@@ -5,6 +5,7 @@ type HEX = `#${string}`;
 export type Color = RGB | RGBA | HEX;
 
 export const enum LegoColors {
+  Black = '#05131D',
   DarkTurquoise = '#008F9B',
   Red = '#C91A09',
   Lime = '#BBE90B',
@@ -13,7 +14,10 @@ export const enum LegoColors {
   LightGray = '#9BA19D',
   Blue = '#0055BF',
   MediumBlue = '#5A93DB',
+  Orange = '#FE8A18',
+  DarkGray = '#6D6E5C',
   DarkOrange = '#A95500',
+  SandBlue = '#6074A1',
   Tan = '#E4CD9E',
   TransMediumBlue = '#CFE2F7',
   TransNeonYellow = '#DAB000',
