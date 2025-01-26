@@ -39,14 +39,20 @@ function getMask(matoran: Matoran) {
 }
 
 export function MatoranAvatar(props: { matoran: Matoran; styles: string }) {
-  const {colors}=props.matoran
+  const { colors } = props.matoran;
   return (
-    <div className={`composited-avatar ${props.styles}`}>
-      <CompositedImage
-        images={[legs, torso, eyes, head, arms, getMask(props.matoran)]}
-        colors={[colors.feet, colors.body, colors.eyes, '#fff', colors.arms, colors.mask]}
-      />
-    </div>
+    <CompositedImage
+      className={`composited-avatar ${props.styles}`}
+      images={[legs, torso, eyes, head, arms, getMask(props.matoran)]}
+      colors={[
+        colors.feet,
+        colors.body,
+        colors.eyes,
+        '#fff',
+        colors.arms,
+        colors.mask,
+      ]}
+    />
   );
   return;
 }

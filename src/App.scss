@@ -13,7 +13,7 @@
 
 .nav-bar {
   background-color: #2d2d2d;
-  padding: 1rem 2rem;
+  padding: 1rem 2rem 2rem;
   color: white;
 
   .nav-links {
@@ -44,16 +44,55 @@
 }
 
 .page-container {
-  text-align: center;
-  padding: 20px;
+  padding: 1rem 2rem;
 
-  h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
   }
 
-  p {
-    font-size: 16px;
-    color: #666;
+  .matoran-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1rem;
+
+    .matoran-card {
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgb(114 114 114 / 50%);
+      transition: transform ease 0.3s;
+
+      &.rare {
+        background-color: rgba(#28a745, 50%);
+      }
+      &.legend {
+        background-color: rgba(#ecb500, 50%);
+      }
+
+      &:hover {
+        cursor: pointer;
+        transform: scale(1.05);
+      }
+
+      .matoran-avatar {
+        height: 96px;
+        border-radius: 50%;
+      }
+
+      .matoran-name {
+        font-size: 1.125rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .matoran-cost {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-top: 0.5rem;
+      }
+    }
   }
 }

@@ -4,7 +4,7 @@ type HEX = `#${string}`;
 
 export type Color = RGB | RGBA | HEX;
 
-export const enum LegoColors {
+export const enum LegoColor {
   Black = '#05131D',
   DarkTurquoise = '#008F9B',
   Red = '#C91A09',

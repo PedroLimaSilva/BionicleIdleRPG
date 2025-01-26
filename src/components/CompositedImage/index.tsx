@@ -3,11 +3,13 @@ import React, { useRef, useEffect } from 'react';
 interface CompositedImageProps {
   images: string[]; // Grayscale image URL
   colors: string[]; // Desired overlay color in hex (e.g., '#ff0000')
+  className: string;
 }
 
 export const CompositedImage: React.FC<CompositedImageProps> = ({
   images: imageUrls,
   colors: colors,
+  className: className,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -30,12 +32,7 @@ export const CompositedImage: React.FC<CompositedImageProps> = ({
       canvas.height = (images[0] as HTMLImageElement).height;
 
       // create offscreen buffer,
-      const bufferContainer = document.getElementById('buffer');
-      if (bufferContainer) {
-        bufferContainer.innerHTML = '';
-      }
       const buffer = document.createElement('canvas');
-      document.getElementById('buffer')?.appendChild(buffer);
       buffer.width = canvas.width;
       buffer.height = canvas.height;
       const bctx = buffer.getContext('2d', {
@@ -62,7 +59,7 @@ export const CompositedImage: React.FC<CompositedImageProps> = ({
           imageData.data[i + 3] = grayscale.data[i + 3];
         }
         bctx.putImageData(imageData, 0, 0);
-        ctx.drawImage(buffer, 0, 0)
+        ctx.drawImage(buffer, 0, 0);
 
         // Reset blend mode
         ctx.globalCompositeOperation = 'source-over';
@@ -71,7 +68,7 @@ export const CompositedImage: React.FC<CompositedImageProps> = ({
         bctx!.clearRect(0, 0, buffer.width, buffer.height);
       }
     });
-  }, [imageUrls, colors]);
+  }, [imageUrls, colors, className]);
 
-  return <canvas ref={canvasRef} />;
+  return <canvas className={className} ref={canvasRef} />;
 };
