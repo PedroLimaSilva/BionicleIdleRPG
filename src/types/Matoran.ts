@@ -1,3 +1,5 @@
+import { Color } from './Colors';
+
 export const enum Rarity {
   Common = 'common',
   Rare = 'rare',
@@ -6,8 +8,12 @@ export const enum Rarity {
 
 export const enum Mask {
   Hau = 'Hau',
-  Huna = 'Huna',
   Kaukau = 'Kaukau',
+  Huna = 'Huna',
+  Kakama = 'Kakama',
+  Akaku = 'Akaku',
+  Pakari = 'Pakari',
+  Miru = 'Miru',
 }
 
 export const enum ElementTribe {
@@ -15,13 +21,11 @@ export const enum ElementTribe {
   Fire = 'Fire',
   Air = 'Air',
   Ice = 'Ice',
+  Stone = 'Stone',
+  Earth = 'Earth',
+  Light = 'Light',
+  Shadow = 'Shadow',
 }
-
-type RGB = `rgb(${number}, ${number}, ${number})`;
-type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`;
-type HEX = `#${string}`;
-
-type Color = RGB | RGBA | HEX;
 
 export type Matoran = {
   id: number;
