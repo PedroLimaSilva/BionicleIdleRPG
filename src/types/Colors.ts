@@ -15,4 +15,10 @@ export const enum LegoColors {
   MediumBlue = '#5A93DB',
   DarkOrange = '#A95500',
   Tan = '#E4CD9E',
+  TransMediumBlue = '#CFE2F7',
+  TransNeonYellow = '#DAB000',
+  TransGreen = '#84B68D',
+  TransNeonOrange = '#FF800D',
+  TransNeonGreen = '#F8F184',
+  TransNeonRed = '#FF0040',
 }

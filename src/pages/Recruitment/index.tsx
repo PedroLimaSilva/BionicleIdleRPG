@@ -22,7 +22,7 @@ const mockMatoran: Matoran[] = [
       body: LegoColors.Red,
       feet: LegoColors.Yellow,
       arms: LegoColors.Red,
-      eyes: '#',
+      eyes: LegoColors.TransNeonRed,
     },
   },
   {
@@ -40,7 +40,7 @@ const mockMatoran: Matoran[] = [
       body: LegoColors.MediumBlue,
       feet: LegoColors.Blue,
       arms: LegoColors.MediumBlue,
-      eyes: '#',
+      eyes: LegoColors.TransNeonYellow,
     },
   },
   {
@@ -58,7 +58,7 @@ const mockMatoran: Matoran[] = [
       body: LegoColors.Tan,
       feet: LegoColors.DarkOrange,
       arms: LegoColors.Tan,
-      eyes: '#',
+      eyes: LegoColors.TransNeonOrange,
     },
   },
   {
@@ -76,7 +76,7 @@ const mockMatoran: Matoran[] = [
       body: LegoColors.MediumBlue,
       feet: LegoColors.Blue,
       arms: LegoColors.MediumBlue,
-      eyes: '#',
+      eyes: LegoColors.TransNeonYellow,
     },
   },
   {
@@ -94,7 +94,7 @@ const mockMatoran: Matoran[] = [
       body: LegoColors.White,
       feet: LegoColors.LightGray,
       arms: LegoColors.White,
-      eyes: '#',
+      eyes: LegoColors.TransMediumBlue,
     },
   },
   {
@@ -112,7 +112,7 @@ const mockMatoran: Matoran[] = [
       body: LegoColors.Lime,
       feet: LegoColors.DarkTurquoise,
       arms: LegoColors.Lime,
-      eyes: '#',
+      eyes: LegoColors.TransNeonGreen,
     },
   },
 ];
@@ -150,6 +150,7 @@ export const Recruitment: React.FC = () => {
           </div>
         ))}
       </div>
+      <div id='buffer'></div>
 
       {selectedMatoran && (
         <div className='modal-overlay'>
