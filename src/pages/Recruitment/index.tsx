@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Mask, Matoran, Rarity } from '../../types/Matoran';
+import { ElementTribe, Mask, Matoran, Rarity } from '../../types/Matoran';
 
 import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
@@ -10,7 +10,7 @@ const mockMatoran: Matoran[] = [
     id: 1,
     name: 'Jala',
     mask: Mask.Hau,
-    element: 'Fire',
+    element: ElementTribe.Fire,
     strength: 8,
     agility: 5,
     intelligence: 6,
@@ -21,26 +21,62 @@ const mockMatoran: Matoran[] = [
       body: '#C91A09',
       feet: '#F2CD37',
       arms: '#C91A09',
-      eyes: '#'
-    }
+      eyes: '#',
+    },
   },
   {
     id: 2,
-    name: 'Maku',
-    mask: Mask.Huna,
-    element: 'Water',
+    name: 'Hali',
+    mask: Mask.Kaukau,
+    element: ElementTribe.Water,
     strength: 5,
     agility: 7,
     intelligence: 8,
-    rarity: Rarity.Rare,
+    rarity: Rarity.Legend,
     cost: 120,
     colors: {
       mask: '#0055BF',
       body: '#5A93DB',
       feet: '#0055BF',
       arms: '#5A93DB',
-      eyes: '#'
-    }
+      eyes: '#',
+    },
+  },
+  {
+    id: 3,
+    name: 'Lumi',
+    mask: Mask.Hau,
+    element: ElementTribe.Water,
+    strength: 5,
+    agility: 7,
+    intelligence: 8,
+    rarity: Rarity.Rare,
+    cost: 120,
+    colors: {
+      mask: '#9BA19D',
+      body: '#fff',
+      feet: '#9BA19D',
+      arms: '#fff',
+      eyes: '#',
+    },
+  },
+  {
+    id: 4,
+    name: 'Le Matoran',
+    mask: Mask.Kaukau,
+    element: ElementTribe.Water,
+    strength: 5,
+    agility: 7,
+    intelligence: 8,
+    rarity: Rarity.Common,
+    cost: 120,
+    colors: {
+      mask: '#008F9B',
+      body: '#BBE90B',
+      feet: '#008F9B',
+      arms: '#BBE90B',
+      eyes: '#',
+    },
   },
 ];
 
