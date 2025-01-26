@@ -1,0 +1,10 @@
+.composited-avatar {
+  position: relative;
+  > img, > canvas {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%) scale(1.5);
+    height: 100%;
+  }
+}

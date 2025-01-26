@@ -1,30 +1,9 @@
 import React, { useState } from 'react';
 
+import { Mask, Matoran, Rarity } from '../../types/Matoran';
+
 import './index.scss';
-
-const enum Rarity {
-  Common = 'common',
-  Rare = 'rare',
-  Legend = 'legend',
-}
-
-const enum Mask {
-  Hau = 'Hau',
-  Huna = 'Huna',
-}
-
-type Matoran = {
-  id: number;
-  name: string;
-  mask: Mask;
-  element: string;
-  strength: number;
-  agility: number;
-  intelligence: number;
-  cost: number;
-  rarity: Rarity;
-  avatar: string;
-};
+import { MatoranAvatar } from '../../components/MatoranAvatar';
 
 const mockMatoran: Matoran[] = [
   {
@@ -37,7 +16,13 @@ const mockMatoran: Matoran[] = [
     intelligence: 6,
     cost: 100,
     rarity: Rarity.Legend,
-    avatar: './matoran/jala.png',
+    colors: {
+      mask: '#F2CD37',
+      body: '#C91A09',
+      feet: '#F2CD37',
+      arms: '#C91A09',
+      eyes: '#'
+    }
   },
   {
     id: 2,
@@ -49,7 +34,13 @@ const mockMatoran: Matoran[] = [
     intelligence: 8,
     rarity: Rarity.Rare,
     cost: 120,
-    avatar: './matoran/maku.png',
+    colors: {
+      mask: '#0055BF',
+      body: '#5A93DB',
+      feet: '#0055BF',
+      arms: '#5A93DB',
+      eyes: '#'
+    }
   },
 ];
 
@@ -81,11 +72,7 @@ export const Recruitment: React.FC = () => {
             className={`matoran-card ${matoran.rarity}`}
             onClick={() => handleRecruit(matoran)}
           >
-            <img
-              src={matoran.avatar}
-              alt={matoran.name}
-              className='matoran-avatar'
-            />
+            <MatoranAvatar matoran={matoran} styles={'matoran-avatar'} />
             <h2 className='matoran-name'>{matoran.name}</h2>
           </div>
         ))}
@@ -95,11 +82,7 @@ export const Recruitment: React.FC = () => {
         <div className='modal-overlay'>
           <div className='modal'>
             <h2 className='modal-title'>Confirm Recruitment</h2>
-            <img
-              src={selectedMatoran.avatar}
-              alt={selectedMatoran.name}
-              className='modal-avatar'
-            />
+            <MatoranAvatar matoran={selectedMatoran} styles='modal-avatar' />
             <p className='modal-detail'>Name: {selectedMatoran.name}</p>
             <p className='modal-detail'>Mask: {selectedMatoran.mask}</p>
             <p className='modal-detail'>Element: {selectedMatoran.element}</p>
