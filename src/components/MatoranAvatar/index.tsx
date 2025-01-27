@@ -48,7 +48,7 @@ export function MatoranAvatar(props: { matoran: Matoran; styles: string }) {
         colors.feet,
         colors.body,
         colors.eyes,
-        '#fff',
+        '#fff', // head
         colors.arms,
         colors.mask,
       ]}
