@@ -1,13 +1,15 @@
-import React from 'react';
+import { useParams } from 'react-router-dom';
+import { useGame } from '../../providers/Game';
+import { MatoranAvatar } from '../../components/MatoranAvatar';
+
+import { getMatoranFromInventoryById } from '../../data/matoran';
 
 import './index.scss';
-import { MatoranAvatar } from '../../components/MatoranAvatar';
-import { getMatoranFromInventoryById } from '../../data/matoran';
-import { useParams } from 'react-router-dom';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
-  const matoran = getMatoranFromInventoryById(Number(id));
+  const { recruitedCharacters } = useGame();
+  const matoran = getMatoranFromInventoryById(Number(id), recruitedCharacters);
   if (!matoran) {
     return <p>Something is wrong, this matoran does not exist</p>;
   }

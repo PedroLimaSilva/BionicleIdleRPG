@@ -1,18 +1,17 @@
-import React from 'react';
-
 import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { Link } from 'react-router-dom';
-import { MATORAN_INVENTORY } from '../../data/matoran';
+import { useGame } from '../../providers/Game';
 
 export const CharacterInventory: React.FC = () => {
+  const { recruitedCharacters } = useGame();
   return (
     <div className='page-container'>
       <h1 className='title'>Characters</h1>
       <div className='matoran-grid'>
-        {MATORAN_INVENTORY.map((matoran) => (
-          <Link to={`/character/${matoran.id}`}>
-            <div key={matoran.id} className={`matoran-card ${matoran.rarity}`}>
+        {recruitedCharacters.map((matoran) => (
+          <Link key={matoran.id} to={`/character/${matoran.id}`}>
+            <div className={`matoran-card ${matoran.rarity}`}>
               <MatoranAvatar matoran={matoran} styles={'matoran-avatar'} />
               <h2 className='matoran-name'>{matoran.name}</h2>
             </div>

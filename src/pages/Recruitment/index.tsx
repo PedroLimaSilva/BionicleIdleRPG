@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { Matoran } from '../../types/Matoran';
-import { RECRUITABLE_MATORAN } from '../../data/matoran';
 import { useNavigate } from 'react-router-dom';
+import { useGame } from '../../providers/Game';
 
 export const Recruitment: React.FC = () => {
   const navigate = useNavigate();
+  const { widgets, recruitCharacter, availableCharacters } = useGame();
   const [selectedMatoran, setSelectedMatoran] = useState<Matoran | null>(null);
+  const canRecruit = useMemo(
+    () => selectedMatoran && widgets >= selectedMatoran.cost,
+    [selectedMatoran, widgets]
+  );
 
   const handleRecruit = (matoran: Matoran) => {
+    console.log({ canRecruit, matoran, widgets });
     setSelectedMatoran(matoran);
   };
 
   const confirmRecruitment = () => {
-    if (selectedMatoran) {
+    console.log('confirmRecruitment', selectedMatoran, widgets);
+    if (selectedMatoran && canRecruit) {
       alert(`${selectedMatoran.name} has been recruited!`);
+      recruitCharacter(selectedMatoran, selectedMatoran.cost);
       setSelectedMatoran(null);
       navigate('/characters');
     }
@@ -30,7 +38,7 @@ export const Recruitment: React.FC = () => {
     <div className='page-container'>
       <h1 className='title'>Recruit a Matoran</h1>
       <div className='matoran-grid'>
-        {RECRUITABLE_MATORAN.map((matoran) => (
+        {availableCharacters.map((matoran) => (
           <div
             key={matoran.id}
             className={`matoran-card ${matoran.rarity}`}
@@ -60,7 +68,10 @@ export const Recruitment: React.FC = () => {
               <button className='cancel-button' onClick={cancelRecruitment}>
                 Cancel
               </button>
-              <button className='confirm-button' onClick={confirmRecruitment}>
+              <button
+                className={`confirm-button ${canRecruit ? '' : 'disabled'}`}
+                onClick={confirmRecruitment}
+              >
                 Confirm
               </button>
             </div>

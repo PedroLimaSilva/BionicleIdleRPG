@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 
 interface CompositedImageProps {
   images: string[]; // Grayscale image URL
