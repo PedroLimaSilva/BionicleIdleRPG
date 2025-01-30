@@ -8,7 +8,12 @@ import { useGame } from '../../providers/Game';
 
 export const Recruitment: React.FC = () => {
   const navigate = useNavigate();
-  const { widgets, recruitCharacter, availableCharacters } = useGame();
+  const {
+    widgets,
+    recruitCharacter,
+    availableCharacters,
+    recruitedCharacters,
+  } = useGame();
   const [selectedMatoran, setSelectedMatoran] = useState<Matoran | null>(null);
   const canRecruit = useMemo(
     () => selectedMatoran && widgets >= selectedMatoran.cost,
@@ -38,16 +43,18 @@ export const Recruitment: React.FC = () => {
     <div className='page-container'>
       <h1 className='title'>Recruit a Matoran</h1>
       <div className='matoran-grid'>
-        {availableCharacters.map((matoran) => (
-          <div
-            key={matoran.id}
-            className={`matoran-card ${matoran.rarity}`}
-            onClick={() => handleRecruit(matoran)}
-          >
-            <MatoranAvatar matoran={matoran} styles={'matoran-avatar'} />
-            <h2 className='matoran-name'>{matoran.name}</h2>
-          </div>
-        ))}
+        {availableCharacters
+          .filter((m) => !recruitedCharacters.find((c) => c.id === m.id))
+          .map((matoran) => (
+            <div
+              key={matoran.id}
+              className={`matoran-card ${matoran.rarity}`}
+              onClick={() => handleRecruit(matoran)}
+            >
+              <MatoranAvatar matoran={matoran} styles={'matoran-avatar'} />
+              <h2 className='matoran-name'>{matoran.name}</h2>
+            </div>
+          ))}
       </div>
 
       {selectedMatoran && (

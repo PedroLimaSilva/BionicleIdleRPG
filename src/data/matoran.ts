@@ -34,6 +34,24 @@ export const INITIAL_GAME_STATE:GameState = {
   ],
   availableCharacters: [
     {
+      id: 1,
+      name: 'Takua',
+      mask: Mask.Pakari,
+      element: ElementTribe.Light,
+      strength: 8,
+      agility: 5,
+      intelligence: 6,
+      cost: 120,
+      rarity: Rarity.Legend,
+      colors: {
+        mask: LegoColor.MediumBlue,
+        body: LegoColor.Red,
+        feet: LegoColor.Yellow,
+        arms: LegoColor.Red,
+        eyes: LegoColor.TransNeonRed,
+      },
+    },
+    {
       id: 2,
       name: 'Jala',
       mask: Mask.Hau,
