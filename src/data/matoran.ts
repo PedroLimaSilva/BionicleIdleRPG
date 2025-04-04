@@ -188,11 +188,11 @@ export const INITIAL_GAME_STATE:GameState = {
       rarity: Rarity.Rare,
       cost: 100,
       colors: {
-        mask: LegoColor.LightGray,
-        body: LegoColor.White,
-        feet: LegoColor.LightGray,
-        arms: LegoColor.White,
-        eyes: LegoColor.TransMediumBlue,
+        mask: LegoColor.Blue,
+        body: LegoColor.MediumBlue,
+        feet: LegoColor.Blue,
+        arms: LegoColor.MediumBlue,
+        eyes: LegoColor.TransNeonYellow,
       },
     },
     {
