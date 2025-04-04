@@ -8,11 +8,11 @@ export type Item = {
 
 export type Inventory = Record<Item['id'], number>;
 
-function removeCharacterFromArray(character: Matoran, array: Matoran[]) {
-  const indexToRemove = array.findIndex((m) => m.id === character.id);
+// function removeCharacterFromArray(character: Matoran, array: Matoran[]) {
+//   const indexToRemove = array.findIndex((m) => m.id === character.id);
 
-  return array.filter((_, i) => i !== indexToRemove);
-}
+//   return array.filter((_, i) => i !== indexToRemove);
+// }
 
 export type GameState = {
   widgets: number;

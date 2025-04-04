@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useGame } from '../../providers/Game';
-import { MatoranAvatar } from '../../components/MatoranAvatar';
 
 import { getMatoranFromInventoryById } from '../../data/matoran';
 
 import './index.scss';
+import { CharacterScene } from '../../components/CharacterScene';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -19,7 +19,9 @@ export const CharacterDetail: React.FC = () => {
         <>
           <h1 className='title'>{matoran.name}</h1>
 
-          <MatoranAvatar matoran={matoran} styles='detail-avatar' />
+          <div className='detail-avatar'>
+            <CharacterScene matoran={matoran}></CharacterScene>
+          </div>
           <p className='detail-data'>Mask: {matoran.mask}</p>
           <p className='detail-data'>Element: {matoran.element}</p>
           <p className='detail-data'>Strength: {matoran.strength}</p>
