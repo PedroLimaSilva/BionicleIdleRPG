@@ -85,7 +85,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     RecruitedMatoran[]
   >(initialState.recruitedCharacters);
 
-  const [availableCharacters] = useState<ListedMatoran[]>(() => {
+  const [availableCharacters, setAvailableCharacters] = useState<
+    ListedMatoran[]
+  >(() => {
     return INITIAL_GAME_STATE.availableCharacters.filter(
       (m) =>
         !initialState.recruitedCharacters.find(
@@ -116,6 +118,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       };
 
       setRecruitedCharacters([...recruitedCharacters, recruitedCharacter]);
+      setAvailableCharacters(
+        availableCharacters.filter((m) => recruitedCharacter.id !== m.id)
+      );
     } else {
       alert('Not enough widgets!');
     }

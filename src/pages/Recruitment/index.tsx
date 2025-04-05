@@ -14,14 +14,7 @@ export const Recruitment: React.FC = () => {
     widgets,
     recruitCharacter,
     availableCharacters,
-    recruitedCharacters,
   } = useGame();
-
-  // Compute unrecruited Matoran once
-  const unrecruitedCharacters = useMemo(() => {
-    const recruitedIds = new Set(recruitedCharacters.map((c) => c.id));
-    return availableCharacters.filter((m) => !recruitedIds.has(m.id));
-  }, [availableCharacters, recruitedCharacters]);
 
   const [selectedMatoran, setSelectedMatoran] = useState<ListedMatoran | null>(null);
 
@@ -31,8 +24,8 @@ export const Recruitment: React.FC = () => {
   );
 
   useEffect(() => {
-    setSelectedMatoran(unrecruitedCharacters[0] || null);
-  }, [unrecruitedCharacters]);
+    setSelectedMatoran(availableCharacters[0] || null);
+  }, [availableCharacters]);
 
   const handleRecruit = (matoran: ListedMatoran) => {
     startTransition(() => {
@@ -68,7 +61,7 @@ export const Recruitment: React.FC = () => {
 
       <div className='matoran-selector'>
         <div className='scroll-row'>
-          {unrecruitedCharacters.map((matoran) => (
+          {availableCharacters.map((matoran) => (
             <div
               key={matoran.id}
               className={`matoran-card element-${matoran.element}`}
