@@ -1,11 +1,87 @@
+* {
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease,
+  border-color 0.3s ease;
+}
+
+:root {
+  --color-text: #ffffff;
+  --color-text-muted: #cccccc;
+  --color-surface-low: #1a1a1a;
+  --color-surface-mid: #262626;
+  --color-surface-high: #333333;
+  --color-border-muted: #444444;
+  --color-accent: #fcef6e;
+
+
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-text: #111111;
+    --color-text-muted: #666666;
+
+    --color-surface-low: #f8f8f8;
+    --color-surface-mid: #b7b7b7;
+    --color-surface-high: #a2a2a2;
+
+    --color-border-muted: #dddddd;
+
+    --color-accent: #a48d00;
+  }
+}
+
 #root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   width: 100%;
+
   margin: 0 auto;
   text-align: center;
-  --theme-base-glow: white;
-  --theme-base-accent: white;
-  --theme-base-primary: white;
-  --linear-gradient: linear-gradient(135deg, var(--primary), var(--glow));
+  color-scheme: light dark;
+  color: var(--color-text);
+  background-color: var(--color-surface-mid);
+}
+
+a {
+  font-weight: 500;
+  text-decoration: inherit;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--color-surface-low);
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
 }
 
 .app-container {
@@ -16,7 +92,7 @@
 }
 
 .nav-bar {
-  background-color: #2d2d2d;
+  background-color: var(--color-surface-high);
   padding: 1rem 2rem 2rem;
 
   .nav-links {
@@ -130,14 +206,14 @@
 }
 
 .elemental-btn {
-  background: #222;
+  background: var(--color-surface-mid);
   border: 1px solid var(--theme-element-primary);
   color: var(--theme-element-primary);
   transition: all 0.2s ease-in-out;
   cursor: pointer;
 
   &:hover {
-    background: #333;
+    background: var(--color-surface-high);
     box-shadow: 0 0 10px var(--theme-element-glow);
   }
 }

@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #111;
-  color: #fff;
+  background: var(--color-surface-low);
+  color: var(--color-text);
 }
 
 .recruitment-preview {
@@ -29,7 +29,7 @@
 }
 
 .matoran-selector {
-  border-top: 2px solid #333;
+  border-top: 2px solid var(--color-surface-high);
 
   .scroll-row {
     padding: 1rem;
@@ -42,12 +42,12 @@
   .matoran-card {
     flex: 0 0 auto;
     width: 120px;
-    background: #1a1a1a;
-    border: 2px solid #444;
+    background: var(--color-surface-low);
+    border: 2px solid var(--color-border-muted);
     border-radius: 12px;
     padding: 0.5rem;
     text-align: center;
-    box-shadow: 0 0 4px #000;
+    box-shadow: 0 0 4px var(--color-text-muted);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 
     &:hover {
@@ -68,7 +68,7 @@
 
     .cost {
       font-size: 0.85rem;
-      color: #ccc;
+      color: var(--color-text-muted);
     }
   }
 }

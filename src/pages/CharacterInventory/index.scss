@@ -6,12 +6,16 @@
 }
 
 .character-card {
-  background: #1a1a1a;
-  border: 2px solid #444;
+  border: 2px solid var(--color-border-muted);
   border-radius: 12px;
   padding: 1rem;
   text-align: center;
-  box-shadow: 0 0 8px #000;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-low),
+    var(--color-surface-mid)
+  );
+  box-shadow: 0 0 8px var(--color-text-muted);
   display: grid;
   align-items: center;
   grid-template-columns: 30% 1fr;
@@ -50,16 +54,16 @@
   margin-top: 2rem;
 
   button {
-    background: #222;
-    color: #fff6c0;
+    background: var(--color-surface-mid);
+    color: var(--color-accent);
     padding: 0.6rem 1.5rem;
-    border: 1px solid #fff6c0;
+    border: 1px solid var(--color-accent);
     border-radius: 6px;
     font-weight: bold;
     transition: all 0.2s ease;
 
     &:hover {
-      background: #333;
+      background: var(--color-surface-high);
       box-shadow: 0 0 10px #fff6c050;
     }
   }

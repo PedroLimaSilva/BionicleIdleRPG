@@ -8,6 +8,11 @@
   font-family: 'Orbitron', sans-serif;
   color: var(--theme-element-primary);
   box-shadow: 0 0 20px var(--theme-element-glow);
+  background: linear-gradient(
+    0deg,
+    var(--color-surface-high),
+    var(--color-surface-low)
+  );
 
   .perk-section {
     margin-top: 1.5rem;

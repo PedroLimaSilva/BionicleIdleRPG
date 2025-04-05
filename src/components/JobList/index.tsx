@@ -1,6 +1,6 @@
 import './index.scss';
 import { useState } from 'react';
-import { MatoranJob } from '../../types/Jobs';
+import { jobDetails, MatoranJob } from '../../types/Jobs';
 import { RecruitedMatoran } from '../../types/Matoran';
 import { useGame } from '../../providers/Game';
 
@@ -32,17 +32,23 @@ export function JobList({ matoran, onCancel }: JobListProps) {
       <h2 className='assign-job-title'>Select a Job</h2>
 
       <div className='job-grid'>
-        {allJobs.map((job) => (
-          <button
-            key={job}
-            className={`job-button ${selectedJob === job ? 'selected' : ''} ${
-              matoran.assignment?.job === job ? 'assigned' : ''
-            }`}
-            onClick={() => setSelectedJob(job)}
-          >
-            {job}
-          </button>
-        ))}
+        {allJobs.map((job) => {
+          const { label, description, rate } = jobDetails[job];
+          return (
+            <button
+              key={job}
+              className={`job-button ${selectedJob === job ? 'selected' : ''} ${
+                matoran.assignment?.job === job ? 'assigned' : ''
+              }`}
+              onClick={() => setSelectedJob(job)}
+              title={description}
+            >
+              <div className='job-label'>{label}</div>
+              <div className='job-description'>{description}</div>
+              <div className='job-rate'>⚡ {rate.toFixed(1)} EXP/sec</div>
+            </button>
+          );
+        })}
       </div>
 
       <div className='job-actions'>
