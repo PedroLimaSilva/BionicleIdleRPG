@@ -9,9 +9,9 @@ export const jobExpRates: Record<MatoranJob, number> = {
   [MatoranJob.Healer]: 0.7,
 };
 
-function computeEarnedExp(job: JobAssignment, now = Date.now()): number {
-  const durationSec = (now - job.assignedAt) / 1000;
-  return Math.floor(durationSec * job.expRatePerSecond);
+function computeEarnedExp(assignment: JobAssignment, now = Date.now()): number {
+  const elapsedSeconds = Math.max(0, (now - assignment.assignedAt) / 1000);
+  return Math.floor(elapsedSeconds * assignment.expRatePerSecond);
 }
 
 export function applyJobExp(
@@ -20,19 +20,22 @@ export function applyJobExp(
 ): RecruitedMatoran {
   if (!matoran.assignment) return matoran;
 
-  const earned = computeEarnedExp(matoran.assignment, now);
+  const earnedExp = computeEarnedExp(matoran.assignment);
 
   return {
     ...matoran,
-    exp: matoran.exp + earned,
+    exp: matoran.exp + earnedExp,
     assignment: {
       ...matoran.assignment,
-      assignedAt: now, // reset timestamp
+      assignedAt: now, // reset timer
     },
   };
 }
 
-export function assignJob(matoran: RecruitedMatoran, job: MatoranJob): RecruitedMatoran {
+export function assignJob(
+  matoran: RecruitedMatoran,
+  job: MatoranJob
+): RecruitedMatoran {
   return {
     ...matoran,
     assignment: {

@@ -9,7 +9,7 @@ import {
   INITIAL_GAME_STATE,
 } from '../data/matoran';
 import { MatoranJob } from '../types/Jobs';
-import { jobExpRates } from '../game/Jobs';
+import { applyJobExp, jobExpRates } from '../game/Jobs';
 
 export type Item = {
   id: string;
@@ -33,6 +33,7 @@ export type GameState = {
   addItemToInventory: (item: string, amount: number) => void;
   assignJobToMatoran: (matoranId: number, job: MatoranJob) => void;
   removeJobFromMatoran: (matoranId: number) => void;
+  tickJobExp: () => void;
 };
 
 const GameContext = createContext<GameState | null>(null);
@@ -159,12 +160,23 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const removeJobFromMatoran = (id: number) => {
     setRecruitedCharacters((prev) =>
       prev.map((matoran) =>
-        matoran.id === id
-          ? { ...matoran, assignment: undefined }
-          : matoran
+        matoran.id === id ? { ...matoran, assignment: undefined } : matoran
       )
     );
   };
+
+  const tickJobExp = () => {
+    const now = Date.now();
+    setRecruitedCharacters((prev) => prev.map((m) => applyJobExp(m, now)));
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      tickJobExp();
+    }, 5000); // or whatever interval makes sense
+
+    return () => clearInterval(interval); // cleanup on unmount
+  }, []);
 
   return (
     <GameContext.Provider
@@ -178,6 +190,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         addItemToInventory,
         assignJobToMatoran,
         removeJobFromMatoran,
+        tickJobExp,
       }}
     >
       {children}

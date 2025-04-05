@@ -57,14 +57,14 @@ export const CharacterDetail: React.FC = () => {
               <div
                 className='xp-bar-fill'
                 style={{
-                  width: `${lvlProgress.progress}%`,
+                  width: `${lvlProgress.progress * 100}%`,
                 }}
               ></div>
             </div>
             <div className='xp-label'>
-              {lvlProgress.currentLevelExp} /{' '}
-              {lvlProgress.currentLevelExp + lvlProgress.expForNextLevel} XP (
-              {lvlProgress.expForNextLevel} to level up)
+              {lvlProgress.currentLevelExp} / {lvlProgress.expForNextLevel} XP (
+              {lvlProgress.expForNextLevel - lvlProgress.currentLevelExp} to
+              level up)
             </div>
           </div>
           <div className='job-section'>
