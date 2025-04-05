@@ -49,11 +49,11 @@ export const Recruitment: React.FC = () => {
     <div className='recruitment-screen'>
       <InventoryBar />
       <div className='recruitment-preview'>
-        <div className='model-display'>
-          {selectedMatoran && (
+        {selectedMatoran && (
+          <div className='model-display fade-in' key={selectedMatoran.id}>
             <CharacterScene matoran={selectedMatoran}></CharacterScene>
-          )}
-        </div>
+          </div>
+        )}
         <button
           className={`recruit-btn ${canRecruit ? '' : 'disabled'}`}
           onClick={confirmRecruitment}
