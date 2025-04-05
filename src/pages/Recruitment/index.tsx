@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { startTransition, useEffect, useMemo, useState } from 'react';
 
 import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
@@ -6,6 +6,7 @@ import { InventoryBar } from '../../components/InventoryBar';
 import { Matoran } from '../../types/Matoran';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../../providers/Game';
+import { CharacterScene } from '../../components/CharacterScene';
 
 export const Recruitment: React.FC = () => {
   const navigate = useNavigate();
@@ -21,13 +22,21 @@ export const Recruitment: React.FC = () => {
     [selectedMatoran, widgets]
   );
 
+  useEffect(() => {
+    setSelectedMatoran(
+      availableCharacters.filter(
+        (m) => !recruitedCharacters.find((c) => c.id === m.id)
+      )[0]
+    );
+  }, [availableCharacters, recruitedCharacters]);
+
   const handleRecruit = (matoran: Matoran) => {
-    console.log({ canRecruit, matoran, widgets });
-    setSelectedMatoran(matoran);
+    startTransition(() => {
+      setSelectedMatoran(matoran);
+    });
   };
 
   const confirmRecruitment = () => {
-    console.log('confirmRecruitment', selectedMatoran, widgets);
     if (selectedMatoran && canRecruit) {
       alert(`${selectedMatoran.name} has been recruited!`);
       recruitCharacter(selectedMatoran, selectedMatoran.cost);
@@ -36,61 +45,43 @@ export const Recruitment: React.FC = () => {
     }
   };
 
-  const cancelRecruitment = () => {
-    setSelectedMatoran(null);
-  };
-
   return (
-    <>
+    <div className='recruitment-screen'>
       <InventoryBar />
-      <div className='page-container'>
-        <h1 className='title'>Recruit a Matoran</h1>
-        <div className='matoran-grid'>
+      <div className='recruitment-preview'>
+        <div className='model-display'>
+          {selectedMatoran && (
+            <CharacterScene matoran={selectedMatoran}></CharacterScene>
+          )}
+        </div>
+        <button
+          className={`recruit-btn ${canRecruit ? '' : 'disabled'}`}
+          onClick={confirmRecruitment}
+        >
+          Recruit
+        </button>
+      </div>
+
+      <div className='matoran-selector'>
+        <div className='scroll-row'>
           {availableCharacters
             .filter((m) => !recruitedCharacters.find((c) => c.id === m.id))
             .map((matoran) => (
               <div
                 key={matoran.id}
-                className={`matoran-card ${matoran.rarity}`}
+                className={`matoran-card element-${matoran.element}`}
                 onClick={() => handleRecruit(matoran)}
               >
-                <MatoranAvatar matoran={matoran} styles={'matoran-avatar'} />
-                <h2 className='matoran-name'>{matoran.name}</h2>
+                <MatoranAvatar
+                  matoran={matoran}
+                  styles={'mask-preview matoran-avatar'}
+                />
+                <div className='name'>{matoran.name}</div>
+                <div className='cost'>{matoran.cost} widgets</div>
               </div>
             ))}
         </div>
-
-        {selectedMatoran && (
-          <div className='modal-overlay'>
-            <div className='modal'>
-              <h2 className='modal-title'>Confirm Recruitment</h2>
-              <MatoranAvatar matoran={selectedMatoran} styles='modal-avatar' />
-              <p className='modal-detail'>Name: {selectedMatoran.name}</p>
-              <p className='modal-detail'>Mask: {selectedMatoran.mask}</p>
-              <p className='modal-detail'>Element: {selectedMatoran.element}</p>
-              <p className='modal-detail'>
-                Strength: {selectedMatoran.strength}
-              </p>
-              <p className='modal-detail'>Agility: {selectedMatoran.agility}</p>
-              <p className='modal-detail'>
-                Intelligence: {selectedMatoran.intelligence}
-              </p>
-              <p className='modal-cost'>Cost: {selectedMatoran.cost} Widgets</p>
-              <div className='modal-actions'>
-                <button className='cancel-button' onClick={cancelRecruitment}>
-                  Cancel
-                </button>
-                <button
-                  className={`confirm-button ${canRecruit ? '' : 'disabled'}`}
-                  onClick={confirmRecruitment}
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
-    </>
+    </div>
   );
 };

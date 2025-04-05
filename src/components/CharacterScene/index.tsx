@@ -47,7 +47,6 @@ export function CharacterScene({ matoran }: { matoran: Matoran }) {
         mask.visible = true;
       }
     });
-
   }, [nodes, materials, matoran]);
 
   return (
@@ -59,7 +58,12 @@ export function CharacterScene({ matoran }: { matoran: Matoran }) {
           <Bounds fit clip observe margin={1.2}>
             <primitive object={nodes.Body} scale={1} />
           </Bounds>
-          <OrbitControls enablePan={false} minDistance={10} maxDistance={20} maxPolarAngle={Math.PI/2}/>
+          <OrbitControls
+            enablePan={false}
+            minDistance={10}
+            maxDistance={20}
+            maxPolarAngle={Math.PI / 2}
+          />
         </Suspense>
       </Stage>
     </Canvas>
