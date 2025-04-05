@@ -53,7 +53,7 @@ export const CharacterDetail: React.FC = () => {
             }}
           ></div>
 
-          <div className='character-stats'>
+          {/* <div className='character-stats'>
             <div className='stat'>
               <label>STR</label>
               <span>{matoran.strength}</span>
@@ -65,6 +65,41 @@ export const CharacterDetail: React.FC = () => {
             <div className='stat'>
               <label>INT</label>
               <span>{matoran.intelligence}</span>
+            </div>
+          </div> */}
+
+          <div className='character-progress'>
+            <div className='level-display'>
+              <span className='label'>Level</span>
+              <span className='value' style={{ color: uiColors.glow }}>
+                12
+              </span>
+            </div>
+
+            <div className='xp-bar'>
+              <div
+                className='xp-bar-fill'
+                style={{
+                  width: `${68}%`,
+                  background: `linear-gradient(90deg, ${uiColors.glow}, ${uiColors.accent})`,
+                }}
+              ></div>
+            </div>
+            <div className='xp-label'>345 / 500 XP (155 to level up)</div>
+
+            <div className='perk-section'>
+              <h3 style={{ color: uiColors.glow }}>Perks</h3>
+              <ul className='perk-list'>
+                <li>
+                  <span>🛡️</span> Mask Mastery: +10% Mask power efficiency
+                </li>
+                <li>
+                  <span>⚡</span> Quickstep: +15% movement speed
+                </li>
+                <li>
+                  <span>🌟</span> Unity Bonus: Increased XP from missions
+                </li>
+              </ul>
             </div>
           </div>
         </div>
