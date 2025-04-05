@@ -1,7 +1,66 @@
-.recruitment {
-  margin-top: 1rem;
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
 }
 
-.matoran-name {
-  color: white;
+.character-card {
+  background: #1a1a1a;
+  border: 2px solid #444;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 0 8px #000;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 30% 1fr;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 12px var(--glow);
+  }
+
+  .card-header {
+    font-weight: bold;
+    font-size: 1.8rem;
+    color: var(--accent);
+    text-shadow: 0 0 4px var(--glow);
+  }
+
+  .level-label {
+    font-size: 0.85rem;
+    color: #ccc;
+    margin: 0.3rem 0;
+  }
+
+  .model-preview {
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+  }
+}
+
+.recruit-button {
+  text-align: center;
+  margin-top: 2rem;
+
+  button {
+    background: #222;
+    color: #fff6c0;
+    padding: 0.6rem 1.5rem;
+    border: 1px solid #fff6c0;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #333;
+      box-shadow: 0 0 10px #fff6c050;
+    }
+  }
 }

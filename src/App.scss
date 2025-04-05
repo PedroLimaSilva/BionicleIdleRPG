@@ -38,6 +38,46 @@
   }
 }
 
+.element-Light {
+  --glow: #fff6c0;
+  --accent: #fdf6d8;
+}
+
+.element-Stone {
+  --glow: #ffce8a;
+  --accent: #d9a066;
+}
+
+.element-Water {
+  --glow: #8de6ff;
+  --accent: #57c4e5;
+}
+
+.element-Fire {
+  --glow: #ff3b00;
+  --accent: #ff784e;
+}
+
+.element-Ice {
+  --glow: #80d4ff;
+  --accent: #a6e1ff;
+}
+
+.element-Earth {
+  --glow: #7a6b68;
+  --accent: #4a3c3a;
+}
+
+.element-Air {
+  --glow: #d2ffd0;
+  --accent: #a8f4a4;
+}
+
+.element-Shadow {
+  --glow: #666666;
+  --accent: #2b2b2b;
+}
+
 .main-content {
   flex-grow: 1;
   overflow-y: auto;
@@ -50,49 +90,5 @@
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 1rem;
-  }
-
-  .matoran-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 1rem;
-
-    .matoran-card {
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      text-align: center;
-      box-shadow: 0 2px 4px rgb(114 114 114 / 50%);
-      transition: transform ease 0.3s;
-
-      &.rare {
-        background-color: rgba(#28a745, 50%);
-      }
-      &.legend {
-        background-color: rgba(#ecb500, 50%);
-      }
-
-      &:hover {
-        cursor: pointer;
-        transform: scale(1.05);
-      }
-
-      .matoran-avatar {
-        height: 96px;
-        border-radius: 50%;
-      }
-
-      .matoran-name {
-        font-size: 1.125rem;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-      }
-
-      .matoran-cost {
-        font-size: 1rem;
-        font-weight: bold;
-        margin-top: 0.5rem;
-      }
-    }
   }
 }

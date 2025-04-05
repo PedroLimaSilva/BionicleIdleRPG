@@ -6,6 +6,7 @@ import { getMatoranFromInventoryById } from '../../data/matoran';
 import './index.scss';
 import { CharacterScene } from '../../components/CharacterScene';
 import { ELEMENT_UI_COLORS } from '../../themes/elements';
+import { ElementTag } from '../../components/ElementTag';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -33,13 +34,7 @@ export const CharacterDetail: React.FC = () => {
             >
               {matoran.name}
             </h1>
-            <div className='element-tag' style={{ background: uiColors.glow }}>
-              <img
-                src={`${import.meta.env.BASE_URL}/icons/${matoran.element}.png`}
-                alt='Light Element Icon'
-              />
-              <span>{matoran.element}</span>
-            </div>
+            <ElementTag element={matoran.element} showName={true} />
           </div>
 
           <div className='model-frame'>
