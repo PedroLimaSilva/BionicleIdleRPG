@@ -9,7 +9,11 @@ import {
   INITIAL_GAME_STATE,
 } from '../data/matoran';
 import { MatoranJob } from '../types/Jobs';
-import { applyJobExp, applyOfflineJobExp } from '../game/Jobs';
+import {
+  applyJobExp,
+  applyOfflineJobExp,
+  getProductivityModifier,
+} from '../game/Jobs';
 import { JOB_DETAILS } from '../data/jobs';
 import { StoryProgression } from '../game/story';
 
@@ -146,7 +150,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   };
 
   const assignJobToMatoran = (id: number, job: MatoranJob) => {
-    const expRatePerSecond = JOB_DETAILS[job].rate;
+    const baseRate = JOB_DETAILS[job].rate;
     const now = Date.now();
 
     setRecruitedCharacters((prev) =>
@@ -156,7 +160,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
               ...matoran,
               assignment: {
                 job,
-                expRatePerSecond,
+                expRatePerSecond:
+                  baseRate * getProductivityModifier(job, matoran),
                 assignedAt: now,
               },
             }

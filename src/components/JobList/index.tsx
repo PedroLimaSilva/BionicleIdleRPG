@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { MatoranJob } from '../../types/Jobs';
 import { RecruitedMatoran } from '../../types/Matoran';
 import { useGame } from '../../providers/Game';
-import { getAvailableJobs } from '../../game/Jobs';
+import { getAvailableJobs, getProductivityModifier } from '../../game/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 
 type JobListProps = {
@@ -41,15 +41,18 @@ export function JobList({ matoran, onCancel }: JobListProps) {
           return (
             <button
               key={job}
-              className={`job-button ${
-                selectedJob === job ? 'selected' : ''
-              } ${matoran.assignment?.job === job ? 'assigned' : ''}`}
+              className={`job-button ${selectedJob === job ? 'selected' : ''} ${
+                matoran.assignment?.job === job ? 'assigned' : ''
+              }`}
               onClick={() => setSelectedJob(job)}
               title={description}
             >
               <div className='job-label'>{label}</div>
               <div className='job-description'>{description}</div>
-              <div className='job-rate'>⚡ {rate.toFixed(1)} EXP/sec</div>
+              <div className='job-rate'>
+                ⚡ {(rate * getProductivityModifier(job, matoran)).toFixed(1)}{' '}
+                EXP/sec
+              </div>
             </button>
           );
         })}
