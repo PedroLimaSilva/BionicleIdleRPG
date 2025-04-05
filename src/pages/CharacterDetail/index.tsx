@@ -10,7 +10,7 @@ import { getExpProgress, getLevelFromExp } from '../../game/Levelling';
 import { useMemo, useState } from 'react';
 import { Modal } from '../../components/Modal';
 import { JobList } from '../../components/JobList';
-import { jobDetails } from '../../types/Jobs';
+import { JOB_DETAILS } from '../../data/jobs';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -71,7 +71,7 @@ export const CharacterDetail: React.FC = () => {
             {matoran.assignment && (
               <p>
                 Assigned Job:{' '}
-                <strong>{jobDetails[matoran.assignment.job].label}</strong>
+                <strong>{JOB_DETAILS[matoran.assignment.job].label}</strong>
               </p>
             )}
 

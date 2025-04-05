@@ -1,3 +1,4 @@
+import { StoryProgression } from '../game/story';
 import { GameState } from '../providers/Game';
 import { LegoColor } from '../types/Colors';
 import { MatoranJob } from '../types/Jobs';
@@ -16,11 +17,12 @@ export function getMatoranFromInventoryById(
   return inventory.find((m) => m.id === id);
 }
 
-export const CURRENT_GAME_STATE_VERSION = 1; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
+export const CURRENT_GAME_STATE_VERSION = 2; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
 
 export const INITIAL_GAME_STATE: GameState = {
   version: CURRENT_GAME_STATE_VERSION,
   widgets: 1000,
+  storyProgress: [StoryProgression.MataNuiSettled],
   recruitedCharacters: [
     {
       id: 1,

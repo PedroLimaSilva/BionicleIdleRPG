@@ -9,7 +9,9 @@ import {
   INITIAL_GAME_STATE,
 } from '../data/matoran';
 import { MatoranJob } from '../types/Jobs';
-import { applyJobExp, applyOfflineJobExp, jobExpRates } from '../game/Jobs';
+import { applyJobExp, applyOfflineJobExp } from '../game/Jobs';
+import { JOB_DETAILS } from '../data/jobs';
+import { StoryProgression } from '../game/story';
 
 export type Item = {
   id: string;
@@ -29,6 +31,7 @@ export type GameState = {
   inventory: Inventory;
   availableCharacters: ListedMatoran[];
   recruitedCharacters: RecruitedMatoran[];
+  storyProgress: StoryProgression[];
   recruitCharacter: (character: ListedMatoran) => void;
   addItemToInventory: (item: string, amount: number) => void;
   assignJobToMatoran: (matoranId: number, job: MatoranJob) => void;
@@ -87,6 +90,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const initialState = loadGameState();
 
   const [version] = useState(initialState.version);
+  const [storyProgress] = useState(initialState.storyProgress);
   const [widgets, setWidgets] = useState(initialState.widgets);
   const [inventory, setInventory] = useState<Inventory>(initialState.inventory);
   const [recruitedCharacters, setRecruitedCharacters] = useState<
@@ -111,9 +115,10 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       widgets,
       inventory,
       recruitedCharacters,
+      storyProgress,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [widgets, inventory, recruitedCharacters, version]);
+  }, [storyProgress, widgets, inventory, recruitedCharacters, version]);
 
   const recruitCharacter = (character: ListedMatoran) => {
     if (widgets >= character.cost) {
@@ -141,7 +146,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   };
 
   const assignJobToMatoran = (id: number, job: MatoranJob) => {
-    const expRatePerSecond = jobExpRates[job]; // You'll need to define this object
+    const expRatePerSecond = JOB_DETAILS[job].rate;
     const now = Date.now();
 
     setRecruitedCharacters((prev) =>
@@ -184,6 +189,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   return (
     <GameContext.Provider
       value={{
+        storyProgress,
         version,
         widgets,
         inventory,

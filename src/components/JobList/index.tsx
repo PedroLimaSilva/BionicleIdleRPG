@@ -1,8 +1,10 @@
 import './index.scss';
-import { useState } from 'react';
-import { jobDetails, MatoranJob } from '../../types/Jobs';
+import { useMemo, useState } from 'react';
+import { MatoranJob } from '../../types/Jobs';
 import { RecruitedMatoran } from '../../types/Matoran';
 import { useGame } from '../../providers/Game';
+import { getAvailableJobs } from '../../game/Jobs';
+import { JOB_DETAILS } from '../../data/jobs';
 
 type JobListProps = {
   matoran: RecruitedMatoran;
@@ -10,11 +12,13 @@ type JobListProps = {
   onCancel: () => void;
 };
 
-const allJobs = Object.values(MatoranJob);
-
 export function JobList({ matoran, onCancel }: JobListProps) {
   const [selectedJob, setSelectedJob] = useState<MatoranJob | null>(null);
   const game = useGame();
+
+  const jobs = useMemo(() => {
+    return getAvailableJobs(game);
+  }, [game]);
 
   const handleAssign = () => {
     if (!selectedJob) return;
@@ -32,14 +36,14 @@ export function JobList({ matoran, onCancel }: JobListProps) {
       <h2 className='assign-job-title'>Select a Job</h2>
 
       <div className='job-grid'>
-        {allJobs.map((job) => {
-          const { label, description, rate } = jobDetails[job];
+        {jobs.map((job) => {
+          const { label, description, rate } = JOB_DETAILS[job];
           return (
             <button
               key={job}
-              className={`job-button ${selectedJob === job ? 'selected' : ''} ${
-                matoran.assignment?.job === job ? 'assigned' : ''
-              }`}
+              className={`job-button ${
+                selectedJob === job ? 'selected' : ''
+              } ${matoran.assignment?.job === job ? 'assigned' : ''}`}
               onClick={() => setSelectedJob(job)}
               title={description}
             >
