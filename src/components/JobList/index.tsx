@@ -5,6 +5,7 @@ import { RecruitedMatoran } from '../../types/Matoran';
 import { useGame } from '../../providers/Game';
 import { getAvailableJobs, getProductivityModifier } from '../../game/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
+import { JobCard } from './JobCard';
 
 type JobListProps = {
   matoran: RecruitedMatoran;
@@ -38,22 +39,23 @@ export function JobList({ matoran, onCancel }: JobListProps) {
       <div className='job-grid'>
         {jobs.map((job) => {
           const { label, description, rate } = JOB_DETAILS[job];
+          const modifier = getProductivityModifier(job, matoran);
           return (
-            <button
+            <div
               key={job}
-              className={`job-button ${selectedJob === job ? 'selected' : ''} ${
-                matoran.assignment?.job === job ? 'assigned' : ''
-              }`}
               onClick={() => setSelectedJob(job)}
               title={description}
             >
-              <div className='job-label'>{label}</div>
-              <div className='job-description'>{description}</div>
-              <div className='job-rate'>
-                ⚡ {(rate * getProductivityModifier(job, matoran)).toFixed(1)}{' '}
-                EXP/sec
-              </div>
-            </button>
+              <JobCard
+                classNames={`${selectedJob === job ? 'selected' : ''} ${
+                  matoran.assignment?.job === job ? 'assigned' : ''
+                }`}
+                title={label}
+                description={description}
+                baseRate={rate}
+                modifier={modifier}
+              />
+            </div>
           );
         })}
       </div>

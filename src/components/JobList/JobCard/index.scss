@@ -1,0 +1,75 @@
+.job-card {
+  background-color: #18181b;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  font-size: 0.875rem;
+  border: 1px solid #3f3f46;
+  color: #fff;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--theme-element-primary);
+  }
+
+  &.assigned {
+    border-color: var(--theme-element-primary);
+    box-shadow: 0 0 6px var(--theme-element-glow);
+  }
+
+  &.selected {
+    border-color: var(--theme-element-primary);
+    box-shadow: 0 0 6px var(--theme-element-glow);
+    background-color: var(--theme-element-glow-transparent);
+  }
+}
+
+.job-title {
+  font-size: 1rem;
+  margin: 0;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.job-description {
+  font-size: 0.75rem;
+  margin: 6px 0 10px;
+  color: #d1d5db;
+}
+
+.job-rates {
+  font-size: 0.75rem;
+  color: #9ca3af;
+
+  .code-style {
+    font-family: monospace;
+    color: #f4f4f5;
+  }
+}
+
+.productivity-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 4px;
+
+  &.boosted {
+    background-color: #16a34a;
+    color: #fff;
+  }
+
+  &.penalized {
+    background-color: #dc2626;
+    color: #fff;
+  }
+
+  &.neutral {
+    background-color: #6b7280;
+    color: #fff;
+  }
+}

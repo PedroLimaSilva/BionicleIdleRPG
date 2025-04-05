@@ -52,7 +52,7 @@
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 10px var(--theme-element-glow);
+      box-shadow: 0 0 10px var(--theme-element-glow-transparent);
     }
 
     .mask-preview {

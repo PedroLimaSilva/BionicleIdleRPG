@@ -11,6 +11,8 @@ import { useMemo, useState } from 'react';
 import { Modal } from '../../components/Modal';
 import { JobList } from '../../components/JobList';
 import { JOB_DETAILS } from '../../data/jobs';
+import { JobCard } from '../../components/JobList/JobCard';
+import { getProductivityModifier } from '../../game/Jobs';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -24,6 +26,11 @@ export const CharacterDetail: React.FC = () => {
       matoran
         ? getExpProgress(matoran.exp)
         : { level: 0, currentLevelExp: 0, expForNextLevel: 1, progress: 0 },
+    [matoran]
+  );
+
+  const jobDetails = useMemo(
+    () => matoran && matoran.assignment && JOB_DETAILS[matoran.assignment.job],
     [matoran]
   );
 
@@ -68,11 +75,20 @@ export const CharacterDetail: React.FC = () => {
             </div>
           </div>
           <div className='job-section'>
-            {matoran.assignment && (
-              <p>
-                Assigned Job:{' '}
-                <strong>{JOB_DETAILS[matoran.assignment.job].label}</strong>
-              </p>
+            {jobDetails && matoran.assignment && (
+              <>
+                <p>Assigned Job:</p>
+                <JobCard
+                  classNames={``}
+                  title={jobDetails.label}
+                  description={jobDetails.description}
+                  baseRate={jobDetails.rate}
+                  modifier={getProductivityModifier(
+                    matoran.assignment.job,
+                    matoran
+                  )}
+                />
+              </>
             )}
 
             <button
@@ -96,21 +112,6 @@ export const CharacterDetail: React.FC = () => {
                 />
               </Modal>
             )}
-          </div>
-
-          <div className='perk-section'>
-            <h3>Perks</h3>
-            <ul className='perk-list'>
-              <li>
-                <span>🛡️</span> Mask Mastery: +10% Mask power efficiency
-              </li>
-              <li>
-                <span>⚡</span> Quickstep: +15% movement speed
-              </li>
-              <li>
-                <span>🌟</span> Unity Bonus: Increased XP from missions
-              </li>
-            </ul>
           </div>
         </div>
       ) : (
