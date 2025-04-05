@@ -9,8 +9,7 @@ export function getMatoranFromInventoryById(
   return inventory.find((m) => m.id === id);
 }
 
-
-export const INITIAL_GAME_STATE:GameState = {
+export const INITIAL_GAME_STATE: GameState = {
   widgets: 1000,
   recruitedCharacters: [
     {
@@ -79,6 +78,7 @@ export const INITIAL_GAME_STATE:GameState = {
       intelligence: 8,
       rarity: Rarity.Legend,
       cost: 120,
+      isMaskTransparent: true,
       colors: {
         mask: LegoColor.Blue,
         body: LegoColor.MediumBlue,
@@ -199,12 +199,13 @@ export const INITIAL_GAME_STATE:GameState = {
       id: 10,
       name: 'Le Matoran',
       mask: Mask.Kaukau,
-      element: ElementTribe.Water,
+      element: ElementTribe.Air,
       strength: 5,
       agility: 7,
       intelligence: 8,
       rarity: Rarity.Common,
       cost: 50,
+      isMaskTransparent: true,
       colors: {
         mask: LegoColor.DarkTurquoise,
         body: LegoColor.Lime,
@@ -222,5 +223,5 @@ export const INITIAL_GAME_STATE:GameState = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addItemToInventory: function (_item: string, _amount: number): void {
     throw new Error('Function not implemented.');
-  }
-}
+  },
+};

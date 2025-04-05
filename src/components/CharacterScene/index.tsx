@@ -2,7 +2,7 @@ import { Suspense, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Bounds, OrbitControls, Stage, useGLTF } from '@react-three/drei';
 import { Matoran } from '../../types/Matoran';
-import { MeshStandardMaterial } from 'three';
+import { Mesh, MeshStandardMaterial } from 'three';
 import { Color } from '../../types/Colors';
 
 const MAT_COLOR_MAP = {
@@ -41,10 +41,15 @@ export function CharacterScene({ matoran }: { matoran: Matoran }) {
     });
 
     nodes.Masks.children.forEach((mask) => {
-      if (mask.name !== matoran.mask) {
-        mask.visible = false;
-      } else {
-        mask.visible = true;
+      const isTarget = mask.name === matoran.mask;
+      mask.visible = isTarget;
+
+      if (isTarget && matoran.isMaskTransparent && (mask as Mesh).isMesh) {
+        const mesh = mask as Mesh;
+        mesh.material = materials['Mask'].clone();
+        const mat = mesh.material as MeshStandardMaterial;
+        mat.transparent = true;
+        mat.opacity = 0.8;
       }
     });
   }, [nodes, materials, matoran]);

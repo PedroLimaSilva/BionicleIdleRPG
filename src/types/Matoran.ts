@@ -37,6 +37,7 @@ export type Matoran = {
   intelligence: number;
   cost: number;
   rarity: Rarity;
+  isMaskTransparent?: boolean;
   colors: {
     mask: Color;
     body: Color;
