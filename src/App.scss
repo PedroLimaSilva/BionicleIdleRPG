@@ -2,6 +2,10 @@
   width: 100%;
   margin: 0 auto;
   text-align: center;
+  --theme-base-glow: white;
+  --theme-base-accent: white;
+  --theme-base-primary: white;
+  --linear-gradient: linear-gradient(135deg, var(--primary), var(--glow));
 }
 
 .app-container {
@@ -14,7 +18,6 @@
 .nav-bar {
   background-color: #2d2d2d;
   padding: 1rem 2rem 2rem;
-  color: white;
 
   .nav-links {
     display: flex;
@@ -27,7 +30,7 @@
       margin-right: 20px;
 
       a {
-        color: white;
+        color: var(--theme-base-primary);
         text-decoration: none;
 
         &:hover {
@@ -39,43 +42,104 @@
 }
 
 .element-Light {
-  --glow: #fff6c0;
-  --accent: #fdf6d8;
+  --theme-element-glow: #fff6c0;
+  --theme-element-accent: #e0cb3c;
+  --theme-element-primary: #fdf6d8;
+  --linear-gradient: linear-gradient(
+    135deg,
+    var(--theme-element-primary),
+    var(--theme-element-glow)
+  );
 }
 
 .element-Stone {
-  --glow: #ffce8a;
-  --accent: #d9a066;
+  --theme-element-glow: #ffce8a;
+  --theme-element-accent: #b57432;
+  --theme-element-primary: #d9a066;
+  --linear-gradient: linear-gradient(
+    135deg,
+    var(--theme-element-primary),
+    var(--theme-element-glow)
+  );
 }
 
 .element-Water {
-  --glow: #8de6ff;
-  --accent: #57c4e5;
+  --theme-element-glow: #8de6ff;
+  --theme-element-accent: #1a8cc2;
+  --theme-element-primary: #57c4e5;
+  --linear-gradient: linear-gradient(
+    135deg,
+    var(--theme-element-primary),
+    var(--theme-element-glow)
+  );
 }
 
 .element-Fire {
-  --glow: #ff3b00;
-  --accent: #ff784e;
+  --theme-element-glow: #ff3b00;
+  --theme-element-accent: #e83717;
+  --theme-element-primary: #ff784e;
+  --linear-gradient: linear-gradient(
+    135deg,
+    var(--theme-element-primary),
+    var(--theme-element-glow)
+  );
 }
 
 .element-Ice {
-  --glow: #80d4ff;
-  --accent: #a6e1ff;
+  --theme-element-glow: #80d4ff;
+  --theme-element-accent: #a6e1ff;
+  --theme-element-primary: #fdf6d8;
+  --linear-gradient: linear-gradient(
+    135deg,
+    var(--theme-element-primary),
+    var(--theme-element-glow)
+  );
 }
 
 .element-Earth {
-  --glow: #7a6b68;
-  --accent: #4a3c3a;
+  --theme-element-glow: #7a6b68;
+  --theme-element-accent: #2d1f1c;
+  --theme-element-primary: #86625d;
+  --linear-gradient: linear-gradient(
+    135deg,
+    var(--theme-element-primary),
+    var(--theme-element-glow)
+  );
 }
 
 .element-Air {
-  --glow: #d2ffd0;
-  --accent: #a8f4a4;
+  --theme-element-glow: #d2ffd0;
+  --theme-element-accent: #5cbb59;
+  --theme-element-primary: #a8f4a4;
+  --linear-gradient: linear-gradient(
+    135deg,
+    var(--theme-element-primary),
+    var(--theme-element-glow)
+  );
 }
 
 .element-Shadow {
-  --glow: #666666;
-  --accent: #2b2b2b;
+  --theme-element-glow: #666666;
+  --theme-element-accent: #101010;
+  --theme-element-primary: #2b2b2b;
+  --linear-gradient: linear-gradient(
+    135deg,
+    var(--theme-element-primary),
+    var(--glow)
+  );
+}
+
+.elemental-btn {
+  background: #222;
+  border: 1px solid var(--theme-element-primary);
+  color: var(--theme-element-primary);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background: #333;
+    box-shadow: 0 0 10px var(--theme-element-glow);
+  }
 }
 
 .main-content {

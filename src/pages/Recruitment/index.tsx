@@ -10,13 +10,11 @@ import { CharacterScene } from '../../components/CharacterScene';
 
 export const Recruitment: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    widgets,
-    recruitCharacter,
-    availableCharacters,
-  } = useGame();
+  const { widgets, recruitCharacter, availableCharacters } = useGame();
 
-  const [selectedMatoran, setSelectedMatoran] = useState<ListedMatoran | null>(null);
+  const [selectedMatoran, setSelectedMatoran] = useState<ListedMatoran | null>(
+    null
+  );
 
   const canRecruit = useMemo(
     () => selectedMatoran && widgets >= selectedMatoran.cost,
@@ -47,16 +45,20 @@ export const Recruitment: React.FC = () => {
       <InventoryBar />
       <div className='recruitment-preview'>
         {selectedMatoran && (
-          <div className='model-display fade-in' key={selectedMatoran.id}>
-            <CharacterScene matoran={selectedMatoran} />
-          </div>
+          <>
+            <div className='model-display fade-in' key={selectedMatoran.id}>
+              <CharacterScene matoran={selectedMatoran} />
+            </div>
+            <button
+              className={`elemental-btn recruit-btn ${
+                canRecruit ? '' : 'disabled'
+              } element-${selectedMatoran.element}`}
+              onClick={confirmRecruitment}
+            >
+              Recruit
+            </button>
+          </>
         )}
-        <button
-          className={`recruit-btn ${canRecruit ? '' : 'disabled'}`}
-          onClick={confirmRecruitment}
-        >
-          Recruit
-        </button>
       </div>
 
       <div className='matoran-selector'>

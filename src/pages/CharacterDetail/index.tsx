@@ -5,15 +5,18 @@ import { getMatoranFromInventoryById } from '../../data/matoran';
 
 import './index.scss';
 import { CharacterScene } from '../../components/CharacterScene';
-import { ELEMENT_UI_COLORS } from '../../themes/elements';
 import { ElementTag } from '../../components/ElementTag';
 import { getExpProgress, getLevelFromExp } from '../../game/Levelling';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { Modal } from '../../components/Modal';
+import { JobList } from '../../components/JobList';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const { recruitedCharacters } = useGame();
   const matoran = getMatoranFromInventoryById(Number(id), recruitedCharacters);
+
+  const [assigningJob, setAssigningJob] = useState(false);
 
   const lvlProgress = useMemo(
     () =>
@@ -26,25 +29,14 @@ export const CharacterDetail: React.FC = () => {
   if (!matoran) {
     return <p>Something is wrong, this matoran does not exist</p>;
   }
-  const uiColors = ELEMENT_UI_COLORS[matoran.element];
   return (
     <div className='page-container'>
       {matoran ? (
         <div
-          className='character-detail-container'
-          style={{
-            color: uiColors.glow,
-            borderColor: uiColors.glow,
-            boxShadow: `0 0 20px ${uiColors.glow}80`,
-          }}
+          className={`character-detail-container element-${matoran.element}`}
         >
           <div className='character-header'>
-            <h1
-              className='character-name'
-              style={{ textShadow: `0 0 6px ${uiColors.glow}` }}
-            >
-              {matoran.name}
-            </h1>
+            <h1 className='character-name'>{matoran.name}</h1>
             <ElementTag element={matoran.element} showName={true} />
           </div>
 
@@ -52,34 +44,12 @@ export const CharacterDetail: React.FC = () => {
             <CharacterScene matoran={matoran}></CharacterScene>
           </div>
 
-          <div
-            className='divider'
-            style={{
-              background: `radial-gradient(circle, ${uiColors.glow} 0%, transparent 70%)`,
-            }}
-          ></div>
-
-          {/* <div className='character-stats'>
-            <div className='stat'>
-              <label>STR</label>
-              <span>{matoran.strength}</span>
-            </div>
-            <div className='stat'>
-              <label>AGI</label>
-              <span>{matoran.agility}</span>
-            </div>
-            <div className='stat'>
-              <label>INT</label>
-              <span>{matoran.intelligence}</span>
-            </div>
-          </div> */}
+          <div className='divider'></div>
 
           <div className='character-progress'>
             <div className='level-display'>
               <span className='label'>Level</span>
-              <span className='value' style={{ color: uiColors.glow }}>
-                {getLevelFromExp(matoran.exp)}
-              </span>
+              <span className='value'>{getLevelFromExp(matoran.exp)}</span>
             </div>
 
             <div className='xp-bar'>
@@ -87,7 +57,6 @@ export const CharacterDetail: React.FC = () => {
                 className='xp-bar-fill'
                 style={{
                   width: `${lvlProgress.progress}%`,
-                  background: `linear-gradient(90deg, ${uiColors.glow}, ${uiColors.accent})`,
                 }}
               ></div>
             </div>
@@ -96,21 +65,50 @@ export const CharacterDetail: React.FC = () => {
               {lvlProgress.currentLevelExp + lvlProgress.expForNextLevel} XP (
               {lvlProgress.expForNextLevel} to level up)
             </div>
+          </div>
+          <div className='job-section'>
+            {matoran.assignment && (
+              <p>
+                Assigned Job: <strong>{matoran.assignment.job}</strong>
+              </p>
+            )}
 
-            <div className='perk-section'>
-              <h3 style={{ color: uiColors.glow }}>Perks</h3>
-              <ul className='perk-list'>
-                <li>
-                  <span>🛡️</span> Mask Mastery: +10% Mask power efficiency
-                </li>
-                <li>
-                  <span>⚡</span> Quickstep: +15% movement speed
-                </li>
-                <li>
-                  <span>🌟</span> Unity Bonus: Increased XP from missions
-                </li>
-              </ul>
-            </div>
+            <button
+              className='elemental-btn'
+              onClick={() => setAssigningJob(true)}
+            >
+              {matoran.assignment ? 'Change Job' : 'Assign Job'}
+            </button>
+
+            {assigningJob && (
+              <Modal
+                onClose={() => setAssigningJob(false)}
+                classNames={`element-${matoran.element}`}
+              >
+                <JobList
+                  matoran={matoran}
+                  onAssign={() => {
+                    setAssigningJob(false);
+                  }}
+                  onCancel={() => setAssigningJob(false)}
+                />
+              </Modal>
+            )}
+          </div>
+          
+          <div className='perk-section'>
+            <h3>Perks</h3>
+            <ul className='perk-list'>
+              <li>
+                <span>🛡️</span> Mask Mastery: +10% Mask power efficiency
+              </li>
+              <li>
+                <span>⚡</span> Quickstep: +15% movement speed
+              </li>
+              <li>
+                <span>🌟</span> Unity Bonus: Increased XP from missions
+              </li>
+            </ul>
           </div>
         </div>
       ) : (

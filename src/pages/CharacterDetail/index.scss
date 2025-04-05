@@ -1,11 +1,43 @@
 .character-detail-container {
   padding: 2rem;
-  border: 2px solid;
+  border: 2px solid var(--theme-element-primary);
   border-radius: 16px;
   width: 100%;
   max-width: 640px;
   margin: 1rem auto;
   font-family: 'Orbitron', sans-serif;
+  color: var(--theme-element-primary);
+  box-shadow: 0 0 20px var(--theme-element-glow);
+
+  .perk-section {
+    margin-top: 1.5rem;
+    text-align: left;
+
+    h3 {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .perk-list {
+      list-style: none;
+      padding: 0;
+      font-size: 0.95rem;
+
+      li {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+
+        span {
+          display: inline-block;
+          width: 1.5rem;
+          text-align: center;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
 }
 
 .character-header {
@@ -16,6 +48,7 @@
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 0.25rem;
+    text-shadow: 0 0 6px var(--theme-element-glow);
   }
 }
 
@@ -25,26 +58,12 @@
 
 .divider {
   height: 2px;
+  background: radial-gradient(
+    circle,
+    var(--theme-element-glow) 0%,
+    transparent 70%
+  );
   margin: 0 0 1.5rem;
-}
-
-.character-stats {
-  display: flex;
-  justify-content: space-around;
-  text-align: center;
-
-  .stat {
-    label {
-      display: block;
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-
-    span {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-  }
 }
 
 .character-progress {
@@ -80,6 +99,7 @@
     .xp-bar-fill {
       height: 100%;
       transition: width 0.3s ease;
+      background: var(--theme-element-linear-gradient);
     }
   }
 
@@ -88,34 +108,8 @@
     margin-top: 0.4rem;
     color: #ccc;
   }
+}
 
-  .perk-section {
-    margin-top: 1.5rem;
-    text-align: left;
-
-    h3 {
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-
-    .perk-list {
-      list-style: none;
-      padding: 0;
-      font-size: 0.95rem;
-
-      li {
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-
-        span {
-          display: inline-block;
-          width: 1.5rem;
-          text-align: center;
-          margin-right: 0.5rem;
-        }
-      }
-    }
-  }
+.job-section {
+  margin-top: 2rem;
 }

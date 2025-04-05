@@ -1,5 +1,6 @@
 import { GameState } from '../providers/Game';
 import { LegoColor } from '../types/Colors';
+import { MatoranJob } from '../types/Jobs';
 import {
   ElementTribe,
   ListedMatoran,
@@ -198,6 +199,10 @@ export const INITIAL_GAME_STATE: GameState = {
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addItemToInventory: function (_item: string, _amount: number): void {
+    throw new Error('Function not implemented.');
+  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  assignJobToMatoran: function (_id: number, _job: MatoranJob): void {
     throw new Error('Function not implemented.');
   },
 };

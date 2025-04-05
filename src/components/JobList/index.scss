@@ -1,0 +1,94 @@
+.assign-job-title {
+  text-align: center;
+  font-size: 1.4rem;
+  color: var(--theme-element-primary);
+  text-shadow: 0 0 4px var(--theme-element-primary);
+  margin-bottom: 24px;
+}
+
+.job-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.job-button {
+  background: #1c1c1c;
+  color: white;
+  border: 2px solid #555;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+  &:hover {
+    border-color: var(--theme-element-primary);
+    background-color: #222;
+  }
+
+  &.assigned {
+    border-color: var(--theme-element-primary);
+    box-shadow: 0 0 6px var(--theme-element-glow);
+    background-color: #2c2c2c;
+  }
+
+  &.selected {
+    border-color: var(--theme-element-primary);
+    box-shadow: 0 0 6px var(--theme-element-glow);
+    background-color: var(--theme-element-accent);
+  }
+}
+
+.job-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cancel-button,
+.assign-button,
+.remove-button {
+  flex: 1;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s ease;
+  font-size: 1rem;
+}
+
+.cancel-button {
+  background: #444;
+  color: white;
+}
+.cancel-button:hover {
+  background: #666;
+}
+
+.assign-button {
+  background: var(--theme-element-accent);
+  color: #111;
+}
+.assign-button:disabled {
+  background: #999;
+  color: #333;
+  cursor: not-allowed;
+}
+
+.remove-button {
+  background: #222;
+  color: #ff6464;
+  border: 1px solid #ff6464;
+}
+.remove-button:hover {
+  background: #331111;
+}

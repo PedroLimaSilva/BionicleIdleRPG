@@ -3,6 +3,7 @@ import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { Link } from 'react-router-dom';
 import { useGame } from '../../providers/Game';
 import { ElementTag } from '../../components/ElementTag';
+import { getLevelFromExp } from '../../game/Levelling';
 
 export const CharacterInventory: React.FC = () => {
   const { recruitedCharacters } = useGame();
@@ -20,7 +21,9 @@ export const CharacterInventory: React.FC = () => {
               <div className='card-header'>
                 <ElementTag element={matoran.element} showName={false} />
                 {'  ' + matoran.name}
-                <div className='level-label'>Level 12</div>
+                <div className='level-label'>
+                  Level {getLevelFromExp(matoran.exp)}
+                </div>
               </div>
             </div>
           </Link>

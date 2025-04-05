@@ -8,6 +8,8 @@ import {
   CURRENT_GAME_STATE_VERSION,
   INITIAL_GAME_STATE,
 } from '../data/matoran';
+import { MatoranJob } from '../types/Jobs';
+import { jobExpRates } from '../game/Jobs';
 
 export type Item = {
   id: string;
@@ -29,6 +31,8 @@ export type GameState = {
   recruitedCharacters: RecruitedMatoran[];
   recruitCharacter: (character: ListedMatoran) => void;
   addItemToInventory: (item: string, amount: number) => void;
+  assignJobToMatoran: (matoranId: number, job: MatoranJob) => void;
+  removeJobFromMatoran: (matoranId: number) => void;
 };
 
 const GameContext = createContext<GameState | null>(null);
@@ -132,6 +136,36 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     }));
   };
 
+  const assignJobToMatoran = (id: number, job: MatoranJob) => {
+    const expRatePerSecond = jobExpRates[job]; // You'll need to define this object
+    const now = Date.now();
+
+    setRecruitedCharacters((prev) =>
+      prev.map((matoran) =>
+        matoran.id === id
+          ? {
+              ...matoran,
+              assignment: {
+                job,
+                expRatePerSecond,
+                assignedAt: now,
+              },
+            }
+          : matoran
+      )
+    );
+  };
+
+  const removeJobFromMatoran = (id: number) => {
+    setRecruitedCharacters((prev) =>
+      prev.map((matoran) =>
+        matoran.id === id
+          ? { ...matoran, assignment: undefined }
+          : matoran
+      )
+    );
+  };
+
   return (
     <GameContext.Provider
       value={{
@@ -142,6 +176,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         recruitedCharacters,
         recruitCharacter,
         addItemToInventory,
+        assignJobToMatoran,
+        removeJobFromMatoran,
       }}
     >
       {children}

@@ -1,4 +1,5 @@
 import { Color } from './Colors';
+import { JobAssignment } from './Jobs';
 
 export const enum Mask {
   Hau = 'Hau',
@@ -47,8 +48,9 @@ export type ListedMatoran = BaseMatoran & {
 };
 
 export type RecruitedMatoran = BaseMatoran & {
-  status: MatoranStatus.Recruited;
+  assignment?: JobAssignment;
   exp: number;
+  status: MatoranStatus.Recruited;
 };
 
 export type Matoran = ListedMatoran | RecruitedMatoran;

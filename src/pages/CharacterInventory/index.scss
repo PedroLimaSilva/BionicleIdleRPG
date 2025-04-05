@@ -19,14 +19,14 @@
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 0 12px var(--glow);
+    box-shadow: 0 0 12px var(--theme-element-glow);
   }
 
   .card-header {
     font-weight: bold;
     font-size: 1.8rem;
-    color: var(--accent);
-    text-shadow: 0 0 4px var(--glow);
+    color: var(--theme-element-primary);
+    text-shadow: 0 0 4px var(--theme-element-glow);
   }
 
   .level-label {
