@@ -1,10 +1,13 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import {
   ListedMatoran,
   MatoranStatus,
   RecruitedMatoran,
 } from '../types/Matoran';
-import { INITIAL_GAME_STATE } from '../data/matoran';
+import {
+  CURRENT_GAME_STATE_VERSION,
+  INITIAL_GAME_STATE,
+} from '../data/matoran';
 
 export type Item = {
   id: string;
@@ -19,6 +22,7 @@ export type Inventory = Record<Item['id'], number>;
 // }
 
 export type GameState = {
+  version: number;
   widgets: number;
   inventory: Inventory;
   availableCharacters: ListedMatoran[];
@@ -40,19 +44,66 @@ interface GameProviderProps {
   children: React.ReactNode;
 }
 
-export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
-  const [widgets, setWidgets] = useState(INITIAL_GAME_STATE.widgets);
-  const [inventory, setInventory] = useState<Inventory>(
-    INITIAL_GAME_STATE.inventory
+const STORAGE_KEY = `GAME_STATE`;
+
+function loadGameState() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      if (isValidGameState(parsed)) {
+        return parsed;
+      } else {
+        console.warn('Invalid or outdated game state. Using defaults.', parsed);
+      }
+    } catch (e) {
+      console.error('Failed to parse game state:', e, stored);
+    }
+  }
+  return INITIAL_GAME_STATE;
+}
+
+function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
+  return (
+    data &&
+    typeof data === 'object' &&
+    data.version === CURRENT_GAME_STATE_VERSION &&
+    typeof data.widgets === 'number' &&
+    typeof data.inventory === 'object' &&
+    Array.isArray(data.recruitedCharacters)
   );
+}
+
+export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
+  // Only access localStorage once
+  const initialState = loadGameState();
+
+  const [version] = useState(initialState.version);
+  const [widgets, setWidgets] = useState(initialState.widgets);
+  const [inventory, setInventory] = useState<Inventory>(initialState.inventory);
   const [recruitedCharacters, setRecruitedCharacters] = useState<
     RecruitedMatoran[]
-  >(INITIAL_GAME_STATE.recruitedCharacters);
-  const [availableCharacters] = useState<ListedMatoran[]>(
-    INITIAL_GAME_STATE.availableCharacters.filter(
-      (m) => !recruitedCharacters.find((c) => c.id === m.id)
-    )
-  );
+  >(initialState.recruitedCharacters);
+
+  const [availableCharacters] = useState<ListedMatoran[]>(() => {
+    return INITIAL_GAME_STATE.availableCharacters.filter(
+      (m) =>
+        !initialState.recruitedCharacters.find(
+          (c: RecruitedMatoran) => c.id === m.id
+        )
+    );
+  });
+
+  // Save to localStorage on state change
+  useEffect(() => {
+    const state: Partial<GameState> = {
+      version,
+      widgets,
+      inventory,
+      recruitedCharacters,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }, [widgets, inventory, recruitedCharacters, version]);
 
   const recruitCharacter = (character: ListedMatoran) => {
     if (widgets >= character.cost) {
@@ -80,6 +131,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   return (
     <GameContext.Provider
       value={{
+        version,
         widgets,
         inventory,
         availableCharacters,
