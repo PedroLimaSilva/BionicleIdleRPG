@@ -7,11 +7,22 @@ import './index.scss';
 import { CharacterScene } from '../../components/CharacterScene';
 import { ELEMENT_UI_COLORS } from '../../themes/elements';
 import { ElementTag } from '../../components/ElementTag';
+import { getExpProgress, getLevelFromExp } from '../../game/Levelling';
+import { useMemo } from 'react';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const { recruitedCharacters } = useGame();
   const matoran = getMatoranFromInventoryById(Number(id), recruitedCharacters);
+
+  const lvlProgress = useMemo(
+    () =>
+      matoran
+        ? getExpProgress(matoran.exp)
+        : { level: 0, currentLevelExp: 0, expForNextLevel: 1, progress: 0 },
+    [matoran]
+  );
+
   if (!matoran) {
     return <p>Something is wrong, this matoran does not exist</p>;
   }
@@ -67,7 +78,7 @@ export const CharacterDetail: React.FC = () => {
             <div className='level-display'>
               <span className='label'>Level</span>
               <span className='value' style={{ color: uiColors.glow }}>
-                {matoran.level}
+                {getLevelFromExp(matoran.exp)}
               </span>
             </div>
 
@@ -75,12 +86,16 @@ export const CharacterDetail: React.FC = () => {
               <div
                 className='xp-bar-fill'
                 style={{
-                  width: `${68}%`,
+                  width: `${lvlProgress.progress}%`,
                   background: `linear-gradient(90deg, ${uiColors.glow}, ${uiColors.accent})`,
                 }}
               ></div>
             </div>
-            <div className='xp-label'>345 / 500 XP (155 to level up)</div>
+            <div className='xp-label'>
+              {lvlProgress.currentLevelExp} /{' '}
+              {lvlProgress.currentLevelExp + lvlProgress.expForNextLevel} XP (
+              {lvlProgress.expForNextLevel} to level up)
+            </div>
 
             <div className='perk-section'>
               <h3 style={{ color: uiColors.glow }}>Perks</h3>

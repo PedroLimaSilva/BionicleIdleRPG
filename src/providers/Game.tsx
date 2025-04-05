@@ -112,7 +112,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       setWidgets(widgets - character.cost);
       const recruitedCharacter: RecruitedMatoran = {
         ...character,
-        level: 1,
         exp: 0,
         status: MatoranStatus.Recruited,
       };

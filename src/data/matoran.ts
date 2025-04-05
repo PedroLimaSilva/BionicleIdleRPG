@@ -34,7 +34,6 @@ export const INITIAL_GAME_STATE: GameState = {
         arms: LegoColor.Red,
         eyes: LegoColor.TransNeonRed,
       },
-      level: 1,
       exp: 0,
     },
   ],

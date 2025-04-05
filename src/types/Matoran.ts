@@ -48,7 +48,6 @@ export type ListedMatoran = BaseMatoran & {
 
 export type RecruitedMatoran = BaseMatoran & {
   status: MatoranStatus.Recruited;
-  level: number;
   exp: number;
 };
 
