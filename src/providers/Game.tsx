@@ -9,7 +9,7 @@ import {
   INITIAL_GAME_STATE,
 } from '../data/matoran';
 import { MatoranJob } from '../types/Jobs';
-import { applyJobExp, jobExpRates } from '../game/Jobs';
+import { applyJobExp, applyOfflineJobExp, jobExpRates } from '../game/Jobs';
 
 export type Item = {
   id: string;
@@ -57,7 +57,10 @@ function loadGameState() {
     try {
       const parsed = JSON.parse(stored);
       if (isValidGameState(parsed)) {
-        return parsed;
+        return {
+          ...parsed,
+          recruitedCharacters: applyOfflineJobExp(parsed.recruitedCharacters),
+        };
       } else {
         console.warn('Invalid or outdated game state. Using defaults.', parsed);
       }

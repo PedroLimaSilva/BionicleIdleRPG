@@ -205,4 +205,11 @@ export const INITIAL_GAME_STATE: GameState = {
   assignJobToMatoran: function (_id: number, _job: MatoranJob): void {
     throw new Error('Function not implemented.');
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  removeJobFromMatoran: function (_id: number): void {
+    throw new Error('Function not implemented.');
+  },
+  tickJobExp: function (): void {
+    throw new Error('Function not implemented.');
+  },
 };

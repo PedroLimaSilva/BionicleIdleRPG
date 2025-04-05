@@ -14,6 +14,11 @@ function computeEarnedExp(assignment: JobAssignment, now = Date.now()): number {
   return Math.floor(elapsedSeconds * assignment.expRatePerSecond);
 }
 
+export function applyOfflineJobExp(characters: RecruitedMatoran[]): RecruitedMatoran[] {
+  const now = Date.now();
+  return characters.map((m) => applyJobExp(m, now));
+}
+
 export function applyJobExp(
   matoran: RecruitedMatoran,
   now = Date.now()
