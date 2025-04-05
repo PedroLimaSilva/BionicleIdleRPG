@@ -1,5 +1,9 @@
 import { createContext, useContext, useState } from 'react';
-import { Matoran } from '../types/Matoran';
+import {
+  ListedMatoran,
+  MatoranStatus,
+  RecruitedMatoran,
+} from '../types/Matoran';
 import { INITIAL_GAME_STATE } from '../data/matoran';
 
 export type Item = {
@@ -17,9 +21,9 @@ export type Inventory = Record<Item['id'], number>;
 export type GameState = {
   widgets: number;
   inventory: Inventory;
-  availableCharacters: Matoran[];
-  recruitedCharacters: Matoran[];
-  recruitCharacter: (character: Matoran, cost: number) => void;
+  availableCharacters: ListedMatoran[];
+  recruitedCharacters: RecruitedMatoran[];
+  recruitCharacter: (character: ListedMatoran) => void;
   addItemToInventory: (item: string, amount: number) => void;
 };
 
@@ -41,19 +45,26 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const [inventory, setInventory] = useState<Inventory>(
     INITIAL_GAME_STATE.inventory
   );
-  const [recruitedCharacters, setRecruitedCharacters] = useState<Matoran[]>(
-    INITIAL_GAME_STATE.recruitedCharacters
-  );
-  const [availableCharacters] = useState<Matoran[]>(
+  const [recruitedCharacters, setRecruitedCharacters] = useState<
+    RecruitedMatoran[]
+  >(INITIAL_GAME_STATE.recruitedCharacters);
+  const [availableCharacters] = useState<ListedMatoran[]>(
     INITIAL_GAME_STATE.availableCharacters.filter(
       (m) => !recruitedCharacters.find((c) => c.id === m.id)
     )
   );
 
-  const recruitCharacter = (character: Matoran, cost: number) => {
-    if (widgets >= cost) {
-      setWidgets(widgets - cost);
-      setRecruitedCharacters([...recruitedCharacters, character]);
+  const recruitCharacter = (character: ListedMatoran) => {
+    if (widgets >= character.cost) {
+      setWidgets(widgets - character.cost);
+      const recruitedCharacter: RecruitedMatoran = {
+        ...character,
+        level: 1,
+        exp: 0,
+        status: MatoranStatus.Recruited,
+      };
+
+      setRecruitedCharacters([...recruitedCharacters, recruitedCharacter]);
     } else {
       alert('Not enough widgets!');
     }

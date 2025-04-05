@@ -1,11 +1,5 @@
 import { Color } from './Colors';
 
-export const enum Rarity {
-  Common = 'common',
-  Rare = 'rare',
-  Legend = 'legend',
-}
-
 export const enum Mask {
   Hau = 'Hau',
   Kaukau = 'Kaukau',
@@ -27,16 +21,11 @@ export const enum ElementTribe {
   Shadow = 'Shadow',
 }
 
-export type Matoran = {
+type BaseMatoran = {
   id: number;
   name: string;
   mask: Mask;
   element: ElementTribe;
-  strength: number;
-  agility: number;
-  intelligence: number;
-  cost: number;
-  rarity: Rarity;
   isMaskTransparent?: boolean;
   colors: {
     mask: Color;
@@ -46,3 +35,21 @@ export type Matoran = {
     eyes: Color;
   };
 };
+
+export const enum MatoranStatus {
+  Listed,
+  Recruited,
+}
+
+export type ListedMatoran = BaseMatoran & {
+  status: MatoranStatus.Listed;
+  cost: number;
+};
+
+export type RecruitedMatoran = BaseMatoran & {
+  status: MatoranStatus.Recruited;
+  level: number;
+  exp: number;
+};
+
+export type Matoran = ListedMatoran | RecruitedMatoran;

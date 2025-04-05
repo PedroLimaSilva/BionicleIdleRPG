@@ -67,7 +67,7 @@ export const CharacterDetail: React.FC = () => {
             <div className='level-display'>
               <span className='label'>Level</span>
               <span className='value' style={{ color: uiColors.glow }}>
-                12
+                {matoran.level}
               </span>
             </div>
 

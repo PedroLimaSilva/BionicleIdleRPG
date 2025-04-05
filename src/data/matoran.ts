@@ -1,10 +1,16 @@
 import { GameState } from '../providers/Game';
 import { LegoColor } from '../types/Colors';
-import { ElementTribe, Mask, Matoran, Rarity } from '../types/Matoran';
+import {
+  ElementTribe,
+  ListedMatoran,
+  Mask,
+  MatoranStatus,
+  RecruitedMatoran,
+} from '../types/Matoran';
 
 export function getMatoranFromInventoryById(
-  id: Matoran['id'],
-  inventory: Matoran[]
+  id: RecruitedMatoran['id'],
+  inventory: RecruitedMatoran[]
 ) {
   return inventory.find((m) => m.id === id);
 }
@@ -14,14 +20,10 @@ export const INITIAL_GAME_STATE: GameState = {
   recruitedCharacters: [
     {
       id: 1,
+      status: MatoranStatus.Recruited,
       name: 'Takua',
       mask: Mask.Pakari,
       element: ElementTribe.Light,
-      strength: 8,
-      agility: 5,
-      intelligence: 6,
-      cost: 120,
-      rarity: Rarity.Legend,
       colors: {
         mask: LegoColor.MediumBlue,
         body: LegoColor.Red,
@@ -29,6 +31,8 @@ export const INITIAL_GAME_STATE: GameState = {
         arms: LegoColor.Red,
         eyes: LegoColor.TransNeonRed,
       },
+      level: 1,
+      exp: 0,
     },
   ],
   availableCharacters: [
@@ -37,11 +41,8 @@ export const INITIAL_GAME_STATE: GameState = {
       name: 'Takua',
       mask: Mask.Pakari,
       element: ElementTribe.Light,
-      strength: 8,
-      agility: 5,
-      intelligence: 6,
       cost: 120,
-      rarity: Rarity.Legend,
+      status: MatoranStatus.Listed,
       colors: {
         mask: LegoColor.MediumBlue,
         body: LegoColor.Red,
@@ -55,11 +56,8 @@ export const INITIAL_GAME_STATE: GameState = {
       name: 'Jala',
       mask: Mask.Hau,
       element: ElementTribe.Fire,
-      strength: 8,
-      agility: 5,
-      intelligence: 6,
       cost: 120,
-      rarity: Rarity.Legend,
+      status: MatoranStatus.Listed,
       colors: {
         mask: LegoColor.Yellow,
         body: LegoColor.Red,
@@ -73,11 +71,8 @@ export const INITIAL_GAME_STATE: GameState = {
       name: 'Hali',
       mask: Mask.Kaukau,
       element: ElementTribe.Water,
-      strength: 5,
-      agility: 7,
-      intelligence: 8,
-      rarity: Rarity.Legend,
       cost: 120,
+      status: MatoranStatus.Listed,
       isMaskTransparent: true,
       colors: {
         mask: LegoColor.Blue,
@@ -92,11 +87,8 @@ export const INITIAL_GAME_STATE: GameState = {
       name: 'Huki',
       mask: Mask.Kakama,
       element: ElementTribe.Stone,
-      strength: 5,
-      agility: 7,
-      intelligence: 8,
-      rarity: Rarity.Legend,
       cost: 120,
+      status: MatoranStatus.Listed,
       colors: {
         mask: LegoColor.DarkOrange,
         body: LegoColor.Tan,
@@ -110,11 +102,8 @@ export const INITIAL_GAME_STATE: GameState = {
       name: 'Nuparu',
       mask: Mask.Pakari,
       element: ElementTribe.Earth,
-      strength: 5,
-      agility: 7,
-      intelligence: 8,
-      rarity: Rarity.Legend,
       cost: 120,
+      status: MatoranStatus.Listed,
       colors: {
         mask: LegoColor.Orange,
         body: LegoColor.Black,
@@ -128,11 +117,8 @@ export const INITIAL_GAME_STATE: GameState = {
       name: 'Kongu',
       mask: Mask.Miru,
       element: ElementTribe.Air,
-      strength: 5,
-      agility: 7,
-      intelligence: 8,
-      rarity: Rarity.Legend,
       cost: 120,
+      status: MatoranStatus.Listed,
       colors: {
         mask: LegoColor.DarkTurquoise,
         body: LegoColor.Lime,
@@ -146,11 +132,8 @@ export const INITIAL_GAME_STATE: GameState = {
       name: 'Matoro',
       mask: Mask.Akaku,
       element: ElementTribe.Ice,
-      strength: 5,
-      agility: 7,
-      intelligence: 8,
-      rarity: Rarity.Legend,
       cost: 120,
+      status: MatoranStatus.Listed,
       colors: {
         mask: LegoColor.SandBlue,
         body: LegoColor.White,
@@ -164,11 +147,8 @@ export const INITIAL_GAME_STATE: GameState = {
       name: 'Maku',
       mask: Mask.Huna,
       element: ElementTribe.Water,
-      strength: 5,
-      agility: 7,
-      intelligence: 8,
-      rarity: Rarity.Rare,
       cost: 100,
+      status: MatoranStatus.Listed,
       colors: {
         mask: LegoColor.Blue,
         body: LegoColor.MediumBlue,
@@ -182,11 +162,8 @@ export const INITIAL_GAME_STATE: GameState = {
       name: 'Lumi',
       mask: Mask.Hau,
       element: ElementTribe.Water,
-      strength: 5,
-      agility: 7,
-      intelligence: 8,
-      rarity: Rarity.Rare,
       cost: 100,
+      status: MatoranStatus.Listed,
       colors: {
         mask: LegoColor.Blue,
         body: LegoColor.MediumBlue,
@@ -199,12 +176,9 @@ export const INITIAL_GAME_STATE: GameState = {
       id: 10,
       name: 'Le Matoran',
       mask: Mask.Kaukau,
-      element: ElementTribe.Air,
-      strength: 5,
-      agility: 7,
-      intelligence: 8,
-      rarity: Rarity.Common,
+      element: ElementTribe.Water,
       cost: 50,
+      status: MatoranStatus.Listed,
       isMaskTransparent: true,
       colors: {
         mask: LegoColor.DarkTurquoise,
@@ -217,7 +191,7 @@ export const INITIAL_GAME_STATE: GameState = {
   ],
   inventory: {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  recruitCharacter: function (_character: Matoran, _cost: number): void {
+  recruitCharacter: function (_character: ListedMatoran): void {
     throw new Error('Function not implemented.');
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
