@@ -7,8 +7,6 @@ import { CharacterDetail } from './pages/CharacterDetail/index.tsx';
 
 import { GameProvider } from './providers/Game.tsx';
 
-import { InventoryBar } from './components/InventoryBar/index.tsx';
-
 import './App.scss';
 
 const Home: React.FC = () => (
@@ -32,7 +30,6 @@ export function App() {
     <GameProvider>
       <Router basename='/BionicleIdleRPG/'>
         <div className='app-container'>
-          <InventoryBar />
           <main className='main-content'>
             <Routes>
               <Route path='/' element={<Home />} />
