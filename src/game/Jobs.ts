@@ -72,7 +72,6 @@ export function applyOfflineJobExp(
     }
     return updatedMatoran;
   });
-  console.log('applyOfflineJobs', JSON.stringify(logs));
   return [updated, logs];
 }
 

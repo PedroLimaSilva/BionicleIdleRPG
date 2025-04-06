@@ -1,9 +1,16 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Bounds, OrbitControls, Stage, useGLTF } from '@react-three/drei';
+import {
+  Bounds,
+  OrbitControls,
+  Stage,
+  useAnimations,
+  useGLTF,
+} from '@react-three/drei';
 import { Matoran } from '../../types/Matoran';
-import { Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { Color } from '../../types/Colors';
+import { useAnimationController } from '../../providers/useAnimationController';
 
 const MAT_COLOR_MAP = {
   // Head: 'head',
@@ -16,13 +23,21 @@ const MAT_COLOR_MAP = {
   Brain: 'eyes',
 };
 
-export function CharacterScene({ matoran }: { matoran: Matoran }) {
-  const { nodes, materials } = useGLTF(
+function Model({ matoran }: { matoran: Matoran }) {
+  const group = useRef<Group>(null);
+  const { nodes, materials, animations } = useGLTF(
     import.meta.env.BASE_URL + 'matoran_master.glb'
   );
+  const { actions, mixer } = useAnimations(animations, group);
+
+  useAnimationController({
+    mixer,
+    idle: actions['IdleArms'],
+    flavors: [actions['Tilt Head']].filter(Boolean),
+  });
+
   useEffect(() => {
     const colorMap = matoran.colors;
-
     const applyColor = (materialName: string, color: Color) => {
       const mat = materials[materialName] as MeshStandardMaterial;
       if (mat && 'color' in mat) {
@@ -52,16 +67,28 @@ export function CharacterScene({ matoran }: { matoran: Matoran }) {
         mat.opacity = 0.8;
       }
     });
-  }, [nodes, materials, matoran]);
+  }, [nodes, materials, matoran, actions]);
 
   return (
-    <Canvas camera={{ position: [0, 1.5, 15], fov: 50 }}>
+    <group ref={group} dispose={null}>
+      <group name='Scene'>
+        <group name='Matoran'>
+          <primitive object={nodes.Body} />
+        </group>
+      </group>
+    </group>
+  );
+}
+
+export function CharacterScene({ matoran }: { matoran: Matoran }) {
+  return (
+    <Canvas camera={{ position: [0, 1.5, 20], fov: 30 }}>
       <Stage>
         <ambientLight intensity={0.2} />
         <directionalLight position={[5, 5, 5]} />
         <Suspense fallback={null}>
           <Bounds fit clip observe margin={1.2}>
-            <primitive object={nodes.Body} scale={1} />
+            <Model matoran={matoran} />
           </Bounds>
           <OrbitControls
             enablePan={false}
