@@ -6,6 +6,7 @@ import { ElementTag } from '../../components/ElementTag';
 import { getLevelFromExp } from '../../game/Levelling';
 import { JobStatusBadge } from '../../components/JobStatusBadge';
 import { getJobStatus } from '../../game/Jobs';
+import { JOB_DETAILS } from '../../data/jobs';
 
 export const CharacterInventory: React.FC = () => {
   const { recruitedCharacters } = useGame();
@@ -30,7 +31,11 @@ export const CharacterInventory: React.FC = () => {
                     Level {getLevelFromExp(matoran.exp)}
                   </div>
                   <JobStatusBadge
-                    label={matoran.assignment?.job}
+                    label={
+                      matoran.assignment?.job
+                        ? JOB_DETAILS[matoran.assignment?.job].label
+                        : jobStatus
+                    }
                     status={jobStatus}
                   />
                 </div>
