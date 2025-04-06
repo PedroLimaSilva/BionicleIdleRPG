@@ -7,19 +7,32 @@ import './index.scss';
 import { CharacterScene } from '../../components/CharacterScene';
 import { ElementTag } from '../../components/ElementTag';
 import { getExpProgress, getLevelFromExp } from '../../game/Levelling';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Modal } from '../../components/Modal';
 import { JobList } from '../../components/JobList';
 import { JOB_DETAILS } from '../../data/jobs';
 import { JobCard } from '../../components/JobList/JobCard';
 import { getProductivityModifier } from '../../game/Jobs';
+import { useSceneCanvas } from '../../providers/useSceneCanvas';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const { recruitedCharacters } = useGame();
+
+  const { setScene } = useSceneCanvas();
+
   const matoran = getMatoranFromInventoryById(Number(id), recruitedCharacters);
 
   const [assigningJob, setAssigningJob] = useState(false);
+
+  useEffect(() => {
+    if (matoran) {
+      setScene(<CharacterScene matoran={matoran}></CharacterScene>);
+    }
+    return () => {
+      setScene(null);
+    };
+  }, [matoran, setScene]);
 
   const lvlProgress = useMemo(
     () =>
@@ -49,7 +62,6 @@ export const CharacterDetail: React.FC = () => {
           </div>
 
           <div className='model-frame'>
-            <CharacterScene matoran={matoran}></CharacterScene>
           </div>
 
           <div className='divider'></div>

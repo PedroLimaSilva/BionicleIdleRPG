@@ -5,12 +5,14 @@ import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { InventoryBar } from '../../components/InventoryBar';
 import { ListedMatoran } from '../../types/Matoran';
 import { useGame } from '../../providers/Game';
-import { CharacterScene } from '../../components/CharacterScene';
 import { ITEM_DICTIONARY } from '../../data/loot';
+import { CharacterScene } from '../../components/CharacterScene';
+import { useSceneCanvas } from '../../providers/useSceneCanvas';
 
 export const Recruitment: React.FC = () => {
   const { widgets, recruitCharacter, availableCharacters, inventory } =
     useGame();
+  const { setScene } = useSceneCanvas();
 
   const [selectedMatoran, setSelectedMatoran] = useState<ListedMatoran | null>(
     null
@@ -34,6 +36,15 @@ export const Recruitment: React.FC = () => {
     setSelectedMatoran(availableCharacters[0] || null);
   }, [availableCharacters]);
 
+  useEffect(() => {
+    if (selectedMatoran) {
+      setScene(<CharacterScene matoran={selectedMatoran} />);
+    }
+    return () => {
+      setScene(null);
+    };
+  }, [selectedMatoran, setScene]);
+
   const handleRecruit = (matoran: ListedMatoran) => {
     startTransition(() => {
       setSelectedMatoran(matoran);
@@ -54,13 +65,6 @@ export const Recruitment: React.FC = () => {
       <div className='recruitment-preview'>
         {selectedMatoran && (
           <div>
-            <div className='model-display fade-in'>
-              <CharacterScene
-                matoran={selectedMatoran}
-                key={selectedMatoran.id}
-              />
-            </div>
-
             <div key={selectedMatoran.id} className='recruitment-overlay'>
               <div className='requirement-list'>
                 <h4>Required to Recruit:</h4>

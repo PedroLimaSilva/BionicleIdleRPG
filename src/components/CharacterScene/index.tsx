@@ -82,21 +82,19 @@ function Model({ matoran }: { matoran: Matoran }) {
 
 export function CharacterScene({ matoran }: { matoran: Matoran }) {
   return (
-    <Canvas camera={{ position: [0, 1.5, 20], fov: 30 }}>
-      <Stage>
-        <ambientLight intensity={0.2} />
-        <directionalLight position={[5, 5, 5]} />
-        <Suspense fallback={null}>
-          <Bounds fit clip observe margin={1.2}>
-            <Model matoran={matoran} />
-          </Bounds>
-          <OrbitControls
-            enablePan={false}
-            enableZoom={false}
-            maxPolarAngle={Math.PI / 2}
-          />
-        </Suspense>
-      </Stage>
-    </Canvas>
+    <Stage>
+      <ambientLight intensity={0.2} />
+      <directionalLight position={[5, 5, 5]} />
+      <Suspense fallback={null}>
+        <Bounds fit clip observe margin={1.2}>
+          <Model matoran={matoran} />
+        </Bounds>
+        <OrbitControls
+          enablePan={false}
+          enableZoom={false}
+          maxPolarAngle={Math.PI / 2}
+        />
+      </Suspense>
+    </Stage>
   );
 }

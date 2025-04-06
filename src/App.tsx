@@ -9,6 +9,7 @@ import { GameProvider } from './providers/Game.tsx';
 
 import './App.scss';
 import { ActivityLog } from './components/ActivityLog/index.tsx';
+import { SceneCanvasProvider } from './providers/Canvas.tsx';
 
 const Home: React.FC = () => (
   <div className='page-container'>
@@ -31,28 +32,31 @@ export function App() {
   return (
     <GameProvider>
       <Router basename='/BionicleIdleRPG/'>
-        <div className='app-container'>
-          <main className='main-content'>
-            <Routes>
-              <Route path='/' element={<Home />} />
-              <Route path='/characters' element={<CharacterInventory />} />
-              <Route path='/character/:id' element={<CharacterDetail />} />
-              <Route path='/recruitment' element={<Recruitment />} />
-              <Route path='*' element={<NotFound />} />
-            </Routes>
-          </main>
-          <nav className='nav-bar'>
-            <ul className='nav-links'>
-              <li>
-                <Link to='/'>Home</Link>
-              </li>
-              <li>
-                <Link to='/characters'>Characters</Link>
-              </li>
-            </ul>
-          </nav>
-        </div>
-        <PWABadge />
+        <SceneCanvasProvider>
+          <div className='app-container'>
+            <main className='main-content'>
+              <div id='canvas-mount'></div>
+              <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/characters' element={<CharacterInventory />} />
+                <Route path='/character/:id' element={<CharacterDetail />} />
+                <Route path='/recruitment' element={<Recruitment />} />
+                <Route path='*' element={<NotFound />} />
+              </Routes>
+            </main>
+            <nav className='nav-bar'>
+              <ul className='nav-links'>
+                <li>
+                  <Link to='/'>Home</Link>
+                </li>
+                <li>
+                  <Link to='/characters'>Characters</Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <PWABadge />
+        </SceneCanvasProvider>
       </Router>
     </GameProvider>
   );

@@ -107,9 +107,13 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  position: relative;
 }
 
 .nav-bar {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
   background-color: var(--color-surface-high);
   padding: 1rem 2rem 2rem;
 
@@ -247,6 +251,26 @@ button:focus-visible {
 .main-content {
   flex-grow: 1;
   overflow-y: auto;
+  position: relative;
+
+  #canvas-mount {
+    position: absolute;
+    display: none;
+    &.route--recruitment {
+      display: block;
+      top: 0;
+      left: 0;
+      height: calc(100% - 184px); // 100% - .matoran-selector-height
+      width: 100%;
+      z-index: 0;
+    }
+    &[class*='route--character-'] {
+      display: block;
+      top: 148px; // Eyed
+      width: 100%;
+      height: 50vh; // .model-frame height
+    }
+  }
 }
 
 .page-container {
