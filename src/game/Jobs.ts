@@ -1,6 +1,11 @@
 import { JOB_DETAILS } from '../data/jobs';
-import { GameState } from '../providers/Game';
-import { JobAssignment, MatoranJob, ProductivityEffect } from '../types/Jobs';
+import { GameState, Inventory } from '../providers/Game';
+import {
+  JobAssignment,
+  JobDetails,
+  MatoranJob,
+  ProductivityEffect,
+} from '../types/Jobs';
 import { RecruitedMatoran } from '../types/Matoran';
 import { ActivityLogEntry, LogType } from '../types/Logging';
 
@@ -20,9 +25,7 @@ export function getAvailableJobs(gameState: GameState): MatoranJob[] {
     .filter((job) => isJobUnlocked(job, gameState));
 }
 
-export function getJobStatus(
-  matoran: RecruitedMatoran,
-): ProductivityEffect {
+export function getJobStatus(matoran: RecruitedMatoran): ProductivityEffect {
   if (!matoran.assignment?.job) return ProductivityEffect.Idle;
 
   const affinity = JOB_DETAILS[matoran.assignment.job].elementAffinity;
@@ -54,15 +57,50 @@ function computeEarnedExp(assignment: JobAssignment, now = Date.now()): number {
   return Math.floor(elapsedSeconds * assignment.expRatePerSecond);
 }
 
+function rollJobRewards(job: JobDetails): Inventory {
+  const drops: Inventory = {};
+  if (!job.rewards) return drops;
+
+  for (const reward of job.rewards) {
+    if (Math.random() < reward.chance) {
+      if (!drops[reward.item]) {
+        drops[reward.item] = 1;
+      } else {
+        drops[reward.item]++;
+      }
+    }
+  }
+
+  return drops;
+}
+
 export function applyOfflineJobExp(
   characters: RecruitedMatoran[]
-): [RecruitedMatoran[], ActivityLogEntry[]] {
+): [RecruitedMatoran[], ActivityLogEntry[], number, Inventory] {
   const now = Date.now();
   const logs: ActivityLogEntry[] = [];
+  let currencyGain = 0;
+  const loot: Inventory = {};
 
   const updated = characters.map((m) => {
-    const [updatedMatoran, earned] = applyJobExp(m, now);
+    const [updatedMatoran, earned, rewards] = applyJobExp(m, now);
+
+    Object.entries(rewards).forEach(([item, amount]) => {
+      if (!loot[item]) {
+        loot[item] = amount;
+      } else {
+        loot[item] += amount;
+      }
+      logs.push({
+        id: crypto.randomUUID(),
+        message: `${m.name} found ${amount} ${item} while working.`,
+        type: LogType.Loot,
+        timestamp: now,
+      });
+    });
+
     if (earned > 0) {
+      currencyGain += earned;
       logs.push({
         id: crypto.randomUUID(),
         message: `${m.name} gained ${earned} EXP while you were away.`,
@@ -70,18 +108,22 @@ export function applyOfflineJobExp(
         timestamp: now,
       });
     }
+
     return updatedMatoran;
   });
-  return [updated, logs];
+
+  return [updated, logs, currencyGain, loot];
 }
 
 export function applyJobExp(
   matoran: RecruitedMatoran,
   now = Date.now()
-): [RecruitedMatoran, number] {
-  if (!matoran.assignment) return [matoran, 0];
+): [RecruitedMatoran, number, Inventory] {
+  if (!matoran.assignment) return [matoran, 0, {}];
 
   const earnedExp = computeEarnedExp(matoran.assignment);
+  const jobDetails = JOB_DETAILS[matoran.assignment.job];
+  const rewards = rollJobRewards(jobDetails);
 
   return [
     {
@@ -93,5 +135,6 @@ export function applyJobExp(
       },
     },
     earnedExp,
+    rewards,
   ];
 }

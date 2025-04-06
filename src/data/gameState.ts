@@ -12,7 +12,7 @@ export const CURRENT_GAME_STATE_VERSION = 3; // ONLY UPDATE IF BREAKING CHANGES 
 export const INITIAL_GAME_STATE: GameState = {
   version: CURRENT_GAME_STATE_VERSION,
   activityLog: [],
-  widgets: 1000,
+  widgets: 10,
   storyProgress: [StoryProgression.MataNuiSettled],
   recruitedCharacters: RECRUITED_CHARACTERS,
   availableCharacters: AVAILABLE_CHARACTERS,

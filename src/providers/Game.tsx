@@ -69,13 +69,15 @@ function loadGameState() {
     try {
       const parsed = JSON.parse(stored);
       if (isValidGameState(parsed)) {
-        const [recruitedCharacters, logs] = applyOfflineJobExp(
+        const [recruitedCharacters, logs, currency] = applyOfflineJobExp(
           parsed.recruitedCharacters
         );
 
         return {
           ...parsed,
+          // inventory: [...parsed.inventory, items],
           recruitedCharacters,
+          widgets: parsed.widgets + currency,
           activityLog: logs,
         };
       }
@@ -193,9 +195,21 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const now = Date.now();
     setRecruitedCharacters((prev) =>
       prev.map((m) => {
-        const [updated, earned] = applyJobExp(m, now);
-        if (earned > 0) {
-          addActivityLog(`${m.name} gained ${earned} EXP`, LogType.Event);
+        const [updated, exp, loot] = applyJobExp(m, now);
+        const earnedWidgets = Math.floor(exp * 0.2);
+        if (earnedWidgets) {
+          addActivityLog(
+            `${m.name} earned ${earnedWidgets} widgets`,
+            LogType.Widgets
+          );
+          setWidgets((prev) => prev + earnedWidgets);
+        }
+        Object.entries(loot).forEach(([item, amount]) => {
+          addItemToInventory(item, amount);
+          addActivityLog(`${m.name} added ${amount} ${item} to the inventory`, LogType.Loot);
+        });
+        if (exp > 0) {
+          addActivityLog(`${m.name} gained ${exp} EXP`, LogType.Gain);
         }
         return updated;
       })

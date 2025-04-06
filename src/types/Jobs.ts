@@ -16,7 +16,12 @@ export enum MatoranJob {
   KnowledgeScribe = 'KnowledgeScribe',
 }
 
-export type JobDetails = {
+type JobReward = {
+  item: string;
+  chance: number;
+};
+
+export interface JobDetails {
   label: string;
   description: string;
   rate: number;
@@ -27,7 +32,8 @@ export type JobDetails = {
   unlock: {
     requiredProgress?: StoryProgression;
   };
-};
+  rewards?: JobReward[];
+}
 
 export type JobAssignment = {
   job: MatoranJob;
