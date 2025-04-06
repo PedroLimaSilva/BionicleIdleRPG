@@ -53,12 +53,15 @@ export const Recruitment: React.FC = () => {
       <InventoryBar />
       <div className='recruitment-preview'>
         {selectedMatoran && (
-          <div key={selectedMatoran.id}>
+          <div>
             <div className='model-display fade-in'>
-              <CharacterScene matoran={selectedMatoran} />
+              <CharacterScene
+                matoran={selectedMatoran}
+                key={selectedMatoran.id}
+              />
             </div>
 
-            <div className='recruitment-overlay'>
+            <div key={selectedMatoran.id} className='recruitment-overlay'>
               <div className='requirement-list'>
                 <h4>Required to Recruit:</h4>
                 <ul>
