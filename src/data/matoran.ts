@@ -175,8 +175,8 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     mask: Mask.Huna,
     cost: 600,
     requiredItems: [
-      { item: GameItemId.IceChip, quantity: 150 },
-      { item: GameItemId.IceChip, quantity: 50 },
+      { item: GameItemId.WaterAlgae, quantity: 150 },
+      { item: GameItemId.GaPearl, quantity: 50 },
     ],
     status: MatoranStatus.Listed,
     colors: {
