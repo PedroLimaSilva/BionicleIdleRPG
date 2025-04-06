@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Orbitron:wght@400;500;700&display=swap');
+
 * {
   box-sizing: border-box;
 }
@@ -11,7 +13,8 @@
   --color-border-muted: #444444;
   --color-accent: #fcef6e;
 
-
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'Inter', sans-serif; /* Or whatever you're using for body */
 }
 
 @media (prefers-color-scheme: light) {
@@ -29,8 +32,27 @@
   }
 }
 
+/* Default body */
+body {
+  font-family: var(--font-body);
+}
+
+/* Accent headers */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+.level-label,
+button {
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 #root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -71,7 +93,6 @@ button {
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
   background-color: var(--color-surface-low);
   cursor: pointer;
   transition: border-color 0.25s;
@@ -85,7 +106,6 @@ button:focus-visible {
 .app-container {
   display: flex;
   flex-direction: column;
-  font-family: Arial, sans-serif;
   height: 100vh;
 }
 
