@@ -8,6 +8,7 @@ import { CharacterDetail } from './pages/CharacterDetail/index.tsx';
 import { GameProvider } from './providers/Game.tsx';
 
 import './App.scss';
+import { ActivityLog } from './components/ActivityLog/index.tsx';
 
 const Home: React.FC = () => (
   <div className='page-container'>
@@ -15,6 +16,7 @@ const Home: React.FC = () => (
     <p>
       Embark on your journey to recruit Matoran and help them become legends!
     </p>
+    <ActivityLog />
   </div>
 );
 

@@ -4,10 +4,6 @@ import {
   MatoranStatus,
   RecruitedMatoran,
 } from '../types/Matoran';
-import {
-  CURRENT_GAME_STATE_VERSION,
-  INITIAL_GAME_STATE,
-} from '../data/matoran';
 import { MatoranJob } from '../types/Jobs';
 import {
   applyJobExp,
@@ -16,6 +12,11 @@ import {
 } from '../game/Jobs';
 import { JOB_DETAILS } from '../data/jobs';
 import { StoryProgression } from '../game/story';
+import { ActivityLogEntry, LogType } from '../types/Logging';
+import {
+  CURRENT_GAME_STATE_VERSION,
+  INITIAL_GAME_STATE,
+} from '../data/gameState';
 
 export type Item = {
   id: string;
@@ -41,6 +42,10 @@ export type GameState = {
   assignJobToMatoran: (matoranId: number, job: MatoranJob) => void;
   removeJobFromMatoran: (matoranId: number) => void;
   tickJobExp: () => void;
+  activityLog: ActivityLogEntry[];
+  addActivityLog: (message: string, type: LogType) => void;
+  removeActivityLogEntry: (id: string) => void;
+  clearActivityLog: () => void;
 };
 
 const GameContext = createContext<GameState | null>(null);
@@ -64,15 +69,18 @@ function loadGameState() {
     try {
       const parsed = JSON.parse(stored);
       if (isValidGameState(parsed)) {
+        const [recruitedCharacters, logs] = applyOfflineJobExp(
+          parsed.recruitedCharacters
+        );
+
         return {
           ...parsed,
-          recruitedCharacters: applyOfflineJobExp(parsed.recruitedCharacters),
+          recruitedCharacters,
+          activityLog: logs,
         };
-      } else {
-        console.warn('Invalid or outdated game state. Using defaults.', parsed);
       }
     } catch (e) {
-      console.error('Failed to parse game state:', e, stored);
+      console.error('Failed to parse game state:', e);
     }
   }
   return INITIAL_GAME_STATE;
@@ -91,9 +99,11 @@ function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
 
 export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   // Only access localStorage once
-  const initialState = loadGameState();
+  const [initialState] = useState(() => loadGameState());
 
   const [version] = useState(initialState.version);
+
+  const [activityLog, setActivityLog] = useState(initialState.activityLog);
   const [storyProgress] = useState(initialState.storyProgress);
   const [widgets, setWidgets] = useState(initialState.widgets);
   const [inventory, setInventory] = useState<Inventory>(initialState.inventory);
@@ -116,6 +126,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   useEffect(() => {
     const state: Partial<GameState> = {
       version,
+      activityLog: [],
       widgets,
       inventory,
       recruitedCharacters,
@@ -180,7 +191,15 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
   const tickJobExp = () => {
     const now = Date.now();
-    setRecruitedCharacters((prev) => prev.map((m) => applyJobExp(m, now)));
+    setRecruitedCharacters((prev) =>
+      prev.map((m) => {
+        const [updated, earned] = applyJobExp(m, now);
+        if (earned > 0) {
+          addActivityLog(`${m.name} gained ${earned} EXP`, LogType.Event);
+        }
+        return updated;
+      })
+    );
   };
 
   useEffect(() => {
@@ -189,12 +208,33 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     }, 5000); // or whatever interval makes sense
 
     return () => clearInterval(interval); // cleanup on unmount
-  }, []);
+  });
+
+  const addActivityLog = (message: string, type: LogType) => {
+    setActivityLog((log: ActivityLogEntry[]) => [
+      ...log,
+      {
+        id: crypto.randomUUID(),
+        message,
+        type,
+        timestamp: Date.now(),
+      } as ActivityLogEntry,
+    ]);
+  };
+
+  const removeActivityLogEntry = (id: string) => {
+    setActivityLog((log) => log.filter((entry) => entry.id !== id));
+  };
+
+  const clearActivityLog = () => {
+    setActivityLog([]);
+  };
 
   return (
     <GameContext.Provider
       value={{
         storyProgress,
+        activityLog,
         version,
         widgets,
         inventory,
@@ -205,6 +245,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         assignJobToMatoran,
         removeJobFromMatoran,
         tickJobExp,
+        clearActivityLog,
+        addActivityLog,
+        removeActivityLogEntry,
       }}
     >
       {children}

@@ -65,8 +65,7 @@ export function CharacterScene({ matoran }: { matoran: Matoran }) {
           </Bounds>
           <OrbitControls
             enablePan={false}
-            minDistance={10}
-            maxDistance={20}
+            enableZoom={false}
             maxPolarAngle={Math.PI / 2}
           />
         </Suspense>

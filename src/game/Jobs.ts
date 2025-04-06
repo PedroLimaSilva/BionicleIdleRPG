@@ -2,6 +2,7 @@ import { JOB_DETAILS } from '../data/jobs';
 import { GameState } from '../providers/Game';
 import { JobAssignment, MatoranJob } from '../types/Jobs';
 import { RecruitedMatoran } from '../types/Matoran';
+import { ActivityLogEntry, LogType } from '../types/Logging';
 
 export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const jobData = JOB_DETAILS[job];
@@ -41,25 +42,43 @@ function computeEarnedExp(assignment: JobAssignment, now = Date.now()): number {
 
 export function applyOfflineJobExp(
   characters: RecruitedMatoran[]
-): RecruitedMatoran[] {
+): [RecruitedMatoran[], ActivityLogEntry[]] {
   const now = Date.now();
-  return characters.map((m) => applyJobExp(m, now));
+  const logs: ActivityLogEntry[] = [];
+
+  const updated = characters.map((m) => {
+    const [updatedMatoran, earned] = applyJobExp(m, now);
+    if (earned > 0) {
+      logs.push({
+        id: crypto.randomUUID(),
+        message: `${m.name} gained ${earned} EXP while you were away.`,
+        type: LogType.Gain,
+        timestamp: now,
+      });
+    }
+    return updatedMatoran;
+  });
+  console.log('applyOfflineJobs', JSON.stringify(logs));
+  return [updated, logs];
 }
 
 export function applyJobExp(
   matoran: RecruitedMatoran,
   now = Date.now()
-): RecruitedMatoran {
-  if (!matoran.assignment) return matoran;
+): [RecruitedMatoran, number] {
+  if (!matoran.assignment) return [matoran, 0];
 
   const earnedExp = computeEarnedExp(matoran.assignment);
 
-  return {
-    ...matoran,
-    exp: matoran.exp + earnedExp,
-    assignment: {
-      ...matoran.assignment,
-      assignedAt: now, // reset timer
+  return [
+    {
+      ...matoran,
+      exp: matoran.exp + earnedExp,
+      assignment: {
+        ...matoran.assignment,
+        assignedAt: now, // reset timer
+      },
     },
-  };
+    earnedExp,
+  ];
 }
