@@ -7,7 +7,7 @@ import { MatoranJob } from '../types/Jobs';
 import { ListedMatoran } from '../types/Matoran';
 import { AVAILABLE_CHARACTERS, RECRUITED_CHARACTERS } from './matoran';
 
-export const CURRENT_GAME_STATE_VERSION = 3; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
+export const CURRENT_GAME_STATE_VERSION = 4; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
 
 export const INITIAL_GAME_STATE: GameState = {
   version: CURRENT_GAME_STATE_VERSION,

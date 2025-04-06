@@ -1,3 +1,4 @@
+import { GameItemId } from '../data/loot';
 import { Color } from './Colors';
 import { JobAssignment } from './Jobs';
 
@@ -42,9 +43,15 @@ export const enum MatoranStatus {
   Recruited,
 }
 
+export type ItemRequirement = {
+  item: GameItemId;
+  quantity: number;
+};
+
 export type ListedMatoran = BaseMatoran & {
   status: MatoranStatus.Listed;
   cost: number;
+  requiredItems?: ItemRequirement[];
 };
 
 export type RecruitedMatoran = BaseMatoran & {

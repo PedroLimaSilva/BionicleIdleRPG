@@ -1,3 +1,4 @@
+import { GameItemId } from '../data/loot';
 import { StoryProgression } from '../game/story';
 import { ElementTribe } from './Matoran';
 
@@ -10,14 +11,14 @@ export enum MatoranJob {
   ChuteController = 'ChuteController',
   QuarryRunner = 'QuarryRunner',
   SculptureOperator = 'SculptureOperator',
-  GlowWormTender = 'GlowWormTender',
+  LightStoneFarmer = 'LightStoneFarmer',
   StasisTechnician = 'StasisTechnician',
   IceSculptor = 'IceSculptor',
   KnowledgeScribe = 'KnowledgeScribe',
 }
 
 type JobReward = {
-  item: string;
+  item: GameItemId;
   chance: number;
 };
 

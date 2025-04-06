@@ -1,3 +1,4 @@
+import { WIDGET_RATE } from '../../../data/jobs';
 import './index.scss';
 
 const enum ProductivityEffect {
@@ -56,14 +57,21 @@ export const JobCard: React.FC<JobCardProps> = ({
       <ProductivityBadge modifier={modifier} />
       <p className='job-description'>{description}</p>
       <div className='job-rates'>
-        Base rate: <span className='code-style'>{baseRate}</span>
-        <br />
-        Modifier: <span className='code-style'>{modifier}</span>
-        <br />
-        <strong>Effective rate:</strong>{' '}
-        <span className='code-style'>
-          {(baseRate * modifier).toFixed(2)} Exp/second
-        </span>
+        <div className='exp-rates'>
+          Base rate: <span className='code-style'>{baseRate}</span>
+          <br />
+          Modifier: <span className='code-style'>{modifier}</span>
+          <br />
+          <strong>Exp rate:</strong>{' '}
+          <span className='code-style'>
+            {(baseRate * modifier).toFixed(2)} Exp/second
+          </span>
+          <br />
+          <strong>Widget rate:</strong>{' '}
+          <span className='code-style'>
+            {(baseRate * modifier * WIDGET_RATE * 60).toFixed(0)} Widgets/minute
+          </span>
+        </div>
       </div>
     </div>
   );

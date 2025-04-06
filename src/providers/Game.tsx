@@ -10,25 +10,16 @@ import {
   applyOfflineJobExp,
   getProductivityModifier,
 } from '../game/Jobs';
-import { JOB_DETAILS } from '../data/jobs';
+import { JOB_DETAILS, WIDGET_RATE } from '../data/jobs';
 import { StoryProgression } from '../game/story';
 import { ActivityLogEntry, LogType } from '../types/Logging';
 import {
   CURRENT_GAME_STATE_VERSION,
   INITIAL_GAME_STATE,
 } from '../data/gameState';
+import { GameItemId } from '../data/loot';
 
-export type Item = {
-  id: string;
-};
-
-export type Inventory = Record<Item['id'], number>;
-
-// function removeCharacterFromArray(character: Matoran, array: Matoran[]) {
-//   const indexToRemove = array.findIndex((m) => m.id === character.id);
-
-//   return array.filter((_, i) => i !== indexToRemove);
-// }
+export type Inventory = Partial<Record<GameItemId, number>>;
 
 export type GameState = {
   version: number;
@@ -38,7 +29,7 @@ export type GameState = {
   recruitedCharacters: RecruitedMatoran[];
   storyProgress: StoryProgression[];
   recruitCharacter: (character: ListedMatoran) => void;
-  addItemToInventory: (item: string, amount: number) => void;
+  addItemToInventory: (item: GameItemId, amount: number) => void;
   assignJobToMatoran: (matoranId: number, job: MatoranJob) => void;
   removeJobFromMatoran: (matoranId: number) => void;
   tickJobExp: () => void;
@@ -137,6 +128,13 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [storyProgress, widgets, inventory, recruitedCharacters, version]);
 
+  const addItemToInventory = (item: GameItemId, amount: number) => {
+    setInventory((prevInventory) => ({
+      ...prevInventory,
+      [item]: (prevInventory[item] || 0) + amount,
+    }));
+  };
+
   const recruitCharacter = (character: ListedMatoran) => {
     if (widgets >= character.cost) {
       setWidgets(widgets - character.cost);
@@ -146,6 +144,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         status: MatoranStatus.Recruited,
       };
 
+      character.requiredItems?.forEach((requirement) => {
+        addItemToInventory(requirement.item, -requirement.quantity);
+      });
       setRecruitedCharacters([...recruitedCharacters, recruitedCharacter]);
       setAvailableCharacters(
         availableCharacters.filter((m) => recruitedCharacter.id !== m.id)
@@ -153,13 +154,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     } else {
       alert('Not enough widgets!');
     }
-  };
-
-  const addItemToInventory = (item: string, amount: number) => {
-    setInventory((prevInventory) => ({
-      ...prevInventory,
-      [item]: (prevInventory[item] || 0) + amount,
-    }));
   };
 
   const assignJobToMatoran = (id: number, job: MatoranJob) => {
@@ -196,7 +190,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     setRecruitedCharacters((prev) =>
       prev.map((m) => {
         const [updated, exp, loot] = applyJobExp(m, now);
-        const earnedWidgets = Math.floor(exp * 0.2);
+        const earnedWidgets = Math.floor(exp * WIDGET_RATE);
         if (earnedWidgets) {
           addActivityLog(
             `${m.name} earned ${earnedWidgets} widgets`,
@@ -205,8 +199,11 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
           setWidgets((prev) => prev + earnedWidgets);
         }
         Object.entries(loot).forEach(([item, amount]) => {
-          addItemToInventory(item, amount);
-          addActivityLog(`${m.name} added ${amount} ${item} to the inventory`, LogType.Loot);
+          addItemToInventory(item as GameItemId, amount);
+          addActivityLog(
+            `${m.name} added ${amount} ${item} to the inventory`,
+            LogType.Loot
+          );
         });
         if (exp > 0) {
           addActivityLog(`${m.name} gained ${exp} EXP`, LogType.Gain);

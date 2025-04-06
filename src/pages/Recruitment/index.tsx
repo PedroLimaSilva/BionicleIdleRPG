@@ -4,22 +4,31 @@ import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { InventoryBar } from '../../components/InventoryBar';
 import { ListedMatoran } from '../../types/Matoran';
-import { useNavigate } from 'react-router-dom';
 import { useGame } from '../../providers/Game';
 import { CharacterScene } from '../../components/CharacterScene';
+import { ITEM_DICTIONARY } from '../../data/loot';
 
 export const Recruitment: React.FC = () => {
-  const navigate = useNavigate();
-  const { widgets, recruitCharacter, availableCharacters } = useGame();
+  const { widgets, recruitCharacter, availableCharacters, inventory } =
+    useGame();
 
   const [selectedMatoran, setSelectedMatoran] = useState<ListedMatoran | null>(
     null
   );
 
-  const canRecruit = useMemo(
-    () => selectedMatoran && widgets >= selectedMatoran.cost,
-    [selectedMatoran, widgets]
-  );
+  const canRecruit = useMemo(() => {
+    const hasRequiredItems = (matoran: ListedMatoran): boolean => {
+      return (matoran.requiredItems || []).every(({ item, quantity }) => {
+        return (inventory[item] || 0) >= quantity;
+      });
+    };
+
+    return (
+      selectedMatoran &&
+      widgets >= selectedMatoran.cost &&
+      hasRequiredItems(selectedMatoran)
+    );
+  }, [selectedMatoran, widgets, inventory]);
 
   useEffect(() => {
     setSelectedMatoran(availableCharacters[0] || null);
@@ -35,8 +44,7 @@ export const Recruitment: React.FC = () => {
     if (selectedMatoran && canRecruit) {
       alert(`${selectedMatoran.name} has been recruited!`);
       recruitCharacter(selectedMatoran);
-      setSelectedMatoran(null);
-      navigate('/characters');
+      setSelectedMatoran(availableCharacters[0] || null);
     }
   };
 
@@ -45,19 +53,51 @@ export const Recruitment: React.FC = () => {
       <InventoryBar />
       <div className='recruitment-preview'>
         {selectedMatoran && (
-          <>
-            <div className='model-display fade-in' key={selectedMatoran.id}>
+          <div key={selectedMatoran.id}>
+            <div className='model-display fade-in'>
               <CharacterScene matoran={selectedMatoran} />
             </div>
-            <button
-              className={`elemental-btn recruit-btn ${
-                canRecruit ? '' : 'disabled'
-              } element-${selectedMatoran.element}`}
-              onClick={confirmRecruitment}
-            >
-              Recruit
-            </button>
-          </>
+
+            <div className='recruitment-overlay'>
+              <div className='requirement-list'>
+                <h4>Required to Recruit:</h4>
+                <ul>
+                  <li
+                    className={
+                      widgets >= selectedMatoran.cost
+                        ? 'has-enough'
+                        : 'not-enough'
+                    }
+                  >
+                    {widgets >= selectedMatoran.cost ? '✅' : '❌'}{' '}
+                    {selectedMatoran.cost} widgets
+                  </li>
+                  {selectedMatoran.requiredItems?.map(({ item, quantity }) => {
+                    const owned = inventory[item] || 0;
+                    const hasEnough = owned >= quantity;
+                    return (
+                      <li
+                        key={`${selectedMatoran.id}-${item}`}
+                        className={hasEnough ? 'has-enough' : 'not-enough'}
+                      >
+                        {hasEnough ? '✅' : '❌'} {ITEM_DICTIONARY[item].name} (
+                        {owned} / {quantity})
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+
+              <button
+                className={`elemental-btn recruit-btn ${
+                  canRecruit ? '' : 'disabled'
+                } element-${selectedMatoran.element}`}
+                onClick={confirmRecruitment}
+              >
+                Recruit
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
@@ -74,7 +114,6 @@ export const Recruitment: React.FC = () => {
                 styles={'mask-preview matoran-avatar'}
               />
               <div className='name'>{matoran.name}</div>
-              <div className='cost'>{matoran.cost} widgets</div>
             </div>
           ))}
         </div>

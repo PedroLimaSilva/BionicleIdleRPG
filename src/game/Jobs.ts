@@ -8,6 +8,7 @@ import {
 } from '../types/Jobs';
 import { RecruitedMatoran } from '../types/Matoran';
 import { ActivityLogEntry, LogType } from '../types/Logging';
+import { GameItemId, ITEM_DICTIONARY } from '../data/loot';
 
 export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const jobData = JOB_DETAILS[job];
@@ -63,11 +64,7 @@ function rollJobRewards(job: JobDetails): Inventory {
 
   for (const reward of job.rewards) {
     if (Math.random() < reward.chance) {
-      if (!drops[reward.item]) {
-        drops[reward.item] = 1;
-      } else {
-        drops[reward.item]++;
-      }
+      drops[reward.item] = (drops[reward.item] ?? 0) + 1;
     }
   }
 
@@ -86,14 +83,11 @@ export function applyOfflineJobExp(
     const [updatedMatoran, earned, rewards] = applyJobExp(m, now);
 
     Object.entries(rewards).forEach(([item, amount]) => {
-      if (!loot[item]) {
-        loot[item] = amount;
-      } else {
-        loot[item] += amount;
-      }
+      const itemId = item as GameItemId;
+      loot[itemId] = (loot[itemId] ?? 0) + amount;
       logs.push({
         id: crypto.randomUUID(),
-        message: `${m.name} found ${amount} ${item} while working.`,
+        message: `${m.name} found ${amount} ${ITEM_DICTIONARY[itemId].name} while working.`,
         type: LogType.Loot,
         timestamp: now,
       });

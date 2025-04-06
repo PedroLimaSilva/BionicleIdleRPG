@@ -14,15 +14,68 @@
   justify-content: center;
   position: relative;
 
+  > div {
+    width: 100%;
+    height: 100%;
+  }
+
   .model-display {
     width: 100%;
     height: 100%;
   }
 
-  .recruit-btn {
-    padding: 0.7rem 1.5rem;
+  .recruitment-overlay {
     position: absolute;
     bottom: 2rem;
+    left: 2rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .requirement-list {
+    position: static;
+    width: 100%;
+    padding: 0;
+
+    h4 {
+      margin: 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--color-text);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        font-size: 0.75rem;
+        margin-bottom: 4px;
+
+        &.has-enough {
+          color: #a3e635;
+        }
+
+        &.not-enough {
+          color: #f87171;
+        }
+      }
+    }
+  }
+
+  .recruit-btn {
+    position: static;
+    width: 100%;
+    padding: 0.6rem 1rem;
     font-weight: bold;
     border-radius: 8px;
   }
@@ -58,7 +111,6 @@
     .mask-preview {
       height: 100px;
       font-size: 2rem;
-      margin-bottom: 0.5rem;
     }
 
     .name {

@@ -6,6 +6,7 @@ import {
   MatoranStatus,
   RecruitedMatoran,
 } from '../types/Matoran';
+import { GameItemId } from './loot';
 
 export function getMatoranFromInventoryById(
   id: RecruitedMatoran['id'],
@@ -38,7 +39,11 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     name: 'Takua',
     mask: Mask.Pakari,
     element: ElementTribe.Light,
-    cost: 120,
+    cost: 1200,
+    requiredItems: [
+      { item: GameItemId.LightStone, quantity: 300 },
+      { item: GameItemId.Charcoal, quantity: 300 },
+    ],
     status: MatoranStatus.Listed,
     colors: {
       mask: LegoColor.MediumBlue,
@@ -51,9 +56,13 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
   {
     id: 2,
     name: 'Jala',
-    mask: Mask.Hau,
     element: ElementTribe.Fire,
-    cost: 120,
+    mask: Mask.Hau,
+    cost: 1200,
+    requiredItems: [
+      { item: GameItemId.Charcoal, quantity: 300 },
+      { item: GameItemId.BurnishedAlloy, quantity: 100 },
+    ],
     status: MatoranStatus.Listed,
     colors: {
       mask: LegoColor.Yellow,
@@ -66,9 +75,13 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
   {
     id: 3,
     name: 'Hali',
-    mask: Mask.Kaukau,
     element: ElementTribe.Water,
-    cost: 120,
+    mask: Mask.Kaukau,
+    cost: 1200,
+    requiredItems: [
+      { item: GameItemId.WaterAlgae, quantity: 300 },
+      { item: GameItemId.GaPearl, quantity: 100 },
+    ],
     status: MatoranStatus.Listed,
     isMaskTransparent: true,
     colors: {
@@ -82,9 +95,13 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
   {
     id: 4,
     name: 'Huki',
-    mask: Mask.Kakama,
     element: ElementTribe.Stone,
-    cost: 120,
+    mask: Mask.Kakama,
+    cost: 1200,
+    requiredItems: [
+      { item: GameItemId.StoneBlock, quantity: 300 },
+      { item: GameItemId.GemShard, quantity: 100 },
+    ],
     status: MatoranStatus.Listed,
     colors: {
       mask: LegoColor.DarkOrange,
@@ -97,9 +114,13 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
   {
     id: 5,
     name: 'Nuparu',
-    mask: Mask.Pakari,
     element: ElementTribe.Earth,
-    cost: 120,
+    mask: Mask.Pakari,
+    cost: 1200,
+    requiredItems: [
+      { item: GameItemId.LightStone, quantity: 300 },
+      { item: GameItemId.BiolumeThread, quantity: 100 },
+    ],
     status: MatoranStatus.Listed,
     colors: {
       mask: LegoColor.Orange,
@@ -112,9 +133,13 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
   {
     id: 6,
     name: 'Kongu',
-    mask: Mask.Miru,
     element: ElementTribe.Air,
-    cost: 120,
+    mask: Mask.Miru,
+    cost: 1200,
+    requiredItems: [
+      { item: GameItemId.FeatherTufts, quantity: 300 },
+      { item: GameItemId.JungleResin, quantity: 100 },
+    ],
     status: MatoranStatus.Listed,
     colors: {
       mask: LegoColor.DarkTurquoise,
@@ -127,9 +152,13 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
   {
     id: 7,
     name: 'Matoro',
-    mask: Mask.Akaku,
     element: ElementTribe.Ice,
-    cost: 120,
+    mask: Mask.Akaku,
+    cost: 1200,
+    requiredItems: [
+      { item: GameItemId.IceChip, quantity: 300 },
+      { item: GameItemId.FrostChisel, quantity: 100 },
+    ],
     status: MatoranStatus.Listed,
     colors: {
       mask: LegoColor.SandBlue,
@@ -142,9 +171,13 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
   {
     id: 8,
     name: 'Maku',
-    mask: Mask.Huna,
     element: ElementTribe.Water,
-    cost: 100,
+    mask: Mask.Huna,
+    cost: 600,
+    requiredItems: [
+      { item: GameItemId.IceChip, quantity: 150 },
+      { item: GameItemId.IceChip, quantity: 50 },
+    ],
     status: MatoranStatus.Listed,
     colors: {
       mask: LegoColor.Blue,
@@ -157,32 +190,34 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
   {
     id: 9,
     name: 'Lumi',
+    element: ElementTribe.Ice,
     mask: Mask.Hau,
-    element: ElementTribe.Water,
-    cost: 100,
+    cost: 300,
+    requiredItems: [{ item: GameItemId.IceChip, quantity: 150 }],
     status: MatoranStatus.Listed,
     colors: {
-      mask: LegoColor.Blue,
-      body: LegoColor.MediumBlue,
-      feet: LegoColor.Blue,
-      arms: LegoColor.MediumBlue,
-      eyes: LegoColor.TransNeonYellow,
+      mask: LegoColor.SandBlue,
+      body: LegoColor.White,
+      feet: LegoColor.SandBlue,
+      arms: LegoColor.White,
+      eyes: LegoColor.TransMediumBlue,
     },
   },
   {
     id: 10,
-    name: 'Le Matoran',
+    name: 'Kivi',
+    element: ElementTribe.Stone,
     mask: Mask.Kaukau,
-    element: ElementTribe.Air,
-    cost: 50,
+    cost: 300,
+    requiredItems: [{ item: GameItemId.StoneBlock, quantity: 150 }],
     status: MatoranStatus.Listed,
     isMaskTransparent: true,
     colors: {
-      mask: LegoColor.DarkTurquoise,
-      body: LegoColor.Lime,
-      feet: LegoColor.DarkTurquoise,
-      arms: LegoColor.Lime,
-      eyes: LegoColor.TransNeonGreen,
+      mask: LegoColor.DarkOrange,
+      body: LegoColor.Tan,
+      feet: LegoColor.DarkOrange,
+      arms: LegoColor.Tan,
+      eyes: LegoColor.TransNeonOrange,
     },
   },
 ];

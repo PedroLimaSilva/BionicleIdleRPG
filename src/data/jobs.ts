@@ -1,6 +1,9 @@
 import { StoryProgression } from '../game/story';
 import { JobDetails, MatoranJob } from '../types/Jobs';
 import { ElementTribe } from '../types/Matoran';
+import { GameItemId } from './loot';
+
+export const WIDGET_RATE = 0.2;
 
 export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   [MatoranJob.CharcoalMaker]: {
@@ -13,8 +16,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     unlock: {},
     rewards: [
-      { item: 'Charcoal', chance: 1.0 },
-      { item: 'BurnishedAlloy', chance: 0.1 },
+      { item: GameItemId.Charcoal, chance: 1.0 },
+      { item: GameItemId.BurnishedAlloy, chance: 0.3 },
     ],
   },
   [MatoranJob.ProtodermisSmelter]: {
@@ -29,8 +32,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: StoryProgression.MetruNuiDiscovered,
     },
     rewards: [
-      { item: 'RefinedProtodermis', chance: 1.0 },
-      { item: 'FurnaceCore', chance: 0.05 },
+      { item: GameItemId.RefinedProtodermis, chance: 1.0 },
+      { item: GameItemId.FurnaceCore, chance: 0.05 },
     ],
   },
   [MatoranJob.AlgaeHarvester]: {
@@ -43,8 +46,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     unlock: {},
     rewards: [
-      { item: 'WaterAlgae', chance: 1.0 },
-      { item: 'GaPearl', chance: 0.05 },
+      { item: GameItemId.WaterAlgae, chance: 1.0 },
+      { item: GameItemId.GaPearl, chance: 0.3 },
     ],
   },
   [MatoranJob.HydroTechnician]: {
@@ -60,8 +63,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: StoryProgression.MetruNuiDiscovered,
     },
     rewards: [
-      { item: 'FilteredProtodermis', chance: 1.0 },
-      { item: 'AquaFilter', chance: 0.08 },
+      { item: GameItemId.FilteredProtodermis, chance: 1.0 },
+      { item: GameItemId.AquaFilter, chance: 0.08 },
     ],
   },
   [MatoranJob.RahiNestWatcher]: {
@@ -74,8 +77,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     rate: 1,
     unlock: {},
     rewards: [
-      { item: 'FeatherTufts', chance: 1.0 },
-      { item: 'JungleResin', chance: 0.1 },
+      { item: GameItemId.FeatherTufts, chance: 1.0 },
+      { item: GameItemId.JungleResin, chance: 0.3 },
     ],
   },
   [MatoranJob.ChuteController]: {
@@ -90,8 +93,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: StoryProgression.MetruNuiDiscovered,
     },
     rewards: [
-      { item: 'ChuteGrease', chance: 1.0 },
-      { item: 'TransportCoreFragment', chance: 0.05 },
+      { item: GameItemId.ChuteGrease, chance: 1.0 },
+      { item: GameItemId.TransportCoreFragment, chance: 0.05 },
     ],
   },
   [MatoranJob.QuarryRunner]: {
@@ -104,8 +107,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     rate: 1,
     unlock: {},
     rewards: [
-      { item: 'StoneBlock', chance: 1.0 },
-      { item: 'GemShard', chance: 0.1 },
+      { item: GameItemId.StoneBlock, chance: 1.0 },
+      { item: GameItemId.GemShard, chance: 0.3 },
     ],
   },
   [MatoranJob.SculptureOperator]: {
@@ -120,13 +123,13 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: StoryProgression.MetruNuiDiscovered,
     },
     rewards: [
-      { item: 'StatueParts', chance: 1.0 },
-      { item: 'CarvingTool', chance: 0.05 },
+      { item: GameItemId.StatueParts, chance: 1.0 },
+      { item: GameItemId.CarvingTool, chance: 0.05 },
     ],
   },
-  [MatoranJob.GlowWormTender]: {
-    label: '💡 Glow Worm Tender',
-    description: 'Raises glow worms for illumination in Onu-Koro caves.',
+  [MatoranJob.LightStoneFarmer]: {
+    label: '💡 Light Stone Farmer',
+    description: 'Farm Light Stone crystals for illumination in Onu-Koro caves.',
     elementAffinity: {
       favored: [ElementTribe.Earth],
       opposed: [],
@@ -134,8 +137,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     rate: 1,
     unlock: {},
     rewards: [
-      { item: 'GlowWormSlime', chance: 1.0 },
-      { item: 'BiolumeThread', chance: 0.1 },
+      { item: GameItemId.LightStone, chance: 1.0 },
+      { item: GameItemId.BiolumeThread, chance: 0.3 },
     ],
   },
   [MatoranJob.StasisTechnician]: {
@@ -150,8 +153,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: StoryProgression.ArchivesUnlocked,
     },
     rewards: [
-      { item: 'StasisSeal', chance: 1.0 },
-      { item: 'CryoCore', chance: 0.05 },
+      { item: GameItemId.StasisSeal, chance: 1.0 },
+      { item: GameItemId.CryoCore, chance: 0.05 },
     ],
   },
   [MatoranJob.IceSculptor]: {
@@ -164,8 +167,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     rate: 1,
     unlock: {},
     rewards: [
-      { item: 'IceChip', chance: 1.0 },
-      { item: 'FrostChisel', chance: 0.1 },
+      { item: GameItemId.IceChip, chance: 1.0 },
+      { item: GameItemId.FrostChisel, chance: 0.3 },
     ],
   },
   [MatoranJob.KnowledgeScribe]: {
@@ -181,8 +184,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: StoryProgression.KnowledgeTowersActive,
     },
     rewards: [
-      { item: 'DataTablet', chance: 1.0 },
-      { item: 'CipherKey', chance: 0.08 },
+      { item: GameItemId.DataTablet, chance: 1.0 },
+      { item: GameItemId.CipherKey, chance: 0.08 },
     ],
   },
 };
