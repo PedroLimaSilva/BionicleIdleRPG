@@ -60,13 +60,17 @@ function loadGameState() {
     try {
       const parsed = JSON.parse(stored);
       if (isValidGameState(parsed)) {
-        const [recruitedCharacters, logs, currency] = applyOfflineJobExp(
+        const [recruitedCharacters, logs, currency, loot] = applyOfflineJobExp(
           parsed.recruitedCharacters
         );
 
+        Object.entries(loot).forEach(([item, amount]) => {
+          const itemId = item as GameItemId;
+          parsed.inventory[itemId] = (parsed.inventory[itemId] || 0) + amount
+        });
+
         return {
           ...parsed,
-          // inventory: [...parsed.inventory, items],
           recruitedCharacters,
           widgets: parsed.widgets + currency,
           activityLog: logs,
