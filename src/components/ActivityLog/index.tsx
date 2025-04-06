@@ -19,22 +19,22 @@ export const ActivityLog = () => {
     });
   }, [activityLog, removeActivityLogEntry]);
 
-  if (activityLog.length === 0) return null;
-
   return (
     <div className='activity-log'>
       <h3>Activity Log</h3>
-      <ul>
-        {activityLog.map((entry, index) => (
-          <li
-            key={entry.id}
-            className={`log-entry ${entry.type}`}
-            style={{ animationDelay: `${10 + index * 0.5}s` }}
-          >
-            {entry.message}
-          </li>
-        ))}
-      </ul>
+      <div>
+        <ul>
+          {activityLog.map((entry, index) => (
+            <li
+              key={entry.id}
+              className={`log-entry ${entry.type}`}
+              style={{ animationDelay: `${10 + index * 0.5}s` }}
+            >
+              {entry.message}
+            </li>
+          ))}
+        </ul>
+      </div>
       <button onClick={clearActivityLog}>Clear</button>
     </div>
   );
