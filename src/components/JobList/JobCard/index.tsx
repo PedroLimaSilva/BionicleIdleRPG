@@ -21,6 +21,8 @@ const ProductivityBadge: React.FC<ProductivityBadgeProps> = ({ modifier }) => {
     [ProductivityEffect.Neutral]: `No productivity effect`,
   };
 
+  // TODO: conside using getJobStatus
+
   let effect = ProductivityEffect.Neutral;
   if (modifier > 1) {
     effect = ProductivityEffect.Boosted;

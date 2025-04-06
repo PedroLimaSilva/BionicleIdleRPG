@@ -1,6 +1,6 @@
 import { JOB_DETAILS } from '../data/jobs';
 import { GameState } from '../providers/Game';
-import { JobAssignment, MatoranJob } from '../types/Jobs';
+import { JobAssignment, MatoranJob, ProductivityEffect } from '../types/Jobs';
 import { RecruitedMatoran } from '../types/Matoran';
 import { ActivityLogEntry, LogType } from '../types/Logging';
 
@@ -18,6 +18,20 @@ export function getAvailableJobs(gameState: GameState): MatoranJob[] {
   return Object.keys(JOB_DETAILS)
     .filter((key): key is MatoranJob => key in MatoranJob)
     .filter((job) => isJobUnlocked(job, gameState));
+}
+
+export function getJobStatus(
+  matoran: RecruitedMatoran,
+): ProductivityEffect {
+  if (!matoran.assignment?.job) return ProductivityEffect.Idle;
+
+  const affinity = JOB_DETAILS[matoran.assignment.job].elementAffinity;
+  if (affinity.favored.includes(matoran.element))
+    return ProductivityEffect.Boosted;
+  if (affinity.opposed.includes(matoran.element))
+    return ProductivityEffect.Penalized;
+
+  return ProductivityEffect.Neutral;
 }
 
 export function getProductivityModifier(

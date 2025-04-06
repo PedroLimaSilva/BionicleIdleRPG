@@ -34,3 +34,10 @@ export type JobAssignment = {
   expRatePerSecond: number;
   assignedAt: number; // timestamp (ms)
 };
+
+export const enum ProductivityEffect {
+  Idle = 'idle',
+  Boosted = 'boosted',
+  Penalized = 'penalized',
+  Neutral = 'working',
+}
