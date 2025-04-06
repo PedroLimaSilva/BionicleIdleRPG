@@ -173,7 +173,7 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     id: 10,
     name: 'Le Matoran',
     mask: Mask.Kaukau,
-    element: ElementTribe.Water,
+    element: ElementTribe.Air,
     cost: 50,
     status: MatoranStatus.Listed,
     isMaskTransparent: true,
