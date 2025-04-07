@@ -1,5 +1,4 @@
 import { Suspense, useEffect, useRef } from 'react';
-import { Canvas } from '@react-three/fiber';
 import {
   Bounds,
   OrbitControls,
@@ -29,6 +28,17 @@ function Model({ matoran }: { matoran: Matoran }) {
     import.meta.env.BASE_URL + 'matoran_master.glb'
   );
   const { actions, mixer } = useAnimations(animations, group);
+
+  useEffect(() => {
+    const idle = actions['IdleArms'];
+    if (!idle) return;
+  
+    idle.reset().play();
+  
+    return () => {
+      idle.fadeOut(0.2);
+    };
+  }, [actions]);
 
   useAnimationController({
     mixer,
