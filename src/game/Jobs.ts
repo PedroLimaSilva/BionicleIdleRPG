@@ -1,11 +1,6 @@
 import { JOB_DETAILS } from '../data/jobs';
 import { GameState, Inventory } from '../providers/Game';
-import {
-  JobAssignment,
-  JobDetails,
-  MatoranJob,
-  ProductivityEffect,
-} from '../types/Jobs';
+import { JobAssignment, MatoranJob, ProductivityEffect } from '../types/Jobs';
 import { RecruitedMatoran } from '../types/Matoran';
 import { ActivityLogEntry, LogType } from '../types/Logging';
 import { GameItemId, ITEM_DICTIONARY } from '../data/loot';
@@ -58,13 +53,44 @@ function computeEarnedExp(assignment: JobAssignment, now = Date.now()): number {
   return Math.floor(elapsedSeconds * assignment.expRatePerSecond);
 }
 
-function rollJobRewards(job: JobDetails): Inventory {
+function approximateBinomial(trials: number, probability: number): number {
+  // Very low chance or high trials — use Poisson
+  if (trials * probability < 30) {
+    const lambda = trials * probability;
+    const L = Math.exp(-lambda);
+    let k = 0;
+    let p = 1;
+    while (p > L) {
+      k++;
+      p *= Math.random();
+    }
+    return k - 1;
+  }
+
+  // Otherwise: use Normal approximation
+  const mean = trials * probability;
+  const stddev = Math.sqrt(trials * probability * (1 - probability));
+  const gaussian = Math.round(mean + stddev * (Math.random() * 2 - 1));
+  return Math.max(0, gaussian);
+}
+
+function rollJobRewards(
+  assignment: JobAssignment,
+  now = Date.now()
+): Inventory {
+  const elapsedSeconds = Math.max(0, (now - assignment.assignedAt) / 1000);
+  const job = JOB_DETAILS[assignment.job];
   const drops: Inventory = {};
+
   if (!job.rewards) return drops;
 
   for (const reward of job.rewards) {
-    if (Math.random() < reward.chance) {
-      drops[reward.item] = (drops[reward.item] ?? 0) + 1;
+    const count = approximateBinomial(
+      Math.floor(elapsedSeconds),
+      reward.chance
+    );
+    if (count > 0) {
+      drops[reward.item] = count;
     }
   }
 
@@ -85,9 +111,10 @@ export function applyOfflineJobExp(
     Object.entries(rewards).forEach(([item, amount]) => {
       const itemId = item as GameItemId;
       loot[itemId] = (loot[itemId] ?? 0) + amount;
+      console.log(item, amount);
       logs.push({
         id: crypto.randomUUID(),
-        message: `${m.name} found ${amount} ${ITEM_DICTIONARY[itemId].name} while working.`,
+        message: `${m.name} found ${amount} ${ITEM_DICTIONARY[itemId].name} while you were away.`,
         type: LogType.Loot,
         timestamp: now,
       });
@@ -116,8 +143,7 @@ export function applyJobExp(
   if (!matoran.assignment) return [matoran, 0, {}];
 
   const earnedExp = computeEarnedExp(matoran.assignment);
-  const jobDetails = JOB_DETAILS[matoran.assignment.job];
-  const rewards = rollJobRewards(jobDetails);
+  const rewards = rollJobRewards(matoran.assignment);
 
   return [
     {
