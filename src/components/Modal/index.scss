@@ -15,8 +15,8 @@
   box-shadow: 0 0 24px var(--theme-element-glow-transparent);
   position: relative;
   min-width: 300px;
-  max-width: 90%;
-  max-height: 80vh;
+  width: 90vw;
+  max-height: 70vh;
   overflow-y: auto;
 }
 

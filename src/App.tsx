@@ -1,5 +1,11 @@
 import { PWABadge } from './components/CacheManagement/PWABadge.tsx';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  NavLink,
+} from 'react-router-dom';
+import { Home, UserCircle2, Backpack } from 'lucide-react';
 
 import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
 import { Recruitment } from './pages/Recruitment/index.tsx';
@@ -12,8 +18,9 @@ import { ActivityLog } from './components/ActivityLog/index.tsx';
 import { SceneCanvasProvider } from './providers/Canvas.tsx';
 import { useEffect } from 'react';
 import { preloadAssets } from './preload.ts';
+import { InventoryPage } from './pages/Inventory/index.tsx';
 
-const Home: React.FC = () => (
+const HomePage: React.FC = () => (
   <div className='page-container'>
     <h1>Welcome to Mata Nui</h1>
     <p>
@@ -43,22 +50,31 @@ export function App() {
             <main className='main-content'>
               <div id='canvas-mount'></div>
               <Routes>
-                <Route path='/' element={<Home />} />
+                <Route path='/' element={<HomePage />} />
                 <Route path='/characters' element={<CharacterInventory />} />
-                <Route path='/character/:id' element={<CharacterDetail />} />
+                <Route path='/characters/:id' element={<CharacterDetail />} />
                 <Route path='/recruitment' element={<Recruitment />} />
+                <Route path='/inventory' element={<InventoryPage />} />
                 <Route path='*' element={<NotFound />} />
               </Routes>
             </main>
             <nav className='nav-bar'>
-              <ul className='nav-links'>
-                <li>
-                  <Link to='/'>Home</Link>
-                </li>
-                <li>
-                  <Link to='/characters'>Characters</Link>
-                </li>
-              </ul>
+              <NavLink to='/' className='nav-item'>
+                <Home />
+                <label>Home</label>
+              </NavLink>
+              <NavLink to='/characters' className='nav-item'>
+                <UserCircle2 />
+                <label>Characters</label>
+              </NavLink>
+              <NavLink to='/inventory' className='nav-item'>
+                <Backpack />
+                <label>Inventory</label>
+              </NavLink>
+              {/* <NavLink to='/settings' className='nav-item'>
+                <Settings />
+                <label>Settings</label>
+              </NavLink> */}
             </nav>
           </div>
           <PWABadge />

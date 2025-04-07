@@ -8,11 +8,14 @@ import { useGame } from '../../providers/Game';
 import { ITEM_DICTIONARY } from '../../data/loot';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../providers/useSceneCanvas';
+import { useNavigate } from 'react-router-dom';
 
 export const Recruitment: React.FC = () => {
   const { widgets, recruitCharacter, availableCharacters, inventory } =
     useGame();
   const { setScene } = useSceneCanvas();
+
+  const navigate = useNavigate();
 
   const [selectedMatoran, setSelectedMatoran] = useState<ListedMatoran | null>(
     null
@@ -55,7 +58,11 @@ export const Recruitment: React.FC = () => {
     if (selectedMatoran && canRecruit) {
       alert(`${selectedMatoran.name} has been recruited!`);
       recruitCharacter(selectedMatoran);
-      setSelectedMatoran(availableCharacters[0] || null);
+      const nextFocusedCharacter = availableCharacters[0] || null;
+      if (!nextFocusedCharacter) {
+        navigate('/characters');
+      }
+      setSelectedMatoran(nextFocusedCharacter);
     }
   };
 

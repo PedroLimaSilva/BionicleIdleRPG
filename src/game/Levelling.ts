@@ -18,8 +18,8 @@ export function getExpProgress(totalExp: number): {
 } {
   const level = getLevelFromExp(totalExp);
   const expCurrent = expForLevel(level);
-  const expForNextLevel = expForLevel(level + 1);
-  const progress = (totalExp - expCurrent) / (expForNextLevel - expCurrent);
+  const expForNextLevel = expForLevel(level + 1) - expCurrent;
+  const progress = (totalExp - expCurrent) / expForNextLevel;
   return {
     level,
     currentLevelExp: totalExp - expCurrent,

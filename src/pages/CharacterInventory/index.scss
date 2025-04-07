@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
-  margin: 2rem 0;
+  margin: 1rem 0;
 }
 
 .character-card {
@@ -29,6 +29,7 @@
   .card-header {
     font-weight: bold;
     font-size: 1.8rem;
+    font-family: var(--font-display);
     color: var(--theme-element-primary);
     text-shadow: 0 0 4px var(--theme-element-glow-transparent);
   }

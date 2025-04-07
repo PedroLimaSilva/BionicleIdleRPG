@@ -86,10 +86,7 @@ function rollJobRewards(
   if (!job.rewards) return drops;
 
   for (const reward of job.rewards) {
-    const count = approximateBinomial(
-      Math.floor(unitsOfWork),
-      reward.chance
-    );
+    const count = approximateBinomial(Math.floor(unitsOfWork), reward.chance);
     if (count > 0) {
       drops[reward.item] = count;
     }

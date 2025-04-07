@@ -1,0 +1,42 @@
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.inventory-item {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-low),
+    var(--color-surface-mid)
+  );
+  border: 2px solid var(--color-border-muted);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 0 6px var(--theme-element-glow-transparent);
+  transition: transform 0.2s ease-in-out, border 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.03);
+    border: 2px solid var(--theme-element-glow);
+
+    box-shadow: 0 0 10px var(--theme-element-glow-transparent);
+  }
+}
+
+.item-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.item-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.item-qty {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
