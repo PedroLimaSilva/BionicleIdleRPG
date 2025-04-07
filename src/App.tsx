@@ -10,6 +10,8 @@ import { GameProvider } from './providers/Game.tsx';
 import './App.scss';
 import { ActivityLog } from './components/ActivityLog/index.tsx';
 import { SceneCanvasProvider } from './providers/Canvas.tsx';
+import { useEffect } from 'react';
+import { preloadAssets } from './preload.ts';
 
 const Home: React.FC = () => (
   <div className='page-container'>
@@ -29,6 +31,10 @@ const NotFound: React.FC = () => (
 );
 
 export function App() {
+  useEffect(() => {
+    preloadAssets();
+  }, []);
+
   return (
     <GameProvider>
       <Router basename='/BionicleIdleRPG/'>
