@@ -5,7 +5,7 @@ import {
   Route,
   NavLink,
 } from 'react-router-dom';
-import { Home, UserCircle2, Backpack } from 'lucide-react';
+import { Home, UserCircle2, Backpack, Settings } from 'lucide-react';
 
 import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
 import { Recruitment } from './pages/Recruitment/index.tsx';
@@ -19,6 +19,7 @@ import { SceneCanvasProvider } from './providers/Canvas.tsx';
 import { useEffect } from 'react';
 import { preloadAssets } from './preload.ts';
 import { InventoryPage } from './pages/Inventory/index.tsx';
+import SettingsPage from './pages/Settings/index.tsx';
 
 const HomePage: React.FC = () => (
   <div className='page-container'>
@@ -55,6 +56,7 @@ export function App() {
                 <Route path='/characters/:id' element={<CharacterDetail />} />
                 <Route path='/recruitment' element={<Recruitment />} />
                 <Route path='/inventory' element={<InventoryPage />} />
+                <Route path='/settings' element={<SettingsPage />} />
                 <Route path='*' element={<NotFound />} />
               </Routes>
             </main>
@@ -71,10 +73,10 @@ export function App() {
                 <Backpack />
                 <label>Inventory</label>
               </NavLink>
-              {/* <NavLink to='/settings' className='nav-item'>
+              <NavLink to='/settings' className='nav-item'>
                 <Settings />
                 <label>Settings</label>
-              </NavLink> */}
+              </NavLink>
             </nav>
           </div>
           <PWABadge />
