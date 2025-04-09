@@ -49,13 +49,22 @@ export const useGameLogic = (): GameState => {
     addActivityLog
   );
 
-  const { activeQuests, completedQuests, startQuest } = useQuestState({
+  const {
+    activeQuests,
+    completedQuests,
+    startQuest,
+    cancelQuest,
+    completeQuest,
+  } = useQuestState({
     initialActive: initialState.activeQuests,
     initialCompleted: initialState.completedQuests,
     characters: recruitedCharacters,
     inventory,
     recruitCharacter,
     setRecruitedCharacters,
+    addWidgets: (widgets: number) => {
+      setWidgets((prev) => prev + widgets);
+    },
     addActivityLog,
   });
 
@@ -84,6 +93,8 @@ export const useGameLogic = (): GameState => {
     assignJobToMatoran,
     removeJobFromMatoran,
     startQuest,
+    cancelQuest,
+    completeQuest,
     addActivityLog,
     removeActivityLogEntry,
     clearActivityLog,

@@ -19,6 +19,8 @@ export type GameState = {
   removeJobFromMatoran: (matoranId: Matoran['id']) => void;
   activityLog: ActivityLogEntry[];
   startQuest: (quest: Quest, assignedMatoran: Matoran['id'][]) => void;
+  cancelQuest: (questId: string) => void;
+  completeQuest: (quest: Quest) => void;
   addActivityLog: (message: string, type: LogType) => void;
   removeActivityLogEntry: (id: string) => void;
   clearActivityLog: () => void;

@@ -1,7 +1,7 @@
 // hooks/useQuestState.ts
 
 import { useState } from 'react';
-import { Quest, QuestProgress } from '../types/Quests';
+import { Quest, QuestItemRequirement, QuestProgress } from '../types/Quests';
 import { ListedMatoran, Matoran, RecruitedMatoran } from '../types/Matoran';
 import { GameState } from '../types/GameState';
 import { LogType } from '../types/Logging';
@@ -20,6 +20,7 @@ interface UseQuestStateOptions {
   setRecruitedCharacters: (RecruitedMatoran: RecruitedMatoran[]) => void;
   recruitCharacter: GameState['recruitCharacter'];
   addActivityLog: GameState['addActivityLog'];
+  addWidgets: (widgets: number) => void;
 }
 
 export const useQuestState = ({
@@ -29,6 +30,7 @@ export const useQuestState = ({
   inventory,
   setRecruitedCharacters,
   recruitCharacter,
+  addWidgets,
   addActivityLog,
 }: UseQuestStateOptions) => {
   const [activeQuests, setActiveQuests] =
@@ -48,6 +50,19 @@ export const useQuestState = ({
     };
 
     setActiveQuests((prev) => [...prev, activeQuest]);
+
+    // Remove required Items
+    if (quest.rewards.loot) {
+      mergeInventory(
+        inventory,
+        quest.requirements.items
+          ?.filter((item) => item.consumed)
+          .reduce((loot: Inventory, item: QuestItemRequirement) => {
+            loot[item.id] = -item.amount;
+            return loot;
+          }, {}) || {}
+      );
+    }
 
     const updatedCharacters = characters.map((char) =>
       assignedMatoran.includes(char.id)
@@ -79,9 +94,15 @@ export const useQuestState = ({
     // Reassign Matoran
     const updatedCharacters = characters.map((char) =>
       active.assignedMatoran.includes(char.id)
-        ? { ...char, quest: undefined }
+        ? {
+            ...char,
+            quest: undefined,
+            exp: char.exp + (quest.rewards.xpPerMatoran ?? 0),
+          }
         : char
     );
+
+    addWidgets(quest.rewards.currency || 0);
 
     setRecruitedCharacters(updatedCharacters);
 

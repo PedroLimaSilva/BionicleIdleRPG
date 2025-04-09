@@ -41,5 +41,11 @@ export const INITIAL_GAME_STATE: GameState = {
   },
   startQuest: function (_quest: Quest, _assignedMatoran: Matoran['id'][]): void {
     throw new Error('Function not implemented.');
+  },
+  cancelQuest: function (_questId: string): void {
+    throw new Error('Function not implemented.');
+  },
+  completeQuest: function (_quest: Quest): void {
+    throw new Error('Function not implemented.');
   }
 };

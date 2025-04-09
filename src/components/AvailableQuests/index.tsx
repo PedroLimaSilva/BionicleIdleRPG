@@ -46,7 +46,6 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
 
   return (
     <div className='available-quests'>
-      <h2 className='available-quests__title'>Available Quests</h2>
       {available.length === 0 ? (
         <p className='available-quests__empty'>
           No quests are available right now.
