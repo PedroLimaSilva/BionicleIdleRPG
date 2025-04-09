@@ -7,6 +7,7 @@ import { GameState } from '../types/GameState';
 import { LogType } from '../types/Logging';
 import { Inventory, mergeInventory } from '../services/inventoryUtils';
 import { UNLOCKABLE_CHARACTERS } from '../data/matoran';
+import { QUESTS } from '../data/quests';
 
 export function getCurrentTimestamp(): number {
   return Math.floor(Date.now() / 1000); // seconds
@@ -52,7 +53,7 @@ export const useQuestState = ({
     setActiveQuests((prev) => [...prev, activeQuest]);
 
     // Remove required Items
-    if (quest.rewards.loot) {
+    if (quest.requirements.items) {
       mergeInventory(
         inventory,
         quest.requirements.items
@@ -60,7 +61,7 @@ export const useQuestState = ({
           .reduce((loot: Inventory, item: QuestItemRequirement) => {
             loot[item.id] = -item.amount;
             return loot;
-          }, {}) || {}
+          }, {})
       );
     }
 
@@ -122,6 +123,22 @@ export const useQuestState = ({
         ? { ...char, quest: undefined }
         : char
     );
+
+    // restore required Items
+    const requirements = QUESTS.find(
+      (q) => q.id === quest.questId
+    )?.requirements;
+    if (requirements && requirements.items) {
+      mergeInventory(
+        inventory,
+        requirements.items
+          ?.filter((item) => item.consumed)
+          .reduce((loot: Inventory, item: QuestItemRequirement) => {
+            loot[item.id] = -item.amount;
+            return loot;
+          }, {}) || {}
+      );
+    }
 
     setRecruitedCharacters(updatedCharacters);
     setActiveQuests((prev) => prev.filter((q) => q.questId !== questId));
