@@ -1,26 +1,22 @@
 import { useState } from 'react';
 import { loadGameState } from '../services/gamePersistence';
 import { useInventoryState } from './useInventoryState';
-import { StoryProgression } from '../game/story';
 import { useCharactersState } from './useCharactersState';
 import { useJobTickEffect } from './useJobTickEffect';
 import { useActivityLogState } from './useActivityLogState';
 import { useGamePersistence } from './useGamePersistence';
 import { GameState } from '../types/GameState';
+import { useQuestState } from './useQuestState';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
 
   const [version] = useState(initialState.version);
-  const [storyProgress] = useState<StoryProgression[]>(
-    initialState.storyProgress
-  );
 
   const { inventory, addItemToInventory } = useInventoryState(
     initialState.inventory
   );
 
-  // The following will be replaced as more hooks are split out:
   const [widgets, setWidgets] = useState(initialState.widgets);
 
   const {
@@ -53,6 +49,16 @@ export const useGameLogic = (): GameState => {
     addActivityLog
   );
 
+  const { activeQuests, completedQuests, startQuest } = useQuestState({
+    initialActive: initialState.activeQuests,
+    initialCompleted: initialState.completedQuests,
+    characters: recruitedCharacters,
+    inventory,
+    recruitCharacter,
+    setRecruitedCharacters,
+    addActivityLog,
+  });
+
   // Auto-save when critical state changes
   useGamePersistence({
     version,
@@ -60,12 +66,14 @@ export const useGameLogic = (): GameState => {
     inventory,
     recruitedCharacters,
     availableCharacters,
-    storyProgress,
+    activeQuests,
+    completedQuests,
   });
 
   return {
     version,
-    storyProgress,
+    activeQuests,
+    completedQuests,
     activityLog,
     widgets,
     inventory,
@@ -75,6 +83,7 @@ export const useGameLogic = (): GameState => {
     recruitCharacter,
     assignJobToMatoran,
     removeJobFromMatoran,
+    startQuest,
     addActivityLog,
     removeActivityLogEntry,
     clearActivityLog,

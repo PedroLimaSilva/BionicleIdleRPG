@@ -1,0 +1,109 @@
+.available-quests {
+  padding: 1rem;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  color: #f0f0f0;
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  &__empty {
+    color: #999;
+    font-style: italic;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__item {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    &-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0;
+      margin-bottom: 0.5rem;
+    }
+    &-desc {
+      font-size: 0.95rem;
+      color: #ccc;
+      margin-bottom: 0.5rem;
+    }
+
+    &-meta {
+      font-size: 0.8rem;
+      color: #888;
+    }
+  }
+
+  .requirement-chip {
+    display: inline-block;
+    margin: 0.25rem 0.5rem 0 0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background-color: #333;
+    border: 1px solid #555;
+    color: #ccc;
+
+    &.met {
+      background-color: #1d3f1d;
+      border-color: #4caf50;
+      color: #b5ffb5;
+    }
+
+    &.missing {
+      background-color: #3a1d1d;
+      border-color: #f44336;
+      color: #ffc1c1;
+    }
+  }
+
+  &__rewards {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+
+    ul {
+      padding-left: 1rem;
+      margin: 0.25rem 0;
+      list-style: none;
+    }
+
+    .reward-label {
+      font-weight: 600;
+      color: #d4af37; // golden tone for emphasis
+      margin-right: 0.4rem;
+    }
+  }
+
+  &__start {
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    width: 100%;
+    font-weight: bold;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border: none;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: #555;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}

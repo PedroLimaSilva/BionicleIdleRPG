@@ -223,26 +223,6 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     },
   },
   {
-    id: 'Kapura',
-    name: 'Kapura',
-    element: ElementTribe.Fire,
-    mask: Mask.Ruru,
-    cost: 600,
-    requiredItems: [
-      { item: GameItemId.Charcoal, quantity: 150 },
-      { item: GameItemId.BurnishedAlloy, quantity: 50 },
-    ],
-    status: MatoranStatus.Listed,
-    colors: {
-      mask: LegoColor.Red,
-      body: LegoColor.Red,
-      feet: LegoColor.Red,
-      arms: LegoColor.Red,
-      eyes: LegoColor.TransNeonRed,
-    },
-    tags: [MatoranTag.ChroniclersCompany],
-  },
-  {
     id: 'Taipu',
     name: 'Taipu',
     element: ElementTribe.Earth,
@@ -323,3 +303,41 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     tags: [MatoranTag.ChroniclersCompany],
   },
 ];
+
+export const UNLOCKABLE_CHARACTERS: Record<string, ListedMatoran> = {
+  toa_tahu: {
+    id: 'toa_tahu',
+    name: 'Toa Tau',
+    element: ElementTribe.Fire,
+    mask: Mask.Hau,
+    cost: 0,
+    status: MatoranStatus.Listed,
+    colors: {
+      mask: LegoColor.Red,
+      body: LegoColor.Red,
+      feet: LegoColor.Red,
+      arms: LegoColor.Orange,
+      eyes: LegoColor.TransNeonRed,
+    },
+  },
+  kapura: {
+    id: 'kapura',
+    name: 'Kapura',
+    element: ElementTribe.Fire,
+    mask: Mask.Ruru,
+    cost: 600,
+    requiredItems: [
+      { item: GameItemId.Charcoal, quantity: 150 },
+      { item: GameItemId.BurnishedAlloy, quantity: 50 },
+    ],
+    status: MatoranStatus.Listed,
+    colors: {
+      mask: LegoColor.Red,
+      body: LegoColor.Red,
+      feet: LegoColor.Red,
+      arms: LegoColor.Red,
+      eyes: LegoColor.TransNeonRed,
+    },
+    tags: [MatoranTag.ChroniclersCompany],
+  },
+};

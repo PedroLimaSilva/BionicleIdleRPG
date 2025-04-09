@@ -11,7 +11,11 @@ export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const { requiredProgress } = jobData.unlock;
 
   const progressMet =
-    !requiredProgress || gameState.storyProgress.includes(requiredProgress);
+    !requiredProgress ||
+    requiredProgress.reduce(
+      (acc: boolean, quest) => acc && gameState.completedQuests.includes(quest),
+      true
+    );
 
   return progressMet;
 }

@@ -20,8 +20,9 @@ export default function SettingsPage() {
           <strong>In other words, YOU WILL LOSE YOUR PROGRESS</strong>
         </p>
         <p>
-          Core mechanics include job productivity, hero upgrades, elemental
-          bonuses, and collectible loot.
+          Core mechanics include jobs, character progression, story quests,
+          elemental bonuses, and collectible loot. It will follow the original
+          storyline from 2001 to 2010
         </p>
         <p>
           This app is built with React and Vite, optimized for modern browsers
@@ -64,12 +65,8 @@ export default function SettingsPage() {
           .
         </p>
         <p>
-          All other code and files available in the code repository, is my
+          All other code and files available in the code repository, are my
           creation.
-        </p>
-        <p>
-          Please do not contact LEGO Customer Service for assistance with this
-          game; they will not be able to help you.
         </p>
       </div>
       <h1 className='title'>Disclaimers</h1>
@@ -90,7 +87,18 @@ export default function SettingsPage() {
         </h1>
         <label className='settings-option'>
           <p>Want a fresh start? You'll lose all your progress</p>
-          <button className='remove-button' onClick={resetGameData}>
+          <button
+            className='remove-button'
+            onClick={() => {
+              const confirm = window.confirm(
+                'Are you sure you want to reset all game data? This cannot be undone.'
+              );
+              if (confirm) {
+                alert('Game data has been reset.');
+                resetGameData();
+              }
+            }}
+          >
             Reset Game Data
           </button>
         </label>

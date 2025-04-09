@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { LogType } from '../types/Logging';
-import { StoryProgression } from '../game/story';
 import { MatoranJob } from '../types/Jobs';
 import { ListedMatoran, Matoran } from '../types/Matoran';
 import { AVAILABLE_CHARACTERS, RECRUITED_CHARACTERS } from './matoran';
 import { GameState } from '../types/GameState';
+import { Quest } from '../types/Quests';
 
 export const CURRENT_GAME_STATE_VERSION = 6; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
 
@@ -13,7 +13,8 @@ export const INITIAL_GAME_STATE: GameState = {
   version: CURRENT_GAME_STATE_VERSION,
   activityLog: [],
   widgets: 10,
-  storyProgress: [StoryProgression.MataNuiSettled],
+  completedQuests: [],
+  activeQuests: [],
   recruitedCharacters: RECRUITED_CHARACTERS,
   availableCharacters: AVAILABLE_CHARACTERS,
   inventory: {},
@@ -38,4 +39,7 @@ export const INITIAL_GAME_STATE: GameState = {
   removeActivityLogEntry: function (_id: string): void {
     throw new Error('Function not implemented.');
   },
+  startQuest: function (_quest: Quest, _assignedMatoran: Matoran['id'][]): void {
+    throw new Error('Function not implemented.');
+  }
 };

@@ -1,6 +1,6 @@
 import { GameItemId } from '../data/loot';
-import { StoryProgression } from '../game/story';
 import { ElementTribe } from './Matoran';
+import { Quest } from './Quests';
 
 export enum MatoranJob {
   CharcoalMaker = 'CharcoalMaker',
@@ -31,7 +31,7 @@ export interface JobDetails {
     opposed: ElementTribe[];
   };
   unlock: {
-    requiredProgress?: StoryProgression;
+    requiredProgress?: Quest['id'][];
   };
   rewards?: JobReward[];
 }

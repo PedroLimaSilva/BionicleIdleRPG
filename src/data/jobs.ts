@@ -1,4 +1,3 @@
-import { StoryProgression } from '../game/story';
 import { JobDetails, MatoranJob } from '../types/Jobs';
 import { ElementTribe } from '../types/Matoran';
 import { GameItemId } from './loot';
@@ -29,7 +28,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [ElementTribe.Ice],
     },
     unlock: {
-      requiredProgress: StoryProgression.MetruNuiDiscovered,
+      requiredProgress: ['settle_metru_nui'],
     },
     rewards: [
       { item: GameItemId.RefinedProtodermis, chance: 1.0 },
@@ -60,7 +59,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [],
     },
     unlock: {
-      requiredProgress: StoryProgression.MetruNuiDiscovered,
+      requiredProgress: ['settle_metru_nui'],
     },
     rewards: [
       { item: GameItemId.FilteredProtodermis, chance: 1.0 },
@@ -90,7 +89,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [],
     },
     unlock: {
-      requiredProgress: StoryProgression.MetruNuiDiscovered,
+      requiredProgress: ['settle_metru_nui'],
     },
     rewards: [
       { item: GameItemId.ChuteGrease, chance: 1.0 },
@@ -120,7 +119,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [],
     },
     unlock: {
-      requiredProgress: StoryProgression.MetruNuiDiscovered,
+      requiredProgress: ['settle_metru_nui'],
     },
     rewards: [
       { item: GameItemId.StatueParts, chance: 1.0 },
@@ -129,7 +128,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   },
   [MatoranJob.LightStoneFarmer]: {
     label: '💡 Light Stone Farmer',
-    description: 'Farm Light Stone crystals for illumination in Onu-Koro caves.',
+    description:
+      'Farm Light Stone crystals for illumination in Onu-Koro caves.',
     elementAffinity: {
       favored: [ElementTribe.Earth],
       opposed: [],
@@ -150,7 +150,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [],
     },
     unlock: {
-      requiredProgress: StoryProgression.ArchivesUnlocked,
+      requiredProgress: ['unlock_archives'],
     },
     rewards: [
       { item: GameItemId.StasisSeal, chance: 1.0 },
@@ -181,7 +181,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [],
     },
     unlock: {
-      requiredProgress: StoryProgression.KnowledgeTowersActive,
+      requiredProgress: ['activate_knowledge_towers'],
     },
     rewards: [
       { item: GameItemId.DataTablet, chance: 1.0 },

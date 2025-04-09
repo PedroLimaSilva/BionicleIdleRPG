@@ -1,6 +1,7 @@
 import { GameItemId } from '../data/loot';
 import { Color } from './Colors';
 import { JobAssignment } from './Jobs';
+import { Quest } from './Quests';
 
 export const enum Mask {
   Hau = 'Hau',
@@ -13,8 +14,8 @@ export const enum Mask {
   Ruru = 'Ruru',
   Komau = 'Komau',
   Rau = 'Rau',
-  Matatu = "Matatu",
-  Mahiki = "Mahiki",
+  Matatu = 'Matatu',
+  Mahiki = 'Mahiki',
 }
 
 export const enum ElementTribe {
@@ -66,6 +67,7 @@ export type ListedMatoran = BaseMatoran & {
 
 export type RecruitedMatoran = BaseMatoran & {
   assignment?: JobAssignment;
+  quest?: Quest['id'];
   exp: number;
   status: MatoranStatus.Recruited;
 };

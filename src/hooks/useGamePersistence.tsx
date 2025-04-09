@@ -7,9 +7,10 @@ type PartialGameState = Pick<
   | 'version'
   | 'widgets'
   | 'inventory'
-  | 'recruitedCharacters'
-  | 'storyProgress'
   | 'availableCharacters'
+  | 'recruitedCharacters'
+  | 'activeQuests'
+  | 'completedQuests'
 >;
 
 export function useGamePersistence({
@@ -18,7 +19,8 @@ export function useGamePersistence({
   inventory,
   recruitedCharacters,
   availableCharacters,
-  storyProgress,
+  activeQuests,
+  completedQuests,
 }: PartialGameState) {
   useEffect(() => {
     const stateToSave: PartialGameState = {
@@ -27,7 +29,8 @@ export function useGamePersistence({
       inventory,
       recruitedCharacters,
       availableCharacters,
-      storyProgress,
+      activeQuests,
+      completedQuests,
     };
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
@@ -37,6 +40,7 @@ export function useGamePersistence({
     inventory,
     availableCharacters,
     recruitedCharacters,
-    storyProgress,
+    activeQuests,
+    completedQuests,
   ]);
 }
