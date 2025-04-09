@@ -10,7 +10,7 @@ export const QUESTS: Quest[] = [
     durationSeconds: 1 * 60, // 1 minute
     requirements: {
       matoran: ['Takua'],
-      minLevel: 10,
+      minLevel: 5,
       items: [
         {
           id: GameItemId.Charcoal,

@@ -7,7 +7,7 @@ import { AVAILABLE_CHARACTERS, RECRUITED_CHARACTERS } from './matoran';
 import { GameState } from '../types/GameState';
 import { Quest } from '../types/Quests';
 
-export const CURRENT_GAME_STATE_VERSION = 6; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
+export const CURRENT_GAME_STATE_VERSION = 7; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
 
 export const INITIAL_GAME_STATE: GameState = {
   version: CURRENT_GAME_STATE_VERSION,

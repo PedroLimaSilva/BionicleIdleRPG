@@ -325,11 +325,7 @@ export const UNLOCKABLE_CHARACTERS: Record<string, ListedMatoran> = {
     name: 'Kapura',
     element: ElementTribe.Fire,
     mask: Mask.Ruru,
-    cost: 600,
-    requiredItems: [
-      { item: GameItemId.Charcoal, quantity: 150 },
-      { item: GameItemId.BurnishedAlloy, quantity: 50 },
-    ],
+    cost: 0,
     status: MatoranStatus.Listed,
     colors: {
       mask: LegoColor.Red,
