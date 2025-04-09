@@ -21,7 +21,7 @@ export const CharacterDetail: React.FC = () => {
 
   const { setScene } = useSceneCanvas();
 
-  const matoran = getMatoranFromInventoryById(Number(id), recruitedCharacters);
+  const matoran = getMatoranFromInventoryById(String(id), recruitedCharacters);
 
   const [assigningJob, setAssigningJob] = useState(false);
 
@@ -61,8 +61,7 @@ export const CharacterDetail: React.FC = () => {
             <ElementTag element={matoran.element} showName={true} />
           </div>
 
-          <div className='model-frame'>
-          </div>
+          <div className='model-frame'></div>
 
           <div className='divider'></div>
 

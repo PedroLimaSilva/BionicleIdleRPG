@@ -28,8 +28,12 @@ export const enum ElementTribe {
   Shadow = 'Shadow',
 }
 
+export const enum MatoranTag {
+  ChroniclersCompany = 'ChroniclersCompany',
+}
+
 type BaseMatoran = {
-  id: number;
+  id: string;
   name: string;
   mask: Mask;
   element: ElementTribe;
@@ -41,6 +45,7 @@ type BaseMatoran = {
     arms: Color;
     eyes: Color;
   };
+  tags?: MatoranTag[];
 };
 
 export const enum MatoranStatus {

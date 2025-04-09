@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
   ListedMatoran,
+  Matoran,
   MatoranStatus,
   RecruitedMatoran,
 } from '../types/Matoran';
@@ -30,8 +31,8 @@ export type GameState = {
   storyProgress: StoryProgression[];
   recruitCharacter: (character: ListedMatoran) => void;
   addItemToInventory: (item: GameItemId, amount: number) => void;
-  assignJobToMatoran: (matoranId: number, job: MatoranJob) => void;
-  removeJobFromMatoran: (matoranId: number) => void;
+  assignJobToMatoran: (matoranId: Matoran['id'], job: MatoranJob) => void;
+  removeJobFromMatoran: (matoranId: Matoran['id']) => void;
   tickJobExp: () => void;
   activityLog: ActivityLogEntry[];
   addActivityLog: (message: string, type: LogType) => void;
@@ -165,7 +166,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     }
   };
 
-  const assignJobToMatoran = (id: number, job: MatoranJob) => {
+  const assignJobToMatoran = (id: Matoran['id'], job: MatoranJob) => {
     const baseRate = JOB_DETAILS[job].rate;
     const now = Date.now();
 
@@ -186,7 +187,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     );
   };
 
-  const removeJobFromMatoran = (id: number) => {
+  const removeJobFromMatoran = (id: Matoran['id']) => {
     setRecruitedCharacters((prev) =>
       prev.map((matoran) =>
         matoran.id === id ? { ...matoran, assignment: undefined } : matoran

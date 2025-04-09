@@ -4,6 +4,7 @@ import {
   ListedMatoran,
   Mask,
   MatoranStatus,
+  MatoranTag,
   RecruitedMatoran,
 } from '../types/Matoran';
 import { GameItemId } from './loot';
@@ -17,11 +18,11 @@ export function getMatoranFromInventoryById(
 
 export const RECRUITED_CHARACTERS: RecruitedMatoran[] = [
   {
-    id: 1,
-    status: MatoranStatus.Recruited,
+    id: 'Takua',
     name: 'Takua',
-    mask: Mask.Pakari,
+    status: MatoranStatus.Recruited,
     element: ElementTribe.Light,
+    mask: Mask.Pakari,
     colors: {
       mask: LegoColor.MediumBlue,
       body: LegoColor.Red,
@@ -30,12 +31,13 @@ export const RECRUITED_CHARACTERS: RecruitedMatoran[] = [
       eyes: LegoColor.TransNeonRed,
     },
     exp: 1000,
+    tags: [MatoranTag.ChroniclersCompany],
   },
 ];
 
 export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
   {
-    id: 1,
+    id: 'Takua',
     name: 'Takua',
     mask: Mask.Pakari,
     element: ElementTribe.Light,
@@ -54,7 +56,7 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     },
   },
   {
-    id: 2,
+    id: 'Jala',
     name: 'Jala',
     element: ElementTribe.Fire,
     mask: Mask.Hau,
@@ -73,7 +75,7 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     },
   },
   {
-    id: 3,
+    id: 'Hali',
     name: 'Hali',
     element: ElementTribe.Water,
     mask: Mask.Kaukau,
@@ -93,7 +95,7 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     },
   },
   {
-    id: 4,
+    id: 'Huki',
     name: 'Huki',
     element: ElementTribe.Stone,
     mask: Mask.Kakama,
@@ -112,7 +114,7 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     },
   },
   {
-    id: 5,
+    id: 'Nuparu',
     name: 'Nuparu',
     element: ElementTribe.Earth,
     mask: Mask.Pakari,
@@ -131,7 +133,7 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     },
   },
   {
-    id: 6,
+    id: 'Kongu',
     name: 'Kongu',
     element: ElementTribe.Air,
     mask: Mask.Miru,
@@ -150,7 +152,7 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     },
   },
   {
-    id: 7,
+    id: 'Matoro',
     name: 'Matoro',
     element: ElementTribe.Ice,
     mask: Mask.Akaku,
@@ -169,7 +171,7 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     },
   },
   {
-    id: 8,
+    id: 'Maku',
     name: 'Maku',
     element: ElementTribe.Water,
     mask: Mask.Huna,
@@ -188,7 +190,7 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     },
   },
   {
-    id: 9,
+    id: 'Lumi',
     name: 'Lumi',
     element: ElementTribe.Ice,
     mask: Mask.Hau,
@@ -204,7 +206,7 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
     },
   },
   {
-    id: 10,
+    id: 'Kivi',
     name: 'Kivi',
     element: ElementTribe.Stone,
     mask: Mask.Kaukau,
@@ -219,5 +221,105 @@ export const AVAILABLE_CHARACTERS: ListedMatoran[] = [
       arms: LegoColor.Tan,
       eyes: LegoColor.TransNeonOrange,
     },
+  },
+  {
+    id: 'Kapura',
+    name: 'Kapura',
+    element: ElementTribe.Fire,
+    mask: Mask.Ruru,
+    cost: 600,
+    requiredItems: [
+      { item: GameItemId.Charcoal, quantity: 150 },
+      { item: GameItemId.BurnishedAlloy, quantity: 50 },
+    ],
+    status: MatoranStatus.Listed,
+    colors: {
+      mask: LegoColor.Red,
+      body: LegoColor.Red,
+      feet: LegoColor.Red,
+      arms: LegoColor.Red,
+      eyes: LegoColor.TransNeonRed,
+    },
+    tags: [MatoranTag.ChroniclersCompany],
+  },
+  {
+    id: 'Taipu',
+    name: 'Taipu',
+    element: ElementTribe.Earth,
+    mask: Mask.Pakari,
+    cost: 600,
+    requiredItems: [
+      { item: GameItemId.LightStone, quantity: 150 },
+      { item: GameItemId.BiolumeThread, quantity: 50 },
+    ],
+    status: MatoranStatus.Listed,
+    colors: {
+      mask: LegoColor.Black,
+      body: LegoColor.Tan,
+      feet: LegoColor.Black,
+      arms: LegoColor.Tan,
+      eyes: LegoColor.TransGreen,
+    },
+    tags: [MatoranTag.ChroniclersCompany],
+  },
+  {
+    id: 'Tamaru',
+    name: 'Tamaru',
+    element: ElementTribe.Air,
+    mask: Mask.Rau,
+    cost: 600,
+    requiredItems: [
+      { item: GameItemId.FeatherTufts, quantity: 150 },
+      { item: GameItemId.JungleResin, quantity: 50 },
+    ],
+    status: MatoranStatus.Listed,
+    colors: {
+      mask: LegoColor.DarkTurquoise,
+      body: LegoColor.Lime,
+      feet: LegoColor.DarkTurquoise,
+      arms: LegoColor.Lime,
+      eyes: LegoColor.TransNeonGreen,
+    },
+    tags: [MatoranTag.ChroniclersCompany],
+  },
+  {
+    id: 'Kopeke',
+    name: 'Kopeke',
+    element: ElementTribe.Ice,
+    mask: Mask.Komau,
+    cost: 600,
+    requiredItems: [
+      { item: GameItemId.IceChip, quantity: 150 },
+      { item: GameItemId.FrostChisel, quantity: 50 },
+    ],
+    status: MatoranStatus.Listed,
+    colors: {
+      mask: LegoColor.SandBlue,
+      body: LegoColor.White,
+      feet: LegoColor.SandBlue,
+      arms: LegoColor.White,
+      eyes: LegoColor.TransMediumBlue,
+    },
+    tags: [MatoranTag.ChroniclersCompany],
+  },
+  {
+    id: 'Hafu',
+    name: 'Hafu',
+    element: ElementTribe.Stone,
+    mask: Mask.Ruru,
+    cost: 600,
+    requiredItems: [
+      { item: GameItemId.StoneBlock, quantity: 150 },
+      { item: GameItemId.GemShard, quantity: 50 },
+    ],
+    status: MatoranStatus.Listed,
+    colors: {
+      mask: LegoColor.Black,
+      body: LegoColor.Tan,
+      feet: LegoColor.Black,
+      arms: LegoColor.Tan,
+      eyes: LegoColor.TransNeonOrange,
+    },
+    tags: [MatoranTag.ChroniclersCompany],
   },
 ];
