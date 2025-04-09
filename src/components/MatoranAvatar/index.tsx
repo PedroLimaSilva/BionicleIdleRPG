@@ -14,12 +14,31 @@ import akaku from './matoran_akaku.png';
 import kakama from './matoran_kakama.png';
 import pakari from './matoran_pakari.png';
 import miru from './matoran_miru.png';
+
 import huna from './matoran_huna.png';
+import mahiki from './matoran_mahiki.png';
+import matatu from './matoran_matatu.png';
+import ruru from './matoran_ruru.png';
+import komau from './matoran_komau.png';
+import rau from './matoran_rau.png';
 
 import './index.scss';
 
 function getMask(matoran: Matoran) {
   switch (matoran.mask) {
+    case Mask.Huna:
+      return huna;
+    case Mask.Komau:
+      return komau;
+    case Mask.Rau:
+      return rau;
+    case Mask.Ruru:
+      return ruru;
+    case Mask.Matatu:
+      return matatu;
+    case Mask.Mahiki:
+      return mahiki;
+
     case Mask.Akaku:
       return akaku;
     case Mask.Pakari:
@@ -30,8 +49,6 @@ function getMask(matoran: Matoran) {
       return miru;
     case Mask.Kaukau:
       return kaukau;
-    case Mask.Huna:
-      return huna;
     case Mask.Hau:
     default:
       return hau;

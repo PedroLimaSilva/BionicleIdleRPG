@@ -10,6 +10,11 @@ export const enum Mask {
   Akaku = 'Akaku',
   Pakari = 'Pakari',
   Miru = 'Miru',
+  Ruru = 'Ruru',
+  Komau = 'Komau',
+  Rau = 'Rau',
+  Matatu = "Matatu",
+  Mahiki = "Mahiki",
 }
 
 export const enum ElementTribe {
