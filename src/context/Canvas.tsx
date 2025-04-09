@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Canvas } from '@react-three/fiber';
-import { SceneCanvasContext } from './useSceneCanvas';
 import { useLocation } from 'react-router-dom';
+import { SceneCanvasContext } from '../hooks/useSceneCanvas';
 
 export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

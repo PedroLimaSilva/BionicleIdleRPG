@@ -2,7 +2,7 @@ import './index.scss';
 import { useMemo, useState } from 'react';
 import { MatoranJob } from '../../types/Jobs';
 import { RecruitedMatoran } from '../../types/Matoran';
-import { useGame } from '../../providers/Game';
+import { useGame } from '../../context/Game';
 import { getAvailableJobs, getProductivityModifier } from '../../game/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { JobCard } from './JobCard';

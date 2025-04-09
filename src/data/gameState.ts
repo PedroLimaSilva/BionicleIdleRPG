@@ -2,12 +2,12 @@
 
 import { LogType } from '../types/Logging';
 import { StoryProgression } from '../game/story';
-import { GameState } from '../providers/Game';
 import { MatoranJob } from '../types/Jobs';
 import { ListedMatoran, Matoran } from '../types/Matoran';
 import { AVAILABLE_CHARACTERS, RECRUITED_CHARACTERS } from './matoran';
+import { GameState } from '../types/GameState';
 
-export const CURRENT_GAME_STATE_VERSION = 5; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
+export const CURRENT_GAME_STATE_VERSION = 6; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
 
 export const INITIAL_GAME_STATE: GameState = {
   version: CURRENT_GAME_STATE_VERSION,
@@ -27,9 +27,6 @@ export const INITIAL_GAME_STATE: GameState = {
     throw new Error('Function not implemented.');
   },
   removeJobFromMatoran: function (_id: Matoran['id']): void {
-    throw new Error('Function not implemented.');
-  },
-  tickJobExp: function (): void {
     throw new Error('Function not implemented.');
   },
   addActivityLog: function (_message: string, _type: LogType): void {

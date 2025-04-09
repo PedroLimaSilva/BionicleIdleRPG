@@ -1,4 +1,4 @@
-import { useGame } from '../../providers/Game';
+import { useGame } from '../../context/Game';
 
 import './index.scss';
 

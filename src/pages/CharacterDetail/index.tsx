@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useGame } from '../../providers/Game';
+import { useGame } from '../../context/Game';
 
 import { getMatoranFromInventoryById } from '../../data/matoran';
 
@@ -13,7 +13,7 @@ import { JobList } from '../../components/JobList';
 import { JOB_DETAILS } from '../../data/jobs';
 import { JobCard } from '../../components/JobList/JobCard';
 import { getProductivityModifier } from '../../game/Jobs';
-import { useSceneCanvas } from '../../providers/useSceneCanvas';
+import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();

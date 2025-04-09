@@ -1,6 +1,6 @@
 import './index.scss';
 import { GameItemId, ITEM_DICTIONARY } from '../../data/loot';
-import { useGame } from '../../providers/Game';
+import { useGame } from '../../context/Game';
 
 export function InventoryPage() {
   const { inventory } = useGame();

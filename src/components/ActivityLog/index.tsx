@@ -1,6 +1,6 @@
 import './index.scss';
 import { useEffect, useRef } from 'react';
-import { useGame } from '../../providers/Game';
+import { useGame } from '../../context/Game';
 
 export const ActivityLog = () => {
   const { activityLog, removeActivityLogEntry, clearActivityLog } = useGame();

@@ -1,4 +1,4 @@
-import { resetGameData } from '../../providers/Game';
+import { resetGameData } from '../../services/gamePersistence';
 import './index.scss';
 
 export default function SettingsPage() {

@@ -11,11 +11,11 @@ import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
 import { Recruitment } from './pages/Recruitment/index.tsx';
 import { CharacterDetail } from './pages/CharacterDetail/index.tsx';
 
-import { GameProvider } from './providers/Game.tsx';
+import { GameProvider } from './context/Game.tsx';
+import { SceneCanvasProvider } from './context/Canvas.tsx';
 
 import './App.scss';
 import { ActivityLog } from './components/ActivityLog/index.tsx';
-import { SceneCanvasProvider } from './providers/Canvas.tsx';
 import { useEffect } from 'react';
 import { preloadAssets } from './preload.ts';
 import { InventoryPage } from './pages/Inventory/index.tsx';

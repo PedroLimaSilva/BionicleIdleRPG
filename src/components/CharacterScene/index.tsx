@@ -9,7 +9,7 @@ import {
 import { Matoran } from '../../types/Matoran';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { Color } from '../../types/Colors';
-import { useAnimationController } from '../../providers/useAnimationController';
+import { useAnimationController } from '../../hooks/useAnimationController';
 
 const MAT_COLOR_MAP = {
   // Head: 'head',

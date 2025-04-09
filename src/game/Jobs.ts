@@ -1,9 +1,10 @@
 import { JOB_DETAILS } from '../data/jobs';
-import { GameState, Inventory } from '../providers/Game';
 import { JobAssignment, MatoranJob, ProductivityEffect } from '../types/Jobs';
 import { RecruitedMatoran } from '../types/Matoran';
 import { ActivityLogEntry, LogType } from '../types/Logging';
 import { GameItemId, ITEM_DICTIONARY } from '../data/loot';
+import { GameState } from '../types/GameState';
+import { Inventory } from '../services/inventoryUtils';
 
 export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const jobData = JOB_DETAILS[job];
@@ -109,7 +110,6 @@ export function applyOfflineJobExp(
     Object.entries(rewards).forEach(([item, amount]) => {
       const itemId = item as GameItemId;
       loot[itemId] = (loot[itemId] ?? 0) + amount;
-      console.log(item, amount);
       logs.push({
         id: crypto.randomUUID(),
         message: `${m.name} found ${amount} ${ITEM_DICTIONARY[itemId].name} while you were away.`,

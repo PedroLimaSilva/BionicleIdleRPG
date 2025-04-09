@@ -1,12 +1,12 @@
 import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { Link } from 'react-router-dom';
-import { useGame } from '../../providers/Game';
 import { ElementTag } from '../../components/ElementTag';
 import { getLevelFromExp } from '../../game/Levelling';
 import { JobStatusBadge } from '../../components/JobStatusBadge';
 import { getJobStatus } from '../../game/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
+import { useGame } from '../../context/Game';
 
 export const CharacterInventory: React.FC = () => {
   const { recruitedCharacters, availableCharacters } = useGame();

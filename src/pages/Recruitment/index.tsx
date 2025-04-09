@@ -4,10 +4,10 @@ import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { InventoryBar } from '../../components/InventoryBar';
 import { ListedMatoran } from '../../types/Matoran';
-import { useGame } from '../../providers/Game';
+import { useGame } from '../../context/Game';
 import { ITEM_DICTIONARY } from '../../data/loot';
 import { CharacterScene } from '../../components/CharacterScene';
-import { useSceneCanvas } from '../../providers/useSceneCanvas';
+import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { useNavigate } from 'react-router-dom';
 
 export const Recruitment: React.FC = () => {
