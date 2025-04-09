@@ -9,6 +9,9 @@ export function InventoryPage() {
     <div className='page-container'>
       <div className='inventory-container'>
         {/* <h1 className='title'>INVENTORY</h1> */}
+        {Object.entries(inventory).length === 0 && (
+          <p>No items. Assign a job to a Matoran to collect items</p>
+        )}
         <div className='inventory-grid'>
           {Object.entries(inventory).map(([item, quantity]) => {
             const itemId = item as GameItemId;
