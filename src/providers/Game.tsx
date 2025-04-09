@@ -54,6 +54,11 @@ interface GameProviderProps {
 
 const STORAGE_KEY = `GAME_STATE`;
 
+export const resetGameData = () => {
+  localStorage.setItem(STORAGE_KEY, '');
+  window.location.reload();
+};
+
 function loadGameState() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
@@ -66,7 +71,7 @@ function loadGameState() {
 
         Object.entries(loot).forEach(([item, amount]) => {
           const itemId = item as GameItemId;
-          parsed.inventory[itemId] = (parsed.inventory[itemId] || 0) + amount
+          parsed.inventory[itemId] = (parsed.inventory[itemId] || 0) + amount;
         });
 
         return {

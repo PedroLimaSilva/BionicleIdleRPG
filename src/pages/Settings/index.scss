@@ -1,31 +1,23 @@
 .page-container {
   min-height: 100vh;
 
-  .settings-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 2rem;
-    text-align: center;
-    color: var(--color-accent);
-    text-shadow: 0 0 6px var(--theme-element-glow-transparent);
-  }
-
   .settings-section {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     max-width: 500px;
-    margin: 0 auto;
+    margin: 2rem auto;
 
     .settings-option {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      text-align: left;
       background: var(--color-surface-low);
       border-radius: 12px;
       padding: 1rem 1.25rem;
       box-shadow: 0 0 6px rgba(255, 255, 255, 0.05);
       font-size: 1rem;
+      button {
+        width: 100%;
+      }
 
       span {
         font-weight: 500;
@@ -61,18 +53,12 @@
     margin-right: auto;
     text-align: left;
 
-    .about-title {
-      font-size: 1.2rem;
-      margin: 0;
-      color: var(--color-accent);
-      text-shadow: 0 0 4px var(--theme-element-glow-transparent);
-      text-align: center;
-    }
     .about-link {
       display: inline-block;
       margin-top: 0.5rem;
       font-size: 0.95rem;
       color: var(--color-accent);
+      word-wrap: break-word;
       text-decoration: none;
       text-align: center;
       text-shadow: 0 0 4px var(--theme-element-glow-transparent);
