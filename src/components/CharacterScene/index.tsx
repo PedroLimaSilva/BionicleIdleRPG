@@ -6,6 +6,7 @@ import {
   useAnimations,
   useGLTF,
 } from '@react-three/drei';
+
 import { Matoran } from '../../types/Matoran';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { Color } from '../../types/Colors';
@@ -32,9 +33,9 @@ function Model({ matoran }: { matoran: Matoran }) {
   useEffect(() => {
     const idle = actions['IdleArms'];
     if (!idle) return;
-  
+
     idle.reset().play();
-  
+
     return () => {
       idle.fadeOut(0.2);
     };
