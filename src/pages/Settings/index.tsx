@@ -94,7 +94,6 @@ export default function SettingsPage() {
                 'Are you sure you want to reset all game data? This cannot be undone.'
               );
               if (confirm) {
-                alert('Game data has been reset.');
                 resetGameData();
               }
             }}

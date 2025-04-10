@@ -59,8 +59,7 @@ export const useGameLogic = (): GameState => {
     initialActive: initialState.activeQuests,
     initialCompleted: initialState.completedQuests,
     characters: recruitedCharacters,
-    inventory,
-    recruitCharacter,
+    addItemToInventory,
     setRecruitedCharacters,
     addWidgets: (widgets: number) => {
       setWidgets((prev) => prev + widgets);

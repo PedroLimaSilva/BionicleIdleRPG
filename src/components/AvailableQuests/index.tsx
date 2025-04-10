@@ -32,9 +32,9 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
 
   const hasMatoran = (requiredIds: string[] = [], minLevel: number = 1) =>
     requiredIds.every((id) =>
-      recruitedCharacters.some((m) => {
-        return m.id === id && getLevelFromExp(m.exp) > minLevel;
-      })
+      recruitedCharacters.some(
+        (m) => m.id === id && getLevelFromExp(m.exp) >= minLevel
+      )
     );
 
   const hasItems = (items: QuestItemRequirement[] = []) =>

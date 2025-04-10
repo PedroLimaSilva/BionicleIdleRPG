@@ -1,13 +1,13 @@
 // hooks/useQuestState.ts
 
 import { useState } from 'react';
-import { Quest, QuestItemRequirement, QuestProgress } from '../types/Quests';
-import { ListedMatoran, Matoran, RecruitedMatoran } from '../types/Matoran';
+import { Quest, QuestProgress } from '../types/Quests';
+import { Matoran, MatoranStatus, RecruitedMatoran } from '../types/Matoran';
 import { GameState } from '../types/GameState';
 import { LogType } from '../types/Logging';
-import { Inventory, mergeInventory } from '../services/inventoryUtils';
 import { UNLOCKABLE_CHARACTERS } from '../data/matoran';
 import { QUESTS } from '../data/quests';
+import { GameItemId } from '../data/loot';
 
 export function getCurrentTimestamp(): number {
   return Math.floor(Date.now() / 1000); // seconds
@@ -17,9 +17,10 @@ interface UseQuestStateOptions {
   initialActive: QuestProgress[];
   initialCompleted: string[];
   characters: RecruitedMatoran[];
-  inventory: Inventory;
-  setRecruitedCharacters: (RecruitedMatoran: RecruitedMatoran[]) => void;
-  recruitCharacter: GameState['recruitCharacter'];
+  addItemToInventory: (item: GameItemId, amount: number) => void;
+  setRecruitedCharacters: React.Dispatch<
+    React.SetStateAction<RecruitedMatoran[]>
+  >;
   addActivityLog: GameState['addActivityLog'];
   addWidgets: (widgets: number) => void;
 }
@@ -28,9 +29,8 @@ export const useQuestState = ({
   initialActive,
   initialCompleted,
   characters,
-  inventory,
+  addItemToInventory,
   setRecruitedCharacters,
-  recruitCharacter,
   addWidgets,
   addActivityLog,
 }: UseQuestStateOptions) => {
@@ -54,15 +54,12 @@ export const useQuestState = ({
 
     // Remove required Items
     if (quest.requirements.items) {
-      mergeInventory(
-        inventory,
-        quest.requirements.items
-          ?.filter((item) => item.consumed)
-          .reduce((loot: Inventory, item: QuestItemRequirement) => {
-            loot[item.id] = -item.amount;
-            return loot;
-          }, {})
-      );
+      quest.requirements.items.forEach((req) => {
+        addItemToInventory(
+          req.id as GameItemId,
+          req.consumed ? -req.amount : 0
+        );
+      });
     }
 
     const updatedCharacters = characters.map((char) =>
@@ -81,32 +78,44 @@ export const useQuestState = ({
 
     // Apply rewards
     if (quest.rewards.loot) {
-      mergeInventory(inventory, quest.rewards.loot);
+      Object.entries(quest.rewards.loot).forEach(([item, amount]) => {
+        addItemToInventory(item as GameItemId, amount);
+      });
     }
 
+    let newRecruits: RecruitedMatoran[] = [];
     if (quest.rewards.unlockCharacters) {
-      quest.rewards.unlockCharacters
-        .map((charId) => {
-          return UNLOCKABLE_CHARACTERS[charId] as ListedMatoran;
-        })
-        .forEach(recruitCharacter);
+      if (quest.rewards.unlockCharacters) {
+        newRecruits = quest.rewards.unlockCharacters.map((id) => {
+          const listed = UNLOCKABLE_CHARACTERS[id];
+          const recruited: RecruitedMatoran = {
+            ...listed,
+            exp: 0,
+            quest: undefined,
+            assignment: undefined,
+            status: MatoranStatus.Recruited,
+          };
+          return recruited;
+        });
+      }
     }
 
     // Reassign Matoran
-    const updatedCharacters = characters.map((char) =>
-      active.assignedMatoran.includes(char.id)
-        ? {
-            ...char,
-            quest: undefined,
-            exp: char.exp + (quest.rewards.xpPerMatoran ?? 0),
-          }
-        : char
-    );
+    setRecruitedCharacters((prev) => {
+      const updated = prev.map((char) =>
+        active.assignedMatoran.includes(char.id)
+          ? {
+              ...char,
+              quest: undefined,
+              exp: char.exp + (quest.rewards.xpPerMatoran ?? 0),
+            }
+          : char
+      );
+
+      return [...updated, ...newRecruits];
+    });
 
     addWidgets(quest.rewards.currency || 0);
-
-    setRecruitedCharacters(updatedCharacters);
-
     // Mark as complete
     setActiveQuests((prev) => prev.filter((q) => q.questId !== quest.id));
     setCompletedQuestIds((prev) => [...prev, quest.id]);
@@ -129,15 +138,9 @@ export const useQuestState = ({
       (q) => q.id === quest.questId
     )?.requirements;
     if (requirements && requirements.items) {
-      mergeInventory(
-        inventory,
-        requirements.items
-          ?.filter((item) => item.consumed)
-          .reduce((loot: Inventory, item: QuestItemRequirement) => {
-            loot[item.id] = -item.amount;
-            return loot;
-          }, {}) || {}
-      );
+      requirements.items.forEach((req) => {
+        addItemToInventory(req.id as GameItemId, req.consumed ? req.amount : 0);
+      });
     }
 
     setRecruitedCharacters(updatedCharacters);

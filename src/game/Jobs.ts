@@ -84,14 +84,16 @@ function rollJobRewards(
   now = Date.now()
 ): Inventory {
   const elapsedSeconds = Math.max(0, (now - assignment.assignedAt) / 1000);
-  const unitsOfWork = elapsedSeconds * 0.15;
   const job = JOB_DETAILS[assignment.job];
   const drops: Inventory = {};
 
   if (!job.rewards) return drops;
 
   for (const reward of job.rewards) {
-    const count = approximateBinomial(Math.floor(unitsOfWork), reward.chance);
+    const count = approximateBinomial(
+      Math.floor(elapsedSeconds),
+      reward.chance
+    );
     if (count > 0) {
       drops[reward.item] = count;
     }

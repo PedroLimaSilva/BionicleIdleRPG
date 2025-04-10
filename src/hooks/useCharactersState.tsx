@@ -31,7 +31,7 @@ export function useCharactersState(
     if (!newRecruit) return;
 
     setWidgets(updatedWidgets);
-    setRecruitedCharacters([...recruitedCharacters, newRecruit]);
+    setRecruitedCharacters(prev => [...prev, newRecruit]);
     setAvailableCharacters(updatedAvailable);
   };
 

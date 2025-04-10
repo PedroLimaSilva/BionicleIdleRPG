@@ -320,8 +320,8 @@ export const UNLOCKABLE_CHARACTERS: Record<string, ListedMatoran> = {
       eyes: LegoColor.TransNeonRed,
     },
   },
-  kapura: {
-    id: 'kapura',
+  Kapura: {
+    id: 'Kapura',
     name: 'Kapura',
     element: ElementTribe.Fire,
     mask: Mask.Ruru,
