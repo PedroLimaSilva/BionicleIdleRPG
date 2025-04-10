@@ -22,13 +22,13 @@ export const useGameLogic = (): GameState => {
   const {
     recruitedCharacters,
     setRecruitedCharacters,
-    availableCharacters,
+    buyableCharacters,
     recruitCharacter,
     assignJobToMatoran,
     removeJobFromMatoran,
   } = useCharactersState(
     initialState.recruitedCharacters,
-    initialState.availableCharacters,
+    initialState.buyableCharacters,
     widgets,
     setWidgets,
     addItemToInventory
@@ -73,7 +73,7 @@ export const useGameLogic = (): GameState => {
     widgets,
     inventory,
     recruitedCharacters,
-    availableCharacters,
+    buyableCharacters: buyableCharacters,
     activeQuests,
     completedQuests,
   });
@@ -86,7 +86,7 @@ export const useGameLogic = (): GameState => {
     widgets,
     inventory,
     recruitedCharacters,
-    availableCharacters,
+    buyableCharacters: buyableCharacters,
     addItemToInventory,
     recruitCharacter,
     assignJobToMatoran,

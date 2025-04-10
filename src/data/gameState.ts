@@ -2,12 +2,12 @@
 
 import { LogType } from '../types/Logging';
 import { MatoranJob } from '../types/Jobs';
-import { ListedMatoran, Matoran } from '../types/Matoran';
-import { AVAILABLE_CHARACTERS, RECRUITED_CHARACTERS } from './matoran';
+import { ListedCharacterData, BaseMatoran } from '../types/Matoran';
 import { GameState } from '../types/GameState';
 import { Quest } from '../types/Quests';
+import { LISTED_MATORAN_DATA, RECRUITED_MATORAN_DATA } from './matoran';
 
-export const CURRENT_GAME_STATE_VERSION = 7; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
+export const CURRENT_GAME_STATE_VERSION = 8; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
 
 export const INITIAL_GAME_STATE: GameState = {
   version: CURRENT_GAME_STATE_VERSION,
@@ -15,19 +15,19 @@ export const INITIAL_GAME_STATE: GameState = {
   widgets: 10,
   completedQuests: [],
   activeQuests: [],
-  recruitedCharacters: RECRUITED_CHARACTERS,
-  availableCharacters: AVAILABLE_CHARACTERS,
+  recruitedCharacters: RECRUITED_MATORAN_DATA,
+  buyableCharacters: LISTED_MATORAN_DATA,
   inventory: {},
-  recruitCharacter: function (_character: ListedMatoran): void {
+  recruitCharacter: function (_character: ListedCharacterData): void {
     throw new Error('Function not implemented.');
   },
   addItemToInventory: function (_item: string, _amount: number): void {
     throw new Error('Function not implemented.');
   },
-  assignJobToMatoran: function (_id: Matoran['id'], _job: MatoranJob): void {
+  assignJobToMatoran: function (_id: BaseMatoran['id'], _job: MatoranJob): void {
     throw new Error('Function not implemented.');
   },
-  removeJobFromMatoran: function (_id: Matoran['id']): void {
+  removeJobFromMatoran: function (_id: BaseMatoran['id']): void {
     throw new Error('Function not implemented.');
   },
   addActivityLog: function (_message: string, _type: LogType): void {
@@ -39,7 +39,7 @@ export const INITIAL_GAME_STATE: GameState = {
   removeActivityLogEntry: function (_id: string): void {
     throw new Error('Function not implemented.');
   },
-  startQuest: function (_quest: Quest, _assignedMatoran: Matoran['id'][]): void {
+  startQuest: function (_quest: Quest, _assignedMatoran: BaseMatoran['id'][]): void {
     throw new Error('Function not implemented.');
   },
   cancelQuest: function (_questId: string): void {

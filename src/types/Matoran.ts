@@ -33,7 +33,8 @@ export const enum MatoranTag {
   ChroniclersCompany = 'ChroniclersCompany',
 }
 
-type BaseMatoran = {
+// Static data for any Matoran
+export type BaseMatoran = {
   id: string;
   name: string;
   mask: Mask;
@@ -49,27 +50,27 @@ type BaseMatoran = {
   tags?: MatoranTag[];
 };
 
-export const enum MatoranStatus {
-  Listed,
-  Recruited,
-}
+export type ListedCharacterData = {
+  id: string;
+  cost: number;
+  requiredItems: ItemRequirement[];
+};
+
+export type RecruitedCharacterData = {
+  id: string;
+  exp: number;
+  assignment?: JobAssignment;
+  quest?: Quest['id'];
+};
+
 
 export type ItemRequirement = {
   item: GameItemId;
   quantity: number;
 };
 
-export type ListedMatoran = BaseMatoran & {
-  status: MatoranStatus.Listed;
-  cost: number;
-  requiredItems?: ItemRequirement[];
-};
+export type ListedMatoran = BaseMatoran & ListedCharacterData;
 
-export type RecruitedMatoran = BaseMatoran & {
-  assignment?: JobAssignment;
-  quest?: Quest['id'];
-  exp: number;
-  status: MatoranStatus.Recruited;
-};
+export type RecruitedMatoran = BaseMatoran & RecruitedCharacterData;
 
 export type Matoran = ListedMatoran | RecruitedMatoran;

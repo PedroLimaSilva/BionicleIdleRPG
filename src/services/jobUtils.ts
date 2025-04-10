@@ -1,12 +1,13 @@
 import { applyJobExp } from '../game/Jobs';
 import { WIDGET_RATE } from '../data/jobs';
-import { RecruitedMatoran } from '../types/Matoran';
+import { RecruitedCharacterData } from '../types/Matoran';
 import { LogType } from '../types/Logging';
 import { ActivityLogEntry } from '../types/Logging';
 import { Inventory } from './inventoryUtils';
+import { MATORAN_DEX } from '../data/matoran';
 
 type TickResult = {
-  updatedMatoran: RecruitedMatoran;
+  updatedMatoran: RecruitedCharacterData;
   earnedWidgets: number;
   earnedLoot: Inventory;
   expGained: number;
@@ -14,18 +15,20 @@ type TickResult = {
 };
 
 export function tickMatoranJobExp(
-  matoran: RecruitedMatoran,
+  matoran: RecruitedCharacterData,
   now: number
 ): TickResult {
   const [updated, exp, loot] = applyJobExp(matoran, now);
   const earnedWidgets = Math.floor(exp * WIDGET_RATE);
+  
+  const matoran_dex = MATORAN_DEX[matoran.id]
 
   const logs: ActivityLogEntry[] = [];
 
   if (earnedWidgets > 0) {
     logs.push({
       id: crypto.randomUUID(),
-      message: `${matoran.name} earned ${earnedWidgets} widgets`,
+      message: `${matoran_dex.name} earned ${earnedWidgets} widgets`,
       type: LogType.Widgets,
       timestamp: now,
     });
@@ -34,7 +37,7 @@ export function tickMatoranJobExp(
   Object.entries(loot).forEach(([item, amount]) => {
     logs.push({
       id: crypto.randomUUID(),
-      message: `${matoran.name} added ${amount} ${item} to the inventory`,
+      message: `${matoran_dex.name} added ${amount} ${item} to the inventory`,
       type: LogType.Loot,
       timestamp: now,
     });
@@ -43,7 +46,7 @@ export function tickMatoranJobExp(
   if (exp > 0) {
     logs.push({
       id: crypto.randomUUID(),
-      message: `${matoran.name} gained ${exp} EXP`,
+      message: `${matoran_dex.name} gained ${exp} EXP`,
       type: LogType.Gain,
       timestamp: now,
     });

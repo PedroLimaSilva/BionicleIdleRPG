@@ -3,26 +3,25 @@ import { startTransition, useEffect, useMemo, useState } from 'react';
 import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { InventoryBar } from '../../components/InventoryBar';
-import { ListedMatoran } from '../../types/Matoran';
+import { ListedCharacterData } from '../../types/Matoran';
 import { useGame } from '../../context/Game';
 import { ITEM_DICTIONARY } from '../../data/loot';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { useNavigate } from 'react-router-dom';
+import { MATORAN_DEX } from '../../data/matoran';
 
 export const Recruitment: React.FC = () => {
-  const { widgets, recruitCharacter, availableCharacters, inventory } =
-    useGame();
+  const { widgets, recruitCharacter, buyableCharacters, inventory } = useGame();
   const { setScene } = useSceneCanvas();
 
   const navigate = useNavigate();
 
-  const [selectedMatoran, setSelectedMatoran] = useState<ListedMatoran | null>(
-    null
-  );
+  const [selectedMatoran, setSelectedMatoran] =
+    useState<ListedCharacterData | null>(null);
 
   const canRecruit = useMemo(() => {
-    const hasRequiredItems = (matoran: ListedMatoran): boolean => {
+    const hasRequiredItems = (matoran: ListedCharacterData): boolean => {
       return (matoran.requiredItems || []).every(({ item, quantity }) => {
         return (inventory[item] || 0) >= quantity;
       });
@@ -36,19 +35,19 @@ export const Recruitment: React.FC = () => {
   }, [selectedMatoran, widgets, inventory]);
 
   useEffect(() => {
-    setSelectedMatoran(availableCharacters[0] || null);
-  }, [availableCharacters]);
+    setSelectedMatoran(buyableCharacters[0] || null);
+  }, [buyableCharacters]);
 
   useEffect(() => {
     if (selectedMatoran) {
-      setScene(<CharacterScene matoran={selectedMatoran} />);
+      setScene(<CharacterScene matoran={MATORAN_DEX[selectedMatoran.id]} />);
     }
     return () => {
       setScene(null);
     };
   }, [selectedMatoran, setScene]);
 
-  const handleRecruit = (matoran: ListedMatoran) => {
+  const handleRecruit = (matoran: ListedCharacterData) => {
     startTransition(() => {
       setSelectedMatoran(matoran);
     });
@@ -56,9 +55,9 @@ export const Recruitment: React.FC = () => {
 
   const confirmRecruitment = () => {
     if (selectedMatoran && canRecruit) {
-      alert(`${selectedMatoran.name} has been recruited!`);
+      alert(`${MATORAN_DEX[selectedMatoran.id].name} has been recruited!`);
       recruitCharacter(selectedMatoran);
-      const nextFocusedCharacter = availableCharacters[0] || null;
+      const nextFocusedCharacter = buyableCharacters[0] || null;
       if (!nextFocusedCharacter) {
         navigate('/characters');
       }
@@ -105,7 +104,7 @@ export const Recruitment: React.FC = () => {
               <button
                 className={`elemental-btn recruit-btn ${
                   canRecruit ? '' : 'disabled'
-                } element-${selectedMatoran.element}`}
+                } element-${MATORAN_DEX[selectedMatoran.id].element}`}
                 onClick={confirmRecruitment}
               >
                 Recruit
@@ -117,17 +116,19 @@ export const Recruitment: React.FC = () => {
 
       <div className='matoran-selector'>
         <div className='scroll-row'>
-          {availableCharacters.map((matoran) => (
+          {buyableCharacters.map((matoran) => (
             <div
               key={matoran.id}
-              className={`matoran-card element-${matoran.element}`}
+              className={`matoran-card element-${
+                MATORAN_DEX[matoran.id].element
+              }`}
               onClick={() => handleRecruit(matoran)}
             >
               <MatoranAvatar
-                matoran={matoran}
+                matoran={MATORAN_DEX[matoran.id]}
                 styles={'mask-preview matoran-avatar'}
               />
-              <div className='name'>{matoran.name}</div>
+              <div className='name'>{MATORAN_DEX[matoran.id].name}</div>
             </div>
           ))}
         </div>

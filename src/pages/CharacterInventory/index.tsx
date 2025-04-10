@@ -7,9 +7,11 @@ import { JobStatusBadge } from '../../components/JobStatusBadge';
 import { getJobStatus } from '../../game/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
+import { MATORAN_DEX } from '../../data/matoran';
 
 export const CharacterInventory: React.FC = () => {
-  const { recruitedCharacters, availableCharacters } = useGame();
+  const { recruitedCharacters, buyableCharacters } =
+    useGame();
 
   return (
     <div className='page-container'>
@@ -17,16 +19,19 @@ export const CharacterInventory: React.FC = () => {
       <div className='character-grid'>
         {recruitedCharacters.map((matoran) => {
           const jobStatus = getJobStatus(matoran);
+
+          const matoran_dex = MATORAN_DEX[matoran.id];
+
           return (
             <Link key={matoran.id} to={`/characters/${matoran.id}`}>
-              <div className={`character-card element-${matoran.element}`}>
+              <div className={`character-card element-${matoran_dex.element}`}>
                 <MatoranAvatar
-                  matoran={matoran}
+                  matoran={matoran_dex}
                   styles={'matoran-avatar model-preview'}
                 />
                 <div className='card-header'>
-                  <ElementTag element={matoran.element} showName={false} />
-                  {'  ' + matoran.name}
+                  <ElementTag element={matoran_dex.element} showName={false} />
+                  {'  ' + matoran_dex.name}
                   <div className='level-label'>
                     Level {getLevelFromExp(matoran.exp)}
                   </div>
@@ -44,7 +49,7 @@ export const CharacterInventory: React.FC = () => {
           );
         })}
       </div>
-      {availableCharacters.length !== 0 && (
+      {buyableCharacters.length !== 0 && (
         <div className='recruit-button'>
           <Link to='/recruitment'>
             <button type='button' className='recruitment-button'>

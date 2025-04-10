@@ -1,4 +1,4 @@
-import { Mask, Matoran } from '../../types/Matoran';
+import { BaseMatoran, Mask } from '../../types/Matoran';
 
 import { CompositedImage } from '../CompositedImage';
 
@@ -24,7 +24,7 @@ import rau from './matoran_rau.png';
 
 import './index.scss';
 
-function getMask(matoran: Matoran) {
+function getMask(matoran: BaseMatoran) {
   switch (matoran.mask) {
     case Mask.Huna:
       return huna;
@@ -55,7 +55,7 @@ function getMask(matoran: Matoran) {
   }
 }
 
-export function MatoranAvatar(props: { matoran: Matoran; styles: string }) {
+export function MatoranAvatar(props: { matoran: BaseMatoran; styles: string }) {
   const { colors } = props.matoran;
   return (
     <CompositedImage

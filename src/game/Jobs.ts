@@ -1,10 +1,11 @@
 import { JOB_DETAILS } from '../data/jobs';
 import { JobAssignment, MatoranJob, ProductivityEffect } from '../types/Jobs';
-import { RecruitedMatoran } from '../types/Matoran';
+import { RecruitedCharacterData } from '../types/Matoran';
 import { ActivityLogEntry, LogType } from '../types/Logging';
 import { GameItemId, ITEM_DICTIONARY } from '../data/loot';
 import { GameState } from '../types/GameState';
 import { Inventory } from '../services/inventoryUtils';
+import { MATORAN_DEX } from '../data/matoran';
 
 export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const jobData = JOB_DETAILS[job];
@@ -26,13 +27,17 @@ export function getAvailableJobs(gameState: GameState): MatoranJob[] {
     .filter((job) => isJobUnlocked(job, gameState));
 }
 
-export function getJobStatus(matoran: RecruitedMatoran): ProductivityEffect {
+export function getJobStatus(
+  matoran: RecruitedCharacterData
+): ProductivityEffect {
   if (!matoran.assignment?.job) return ProductivityEffect.Idle;
 
+  const matoran_dex = MATORAN_DEX[matoran.id];
+
   const affinity = JOB_DETAILS[matoran.assignment.job].elementAffinity;
-  if (affinity.favored.includes(matoran.element))
+  if (affinity.favored.includes(matoran_dex.element))
     return ProductivityEffect.Boosted;
-  if (affinity.opposed.includes(matoran.element))
+  if (affinity.opposed.includes(matoran_dex.element))
     return ProductivityEffect.Penalized;
 
   return ProductivityEffect.Neutral;
@@ -40,13 +45,15 @@ export function getJobStatus(matoran: RecruitedMatoran): ProductivityEffect {
 
 export function getProductivityModifier(
   job: MatoranJob,
-  matoran: RecruitedMatoran
+  matoran: RecruitedCharacterData
 ): number {
   const { elementAffinity } = JOB_DETAILS[job];
 
-  if (elementAffinity.favored.includes(matoran.element)) {
+  const matoran_dex = MATORAN_DEX[matoran.id];
+
+  if (elementAffinity.favored.includes(matoran_dex.element)) {
     return 1.2; // +20% productivity
-  } else if (elementAffinity.opposed.includes(matoran.element)) {
+  } else if (elementAffinity.opposed.includes(matoran_dex.element)) {
     return 0.8; // -20% productivity
   } else {
     return 1.0; // neutral
@@ -103,8 +110,8 @@ function rollJobRewards(
 }
 
 export function applyOfflineJobExp(
-  characters: RecruitedMatoran[]
-): [RecruitedMatoran[], ActivityLogEntry[], number, Inventory] {
+  characters: RecruitedCharacterData[]
+): [RecruitedCharacterData[], ActivityLogEntry[], number, Inventory] {
   const now = Date.now();
   const logs: ActivityLogEntry[] = [];
   let currencyGain = 0;
@@ -112,13 +119,14 @@ export function applyOfflineJobExp(
 
   const updated = characters.map((m) => {
     const [updatedMatoran, earned, rewards] = applyJobExp(m, now);
+    const matoran = MATORAN_DEX[m.id];
 
     Object.entries(rewards).forEach(([item, amount]) => {
       const itemId = item as GameItemId;
       loot[itemId] = (loot[itemId] ?? 0) + amount;
       logs.push({
         id: crypto.randomUUID(),
-        message: `${m.name} found ${amount} ${ITEM_DICTIONARY[itemId].name} while you were away.`,
+        message: `${matoran.name} found ${amount} ${ITEM_DICTIONARY[itemId].name} while you were away.`,
         type: LogType.Loot,
         timestamp: now,
       });
@@ -128,7 +136,7 @@ export function applyOfflineJobExp(
       currencyGain += earned;
       logs.push({
         id: crypto.randomUUID(),
-        message: `${m.name} gained ${earned} EXP while you were away.`,
+        message: `${matoran.name} gained ${earned} EXP while you were away.`,
         type: LogType.Gain,
         timestamp: now,
       });
@@ -141,9 +149,9 @@ export function applyOfflineJobExp(
 }
 
 export function applyJobExp(
-  matoran: RecruitedMatoran,
+  matoran: RecruitedCharacterData,
   now = Date.now()
-): [RecruitedMatoran, number, Inventory] {
+): [RecruitedCharacterData, number, Inventory] {
   if (!matoran.assignment) return [matoran, 0, {}];
 
   const earnedExp = computeEarnedExp(matoran.assignment);

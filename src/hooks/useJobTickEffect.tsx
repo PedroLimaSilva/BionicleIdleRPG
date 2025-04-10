@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
-import { RecruitedMatoran } from '../types/Matoran';
+import { RecruitedCharacterData } from '../types/Matoran';
 import { GameItemId } from '../data/loot';
 import { ActivityLogEntry } from '../types/Logging';
 import { tickMatoranJobExp } from '../services/jobUtils';
 
 export function useJobTickEffect(
-  recruitedCharacters: RecruitedMatoran[],
+  recruitedCharacters: RecruitedCharacterData[],
   setRecruitedCharacters: (
-    fn: (prev: RecruitedMatoran[]) => RecruitedMatoran[]
+    fn: (prev: RecruitedCharacterData[]) => RecruitedCharacterData[]
   ) => void,
   addWidgets: (amount: number) => void,
   addItemToInventory: (item: GameItemId, amount: number) => void,

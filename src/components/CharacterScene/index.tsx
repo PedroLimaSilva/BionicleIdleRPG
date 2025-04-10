@@ -7,7 +7,7 @@ import {
   useGLTF,
 } from '@react-three/drei';
 
-import { Matoran } from '../../types/Matoran';
+import { BaseMatoran } from '../../types/Matoran';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { Color } from '../../types/Colors';
 import { useAnimationController } from '../../hooks/useAnimationController';
@@ -23,7 +23,7 @@ const MAT_COLOR_MAP = {
   Brain: 'eyes',
 };
 
-function Model({ matoran }: { matoran: Matoran }) {
+function Model({ matoran }: { matoran: BaseMatoran }) {
   const group = useRef<Group>(null);
   const { nodes, materials, animations } = useGLTF(
     import.meta.env.BASE_URL + 'matoran_master.glb'
@@ -62,7 +62,7 @@ function Model({ matoran }: { matoran: Matoran }) {
     Object.entries(MAT_COLOR_MAP).forEach(([materialName, colorName]) => {
       applyColor(
         materialName,
-        colorMap[colorName as keyof Matoran['colors']] as Color
+        colorMap[colorName as keyof BaseMatoran['colors']] as Color
       );
     });
 
@@ -91,7 +91,7 @@ function Model({ matoran }: { matoran: Matoran }) {
   );
 }
 
-export function CharacterScene({ matoran }: { matoran: Matoran }) {
+export function CharacterScene({ matoran }: { matoran: BaseMatoran }) {
   return (
     <Stage>
       <ambientLight intensity={0.2} />

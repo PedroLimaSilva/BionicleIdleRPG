@@ -54,7 +54,7 @@ export const QUESTS: Quest[] = [
       ],
     },
     rewards: {
-      unlockCharacters: ['toa_tahu'],
+      unlockCharacters: ['Toa_Tahu'],
       loot: {
         [GameItemId.Charcoal]: 1000,
         [GameItemId.BurnishedAlloy]: 500,

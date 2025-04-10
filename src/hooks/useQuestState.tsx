@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { Quest, QuestProgress } from '../types/Quests';
-import { Matoran, MatoranStatus, RecruitedMatoran } from '../types/Matoran';
+import { Matoran, RecruitedCharacterData } from '../types/Matoran';
 import { GameState } from '../types/GameState';
 import { LogType } from '../types/Logging';
-import { UNLOCKABLE_CHARACTERS } from '../data/matoran';
 import { QUESTS } from '../data/quests';
 import { GameItemId } from '../data/loot';
 
@@ -16,10 +15,10 @@ export function getCurrentTimestamp(): number {
 interface UseQuestStateOptions {
   initialActive: QuestProgress[];
   initialCompleted: string[];
-  characters: RecruitedMatoran[];
+  characters: RecruitedCharacterData[];
   addItemToInventory: (item: GameItemId, amount: number) => void;
   setRecruitedCharacters: React.Dispatch<
-    React.SetStateAction<RecruitedMatoran[]>
+    React.SetStateAction<RecruitedCharacterData[]>
   >;
   addActivityLog: GameState['addActivityLog'];
   addWidgets: (widgets: number) => void;
@@ -83,17 +82,13 @@ export const useQuestState = ({
       });
     }
 
-    let newRecruits: RecruitedMatoran[] = [];
+    let newRecruits: RecruitedCharacterData[] = [];
     if (quest.rewards.unlockCharacters) {
       if (quest.rewards.unlockCharacters) {
         newRecruits = quest.rewards.unlockCharacters.map((id) => {
-          const listed = UNLOCKABLE_CHARACTERS[id];
-          const recruited: RecruitedMatoran = {
-            ...listed,
+          const recruited: RecruitedCharacterData = {
+            id,
             exp: 0,
-            quest: undefined,
-            assignment: undefined,
-            status: MatoranStatus.Recruited,
           };
           return recruited;
         });

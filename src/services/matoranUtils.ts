@@ -1,8 +1,7 @@
 import {
-  ListedMatoran,
+  ListedCharacterData,
   Matoran,
-  MatoranStatus,
-  RecruitedMatoran,
+  RecruitedCharacterData,
 } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { GameItemId } from '../data/loot';
@@ -10,28 +9,27 @@ import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
 
 export function recruitMatoran(
-  character: ListedMatoran,
+  character: ListedCharacterData,
   widgets: number,
-  available: ListedMatoran[],
+  buyableCharacters: ListedCharacterData[],
   addItem: (item: GameItemId, amount: number) => void
 ): {
   updatedWidgets: number;
-  newRecruit: RecruitedMatoran | null;
-  updatedAvailable: ListedMatoran[];
+  newRecruit: RecruitedCharacterData | null;
+  updatedBuyable: ListedCharacterData[];
 } {
   if (widgets < character.cost) {
     alert('Not enough widgets!');
     return {
       updatedWidgets: widgets,
       newRecruit: null,
-      updatedAvailable: available,
+      updatedBuyable: buyableCharacters,
     };
   }
 
-  const recruitedCharacter: RecruitedMatoran = {
-    ...character,
+  const recruitedCharacter: RecruitedCharacterData = {
+    id: character.id,
     exp: 0,
-    status: MatoranStatus.Recruited,
   };
 
   character.requiredItems?.forEach((requirement) => {
@@ -41,15 +39,15 @@ export function recruitMatoran(
   return {
     updatedWidgets: widgets - character.cost,
     newRecruit: recruitedCharacter,
-    updatedAvailable: available.filter((m) => m.id !== character.id),
+    updatedBuyable: buyableCharacters.filter((m) => m.id !== character.id),
   };
 }
 
 export function assignJob(
   id: Matoran['id'],
   job: MatoranJob,
-  matoran: RecruitedMatoran[]
-): RecruitedMatoran[] {
+  matoran: RecruitedCharacterData[]
+): RecruitedCharacterData[] {
   const baseRate = JOB_DETAILS[job].rate;
   const now = Date.now();
 
@@ -69,8 +67,8 @@ export function assignJob(
 
 export function removeJob(
   id: Matoran['id'],
-  matoran: RecruitedMatoran[]
-): RecruitedMatoran[] {
+  matoran: RecruitedCharacterData[]
+): RecruitedCharacterData[] {
   return matoran.map((m) =>
     m.id === id ? { ...m, assignment: undefined } : m
   );

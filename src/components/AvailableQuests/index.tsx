@@ -1,9 +1,9 @@
 import { GameItemId, ITEM_DICTIONARY } from '../../data/loot';
-import { UNLOCKABLE_CHARACTERS } from '../../data/matoran';
+import { MATORAN_DEX } from '../../data/matoran';
 import { getLevelFromExp } from '../../game/Levelling';
 import { getAvailableQuests } from '../../game/Quests';
 import { Inventory } from '../../services/inventoryUtils';
-import { RecruitedMatoran } from '../../types/Matoran';
+import { RecruitedCharacterData, RecruitedMatoran } from '../../types/Matoran';
 import { Quest, QuestItemRequirement } from '../../types/Quests';
 import './index.scss';
 
@@ -11,7 +11,7 @@ interface AvailableQuestsProps {
   allQuests: Quest[];
   completedQuestIds: string[];
   activeQuestIds: string[];
-  recruitedCharacters: RecruitedMatoran[];
+  recruitedCharacters: RecruitedCharacterData[];
   inventory: Inventory;
   startQuest: (quest: Quest, assignedMatoran: RecruitedMatoran['id'][]) => void;
 }
@@ -140,7 +140,7 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                         <li>
                           <span className='reward-label'>Unlocks:</span>{' '}
                           {quest.rewards.unlockCharacters
-                            .map((id) => UNLOCKABLE_CHARACTERS[id].name)
+                            .map((id) => MATORAN_DEX[id].name)
                             .join(', ')}
                         </li>
                       )}

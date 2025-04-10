@@ -7,7 +7,7 @@ type PartialGameState = Pick<
   | 'version'
   | 'widgets'
   | 'inventory'
-  | 'availableCharacters'
+  | 'buyableCharacters'
   | 'recruitedCharacters'
   | 'activeQuests'
   | 'completedQuests'
@@ -18,7 +18,7 @@ export function useGamePersistence({
   widgets,
   inventory,
   recruitedCharacters,
-  availableCharacters,
+  buyableCharacters,
   activeQuests,
   completedQuests,
 }: PartialGameState) {
@@ -28,7 +28,7 @@ export function useGamePersistence({
       widgets,
       inventory,
       recruitedCharacters,
-      availableCharacters,
+      buyableCharacters: buyableCharacters,
       activeQuests,
       completedQuests,
     };
@@ -38,7 +38,7 @@ export function useGamePersistence({
     version,
     widgets,
     inventory,
-    availableCharacters,
+    buyableCharacters,
     recruitedCharacters,
     activeQuests,
     completedQuests,

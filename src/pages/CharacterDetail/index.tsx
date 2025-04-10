@@ -1,7 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 
-import { getMatoranFromInventoryById } from '../../data/matoran';
+import { getRecruitedMatoran } from '../../data/matoran';
 
 import './index.scss';
 import { CharacterScene } from '../../components/CharacterScene';
@@ -14,6 +14,7 @@ import { JOB_DETAILS } from '../../data/jobs';
 import { JobCard } from '../../components/JobList/JobCard';
 import { getProductivityModifier } from '../../game/Jobs';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { QUESTS } from '../../data/quests';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -21,7 +22,10 @@ export const CharacterDetail: React.FC = () => {
 
   const { setScene } = useSceneCanvas();
 
-  const matoran = getMatoranFromInventoryById(String(id), recruitedCharacters);
+  const matoran = useMemo(
+    () => getRecruitedMatoran(String(id), recruitedCharacters),
+    [id, recruitedCharacters]
+  );
 
   const [assigningJob, setAssigningJob] = useState(false);
 
@@ -102,12 +106,14 @@ export const CharacterDetail: React.FC = () => {
               </>
             )}
 
-            <button
-              className='elemental-btn'
-              onClick={() => setAssigningJob(true)}
-            >
-              {matoran.assignment ? 'Change Job' : 'Assign Job'}
-            </button>
+            {!matoran.quest && (
+              <button
+                className='elemental-btn'
+                onClick={() => setAssigningJob(true)}
+              >
+                {matoran.assignment ? 'Change Job' : 'Assign Job'}
+              </button>
+            )}
 
             {assigningJob && (
               <Modal
@@ -124,6 +130,14 @@ export const CharacterDetail: React.FC = () => {
               </Modal>
             )}
           </div>
+          {matoran.quest && (
+            <div className='job-section'>
+              <p>Assigned Quest:</p>
+              <Link to='/quests'>
+                <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
+              </Link>
+            </div>
+          )}
         </div>
       ) : (
         <p>Something is wrong, this matoran does not exist</p>

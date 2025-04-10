@@ -1,38 +1,40 @@
 import { useState } from 'react';
-import { ListedMatoran, Matoran, RecruitedMatoran } from '../types/Matoran';
+import {
+  ListedCharacterData,
+  Matoran,
+  RecruitedCharacterData,
+} from '../types/Matoran';
 import { GameItemId } from '../data/loot';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
 
 export function useCharactersState(
-  initialRecruited: RecruitedMatoran[],
-  initialAvailable: ListedMatoran[],
+  initialRecruited: RecruitedCharacterData[],
+  initialBuyable: ListedCharacterData[],
   widgets: number,
   setWidgets: (amount: number) => void,
   addItemToInventory: (item: GameItemId, amount: number) => void
 ) {
   const [recruitedCharacters, setRecruitedCharacters] =
-    useState<RecruitedMatoran[]>(initialRecruited);
+    useState<RecruitedCharacterData[]>(initialRecruited);
 
-  const [availableCharacters, setAvailableCharacters] = useState<
-    ListedMatoran[]
-  >(
-    initialAvailable.filter((m) => !initialRecruited.find((r) => r.id === m.id))
-  );
+  const [buyableCharacters, setBuyableCharacters] = useState<
+    ListedCharacterData[]
+  >(initialBuyable.filter((m) => !initialRecruited.find((r) => r.id === m.id)));
 
-  const recruitCharacter = (character: ListedMatoran) => {
-    const { updatedWidgets, newRecruit, updatedAvailable } = recruitMatoran(
+  const recruitCharacter = (character: ListedCharacterData) => {
+    const { updatedWidgets, newRecruit, updatedBuyable } = recruitMatoran(
       character,
       widgets,
-      availableCharacters,
+      buyableCharacters,
       addItemToInventory
     );
 
     if (!newRecruit) return;
 
     setWidgets(updatedWidgets);
-    setRecruitedCharacters(prev => [...prev, newRecruit]);
-    setAvailableCharacters(updatedAvailable);
+    setRecruitedCharacters((prev) => [...prev, newRecruit]);
+    setBuyableCharacters(updatedBuyable);
   };
 
   const assignJobToMatoran = (id: Matoran['id'], job: MatoranJob) => {
@@ -46,7 +48,7 @@ export function useCharactersState(
   return {
     recruitedCharacters,
     setRecruitedCharacters,
-    availableCharacters,
+    buyableCharacters,
     recruitCharacter,
     assignJobToMatoran,
     removeJobFromMatoran,
