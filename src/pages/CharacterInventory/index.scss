@@ -1,6 +1,6 @@
 .character-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 2fr));
   gap: 1rem;
   margin: 1rem 0;
 }
@@ -16,10 +16,13 @@
     var(--color-surface-mid)
   );
   box-shadow: 0 0 8px var(--color-text-muted);
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  grid-template-columns: 30% 1fr;
+  position: relative;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
 
   &:hover {
     transform: translateY(-4px);
@@ -47,6 +50,15 @@
     justify-content: center;
     border-radius: 8px;
     margin-top: 0.5rem;
+  }
+
+  .job-status-badge {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    right: 50%;
+    transform: translateX(50%);
+    border-radius: 0;
   }
 }
 
