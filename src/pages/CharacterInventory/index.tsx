@@ -8,10 +8,10 @@ import { getJobStatus } from '../../game/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
 import { MATORAN_DEX } from '../../data/matoran';
+import { QUESTS } from '../../data/quests';
 
 export const CharacterInventory: React.FC = () => {
-  const { recruitedCharacters, buyableCharacters } =
-    useGame();
+  const { recruitedCharacters, buyableCharacters } = useGame();
 
   return (
     <div className='page-container'>
@@ -39,7 +39,8 @@ export const CharacterInventory: React.FC = () => {
                     label={
                       matoran.assignment?.job
                         ? JOB_DETAILS[matoran.assignment?.job].label
-                        : jobStatus
+                        : QUESTS.find((q) => q.id === matoran.quest)?.name ||
+                          jobStatus
                     }
                     status={jobStatus}
                   />
