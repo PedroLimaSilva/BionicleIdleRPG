@@ -13,7 +13,7 @@ export const ElementTag = ({
     <div className='element-tag'>
       <img
         src={`${import.meta.env.BASE_URL}/icons/${element}.png`}
-        alt='Light Element Icon'
+        alt={`${element} Element Icon`}
       />
       {showName && <span>{element}</span>}
     </div>

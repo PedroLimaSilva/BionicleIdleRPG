@@ -6,69 +6,70 @@ interface CompositedImageProps {
   className: string;
 }
 
+function arraysEqual(a: string[], b: string[]) {
+  return a.length === b.length && a.every((v, i) => v === b[i]);
+}
+
 export const CompositedImage: React.FC<CompositedImageProps> = ({
-  images: imageUrls,
-  colors: colors,
-  className: className,
+  images,
+  colors,
+  className,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const prevImages = useRef<string[]>([]);
 
   useEffect(() => {
-    // Wait for all images to be loaded.
+    if (arraysEqual(prevImages.current, images)) return;
+    prevImages.current = images;
+
     Promise.all(
-      imageUrls.map(
-        (imageUrl) =>
+      images.map(
+        (url) =>
           new Promise((resolve) => {
             const img = new Image();
-            img.src = imageUrl;
+            img.src = url;
             img.onload = () => resolve(img);
           })
       )
-    ).then((images) => {
+    ).then((loadedImages) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      canvas.width = (images[0] as HTMLImageElement).width;
-      canvas.height = (images[0] as HTMLImageElement).height;
-
-      // create offscreen buffer,
       const buffer = document.createElement('canvas');
-      buffer.width = canvas.width;
-      buffer.height = canvas.height;
       const bctx = buffer.getContext('2d', {
         willReadFrequently: true,
       }) as CanvasRenderingContext2D;
 
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) return;
-      for (let i = 0; i < images.length; i++) {
-        const img = images[i] as HTMLImageElement;
 
-        // Draw the grayscale image to buffer
+      canvas.width = (loadedImages[0] as HTMLImageElement).width;
+      canvas.height = (loadedImages[0] as HTMLImageElement).height;
+      buffer.width = canvas.width;
+      buffer.height = canvas.height;
+
+      for (let i = 0; i < loadedImages.length; i++) {
+        const img = loadedImages[i] as HTMLImageElement;
+
         bctx.drawImage(img, 0, 0);
-
         const grayscale = bctx.getImageData(0, 0, canvas.width, canvas.height);
 
-        // Add a colored overlay
         bctx.globalCompositeOperation = 'multiply';
         bctx.fillStyle = colors[i];
         bctx.fillRect(0, 0, canvas.width, canvas.height);
 
         const imageData = bctx.getImageData(0, 0, canvas.width, canvas.height);
-        for (let i = 0, n = imageData.data.length; i < n; i += 4) {
+        for (let i = 0; i < imageData.data.length; i += 4) {
           imageData.data[i + 3] = grayscale.data[i + 3];
         }
+
         bctx.putImageData(imageData, 0, 0);
         ctx.drawImage(buffer, 0, 0);
-
-        // Reset blend mode
         ctx.globalCompositeOperation = 'source-over';
-
-        // Reset Buffer
-        bctx!.clearRect(0, 0, buffer.width, buffer.height);
+        bctx.clearRect(0, 0, buffer.width, buffer.height);
       }
     });
-  }, [imageUrls, colors, className]);
+  }, [images, colors]);
 
   return <canvas className={className} ref={canvasRef} />;
 };

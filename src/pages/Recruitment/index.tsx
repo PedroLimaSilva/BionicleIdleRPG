@@ -58,7 +58,7 @@ export const Recruitment: React.FC = () => {
       alert(`${MATORAN_DEX[selectedMatoran.id].name} has been recruited!`);
       recruitCharacter(selectedMatoran);
       const nextFocusedCharacter = buyableCharacters[0] || null;
-      if (!nextFocusedCharacter) {
+      if (!nextFocusedCharacter || buyableCharacters.length === 1) {
         navigate('/characters');
       }
       setSelectedMatoran(nextFocusedCharacter);
