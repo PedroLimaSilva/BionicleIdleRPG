@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { AvailableQuests } from '../../components/AvailableQuests';
 import { useGame } from '../../context/Game';
 import { QUESTS } from '../../data/quests';
@@ -29,6 +30,12 @@ export const QuestsPage = () => {
     const secondsLeft = quest.endsAt - Math.floor(Date.now() / 1000);
     if (secondsLeft <= 0) return true;
     return false;
+  };
+
+  const [cutsceneUrl, setCutsceneUrl] = useState<string | null>(null);
+
+  const handleCutscene = (cutscene: string) => {
+    setCutsceneUrl(cutscene);
   };
 
   return (
@@ -63,7 +70,11 @@ export const QuestsPage = () => {
                   <button
                     className='quests-page__complete'
                     disabled={!canComplete(progress)}
-                    onClick={() => completeQuest(quest)}
+                    onClick={() => {
+                      completeQuest(quest);
+                      if (quest.rewards.cutscene)
+                        handleCutscene(quest.rewards.cutscene);
+                    }}
                   >
                     Complete Quest
                   </button>
@@ -94,12 +105,43 @@ export const QuestsPage = () => {
           {completedQuests.map((id) => {
             const quest = getQuestById(id);
             return (
-              <li key={id} className='quests-page__item'>
+              <li
+                key={id}
+                className='quests-page__item'
+                onClick={() => {
+                  if (quest?.rewards.cutscene)
+                    handleCutscene(quest.rewards.cutscene);
+                }}
+              >
                 <h3 className='quests-page__item-title'>{quest?.name || id}</h3>
               </li>
             );
           })}
         </ul>
+      )}
+      {cutsceneUrl && (
+        <div className='modal-overlay' onClick={() => setCutsceneUrl(null)}>
+          <div className='modal-content' onClick={(e) => e.stopPropagation()}>
+            <button
+              className='modal-close'
+              onClick={() => setCutsceneUrl(null)}
+            >
+              ✖
+            </button>
+            <div className='modal-video-wrapper'>
+              <iframe
+                width='100%'
+                height='100%'
+                src={`https://www.youtube.com/embed/${cutsceneUrl}?si=nxWcOaAKDqTtrf2b&amp;controls=0`}
+                title='YouTube video player'
+                frameBorder='0'
+                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                referrerPolicy='strict-origin-when-cross-origin'
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -1,4 +1,3 @@
-import { MatoranTag } from '../types/Matoran';
 import { Quest } from '../types/Quests';
 import { GameItemId } from './loot';
 
@@ -15,6 +14,7 @@ export const QUESTS: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: 'u0DYYVupuGQ',
       unlockCharacters: [
         {
           id: 'Kapura',
@@ -78,6 +78,7 @@ export const QUESTS: Quest[] = [
       ],
     },
     rewards: {
+      cutscene: 'Cn5jxci0RiQ',
       unlockCharacters: [
         {
           id: 'Toa_Tahu',
@@ -122,6 +123,7 @@ export const QUESTS: Quest[] = [
       ],
     },
     rewards: {
+      cutscene: 'qRVxnc26NDI',
       loot: {
         [GameItemId.WaterAlgae]: 100,
         [GameItemId.GaPearl]: 50,
@@ -150,6 +152,7 @@ export const QUESTS: Quest[] = [
       ],
     },
     rewards: {
+      cutscene: 'Fud_TgE_GTs',
       loot: {
         [GameItemId.WaterAlgae]: 1000,
         [GameItemId.GaPearl]: 500,
@@ -219,6 +222,7 @@ export const QUESTS: Quest[] = [
       ],
     },
     rewards: {
+      cutscene: 'EZdYj1GQR4s',
       unlockCharacters: [
         {
           id: 'Toa_Pohatu',
