@@ -93,7 +93,7 @@ export const useQuestState = ({
       }
     }
 
-    setBuyableCharacters((prev) => [...prev, ...unlockedCharacters]);
+    setBuyableCharacters((prev) => [...unlockedCharacters, ...prev]);
 
     // Reassign Matoran with updated exp
     setRecruitedCharacters((prev) => {
