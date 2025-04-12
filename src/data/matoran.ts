@@ -252,34 +252,6 @@ export const RECRUITED_MATORAN_DATA: RecruitedCharacterData[] = [
 
 export const LISTED_MATORAN_DATA = [
   {
-    id: 'Takua',
-    cost: 1200,
-    requiredItems: [
-      {
-        item: GameItemId.LightStone,
-        quantity: 300,
-      },
-      {
-        item: GameItemId.Charcoal,
-        quantity: 300,
-      },
-    ],
-  },
-  {
-    id: 'Jala',
-    cost: 1200,
-    requiredItems: [
-      {
-        item: GameItemId.Charcoal,
-        quantity: 300,
-      },
-      {
-        item: GameItemId.BurnishedAlloy,
-        quantity: 100,
-      },
-    ],
-  },
-  {
     id: 'Hali',
     cost: 1200,
     requiredItems: [

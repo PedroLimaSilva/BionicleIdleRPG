@@ -43,7 +43,9 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       favored: [ElementTribe.Water],
       opposed: [],
     },
-    unlock: {},
+    unlock: {
+      requiredProgress: ['story_ga_koro_sos'],
+    },
     rewards: [
       { item: GameItemId.WaterAlgae, chance: 1.0 },
       { item: GameItemId.GaPearl, chance: 0.3 },
@@ -74,7 +76,9 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [],
     },
     rate: 1,
-    unlock: {},
+    unlock: {
+      requiredProgress: ['story_meet_tamaru'],
+    },
     rewards: [
       { item: GameItemId.FeatherTufts, chance: 1.0 },
       { item: GameItemId.JungleResin, chance: 0.3 },
@@ -104,7 +108,9 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [],
     },
     rate: 1,
-    unlock: {},
+    unlock: {
+      requiredProgress: ['story_po_koro_sickness'],
+    },
     rewards: [
       { item: GameItemId.StoneBlock, chance: 1.0 },
       { item: GameItemId.GemShard, chance: 0.3 },
@@ -165,7 +171,9 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [ElementTribe.Fire],
     },
     rate: 1,
-    unlock: {},
+    unlock: {
+      requiredProgress: ['story_meet_matoro'],
+    },
     rewards: [
       { item: GameItemId.IceChip, chance: 1.0 },
       { item: GameItemId.FrostChisel, chance: 0.3 },
