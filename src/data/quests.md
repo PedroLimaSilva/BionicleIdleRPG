@@ -34,9 +34,15 @@ Unlock: Toa_Pohatu
 Loot: StoneBlock=1000, GemShard=500
 Currency: 800
 XP: 400"]
+  story_recruit_hewkii["Koli Champion Recovered
+(30m)
+Unlock: Huki, Maku
+Currency: 300
+XP: 200"]
   story_find_canister_beach --> story_tahu_unlock_01
   story_tahu_unlock_01 --> story_ga_koro_sos
   story_ga_koro_sos --> story_restore_ga_koro
   story_restore_ga_koro --> story_po_koro_sickness
   story_po_koro_sickness --> story_po_koro_cave_investigation
+  story_po_koro_cave_investigation --> story_recruit_hewkii
 ```

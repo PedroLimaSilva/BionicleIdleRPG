@@ -1,3 +1,4 @@
+import { MatoranTag } from '../types/Matoran';
 import { Quest } from '../types/Quests';
 import { GameItemId } from './loot';
 
@@ -218,20 +219,22 @@ export const QUESTS: Quest[] = [
       ],
     },
     rewards: {
-      unlockCharacters: [{
-        id: 'Toa_Pohatu',
-        cost: 10000,
-        requiredItems: [
-          {
-            item: GameItemId.StoneBlock,
-            quantity: 3000,
-          },
-          {
-            item: GameItemId.GemShard,
-            quantity: 1000,
-          },
-        ],
-      }],
+      unlockCharacters: [
+        {
+          id: 'Toa_Pohatu',
+          cost: 10000,
+          requiredItems: [
+            {
+              item: GameItemId.StoneBlock,
+              quantity: 3000,
+            },
+            {
+              item: GameItemId.GemShard,
+              quantity: 1000,
+            },
+          ],
+        },
+      ],
       loot: {
         [GameItemId.StoneBlock]: 1000,
         [GameItemId.GemShard]: 500,
@@ -239,12 +242,58 @@ export const QUESTS: Quest[] = [
       xpPerMatoran: 400,
       currency: 800,
     },
-    followUpQuests: [],
+    followUpQuests: ['story_recruit_hewkii'],
     unlockedAfter: ['story_po_koro_sickness'],
-  }
+  },
+  {
+    id: 'story_recruit_hewkii',
+    name: 'Koli Champion Recovered',
+    description:
+      'With the source of the corruption destroyed, Hewkii finally begins to recover. Inspired by Takua’s courage, he offers to join the journey ahead.',
+    durationSeconds: 30 * 60, // 30 minutes
+    requirements: {
+      matoran: ['Takua'],
+      minLevel: 7,
+      items: [],
+    },
+    rewards: {
+      unlockCharacters: [
+        {
+          id: 'Huki',
+          cost: 1200,
+          requiredItems: [
+            {
+              item: GameItemId.StoneBlock,
+              quantity: 300,
+            },
+            {
+              item: GameItemId.GemShard,
+              quantity: 100,
+            },
+          ],
+        },
+        {
+          id: 'Maku',
+          cost: 600,
+          requiredItems: [
+            {
+              item: GameItemId.WaterAlgae,
+              quantity: 150,
+            },
+            {
+              item: GameItemId.GaPearl,
+              quantity: 50,
+            },
+          ],
+        },
+      ],
+      xpPerMatoran: 200,
+      currency: 300,
+    },
+    followUpQuests: [],
+    unlockedAfter: ['story_po_koro_cave_investigation'],
+  },
 ];
-
-
 
 function formatDuration(seconds: number) {
   const h = Math.floor(seconds / 3600);

@@ -151,6 +151,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.MediumBlue,
       eyes: LegoColor.TransNeonYellow,
     },
+    tags: [MatoranTag.ChroniclersCompany],
   },
   Lumi: {
     id: 'Lumi',
@@ -266,20 +267,6 @@ export const LISTED_MATORAN_DATA = [
     ],
   },
   {
-    id: 'Huki',
-    cost: 1200,
-    requiredItems: [
-      {
-        item: GameItemId.StoneBlock,
-        quantity: 300,
-      },
-      {
-        item: GameItemId.GemShard,
-        quantity: 100,
-      },
-    ],
-  },
-  {
     id: 'Nuparu',
     cost: 1200,
     requiredItems: [
@@ -318,20 +305,6 @@ export const LISTED_MATORAN_DATA = [
       {
         item: GameItemId.FrostChisel,
         quantity: 100,
-      },
-    ],
-  },
-  {
-    id: 'Maku',
-    cost: 600,
-    requiredItems: [
-      {
-        item: GameItemId.WaterAlgae,
-        quantity: 150,
-      },
-      {
-        item: GameItemId.GaPearl,
-        quantity: 50,
       },
     ],
   },
