@@ -3,6 +3,7 @@ import {
   BaseMatoran,
   ElementTribe,
   Mask,
+  MatoranStage,
   MatoranTag,
   RecruitedCharacterData,
 } from '../types/Matoran';
@@ -14,6 +15,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     name: 'Toa Tau',
     element: ElementTribe.Fire,
     mask: Mask.Hau,
+    stage: MatoranStage.ToaMata,
     colors: {
       mask: LegoColor.Red,
       body: LegoColor.Red,
@@ -27,6 +29,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     name: 'Kapura',
     element: ElementTribe.Fire,
     mask: Mask.Ruru,
+    stage: MatoranStage.Diminished,
     colors: {
       mask: LegoColor.Red,
       body: LegoColor.Red,
@@ -41,6 +44,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     name: 'Takua',
     mask: Mask.Pakari,
     element: ElementTribe.Light,
+    stage: MatoranStage.Diminished,
     colors: {
       mask: LegoColor.MediumBlue,
       body: LegoColor.Red,
@@ -54,6 +58,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     name: 'Jala',
     mask: Mask.Hau,
     element: ElementTribe.Fire,
+    stage: MatoranStage.Diminished,
     colors: {
       mask: LegoColor.Yellow,
       body: LegoColor.Red,
@@ -66,6 +71,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Hali',
     name: 'Hali',
     mask: Mask.Kaukau,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Water,
     isMaskTransparent: true,
     colors: {
@@ -80,6 +86,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Huki',
     name: 'Huki',
     mask: Mask.Kakama,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Stone,
     colors: {
       mask: LegoColor.DarkOrange,
@@ -93,6 +100,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Nuparu',
     name: 'Nuparu',
     mask: Mask.Pakari,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Earth,
     colors: {
       mask: LegoColor.Orange,
@@ -106,6 +114,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Kongu',
     name: 'Kongu',
     mask: Mask.Miru,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Air,
     colors: {
       mask: LegoColor.DarkTurquoise,
@@ -119,6 +128,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Matoro',
     name: 'Matoro',
     mask: Mask.Akaku,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Ice,
     colors: {
       mask: LegoColor.SandBlue,
@@ -132,6 +142,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Maku',
     name: 'Maku',
     mask: Mask.Huna,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Water,
     colors: {
       mask: LegoColor.Blue,
@@ -145,6 +156,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Lumi',
     name: 'Lumi',
     mask: Mask.Hau,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Ice,
     colors: {
       mask: LegoColor.SandBlue,
@@ -158,6 +170,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Kivi',
     name: 'Kivi',
     mask: Mask.Kaukau,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Stone,
     isMaskTransparent: true,
     colors: {
@@ -172,6 +185,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Taipu',
     name: 'Taipu',
     mask: Mask.Pakari,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Earth,
     colors: {
       mask: LegoColor.Black,
@@ -186,6 +200,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Tamaru',
     name: 'Tamaru',
     mask: Mask.Rau,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Air,
     colors: {
       mask: LegoColor.DarkTurquoise,
@@ -200,6 +215,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Kopeke',
     name: 'Kopeke',
     mask: Mask.Komau,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Ice,
     colors: {
       mask: LegoColor.SandBlue,
@@ -214,6 +230,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Hafu',
     name: 'Hafu',
     mask: Mask.Ruru,
+    stage: MatoranStage.Diminished,
     element: ElementTribe.Stone,
     colors: {
       mask: LegoColor.Black,

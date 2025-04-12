@@ -33,6 +33,14 @@ export const enum MatoranTag {
   ChroniclersCompany = 'ChroniclersCompany',
 }
 
+export const enum MatoranStage {
+  ToaMata = 'Toa Mata',
+  ToaNuva = 'Toa Nuva',
+  Diminished = 'Diminished',
+  Rebuilt = 'Rebuilt',
+  Metru = 'Metru',
+}
+
 // Static data for any Matoran
 export type BaseMatoran = {
   id: string;
@@ -40,6 +48,7 @@ export type BaseMatoran = {
   mask: Mask;
   element: ElementTribe;
   isMaskTransparent?: boolean;
+  stage: MatoranStage;
   colors: {
     mask: Color;
     body: Color;
