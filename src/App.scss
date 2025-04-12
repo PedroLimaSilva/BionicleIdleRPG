@@ -290,11 +290,11 @@ button:focus-visible {
     display: none;
     &.route--recruitment {
       display: block;
-      top: 0;
+      top: 80px; // .inventory-bar
       left: 0;
       height: calc(
-        100% - 184px - 96px
-      ); // 100% - .matoran-selector-height - space-for-nav-bar
+        100% - 184px - 96px - 80px
+      ); // 100% - .matoran-selector-height - space-for-nav-bar - 
       width: 100%;
       z-index: 0;
     }
