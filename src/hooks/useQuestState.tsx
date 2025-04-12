@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Quest, QuestProgress } from '../types/Quests';
-import { Matoran, RecruitedCharacterData } from '../types/Matoran';
+import { ListedCharacterData, RecruitedCharacterData } from '../types/Matoran';
 import { GameState } from '../types/GameState';
 import { LogType } from '../types/Logging';
 import { QUESTS } from '../data/quests';
@@ -20,6 +20,9 @@ interface UseQuestStateOptions {
   setRecruitedCharacters: React.Dispatch<
     React.SetStateAction<RecruitedCharacterData[]>
   >;
+  setBuyableCharacters: React.Dispatch<
+    React.SetStateAction<ListedCharacterData[]>
+  >;
   addActivityLog: GameState['addActivityLog'];
   addWidgets: (widgets: number) => void;
 }
@@ -30,6 +33,7 @@ export const useQuestState = ({
   characters,
   addItemToInventory,
   setRecruitedCharacters,
+  setBuyableCharacters,
   addWidgets,
   addActivityLog,
 }: UseQuestStateOptions) => {
@@ -38,7 +42,7 @@ export const useQuestState = ({
   const [completedQuests, setCompletedQuestIds] =
     useState<string[]>(initialCompleted);
 
-  const startQuest = (quest: Quest, assignedMatoran: Matoran['id'][]) => {
+  const startQuest = (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => {
     const now = getCurrentTimestamp();
     const endsAt = now + quest.durationSeconds;
 
@@ -82,20 +86,16 @@ export const useQuestState = ({
       });
     }
 
-    let newRecruits: RecruitedCharacterData[] = [];
+    let unlockedCharacters: ListedCharacterData[] = [];
     if (quest.rewards.unlockCharacters) {
       if (quest.rewards.unlockCharacters) {
-        newRecruits = quest.rewards.unlockCharacters.map((id) => {
-          const recruited: RecruitedCharacterData = {
-            id,
-            exp: 0,
-          };
-          return recruited;
-        });
+        unlockedCharacters = quest.rewards.unlockCharacters;
       }
     }
 
-    // Reassign Matoran
+    setBuyableCharacters((prev) => [...prev, ...unlockedCharacters]);
+
+    // Reassign Matoran with updated exp
     setRecruitedCharacters((prev) => {
       const updated = prev.map((char) =>
         active.assignedMatoran.includes(char.id)
@@ -107,7 +107,7 @@ export const useQuestState = ({
           : char
       );
 
-      return [...updated, ...newRecruits];
+      return updated;
     });
 
     addWidgets(quest.rewards.currency || 0);

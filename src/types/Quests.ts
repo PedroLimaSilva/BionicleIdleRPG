@@ -1,6 +1,6 @@
 import { GameItemId } from '../data/loot';
 import { Inventory } from '../services/inventoryUtils';
-import { Matoran, RecruitedMatoran } from './Matoran';
+import { ListedCharacterData, RecruitedCharacterData } from './Matoran';
 
 export interface QuestItemRequirement {
   id: GameItemId; // Item ID
@@ -8,13 +8,13 @@ export interface QuestItemRequirement {
   consumed: boolean; // If true, item will be removed from inventory
 }
 export interface QuestRequirement {
-  matoran?: Matoran['id'][]; // Required Matoran by ID
+  matoran?: RecruitedCharacterData['id'][]; // Required Matoran by ID
   items?: QuestItemRequirement[];
   minLevel?: number; // Minimum level required for all assigned Matoran
 }
 
 export interface QuestReward {
-  unlockCharacters?: Matoran['id'][]; // IDs of unlocked characters (e.g., Toa, Matoran)
+  unlockCharacters?: ListedCharacterData[]; // IDs of unlocked characters (e.g., Toa, Matoran)
   loot?: Inventory;
   xpPerMatoran?: number; // XP awarded to each participating Matoran
   currency?: number; // Generic currency reward
@@ -36,5 +36,5 @@ export interface QuestProgress {
   questId: string;
   startedAt: number; // timestamp
   endsAt: number; // timestamp
-  assignedMatoran: RecruitedMatoran['id'][];
+  assignedMatoran: RecruitedCharacterData['id'][];
 }

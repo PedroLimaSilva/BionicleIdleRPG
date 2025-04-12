@@ -27,7 +27,6 @@ export const QuestsPage = () => {
 
   const canComplete = (quest: QuestProgress) => {
     const secondsLeft = quest.endsAt - Math.floor(Date.now() / 1000);
-    console.log(secondsLeft)
     if (secondsLeft <= 0) return true;
     return false;
   };

@@ -22,6 +22,7 @@ export const useGameLogic = (): GameState => {
   const {
     recruitedCharacters,
     setRecruitedCharacters,
+    setBuyableCharacters,
     buyableCharacters,
     recruitCharacter,
     assignJobToMatoran,
@@ -61,6 +62,7 @@ export const useGameLogic = (): GameState => {
     characters: recruitedCharacters,
     addItemToInventory,
     setRecruitedCharacters,
+    setBuyableCharacters,
     addWidgets: (widgets: number) => {
       setWidgets((prev) => prev + widgets);
     },

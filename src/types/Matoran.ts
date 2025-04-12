@@ -63,14 +63,7 @@ export type RecruitedCharacterData = {
   quest?: Quest['id'];
 };
 
-
 export type ItemRequirement = {
   item: GameItemId;
   quantity: number;
 };
-
-export type ListedMatoran = BaseMatoran & ListedCharacterData;
-
-export type RecruitedMatoran = BaseMatoran & RecruitedCharacterData;
-
-export type Matoran = ListedMatoran | RecruitedMatoran;

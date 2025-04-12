@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  ListedCharacterData,
-  Matoran,
-  RecruitedCharacterData,
-} from '../types/Matoran';
+import { ListedCharacterData, RecruitedCharacterData } from '../types/Matoran';
 import { GameItemId } from '../data/loot';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
@@ -37,17 +33,18 @@ export function useCharactersState(
     setBuyableCharacters(updatedBuyable);
   };
 
-  const assignJobToMatoran = (id: Matoran['id'], job: MatoranJob) => {
+  const assignJobToMatoran = (id: RecruitedCharacterData['id'], job: MatoranJob) => {
     setRecruitedCharacters((prev) => assignJob(id, job, prev));
   };
 
-  const removeJobFromMatoran = (id: Matoran['id']) => {
+  const removeJobFromMatoran = (id: RecruitedCharacterData['id']) => {
     setRecruitedCharacters((prev) => removeJob(id, prev));
   };
 
   return {
     recruitedCharacters,
     setRecruitedCharacters,
+    setBuyableCharacters,
     buyableCharacters,
     recruitCharacter,
     assignJobToMatoran,

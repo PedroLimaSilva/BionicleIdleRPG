@@ -2,45 +2,11 @@ import { LegoColor } from '../types/Colors';
 import {
   BaseMatoran,
   ElementTribe,
-  ListedCharacterData,
-  ListedMatoran,
   Mask,
   MatoranTag,
   RecruitedCharacterData,
-  RecruitedMatoran,
 } from '../types/Matoran';
 import { GameItemId } from './loot';
-
-export function getListedMatoran(
-  id: string,
-  listed: ListedCharacterData[]
-): ListedMatoran {
-  const base = MATORAN_DEX[id];
-  const listing = listed.find((m) => m.id === id);
-  if (!base || !listing)
-    throw new Error(`Missing data for listed Matoran: ${id}`);
-  return {
-    ...base,
-    cost: listing.cost,
-    requiredItems: listing.requiredItems,
-  };
-}
-
-export function getRecruitedMatoran(
-  id: string,
-  recruitedCharacters: RecruitedCharacterData[]
-): RecruitedMatoran {
-  const base = MATORAN_DEX[id];
-  const recruited = recruitedCharacters.find((m) => m.id === id);
-  if (!base || !recruited)
-    throw new Error(`Missing data for recruited Matoran: ${id}`);
-  return {
-    ...base,
-    exp: recruited.exp,
-    assignment: recruited.assignment,
-    quest: recruited.quest,
-  };
-}
 
 export const MATORAN_DEX: Record<string, BaseMatoran> = {
   Toa_Tahu: {

@@ -20,7 +20,22 @@ export const QUESTS: Quest[] = [
       ],
     },
     rewards: {
-      unlockCharacters: ['Kapura'],
+      unlockCharacters: [
+        {
+          id: 'Kapura',
+          cost: 600,
+          requiredItems: [
+            {
+              item: GameItemId.Charcoal,
+              quantity: 150,
+            },
+            {
+              item: GameItemId.BurnishedAlloy,
+              quantity: 50,
+            },
+          ],
+        },
+      ],
       loot: {
         [GameItemId.Charcoal]: 100,
         [GameItemId.BurnishedAlloy]: 50,
@@ -54,7 +69,22 @@ export const QUESTS: Quest[] = [
       ],
     },
     rewards: {
-      unlockCharacters: ['Toa_Tahu'],
+      unlockCharacters: [
+        {
+          id: 'Toa_Tahu',
+          cost: 100000,
+          requiredItems: [
+            {
+              item: GameItemId.Charcoal,
+              quantity: 3000,
+            },
+            {
+              item: GameItemId.BurnishedAlloy,
+              quantity: 1000,
+            },
+          ],
+        },
+      ],
       loot: {
         [GameItemId.Charcoal]: 1000,
         [GameItemId.BurnishedAlloy]: 500,

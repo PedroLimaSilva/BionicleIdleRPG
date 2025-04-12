@@ -1,15 +1,15 @@
 import './index.scss';
 import { useMemo, useState } from 'react';
 import { MatoranJob } from '../../types/Jobs';
-import { RecruitedMatoran } from '../../types/Matoran';
 import { useGame } from '../../context/Game';
 import { getAvailableJobs, getProductivityModifier } from '../../game/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { JobCard } from './JobCard';
+import { RecruitedCharacterData } from '../../types/Matoran';
 
 type JobListProps = {
-  matoran: RecruitedMatoran;
-  onAssign: (updated: RecruitedMatoran) => void;
+  matoran: RecruitedCharacterData;
+  onAssign: (updated: RecruitedCharacterData) => void;
   onCancel: () => void;
 };
 

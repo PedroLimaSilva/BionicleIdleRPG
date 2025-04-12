@@ -1,8 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 
-import { getRecruitedMatoran } from '../../data/matoran';
-
 import './index.scss';
 import { CharacterScene } from '../../components/CharacterScene';
 import { ElementTag } from '../../components/ElementTag';
@@ -15,6 +13,8 @@ import { JobCard } from '../../components/JobList/JobCard';
 import { getProductivityModifier } from '../../game/Jobs';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
+import { getRecruitedMatoran } from '../../services/matoranUtils';
+import { RecruitedCharacterData } from '../../types/Matoran';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -23,7 +23,7 @@ export const CharacterDetail: React.FC = () => {
   const { setScene } = useSceneCanvas();
 
   const matoran = useMemo(
-    () => getRecruitedMatoran(String(id), recruitedCharacters),
+    () => getRecruitedMatoran(String(id), recruitedCharacters)!,
     [id, recruitedCharacters]
   );
 
@@ -41,7 +41,7 @@ export const CharacterDetail: React.FC = () => {
   const lvlProgress = useMemo(
     () =>
       matoran
-        ? getExpProgress(matoran.exp)
+        ? getExpProgress(matoran?.exp || 0)
         : { level: 0, currentLevelExp: 0, expForNextLevel: 1, progress: 0 },
     [matoran]
   );
@@ -72,7 +72,7 @@ export const CharacterDetail: React.FC = () => {
           <div className='character-progress'>
             <div className='level-display'>
               <span className='label'>Level</span>
-              <span className='value'>{getLevelFromExp(matoran.exp)}</span>
+              <span className='value'>{getLevelFromExp(matoran.exp || 0)}</span>
             </div>
 
             <div className='xp-bar'>
@@ -100,7 +100,7 @@ export const CharacterDetail: React.FC = () => {
                   baseRate={jobDetails.rate}
                   modifier={getProductivityModifier(
                     matoran.assignment.job,
-                    matoran
+                    matoran as RecruitedCharacterData
                   )}
                 />
               </>
@@ -121,7 +121,7 @@ export const CharacterDetail: React.FC = () => {
                 classNames={`element-${matoran.element}`}
               >
                 <JobList
-                  matoran={matoran}
+                  matoran={matoran as RecruitedCharacterData}
                   onAssign={() => {
                     setAssigningJob(false);
                   }}

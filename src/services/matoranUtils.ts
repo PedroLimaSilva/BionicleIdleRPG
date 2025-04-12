@@ -1,12 +1,19 @@
-import {
-  ListedCharacterData,
-  Matoran,
-  RecruitedCharacterData,
-} from '../types/Matoran';
+import { ListedCharacterData, RecruitedCharacterData } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { GameItemId } from '../data/loot';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
+import { MATORAN_DEX } from '../data/matoran';
+
+export function getRecruitedMatoran(
+  id: string,
+  recruitedMatoran: RecruitedCharacterData[]
+) {
+  return {
+    ...MATORAN_DEX[id],
+    ...recruitedMatoran.find((m) => m.id === id),
+  };
+}
 
 export function recruitMatoran(
   character: ListedCharacterData,
@@ -44,7 +51,7 @@ export function recruitMatoran(
 }
 
 export function assignJob(
-  id: Matoran['id'],
+  id: RecruitedCharacterData['id'],
   job: MatoranJob,
   matoran: RecruitedCharacterData[]
 ): RecruitedCharacterData[] {
@@ -66,7 +73,7 @@ export function assignJob(
 }
 
 export function removeJob(
-  id: Matoran['id'],
+  id: RecruitedCharacterData['id'],
   matoran: RecruitedCharacterData[]
 ): RecruitedCharacterData[] {
   return matoran.map((m) =>

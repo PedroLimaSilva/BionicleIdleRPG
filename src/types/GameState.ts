@@ -2,7 +2,7 @@ import { GameItemId } from '../data/loot';
 import { Inventory } from '../services/inventoryUtils';
 import { MatoranJob } from './Jobs';
 import { ActivityLogEntry, LogType } from './Logging';
-import { ListedCharacterData, Matoran, RecruitedCharacterData } from './Matoran';
+import { ListedCharacterData, RecruitedCharacterData } from './Matoran';
 import { Quest, QuestProgress } from './Quests';
 
 export type GameState = {
@@ -15,10 +15,10 @@ export type GameState = {
   completedQuests: string[];
   recruitCharacter: (character: ListedCharacterData) => void;
   addItemToInventory: (item: GameItemId, amount: number) => void;
-  assignJobToMatoran: (matoranId: Matoran['id'], job: MatoranJob) => void;
-  removeJobFromMatoran: (matoranId: Matoran['id']) => void;
+  assignJobToMatoran: (matoranId: RecruitedCharacterData['id'], job: MatoranJob) => void;
+  removeJobFromMatoran: (matoranId: RecruitedCharacterData['id']) => void;
   activityLog: ActivityLogEntry[];
-  startQuest: (quest: Quest, assignedMatoran: Matoran['id'][]) => void;
+  startQuest: (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => void;
   cancelQuest: (questId: string) => void;
   completeQuest: (quest: Quest) => void;
   addActivityLog: (message: string, type: LogType) => void;
