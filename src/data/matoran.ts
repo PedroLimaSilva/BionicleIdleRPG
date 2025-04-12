@@ -12,7 +12,7 @@ import { GameItemId } from './loot';
 export const MATORAN_DEX: Record<string, BaseMatoran> = {
   Toa_Tahu: {
     id: 'Toa_Tahu',
-    name: 'Toa Tau',
+    name: 'Toa Tahu',
     element: ElementTribe.Fire,
     mask: Mask.Hau,
     stage: MatoranStage.ToaMata,
