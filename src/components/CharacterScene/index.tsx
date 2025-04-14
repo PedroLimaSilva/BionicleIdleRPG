@@ -3,7 +3,9 @@ import { Bounds, OrbitControls, Stage } from '@react-three/drei';
 
 import { BaseMatoran, MatoranStage } from '../../types/Matoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
-import { ToaMataModel } from './ToaMataModel';
+import { ToaTahuMataModel } from './ToaTahuMataModel';
+import { ToaGaliMataModel } from './ToaGaliMataModel';
+import { ToaPohatuMataModel } from './ToaPohatuMataModel';
 
 function getCharacterModel(matoran: BaseMatoran) {
   switch (matoran.stage) {
@@ -11,7 +13,14 @@ function getCharacterModel(matoran: BaseMatoran) {
       return <DiminishedMatoranModel matoran={matoran} />;
     }
     case MatoranStage.ToaMata: {
-      return <ToaMataModel />;
+      switch (matoran.id) {
+        case 'Toa_Gali':
+          return <ToaGaliMataModel />;
+        case 'Toa_Pohatu':
+          return <ToaPohatuMataModel />;
+        default:
+          return <ToaTahuMataModel />;
+      }
     }
     default:
       return <DiminishedMatoranModel matoran={matoran} />;

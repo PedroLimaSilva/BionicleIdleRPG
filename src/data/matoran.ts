@@ -24,12 +24,13 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       eyes: LegoColor.TransNeonRed,
     },
   },
-  Toa_Gali:{
-    id:'Toa_Gali',
+  Toa_Gali: {
+    id: 'Toa_Gali',
     name: 'Toa Gali',
     element: ElementTribe.Water,
+    isMaskTransparent: true,
     mask: Mask.Kaukau,
-    stage: MatoranStage.Diminished,
+    stage: MatoranStage.ToaMata,
     colors: {
       mask: LegoColor.Blue,
       body: LegoColor.Blue,
@@ -38,12 +39,12 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       eyes: LegoColor.TransNeonYellow,
     },
   },
-  Toa_Pohatu:{
-    id:'Toa_Pohatu',
+  Toa_Pohatu: {
+    id: 'Toa_Pohatu',
     name: 'Toa Pohatu',
     element: ElementTribe.Stone,
     mask: Mask.Kakama,
-    stage: MatoranStage.Diminished,
+    stage: MatoranStage.ToaMata,
     colors: {
       mask: LegoColor.DarkOrange,
       body: LegoColor.DarkOrange,
