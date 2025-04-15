@@ -233,10 +233,10 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Air,
     colors: {
-      mask: LegoColor.DarkTurquoise,
-      body: LegoColor.Lime,
-      feet: LegoColor.DarkTurquoise,
-      arms: LegoColor.Lime,
+      mask: LegoColor.Lime,
+      body: LegoColor.DarkTurquoise,
+      feet: LegoColor.Lime,
+      arms: LegoColor.DarkTurquoise,
       eyes: LegoColor.TransNeonGreen,
     },
     tags: [MatoranTag.ChroniclersCompany],
@@ -310,20 +310,6 @@ export const LISTED_MATORAN_DATA = [
     ],
   },
   {
-    id: 'Kongu',
-    cost: 1200,
-    requiredItems: [
-      {
-        item: GameItemId.FeatherTufts,
-        quantity: 300,
-      },
-      {
-        item: GameItemId.JungleResin,
-        quantity: 100,
-      },
-    ],
-  },
-  {
     id: 'Matoro',
     cost: 1200,
     requiredItems: [
@@ -354,34 +340,6 @@ export const LISTED_MATORAN_DATA = [
       {
         item: GameItemId.StoneBlock,
         quantity: 150,
-      },
-    ],
-  },
-  {
-    id: 'Taipu',
-    cost: 600,
-    requiredItems: [
-      {
-        item: GameItemId.LightStone,
-        quantity: 150,
-      },
-      {
-        item: GameItemId.BiolumeThread,
-        quantity: 50,
-      },
-    ],
-  },
-  {
-    id: 'Tamaru',
-    cost: 600,
-    requiredItems: [
-      {
-        item: GameItemId.FeatherTufts,
-        quantity: 150,
-      },
-      {
-        item: GameItemId.JungleResin,
-        quantity: 50,
       },
     ],
   },

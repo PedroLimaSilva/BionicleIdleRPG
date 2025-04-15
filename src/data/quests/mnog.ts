@@ -1,7 +1,7 @@
-import { Quest } from '../types/Quests';
-import { GameItemId } from './loot';
+import { Quest } from '../../types/Quests';
+import { GameItemId } from '../loot';
 
-export const QUESTS: Quest[] = [
+export const MNOG_QUEST_LINE: Quest[] = [
   {
     id: 'story_find_canister_beach',
     name: 'The Canister on the shore',
@@ -294,63 +294,214 @@ export const QUESTS: Quest[] = [
       xpPerMatoran: 200,
       currency: 300,
     },
-    followUpQuests: [],
+    followUpQuests: ['story_arrive_onu_koro'],
     unlockedAfter: ['story_po_koro_cave_investigation'],
   },
+  {
+    id: 'story_arrive_onu_koro',
+    name: 'Into the Underground',
+    description: `Takua travels through the rocky tunnels toward Onu-Koro, following rumors of mining troubles.`,
+    durationSeconds: 30 * 60, // 30 minutes
+    requirements: {
+      matoran: ['Takua'],
+      minLevel: 8,
+      items: [],
+    },
+    rewards: {
+      xpPerMatoran: 200,
+      currency: 400,
+    },
+    followUpQuests: ['story_onu_koro_lava_problem'],
+    unlockedAfter: ['story_recruit_hewkii'],
+  },
+  {
+    id: 'story_onu_koro_lava_problem',
+    name: 'Redirection',
+    description:
+      'Onu-Koro’s main tunnel has been blocked by lava flows. Takua can use his lava board to cross it and activate an ancient pump system to reroute the molten stream and restore safe mining routes.',
+    durationSeconds: 2 * 60 * 60, // 2 hours
+    requirements: {
+      matoran: ['Takua'],
+      minLevel: 8,
+      items: [
+        {
+          id: GameItemId.BurnishedAlloy,
+          amount: 1000,
+          consumed: true,
+        },
+      ],
+    },
+    rewards: {
+      loot: {
+        [GameItemId.LightStone]: 1000,
+        [GameItemId.BiolumeThread]: 500,
+      },
+      xpPerMatoran: 300,
+      currency: 700,
+    },
+    followUpQuests: ['story_meet_taipu'],
+    unlockedAfter: ['story_arrive_onu_koro'],
+  },
+  {
+    id: 'story_meet_taipu',
+    name: 'Meet Taipu',
+    description:
+      'With the lava redirected, Takua can explore the newly opened tunnels. At the end of the tunnel to Le Koro, Takua meets Taipu who is very eager to explore Le-Wahi and wants to join in your adventure.',
+    durationSeconds: 45 * 60, // 45 minutes
+    requirements: {
+      matoran: ['Takua'],
+      minLevel: 9,
+      items: [],
+    },
+    rewards: {
+      unlockCharacters: [
+        {
+          id: 'Taipu',
+          cost: 600,
+          requiredItems: [
+            {
+              item: GameItemId.LightStone,
+              quantity: 150,
+            },
+            {
+              item: GameItemId.BiolumeThread,
+              quantity: 50,
+            },
+          ],
+        },
+      ],
+      loot: {
+        [GameItemId.LightStone]: 500,
+        [GameItemId.BiolumeThread]: 250,
+      },
+      xpPerMatoran: 250,
+      currency: 500,
+    },
+    followUpQuests: ['story_enter_le_wahi'],
+    unlockedAfter: ['story_onu_koro_lava_problem'],
+  },
+  {
+    id: 'story_enter_le_wahi',
+    name: 'Enter Le-Wahi',
+    description:
+      'Takua and Taipu travel through the reopened tunnel toward Le-Wahi. As they emerge into the jungle, a Nui-Rama suddenly ambushes them—snatching Taipu and flying off toward the treetops. Takua presses on alone, determined to rescue his friend.',
+    durationSeconds: 1 * 60 * 60, // 1 hour
+    requirements: {
+      matoran: ['Takua', 'Taipu'],
+      minLevel: 9,
+      items: [],
+    },
+    rewards: {
+      loot: {
+        [GameItemId.JungleResin]: 100,
+      },
+      cutscene: 'vM0lWqZ9uD4',
+      xpPerMatoran: 300,
+      currency: 600,
+    },
+    followUpQuests: ['story_flight_to_hive'],
+    unlockedAfter: ['story_meet_taipu'],
+  },
+  {
+    id: 'story_flight_to_hive',
+    name: 'Flight to the Hive',
+    description:
+      'Arriving at Le-Koro, Takua finds the village nearly deserted—most of its Matoran have been taken by the Nui-Rama. The few who remain, including Tamaru and Kongu, greet him with urgency. With a Kahu prepared for flight, Takua joins them on a daring mission to rescue the missing villagers from the hive.',
+    durationSeconds: 1.5 * 60 * 60, // 1.5 hours
+    requirements: {
+      matoran: ['Takua'],
+      minLevel: 10,
+      items: [
+        {
+          id: GameItemId.FeatherTufts,
+          amount: 400,
+          consumed: true,
+        },
+        {
+          id: GameItemId.JungleResin,
+          amount: 200,
+          consumed: true,
+        },
+      ],
+    },
+    rewards: {
+      unlockCharacters: [
+        {
+          id: 'Tamaru',
+          cost: 600,
+          requiredItems: [
+            {
+              item: GameItemId.FeatherTufts,
+              quantity: 150,
+            },
+            {
+              item: GameItemId.JungleResin,
+              quantity: 50,
+            },
+          ],
+        },
+        {
+          id: 'Kongu',
+          cost: 1200,
+          requiredItems: [
+            {
+              item: GameItemId.FeatherTufts,
+              quantity: 300,
+            },
+            {
+              item: GameItemId.JungleResin,
+              quantity: 100,
+            },
+          ],
+        },
+      ],
+      loot: {
+        [GameItemId.FeatherTufts]: 800,
+        [GameItemId.JungleResin]: 400,
+      },
+      cutscene: '3feiWoDhKzo',
+      xpPerMatoran: 500,
+      currency: 700,
+    },
+    followUpQuests: ['story_rescue_from_hive'],
+    unlockedAfter: ['story_enter_le_wahi'],
+  },
+  {
+    id: 'story_rescue_from_hive',
+    name: 'Rescue from the Hive',
+    description:
+      'Takua, Tamaru, and Kongu fly to the Nui-Rama hive in a daring rescue mission. As they enter, something downs their Kahu birds and they are trapped. Inside, they discover the captive Le-Matoran—and Taipu, still alive but forced to work.',
+    durationSeconds: 0.5 * 60 * 60, // 0.5 hours
+    requirements: {
+      matoran: ['Takua', 'Tamaru', 'Kongu'],
+      minLevel: 10,
+      items: [],
+    },
+    rewards: {
+      cutscene: 'dsSugRBjusI',
+      xpPerMatoran: 1000,
+      currency: 1200,
+    },
+    followUpQuests: ['story_lewa_v_onua'],
+    unlockedAfter: ['story_flight_to_hive'],
+  },
+  {
+    id: 'story_lewa_v_onua',
+    name: 'Trapped in the Hive',
+    description:
+      'Takua, Taipu and all the Le Matoran, includind Turaga Matau, are trapped in a Nui-Rama nest. There does not seem to be a way out!',
+    durationSeconds: 15 * 60, // 15 minutes
+    requirements: {
+      matoran: ['Takua', 'Taipu', 'Tamaru', 'Kongu'],
+      minLevel: 10,
+      items: [],
+    },
+    rewards: {
+      cutscene: 'tggBKXjwPow',
+      xpPerMatoran: 1000,
+      currency: 1200,
+    },
+    followUpQuests: [],
+    unlockedAfter: ['story_lewa_v_onua'],
+  },
 ];
-
-function formatDuration(seconds: number) {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  return [h ? `${h}h` : '', m ? `${m}m` : '', s && !h && !m ? `${s}s` : '']
-    .filter(Boolean)
-    .join(' ');
-}
-
-function formatRewards(rewards: Quest['rewards']) {
-  if (!rewards) return '';
-  const parts: string[] = [];
-  if (rewards.unlockCharacters) {
-    parts.push(
-      `Unlock: ${rewards.unlockCharacters.map((c) => c.id).join(', ')}`
-    );
-  }
-  if (rewards.loot) {
-    parts.push(
-      `Loot: ${Object.entries(rewards.loot)
-        .map(([k, v]) => `${k}=${v}`)
-        .join(', ')}`
-    );
-  }
-  if (rewards.currency) parts.push(`Currency: ${rewards.currency}`);
-  if (rewards.xpPerMatoran) parts.push(`XP: ${rewards.xpPerMatoran}`);
-  return parts.length ? `\n${parts.join('\n')}` : '';
-}
-
-function sanitize(text: string) {
-  return text.replace(/"/g, "'").replace(/[{}]/g, '').replace(/\|/g, '/');
-}
-
-function generateMermaidFlowchart(quests: Quest[]) {
-  const nodes = quests.map((q) => {
-    const duration = formatDuration(q.durationSeconds || 0);
-    const rewards = formatRewards(q.rewards);
-    const label = sanitize(`${q.name}\n(${duration})${rewards}`);
-    return `  ${q.id}["${label}"]`;
-  });
-
-  const edges: string[] = [];
-  quests.forEach((q) => {
-    if (q.followUpQuests && q.followUpQuests.length > 0) {
-      q.followUpQuests.forEach((targetId) => {
-        edges.push(`  ${q.id} --> ${targetId}`);
-      });
-    }
-  });
-
-  return `graph TD\n${nodes.join('\n')}\n${edges.join('\n')}`;
-}
-
-// Example usage:
-console.log(generateMermaidFlowchart(QUESTS));

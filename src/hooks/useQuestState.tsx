@@ -42,7 +42,10 @@ export const useQuestState = ({
   const [completedQuests, setCompletedQuestIds] =
     useState<string[]>(initialCompleted);
 
-  const startQuest = (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => {
+  const startQuest = (
+    quest: Quest,
+    assignedMatoran: RecruitedCharacterData['id'][]
+  ) => {
     const now = getCurrentTimestamp();
     const endsAt = now + quest.durationSeconds;
 
@@ -93,7 +96,10 @@ export const useQuestState = ({
       }
     }
 
-    setBuyableCharacters((prev) => [...unlockedCharacters, ...prev]);
+    setBuyableCharacters((prev) => [
+      ...unlockedCharacters.filter((u) => !prev.some((p) => p.id === u.id)),
+      ...prev,
+    ]);
 
     // Reassign Matoran with updated exp
     setRecruitedCharacters((prev) => {
