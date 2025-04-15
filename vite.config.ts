@@ -39,7 +39,12 @@ export default defineConfig({
     }),
     watch({
       pattern: 'src/data/quests/**/*',
-      command: 'tsx scripts/generate-quest-graph.ts',
+      command: 'tsx tools/generate-quest-graph.ts',
     }),
   ],
+  build: {
+    rollupOptions: {
+      external: ['tools'],
+    },
+  },
 });

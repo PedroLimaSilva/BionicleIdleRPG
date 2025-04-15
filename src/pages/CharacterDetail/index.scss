@@ -13,33 +13,44 @@
     var(--color-surface-low)
   );
 
-  .perk-section {
-    margin-top: 1.5rem;
-    text-align: left;
 
-    h3 {
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
+  .scroll-row {
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+  }
+
+  .mask-collection-item {
+    flex: 0 0 auto;
+    width: 120px;
+    background: var(--color-surface-low);
+    border: 2px solid var(--color-border-muted);
+    border-radius: 12px;
+    padding: 0.5rem;
+    text-align: center;
+    box-shadow: 0 0 4px var(--color-text-muted);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 10px var(--theme-element-glow-transparent);
     }
 
-    .perk-list {
-      list-style: none;
-      padding: 0;
-      font-size: 0.95rem;
+    .mask-preview {
+      height: 100px;
+      font-size: 2rem;
+    }
 
-      li {
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
+    .name {
+      font-weight: bold;
+      color: var(--theme-element-primary);
+    }
 
-        span {
-          display: inline-block;
-          width: 1.5rem;
-          text-align: center;
-          margin-right: 0.5rem;
-        }
-      }
+    .cost {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
     }
   }
 }

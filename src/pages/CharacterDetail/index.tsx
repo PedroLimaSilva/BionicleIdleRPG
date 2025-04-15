@@ -13,12 +13,18 @@ import { JobCard } from '../../components/JobList/JobCard';
 import { getProductivityModifier } from '../../game/Jobs';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
-import { getRecruitedMatoran, isMatoran } from '../../services/matoranUtils';
-import { RecruitedCharacterData } from '../../types/Matoran';
+import {
+  getRecruitedMatoran,
+  isMatoran,
+  masksCollected,
+} from '../../services/matoranUtils';
+import { MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
+import { MatoranAvatar } from '../../components/MatoranAvatar';
+import { CompositedImage } from '../../components/CompositedImage';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
-  const { recruitedCharacters } = useGame();
+  const { recruitedCharacters, completedQuests } = useGame();
 
   const { setScene } = useSceneCanvas();
 
@@ -26,6 +32,10 @@ export const CharacterDetail: React.FC = () => {
     () => getRecruitedMatoran(String(id), recruitedCharacters)!,
     [id, recruitedCharacters]
   );
+
+  const masks = useMemo(() => {
+    return masksCollected(matoran, completedQuests);
+  }, [matoran, completedQuests]);
 
   const [assigningJob, setAssigningJob] = useState(false);
 
@@ -129,6 +139,39 @@ export const CharacterDetail: React.FC = () => {
                     onCancel={() => setAssigningJob(false)}
                   />
                 </Modal>
+              )}
+            </div>
+          )}
+          {matoran.stage === MatoranStage.ToaMata && (
+            <div className='job-section'>
+              {masks.length && (
+                <>
+                  <p>Masks Collected:</p>
+                  <div className='scroll-row mask-collection'>
+                    {masks.map((mask) => (
+                      <div
+                        key={mask}
+                        className={`matoran-card element-${
+                          matoran.element
+                        }`}
+                        // onClick={() => handeMaskOverride(matoran, mask)}
+                      >
+                        <CompositedImage
+                          className='mask-collection-item'
+                          images={[
+                            `${import.meta.env.BASE_URL}/avatar/${mask}.png`,
+                          ]}
+                          colors={[
+                            matoran.maskColorOverride || matoran.colors.mask,
+                          ]}
+                        />
+                        <div className='name'>
+                          {mask}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           )}

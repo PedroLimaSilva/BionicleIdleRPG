@@ -1,5 +1,5 @@
 import { GameItemId } from '../data/loot';
-import { Color } from './Colors';
+import { Color, LegoColor } from './Colors';
 import { JobAssignment } from './Jobs';
 import { Quest } from './Quests';
 
@@ -70,6 +70,8 @@ export type RecruitedCharacterData = {
   exp: number;
   assignment?: JobAssignment;
   quest?: Quest['id'];
+  maskOverride?: Mask;
+  maskColorOverride?: LegoColor;
 };
 
 export type ItemRequirement = {

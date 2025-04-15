@@ -1,6 +1,7 @@
 import {
   BaseMatoran,
   ListedCharacterData,
+  Mask,
   MatoranStage,
   RecruitedCharacterData,
 } from '../types/Matoran';
@@ -9,6 +10,7 @@ import { GameItemId } from '../data/loot';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
 import { MATORAN_DEX } from '../data/matoran';
+import { GameState } from '../types/GameState';
 
 export function isMatoran(matoran: BaseMatoran) {
   return [
@@ -16,6 +18,89 @@ export function isMatoran(matoran: BaseMatoran) {
     MatoranStage.Rebuilt,
     MatoranStage.Metru,
   ].includes(matoran.stage);
+}
+
+const FULL_MASK_SET = [
+  Mask.Akaku,
+  Mask.Hau,
+  Mask.Huna,
+  Mask.Kakama,
+  Mask.Kaukau,
+  Mask.Komau,
+  Mask.Mahiki,
+  Mask.Matatu,
+  Mask.Miru,
+  Mask.Pakari,
+  Mask.Rau,
+  Mask.Ruru,
+];
+
+export function masksCollected(
+  matoran: BaseMatoran,
+  storyProgress: GameState['completedQuests']
+): Mask[] {
+  const masks: Mask[] = [];
+  if (storyProgress.includes('maskhunt_final_collection')) {
+    return FULL_MASK_SET;
+  }
+  masks.push(matoran.mask);
+  switch (matoran.id) {
+    case 'Toa_Tahu': {
+      if (storyProgress.includes('maskhunt_tahu_cave_akaku')) {
+        masks.push(Mask.Akaku);
+      }
+      if (storyProgress.includes('maskhunt_tahu_miru')) {
+        masks.push(Mask.Miru);
+      }
+      if (storyProgress.includes('maskhunt_forest_tahu_kakama')) {
+        masks.push(Mask.Kakama);
+      }
+      break;
+    }
+    case 'Toa_Kopaka': {
+      if (storyProgress.includes('maskhunt_kopaka_pohatu_icecliff')) {
+        masks.push(Mask.Hau);
+      }
+      if (storyProgress.includes('maskhunt_kopaka_mahiki_huna')) {
+        masks.push(Mask.Mahiki, Mask.Huna);
+      }
+      if (storyProgress.includes('maskhunt_kopaka_pakari')) {
+        masks.push(Mask.Pakari);
+      }
+      break;
+    }
+    case 'Toa_Pohatu': {
+      if (storyProgress.includes('maskhunt_pohatu_kaukau_bluff')) {
+        masks.push(Mask.Kaukau);
+      }
+      break;
+    }
+    case 'Toa_Onua': {
+      if (storyProgress.includes('maskhunt_onua_matatu_komau')) {
+        masks.push(Mask.Matatu, Mask.Komau);
+      }
+      break;
+    }
+    case 'Toa_Lewa': {
+      if (storyProgress.includes('maskhunt_lewa_pakari')) {
+        masks.push(Mask.Pakari);
+      }
+      if (storyProgress.includes('maskhunt_lewa_kakama')) {
+        masks.push(Mask.Kakama);
+      }
+      break;
+    }
+    case 'Toa_Gali': {
+      if (storyProgress.includes('maskhunt_gali_miru')) {
+        masks.push(Mask.Miru);
+      }
+      break;
+    }
+    default: {
+      // Do nothing
+    }
+  }
+  return masks;
 }
 
 export function getRecruitedMatoran(
