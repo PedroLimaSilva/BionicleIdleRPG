@@ -28,7 +28,6 @@ export interface Quest {
   durationSeconds: number;
   requirements: QuestRequirement;
   rewards: QuestReward;
-  followUpQuests?: string[]; // Optional chaining
   unlockedAfter?: string[]; // Optional prerequisites
 }
 

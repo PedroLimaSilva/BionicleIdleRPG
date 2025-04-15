@@ -21,6 +21,11 @@ XP: 1000"]
 Loot: LightStone=100, BurnishedAlloy=50
 Currency: 700
 XP: 400"]
+  maskhunt_lewa_pakari["Strength Below the Surface
+(9m)
+Loot: LightStone=60, BiolumeThread=30
+Currency: 900
+XP: 500"]
   mnog_find_canister_beach["The Canister on the shore
 (1m)
 Unlock: Kapura, Jala
@@ -151,6 +156,7 @@ XP: 5000"]
   maskhunt_kopaka_pohatu_icecliff --> story_toa_council
   mnog_tahu_unlock_01 --> maskhunt_tahu_cave_akaku
   story_toa_council --> maskhunt_tahu_cave_akaku
+  story_toa_council --> maskhunt_lewa_pakari
   story_toa_arrival --> mnog_find_canister_beach
   mnog_find_canister_beach --> mnog_tahu_unlock_01
   mnog_tahu_unlock_01 --> mnog_ga_koro_sos

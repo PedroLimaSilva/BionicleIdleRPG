@@ -43,9 +43,9 @@ export function generateMermaidFlowchart(quests: Quest[]) {
 
   const edges: string[] = [];
   quests.forEach((q) => {
-    if (q.followUpQuests && q.followUpQuests.length > 0) {
-      q.followUpQuests.forEach((targetId) => {
-        edges.push(`  ${q.id} --> ${targetId}`);
+    if (q.unlockedAfter && q.unlockedAfter.length > 0) {
+      q.unlockedAfter.forEach((sourceId) => {
+        edges.push(`  ${sourceId} --> ${q.id}`);
       });
     }
   });

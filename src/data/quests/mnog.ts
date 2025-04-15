@@ -52,8 +52,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 150,
       currency: 500,
     },
-    followUpQuests: ['mnog_tahu_unlock_01'],
-    unlockedAfter: [],
+    unlockedAfter: ['story_toa_arrival'],
   },
   {
     id: 'mnog_tahu_unlock_01',
@@ -79,22 +78,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     },
     rewards: {
       cutscene: 'Cn5jxci0RiQ',
-      unlockCharacters: [
-        {
-          id: 'Toa_Tahu',
-          cost: 10000,
-          requiredItems: [
-            {
-              item: GameItemId.Charcoal,
-              quantity: 3000,
-            },
-            {
-              item: GameItemId.BurnishedAlloy,
-              quantity: 1000,
-            },
-          ],
-        },
-      ],
       loot: {
         [GameItemId.Charcoal]: 1000,
         [GameItemId.BurnishedAlloy]: 500,
@@ -102,7 +85,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 150,
       currency: 500,
     },
-    followUpQuests: ['mnog_ga_koro_sos'],
     unlockedAfter: ['mnog_find_canister_beach'],
   },
   {
@@ -131,7 +113,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 200,
       currency: 600,
     },
-    followUpQuests: ['mnog_restore_ga_koro'],
     unlockedAfter: ['mnog_tahu_unlock_01'],
   },
   {
@@ -141,7 +122,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       'Takua finds the villagers of Ga-Koro trapped underwater. Takua needs to find a way to release them.',
     durationSeconds: 2 * 60 * 60, // 2 hours
     requirements: {
-      matoran: ['Takua'],
+      matoran: ['Takua', 'Toa_Gali'],
       minLevel: 6,
       items: [
         {
@@ -158,20 +139,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
         [GameItemId.GaPearl]: 500,
       },
       unlockCharacters: [
-        {
-          id: 'Toa_Gali',
-          cost: 10000,
-          requiredItems: [
-            {
-              item: GameItemId.WaterAlgae,
-              quantity: 3000,
-            },
-            {
-              item: GameItemId.GaPearl,
-              quantity: 1000,
-            },
-          ],
-        },
         {
           id: 'Hali',
           cost: 1200,
@@ -190,8 +157,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 200,
       currency: 600,
     },
-    followUpQuests: ['mnog_po_koro_sickness'],
-    unlockedAfter: ['mnog_ga_koro_sos'],
+    unlockedAfter: ['mnog_ga_koro_sos', 'story_toa_council'],
   },
   {
     id: 'mnog_po_koro_sickness',
@@ -227,7 +193,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
         [GameItemId.GemShard]: 50,
       },
     },
-    followUpQuests: ['mnog_po_koro_cave_investigation'],
     unlockedAfter: ['mnog_restore_ga_koro'],
   },
   {
@@ -237,7 +202,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       'Takua follows the trail of the infected Koli balls to a dark cave outside Po-Koro. Inside, he discovers a Rahi nest and a stash of corrupted balls. Toa Pohatu arrives just in time to help seal the cave.',
     durationSeconds: 2 * 60 * 60, // 2 hours
     requirements: {
-      matoran: ['Takua'],
+      matoran: ['Takua', 'Toa_Pohatu'],
       minLevel: 7,
       items: [
         {
@@ -249,22 +214,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     },
     rewards: {
       cutscene: 'EZdYj1GQR4s',
-      unlockCharacters: [
-        {
-          id: 'Toa_Pohatu',
-          cost: 10000,
-          requiredItems: [
-            {
-              item: GameItemId.StoneBlock,
-              quantity: 3000,
-            },
-            {
-              item: GameItemId.GemShard,
-              quantity: 1000,
-            },
-          ],
-        },
-      ],
       loot: {
         [GameItemId.StoneBlock]: 1000,
         [GameItemId.GemShard]: 500,
@@ -272,8 +221,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 400,
       currency: 800,
     },
-    followUpQuests: ['mnog_recruit_hewkii'],
-    unlockedAfter: ['mnog_po_koro_sickness'],
+    unlockedAfter: ['mnog_po_koro_sickness', 'story_toa_council'],
   },
   {
     id: 'mnog_recruit_hewkii',
@@ -320,7 +268,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 200,
       currency: 300,
     },
-    followUpQuests: ['mnog_arrive_onu_koro'],
     unlockedAfter: ['mnog_po_koro_cave_investigation'],
   },
   {
@@ -367,7 +314,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       ],
       currency: 400,
     },
-    followUpQuests: ['mnog_onu_koro_lava_problem'],
     unlockedAfter: ['mnog_recruit_hewkii'],
   },
   {
@@ -395,7 +341,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 300,
       currency: 700,
     },
-    followUpQuests: ['mnog_meet_taipu'],
     unlockedAfter: ['mnog_arrive_onu_koro'],
   },
   {
@@ -433,7 +378,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 250,
       currency: 500,
     },
-    followUpQuests: ['mnog_enter_le_wahi'],
     unlockedAfter: ['mnog_onu_koro_lava_problem'],
   },
   {
@@ -455,7 +399,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 300,
       currency: 600,
     },
-    followUpQuests: ['mnog_flight_to_hive'],
     unlockedAfter: ['mnog_meet_taipu'],
   },
   {
@@ -519,7 +462,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 500,
       currency: 700,
     },
-    followUpQuests: ['mnog_rescue_from_hive'],
     unlockedAfter: ['mnog_enter_le_wahi'],
   },
   {
@@ -538,7 +480,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 1000,
       currency: 1200,
     },
-    followUpQuests: ['mnog_lewa_v_onua'],
     unlockedAfter: ['mnog_flight_to_hive'],
   },
   {
@@ -557,8 +498,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 1000,
       currency: 1200,
     },
-    followUpQuests: ['mnog_arrive_ko_koro'],
-    unlockedAfter: ['mnog_lewa_v_onua'],
+    unlockedAfter: ['mnog_rescue_from_hive'],
   },
   {
     id: 'mnog_arrive_ko_koro',
@@ -611,8 +551,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 350,
       currency: 800,
     },
-    followUpQuests: ['mnog_search_for_matoro'],
-    unlockedAfter: ['mnog_rescue_from_hive'],
+    unlockedAfter: ['mnog_lewa_v_onua'],
   },
   {
     id: 'mnog_search_for_matoro',
@@ -621,7 +560,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       'After reaching the silent village of Ko-Koro, Takua learns that Turaga Nuju speaks only in gestures and whistles. In order to understand him, Takua must find his translator—Matoro—who has gone missing somewhere in the icy wastes of Ko-Wahi.',
     durationSeconds: 1.5 * 60 * 60, // 1.5 hours
     requirements: {
-      matoran: ['Takua'],
+      matoran: ['Takua', 'Toa_Kopaka'],
       minLevel: 11,
       items: [
         {
@@ -656,7 +595,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 350,
       currency: 850,
     },
-    followUpQuests: ['mnog_summon_chroniclers_company'],
     unlockedAfter: ['mnog_arrive_ko_koro'],
   },
   {
@@ -690,7 +628,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 600,
       currency: 1500,
     },
-    followUpQuests: ['mnog_journey_to_kini_nui_1'],
     unlockedAfter: ['mnog_search_for_matoro'],
   },
   {
@@ -708,7 +645,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       currency: 1200,
       cutscene: 'HJI0snTJetM',
     },
-    followUpQuests: ['mnog_journey_to_kini_nui_2'],
     unlockedAfter: ['mnog_summon_chroniclers_company'],
   },
   {
@@ -726,7 +662,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       currency: 1000,
       cutscene: 'gx8dUv8I3-Y',
     },
-    followUpQuests: ['mnog_journey_to_kini_nui_3'],
     unlockedAfter: ['mnog_journey_to_kini_nui_1'],
   },
   {
@@ -751,7 +686,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       currency: 1100,
       cutscene: 'qXCfYwpGBqY',
     },
-    followUpQuests: ['mnog_journey_to_kini_nui_4'],
     unlockedAfter: ['mnog_journey_to_kini_nui_2'],
   },
   {
@@ -781,7 +715,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       currency: 900,
       cutscene: 'lts_AXCvj60',
     },
-    followUpQuests: ['mnog_kini_nui_arrival'],
     unlockedAfter: ['mnog_journey_to_kini_nui_3'],
   },
   {
@@ -799,7 +732,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 2000,
       currency: 1500,
     },
-    followUpQuests: ['mnog_kini_nui_defense'],
     unlockedAfter: ['mnog_journey_to_kini_nui_4'],
   },
   {
@@ -817,7 +749,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       currency: 1800,
       cutscene: 'ISmkk9Vg8IM',
     },
-    followUpQuests: ['mnog_gali_call'],
     unlockedAfter: ['mnog_kini_nui_arrival'],
   },
   {
@@ -842,7 +773,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       currency: 1000,
       cutscene: 'In1jZ3pZE9k',
     },
-    followUpQuests: ['mnog_witness_makuta_battle'],
     unlockedAfter: ['mnog_kini_nui_defense'],
   },
   {
@@ -860,7 +790,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       currency: 1600,
       cutscene: 'kQbHb3eNzzs',
     },
-    followUpQuests: ['mnog_return_to_shore'],
     unlockedAfter: ['mnog_gali_call'],
   },
   {
@@ -879,7 +808,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
       currency: 2000,
       cutscene: 'h0KeJl6i7Ns',
     },
-    followUpQuests: [],
     unlockedAfter: ['mnog_witness_makuta_battle'],
   },
 ];
