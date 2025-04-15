@@ -58,7 +58,7 @@ export const QuestsPage = () => {
                   Time Remaining: {formatTimeRemaining(progress.endsAt)}
                 </p>
                 <p className='quests-page__item-meta'>
-                  Assigned Matoran:{' '}
+                  Assigned Characters:{' '}
                   {progress.assignedMatoran
                     .map((m) => MATORAN_DEX[m].name)
                     .join(', ')}

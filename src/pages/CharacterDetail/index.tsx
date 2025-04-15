@@ -13,7 +13,7 @@ import { JobCard } from '../../components/JobList/JobCard';
 import { getProductivityModifier } from '../../game/Jobs';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
-import { getRecruitedMatoran } from '../../services/matoranUtils';
+import { getRecruitedMatoran, isMatoran } from '../../services/matoranUtils';
 import { RecruitedCharacterData } from '../../types/Matoran';
 
 export const CharacterDetail: React.FC = () => {
@@ -89,47 +89,49 @@ export const CharacterDetail: React.FC = () => {
               level up)
             </div>
           </div>
-          <div className='job-section'>
-            {jobDetails && matoran.assignment && (
-              <>
-                <p>Assigned Job:</p>
-                <JobCard
-                  classNames={``}
-                  title={jobDetails.label}
-                  description={jobDetails.description}
-                  baseRate={jobDetails.rate}
-                  modifier={getProductivityModifier(
-                    matoran.assignment.job,
-                    matoran as RecruitedCharacterData
-                  )}
-                />
-              </>
-            )}
+          {isMatoran(matoran) && (
+            <div className='job-section'>
+              {jobDetails && matoran.assignment && (
+                <>
+                  <p>Assigned Job:</p>
+                  <JobCard
+                    classNames={``}
+                    title={jobDetails.label}
+                    description={jobDetails.description}
+                    baseRate={jobDetails.rate}
+                    modifier={getProductivityModifier(
+                      matoran.assignment.job,
+                      matoran as RecruitedCharacterData
+                    )}
+                  />
+                </>
+              )}
 
-            {!matoran.quest && (
-              <button
-                className='elemental-btn'
-                onClick={() => setAssigningJob(true)}
-              >
-                {matoran.assignment ? 'Change Job' : 'Assign Job'}
-              </button>
-            )}
+              {!matoran.quest && (
+                <button
+                  className='elemental-btn'
+                  onClick={() => setAssigningJob(true)}
+                >
+                  {matoran.assignment ? 'Change Job' : 'Assign Job'}
+                </button>
+              )}
 
-            {assigningJob && (
-              <Modal
-                onClose={() => setAssigningJob(false)}
-                classNames={`element-${matoran.element}`}
-              >
-                <JobList
-                  matoran={matoran as RecruitedCharacterData}
-                  onAssign={() => {
-                    setAssigningJob(false);
-                  }}
-                  onCancel={() => setAssigningJob(false)}
-                />
-              </Modal>
-            )}
-          </div>
+              {assigningJob && (
+                <Modal
+                  onClose={() => setAssigningJob(false)}
+                  classNames={`element-${matoran.element}`}
+                >
+                  <JobList
+                    matoran={matoran as RecruitedCharacterData}
+                    onAssign={() => {
+                      setAssigningJob(false);
+                    }}
+                    onCancel={() => setAssigningJob(false)}
+                  />
+                </Modal>
+              )}
+            </div>
+          )}
           {matoran.quest && (
             <div className='job-section'>
               <p>Assigned Quest:</p>

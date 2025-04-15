@@ -1,9 +1,22 @@
-import { ListedCharacterData, RecruitedCharacterData } from '../types/Matoran';
+import {
+  BaseMatoran,
+  ListedCharacterData,
+  MatoranStage,
+  RecruitedCharacterData,
+} from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { GameItemId } from '../data/loot';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
 import { MATORAN_DEX } from '../data/matoran';
+
+export function isMatoran(matoran: BaseMatoran) {
+  return [
+    MatoranStage.Diminished,
+    MatoranStage.Rebuilt,
+    MatoranStage.Metru,
+  ].includes(matoran.stage);
+}
 
 export function getRecruitedMatoran(
   id: string,

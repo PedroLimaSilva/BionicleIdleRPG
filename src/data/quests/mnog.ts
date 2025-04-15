@@ -92,7 +92,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'A call for help',
     description:
       'Jala mentioned a distress call from Ga-Koro. Back at the Ta-Wahi coast, Takua meets Maku, who pleads for help—Ga-Koro is under attack by a Rahi! Moved by her urgency, Takua sets sail to offer aid.',
-    durationSeconds: 2 * 60 * 60, // 2 hours
+    durationSeconds: 0.5 * 60 * 60, // 2 hours
     requirements: {
       matoran: ['Takua'],
       minLevel: 6,
@@ -120,10 +120,10 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Ga-Koro Under Siege',
     description:
       'Takua finds the villagers of Ga-Koro trapped underwater. Takua needs to find a way to release them.',
-    durationSeconds: 2 * 60 * 60, // 2 hours
+    durationSeconds: 0.5 * 60 * 60, // 0.5 hours
     requirements: {
       matoran: ['Takua', 'Toa_Gali'],
-      minLevel: 6,
+      minLevel: 5,
       items: [
         {
           id: GameItemId.WaterAlgae,
@@ -167,7 +167,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
        Arriving in the stone village of Po-Koro, 
        Takua finds many villagers—including famous Koli player Huki—sick.
        Suspicion turns to the Koli balls used in recent matches.`,
-    durationSeconds: 1 * 60 * 60, // 1 hour
+    durationSeconds: 0.25 * 60 * 60, // 1 hour
     requirements: {
       matoran: ['Takua'],
       minLevel: 7,
@@ -498,7 +498,11 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 1000,
       currency: 1200,
     },
-    unlockedAfter: ['mnog_rescue_from_hive'],
+    unlockedAfter: [
+      'mnog_rescue_from_hive',
+      'maskhunt_lewa_kakama',
+      'maskhunt_onua_jungle_rumor',
+    ],
   },
   {
     id: 'mnog_arrive_ko_koro',
@@ -595,7 +599,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 350,
       currency: 850,
     },
-    unlockedAfter: ['mnog_arrive_ko_koro'],
+    unlockedAfter: ['mnog_arrive_ko_koro', 'maskhunt_kopaka_mahiki_huna'],
   },
   {
     id: 'mnog_summon_chroniclers_company',
@@ -732,7 +736,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 2000,
       currency: 1500,
     },
-    unlockedAfter: ['mnog_journey_to_kini_nui_4'],
+    unlockedAfter: ['story_kini_nui_gathering', 'mnog_journey_to_kini_nui_4'],
   },
   {
     id: 'mnog_kini_nui_defense',
