@@ -13,7 +13,10 @@ interface AvailableQuestsProps {
   activeQuestIds: string[];
   recruitedCharacters: RecruitedCharacterData[];
   inventory: Inventory;
-  startQuest: (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => void;
+  startQuest: (
+    quest: Quest,
+    assignedMatoran: RecruitedCharacterData['id'][]
+  ) => void;
 }
 
 export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
@@ -81,14 +84,14 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                           has ? 'met' : 'missing'
                         }`}
                       >
-                        {id}
+                        {MATORAN_DEX[id].name}
                       </span>
                     );
                   })}
                   {quest.requirements.minLevel && (
                     <p className='available-quests__item-meta'>
-                      All characters must be at lvl:{' '}
-                      {quest.requirements.minLevel}
+                      All characters must be at lvl{' '}
+                      {quest.requirements.minLevel} or higher
                     </p>
                   )}
                 </div>

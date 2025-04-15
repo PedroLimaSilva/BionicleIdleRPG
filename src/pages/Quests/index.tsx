@@ -4,6 +4,7 @@ import { useGame } from '../../context/Game';
 import { QUESTS } from '../../data/quests';
 import { QuestProgress } from '../../types/Quests';
 import './index.scss';
+import { MATORAN_DEX } from '../../data/matoran';
 
 export const QuestsPage = () => {
   const {
@@ -57,7 +58,10 @@ export const QuestsPage = () => {
                   Time Remaining: {formatTimeRemaining(progress.endsAt)}
                 </p>
                 <p className='quests-page__item-meta'>
-                  Assigned Matoran: {progress.assignedMatoran.join(', ')}
+                  Assigned Matoran:{' '}
+                  {progress.assignedMatoran
+                    .map((m) => MATORAN_DEX[m].name)
+                    .join(', ')}
                 </p>
 
                 <div className='quests-page__button-container'>
