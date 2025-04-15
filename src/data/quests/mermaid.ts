@@ -50,5 +50,5 @@ export function generateMermaidFlowchart(quests: Quest[]) {
     }
   });
 
-  return `graph TD\n${nodes.join('\n')}\n${edges.join('\n')}`;
+  return `\`\`\`mermaid\ngraph TD\n${nodes.join('\n')}\n${edges.join('\n')}\n\`\`\``;
 }

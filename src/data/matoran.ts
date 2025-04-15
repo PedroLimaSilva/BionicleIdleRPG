@@ -7,7 +7,6 @@ import {
   MatoranTag,
   RecruitedCharacterData,
 } from '../types/Matoran';
-import { GameItemId } from './loot';
 
 export const MATORAN_DEX: Record<string, BaseMatoran> = {
   Toa_Tahu: {
@@ -135,6 +134,20 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       mask: LegoColor.Orange,
       body: LegoColor.Black,
       feet: LegoColor.DarkGray,
+      arms: LegoColor.Black,
+      eyes: LegoColor.TransGreen,
+    },
+  },
+  Onepu: {
+    id: 'Onepu',
+    name: 'Onepu',
+    mask: Mask.Pakari,
+    stage: MatoranStage.Diminished,
+    element: ElementTribe.Earth,
+    colors: {
+      mask: LegoColor.Purple,
+      body: LegoColor.Black,
+      feet: LegoColor.Purple,
       arms: LegoColor.Black,
       eyes: LegoColor.TransGreen,
     },
@@ -280,95 +293,4 @@ export const RECRUITED_MATORAN_DATA: RecruitedCharacterData[] = [
   },
 ];
 
-export const LISTED_MATORAN_DATA = [
-  {
-    id: 'Hali',
-    cost: 1200,
-    requiredItems: [
-      {
-        item: GameItemId.WaterAlgae,
-        quantity: 300,
-      },
-      {
-        item: GameItemId.GaPearl,
-        quantity: 100,
-      },
-    ],
-  },
-  {
-    id: 'Nuparu',
-    cost: 1200,
-    requiredItems: [
-      {
-        item: GameItemId.LightStone,
-        quantity: 300,
-      },
-      {
-        item: GameItemId.BiolumeThread,
-        quantity: 100,
-      },
-    ],
-  },
-  {
-    id: 'Matoro',
-    cost: 1200,
-    requiredItems: [
-      {
-        item: GameItemId.IceChip,
-        quantity: 300,
-      },
-      {
-        item: GameItemId.FrostChisel,
-        quantity: 100,
-      },
-    ],
-  },
-  {
-    id: 'Lumi',
-    cost: 300,
-    requiredItems: [
-      {
-        item: GameItemId.IceChip,
-        quantity: 150,
-      },
-    ],
-  },
-  {
-    id: 'Kivi',
-    cost: 300,
-    requiredItems: [
-      {
-        item: GameItemId.StoneBlock,
-        quantity: 150,
-      },
-    ],
-  },
-  {
-    id: 'Kopeke',
-    cost: 600,
-    requiredItems: [
-      {
-        item: GameItemId.IceChip,
-        quantity: 150,
-      },
-      {
-        item: GameItemId.FrostChisel,
-        quantity: 50,
-      },
-    ],
-  },
-  {
-    id: 'Hafu',
-    cost: 600,
-    requiredItems: [
-      {
-        item: GameItemId.StoneBlock,
-        quantity: 150,
-      },
-      {
-        item: GameItemId.GemShard,
-        quantity: 50,
-      },
-    ],
-  },
-];
+export const LISTED_MATORAN_DATA = [];

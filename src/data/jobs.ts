@@ -77,7 +77,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     rate: 1,
     unlock: {
-      requiredProgress: ['story_meet_tamaru'],
+      requiredProgress: ['story_meet_taipu'],
     },
     rewards: [
       { item: GameItemId.FeatherTufts, chance: 1.0 },
@@ -141,7 +141,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [],
     },
     rate: 1,
-    unlock: {},
+    unlock: { requiredProgress: ['story_arrive_onu_koro'] },
     rewards: [
       { item: GameItemId.LightStone, chance: 1.0 },
       { item: GameItemId.BiolumeThread, chance: 0.3 },
@@ -172,7 +172,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     rate: 1,
     unlock: {
-      requiredProgress: ['story_meet_matoro'],
+      requiredProgress: ['story_arrive_ko_koro'],
     },
     rewards: [
       { item: GameItemId.IceChip, chance: 1.0 },
