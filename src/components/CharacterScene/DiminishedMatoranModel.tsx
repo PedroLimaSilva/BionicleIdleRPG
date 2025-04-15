@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { BaseMatoran } from '../../types/Matoran';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh, MeshStandardMaterial, Vector3 } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
@@ -77,10 +77,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
     <group ref={group} dispose={null}>
       <group name='Scene'>
         <group name='Matoran'>
-          <primitive object={nodes.Body} />
-        </group>
-        <group name='Bounding Box'>
-          <primitive object={nodes.Bounding_Box} />
+          <primitive object={nodes.Body} position={new Vector3(0, -7, 0)} />
         </group>
       </group>
     </group>

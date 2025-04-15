@@ -5,7 +5,7 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 export function ToaTahuMataModel() {
   const group = useRef<Group>(null);
   const { nodes, animations } = useGLTF(
-    import.meta.env.BASE_URL + 'toa_mata_master.glb'
+    import.meta.env.BASE_URL + 'toa_tahu_mata.glb'
   );
 
   const { actions } = useAnimations(animations, group);

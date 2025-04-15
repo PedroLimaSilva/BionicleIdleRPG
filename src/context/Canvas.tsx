@@ -32,7 +32,8 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
         createPortal(
           <Canvas
             className='shared-canvas'
-            camera={{ position: [0, 1.5, 20], fov: 30 }}
+            orthographic
+            camera={{ position: [0, 10, 50], fov: 30 }}
           >
             {scene}
           </Canvas>,

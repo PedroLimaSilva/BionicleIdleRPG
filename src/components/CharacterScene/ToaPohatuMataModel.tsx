@@ -23,7 +23,7 @@ export function ToaPohatuMataModel() {
   return (
     <group ref={group} dispose={null}>
       <group name='Scene'>
-        <group name='Toa'>
+        <group name='Toa' position={[0, -0.5,-0.4]} scale={37}>
           <primitive object={nodes.Waist} />
         </group>
       </group>
