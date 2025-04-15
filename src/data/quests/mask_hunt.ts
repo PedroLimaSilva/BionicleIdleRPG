@@ -33,7 +33,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'maskhunt_kopaka_pohatu_icecliff',
     name: 'The Cliffside Encounter',
     description:
-      'As Kopaka explores the frozen drifts of Ko-Wahi, he unexpectedly crosses paths with Pohatu, who arrived chasing a Rahi sighting from the desert’s edge. Though their temperaments clash, the two agree to investigate a nearby crevasse said to conceal an Kanohi Mask. There, they must work together to survive an avalanche and fend off ambushing Rahi to retrieve the Mask of Shielding.',
+      'As Kopaka explores the frozen drifts of Ko-Wahi, he unexpectedly crosses paths with Pohatu, who arrived chasing a Rahi sighting from the desert’s edge. Though their temperaments clash, the two agree to investigate a nearby crevasse said to conceal a Kanohi Mask. There, they must work together to survive an avalanche and fend off ambushing Rahi to retrieve the Mask of Shielding.',
     durationSeconds: 480, // 8 minutes
     requirements: {
       matoran: ['Toa_Kopaka', 'Toa_Pohatu'],
@@ -54,7 +54,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'story_toa_council',
     name: 'The Toa Council',
     description:
-      'Following a chance encounter between Kopaka and Pohatu, they find the other four Toa gathered near the slops of Mount Ihu. Though tensions arise between their differing personalities and priorities, they come to a shared understanding: each must search for the scattered Kanohi and grow stronger in preparation for the battle against Makuta. They part ways with a mutual vow to reunite when the time is right.',
+      'Following a chance encounter between Kopaka and Pohatu, they find the other four Toa gathered near the slopes of Mount Ihu. Though tensions arise between their differing personalities and priorities, they come to a shared understanding: each must search for the scattered Kanohi and grow stronger in preparation for the battle against Makuta. They part ways with a mutual vow to reunite when the time is right.',
     durationSeconds: 30 * 60, // 2 minutes
     requirements: {
       matoran: [
