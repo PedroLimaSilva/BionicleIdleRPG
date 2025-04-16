@@ -121,7 +121,7 @@ Loot: StoneBlock=100, GemShard=50
 Currency: 500
 XP: 250"]
   mnog_po_koro_cave_investigation["Cave of the Corrupted
-(2h)
+(30m)
 Loot: StoneBlock=1000, GemShard=500
 Currency: 800
 XP: 400"]
