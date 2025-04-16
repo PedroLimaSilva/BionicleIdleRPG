@@ -18,12 +18,17 @@ import {
   isMatoran,
   masksCollected,
 } from '../../services/matoranUtils';
-import { MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
+import {
+  BaseMatoran,
+  Mask,
+  MatoranStage,
+  RecruitedCharacterData,
+} from '../../types/Matoran';
 import { CompositedImage } from '../../components/CompositedImage';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
-  const { recruitedCharacters, completedQuests } = useGame();
+  const { recruitedCharacters, completedQuests, setMaskOverride } = useGame();
 
   const { setScene } = useSceneCanvas();
 
@@ -59,6 +64,13 @@ export const CharacterDetail: React.FC = () => {
     () => matoran && matoran.assignment && JOB_DETAILS[matoran.assignment.job],
     [matoran]
   );
+
+  const handeMaskOverride = (
+    matoran: RecruitedCharacterData & BaseMatoran,
+    mask: Mask
+  ) => {
+    setMaskOverride(matoran.id, matoran.colors.mask, mask);
+  };
 
   if (!matoran) {
     return <p>Something is wrong, this matoran does not exist</p>;
@@ -150,10 +162,8 @@ export const CharacterDetail: React.FC = () => {
                     {masks.map((mask) => (
                       <div
                         key={mask}
-                        className={`card element-${
-                          matoran.element
-                        }`}
-                        // onClick={() => handeMaskOverride(matoran, mask)}
+                        className={`card element-${matoran.element}`}
+                        onClick={() => handeMaskOverride(matoran, mask)}
                       >
                         <CompositedImage
                           className='mask-preview'
@@ -164,9 +174,7 @@ export const CharacterDetail: React.FC = () => {
                             matoran.maskColorOverride || matoran.colors.mask,
                           ]}
                         />
-                        <div className='name'>
-                          {mask}
-                        </div>
+                        <div className='name'>{mask}</div>
                       </div>
                     ))}
                   </div>

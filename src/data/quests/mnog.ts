@@ -59,7 +59,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'A disturbance in the Forest',
     description:
       'Jala and Kapura investigate a strange disturbance deep in the Ta-Wahi forest. Smoke rises where none should be—could the ancient legends be true?',
-    durationSeconds: 1 * 60 * 60, // 1 hour
+    durationSeconds: 5 * 60, // 5 minutes
     requirements: {
       matoran: ['Jala', 'Kapura'],
       minLevel: 5,
@@ -92,7 +92,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'A call for help',
     description:
       'Jala mentioned a distress call from Ga-Koro. Back at the Ta-Wahi coast, Takua meets Maku, who pleads for help—Ga-Koro is under attack by a Rahi! Moved by her urgency, Takua sets sail to offer aid.',
-    durationSeconds: 0.5 * 60 * 60, // 2 hours
+    durationSeconds: 20 * 60, // 20 minutes
     requirements: {
       matoran: ['Takua'],
       minLevel: 6,
@@ -120,7 +120,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Ga-Koro Under Siege',
     description:
       'Takua finds the villagers of Ga-Koro trapped underwater. Takua needs to find a way to release them.',
-    durationSeconds: 0.5 * 60 * 60, // 0.5 hours
+    durationSeconds: 10 * 60, // 10 minutes
     requirements: {
       matoran: ['Takua', 'Toa_Gali'],
       minLevel: 5,
@@ -167,7 +167,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
        Arriving in the stone village of Po-Koro, 
        Takua finds many villagers—including famous Koli player Huki—sick.
        Suspicion turns to the Koli balls used in recent matches.`,
-    durationSeconds: 0.25 * 60 * 60, // 1 hour
+    durationSeconds: 15 * 60, // 15 min
     requirements: {
       matoran: ['Takua'],
       minLevel: 7,
@@ -200,7 +200,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Cave of the Corrupted',
     description:
       'Takua follows the trail of the infected Koli balls to a dark cave outside Po-Koro. Inside, he discovers a Rahi nest and a stash of corrupted balls. Toa Pohatu arrives just in time to help seal the cave.',
-    durationSeconds: 0.5 * 60 * 60, // 2 hours
+    durationSeconds: 10 * 60, // 10 min
     requirements: {
       matoran: ['Takua', 'Toa_Pohatu'],
       minLevel: 6,
@@ -228,7 +228,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Koli Champion Recovered',
     description:
       'With the source of the corruption destroyed, Hewkii finally begins to recover. Inspired by Takua’s courage, he offers to join the journey ahead.',
-    durationSeconds: 30 * 60, // 30 minutes
+    durationSeconds: 5 * 60, // 5 minutes
     requirements: {
       matoran: ['Takua'],
       minLevel: 7,
@@ -274,7 +274,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     id: 'mnog_arrive_onu_koro',
     name: 'Into the Underground',
     description: `Takua travels through the rocky tunnels toward Onu-Koro, following rumors of mining troubles.`,
-    durationSeconds: 30 * 60, // 30 minutes
+    durationSeconds: 10 * 60, // 10 minutes
     requirements: {
       matoran: ['Takua'],
       minLevel: 8,
@@ -321,7 +321,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Redirection',
     description:
       'Onu-Koro’s main tunnel has been blocked by lava flows. Takua can use his lava board to cross it and activate an ancient pump system to reroute the molten stream and restore safe mining routes.',
-    durationSeconds: 2 * 60 * 60, // 2 hours
+    durationSeconds: 20 * 60, // 20 min
     requirements: {
       matoran: ['Takua'],
       minLevel: 8,
@@ -348,7 +348,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Meet Taipu',
     description:
       'With the lava redirected, Takua can explore the newly opened tunnels. At the end of the tunnel to Le Koro, Takua meets Taipu who is very eager to explore Le-Wahi and wants to join in your adventure.',
-    durationSeconds: 45 * 60, // 45 minutes
+    durationSeconds: 10 * 60, // 10 minutes
     requirements: {
       matoran: ['Takua'],
       minLevel: 9,
@@ -385,7 +385,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Enter Le-Wahi',
     description:
       'Takua and Taipu travel through the reopened tunnel toward Le-Wahi. As they emerge into the jungle, a Nui-Rama suddenly ambushes them—snatching Taipu and flying off toward the treetops. Takua presses on alone, determined to rescue his friend.',
-    durationSeconds: 1 * 60 * 60, // 1 hour
+    durationSeconds: 10 * 60, // 10 min
     requirements: {
       matoran: ['Takua', 'Taipu'],
       minLevel: 9,
@@ -406,7 +406,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Flight to the Hive',
     description:
       'Arriving at Le-Koro, Takua finds the village nearly deserted—most of its Matoran have been taken by the Nui-Rama. The few who remain, including Tamaru and Kongu, greet him with urgency. With a Kahu prepared for flight, Takua joins them on a daring mission to rescue the missing villagers from the hive.',
-    durationSeconds: 1.5 * 60 * 60, // 1.5 hours
+    durationSeconds: 5  * 60, // 5 min
     requirements: {
       matoran: ['Takua'],
       minLevel: 10,
@@ -509,7 +509,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Journey to Ko-Koro',
     description:
       'At Jala’s request, Takua travels to the icy peaks of Ko-Wahi to warn the secluded Ko-Matoran of increased Rahi activity.',
-    durationSeconds: 0.5 * 60 * 60, // 1.5 hours
+    durationSeconds: 0.5 * 60 * 60, // 0.5 hours
     requirements: {
       matoran: ['Takua'],
       minLevel: 11,
@@ -606,7 +606,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Summon the Chronicler’s Company',
     description:
       'After speaking with Turaga Nuju, Takua is entrusted with a great responsibility: to visit each of the other Turaga and ask that one brave Matoran from their village be spared to join him on a journey to Kini-Nui. One by one, the Chronicler’s Company begins to take shape.',
-    durationSeconds: 3 * 60 * 60, // 4 hours
+    durationSeconds: 30 * 60, // 30 min
     requirements: {
       matoran: ['Takua', 'Kopeke'],
       minLevel: 12,
@@ -639,7 +639,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Passage to Kini-Nui',
     description:
       'With the Chronicler’s Company assembled, Takua leads the six Matoran across Mata Nui. In Ga-Koro, Nokama reveals the hidden water passage that leads deep inland toward Kini-Nui. Together, the company embarks on the sacred journey.',
-    durationSeconds: 1 * 60 * 60, // 1 hour
+    durationSeconds: 30 * 60, // 30 min
     requirements: {
       matoran: ['Takua', 'Hafu', 'Maku', 'Tamaru', 'Kopeke', 'Taipu', 'Kapura'],
       minLevel: 20,
@@ -656,7 +656,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Ravine Crossing',
     description:
       'After passing through the secret waterfall passage, the Chronicler’s Company treks across the forest toward Kini-Nui. Their progress is halted by a deep ravine. As the team debates their options, Tamaru proposes a daring method to get across.',
-    durationSeconds: 45 * 60, // 45 minutes
+    durationSeconds: 30 * 60, // 30 minutes
     requirements: {
       matoran: ['Takua', 'Hafu', 'Maku', 'Tamaru', 'Kopeke', 'Taipu', 'Kapura'],
       minLevel: 20,
@@ -673,7 +673,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Rockslide Ahead',
     description:
       'Having crossed the ravine, the Chronicler’s Company makes steady progress toward Kini-Nui. But their path is blocked once more—this time by a massive rockslide. The group must clear a way through or find a clever way around the rubble.',
-    durationSeconds: 1 * 60 * 60, // 1 hour
+    durationSeconds: 30 * 60, // 1 hour
     requirements: {
       matoran: ['Takua', 'Hafu', 'Maku', 'Tamaru', 'Kopeke', 'Taipu', 'Kapura'],
       minLevel: 12,
@@ -743,7 +743,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Defense of Kini-Nui',
     description:
       'With the Toa descended into the depths beneath Kini-Nui, the Chronicler’s Company remains behind to defend the shrine. Suddenly, waves of Rahi begin emerging from the jungle—Makuta’s final effort to stop the Toa. The Matoran must hold the line.',
-    durationSeconds: 2 * 60 * 60, // 2 hours
+    durationSeconds: 20 * 60, // 2 hours
     requirements: {
       matoran: ['Takua', 'Hafu', 'Maku', 'Tamaru', 'Kopeke', 'Taipu', 'Kapura'],
       minLevel: 25,
@@ -760,7 +760,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: "Gali's Call",
     description:
       'With the shrine defended and the villagers rallying to the Company’s aid, Takua suddenly hears Gali’s voice echoing in his mind, calling for help. Remembering an ancient tunnel deep in Onu-Wahi, he sets out alone, hoping to reach her in time.',
-    durationSeconds: 1 * 60 * 60, // 1 hour
+    durationSeconds: 20 * 60, // 1 hour
     requirements: {
       matoran: ['Takua'],
       minLevel: 13,
@@ -784,7 +784,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Confronting Chaos',
     description:
       'Navigating ancient tunnels beneath Kini-Nui, Takua quietly arrives at the edge of a vast chamber—Mangaia. There, he sees the Toa united in battle against the dark presence of Makuta. From the shadows, he watches the fate of Mata Nui unfold.',
-    durationSeconds: 45 * 60, // 45 minutes
+    durationSeconds: 5 * 60, // 5 minutes
     requirements: {
       matoran: ['Takua'],
       minLevel: 30,
@@ -801,7 +801,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Return to the Shore',
     description:
       'Having followed the Toa’s journey to its end and witnessed their confrontation with Makuta, Takua emerges once again on the familiar shore of Ta-Wahi. There, Turaga Vakama awaits him. It is time to record the final chapter of this saga.',
-    durationSeconds: 30 * 60, // 30 minutes
+    durationSeconds: 5 * 60, // 5 minutes
     requirements: {
       matoran: ['Takua'],
       minLevel: 30,

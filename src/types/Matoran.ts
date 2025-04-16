@@ -50,11 +50,11 @@ export type BaseMatoran = {
   isMaskTransparent?: boolean;
   stage: MatoranStage;
   colors: {
-    mask: Color;
-    body: Color;
-    feet: Color;
-    arms: Color;
-    eyes: Color;
+    mask: LegoColor;
+    body: LegoColor;
+    feet: LegoColor;
+    arms: LegoColor;
+    eyes: LegoColor;
   };
   tags?: MatoranTag[];
 };

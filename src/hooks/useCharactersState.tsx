@@ -1,8 +1,13 @@
 import { useState } from 'react';
-import { ListedCharacterData, RecruitedCharacterData } from '../types/Matoran';
+import {
+  ListedCharacterData,
+  Mask,
+  RecruitedCharacterData,
+} from '../types/Matoran';
 import { GameItemId } from '../data/loot';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
+import { LegoColor } from '../types/Colors';
 
 export function useCharactersState(
   initialRecruited: RecruitedCharacterData[],
@@ -33,12 +38,31 @@ export function useCharactersState(
     setBuyableCharacters(updatedBuyable);
   };
 
-  const assignJobToMatoran = (id: RecruitedCharacterData['id'], job: MatoranJob) => {
+  const assignJobToMatoran = (
+    id: RecruitedCharacterData['id'],
+    job: MatoranJob
+  ) => {
     setRecruitedCharacters((prev) => assignJob(id, job, prev));
   };
 
   const removeJobFromMatoran = (id: RecruitedCharacterData['id']) => {
     setRecruitedCharacters((prev) => removeJob(id, prev));
+  };
+
+  const setMaskOverride = (
+    id: RecruitedCharacterData['id'],
+    color: LegoColor,
+    mask: Mask
+  ) => {
+    setRecruitedCharacters((prev) =>
+      prev.map((m) => {
+        if (id === m.id) {
+          m.maskOverride = mask;
+          m.maskColorOverride = color;
+        }
+        return m;
+      })
+    );
   };
 
   return {
@@ -49,5 +73,6 @@ export function useCharactersState(
     recruitCharacter,
     assignJobToMatoran,
     removeJobFromMatoran,
+    setMaskOverride,
   };
 }

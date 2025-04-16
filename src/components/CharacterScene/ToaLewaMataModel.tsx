@@ -1,14 +1,24 @@
-import { useRef } from 'react';
-import { Group } from 'three';
+import { useEffect, useRef } from 'react';
 import { useGLTF } from '@react-three/drei';
+import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
+import { Group } from 'three';
 
-export function ToaLewaMataModel() {
+export function ToaLewaMataModel({
+  matoran,
+}: {
+  matoran: RecruitedCharacterData & BaseMatoran;
+}) {
   const group = useRef<Group>(null);
-  const { nodes } = useGLTF(
-    import.meta.env.BASE_URL + 'toa_lewa_mata.glb'
-  );
+  const { nodes } = useGLTF(import.meta.env.BASE_URL + 'toa_lewa_mata.glb');
 
-  // const { actions } = useAnimations(animations, group);
+  useEffect(() => {
+    const maskTarget = matoran.maskOverride || matoran.mask;
+    
+    nodes.Masks.children.forEach((mask) => {
+      const isTarget = mask.name === maskTarget;
+      mask.visible = isTarget;
+    });
+  }, [nodes, matoran]);
 
   return (
     <group ref={group} dispose={null}>

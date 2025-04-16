@@ -1,7 +1,11 @@
 import { Suspense, useLayoutEffect } from 'react';
 import { Bounds, OrbitControls, Stage, useBounds } from '@react-three/drei';
 
-import { BaseMatoran, MatoranStage } from '../../types/Matoran';
+import {
+  BaseMatoran,
+  MatoranStage,
+  RecruitedCharacterData,
+} from '../../types/Matoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
 import { ToaTahuMataModel } from './ToaTahuMataModel';
 import { ToaGaliMataModel } from './ToaGaliMataModel';
@@ -10,22 +14,26 @@ import { ToaKopakaMataModel } from './ToaKopakaMataModel';
 import { ToaOnuaMataModel } from './ToaOnuaMataModel';
 import { ToaLewaMataModel } from './ToaLewaMataModel';
 
-function CharacterModel({ matoran }: { matoran: BaseMatoran }) {
+function CharacterModel({
+  matoran,
+}: {
+  matoran: BaseMatoran & RecruitedCharacterData;
+}) {
   switch (matoran.stage) {
     case MatoranStage.ToaMata:
       switch (matoran.id) {
         case 'Toa_Gali':
-          return <ToaGaliMataModel />;
+          return <ToaGaliMataModel matoran={matoran} />;
         case 'Toa_Pohatu':
-          return <ToaPohatuMataModel />;
+          return <ToaPohatuMataModel matoran={matoran} />;
         case 'Toa_Kopaka':
-          return <ToaKopakaMataModel />;
+          return <ToaKopakaMataModel matoran={matoran} />;
         case 'Toa_Onua':
-          return <ToaOnuaMataModel />;
+          return <ToaOnuaMataModel matoran={matoran} />;
         case 'Toa_Lewa':
-          return <ToaLewaMataModel />;
+          return <ToaLewaMataModel matoran={matoran} />;
         default:
-          return <ToaTahuMataModel />;
+          return <ToaTahuMataModel matoran={matoran} />;
       }
     case MatoranStage.Diminished:
     default:
@@ -75,7 +83,11 @@ function getBoundingBox(matoran: BaseMatoran) {
   );
 }
 
-export function CharacterScene({ matoran }: { matoran: BaseMatoran }) {
+export function CharacterScene({
+  matoran,
+}: {
+  matoran: BaseMatoran & RecruitedCharacterData;
+}) {
   return (
     <Stage
       environment='forest'

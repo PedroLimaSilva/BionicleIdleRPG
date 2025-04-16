@@ -1,8 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { Group } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
+import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
 
-export function ToaTahuMataModel() {
+export function ToaTahuMataModel({
+  matoran,
+}: {
+  matoran: RecruitedCharacterData & BaseMatoran;
+}) {
   const group = useRef<Group>(null);
   const { nodes, animations } = useGLTF(
     import.meta.env.BASE_URL + 'toa_tahu_mata.glb'
@@ -20,6 +25,15 @@ export function ToaTahuMataModel() {
       idle.fadeOut(0.2);
     };
   }, [actions]);
+
+  useEffect(() => {
+    const maskTarget = matoran.maskOverride || matoran.mask;
+    
+    nodes.Masks.children.forEach((mask) => {
+      const isTarget = mask.name === maskTarget;
+      mask.visible = isTarget;
+    });
+  }, [nodes, matoran]);
 
   return (
     <group ref={group} dispose={null}>

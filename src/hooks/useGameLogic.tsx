@@ -27,6 +27,7 @@ export const useGameLogic = (): GameState => {
     recruitCharacter,
     assignJobToMatoran,
     removeJobFromMatoran,
+    setMaskOverride,
   } = useCharactersState(
     initialState.recruitedCharacters,
     initialState.buyableCharacters,
@@ -91,6 +92,7 @@ export const useGameLogic = (): GameState => {
     buyableCharacters: buyableCharacters,
     addItemToInventory,
     recruitCharacter,
+    setMaskOverride,
     assignJobToMatoran,
     removeJobFromMatoran,
     startQuest,

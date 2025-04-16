@@ -1,24 +1,24 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Group } from 'three';
 import { useGLTF } from '@react-three/drei';
+import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
 
-export function ToaPohatuMataModel() {
+export function ToaPohatuMataModel({
+  matoran,
+}: {
+  matoran: RecruitedCharacterData & BaseMatoran;
+}) {
   const group = useRef<Group>(null);
   const { nodes } = useGLTF(import.meta.env.BASE_URL + 'toa_pohatu_mata.glb');
 
-  // const { actions } = useAnimations(animations, group);
-
-  // useEffect(() => {
-
-  //   // const idle = actions['Tahu Idle'];
-  //   // if (!idle) return;
-
-  //   // idle.reset().play();
-
-  //   // return () => {
-  //   //   idle.fadeOut(0.2);
-  //   // };
-  // }, [materials]);
+  useEffect(() => {
+    const maskTarget = matoran.maskOverride || matoran.mask;
+    
+    nodes.Masks.children.forEach((mask) => {
+      const isTarget = mask.name === maskTarget;
+      mask.visible = isTarget;
+    });
+  }, [nodes, matoran]);
 
   return (
     <group ref={group} dispose={null}>

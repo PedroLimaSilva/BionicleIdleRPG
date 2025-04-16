@@ -1,14 +1,24 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Group } from 'three';
 import { useGLTF } from '@react-three/drei';
+import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
 
-export function ToaKopakaMataModel() {
+export function ToaKopakaMataModel({
+  matoran,
+}: {
+  matoran: RecruitedCharacterData & BaseMatoran;
+}) {
   const group = useRef<Group>(null);
-  const { nodes } = useGLTF(
-    import.meta.env.BASE_URL + 'toa_kopaka_mata.glb'
-  );
+  const { nodes } = useGLTF(import.meta.env.BASE_URL + 'toa_kopaka_mata.glb');
 
-  // const { actions } = useAnimations(animations, group);
+  useEffect(() => {
+    const maskTarget = matoran.maskOverride || matoran.mask;
+
+    nodes.Masks.children.forEach((mask) => {
+      const isTarget = mask.name === maskTarget;
+      mask.visible = isTarget;
+    });
+  }, [nodes, matoran]);
 
   return (
     <group ref={group} dispose={null}>

@@ -1,8 +1,9 @@
 import { GameItemId } from '../data/loot';
 import { Inventory } from '../services/inventoryUtils';
+import { LegoColor } from './Colors';
 import { MatoranJob } from './Jobs';
 import { ActivityLogEntry, LogType } from './Logging';
-import { ListedCharacterData, RecruitedCharacterData } from './Matoran';
+import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
 import { Quest, QuestProgress } from './Quests';
 
 export type GameState = {
@@ -14,6 +15,7 @@ export type GameState = {
   activeQuests: QuestProgress[];
   completedQuests: string[];
   recruitCharacter: (character: ListedCharacterData) => void;
+  setMaskOverride: (id: RecruitedCharacterData["id"], color: LegoColor, mask: Mask) => void;
   addItemToInventory: (item: GameItemId, amount: number) => void;
   assignJobToMatoran: (matoranId: RecruitedCharacterData['id'], job: MatoranJob) => void;
   removeJobFromMatoran: (matoranId: RecruitedCharacterData['id']) => void;

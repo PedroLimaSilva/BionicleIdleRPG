@@ -106,10 +106,10 @@ export function masksCollected(
 export function getRecruitedMatoran(
   id: string,
   recruitedMatoran: RecruitedCharacterData[]
-) {
+): BaseMatoran & RecruitedCharacterData {
   return {
     ...MATORAN_DEX[id],
-    ...recruitedMatoran.find((m) => m.id === id),
+    ...recruitedMatoran.find((m) => m.id === id)!,
   };
 }
 
