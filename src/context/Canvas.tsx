@@ -29,9 +29,9 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
           ?.getClientRects()
           .item(0);
         if (aboveCanvas) {
-          el.style = `top: ${aboveCanvas.bottom}px`;
+          el.style.top = `${aboveCanvas.bottom}px`;
         } else {
-          el.style = '';
+          el.style.top = '';
         }
       }, 0);
     }
