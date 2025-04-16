@@ -26,6 +26,9 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
+        echo "machine github.com login ${{ secrets.GITHUB_TOKEN }}" > ~/.netrc
 
     - name: Build and Deploy to GitHub Pages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: yarn deploy
