@@ -26,10 +26,13 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
       setTimeout(() => {
         const aboveCanvas = document
           .querySelector('.js-above-canvas')
-          ?.getClientRects()
-          .item(0);
+          ?.getBoundingClientRect();
         if (aboveCanvas) {
-          el.style.top = `${aboveCanvas.bottom}px`;
+          el.style.top = `${
+            (document.querySelector('.main-content')?.scrollTop || 0) +
+            aboveCanvas.height +
+            aboveCanvas.top
+          }px`;
         } else {
           el.style.top = '';
         }
