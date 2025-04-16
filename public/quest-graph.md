@@ -31,7 +31,7 @@ XP: 500"]
 Loot: FrostChisel=120, IceChip=240
 Currency: 1300
 XP: 750"]
-  maskhunt_lewa_kakama["Echoes Beneath the Lake
+  maskhunt_lewa_kakama_komau["Echoes Beneath the Lake
 (10m)
 Loot: FeatherTufts=80, JungleResin=40
 Currency: 1000
@@ -224,7 +224,7 @@ XP: 5000"]
   story_toa_council --> maskhunt_tahu_cave_akaku
   story_toa_council --> maskhunt_lewa_pakari
   story_toa_council --> maskhunt_kopaka_mahiki_huna
-  maskhunt_lewa_pakari --> maskhunt_lewa_kakama
+  maskhunt_lewa_pakari --> maskhunt_lewa_kakama_komau
   story_toa_council --> maskhunt_onua_matatu_komau
   maskhunt_onua_matatu_komau --> maskhunt_onua_jungle_rumor
   mnog_restore_ga_koro --> maskhunt_gali_miru
@@ -258,7 +258,7 @@ XP: 5000"]
   mnog_enter_le_wahi --> mnog_flight_to_hive
   mnog_flight_to_hive --> mnog_rescue_from_hive
   mnog_rescue_from_hive --> mnog_lewa_v_onua
-  maskhunt_lewa_kakama --> mnog_lewa_v_onua
+  maskhunt_lewa_kakama_komau --> mnog_lewa_v_onua
   maskhunt_onua_jungle_rumor --> mnog_lewa_v_onua
   mnog_lewa_v_onua --> mnog_arrive_ko_koro
   mnog_arrive_ko_koro --> mnog_search_for_matoro

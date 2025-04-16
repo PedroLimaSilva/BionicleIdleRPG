@@ -85,8 +85,8 @@ export function masksCollected(
       if (storyProgress.includes('maskhunt_lewa_pakari')) {
         masks.push(Mask.Pakari);
       }
-      if (storyProgress.includes('maskhunt_lewa_kakama')) {
-        masks.push(Mask.Kakama);
+      if (storyProgress.includes('maskhunt_lewa_kakama_komau')) {
+        masks.push(Mask.Kakama, Mask.Komau);
       }
       break;
     }

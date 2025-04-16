@@ -139,7 +139,7 @@ export const MASK_HUNT: Quest[] = [
     unlockedAfter: ['story_toa_council'],
   },
   {
-    id: 'maskhunt_lewa_kakama',
+    id: 'maskhunt_lewa_kakama_komau',
     name: 'Echoes Beneath the Lake',
     description:
       'Driven by tales of a hidden Kanohi beneath the jungle, Lewa follows a winding tunnel into a vast subterranean lake deep within Le-Wahi. As he swims to the center of the cavern, a massive Nui-Jaga erupts from the shadows. In the battle that follows, Lewa is nearly dragged beneath the surface, but with sheer determination and agility, he defeats the beast and emerges with the Kakama in hand.',

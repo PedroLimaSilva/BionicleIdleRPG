@@ -500,7 +500,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     },
     unlockedAfter: [
       'mnog_rescue_from_hive',
-      'maskhunt_lewa_kakama',
+      'maskhunt_lewa_kakama_komau',
       'maskhunt_onua_jungle_rumor',
     ],
   },
