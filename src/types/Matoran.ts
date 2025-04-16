@@ -1,5 +1,5 @@
 import { GameItemId } from '../data/loot';
-import { Color, LegoColor } from './Colors';
+import { LegoColor } from './Colors';
 import { JobAssignment } from './Jobs';
 import { Quest } from './Quests';
 

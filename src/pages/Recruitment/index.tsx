@@ -40,7 +40,11 @@ export const Recruitment: React.FC = () => {
 
   useEffect(() => {
     if (selectedMatoran) {
-      setScene(<CharacterScene matoran={MATORAN_DEX[selectedMatoran.id]} />);
+      setScene(
+        <CharacterScene
+          matoran={{ ...MATORAN_DEX[selectedMatoran.id], exp: 0 }}
+        />
+      );
     }
     return () => {
       setScene(null);
@@ -119,9 +123,7 @@ export const Recruitment: React.FC = () => {
           {buyableCharacters.map((matoran) => (
             <div
               key={matoran.id}
-              className={`card element-${
-                MATORAN_DEX[matoran.id].element
-              }`}
+              className={`card element-${MATORAN_DEX[matoran.id].element}`}
               onClick={() => handleRecruit(matoran)}
             >
               <MatoranAvatar

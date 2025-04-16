@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { Group } from 'three';
+import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { useGLTF } from '@react-three/drei';
-import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
+import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 
 export function ToaKopakaMataModel({
   matoran,
@@ -9,7 +9,20 @@ export function ToaKopakaMataModel({
   matoran: RecruitedCharacterData & BaseMatoran;
 }) {
   const group = useRef<Group>(null);
-  const { nodes } = useGLTF(import.meta.env.BASE_URL + 'toa_kopaka_mata.glb');
+  const { nodes, materials } = useGLTF(import.meta.env.BASE_URL + 'toa_kopaka_mata.glb');
+
+  useEffect(() => {
+    nodes.Masks.children.forEach((mask) => {
+      const isTarget = mask.name === Mask.Kaukau;
+      if (isTarget) {
+        const mesh = mask as Mesh;
+        mesh.material = materials['Kopaka Mask'].clone();
+        const mat = mesh.material as MeshStandardMaterial;
+        mat.transparent = true;
+        mat.opacity = 0.8;
+      }
+    });
+  }, [nodes, materials]);
 
   useEffect(() => {
     const maskTarget = matoran.maskOverride || matoran.mask;

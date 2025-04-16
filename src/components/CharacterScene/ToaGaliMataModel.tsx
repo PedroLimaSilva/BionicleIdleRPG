@@ -12,10 +12,10 @@ export function ToaGaliMataModel({
   const { nodes, materials } = useGLTF(
     import.meta.env.BASE_URL + 'toa_gali_mata.glb'
   );
+  
   useEffect(() => {
     nodes.Masks.children.forEach((mask) => {
       const isTarget = mask.name === Mask.Kaukau;
-      console.log(mask.name, isTarget);
       if (isTarget) {
         const mesh = mask as Mesh;
         mesh.material = materials['Gali Mask'].clone();
@@ -24,7 +24,6 @@ export function ToaGaliMataModel({
         mat.opacity = 0.8;
       }
     });
-    console.log(nodes.Kaukau, nodes.Hau);
   }, [nodes, materials]);
 
   useEffect(() => {

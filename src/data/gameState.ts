@@ -2,10 +2,11 @@
 
 import { LogType } from '../types/Logging';
 import { MatoranJob } from '../types/Jobs';
-import { ListedCharacterData, BaseMatoran } from '../types/Matoran';
+import { ListedCharacterData, BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { GameState } from '../types/GameState';
 import { Quest } from '../types/Quests';
 import { LISTED_MATORAN_DATA, RECRUITED_MATORAN_DATA } from './matoran';
+import { LegoColor } from '../types/Colors';
 
 export const CURRENT_GAME_STATE_VERSION = 9; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
 
@@ -46,6 +47,9 @@ export const INITIAL_GAME_STATE: GameState = {
     throw new Error('Function not implemented.');
   },
   completeQuest: function (_quest: Quest): void {
+    throw new Error('Function not implemented.');
+  },
+  setMaskOverride: function (_id: RecruitedCharacterData['id'], _color: LegoColor, _mask: Mask): void {
     throw new Error('Function not implemented.');
   }
 };

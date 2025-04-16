@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { Group } from 'three';
+import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
-import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
+import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 
 export function ToaTahuMataModel({
   matoran,
@@ -9,12 +9,25 @@ export function ToaTahuMataModel({
   matoran: RecruitedCharacterData & BaseMatoran;
 }) {
   const group = useRef<Group>(null);
-  const { nodes, animations } = useGLTF(
+  const { nodes, animations, materials } = useGLTF(
     import.meta.env.BASE_URL + 'toa_tahu_mata.glb'
   );
 
   const { actions } = useAnimations(animations, group);
 
+  useEffect(() => {
+    nodes.Masks.children.forEach((mask) => {
+      const isTarget = mask.name === Mask.Kaukau;
+      if (isTarget) {
+        const mesh = mask as Mesh;
+        mesh.material = materials['Tahu Mask'].clone();
+        const mat = mesh.material as MeshStandardMaterial;
+        mat.transparent = true;
+        mat.opacity = 0.8;
+      }
+    });
+  }, [nodes, materials]);
+  
   useEffect(() => {
     const idle = actions['Tahu Idle'];
     if (!idle) return;
