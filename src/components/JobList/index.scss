@@ -42,44 +42,7 @@
   display: flex;
   justify-content: space-between;
   gap: 8px;
-}
-
-.cancel-button,
-.assign-button,
-.remove-button {
-  flex: 1;
-  padding: 10px;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  transition: background 0.2s ease;
-  font-size: 1rem;
-}
-
-.cancel-button {
-  background: #444;
-  color: var(--color-text);
-}
-.cancel-button:hover {
-  background: #666;
-}
-
-.assign-button {
-  background: var(--theme-element-accent);
-  color: #111;
-}
-.assign-button:disabled {
-  background: #555;
-  color: #222;
-  cursor: not-allowed;
-}
-
-.remove-button {
-  background: #222;
-  color: #ff6464;
-  border: 1px solid #ff6464;
-}
-.remove-button:hover {
-  background: #331111;
+  button {
+    flex: 1;
+  }
 }

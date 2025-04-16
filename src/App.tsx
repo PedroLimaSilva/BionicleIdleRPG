@@ -14,7 +14,7 @@ import { CharacterDetail } from './pages/CharacterDetail/index.tsx';
 import { GameProvider } from './context/Game.tsx';
 import { SceneCanvasProvider } from './context/Canvas.tsx';
 
-import './App.scss';
+import './styles/index.scss';
 import { ActivityLog } from './components/ActivityLog/index.tsx';
 import { useEffect } from 'react';
 import { preloadAssets } from './preload.ts';

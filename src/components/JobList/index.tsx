@@ -67,7 +67,7 @@ export function JobList({ matoran, onCancel }: JobListProps) {
           </button>
           <button
             onClick={handleAssign}
-            className='assign-button'
+            className='confirm-button'
             disabled={!selectedJob}
           >
             Assign

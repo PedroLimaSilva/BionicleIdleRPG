@@ -150,13 +150,13 @@ export const CharacterDetail: React.FC = () => {
                     {masks.map((mask) => (
                       <div
                         key={mask}
-                        className={`matoran-card element-${
+                        className={`card element-${
                           matoran.element
                         }`}
                         // onClick={() => handeMaskOverride(matoran, mask)}
                       >
                         <CompositedImage
-                          className='mask-collection-item'
+                          className='mask-preview'
                           images={[
                             `${import.meta.env.BASE_URL}/avatar/${mask}.png`,
                           ]}

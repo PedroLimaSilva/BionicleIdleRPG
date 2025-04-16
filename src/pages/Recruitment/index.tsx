@@ -102,7 +102,7 @@ export const Recruitment: React.FC = () => {
               </div>
 
               <button
-                className={`elemental-btn recruit-btn ${
+                className={`elemental-btn ${
                   canRecruit ? '' : 'disabled'
                 } element-${MATORAN_DEX[selectedMatoran.id].element}`}
                 onClick={confirmRecruitment}
@@ -119,7 +119,7 @@ export const Recruitment: React.FC = () => {
           {buyableCharacters.map((matoran) => (
             <div
               key={matoran.id}
-              className={`matoran-card element-${
+              className={`card element-${
                 MATORAN_DEX[matoran.id].element
               }`}
               onClick={() => handleRecruit(matoran)}
