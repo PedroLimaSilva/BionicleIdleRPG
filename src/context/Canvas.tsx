@@ -22,6 +22,18 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
         /\//g,
         '-'
       )}`;
+
+      setTimeout(() => {
+        const aboveCanvas = document
+          .querySelector('.js-above-canvas')
+          ?.getClientRects()
+          .item(0);
+        if (aboveCanvas) {
+          el.style = `top: ${aboveCanvas.bottom}px`;
+        } else {
+          el.style = '';
+        }
+      }, 0);
     }
   }, [location.pathname]);
 
