@@ -166,13 +166,13 @@ XP: 1000"]
 Currency: 1200
 XP: 1000"]
   mnog_arrive_ko_koro["Journey to Ko-Koro
-(1h 30m)
+(30m)
 Unlock: Kopeke, Lumi
 Loot: IceChip=75, FrostChisel=25
 Currency: 800
 XP: 350"]
   mnog_search_for_matoro["Search for Matoro
-(1h 30m)
+(30m)
 Unlock: Matoro
 Loot: IceChip=150, FrostChisel=50
 Currency: 850
