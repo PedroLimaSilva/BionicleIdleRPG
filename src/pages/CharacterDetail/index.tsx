@@ -19,7 +19,6 @@ import {
   masksCollected,
 } from '../../services/matoranUtils';
 import { MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
-import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { CompositedImage } from '../../components/CompositedImage';
 
 export const CharacterDetail: React.FC = () => {

@@ -16,15 +16,15 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       cutscene: 'Fk47EDfWK10',
       unlockCharacters: [
-        { id: 'Toa_Tahu', cost: 0, requiredItems: [] },
-        { id: 'Toa_Gali', cost: 0, requiredItems: [] },
-        { id: 'Toa_Kopaka', cost: 0, requiredItems: [] },
-        { id: 'Toa_Lewa', cost: 0, requiredItems: [] },
-        { id: 'Toa_Onua', cost: 0, requiredItems: [] },
-        { id: 'Toa_Pohatu', cost: 0, requiredItems: [] },
+        { id: 'Toa_Tahu', cost: 100, requiredItems: [] },
+        { id: 'Toa_Gali', cost: 100, requiredItems: [] },
+        { id: 'Toa_Kopaka', cost: 100, requiredItems: [] },
+        { id: 'Toa_Lewa', cost: 100, requiredItems: [] },
+        { id: 'Toa_Onua', cost: 100, requiredItems: [] },
+        { id: 'Toa_Pohatu', cost: 100, requiredItems: [] },
       ],
       xpPerMatoran: 100,
-      currency: 1000,
+      currency: 200,
       loot: {},
     },
     unlockedAfter: [],
@@ -42,7 +42,7 @@ export const MASK_HUNT: Quest[] = [
     },
     rewards: {
       xpPerMatoran: 450,
-      currency: 800,
+      currency: 400,
       loot: {
         [GameItemId.IceChip]: 100,
         [GameItemId.StoneBlock]: 100,
@@ -125,7 +125,7 @@ export const MASK_HUNT: Quest[] = [
     durationSeconds: 780, // 13 minutes
     requirements: {
       matoran: ['Toa_Kopaka'],
-      minLevel: 8,
+      minLevel: 6,
       items: [],
     },
     rewards: {
@@ -226,7 +226,7 @@ export const MASK_HUNT: Quest[] = [
     durationSeconds: 480, // 8 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali'],
-      minLevel: 15,
+      minLevel: 6,
       items: [],
     },
     rewards: {
@@ -275,7 +275,7 @@ export const MASK_HUNT: Quest[] = [
         'Toa_Onua',
         'Toa_Pohatu',
       ],
-      minLevel: 16,
+      minLevel: 6,
       items: [],
     },
     rewards: {

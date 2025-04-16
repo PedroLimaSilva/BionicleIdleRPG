@@ -57,7 +57,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     name: 'Toa Onua',
     element: ElementTribe.Earth,
     mask: Mask.Pakari,
-    stage: MatoranStage.Diminished,
+    stage: MatoranStage.ToaMata,
     colors: {
       mask: LegoColor.Black,
       body: LegoColor.Black,
@@ -71,7 +71,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     name: 'Toa Kopaka',
     element: ElementTribe.Ice,
     mask: Mask.Akaku,
-    stage: MatoranStage.Diminished,
+    stage: MatoranStage.ToaMata,
     colors: {
       mask: LegoColor.White,
       body: LegoColor.White,
@@ -85,7 +85,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     name: 'Toa Lewa',
     element: ElementTribe.Air,
     mask: Mask.Miru,
-    stage: MatoranStage.Diminished,
+    stage: MatoranStage.ToaMata,
     colors: {
       mask: LegoColor.Green,
       body: LegoColor.Green,

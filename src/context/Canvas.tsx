@@ -33,7 +33,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
           <Canvas
             className='shared-canvas'
             orthographic
-            camera={{ position: [0, 10, 50], fov: 30 }}
+            // camera={{ position: [0, 10, 50], fov: 30 }}
           >
             {scene}
           </Canvas>,

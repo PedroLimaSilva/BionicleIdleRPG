@@ -6,6 +6,9 @@ import { DiminishedMatoranModel } from './DiminishedMatoranModel';
 import { ToaTahuMataModel } from './ToaTahuMataModel';
 import { ToaGaliMataModel } from './ToaGaliMataModel';
 import { ToaPohatuMataModel } from './ToaPohatuMataModel';
+import { ToaKopakaMataModel } from './ToaKopakaMataModel';
+import { ToaOnuaMataModel } from './ToaOnuaMataModel';
+import { ToaLewaMataModel } from './ToaLewaMataModel';
 
 function CharacterModel({ matoran }: { matoran: BaseMatoran }) {
   switch (matoran.stage) {
@@ -15,6 +18,12 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran }) {
           return <ToaGaliMataModel />;
         case 'Toa_Pohatu':
           return <ToaPohatuMataModel />;
+        case 'Toa_Kopaka':
+          return <ToaKopakaMataModel />;
+        case 'Toa_Onua':
+          return <ToaOnuaMataModel />;
+        case 'Toa_Lewa':
+          return <ToaLewaMataModel />;
         default:
           return <ToaTahuMataModel />;
       }
@@ -43,7 +52,7 @@ export function FitBoundsBox({
     <mesh
       castShadow={false}
       receiveShadow={false}
-      position={isToa ? [0, 0, 0] : [0, -5, 0]}
+      position={isToa ? [0, 0, 0] : [0, -5, 3]}
     >
       <boxGeometry args={isToa ? [15, 20, 15] : [10, 10, 10]} />
       <meshStandardMaterial
@@ -75,13 +84,13 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran }) {
     >
       <ambientLight intensity={0.2} />
       <directionalLight position={[5, 5, 5]} />
-      <OrbitControls
-        makeDefault
-        enablePan={false}
-        enableZoom={false}
-        maxPolarAngle={Math.PI / 2}
-      />
       <Suspense fallback={null}>
+        <OrbitControls
+          makeDefault
+          enablePan={false}
+          enableZoom={false}
+          maxPolarAngle={Math.PI / 2}
+        />
         <CharacterModel matoran={matoran} />
         {getBoundingBox(matoran)}
       </Suspense>

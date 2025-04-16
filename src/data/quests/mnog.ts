@@ -200,10 +200,10 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Cave of the Corrupted',
     description:
       'Takua follows the trail of the infected Koli balls to a dark cave outside Po-Koro. Inside, he discovers a Rahi nest and a stash of corrupted balls. Toa Pohatu arrives just in time to help seal the cave.',
-    durationSeconds: 2 * 60 * 60, // 2 hours
+    durationSeconds: 0.5 * 60 * 60, // 2 hours
     requirements: {
       matoran: ['Takua', 'Toa_Pohatu'],
-      minLevel: 7,
+      minLevel: 6,
       items: [
         {
           id: GameItemId.StoneBlock,
@@ -509,7 +509,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Journey to Ko-Koro',
     description:
       'At Jala’s request, Takua travels to the icy peaks of Ko-Wahi to warn the secluded Ko-Matoran of increased Rahi activity.',
-    durationSeconds: 1.5 * 60 * 60, // 1.5 hours
+    durationSeconds: 0.5 * 60 * 60, // 1.5 hours
     requirements: {
       matoran: ['Takua'],
       minLevel: 11,
@@ -562,10 +562,10 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Search for Matoro',
     description:
       'After reaching the silent village of Ko-Koro, Takua learns that Turaga Nuju speaks only in gestures and whistles. In order to understand him, Takua must find his translator—Matoro—who has gone missing somewhere in the icy wastes of Ko-Wahi.',
-    durationSeconds: 1.5 * 60 * 60, // 1.5 hours
+    durationSeconds: 0.5 * 60 * 60, // 1.5 hours
     requirements: {
       matoran: ['Takua', 'Toa_Kopaka'],
-      minLevel: 11,
+      minLevel: 8,
       items: [
         {
           id: GameItemId.Charcoal,

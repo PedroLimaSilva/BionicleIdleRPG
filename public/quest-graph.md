@@ -4,12 +4,12 @@ graph TD
 (1m)
 Unlock: Toa_Tahu, Toa_Gali, Toa_Kopaka, Toa_Lewa, Toa_Onua, Toa_Pohatu
 Loot: 
-Currency: 1000
+Currency: 200
 XP: 100"]
   maskhunt_kopaka_pohatu_icecliff["The Cliffside Encounter
 (8m)
 Loot: IceChip=100, StoneBlock=100
-Currency: 800
+Currency: 400
 XP: 450"]
   story_toa_council["The Toa Council
 (30m)
@@ -121,7 +121,7 @@ Loot: StoneBlock=100, GemShard=50
 Currency: 500
 XP: 250"]
   mnog_po_koro_cave_investigation["Cave of the Corrupted
-(2h)
+(30m)
 Loot: StoneBlock=1000, GemShard=500
 Currency: 800
 XP: 400"]
@@ -166,13 +166,13 @@ XP: 1000"]
 Currency: 1200
 XP: 1000"]
   mnog_arrive_ko_koro["Journey to Ko-Koro
-(1h 30m)
+(30m)
 Unlock: Kopeke, Lumi
 Loot: IceChip=75, FrostChisel=25
 Currency: 800
 XP: 350"]
   mnog_search_for_matoro["Search for Matoro
-(1h 30m)
+(30m)
 Unlock: Matoro
 Loot: IceChip=150, FrostChisel=50
 Currency: 850
