@@ -44,7 +44,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [],
     },
     unlock: {
-      requiredProgress: ['story_ga_koro_sos'],
+      requiredProgress: ['mnog_ga_koro_sos'],
     },
     rewards: [
       { item: GameItemId.WaterAlgae, chance: 1.0 },
@@ -77,7 +77,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     rate: 1,
     unlock: {
-      requiredProgress: ['story_meet_taipu'],
+      requiredProgress: ['mnog_meet_taipu'],
     },
     rewards: [
       { item: GameItemId.FeatherTufts, chance: 1.0 },
@@ -109,7 +109,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     rate: 1,
     unlock: {
-      requiredProgress: ['story_po_koro_sickness'],
+      requiredProgress: ['mnog_po_koro_sickness'],
     },
     rewards: [
       { item: GameItemId.StoneBlock, chance: 1.0 },
@@ -172,7 +172,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     rate: 1,
     unlock: {
-      requiredProgress: ['story_arrive_ko_koro'],
+      requiredProgress: ['mnog_arrive_ko_koro'],
     },
     rewards: [
       { item: GameItemId.IceChip, chance: 1.0 },
