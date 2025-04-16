@@ -141,7 +141,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [],
     },
     rate: 1,
-    unlock: { requiredProgress: ['story_arrive_onu_koro'] },
+    unlock: { requiredProgress: ['mnog_arrive_onu_koro'] },
     rewards: [
       { item: GameItemId.LightStone, chance: 1.0 },
       { item: GameItemId.BiolumeThread, chance: 0.3 },
