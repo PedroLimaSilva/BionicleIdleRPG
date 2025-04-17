@@ -6,6 +6,7 @@ export type Color = RGB | RGBA | HEX;
 
 export const enum LegoColor {
   Black = '#05131D',
+  Brown = '#583927',
   Green = '#237841',
   DarkTurquoise = '#008F9B',
   Red = '#C91A09',

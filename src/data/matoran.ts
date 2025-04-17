@@ -45,9 +45,9 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Kakama,
     stage: MatoranStage.ToaMata,
     colors: {
-      mask: LegoColor.DarkOrange,
-      body: LegoColor.DarkOrange,
-      feet: LegoColor.DarkOrange,
+      mask: LegoColor.Brown,
+      body: LegoColor.Brown,
+      feet: LegoColor.Brown,
       arms: LegoColor.Tan,
       eyes: LegoColor.TransNeonOrange,
     },
