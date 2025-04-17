@@ -127,7 +127,7 @@ export const Recruitment: React.FC = () => {
               onClick={() => handleRecruit(matoran)}
             >
               <MatoranAvatar
-                matoran={MATORAN_DEX[matoran.id]}
+                matoran={{ ...MATORAN_DEX[matoran.id], exp: 0 }}
                 styles={'mask-preview matoran-avatar'}
               />
               <div className='name'>{MATORAN_DEX[matoran.id].name}</div>

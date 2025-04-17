@@ -777,7 +777,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       currency: 1000,
       cutscene: 'In1jZ3pZE9k',
     },
-    unlockedAfter: ['mnog_kini_nui_defense'],
+    unlockedAfter: ['mnog_kini_nui_defense', 'story_kini_nui_descent'],
   },
   {
     id: 'mnog_witness_makuta_battle',

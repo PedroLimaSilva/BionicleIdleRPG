@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Color, LegoColor } from '../../types/Colors';
 
 export function ToaLewaMataModel({
   matoran,
@@ -13,16 +14,20 @@ export function ToaLewaMataModel({
 
   useEffect(() => {
     nodes.Masks.children.forEach((mask) => {
-      const isTarget = mask.name === Mask.Kaukau;
-      if (isTarget) {
-        const mesh = mask as Mesh;
-        mesh.material = materials['Lewa Mask'].clone();
-        const mat = mesh.material as MeshStandardMaterial;
+      const mesh = mask as Mesh;
+      mesh.material = materials['Lewa Mask'].clone();
+      const mat = mesh.material as MeshStandardMaterial;
+      mat.color.set(
+        (matoran.maskColorOverride || matoran.colors.mask) as Color
+      );
+      mat.metalness =
+        matoran.maskColorOverride === LegoColor.PearlGold ? 0.5 : 0;
+      if (mask.name === Mask.Kaukau) {
         mat.transparent = true;
         mat.opacity = 0.8;
       }
     });
-  }, [nodes, materials]);
+  }, [nodes, materials, matoran]);
 
   useEffect(() => {
     const maskTarget = matoran.maskOverride || matoran.mask;

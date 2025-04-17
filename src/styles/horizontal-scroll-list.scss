@@ -8,17 +8,13 @@
   .card {
     flex: 0 0 auto;
     width: 120px;
-    background: var(--color-surface-low);
+    background: var(--color-surface-high);
     border: 2px solid var(--color-border-muted);
     border-radius: 12px;
     padding: 0.5rem;
     text-align: center;
     box-shadow: 0 0 4px var(--color-text-muted);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    &.element-Earth{
-      background: var(--color-surface-high);
-    }
   
     &:hover {
       transform: translateY(-2px);

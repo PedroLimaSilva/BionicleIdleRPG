@@ -19,6 +19,7 @@ export const enum LegoColor {
   DarkGray = '#6D6E5C',
   DarkOrange = '#A95500',
   SandBlue = '#6074A1',
+  PearlGold = '#AA7F2E',
   Purple = '#81007B',
   Tan = '#E4CD9E',
   TransMediumBlue = '#CFE2F7',

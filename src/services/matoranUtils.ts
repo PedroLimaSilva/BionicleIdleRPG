@@ -20,6 +20,10 @@ export function isMatoran(matoran: BaseMatoran) {
   ].includes(matoran.stage);
 }
 
+export function isToaMata(matoran: BaseMatoran) {
+  return MatoranStage.ToaMata === matoran.stage;
+}
+
 const FULL_MASK_SET = [
   Mask.Akaku,
   Mask.Hau,

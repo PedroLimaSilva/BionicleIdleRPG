@@ -7,6 +7,9 @@ import { GameState } from '../types/GameState';
 import { LogType } from '../types/Logging';
 import { QUESTS } from '../data/quests';
 import { GameItemId } from '../data/loot';
+import { LegoColor } from '../types/Colors';
+import { isToaMata } from '../services/matoranUtils';
+import { MATORAN_DEX } from '../data/matoran';
 
 export function getCurrentTimestamp(): number {
   return Math.floor(Date.now() / 1000); // seconds
@@ -103,15 +106,22 @@ export const useQuestState = ({
 
     // Reassign Matoran with updated exp
     setRecruitedCharacters((prev) => {
-      const updated = prev.map((char) =>
-        active.assignedMatoran.includes(char.id)
-          ? {
-              ...char,
-              quest: undefined,
-              exp: char.exp + (quest.rewards.xpPerMatoran ?? 0),
-            }
-          : char
-      );
+      const updated = prev.map((char) => {
+        if (active.assignedMatoran.includes(char.id)) {
+          return {
+            ...char,
+            quest: undefined,
+            exp: char.exp + (quest.rewards.xpPerMatoran ?? 0),
+          };
+        } else if (quest.id === 'mnog_kini_nui_arrival' && !isToaMata(MATORAN_DEX[char.id])) {
+          return {
+            ...char,
+            maskColorOverride: LegoColor.PearlGold,
+          };
+        } else {
+          return char;
+        }
+      });
 
       return updated;
     });

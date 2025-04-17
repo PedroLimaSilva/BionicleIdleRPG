@@ -423,4 +423,24 @@ export const MASK_HUNT: Quest[] = [
     },
     unlockedAfter: ['maskhunt_final_collection'],
   },
+  {
+    id: 'story_kini_nui_descent',
+    name: 'Descent into Darkness',
+    description:
+      'With the Chronicler’s Company standing watch above, the six Toa descend into the ancient tunnels beneath Kini-Nui. The air grows colder, and the light from the surface fades behind them. Whispers echo through the stone — memories of long-forgotten battles and shadows yet to come. Though the path is unclear, one thing is certain: they will face whatever lies beneath, together.',
+    durationSeconds: 300, // 5 minutes
+    requirements: {
+      matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
+      minLevel: 20,
+      items: [],
+    },
+    rewards: {
+      cutscene: 'oken0zw1D-U', 
+      xpPerMatoran: 1000,
+      currency: 100,
+      loot: {},
+    },
+    unlockedAfter: ['mnog_kini_nui_arrival'],
+  }
+ 
 ];

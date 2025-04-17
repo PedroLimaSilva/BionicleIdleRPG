@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { BaseMatoran } from '../../types/Matoran';
+import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
 
 import { CompositedImage } from '../CompositedImage';
 
@@ -13,10 +13,10 @@ export function MatoranAvatar({
   matoran,
   styles,
 }: {
-  matoran: BaseMatoran;
+  matoran: BaseMatoran & RecruitedCharacterData;
   styles: string;
 }) {
-  const { colors } = matoran;
+  const { colors, maskColorOverride } = matoran;
 
   const mask = useMemo(() => {
     return getMask(matoran);
@@ -30,7 +30,7 @@ export function MatoranAvatar({
         `${import.meta.env.BASE_URL}/avatar/Face.png`,
         mask,
       ]}
-      colors={[colors.eyes, '#fff', colors.mask]}
+      colors={[colors.eyes, '#fff', maskColorOverride || colors.mask]}
     />
   );
   return;

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
+import { Color, LegoColor } from '../../types/Colors';
 
 export function ToaTahuMataModel({
   matoran,
@@ -17,17 +18,21 @@ export function ToaTahuMataModel({
 
   useEffect(() => {
     nodes.Masks.children.forEach((mask) => {
-      const isTarget = mask.name === Mask.Kaukau;
-      if (isTarget) {
-        const mesh = mask as Mesh;
-        mesh.material = materials['Tahu Mask'].clone();
-        const mat = mesh.material as MeshStandardMaterial;
+      const mesh = mask as Mesh;
+      mesh.material = materials['Tahu Mask'].clone();
+      const mat = mesh.material as MeshStandardMaterial;
+      mat.color.set(
+        (matoran.maskColorOverride || matoran.colors.mask) as Color
+      );
+      mat.metalness =
+        matoran.maskColorOverride === LegoColor.PearlGold ? 0.5 : 0;
+      if (mask.name === Mask.Kaukau) {
         mat.transparent = true;
         mat.opacity = 0.8;
       }
     });
-  }, [nodes, materials]);
-  
+  }, [nodes, materials, matoran]);
+
   useEffect(() => {
     const idle = actions['Tahu Idle'];
     if (!idle) return;
@@ -41,7 +46,7 @@ export function ToaTahuMataModel({
 
   useEffect(() => {
     const maskTarget = matoran.maskOverride || matoran.mask;
-    
+
     nodes.Masks.children.forEach((mask) => {
       const isTarget = mask.name === maskTarget;
       mask.visible = isTarget;

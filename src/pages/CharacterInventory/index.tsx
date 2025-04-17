@@ -25,7 +25,7 @@ export const CharacterInventory: React.FC = () => {
             <Link key={matoran.id} to={`/characters/${matoran.id}`}>
               <div className={`character-card element-${matoran_dex.element}`}>
                 <MatoranAvatar
-                  matoran={matoran_dex}
+                  matoran={{ ...matoran_dex, ...matoran }}
                   styles={'matoran-avatar model-preview'}
                 />
                 <div className='card-header'>

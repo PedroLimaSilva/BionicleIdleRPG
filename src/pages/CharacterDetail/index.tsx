@@ -69,7 +69,11 @@ export const CharacterDetail: React.FC = () => {
     matoran: RecruitedCharacterData & BaseMatoran,
     mask: Mask
   ) => {
-    setMaskOverride(matoran.id, matoran.colors.mask, mask);
+    setMaskOverride(
+      matoran.id,
+      matoran.maskColorOverride || matoran.colors.mask,
+      mask
+    );
   };
 
   if (!matoran) {
