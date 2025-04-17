@@ -113,7 +113,11 @@ export const useQuestState = ({
             quest: undefined,
             exp: char.exp + (quest.rewards.xpPerMatoran ?? 0),
           };
-        } else if (quest.id === 'mnog_kini_nui_arrival' && !isToaMata(MATORAN_DEX[char.id])) {
+        } else if (
+          (quest.id === 'mnog_kini_nui_arrival' ||
+            quest.id === 'mnog_gali_call') &&
+          isToaMata(MATORAN_DEX[char.id])
+        ) {
           return {
             ...char,
             maskColorOverride: LegoColor.PearlGold,
