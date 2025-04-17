@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useGLTF } from '@react-three/drei';
+import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { Color, LegoColor } from '../../types/Colors';
@@ -10,7 +10,22 @@ export function ToaLewaMataModel({
   matoran: RecruitedCharacterData & BaseMatoran;
 }) {
   const group = useRef<Group>(null);
-  const { nodes, materials } = useGLTF(import.meta.env.BASE_URL + 'toa_lewa_mata.glb');
+  const { nodes, materials, animations } = useGLTF(
+    import.meta.env.BASE_URL + 'toa_lewa_mata.glb'
+  );
+
+  const { actions } = useAnimations(animations, group);
+
+  useEffect(() => {
+    const idle = actions['Idle'];
+    if (!idle) return;
+
+    idle.reset().play();
+
+    return () => {
+      idle.fadeOut(0.2);
+    };
+  }, [actions]);
 
   useEffect(() => {
     nodes.Masks.children.forEach((mask) => {
@@ -31,7 +46,7 @@ export function ToaLewaMataModel({
 
   useEffect(() => {
     const maskTarget = matoran.maskOverride || matoran.mask;
-    
+
     nodes.Masks.children.forEach((mask) => {
       const isTarget = mask.name === maskTarget;
       mask.visible = isTarget;

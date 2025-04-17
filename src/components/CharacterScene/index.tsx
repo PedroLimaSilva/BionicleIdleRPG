@@ -54,6 +54,7 @@ export function FitBoundsBox({
 
   useLayoutEffect(() => {
     bounds.refresh().fit();
+    console.log();
   }, [bounds, isToa, modelId]); // Trigger on change
 
   return (
@@ -92,7 +93,7 @@ export function CharacterScene({
     <Stage
       environment='forest'
       adjustCamera={false}
-      shadows={{ type: 'contact', offset: -0.5 }}
+      shadows={{ type: 'contact', offset: -0.45 }}
     >
       <ambientLight intensity={0.2} />
       <directionalLight position={[5, 5, 5]} />

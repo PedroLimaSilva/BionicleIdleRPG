@@ -17,6 +17,17 @@ export function ToaTahuMataModel({
   const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
+    const idle = actions['Tahu Idle'];
+    if (!idle) return;
+
+    idle.reset().play();
+
+    return () => {
+      idle.fadeOut(0.2);
+    };
+  }, [actions]);
+
+  useEffect(() => {
     nodes.Masks.children.forEach((mask) => {
       const mesh = mask as Mesh;
       mesh.material = materials['Tahu Mask'].clone();
@@ -32,17 +43,6 @@ export function ToaTahuMataModel({
       }
     });
   }, [nodes, materials, matoran]);
-
-  useEffect(() => {
-    const idle = actions['Tahu Idle'];
-    if (!idle) return;
-
-    idle.reset().play();
-
-    return () => {
-      idle.fadeOut(0.2);
-    };
-  }, [actions]);
 
   useEffect(() => {
     const maskTarget = matoran.maskOverride || matoran.mask;
