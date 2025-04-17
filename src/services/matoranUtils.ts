@@ -71,6 +71,9 @@ export function masksCollected(
       if (storyProgress.includes('maskhunt_kopaka_pakari')) {
         masks.push(Mask.Pakari);
       }
+      if(storyProgress.includes('story_toa_second_council')){
+        masks.push(Mask.Kaukau)
+      }
       break;
     }
     case 'Toa_Pohatu': {
@@ -84,7 +87,10 @@ export function masksCollected(
         masks.push(Mask.Matatu, Mask.Komau);
       }
       if (storyProgress.includes('mnog_lewa_v_onua')) {
-        masks.push(Mask.Matatu, Mask.Hau);
+        masks.push(Mask.Hau);
+      }
+      if(storyProgress.includes('story_toa_second_council')){
+        masks.push(Mask.Kaukau)
       }
       break;
     }

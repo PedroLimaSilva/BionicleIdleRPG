@@ -317,7 +317,7 @@ export const MASK_HUNT: Quest[] = [
     durationSeconds: 660, // 11 minutes
     requirements: {
       matoran: ['Toa_Pohatu', 'Toa_Kopaka', 'Toa_Lewa'],
-      minLevel: 17,
+      minLevel: 9,
       items: [],
     },
     rewards: {
@@ -337,7 +337,7 @@ export const MASK_HUNT: Quest[] = [
     durationSeconds: 600, // 10 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Onua'],
-      minLevel: 17,
+      minLevel: 10,
       items: [],
     },
     rewards: {
@@ -364,7 +364,7 @@ export const MASK_HUNT: Quest[] = [
         'Toa_Onua',
         'Toa_Pohatu',
       ],
-      minLevel: 18,
+      minLevel: 10,
       items: [],
     },
     rewards: {
@@ -392,7 +392,7 @@ export const MASK_HUNT: Quest[] = [
         'Toa_Onua',
         'Toa_Pohatu',
       ],
-      minLevel: 19,
+      minLevel: 11,
       items: [],
     },
     rewards: {
@@ -416,7 +416,7 @@ export const MASK_HUNT: Quest[] = [
         'Toa_Onua',
         'Toa_Pohatu',
       ],
-      minLevel: 20,
+      minLevel: 12,
       items: [],
     },
     rewards: {
@@ -441,7 +441,7 @@ export const MASK_HUNT: Quest[] = [
         'Toa_Onua',
         'Toa_Pohatu',
       ],
-      minLevel: 20,
+      minLevel: 12,
       items: [],
     },
     rewards: {
