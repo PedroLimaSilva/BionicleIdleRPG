@@ -92,6 +92,11 @@ XP: 2000"]
 Loot: 
 Currency: 1000
 XP: 3000"]
+  story_kini_nui_descent["Descent into Darkness
+(5m)
+Loot: 
+Currency: 100
+XP: 1000"]
   mnog_find_canister_beach["The Canister on the shore
 (1m)
 Unlock: Kapura, Jala
@@ -242,6 +247,7 @@ XP: 5000"]
   maskhunt_pohatu_kaukau_bluff --> story_nui_jaga_nest
   story_nui_jaga_nest --> maskhunt_final_collection
   maskhunt_final_collection --> story_kini_nui_gathering
+  mnog_kini_nui_arrival --> story_kini_nui_descent
   story_toa_arrival --> mnog_find_canister_beach
   mnog_find_canister_beach --> mnog_tahu_unlock_01
   mnog_tahu_unlock_01 --> mnog_ga_koro_sos
@@ -272,6 +278,7 @@ XP: 5000"]
   mnog_journey_to_kini_nui_4 --> mnog_kini_nui_arrival
   mnog_kini_nui_arrival --> mnog_kini_nui_defense
   mnog_kini_nui_defense --> mnog_gali_call
+  story_kini_nui_descent --> mnog_gali_call
   mnog_gali_call --> mnog_witness_makuta_battle
   mnog_witness_makuta_battle --> mnog_return_to_shore
 ```
