@@ -1,7 +1,18 @@
-import { resetGameData } from '../../services/gamePersistence';
+import { useEffect, useState } from 'react';
+import {
+  getDebugMode,
+  resetGameData,
+  toggleDebugMode,
+} from '../../services/gamePersistence';
 import './index.scss';
 
 export default function SettingsPage() {
+  const [debugMode, setDebugMode] = useState(getDebugMode());
+
+  useEffect(() => {
+    toggleDebugMode();
+  }, [debugMode]);
+
   return (
     <div className='page-container'>
       <h1 className='title'>ABOUT THIS APP</h1>
@@ -100,6 +111,13 @@ export default function SettingsPage() {
           >
             Reset Game Data
           </button>
+        </label>
+        <label className='settings-option'>
+          <span>Quest Debug mode</span>
+          <div
+            className={`toggle-placeholder ${debugMode ? 'on' : ''}`}
+            onClick={() => setDebugMode(!debugMode)}
+          />
         </label>
 
         {/* <label className='settings-option'>

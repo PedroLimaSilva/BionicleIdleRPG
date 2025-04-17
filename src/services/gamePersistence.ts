@@ -43,6 +43,27 @@ export function loadGameState() {
   return INITIAL_GAME_STATE;
 }
 
+let debugMode: boolean | undefined;
+
+export function getDebugMode() {
+  if (debugMode !== undefined) {
+    return debugMode;
+  }
+  const stored = localStorage.getItem('DEBUG_MODE');
+  if (stored) {
+    const parsed = JSON.parse(stored) as boolean;
+    debugMode = parsed;
+    return parsed;
+  }
+  debugMode = false;
+  return false;
+}
+
+export function toggleDebugMode() {
+  debugMode = !debugMode
+  localStorage.setItem('DEBUG_MODE', (debugMode).toString());
+}
+
 function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
   return (
     data &&

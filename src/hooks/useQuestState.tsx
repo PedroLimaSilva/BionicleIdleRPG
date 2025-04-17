@@ -10,6 +10,7 @@ import { GameItemId } from '../data/loot';
 import { LegoColor } from '../types/Colors';
 import { isToaMata } from '../services/matoranUtils';
 import { MATORAN_DEX } from '../data/matoran';
+import { getDebugMode } from '../services/gamePersistence';
 
 export function getCurrentTimestamp(): number {
   return Math.floor(Date.now() / 1000); // seconds
@@ -50,7 +51,7 @@ export const useQuestState = ({
     assignedMatoran: RecruitedCharacterData['id'][]
   ) => {
     const now = getCurrentTimestamp();
-    const endsAt = now + quest.durationSeconds;
+    const endsAt = now + (getDebugMode() ? 1 : quest.durationSeconds);
 
     const activeQuest = {
       questId: quest.id,
