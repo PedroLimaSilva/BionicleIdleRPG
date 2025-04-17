@@ -406,7 +406,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     name: 'Flight to the Hive',
     description:
       'Arriving at Le-Koro, Takua finds the village nearly deserted—most of its Matoran have been taken by the Nui-Rama. The few who remain, including Tamaru and Kongu, greet him with urgency. With a Kahu prepared for flight, Takua joins them on a daring mission to rescue the missing villagers from the hive.',
-    durationSeconds: 5  * 60, // 5 min
+    durationSeconds: 5 * 60, // 5 min
     requirements: {
       matoran: ['Takua'],
       minLevel: 10,

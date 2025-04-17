@@ -83,6 +83,9 @@ export function masksCollected(
       if (storyProgress.includes('maskhunt_onua_matatu_komau')) {
         masks.push(Mask.Matatu, Mask.Komau);
       }
+      if (storyProgress.includes('mnog_lewa_v_onua')) {
+        masks.push(Mask.Matatu, Mask.Hau);
+      }
       break;
     }
     case 'Toa_Lewa': {

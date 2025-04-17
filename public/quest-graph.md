@@ -235,7 +235,7 @@ XP: 5000"]
   mnog_restore_ga_koro --> maskhunt_gali_miru
   maskhunt_gali_miru --> maskhunt_gali_rescue
   maskhunt_tahu_cave_akaku --> maskhunt_gali_rescue
-  maskhunt_kopaka_mahiki_huna --> maskhunt_kopaka_pakari
+  mnog_search_for_matoro --> maskhunt_kopaka_pakari
   mnog_lewa_v_onua --> maskhunt_kopaka_pakari
   maskhunt_kopaka_pakari --> story_toa_second_council
   maskhunt_gali_rescue --> story_toa_second_council
