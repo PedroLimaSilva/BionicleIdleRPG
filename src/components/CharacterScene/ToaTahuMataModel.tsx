@@ -3,41 +3,6 @@ import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
-import { GLTF } from 'three-stdlib';
-
-type ActionName = 'Tahu Idle';
-
-interface GLTFAction extends THREE.AnimationClip {
-  name: ActionName;
-}
-
-type GLTFResult = GLTF & {
-  nodes: {
-    Body: THREE.Mesh;
-    Masks: THREE.Group;
-    Face: THREE.Mesh;
-    Akaku: THREE.Mesh;
-    Hau: THREE.Mesh;
-    Huna: THREE.Mesh;
-    Kakama: THREE.Mesh;
-    Kaukau: THREE.Mesh;
-    Komau: THREE.Mesh;
-    Mahiki: THREE.Mesh;
-    Matatu: THREE.Mesh;
-    Miru: THREE.Mesh;
-    Pakari: THREE.Mesh;
-    Rau: THREE.Mesh;
-    Ruru: THREE.Mesh;
-  };
-  materials: {
-    PaletteMaterial001: THREE.MeshStandardMaterial; // Mask
-    PaletteMaterial002: THREE.MeshStandardMaterial;
-    PaletteMaterial003: THREE.MeshStandardMaterial;
-    PaletteMaterial004: THREE.MeshStandardMaterial;
-    PaletteMaterial005: THREE.MeshStandardMaterial;
-  };
-  animations: GLTFAction[];
-};
 
 export function ToaTahuMataModel({
   matoran,
@@ -47,7 +12,7 @@ export function ToaTahuMataModel({
   const group = useRef<Group>(null);
   const { nodes, animations, materials } = useGLTF(
     import.meta.env.BASE_URL + 'toa_tahu_mata.glb'
-  ) as GLTFResult;
+  );
 
   const { actions } = useAnimations(animations, group);
 
