@@ -30,7 +30,7 @@ export function ToaPohatuMataModel({
   useEffect(() => {
     nodes.Masks.children.forEach((mask) => {
       const mesh = mask as Mesh;
-      mesh.material = materials.PaletteMaterial001.clone();
+      mesh.material = materials['Pohatu Rock'].clone();
       const mat = mesh.material as MeshStandardMaterial;
       mat.color.set(
         (matoran.maskColorOverride || matoran.colors.mask) as Color
