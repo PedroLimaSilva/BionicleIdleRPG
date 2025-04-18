@@ -76,6 +76,18 @@
     opacity: 0.8;
   }
 
+  &__accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  &__accordion-content--expanded {
+    max-height: 500px; // arbitrary large enough value
+    opacity: 1;
+  }
+
   .modal-overlay {
     position: fixed;
     top: 0;
