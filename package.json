@@ -8,7 +8,8 @@
     "build": "tsc -p tsconfig.app.json && vite build",
     "lint": "eslint .",
     "deploy": "yarn build && gh-pages -d dist",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "compress": "npx gltfjsx --transform --types --keepnames --keepgroups --debug --keepmeshes"
   },
   "dependencies": {
     "@react-three/drei": "9.92.7",
