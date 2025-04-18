@@ -23,6 +23,7 @@ export const enum LegoColor {
   PearlGold = '#AA7F2E',
   Purple = '#81007B',
   Tan = '#E4CD9E',
+  TransDarkBlue = '#0020A0',
   TransMediumBlue = '#CFE2F7',
   TransNeonYellow = '#DAB000',
   TransGreen = '#84B68D',

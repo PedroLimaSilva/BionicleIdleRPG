@@ -90,11 +90,7 @@ export function CharacterScene({
   matoran: BaseMatoran & RecruitedCharacterData;
 }) {
   return (
-    <Stage
-      environment='forest'
-      adjustCamera={false}
-      shadows={{ type: 'contact', offset: -0.45 }}
-    >
+    <Stage environment='forest'>
       <ambientLight intensity={0.2} />
       <directionalLight position={[5, 5, 5]} />
       <Suspense fallback={null}>
