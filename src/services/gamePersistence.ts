@@ -59,8 +59,9 @@ export function getDebugMode() {
   return false;
 }
 
-export function toggleDebugMode() {
-  debugMode = !debugMode;
+export function saveDebugMode(value: boolean) {
+  debugMode = value;
+  console.log('saveDebugMode', value);
   localStorage.setItem('DEBUG_MODE', debugMode.toString());
 }
 

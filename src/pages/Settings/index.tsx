@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   getDebugMode,
   resetGameData,
-  toggleDebugMode,
+  saveDebugMode,
 } from '../../services/gamePersistence';
 import './index.scss';
 
@@ -10,7 +10,7 @@ export default function SettingsPage() {
   const [debugMode, setDebugMode] = useState(getDebugMode());
 
   useEffect(() => {
-    toggleDebugMode();
+    saveDebugMode(debugMode);
   }, [debugMode]);
 
   return (
