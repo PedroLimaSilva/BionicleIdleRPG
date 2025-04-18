@@ -227,7 +227,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     id: 'mnog_recruit_hewkii',
     name: 'Koli Champion Recovered',
     description:
-      'With the source of the corruption destroyed, Hewkii finally begins to recover. Inspired by Takua’s courage, he offers to join the journey ahead.',
+      'With the source of the corruption destroyed, Huki finally begins to recover. Inspired by Takua’s courage, he offers to join the journey ahead.',
     durationSeconds: 5 * 60, // 5 minutes
     requirements: {
       matoran: ['Takua'],
