@@ -63,6 +63,7 @@ XP: 600"]
   story_toa_second_council["Council of Unity
 (2m)
 Loot: 
+Currency: 100
 XP: 800"]
   maskhunt_tahu_miru["Depths of the Shoreline
 (12m)

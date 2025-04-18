@@ -283,7 +283,7 @@ export const MASK_HUNT: Quest[] = [
     },
     rewards: {
       xpPerMatoran: 800,
-      currency: 0,
+      currency: 100,
       loot: {},
     },
     unlockedAfter: ['maskhunt_kopaka_pakari', 'maskhunt_gali_rescue'],
@@ -405,7 +405,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'story_kini_nui_gathering',
     name: 'The Path Below',
     description:
-      'With every Kanohi collected, the Toa journey to the sacred temple of Kini-Nui. The island is quiet as they arrive, standing together beneath ancient carvings that speak of prophecy and shadow. As they prepare to descend into the depths below, a familiar voice calls out—Takua, accompanied by a group of brave Matoran. The Chronicler’s Company!',
+      'With every Kanohi collected, the Toa journey to the sacred temple of Kini-Nui. The island is quiet as they arrive, standing together beneath ancient carvings that speak of prophecy and shadow.',
     durationSeconds: 300, // 5 minutes
     requirements: {
       matoran: [
