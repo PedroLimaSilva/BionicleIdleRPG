@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "deploy": "yarn build && gh-pages -d dist",
     "preview": "vite preview",
-    "compress": "npx gltfjsx --transform --types --keepnames --keepgroups --debug --keepmeshes"
+    "compress": "npx gltfjsx --transform --types --keepnames --keepgroups --debug --keepmeshes --keepmaterials"
   },
   "dependencies": {
     "@react-three/drei": "9.92.7",

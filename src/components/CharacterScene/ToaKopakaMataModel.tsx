@@ -3,36 +3,6 @@ import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
-import { GLTF } from 'three-stdlib';
-
-type ActionName = 'Idle';
-
-interface GLTFAction extends THREE.AnimationClip {
-  name: ActionName;
-}
-
-type GLTFResult = GLTF & {
-  nodes: {
-    Body: THREE.Mesh;
-    Akaku: THREE.Mesh;
-    Masks: THREE.Group;
-    Hau: THREE.Mesh;
-    Huna: THREE.Mesh;
-    Kakama: THREE.Mesh;
-    Kaukau: THREE.Mesh;
-    Komau: THREE.Mesh;
-    Mahiki: THREE.Mesh;
-    Matatu: THREE.Mesh;
-    Miru: THREE.Mesh;
-    Pakari: THREE.Mesh;
-    Rau: THREE.Mesh;
-    Ruru: THREE.Mesh;
-  };
-  materials: {
-    PaletteMaterial004: THREE.MeshStandardMaterial; // Mask
-  };
-  animations: GLTFAction[];
-};
 
 export function ToaKopakaMataModel({
   matoran,
@@ -42,7 +12,7 @@ export function ToaKopakaMataModel({
   const group = useRef<Group>(null);
   const { nodes, materials, animations } = useGLTF(
     import.meta.env.BASE_URL + 'toa_kopaka_mata.glb'
-  ) as GLTFResult;
+  );
 
   const { actions } = useAnimations(animations, group);
 
@@ -60,7 +30,7 @@ export function ToaKopakaMataModel({
   useEffect(() => {
     nodes.Masks.children.forEach((mask) => {
       const mesh = mask as Mesh;
-      mesh.material = materials.PaletteMaterial004.clone();
+      mesh.material = materials['Kopaka Mask'].clone();
       const mat = mesh.material as MeshStandardMaterial;
       mat.color.set(
         (matoran.maskColorOverride || matoran.colors.mask) as Color

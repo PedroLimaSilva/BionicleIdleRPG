@@ -30,7 +30,7 @@ export function ToaLewaMataModel({
   useEffect(() => {
     nodes.Masks.children.forEach((mask) => {
       const mesh = mask as Mesh;
-      mesh.material = materials['Lewa Mask'].clone();
+      mesh.material = materials['Lewa Green02'].clone();
       const mat = mesh.material as MeshStandardMaterial;
       mat.color.set(
         (matoran.maskColorOverride || matoran.colors.mask) as Color
