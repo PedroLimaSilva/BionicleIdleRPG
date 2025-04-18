@@ -98,7 +98,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Kapura',
     name: 'Kapura',
     element: ElementTribe.Fire,
-    mask: Mask.Ruru,
+    mask: Mask.Pakari,
     stage: MatoranStage.Diminished,
     colors: {
       mask: LegoColor.Red,
@@ -269,7 +269,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
   Taipu: {
     id: 'Taipu',
     name: 'Taipu',
-    mask: Mask.Pakari,
+    mask: Mask.Ruru,
     stage: MatoranStage.Diminished,
     element: ElementTribe.Earth,
     colors: {
@@ -314,7 +314,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
   Hafu: {
     id: 'Hafu',
     name: 'Hafu',
-    mask: Mask.Ruru,
+    mask: Mask.Pakari,
     stage: MatoranStage.Diminished,
     element: ElementTribe.Stone,
     colors: {
