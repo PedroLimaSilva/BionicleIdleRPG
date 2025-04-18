@@ -3,12 +3,16 @@ import { createPortal } from 'react-dom';
 import { Canvas } from '@react-three/fiber';
 import { useLocation } from 'react-router-dom';
 import { SceneCanvasContext } from '../hooks/useSceneCanvas';
+import { Perf } from 'r3f-perf';
+import { getDebugMode } from '../services/gamePersistence';
 
 export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [scene, setScene] = useState<React.ReactNode>(null);
   const [target, setTarget] = useState<HTMLElement | null>(null);
+
+  const [debugMode] = useState(getDebugMode());
 
   const location = useLocation();
 
@@ -50,6 +54,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
             orthographic
             // camera={{ position: [0, 10, 50], fov: 30 }}
           >
+            {debugMode && <Perf position='top-left' />}
             {scene}
           </Canvas>,
           target

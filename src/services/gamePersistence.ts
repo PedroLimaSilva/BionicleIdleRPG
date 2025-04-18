@@ -60,8 +60,8 @@ export function getDebugMode() {
 }
 
 export function toggleDebugMode() {
-  debugMode = !debugMode
-  localStorage.setItem('DEBUG_MODE', (debugMode).toString());
+  debugMode = !debugMode;
+  localStorage.setItem('DEBUG_MODE', debugMode.toString());
 }
 
 function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
