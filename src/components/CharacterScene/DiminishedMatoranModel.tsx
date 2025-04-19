@@ -14,8 +14,8 @@ const MAT_COLOR_MAP = {
   Torso: 'body',
   Mask: 'mask',
   Brain: 'eyes',
-  'GlowingEyes': 'eyes',
-}
+  GlowingEyes: 'eyes',
+};
 
 export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   const group = useRef<Group>(null);
@@ -78,7 +78,11 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
     <group ref={group} dispose={null}>
       <group name='Scene'>
         <group name='Matoran'>
-          <primitive scale={1} object={nodes.Body} position={new Vector3(0, -7, 0)} />
+          <primitive
+            scale={1}
+            object={nodes.Body}
+            position={new Vector3(0, -7, 0)}
+          />
         </group>
       </group>
     </group>

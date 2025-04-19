@@ -61,7 +61,6 @@ export function getDebugMode() {
 
 export function saveDebugMode(value: boolean) {
   debugMode = value;
-  console.log('saveDebugMode', value);
   localStorage.setItem('DEBUG_MODE', debugMode.toString());
 }
 
