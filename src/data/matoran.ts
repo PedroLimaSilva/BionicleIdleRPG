@@ -63,7 +63,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       body: LegoColor.Black,
       feet: LegoColor.Black,
       arms: LegoColor.DarkGray,
-      eyes: LegoColor.TransGreen,
+      eyes: LegoColor.Green,
     },
   },
   Toa_Kopaka: {
@@ -77,7 +77,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       body: LegoColor.White,
       feet: LegoColor.White,
       arms: LegoColor.LightGray,
-      eyes: LegoColor.TransMediumBlue,
+      eyes: LegoColor.MediumBlue,
     },
   },
   Toa_Lewa: {
@@ -177,7 +177,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       body: LegoColor.Black,
       feet: LegoColor.DarkGray,
       arms: LegoColor.Black,
-      eyes: LegoColor.TransGreen,
+      eyes: LegoColor.Green,
     },
   },
   Onepu: {
@@ -191,7 +191,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       body: LegoColor.Black,
       feet: LegoColor.Purple,
       arms: LegoColor.Black,
-      eyes: LegoColor.TransGreen,
+      eyes: LegoColor.Green,
     },
   },
   Kongu: {
@@ -219,7 +219,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       body: LegoColor.White,
       feet: LegoColor.SandBlue,
       arms: LegoColor.White,
-      eyes: LegoColor.TransMediumBlue,
+      eyes: LegoColor.MediumBlue,
     },
   },
   Maku: {
@@ -248,7 +248,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       body: LegoColor.White,
       feet: LegoColor.SandBlue,
       arms: LegoColor.White,
-      eyes: LegoColor.TransMediumBlue,
+      eyes: LegoColor.MediumBlue,
     },
   },
   Kivi: {
@@ -277,7 +277,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       body: LegoColor.Tan,
       feet: LegoColor.Black,
       arms: LegoColor.Tan,
-      eyes: LegoColor.TransGreen,
+      eyes: LegoColor.Green,
     },
     tags: [MatoranTag.ChroniclersCompany],
   },
@@ -307,7 +307,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       body: LegoColor.White,
       feet: LegoColor.SandBlue,
       arms: LegoColor.White,
-      eyes: LegoColor.TransMediumBlue,
+      eyes: LegoColor.MediumBlue,
     },
     tags: [MatoranTag.ChroniclersCompany],
   },

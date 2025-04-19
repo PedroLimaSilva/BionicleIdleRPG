@@ -14,7 +14,8 @@ const MAT_COLOR_MAP = {
   Torso: 'body',
   Mask: 'mask',
   Brain: 'eyes',
-};
+  'GlowingEyes': 'eyes',
+}
 
 export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   const group = useRef<Group>(null);
@@ -46,9 +47,9 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
       const mat = materials[materialName] as MeshStandardMaterial;
       if (mat && 'color' in mat) {
         mat.color.set(color);
-        if (materialName === 'Brain') {
-          mat.emissive.set(color);
-        }
+      }
+      if (mat && 'emissive' in mat && mat.emissiveIntensity > 1) {
+        mat.emissive.set(color);
       }
     };
 
@@ -77,7 +78,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
     <group ref={group} dispose={null}>
       <group name='Scene'>
         <group name='Matoran'>
-          <primitive object={nodes.Body} position={new Vector3(0, -7, 0)} />
+          <primitive scale={1} object={nodes.Body} position={new Vector3(0, -7, 0)} />
         </group>
       </group>
     </group>
