@@ -172,7 +172,7 @@ export const CharacterDetail: React.FC = () => {
                         <CompositedImage
                           className='mask-preview'
                           images={[
-                            `${import.meta.env.BASE_URL}/avatar/${mask}.png`,
+                            `${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.png`,
                           ]}
                           colors={[
                             matoran.maskColorOverride || matoran.colors.mask,

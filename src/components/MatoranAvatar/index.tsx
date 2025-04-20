@@ -5,8 +5,8 @@ import { CompositedImage } from '../CompositedImage';
 
 import './index.scss';
 
-function getMask(matoran: BaseMatoran) {
-  return `${import.meta.env.BASE_URL}/avatar/${matoran.mask}.png`;
+function getMask(matoran: BaseMatoran & RecruitedCharacterData) {
+  return `${import.meta.env.BASE_URL}/avatar/Kanohi/${matoran.maskOverride || matoran.mask}.png`;
 }
 
 export function MatoranAvatar({
