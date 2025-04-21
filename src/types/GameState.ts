@@ -1,4 +1,5 @@
 import { GameItemId } from '../data/loot';
+import { BattleState } from '../hooks/useBattleState';
 import { Inventory } from '../services/inventoryUtils';
 import { LegoColor } from './Colors';
 import { MatoranJob } from './Jobs';
@@ -14,6 +15,7 @@ export type GameState = {
   recruitedCharacters: RecruitedCharacterData[];
   activeQuests: QuestProgress[];
   completedQuests: string[];
+  battle: BattleState,
   recruitCharacter: (character: ListedCharacterData) => void;
   setMaskOverride: (id: RecruitedCharacterData["id"], color: LegoColor, mask: Mask) => void;
   addItemToInventory: (item: GameItemId, amount: number) => void;

@@ -7,6 +7,7 @@ import { useActivityLogState } from './useActivityLogState';
 import { useGamePersistence } from './useGamePersistence';
 import { GameState } from '../types/GameState';
 import { useQuestState } from './useQuestState';
+import { useBattleState } from './useBattleState';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -70,6 +71,8 @@ export const useGameLogic = (): GameState => {
     addActivityLog,
   });
 
+  const battle = useBattleState();
+
   // Auto-save when critical state changes
   useGamePersistence({
     version,
@@ -101,5 +104,6 @@ export const useGameLogic = (): GameState => {
     addActivityLog,
     removeActivityLogEntry,
     clearActivityLog,
+    battle,
   };
 };

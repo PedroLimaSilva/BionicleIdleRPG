@@ -7,10 +7,10 @@ export const ElementTag = ({
   showName,
 }: {
   element: ElementTribe;
-  showName: boolean;
+  showName?: boolean;
 }) => {
   return (
-    <div className='element-tag'>
+    <div className={`element-tag element-${element}`}>
       <img
         src={`${import.meta.env.BASE_URL}/icons/${element}.png`}
         alt={`${element} Element Icon`}

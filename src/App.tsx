@@ -5,7 +5,7 @@ import {
   Route,
   NavLink,
 } from 'react-router-dom';
-import { Home, UserCircle2, Backpack, Settings, Map } from 'lucide-react';
+import { UserCircle2, Backpack, Settings, Map, Swords } from 'lucide-react';
 
 import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
 import { Recruitment } from './pages/Recruitment/index.tsx';
@@ -21,6 +21,8 @@ import { preloadAssets } from './preload.ts';
 import { InventoryPage } from './pages/Inventory/index.tsx';
 import SettingsPage from './pages/Settings/index.tsx';
 import { QuestsPage } from './pages/Quests/index.tsx';
+import { BattleSelector } from './pages/BattleSelector/index.tsx';
+import { BattlePage } from './pages/Battle/index.tsx';
 
 const HomePage: React.FC = () => (
   <div className='page-container'>
@@ -53,6 +55,8 @@ export function App() {
               <div id='canvas-mount'></div>
               <Routes>
                 <Route path='/' element={<HomePage />} />
+                <Route path='/battle/selector' element={<BattleSelector />} />
+                <Route path='/battle' element={<BattlePage />} />
                 <Route path='/characters' element={<CharacterInventory />} />
                 <Route path='/characters/:id' element={<CharacterDetail />} />
                 <Route path='/recruitment' element={<Recruitment />} />
@@ -63,9 +67,9 @@ export function App() {
               </Routes>
             </main>
             <nav className='nav-bar'>
-              <NavLink to='/' className='nav-item'>
-                <Home />
-                <label>Home</label>
+              <NavLink to='/battle' className='nav-item'>
+                <Swords />
+                <label>Battle</label>
               </NavLink>
               <NavLink to='/characters' className='nav-item'>
                 <UserCircle2 />

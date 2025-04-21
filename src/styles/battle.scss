@@ -1,0 +1,41 @@
+.encounter {
+  border: 1px solid var(--color-border-muted);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-surface-high);
+  margin-bottom: 1rem;
+  &-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1rem;
+  }
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    gap: 1rem;    
+  }
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    flex: 1;
+    text-align: left;
+  }
+  .difficulty {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  .description {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+  .loot {
+    font-size: 0.875rem;
+    color: var(--theme-element-accent);
+  }
+  .enemy-avatar{
+    width: 100%;
+    max-width: 384px;
+  }
+}
