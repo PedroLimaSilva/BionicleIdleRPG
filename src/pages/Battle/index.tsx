@@ -11,7 +11,11 @@ import { isToaMata } from '../../services/matoranUtils';
 
 const MAX_TEAM_SIZE = 3;
 
-const NULL_MEMBER = { id: null };
+const enum TeamPosition {
+  Left,
+  Middle,
+  Right,
+}
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,9 +23,15 @@ export const BattlePage: React.FC = () => {
   const { currentEncounter, phase, confirmTeam, retreat } = battle;
 
   const [selectedTeam, setSelectedTeam] = useState<
-    (RecruitedCharacterData | typeof NULL_MEMBER)[]
-  >([NULL_MEMBER, NULL_MEMBER, NULL_MEMBER]);
-  const [selectingIndex, setSelectingIndex] = useState<number>(0);
+    Record<TeamPosition, RecruitedCharacterData | undefined>
+  >({
+    [TeamPosition.Left]: undefined,
+    [TeamPosition.Middle]: undefined,
+    [TeamPosition.Right]: undefined,
+  });
+  const [selectingIndex, setSelectingIndex] = useState<TeamPosition>(
+    TeamPosition.Left
+  );
 
   useEffect(() => {
     if (!currentEncounter) {
@@ -34,22 +44,37 @@ export const BattlePage: React.FC = () => {
   }
 
   const handleClickRecruitedCharacter = (recruited: RecruitedCharacterData) => {
-    let newSelectedTeam: (RecruitedCharacterData | typeof NULL_MEMBER)[] =
-      selectedTeam.filter((s) => s.id !== recruited.id);
-    console.log(
-      'handleClickRecruitedCharacter',
-      JSON.stringify(newSelectedTeam),
-      selectingIndex,
-      recruited
-    );
-    newSelectedTeam = newSelectedTeam.toSpliced(selectingIndex, 1, recruited);
-
+    const newSelectedTeam: Record<
+      TeamPosition,
+      RecruitedCharacterData | undefined
+    > = {
+      [TeamPosition.Left]:
+        selectedTeam[TeamPosition.Left]?.id === recruited.id &&
+        selectingIndex !== TeamPosition.Left
+          ? undefined
+          : selectedTeam[TeamPosition.Left],
+      [TeamPosition.Middle]:
+        selectedTeam[TeamPosition.Middle]?.id === recruited.id &&
+        selectingIndex !== TeamPosition.Middle
+          ? undefined
+          : selectedTeam[TeamPosition.Middle],
+      [TeamPosition.Right]:
+        selectedTeam[TeamPosition.Right]?.id === recruited.id &&
+        selectingIndex !== TeamPosition.Right
+          ? undefined
+          : selectedTeam[TeamPosition.Right],
+    };
+    newSelectedTeam[selectingIndex] = recruited;
     setSelectedTeam(newSelectedTeam);
-    console.log(
-      'handleClickRecruitedCharacter',
-      JSON.stringify(newSelectedTeam)
+
+    let nextSelectIndex = selectingIndex + 1;
+    const undefinedIndex = Object.values(newSelectedTeam).findIndex(
+      (member) => member === undefined
     );
-    setSelectingIndex((prev) => prev + 1);
+    if (undefinedIndex !== -1) {
+      nextSelectIndex = undefinedIndex;
+    }
+    setSelectingIndex(nextSelectIndex);
   };
 
   const handleClickSelectedCharacter = (index: number) => {
@@ -66,9 +91,9 @@ export const BattlePage: React.FC = () => {
         <div className='battle-prep'>
           <h2>Preparing for: {currentEncounter.name}</h2>
           <div className='battle-prep__selected-team'>
-            {selectedTeam.map((member, index) => {
+            {Object.values(selectedTeam).map((member, index) => {
               const focused = index === selectingIndex;
-              if (member.id === null) {
+              if (member === undefined) {
                 return (
                   <div
                     className={`character-card missing ${focused && 'focused'}`}
@@ -138,11 +163,13 @@ export const BattlePage: React.FC = () => {
             <button
               className='confirm-button'
               disabled={
-                selectedTeam.length < MAX_TEAM_SIZE ||
-                selectedTeam.includes(NULL_MEMBER)
+                Object.values(selectedTeam).length < MAX_TEAM_SIZE ||
+                Object.values(selectedTeam).includes(undefined)
               }
               onClick={() =>
-                confirmTeam(selectedTeam as RecruitedCharacterData[])
+                confirmTeam(
+                  Object.values(selectedTeam) as RecruitedCharacterData[]
+                )
               }
             >
               Begin Battle
