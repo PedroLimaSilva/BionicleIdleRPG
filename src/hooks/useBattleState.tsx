@@ -27,10 +27,15 @@ export interface BattleState {
 
 export const useBattleState = (): BattleState => {
   const [phase, setPhase] = useState<BattlePhase>(INITIAL_BATTLE_STATE.phase);
-  const [currentEncounter, setCurrentEncounter] =
-    useState<EnemyEncounter | undefined>(INITIAL_BATTLE_STATE.currentEncounter);
-  const [currentWave, setCurrentWave] = useState(INITIAL_BATTLE_STATE.currentWave);
-  const [enemies, setEnemies] = useState<Combatant[]>(INITIAL_BATTLE_STATE.enemies);
+  const [currentEncounter, setCurrentEncounter] = useState<
+    EnemyEncounter | undefined
+  >(INITIAL_BATTLE_STATE.currentEncounter);
+  const [currentWave, setCurrentWave] = useState(
+    INITIAL_BATTLE_STATE.currentWave
+  );
+  const [enemies, setEnemies] = useState<Combatant[]>(
+    INITIAL_BATTLE_STATE.enemies
+  );
   const [team, setTeam] = useState<Combatant[]>(INITIAL_BATTLE_STATE.team);
 
   const startBattle = (encounter: EnemyEncounter) => {
@@ -46,7 +51,12 @@ export const useBattleState = (): BattleState => {
   };
 
   const retreat = () => {
-    setPhase(BattlePhase.Retreated);
+    if (phase === BattlePhase.Preparing) {
+      setPhase(BattlePhase.Idle);
+      setCurrentEncounter(undefined);
+    } else {
+      setPhase(BattlePhase.Retreated);
+    }
     // optionally clear other state
   };
 

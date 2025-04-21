@@ -3,9 +3,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  NavLink,
 } from 'react-router-dom';
-import { UserCircle2, Backpack, Settings, Map, Swords } from 'lucide-react';
 
 import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
 import { Recruitment } from './pages/Recruitment/index.tsx';
@@ -23,6 +21,7 @@ import SettingsPage from './pages/Settings/index.tsx';
 import { QuestsPage } from './pages/Quests/index.tsx';
 import { BattleSelector } from './pages/BattleSelector/index.tsx';
 import { BattlePage } from './pages/Battle/index.tsx';
+import { NavBar } from './components/NavBar/index.tsx';
 
 const HomePage: React.FC = () => (
   <div className='page-container'>
@@ -66,28 +65,7 @@ export function App() {
                 <Route path='*' element={<NotFound />} />
               </Routes>
             </main>
-            <nav className='nav-bar'>
-              <NavLink to='/battle' className='nav-item'>
-                <Swords />
-                <label>Battle</label>
-              </NavLink>
-              <NavLink to='/characters' className='nav-item'>
-                <UserCircle2 />
-                <label>Characters</label>
-              </NavLink>
-              <NavLink to='/quests' className='nav-item'>
-                <Map />
-                <label>Quests</label>
-              </NavLink>
-              <NavLink to='/inventory' className='nav-item'>
-                <Backpack />
-                <label>Inventory</label>
-              </NavLink>
-              <NavLink to='/settings' className='nav-item'>
-                <Settings />
-                <label>Settings</label>
-              </NavLink>
-            </nav>
+            <NavBar />
           </div>
           <PWABadge />
         </SceneCanvasProvider>

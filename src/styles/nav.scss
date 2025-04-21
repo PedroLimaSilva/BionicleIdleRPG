@@ -12,6 +12,12 @@
   display: flex;
   gap: 32px;
   z-index: 1000;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+
+  &.hidden {
+    transform: translateX(-50%) translateY(calc(60px + 24px));
+    opacity: 0;
+  }
 
   .nav-item {
     color: #ccc;

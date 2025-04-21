@@ -8,7 +8,7 @@ import { ENEMY_DEX } from '../../data/combat';
 export const BattlePage: React.FC = () => {
   const { battle, recruitedCharacters } = useGame();
 
-  const { currentEncounter, phase, confirmTeam } = battle;
+  const { currentEncounter, phase, confirmTeam, retreat } = battle;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,6 +34,12 @@ export const BattlePage: React.FC = () => {
             <li key={combatant.id}>{MATORAN_DEX[combatant.id].name}</li>
           ))}
         </ul>
+        <button
+          className='cancel-button'
+          onClick={() => retreat()}
+        >
+          Retreat
+        </button>
         <button
           className='confirm-button'
           onClick={() => confirmTeam(defaultTeam)}
