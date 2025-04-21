@@ -13,7 +13,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
-    gap: 1rem;    
+    gap: 1rem;
   }
   h2 {
     font-size: 1.25rem;
@@ -34,8 +34,67 @@
     font-size: 0.875rem;
     color: var(--theme-element-accent);
   }
-  .enemy-avatar{
+  .enemy-avatar {
     width: 100%;
     max-width: 384px;
+  }
+}
+
+.battle {
+  &-prep {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    padding: 2rem;
+    background-color: var(--color-surface-low);
+    border-radius: 0.75rem;
+
+    h2 {
+      margin: 0;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin: 0;
+      text-align: left;
+    }
+
+    &__selected-team {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr;
+      margin-bottom: 1rem;
+    }
+
+    &__team-selector {
+      transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+      max-height: 400px;
+      &.hidden {
+        max-height: 0;
+        opacity: 0;
+      }
+    }
+
+    .character-card {
+      padding: 0.5rem;
+      cursor: pointer;
+      &.focused {
+        box-shadow: none;
+      }
+    }
+    .card-header {
+      font-size: 1rem;
+    }
+    .level-label {
+      font-size: 0.8rem;
+    }
+    .matoran-avatar {
+      margin-top: 0;
+    }
+  }
+  &-buttons {
+    display: flex;
+    justify-content: space-between;
   }
 }

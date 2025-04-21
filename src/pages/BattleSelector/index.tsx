@@ -10,7 +10,7 @@ export const BattleSelector: React.FC = () => {
   const { battle, completedQuests } = useGame();
   return (
     <div className='page-container'>
-      <h1 className='title'>Select a Battle Encounter</h1>
+      <h1 className='title'>Select an Encounter</h1>
       <div className='encounter-list'>
         {ENCOUNTERS.filter(
           (e) =>

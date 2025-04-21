@@ -1,12 +1,19 @@
 import { NavLink } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 import { UserCircle2, Backpack, Settings, Map, Swords } from 'lucide-react';
+import { BattlePhase } from '../../hooks/useBattleState';
 
 export const NavBar = () => {
   const { battle } = useGame();
 
   return (
-    <nav className={`nav-bar ${battle.currentEncounter ? 'hidden' : ''}`}>
+    <nav
+      className={`nav-bar ${
+        battle.currentEncounter && battle.phase !== BattlePhase.Retreated
+          ? 'hidden'
+          : ''
+      }`}
+    >
       <NavLink to='/battle' className='nav-item'>
         <Swords />
         <label>Battle</label>
