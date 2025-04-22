@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Group, MeshStandardMaterial, Vector3 } from 'three';
+import { Group, MeshStandardMaterial } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { Color, LegoColor } from '../../types/Colors';
 
@@ -39,7 +39,7 @@ const BOHROK_COLORS: Record<
   },
 };
 
-export function BohrokModel({ bohrok }: { bohrok: { name: string } }) {
+export function BohrokModel({ name }: { name: string }) {
   const group = useRef<Group>(null);
   const { nodes, materials } = useGLTF(
     import.meta.env.BASE_URL + 'bohrok_master.glb'
@@ -47,46 +47,41 @@ export function BohrokModel({ bohrok }: { bohrok: { name: string } }) {
 
   useEffect(() => {
     (materials.Bohrok_Main as MeshStandardMaterial).color.set(
-      BOHROK_COLORS[bohrok.name].main as Color
+      BOHROK_COLORS[name].main as Color
     );
     (materials.Bohrok_Secondary as MeshStandardMaterial).color.set(
-      BOHROK_COLORS[bohrok.name].secondary as Color
+      BOHROK_COLORS[name].secondary as Color
     );
     (materials.Bohrok_Eye as MeshStandardMaterial).color.set(
-      BOHROK_COLORS[bohrok.name].eyes as Color
+      BOHROK_COLORS[name].eyes as Color
     );
     (materials.Bohrok_Eye as MeshStandardMaterial).emissive.set(
-      BOHROK_COLORS[bohrok.name].eyes as Color
+      BOHROK_COLORS[name].eyes as Color
     );
     (materials.Bohrok_Iris as MeshStandardMaterial).color.set(
-      BOHROK_COLORS[bohrok.name].eyes as Color
+      BOHROK_COLORS[name].eyes as Color
     );
     (materials.Bohrok_Iris as MeshStandardMaterial).emissive.set(
-      BOHROK_COLORS[bohrok.name].eyes as Color
+      BOHROK_COLORS[name].eyes as Color
     );
     (materials.Krana as MeshStandardMaterial).color.set(
-      BOHROK_COLORS[bohrok.name].eyes as Color
+      BOHROK_COLORS[name].eyes as Color
     );
-  }, [nodes, materials, bohrok]);
+  }, [nodes, materials, name]);
 
   useEffect(() => {
-    console.log(nodes);
-    const shieldTarget = bohrok.name;
+    const shieldTarget = name;
     ['R', 'L'].forEach((suffix) => {
       nodes[`Hand${suffix}`].children.forEach((shield) => {
         const isTarget = shield.name === `${shieldTarget}${suffix}`;
         shield.visible = isTarget;
       });
     });
-  }, [nodes, bohrok]);
+  }, [nodes, name]);
 
   return (
     <group ref={group} dispose={null}>
-      <primitive
-        object={nodes.Body}
-        scale={4}
-        position={new Vector3(0, -5, 0)}
-      />
+      <primitive object={nodes.Body} />
     </group>
   );
 }

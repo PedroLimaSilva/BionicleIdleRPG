@@ -4,17 +4,28 @@ import { BattlePhase } from '../../hooks/useBattleState';
 import { useEffect } from 'react';
 import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
+import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { Arena } from './Arena';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
   const { battle } = useGame();
   const { currentEncounter, phase } = battle;
+  const { setScene } = useSceneCanvas();
 
   useEffect(() => {
     if (!currentEncounter) {
       navigate('/battle/selector');
     }
   }, [navigate, currentEncounter]);
+
+  useEffect(() => {
+    if (currentEncounter) {
+      setScene(<Arena team={battle.team} enemies={battle.enemies} />);
+    } else {
+      setScene(null); // or show something else
+    }
+  }, [setScene, currentEncounter, battle.team, battle.enemies, phase]);
 
   if (!currentEncounter) {
     return null;

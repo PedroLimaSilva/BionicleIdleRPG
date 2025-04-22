@@ -15,6 +15,8 @@ export type CombatantDexEntry = {
 
 export interface Combatant {
   id: string;
+  name: string;
+  model: string;
   lvl: number;
   maskOverride?: Mask;
   maskColorOverride?: LegoColor;
@@ -29,6 +31,7 @@ export interface Combatant {
 export interface CombatantTemplate {
   id: string;
   name: string;
+  model: string;
   element: ElementTribe;
   baseHp: number;
   baseAttack: number;

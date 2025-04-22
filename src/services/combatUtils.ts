@@ -6,6 +6,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   Toa_Kopaka: {
     id: 'Toa_Kopaka',
     name: 'Toa Kopaka',
+    model: 'Toa_Kopaka',
     element: ElementTribe.Ice,
     baseHp: 90,
     baseAttack: 16,
@@ -15,6 +16,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   Toa_Pohatu: {
     id: 'Toa_Pohatu',
     name: 'Toa Pohatu',
+    model: 'Toa_Pohatu',
     element: ElementTribe.Stone,
     baseHp: 100,
     baseAttack: 20,
@@ -24,6 +26,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   Toa_Tahu: {
     id: 'Toa_Tahu',
     name: 'Toa Tahu',
+    model: 'Toa_Tahu',
     element: ElementTribe.Fire,
     baseHp: 90,
     baseAttack: 18,
@@ -33,6 +36,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   Toa_Onua: {
     id: 'Toa_Onua',
     name: 'Toa Onua',
+    model: 'Toa_Onua',
     element: ElementTribe.Earth,
     baseHp: 110,
     baseAttack: 15,
@@ -42,6 +46,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   Toa_Gali: {
     id: 'Toa_Gali',
     name: 'Toa Gali',
+    model: 'Toa_Gali',
     element: ElementTribe.Water,
     baseHp: 95,
     baseAttack: 14,
@@ -51,6 +56,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   Toa_Lewa: {
     id: 'Toa_Lewa',
     name: 'Toa Lewa',
+    model: 'Toa_Lewa',
     element: ElementTribe.Air,
     baseHp: 85,
     baseAttack: 17,
@@ -62,6 +68,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   tahnok: {
     id: 'tahnok',
     name: 'Tahnok',
+    model: 'bohrok',
     element: ElementTribe.Fire,
     baseHp: 80,
     baseAttack: 22,
@@ -71,6 +78,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   gahlok: {
     id: 'gahlok',
     name: 'Gahlok',
+    model: 'bohrok',
     element: ElementTribe.Water,
     baseHp: 75,
     baseAttack: 18,
@@ -80,6 +88,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   lehvak: {
     id: 'lehvak',
     name: 'Lehvak',
+    model: 'bohrok',
     element: ElementTribe.Air,
     baseHp: 70,
     baseAttack: 16,
@@ -89,6 +98,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   pahrak: {
     id: 'pahrak',
     name: 'Pahrak',
+    model: 'bohrok',
     element: ElementTribe.Stone,
     baseHp: 95,
     baseAttack: 20,
@@ -98,6 +108,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   nuhvok: {
     id: 'nuhvok',
     name: 'Nuhvok',
+    model: 'bohrok',
     element: ElementTribe.Earth,
     baseHp: 90,
     baseAttack: 17,
@@ -107,6 +118,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   kohrak: {
     id: 'kohrak',
     name: 'Kohrak',
+    model: 'bohrok',
     element: ElementTribe.Ice,
     baseHp: 85,
     baseAttack: 19,
@@ -240,6 +252,8 @@ export function generateCombatantStats(
 
   return {
     id,
+    name: template.name,
+    model: template.model,
     lvl,
     maskOverride,
     maskColorOverride,

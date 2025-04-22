@@ -49,7 +49,7 @@ export const useBattleState = (): BattleState => {
   const [isRunningRound, setIsRunningRound] = useState(false);
 
   useEffect(() => {
-    const allTeamDefeated = team.every((t) => t.hp <= 0);
+    const allTeamDefeated = team.length && team.every((t) => t.hp <= 0);
     if (allTeamDefeated) {
       console.log('Defeat!');
       setIsRunningRound(false);
@@ -58,7 +58,8 @@ export const useBattleState = (): BattleState => {
   }, [team]);
 
   useEffect(() => {
-    const allEnemiesDefeated = enemies.every((e) => e.hp <= 0);
+    const allEnemiesDefeated =
+      enemies.length && enemies.every((e) => e.hp <= 0);
     if (allEnemiesDefeated) {
       console.log('Victory!');
       setIsRunningRound(false);
@@ -68,6 +69,10 @@ export const useBattleState = (): BattleState => {
 
   const startBattle = (encounter: EnemyEncounter) => {
     setCurrentEncounter(encounter);
+    setTeam([]);
+    setEnemies(encounter!.waves[0].map(({ id, lvl }) =>
+      generateCombatantStats(id, lvl)
+    ));
     setPhase(BattlePhase.Preparing);
   };
 
