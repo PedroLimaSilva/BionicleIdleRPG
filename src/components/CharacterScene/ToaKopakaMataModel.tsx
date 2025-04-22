@@ -1,25 +1,49 @@
-import { useEffect, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
+import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 
-export function ToaKopakaMataModel({
-  matoran,
-}: {
-  matoran: RecruitedCharacterData & BaseMatoran;
-}) {
+export const ToaKopakaMataModel = forwardRef<
+  CombatantModelHandle,
+  {
+    matoran: RecruitedCharacterData & BaseMatoran;
+  }
+>(({ matoran }, ref) => {
   const group = useRef<Group>(null);
   const { nodes, materials, animations } = useGLTF(
     import.meta.env.BASE_URL + 'toa_kopaka_mata.glb'
   );
+  const { actions, mixer } = useAnimations(animations, group);
 
-  const { actions } = useAnimations(animations, group);
+  useImperativeHandle(ref, () => ({
+    playAnimation: (name) => {
+      return new Promise<void>((resolve) => {
+        const action = actions[name];
+        if (!action) {
+          console.warn(`Animation '${name}' not found for ${matoran.id}`);
+          return resolve();
+        }
+        actions['Idle']?.fadeOut(0.2);
+        action.reset().play();
+
+        const onComplete = () => {
+          mixer.removeEventListener('finished', onComplete);
+          resolve();
+          const idle = actions['Idle'];
+          if (!idle) return;
+          idle.fadeIn(0.2).play();
+        };
+
+        mixer.addEventListener('finished', onComplete);
+      });
+    },
+  }));
 
   useEffect(() => {
     const idle = actions['Idle'];
     if (!idle) return;
-
     idle.reset().play();
 
     return () => {
@@ -46,10 +70,8 @@ export function ToaKopakaMataModel({
 
   useEffect(() => {
     const maskTarget = matoran.maskOverride || matoran.mask;
-
     nodes.Masks.children.forEach((mask) => {
-      const isTarget = mask.name === maskTarget;
-      mask.visible = isTarget;
+      mask.visible = mask.name === maskTarget;
     });
   }, [nodes, matoran]);
 
@@ -62,4 +84,4 @@ export function ToaKopakaMataModel({
       </group>
     </group>
   );
-}
+});

@@ -2,6 +2,15 @@ import { LegoColor } from '../types/Colors';
 import { Combatant, CombatantTemplate } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 
+declare global {
+  interface Window {
+    combatantRefs: Record<
+      string,
+      { playAnimation?: (name: string) => Promise<void> }
+    >;
+  }
+}
+
 export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   Toa_Kopaka: {
     id: 'Toa_Kopaka',
@@ -172,43 +181,17 @@ export function queueCombatRound(
       const target = targets[Math.floor(Math.random() * targets.length)];
       const damage = resolveAttack(self, target);
 
-      // Trigger animations and wait for both to complete
-      const actorNode = document.getElementById(`combatant-${self.id}`);
-      const targetNode = document.getElementById(`combatant-${target.id}`);
+      // Expect 3D combatant refs to be globally accessible for now
+      const actorRef = window.combatantRefs?.[self.id];
+      const targetRef = window.combatantRefs?.[target.id];
 
       const animationPromises: Promise<void>[] = [];
 
-      if (actorNode) {
-        animationPromises.push(
-          new Promise((res) => {
-            actorNode.classList.add('attacking');
-            const handler = () => {
-              actorNode.classList.remove('attacking');
-              actorNode.removeEventListener('animationend', handler);
-              res();
-            };
-            actorNode.addEventListener('animationend', handler);
-          })
-        );
-      }
+      if (actorRef && actorRef.playAnimation)
+        animationPromises.push(actorRef.playAnimation?.('Attack'));
+      if (targetRef && targetRef.playAnimation)
+        animationPromises.push(targetRef.playAnimation?.('Hit'));
 
-      if (targetNode) {
-        animationPromises.push(
-          new Promise((res) => {
-            targetNode.classList.remove('hit');
-            // Force reflow to restart animation
-            void targetNode.offsetWidth;
-            targetNode.classList.add('hit');
-
-            const handler = () => {
-              targetNode.classList.remove('hit');
-              targetNode.removeEventListener('animationend', handler);
-              res();
-            };
-            targetNode.addEventListener('animationend', handler);
-          })
-        );
-      }
       await Promise.all(animationPromises);
 
       // Apply damage and update state

@@ -8,6 +8,7 @@ import { ToaPohatuMataModel } from '../../components/CharacterScene/ToaPohatuMat
 import { ToaOnuaMataModel } from '../../components/CharacterScene/ToaOnuaMataModel';
 import { ToaLewaMataModel } from '../../components/CharacterScene/ToaLewaMataModel';
 import { ToaGaliMataModel } from '../../components/CharacterScene/ToaGaliMataModel';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 
 interface CombatantModelProps {
   combatant: Combatant;
@@ -15,11 +16,24 @@ interface CombatantModelProps {
   side: 'enemy' | 'team';
 }
 
-export const CombatantModel: React.FC<CombatantModelProps> = ({
-  combatant,
-  position,
-  side,
-}) => {
+export interface CombatantModelHandle {
+  playAnimation: (name: 'Attack' | 'Hit' | 'Idle') => Promise<void>;
+}
+
+export const CombatantModel = forwardRef<
+  CombatantModelHandle,
+  CombatantModelProps
+>(({ combatant, position, side }, ref) => {
+  const modelGroup = useRef<THREE.Group>(null);
+
+  const childRef = useRef<CombatantModelHandle>(null);
+
+  useImperativeHandle(ref, () => ({
+    playAnimation: (name) => {
+      return childRef.current?.playAnimation(name) ?? Promise.resolve();
+    },
+  }));
+
   const rotation: Euler = [0, side === 'team' ? Math.PI : 0, 0];
 
   const model = (() => {
@@ -27,13 +41,14 @@ export const CombatantModel: React.FC<CombatantModelProps> = ({
       case 'bohrok':
         return (
           <group scale={0.2} position={[0, 0.3, 0]}>
-            <BohrokModel name={combatant.name} />
+            <BohrokModel ref={childRef} name={combatant.name} />
           </group>
         );
       case 'Toa_Kopaka':
         return (
           <group scale={0.05} position={[0, 0.51, 0]}>
             <ToaKopakaMataModel
+              ref={childRef}
               matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
             />
           </group>
@@ -83,8 +98,8 @@ export const CombatantModel: React.FC<CombatantModelProps> = ({
     }
   })();
   return (
-    <group position={position} rotation={rotation}>
+    <group ref={modelGroup} position={position} rotation={rotation}>
       {model}
     </group>
   );
-};
+});

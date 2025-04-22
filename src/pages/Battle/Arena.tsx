@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { useGLTF, OrthographicCamera, Stage } from '@react-three/drei';
 import { GLTF } from 'three-stdlib';
 import { Combatant } from '../../types/Combat';
-import { CombatantModel } from './CombatantModel';
+import { CombatantModel, CombatantModelHandle } from './CombatantModel';
+import { useEffect, useRef } from 'react';
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -37,9 +38,16 @@ const ENEMY_POSITIONS: [number, number, number][] = [
 ];
 
 export function Arena({ team, enemies }: ArenaProps) {
+  const combatantRefs = useRef<Record<string, CombatantModelHandle>>({});
+
   const { nodes, materials } = useGLTF(
     import.meta.env.BASE_URL + '/arena.glb'
   ) as GLTFResult;
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).combatantRefs = combatantRefs.current;
+  }, [team, enemies]);
   return (
     <Stage shadows='contact'>
       <group dispose={null}>
@@ -95,22 +103,27 @@ export function Arena({ team, enemies }: ArenaProps) {
             position={[0.5, 0.025, 0.75]}
           />
 
-          {/* Add Toa models */}
           {team.map((c, i) => (
             <CombatantModel
               key={c.id}
               combatant={c}
               side='team'
               position={TEAM_POSITIONS[i]}
+              ref={(ref) => {
+                if (ref) combatantRefs.current[c.id] = ref;
+              }}
             />
           ))}
-          {/* Add Enemy models */}
+
           {enemies.map((c, i) => (
             <CombatantModel
               key={c.id}
               combatant={c}
               side='enemy'
               position={ENEMY_POSITIONS[i]}
+              ref={(ref) => {
+                if (ref) combatantRefs.current[c.id] = ref;
+              }}
             />
           ))}
         </group>
@@ -119,4 +132,4 @@ export function Arena({ team, enemies }: ArenaProps) {
   );
 }
 
-useGLTF.preload('/arena-transformed.glb');
+useGLTF.preload(import.meta.env.BASE_URL + '/arena.glb');

@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { Group, MeshStandardMaterial } from 'three';
-import { useGLTF } from '@react-three/drei';
+import { useAnimations, useGLTF } from '@react-three/drei';
 import { Color, LegoColor } from '../../types/Colors';
+import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 
 const BOHROK_COLORS: Record<
   string,
@@ -39,49 +40,75 @@ const BOHROK_COLORS: Record<
   },
 };
 
-export function BohrokModel({ name }: { name: string }) {
-  const group = useRef<Group>(null);
-  const { nodes, materials } = useGLTF(
-    import.meta.env.BASE_URL + 'bohrok_master.glb'
-  );
+export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(
+  ({ name }, ref) => {
+    const group = useRef<Group>(null);
 
-  useEffect(() => {
-    (materials.Bohrok_Main as MeshStandardMaterial).color.set(
-      BOHROK_COLORS[name].main as Color
+    const { nodes, materials, animations } = useGLTF(
+      import.meta.env.BASE_URL + 'bohrok_master.glb'
     );
-    (materials.Bohrok_Secondary as MeshStandardMaterial).color.set(
-      BOHROK_COLORS[name].secondary as Color
-    );
-    (materials.Bohrok_Eye as MeshStandardMaterial).color.set(
-      BOHROK_COLORS[name].eyes as Color
-    );
-    (materials.Bohrok_Eye as MeshStandardMaterial).emissive.set(
-      BOHROK_COLORS[name].eyes as Color
-    );
-    (materials.Bohrok_Iris as MeshStandardMaterial).color.set(
-      BOHROK_COLORS[name].eyes as Color
-    );
-    (materials.Bohrok_Iris as MeshStandardMaterial).emissive.set(
-      BOHROK_COLORS[name].eyes as Color
-    );
-    (materials.Krana as MeshStandardMaterial).color.set(
-      BOHROK_COLORS[name].eyes as Color
-    );
-  }, [nodes, materials, name]);
 
-  useEffect(() => {
-    const shieldTarget = name;
-    ['R', 'L'].forEach((suffix) => {
-      nodes[`Hand${suffix}`].children.forEach((shield) => {
-        const isTarget = shield.name === `${shieldTarget}${suffix}`;
-        shield.visible = isTarget;
+    const { actions, mixer } = useAnimations(animations, group);
+
+    useImperativeHandle(ref, () => ({
+      playAnimation: (actionName) => {
+        return new Promise<void>((resolve) => {
+          const action = actions[actionName];
+          if (!action) {
+            console.warn(`Animation '${actionName}' not found for ${name}`);
+            return resolve();
+          }
+
+          action.reset().play();
+
+          const onComplete = () => {
+            mixer.removeEventListener('finished', onComplete);
+            resolve();
+          };
+
+          mixer.addEventListener('finished', onComplete);
+        });
+      },
+    }));
+
+    useEffect(() => {
+      (materials.Bohrok_Main as MeshStandardMaterial).color.set(
+        BOHROK_COLORS[name].main as Color
+      );
+      (materials.Bohrok_Secondary as MeshStandardMaterial).color.set(
+        BOHROK_COLORS[name].secondary as Color
+      );
+      (materials.Bohrok_Eye as MeshStandardMaterial).color.set(
+        BOHROK_COLORS[name].eyes as Color
+      );
+      (materials.Bohrok_Eye as MeshStandardMaterial).emissive.set(
+        BOHROK_COLORS[name].eyes as Color
+      );
+      (materials.Bohrok_Iris as MeshStandardMaterial).color.set(
+        BOHROK_COLORS[name].eyes as Color
+      );
+      (materials.Bohrok_Iris as MeshStandardMaterial).emissive.set(
+        BOHROK_COLORS[name].eyes as Color
+      );
+      (materials.Krana as MeshStandardMaterial).color.set(
+        BOHROK_COLORS[name].eyes as Color
+      );
+    }, [nodes, materials, name]);
+
+    useEffect(() => {
+      const shieldTarget = name;
+      ['R', 'L'].forEach((suffix) => {
+        nodes[`Hand${suffix}`].children.forEach((shield) => {
+          const isTarget = shield.name === `${shieldTarget}${suffix}`;
+          shield.visible = isTarget;
+        });
       });
-    });
-  }, [nodes, name]);
+    }, [nodes, name]);
 
-  return (
-    <group ref={group} dispose={null}>
-      <primitive object={nodes.Body} />
-    </group>
-  );
-}
+    return (
+      <group ref={group} dispose={null}>
+        <primitive object={nodes.Body} />
+      </group>
+    );
+  }
+);
