@@ -1,5 +1,6 @@
+import { LegoColor } from '../types/Colors';
 import { Combatant, CombatantTemplate } from '../types/Combat';
-import { ElementTribe } from '../types/Matoran';
+import { ElementTribe, Mask } from '../types/Matoran';
 
 export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   Toa_Kopaka: {
@@ -221,7 +222,12 @@ export function queueCombatRound(
   }
 }
 
-export function generateCombatantStats(id: string, lvl: number): Combatant {
+export function generateCombatantStats(
+  id: string,
+  lvl: number,
+  maskOverride?: Mask,
+  maskColorOverride?: LegoColor
+): Combatant {
   const template = COMBATANT_DEX[id];
   if (!template) {
     console.error('Missing base stats for ', id);
@@ -235,6 +241,8 @@ export function generateCombatantStats(id: string, lvl: number): Combatant {
   return {
     id,
     lvl,
+    maskOverride,
+    maskColorOverride,
     element: template.element,
     maxHp,
     hp: maxHp,

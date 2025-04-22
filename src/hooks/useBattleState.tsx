@@ -94,8 +94,13 @@ export const useBattleState = (): BattleState => {
 
   const confirmTeam = (team: RecruitedCharacterData[]) => {
     setTeam(
-      team.map(({ id, exp }) =>
-        generateCombatantStats(id, getLevelFromExp(exp))
+      team.map(({ id, exp, maskColorOverride, maskOverride }) =>
+        generateCombatantStats(
+          id,
+          getLevelFromExp(exp),
+          maskOverride,
+          maskColorOverride
+        )
       ) // add stats
     );
     setCurrentWave(0);
