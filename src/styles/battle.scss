@@ -120,8 +120,12 @@
       gap: 1rem;
       flex-wrap: wrap;
     }
-    .enemy-list{
+    .enemy-list {
       position: fixed;
+      left: 0;
+      width: 100%;
+      padding: 0 1rem;
+      top: 5rem;
     }
 
     .toa-team {
@@ -129,6 +133,7 @@
       bottom: 12vh;
       left: 0;
       padding: 0 1rem;
+      height: 11rem;
       width: 100%;
       .card-header {
         display: none;

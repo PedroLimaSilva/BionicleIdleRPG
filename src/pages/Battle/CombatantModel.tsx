@@ -40,13 +40,13 @@ export const CombatantModel = forwardRef<
     switch (combatant.model) {
       case 'bohrok':
         return (
-          <group scale={0.2} position={[0, 0.3, 0]}>
+          <group scale={0.1} position={[0, 0.075, 0]}>
             <BohrokModel ref={childRef} name={combatant.name} />
           </group>
         );
       case 'Toa_Kopaka':
         return (
-          <group scale={0.05} position={[0, 0.51, 0]}>
+          <group scale={0.025} position={[0, 0.2, 0]}>
             <ToaKopakaMataModel
               ref={childRef}
               matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
@@ -55,7 +55,7 @@ export const CombatantModel = forwardRef<
         );
       case 'Toa_Tahu':
         return (
-          <group scale={0.05} position={[0, 0.51, 0]}>
+          <group scale={0.025} position={[0, 0.2, 0]}>
             <ToaTahuMataModel
               matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
             />
@@ -63,7 +63,7 @@ export const CombatantModel = forwardRef<
         );
       case 'Toa_Pohatu':
         return (
-          <group scale={0.05} position={[0, 0.51, 0]}>
+          <group scale={0.025} position={[0, 0.2, 0]}>
             <ToaPohatuMataModel
               matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
             />
@@ -71,7 +71,7 @@ export const CombatantModel = forwardRef<
         );
       case 'Toa_Onua':
         return (
-          <group scale={0.05} position={[0, 0.51, 0]}>
+          <group scale={0.025} position={[0, 0.2, 0]}>
             <ToaOnuaMataModel
               matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
             />
@@ -79,7 +79,7 @@ export const CombatantModel = forwardRef<
         );
       case 'Toa_Lewa':
         return (
-          <group scale={0.05} position={[0, 0.51, 0]}>
+          <group scale={0.025} position={[0, 0.2, 0]}>
             <ToaLewaMataModel
               matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
             />
@@ -87,7 +87,7 @@ export const CombatantModel = forwardRef<
         );
       case 'Toa_Gali':
         return (
-          <group scale={0.05} position={[0, 0.51, 0]}>
+          <group scale={0.025} position={[0, 0.2, 0]}>
             <ToaGaliMataModel
               matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
             />

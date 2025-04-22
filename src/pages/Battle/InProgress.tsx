@@ -29,7 +29,6 @@ export const BattleInProgress = () => {
       <div className='battle-arena'>
         {/* Enemy Side */}
         <div className='enemy-side'>
-          <h2>Enemies</h2>
           <div className='enemy-list'>
             {enemies.map((enemy) => (
               <div
