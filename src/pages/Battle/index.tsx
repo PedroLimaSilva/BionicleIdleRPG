@@ -46,7 +46,7 @@ export const BattlePage: React.FC = () => {
   ) {
     return (
       <div className='page-container'>
-        <h1>Battle {phase}</h1>
+        <h1 style={{ fontSize: '8vw' }}>{phase}</h1>
         <p>Battle summary goes here</p>
         <div
           className='battle-buttons'
