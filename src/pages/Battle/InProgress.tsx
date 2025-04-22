@@ -50,7 +50,6 @@ export const BattleInProgress = () => {
 
         {/* Ally Side */}
         <div className='ally-side'>
-          <h2>Your Toa</h2>
           <div className='toa-team'>
             {team.map((toa) => {
               const dex = MATORAN_DEX[toa.id];

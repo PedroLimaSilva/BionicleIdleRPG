@@ -120,6 +120,20 @@
       gap: 1rem;
       flex-wrap: wrap;
     }
+    .enemy-list{
+      position: fixed;
+    }
+
+    .toa-team {
+      position: fixed;
+      bottom: 12vh;
+      left: 0;
+      padding: 0 1rem;
+      width: 100%;
+      .card-header {
+        display: none;
+      }
+    }
 
     .enemy-card,
     .character-card {
