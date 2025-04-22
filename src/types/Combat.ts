@@ -1,5 +1,6 @@
+import { LegoColor } from './Colors';
 import { GameState } from './GameState';
-import { ElementTribe } from './Matoran';
+import { ElementTribe, Mask } from './Matoran';
 
 export interface BattleDrop {
   id: string;
@@ -15,6 +16,30 @@ export type CombatantDexEntry = {
 export interface Combatant {
   id: string;
   lvl: number;
+  maskOverride?: Mask;
+  maskColorOverride?: LegoColor;
+  element: ElementTribe;
+  maxHp: number;
+  hp: number;
+  attack: number;
+  defense: number;
+  speed: number;
+}
+
+export interface CombatantTemplate {
+  id: string;
+  name: string;
+  element: ElementTribe;
+  baseHp: number;
+  baseAttack: number;
+  baseDefense: number;
+  baseSpeed: number;
+}
+
+export interface CombatRoundResult {
+  updatedTeam: Combatant[];
+  updatedEnemies: Combatant[];
+  log: string[];
 }
 
 export interface EnemyEncounter {
@@ -24,6 +49,6 @@ export interface EnemyEncounter {
   unlockedAfter?: GameState['completedQuests'];
   difficulty: number;
   headliner: Combatant['id'];
-  waves: Array<Combatant[]>;
+  waves: Array<{ id: string; lvl: number }[]>;
   loot: BattleDrop[];
 }

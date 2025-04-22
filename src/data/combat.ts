@@ -22,6 +22,14 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   retreat: function (): void {
     throw new Error('Function not implemented.');
   },
+  runRound: function (): void {
+    throw new Error('Function not implemented.');
+  },
+  playActionQueue: function (): Promise<void> {
+    throw new Error('Function not implemented.');
+  },
+  actionQueue: [],
+  isRunningRound: false
 };
 
 export const ENEMY_DEX: Record<string, CombatantDexEntry> = {
@@ -67,7 +75,14 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     id: 'gahlok',
     name: 'Gahlok Swarm',
     headliner: 'gahlok',
-    waves: [],
+    waves: [
+      [
+        {
+          id: 'gahlok',
+          lvl: 5,
+        },
+      ],
+    ],
     description: 'Swift and evasive attackers.',
     difficulty: 1,
     loot: [
@@ -78,7 +93,14 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   {
     id: 'lehvak',
     name: 'Lehvak Swarm',
-    waves: [],
+    waves: [
+      [
+        {
+          id: 'lehvak',
+          lvl: 5,
+        },
+      ],
+    ],
     headliner: 'lehvak',
     description: 'Swift and evasive attackers.',
     difficulty: 1,

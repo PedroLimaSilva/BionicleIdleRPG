@@ -9,7 +9,12 @@ export const NavBar = () => {
   return (
     <nav
       className={`nav-bar ${
-        battle.currentEncounter && battle.phase !== BattlePhase.Retreated
+        battle.currentEncounter &&
+        !(
+          battle.phase === BattlePhase.Retreated ||
+          battle.phase === BattlePhase.Defeat ||
+          battle.phase === BattlePhase.Victory
+        )
           ? 'hidden'
           : ''
       }`}

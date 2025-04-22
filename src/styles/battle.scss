@@ -46,7 +46,7 @@
     width: 100%;
     bottom: 0;
     left: 0;
-    padding: 2rem;
+    padding: 2rem 2rem 5rem;
     background-color: var(--color-surface-low);
     border-radius: 0.75rem;
 
@@ -96,5 +96,83 @@
   &-buttons {
     display: flex;
     justify-content: space-between;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem;
+  }
+
+  &-arena {
+    display: flex;
+    gap: 2rem;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .enemy-side,
+    .ally-side {
+      flex: 1;
+    }
+
+    .enemy-list,
+    .toa-team {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .enemy-card,
+    .character-card {
+      background: #222;
+      border-radius: 8px;
+      padding: 0.5rem;
+      text-align: center;
+      flex: 1;
+    }
+
+    .hp-bar {
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+    }
+
+    .mask-power {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.enemy-card,
+.character-card {
+  &.attacking {
+    animation: pulse 0.3s ease;
+  }
+  &.hit {
+    animation: shake 0.3s ease;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
   }
 }
