@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, LoopOnce, Mesh, MeshStandardMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
@@ -26,7 +26,10 @@ export const ToaKopakaMataModel = forwardRef<
           return resolve();
         }
         actions['Idle']?.fadeOut(0.2);
-        action.reset().play();
+        action.reset();
+        action.setLoop(LoopOnce, 1);
+        action.clampWhenFinished = true;
+        action.play();
 
         const onComplete = () => {
           mixer.removeEventListener('finished', onComplete);
