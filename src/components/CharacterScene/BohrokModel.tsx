@@ -74,6 +74,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(
           action.reset();
           action.setLoop(LoopOnce, 1);
           action.clampWhenFinished = true;
+          action.setEffectiveTimeScale(1.5);
           action.play();
 
           const onComplete = () => {
