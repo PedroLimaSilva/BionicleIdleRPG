@@ -158,6 +158,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   },
 };
 
+export const TEAM_POSITION_LABELS = ['Middle', 'Left', 'Right'];
 
 export const ENCOUNTERS: EnemyEncounter[] = [
   {
@@ -167,7 +168,15 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [
       [
         {
+          id: 'nuhvok',
+          lvl: 20,
+        },
+        {
           id: 'tahnok',
+          lvl: 20,
+        },
+        {
+          id: 'lehvak',
           lvl: 20,
         },
       ],

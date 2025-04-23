@@ -30,20 +30,26 @@ export const BattleInProgress = () => {
         {/* Enemy Side */}
         <div className='enemy-side'>
           <div className='enemy-list'>
-            {enemies.map((enemy) => (
-              <div
-                id={`combatant-${enemy.id}`}
-                key={enemy.id}
-                className={`enemy-card element-${enemy.element}`}
-              >
-                <div className='name'>
-                  {COMBATANT_DEX[enemy.id]?.name || enemy.id}
+            {enemies
+              .toSorted((a, b) => {
+                const positionA = a.id.split(' ')[1];
+                const positionB = b.id.split(' ')[1];
+                return positionA.localeCompare(positionB);
+              })
+              .map((enemy) => (
+                <div
+                  id={`combatant-${enemy.id}`}
+                  key={enemy.id}
+                  className={`enemy-card element-${enemy.element}`}
+                >
+                  <div className='name'>
+                    {COMBATANT_DEX[enemy.id]?.name || enemy.id}
+                  </div>
+                  <div className='hp-bar'>
+                    HP: {enemy.hp}/{enemy.maxHp}
+                  </div>
                 </div>
-                <div className='hp-bar'>
-                  HP: {enemy.hp}/{enemy.maxHp}
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
 

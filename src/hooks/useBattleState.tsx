@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Combatant, EnemyEncounter } from '../types/Combat';
 import { RecruitedCharacterData } from '../types/Matoran';
 import { getLevelFromExp } from '../game/Levelling';
-import { INITIAL_BATTLE_STATE } from '../data/combat';
+import { INITIAL_BATTLE_STATE, TEAM_POSITION_LABELS } from '../data/combat';
 import {
   generateCombatantStats,
   queueCombatRound,
@@ -70,9 +70,9 @@ export const useBattleState = (): BattleState => {
   const startBattle = (encounter: EnemyEncounter) => {
     setCurrentEncounter(encounter);
     setTeam([]);
-    setEnemies(encounter!.waves[0].map(({ id, lvl }) =>
-      generateCombatantStats(id, lvl)
-    ));
+    setEnemies(encounter!.waves[0].map(({ id, lvl }, index) =>
+      generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
+  ));
     setPhase(BattlePhase.Preparing);
   };
 
@@ -81,8 +81,8 @@ export const useBattleState = (): BattleState => {
     const nextWave = currentWave + 1;
     setCurrentWave(nextWave);
     setEnemies(
-      currentEncounter.waves[nextWave].map(({ id, lvl }) =>
-        generateCombatantStats(id, lvl)
+      currentEncounter.waves[nextWave].map(({ id, lvl }, index) =>
+        generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
       )
     );
   };
@@ -102,6 +102,7 @@ export const useBattleState = (): BattleState => {
       team.map(({ id, exp, maskColorOverride, maskOverride }) =>
         generateCombatantStats(
           id,
+          id,
           getLevelFromExp(exp),
           maskOverride,
           maskColorOverride
@@ -110,8 +111,8 @@ export const useBattleState = (): BattleState => {
     );
     setCurrentWave(0);
     setEnemies(
-      currentEncounter!.waves[0].map(({ id, lvl }) =>
-        generateCombatantStats(id, lvl)
+      currentEncounter!.waves[0].map(({ id, lvl }, index) =>
+        generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
       )
     );
     setPhase(BattlePhase.Inprogress);

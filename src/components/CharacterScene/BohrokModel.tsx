@@ -1,5 +1,11 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import { Group, LoopOnce, MeshStandardMaterial } from 'three';
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from 'react';
+import { Group, LoopOnce, Mesh, MeshStandardMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { Color, LegoColor } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
@@ -44,9 +50,11 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(
   ({ name }, ref) => {
     const group = useRef<Group>(null);
 
-    const { nodes, materials, animations } = useGLTF(
+    const { nodes, animations } = useGLTF(
       import.meta.env.BASE_URL + 'bohrok_master.glb'
     );
+
+    const bodyInstance = useMemo(() => nodes.Body.clone(true), [nodes]);
 
     const { actions, mixer } = useAnimations(animations, group);
 
@@ -70,11 +78,11 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(
             console.warn(`Animation '${actionName}' not found for ${name}`);
             return resolve();
           }
-          actions['Idle']?.fadeOut(0.2);
+          mixer.stopAllAction()
           action.reset();
           action.setLoop(LoopOnce, 1);
           action.clampWhenFinished = true;
-          action.setEffectiveTimeScale(1.5);
+          action.setEffectiveTimeScale(2);
           action.play();
 
           const onComplete = () => {
@@ -92,43 +100,47 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(
     }));
 
     useEffect(() => {
-      (materials.Bohrok_Main as MeshStandardMaterial).color.set(
-        BOHROK_COLORS[name].main as Color
-      );
-      (materials.Bohrok_Secondary as MeshStandardMaterial).color.set(
-        BOHROK_COLORS[name].secondary as Color
-      );
-      (materials.Bohrok_Eye as MeshStandardMaterial).color.set(
-        BOHROK_COLORS[name].eyes as Color
-      );
-      (materials.Bohrok_Eye as MeshStandardMaterial).emissive.set(
-        BOHROK_COLORS[name].eyes as Color
-      );
-      (materials.Bohrok_Iris as MeshStandardMaterial).color.set(
-        BOHROK_COLORS[name].eyes as Color
-      );
-      (materials.Bohrok_Iris as MeshStandardMaterial).emissive.set(
-        BOHROK_COLORS[name].eyes as Color
-      );
-      (materials.Krana as MeshStandardMaterial).color.set(
-        BOHROK_COLORS[name].eyes as Color
-      );
-    }, [nodes, materials, name]);
+      const colorScheme = BOHROK_COLORS[name];
 
-    useEffect(() => {
+      bodyInstance.traverse((child) => {
+        if (!(child instanceof Mesh)) return;
+
+        const originalMaterial = child.material as MeshStandardMaterial;
+        const cloned = originalMaterial.clone();
+
+        // Set custom color logic based on mesh name or usage
+        if (cloned.name === 'Bohrok_Main') {
+          cloned.color.set(colorScheme.main as Color);
+        } else if (cloned.name === 'Bohrok_Secondary') {
+          cloned.color.set(colorScheme.secondary as Color);
+        } else if(cloned.name === 'Bohrok_Eye' || cloned.name === 'Bohrok_Iris' || cloned.name === 'Krana'){
+          cloned.color.set(colorScheme.eyes as Color);
+          if(cloned.name === 'Bohrok_Eye' || cloned.name === 'Bohrok_Iris'){
+            cloned.emissive.set(colorScheme.eyes as Color);
+          }
+        }
+
+        child.material = cloned;
+      });
+
       const shieldTarget = name;
       ['R', 'L'].forEach((suffix) => {
-        nodes[`Hand${suffix}`].children.forEach((shield) => {
-          const isTarget = shield.name === `${shieldTarget}${suffix}`;
-          shield.visible = isTarget;
+        bodyInstance.traverse((child) => {
+          if (child.name === `Hand${suffix}`) {
+            child.children.forEach((shield) => {
+              const isTarget = shield.name === `${shieldTarget}${suffix}`;
+              shield.visible = isTarget;
+            });
+          }
         });
       });
-    }, [nodes, name]);
+    }, [bodyInstance, name]);
 
     return (
       <group ref={group} dispose={null}>
-        <primitive object={nodes.Body} />
+        <primitive object={bodyInstance} />
       </group>
     );
   }
 );
+useGLTF.preload(import.meta.env.BASE_URL + 'bohrok_master.glb');

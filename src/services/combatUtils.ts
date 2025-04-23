@@ -95,13 +95,14 @@ export function queueCombatRound(
 
 export function generateCombatantStats(
   id: string,
+  templateId: string,
   lvl: number,
   maskOverride?: Mask,
   maskColorOverride?: LegoColor
 ): Combatant {
-  const template = COMBATANT_DEX[id];
+  const template = COMBATANT_DEX[templateId];
   if (!template) {
-    console.error('Missing base stats for ', id);
+    console.error('Missing base stats for ', templateId);
   }
 
   const maxHp = template.baseHp + lvl * 10;

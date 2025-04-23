@@ -115,17 +115,19 @@ export function Arena({ team, enemies }: ArenaProps) {
             />
           ))}
 
-          {enemies.map((c, i) => (
-            <CombatantModel
-              key={c.id}
-              combatant={c}
-              side='enemy'
-              position={ENEMY_POSITIONS[i]}
-              ref={(ref) => {
-                if (ref) combatantRefs.current[c.id] = ref;
-              }}
-            />
-          ))}
+          {enemies.map((c, i) => {
+            return (
+              <CombatantModel
+                key={c.id}
+                combatant={c}
+                side='enemy'
+                position={ENEMY_POSITIONS[i]}
+                ref={(ref) => {
+                  if (ref) combatantRefs.current[c.id] = ref;
+                }}
+              />
+            );
+          })}
         </group>
       </group>
     </Stage>
