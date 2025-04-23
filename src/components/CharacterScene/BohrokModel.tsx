@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import { Group, MeshStandardMaterial } from 'three';
+import { Group, LoopOnce, MeshStandardMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { Color, LegoColor } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
@@ -50,20 +50,39 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(
 
     const { actions, mixer } = useAnimations(animations, group);
 
+    useEffect(() => {
+      const idle = actions['Idle'];
+      if (!idle) return;
+
+      idle.reset().play();
+
+      return () => {
+        idle.fadeOut(0.2);
+      };
+    }, [actions]);
+
     useImperativeHandle(ref, () => ({
       playAnimation: (actionName) => {
         return new Promise<void>((resolve) => {
           const action = actions[actionName];
+          console.log(`Playing '${actionName}' on ${name}`);
           if (!action) {
             console.warn(`Animation '${actionName}' not found for ${name}`);
             return resolve();
           }
-
-          action.reset().play();
+          actions['Idle']?.fadeOut(0.2);
+          action.reset();
+          action.setLoop(LoopOnce, 1);
+          action.clampWhenFinished = true;
+          action.play();
 
           const onComplete = () => {
+            console.log(`Completed '${actionName}' on ${name}`);
             mixer.removeEventListener('finished', onComplete);
             resolve();
+            const idle = actions['Idle'];
+            if (!idle) return;
+            idle.reset().fadeIn(0.2).play();
           };
 
           mixer.addEventListener('finished', onComplete);

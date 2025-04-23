@@ -60,7 +60,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [
         {
           id: 'tahnok',
-          lvl: 5,
+          lvl: 20,
         },
       ],
     ],
@@ -79,7 +79,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [
         {
           id: 'gahlok',
-          lvl: 5,
+          lvl: 20,
         },
       ],
     ],
@@ -97,7 +97,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [
         {
           id: 'lehvak',
-          lvl: 5,
+          lvl: 20,
         },
       ],
     ],

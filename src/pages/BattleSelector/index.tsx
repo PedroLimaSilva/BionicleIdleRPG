@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { CompositedImage } from '../../components/CompositedImage';
 import { ElementTag } from '../../components/ElementTag';
-import './index.scss';
 import { useGame } from '../../context/Game';
 import { ENCOUNTERS, ENEMY_DEX } from '../../data/combat';
 

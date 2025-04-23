@@ -33,7 +33,7 @@ export const ToaKopakaMataModel = forwardRef<
           resolve();
           const idle = actions['Idle'];
           if (!idle) return;
-          idle.fadeIn(0.2).play();
+          idle.reset().fadeIn(0.2).play();
         };
 
         mixer.addEventListener('finished', onComplete);
