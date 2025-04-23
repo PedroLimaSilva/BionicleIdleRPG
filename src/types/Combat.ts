@@ -7,12 +7,6 @@ export interface BattleDrop {
   chance: number;
 }
 
-export type CombatantDexEntry = {
-  id: string;
-  name: string;
-  element: ElementTribe;
-};
-
 export interface Combatant {
   id: string;
   name: string;

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { CompositedImage } from '../../components/CompositedImage';
 import { ElementTag } from '../../components/ElementTag';
 import { useGame } from '../../context/Game';
-import { ENCOUNTERS, ENEMY_DEX } from '../../data/combat';
+import { COMBATANT_DEX, ENCOUNTERS } from '../../data/combat';
 
 export const BattleSelector: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export const BattleSelector: React.FC = () => {
           <div key={encounter.id} className='encounter'>
             <div className='encounter-header'>
               {encounter.headliner && (
-                <ElementTag element={ENEMY_DEX[encounter.headliner].element} />
+                <ElementTag element={COMBATANT_DEX[encounter.headliner].element} />
               )}
               <h2>{encounter.name}</h2>
               <span className='difficulty'>
@@ -30,7 +30,7 @@ export const BattleSelector: React.FC = () => {
               className='enemy-avatar'
               images={[
                 `${import.meta.env.BASE_URL}/avatar/Bohrok/${
-                  ENEMY_DEX[encounter.headliner].name
+                  COMBATANT_DEX[encounter.headliner].name
                 }.png`,
               ]}
               colors={['#fff']}

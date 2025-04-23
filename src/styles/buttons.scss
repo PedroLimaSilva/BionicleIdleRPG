@@ -31,6 +31,10 @@ button {
   &:hover {
     background: #666;
   }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .confirm-button {

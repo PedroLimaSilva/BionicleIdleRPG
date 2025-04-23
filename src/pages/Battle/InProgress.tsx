@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
-import { ENEMY_DEX } from '../../data/combat';
 import { MATORAN_DEX } from '../../data/matoran';
 import { useGame } from '../../context/Game';
+import { COMBATANT_DEX } from '../../data/combat';
 
 export const BattleInProgress = () => {
   const { battle } = useGame();
@@ -37,7 +37,7 @@ export const BattleInProgress = () => {
                 className={`enemy-card element-${enemy.element}`}
               >
                 <div className='name'>
-                  {ENEMY_DEX[enemy.id]?.name || enemy.id}
+                  {COMBATANT_DEX[enemy.id]?.name || enemy.id}
                 </div>
                 <div className='hp-bar'>
                   HP: {enemy.hp}/{enemy.maxHp}
@@ -77,7 +77,11 @@ export const BattleInProgress = () => {
       </div>
 
       <div className='battle-buttons'>
-        <button className='cancel-button' onClick={() => retreat()}>
+        <button
+          className='cancel-button'
+          disabled={battle.isRunningRound}
+          onClick={() => retreat()}
+        >
           Retreat
         </button>
         <button
