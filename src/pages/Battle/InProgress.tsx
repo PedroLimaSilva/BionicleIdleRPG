@@ -24,7 +24,7 @@ export const BattleInProgress = () => {
 
   return (
     <div className='page-container'>
-      <h1 className='title'>Wave {currentWave}</h1>
+      <h1 className='title'>Wave {currentWave + 1}</h1>
 
       <div className='battle-arena'>
         {/* Enemy Side */}
@@ -90,15 +90,28 @@ export const BattleInProgress = () => {
         >
           Retreat
         </button>
-        <button
-          className='confirm-button'
-          disabled={battle.isRunningRound}
-          onClick={() => {
-            battle.runRound();
-          }}
-        >
-          Run Round
-        </button>
+
+        {battle.enemies.length && battle.enemies.some((e) => e.hp > 0) ? (
+          <button
+            className='confirm-button'
+            disabled={battle.isRunningRound}
+            onClick={() => {
+              battle.runRound();
+            }}
+          >
+            Run Round
+          </button>
+        ) : (
+          <button
+            className='confirm-button'
+            disabled={battle.isRunningRound}
+            onClick={() => {
+              battle.advanceWave();
+            }}
+          >
+            Next Wave
+          </button>
+        )}
       </div>
     </div>
   );

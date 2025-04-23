@@ -168,7 +168,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [
       [
         {
-          id: 'nuhvok',
+          id: 'tahnok',
           lvl: 20,
         },
         {
@@ -176,7 +176,17 @@ export const ENCOUNTERS: EnemyEncounter[] = [
           lvl: 20,
         },
         {
-          id: 'lehvak',
+          id: 'tahnok',
+          lvl: 20,
+        },
+      ],
+      [
+        {
+          id: 'nuhvok',
+          lvl: 20,
+        },
+        {
+          id: 'tahnok',
           lvl: 20,
         },
       ],
@@ -194,6 +204,26 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'gahlok',
     waves: [
       [
+        {
+          id: 'gahlok',
+          lvl: 20,
+        },
+      ],
+      [
+        {
+          id: 'gahlok',
+          lvl: 20,
+        },
+      ],
+      [
+        {
+          id: 'gahlok',
+          lvl: 20,
+        },
+        {
+          id: 'gahlok',
+          lvl: 20,
+        },
         {
           id: 'gahlok',
           lvl: 20,

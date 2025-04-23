@@ -59,20 +59,25 @@ export const useBattleState = (): BattleState => {
 
   useEffect(() => {
     const allEnemiesDefeated =
-      enemies.length && enemies.every((e) => e.hp <= 0);
+      currentEncounter &&
+      currentWave === currentEncounter.waves.length - 1 &&
+      enemies.length &&
+      enemies.every((e) => e.hp <= 0);
     if (allEnemiesDefeated) {
       console.log('Victory!');
       setIsRunningRound(false);
       setPhase(BattlePhase.Victory);
     }
-  }, [enemies]);
+  }, [currentEncounter, currentWave, enemies]);
 
   const startBattle = (encounter: EnemyEncounter) => {
     setCurrentEncounter(encounter);
     setTeam([]);
-    setEnemies(encounter!.waves[0].map(({ id, lvl }, index) =>
-      generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
-  ));
+    setEnemies(
+      encounter!.waves[0].map(({ id, lvl }, index) =>
+        generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
+      )
+    );
     setPhase(BattlePhase.Preparing);
   };
 
