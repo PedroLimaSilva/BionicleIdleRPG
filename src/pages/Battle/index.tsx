@@ -50,7 +50,7 @@ export const BattlePage: React.FC = () => {
         <p>Battle summary goes here</p>
         <div
           className='battle-buttons'
-          style={{ justifyContent: 'center', paddingBottom: '10vh' }}
+          style={{ justifyContent: 'center', paddingBottom: '132px' }}
         >
           <Link to='/battle/selector'>
             <button className='confirm-button' onClick={() => {}}>
