@@ -9,6 +9,7 @@ import { ToaOnuaMataModel } from '../../components/CharacterScene/ToaOnuaMataMod
 import { ToaLewaMataModel } from '../../components/CharacterScene/ToaLewaMataModel';
 import { ToaGaliMataModel } from '../../components/CharacterScene/ToaGaliMataModel';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { Group } from 'three';
 
 interface CombatantModelProps {
   combatant: Combatant;
@@ -24,7 +25,7 @@ export const CombatantModel = forwardRef<
   CombatantModelHandle,
   CombatantModelProps
 >(({ combatant, position, side }, ref) => {
-  const modelGroup = useRef<THREE.Group>(null);
+  const modelGroup = useRef<Group>(null);
 
   const childRef = useRef<CombatantModelHandle>(null);
 
