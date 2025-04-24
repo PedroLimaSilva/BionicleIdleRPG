@@ -58,6 +58,7 @@ export const CombatantModel = forwardRef<
         return (
           <group scale={0.04} position={[0, 0.375, 0]}>
             <ToaTahuMataModel
+              ref={childRef}
               matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
             />
           </group>

@@ -1,20 +1,50 @@
-import { useEffect, useRef } from 'react';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { Group, LoopOnce, Mesh, MeshStandardMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
+import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 
-export function ToaTahuMataModel({
-  matoran,
-}: {
-  matoran: RecruitedCharacterData & BaseMatoran;
-}) {
+export const ToaTahuMataModel = forwardRef<
+  CombatantModelHandle,
+  {
+    matoran: RecruitedCharacterData & BaseMatoran;
+  }
+>(({ matoran }, ref) => {
   const group = useRef<Group>(null);
   const { nodes, animations, materials } = useGLTF(
     import.meta.env.BASE_URL + 'toa_tahu_mata.glb'
   );
 
-  const { actions } = useAnimations(animations, group);
+  const { actions, mixer } = useAnimations(animations, group);
+
+  useImperativeHandle(ref, () => ({
+    playAnimation: (name) => {
+      return new Promise<void>((resolve) => {
+        const action = actions[name];
+        if (!action) {
+          console.warn(`Animation '${name}' not found for ${matoran.id}`);
+          return resolve();
+        }
+        actions['Tahu Idle']?.fadeOut(0.2);
+        action.reset();
+        action.setLoop(LoopOnce, 1);
+        action.clampWhenFinished = true;
+        action.setEffectiveTimeScale(1.5);
+        action.play();
+
+        const onComplete = () => {
+          mixer.removeEventListener('finished', onComplete);
+          resolve();
+          const idle = actions['Tahu Idle'];
+          if (!idle) return;
+          idle.reset().fadeIn(0.2).play();
+        };
+
+        mixer.addEventListener('finished', onComplete);
+      });
+    },
+  }));
 
   useEffect(() => {
     const idle = actions['Tahu Idle'];
@@ -55,11 +85,12 @@ export function ToaTahuMataModel({
 
   return (
     <group ref={group} dispose={null}>
-      <group name='Scene'>
-        <group name='Toa'>
-          <primitive object={nodes.Body} />
-        </group>
+      <group name='Toa' position={[0, -10, -0.4]}>
+        <primitive object={nodes.Body} />
+        <primitive object={nodes.Root} />
+        <primitive object={nodes.LegIKTargetL} />
+        <primitive object={nodes.LegIKTargetR} />
       </group>
     </group>
   );
-}
+});
