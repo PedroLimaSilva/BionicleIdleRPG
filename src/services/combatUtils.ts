@@ -1,7 +1,7 @@
 import { COMBATANT_DEX } from '../data/combat';
 import { LegoColor } from '../types/Colors';
 import { Combatant } from '../types/Combat';
-import { Mask } from '../types/Matoran';
+import { ElementTribe, Mask } from '../types/Matoran';
 
 declare global {
   interface Window {
@@ -12,10 +12,112 @@ declare global {
   }
 }
 
+
+/**
+ * |    | 🔥  | 🌊  | ❄️  | 🪨  | 🌍  | 💨  | 🌑  | 🌕  |
+ * | 🔥 | 1.0 | 1.0 | 1.5 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 |
+ * | 🌊 | 1.5 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 |
+ * | ❄️ | 0.5 | 1.5 | 1.0 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 |
+ * | 🪨 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 | 1.5 | 1.0 | 1.0 |
+ * | 🌍 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 | 0.5 | 1.0 | 1.0 |
+ * | 💨 | 1.5 | 1.0 | 1.0 | 1.0 | 1.5 | 1.0 | 1.0 | 1.0 |
+ * | 🌑 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 0.5 | 1.5 |
+ * | 🌕 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.5 | 0.5 |
+ */
+const elementEffectiveness: Record<
+  ElementTribe,
+  Record<ElementTribe, number>
+> = {
+  [ElementTribe.Fire]: {
+    [ElementTribe.Fire]: 1.0,
+    [ElementTribe.Water]: 1.0,
+    [ElementTribe.Ice]: 1.5,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Earth]: 0.5,
+    [ElementTribe.Air]: 1.5,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Light]: 1.0,
+  },
+  [ElementTribe.Water]: {
+    [ElementTribe.Fire]: 1.5,
+    [ElementTribe.Water]: 1.0,
+    [ElementTribe.Ice]: 0.5,
+    [ElementTribe.Stone]: 1.5,
+    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Light]: 1.0,
+  },
+  [ElementTribe.Ice]: {
+    [ElementTribe.Fire]: 0.5,
+    [ElementTribe.Water]: 1.5,
+    [ElementTribe.Ice]: 1.0,
+    [ElementTribe.Stone]: 1.5,
+    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Light]: 1.0,
+  },
+  [ElementTribe.Stone]: {
+    [ElementTribe.Fire]: 1.0,
+    [ElementTribe.Water]: 0.5,
+    [ElementTribe.Ice]: 1.5,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Air]: 1.5,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Light]: 1.0,
+  },
+  [ElementTribe.Earth]: {
+    [ElementTribe.Fire]: 1.5,
+    [ElementTribe.Water]: 1.0,
+    [ElementTribe.Ice]: 1.0,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Air]: 0.5,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Light]: 1.0,
+  },
+  [ElementTribe.Air]: {
+    [ElementTribe.Fire]: 1.5,
+    [ElementTribe.Water]: 1.0,
+    [ElementTribe.Ice]: 1.0,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Earth]: 1.5,
+    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Light]: 1.0,
+  },
+  [ElementTribe.Shadow]: {
+    [ElementTribe.Fire]: 1.0,
+    [ElementTribe.Water]: 1.0,
+    [ElementTribe.Ice]: 1.0,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Shadow]: 0.5,
+    [ElementTribe.Light]: 1.5,
+  },
+  [ElementTribe.Light]: {
+    [ElementTribe.Fire]: 1.0,
+    [ElementTribe.Water]: 1.0,
+    [ElementTribe.Ice]: 1.0,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Shadow]: 1.5,
+    [ElementTribe.Light]: 0.5,
+  },
+};
+
 function resolveAttack(attacker: Combatant, defender: Combatant): number {
   const rawDamage = Math.max(1, attacker.attack - defender.defense);
-  const final = rawDamage + Math.floor(Math.random() * 5); // optional variance
-  return final;
+  const multiplier =
+    elementEffectiveness[attacker.element]?.[defender.element] ?? 1.0;
+  const final = Math.floor(
+    (rawDamage + Math.floor(Math.random() * 5)) * multiplier
+  );
+  return Math.max(1, final);
 }
 
 function applyDamage(target: Combatant, damage: number): Combatant {
