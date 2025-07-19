@@ -1,5 +1,5 @@
 import { BattlePhase, BattleState } from '../hooks/useBattleState';
-import { CombatantTemplate, EnemyEncounter } from '../types/Combat';
+import { CombatantTemplate, EnemyEncounter, MaskPower } from '../types/Combat';
 import { ElementTribe, Mask, RecruitedCharacterData } from '../types/Matoran';
 
 export const INITIAL_BATTLE_STATE: BattleState = {

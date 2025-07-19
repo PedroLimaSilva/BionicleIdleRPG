@@ -21,7 +21,7 @@ import {
 } from '../../services/matoranUtils';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { CompositedImage } from '../../components/CompositedImage';
-import { COMBATANT_DEX, MASK_POWERS } from '../../data/combat';
+import { MASK_POWERS } from '../../data/combat';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
