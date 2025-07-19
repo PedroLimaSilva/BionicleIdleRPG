@@ -113,9 +113,13 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(
           cloned.color.set(colorScheme.main as Color);
         } else if (cloned.name === 'Bohrok_Secondary') {
           cloned.color.set(colorScheme.secondary as Color);
-        } else if(cloned.name === 'Bohrok_Eye' || cloned.name === 'Bohrok_Iris' || cloned.name === 'Krana'){
+        } else if (
+          cloned.name === 'Bohrok_Eye' ||
+          cloned.name === 'Bohrok_Iris' ||
+          cloned.name === 'Krana'
+        ) {
           cloned.color.set(colorScheme.eyes as Color);
-          if(cloned.name === 'Bohrok_Eye' || cloned.name === 'Bohrok_Iris'){
+          if (cloned.name === 'Bohrok_Eye' || cloned.name === 'Bohrok_Iris') {
             cloned.emissive.set(colorScheme.eyes as Color);
           }
         }

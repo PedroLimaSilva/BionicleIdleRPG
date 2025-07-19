@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
-import { MatoranAvatar } from '../../components/MatoranAvatar';
-import { MATORAN_DEX } from '../../data/matoran';
 import { useGame } from '../../context/Game';
-import { COMBATANT_DEX } from '../../data/combat';
+import { EnemyCard } from './Cards/Enemy';
+import { AllyCard } from './Cards/Ally';
 
 export const BattleInProgress = () => {
   const { battle } = useGame();
@@ -37,18 +36,7 @@ export const BattleInProgress = () => {
                 return positionA.localeCompare(positionB);
               })
               .map((enemy) => (
-                <div
-                  id={`combatant-${enemy.id}`}
-                  key={enemy.id}
-                  className={`enemy-card element-${enemy.element}`}
-                >
-                  <div className='name'>
-                    {COMBATANT_DEX[enemy.id]?.name || enemy.id}
-                  </div>
-                  <div className='hp-bar'>
-                    HP: {enemy.hp}/{enemy.maxHp}
-                  </div>
-                </div>
+                <EnemyCard enemy={enemy} />
               ))}
           </div>
         </div>
@@ -56,28 +44,9 @@ export const BattleInProgress = () => {
         {/* Ally Side */}
         <div className='ally-side'>
           <div className='toa-team'>
-            {team.map((toa) => {
-              const dex = MATORAN_DEX[toa.id];
-              return (
-                <div
-                  id={`combatant-${toa.id}`}
-                  key={toa.id}
-                  className={`character-card element-${dex.element}`}
-                >
-                  <MatoranAvatar
-                    matoran={{ ...dex, ...toa, exp: 0 }}
-                    styles='matoran-avatar model-preview'
-                  />
-                  <div className='card-header'>
-                    {dex.name}
-                    <div className='level-label'>Level {toa.lvl}</div>
-                  </div>
-                  <div className='hp-bar'>
-                    HP: {toa.hp}/{toa.maxHp}
-                  </div>
-                </div>
-              );
-            })}
+            {team.map((toa) => (
+              <AllyCard combatant={toa} />
+            ))}
           </div>
         </div>
       </div>
