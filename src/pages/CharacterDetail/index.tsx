@@ -16,15 +16,12 @@ import { QUESTS } from '../../data/quests';
 import {
   getRecruitedMatoran,
   isMatoran,
+  isToa,
   masksCollected,
 } from '../../services/matoranUtils';
-import {
-  BaseMatoran,
-  Mask,
-  MatoranStage,
-  RecruitedCharacterData,
-} from '../../types/Matoran';
+import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { CompositedImage } from '../../components/CompositedImage';
+import { COMBATANT_DEX, MASK_POWERS } from '../../data/combat';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -64,6 +61,13 @@ export const CharacterDetail: React.FC = () => {
     () => matoran && matoran.assignment && JOB_DETAILS[matoran.assignment.job],
     [matoran]
   );
+
+  const combatantStats = useMemo(() => {
+    return COMBATANT_DEX[matoran.id] || null;
+  }, [matoran]);
+
+  const activeMask = matoran.maskOverride || matoran.mask;
+  const maskDescription = MASK_POWERS[activeMask].description || 'Unknown Mask Power';
 
   const handeMaskOverride = (
     matoran: RecruitedCharacterData & BaseMatoran,
@@ -114,8 +118,10 @@ export const CharacterDetail: React.FC = () => {
               level up)
             </div>
           </div>
+
+          {/* Job Assignement  */}
           {isMatoran(matoran) && (
-            <div className='job-section'>
+            <div className='character-detail-section'>
               {jobDetails && matoran.assignment && (
                 <>
                   <p>Assigned Job:</p>
@@ -157,8 +163,17 @@ export const CharacterDetail: React.FC = () => {
               )}
             </div>
           )}
-          {matoran.stage === MatoranStage.ToaMata && (
-            <div className='job-section'>
+
+          {isToa(matoran) && activeMask && (
+            <div className='character-detail-section mask-power'>
+              <h3>{MASK_POWERS[activeMask].longName}</h3>
+              <p>{maskDescription}</p>
+            </div>
+          )}
+
+          {/* Mask Collection  */}
+          {isToa(matoran) && (
+            <div className='character-detail-section'>
               {masks.length && (
                 <>
                   <p>Masks Collected:</p>
@@ -172,7 +187,9 @@ export const CharacterDetail: React.FC = () => {
                         <CompositedImage
                           className='mask-preview'
                           images={[
-                            `${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.png`,
+                            `${
+                              import.meta.env.BASE_URL
+                            }/avatar/Kanohi/${mask}.png`,
                           ]}
                           colors={[
                             matoran.maskColorOverride || matoran.colors.mask,
@@ -186,12 +203,34 @@ export const CharacterDetail: React.FC = () => {
               )}
             </div>
           )}
+
+          {/* Assigned Quest  */}
           {matoran.quest && (
-            <div className='job-section'>
+            <div className='character-detail-section'>
               <p>Assigned Quest:</p>
               <Link to='/quests'>
                 <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
               </Link>
+            </div>
+          )}
+
+          {combatantStats && (
+            <div className='character-detail-section combatant-stats'>
+              <h3>Combat Stats</h3>
+              <ul>
+                <li>
+                  <strong>HP:</strong> {combatantStats.baseHp}
+                </li>
+                <li>
+                  <strong>Attack:</strong> {combatantStats.baseAttack}
+                </li>
+                <li>
+                  <strong>Defense:</strong> {combatantStats.baseDefense}
+                </li>
+                <li>
+                  <strong>Speed:</strong> {combatantStats.baseSpeed}
+                </li>
+              </ul>
             </div>
           )}
         </div>

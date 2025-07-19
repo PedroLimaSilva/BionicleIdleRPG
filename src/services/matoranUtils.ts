@@ -20,6 +20,10 @@ export function isMatoran(matoran: BaseMatoran) {
   ].includes(matoran.stage);
 }
 
+export function isToa(matoran: BaseMatoran) {
+  return isToaMata(matoran);
+}
+
 export function isToaMata(matoran: BaseMatoran) {
   return MatoranStage.ToaMata === matoran.stage;
 }
@@ -71,8 +75,8 @@ export function masksCollected(
       if (storyProgress.includes('maskhunt_kopaka_pakari')) {
         masks.push(Mask.Pakari);
       }
-      if(storyProgress.includes('story_toa_second_council')){
-        masks.push(Mask.Kaukau)
+      if (storyProgress.includes('story_toa_second_council')) {
+        masks.push(Mask.Kaukau);
       }
       break;
     }
@@ -83,14 +87,11 @@ export function masksCollected(
       break;
     }
     case 'Toa_Onua': {
-      if (storyProgress.includes('maskhunt_onua_matatu_komau')) {
-        masks.push(Mask.Matatu, Mask.Komau);
+      if (storyProgress.includes('maskhunt_onua_matatu_hau')) {
+        masks.push(Mask.Matatu, Mask.Hau);
       }
-      if (storyProgress.includes('mnog_lewa_v_onua')) {
-        masks.push(Mask.Hau);
-      }
-      if(storyProgress.includes('story_toa_second_council')){
-        masks.push(Mask.Kaukau)
+      if (storyProgress.includes('story_toa_second_council')) {
+        masks.push(Mask.Kaukau);
       }
       break;
     }

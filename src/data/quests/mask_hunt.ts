@@ -160,10 +160,10 @@ export const MASK_HUNT: Quest[] = [
     unlockedAfter: ['maskhunt_lewa_pakari'],
   },
   {
-    id: 'maskhunt_onua_matatu_komau',
+    id: 'maskhunt_onua_matatu_hau',
     name: 'Echoes of the Forest',
     description:
-      'After the Toa Council, Onua begins his journey through the thick jungle of Le-Wahi. He uncovers two Kanohi—Matatu and Komau—resting on top of trees. Onua must use his strength and caution to secure the masks.',
+      'After the Toa Council, Onua begins his journey through the thick jungle of Le-Wahi. He uncovers two Kanohi—Hau and Matatu—resting on top of trees. Onua must use his strength and caution to secure the masks.',
     durationSeconds: 540, // 9 minutes
     requirements: {
       matoran: ['Toa_Onua'],
@@ -195,7 +195,7 @@ export const MASK_HUNT: Quest[] = [
       xpPerMatoran: 800,
       currency: 600,
     },
-    unlockedAfter: ['maskhunt_onua_matatu_komau'],
+    unlockedAfter: ['maskhunt_onua_matatu_hau'],
   },
   {
     id: 'maskhunt_gali_miru',
