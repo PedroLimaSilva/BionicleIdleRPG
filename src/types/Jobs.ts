@@ -43,8 +43,8 @@ export type JobAssignment = {
 };
 
 export const enum ProductivityEffect {
-  Idle = 'idle',
-  Boosted = 'boosted',
-  Penalized = 'penalized',
-  Neutral = 'working',
+  Idle = 'Idle',
+  Boosted = 'Boosted',
+  Penalized = 'Penalized',
+  Neutral = 'Working',
 }

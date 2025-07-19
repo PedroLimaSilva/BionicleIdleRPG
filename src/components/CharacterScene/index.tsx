@@ -1,5 +1,5 @@
-import { Suspense, useLayoutEffect } from 'react';
-import { Bounds, OrbitControls, Stage, useBounds } from '@react-three/drei';
+import { Suspense } from 'react';
+import { OrthographicCamera, Stage } from '@react-three/drei';
 
 import {
   BaseMatoran,
@@ -23,65 +23,46 @@ function CharacterModel({
     case MatoranStage.ToaMata:
       switch (matoran.id) {
         case 'Toa_Gali':
-          return <ToaGaliMataModel matoran={matoran} />;
+          return (
+            <group position={[0, 7.1, 0]}>
+              <ToaGaliMataModel matoran={matoran} />
+            </group>
+          );
         case 'Toa_Pohatu':
-          return <ToaPohatuMataModel matoran={matoran} />;
+          return (
+            <group position={[0, 6.4, 0]}>
+              <ToaPohatuMataModel matoran={matoran} />
+            </group>
+          );
         case 'Toa_Kopaka':
-          return <ToaKopakaMataModel matoran={matoran} />;
+          return (
+            <group position={[0, 6.9, 0]}>
+              <ToaKopakaMataModel matoran={matoran} />
+            </group>
+          );
         case 'Toa_Onua':
-          return <ToaOnuaMataModel matoran={matoran} />;
+          return (
+            <group position={[0, 7, 0]}>
+              <ToaOnuaMataModel matoran={matoran} />
+            </group>
+          );
         case 'Toa_Lewa':
-          return <ToaLewaMataModel matoran={matoran} />;
+          return (
+            <group position={[0, 7, 0]}>
+              <ToaLewaMataModel matoran={matoran} />
+            </group>
+          );
         default:
-          return <ToaTahuMataModel matoran={matoran} />;
+          return (
+            <group position={[0, -2.5, 0]}>
+              <ToaTahuMataModel matoran={matoran} />
+            </group>
+          );
       }
     case MatoranStage.Diminished:
     default:
       return <DiminishedMatoranModel matoran={matoran} />;
   }
-}
-
-const isPreview = false;
-
-export function FitBoundsBox({
-  isToa,
-  modelId,
-}: {
-  isToa: boolean;
-  modelId: string;
-}) {
-  const bounds = useBounds();
-
-  useLayoutEffect(() => {
-    bounds.refresh().fit();
-    console.log();
-  }, [bounds, isToa, modelId]); // Trigger on change
-
-  return (
-    <mesh
-      castShadow={false}
-      receiveShadow={false}
-      position={isToa ? [0, 0, 0] : [0, -5, 3]}
-    >
-      <boxGeometry args={isToa ? [15, 20, 15] : [10, 10, 10]} />
-      <meshStandardMaterial
-        transparent={!isPreview}
-        visible={isPreview}
-        opacity={isPreview ? 1 : 0}
-        wireframe={isPreview}
-        color={'#E7AD00'}
-      />
-    </mesh>
-  );
-}
-
-function getBoundingBox(matoran: BaseMatoran) {
-  const isToa = matoran.stage === MatoranStage.ToaMata;
-  return (
-    <Bounds fit clip observe margin={1}>
-      <FitBoundsBox isToa={isToa} modelId={matoran.id} />
-    </Bounds>
-  );
 }
 
 export function CharacterScene({
@@ -90,18 +71,12 @@ export function CharacterScene({
   matoran: BaseMatoran & RecruitedCharacterData;
 }) {
   return (
-    <Stage environment='forest' shadows={false}>
+    <Stage environment='forest' adjustCamera={false} shadows={false}>
       <ambientLight intensity={0.2} />
       <directionalLight position={[5, 5, 5]} />
       <Suspense fallback={null}>
-        {/* <OrbitControls
-          makeDefault
-          enablePan={false}
-          enableZoom={false}
-          maxPolarAngle={Math.PI / 2}
-        /> */}
+        <OrthographicCamera makeDefault zoom={20} position={[0, 9.5, 100]} />
         <CharacterModel matoran={matoran} />
-        {getBoundingBox(matoran)}
       </Suspense>
     </Stage>
   );

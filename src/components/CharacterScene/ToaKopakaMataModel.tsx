@@ -82,7 +82,7 @@ export const ToaKopakaMataModel = forwardRef<
   return (
     <group ref={group} dispose={null}>
       <group name='Scene'>
-        <group name='Toa' position={[0, -10, -0.4]}>
+        <group name='Toa' position={[0, -9.5, -0.4]}>
           <primitive object={nodes.Body} />
           <primitive object={nodes.Root} />
           <primitive object={nodes.LegIKTargetL} />

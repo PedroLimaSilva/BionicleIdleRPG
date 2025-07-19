@@ -27,7 +27,7 @@
 }
 
 .model-frame {
-  height: 50vh;
+  height: var(--character-detail-model-h);
 }
 
 .divider {

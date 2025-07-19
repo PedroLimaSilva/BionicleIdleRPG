@@ -1,3 +1,7 @@
+:root {
+  --character-detail-model-h: 480px;
+}
+
 .main-content {
   flex-grow: 1;
   overflow-y: auto;
@@ -19,7 +23,7 @@
     &[class*='route--characters-'] {
       display: block;
       width: 100%;
-      height: 50vh; // .model-frame height
+      height: var(--character-detail-model-h); // .model-frame height
     }
     &.route--battle {
       display: block;
