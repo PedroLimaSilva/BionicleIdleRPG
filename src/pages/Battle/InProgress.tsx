@@ -35,8 +35,8 @@ export const BattleInProgress = () => {
                 const positionB = b.id.split(' ')[1];
                 return positionA.localeCompare(positionB);
               })
-              .map((enemy) => (
-                <EnemyCard enemy={enemy} />
+              .map((enemy, i) => (
+                <EnemyCard key={i} enemy={enemy} />
               ))}
           </div>
         </div>
@@ -44,8 +44,8 @@ export const BattleInProgress = () => {
         {/* Ally Side */}
         <div className='ally-side'>
           <div className='toa-team'>
-            {team.map((toa) => (
-              <AllyCard combatant={toa} />
+            {team.map((toa, i) => (
+              <AllyCard key={i} combatant={toa} />
             ))}
           </div>
         </div>
