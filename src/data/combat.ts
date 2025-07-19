@@ -1,6 +1,6 @@
 import { BattlePhase, BattleState } from '../hooks/useBattleState';
 import { CombatantTemplate, EnemyEncounter } from '../types/Combat';
-import { ElementTribe, RecruitedCharacterData } from '../types/Matoran';
+import { ElementTribe, Mask, RecruitedCharacterData } from '../types/Matoran';
 
 export const INITIAL_BATTLE_STATE: BattleState = {
   phase: BattlePhase.Idle,
@@ -32,6 +32,223 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   isRunningRound: false
 };
 
+export const MASK_POWERS: Record<Mask, MaskPower> = {
+  [Mask.Akaku]: {
+    shortName: Mask.Akaku,
+    longName: 'Mask of X-Ray Vision',
+    description: 'Marks target; allies deal +50% damage to them for 2 turns',
+    effect: {
+      duration: {
+        amount: 2,
+        unit: 'turn',
+      },
+      cooldown: {
+        amount: 4,
+        unit: 'turn',
+      },
+      type: 'ATK_MULT',
+      multiplier: 1.5,
+      target: 'self',
+    },
+  },
+  [Mask.Hau]: {
+    shortName: Mask.Hau,
+    longName: 'Mask of Shielding',
+    description: 'Grants full immunity to all damage for 1 turn',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'turn',
+      },
+      cooldown: {
+        amount: 2,
+        unit: 'wave',
+      },
+      type: 'DMG_MITIGATOR',
+      multiplier: 0,
+      target: 'self',
+    },
+  },
+  [Mask.Kaukau]: {
+    shortName: Mask.Kaukau,
+    longName: 'Mask of Water Breathing',
+    description: 'Heals self each turn for 3 turns',
+    effect: {
+      duration: {
+        amount: 3,
+        unit: 'turn',
+      },
+      cooldown: {
+        amount: 1,
+        unit: 'wave',
+      },
+      type: 'HEAL',
+      multiplier: 0.2,
+      target: 'self',
+    },
+  },
+  [Mask.Huna]: {
+    shortName: Mask.Huna,
+    longName: 'Mask of Concealment',
+    description: 'Becomes untargetable for 1 turn',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'turn',
+      },
+      cooldown: {
+        amount: 3,
+        unit: 'turn',
+      },
+      type: 'AGGRO',
+      multiplier: 0,
+      target: 'self',
+    },
+  },
+  [Mask.Kakama]: {
+    shortName: Mask.Kakama,
+    longName: 'Mask of Speed',
+    description: 'User attacks twice this round',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'round',
+      },
+      cooldown: {
+        amount: 5,
+        unit: 'turn',
+      },
+      type: 'SPEED',
+      multiplier: 2,
+      target: 'self',
+    },
+  },
+  [Mask.Pakari]: {
+    shortName: Mask.Pakari,
+    longName: 'Mask of Strength',
+    description: 'Next attack deals 3x damage',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'attack',
+      },
+      cooldown: {
+        amount: 2,
+        unit: 'turn',
+      },
+      type: 'ATK_MULT',
+      multiplier: 3,
+      target: 'self',
+    },
+  },
+  [Mask.Miru]: {
+    shortName: Mask.Miru,
+    longName: 'Mask of Levitation',
+    description: 'Evades next 2 attacks; unaffected by ground-based effects',
+    effect: {
+      duration: {
+        amount: 2,
+        unit: 'hit',
+      },
+      cooldown: {
+        amount: 1,
+        unit: 'wave',
+      },
+      type: 'DMG_MITIGATOR',
+      multiplier: 0,
+      target: 'self',
+    },
+  },
+  [Mask.Ruru]: {
+    shortName: Mask.Ruru,
+    longName: 'Mask of Night Vision',
+    description: 'Blinds all enemies, reducing hit chance for 2 turns',
+    effect: {
+      duration: {
+        amount: 2,
+        unit: 'turn',
+      },
+      cooldown: {
+        amount: 4,
+        unit: 'turn',
+      },
+      type: 'ACCURACY_MULT',
+      multiplier: 0.5,
+      target: 'allEnemies',
+    },
+  },
+  [Mask.Komau]: {
+    shortName: Mask.Komau,
+    longName: 'Mask of Mind Control',
+    description: 'Forces one enemy to attack oneself for 3 turns',
+    effect: {
+      duration: {
+        amount: 3,
+        unit: 'turn',
+      },
+      cooldown: {
+        amount: 4,
+        unit: 'turn',
+      },
+      type: 'CONFUSION',
+      target: 'enemy',
+    },
+  },
+  [Mask.Rau]: {
+    shortName: Mask.Rau,
+    longName: 'Mask of Translation',
+    description: `Changes the user's Element so the all attacks are super effective on any enemy. Lasts until the end of the current wave.`,
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'wave',
+      },
+      cooldown: {
+        amount: 2,
+        unit: 'wave',
+      },
+      type: 'ATK_MULT',
+      multiplier: 1.5,
+      target: 'self',
+    },
+  },
+  [Mask.Matatu]: {
+    shortName: Mask.Matatu,
+    longName: 'Mask of Telekinesis',
+    description: 'Immobilizes enemy, preventing them from attacking for 1 wave',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'wave',
+      },
+      cooldown: {
+        amount: 2,
+        unit: 'turn',
+      },
+      type: 'ATK_MULT',
+      multiplier: 0,
+      target: 'enemy',
+    },
+  },
+  [Mask.Mahiki]: {
+    shortName: Mask.Mahiki,
+    longName: 'Mask of Illusion',
+    description: 'Summons a clone to absorb 1 hit',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'hit',
+      },
+      cooldown: {
+        amount: 2,
+        unit: 'turn',
+      },
+      type: 'DMG_MITIGATOR',
+      multiplier: 0,
+      target: 'self',
+    },
+  },
+};
 
 export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   Toa_Kopaka: {

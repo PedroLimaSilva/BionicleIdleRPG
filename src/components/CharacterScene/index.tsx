@@ -94,12 +94,12 @@ export function CharacterScene({
       <ambientLight intensity={0.2} />
       <directionalLight position={[5, 5, 5]} />
       <Suspense fallback={null}>
-        <OrbitControls
+        {/* <OrbitControls
           makeDefault
           enablePan={false}
           enableZoom={false}
           maxPolarAngle={Math.PI / 2}
-        />
+        /> */}
         <CharacterModel matoran={matoran} />
         {getBoundingBox(matoran)}
       </Suspense>

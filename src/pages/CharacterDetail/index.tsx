@@ -62,9 +62,9 @@ export const CharacterDetail: React.FC = () => {
     [matoran]
   );
 
-  const combatantStats = useMemo(() => {
-    return COMBATANT_DEX[matoran.id] || null;
-  }, [matoran]);
+  // const combatantStats = useMemo(() => {
+  //   return COMBATANT_DEX[matoran.id] || null;
+  // }, [matoran]);
 
   const activeMask = matoran.maskOverride || matoran.mask;
   const maskDescription = MASK_POWERS[activeMask].description || 'Unknown Mask Power';
@@ -164,13 +164,6 @@ export const CharacterDetail: React.FC = () => {
             </div>
           )}
 
-          {isToa(matoran) && activeMask && (
-            <div className='character-detail-section mask-power'>
-              <h3>{MASK_POWERS[activeMask].longName}</h3>
-              <p>{maskDescription}</p>
-            </div>
-          )}
-
           {/* Mask Collection  */}
           {isToa(matoran) && (
             <div className='character-detail-section'>
@@ -204,6 +197,13 @@ export const CharacterDetail: React.FC = () => {
             </div>
           )}
 
+          {isToa(matoran) && activeMask && (
+            <div className='character-detail-section mask-power'>
+              <h3>{MASK_POWERS[activeMask].longName}</h3>
+              <p>{maskDescription}</p>
+            </div>
+          )}
+
           {/* Assigned Quest  */}
           {matoran.quest && (
             <div className='character-detail-section'>
@@ -214,7 +214,7 @@ export const CharacterDetail: React.FC = () => {
             </div>
           )}
 
-          {combatantStats && (
+          {/* combatantStats && (
             <div className='character-detail-section combatant-stats'>
               <h3>Combat Stats</h3>
               <ul>
@@ -232,7 +232,7 @@ export const CharacterDetail: React.FC = () => {
                 </li>
               </ul>
             </div>
-          )}
+          )*/}
         </div>
       ) : (
         <p>Something is wrong, this matoran does not exist</p>

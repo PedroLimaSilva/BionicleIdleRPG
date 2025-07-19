@@ -22,6 +22,33 @@ export interface Combatant {
   speed: number;
 }
 
+export interface MaskPower {
+  description: string;
+  shortName: Mask;
+  longName: string;
+  effect: MaskEffect;
+}
+
+interface CombatDuration {
+  unit: 'attack' | 'hit' | 'turn' | 'round' | 'wave';
+  amount: number;
+}
+
+type MaskEffect = {
+  type:
+    | 'ATK_MULT'
+    | 'DMG_MITIGATOR'
+    | 'HEAL'
+    | 'AGGRO'
+    | 'SPEED'
+    | 'ACCURACY_MULT'
+    | 'CONFUSION';
+  duration: CombatDuration;
+  cooldown: CombatDuration;
+  multiplier?: number;
+  target: 'self' | 'enemy' | 'allEnemies';
+};
+
 export interface CombatantTemplate {
   id: string;
   name: string;
