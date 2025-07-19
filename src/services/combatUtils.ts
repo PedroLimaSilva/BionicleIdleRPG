@@ -1,6 +1,7 @@
-import { COMBATANT_DEX } from '../data/combat';
+import { COMBATANT_DEX, MASK_POWERS } from '../data/combat';
+import { MATORAN_DEX } from '../data/matoran';
 import { LegoColor } from '../types/Colors';
-import { Combatant } from '../types/Combat';
+import { Combatant, MaskEffectInstance } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 
 declare global {
@@ -11,7 +12,6 @@ declare global {
     >;
   }
 }
-
 
 /**
  * |    | 🔥  | 🌊  | ❄️  | 🪨  | 🌍  | 💨  | 🌑  | 🌕  |
@@ -142,6 +142,55 @@ export function queueCombatRound(
 
   let currentTeam = [...team];
   let currentEnemies = [...enemies];
+
+  const applyMaskPowers = (combatants: Combatant[]): Combatant[] => {
+    return combatants.map((c) => {
+      if ( MATORAN_DEX[c.id] === undefined || !c.maskPowerQueued || c.maskCooldown > 0) return c;
+  
+      const mask= c.maskOverride || MATORAN_DEX[c.id].mask;
+      const power = MASK_POWERS[mask];
+      const effectInstance: MaskEffectInstance = {
+        source: mask,
+        effect: power.effect,
+        remaining: power.effect.duration,
+      };
+  
+      // If target is self
+      if (power.effect.target === 'self') {
+        return {
+          ...c,
+          activeEffects: [...c.activeEffects, effectInstance],
+          maskPowerQueued: false,
+          maskCooldown: power.effect.cooldown,
+        };
+      }
+  
+      // If targeting others
+      if (power.effect.target === 'enemy') {
+        const enemies = c.side === 'team' ? currentEnemies : currentTeam;
+        const target = enemies.find((e) => e.hp > 0);
+        if (!target) return c;
+  
+        target.activeEffects.push(effectInstance);
+      }
+  
+      if (power.effect.target === 'allEnemies') {
+        const enemies = c.side === 'team' ? currentEnemies : currentTeam;
+        enemies.forEach((e) => {
+          if (e.hp > 0) e.activeEffects.push({ ...effectInstance });
+        });
+      }
+  
+      return {
+        ...c,
+        maskPowerQueued: false,
+        maskCooldown: power.effect.cooldown,
+      };
+    });
+  };
+
+  currentTeam = applyMaskPowers(currentTeam);
+  currentEnemies = applyMaskPowers(currentEnemies);
 
   for (const actor of turnOrder) {
     const isTeam = actor.side === 'team';

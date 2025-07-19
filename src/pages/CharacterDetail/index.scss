@@ -83,6 +83,30 @@
   }
 }
 
-.job-section {
+.character-detail-section {
   margin-top: 2rem;
+}
+
+.combatant-stats,
+.mask-power {
+  padding: 1rem;
+  border: 1px solid var(--border-glow);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 8px var(--accent-color);
+  color: white;
+
+  h3 {
+    margin-top: 0;
+    color: var(--accent-color);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 0.25rem;
+  }
 }
