@@ -150,15 +150,16 @@
       position: relative;
       text-transform: capitalize;
       overflow: visible;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .model-preview {
+        margin: 0;
+      }
     }
 
     .hp-bar {
-      font-size: 0.8rem;
-      margin-top: 0.25rem;
-    }
-
-    .mask-power {
-      margin-top: 0.5rem;
       font-size: 0.8rem;
     }
   }
