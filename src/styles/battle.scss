@@ -118,7 +118,7 @@
     .toa-team {
       display: flex;
       gap: 1rem;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
     .enemy-list {
       position: fixed;
@@ -150,12 +150,13 @@
       position: relative;
       text-transform: capitalize;
       overflow: visible;
-      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       .model-preview {
         margin: 0;
+        width: 100%;
+        height: auto;
       }
     }
 
@@ -175,27 +176,6 @@
   font-weight: bold;
 }
 
-.enemy-card,
-.character-card {
-  &.attacking {
-    animation: pulse 0.3s ease;
-  }
-  &.hit {
-    animation: shake 0.3s ease;
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
 
 @keyframes float-up {
   0% {
@@ -233,17 +213,4 @@
 .float-down {
   bottom: 0;
   animation: float-down 0.8s ease-out forwards;
-}
-
-@keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-4px);
-  }
-  75% {
-    transform: translateX(4px);
-  }
 }
