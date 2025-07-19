@@ -54,7 +54,7 @@ function CharacterModel({
           );
         default:
           return (
-            <group position={[0, -2.5, 0]}>
+            <group position={[0, 7.4, 0]}>
               <ToaTahuMataModel matoran={matoran} />
             </group>
           );
