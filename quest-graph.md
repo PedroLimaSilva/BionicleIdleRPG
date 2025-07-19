@@ -36,7 +36,7 @@ XP: 750"]
 Loot: FeatherTufts=80, JungleResin=40
 Currency: 1000
 XP: 550"]
-  maskhunt_onua_matatu_komau["Echoes of the Forest
+  maskhunt_onua_matatu_hau["Echoes of the Forest
 (9m)
 Loot: FeatherTufts=100, JungleResin=50
 Currency: 800
@@ -231,8 +231,8 @@ XP: 5000"]
   story_toa_council --> maskhunt_lewa_pakari
   story_toa_council --> maskhunt_kopaka_mahiki_huna
   maskhunt_lewa_pakari --> maskhunt_lewa_kakama_komau
-  story_toa_council --> maskhunt_onua_matatu_komau
-  maskhunt_onua_matatu_komau --> maskhunt_onua_jungle_rumor
+  story_toa_council --> maskhunt_onua_matatu_hau
+  maskhunt_onua_matatu_hau --> maskhunt_onua_jungle_rumor
   mnog_restore_ga_koro --> maskhunt_gali_miru
   maskhunt_gali_miru --> maskhunt_gali_rescue
   maskhunt_tahu_cave_akaku --> maskhunt_gali_rescue
