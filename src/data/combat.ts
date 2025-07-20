@@ -1,36 +1,5 @@
-import { BattlePhase, BattleState } from '../hooks/useBattleState';
 import { CombatantTemplate, EnemyEncounter, MaskPower } from '../types/Combat';
-import { ElementTribe, Mask, RecruitedCharacterData } from '../types/Matoran';
-
-export const INITIAL_BATTLE_STATE: BattleState = {
-  phase: BattlePhase.Idle,
-  currentWave: 0,
-  currentEncounter: undefined,
-  enemies: [],
-  team: [],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  startBattle: function (_encounter: EnemyEncounter): void {
-    throw new Error('Function not implemented.');
-  },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  confirmTeam: function (_team: RecruitedCharacterData[]): void {
-    throw new Error('Function not implemented.');
-  },
-  advanceWave: function (): void {
-    throw new Error('Function not implemented.');
-  },
-  retreat: function (): void {
-    throw new Error('Function not implemented.');
-  },
-  runRound: function (): void {
-    throw new Error('Function not implemented.');
-  },
-  playActionQueue: function (): Promise<void> {
-    throw new Error('Function not implemented.');
-  },
-  actionQueue: [],
-  isRunningRound: false
-};
+import { ElementTribe, Mask } from '../types/Matoran';
 
 export const MASK_POWERS: Record<Mask, MaskPower> = {
   [Mask.Akaku]: {

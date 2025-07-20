@@ -7,6 +7,12 @@ export interface BattleDrop {
   chance: number;
 }
 
+export const enum BattleStrategy {
+  Random = 'Random', // Will target a random enemy
+  LowestHp = 'LowestHp', // Will target the enemy with lowest hp, even if not effective against it
+  MostEffective = 'MostEffective', // Will target the enemy it estimates will take more damage from an attack
+}
+
 export interface Combatant {
   id: string;
   name: string;
@@ -20,6 +26,7 @@ export interface Combatant {
   attack: number;
   defense: number;
   speed: number;
+  strategy: BattleStrategy;
 }
 
 export interface MaskPower {
@@ -58,6 +65,7 @@ export interface CombatantTemplate {
   baseAttack: number;
   baseDefense: number;
   baseSpeed: number;
+  strategy?: BattleStrategy;
 }
 
 export interface CombatRoundResult {

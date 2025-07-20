@@ -1,6 +1,6 @@
 import { COMBATANT_DEX } from '../data/combat';
 import { LegoColor } from '../types/Colors';
-import { Combatant } from '../types/Combat';
+import { BattleStrategy, Combatant } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 
 declare global {
@@ -12,17 +12,17 @@ declare global {
   }
 }
 
-
 /**
- * |    | 🔥  | 🌊  | ❄️  | 🪨  | 🌍  | 💨  | 🌑  | 🌕  |
- * | 🔥 | 1.0 | 1.0 | 1.5 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 |
- * | 🌊 | 1.5 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 |
- * | ❄️ | 0.5 | 1.5 | 1.0 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 |
- * | 🪨 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 | 1.5 | 1.0 | 1.0 |
- * | 🌍 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 | 0.5 | 1.0 | 1.0 |
- * | 💨 | 1.5 | 1.0 | 1.0 | 1.0 | 1.5 | 1.0 | 1.0 | 1.0 |
- * | 🌑 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 0.5 | 1.5 |
- * | 🌕 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.5 | 0.5 |
+ *          D E F E N D E R
+ *    |    | 🔥  | 🌊  | ❄️  | 🪨  | 🌍  | 💨  | 🌑  | 🌕  |
+ * A  | 🔥 | 1.0 | 1.0 | 1.5 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 |
+ * T  | 🌊 | 1.5 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 |
+ * T  | ❄️ | 0.5 | 1.5 | 1.0 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 |
+ * A  | 🪨 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 | 1.5 | 1.0 | 1.0 |
+ * C  | 🌍 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 | 0.5 | 1.0 | 1.0 |
+ * K  | 💨 | 1.5 | 1.0 | 1.0 | 1.0 | 1.5 | 1.0 | 1.0 | 1.0 |
+ * E  | 🌑 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 0.5 | 1.5 |
+ * R  | 🌕 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.5 | 0.5 |
  */
 const elementEffectiveness: Record<
   ElementTribe,
@@ -110,7 +110,7 @@ const elementEffectiveness: Record<
   },
 };
 
-function resolveAttack(attacker: Combatant, defender: Combatant): number {
+function calculateAtkDmg(attacker: Combatant, defender: Combatant): number {
   const rawDamage = Math.max(1, attacker.attack - defender.defense);
   const multiplier =
     elementEffectiveness[attacker.element]?.[defender.element] ?? 1.0;
@@ -125,6 +125,39 @@ function applyDamage(target: Combatant, damage: number): Combatant {
     ...target,
     hp: Math.max(0, target.hp - damage),
   };
+}
+
+// exported only for tests
+export function chooseTarget(self: Combatant, targets: Combatant[]): Combatant {
+  switch (self.strategy) {
+    case BattleStrategy.LowestHp: {
+      let lowestHpIndex = 0;
+      for (let i = 0; i < targets.length; i++) {
+        const target = targets[i];
+        if (targets[lowestHpIndex].hp > target.hp) {
+          lowestHpIndex = i;
+        }
+      }
+      return targets[lowestHpIndex];
+    }
+    case BattleStrategy.MostEffective: {
+      let bestDmgIndex = 0;
+      let bestDmg = 0;
+      for (let i = 0; i < targets.length; i++) {
+        const target = targets[i];
+        const targetDmg = calculateAtkDmg(self, target);
+        console.log(target.name, targetDmg);
+        if (targetDmg > bestDmg) {
+          bestDmg = targetDmg;
+          bestDmgIndex = i;
+        }
+      }
+      return targets[bestDmgIndex];
+    }
+    case BattleStrategy.Random:
+    default:
+      return targets[Math.floor(Math.random() * targets.length)];
+  }
 }
 
 export function queueCombatRound(
@@ -156,8 +189,8 @@ export function queueCombatRound(
       const targets = opponentList.filter((t) => t.hp > 0);
       if (targets.length === 0) return;
 
-      const target = targets[Math.floor(Math.random() * targets.length)];
-      const damage = resolveAttack(self, target);
+      const target = chooseTarget(self, targets);
+      const damage = calculateAtkDmg(self, target);
 
       // Expect 3D combatant refs to be globally accessible for now
       const actorRef = window.combatantRefs?.[self.id];
@@ -225,5 +258,6 @@ export function generateCombatantStats(
     attack,
     defense,
     speed,
+    strategy: template.strategy || BattleStrategy.Random,
   };
 }

@@ -12,7 +12,7 @@ import { GameState } from '../types/GameState';
 import { Quest } from '../types/Quests';
 import { LISTED_MATORAN_DATA, RECRUITED_MATORAN_DATA } from './matoran';
 import { LegoColor } from '../types/Colors';
-import { INITIAL_BATTLE_STATE } from './combat';
+import { INITIAL_BATTLE_STATE } from '../hooks/useBattleState';
 
 export const CURRENT_GAME_STATE_VERSION = 9; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Combatant, EnemyEncounter } from '../types/Combat';
 import { RecruitedCharacterData } from '../types/Matoran';
 import { getLevelFromExp } from '../game/Levelling';
-import { INITIAL_BATTLE_STATE, TEAM_POSITION_LABELS } from '../data/combat';
+import { TEAM_POSITION_LABELS } from '../data/combat';
 import {
   generateCombatantStats,
   queueCombatRound,
@@ -32,6 +32,37 @@ export interface BattleState {
   actionQueue: (() => void)[];
   isRunningRound: boolean;
 }
+
+export const INITIAL_BATTLE_STATE: BattleState = {
+  phase: BattlePhase.Idle,
+  currentWave: 0,
+  currentEncounter: undefined,
+  enemies: [],
+  team: [],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  startBattle: function (_encounter: EnemyEncounter): void {
+    throw new Error('Function not implemented.');
+  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  confirmTeam: function (_team: RecruitedCharacterData[]): void {
+    throw new Error('Function not implemented.');
+  },
+  advanceWave: function (): void {
+    throw new Error('Function not implemented.');
+  },
+  retreat: function (): void {
+    throw new Error('Function not implemented.');
+  },
+  runRound: function (): void {
+    throw new Error('Function not implemented.');
+  },
+  playActionQueue: function (): Promise<void> {
+    throw new Error('Function not implemented.');
+  },
+  actionQueue: [],
+  isRunningRound: false
+};
+
 
 export const useBattleState = (): BattleState => {
   const [phase, setPhase] = useState<BattlePhase>(INITIAL_BATTLE_STATE.phase);
