@@ -37,23 +37,15 @@ export default function SettingsPage() {
         </p>
         <p>
           This app is built with React and Vite, optimized for modern browsers
-          and mobile play.
-        </p>
-        <p>
-          Found a bug or have a suggestion? Visit the project's GitHub:
-          <br />
-          <a
-            href='https://github.com/PedroLimaSilva/BionicleIdleRPG'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='about-link'
-          >
-            github.com/PedroLimaSilva/BionicleIdleRPG
-          </a>
+          and mobile play. See the Credits section below for more information
+          about the project and how to contribute.
         </p>
       </div>
-      <h1 className='title'>Credit</h1>
+      <h1 className='title'>Credits & Acknowledgments</h1>
       <div className='about-section'>
+        <p>
+          <strong>3D Models</strong>
+        </p>
         <p>
           3D models provided by{' '}
           <a
@@ -76,19 +68,127 @@ export default function SettingsPage() {
           .
         </p>
         <p>
-          All other code and files available in the code repository, are my
-          creation.
+          <strong>Technologies</strong>
+        </p>
+        <p>
+          Built with{' '}
+          <a
+            href='https://react.dev'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='about-link'
+          >
+            React
+          </a>
+          ,{' '}
+          <a
+            href='https://www.typescriptlang.org'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='about-link'
+          >
+            TypeScript
+          </a>
+          ,{' '}
+          <a
+            href='https://vitejs.dev'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='about-link'
+          >
+            Vite
+          </a>
+          , and{' '}
+          <a
+            href='https://docs.pmnd.rs/react-three-fiber'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='about-link'
+          >
+            React Three Fiber
+          </a>
+          .
+        </p>
+        <p>
+          <strong>Source Code</strong>
+        </p>
+        <p>
+          This project is open source and available on GitHub. All code and files
+          (except the 3D models) are created by the project contributors.
+        </p>
+        <p>
+          View the source code, report issues, or contribute:{' '}
+          <a
+            href='https://github.com/PedroLimaSilva/BionicleIdleRPG'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='about-link'
+          >
+            github.com/PedroLimaSilva/BionicleIdleRPG
+          </a>
+        </p>
+        <p>
+          <strong>License</strong>
+        </p>
+        <p>
+          This project is licensed under the{' '}
+          <a
+            href='https://opensource.org/licenses/MIT'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='about-link'
+          >
+            MIT License
+          </a>
+          . See the LICENSE file in the repository for details.
+        </p>
+        <p>
+          <strong>Inspiration</strong>
+        </p>
+        <p>
+          Inspired by idle RPG games and built as a fan project celebrating the
+          Bionicle universe. This is a non-commercial, educational project.
         </p>
       </div>
       <h1 className='title'>Disclaimers</h1>
       <div className='about-section'>
         <p>
-          LEGO and BIONICLE are trademarks of the LEGO Group, which does not
-          approve, authorize, or endorse this site.
+          <strong>⚠️ Intellectual Property Notice</strong>
         </p>
         <p>
-          Please do not contact LEGO Customer Service for assistance with this
-          game; they will not be able to help you.
+          This project is a <strong>fan-made, non-commercial project</strong> that
+          uses characters, names, and concepts from the Bionicle universe, which is
+          the intellectual property of <strong>The LEGO Group</strong>.
+        </p>
+        <p>
+          <strong>This project is not affiliated with, endorsed by, or sponsored
+          by The LEGO Group.</strong>
+        </p>
+        <p>
+          LEGO, BIONICLE, Matoran, Toa, Kanohi masks, and all related characters,
+          names, and concepts are trademarks and/or copyrights of The LEGO Group,
+          which does not approve, authorize, or endorse this site.
+        </p>
+        <p>
+          This software is provided for <strong>educational and entertainment
+          purposes only</strong>. Commercial use of this software, particularly in
+          relation to the Bionicle intellectual property, may require separate
+          licensing from The LEGO Group. Users are responsible for ensuring
+          compliance with all applicable laws and intellectual property rights.
+        </p>
+        <p>
+          The authors of this software do not claim any rights to the Bionicle
+          intellectual property and make no representations or warranties regarding
+          the legal status of using this software in connection with
+          Bionicle-related content.
+        </p>
+        <p>
+          <strong>Please do not contact LEGO Customer Service</strong> for
+          assistance with this game; they will not be able to help you.
+        </p>
+        <p>
+          The MIT License applies to the code and software in this repository. It
+          does not grant any rights to use The LEGO Group's intellectual property.
         </p>
       </div>
 
