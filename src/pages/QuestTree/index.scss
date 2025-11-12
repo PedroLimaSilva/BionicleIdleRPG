@@ -1,0 +1,63 @@
+.quest-tree {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+
+  &__diagram-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: var(--bg-secondary, #2d3748);
+    padding: 1rem;
+    position: relative;
+  }
+
+  &__loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-secondary, #cbd5e0);
+    font-size: 1.1rem;
+  }
+
+  &__diagram {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  &__error {
+    color: var(--error-color, #fc8181);
+    padding: 1rem;
+    text-align: center;
+
+    pre {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: var(--bg-tertiary, #1a202c);
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// Ensure mermaid diagrams are styled properly
+.quest-tree__diagram {
+  :global(.nodeLabel) {
+    color: var(--text-primary, #e2e8f0) !important;
+  }
+
+  :global(.edgeLabel) {
+    color: var(--text-secondary, #cbd5e0) !important;
+    background: var(--bg-secondary, #2d3748) !important;
+  }
+}
+

@@ -19,6 +19,7 @@ import { preloadAssets } from './preload.ts';
 import { InventoryPage } from './pages/Inventory/index.tsx';
 import SettingsPage from './pages/Settings/index.tsx';
 import { QuestsPage } from './pages/Quests/index.tsx';
+import { QuestTreePage } from './pages/QuestTree/index.tsx';
 import { BattleSelector } from './pages/BattleSelector/index.tsx';
 import { BattlePage } from './pages/Battle/index.tsx';
 import { NavBar } from './components/NavBar/index.tsx';
@@ -60,6 +61,7 @@ export function App() {
                 <Route path='/characters/:id' element={<CharacterDetail />} />
                 <Route path='/recruitment' element={<Recruitment />} />
                 <Route path='/quests' element={<QuestsPage />} />
+                <Route path='/quest-tree' element={<QuestTreePage />} />
                 <Route path='/inventory' element={<InventoryPage />} />
                 <Route path='/settings' element={<SettingsPage />} />
                 <Route path='*' element={<NotFound />} />

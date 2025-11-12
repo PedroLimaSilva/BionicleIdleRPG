@@ -19,6 +19,7 @@
     "@react-three/postprocessing": "2.15.11",
     "@types/three": "0.160.0",
     "lucide-react": "^0.487.0",
+    "mermaid": "^11.12.1",
     "r3f-perf": "^7.2.3",
     "react": "18",
     "react-dom": "18",
