@@ -28,15 +28,13 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
       )}`;
 
       setTimeout(() => {
-        const aboveCanvas = document
-          .querySelector('.js-above-canvas')
+        const modelFrame = document
+          .getElementById('model-frame')
           ?.getBoundingClientRect();
-        if (aboveCanvas) {
-          el.style.top = `${
-            (document.querySelector('.main-content')?.scrollTop || 0) +
-            aboveCanvas.height +
-            aboveCanvas.top
-          }px`;
+        if (modelFrame) {
+          el.style.top = `${(document.querySelector('.main-content')?.scrollTop || 0) +
+            modelFrame.top
+            }px`;
         } else {
           el.style.top = '';
         }

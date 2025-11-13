@@ -4,27 +4,15 @@
   border-radius: var(--border-radius-lg);
   width: 100%;
   max-width: 640px;
-  margin: 1.5rem auto;
   color: var(--theme-element-primary);
   box-shadow:
-    var(--shadow-glow-strong),
+    var(--theme-element-glow-strong),
     0 0 1px rgba(255, 255, 255, 0.1) inset;
   background: linear-gradient(135deg,
       var(--color-surface-high) 0%,
       var(--color-surface-mid) 50%,
       var(--color-surface-low) 100%);
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: calc(var(--border-radius-lg) / 2);
-    background: var(--theme-element-primary);
-    opacity: 0.8;
-  }
 
   &::after {
     content: '';
@@ -74,7 +62,7 @@
   }
 }
 
-.model-frame {
+#model-frame {
   height: var(--character-detail-model-h);
 }
 

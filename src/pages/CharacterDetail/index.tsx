@@ -89,12 +89,12 @@ export const CharacterDetail: React.FC = () => {
         <div
           className={`character-detail-container element-${matoran.element}`}
         >
-          <div className='character-header js-above-canvas'>
+          <div className='character-header'>
             <h1 className='character-name'>{matoran.name}</h1>
             <ElementTag element={matoran.element} showName={true} />
           </div>
 
-          <div className='model-frame'></div>
+          <div id='model-frame'></div>
 
           <div className='divider'></div>
 
