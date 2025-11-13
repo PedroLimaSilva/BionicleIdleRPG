@@ -31,6 +31,8 @@ body {
   );
   background-attachment: fixed;
   position: relative;
+  max-width: 100vw;
+  overflow-x: hidden;
 
   &::before {
     content: '';
