@@ -4,7 +4,7 @@
   height: 100%;
   background: var(--color-surface-low);
   color: var(--color-text);
-  padding-bottom: 96px;
+
 }
 
 .recruitment-preview {
@@ -16,7 +16,7 @@
   position: relative;
   pointer-events: none;
 
-  > div {
+  >div {
     width: 100%;
     height: 100%;
   }
@@ -28,52 +28,119 @@
 
   .recruitment-overlay {
     position: absolute;
-    bottom: 2rem;
     left: 2rem;
-    padding: 1rem;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(6px);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    background: linear-gradient(135deg,
+        rgba(26, 26, 35, 0.95) 0%,
+        rgba(20, 20, 28, 0.9) 100%);
+    backdrop-filter: blur(12px) saturate(180%);
+    border: 2px solid var(--color-border-subtle);
     text-align: left;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
     pointer-events: all;
-    
+    box-shadow:
+      var(--shadow-lg),
+      0 0 1px rgba(255, 255, 255, 0.1) inset;
+    max-width: 320px;
+
+    &.top {
+      top: 2rem;
+    }
+
+    &.bottom {
+      bottom: 2rem;
+    }
+
     button {
       width: 100%;
+      margin-top: 0.5rem;
     }
   }
 
   .requirement-list {
     position: static;
     width: 100%;
-    padding: 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border-subtle);
 
     h4 {
       margin: 0;
-      font-size: 0.875rem;
-      font-weight: 600;
-      margin-bottom: 4px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
       color: var(--color-text);
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-align: center;
+      position: relative;
+      padding-bottom: 0.5rem;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 2px;
+        background: linear-gradient(90deg,
+            transparent,
+            var(--color-border-muted),
+            transparent);
+      }
     }
 
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
 
       li {
-        font-size: 0.75rem;
-        margin-bottom: 4px;
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--border-radius-sm);
+        background: rgba(255, 255, 255, 0.02);
+        border-left: 3px solid transparent;
+        transition: all var(--transition-base);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
 
         &.has-enough {
           color: #a3e635;
+          border-left-color: #a3e635;
+          background: rgba(163, 230, 53, 0.1);
+          box-shadow: 0 0 8px rgba(163, 230, 53, 0.2);
+
+          &:hover {
+            background: rgba(163, 230, 53, 0.15);
+            box-shadow: 0 0 12px rgba(163, 230, 53, 0.3);
+            transform: translateX(4px);
+          }
         }
 
         &.not-enough {
           color: #f87171;
+          border-left-color: #f87171;
+          background: rgba(248, 113, 113, 0.1);
+          box-shadow: 0 0 8px rgba(248, 113, 113, 0.2);
+
+          &:hover {
+            background: rgba(248, 113, 113, 0.15);
+            box-shadow: 0 0 12px rgba(248, 113, 113, 0.3);
+            transform: translateX(4px);
+          }
         }
       }
     }
@@ -81,5 +148,12 @@
 }
 
 .matoran-selector {
-  border-top: 2px solid var(--color-surface-high);
+  border-top: 2px solid var(--color-border-subtle);
+  background: linear-gradient(180deg,
+      var(--color-surface-low) 0%,
+      var(--color-surface-mid) 100%);
+  box-shadow:
+    0 -4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding-bottom: 96px;
 }

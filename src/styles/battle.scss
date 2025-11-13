@@ -3,18 +3,23 @@
   padding: 1rem;
   border-radius: 0.75rem;
   background-color: var(--color-surface-high);
-  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   &-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
     gap: 1rem;
   }
+
   &-header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
     gap: 1rem;
   }
+
   h2 {
     font-size: 1.25rem;
     font-weight: 600;
@@ -22,18 +27,22 @@
     flex: 1;
     text-align: left;
   }
+
   .difficulty {
     font-size: 0.875rem;
     color: var(--color-text-muted);
   }
+
   .description {
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
   }
+
   .loot {
     font-size: 0.875rem;
     color: var(--theme-element-accent);
   }
+
   .enemy-avatar {
     width: 100%;
     max-width: 384px;
@@ -54,6 +63,7 @@
       margin: 0;
       margin-bottom: 1rem;
     }
+
     p {
       margin: 0;
       text-align: left;
@@ -70,6 +80,7 @@
     &__team-selector {
       transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
       max-height: 400px;
+
       &.hidden {
         max-height: 0;
         opacity: 0;
@@ -79,20 +90,25 @@
     .character-card {
       padding: 0.5rem;
       cursor: pointer;
+
       &.focused {
         box-shadow: none;
       }
     }
+
     .card-header {
       font-size: 1rem;
     }
+
     .level-label {
       font-size: 0.8rem;
     }
+
     .matoran-avatar {
       margin-top: 0;
     }
   }
+
   &-buttons {
     display: flex;
     justify-content: space-between;
@@ -120,6 +136,7 @@
       gap: 1rem;
       flex-wrap: nowrap;
     }
+
     .enemy-list {
       position: fixed;
       left: 0;
@@ -135,6 +152,7 @@
       padding: 0 1rem;
       height: 176px;
       width: 100%;
+
       .card-header {
         display: none;
       }
@@ -153,6 +171,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+
       .model-preview {
         margin: 0;
         width: 100%;
@@ -182,9 +201,11 @@
     opacity: 1;
     transform: translate(-50%, 0) scale(0.5);
   }
+
   50% {
     transform: translate(-50%, -20px) scale(3);
   }
+
   100% {
     opacity: 0;
     transform: translate(-50%, -40px);
@@ -201,9 +222,11 @@
     opacity: 1;
     transform: translate(-50%, 0);
   }
+
   50% {
     transform: translate(-50%, 20px) scale(3);
   }
+
   100% {
     opacity: 0;
     transform: translate(-50%, 40px);

@@ -12,12 +12,11 @@
     display: none;
     &.route--recruitment {
       display: block;
-      top: 80px; // .inventory-bar
-      left: 0;
+      left: 30vw;
       height: calc(
-        100% - 184px - 96px - 80px
+        100% - 184px - 96px
       ); // 100% - .matoran-selector-height - space-for-nav-bar -
-      width: 100%;
+      width: 60vw;
       z-index: 0;
     }
     &[class*='route--characters-'] {
@@ -36,12 +35,42 @@
 
 .page-container {
   width: 100%;
-  padding: 1rem 2rem;
-  padding-bottom: 96px; //space for .nav-bar
+  padding: 2rem;
+  padding-bottom: 120px; //space for .nav-bar
+  max-width: 1400px;
+  margin: 0 auto;
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--theme-element-accent);
+    text-shadow: 0 0 16px var(--color-accent-hover);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+    letter-spacing: 0.05em;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
 
   .title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--color-accent);
+    text-shadow: 0 0 12px var(--color-accent-hover);
+    letter-spacing: 0.1em;
   }
 }

@@ -1,5 +1,33 @@
 .inventory-bar {
-  padding: 0.75rem 2rem;
-  background-color: #3333337e;
-  font-size: 1rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(
+    180deg,
+    rgba(26, 26, 30, 0.95) 0%,
+    rgba(20, 20, 25, 0.9) 100%
+  );
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 10;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-border-muted),
+      transparent
+    );
+  }
 }

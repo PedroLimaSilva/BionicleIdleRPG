@@ -1,57 +1,139 @@
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  border-radius: var(--border-radius-md);
+  border: 2px solid var(--color-border-muted);
+  padding: 0.75rem 1.5rem;
   font-size: 1em;
-  font-weight: 500;
-  background-color: var(--color-surface-low);
+  font-weight: 600;
+  font-family: var(--font-display);
+  background: linear-gradient(
+    135deg,
+    var(--color-surface-mid),
+    var(--color-surface-high)
+  );
+  color: var(--color-text);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
   &:focus,
   &:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(
+      135deg,
+      var(--color-surface-high),
+      var(--color-surface-elevated)
+    );
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
   }
 }
 
 .cancel-button,
 .confirm-button,
 .remove-button {
-  padding: 10px;
-  font-weight: bold;
-  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  border: none;
-  transition: background 0.2s ease;
-  font-size: 1rem;
+  border: 2px solid transparent;
+  transition: all var(--transition-base);
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
 }
 
 .cancel-button {
-  background: #444;
+  background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-mid));
   color: var(--color-text);
-  &:hover {
-    background: #666;
+  border-color: var(--color-border-muted);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-surface-elevated), var(--color-surface-high));
+    border-color: var(--color-text-secondary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
   }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
   }
 }
 
 .confirm-button {
-  background: var(--theme-element-accent);
+  background: linear-gradient(135deg, var(--theme-element-accent), var(--theme-element-glow));
   color: #111;
+  border-color: var(--theme-element-primary);
+  box-shadow: 0 0 12px var(--theme-element-glow-transparent);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--theme-element-glow), var(--theme-element-accent));
+    box-shadow: 0 0 20px var(--theme-element-glow-strong);
+    transform: translateY(-2px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 0 12px var(--theme-element-glow-transparent);
+  }
+
   &:disabled {
-    background: #555;
-    color: #222;
+    background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-mid));
+    color: var(--color-text-muted);
+    border-color: var(--color-border-muted);
+    box-shadow: var(--shadow-sm);
     cursor: not-allowed;
+    transform: none;
   }
 }
 
 .remove-button {
-  background: #222;
+  background: linear-gradient(135deg, #331111, #441111);
   color: #ff6464;
-  border: 1px solid #ff6464;
-  &:hover {
-    background: #331111;
+  border: 2px solid #ff6464;
+  box-shadow: 0 0 8px rgba(255, 100, 100, 0.3);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #441111, #551111);
+    box-shadow: 0 0 16px rgba(255, 100, 100, 0.5);
+    transform: translateY(-2px);
+    border-color: #ff8888;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 0 8px rgba(255, 100, 100, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
   }
 }

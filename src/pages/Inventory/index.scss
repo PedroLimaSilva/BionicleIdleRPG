@@ -6,37 +6,87 @@
 }
 
 .inventory-item {
-  background: linear-gradient(
-    90deg,
-    var(--color-surface-low),
-    var(--color-surface-mid)
-  );
+  background: linear-gradient(135deg,
+      var(--color-surface-low) 0%,
+      var(--color-surface-mid) 100%);
   border: 2px solid var(--color-border-muted);
-  border-radius: 12px;
-  padding: 1rem;
+  border-radius: var(--border-radius-md);
+  padding: 1.25rem;
   text-align: center;
-  box-shadow: 0 0 6px var(--theme-element-glow-transparent);
-  transition: transform 0.2s ease-in-out, border 0.2s ease-in-out;
-  &:hover {
-    transform: scale(1.03);
-    border: 2px solid var(--theme-element-glow);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
-    box-shadow: 0 0 10px var(--theme-element-glow-transparent);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: calc(var(--border-radius-md) / 2);
+    background: var(--theme-element-linear-gradient);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+  }
+
+  &:hover {
+    transform: translateY(-4px) scale(1.05);
+    border-color: var(--theme-element-glow);
+    box-shadow: var(--shadow-glow);
+    background: linear-gradient(135deg,
+        var(--color-surface-mid) 0%,
+        var(--color-surface-high) 100%);
+
+    &::before {
+      opacity: 1;
+    }
+
+    .item-icon {
+      transform: scale(1.1) rotate(5deg);
+      filter: drop-shadow(0 0 8px var(--theme-element-glow-transparent));
+    }
+  }
+
+  &:active {
+    transform: translateY(-2px) scale(1.02);
   }
 }
 
 .item-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  transition: all var(--transition-base);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  position: relative;
+  z-index: 1;
 }
 
 .item-name {
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+  z-index: 1;
 }
 
 .item-qty {
   font-size: 0.85rem;
-  opacity: 0.8;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  background: var(--color-surface-low);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius-sm);
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--color-border-muted);
 }

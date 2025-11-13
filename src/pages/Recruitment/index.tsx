@@ -2,7 +2,6 @@ import { startTransition, useEffect, useMemo, useState } from 'react';
 
 import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
-import { InventoryBar } from '../../components/InventoryBar';
 import { ListedCharacterData } from '../../types/Matoran';
 import { useGame } from '../../context/Game';
 import { ITEM_DICTIONARY } from '../../data/loot';
@@ -10,6 +9,7 @@ import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { useNavigate } from 'react-router-dom';
 import { MATORAN_DEX } from '../../data/matoran';
+import { isMatoran } from '../../services/matoranUtils';
 
 export const Recruitment: React.FC = () => {
   const { widgets, recruitCharacter, buyableCharacters, inventory } = useGame();
@@ -71,11 +71,10 @@ export const Recruitment: React.FC = () => {
 
   return (
     <div className='recruitment-screen'>
-      <InventoryBar />
       <div className='recruitment-preview'>
         {selectedMatoran && (
           <div>
-            <div key={selectedMatoran.id} className='recruitment-overlay'>
+            <div key={selectedMatoran.id} className={`recruitment-overlay ${isMatoran(MATORAN_DEX[selectedMatoran.id]) ? 'top' : 'bottom'}`}>
               <div className='requirement-list'>
                 <h4>Required to Recruit:</h4>
                 <ul>
