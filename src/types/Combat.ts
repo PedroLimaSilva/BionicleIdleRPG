@@ -18,7 +18,7 @@ export interface Combatant {
   name: string;
   model: string;
   lvl: number;
-  maskOverride?: Mask;
+  maskPower?: MaskPower;
   maskColorOverride?: LegoColor;
   element: ElementTribe;
   maxHp: number;
@@ -26,6 +26,7 @@ export interface Combatant {
   attack: number;
   defense: number;
   speed: number;
+  willUseAbility: boolean;
   strategy: BattleStrategy;
 }
 
@@ -60,6 +61,7 @@ export interface CombatantTemplate {
   id: string;
   name: string;
   model: string;
+  mask?: Mask;
   element: ElementTribe;
   baseHp: number;
   baseAttack: number;

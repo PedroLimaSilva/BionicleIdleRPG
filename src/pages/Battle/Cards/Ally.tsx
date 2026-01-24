@@ -4,9 +4,20 @@ import { DamagePopup } from './DamagePopup';
 import { MATORAN_DEX } from '../../../data/matoran';
 import { MatoranAvatar } from '../../../components/MatoranAvatar';
 
-export function AllyCard({ combatant }: { combatant: Combatant }) {
+export function AllyCard({
+  combatant,
+  onClick,
+}: {
+  combatant: Combatant;
+  onClick: () => void;
+}) {
   const prevHpRef = useRef(combatant.hp);
   const [damage, setDamage] = useState<number | null>(null);
+  const [selected, setSelected] = useState<boolean>(false);
+
+  useEffect(() => {
+    setSelected(combatant.willUseAbility);
+  }, [combatant.willUseAbility]);
 
   useEffect(() => {
     if (combatant.hp < prevHpRef.current) {
@@ -14,12 +25,16 @@ export function AllyCard({ combatant }: { combatant: Combatant }) {
     }
     prevHpRef.current = combatant.hp;
   }, [combatant.hp]);
+
   const dex = MATORAN_DEX[combatant.id];
   return (
     <div
       id={`combatant-${combatant.id}`}
       key={combatant.id}
-      className={`character-card element-${dex.element}`}
+      onClick={onClick}
+      className={`character-card element-${dex.element} ${
+        !combatant.maskPower?.effect.cooldown && 'disabled'
+      } ${selected && 'selected'}`}
     >
       <MatoranAvatar
         matoran={{ ...dex, ...combatant, exp: 0 }}

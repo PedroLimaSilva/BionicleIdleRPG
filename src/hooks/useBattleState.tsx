@@ -26,6 +26,7 @@ export interface BattleState {
   startBattle: (encounter: EnemyEncounter) => void;
   confirmTeam: (team: RecruitedCharacterData[]) => void;
   advanceWave: () => void;
+  toggleAbility: (toa: Combatant) => void;
   retreat: () => void;
   runRound: () => void;
   playActionQueue: () => Promise<void>;
@@ -59,10 +60,13 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   playActionQueue: function (): Promise<void> {
     throw new Error('Function not implemented.');
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  toggleAbility: function (_toa: Combatant): boolean {
+    throw new Error('Function not implemented.');
+  },
   actionQueue: [],
-  isRunningRound: false
+  isRunningRound: false,
 };
-
 
 export const useBattleState = (): BattleState => {
   const [phase, setPhase] = useState<BattlePhase>(INITIAL_BATTLE_STATE.phase);
@@ -110,6 +114,18 @@ export const useBattleState = (): BattleState => {
       )
     );
     setPhase(BattlePhase.Preparing);
+  };
+
+  const toggleAbility = (toa: Combatant) => {
+    if (
+      toa.maskPower &&
+      toa.hp > 0 &&
+      toa.maskPower.effect.cooldown.amount === 0
+    ) {
+      toa.willUseAbility = !toa.willUseAbility;
+      const updatedTeam = team.map((t) => (t.id === toa.id ? toa : t));
+      setTeam(updatedTeam);
+    }
   };
 
   const advanceWave = () => {
@@ -179,6 +195,7 @@ export const useBattleState = (): BattleState => {
     team,
     confirmTeam,
     startBattle,
+    toggleAbility: toggleAbility,
     advanceWave,
     retreat,
     runRound,

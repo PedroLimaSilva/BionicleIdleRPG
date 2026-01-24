@@ -57,7 +57,7 @@
     pointer-events: none;
   }
 
-  &:hover {
+  &:hover, &.selected {
     transform: translateY(-6px) scale(1.02);
     box-shadow: var(--shadow-glow);
     border-color: var(--theme-element-primary);

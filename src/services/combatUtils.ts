@@ -1,4 +1,4 @@
-import { COMBATANT_DEX } from '../data/combat';
+import { COMBATANT_DEX, MASK_POWERS } from '../data/combat';
 import { LegoColor } from '../types/Colors';
 import { BattleStrategy, Combatant } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
@@ -160,6 +160,42 @@ export function chooseTarget(self: Combatant, targets: Combatant[]): Combatant {
   }
 }
 
+function triggerMaskPowers(
+  turnOrder: (Combatant & { side: string })[],
+  currentTeam: Combatant[],
+  currentEnemies: Combatant[],
+  setTeam: (team: Combatant[]) => void,
+  setEnemies: (enemies: Combatant[]) => void,
+  enqueue: (step: () => Promise<void>) => void
+) {
+  for (const actor of turnOrder) {
+    const isTeam = actor.side === 'team';
+
+    const actorList = isTeam ? currentTeam : currentEnemies;
+
+    const self = actorList.find((c) => c.id === actor.id);
+    if (!self || self.hp <= 0) continue;
+
+    if (actor.maskPower && actor.willUseAbility) {
+      actor.willUseAbility = false;
+      console.log('applying mask power', actor.id, actor.maskPower);
+      if (isTeam) {
+        currentTeam = currentTeam.map((t) => (t.id === actor.id ? actor : t));
+      } else {
+        currentEnemies = currentEnemies.map((t) =>
+          t.id === actor.id ? actor : t
+        );
+      }
+    }
+  }
+  enqueue(async () => {
+    // Apply mask powers
+    await setEnemies(currentEnemies);
+    await setTeam(currentTeam);
+  });
+  return {currentTeam, currentEnemies}
+}
+
 export function queueCombatRound(
   team: Combatant[],
   enemies: Combatant[],
@@ -175,6 +211,18 @@ export function queueCombatRound(
 
   let currentTeam = [...team];
   let currentEnemies = [...enemies];
+
+  const updatedActors = triggerMaskPowers(
+    turnOrder,
+    currentTeam,
+    currentEnemies,
+    setTeam,
+    setEnemies,
+    enqueue
+  );
+  currentTeam = updatedActors?.currentTeam;
+  currentEnemies = updatedActors?.currentEnemies;
+
 
   for (const actor of turnOrder) {
     const isTeam = actor.side === 'team';
@@ -244,13 +292,18 @@ export function generateCombatantStats(
   const attack = template.baseAttack + lvl * 3;
   const defense = template.baseDefense + lvl * 2;
   const speed = template.baseSpeed + lvl * 1;
+  const mask = maskOverride || template.mask;
+  const maskPower = mask && Object.assign({}, MASK_POWERS[mask]);
+  if (maskPower) {
+    maskPower.effect.cooldown.amount = 0;
+  }
 
   return {
     id,
     name: template.name,
     model: template.model,
     lvl,
-    maskOverride,
+    maskPower,
     maskColorOverride,
     element: template.element,
     maxHp,
@@ -259,5 +312,6 @@ export function generateCombatantStats(
     defense,
     speed,
     strategy: template.strategy || BattleStrategy.Random,
+    willUseAbility: false,
   };
 }

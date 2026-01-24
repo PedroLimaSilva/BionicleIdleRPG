@@ -135,6 +135,7 @@
       display: flex;
       gap: 1rem;
       flex-wrap: nowrap;
+      justify-content: center;
     }
 
     .enemy-list {
@@ -171,11 +172,11 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      max-width: 140px;
 
-      .model-preview {
-        margin: 0;
-        width: 100%;
-        height: auto;
+      &.disabled {
+        pointer-events: none;
+        opacity: 0.5;
       }
     }
 
@@ -194,7 +195,6 @@
   color: red;
   font-weight: bold;
 }
-
 
 @keyframes float-up {
   0% {
