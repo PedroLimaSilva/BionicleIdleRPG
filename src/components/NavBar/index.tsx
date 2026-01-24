@@ -2,9 +2,10 @@ import { NavLink } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 import { UserCircle2, Backpack, Settings, Map, Swords } from 'lucide-react';
 import { BattlePhase } from '../../hooks/useBattleState';
+import { areBattlesUnlocked } from '../../game/Progress';
 
 export const NavBar = () => {
-  const { battle } = useGame();
+  const { battle, completedQuests } = useGame();
 
   return (
     <nav
@@ -19,10 +20,12 @@ export const NavBar = () => {
           : ''
       }`}
     >
-      <NavLink to='/battle' className='nav-item'>
-        <Swords />
-        <label>Battle</label>
-      </NavLink>
+      {areBattlesUnlocked(completedQuests) && (
+        <NavLink to='/battle' className='nav-item'>
+          <Swords />
+          <label>Battle</label>
+        </NavLink>
+      )}
       <NavLink to='/characters' className='nav-item'>
         <UserCircle2 />
         <label>Characters</label>
