@@ -256,7 +256,6 @@ export function chooseTarget(self: Combatant, targets: Combatant[]): Combatant {
       for (let i = 0; i < validTargets.length; i++) {
         const target = validTargets[i];
         const targetDmg = calculateAtkDmg(self, target);
-        console.log(target.name, targetDmg);
         if (targetDmg > bestDmg) {
           bestDmg = targetDmg;
           bestDmgIndex = i;
