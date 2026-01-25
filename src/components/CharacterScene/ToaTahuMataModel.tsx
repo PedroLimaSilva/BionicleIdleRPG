@@ -4,6 +4,7 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
+import { getAnimationTimeScale } from '../../utils/testMode';
 
 export const ToaTahuMataModel = forwardRef<
   CombatantModelHandle,
@@ -17,6 +18,11 @@ export const ToaTahuMataModel = forwardRef<
   );
 
   const { actions, mixer } = useAnimations(animations, group);
+
+  useEffect(() => {
+    // Set mixer timeScale based on test mode
+    mixer.timeScale = getAnimationTimeScale();
+  }, [mixer]);
 
   useImperativeHandle(ref, () => ({
     playAnimation: (name) => {

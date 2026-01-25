@@ -25,3 +25,8 @@ dev-dist
 *.sw?
 *.blend1
 coverage
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/

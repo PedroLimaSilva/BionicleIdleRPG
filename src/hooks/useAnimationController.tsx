@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { AnimationAction, AnimationMixer, Event, LoopOnce } from 'three';
+import { getAnimationTimeScale, shouldDisableAnimations } from '../utils/testMode';
 
 type AnimationControllerOptions = {
   mixer: AnimationMixer;
@@ -19,6 +20,9 @@ export function useAnimationController({
 
   useEffect(() => {
     if (!idle) return;
+
+    // Set mixer timeScale based on test mode
+    mixer.timeScale = getAnimationTimeScale();
 
     // Don't restart if already running
     if (!idle.isRunning()) {
@@ -53,7 +57,10 @@ export function useAnimationController({
       }
     }
 
-    timeout.current = window.setInterval(scheduleNextFlavor, interval);
+    // Don't schedule random flavor animations in test mode
+    if (!shouldDisableAnimations()) {
+      timeout.current = window.setInterval(scheduleNextFlavor, interval);
+    }
 
     return () => {
       if (timeout.current !== null) clearInterval(timeout.current);
