@@ -397,6 +397,9 @@ export function queueCombatRound(
       // Decrement 'hit' unit counters for defender
       updatedTarget = decrementMaskPowerCounter(updatedTarget, 'hit');
 
+      // Decrement 'turn' unit counters ONLY for the combatant whose turn it is
+      self = decrementMaskPowerCounter(self, 'turn');
+
       // Update both attacker and defender in their respective lists
       const newActorList = actorList.map((c) => (c.id === self.id ? self : c));
       const newOpponentList = opponentList.map((t) =>
@@ -420,12 +423,6 @@ export function queueCombatRound(
           isTeam ? 'enemy' : 'team'
         }) for ${damage} damage → HP: ${target.hp} → ${updatedTarget.hp}`
       );
-
-      // Decrement 'turn' unit counters for all combatants after each turn
-      currentTeam = currentTeam.map((c) => decrementMaskPowerCounter(c, 'turn'));
-      currentEnemies = currentEnemies.map((c) => decrementMaskPowerCounter(c, 'turn'));
-      setTeam(currentTeam);
-      setEnemies(currentEnemies);
     });
   }
 
