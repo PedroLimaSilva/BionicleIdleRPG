@@ -3,9 +3,11 @@ import { useEffect, useRef } from 'react';
 export const DamagePopup = ({
   damage,
   direction,
+  isHealing = false,
 }: {
   damage: number;
   direction: 'up' | 'down';
+  isHealing?: boolean;
 }) => {
   const popupRef = useRef<HTMLDivElement>(null);
 
@@ -19,11 +21,11 @@ export const DamagePopup = ({
     void el.offsetWidth;
     // Re-add the animation class
     el.classList.add(`float-${direction}`);
-  }, [damage, direction]); // re-trigger on any damage change
+  }, [damage, direction, isHealing]); // re-trigger on any damage/healing change
 
   return (
-    <div ref={popupRef} className={`damage-popup float-${direction}`}>
-      -{damage}
+    <div ref={popupRef} className={`damage-popup float-${direction} ${isHealing ? 'healing' : ''}`}>
+      {isHealing ? '+' : '-'}{damage}
     </div>
   );
 };
