@@ -14,7 +14,7 @@ export function useCharactersState(
   initialBuyable: ListedCharacterData[],
   widgets: number,
   setWidgets: (amount: number) => void,
-  addItemToInventory: (item: GameItemId, amount: number) => void
+  addItemToInventory: (item: GameItemId, amount: number) => void,
 ) {
   const [recruitedCharacters, setRecruitedCharacters] =
     useState<RecruitedCharacterData[]>(initialRecruited);
@@ -28,7 +28,7 @@ export function useCharactersState(
       character,
       widgets,
       buyableCharacters,
-      addItemToInventory
+      addItemToInventory,
     );
 
     if (!newRecruit) return;
@@ -40,7 +40,7 @@ export function useCharactersState(
 
   const assignJobToMatoran = (
     id: RecruitedCharacterData['id'],
-    job: MatoranJob
+    job: MatoranJob,
   ) => {
     setRecruitedCharacters((prev) => assignJob(id, job, prev));
   };
@@ -52,16 +52,15 @@ export function useCharactersState(
   const setMaskOverride = (
     id: RecruitedCharacterData['id'],
     color: LegoColor,
-    mask: Mask
+    mask: Mask,
   ) => {
     setRecruitedCharacters((prev) =>
       prev.map((m) => {
         if (id === m.id) {
-          m.maskOverride = mask;
-          m.maskColorOverride = color;
+          return { ...m, maskOverride: mask, maskColorOverride: color };
         }
         return m;
-      })
+      }),
     );
   };
 

@@ -95,9 +95,7 @@ export const useQuestState = ({
 
     let unlockedCharacters: ListedCharacterData[] = [];
     if (quest.rewards.unlockCharacters) {
-      if (quest.rewards.unlockCharacters) {
-        unlockedCharacters = quest.rewards.unlockCharacters;
-      }
+      unlockedCharacters = quest.rewards.unlockCharacters;
     }
 
     setBuyableCharacters((prev) => [

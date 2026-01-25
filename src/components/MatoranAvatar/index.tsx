@@ -33,5 +33,4 @@ export function MatoranAvatar({
       colors={[colors.eyes, '#fff', maskColorOverride || colors.mask]}
     />
   );
-  return;
 }
