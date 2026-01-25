@@ -6,6 +6,7 @@ import { TEAM_POSITION_LABELS } from '../data/combat';
 import {
   generateCombatantStats,
   queueCombatRound,
+  decrementWaveCounters,
 } from '../services/combatUtils';
 
 export const enum BattlePhase {
@@ -132,6 +133,12 @@ export const useBattleState = (): BattleState => {
     if (!currentEncounter) return;
     const nextWave = currentWave + 1;
     setCurrentWave(nextWave);
+
+    // Decrement wave-based mask power counters for the team
+    const updatedTeam = decrementWaveCounters(team);
+    setTeam(updatedTeam);
+
+    // Load new enemies for the next wave
     setEnemies(
       currentEncounter.waves[nextWave].map(({ id, lvl }, index) =>
         generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)

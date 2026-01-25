@@ -166,10 +166,12 @@ interface CombatDuration {
 - ✅ Wave progression
 - ✅ Element effectiveness system
 - ✅ Battle strategies (Random, LowestHp, MostEffective)
-- 🚧 Mask power activation (in progress)
-- ❌ Mask power effect application
-- ❌ Mask power duration tracking
-- ❌ Mask power cooldown tracking
+- ✅ Mask power activation
+- ✅ Mask power effect application (ATK_MULT, DMG_MITIGATOR, HEAL, AGGRO, SPEED)
+- ✅ Mask power duration tracking (all unit types)
+- ✅ Mask power cooldown tracking (all unit types)
+- ❌ Advanced mask effects (ACCURACY_MULT, CONFUSION, immobilization)
+- ❌ Nuva mask powers (team-wide effects)
 - ❌ Reward distribution
 - ❌ Experience gain
 

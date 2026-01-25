@@ -35,6 +35,7 @@ export interface MaskPower {
   shortName: Mask;
   longName: string;
   effect: MaskEffect;
+  active?: boolean;
 }
 
 interface CombatDuration {
