@@ -55,9 +55,11 @@
     opacity: 0;
     transition: all var(--transition-slow);
     pointer-events: none;
+    touch-action: none;
   }
 
-  &:hover, &.selected {
+  &:hover,
+  &.selected {
     transform: translateY(-6px) scale(1.02);
     box-shadow: var(--shadow-glow);
     border-color: var(--theme-element-primary);
@@ -153,7 +155,7 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     transition: all var(--transition-base);
-    box-shadow: 
+    box-shadow:
       var(--shadow-sm),
       0 0 12px var(--color-accent-hover);
 
@@ -163,7 +165,7 @@
         var(--color-surface-high),
         var(--color-surface-elevated)
       );
-      box-shadow: 
+      box-shadow:
         var(--shadow-glow),
         0 0 20px var(--color-accent-hover);
       transform: translateY(-2px);

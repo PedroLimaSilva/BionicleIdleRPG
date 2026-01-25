@@ -78,7 +78,9 @@
     }
 
     &__team-selector {
-      transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+      transition:
+        max-height 0.3s ease-in-out,
+        opacity 0.3s ease-in-out;
       max-height: 400px;
 
       &.hidden {
@@ -176,6 +178,7 @@
 
       &.disabled {
         pointer-events: none;
+        touch-action: none;
         opacity: 0.5;
       }
 
@@ -200,6 +203,7 @@
   position: absolute;
   left: 50%;
   pointer-events: none;
+  touch-action: none;
   z-index: 2;
   transform: translate(-50%, 0);
   color: red;
