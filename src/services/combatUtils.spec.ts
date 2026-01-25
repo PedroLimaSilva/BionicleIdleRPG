@@ -1,5 +1,5 @@
 import { BattleStrategy, Combatant } from '../types/Combat';
-import { ElementTribe } from '../types/Matoran';
+import { ElementTribe, Mask } from '../types/Matoran';
 import { chooseTarget, generateCombatantStats } from './combatUtils';
 
 describe('chooseTarget', () => {
@@ -201,7 +201,7 @@ describe('chooseTarget', () => {
         'test-id',
         'Toa_Tahu',
         1,
-        'Kaukau' as any
+        Mask.Kaukau
       );
 
       expect(combatant.maskPower).toBeDefined();
@@ -212,7 +212,7 @@ describe('chooseTarget', () => {
         'test-id',
         'Toa_Tahu',
         1,
-        'Hau' as any
+        Mask.Hau
       );
 
       expect(combatant.maskPower?.effect.cooldown.amount).toBe(0);

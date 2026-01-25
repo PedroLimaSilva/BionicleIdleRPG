@@ -148,9 +148,9 @@ describe('Jobs', () => {
 
   describe('getAvailableJobs', () => {
     test('returns only unlocked jobs', () => {
-      const mockGameState: GameState = {
+      const mockGameState = {
         completedQuests: [],
-      } as GameState;
+      } as unknown as GameState;
 
       const available = getAvailableJobs(mockGameState);
 
