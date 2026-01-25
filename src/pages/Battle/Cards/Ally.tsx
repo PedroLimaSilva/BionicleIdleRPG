@@ -37,7 +37,9 @@ export function AllyCard({
       } ${selected && 'selected'}`}
     >
       <MatoranAvatar
-        matoran={{ ...dex, ...combatant, exp: 0 }}
+        matoran={{ ...dex, ...combatant, maskOverride: combatant.maskPower?.shortName,
+          exp: 0,
+        }}
         styles='matoran-avatar model-preview'
       />
       <div className='card-header'>

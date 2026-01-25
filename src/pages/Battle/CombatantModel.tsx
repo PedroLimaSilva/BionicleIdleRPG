@@ -50,7 +50,12 @@ export const CombatantModel = forwardRef<
           <group scale={0.04} position={[0, 0.375, 0]}>
             <ToaKopakaMataModel
               ref={childRef}
-              matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
+              matoran={{
+                maskOverride: combatant.maskPower?.shortName,
+                ...MATORAN_DEX[combatant.id],
+                ...combatant,
+                exp: 0,
+              }}
             />
           </group>
         );
@@ -59,7 +64,12 @@ export const CombatantModel = forwardRef<
           <group scale={0.04} position={[0, 0.375, 0]}>
             <ToaTahuMataModel
               ref={childRef}
-              matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
+             matoran={{
+                maskOverride: combatant.maskPower?.shortName,
+                ...MATORAN_DEX[combatant.id],
+                ...combatant,
+                exp: 0,
+              }}
             />
           </group>
         );
@@ -68,7 +78,12 @@ export const CombatantModel = forwardRef<
           <group scale={0.04} position={[0, 0.375, 0]}>
             <ToaPohatuMataModel
               ref={childRef}
-              matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
+             matoran={{
+                maskOverride: combatant.maskPower?.shortName,
+                ...MATORAN_DEX[combatant.id],
+                ...combatant,
+                exp: 0,
+              }}
             />
           </group>
         );
@@ -76,7 +91,12 @@ export const CombatantModel = forwardRef<
         return (
           <group scale={0.04} position={[0, 0.375, 0]}>
             <ToaOnuaMataModel
-              matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
+             matoran={{
+                maskOverride: combatant.maskPower?.shortName,
+                ...MATORAN_DEX[combatant.id],
+                ...combatant,
+                exp: 0,
+              }}
             />
           </group>
         );
@@ -84,7 +104,12 @@ export const CombatantModel = forwardRef<
         return (
           <group scale={0.04} position={[0, 0.375, 0]}>
             <ToaLewaMataModel
-              matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
+             matoran={{
+                maskOverride: combatant.maskPower?.shortName,
+                ...MATORAN_DEX[combatant.id],
+                ...combatant,
+                exp: 0,
+              }}
             />
           </group>
         );
@@ -93,7 +118,12 @@ export const CombatantModel = forwardRef<
           <group scale={0.04} position={[0, 0.375, 0]}>
             <ToaGaliMataModel
               ref={childRef}
-              matoran={{ ...MATORAN_DEX[combatant.id], ...combatant, exp: 0 }}
+             matoran={{
+                maskOverride: combatant.maskPower?.shortName,
+                ...MATORAN_DEX[combatant.id],
+                ...combatant,
+                exp: 0,
+              }}
             />
           </group>
         );
