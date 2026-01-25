@@ -110,7 +110,7 @@ const elementEffectiveness: Record<
   },
 };
 
-function calculateAtkDmg(attacker: Combatant, defender: Combatant): number {
+export function calculateAtkDmg(attacker: Combatant, defender: Combatant): number {
   let rawDamage = Math.max(1, attacker.attack - defender.defense);
 
   // Apply attacker's ATK_MULT mask power (e.g., Pakari - Mask of Strength)
@@ -131,7 +131,7 @@ function calculateAtkDmg(attacker: Combatant, defender: Combatant): number {
   return Math.max(1, final);
 }
 
-function applyDamage(target: Combatant, damage: number): Combatant {
+export function applyDamage(target: Combatant, damage: number): Combatant {
   let finalDamage = damage;
 
   // Apply defender's DMG_MITIGATOR mask power (e.g., Hau - Mask of Shielding, Miru - Mask of Levitation)
@@ -149,7 +149,7 @@ function applyDamage(target: Combatant, damage: number): Combatant {
   };
 }
 
-function applyHealing(combatant: Combatant): Combatant {
+export function applyHealing(combatant: Combatant): Combatant {
   // Apply HEAL mask power (e.g., Kaukau - Mask of Water Breathing)
   if (
     combatant.maskPower?.active &&
