@@ -24,3 +24,4 @@ dev-dist
 *.sln
 *.sw?
 *.blend1
+coverage

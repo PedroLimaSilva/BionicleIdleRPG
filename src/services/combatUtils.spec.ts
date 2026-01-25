@@ -1,6 +1,7 @@
 import { BattleStrategy, Combatant } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
-import { chooseTarget, generateCombatantStats } from './combatUtils';
+import { chooseTarget, generateCombatantStats, decrementWaveCounters } from './combatUtils';
+import { LegoColor } from '../types/Colors';
 
 describe('chooseTarget', () => {
   const targets: Combatant[] = [
@@ -300,6 +301,276 @@ describe('chooseTarget', () => {
       };
 
       expect(shadow.element).toBe(ElementTribe.Shadow);
+    });
+  });
+
+  describe('mask powers and abilities', () => {
+    test('generates combatant with Hau mask (DMG_MITIGATOR)', () => {
+      const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1, Mask.Hau);
+
+      expect(tahu.maskPower).toBeDefined();
+      expect(tahu.maskPower?.effect.type).toBe('DMG_MITIGATOR');
+    });
+
+    test('generates combatant with Kakama mask (SPEED)', () => {
+      const pohatu = generateCombatantStats('pohatu', 'Toa_Pohatu', 1, Mask.Kakama);
+
+      expect(pohatu.maskPower).toBeDefined();
+      expect(pohatu.maskPower?.effect.type).toBe('SPEED');
+    });
+
+    test('generates combatant with Kaukau mask (HEAL)', () => {
+      const gali = generateCombatantStats('gali', 'Toa_Gali', 1, Mask.Kaukau);
+
+      expect(gali.maskPower).toBeDefined();
+      expect(gali.maskPower?.effect.type).toBe('HEAL');
+    });
+
+    test('generates combatant with Pakari mask (ATK_MULT)', () => {
+      const onua = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Pakari);
+
+      expect(onua.maskPower).toBeDefined();
+      expect(onua.maskPower?.effect.type).toBe('ATK_MULT');
+    });
+
+    test('generates combatant with Miru mask (DMG_MITIGATOR)', () => {
+      const lewa = generateCombatantStats('lewa', 'Toa_Lewa', 1, Mask.Miru);
+
+      expect(lewa.maskPower).toBeDefined();
+      expect(lewa.maskPower?.effect.type).toBe('DMG_MITIGATOR');
+    });
+
+    test('generates combatant with Huna mask (AGGRO)', () => {
+      const matoran = generateCombatantStats('test', 'Toa_Tahu', 1, Mask.Huna);
+
+      expect(matoran.maskPower).toBeDefined();
+      expect(matoran.maskPower?.effect.type).toBe('AGGRO');
+    });
+
+    test('mask power has duration and cooldown properties', () => {
+      const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1, Mask.Hau);
+
+      expect(tahu.maskPower?.effect.duration).toBeDefined();
+      expect(tahu.maskPower?.effect.duration.unit).toBeDefined();
+      expect(tahu.maskPower?.effect.duration.amount).toBeGreaterThanOrEqual(0);
+      expect(tahu.maskPower?.effect.cooldown).toBeDefined();
+      expect(tahu.maskPower?.effect.cooldown.unit).toBeDefined();
+      expect(tahu.maskPower?.effect.cooldown.amount).toBeGreaterThanOrEqual(0);
+    });
+
+    test('mask power starts inactive or undefined', () => {
+      const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1, Mask.Hau);
+
+      // active can be false or undefined (both mean inactive)
+      expect(tahu.maskPower?.active).toBeFalsy();
+    });
+  });
+
+  describe('decrementWaveCounters', () => {
+    test('decrements wave-based mask power duration when active', () => {
+      const combatant: Combatant = {
+        id: 'test',
+        name: 'Test',
+        model: '',
+        lvl: 1,
+        hp: 100,
+        maxHp: 100,
+        attack: 10,
+        defense: 5,
+        speed: 5,
+        element: ElementTribe.Fire,
+        strategy: BattleStrategy.Random,
+        willUseAbility: false,
+        maskPower: {
+          description: 'Test mask',
+          shortName: Mask.Pakari,
+          longName: 'Test Mask',
+          active: true,
+          effect: {
+            type: 'ATK_MULT',
+            target: 'self',
+            multiplier: 1.5,
+            duration: { unit: 'wave', amount: 3 },
+            cooldown: { unit: 'wave', amount: 0 },
+          },
+        },
+      };
+
+      const [updated] = decrementWaveCounters([combatant]);
+
+      expect(updated.maskPower?.effect.duration.amount).toBe(2);
+      expect(updated.maskPower?.active).toBe(true);
+    });
+
+    test('deactivates mask power when duration reaches 0', () => {
+      const combatant: Combatant = {
+        id: 'Toa_Tahu', // Use a real combatant ID so it can look up the original mask
+        name: 'Test',
+        model: '',
+        lvl: 1,
+        hp: 100,
+        maxHp: 100,
+        attack: 10,
+        defense: 5,
+        speed: 5,
+        element: ElementTribe.Fire,
+        strategy: BattleStrategy.Random,
+        willUseAbility: false,
+        maskPower: {
+          description: 'Test mask',
+          shortName: Mask.Hau,
+          longName: 'Test Mask',
+          active: true,
+          effect: {
+            type: 'DMG_MITIGATOR',
+            target: 'self',
+            multiplier: 0.5,
+            duration: { unit: 'wave', amount: 1 },
+            cooldown: { unit: 'wave', amount: 0 },
+          },
+        },
+      };
+
+      const [updated] = decrementWaveCounters([combatant]);
+
+      expect(updated.maskPower?.active).toBe(false);
+      // Cooldown should be set from the original mask data when duration expires
+      expect(updated.maskPower?.effect.duration.amount).toBe(0);
+    });
+
+    test('decrements cooldown when mask power is inactive', () => {
+      const combatant: Combatant = {
+        id: 'test',
+        name: 'Test',
+        model: '',
+        lvl: 1,
+        hp: 100,
+        maxHp: 100,
+        attack: 10,
+        defense: 5,
+        speed: 5,
+        element: ElementTribe.Fire,
+        strategy: BattleStrategy.Random,
+        willUseAbility: false,
+        maskPower: {
+          description: 'Test mask',
+          shortName: Mask.Pakari,
+          longName: 'Test Mask',
+          active: false,
+          effect: {
+            type: 'ATK_MULT',
+            target: 'self',
+            multiplier: 1.5,
+            duration: { unit: 'wave', amount: 2 },
+            cooldown: { unit: 'wave', amount: 3 },
+          },
+        },
+      };
+
+      const [updated] = decrementWaveCounters([combatant]);
+
+      expect(updated.maskPower?.effect.cooldown.amount).toBe(2);
+      expect(updated.maskPower?.active).toBe(false);
+    });
+
+    test('does not decrement non-wave counters', () => {
+      const combatant: Combatant = {
+        id: 'test',
+        name: 'Test',
+        model: '',
+        lvl: 1,
+        hp: 100,
+        maxHp: 100,
+        attack: 10,
+        defense: 5,
+        speed: 5,
+        element: ElementTribe.Fire,
+        strategy: BattleStrategy.Random,
+        willUseAbility: false,
+        maskPower: {
+          description: 'Test mask',
+          shortName: Mask.Pakari,
+          longName: 'Test Mask',
+          active: true,
+          effect: {
+            type: 'ATK_MULT',
+            target: 'self',
+            multiplier: 1.5,
+            duration: { unit: 'turn', amount: 3 },
+            cooldown: { unit: 'turn', amount: 0 },
+          },
+        },
+      };
+
+      const [updated] = decrementWaveCounters([combatant]);
+
+      // Should not change because duration unit is 'turn', not 'wave'
+      expect(updated.maskPower?.effect.duration.amount).toBe(3);
+      expect(updated.maskPower?.active).toBe(true);
+    });
+
+    test('handles multiple combatants', () => {
+      const combatants: Combatant[] = [
+        {
+          id: 'test1',
+          name: 'Test1',
+          model: '',
+          lvl: 1,
+          hp: 100,
+          maxHp: 100,
+          attack: 10,
+          defense: 5,
+          speed: 5,
+          element: ElementTribe.Fire,
+          strategy: BattleStrategy.Random,
+          willUseAbility: false,
+          maskPower: {
+            description: 'Test mask',
+            shortName: Mask.Pakari,
+            longName: 'Test Mask',
+            active: true,
+            effect: {
+              type: 'ATK_MULT',
+              target: 'self',
+              multiplier: 1.5,
+              duration: { unit: 'wave', amount: 2 },
+              cooldown: { unit: 'wave', amount: 0 },
+            },
+          },
+        },
+        {
+          id: 'test2',
+          name: 'Test2',
+          model: '',
+          lvl: 1,
+          hp: 100,
+          maxHp: 100,
+          attack: 10,
+          defense: 5,
+          speed: 5,
+          element: ElementTribe.Water,
+          strategy: BattleStrategy.Random,
+          willUseAbility: false,
+          maskPower: {
+            description: 'Test mask',
+            shortName: Mask.Kaukau,
+            longName: 'Test Mask',
+            active: false,
+            effect: {
+              type: 'HEAL',
+              target: 'self',
+              multiplier: 0.2,
+              duration: { unit: 'wave', amount: 1 },
+              cooldown: { unit: 'wave', amount: 3 },
+            },
+          },
+        },
+      ];
+
+      const updated = decrementWaveCounters(combatants);
+
+      expect(updated[0].maskPower?.effect.duration.amount).toBe(1);
+      expect(updated[1].maskPower?.effect.cooldown.amount).toBe(2);
     });
   });
 });

@@ -4,6 +4,7 @@ import {
   isJobUnlocked,
   getAvailableJobs,
   applyJobExp,
+  applyOfflineJobExp,
 } from './Jobs';
 import { MatoranJob, ProductivityEffect } from '../types/Jobs';
 import { RecruitedCharacterData } from '../types/Matoran';
@@ -263,6 +264,122 @@ describe('Jobs', () => {
       expect(earned).toBe(0);
       expect(updated.exp).toBe(100);
     });
+
+    test('returns job rewards when matoran has assignment', () => {
+      const now = Date.now();
+      const matoran: RecruitedCharacterData = {
+        id: 'Jala',
+        exp: 0,
+        assignment: {
+          job: MatoranJob.CharcoalMaker,
+          expRatePerSecond: 1.0,
+          assignedAt: now - 5000,
+        },
+      };
+
+      const [, , rewards] = applyJobExp(matoran, now);
+
+      // Rewards should be an object (may be empty or have items based on RNG)
+      expect(typeof rewards).toBe('object');
+    });
+  });
+
+  describe('applyOfflineJobExp', () => {
+    test('returns empty arrays when no characters', () => {
+      const [updated, logs, currencyGain, loot] = applyOfflineJobExp([]);
+
+      expect(updated).toEqual([]);
+      expect(logs).toEqual([]);
+      expect(currencyGain).toBe(0);
+      expect(loot).toEqual({});
+    });
+
+    test('processes multiple matoran with jobs', () => {
+      const now = Date.now();
+      const characters: RecruitedCharacterData[] = [
+        {
+          id: 'Jala',
+          exp: 0,
+          assignment: {
+            job: MatoranJob.CharcoalMaker,
+            expRatePerSecond: 1.0,
+            assignedAt: now - 10000, // 10 seconds ago
+          },
+        },
+        {
+          id: 'Hali',
+          exp: 0,
+          assignment: {
+            job: MatoranJob.AlgaeHarvester,
+            expRatePerSecond: 1.0,
+            assignedAt: now - 5000, // 5 seconds ago
+          },
+        },
+      ];
+
+      const [updated, logs, currencyGain] = applyOfflineJobExp(characters);
+
+      expect(updated).toHaveLength(2);
+      expect(updated[0].exp).toBeGreaterThan(0);
+      expect(updated[1].exp).toBeGreaterThan(0);
+      expect(currencyGain).toBeGreaterThan(0);
+      expect(logs.length).toBeGreaterThan(0);
+    });
+
+    test('aggregates loot from multiple matoran', () => {
+      const now = Date.now();
+      const characters: RecruitedCharacterData[] = [
+        {
+          id: 'Jala',
+          exp: 0,
+          assignment: {
+            job: MatoranJob.CharcoalMaker,
+            expRatePerSecond: 1.0,
+            assignedAt: now - 10000,
+          },
+        },
+      ];
+
+      const [, , , loot] = applyOfflineJobExp(characters);
+
+      // Loot should be an object (may have items based on RNG)
+      expect(typeof loot).toBe('object');
+    });
+
+    test('generates activity logs for earned exp', () => {
+      const now = Date.now();
+      const characters: RecruitedCharacterData[] = [
+        {
+          id: 'Jala',
+          exp: 0,
+          assignment: {
+            job: MatoranJob.CharcoalMaker,
+            expRatePerSecond: 1.0,
+            assignedAt: now - 10000,
+          },
+        },
+      ];
+
+      const [, logs] = applyOfflineJobExp(characters);
+
+      // Should have at least one log for exp gain
+      const expLogs = logs.filter((log) => log.message.includes('gained'));
+      expect(expLogs.length).toBeGreaterThan(0);
+    });
+
+    test('does not process matoran without jobs', () => {
+      const characters: RecruitedCharacterData[] = [
+        { id: 'Jala', exp: 100 },
+        { id: 'Hali', exp: 50 },
+      ];
+
+      const [updated, logs, currencyGain, loot] = applyOfflineJobExp(characters);
+
+      expect(updated[0].exp).toBe(100);
+      expect(updated[1].exp).toBe(50);
+      expect(logs).toEqual([]);
+      expect(currencyGain).toBe(0);
+      expect(loot).toEqual({});
+    });
   });
 });
-
