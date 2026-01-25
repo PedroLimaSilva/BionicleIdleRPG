@@ -23,14 +23,14 @@ export const MASK_POWERS: Record<Mask, MaskPower> = {
   [Mask.Hau]: {
     shortName: Mask.Hau,
     longName: 'Mask of Shielding',
-    description: 'Grants full immunity to all damage for 1 turn',
+    description: 'Grants full immunity to all damage for 1 round',
     effect: {
       duration: {
         amount: 1,
-        unit: 'turn',
+        unit: 'round',
       },
       cooldown: {
-        amount: 2,
+        amount: 1,
         unit: 'wave',
       },
       type: 'DMG_MITIGATOR',
