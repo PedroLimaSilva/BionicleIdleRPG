@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { gotoWithTestMode, waitForCanvas } from '../helpers';
+import { enableTestMode, goto, waitForCanvas } from '../helpers';
 
 test.describe('Character Detail Page', () => {
   test('should render 3D character scene on character detail page', async ({
     page,
   }) => {
-    await gotoWithTestMode(page, '/characters');
+    await enableTestMode(page);
+    await goto(page, '/characters');
 
     // Wait for character cards to be visible instead of networkidle
     const characterCard = page
@@ -16,7 +17,7 @@ test.describe('Character Detail Page', () => {
     // Click on the first character card
     await characterCard.click();
 
-    // Wait for navigation to character detail page (testMode will be preserved)
+    // Wait for navigation to character detail page (testMode is preserved via localStorage)
     await page.waitForURL(/\/characters\/.+/, { timeout: 10000 });
 
     // Wait for 3D canvas to be ready (animations are paused via testMode)

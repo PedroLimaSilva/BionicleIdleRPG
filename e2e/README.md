@@ -64,25 +64,29 @@ All 3D character models in this app have animations (idle animations, flavor ani
 
 ### How It Works
 
-1. **Test Mode URL Parameter**: Tests navigate with `?testMode=true` appended to all URLs
-2. **Animation Pausing**: When `testMode=true` is detected:
+1. **Test Mode localStorage**: Tests set `localStorage.setItem('TEST_MODE', 'true')` before navigation
+2. **Animation Pausing**: When test mode is detected:
    - All Three.js animation mixers set `timeScale = 0` to pause animations
    - All idle animations are forced to `time = 0` and `paused = true` to ensure they're at frame 0
    - This guarantees consistent screenshots at exactly the same animation frame every time
-3. **Helper Function**: Use `gotoWithTestMode(page, '/path')` instead of `page.goto('/path')` in all tests
+3. **Persistence**: Test mode persists across navigation automatically via localStorage
+4. **Helper Functions**:
+   - Use `enableTestMode(page)` to enable test mode before navigation
+   - Use `setupGameState(page, state)` which automatically enables test mode
+   - Use `goto(page, '/path')` for navigation (test mode is already set via localStorage)
 
 ### Implementation Details
 
 - **Test Mode Utilities** (`src/utils/testMode.ts`):
-  - `isTestMode()` - Detects if `?testMode=true` is in URL
+  - `isTestMode()` - Detects if `localStorage.getItem('TEST_MODE') === 'true'`
   - `getAnimationTimeScale()` - Returns 0 in test mode, 1 otherwise
   - `shouldDisableAnimations()` - Returns true in test mode
   - `setupAnimationForTestMode(action)` - Forces animation to frame 0 and pauses it in test mode
 
-- **Navigation Components** (preserve testMode across navigation):
-  - `TestModeLink` - Wrapper around React Router's `Link` component
-  - `TestModeNavLink` - Wrapper around React Router's `NavLink` component
-  - `useTestModeNavigate` - Hook for programmatic navigation
+- **Test Helpers** (`e2e/helpers.ts`):
+  - `enableTestMode(page)` - Sets localStorage flag before page load
+  - `setupGameState(page, state)` - Sets game state and automatically enables test mode
+  - `goto(page, path)` - Navigate to a path (test mode persists via localStorage)
 
 - **Model Integration**: All character models (Toa, Matoran, Bohrok) call `setupAnimationForTestMode()` on their idle animations to ensure they're paused at frame 0
 - **Animation Controller**: The `useAnimationController` hook also respects test mode and disables random flavor animations
@@ -90,15 +94,24 @@ All 3D character models in this app have animations (idle animations, flavor ani
 ### Example Usage
 
 ```typescript
-import { gotoWithTestMode, waitForCanvas } from './helpers';
+import { enableTestMode, goto, setupGameState, waitForCanvas } from './helpers';
 
 test('should render 3D scene', async ({ page }) => {
-  await gotoWithTestMode(page, '/characters');
+  await enableTestMode(page);
+  await goto(page, '/characters');
 
   // Wait for specific elements instead of networkidle (better for mobile)
   await page.locator('.character-card').first().waitFor({ state: 'visible' });
 
   await waitForCanvas(page);
+  await expect(page).toHaveScreenshot('scene.png');
+});
+
+// Or with game state (automatically enables test mode):
+test('should render with custom state', async ({ page }) => {
+  await setupGameState(page, { widgets: 1000, inventory: {} });
+  await goto(page, '/characters');
+
   await expect(page).toHaveScreenshot('scene.png');
 });
 ```

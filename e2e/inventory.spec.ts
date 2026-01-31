@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {
-  gotoWithTestMode,
+  enableTestMode,
+  goto,
   INITIAL_GAME_STATE,
   setupGameState,
 } from './helpers';
@@ -16,7 +17,8 @@ const INVENTORY_GAME_STATE = {
 
 test.describe('Inventory Page', () => {
   test('should display empty inventory page', async ({ page }) => {
-    await gotoWithTestMode(page, '/inventory');
+    await enableTestMode(page);
+    await goto(page, '/inventory');
 
     await page
       .locator('.inventory-grid, .page-container')
@@ -32,7 +34,7 @@ test.describe('Inventory Page', () => {
 
   test('should display inventory page', async ({ browser, page }) => {
     await setupGameState(page, INVENTORY_GAME_STATE);
-    await gotoWithTestMode(page, '/inventory');
+    await goto(page, '/inventory');
 
     await page
       .locator('.inventory-grid, .page-container')

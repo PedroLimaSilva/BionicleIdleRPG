@@ -13,19 +13,33 @@ export const INITIAL_GAME_STATE: PartialGameState = {
 };
 
 /**
+ * Enable test mode by setting localStorage flag
+ * This should be called before navigation to ensure test mode is active
+ */
+export async function enableTestMode(page: Page) {
+  await page.addInitScript(() => {
+    localStorage.setItem('TEST_MODE', 'true');
+  });
+}
+
+/**
  * Creates a game state and stores it in localStorage to be loaded by the game
+ * Also enables test mode automatically
  */
 export async function setupGameState(page: Page, gameState: PartialGameState) {
   await page.addInitScript((state) => {
     localStorage.setItem('GAME_STATE', JSON.stringify(state));
+    localStorage.setItem('TEST_MODE', 'true');
   }, gameState);
 }
 
 /**
- * Navigate to a path with testMode enabled to pause animations
+ * Navigate to a path
  * Constructs full URL with base path /BionicleIdleRPG/ to match React Router basename
+ *
+ * Note: Test mode is enabled via localStorage (set by setupGameState or enableTestMode)
  */
-export async function gotoWithTestMode(page: Page, path: string) {
+export async function goto(page: Page, path: string) {
   // Ensure path starts with /
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
 
@@ -33,12 +47,7 @@ export async function gotoWithTestMode(page: Page, path: string) {
   const basePath = '/BionicleIdleRPG';
   const fullPath = `${basePath}${normalizedPath}`;
 
-  // Add testMode parameter
-  const url = fullPath.includes('?')
-    ? `${fullPath}&testMode=true`
-    : `${fullPath}?testMode=true`;
-
-  await page.goto(url);
+  await page.goto(fullPath);
 }
 
 /**
@@ -50,7 +59,7 @@ export async function waitForPageLoad(page: Page) {
 
 /**
  * Wait for 3D canvas to be ready
- * Note: Animations are automatically paused when testMode=true is in the URL
+ * Note: Animations are automatically paused when TEST_MODE is enabled in localStorage
  */
 export async function waitForCanvas(page: Page, timeout = 10000) {
   await page.waitForSelector('canvas', { timeout, state: 'visible' });
@@ -93,8 +102,9 @@ export async function waitForConsoleMessage(
  * a console listener that needs to be active when the model loads.
  *
  * @example
+ * await setupGameState(page, gameState); // This enables test mode
  * const modelLoadPromise = waitForModelLoad(page);
- * await gotoWithTestMode(page, '/recruitment');
+ * await goto(page, '/recruitment');
  * await modelLoadPromise;
  */
 export function waitForModelLoad(page: Page, timeout = 10000): Promise<void> {

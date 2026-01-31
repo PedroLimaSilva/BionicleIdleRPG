@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {
-  gotoWithTestMode,
+  enableTestMode,
+  goto,
   INITIAL_GAME_STATE,
   setupGameState,
 } from './helpers';
@@ -20,7 +21,8 @@ const QUESTS_GAME_STATE = {
 
 test.describe('Quests Page', () => {
   test('should display initial quests page', async ({ page }) => {
-    await gotoWithTestMode(page, '/quests');
+    await enableTestMode(page);
+    await goto(page, '/quests');
 
     // Wait for the title to be visible instead of networkidle
     await page
@@ -34,7 +36,7 @@ test.describe('Quests Page', () => {
       maxDiffPixels: 150,
     });
 
-    await gotoWithTestMode(page, '/quest-tree');
+    await goto(page, '/quest-tree');
 
     await expect(page).toHaveScreenshot({
       fullPage: true,
@@ -46,7 +48,7 @@ test.describe('Quests Page', () => {
     page,
   }) => {
     await setupGameState(page, QUESTS_GAME_STATE);
-    await gotoWithTestMode(page, '/quests');
+    await goto(page, '/quests');
     // Wait for the title to be visible instead of networkidle
     await page
       .locator('h2.quests-page__title')
@@ -59,7 +61,7 @@ test.describe('Quests Page', () => {
       maxDiffPixels: 150,
     });
 
-    await gotoWithTestMode(page, '/quest-tree');
+    await goto(page, '/quest-tree');
     await expect(page).toHaveScreenshot({
       fullPage: true,
       maxDiffPixels: 150,

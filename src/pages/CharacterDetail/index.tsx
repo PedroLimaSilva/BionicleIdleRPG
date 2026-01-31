@@ -1,5 +1,4 @@
-import { useParams } from 'react-router-dom';
-import { TestModeLink } from '../../components/TestModeLink';
+import { Link, useParams } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 
 import './index.scss';
@@ -209,9 +208,9 @@ export const CharacterDetail: React.FC = () => {
           {matoran.quest && (
             <div className='character-detail-section'>
               <p>Assigned Quest:</p>
-              <TestModeLink to='/quests'>
+              <Link to='/quests'>
                 <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
-              </TestModeLink>
+              </Link>
             </div>
           )}
 

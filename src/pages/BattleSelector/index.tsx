@@ -1,11 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import { CompositedImage } from '../../components/CompositedImage';
 import { ElementTag } from '../../components/ElementTag';
 import { useGame } from '../../context/Game';
 import { COMBATANT_DEX, ENCOUNTERS } from '../../data/combat';
-import { useTestModeNavigate } from '../../hooks/useTestModeNavigate';
 
 export const BattleSelector: React.FC = () => {
-  const navigate = useTestModeNavigate();
+  const navigate = useNavigate();
   const { battle, completedQuests } = useGame();
   return (
     <div className='page-container'>

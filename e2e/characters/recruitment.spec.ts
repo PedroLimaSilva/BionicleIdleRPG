@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import {
-  gotoWithTestMode,
+  goto,
   INITIAL_GAME_STATE,
   setupGameState,
   waitForModelLoad,
@@ -76,7 +76,7 @@ test.describe('Recruitment Page', () => {
     // Set up listener for model load BEFORE navigation
     const modelLoadPromise = waitForModelLoad(page);
 
-    await gotoWithTestMode(page, '/recruitment');
+    await goto(page, '/recruitment');
 
     // Wait for page to be fully loaded and ready
     // Wait for character cards to be in the DOM

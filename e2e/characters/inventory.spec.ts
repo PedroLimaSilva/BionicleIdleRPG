@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { MatoranJob } from '../../src/types/Jobs';
 import {
-  gotoWithTestMode,
+  goto,
   INITIAL_GAME_STATE,
   setupGameState,
   waitForCharacterCards,
@@ -45,7 +45,7 @@ const CHARACTER_INVENTORY_GAME_STATE = {
 test.describe('Character Inventory Page', () => {
   test('should display character inventory', async ({ page }) => {
     await setupGameState(page, CHARACTER_INVENTORY_GAME_STATE);
-    await gotoWithTestMode(page, '/characters');
+    await goto(page, '/characters');
 
     // Wait for character cards to be visible instead of networkidle
     await waitForCharacterCards(page);
@@ -62,7 +62,7 @@ test.describe('Character Inventory Page', () => {
   }) => {
     CHARACTER_INVENTORY_GAME_STATE.buyableCharacters = [];
     await setupGameState(page, CHARACTER_INVENTORY_GAME_STATE);
-    await gotoWithTestMode(page, '/characters');
+    await goto(page, '/characters');
 
     // Wait for character cards to be visible instead of networkidle
     await waitForCharacterCards(page);
@@ -84,7 +84,7 @@ test.describe('Character Inventory Page', () => {
         test.skip();
       }
       await setupGameState(page, CHARACTER_INVENTORY_GAME_STATE);
-      await gotoWithTestMode(page, '/characters');
+      await goto(page, '/characters');
 
       // Wait for character cards to be visible instead of networkidle
       await waitForCharacterCards(page);

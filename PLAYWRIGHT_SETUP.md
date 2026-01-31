@@ -70,17 +70,18 @@ yarn test:e2e:update-snapshots
 **Problem**: 3D character models have animations that would cause different screenshots on every frame, leading to flaky tests.
 
 **Solution**: Test Mode System
-- All tests navigate with `?testMode=true` URL parameter
+- All tests set `localStorage.setItem('TEST_MODE', 'true')` before navigation
 - When detected, all Three.js animation mixers pause (set `timeScale = 0`)
 - All idle animations are forced to `time = 0` and `paused = true` to ensure they're at frame 0
-- The parameter persists across all navigation (links, buttons, programmatic navigation)
+- Test mode persists across all navigation automatically via localStorage
 - This ensures consistent screenshots at exactly the same animation frame every time
 
 **Implementation**:
-- Use `gotoWithTestMode(page, '/path')` helper instead of `page.goto()`
+- Use `enableTestMode(page)` helper before navigation to set localStorage flag
+- Use `setupGameState(page, state)` which automatically enables test mode
+- Use `goto(page, '/path')` for navigation (test mode persists via localStorage)
 - All character models automatically detect test mode and call `setupAnimationForTestMode()` on their idle animations
-- Navigation wrappers (`TestModeLink`, `TestModeNavLink`, `useTestModeNavigate`) preserve the parameter
-- See `src/utils/testMode.ts` and `src/components/TestModeLink.tsx` for the implementation
+- See `src/utils/testMode.ts` and `e2e/helpers.ts` for the implementation
 
 ## Tolerance Levels
 
@@ -142,15 +143,15 @@ yarn test:e2e:report
 ### New Files
 - `playwright.config.ts` - Playwright configuration
 - `e2e/homepage.spec.ts` - Homepage tests
-- `e2e/recruitment.spec.ts` - Recruitment page tests
-- `e2e/character-inventory.spec.ts` - Character inventory tests
-- `e2e/3d-scene.spec.ts` - 3D scene tests
+- `e2e/characters/recruitment.spec.ts` - Recruitment page tests
+- `e2e/characters/inventory.spec.ts` - Character inventory tests
+- `e2e/characters/detail.spec.ts` - Character detail tests
 - `e2e/quests.spec.ts` - Quest page tests
 - `e2e/inventory.spec.ts` - Inventory page tests
-- `e2e/battle.spec.ts` - Battle page tests
-- `e2e/helpers.ts` - Test helper utilities (includes `gotoWithTestMode()`)
+- `e2e/battle/selector.spec.ts` - Battle selector tests
+- `e2e/helpers.ts` - Test helper utilities (includes `enableTestMode()`, `setupGameState()`, `goto()`)
 - `e2e/README.md` - E2E testing documentation
-- `src/utils/testMode.ts` - Test mode detection and animation control utilities
+- `src/utils/testMode.ts` - Test mode detection and animation control utilities (localStorage-based)
 
 ### Modified Files
 - `package.json` - Added Playwright scripts
@@ -159,6 +160,7 @@ yarn test:e2e:report
 - `src/hooks/useAnimationController.tsx` - Added test mode support
 - All Toa model components - Added animation pausing in test mode
 - `BohrokModel.tsx` - Added animation pausing in test mode
+- All navigation components - Removed test mode wrappers, now use standard React Router components
 
 ## Best Practices
 

@@ -1,6 +1,6 @@
 import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
-import { TestModeLink } from '../../components/TestModeLink';
+import { Link } from 'react-router-dom';
 import { getLevelFromExp } from '../../game/Levelling';
 import { JobStatusBadge } from '../../components/JobStatusBadge';
 import { getJobStatus } from '../../game/Jobs';
@@ -22,7 +22,7 @@ export const CharacterInventory: React.FC = () => {
           const matoran_dex = MATORAN_DEX[matoran.id];
 
           return (
-            <TestModeLink key={matoran.id} to={`/characters/${matoran.id}`}>
+            <Link key={matoran.id} to={`/characters/${matoran.id}`}>
               <div className={`character-card element-${matoran_dex.element}`}>
                 <MatoranAvatar
                   matoran={{ ...matoran_dex, ...matoran }}
@@ -44,17 +44,17 @@ export const CharacterInventory: React.FC = () => {
                   />
                 </div>
               </div>
-            </TestModeLink>
+            </Link>
           );
         })}
       </div>
       {buyableCharacters.length !== 0 && (
         <div className='recruit-button'>
-          <TestModeLink to='/recruitment'>
+          <Link to='/recruitment'>
             <button type='button' className='recruitment-button'>
               Recruit More
             </button>
-          </TestModeLink>
+          </Link>
         </div>
       )}
     </div>

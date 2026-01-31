@@ -8,12 +8,11 @@ import { AnimationAction } from 'three';
 
 /**
  * Check if the app is running in test mode
- * Test mode is enabled via URL parameter: ?testMode=true
+ * Test mode is enabled via localStorage: TEST_MODE=true
  */
 export function isTestMode(): boolean {
   if (typeof window === 'undefined') return false;
-  const params = new URLSearchParams(window.location.search);
-  return params.get('testMode') === 'true';
+  return localStorage.getItem('TEST_MODE') === 'true';
 }
 
 /**

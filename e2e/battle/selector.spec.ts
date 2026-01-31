@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { gotoWithTestMode } from '../helpers';
+import { enableTestMode, goto } from '../helpers';
 
 test.describe('Battle Selector', () => {
   test('should display battle selector page', async ({ page }) => {
-    await gotoWithTestMode(page, '/battle');
+    await enableTestMode(page);
+    await goto(page, '/battle');
 
     // Wait for the page container to be visible instead of networkidle
     await page

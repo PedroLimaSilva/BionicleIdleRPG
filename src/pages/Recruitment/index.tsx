@@ -1,4 +1,5 @@
 import { startTransition, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
@@ -9,13 +10,12 @@ import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { MATORAN_DEX } from '../../data/matoran';
 import { isMatoran } from '../../services/matoranUtils';
-import { useTestModeNavigate } from '../../hooks/useTestModeNavigate';
 
 export const Recruitment: React.FC = () => {
   const { widgets, recruitCharacter, buyableCharacters, inventory } = useGame();
   const { setScene } = useSceneCanvas();
 
-  const navigate = useTestModeNavigate();
+  const navigate = useNavigate();
 
   const [selectedMatoran, setSelectedMatoran] =
     useState<ListedCharacterData | null>(null);

@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { gotoWithTestMode } from './helpers';
+import { enableTestMode, goto } from './helpers';
 
 test.describe('Homepage', () => {
   test('should display welcome message and activity log', async ({ page }) => {
-    await gotoWithTestMode(page, '/');
+    await enableTestMode(page);
+    await goto(page, '/');
 
     // Wait for the page to load
     await expect(page.locator('h1')).toContainText('Welcome to Mata Nui');
