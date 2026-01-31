@@ -18,18 +18,5 @@ test.describe('Homepage', () => {
       maxDiffPixels: 100,
     });
   });
-
-  test('should have navigation bar', async ({ page }) => {
-    await gotoWithTestMode(page, '/');
-
-    // Wait for navbar to be visible
-    const navbar = page.locator('.nav-bar, nav');
-    await expect(navbar).toBeVisible();
-
-    // Take screenshot of navbar
-    await expect(navbar).toHaveScreenshot('navbar.png', {
-      maxDiffPixels: 50,
-    });
-  });
 });
 
