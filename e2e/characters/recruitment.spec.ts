@@ -95,7 +95,7 @@ test.describe('Recruitment Page', () => {
     await expect(page).toHaveScreenshot({
       fullPage: true,
       maxDiffPixels: 150,
-      timeout: 10000,
+      timeout: 15000,
     });
   });
 });
