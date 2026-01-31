@@ -47,7 +47,7 @@ export default defineConfig({
     {
       name: 'Mobile Chrome Portrait',
       use: {
-        ...devices['Pixel 5'],
+        ...devices['Pixel 7'],
         // Portrait is default orientation
       },
     },
@@ -55,7 +55,7 @@ export default defineConfig({
     {
       name: 'Mobile Chrome Landscape',
       use: {
-        ...devices['Pixel 5'],
+        ...devices['Pixel 7'],
         viewport: { width: 851, height: 393 }, // Landscape dimensions for Pixel 5
       },
     },
