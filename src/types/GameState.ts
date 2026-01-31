@@ -29,3 +29,14 @@ export type GameState = {
   removeActivityLogEntry: (id: string) => void;
   clearActivityLog: () => void;
 };
+
+export type PartialGameState = Pick<
+  GameState,
+  | 'version'
+  | 'widgets'
+  | 'inventory'
+  | 'buyableCharacters'
+  | 'recruitedCharacters'
+  | 'activeQuests'
+  | 'completedQuests'
+>;

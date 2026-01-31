@@ -7,15 +7,15 @@ import { useGame } from '../../context/Game';
 import { ITEM_DICTIONARY } from '../../data/loot';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
-import { useNavigate } from 'react-router-dom';
 import { MATORAN_DEX } from '../../data/matoran';
 import { isMatoran } from '../../services/matoranUtils';
+import { useTestModeNavigate } from '../../hooks/useTestModeNavigate';
 
 export const Recruitment: React.FC = () => {
   const { widgets, recruitCharacter, buyableCharacters, inventory } = useGame();
   const { setScene } = useSceneCanvas();
 
-  const navigate = useNavigate();
+  const navigate = useTestModeNavigate();
 
   const [selectedMatoran, setSelectedMatoran] =
     useState<ListedCharacterData | null>(null);

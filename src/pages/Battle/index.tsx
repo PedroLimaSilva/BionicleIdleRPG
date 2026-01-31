@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { TestModeLink } from '../../components/TestModeLink';
 import { useGame } from '../../context/Game';
 import { BattlePhase } from '../../hooks/useBattleState';
 import { useEffect } from 'react';
@@ -6,9 +6,10 @@ import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { Arena } from './Arena';
+import { useTestModeNavigate } from '../../hooks/useTestModeNavigate';
 
 export const BattlePage: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useTestModeNavigate();
   const { battle } = useGame();
   const { currentEncounter, phase } = battle;
   const { setScene } = useSceneCanvas();
@@ -52,11 +53,11 @@ export const BattlePage: React.FC = () => {
           className='battle-buttons'
           style={{ justifyContent: 'center', paddingBottom: '132px' }}
         >
-          <Link to='/battle/selector'>
+          <TestModeLink to='/battle/selector'>
             <button className='confirm-button' onClick={() => {}}>
               Collect Rewards
             </button>
-          </Link>
+          </TestModeLink>
         </div>
       </div>
     );

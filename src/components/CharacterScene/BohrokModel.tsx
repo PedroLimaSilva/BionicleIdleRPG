@@ -9,7 +9,7 @@ import { Group, LoopOnce, Mesh, MeshStandardMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { Color, LegoColor } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
-import { getAnimationTimeScale } from '../../utils/testMode';
+import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
 
 const BOHROK_COLORS: Record<
   string,
@@ -67,6 +67,9 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(
       if (!idle) return;
 
       idle.reset().play();
+
+      // In test mode, force animation to frame 0 and pause
+      setupAnimationForTestMode(idle);
 
       return () => {
         idle.fadeOut(0.2);

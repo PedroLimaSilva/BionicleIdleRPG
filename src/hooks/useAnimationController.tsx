@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { AnimationAction, AnimationMixer, Event, LoopOnce } from 'three';
-import { getAnimationTimeScale, shouldDisableAnimations } from '../utils/testMode';
+import { getAnimationTimeScale, shouldDisableAnimations, setupAnimationForTestMode } from '../utils/testMode';
 
 type AnimationControllerOptions = {
   mixer: AnimationMixer;
@@ -28,6 +28,9 @@ export function useAnimationController({
     if (!idle.isRunning()) {
       idle.reset().play();
     }
+
+    // In test mode, force animation to frame 0 and pause
+    setupAnimationForTestMode(idle);
 
     const handleFinished = (event: Event) => {
       const action = (event as unknown as { action: AnimationAction }).action;

@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { TestModeNavLink } from '../TestModeNavLink';
 import { useGame } from '../../context/Game';
 import { UserCircle2, Backpack, Settings, Map, Swords } from 'lucide-react';
 import { BattlePhase } from '../../hooks/useBattleState';
@@ -21,27 +21,27 @@ export const NavBar = () => {
       }`}
     >
       {areBattlesUnlocked(completedQuests) && (
-        <NavLink to='/battle' className='nav-item'>
+        <TestModeNavLink to='/battle' className='nav-item'>
           <Swords />
           <label>Battle</label>
-        </NavLink>
+        </TestModeNavLink>
       )}
-      <NavLink to='/characters' className='nav-item'>
+      <TestModeNavLink to='/characters' className='nav-item'>
         <UserCircle2 />
         <label>Characters</label>
-      </NavLink>
-      <NavLink to='/quests' className='nav-item'>
+      </TestModeNavLink>
+      <TestModeNavLink to='/quests' className='nav-item'>
         <Map />
         <label>Quests</label>
-      </NavLink>
-      <NavLink to='/inventory' className='nav-item'>
+      </TestModeNavLink>
+      <TestModeNavLink to='/inventory' className='nav-item'>
         <Backpack />
         <label>Inventory</label>
-      </NavLink>
-      <NavLink to='/settings' className='nav-item'>
+      </TestModeNavLink>
+      <TestModeNavLink to='/settings' className='nav-item'>
         <Settings />
         <label>Settings</label>
-      </NavLink>
+      </TestModeNavLink>
     </nav>
   );
 };
