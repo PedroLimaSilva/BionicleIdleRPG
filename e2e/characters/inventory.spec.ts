@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test';
-import { MatoranJob } from '../src/types/Jobs';
+import { MatoranJob } from '../../src/types/Jobs';
 import {
   gotoWithTestMode,
   INITIAL_GAME_STATE,
   setupGameState,
   waitForCharacterCards,
-} from './helpers';
+} from '../helpers';
 
 const CHARACTER_INVENTORY_GAME_STATE = {
   ...INITIAL_GAME_STATE,
