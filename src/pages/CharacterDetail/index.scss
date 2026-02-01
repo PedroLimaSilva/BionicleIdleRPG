@@ -150,6 +150,10 @@
   }
 }
 
+.character-detail-section {
+  margin-top: 1rem;
+}
+
 @keyframes shimmer {
   0% {
     left: -100%;
@@ -158,8 +162,4 @@
   100% {
     left: 100%;
   }
-}
-
-.job-section {
-  margin-top: 2rem;
 }
