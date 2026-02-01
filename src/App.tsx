@@ -67,7 +67,7 @@ export function App() {
       );
       window.removeEventListener(
         'orientationchange',
-        handleResize as unknown as (this: Window, ev: Event) => vod,
+        handleResize as unknown as (this: Window, ev: Event) => void,
       );
     };
   }, []);
