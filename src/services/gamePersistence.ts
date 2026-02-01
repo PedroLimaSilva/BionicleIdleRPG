@@ -5,6 +5,7 @@ import {
 import { GameItemId } from '../data/loot';
 import { applyOfflineJobExp } from '../game/Jobs';
 import { GameState } from '../types/GameState';
+import { clamp } from '../utils/math';
 
 export const STORAGE_KEY = `GAME_STATE`;
 
@@ -18,9 +19,12 @@ export function loadGameState() {
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
+      if (!parsed.widgetCap) {
+        parsed.widgetCap = INITIAL_GAME_STATE.widgetCap;
+      }
       if (isValidGameState(parsed)) {
         const [recruitedCharacters, logs, currency, loot] = applyOfflineJobExp(
-          parsed.recruitedCharacters
+          parsed.recruitedCharacters,
         );
 
         Object.entries(loot).forEach(([item, amount]) => {
@@ -32,7 +36,7 @@ export function loadGameState() {
         return {
           ...parsed,
           recruitedCharacters,
-          widgets: parsed.widgets + currency,
+          widgets: clamp(parsed.widgets + currency, 0, parsed.widgetCap),
           activityLog: logs,
         };
       }

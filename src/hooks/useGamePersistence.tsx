@@ -5,6 +5,7 @@ import { PartialGameState } from '../types/GameState';
 export function useGamePersistence({
   version,
   widgets,
+  widgetCap,
   inventory,
   recruitedCharacters,
   buyableCharacters,
@@ -15,6 +16,7 @@ export function useGamePersistence({
     const stateToSave: PartialGameState = {
       version,
       widgets,
+      widgetCap,
       inventory,
       recruitedCharacters,
       buyableCharacters: buyableCharacters,
@@ -26,6 +28,7 @@ export function useGamePersistence({
   }, [
     version,
     widgets,
+    widgetCap,
     inventory,
     buyableCharacters,
     recruitedCharacters,

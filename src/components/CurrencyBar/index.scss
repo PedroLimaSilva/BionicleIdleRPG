@@ -1,0 +1,49 @@
+.currency {
+  &-bar {
+    padding: 1rem 2rem;
+    background: linear-gradient(
+      180deg,
+      rgba(26, 26, 30, 0.95) 0%,
+      rgba(20, 20, 25, 0.9) 100%
+    );
+    border-radius: 50px 50px 0 0;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 0 20px var(--color-accent-hover);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border-subtle);
+    font-size: 0.95rem;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 auto;
+  }
+  &-progress {
+    min-width: 200px;
+    box-shadow: inset 0 0 5px rgb(126 125 125 / 49%);
+    height: 25px;
+    border-radius: 25px;
+    transition: width var(--transition-slow);
+    overflow: hidden;
+  }
+  &-fill {
+    background: linear-gradient(
+      90deg,
+      var(--color-accent),
+      var(--color-accent-hover)
+    );
+    border-radius: 25px;
+    height: 100%;
+  }
+  &-label {
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    transform: translate(50%, -50%);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+}

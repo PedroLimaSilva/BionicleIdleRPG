@@ -15,8 +15,8 @@
       display: block;
       left: 30vw;
       height: calc(
-        100% - 184px - 96px
-      ); // 100% - .matoran-selector-height - space-for-nav-bar -
+        100% - 184px - 96px - 58px
+      ); // 100% - .matoran-selector-height - space-for-nav-bar - space-for-currency-bar
       width: 60vw;
       z-index: 0;
     }

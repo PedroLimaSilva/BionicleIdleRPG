@@ -8,6 +8,7 @@ import { useGamePersistence } from './useGamePersistence';
 import { GameState } from '../types/GameState';
 import { useQuestState } from './useQuestState';
 import { useBattleState } from './useBattleState';
+import { clamp } from '../utils/math';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -19,6 +20,7 @@ export const useGameLogic = (): GameState => {
   );
 
   const [widgets, setWidgets] = useState(initialState.widgets);
+  const [widgetCap] = useState(initialState.widgetCap);
 
   const {
     recruitedCharacters,
@@ -47,7 +49,7 @@ export const useGameLogic = (): GameState => {
   useJobTickEffect(
     recruitedCharacters,
     setRecruitedCharacters,
-    (amount) => setWidgets((prev) => prev + amount),
+    (amount) => setWidgets((prev) => clamp(prev + amount, 0, widgetCap)),
     addItemToInventory,
     addActivityLog
   );
@@ -66,7 +68,7 @@ export const useGameLogic = (): GameState => {
     setRecruitedCharacters,
     setBuyableCharacters,
     addWidgets: (widgets: number) => {
-      setWidgets((prev) => prev + widgets);
+      setWidgets((prev) => clamp(prev + widgets, 0, widgetCap));
     },
     addActivityLog,
   });
@@ -77,6 +79,7 @@ export const useGameLogic = (): GameState => {
   useGamePersistence({
     version,
     widgets,
+    widgetCap,
     inventory,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
@@ -90,6 +93,7 @@ export const useGameLogic = (): GameState => {
     completedQuests,
     activityLog,
     widgets,
+    widgetCap,
     inventory,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
