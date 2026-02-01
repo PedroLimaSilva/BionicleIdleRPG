@@ -21,10 +21,6 @@ test.describe('Battle Nav Item', () => {
       .first()
       .waitFor({ state: 'visible', timeout: 10000 });
 
-    // Give time for battle UI to render
-    await page.waitForTimeout(1000);
-
-    // Take a screenshot
     await expect(page).toHaveScreenshot({});
   });
 });
@@ -39,10 +35,6 @@ test.describe('Battle Selector', () => {
       .first()
       .waitFor({ state: 'visible', timeout: 10000 });
 
-    // Give time for battle UI to render
-    await page.waitForTimeout(1000);
-
-    // Take a screenshot
     await expect(page).toHaveScreenshot();
   });
 });
