@@ -31,7 +31,7 @@ export const CharacterDetail: React.FC = () => {
 
   const matoran = useMemo(
     () => getRecruitedMatoran(String(id), recruitedCharacters)!,
-    [id, recruitedCharacters]
+    [id, recruitedCharacters],
   );
 
   const masks = useMemo(() => {
@@ -54,12 +54,12 @@ export const CharacterDetail: React.FC = () => {
       matoran
         ? getExpProgress(matoran?.exp || 0)
         : { level: 0, currentLevelExp: 0, expForNextLevel: 1, progress: 0 },
-    [matoran]
+    [matoran],
   );
 
   const jobDetails = useMemo(
     () => matoran && matoran.assignment && JOB_DETAILS[matoran.assignment.job],
-    [matoran]
+    [matoran],
   );
 
   // const combatantStats = useMemo(() => {
@@ -67,16 +67,17 @@ export const CharacterDetail: React.FC = () => {
   // }, [matoran]);
 
   const activeMask = matoran.maskOverride || matoran.mask;
-  const maskDescription = MASK_POWERS[activeMask].description || 'Unknown Mask Power';
+  const maskDescription =
+    MASK_POWERS[activeMask].description || 'Unknown Mask Power';
 
   const handeMaskOverride = (
     matoran: RecruitedCharacterData & BaseMatoran,
-    mask: Mask
+    mask: Mask,
   ) => {
     setMaskOverride(
       matoran.id,
       matoran.maskColorOverride || matoran.colors.mask,
-      mask
+      mask,
     );
   };
 
@@ -94,9 +95,9 @@ export const CharacterDetail: React.FC = () => {
             <ElementTag element={matoran.element} showName={true} />
           </div>
 
-          <div id='model-frame'></div>
-
-          <div className='divider'></div>
+          <div id='model-frame'>
+            <div className='divider'></div>
+          </div>
 
           <div className='character-progress'>
             <div className='level-display'>
@@ -118,103 +119,103 @@ export const CharacterDetail: React.FC = () => {
               level up)
             </div>
           </div>
+          <div className='character-detail-section'>
+            {/* Job Assignement  */}
+            {isMatoran(matoran) && (
+              <div>
+                {jobDetails && matoran.assignment && (
+                  <>
+                    <p>Assigned Job:</p>
+                    <JobCard
+                      classNames={``}
+                      title={jobDetails.label}
+                      description={jobDetails.description}
+                      baseRate={jobDetails.rate}
+                      modifier={getProductivityModifier(
+                        matoran.assignment.job,
+                        matoran as RecruitedCharacterData,
+                      )}
+                    />
+                  </>
+                )}
 
-          {/* Job Assignement  */}
-          {isMatoran(matoran) && (
-            <div className='character-detail-section'>
-              {jobDetails && matoran.assignment && (
-                <>
-                  <p>Assigned Job:</p>
-                  <JobCard
-                    classNames={``}
-                    title={jobDetails.label}
-                    description={jobDetails.description}
-                    baseRate={jobDetails.rate}
-                    modifier={getProductivityModifier(
-                      matoran.assignment.job,
-                      matoran as RecruitedCharacterData
-                    )}
-                  />
-                </>
-              )}
+                {!matoran.quest && (
+                  <button
+                    className='elemental-btn'
+                    onClick={() => setAssigningJob(true)}
+                  >
+                    {matoran.assignment ? 'Change Job' : 'Assign Job'}
+                  </button>
+                )}
 
-              {!matoran.quest && (
-                <button
-                  className='elemental-btn'
-                  onClick={() => setAssigningJob(true)}
-                >
-                  {matoran.assignment ? 'Change Job' : 'Assign Job'}
-                </button>
-              )}
+                {assigningJob && (
+                  <Modal
+                    onClose={() => setAssigningJob(false)}
+                    classNames={`element-${matoran.element}`}
+                  >
+                    <JobList
+                      matoran={matoran as RecruitedCharacterData}
+                      onAssign={() => {
+                        setAssigningJob(false);
+                      }}
+                      onCancel={() => setAssigningJob(false)}
+                    />
+                  </Modal>
+                )}
+              </div>
+            )}
 
-              {assigningJob && (
-                <Modal
-                  onClose={() => setAssigningJob(false)}
-                  classNames={`element-${matoran.element}`}
-                >
-                  <JobList
-                    matoran={matoran as RecruitedCharacterData}
-                    onAssign={() => {
-                      setAssigningJob(false);
-                    }}
-                    onCancel={() => setAssigningJob(false)}
-                  />
-                </Modal>
-              )}
-            </div>
-          )}
+            {/* Mask Collection  */}
+            {isToa(matoran) && (
+              <div>
+                {masks.length && (
+                  <>
+                    <p>Masks Collected:</p>
+                    <div className='scroll-row mask-collection'>
+                      {masks.map((mask) => (
+                        <div
+                          key={mask}
+                          className={`card element-${matoran.element}`}
+                          onClick={() => handeMaskOverride(matoran, mask)}
+                        >
+                          <CompositedImage
+                            className='mask-preview'
+                            images={[
+                              `${
+                                import.meta.env.BASE_URL
+                              }/avatar/Kanohi/${mask}.png`,
+                            ]}
+                            colors={[
+                              matoran.maskColorOverride || matoran.colors.mask,
+                            ]}
+                          />
+                          <div className='name'>{mask}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
 
-          {/* Mask Collection  */}
-          {isToa(matoran) && (
-            <div className='character-detail-section'>
-              {masks.length && (
-                <>
-                  <p>Masks Collected:</p>
-                  <div className='scroll-row mask-collection'>
-                    {masks.map((mask) => (
-                      <div
-                        key={mask}
-                        className={`card element-${matoran.element}`}
-                        onClick={() => handeMaskOverride(matoran, mask)}
-                      >
-                        <CompositedImage
-                          className='mask-preview'
-                          images={[
-                            `${
-                              import.meta.env.BASE_URL
-                            }/avatar/Kanohi/${mask}.png`,
-                          ]}
-                          colors={[
-                            matoran.maskColorOverride || matoran.colors.mask,
-                          ]}
-                        />
-                        <div className='name'>{mask}</div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
+            {isToa(matoran) && activeMask && (
+              <div>
+                <h3>{MASK_POWERS[activeMask].longName}</h3>
+                <p>{maskDescription}</p>
+              </div>
+            )}
 
-          {isToa(matoran) && activeMask && (
-            <div className='character-detail-section mask-power'>
-              <h3>{MASK_POWERS[activeMask].longName}</h3>
-              <p>{maskDescription}</p>
-            </div>
-          )}
+            {/* Assigned Quest  */}
+            {matoran.quest && (
+              <div>
+                <p>Assigned Quest:</p>
+                <Link to='/quests'>
+                  <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
+                </Link>
+              </div>
+            )}
 
-          {/* Assigned Quest  */}
-          {matoran.quest && (
-            <div className='character-detail-section'>
-              <p>Assigned Quest:</p>
-              <Link to='/quests'>
-                <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
-              </Link>
-            </div>
-          )}
-
-          {/* combatantStats && (
+            {/* combatantStats && (
             <div className='character-detail-section combatant-stats'>
               <h3>Combat Stats</h3>
               <ul>
@@ -233,6 +234,7 @@ export const CharacterDetail: React.FC = () => {
               </ul>
             </div>
           )*/}
+          </div>
         </div>
       ) : (
         <p>Something is wrong, this matoran does not exist</p>

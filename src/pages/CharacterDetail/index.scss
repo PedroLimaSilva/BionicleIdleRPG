@@ -18,6 +18,14 @@
   overflow: hidden;
   position: relative;
 
+  display: grid;
+  gap: 0.5rem;
+  grid-template-areas:
+    'header'
+    'model'
+    'progress'
+    'info';
+
   &::before {
     content: '';
     position: absolute;
@@ -31,8 +39,6 @@
       transparent 70%
     );
     opacity: 0.1;
-    pointer-events: none;
-    touch-action: none;
     animation: pulse 4s ease-in-out infinite;
   }
 }
@@ -54,6 +60,7 @@
   text-align: center;
   position: relative;
   z-index: 1;
+  grid-area: header;
 
   .character-name {
     margin: 0;
@@ -69,7 +76,11 @@
 }
 
 #model-frame {
-  height: var(--character-detail-model-h);
+  anchor-name: --canvas-anchor;
+  grid-area: model;
+  position: relative;
+  min-height: var(--character-detail-model-h);
+  max-height: 80vh;
 }
 
 .divider {
@@ -79,11 +90,13 @@
     var(--theme-element-glow) 0%,
     transparent 70%
   );
-  margin: 0 0 1.5rem;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 .character-progress {
-  margin-top: 1.5rem;
+  grid-area: progress;
   text-align: center;
 
   .level-display {
@@ -152,7 +165,7 @@
 }
 
 .character-detail-section {
-  margin-top: 1rem;
+  grid-area: info;
 }
 
 @keyframes shimmer {

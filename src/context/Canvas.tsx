@@ -27,18 +27,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
         '-'
       )}`;
 
-      setTimeout(() => {
-        const modelFrame = document
-          .getElementById('model-frame')
-          ?.getBoundingClientRect();
-        if (modelFrame) {
-          el.style.top = `${(document.querySelector('.main-content')?.scrollTop || 0) +
-            modelFrame.top
-            }px`;
-        } else {
-          el.style.top = '';
-        }
-      }, 0);
+      setTimeout(() => {}, 0);
     }
   }, [location.pathname]);
 

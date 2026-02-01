@@ -9,46 +9,28 @@
   position: relative;
 
   #canvas-mount {
-    position: absolute;
+    position: fixed;
+    position-anchor: --canvas-anchor;
+    top: anchor(top);
+    left: anchor(left);
+    right: anchor(right);
+    bottom: anchor(bottom);
     display: none;
     &.route--recruitment {
       display: block;
-      left: 30vw;
-      height: calc(
-        100% - 184px - 96px - 58px
-      ); // 100% - .matoran-selector-height - space-for-nav-bar - space-for-currency-bar
-      width: 60vw;
       z-index: 0;
     }
     &[class*='route--characters-'] {
       display: block;
-      width: 100%;
       z-index: 1;
-      height: var(--character-detail-model-h); // #model-frame height
     }
     &.route--battle {
       display: block;
-      width: 100%;
-      height: 100vh;
       z-index: -1;
     }
   }
 
   &.landscape {
-    #canvas-mount {
-      &.route--recruitment {
-        display: block;
-        left: 20%;
-        height: 100%;
-        width: calc(
-          80% - 92px - 96px - 58px
-        ); // 100% - .matoran-selector-height - space-for-nav-bar - space-for-currency-bar
-      }
-      &[class*='route--characters-'] {
-        left: 2rem;
-        width: calc(100% - 110px - 2rem);
-      }
-    }
     .page-container {
       padding-bottom: 2rem;
       padding-right: 110px; //space for .nav-bar
