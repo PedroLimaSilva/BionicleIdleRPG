@@ -26,13 +26,13 @@ export const NavBar = () => {
           <label>Battle</label>
         </NavLink>
       )}
-      <NavLink to='/characters' className='nav-item'>
-        <UserCircle2 />
-        <label>Characters</label>
-      </NavLink>
       <NavLink to='/quests' className='nav-item'>
         <Map />
         <label>Quests</label>
+      </NavLink>
+      <NavLink to='/characters' className='nav-item'>
+        <UserCircle2 />
+        <label>Characters</label>
       </NavLink>
       <NavLink to='/inventory' className='nav-item'>
         <Backpack />
