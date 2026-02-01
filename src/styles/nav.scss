@@ -1,8 +1,20 @@
-.nav-bar {
+.nav-container {
   position: fixed;
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 1000;
+  transition: all var(--transition-slow);
+
+  &.hidden {
+    transform: translateX(-50%) translateY(calc(64px + 24px));
+    opacity: 0;
+    pointer-events: none;
+    touch-action: none;
+  }
+}
+
+.nav-bar {
   background: linear-gradient(
     135deg,
     rgba(26, 26, 35, 0.95) 0%,
@@ -21,15 +33,6 @@
   justify-content: space-between;
   width: 90vw;
   max-width: 600px;
-  z-index: 1000;
-  transition: all var(--transition-slow);
-
-  &.hidden {
-    transform: translateX(-50%) translateY(calc(64px + 24px));
-    opacity: 0;
-    pointer-events: none;
-    touch-action: none;
-  }
 
   .nav-item {
     color: var(--color-text-muted);

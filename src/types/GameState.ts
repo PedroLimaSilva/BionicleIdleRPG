@@ -10,6 +10,7 @@ import { Quest, QuestProgress } from './Quests';
 export type GameState = {
   version: number;
   widgets: number;
+  widgetCap: number;
   inventory: Inventory;
   buyableCharacters: ListedCharacterData[];
   recruitedCharacters: RecruitedCharacterData[];
@@ -34,6 +35,7 @@ export type PartialGameState = Pick<
   GameState,
   | 'version'
   | 'widgets'
+  | 'widgetCap'
   | 'inventory'
   | 'buyableCharacters'
   | 'recruitedCharacters'
