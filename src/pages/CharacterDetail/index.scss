@@ -20,6 +20,7 @@
 
   display: grid;
   gap: 0.5rem;
+  grid-template-columns: 100%;
   grid-template-areas:
     'header'
     'model'
