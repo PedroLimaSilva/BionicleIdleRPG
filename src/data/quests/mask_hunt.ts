@@ -73,7 +73,7 @@ export const MASK_HUNT: Quest[] = [
       currency: 500,
       loot: {},
     },
-    unlockedAfter: ['maskhunt_kopaka_pohatu_icecliff'],
+    unlockedAfter: ['mnog_tahu_unlock_01','maskhunt_kopaka_pohatu_icecliff'],
   },
   {
     id: 'maskhunt_tahu_cave_akaku',
@@ -94,7 +94,7 @@ export const MASK_HUNT: Quest[] = [
         [GameItemId.BurnishedAlloy]: 50,
       },
     },
-    unlockedAfter: ['mnog_tahu_unlock_01', 'story_toa_council'],
+    unlockedAfter: ['story_toa_council'],
   },
   {
     id: 'maskhunt_lewa_pakari',

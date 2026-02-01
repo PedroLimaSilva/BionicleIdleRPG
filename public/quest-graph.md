@@ -225,8 +225,8 @@ XP: 800"]
 Currency: 2000
 XP: 5000"]
   story_toa_arrival --> maskhunt_kopaka_pohatu_icecliff
+  mnog_tahu_unlock_01 --> story_toa_council
   maskhunt_kopaka_pohatu_icecliff --> story_toa_council
-  mnog_tahu_unlock_01 --> maskhunt_tahu_cave_akaku
   story_toa_council --> maskhunt_tahu_cave_akaku
   story_toa_council --> maskhunt_lewa_pakari
   story_toa_council --> maskhunt_kopaka_mahiki_huna
