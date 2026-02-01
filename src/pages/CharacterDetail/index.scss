@@ -16,8 +16,9 @@
     var(--color-surface-low) 100%
   );
   overflow: hidden;
+  position: relative;
 
-  &::after {
+  &::before {
     content: '';
     position: absolute;
     top: -50%;
