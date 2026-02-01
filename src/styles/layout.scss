@@ -23,6 +23,7 @@
     &[class*='route--characters-'] {
       display: block;
       width: 100%;
+      z-index: 1;
       height: var(--character-detail-model-h); // #model-frame height
     }
     &.route--battle {
