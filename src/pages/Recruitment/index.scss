@@ -6,6 +6,12 @@
   color: var(--color-text);
 }
 
+.main-content.landscape {
+  .recruitment-screen {
+    flex-direction: row;
+  }
+}
+
 .recruitment-preview {
   flex: 1;
   display: flex;
@@ -48,6 +54,8 @@
       var(--shadow-lg),
       0 0 1px rgba(255, 255, 255, 0.1) inset;
     max-width: 320px;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
 
     &.top {
       top: 2rem;
@@ -60,6 +68,7 @@
     button {
       width: 100%;
       margin-top: 0.5rem;
+      min-height: fit-content;
     }
   }
 
@@ -162,4 +171,21 @@
     0 -4px 12px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   padding-bottom: calc(96px + 58px);
+}
+
+.main-content.landscape {
+  .matoran-selector {
+    padding-bottom: 0;
+    padding-right: calc(96px + 58px);
+    border-top: none;
+    border-left: 2px solid var(--color-border-subtle);
+  }
+
+  .scroll-row {
+    grid-auto-flow: row;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-right: 1rem;
+    scroll-snap-type: y mandatory;
+  }
 }

@@ -9,13 +9,13 @@ const shouldShowCurrencyBar = (pathname: string) => {
   return ['/recruitment', '/inventory'].includes(pathname);
 };
 
-export const NavBar = () => {
+export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
   const { battle, completedQuests } = useGame();
   const { pathname } = useLocation();
 
   return (
     <div
-      className={`nav-container ${
+      className={`nav-container ${isPortrait ? 'portrait' : 'landscape'} ${
         battle.currentEncounter &&
         !(
           battle.phase === BattlePhase.Retreated ||
@@ -26,7 +26,7 @@ export const NavBar = () => {
           : ''
       }`}
     >
-      {shouldShowCurrencyBar(pathname) && <CurrencyBar />}
+      {shouldShowCurrencyBar(pathname) && <CurrencyBar isPortrait={isPortrait} />}
       <nav className='nav-bar'>
         {areBattlesUnlocked(completedQuests) && (
           <NavLink to='/battle' className='nav-item'>

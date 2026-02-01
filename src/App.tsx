@@ -1,9 +1,5 @@
 import { PWABadge } from './components/CacheManagement/PWABadge.tsx';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
 import { Recruitment } from './pages/Recruitment/index.tsx';
@@ -14,7 +10,7 @@ import { SceneCanvasProvider } from './context/Canvas.tsx';
 
 import './styles/index.scss';
 import { ActivityLog } from './components/ActivityLog/index.tsx';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { preloadAssets } from './preload.ts';
 import { InventoryPage } from './pages/Inventory/index.tsx';
 import SettingsPage from './pages/Settings/index.tsx';
@@ -46,12 +42,42 @@ export function App() {
     preloadAssets();
   }, []);
 
+  const [isPortrait, setIsPortrait] = useState(
+    window.innerHeight > window.innerWidth,
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsPortrait(window.innerHeight > window.innerWidth);
+    };
+
+    window.addEventListener(
+      'resize',
+      handleResize as unknown as (this: Window, ev: UIEvent) => void,
+    );
+    window.addEventListener(
+      'orientationchange',
+      handleResize as unknown as (this: Window, ev: Event) => void,
+    );
+
+    return () => {
+      window.removeEventListener(
+        'resize',
+        handleResize as unknown as (this: Window, ev: UIEvent) => void,
+      );
+      window.removeEventListener(
+        'orientationchange',
+        handleResize as unknown as (this: Window, ev: Event) => void,
+      );
+    };
+  }, []);
+
   return (
     <GameProvider>
       <Router basename='/BionicleIdleRPG/'>
         <SceneCanvasProvider>
           <div className='app-container'>
-            <main className='main-content'>
+            <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
               <div id='canvas-mount'></div>
               <Routes>
                 <Route path='/' element={<HomePage />} />
@@ -67,7 +93,7 @@ export function App() {
                 <Route path='*' element={<NotFound />} />
               </Routes>
             </main>
-            <NavBar />
+            <NavBar isPortrait={isPortrait} />
           </div>
           <PWABadge />
         </SceneCanvasProvider>

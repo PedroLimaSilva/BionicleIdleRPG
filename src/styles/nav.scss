@@ -3,14 +3,44 @@
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
-  transition: all var(--transition-slow);
+  z-index: 500;
+  transition: transform var(--transition-slow);
 
   &.hidden {
     transform: translateX(-50%) translateY(calc(64px + 24px));
     opacity: 0;
     pointer-events: none;
     touch-action: none;
+  }
+
+  &.landscape {
+    bottom: 50%;
+    left: unset;
+    right: 1.5rem;
+    transform: translateY(50%);
+    .nav-bar {
+      width: fit-content;
+      flex-direction: column;
+      padding: 0.5rem 0.5rem;
+      height: fit-content;
+    }
+    .nav-item {
+      &:hover,
+      &:focus {
+        transform: translateY(0);
+        svg {
+          transform: scale(1.1);
+        }
+      }
+      &.active {
+        svg {
+          transform: scale(1.05);
+        }
+      }
+      label {
+        display: none;
+      }
+    }
   }
 }
 
