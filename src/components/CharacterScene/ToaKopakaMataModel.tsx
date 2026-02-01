@@ -4,6 +4,7 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
+import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
 
 export const ToaKopakaMataModel = forwardRef<
   CombatantModelHandle,
@@ -16,6 +17,11 @@ export const ToaKopakaMataModel = forwardRef<
     import.meta.env.BASE_URL + 'toa_kopaka_mata.glb'
   );
   const { actions, mixer } = useAnimations(animations, group);
+
+  useEffect(() => {
+    // Set mixer timeScale based on test mode
+    mixer.timeScale = getAnimationTimeScale();
+  }, [mixer]);
 
   useImperativeHandle(ref, () => ({
     playAnimation: (name) => {
@@ -49,6 +55,9 @@ export const ToaKopakaMataModel = forwardRef<
     const idle = actions['Idle'];
     if (!idle) return;
     idle.reset().play();
+
+    // In test mode, force animation to frame 0 and pause
+    setupAnimationForTestMode(idle);
 
     return () => {
       idle.fadeOut(0.2);

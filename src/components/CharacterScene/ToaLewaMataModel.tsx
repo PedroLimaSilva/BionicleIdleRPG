@@ -3,6 +3,7 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { Color, LegoColor } from '../../types/Colors';
+import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
 
 export function ToaLewaMataModel({
   matoran,
@@ -14,18 +15,24 @@ export function ToaLewaMataModel({
     import.meta.env.BASE_URL + 'toa_lewa_mata.glb'
   );
 
-  const { actions } = useAnimations(animations, group);
+  const { actions, mixer } = useAnimations(animations, group);
 
   useEffect(() => {
+    // Set mixer timeScale based on test mode
+    mixer.timeScale = getAnimationTimeScale();
+
     const idle = actions['Idle'];
     if (!idle) return;
 
     idle.reset().play();
 
+    // In test mode, force animation to frame 0 and pause
+    setupAnimationForTestMode(idle);
+
     return () => {
       idle.fadeOut(0.2);
     };
-  }, [actions]);
+  }, [actions, mixer]);
 
   useEffect(() => {
     nodes.Masks.children.forEach((mask) => {

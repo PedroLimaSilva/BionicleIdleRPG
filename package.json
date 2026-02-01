@@ -10,6 +10,15 @@
     "lint": "eslint .",
     "test": "jest --watch",
     "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:update-snapshots": "playwright test --update-snapshots",
+    "test:e2e:docker": "docker-compose -f docker-compose.playwright.yml run --rm playwright",
+    "test:e2e:docker:update": "docker-compose -f docker-compose.playwright.yml run --rm playwright yarn test:e2e:update-snapshots",
+    "test:e2e:docker:build": "docker-compose -f docker-compose.playwright.yml build",
     "deploy": "yarn build && gh-pages -d dist",
     "preview": "vite preview",
     "compress": "npx gltfjsx --transform --types --keepnames --keepgroups --keepmeshes --keepmaterials"
@@ -29,6 +38,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.58.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

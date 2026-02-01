@@ -1,17 +1,6 @@
 import { useEffect } from 'react';
 import { STORAGE_KEY } from '../services/gamePersistence';
-import { GameState } from '../types/GameState';
-
-type PartialGameState = Pick<
-  GameState,
-  | 'version'
-  | 'widgets'
-  | 'inventory'
-  | 'buyableCharacters'
-  | 'recruitedCharacters'
-  | 'activeQuests'
-  | 'completedQuests'
->;
+import { PartialGameState } from '../types/GameState';
 
 export function useGamePersistence({
   version,

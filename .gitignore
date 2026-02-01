@@ -25,3 +25,10 @@ dev-dist
 *.sw?
 *.blend1
 coverage
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+# Ignore local snapshots (macOS), only commit CI snapshots (Linux)
+**/*-snapshots-local/

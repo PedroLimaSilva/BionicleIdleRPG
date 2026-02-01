@@ -1,4 +1,5 @@
 import { startTransition, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import './index.scss';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
@@ -7,7 +8,6 @@ import { useGame } from '../../context/Game';
 import { ITEM_DICTIONARY } from '../../data/loot';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
-import { useNavigate } from 'react-router-dom';
 import { MATORAN_DEX } from '../../data/matoran';
 import { isMatoran } from '../../services/matoranUtils';
 

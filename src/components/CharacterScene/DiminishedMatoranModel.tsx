@@ -4,6 +4,7 @@ import { Group, Mesh, MeshStandardMaterial, Vector3 } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
+import { setupAnimationForTestMode } from '../../utils/testMode';
 
 const MAT_COLOR_MAP = {
   // Head: 'head',
@@ -29,6 +30,9 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
     if (!idle) return;
 
     idle.reset().play();
+
+    // In test mode, force animation to frame 0 and pause
+    setupAnimationForTestMode(idle);
 
     return () => {
       idle.fadeOut(0.2);

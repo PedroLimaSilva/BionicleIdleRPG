@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  playwright:
+    build:
+      context: .
+      dockerfile: Dockerfile.playwright
+    volumes:
+      # Mount source code for live updates
+      - ./src:/app/src
+      - ./e2e:/app/e2e
+      - ./playwright.config.ts:/app/playwright.config.ts
+      - ./vite.config.ts:/app/vite.config.ts
+      - ./index.html:/app/index.html
+      - ./public:/app/public
+      # Mount test results and snapshots back to host
+      - ./test-results:/app/test-results
+      - ./playwright-report:/app/playwright-report
+    environment:
+      - CI=true
+      - PLAYWRIGHT_DOCKER=true
+    # Use extra_hosts to allow container to access host's localhost
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # Or use host network mode (Linux only, simpler but less portable)
+    # network_mode: host
+
