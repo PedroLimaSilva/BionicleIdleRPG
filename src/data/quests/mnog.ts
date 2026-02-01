@@ -18,7 +18,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Kapura',
-          cost: 600,
+          cost: 200,
           requiredItems: [
             {
               item: GameItemId.Charcoal,
@@ -32,7 +32,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
         },
         {
           id: 'Jala',
-          cost: 1200,
+          cost: 200,
           requiredItems: [
             {
               item: GameItemId.Charcoal,
