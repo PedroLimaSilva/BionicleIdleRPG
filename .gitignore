@@ -30,3 +30,5 @@ coverage
 test-results/
 playwright-report/
 playwright/.cache/
+# Ignore local snapshots (macOS), only commit CI snapshots (Linux)
+**/*-snapshots-local/

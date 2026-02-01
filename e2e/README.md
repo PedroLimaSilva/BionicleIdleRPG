@@ -7,7 +7,22 @@ This directory contains end-to-end (E2E) visual regression tests using Playwrigh
 These tests validate the UI and prevent visual regressions by:
 - Taking screenshots of key pages and components
 - Comparing them against baseline snapshots
-- Testing across multiple browsers and viewports (Desktop Chrome, Mobile Safari Portrait/Landscape)
+- Testing across multiple viewports (Desktop Chrome, Mobile Chrome Portrait/Landscape)
+
+## Important: Docker for Consistent Screenshots
+
+**⚠️ If you're on macOS and need to update snapshots for CI, use Docker!**
+
+Screenshots differ between macOS and Linux (CI environment). See [DOCKER_TESTING.md](./DOCKER_TESTING.md) for details.
+
+**Quick commands:**
+```bash
+# Update snapshots for CI (Linux/Docker)
+yarn test:e2e:docker:update
+
+# Run tests in CI environment (Linux/Docker)
+yarn test:e2e:docker
+```
 
 ## Running Tests
 
@@ -50,11 +65,11 @@ yarn test:e2e:update-snapshots
 
 Tests are configured in `playwright.config.ts` with:
 
-- **Desktop Safari**: 1920x1080 viewport (WebKit engine)
-- **Mobile Chrome Portrait**: Pixel 5 (default orientation, Chromium engine)
-- **Mobile Chrome Landscape**: Pixel 5 landscape (851x393, Chromium engine)
+- **Desktop Chrome**: 1920x1080 viewport (Chromium engine)
+- **Mobile Chrome Portrait**: Pixel 7 (default orientation, Chromium engine)
+- **Mobile Chrome Landscape**: Pixel 7 landscape (851x393, Chromium engine)
 
-**Note**: Mobile uses Chrome instead of Safari for better WebGL/3D rendering consistency in tests.
+**Note**: All tests use Chromium for consistency between local development and CI environments.
 
 ## Animation Handling
 

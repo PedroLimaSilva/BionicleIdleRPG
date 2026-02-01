@@ -1,6 +1,16 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
+ * Determine snapshot path suffix based on environment
+ * - CI/Docker: Use 'ci-linux' suffix for Linux-based screenshots
+ * - Local: Use 'local-darwin' suffix for macOS screenshots (ignored in git)
+ */
+const isCI = !!process.env.CI || !!process.env.PLAYWRIGHT_DOCKER;
+const snapshotPathTemplate = isCI
+  ? '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}'
+  : '{testDir}/{testFileDir}/{testFileName}-snapshots-local/{arg}-{projectName}{ext}';
+
+/**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
@@ -21,6 +31,9 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? 'html' : 'list',
 
+  /* Snapshot path template - different for CI vs local */
+  snapshotPathTemplate,
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -37,9 +50,9 @@ export default defineConfig({
   /* Configure projects for major browsers and mobile viewports */
   projects: [
     {
-      name: 'Desktop Safari',
+      name: 'Desktop Chrome',
       use: {
-        ...devices['Desktop Safari'],
+        ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 1080 },
       },
     },

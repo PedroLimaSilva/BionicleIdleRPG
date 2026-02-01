@@ -7,8 +7,7 @@ Successfully set up Playwright for visual regression testing of your Bionicle Id
 ## What Was Installed
 
 - **@playwright/test** v1.58.0
-- **Chromium** browser (for Desktop Chrome testing)
-- **WebKit** browser (for Mobile Safari testing)
+- **Chromium** browser (for all testing)
 
 ## Test Configuration
 
@@ -16,11 +15,11 @@ Successfully set up Playwright for visual regression testing of your Bionicle Id
 
 Tests run across 3 different configurations:
 
-1. **Desktop Safari** - 1920x1080 viewport (WebKit engine)
-2. **Mobile Chrome Portrait** - Pixel 5 (Chromium engine)
-3. **Mobile Chrome Landscape** - Pixel 5 landscape (851x393, Chromium engine)
+1. **Desktop Chrome** - 1920x1080 viewport (Chromium engine)
+2. **Mobile Chrome Portrait** - Pixel 7 (Chromium engine)
+3. **Mobile Chrome Landscape** - Pixel 7 landscape (851x393, Chromium engine)
 
-**Why Chrome for mobile?** Better WebGL/3D rendering consistency for testing Three.js scenes.
+**Why Chromium everywhere?** Ensures consistency between local development (macOS) and CI (Linux).
 
 ### Test Coverage
 

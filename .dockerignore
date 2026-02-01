@@ -1,0 +1,34 @@
+# Ignore files that don't need to be in the Docker build context
+node_modules
+dist
+dist-ssr
+dev-dist
+*.local
+
+# Test artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Local snapshots (we only need CI snapshots in Docker)
+**/*-snapshots-local/
+
+# Git
+.git
+.gitignore
+
+# Editor
+.vscode
+.idea
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage
+coverage
+

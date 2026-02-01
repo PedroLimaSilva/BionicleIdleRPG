@@ -1,0 +1,25 @@
+# Use the official Playwright image which matches CI environment
+FROM mcr.microsoft.com/playwright:v1.58.0-jammy
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package.json yarn.lock ./
+
+# Install dependencies (this layer will be cached if package.json doesn't change)
+RUN yarn install --frozen-lockfile
+
+# Copy the rest of the application
+COPY . .
+
+# Set environment variable to indicate we're in Docker
+ENV PLAYWRIGHT_DOCKER=true
+
+# Install Playwright browsers (cached layer)
+# Only install chromium since Safari/WebKit is not available on Linux
+RUN npx playwright install chromium
+
+# Default command
+CMD ["yarn", "test:e2e"]
+

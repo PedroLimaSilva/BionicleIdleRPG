@@ -4,6 +4,7 @@ import {
   goto,
   INITIAL_GAME_STATE,
   setupGameState,
+  deviceHover,
 } from './helpers';
 
 const INVENTORY_GAME_STATE = {
@@ -32,7 +33,7 @@ test.describe('Inventory Page', () => {
     });
   });
 
-  test('should display inventory page', async ({ browser, page }) => {
+  test('should display inventory page', async ({ page }, testInfo) => {
     await setupGameState(page, INVENTORY_GAME_STATE);
     await goto(page, '/inventory');
 
@@ -43,11 +44,8 @@ test.describe('Inventory Page', () => {
 
     const firstItem = page.locator('.inventory-item').first();
 
-    if (browser.browserType().name() === 'chromium') {
-      await firstItem.tap();
-    } else {
-      await firstItem.hover();
-    }
+    // Mobile: tap, Desktop: hover
+    await deviceHover(firstItem, testInfo);
 
     // Take a screenshot
     await expect(page).toHaveScreenshot('inventory-page.png', {

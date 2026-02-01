@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, Locator, TestInfo } from '@playwright/test';
 import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 
@@ -55,6 +55,34 @@ export async function goto(page: Page, path: string) {
  */
 export async function waitForPageLoad(page: Page) {
   await page.waitForLoadState('networkidle');
+}
+
+/**
+ * Hover an element based on device type
+ * Mobile: tap, Desktop: hover
+ *
+ * @param locator - The element to interact with
+ * @param testInfo - Test info from Playwright (contains project name)
+ *
+ * @example
+ * await deviceHover(page.locator('.item').first(), testInfo);
+ */
+export async function deviceHover(locator: Locator, testInfo: TestInfo) {
+  if (testInfo.project.name.includes('Mobile')) {
+    await locator.tap();
+  } else {
+    await locator.hover();
+  }
+}
+
+/**
+ * Check if the current test is running on a mobile device
+ *
+ * @param testInfo - Test info from Playwright (contains project name)
+ * @returns true if running on mobile, false otherwise
+ */
+export function isMobile(testInfo: TestInfo): boolean {
+  return testInfo.project.name.includes('Mobile');
 }
 
 /**
