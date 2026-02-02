@@ -76,7 +76,7 @@ export const Recruitment: React.FC = () => {
           <div>
             <div key={selectedMatoran.id} className={`recruitment-overlay ${isMatoran(MATORAN_DEX[selectedMatoran.id]) ? 'top' : 'bottom'}`}>
               <div className='requirement-list'>
-                <h4>Required to Recruit:</h4>
+                <h4>Required:</h4>
                 <ul>
                   <li
                     className={
