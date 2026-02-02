@@ -9,7 +9,7 @@
   position: relative;
 
   #canvas-mount {
-    position: fixed;
+    position: absolute;
     position-anchor: --canvas-anchor;
     top: anchor(top);
     left: anchor(left);
