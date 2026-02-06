@@ -23,6 +23,8 @@
     &[class*='route--characters-'] {
       display: block;
       z-index: 1;
+      left: calc(anchor(left) - 4rem);
+      right: calc(anchor(right) - 4rem);
     }
     &.route--battle {
       display: block;

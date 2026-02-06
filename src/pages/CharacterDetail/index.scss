@@ -1,20 +1,47 @@
-.character-detail-container {
-  margin: 0 auto;
-  padding: 2.5rem;
-  border: 2px solid var(--theme-element-primary);
-  border-radius: var(--border-radius-lg);
-  width: 100%;
-  max-width: 640px;
-  color: var(--theme-element-primary);
-  box-shadow:
-    var(--theme-element-glow-strong),
-    0 0 1px rgba(255, 255, 255, 0.1) inset;
-  background: linear-gradient(
+:root {
+  --container-max-w: 640px;
+  --container-background: linear-gradient(
     135deg,
     var(--color-surface-high) 0%,
     var(--color-surface-mid) 50%,
     var(--color-surface-low) 100%
   );
+}
+
+.character-detail {
+  display: grid;
+  column-gap: 2rem;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'visualization'
+    'tabs'
+    'content';
+}
+
+.landscape .character-detail {
+  display: grid;
+  column-gap: 2rem;
+  grid-template-columns: 1fr minmax(100px, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'visualization tabs'
+    'visualization content';
+}
+
+.character-detail-visualization {
+  grid-area: visualization;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border: 2px solid var(--theme-element-primary);
+  border-radius: var(--border-radius-lg);
+  width: 100%;
+  max-width: var(--container-max-w);
+  color: var(--theme-element-primary);
+  box-shadow:
+    var(--theme-element-glow-strong),
+    0 0 1px rgba(255, 255, 255, 0.1) inset;
+  background: var(--container-background);
   overflow: hidden;
   position: relative;
 
@@ -23,9 +50,7 @@
   grid-template-columns: 100%;
   grid-template-areas:
     'header'
-    'model'
-    'progress'
-    'info';
+    'model';
 
   &::before {
     content: '';
@@ -66,7 +91,7 @@
 
   .character-name {
     margin: 0;
-    font-size: 2.75rem;
+    font-size: 2rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
     text-shadow:
@@ -81,8 +106,8 @@
   anchor-name: --canvas-anchor;
   grid-area: model;
   position: relative;
-  min-height: var(--character-detail-model-h);
-  max-height: 80vh;
+  // min-height: var(--character-detail-model-h);
+  height: 50vh;
 }
 
 .divider {
@@ -97,77 +122,49 @@
   width: 100%;
 }
 
-.character-progress {
-  grid-area: progress;
-  text-align: center;
-
-  .level-display {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-
-    .label {
-      text-transform: uppercase;
-      opacity: 0.7;
-      margin-right: 0.5rem;
-    }
-
-    .value {
-      font-size: 1.8rem;
-      font-weight: bold;
-    }
-  }
-
-  .xp-bar {
-    background: var(--color-surface-low);
-    border-radius: var(--border-radius-sm);
-    height: 18px;
-    margin: 0 auto;
-    width: 80%;
-    overflow: hidden;
-    box-shadow:
-      inset 0 2px 4px rgba(0, 0, 0, 0.4),
-      0 0 8px rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--color-border-muted);
+.character-detail-content {
+  grid-area: content;
+  margin: 0 auto;
+  width: 100%;
+  max-width: var(--container-max-w);
+  .divider {
     position: relative;
+  }
+}
 
-    .xp-bar-fill {
-      height: 100%;
-      transition: width var(--transition-slow);
-      background: var(--theme-element-linear-gradient);
-      box-shadow:
-        0 0 12px var(--theme-element-glow-transparent),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      position: relative;
-      overflow: hidden;
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.3),
-          transparent
-        );
-        animation: shimmer 2s infinite;
-      }
-    }
+.character-detail-tabs {
+  grid-area: tabs;
+  justify-self: center;
+  width: fit-content;
+  overflow-x: scroll;
+  padding: 0.5rem;
+  padding-bottom: calc(1rem + 2px);
+  scroll-behavior: smooth;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  top: 0;
+  position: sticky;
+  z-index: 100;
+  margin-top: 0.5rem;
+  &::-webkit-scrollbar {
+    display: none;
   }
 
-  .xp-label {
-    font-size: 0.9rem;
-    margin-top: 0.75rem;
-    color: var(--color-text-muted);
-    font-weight: 500;
+  .character-detail-tabs-inner {
+    display: flex;
+    flex-wrap: nowrap;
+    width: fit-content;
+    gap: 0.5rem;
   }
 }
 
 .character-detail-section {
-  grid-area: info;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  .element-tag {
+    align-self: center;
+  }
 }
 
 @keyframes shimmer {

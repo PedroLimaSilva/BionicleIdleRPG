@@ -75,7 +75,7 @@ export function CharacterScene({
       <ambientLight intensity={0.2} />
       <directionalLight position={[5, 5, 5]} />
       <Suspense fallback={null}>
-        <OrthographicCamera makeDefault zoom={20} position={[0, 9.5, 100]} />
+        <OrthographicCamera makeDefault zoom={20} position={[0, 8.15, 100]} />
         <CharacterModel matoran={matoran} />
       </Suspense>
     </Stage>
