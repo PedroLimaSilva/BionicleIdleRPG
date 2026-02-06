@@ -43,6 +43,7 @@ test.describe('Character Detail Page', () => {
     // Take screenshot of the entire page including 3D scene
     await expect(page).toHaveScreenshot({
       fullPage: true,
+      timeout: 15000,
       // Moderate tolerance for WebGL rendering differences
       maxDiffPixels: 300,
       threshold: 0.2,

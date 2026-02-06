@@ -1,20 +1,47 @@
-.character-detail-container {
-  margin: 0 auto;
-  padding: 1.5rem;
-  border: 2px solid var(--theme-element-primary);
-  border-radius: var(--border-radius-lg);
-  width: 100%;
-  max-width: 640px;
-  color: var(--theme-element-primary);
-  box-shadow:
-    var(--theme-element-glow-strong),
-    0 0 1px rgba(255, 255, 255, 0.1) inset;
-  background: linear-gradient(
+:root {
+  --container-max-w: 640px;
+  --container-background: linear-gradient(
     135deg,
     var(--color-surface-high) 0%,
     var(--color-surface-mid) 50%,
     var(--color-surface-low) 100%
   );
+}
+
+.character-detail {
+  display: grid;
+  column-gap: 2rem;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'visualization'
+    'tabs'
+    'content';
+}
+
+.landscape .character-detail {
+  display: grid;
+  column-gap: 2rem;
+  grid-template-columns: 1fr minmax(100px, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'visualization tabs'
+    'visualization content';
+}
+
+.character-detail-visualization {
+  grid-area: visualization;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border: 2px solid var(--theme-element-primary);
+  border-radius: var(--border-radius-lg);
+  width: 100%;
+  max-width: var(--container-max-w);
+  color: var(--theme-element-primary);
+  box-shadow:
+    var(--theme-element-glow-strong),
+    0 0 1px rgba(255, 255, 255, 0.1) inset;
+  background: var(--container-background);
   overflow: hidden;
   position: relative;
 
@@ -95,16 +122,33 @@
   width: 100%;
 }
 
-.character-detail-tabs {
+.character-detail-content {
+  grid-area: content;
+  margin: 0 auto;
   width: 100%;
+  max-width: var(--container-max-w);
+  .divider {
+    position: relative;
+  }
+}
+
+.character-detail-tabs {
+  grid-area: tabs;
+  justify-self: center;
+  width: fit-content;
   overflow-x: scroll;
   padding: 0.5rem;
   padding-bottom: calc(1rem + 2px);
   scroll-behavior: smooth;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
   top: 0;
   position: sticky;
   z-index: 100;
   margin-top: 0.5rem;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .character-detail-tabs-inner {
     display: flex;
@@ -115,7 +159,6 @@
 }
 
 .character-detail-section {
-  grid-area: info;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

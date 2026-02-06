@@ -12,8 +12,8 @@
     position: absolute;
     position-anchor: --canvas-anchor;
     top: anchor(top);
-    left: 0;
-    right: 0;
+    left: anchor(left);
+    right: anchor(right);
     bottom: anchor(bottom);
     display: none;
     &.route--recruitment {
@@ -23,6 +23,8 @@
     &[class*='route--characters-'] {
       display: block;
       z-index: 1;
+      left: calc(anchor(left) - 4rem);
+      right: calc(anchor(right) - 4rem);
     }
     &.route--battle {
       display: block;

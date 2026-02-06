@@ -57,8 +57,10 @@ export const CharacterDetail: React.FC = () => {
     return <p>Something is wrong, this matoran does not exist</p>;
   }
   return (
-    <div className='page-container'>
-      <div className={`character-detail-container element-${matoran.element}`}>
+    <div
+      className={`page-container character-detail element-${matoran.element}`}
+    >
+      <div className='character-detail-visualization'>
         <div className='character-header'>
           <h1 className='character-name'>{matoran.name}</h1>
         </div>
@@ -79,15 +81,15 @@ export const CharacterDetail: React.FC = () => {
             </button>
           ))}
         </div>
-        <div className='divider'></div>
       </div>
-
-      <div className='character-detail-section'>
-        {activeTab === 'stats' && (
-          <>
-            <LevelProgress exp={matoran.exp} />
-            <ElementTag element={matoran.element} showName={true} />
-            {/* combatantStats && (
+      <div className='character-detail-content'>
+        <div className='divider'></div>
+        <div className='character-detail-section'>
+          {activeTab === 'stats' && (
+            <>
+              <LevelProgress exp={matoran.exp} />
+              <ElementTag element={matoran.element} showName={true} />
+              {/* combatantStats && (
                 <div className='character-detail-section combatant-stats'>
                   <h3>Combat Stats</h3>
                   <ul>
@@ -106,28 +108,29 @@ export const CharacterDetail: React.FC = () => {
                   </ul>
                 </div>
               )*/}
-          </>
-        )}
-        {activeTab === 'equipment' && isToa(matoran) && (
-          <MaskCollection matoran={matoran} />
-        )}
+            </>
+          )}
+          {activeTab === 'equipment' && isToa(matoran) && (
+            <MaskCollection matoran={matoran} />
+          )}
 
-        {activeTab === 'tasks' && (
-          <div>
-            {/* Job Assignement  */}
-            {isMatoran(matoran) && <JobAssignment matoran={matoran} />}
+          {activeTab === 'tasks' && (
+            <div>
+              {/* Job Assignement  */}
+              {isMatoran(matoran) && <JobAssignment matoran={matoran} />}
 
-            {/* Assigned Quest  */}
-            {matoran.quest && (
-              <div>
-                <p>Assigned Quest:</p>
-                <Link to='/quests'>
-                  <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
-                </Link>
-              </div>
-            )}
-          </div>
-        )}
+              {/* Assigned Quest  */}
+              {matoran.quest && (
+                <div>
+                  <p>Assigned Quest:</p>
+                  <Link to='/quests'>
+                    <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
