@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { OrthographicCamera, Stage } from '@react-three/drei';
+import { Bounds, OrbitControls, Stage } from '@react-three/drei';
 
 import {
   BaseMatoran,
@@ -71,12 +71,25 @@ export function CharacterScene({
   matoran: BaseMatoran & RecruitedCharacterData;
 }) {
   return (
-    <Stage environment='forest' adjustCamera={false} shadows={false}>
+    <Stage
+      environment='forest'
+      preset='soft'
+      adjustCamera={false}
+      shadows={false}
+    >
       <ambientLight intensity={0.2} />
       <directionalLight position={[5, 5, 5]} />
       <Suspense fallback={null}>
-        <OrthographicCamera makeDefault zoom={20} position={[0, 8.15, 100]} />
-        <CharacterModel matoran={matoran} />
+        <OrbitControls
+          makeDefault
+          minPolarAngle={Math.PI / 2}
+          maxPolarAngle={Math.PI / 2}
+          enableZoom={false}
+          enablePan={false}
+        />
+        <Bounds fit clip observe margin={0.985} maxDuration={0}>
+          <CharacterModel matoran={matoran} />
+        </Bounds>
       </Suspense>
     </Stage>
   );
