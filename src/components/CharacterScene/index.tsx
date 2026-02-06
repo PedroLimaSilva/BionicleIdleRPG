@@ -13,7 +13,6 @@ import { ToaPohatuMataModel } from './ToaPohatuMataModel';
 import { ToaKopakaMataModel } from './ToaKopakaMataModel';
 import { ToaOnuaMataModel } from './ToaOnuaMataModel';
 import { ToaLewaMataModel } from './ToaLewaMataModel';
-import { OrthographicCamera } from 'three';
 
 function CharacterModel({
   matoran,
