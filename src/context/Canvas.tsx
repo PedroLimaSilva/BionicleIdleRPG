@@ -24,7 +24,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
       // Optional: dynamically assign a route-based class
       el.className = `canvas-mount route-${location.pathname.replace(
         /\//g,
-        '-'
+        '-',
       )}`;
 
       setTimeout(() => {}, 0);
@@ -40,7 +40,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
             {debugMode && <Perf position='top-left' />}
             {scene}
           </Canvas>,
-          target
+          target,
         )}
     </SceneCanvasContext.Provider>
   );
