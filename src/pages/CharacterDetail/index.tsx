@@ -27,6 +27,18 @@ export const CharacterDetail: React.FC = () => {
     [id, recruitedCharacters],
   );
 
+  const [activeTab, setActiveTab] = useState('stats');
+
+  const tabs = useMemo(() => {
+    const base = ['stats'];
+    if (isToa(matoran)) {
+      base.push('equipment');
+    }
+    if (matoran.quest || isMatoran(matoran)) {
+      base.push('tasks');
+    }
+    return base;
+  }, [matoran]);
 
   useEffect(() => {
     if (matoran) {
@@ -54,47 +66,68 @@ export const CharacterDetail: React.FC = () => {
         <div id='model-frame'>
           <div className='divider'></div>
         </div>
-
-        <div className='character-detail-section'>
-          <LevelProgress exp={matoran.exp} />
-          <ElementTag element={matoran.element} showName={true} />
-
-          {/* Mask Collection */}
-          {isToa(matoran) && <MaskCollection matoran={matoran} />}
-
-          {/* Job Assignement  */}
-          {isMatoran(matoran) && <JobAssignment matoran={matoran} />}
-
-          {/* Assigned Quest  */}
-          {matoran.quest && (
-            <div>
-              <p>Assigned Quest:</p>
-              <Link to='/quests'>
-                <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
-              </Link>
-            </div>
-          )}
-
-          {/* combatantStats && (
-            <div className='character-detail-section combatant-stats'>
-              <h3>Combat Stats</h3>
-              <ul>
-                <li>
-                  <strong>HP:</strong> {combatantStats.baseHp}
-                </li>
-                <li>
-                  <strong>Attack:</strong> {combatantStats.baseAttack}
-                </li>
-                <li>
-                  <strong>Defense:</strong> {combatantStats.baseDefense}
-                </li>
-                <li>
-                  <strong>Speed:</strong> {combatantStats.baseSpeed}
-                </li>
-              </ul>
-            </div>
-          )*/}
+      </div>
+      <div className='character-detail-tabs'>
+        <div className='character-detail-tabs-inner'>
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
+        <div className='divider'></div>
+      </div>
+
+      <div className='character-detail-section'>
+        {activeTab === 'stats' && (
+          <>
+            <LevelProgress exp={matoran.exp} />
+            <ElementTag element={matoran.element} showName={true} />
+            {/* combatantStats && (
+                <div className='character-detail-section combatant-stats'>
+                  <h3>Combat Stats</h3>
+                  <ul>
+                    <li>
+                      <strong>HP:</strong> {combatantStats.baseHp}
+                    </li>
+                    <li>
+                      <strong>Attack:</strong> {combatantStats.baseAttack}
+                    </li>
+                    <li>
+                      <strong>Defense:</strong> {combatantStats.baseDefense}
+                    </li>
+                    <li>
+                      <strong>Speed:</strong> {combatantStats.baseSpeed}
+                    </li>
+                  </ul>
+                </div>
+              )*/}
+          </>
+        )}
+        {activeTab === 'equipment' && isToa(matoran) && (
+          <MaskCollection matoran={matoran} />
+        )}
+
+        {activeTab === 'tasks' && (
+          <div>
+            {/* Job Assignement  */}
+            {isMatoran(matoran) && <JobAssignment matoran={matoran} />}
+
+            {/* Assigned Quest  */}
+            {matoran.quest && (
+              <div>
+                <p>Assigned Quest:</p>
+                <Link to='/quests'>
+                  <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 export const INITIAL_GAME_STATE: PartialGameState = {
   version: CURRENT_GAME_STATE_VERSION,
   widgets: 0,
+  widgetCap: 2000,
   inventory: {},
   recruitedCharacters: [],
   buyableCharacters: [],

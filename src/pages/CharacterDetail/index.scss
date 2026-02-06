@@ -23,9 +23,7 @@
   grid-template-columns: 100%;
   grid-template-areas:
     'header'
-    'model'
-    'progress'
-    'info';
+    'model';
 
   &::before {
     content: '';
@@ -97,13 +95,32 @@
   width: 100%;
 }
 
+.character-detail-tabs {
+  width: 100%;
+  overflow-x: scroll;
+  padding: 0.5rem;
+  padding-bottom: calc(1rem + 2px);
+  scroll-behavior: smooth;
+  top: 0;
+  position: sticky;
+  z-index: 100;
+  margin-top: 0.5rem;
+
+  .character-detail-tabs-inner {
+    display: flex;
+    flex-wrap: nowrap;
+    width: fit-content;
+    gap: 0.5rem;
+  }
+}
+
 .character-detail-section {
   grid-area: info;
   display: flex;
   flex-direction: column;
-  gap: .5rem;
-  .element-tag{
-    align-self: center
+  gap: 0.5rem;
+  .element-tag {
+    align-self: center;
   }
 }
 
