@@ -74,7 +74,7 @@ export default defineConfig({
           },
         ] satisfies ExtendedIconResource[]) as typeof undefined,
         // Extended manifest fields for dark mode theming
-        ...({ dark_theme_color: '#000000', dark_background_color: '#000000' } as Record<string, string>),
+        ...({ dark_theme_color: '#2d2d2d', dark_background_color: '#2d2d2d' } as Record<string, string>),
       },
 
       workbox: {
