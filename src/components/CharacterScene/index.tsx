@@ -113,13 +113,12 @@ export function CharacterScene({
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />
       <PresentationControls
-        global
-        snap
-        speed={1.5}
+        global={true}
+        snap={false}
+        speed={0.5}
         zoom={1}
-        polar={[-Math.PI / 8, Math.PI / 8]}
-        azimuth={[-Math.PI / 4, Math.PI / 4]}
-        config={{ mass: 1, tension: 170, friction: 26 }}
+        polar={[0,0]}
+        config={{ mass: 0.5, tension: 170, friction: 26 }}
       >
         <Suspense fallback={null}>
           <CharacterModel matoran={matoran} />
