@@ -1,5 +1,7 @@
-import { Suspense } from 'react';
-import { Bounds, Stage } from '@react-three/drei';
+import { Suspense, useEffect } from 'react';
+import { Environment } from '@react-three/drei';
+import { useThree } from '@react-three/fiber';
+import { OrthographicCamera } from 'three';
 
 import {
   BaseMatoran,
@@ -13,7 +15,7 @@ import { ToaPohatuMataModel } from './ToaPohatuMataModel';
 import { ToaKopakaMataModel } from './ToaKopakaMataModel';
 import { ToaOnuaMataModel } from './ToaOnuaMataModel';
 import { ToaLewaMataModel } from './ToaLewaMataModel';
-import { BoundsCylinder } from './BoundsCylinder';
+import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 
 function CharacterModel({
   matoran,
@@ -66,32 +68,53 @@ function CharacterModel({
   }
 }
 
+/**
+ * Positions the shared orthographic camera so it looks head-on at the
+ * cylinder volume defined in BoundsCylinder.  Zoom is set so the
+ * cylinder just fits the viewport – whichever dimension is tighter
+ * (width or height) wins.
+ *
+ * Runs once on mount and again whenever the viewport is resized.
+ */
+function CharacterFraming() {
+  const camera = useThree((s) => s.camera);
+  const size = useThree((s) => s.size);
+
+  useEffect(() => {
+    if (!(camera instanceof OrthographicCamera)) return;
+
+    // Look head-on from the front, vertically centered on the cylinder
+    camera.position.set(0, CYLINDER_HEIGHT / 2, 100);
+    camera.lookAt(0, CYLINDER_HEIGHT / 2, 0);
+    camera.near = 0.1;
+    camera.far = 1000;
+
+    // Zoom so the cylinder just fits the viewport
+    camera.zoom = Math.min(
+      size.width / (CYLINDER_RADIUS * 2),
+      size.height / CYLINDER_HEIGHT,
+    );
+    camera.updateProjectionMatrix();
+  }, [camera, size]);
+
+  return null;
+}
+
 export function CharacterScene({
   matoran,
 }: {
   matoran: BaseMatoran & RecruitedCharacterData;
 }) {
   return (
-    <Stage
-      shadows={false}
-      adjustCamera={false}
-      preset='soft'
-      environment='city'
-      intensity={0.4}
-    >
-      {/*
-        Fit camera ONLY to the cylinder – character geometry lives
-        outside <Bounds> so it can never shift the framing.
-      */}
-      <Bounds fit observe clip margin={1} maxDuration={0}>
-        <BoundsCylinder />
-      </Bounds>
+    <>
+      <CharacterFraming />
+      <Environment preset='city' />
       <directionalLight position={[3, 5, 2]} intensity={1.2} />
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />
       <Suspense fallback={null}>
         <CharacterModel matoran={matoran} />
       </Suspense>
-    </Stage>
+    </>
   );
 }
