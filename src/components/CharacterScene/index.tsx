@@ -72,13 +72,15 @@ export function CharacterScene({
 }) {
   return (
     <Stage
-      environment='forest'
-      preset='soft'
-      adjustCamera={false}
       shadows={false}
+      adjustCamera={false}
+      preset='soft'
+      environment='city'
+      intensity={0.4}
     >
+      <directionalLight position={[3, 5, 2]} intensity={1.2} />
+      <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />
-      <directionalLight position={[5, 5, 5]} />
       <Suspense fallback={null}>
         <OrbitControls
           makeDefault
@@ -87,7 +89,7 @@ export function CharacterScene({
           enableZoom={false}
           enablePan={false}
         />
-        <Bounds fit clip observe margin={0.985} maxDuration={0}>
+        <Bounds fit observe clip margin={0.985} maxDuration={0}>
           <CharacterModel matoran={matoran} />
         </Bounds>
       </Suspense>
