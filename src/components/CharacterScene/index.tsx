@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Stage } from '@react-three/drei';
+import { Bounds, Stage } from '@react-three/drei';
 
 import {
   BaseMatoran,
@@ -74,15 +74,18 @@ export function CharacterScene({
   return (
     <Stage
       shadows={false}
-      adjustCamera={1}
-      fit
-      maxDuration={0}
+      adjustCamera={false}
       preset='soft'
       environment='city'
       intensity={0.4}
     >
-      {/* Fixed cylinder bounds – keeps camera framing stable across all characters */}
-      <BoundsCylinder />
+      {/*
+        Fit camera ONLY to the cylinder – character geometry lives
+        outside <Bounds> so it can never shift the framing.
+      */}
+      <Bounds fit clip margin={1} maxDuration={0}>
+        <BoundsCylinder />
+      </Bounds>
       <directionalLight position={[3, 5, 2]} intensity={1.2} />
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />
