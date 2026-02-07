@@ -94,7 +94,7 @@ export async function waitForCanvas(page: Page, timeout = 10000) {
   await page.waitForSelector('canvas', { timeout, state: 'visible' });
 
   // Give WebGL time to render initial frame
-  await page.waitForTimeout(1500);
+  await page.waitForTimeout(3000);
 }
 
 /**

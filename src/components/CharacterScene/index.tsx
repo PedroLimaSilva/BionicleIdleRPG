@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Bounds, OrbitControls, Stage } from '@react-three/drei';
+import { Bounds, OrthographicCamera, Stage } from '@react-three/drei';
 
 import {
   BaseMatoran,
@@ -13,6 +13,7 @@ import { ToaPohatuMataModel } from './ToaPohatuMataModel';
 import { ToaKopakaMataModel } from './ToaKopakaMataModel';
 import { ToaOnuaMataModel } from './ToaOnuaMataModel';
 import { ToaLewaMataModel } from './ToaLewaMataModel';
+import { isTestMode } from '../../utils/testMode';
 
 function CharacterModel({
   matoran,
@@ -73,7 +74,9 @@ export function CharacterScene({
   return (
     <Stage
       shadows={false}
-      adjustCamera={false}
+      adjustCamera={1}
+      fit
+      maxDuration={0}
       preset='soft'
       environment='city'
       intensity={0.4}
@@ -82,16 +85,7 @@ export function CharacterScene({
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />
       <Suspense fallback={null}>
-        <OrbitControls
-          makeDefault
-          minPolarAngle={Math.PI / 2}
-          maxPolarAngle={Math.PI / 2}
-          enableZoom={false}
-          enablePan={false}
-        />
-        <Bounds fit observe clip margin={0.985} maxDuration={0}>
-          <CharacterModel matoran={matoran} />
-        </Bounds>
+        <CharacterModel matoran={matoran} />
       </Suspense>
     </Stage>
   );

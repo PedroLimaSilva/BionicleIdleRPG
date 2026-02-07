@@ -66,6 +66,12 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
         worn.emissiveIntensity = original.emissiveIntensity;
       }
 
+      // preserve transparent behavior
+      if (original.transparent && original.opacity < 1) {
+        worn.transparent = true;
+        worn.opacity = original.opacity;
+      }
+
       // assign to all meshes using this material
       Object.values(nodes).forEach((node: unknown) => {
         if ((node as Mesh).isMesh && (node as Mesh).material === original) {
