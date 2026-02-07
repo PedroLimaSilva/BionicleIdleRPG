@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Bounds, OrthographicCamera, Stage } from '@react-three/drei';
+import { Stage } from '@react-three/drei';
 
 import {
   BaseMatoran,
@@ -13,7 +13,6 @@ import { ToaPohatuMataModel } from './ToaPohatuMataModel';
 import { ToaKopakaMataModel } from './ToaKopakaMataModel';
 import { ToaOnuaMataModel } from './ToaOnuaMataModel';
 import { ToaLewaMataModel } from './ToaLewaMataModel';
-import { isTestMode } from '../../utils/testMode';
 
 function CharacterModel({
   matoran,
