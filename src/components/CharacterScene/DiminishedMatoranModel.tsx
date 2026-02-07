@@ -115,7 +115,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
           <primitive
             scale={1}
             object={nodes.Body}
-            position={new Vector3(0, 0, 0)}
+            position={new Vector3(0, 2.5, 0)}
           />
         </group>
       </group>

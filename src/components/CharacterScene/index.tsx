@@ -83,7 +83,7 @@ export function CharacterScene({
         Fit camera ONLY to the cylinder – character geometry lives
         outside <Bounds> so it can never shift the framing.
       */}
-      <Bounds fit clip margin={1} maxDuration={0}>
+      <Bounds fit observe clip margin={1} maxDuration={0}>
         <BoundsCylinder />
       </Bounds>
       <directionalLight position={[3, 5, 2]} intensity={1.2} />
