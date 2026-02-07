@@ -19,7 +19,7 @@ export function JobAssignment({
   );
 
   return (
-    <div>
+    <div style={{ marginTop: '2rem' }}>
       {jobDetails && matoran.assignment && (
         <>
           <p>Assigned Job:</p>
