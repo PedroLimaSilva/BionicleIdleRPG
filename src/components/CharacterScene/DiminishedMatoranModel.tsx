@@ -5,7 +5,6 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
 import { setupAnimationForTestMode } from '../../utils/testMode';
-import { BoundingBox } from './BoundingBox';
 import {
   createWornPlasticMaterial,
   getWornMaterial,
@@ -112,7 +111,6 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   return (
     <group ref={group} dispose={null}>
       <group name='Scene'>
-        <BoundingBox />
         <group name='Matoran'>
           <primitive
             scale={1}

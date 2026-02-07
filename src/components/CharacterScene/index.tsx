@@ -13,6 +13,7 @@ import { ToaPohatuMataModel } from './ToaPohatuMataModel';
 import { ToaKopakaMataModel } from './ToaKopakaMataModel';
 import { ToaOnuaMataModel } from './ToaOnuaMataModel';
 import { ToaLewaMataModel } from './ToaLewaMataModel';
+import { BoundsCylinder } from './BoundsCylinder';
 
 function CharacterModel({
   matoran,
@@ -80,6 +81,8 @@ export function CharacterScene({
       environment='city'
       intensity={0.4}
     >
+      {/* Fixed cylinder bounds – keeps camera framing stable across all characters */}
+      <BoundsCylinder />
       <directionalLight position={[3, 5, 2]} intensity={1.2} />
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />
