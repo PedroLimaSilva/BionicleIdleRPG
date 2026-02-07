@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react';
-import { Environment } from '@react-three/drei';
+import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { OrthographicCamera } from 'three';
 
@@ -112,9 +112,19 @@ export function CharacterScene({
       <directionalLight position={[3, 5, 2]} intensity={1.2} />
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />
-      <Suspense fallback={null}>
-        <CharacterModel matoran={matoran} />
-      </Suspense>
+      <PresentationControls
+        global
+        snap
+        speed={1.5}
+        zoom={1}
+        polar={[-Math.PI / 8, Math.PI / 8]}
+        azimuth={[-Math.PI / 4, Math.PI / 4]}
+        config={{ mass: 1, tension: 170, friction: 26 }}
+      >
+        <Suspense fallback={null}>
+          <CharacterModel matoran={matoran} />
+        </Suspense>
+      </PresentationControls>
     </>
   );
 }
