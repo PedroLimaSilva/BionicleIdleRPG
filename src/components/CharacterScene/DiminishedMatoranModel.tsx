@@ -5,10 +5,7 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
 import { setupAnimationForTestMode } from '../../utils/testMode';
-import {
-  createWornPlasticMaterial,
-  getWornMaterial,
-} from './WornPlasticMaterial';
+import { getWornMaterial } from './WornPlasticMaterial';
 
 const MAT_COLOR_MAP = {
   // Head: 'head',
@@ -82,8 +79,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
       const needsEmissive =
         'emissive' in original && original.emissiveIntensity > 1;
-      const needsTransparent =
-        original.transparent && original.opacity < 1;
+      const needsTransparent = original.transparent;
 
       if (needsEmissive || needsTransparent) {
         worn = worn.clone();
@@ -118,17 +114,9 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
       if (isTarget && matoran.isMaskTransparent && (mask as Mesh).isMesh) {
         const mesh = mask as Mesh;
-
-        const worn = createWornPlasticMaterial({
-          color: matoran.colors['mask'],
-          roughness: 0.4,
-          roughnessNoise: 0.1,
-          fresnelStrength: 0.25,
-        });
-
+        const worn = getWornMaterial(matoran.colors['mask']).clone();
         worn.transparent = true;
         worn.opacity = 0.8;
-
         mesh.material = worn;
       }
     });

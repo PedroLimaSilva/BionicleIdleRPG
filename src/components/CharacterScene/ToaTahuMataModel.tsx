@@ -5,6 +5,10 @@ import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
+import {
+  applyWornPlasticToObject,
+  getWornMaterial,
+} from './WornPlasticMaterial';
 
 export const ToaTahuMataModel = forwardRef<
   CombatantModelHandle,
@@ -13,7 +17,7 @@ export const ToaTahuMataModel = forwardRef<
   }
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);
-  const { nodes, animations, materials } = useGLTF(
+  const { nodes, animations } = useGLTF(
     import.meta.env.BASE_URL + 'toa_tahu_mata.glb'
   );
 
@@ -67,21 +71,30 @@ export const ToaTahuMataModel = forwardRef<
   }, [actions]);
 
   useEffect(() => {
+    applyWornPlasticToObject(nodes.Body);
+    applyWornPlasticToObject(nodes.Root);
+  }, [nodes.Body, nodes.Root]);
+
+  useEffect(() => {
+    const maskColor = (matoran.maskColorOverride ||
+      matoran.colors.mask) as Color;
     nodes.Masks.children.forEach((mask) => {
       const mesh = mask as Mesh;
-      mesh.material = materials['Tahu Red'].clone();
-      const mat = mesh.material as MeshStandardMaterial;
-      mat.color.set(
-        (matoran.maskColorOverride || matoran.colors.mask) as Color
-      );
-      mat.metalness =
-        matoran.maskColorOverride === LegoColor.PearlGold ? 0.5 : 0;
-      if (mask.name === Mask.Kaukau) {
-        mat.transparent = true;
-        mat.opacity = 0.8;
+      let mat = getWornMaterial(maskColor);
+      const needsTransparent = mask.name === Mask.Kaukau;
+      const needsMetalness =
+        matoran.maskColorOverride === LegoColor.PearlGold;
+      if (needsTransparent || needsMetalness) {
+        mat = mat.clone();
+        if (needsTransparent) {
+          mat.transparent = true;
+          mat.opacity = 0.8;
+        }
+        if (needsMetalness) mat.metalness = 0.5;
       }
+      mesh.material = mat;
     });
-  }, [nodes, materials, matoran]);
+  }, [nodes, matoran]);
 
   useEffect(() => {
     const maskTarget = matoran.maskOverride || matoran.mask;

@@ -2,7 +2,9 @@ import {
   Color,
   ColorRepresentation,
   DoubleSide,
+  Mesh,
   MeshStandardMaterial,
+  Object3D,
 } from 'three';
 
 type WornPlasticOptions = {
@@ -118,4 +120,47 @@ export function getWornMaterial(color: ColorRepresentation): MeshStandardMateria
     );
   }
   return materialCache.get(key)!;
+}
+
+/**
+ * Copies transparency and emissive from the original material onto the worn
+ * material. Use when the original had transparent or emissive and we must preserve it.
+ */
+function copySpecialProperties(
+  worn: MeshStandardMaterial,
+  original: MeshStandardMaterial,
+): MeshStandardMaterial {
+  const needsTransparent = original.transparent;
+  const needsEmissive =
+    'emissiveIntensity' in original && original.emissiveIntensity > 0;
+  if (!needsTransparent && !needsEmissive) return worn;
+  const cloned = worn.clone();
+  if (needsTransparent) {
+    cloned.transparent = true;
+    cloned.opacity = original.opacity;
+  }
+  if (needsEmissive) {
+    cloned.emissive.copy(original.emissive);
+    cloned.emissiveIntensity = original.emissiveIntensity;
+  }
+  return cloned;
+}
+
+/**
+ * Traverses an object and replaces every mesh's material with a cached
+ * worn plastic material keyed by the current material's color. Preserves
+ * the original material's transparency and emissive when present.
+ */
+export function applyWornPlasticToObject(object: Object3D | null | undefined): void {
+  if (!object) return;
+  object.traverse((child) => {
+    if (!(child as Mesh).isMesh) return;
+    const mesh = child as Mesh;
+    const original = mesh.material as MeshStandardMaterial | undefined;
+    if (!original || !original.color) return;
+    const color = original.color;
+    let worn = getWornMaterial(color);
+    worn = copySpecialProperties(worn, original);
+    mesh.material = worn;
+  });
 }
