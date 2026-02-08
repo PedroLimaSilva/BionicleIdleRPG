@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh } from 'three';
 import { Color, LegoColor } from '../../types/Colors';
 import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
 import {
