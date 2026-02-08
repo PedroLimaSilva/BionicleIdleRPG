@@ -232,7 +232,7 @@ function makeWornUniforms(
     },
     uLightDirection2: { value: DEFAULT_LIGHT_DIR2.clone() },
     uLightColor2: { value: new Color('#ffffff').multiplyScalar(0.6) },
-    uAmbient: { value: opts.ambient ?? 0.4 },
+    uAmbient: { value: opts.ambient ?? 0.6 },
     uEmissive: { value: new Color(0, 0, 0) },
     uEmissiveIntensity: { value: 0 },
     uOpacity: { value: 1 },

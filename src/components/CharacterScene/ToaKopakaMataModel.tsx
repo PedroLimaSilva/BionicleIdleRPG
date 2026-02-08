@@ -9,10 +9,9 @@ import {
   setupAnimationForTestMode,
 } from '../../utils/testMode';
 import {
-  applyWornPlasticToObject,
-  getWornMaterial,
-  type WornPlasticShaderMaterial,
-} from './WornPlasticMaterial';
+  applyStandardPlasticToObject,
+  getStandardPlasticMaterial,
+} from './StandardPlasticMaterial';
 
 export const ToaKopakaMataModel = forwardRef<
   CombatantModelHandle,
@@ -73,7 +72,7 @@ export const ToaKopakaMataModel = forwardRef<
   }, [actions]);
 
   useEffect(() => {
-    if (group.current) applyWornPlasticToObject(group.current);
+    if (group.current) applyStandardPlasticToObject(group.current);
   }, [nodes]);
 
   useEffect(() => {
@@ -81,17 +80,19 @@ export const ToaKopakaMataModel = forwardRef<
       matoran.colors.mask) as Color;
     nodes.Masks.children.forEach((mask) => {
       const mesh = mask as Mesh;
-      let mat = getWornMaterial(maskColor) as WornPlasticShaderMaterial;
+      let mat = getStandardPlasticMaterial(maskColor);
       const needsTransparent = mask.name === Mask.Kaukau;
       const needsMetalness = matoran.maskColorOverride === LegoColor.PearlGold;
       if (needsTransparent || needsMetalness) {
-        mat = mat.clone() as WornPlasticShaderMaterial;
+        mat = mat.clone();
         if (needsTransparent) {
           mat.transparent = true;
           mat.opacity = 0.8;
-          mat.uniforms.uOpacity.value = 0.8;
         }
-        if (needsMetalness) mat.uniforms.uMetalness.value = 0.5;
+        if (needsMetalness) {
+          mat.metalness = 0.5;
+          mat.roughness = 0.3;
+        }
       }
       mesh.material = mat;
     });

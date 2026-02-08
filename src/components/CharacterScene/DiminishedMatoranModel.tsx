@@ -5,10 +5,7 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
 import { setupAnimationForTestMode } from '../../utils/testMode';
-import {
-  getWornMaterial,
-  type WornPlasticShaderMaterial,
-} from './WornPlasticMaterial';
+import { getStandardPlasticMaterial } from './StandardPlasticMaterial';
 
 const MAT_COLOR_MAP = {
   // Head: 'head',
@@ -64,7 +61,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
     const colorMap = matoran.colors;
     const materialReplacements = new Map<
       MeshStandardMaterial,
-      WornPlasticShaderMaterial
+      MeshStandardMaterial
     >();
 
     Object.entries(MAT_COLOR_MAP).forEach(([materialName, colorName]) => {
@@ -72,28 +69,25 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
       if (!original) return;
 
       const color = colorMap[colorName as keyof BaseMatoran['colors']] as Color;
-      let worn = getWornMaterial(color) as WornPlasticShaderMaterial;
+      let standard = getStandardPlasticMaterial(color);
 
       const needsEmissive =
         'emissive' in original && (original.emissiveIntensity ?? 0) > 0;
       const needsTransparent = original.transparent;
 
       if (needsEmissive || needsTransparent) {
-        worn = worn.clone() as WornPlasticShaderMaterial;
-        if (needsEmissive && worn.uniforms?.uEmissive) {
-          worn.uniforms.uEmissive.value.copy(original.emissive);
-          worn.uniforms.uEmissiveIntensity.value =
-            original.emissiveIntensity ?? 0;
+        standard = standard.clone();
+        if (needsEmissive) {
+          standard.emissive = original.emissive.clone();
+          standard.emissiveIntensity = original.emissiveIntensity ?? 0;
         }
         if (needsTransparent) {
-          worn.transparent = true;
-          worn.opacity = original.opacity ?? 1;
-          if (worn.uniforms?.uOpacity)
-            worn.uniforms.uOpacity.value = original.opacity ?? 1;
+          standard.transparent = true;
+          standard.opacity = original.opacity ?? 1;
         }
       }
 
-      materialReplacements.set(original, worn);
+      materialReplacements.set(original, standard);
     });
 
     root.traverse((child) => {
@@ -112,13 +106,12 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
       if (isTarget && matoran.isMaskTransparent && (mask as Mesh).isMesh) {
         const mesh = mask as Mesh;
-        const worn = getWornMaterial(
+        const standard = getStandardPlasticMaterial(
           matoran.colors['mask'],
-        ).clone() as WornPlasticShaderMaterial;
-        worn.transparent = true;
-        worn.opacity = 0.8;
-        if (worn.uniforms?.uOpacity) worn.uniforms.uOpacity.value = 0.8;
-        mesh.material = worn;
+        ).clone();
+        standard.transparent = true;
+        standard.opacity = 0.8;
+        mesh.material = standard;
       }
     });
 

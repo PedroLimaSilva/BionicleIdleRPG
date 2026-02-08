@@ -1,7 +1,9 @@
 import { Suspense, useEffect } from 'react';
 import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
-import { OrthographicCamera } from 'three';
+import { EffectComposer, SSAO } from '@react-three/postprocessing';
+import { BlendFunction } from 'postprocessing';
+import { OrthographicCamera, SRGBColorSpace } from 'three';
 
 import {
   BaseMatoran,
@@ -69,6 +71,21 @@ function CharacterModel({
 }
 
 /**
+ * Ensures the renderer outputs in sRGB so postprocessing (EffectComposer)
+ * doesn’t leave the final image in linear space, which would look desaturated.
+ */
+function CharacterSceneColorSpace() {
+  const gl = useThree((s) => s.gl);
+  useEffect(() => {
+    gl.outputColorSpace = SRGBColorSpace;
+    return () => {
+      gl.outputColorSpace = SRGBColorSpace;
+    };
+  }, [gl]);
+  return null;
+}
+
+/**
  * Positions the shared orthographic camera so it looks head-on at the
  * cylinder volume defined in BoundsCylinder.  Zoom is set so the
  * cylinder just fits the viewport – whichever dimension is tighter
@@ -112,6 +129,7 @@ export function CharacterScene({
 }) {
   return (
     <>
+      <CharacterSceneColorSpace />
       <CharacterFraming />
       <Environment preset='city' />
       <directionalLight position={[3, 5, 2]} intensity={1.2} />
@@ -129,6 +147,17 @@ export function CharacterScene({
           <CharacterModel matoran={matoran} />
         </Suspense>
       </PresentationControls>
+      <EffectComposer multisampling={0} enableNormalPass resolutionScale={0.5}>
+        <SSAO
+          blendFunction={BlendFunction.MULTIPLY}
+          samples={24}
+          rings={4}
+          intensity={1.0}
+          radius={6}
+          bias={0.5}
+          luminanceInfluence={0.35}
+        />
+      </EffectComposer>
     </>
   );
 }
