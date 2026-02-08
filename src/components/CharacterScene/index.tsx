@@ -1,9 +1,9 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
-import { EffectComposer, SSAO } from '@react-three/postprocessing';
+import { EffectComposer, SSAO, SelectiveBloom } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
-import { OrthographicCamera } from 'three';
+import { Mesh, MeshStandardMaterial, Object3D, OrthographicCamera } from 'three';
 
 import {
   BaseMatoran,
@@ -70,6 +70,58 @@ function CharacterModel({
   }
 }
 
+/** Names that identify eye/glowing-eye/lens meshes in Matoran and Toa GLTFs (mesh or material). */
+export const EYE_MESH_NAMES = [
+  'Brain',
+  'GlowingEyes',
+  'Eyes',
+  'Eye',
+  'glowing_eyes',
+  'lens',
+];
+
+function isEyeMesh(mesh: Mesh): boolean {
+  const name = (mesh.name || '').toLowerCase();
+  const matName = ((mesh.material as { name?: string })?.name ?? '').toLowerCase();
+  return EYE_MESH_NAMES.some(
+    (eye) =>
+      name.includes(eye.toLowerCase()) || matName.includes(eye.toLowerCase()),
+  );
+}
+
+/** Collects only eye meshes (by name) that have emissive material, for selective bloom */
+function useEyeMeshes(characterRootRef: React.RefObject<Object3D | null>, matoran: BaseMatoran & RecruitedCharacterData) {
+  const [eyeMeshes, setEyeMeshes] = useState<Object3D[]>([]);
+
+  useLayoutEffect(() => {
+    const root = characterRootRef.current;
+    if (!root) {
+      setEyeMeshes([]);
+      return;
+    }
+    const collect = () => {
+      const collected: Object3D[] = [];
+      root.traverse((obj) => {
+        if (!(obj as Mesh).isMesh) return;
+        const mesh = obj as Mesh;
+        const mat = mesh.material as MeshStandardMaterial | undefined;
+        if (
+          mat &&
+          (mat.emissiveIntensity ?? 0) > 0 &&
+          isEyeMesh(mesh)
+        ) {
+          collected.push(mesh);
+        }
+      });
+      setEyeMeshes(collected);
+    };
+    const id = setTimeout(collect, 0);
+    return () => clearTimeout(id);
+  }, [matoran, characterRootRef]);
+
+  return eyeMeshes;
+}
+
 /**
  * Positions the shared orthographic camera so it looks head-on at the
  * cylinder volume defined in BoundsCylinder.  Zoom is set so the
@@ -112,25 +164,49 @@ export function CharacterScene({
 }: {
   matoran: BaseMatoran & RecruitedCharacterData;
 }) {
+  const characterRootRef = useRef<Object3D>(null);
+  const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
+  const eyeMeshes = useEyeMeshes(characterRootRef, matoran);
+
   return (
     <>
       <CharacterFraming />
       <Environment preset='city' />
-      <directionalLight position={[3, 5, 2]} intensity={1.2} />
-      <directionalLight position={[-3, 2, -2]} intensity={0.4} />
+      <directionalLight
+        ref={(el) => {
+          if (el)
+            setLightsForBloom((prev) =>
+              prev.includes(el) ? prev : [...prev, el],
+            );
+        }}
+        position={[3, 5, 2]}
+        intensity={1.2}
+      />
+      <directionalLight
+        ref={(el) => {
+          if (el)
+            setLightsForBloom((prev) =>
+              prev.includes(el) ? prev : [...prev, el],
+            );
+        }}
+        position={[-3, 2, -2]}
+        intensity={0.4}
+      />
       <ambientLight intensity={0.2} />
-      <PresentationControls
-        global={false}
-        snap={false}
-        speed={2}
-        zoom={1}
-        polar={[0, 0]}
-        config={{ mass: 0.5, tension: 170, friction: 26 }}
-      >
-        <Suspense fallback={null}>
-          <CharacterModel matoran={matoran} />
-        </Suspense>
-      </PresentationControls>
+      <group ref={characterRootRef}>
+        <PresentationControls
+          global={false}
+          snap={false}
+          speed={2}
+          zoom={1}
+          polar={[0, 0]}
+          config={{ mass: 0.5, tension: 170, friction: 26 }}
+        >
+          <Suspense fallback={null}>
+            <CharacterModel matoran={matoran} />
+          </Suspense>
+        </PresentationControls>
+      </group>
       <EffectComposer multisampling={0} enableNormalPass resolutionScale={0.5}>
         <SSAO
           blendFunction={BlendFunction.MULTIPLY}
@@ -141,6 +217,18 @@ export function CharacterScene({
           bias={0.5}
           luminanceInfluence={0.35}
         />
+        {lightsForBloom.length > 0 ? (
+          <SelectiveBloom
+            selection={eyeMeshes}
+            lights={lightsForBloom}
+            luminanceThreshold={0.25}
+            luminanceSmoothing={0.5}
+            intensity={0.28}
+            mipmapBlur
+          />
+        ) : (
+          <></>
+        )}
       </EffectComposer>
     </>
   );

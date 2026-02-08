@@ -150,8 +150,9 @@ function copySpecialProperties(
   ) {
     cloned.emissive = (original.emissive as Color).clone();
     cloned.emissiveIntensity = emissiveIntensity;
-    if ((original as { name?: string }).name?.includes('Eyes')) {
-      cloned.emissiveIntensity = emissiveIntensity * 10;
+    const originalName = (original as { name?: string }).name;
+    if (originalName?.includes('Eyes')) {
+      cloned.emissiveIntensity = 25;
     }
   }
   if (needsMetalness) {
