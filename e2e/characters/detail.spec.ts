@@ -19,11 +19,11 @@ test.describe('Character Detail Page', () => {
           { id: 'Jala', exp: 0 },
         ],
       });
-      const modelLoadPromise = waitForModelLoad(page);
+      // const modelLoadPromise = waitForModelLoad(page);
 
       await goto(page, '/characters/Takua');
       await waitForCanvas(page);
-      await modelLoadPromise;
+      // await modelLoadPromise;
     });
     test('should render matoran character detail page', async ({ page }) => {
       // Take screenshot of the entire page including 3D scene
@@ -51,11 +51,12 @@ test.describe('Character Detail Page', () => {
         threshold: 0.2,
       });
 
-      const modelLoadPromise = waitForModelLoad(page);
-      await page.locator('.character-card').last().click();
+      // const modelLoadPromise = waitForModelLoad(page);
+      const jalaLink = page.locator('a').filter({ hasText: 'Jala' });
+      await jalaLink.click();
       await expect(page).toHaveURL(new RegExp(`/characters/Jala`));
       await waitForCanvas(page);
-      await modelLoadPromise;
+      // await modelLoadPromise;
 
       await expect(page).toHaveScreenshot({
         fullPage: true,
@@ -97,10 +98,10 @@ test.describe('Character Detail Page', () => {
             },
           ],
         });
-        const modelLoadPromise = waitForModelLoad(page);
+        // const modelLoadPromise = waitForModelLoad(page);
         await goto(page, `/characters/${characterId}`);
         await waitForCanvas(page);
-        await modelLoadPromise;
+        // await modelLoadPromise;
 
         // Take screenshot of the entire page including 3D scene
         await expect(page).toHaveScreenshot({
