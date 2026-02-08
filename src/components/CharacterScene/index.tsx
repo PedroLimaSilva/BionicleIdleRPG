@@ -1,6 +1,8 @@
 import { Suspense, useEffect } from 'react';
 import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
+import { EffectComposer, SSAO } from '@react-three/postprocessing';
+import { BlendFunction } from 'postprocessing';
 import { OrthographicCamera } from 'three';
 
 import {
@@ -129,6 +131,17 @@ export function CharacterScene({
           <CharacterModel matoran={matoran} />
         </Suspense>
       </PresentationControls>
+      <EffectComposer multisampling={0} enableNormalPass resolutionScale={0.5}>
+        <SSAO
+          blendFunction={BlendFunction.MULTIPLY}
+          samples={24}
+          rings={4}
+          intensity={1.0}
+          radius={6}
+          bias={0.5}
+          luminanceInfluence={0.35}
+        />
+      </EffectComposer>
     </>
   );
 }
