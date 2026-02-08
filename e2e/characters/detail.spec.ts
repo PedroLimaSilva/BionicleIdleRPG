@@ -1,17 +1,24 @@
 import { test, expect } from '@playwright/test';
 import {
-  enableTestMode,
   goto,
   INITIAL_GAME_STATE,
   setupGameState,
   waitForCanvas,
+  waitForCharacterCards,
   waitForModelLoad,
 } from '../helpers';
 
 test.describe('Character Detail Page', () => {
   test.describe('Matoran Character', () => {
     test.beforeEach(async ({ page }) => {
-      await enableTestMode(page);
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [
+          ...INITIAL_GAME_STATE.recruitedCharacters,
+          { id: 'Takua', exp: 0 },
+          { id: 'Jala', exp: 0 },
+        ],
+      });
       const modelLoadPromise = waitForModelLoad(page);
 
       await goto(page, '/characters/Takua');
@@ -20,6 +27,36 @@ test.describe('Character Detail Page', () => {
     });
     test('should render matoran character detail page', async ({ page }) => {
       // Take screenshot of the entire page including 3D scene
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        // Moderate tolerance for WebGL rendering differences
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
+
+    test('should render correct matoran character detail after switching to another character', async ({
+      page,
+    }) => {
+      // find the nav item that ends with "Characters"
+      const charactersNavItem = page
+        .locator('nav a')
+        .filter({ hasText: /Characters$/ });
+      await charactersNavItem.click();
+      await waitForCharacterCards(page);
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        // Moderate tolerance for WebGL rendering differences
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+
+      const modelLoadPromise = waitForModelLoad(page);
+      await page.locator('.character-card').last().click();
+      await expect(page).toHaveURL(new RegExp(`/characters/Jala`));
+      await waitForCanvas(page);
+      await modelLoadPromise;
+
       await expect(page).toHaveScreenshot({
         fullPage: true,
         // Moderate tolerance for WebGL rendering differences
