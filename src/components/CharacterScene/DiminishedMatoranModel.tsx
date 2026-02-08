@@ -109,7 +109,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
         mesh.material = worn;
       }
     });
-  }, [nodes, materials, matoran, actions]);
+  }, [nodes, materials, matoran]);
 
   return (
     <group ref={group} dispose={null}>
