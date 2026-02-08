@@ -65,9 +65,6 @@ test.describe('Character Detail Page', () => {
         await waitForCanvas(page);
         await modelLoadPromise;
 
-        // Wait for 3D canvas to be ready (animations are paused via testMode)
-        await waitForCanvas(page);
-
         // Take screenshot of the entire page including 3D scene
         await expect(page).toHaveScreenshot({
           fullPage: true,
