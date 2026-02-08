@@ -113,9 +113,9 @@ export function CharacterScene({
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />
       <PresentationControls
-        global={true}
+        global={false}
         snap={false}
-        speed={0.5}
+        speed={2}
         zoom={1}
         polar={[0,0]}
         config={{ mass: 0.5, tension: 170, friction: 26 }}
