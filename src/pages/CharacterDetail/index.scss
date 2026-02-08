@@ -36,7 +36,7 @@
   border: 2px solid var(--theme-element-primary);
   border-radius: var(--border-radius-lg);
   width: 100%;
-  max-width: var(--container-max-w);
+  max-width: min(var(--container-max-w), calc(100vw - 4rem));
   color: var(--theme-element-primary);
   box-shadow:
     var(--theme-element-glow-strong),

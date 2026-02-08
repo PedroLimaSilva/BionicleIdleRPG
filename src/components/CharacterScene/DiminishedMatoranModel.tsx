@@ -5,7 +5,10 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
 import { setupAnimationForTestMode } from '../../utils/testMode';
-import { getWornMaterial } from './WornPlasticMaterial';
+import {
+  getWornMaterial,
+  type WornPlasticShaderMaterial,
+} from './WornPlasticMaterial';
 
 const MAT_COLOR_MAP = {
   // Head: 'head',
@@ -47,83 +50,79 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   });
 
   useEffect(() => {
-    // Save current mesh materials before any mutations. When the effect
-    // re-runs (e.g. matoran.colors changes), the cleanup function restores
-    // these originals so the `=== original` check in applyColor still works.
+    const root = group.current;
+    if (!root) return;
+
     const savedMaterials = new Map<Mesh, MeshStandardMaterial>();
-    Object.values(nodes).forEach((node: unknown) => {
-      if ((node as Mesh).isMesh) {
-        savedMaterials.set(
-          node as Mesh,
-          (node as Mesh).material as MeshStandardMaterial,
-        );
+    root.traverse((child) => {
+      if ((child as Mesh).isMesh) {
+        const mesh = child as Mesh;
+        savedMaterials.set(mesh, mesh.material as MeshStandardMaterial);
       }
     });
-    if (nodes.Masks) {
-      (nodes.Masks as Group).children.forEach((child) => {
-        if ((child as Mesh).isMesh && !savedMaterials.has(child as Mesh)) {
-          savedMaterials.set(
-            child as Mesh,
-            (child as Mesh).material as MeshStandardMaterial,
-          );
-        }
-      });
-    }
 
     const colorMap = matoran.colors;
-    const applyColor = (materialName: string, color: Color) => {
+    const materialReplacements = new Map<
+      MeshStandardMaterial,
+      WornPlasticShaderMaterial
+    >();
+
+    Object.entries(MAT_COLOR_MAP).forEach(([materialName, colorName]) => {
       const original = materials[materialName] as MeshStandardMaterial;
       if (!original) return;
 
-      let worn = getWornMaterial(color);
+      const color = colorMap[colorName as keyof BaseMatoran['colors']] as Color;
+      let worn = getWornMaterial(color) as WornPlasticShaderMaterial;
 
       const needsEmissive =
-        'emissive' in original && original.emissiveIntensity > 1;
+        'emissive' in original && (original.emissiveIntensity ?? 0) > 0;
       const needsTransparent = original.transparent;
 
       if (needsEmissive || needsTransparent) {
-        worn = worn.clone();
-        if (needsEmissive) {
-          worn.emissive.set(color);
-          worn.emissiveIntensity = original.emissiveIntensity;
+        worn = worn.clone() as WornPlasticShaderMaterial;
+        if (needsEmissive && worn.uniforms?.uEmissive) {
+          worn.uniforms.uEmissive.value.copy(original.emissive);
+          worn.uniforms.uEmissiveIntensity.value =
+            original.emissiveIntensity ?? 0;
         }
         if (needsTransparent) {
           worn.transparent = true;
-          worn.opacity = original.opacity;
+          worn.opacity = original.opacity ?? 1;
+          if (worn.uniforms?.uOpacity)
+            worn.uniforms.uOpacity.value = original.opacity ?? 1;
         }
       }
 
-      // assign to all meshes using this material
-      Object.values(nodes).forEach((node: unknown) => {
-        if ((node as Mesh).isMesh && (node as Mesh).material === original) {
-          (node as Mesh).material = worn;
-        }
-      });
-    };
-
-    Object.entries(MAT_COLOR_MAP).forEach(([materialName, colorName]) => {
-      applyColor(
-        materialName,
-        colorMap[colorName as keyof BaseMatoran['colors']] as Color,
-      );
+      materialReplacements.set(original, worn);
     });
 
-    nodes.Masks.children.forEach((mask) => {
+    root.traverse((child) => {
+      if ((child as Mesh).isMesh) {
+        const mesh = child as Mesh;
+        const replacement = materialReplacements.get(
+          mesh.material as MeshStandardMaterial,
+        );
+        if (replacement) mesh.material = replacement;
+      }
+    });
+
+    nodes.Masks?.children.forEach((mask) => {
       const isTarget = mask.name === matoran.mask;
       mask.visible = isTarget;
 
       if (isTarget && matoran.isMaskTransparent && (mask as Mesh).isMesh) {
         const mesh = mask as Mesh;
-        const worn = getWornMaterial(matoran.colors['mask']).clone();
+        const worn = getWornMaterial(
+          matoran.colors['mask'],
+        ).clone() as WornPlasticShaderMaterial;
         worn.transparent = true;
         worn.opacity = 0.8;
+        if (worn.uniforms?.uOpacity) worn.uniforms.uOpacity.value = 0.8;
         mesh.material = worn;
       }
     });
 
     return () => {
-      // Restore the original GLTF materials so the next effect run can
-      // match meshes by their original material reference.
       savedMaterials.forEach((material, mesh) => {
         mesh.material = material;
       });

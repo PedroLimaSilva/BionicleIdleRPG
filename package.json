@@ -26,7 +26,7 @@
   "dependencies": {
     "@react-three/drei": "9.92.7",
     "@react-three/fiber": "9.5.0",
-    "@react-three/postprocessing": "2.15.11",
+    "@react-three/postprocessing": "3.0.4",
     "@types/three": "0.160.0",
     "lucide-react": "^0.487.0",
     "mermaid": "^11.12.1",
