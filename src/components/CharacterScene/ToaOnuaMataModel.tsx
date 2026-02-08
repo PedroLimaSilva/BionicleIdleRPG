@@ -3,7 +3,10 @@ import { Group, Mesh } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
-import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
+import {
+  getAnimationTimeScale,
+  setupAnimationForTestMode,
+} from '../../utils/testMode';
 import {
   applyWornPlasticToObject,
   getWornMaterial,
@@ -17,7 +20,7 @@ export function ToaOnuaMataModel({
 }) {
   const group = useRef<Group>(null);
   const { nodes, animations } = useGLTF(
-    import.meta.env.BASE_URL + 'toa_onua_mata.glb'
+    import.meta.env.BASE_URL + 'toa_onua_mata.glb',
   );
 
   const { actions, mixer } = useAnimations(animations, group);
@@ -50,8 +53,7 @@ export function ToaOnuaMataModel({
       const mesh = mask as Mesh;
       let mat = getWornMaterial(maskColor) as WornPlasticShaderMaterial;
       const needsTransparent = mask.name === Mask.Kaukau;
-      const needsMetalness =
-        matoran.maskColorOverride === LegoColor.PearlGold;
+      const needsMetalness = matoran.maskColorOverride === LegoColor.PearlGold;
       if (needsTransparent || needsMetalness) {
         mat = mat.clone() as WornPlasticShaderMaterial;
         if (needsTransparent) {
@@ -77,7 +79,7 @@ export function ToaOnuaMataModel({
   return (
     <group ref={group} dispose={null}>
       <group name='Scene'>
-        <group name='Toa'position={[0, 2.5, 0]}>
+        <group name='Toa' position={[0, 2.5, 0]}>
           <primitive object={nodes.Body} />
         </group>
       </group>

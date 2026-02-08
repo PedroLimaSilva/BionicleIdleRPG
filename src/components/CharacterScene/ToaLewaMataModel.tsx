@@ -3,7 +3,10 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Group, Mesh } from 'three';
 import { Color, LegoColor } from '../../types/Colors';
-import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
+import {
+  getAnimationTimeScale,
+  setupAnimationForTestMode,
+} from '../../utils/testMode';
 import {
   applyWornPlasticToObject,
   getWornMaterial,
@@ -17,7 +20,7 @@ export function ToaLewaMataModel({
 }) {
   const group = useRef<Group>(null);
   const { nodes, animations } = useGLTF(
-    import.meta.env.BASE_URL + 'toa_lewa_mata.glb'
+    import.meta.env.BASE_URL + 'toa_lewa_mata.glb',
   );
 
   const { actions, mixer } = useAnimations(animations, group);
@@ -50,8 +53,7 @@ export function ToaLewaMataModel({
       const mesh = mask as Mesh;
       let mat = getWornMaterial(maskColor) as WornPlasticShaderMaterial;
       const needsTransparent = mask.name === Mask.Kaukau;
-      const needsMetalness =
-        matoran.maskColorOverride === LegoColor.PearlGold;
+      const needsMetalness = matoran.maskColorOverride === LegoColor.PearlGold;
       if (needsTransparent || needsMetalness) {
         mat = mat.clone() as WornPlasticShaderMaterial;
         if (needsTransparent) {

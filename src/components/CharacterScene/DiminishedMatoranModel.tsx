@@ -5,7 +5,10 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
 import { setupAnimationForTestMode } from '../../utils/testMode';
-import { getWornMaterial, type WornPlasticShaderMaterial } from './WornPlasticMaterial';
+import {
+  getWornMaterial,
+  type WornPlasticShaderMaterial,
+} from './WornPlasticMaterial';
 
 const MAT_COLOR_MAP = {
   // Head: 'head',

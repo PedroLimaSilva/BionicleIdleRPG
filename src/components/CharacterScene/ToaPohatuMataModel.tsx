@@ -4,7 +4,10 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
-import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
+import {
+  getAnimationTimeScale,
+  setupAnimationForTestMode,
+} from '../../utils/testMode';
 import {
   applyWornPlasticToObject,
   getWornMaterial,
@@ -19,7 +22,7 @@ export const ToaPohatuMataModel = forwardRef<
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);
   const { nodes, animations } = useGLTF(
-    import.meta.env.BASE_URL + 'toa_pohatu_mata.glb'
+    import.meta.env.BASE_URL + 'toa_pohatu_mata.glb',
   );
 
   const { actions, mixer } = useAnimations(animations, group);
@@ -82,8 +85,7 @@ export const ToaPohatuMataModel = forwardRef<
       const mesh = mask as Mesh;
       let mat = getWornMaterial(maskColor) as WornPlasticShaderMaterial;
       const needsTransparent = mask.name === Mask.Kaukau;
-      const needsMetalness =
-        matoran.maskColorOverride === LegoColor.PearlGold;
+      const needsMetalness = matoran.maskColorOverride === LegoColor.PearlGold;
       if (needsTransparent || needsMetalness) {
         mat = mat.clone() as WornPlasticShaderMaterial;
         if (needsTransparent) {
