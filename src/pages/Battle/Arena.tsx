@@ -42,7 +42,7 @@ export function Arena({ team, enemies }: ArenaProps) {
 
   const { nodes, materials } = useGLTF(
     import.meta.env.BASE_URL + '/arena.glb'
-  ) as GLTFResult;
+  ) as unknown as GLTFResult;
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
