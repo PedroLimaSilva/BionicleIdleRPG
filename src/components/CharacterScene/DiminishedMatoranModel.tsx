@@ -5,7 +5,10 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
 import { setupAnimationForTestMode } from '../../utils/testMode';
-import { BoundingBox } from './BoundingBox';
+import {
+  createWornPlasticMaterial,
+  getWornMaterial,
+} from './WornPlasticMaterial';
 
 const MAT_COLOR_MAP = {
   // Head: 'head',
@@ -49,13 +52,34 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   useEffect(() => {
     const colorMap = matoran.colors;
     const applyColor = (materialName: string, color: Color) => {
-      const mat = materials[materialName] as MeshStandardMaterial;
-      if (mat && 'color' in mat) {
-        mat.color.set(color);
+      const original = materials[materialName] as MeshStandardMaterial;
+      if (!original) return;
+
+      let worn = getWornMaterial(color);
+
+      const needsEmissive =
+        'emissive' in original && original.emissiveIntensity > 1;
+      const needsTransparent =
+        original.transparent && original.opacity < 1;
+
+      if (needsEmissive || needsTransparent) {
+        worn = worn.clone();
+        if (needsEmissive) {
+          worn.emissive.set(color);
+          worn.emissiveIntensity = original.emissiveIntensity;
+        }
+        if (needsTransparent) {
+          worn.transparent = true;
+          worn.opacity = original.opacity;
+        }
       }
-      if (mat && 'emissive' in mat && mat.emissiveIntensity > 1) {
-        mat.emissive.set(color);
-      }
+
+      // assign to all meshes using this material
+      Object.values(nodes).forEach((node: unknown) => {
+        if ((node as Mesh).isMesh && (node as Mesh).material === original) {
+          (node as Mesh).material = worn;
+        }
+      });
     };
 
     Object.entries(MAT_COLOR_MAP).forEach(([materialName, colorName]) => {
@@ -71,23 +95,30 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
       if (isTarget && matoran.isMaskTransparent && (mask as Mesh).isMesh) {
         const mesh = mask as Mesh;
-        mesh.material = materials['Mask'].clone();
-        const mat = mesh.material as MeshStandardMaterial;
-        mat.transparent = true;
-        mat.opacity = 0.8;
+
+        const worn = createWornPlasticMaterial({
+          color: matoran.colors['mask'],
+          roughness: 0.4,
+          roughnessNoise: 0.1,
+          fresnelStrength: 0.25,
+        });
+
+        worn.transparent = true;
+        worn.opacity = 0.8;
+
+        mesh.material = worn;
       }
     });
-  }, [nodes, materials, matoran, actions]);
+  }, [nodes, materials, matoran]);
 
   return (
     <group ref={group} dispose={null}>
       <group name='Scene'>
-        <BoundingBox />
         <group name='Matoran'>
           <primitive
             scale={1}
             object={nodes.Body}
-            position={new Vector3(0, 0, 0)}
+            position={new Vector3(0, 2.5, 0)}
           />
         </group>
       </group>

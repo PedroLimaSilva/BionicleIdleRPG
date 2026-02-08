@@ -5,14 +5,18 @@ import {
   INITIAL_GAME_STATE,
   setupGameState,
   waitForCanvas,
+  waitForModelLoad,
 } from '../helpers';
 
 test.describe('Character Detail Page', () => {
   test.describe('Matoran Character', () => {
     test.beforeEach(async ({ page }) => {
       await enableTestMode(page);
+      const modelLoadPromise = waitForModelLoad(page);
+
       await goto(page, '/characters/Takua');
       await waitForCanvas(page);
+      await modelLoadPromise;
     });
     test('should render matoran character detail page', async ({ page }) => {
       // Take screenshot of the entire page including 3D scene
@@ -36,30 +40,39 @@ test.describe('Character Detail Page', () => {
   });
 
   test.describe('Toa Characters', () => {
-    test('should render Toa Lewa Mata character detail page', async ({
-      page,
-    }) => {
-      await setupGameState(page, {
-        ...INITIAL_GAME_STATE,
-        recruitedCharacters: [
-          {
-            id: 'Toa_Lewa',
-            exp: 0,
-          },
-        ],
-      });
-      await goto(page, '/characters/Toa_Lewa');
+    [
+      'Toa_Gali',
+      'Toa_Kopaka',
+      'Toa_Lewa',
+      'Toa_Onua',
+      'Toa_Pohatu',
+      'Toa_Tahu',
+    ].forEach((characterId) => {
+      test(`should render ${characterId} character detail page`, async ({
+        page,
+      }) => {
+        await setupGameState(page, {
+          ...INITIAL_GAME_STATE,
+          recruitedCharacters: [
+            {
+              id: characterId,
+              exp: 0,
+            },
+          ],
+        });
+        const modelLoadPromise = waitForModelLoad(page);
+        await goto(page, `/characters/${characterId}`);
+        await waitForCanvas(page);
+        await modelLoadPromise;
 
-      // Wait for 3D canvas to be ready (animations are paused via testMode)
-      await waitForCanvas(page);
-
-      // Take screenshot of the entire page including 3D scene
-      await expect(page).toHaveScreenshot({
-        fullPage: true,
-        timeout: 15000,
-        // Moderate tolerance for WebGL rendering differences
-        maxDiffPixels: 300,
-        threshold: 0.2,
+        // Take screenshot of the entire page including 3D scene
+        await expect(page).toHaveScreenshot({
+          fullPage: true,
+          timeout: 15000,
+          // Moderate tolerance for WebGL rendering differences
+          maxDiffPixels: 300,
+          threshold: 0.2,
+        });
       });
     });
   });

@@ -93,7 +93,7 @@ export const ToaGaliMataModel = forwardRef<
   return (
     <group ref={group} dispose={null}>
       <group name='Scene'>
-        <group name='Toa'>
+        <group name='Toa' position={[0, 2.5, 0]}>
           <primitive object={nodes.Body} />
         </group>
       </group>
