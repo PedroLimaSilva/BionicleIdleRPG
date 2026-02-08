@@ -155,8 +155,10 @@ function copySpecialProperties(
     }
   }
   if (needsMetalness) {
-    cloned.metalness = 0.85;
-    cloned.roughness = 0.1;
+    cloned.metalness = originalMetalness;
+    if (originalMetalness > 0.5) {
+      cloned.roughness = 0.1;
+    }
   }
   return cloned;
 }
