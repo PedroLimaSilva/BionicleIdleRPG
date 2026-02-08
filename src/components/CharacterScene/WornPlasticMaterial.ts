@@ -1,4 +1,9 @@
-import { ColorRepresentation, DoubleSide, MeshStandardMaterial } from 'three';
+import {
+  Color,
+  ColorRepresentation,
+  DoubleSide,
+  MeshStandardMaterial,
+} from 'three';
 
 type WornPlasticOptions = {
   color?: ColorRepresentation;
@@ -93,7 +98,14 @@ export function createWornPlasticMaterial({
 
 const materialCache = new Map<string, MeshStandardMaterial>();
 
-export const getWornMaterial = (key: string, color: ColorRepresentation) => {
+/**
+ * Returns a shared worn plastic material for the given color. All pieces
+ * of the same color share the same material instance. Do not mutate the
+ * returned material's color; clone it if you need a variant (e.g. emissive
+ * or transparent).
+ */
+export function getWornMaterial(color: ColorRepresentation): MeshStandardMaterial {
+  const key = new Color(color).getStyle();
   if (!materialCache.has(key)) {
     materialCache.set(
       key,
@@ -106,4 +118,4 @@ export const getWornMaterial = (key: string, color: ColorRepresentation) => {
     );
   }
   return materialCache.get(key)!;
-};
+}

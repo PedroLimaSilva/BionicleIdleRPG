@@ -55,20 +55,23 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
       const original = materials[materialName] as MeshStandardMaterial;
       if (!original) return;
 
-      const worn = getWornMaterial(materialName, color);
+      let worn = getWornMaterial(color);
 
-      worn.color.set(color);
+      const needsEmissive =
+        'emissive' in original && original.emissiveIntensity > 1;
+      const needsTransparent =
+        original.transparent && original.opacity < 1;
 
-      // preserve emissive behavior
-      if ('emissive' in original && original.emissiveIntensity > 1) {
-        worn.emissive.set(color);
-        worn.emissiveIntensity = original.emissiveIntensity;
-      }
-
-      // preserve transparent behavior
-      if (original.transparent && original.opacity < 1) {
-        worn.transparent = true;
-        worn.opacity = original.opacity;
+      if (needsEmissive || needsTransparent) {
+        worn = worn.clone();
+        if (needsEmissive) {
+          worn.emissive.set(color);
+          worn.emissiveIntensity = original.emissiveIntensity;
+        }
+        if (needsTransparent) {
+          worn.transparent = true;
+          worn.opacity = original.opacity;
+        }
       }
 
       // assign to all meshes using this material
