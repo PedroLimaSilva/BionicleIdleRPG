@@ -83,6 +83,11 @@ function CharacterFraming() {
   useEffect(() => {
     if (!(camera instanceof OrthographicCamera)) return;
 
+    // Skip when container has no layout yet (e.g. hidden via CSS).
+    // OrthographicCamera.updateProjectionMatrix() divides by zoom internally;
+    // zoom=0 causes division by zero → Infinity/NaN in projection matrix.
+    if (size.width <= 0 || size.height <= 0) return;
+
     // Look head-on from the front, vertically centered on the cylinder
     camera.position.set(0, CYLINDER_HEIGHT / 2, 100);
     camera.lookAt(0, CYLINDER_HEIGHT / 2, 0);
@@ -117,7 +122,7 @@ export function CharacterScene({
         snap={false}
         speed={2}
         zoom={1}
-        polar={[0,0]}
+        polar={[0, 0]}
         config={{ mass: 0.5, tension: 170, friction: 26 }}
       >
         <Suspense fallback={null}>
