@@ -5,10 +5,7 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
 import { setupAnimationForTestMode } from '../../utils/testMode';
-import {
-  createWornPlasticMaterial,
-  getWornMaterial,
-} from './WornPlasticMaterial';
+import { getWornMaterial } from './WornPlasticMaterial';
 
 const MAT_COLOR_MAP = {
   // Head: 'head',
@@ -50,6 +47,29 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   });
 
   useEffect(() => {
+    // Save current mesh materials before any mutations. When the effect
+    // re-runs (e.g. matoran.colors changes), the cleanup function restores
+    // these originals so the `=== original` check in applyColor still works.
+    const savedMaterials = new Map<Mesh, MeshStandardMaterial>();
+    Object.values(nodes).forEach((node: unknown) => {
+      if ((node as Mesh).isMesh) {
+        savedMaterials.set(
+          node as Mesh,
+          (node as Mesh).material as MeshStandardMaterial,
+        );
+      }
+    });
+    if (nodes.Masks) {
+      (nodes.Masks as Group).children.forEach((child) => {
+        if ((child as Mesh).isMesh && !savedMaterials.has(child as Mesh)) {
+          savedMaterials.set(
+            child as Mesh,
+            (child as Mesh).material as MeshStandardMaterial,
+          );
+        }
+      });
+    }
+
     const colorMap = matoran.colors;
     const applyColor = (materialName: string, color: Color) => {
       const original = materials[materialName] as MeshStandardMaterial;
@@ -59,8 +79,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
       const needsEmissive =
         'emissive' in original && original.emissiveIntensity > 1;
-      const needsTransparent =
-        original.transparent && original.opacity < 1;
+      const needsTransparent = original.transparent;
 
       if (needsEmissive || needsTransparent) {
         worn = worn.clone();
@@ -95,20 +114,20 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
       if (isTarget && matoran.isMaskTransparent && (mask as Mesh).isMesh) {
         const mesh = mask as Mesh;
-
-        const worn = createWornPlasticMaterial({
-          color: matoran.colors['mask'],
-          roughness: 0.4,
-          roughnessNoise: 0.1,
-          fresnelStrength: 0.25,
-        });
-
+        const worn = getWornMaterial(matoran.colors['mask']).clone();
         worn.transparent = true;
         worn.opacity = 0.8;
-
         mesh.material = worn;
       }
     });
+
+    return () => {
+      // Restore the original GLTF materials so the next effect run can
+      // match meshes by their original material reference.
+      savedMaterials.forEach((material, mesh) => {
+        mesh.material = material;
+      });
+    };
   }, [nodes, materials, matoran]);
 
   return (

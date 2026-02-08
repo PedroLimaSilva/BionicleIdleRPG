@@ -1,9 +1,13 @@
 import { useEffect, useRef } from 'react';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
 import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
+import {
+  applyWornPlasticToObject,
+  getWornMaterial,
+} from './WornPlasticMaterial';
 
 export function ToaOnuaMataModel({
   matoran,
@@ -11,7 +15,7 @@ export function ToaOnuaMataModel({
   matoran: RecruitedCharacterData & BaseMatoran;
 }) {
   const group = useRef<Group>(null);
-  const { nodes, materials, animations } = useGLTF(
+  const { nodes, animations } = useGLTF(
     import.meta.env.BASE_URL + 'toa_onua_mata.glb'
   );
 
@@ -35,21 +39,29 @@ export function ToaOnuaMataModel({
   }, [actions, mixer]);
 
   useEffect(() => {
+    applyWornPlasticToObject(nodes.Body);
+  }, [nodes.Body]);
+
+  useEffect(() => {
+    const maskColor = (matoran.maskColorOverride ||
+      matoran.colors.mask) as Color;
     nodes.Masks.children.forEach((mask) => {
       const mesh = mask as Mesh;
-      mesh.material = materials['Onua Black02'].clone();
-      const mat = mesh.material as MeshStandardMaterial;
-      mat.color.set(
-        (matoran.maskColorOverride || matoran.colors.mask) as Color
-      );
-      mat.metalness =
-        matoran.maskColorOverride === LegoColor.PearlGold ? 0.5 : 0;
-      if (mask.name === Mask.Kaukau) {
-        mat.transparent = true;
-        mat.opacity = 0.8;
+      let mat = getWornMaterial(maskColor);
+      const needsTransparent = mask.name === Mask.Kaukau;
+      const needsMetalness =
+        matoran.maskColorOverride === LegoColor.PearlGold;
+      if (needsTransparent || needsMetalness) {
+        mat = mat.clone();
+        if (needsTransparent) {
+          mat.transparent = true;
+          mat.opacity = 0.8;
+        }
+        if (needsMetalness) mat.metalness = 0.5;
       }
+      mesh.material = mat;
     });
-  }, [nodes, materials, matoran]);
+  }, [nodes, matoran]);
 
   useEffect(() => {
     const maskTarget = matoran.maskOverride || matoran.mask;
