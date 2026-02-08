@@ -92,8 +92,8 @@ export const ToaTahuMataModel = forwardRef<
           mat.opacity = 0.8;
         }
         if (needsMetalness) {
-          mat.metalness = 1;
-          mat.roughness = 0.1;
+          mat.metalness = 0.5;
+          mat.roughness = 0.3;
         }
       }
       mesh.material = mat;

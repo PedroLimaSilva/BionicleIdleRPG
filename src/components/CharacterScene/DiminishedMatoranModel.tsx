@@ -72,18 +72,20 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
       let standard = getStandardPlasticMaterial(color);
 
       const needsEmissive =
-        'emissive' in original && (original.emissiveIntensity ?? 0) > 0;
+        original.emissive && (original.emissiveIntensity ?? 0) > 0;
       const needsTransparent = original.transparent;
 
       if (needsEmissive || needsTransparent) {
         standard = standard.clone();
-        if (needsEmissive) {
+        if (needsEmissive && original.emissive) {
           standard.emissive = original.emissive.clone();
           standard.emissiveIntensity = original.emissiveIntensity ?? 0;
         }
         if (needsTransparent) {
           standard.transparent = true;
           standard.opacity = original.opacity ?? 1;
+          standard.roughness = 0;
+          standard.metalness = 0.85;
         }
       }
 

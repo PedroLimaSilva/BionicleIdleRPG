@@ -3,7 +3,7 @@ import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { EffectComposer, SSAO } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
-import { OrthographicCamera, SRGBColorSpace } from 'three';
+import { OrthographicCamera } from 'three';
 
 import {
   BaseMatoran,
@@ -71,21 +71,6 @@ function CharacterModel({
 }
 
 /**
- * Ensures the renderer outputs in sRGB so postprocessing (EffectComposer)
- * doesn’t leave the final image in linear space, which would look desaturated.
- */
-function CharacterSceneColorSpace() {
-  const gl = useThree((s) => s.gl);
-  useEffect(() => {
-    gl.outputColorSpace = SRGBColorSpace;
-    return () => {
-      gl.outputColorSpace = SRGBColorSpace;
-    };
-  }, [gl]);
-  return null;
-}
-
-/**
  * Positions the shared orthographic camera so it looks head-on at the
  * cylinder volume defined in BoundsCylinder.  Zoom is set so the
  * cylinder just fits the viewport – whichever dimension is tighter
@@ -129,7 +114,6 @@ export function CharacterScene({
 }) {
   return (
     <>
-      <CharacterSceneColorSpace />
       <CharacterFraming />
       <Environment preset='city' />
       <directionalLight position={[3, 5, 2]} intensity={1.2} />
