@@ -21,7 +21,9 @@
     "test:e2e:docker:build": "docker-compose -f docker-compose.playwright.yml build",
     "deploy": "yarn build && gh-pages -d dist",
     "preview": "vite preview",
-    "compress": "npx gltfjsx --transform --types --keepnames --keepgroups --keepmeshes --keepmaterials"
+    "compress": "npx gltfjsx --transform --types --keepnames --keepgroups --keepmeshes --keepmaterials",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@react-three/drei": "9.92.7",
@@ -66,7 +68,8 @@
     "vite-plugin-pwa": "^0.21.1",
     "vite-plugin-watch": "^0.3.1",
     "workbox-core": "^7.3.0",
-    "workbox-window": "^7.3.0"
+    "workbox-window": "^7.3.0",
+    "prettier": "^3.4.2"
   },
   "resolutions": {
     "sharp": "0.32.6",
