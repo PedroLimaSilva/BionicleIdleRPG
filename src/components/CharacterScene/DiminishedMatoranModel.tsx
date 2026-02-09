@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { BaseMatoran } from '../../types/Matoran';
-import { Group, Mesh, MeshStandardMaterial, Vector3 } from 'three';
+import {
+  Color as ThreeColor,
+  Group,
+  Mesh,
+  MeshStandardMaterial,
+  Vector3,
+} from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
@@ -72,13 +78,15 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
       let standard = getStandardPlasticMaterial(color);
 
       const needsEmissive =
-        original.emissive && (original.emissiveIntensity ?? 0) > 0;
+        materialName === 'GlowingEyes' &&
+        original.emissive &&
+        (original.emissiveIntensity ?? 0) > 0;
       const needsTransparent = original.transparent;
 
       if (needsEmissive || needsTransparent) {
         standard = standard.clone();
         if (needsEmissive && original.emissive) {
-          standard.emissive = original.emissive.clone();
+          standard.emissive = new ThreeColor(color);
           standard.emissiveIntensity = original.emissiveIntensity ?? 0;
         }
         if (needsTransparent) {
