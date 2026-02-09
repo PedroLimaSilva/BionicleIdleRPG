@@ -53,8 +53,9 @@ export const BattlePrep: React.FC = () => {
   if (!currentEncounter) return null;
 
   return (
-    <div className="page-container">
+    <div className="page-container battle">
       <h1 className="title">Select Your Team</h1>
+      <div className="battle-arena"></div>
       <div className="battle-prep">
         <h2>Preparing for: {currentEncounter.name}</h2>
 

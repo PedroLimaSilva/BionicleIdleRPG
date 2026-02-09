@@ -15,7 +15,7 @@ export const BattleInProgress = () => {
   }, [playActionQueue, actionQueue, isRunningRound]);
 
   return (
-    <div className="page-container">
+    <div className="page-container battle">
       <h1 className="title">Wave {currentWave + 1}</h1>
 
       <div className="battle-arena">

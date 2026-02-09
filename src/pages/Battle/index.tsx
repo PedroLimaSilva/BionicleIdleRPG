@@ -45,9 +45,11 @@ export const BattlePage: React.FC = () => {
     phase === BattlePhase.Victory
   ) {
     return (
-      <div className="page-container">
+      <div className="page-container battle">
         <h1 style={{ fontSize: '8vw' }}>{phase}</h1>
-        <p>Battle summary goes here</p>
+        <div className="battle-arena">
+          <p>Battle summary goes here</p>
+        </div>
         <div
           className="battle-buttons"
           style={{ justifyContent: 'center', paddingBottom: '132px' }}
