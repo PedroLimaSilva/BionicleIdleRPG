@@ -35,14 +35,16 @@ export const CharacterInventory: React.FC = () => {
   }, [recruitedCharacters, activeTab]);
 
   return (
-    <div className='page-container'>
-      <Tabs
-        tabs={tabs}
-        classNames='character-inventory-tabs'
-        activeTab={activeTab}
-        onTabChange={(tab: string) => setActiveTab(tab as 'matoran' | 'toa')}
-      />
-      <div className='character-grid'>
+    <div className="page-container">
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Tabs
+          tabs={tabs}
+          classNames="character-inventory-tabs"
+          activeTab={activeTab}
+          onTabChange={(tab: string) => setActiveTab(tab as 'matoran' | 'toa')}
+        />
+      </div>
+      <div className="character-grid">
         {characters.map((matoran) => {
           const jobStatus = getJobStatus(matoran);
 
@@ -55,17 +57,14 @@ export const CharacterInventory: React.FC = () => {
                   matoran={{ ...matoran_dex, ...matoran }}
                   styles={'matoran-avatar model-preview'}
                 />
-                <div className='card-header'>
+                <div className="card-header">
                   {'  ' + matoran_dex.name}
-                  <div className='level-label'>
-                    Level {getLevelFromExp(matoran.exp)}
-                  </div>
+                  <div className="level-label">Level {getLevelFromExp(matoran.exp)}</div>
                   <JobStatusBadge
                     label={
                       matoran.assignment?.job
                         ? JOB_DETAILS[matoran.assignment?.job].label
-                        : QUESTS.find((q) => q.id === matoran.quest)?.name ||
-                          jobStatus
+                        : QUESTS.find((q) => q.id === matoran.quest)?.name || jobStatus
                     }
                     status={jobStatus}
                   />
@@ -76,9 +75,9 @@ export const CharacterInventory: React.FC = () => {
         })}
       </div>
       {buyableCharacters.length !== 0 && (
-        <div className='recruit-button'>
-          <Link to='/recruitment'>
-            <button type='button' className='recruitment-button'>
+        <div className="recruit-button">
+          <Link to="/recruitment">
+            <button type="button" className="recruitment-button">
               Recruit More
             </button>
           </Link>
