@@ -78,7 +78,9 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
       let standard = getStandardPlasticMaterial(color);
 
       const needsEmissive =
-        original.emissive && (original.emissiveIntensity ?? 0) > 0;
+        materialName === 'GlowingEyes' &&
+        original.emissive &&
+        (original.emissiveIntensity ?? 0) > 0;
       const needsTransparent = original.transparent;
 
       if (needsEmissive || needsTransparent) {
