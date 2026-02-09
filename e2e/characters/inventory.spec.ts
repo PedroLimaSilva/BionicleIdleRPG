@@ -98,6 +98,18 @@ test.describe('Character Inventory Page', () => {
           maxDiffPixels: 150,
         });
       }
+
+      await page.locator('.tab-btn').filter({ hasText: 'toa' }).click();
+      const toaCards = await page.locator('.character-card').all();
+
+      for (const card of toaCards) {
+        // Hover over the card to trigger accent color
+        await card.hover();
+
+        await expect(page).toHaveScreenshot({
+          maxDiffPixels: 150,
+        });
+      }
     });
   });
 });

@@ -15,6 +15,7 @@ import {
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { JobAssignment } from './JobAssignment';
+import { Tabs } from '../../components/Tabs';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -69,22 +70,14 @@ export const CharacterDetail: React.FC = () => {
           <div className='divider'></div>
         </div>
       </div>
-      <div className='character-detail-tabs'>
-        <div className='character-detail-tabs-inner'>
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-      </div>
+      <Tabs
+        tabs={tabs}
+        classNames='character-detail-tabs'
+        activeTab={activeTab}
+        onTabChange={(tab: string) => setActiveTab(tab)}
+      />
       <div className='character-detail-content'>
-        <div className='divider'></div>
-        <div className='character-detail-section'>
+        <div className='character-detail-section' id={activeTab}>
           {activeTab === 'stats' && (
             <>
               <LevelProgress exp={matoran.exp} />
