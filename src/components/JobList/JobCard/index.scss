@@ -1,9 +1,5 @@
 .job-card {
-  background: linear-gradient(
-    135deg,
-    var(--color-surface-low),
-    var(--color-surface-mid)
-  );
+  background: linear-gradient(135deg, var(--color-surface-low), var(--color-surface-mid));
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
   padding: 1rem;
@@ -32,11 +28,7 @@
     border-color: var(--theme-element-primary);
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
-    background: linear-gradient(
-      135deg,
-      var(--color-surface-mid),
-      var(--color-surface-high)
-    );
+    background: linear-gradient(135deg, var(--color-surface-mid), var(--color-surface-high));
 
     &::before {
       opacity: 1;
@@ -46,11 +38,7 @@
   &.assigned {
     border-color: var(--theme-element-primary);
     box-shadow: var(--shadow-glow);
-    background: linear-gradient(
-      135deg,
-      var(--color-surface-high),
-      var(--color-surface-elevated)
-    );
+    background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
 
     &::before {
       opacity: 1;
@@ -60,11 +48,7 @@
   &.selected {
     border-color: var(--theme-element-glow);
     box-shadow: var(--shadow-glow-strong);
-    background: linear-gradient(
-      135deg,
-      var(--color-surface-high),
-      var(--color-surface-elevated)
-    );
+    background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
     border-width: 2px;
 
     &::before {

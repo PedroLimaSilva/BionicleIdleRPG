@@ -9,11 +9,13 @@ Refactored the E2E test mode system from URL parameter-based to localStorage-bas
 ### 1. Test Mode System (URL → localStorage)
 
 **Before:**
+
 - Test mode enabled via `?testMode=true` URL parameter
 - Required custom navigation wrappers to preserve parameter across navigation
 - Components: `TestModeLink`, `TestModeNavLink`, `useTestModeNavigate`
 
 **After:**
+
 - Test mode enabled via `localStorage.setItem('TEST_MODE', 'true')`
 - Persists automatically across navigation
 - Uses standard React Router components (`Link`, `NavLink`, `useNavigate`)
@@ -21,15 +23,18 @@ Refactored the E2E test mode system from URL parameter-based to localStorage-bas
 #### Files Modified:
 
 **Core Utilities:**
+
 - `src/utils/testMode.ts` - Updated `isTestMode()` to read from localStorage instead of URL
 
 **Test Helpers:**
+
 - `e2e/helpers.ts`:
   - Added `enableTestMode(page)` - Sets localStorage before page load
   - Updated `setupGameState(page, state)` - Auto-enables test mode
   - Renamed `gotoWithTestMode()` → `goto()` - Removed URL parameter logic
 
 **React Components:**
+
 - `src/components/NavBar/index.tsx` - Use `NavLink` instead of `TestModeNavLink`
 - `src/pages/Recruitment/index.tsx` - Use `useNavigate` instead of `useTestModeNavigate`
 - `src/pages/Battle/index.tsx` - Use `Link` and `useNavigate`
@@ -37,6 +42,7 @@ Refactored the E2E test mode system from URL parameter-based to localStorage-bas
 - `src/pages/CharacterInventory/index.tsx` - Use `Link`
 
 **Test Files:**
+
 - `e2e/characters/recruitment.spec.ts`
 - `e2e/characters/inventory.spec.ts`
 - `e2e/characters/detail.spec.ts`
@@ -47,6 +53,7 @@ Refactored the E2E test mode system from URL parameter-based to localStorage-bas
 - `e2e/quests.spec.ts`
 
 All updated to use:
+
 ```typescript
 await enableTestMode(page);
 await goto(page, '/path');
@@ -56,11 +63,13 @@ await goto(page, '/path');
 ```
 
 **Files Removed:**
+
 - `src/components/TestModeLink.tsx`
 - `src/components/TestModeNavLink.tsx`
 - `src/hooks/useTestModeNavigate.tsx` (already deleted by user)
 
 **Documentation:**
+
 - `e2e/README.md` - Updated test mode documentation
 - `PLAYWRIGHT_SETUP.md` - Updated implementation details
 
@@ -79,6 +88,7 @@ await goto(page, '/path');
 #### Modified Files:
 
 **playwright.config.ts:**
+
 - Added environment-based snapshot path configuration
 - CI/Docker: Uses `*-snapshots/` (committed to git)
 - Local: Uses `*-snapshots-local/` (ignored by git)
@@ -91,14 +101,17 @@ const snapshotPathTemplate = isCI
 ```
 
 **.gitignore:**
+
 - Added `**/*-snapshots-local/` to ignore local macOS snapshots
 
 **package.json:**
+
 - Added `test:e2e:docker` - Run tests in Docker
 - Added `test:e2e:docker:update` - Update snapshots in Docker
 - Added `test:e2e:docker:build` - Build Docker image
 
 **e2e/README.md:**
+
 - Added Docker testing section with quick commands
 
 ## Usage
@@ -136,12 +149,14 @@ yarn test:e2e:docker
 ## Benefits
 
 ### Test Mode Refactoring:
+
 1. **Simpler code** - No custom navigation wrappers needed
 2. **Better persistence** - localStorage survives page reloads and navigation
 3. **Standard React Router** - Uses official components, easier to maintain
 4. **Cleaner URLs** - No `?testMode=true` in URLs during tests
 
 ### Docker Support:
+
 1. **Consistent screenshots** - Match CI environment exactly
 2. **Local flexibility** - Run tests on macOS without worrying about differences
 3. **Clear separation** - CI snapshots committed, local snapshots ignored
@@ -153,4 +168,3 @@ yarn test:e2e:docker
 - All tests updated to use new localStorage-based approach
 - Documentation updated to reflect new system
 - Docker setup ready for cross-platform consistency
-

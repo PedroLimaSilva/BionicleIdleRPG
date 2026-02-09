@@ -1,9 +1,5 @@
 .activity-log {
-  background: linear-gradient(
-    135deg,
-    var(--color-surface-mid) 0%,
-    var(--color-surface-low) 100%
-  );
+  background: linear-gradient(135deg, var(--color-surface-mid) 0%, var(--color-surface-low) 100%);
   border: 2px solid var(--color-border-muted);
   padding: 1.5rem;
   border-radius: var(--border-radius-lg);
@@ -14,7 +10,7 @@
   height: 60vh;
   margin-left: auto;
   margin-right: auto;
-  box-shadow: 
+  box-shadow:
     var(--shadow-lg),
     0 0 1px rgba(255, 255, 255, 0.1) inset;
   backdrop-filter: blur(8px);
@@ -56,7 +52,7 @@
     overflow-x: visible;
     position: relative;
     z-index: 1;
-    
+
     /* Custom scrollbar */
     &::-webkit-scrollbar {
       width: 8px;
@@ -146,11 +142,7 @@
     margin-top: 1rem;
     position: sticky;
     bottom: 0;
-    background: linear-gradient(
-      135deg,
-      var(--color-surface-mid),
-      var(--color-surface-high)
-    );
+    background: linear-gradient(135deg, var(--color-surface-mid), var(--color-surface-high));
     color: var(--color-text-muted);
     border: 1px solid var(--color-border-muted);
     border-radius: var(--border-radius-sm);
@@ -163,11 +155,7 @@
     &:hover {
       color: var(--color-accent);
       border-color: var(--color-accent);
-      background: linear-gradient(
-        135deg,
-        var(--color-surface-high),
-        var(--color-surface-elevated)
-      );
+      background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
       box-shadow: var(--shadow-md);
     }
   }

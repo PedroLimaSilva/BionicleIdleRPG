@@ -7,11 +7,7 @@ import { ElementTag } from '../../components/ElementTag';
 import { useEffect, useMemo, useState } from 'react';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
-import {
-  getRecruitedMatoran,
-  isMatoran,
-  isToa,
-} from '../../services/matoranUtils';
+import { getRecruitedMatoran, isMatoran, isToa } from '../../services/matoranUtils';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { JobAssignment } from './JobAssignment';
@@ -25,7 +21,7 @@ export const CharacterDetail: React.FC = () => {
 
   const matoran = useMemo(
     () => getRecruitedMatoran(String(id), recruitedCharacters)!,
-    [id, recruitedCharacters],
+    [id, recruitedCharacters]
   );
 
   const [activeTab, setActiveTab] = useState('stats');
@@ -58,26 +54,24 @@ export const CharacterDetail: React.FC = () => {
     return <p>Something is wrong, this matoran does not exist</p>;
   }
   return (
-    <div
-      className={`page-container character-detail element-${matoran.element}`}
-    >
-      <div className='character-detail-visualization'>
-        <div className='character-header'>
-          <h1 className='character-name'>{matoran.name}</h1>
+    <div className={`page-container character-detail element-${matoran.element}`}>
+      <div className="character-detail-visualization">
+        <div className="character-header">
+          <h1 className="character-name">{matoran.name}</h1>
         </div>
 
-        <div id='model-frame'>
-          <div className='divider'></div>
+        <div id="model-frame">
+          <div className="divider"></div>
         </div>
       </div>
       <Tabs
         tabs={tabs}
-        classNames='character-detail-tabs'
+        classNames="character-detail-tabs"
         activeTab={activeTab}
         onTabChange={(tab: string) => setActiveTab(tab)}
       />
-      <div className='character-detail-content'>
-        <div className='character-detail-section' id={activeTab}>
+      <div className="character-detail-content">
+        <div className="character-detail-section" id={activeTab}>
           {activeTab === 'stats' && (
             <>
               <LevelProgress exp={matoran.exp} />
@@ -103,9 +97,7 @@ export const CharacterDetail: React.FC = () => {
               )*/}
             </>
           )}
-          {activeTab === 'equipment' && isToa(matoran) && (
-            <MaskCollection matoran={matoran} />
-          )}
+          {activeTab === 'equipment' && isToa(matoran) && <MaskCollection matoran={matoran} />}
 
           {activeTab === 'tasks' && (
             <div>
@@ -116,7 +108,7 @@ export const CharacterDetail: React.FC = () => {
               {matoran.quest && (
                 <div>
                   <p>Assigned Quest:</p>
-                  <Link to='/quests'>
+                  <Link to="/quests">
                     <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
                   </Link>
                 </div>

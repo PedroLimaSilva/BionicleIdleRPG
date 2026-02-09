@@ -5,12 +5,14 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 ## 🎮 Features
 
 ### Character Management
+
 - **Recruitment System**: Recruit Matoran and Toa characters using widgets (currency) and required items
 - **Character Progression**: Characters gain XP from jobs and quests, leveling up to become more powerful
 - **Character Customization**: Override mask colors and appearances
 - **3D Character Rendering**: View your characters in 3D using React Three Fiber
 
 ### Idle Gameplay
+
 - **Job System**: Assign characters to element-based jobs that produce resources over time
   - Jobs have element affinities (Fire, Water, Air, Ice, Stone, Earth, Light, Shadow)
   - Characters with matching elements perform better at jobs
@@ -18,12 +20,14 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - **Offline Progress**: Game continues to generate resources when you're not playing
 
 ### Quest System
+
 - **Story Quests**: Send characters on quests with specific requirements
 - **Quest Requirements**: May require specific characters, items, or minimum levels
 - **Quest Rewards**: Earn XP, loot, currency, and unlock new characters
 - **Quest Progress Tracking**: Monitor active quests and their completion status
 
 ### Combat System
+
 - **Turn-Based Battles**: Engage in strategic turn-based combat
 - **Mask Powers**: Each character's mask provides unique abilities
   - Mask of Shielding (Hau): Full damage immunity for 1 turn
@@ -34,11 +38,13 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - **Wave-Based Encounters**: Face multiple waves of enemies (Bohrok swarms, etc.)
 
 ### Inventory & Items
+
 - **Resource Collection**: Gather items from jobs and quests
 - **Item Crafting**: Use items to recruit new characters
 - **Element-Based Items**: Items are associated with different elements
 
 ### Game Persistence
+
 - **Auto-Save**: Game state automatically saves to localStorage
 - **Offline Progress**: Resume with resources generated while offline
 - **State Versioning**: Game state versioning for save compatibility
@@ -67,17 +73,20 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd BionicleIdleRpg
    ```
 
 2. **Install dependencies**
+
    ```bash
    yarn install
    ```
 
 3. **Start the development server**
+
    ```bash
    yarn dev
    ```
@@ -139,7 +148,9 @@ src/
 ## 🎯 Game Mechanics
 
 ### Elements
+
 Characters and items belong to one of eight elements:
+
 - **Fire** (Ta-Koro)
 - **Water** (Ga-Koro)
 - **Air** (Le-Wahi)
@@ -150,7 +161,9 @@ Characters and items belong to one of eight elements:
 - **Shadow**
 
 ### Masks
+
 Each character wears a Kanohi mask with unique powers:
+
 - **Hau** (Mask of Shielding)
 - **Kakama** (Mask of Speed)
 - **Pakari** (Mask of Strength)
@@ -159,21 +172,27 @@ Each character wears a Kanohi mask with unique powers:
 - And many more!
 
 ### Jobs
+
 Jobs are element-based activities that generate resources:
+
 - Characters with matching elements perform better
 - Jobs have different production rates
 - Some jobs require quest completion to unlock
 - Jobs generate widgets (currency) and items over time
 
 ### Quests
+
 Quests are story-driven activities:
+
 - Require specific characters, items, or minimum levels
 - Have time-based durations
 - Reward XP, items, currency, and character unlocks
 - Unlock new content as you progress
 
 ### Combat
+
 Turn-based combat system:
+
 - Wave-based encounters
 - Mask powers with cooldowns
 - Elemental strengths and weaknesses
@@ -182,6 +201,7 @@ Turn-based combat system:
 ## 🎨 3D Models
 
 The game includes 3D models for:
+
 - Toa Mata (Tahu, Gali, Pohatu, Onua, Kopaka, Lewa)
 - Matoran characters
 - Bohrok enemies
@@ -192,6 +212,7 @@ Models are stored in `public/` as GLB files and rendered using React Three Fiber
 ## 💾 Game Persistence
 
 The game automatically saves to localStorage:
+
 - Game state is saved whenever critical changes occur
 - Offline progress is calculated when you return
 - Save data includes versioning for compatibility
@@ -200,6 +221,7 @@ The game automatically saves to localStorage:
 ## 🐛 Debug Mode
 
 Enable debug mode in the Settings page to see:
+
 - Performance metrics (FPS, render times)
 - Additional debugging information
 

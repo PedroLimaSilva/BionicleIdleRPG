@@ -1,11 +1,5 @@
 import { test, expect } from '@playwright/test';
-import {
-  enableTestMode,
-  goto,
-  INITIAL_GAME_STATE,
-  setupGameState,
-  deviceHover,
-} from './helpers';
+import { enableTestMode, goto, INITIAL_GAME_STATE, setupGameState, deviceHover } from './helpers';
 
 const INVENTORY_GAME_STATE = {
   ...INITIAL_GAME_STATE,

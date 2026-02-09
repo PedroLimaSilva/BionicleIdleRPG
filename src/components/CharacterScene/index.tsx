@@ -5,11 +5,7 @@ import { EffectComposer, SSAO, SelectiveBloom } from '@react-three/postprocessin
 import { BlendFunction } from 'postprocessing';
 import { Mesh, MeshStandardMaterial, Object3D, OrthographicCamera } from 'three';
 
-import {
-  BaseMatoran,
-  MatoranStage,
-  RecruitedCharacterData,
-} from '../../types/Matoran';
+import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
 import { ToaTahuMataModel } from './ToaTahuMataModel';
 import { ToaGaliMataModel } from './ToaGaliMataModel';
@@ -19,11 +15,7 @@ import { ToaOnuaMataModel } from './ToaOnuaMataModel';
 import { ToaLewaMataModel } from './ToaLewaMataModel';
 import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 
-function CharacterModel({
-  matoran,
-}: {
-  matoran: BaseMatoran & RecruitedCharacterData;
-}) {
+function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   switch (matoran.stage) {
     case MatoranStage.ToaMata:
       switch (matoran.id) {
@@ -71,26 +63,21 @@ function CharacterModel({
 }
 
 /** Names that identify eye/glowing-eye/lens meshes in Matoran and Toa GLTFs (mesh or material). */
-export const EYE_MESH_NAMES = [
-  'Brain',
-  'GlowingEyes',
-  'Eyes',
-  'Eye',
-  'glowing_eyes',
-  'lens',
-];
+export const EYE_MESH_NAMES = ['Brain', 'GlowingEyes', 'Eyes', 'Eye', 'glowing_eyes', 'lens'];
 
 function isEyeMesh(mesh: Mesh): boolean {
   const name = (mesh.name || '').toLowerCase();
   const matName = ((mesh.material as { name?: string })?.name ?? '').toLowerCase();
   return EYE_MESH_NAMES.some(
-    (eye) =>
-      name.includes(eye.toLowerCase()) || matName.includes(eye.toLowerCase()),
+    (eye) => name.includes(eye.toLowerCase()) || matName.includes(eye.toLowerCase())
   );
 }
 
 /** Collects only eye meshes (by name) that have emissive material, for selective bloom */
-function useEyeMeshes(characterRootRef: React.RefObject<Object3D | null>, matoran: BaseMatoran & RecruitedCharacterData) {
+function useEyeMeshes(
+  characterRootRef: React.RefObject<Object3D | null>,
+  matoran: BaseMatoran & RecruitedCharacterData
+) {
   const [eyeMeshes, setEyeMeshes] = useState<Object3D[]>([]);
 
   useLayoutEffect(() => {
@@ -105,11 +92,7 @@ function useEyeMeshes(characterRootRef: React.RefObject<Object3D | null>, matora
         if (!(obj as Mesh).isMesh) return;
         const mesh = obj as Mesh;
         const mat = mesh.material as MeshStandardMaterial | undefined;
-        if (
-          mat &&
-          (mat.emissiveIntensity ?? 0) > 0 &&
-          isEyeMesh(mesh)
-        ) {
+        if (mat && (mat.emissiveIntensity ?? 0) > 0 && isEyeMesh(mesh)) {
           collected.push(mesh);
         }
       });
@@ -149,21 +132,14 @@ function CharacterFraming() {
     camera.far = 1000;
 
     // Zoom so the cylinder just fits the viewport
-    camera.zoom = Math.min(
-      size.width / (CYLINDER_RADIUS * 2),
-      size.height / CYLINDER_HEIGHT,
-    );
+    camera.zoom = Math.min(size.width / (CYLINDER_RADIUS * 2), size.height / CYLINDER_HEIGHT);
     camera.updateProjectionMatrix();
   }, [camera, size]);
 
   return null;
 }
 
-export function CharacterScene({
-  matoran,
-}: {
-  matoran: BaseMatoran & RecruitedCharacterData;
-}) {
+export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const characterRootRef = useRef<Object3D>(null);
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
   const eyeMeshes = useEyeMeshes(characterRootRef, matoran);
@@ -171,23 +147,17 @@ export function CharacterScene({
   return (
     <>
       <CharacterFraming />
-      <Environment preset='city' />
+      <Environment preset="city" />
       <directionalLight
         ref={(el) => {
-          if (el)
-            setLightsForBloom((prev) =>
-              prev.includes(el) ? prev : [...prev, el],
-            );
+          if (el) setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
         }}
         position={[3, 5, 2]}
         intensity={1.2}
       />
       <directionalLight
         ref={(el) => {
-          if (el)
-            setLightsForBloom((prev) =>
-              prev.includes(el) ? prev : [...prev, el],
-            );
+          if (el) setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
         }}
         position={[-3, 2, -2]}
         intensity={0.4}

@@ -33,19 +33,15 @@ export function JobList({ matoran, onCancel }: JobListProps) {
   };
 
   return (
-    <div className='assign-job-container'>
-      <h2 className='assign-job-title'>Select a Job</h2>
+    <div className="assign-job-container">
+      <h2 className="assign-job-title">Select a Job</h2>
 
-      <div className='job-grid'>
+      <div className="job-grid">
         {jobs.map((job) => {
           const { label, description, rate } = JOB_DETAILS[job];
           const modifier = getProductivityModifier(job, matoran);
           return (
-            <div
-              key={job}
-              onClick={() => setSelectedJob(job)}
-              title={description}
-            >
+            <div key={job} onClick={() => setSelectedJob(job)} title={description}>
               <JobCard
                 classNames={`${selectedJob === job ? 'selected' : ''} ${
                   matoran.assignment?.job === job ? 'assigned' : ''
@@ -60,21 +56,17 @@ export function JobList({ matoran, onCancel }: JobListProps) {
         })}
       </div>
 
-      <div className='job-actions'>
-        <div className='action-row'>
-          <button onClick={onCancel} className='cancel-button'>
+      <div className="job-actions">
+        <div className="action-row">
+          <button onClick={onCancel} className="cancel-button">
             Cancel
           </button>
-          <button
-            onClick={handleAssign}
-            className='confirm-button'
-            disabled={!selectedJob}
-          >
+          <button onClick={handleAssign} className="confirm-button" disabled={!selectedJob}>
             Assign
           </button>
         </div>
         {matoran.assignment && (
-          <button onClick={handleRemoveJob} className='remove-button'>
+          <button onClick={handleRemoveJob} className="remove-button">
             Remove Job
           </button>
         )}

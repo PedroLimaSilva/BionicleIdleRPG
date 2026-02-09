@@ -1,11 +1,13 @@
 # Battle System Specification
 
 ## Overview
+
 The battle system is a turn-based combat system where players select a team of Toa to fight against waves of enemies. Battles are ephemeral - all progress is lost on page reload, with only final rewards being persisted.
 
 ## Battle Flow
 
 ### 1. Battle Selection (Idle Phase)
+
 - User browses available battles
 - Each battle displays:
   - Name and description
@@ -16,6 +18,7 @@ The battle system is a turn-based combat system where players select a team of T
 - User selects a battle to start
 
 ### 2. Team Preparation (Preparing Phase)
+
 - Battle transitions to `BattlePhase.Preparing`
 - First wave of enemies is loaded and displayed
 - User selects up to 3 Toa for their team
@@ -26,6 +29,7 @@ The battle system is a turn-based combat system where players select a team of T
 ### 3. Battle In Progress (Inprogress Phase)
 
 #### Round Structure
+
 Each round consists of:
 
 1. **Pre-Round: Mask Power Selection**
@@ -37,24 +41,24 @@ Each round consists of:
 2. **Round Execution**
    - User clicks "Run Round" button
    - Combat actions are queued and executed sequentially:
-     
+
      a. **Mask Power Activation Phase**
-        - All combatants with `willUseAbility === true` activate their mask powers
-        - Mask power `active` flag is set to `true`
-        - Special case: SPEED mask powers grant an extra turn in the same round
-        - Mask power cooldowns are set to their configured values
-        - `willUseAbility` is reset to `false`
-     
+     - All combatants with `willUseAbility === true` activate their mask powers
+     - Mask power `active` flag is set to `true`
+     - Special case: SPEED mask powers grant an extra turn in the same round
+     - Mask power cooldowns are set to their configured values
+     - `willUseAbility` is reset to `false`
+
      b. **Combat Phase**
-        - Turn order determined by speed stat (highest to lowest)
-        - Each combatant takes their turn in order:
-          - Skip if HP <= 0
-          - Select target based on strategy (Random, LowestHp, MostEffective)
-          - Calculate damage (base damage + element effectiveness + random variance)
-          - Apply mask power effects (damage multipliers, mitigation, etc.)
-          - Play attack/hit animations
-          - Apply damage to target
-          - Update HP values
+     - Turn order determined by speed stat (highest to lowest)
+     - Each combatant takes their turn in order:
+       - Skip if HP <= 0
+       - Select target based on strategy (Random, LowestHp, MostEffective)
+       - Calculate damage (base damage + element effectiveness + random variance)
+       - Apply mask power effects (damage multipliers, mitigation, etc.)
+       - Play attack/hit animations
+       - Apply damage to target
+       - Update HP values
 
 3. **Post-Round**
    - Check victory/defeat conditions
@@ -62,6 +66,7 @@ Each round consists of:
    - Update UI to reflect new state
 
 #### Wave Progression
+
 - When all enemies in current wave reach 0 HP:
   - If more waves remain: Load next wave, heal team (optional), continue battle
   - If final wave: Transition to `BattlePhase.Victory`
@@ -71,6 +76,7 @@ Each round consists of:
 ### 4. Battle Conclusion
 
 #### Victory (Victory Phase)
+
 - Display victory screen
 - Show rewards summary:
   - Experience gained per Toa
@@ -82,11 +88,13 @@ Each round consists of:
 - Return to battle selection
 
 #### Defeat (Defeat Phase)
+
 - Display defeat screen
 - No rewards granted
 - Return to battle selection
 
 #### Retreat (Retreated Phase)
+
 - User can retreat during Preparing or Inprogress phases
 - No rewards granted
 - Return to battle selection
@@ -94,20 +102,21 @@ Each round consists of:
 ## Mask Power System
 
 ### Mask Power Structure
+
 ```typescript
 interface MaskPower {
   description: string;
   shortName: Mask;
   longName: string;
   effect: MaskEffect;
-  active?: boolean;  // Whether the power is currently active
+  active?: boolean; // Whether the power is currently active
 }
 
 interface MaskEffect {
   type: 'ATK_MULT' | 'DMG_MITIGATOR' | 'HEAL' | 'AGGRO' | 'SPEED' | 'ACCURACY_MULT' | 'CONFUSION';
-  duration: CombatDuration;  // How long the effect lasts
-  cooldown: CombatDuration;  // How long until it can be used again
-  multiplier?: number;       // Effect strength
+  duration: CombatDuration; // How long the effect lasts
+  cooldown: CombatDuration; // How long until it can be used again
+  multiplier?: number; // Effect strength
   target: 'self' | 'enemy' | 'allEnemies';
 }
 
@@ -118,6 +127,7 @@ interface CombatDuration {
 ```
 
 ### Mask Power Lifecycle
+
 1. **Initialization**: Cooldown starts at 0 (ready to use)
 2. **Activation**: User toggles `willUseAbility` before round
 3. **Trigger**: At start of round, power activates (`active = true`)
@@ -126,6 +136,7 @@ interface CombatDuration {
 6. **Ready**: When cooldown reaches 0, power can be used again
 
 ### Duration & Cooldown Units
+
 - **attack**: Counts down when this combatant attacks
 - **hit**: Counts down when this combatant is hit
 - **turn**: Counts down after each combatant's turn (1 turn = 1 actor's action check, might be paralized)
@@ -135,6 +146,7 @@ interface CombatDuration {
 ## State Persistence
 
 ### Ephemeral (Lost on Reload)
+
 - Current battle state
 - Current wave number
 - Combatant HP values
@@ -142,6 +154,7 @@ interface CombatDuration {
 - Round progress
 
 ### Persistent (Saved to Game State)
+
 - Toa experience (only on victory)
 - Inventory items (only on victory)
 - Completed battles (for unlocking new content)
@@ -149,12 +162,14 @@ interface CombatDuration {
 ## Technical Implementation Notes
 
 ### Battle State Hook (`useBattleState`)
+
 - Manages all battle state and phase transitions
 - Provides methods: `startBattle`, `confirmTeam`, `runRound`, `advanceWave`, `retreat`, `toggleAbility`
 - Handles victory/defeat detection via useEffect
 - Maintains action queue for sequential combat execution
 
 ### Combat Utils (`combatUtils.ts`)
+
 - `queueCombatRound`: Orchestrates round execution
 - `triggerMaskPowers`: Handles mask power activation
 - `calculateAtkDmg`: Computes damage with element effectiveness
@@ -162,6 +177,7 @@ interface CombatDuration {
 - `generateCombatantStats`: Creates combatant instances from templates
 
 ### Current Implementation Status
+
 - ✅ Basic combat flow
 - ✅ Wave progression
 - ✅ Element effectiveness system
@@ -174,4 +190,3 @@ interface CombatDuration {
 - ❌ Nuva mask powers (team-wide effects)
 - ❌ Reward distribution
 - ❌ Experience gain
-

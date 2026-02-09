@@ -36,9 +36,7 @@ test.describe('Character Detail Page', () => {
       page,
     }) => {
       // find the nav item that ends with "Characters"
-      const charactersNavItem = page
-        .locator('nav a')
-        .filter({ hasText: /Characters$/ });
+      const charactersNavItem = page.locator('nav a').filter({ hasText: /Characters$/ });
       await charactersNavItem.click();
       await waitForCharacterCards(page);
       await expect(page).toHaveScreenshot({
@@ -73,38 +71,31 @@ test.describe('Character Detail Page', () => {
   });
 
   test.describe('Toa Characters', () => {
-    [
-      'Toa_Gali',
-      'Toa_Kopaka',
-      'Toa_Lewa',
-      'Toa_Onua',
-      'Toa_Pohatu',
-      'Toa_Tahu',
-    ].forEach((characterId) => {
-      test(`should render ${characterId} character detail page`, async ({
-        page,
-      }) => {
-        await setupGameState(page, {
-          ...INITIAL_GAME_STATE,
-          recruitedCharacters: [
-            {
-              id: characterId,
-              exp: 0,
-            },
-          ],
-        });
-        await goto(page, `/characters/${characterId}`);
-        await waitForCanvas(page);
+    ['Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu', 'Toa_Tahu'].forEach(
+      (characterId) => {
+        test(`should render ${characterId} character detail page`, async ({ page }) => {
+          await setupGameState(page, {
+            ...INITIAL_GAME_STATE,
+            recruitedCharacters: [
+              {
+                id: characterId,
+                exp: 0,
+              },
+            ],
+          });
+          await goto(page, `/characters/${characterId}`);
+          await waitForCanvas(page);
 
-        // Take screenshot of the entire page including 3D scene
-        await expect(page).toHaveScreenshot({
-          fullPage: true,
-          timeout: 15000,
-          // Moderate tolerance for WebGL rendering differences
-          maxDiffPixels: 300,
-          threshold: 0.2,
+          // Take screenshot of the entire page including 3D scene
+          await expect(page).toHaveScreenshot({
+            fullPage: true,
+            timeout: 15000,
+            // Moderate tolerance for WebGL rendering differences
+            maxDiffPixels: 300,
+            threshold: 0.2,
+          });
         });
-      });
-    });
+      }
+    );
   });
 });

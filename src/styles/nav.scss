@@ -45,11 +45,7 @@
 }
 
 .nav-bar {
-  background: linear-gradient(
-    135deg,
-    rgba(26, 26, 35, 0.95) 0%,
-    rgba(20, 20, 28, 0.9) 100%
-  );
+  background: linear-gradient(135deg, rgba(26, 26, 35, 0.95) 0%, rgba(20, 20, 28, 0.9) 100%);
   backdrop-filter: blur(16px) saturate(180%);
   height: 64px;
   border-radius: 64px;
@@ -106,11 +102,7 @@
       transform: translate(-50%, -50%) scale(0);
       width: 40px;
       height: 40px;
-      background: radial-gradient(
-        circle,
-        var(--color-accent-hover) 0%,
-        transparent 70%
-      );
+      background: radial-gradient(circle, var(--color-accent-hover) 0%, transparent 70%);
       opacity: 0;
       transition: all var(--transition-base);
       border-radius: 50%;

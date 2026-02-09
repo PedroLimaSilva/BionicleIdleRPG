@@ -106,20 +106,17 @@ export const QuestTreePage = () => {
   }, [questStates]);
 
   return (
-    <div className='quest-tree'>
-      <div className='quest-tree__diagram-container'>
-        {isLoading && (
-          <div className='quest-tree__loading'>Loading quest tree...</div>
-        )}
+    <div className="quest-tree">
+      <div className="quest-tree__diagram-container">
+        {isLoading && <div className="quest-tree__loading">Loading quest tree...</div>}
         {error && (
-          <div className='quest-tree__error'>
+          <div className="quest-tree__error">
             <p>Error loading quest tree. Please refresh the page.</p>
             <pre>{error}</pre>
           </div>
         )}
-        <div ref={mermaidRef} className='quest-tree__diagram' />
+        <div ref={mermaidRef} className="quest-tree__diagram" />
       </div>
     </div>
   );
 };
-

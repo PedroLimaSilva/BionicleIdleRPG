@@ -1,12 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { BaseMatoran } from '../../types/Matoran';
-import {
-  Color as ThreeColor,
-  Group,
-  Mesh,
-  MeshStandardMaterial,
-  Vector3,
-} from 'three';
+import { Color as ThreeColor, Group, Mesh, MeshStandardMaterial, Vector3 } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { Color } from '../../types/Colors';
@@ -27,9 +21,7 @@ const MAT_COLOR_MAP = {
 
 export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   const group = useRef<Group>(null);
-  const { nodes, materials, animations } = useGLTF(
-    import.meta.env.BASE_URL + 'matoran_master.glb',
-  );
+  const { nodes, materials, animations } = useGLTF(import.meta.env.BASE_URL + 'matoran_master.glb');
   const { actions, mixer } = useAnimations(animations, group);
 
   useEffect(() => {
@@ -65,10 +57,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
     });
 
     const colorMap = matoran.colors;
-    const materialReplacements = new Map<
-      MeshStandardMaterial,
-      MeshStandardMaterial
-    >();
+    const materialReplacements = new Map<MeshStandardMaterial, MeshStandardMaterial>();
 
     Object.entries(MAT_COLOR_MAP).forEach(([materialName, colorName]) => {
       const original = materials[materialName] as MeshStandardMaterial;
@@ -103,9 +92,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
     root.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
-        const replacement = materialReplacements.get(
-          mesh.material as MeshStandardMaterial,
-        );
+        const replacement = materialReplacements.get(mesh.material as MeshStandardMaterial);
         if (replacement) mesh.material = replacement;
       }
     });
@@ -116,9 +103,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
       if (isTarget && matoran.isMaskTransparent && (mask as Mesh).isMesh) {
         const mesh = mask as Mesh;
-        const standard = getStandardPlasticMaterial(
-          matoran.colors['mask'],
-        ).clone();
+        const standard = getStandardPlasticMaterial(matoran.colors['mask']).clone();
         standard.transparent = true;
         standard.opacity = 0.8;
         mesh.material = standard;
@@ -134,13 +119,9 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
   return (
     <group ref={group} dispose={null}>
-      <group name='Scene'>
-        <group name='Matoran'>
-          <primitive
-            scale={1}
-            object={nodes.Body}
-            position={new Vector3(0, 2.5, 0)}
-          />
+      <group name="Scene">
+        <group name="Matoran">
+          <primitive scale={1} object={nodes.Body} position={new Vector3(0, 2.5, 0)} />
         </group>
       </group>
     </group>

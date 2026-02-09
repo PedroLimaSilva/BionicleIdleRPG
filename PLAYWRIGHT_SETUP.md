@@ -69,6 +69,7 @@ yarn test:e2e:update-snapshots
 **Problem**: 3D character models have animations that would cause different screenshots on every frame, leading to flaky tests.
 
 **Solution**: Test Mode System
+
 - All tests set `localStorage.setItem('TEST_MODE', 'true')` before navigation
 - When detected, all Three.js animation mixers pause (set `timeScale = 0`)
 - All idle animations are forced to `time = 0` and `paused = true` to ensure they're at frame 0
@@ -76,6 +77,7 @@ yarn test:e2e:update-snapshots
 - This ensures consistent screenshots at exactly the same animation frame every time
 
 **Implementation**:
+
 - Use `enableTestMode(page)` helper before navigation to set localStorage flag
 - Use `setupGameState(page, state)` which automatically enables test mode
 - Use `goto(page, '/path')` for navigation (test mode persists via localStorage)
@@ -95,6 +97,7 @@ Different components have different tolerance for pixel differences:
 ✅ Added to GitHub Actions workflow (`.github/workflows/main.yml`)
 
 Tests run automatically on:
+
 - Pull requests
 - Pushes to master/main branches
 
@@ -140,6 +143,7 @@ yarn test:e2e:report
 ## Files Created/Modified
 
 ### New Files
+
 - `playwright.config.ts` - Playwright configuration
 - `e2e/homepage.spec.ts` - Homepage tests
 - `e2e/characters/recruitment.spec.ts` - Recruitment page tests
@@ -153,6 +157,7 @@ yarn test:e2e:report
 - `src/utils/testMode.ts` - Test mode detection and animation control utilities (localStorage-based)
 
 ### Modified Files
+
 - `package.json` - Added Playwright scripts
 - `.gitignore` - Added Playwright artifacts
 - `.github/workflows/main.yml` - Added E2E test job
@@ -173,16 +178,19 @@ yarn test:e2e:report
 ## Troubleshooting
 
 ### Tests fail with minor pixel differences
+
 - Review the diff in the HTML report
 - If acceptable, update snapshots: `yarn test:e2e:update-snapshots`
 
 ### WebGL tests are flaky
+
 - **Animations are now paused in test mode** - This should eliminate most flakiness
 - 3D scene tests have moderate tolerance due to GPU rendering variations
 - Mobile tests use Chrome (Chromium) for better WebGL consistency
 - Make sure all tests use `gotoWithTestMode()` helper
 
 ### Snapshots differ between machines
+
 - This is normal for WebGL content
 - CI/CD will use consistent environment
 - Local snapshots may differ slightly from CI
@@ -197,4 +205,3 @@ yarn test:e2e:report
 ---
 
 **Setup Complete!** 🎉 You now have comprehensive visual regression testing for your Three.js application.
-

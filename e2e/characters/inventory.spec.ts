@@ -1,11 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { MatoranJob } from '../../src/types/Jobs';
-import {
-  goto,
-  INITIAL_GAME_STATE,
-  setupGameState,
-  waitForCharacterCards,
-} from '../helpers';
+import { goto, INITIAL_GAME_STATE, setupGameState, waitForCharacterCards } from '../helpers';
 
 const CHARACTER_INVENTORY_GAME_STATE = {
   ...INITIAL_GAME_STATE,
@@ -57,9 +52,7 @@ test.describe('Character Inventory Page', () => {
     });
   });
 
-  test('should display character inventory without recruit button', async ({
-    page,
-  }) => {
+  test('should display character inventory without recruit button', async ({ page }) => {
     CHARACTER_INVENTORY_GAME_STATE.buyableCharacters = [];
     await setupGameState(page, CHARACTER_INVENTORY_GAME_STATE);
     await goto(page, '/characters');
@@ -76,9 +69,7 @@ test.describe('Character Inventory Page', () => {
 
   test.describe('Character Cards', () => {
     // Skip test if not on Desktop
-    test('should display character cards with avatars', async ({
-      page,
-    }, testInfo) => {
+    test('should display character cards with avatars', async ({ page }, testInfo) => {
       if (testInfo.project.name.includes('Mobile')) {
         test.skip();
       }

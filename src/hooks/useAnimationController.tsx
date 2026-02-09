@@ -1,6 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { AnimationAction, AnimationMixer, Event, LoopOnce } from 'three';
-import { getAnimationTimeScale, shouldDisableAnimations, setupAnimationForTestMode } from '../utils/testMode';
+import {
+  getAnimationTimeScale,
+  shouldDisableAnimations,
+  setupAnimationForTestMode,
+} from '../utils/testMode';
 
 type AnimationControllerOptions = {
   mixer: AnimationMixer;

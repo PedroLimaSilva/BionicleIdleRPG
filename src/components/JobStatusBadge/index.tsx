@@ -1,7 +1,6 @@
 import { ProductivityEffect } from '../../types/Jobs';
 import './index.scss';
 
-
 interface JobStatusBadgeProps {
   label?: string;
   status: ProductivityEffect;

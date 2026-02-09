@@ -42,8 +42,7 @@ function createTileableNoiseTexture(): DataTexture {
   const size = NOISE_SIZE;
   const grid: number[] = [];
   for (let i = 0; i < size * size; i++) grid.push(Math.random());
-  const sample = (ix: number, iy: number) =>
-    grid[(iy % size) * size + (ix % size)];
+  const sample = (ix: number, iy: number) => grid[(iy % size) * size + (ix % size)];
   const data = new Uint8Array(size * size * 4);
   for (let j = 0; j < size; j++) {
     for (let i = 0; i < size; i++) {
@@ -211,7 +210,7 @@ const DEFAULT_LIGHT_DIR2 = new Vector3(-3, 2, -2).normalize();
 
 function makeWornUniforms(
   color: ColorRepresentation,
-  opts: WornPlasticOptions,
+  opts: WornPlasticOptions
 ): Record<string, { value: unknown }> {
   const c = new Color(color);
   return {
@@ -262,15 +261,10 @@ const materialCache = new Map<string, WornPlasticShaderMaterial>();
  * Returns a shared worn plastic shader material for the given color.
  * Do not mutate the returned material; clone it for variants (e.g. emissive, transparent).
  */
-export function getWornMaterial(
-  color: ColorRepresentation,
-): WornPlasticShaderMaterial {
+export function getWornMaterial(color: ColorRepresentation): WornPlasticShaderMaterial {
   const key = new Color(color).getStyle();
   if (!materialCache.has(key)) {
-    materialCache.set(
-      key,
-      createWornPlasticMaterial({ color }) as WornPlasticShaderMaterial,
-    );
+    materialCache.set(key, createWornPlasticMaterial({ color }) as WornPlasticShaderMaterial);
   }
   return materialCache.get(key)!;
 }
@@ -282,36 +276,23 @@ export function getWornMaterial(
  */
 function copySpecialProperties(
   worn: WornPlasticShaderMaterial,
-  original: MeshLike,
+  original: MeshLike
 ): WornPlasticShaderMaterial {
   const needsTransparent = original.transparent === true;
-  const emissiveIntensity =
-    (original as { emissiveIntensity?: number }).emissiveIntensity ?? 0;
-  const needsEmissive =
-    'emissiveIntensity' in original && emissiveIntensity > 0;
+  const emissiveIntensity = (original as { emissiveIntensity?: number }).emissiveIntensity ?? 0;
+  const needsEmissive = 'emissiveIntensity' in original && emissiveIntensity > 0;
   const originalMetalness = (original as { metalness?: number }).metalness ?? 0;
   const hasMetalnessMap =
-    'metalnessMap' in original &&
-    !!(original as { metalnessMap?: unknown }).metalnessMap;
+    'metalnessMap' in original && !!(original as { metalnessMap?: unknown }).metalnessMap;
   const needsMetalness = originalMetalness > 0 || hasMetalnessMap;
   if (!needsTransparent && !needsEmissive && !needsMetalness) return worn;
   const cloned = worn.clone() as WornPlasticShaderMaterial;
-  if (
-    needsTransparent &&
-    'opacity' in original &&
-    original.opacity !== undefined
-  ) {
+  if (needsTransparent && 'opacity' in original && original.opacity !== undefined) {
     cloned.transparent = true;
     cloned.opacity = original.opacity;
-    if (cloned.uniforms.uOpacity)
-      cloned.uniforms.uOpacity.value = original.opacity;
+    if (cloned.uniforms.uOpacity) cloned.uniforms.uOpacity.value = original.opacity;
   }
-  if (
-    needsEmissive &&
-    'emissive' in original &&
-    original.emissive &&
-    cloned.uniforms.uEmissive
-  ) {
+  if (needsEmissive && 'emissive' in original && original.emissive && cloned.uniforms.uEmissive) {
     cloned.uniforms.uEmissive.value.copy(original.emissive as Color);
     cloned.uniforms.uEmissiveIntensity.value = emissiveIntensity;
   }
@@ -337,9 +318,7 @@ type MeshLike = {
  * worn plastic shader material keyed by the original material's color.
  * Call with the root group (e.g. group.current) so all children are covered.
  */
-export function applyWornPlasticToObject(
-  object: Object3D | null | undefined,
-): void {
+export function applyWornPlasticToObject(object: Object3D | null | undefined): void {
   if (!object) return;
   object.traverse((child) => {
     if (!(child as Mesh).isMesh) return;

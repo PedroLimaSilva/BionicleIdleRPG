@@ -17,8 +17,7 @@ export const Recruitment: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const [selectedMatoran, setSelectedMatoran] =
-    useState<ListedCharacterData | null>(null);
+  const [selectedMatoran, setSelectedMatoran] = useState<ListedCharacterData | null>(null);
 
   const canRecruit = useMemo(() => {
     const hasRequiredItems = (matoran: ListedCharacterData): boolean => {
@@ -27,11 +26,7 @@ export const Recruitment: React.FC = () => {
       });
     };
 
-    return (
-      selectedMatoran &&
-      widgets >= selectedMatoran.cost &&
-      hasRequiredItems(selectedMatoran)
-    );
+    return selectedMatoran && widgets >= selectedMatoran.cost && hasRequiredItems(selectedMatoran);
   }, [selectedMatoran, widgets, inventory]);
 
   useEffect(() => {
@@ -40,11 +35,7 @@ export const Recruitment: React.FC = () => {
 
   useEffect(() => {
     if (selectedMatoran) {
-      setScene(
-        <CharacterScene
-          matoran={{ ...MATORAN_DEX[selectedMatoran.id], exp: 0 }}
-        />
-      );
+      setScene(<CharacterScene matoran={{ ...MATORAN_DEX[selectedMatoran.id], exp: 0 }} />);
     }
     return () => {
       setScene(null);
@@ -70,23 +61,19 @@ export const Recruitment: React.FC = () => {
   };
 
   return (
-    <div className='recruitment-screen'>
-      <div className='recruitment-preview'>
+    <div className="recruitment-screen">
+      <div className="recruitment-preview">
         {selectedMatoran && (
           <div>
-            <div key={selectedMatoran.id} className={`recruitment-overlay ${isMatoran(MATORAN_DEX[selectedMatoran.id]) ? 'top' : 'bottom'}`}>
-              <div className='requirement-list'>
+            <div
+              key={selectedMatoran.id}
+              className={`recruitment-overlay ${isMatoran(MATORAN_DEX[selectedMatoran.id]) ? 'top' : 'bottom'}`}
+            >
+              <div className="requirement-list">
                 <h4>Required to Recruit:</h4>
                 <ul>
-                  <li
-                    className={
-                      widgets >= selectedMatoran.cost
-                        ? 'has-enough'
-                        : 'not-enough'
-                    }
-                  >
-                    {widgets >= selectedMatoran.cost ? '✅' : '❌'}{' '}
-                    {selectedMatoran.cost} widgets
+                  <li className={widgets >= selectedMatoran.cost ? 'has-enough' : 'not-enough'}>
+                    {widgets >= selectedMatoran.cost ? '✅' : '❌'} {selectedMatoran.cost} widgets
                   </li>
                   {selectedMatoran.requiredItems?.map(({ item, quantity }) => {
                     const owned = inventory[item] || 0;
@@ -96,8 +83,8 @@ export const Recruitment: React.FC = () => {
                         key={`${selectedMatoran.id}-${item}`}
                         className={hasEnough ? 'has-enough' : 'not-enough'}
                       >
-                        {hasEnough ? '✅' : '❌'} {ITEM_DICTIONARY[item].name} (
-                        {owned} / {quantity})
+                        {hasEnough ? '✅' : '❌'} {ITEM_DICTIONARY[item].name} ({owned} / {quantity}
+                        )
                       </li>
                     );
                   })}
@@ -117,8 +104,8 @@ export const Recruitment: React.FC = () => {
         )}
       </div>
 
-      <div className='matoran-selector'>
-        <div className='scroll-row'>
+      <div className="matoran-selector">
+        <div className="scroll-row">
           {buyableCharacters.map((matoran) => (
             <div
               key={matoran.id}
@@ -129,7 +116,7 @@ export const Recruitment: React.FC = () => {
                 matoran={{ ...MATORAN_DEX[matoran.id], exp: 0 }}
                 styles={'mask-preview matoran-avatar'}
               />
-              <div className='name'>{MATORAN_DEX[matoran.id].name}</div>
+              <div className="name">{MATORAN_DEX[matoran.id].name}</div>
             </div>
           ))}
         </div>

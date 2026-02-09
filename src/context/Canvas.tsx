@@ -16,9 +16,7 @@ function SetSRGBColorSpace() {
   return null;
 }
 
-export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [scene, setScene] = useState<React.ReactNode>(null);
   const [target, setTarget] = useState<HTMLElement | null>(null);
 
@@ -32,10 +30,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
       setTarget(el);
 
       // Optional: dynamically assign a route-based class
-      el.className = `canvas-mount route-${location.pathname.replace(
-        /\//g,
-        '-',
-      )}`;
+      el.className = `canvas-mount route-${location.pathname.replace(/\//g, '-')}`;
 
       setTimeout(() => {}, 0);
     }
@@ -46,12 +41,12 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
       {target &&
         createPortal(
-          <Canvas className='shared-canvas' orthographic>
+          <Canvas className="shared-canvas" orthographic>
             <SetSRGBColorSpace />
-            {debugMode && <Perf position='top-left' />}
+            {debugMode && <Perf position="top-left" />}
             {scene}
           </Canvas>,
-          target,
+          target
         )}
     </SceneCanvasContext.Provider>
   );

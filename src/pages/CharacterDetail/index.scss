@@ -60,11 +60,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(
-      circle,
-      var(--theme-element-glow-transparent) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(circle, var(--theme-element-glow-transparent) 0%, transparent 70%);
     opacity: 0.1;
     animation: pulse 4s ease-in-out infinite;
   }
@@ -117,11 +113,7 @@
 
 .divider {
   height: 2px;
-  background: radial-gradient(
-    circle,
-    var(--theme-element-glow) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle, var(--theme-element-glow) 0%, transparent 70%);
 }
 
 .character-detail-content {

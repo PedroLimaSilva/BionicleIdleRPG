@@ -148,11 +148,7 @@
 }
 
 .elemental-btn {
-  background: linear-gradient(
-    135deg,
-    var(--color-surface-mid),
-    var(--color-surface-high)
-  );
+  background: linear-gradient(135deg, var(--color-surface-mid), var(--color-surface-high));
   border: 2px solid var(--theme-element-primary);
   color: var(--theme-element-primary);
   font-weight: 600;
@@ -171,21 +167,12 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.1),
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
     transition: left var(--transition-slow);
   }
 
   &:hover {
-    background: linear-gradient(
-      135deg,
-      var(--color-surface-high),
-      var(--color-surface-elevated)
-    );
+    background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
     box-shadow: var(--shadow-glow);
     transform: translateY(-2px);
     border-color: var(--theme-element-glow);
@@ -209,11 +196,7 @@
     &:hover {
       transform: none;
       box-shadow: var(--shadow-sm);
-      background: linear-gradient(
-        135deg,
-        var(--color-surface-mid),
-        var(--color-surface-high)
-      );
+      background: linear-gradient(135deg, var(--color-surface-mid), var(--color-surface-high));
     }
   }
 }

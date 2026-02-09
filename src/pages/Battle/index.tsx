@@ -45,15 +45,15 @@ export const BattlePage: React.FC = () => {
     phase === BattlePhase.Victory
   ) {
     return (
-      <div className='page-container'>
+      <div className="page-container">
         <h1 style={{ fontSize: '8vw' }}>{phase}</h1>
         <p>Battle summary goes here</p>
         <div
-          className='battle-buttons'
+          className="battle-buttons"
           style={{ justifyContent: 'center', paddingBottom: '132px' }}
         >
-          <Link to='/battle/selector'>
-            <button className='confirm-button' onClick={() => {}}>
+          <Link to="/battle/selector">
+            <button className="confirm-button" onClick={() => {}}>
               Collect Rewards
             </button>
           </Link>
@@ -62,5 +62,5 @@ export const BattlePage: React.FC = () => {
     );
   }
 
-  return <div className='page-container'>Battle status: {phase}</div>;
+  return <div className="page-container">Battle status: {phase}</div>;
 };

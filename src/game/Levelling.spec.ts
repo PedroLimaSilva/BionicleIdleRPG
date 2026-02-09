@@ -94,10 +94,9 @@ describe('Levelling', () => {
       const level1 = getExpProgress(0);
       const level2 = getExpProgress(100);
       const level5 = getExpProgress(800);
-      
+
       expect(level2.expForNextLevel).toBeGreaterThan(level1.expForNextLevel);
       expect(level5.expForNextLevel).toBeGreaterThan(level2.expForNextLevel);
     });
   });
 });
-

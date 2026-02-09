@@ -21,12 +21,8 @@ interface UseQuestStateOptions {
   initialCompleted: string[];
   characters: RecruitedCharacterData[];
   addItemToInventory: (item: GameItemId, amount: number) => void;
-  setRecruitedCharacters: React.Dispatch<
-    React.SetStateAction<RecruitedCharacterData[]>
-  >;
-  setBuyableCharacters: React.Dispatch<
-    React.SetStateAction<ListedCharacterData[]>
-  >;
+  setRecruitedCharacters: React.Dispatch<React.SetStateAction<RecruitedCharacterData[]>>;
+  setBuyableCharacters: React.Dispatch<React.SetStateAction<ListedCharacterData[]>>;
   addActivityLog: GameState['addActivityLog'];
   addWidgets: (widgets: number) => void;
 }
@@ -41,15 +37,10 @@ export const useQuestState = ({
   addWidgets,
   addActivityLog,
 }: UseQuestStateOptions) => {
-  const [activeQuests, setActiveQuests] =
-    useState<QuestProgress[]>(initialActive);
-  const [completedQuests, setCompletedQuestIds] =
-    useState<string[]>(initialCompleted);
+  const [activeQuests, setActiveQuests] = useState<QuestProgress[]>(initialActive);
+  const [completedQuests, setCompletedQuestIds] = useState<string[]>(initialCompleted);
 
-  const startQuest = (
-    quest: Quest,
-    assignedMatoran: RecruitedCharacterData['id'][]
-  ) => {
+  const startQuest = (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => {
     const now = getCurrentTimestamp();
     const endsAt = now + (getDebugMode() ? 1 : quest.durationSeconds);
 
@@ -65,10 +56,7 @@ export const useQuestState = ({
     // Remove required Items
     if (quest.requirements.items) {
       quest.requirements.items.forEach((req) => {
-        addItemToInventory(
-          req.id as GameItemId,
-          req.consumed ? -req.amount : 0
-        );
+        addItemToInventory(req.id as GameItemId, req.consumed ? -req.amount : 0);
       });
     }
 
@@ -113,8 +101,7 @@ export const useQuestState = ({
             exp: char.exp + (quest.rewards.xpPerMatoran ?? 0),
           };
         } else if (
-          (quest.id === 'mnog_kini_nui_arrival' ||
-            quest.id === 'mnog_gali_call') &&
+          (quest.id === 'mnog_kini_nui_arrival' || quest.id === 'mnog_gali_call') &&
           isToaMata(MATORAN_DEX[char.id])
         ) {
           return {
@@ -142,15 +129,11 @@ export const useQuestState = ({
     if (!quest) return;
 
     const updatedCharacters = characters.map((char) =>
-      quest.assignedMatoran.includes(char.id)
-        ? { ...char, quest: undefined }
-        : char
+      quest.assignedMatoran.includes(char.id) ? { ...char, quest: undefined } : char
     );
 
     // restore required Items
-    const requirements = QUESTS.find(
-      (q) => q.id === quest.questId
-    )?.requirements;
+    const requirements = QUESTS.find((q) => q.id === quest.questId)?.requirements;
     if (requirements && requirements.items) {
       requirements.items.forEach((req) => {
         addItemToInventory(req.id as GameItemId, req.consumed ? req.amount : 0);

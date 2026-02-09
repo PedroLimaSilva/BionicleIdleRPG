@@ -21,7 +21,6 @@ services:
       - PLAYWRIGHT_DOCKER=true
     # Use extra_hosts to allow container to access host's localhost
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - 'host.docker.internal:host-gateway'
     # Or use host network mode (Linux only, simpler but less portable)
     # network_mode: host
-

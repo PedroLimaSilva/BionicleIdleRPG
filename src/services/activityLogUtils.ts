@@ -1,9 +1,6 @@
 import { ActivityLogEntry, LogType } from '../types/Logging';
 
-export function createLogEntry(
-  message: string,
-  type: LogType
-): ActivityLogEntry {
+export function createLogEntry(message: string, type: LogType): ActivityLogEntry {
   return {
     id: crypto.randomUUID(),
     message,
@@ -12,9 +9,6 @@ export function createLogEntry(
   };
 }
 
-export function removeLogEntry(
-  log: ActivityLogEntry[],
-  id: string
-): ActivityLogEntry[] {
+export function removeLogEntry(log: ActivityLogEntry[], id: string): ActivityLogEntry[] {
   return log.filter((entry) => entry.id !== id);
 }

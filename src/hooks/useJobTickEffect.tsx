@@ -20,8 +20,10 @@ export function useJobTickEffect(
 
       setRecruitedCharacters((prev) =>
         prev.map((matoran) => {
-          const { updatedMatoran, earnedWidgets, earnedLoot, logs } =
-            tickMatoranJobExp(matoran, now);
+          const { updatedMatoran, earnedWidgets, earnedLoot, logs } = tickMatoranJobExp(
+            matoran,
+            now
+          );
 
           if (earnedWidgets > 0) addWidgets(earnedWidgets);
           Object.entries(earnedLoot).forEach(([item, amount]) => {

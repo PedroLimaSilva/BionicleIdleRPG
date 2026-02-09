@@ -41,17 +41,14 @@ const materialCache = new Map<string, MeshStandardMaterial>();
  * Injects a fake ambient occlusion term into the fragment shader: surfaces
  * facing away from view-space "up" (normal.y) are darkened slightly.
  */
-function applyFakeAO(
-  material: MeshStandardMaterial,
-  strength: number = DEFAULT_AO_STRENGTH,
-): void {
+function applyFakeAO(material: MeshStandardMaterial, strength: number = DEFAULT_AO_STRENGTH): void {
   if (strength <= 0) return;
   material.onBeforeCompile = (shader) => {
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <dithering_fragment>',
       `#include <dithering_fragment>
       float fakeAO = 1.0 - ${strength.toFixed(3)} * (1.0 - max(normal.y, 0.0));
-      gl_FragColor.rgb *= fakeAO;`,
+      gl_FragColor.rgb *= fakeAO;`
     );
   };
 }
@@ -62,7 +59,7 @@ function applyFakeAO(
  */
 export function getStandardPlasticMaterial(
   color: ColorRepresentation,
-  options: StandardPlasticOptions = {},
+  options: StandardPlasticOptions = {}
 ): MeshStandardMaterial {
   const baseColor = new Color(color);
   const saturation = options.saturation ?? DEFAULT_SATURATION;
@@ -83,8 +80,7 @@ export function getStandardPlasticMaterial(
     roughness: options.roughness ?? DEFAULT_ROUGHNESS,
     metalness: options.metalness ?? DEFAULT_METALNESS,
     envMapIntensity: options.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
-    ambientOcclusionStrength:
-      options.ambientOcclusionStrength ?? DEFAULT_AO_STRENGTH,
+    ambientOcclusionStrength: options.ambientOcclusionStrength ?? DEFAULT_AO_STRENGTH,
   };
   const cacheKey = `${key}_${opts.roughness}_${opts.metalness}_${opts.envMapIntensity}_${opts.ambientOcclusionStrength}`;
   if (!materialCache.has(cacheKey)) {
@@ -116,38 +112,26 @@ type MeshLike = {
  */
 function copySpecialProperties(
   standard: MeshStandardMaterial,
-  original: MeshLike,
+  original: MeshLike
 ): MeshStandardMaterial {
   const needsTransparent = original.transparent === true;
-  const emissiveIntensity =
-    (original as { emissiveIntensity?: number }).emissiveIntensity ?? 0;
-  const needsEmissive =
-    'emissiveIntensity' in original && emissiveIntensity > 0;
+  const emissiveIntensity = (original as { emissiveIntensity?: number }).emissiveIntensity ?? 0;
+  const needsEmissive = 'emissiveIntensity' in original && emissiveIntensity > 0;
   const originalMetalness = (original as { metalness?: number }).metalness ?? 0;
   const hasMetalnessMap =
-    'metalnessMap' in original &&
-    !!(original as { metalnessMap?: unknown }).metalnessMap;
+    'metalnessMap' in original && !!(original as { metalnessMap?: unknown }).metalnessMap;
   const needsMetalness = originalMetalness > 0 || hasMetalnessMap;
 
   if (!needsTransparent && !needsEmissive && !needsMetalness) return standard;
 
   const cloned = standard.clone();
-  if (
-    needsTransparent &&
-    'opacity' in original &&
-    original.opacity !== undefined
-  ) {
+  if (needsTransparent && 'opacity' in original && original.opacity !== undefined) {
     cloned.transparent = true;
     cloned.opacity = original.opacity;
     cloned.roughness = 0;
     cloned.metalness = 0.85;
   }
-  if (
-    needsEmissive &&
-    'emissive' in original &&
-    original.emissive &&
-    emissiveIntensity
-  ) {
+  if (needsEmissive && 'emissive' in original && original.emissive && emissiveIntensity) {
     cloned.emissive = (original.emissive as Color).clone();
     cloned.emissiveIntensity = emissiveIntensity;
     const originalName = (original as { name?: string }).name;
@@ -169,9 +153,7 @@ function copySpecialProperties(
  * plastic PBR material keyed by the original material's color. Preserves
  * emissive, transparency, and metalness where the original had them.
  */
-export function applyStandardPlasticToObject(
-  object: Object3D | null | undefined,
-): void {
+export function applyStandardPlasticToObject(object: Object3D | null | undefined): void {
   if (!object) return;
   object.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
@@ -179,10 +161,7 @@ export function applyStandardPlasticToObject(
     const raw = mesh.material;
     if (!raw) return;
     // Skip if this mesh already has one of our cached standard plastics
-    if (
-      raw instanceof MeshStandardMaterial &&
-      Array.from(materialCache.values()).includes(raw)
-    )
+    if (raw instanceof MeshStandardMaterial && Array.from(materialCache.values()).includes(raw))
       return;
     const original = raw as MeshLike;
     const color = original.color;
@@ -191,9 +170,7 @@ export function applyStandardPlasticToObject(
       color instanceof Color
         ? color.getStyle()
         : new Color(color as ColorRepresentation).getStyle();
-    let standard = getStandardPlasticMaterial(
-      colorStyle as ColorRepresentation,
-    );
+    let standard = getStandardPlasticMaterial(colorStyle as ColorRepresentation);
     standard = copySpecialProperties(standard, original);
     mesh.material = standard;
   });

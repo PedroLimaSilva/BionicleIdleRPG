@@ -24,12 +24,8 @@ describe('useCharactersState', () => {
 
   describe('initialization', () => {
     test('initializes with provided recruited and buyable characters', () => {
-      const initialRecruited: RecruitedCharacterData[] = [
-        { id: 'Jala', exp: 100 },
-      ];
-      const initialBuyable: ListedCharacterData[] = [
-        { id: 'Hali', cost: 50, requiredItems: [] },
-      ];
+      const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
+      const initialBuyable: ListedCharacterData[] = [{ id: 'Hali', cost: 50, requiredItems: [] }];
 
       const { result } = renderHook(() =>
         useCharactersState(
@@ -46,9 +42,7 @@ describe('useCharactersState', () => {
     });
 
     test('filters out already recruited characters from buyable list', () => {
-      const initialRecruited: RecruitedCharacterData[] = [
-        { id: 'Jala', exp: 100 },
-      ];
+      const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
       const initialBuyable: ListedCharacterData[] = [
         { id: 'Jala', cost: 50, requiredItems: [] },
         { id: 'Hali', cost: 50, requiredItems: [] },
@@ -184,9 +178,7 @@ describe('useCharactersState', () => {
     });
 
     test('sets correct exp rate based on productivity modifier', () => {
-      const initialRecruited: RecruitedCharacterData[] = [
-        { id: 'Jala', exp: 0 },
-      ];
+      const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 0 }];
 
       const { result } = renderHook(() =>
         useCharactersState(
@@ -239,9 +231,7 @@ describe('useCharactersState', () => {
     });
 
     test('does not affect matoran without job', () => {
-      const initialRecruited: RecruitedCharacterData[] = [
-        { id: 'Jala', exp: 100 },
-      ];
+      const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
 
       const { result } = renderHook(() =>
         useCharactersState(
@@ -263,9 +253,7 @@ describe('useCharactersState', () => {
 
   describe('setMaskOverride', () => {
     test('sets mask and color override for specific matoran', () => {
-      const initialRecruited: RecruitedCharacterData[] = [
-        { id: 'Jala', exp: 0 },
-      ];
+      const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 0 }];
 
       const { result } = renderHook(() =>
         useCharactersState(

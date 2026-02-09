@@ -21,17 +21,15 @@ import { BattlePage } from './pages/Battle/index.tsx';
 import { NavBar } from './components/NavBar/index.tsx';
 
 const HomePage: React.FC = () => (
-  <div className='page-container'>
+  <div className="page-container">
     <h1>Welcome to Mata Nui</h1>
-    <p>
-      Embark on your journey to recruit Matoran and help them become legends!
-    </p>
+    <p>Embark on your journey to recruit Matoran and help them become legends!</p>
     <ActivityLog />
   </div>
 );
 
 const NotFound: React.FC = () => (
-  <div className='page-container'>
+  <div className="page-container">
     <h1>404 - Not Found</h1>
     <p>The page you are looking for does not exist.</p>
   </div>
@@ -42,9 +40,7 @@ export function App() {
     preloadAssets();
   }, []);
 
-  const [isPortrait, setIsPortrait] = useState(
-    window.innerHeight > window.innerWidth,
-  );
+  const [isPortrait, setIsPortrait] = useState(window.innerHeight > window.innerWidth);
 
   useEffect(() => {
     const handleResize = () => {
@@ -53,44 +49,44 @@ export function App() {
 
     window.addEventListener(
       'resize',
-      handleResize as unknown as (this: Window, ev: UIEvent) => void,
+      handleResize as unknown as (this: Window, ev: UIEvent) => void
     );
     window.addEventListener(
       'orientationchange',
-      handleResize as unknown as (this: Window, ev: Event) => void,
+      handleResize as unknown as (this: Window, ev: Event) => void
     );
 
     return () => {
       window.removeEventListener(
         'resize',
-        handleResize as unknown as (this: Window, ev: UIEvent) => void,
+        handleResize as unknown as (this: Window, ev: UIEvent) => void
       );
       window.removeEventListener(
         'orientationchange',
-        handleResize as unknown as (this: Window, ev: Event) => void,
+        handleResize as unknown as (this: Window, ev: Event) => void
       );
     };
   }, []);
 
   return (
     <GameProvider>
-      <Router basename='/BionicleIdleRPG/'>
+      <Router basename="/BionicleIdleRPG/">
         <SceneCanvasProvider>
-          <div className='app-container'>
+          <div className="app-container">
             <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
-              <div id='canvas-mount'></div>
+              <div id="canvas-mount"></div>
               <Routes>
-                <Route path='/' element={<HomePage />} />
-                <Route path='/battle/selector' element={<BattleSelector />} />
-                <Route path='/battle' element={<BattlePage />} />
-                <Route path='/characters' element={<CharacterInventory />} />
-                <Route path='/characters/:id' element={<CharacterDetail />} />
-                <Route path='/recruitment' element={<Recruitment />} />
-                <Route path='/quests' element={<QuestsPage />} />
-                <Route path='/quest-tree' element={<QuestTreePage />} />
-                <Route path='/inventory' element={<InventoryPage />} />
-                <Route path='/settings' element={<SettingsPage />} />
-                <Route path='*' element={<NotFound />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/battle/selector" element={<BattleSelector />} />
+                <Route path="/battle" element={<BattlePage />} />
+                <Route path="/characters" element={<CharacterInventory />} />
+                <Route path="/characters/:id" element={<CharacterDetail />} />
+                <Route path="/recruitment" element={<Recruitment />} />
+                <Route path="/quests" element={<QuestsPage />} />
+                <Route path="/quest-tree" element={<QuestTreePage />} />
+                <Route path="/inventory" element={<InventoryPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
             <NavBar isPortrait={isPortrait} />

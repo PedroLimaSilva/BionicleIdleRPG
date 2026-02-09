@@ -53,8 +53,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   },
   [MatoranJob.HydroTechnician]: {
     label: '💧 Hydro Technician',
-    description:
-      'Manages purified protodermis flow in Ga-Metru research systems.',
+    description: 'Manages purified protodermis flow in Ga-Metru research systems.',
     rate: 2,
     elementAffinity: {
       favored: [ElementTribe.Water],
@@ -134,8 +133,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   },
   [MatoranJob.LightStoneFarmer]: {
     label: '💡 Light Stone Farmer',
-    description:
-      'Farm Light Stone crystals for illumination in Onu-Koro caves.',
+    description: 'Farm Light Stone crystals for illumination in Onu-Koro caves.',
     elementAffinity: {
       favored: [ElementTribe.Earth],
       opposed: [],
@@ -181,8 +179,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   },
   [MatoranJob.KnowledgeScribe]: {
     label: '📚 Knowledge Scribe',
-    description:
-      'Records prophecies and research in Ko-Metru knowledge towers.',
+    description: 'Records prophecies and research in Ko-Metru knowledge towers.',
     rate: 2,
     elementAffinity: {
       favored: [ElementTribe.Ice],

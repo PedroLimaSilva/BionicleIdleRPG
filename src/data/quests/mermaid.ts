@@ -13,9 +13,7 @@ function formatRewards(rewards: Quest['rewards']) {
   if (!rewards) return '';
   const parts: string[] = [];
   if (rewards.unlockCharacters) {
-    parts.push(
-      `Unlock: ${rewards.unlockCharacters.map((c) => c.id).join(', ')}`
-    );
+    parts.push(`Unlock: ${rewards.unlockCharacters.map((c) => c.id).join(', ')}`);
   }
   if (rewards.loot) {
     parts.push(
@@ -40,10 +38,7 @@ export interface QuestStates {
   locked: string[];
 }
 
-export function generateMermaidFlowchart(
-  quests: Quest[],
-  questStates?: QuestStates
-) {
+export function generateMermaidFlowchart(quests: Quest[], questStates?: QuestStates) {
   // Determine quest states if not provided
   const states: QuestStates = questStates || {
     completed: [],

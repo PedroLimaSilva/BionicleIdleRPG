@@ -1,10 +1,5 @@
 import { test, expect } from '@playwright/test';
-import {
-  goto,
-  INITIAL_GAME_STATE,
-  setupGameState,
-  waitForModelLoad,
-} from '../helpers';
+import { goto, INITIAL_GAME_STATE, setupGameState, waitForModelLoad } from '../helpers';
 
 const RECRUITMENT_GAME_STATE = {
   ...INITIAL_GAME_STATE,
@@ -68,9 +63,7 @@ const RECRUITMENT_GAME_STATE = {
 };
 
 test.describe('Recruitment Page', () => {
-  test('should display recruitment page with character list', async ({
-    page,
-  }) => {
+  test('should display recruitment page with character list', async ({ page }) => {
     await setupGameState(page, RECRUITMENT_GAME_STATE);
 
     // Set up listener for model load BEFORE navigation
@@ -80,10 +73,7 @@ test.describe('Recruitment Page', () => {
 
     // Wait for page to be fully loaded and ready
     // Wait for character cards to be in the DOM
-    await page
-      .locator('.card')
-      .first()
-      .waitFor({ state: 'visible', timeout: 10000 });
+    await page.locator('.card').first().waitFor({ state: 'visible', timeout: 10000 });
 
     // Wait for canvas to be present
     await page.waitForSelector('canvas', { state: 'visible', timeout: 10000 });

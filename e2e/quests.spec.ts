@@ -1,10 +1,5 @@
 import { test, expect } from '@playwright/test';
-import {
-  enableTestMode,
-  goto,
-  INITIAL_GAME_STATE,
-  setupGameState,
-} from './helpers';
+import { enableTestMode, goto, INITIAL_GAME_STATE, setupGameState } from './helpers';
 
 const QUESTS_GAME_STATE = {
   ...INITIAL_GAME_STATE,
@@ -44,9 +39,7 @@ test.describe('Quests Page', () => {
     });
   });
 
-  test('should display quests page with active and completed quests', async ({
-    page,
-  }) => {
+  test('should display quests page with active and completed quests', async ({ page }) => {
     await setupGameState(page, QUESTS_GAME_STATE);
     await goto(page, '/quests');
     // Wait for the title to be visible instead of networkidle

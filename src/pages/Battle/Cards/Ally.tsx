@@ -4,13 +4,7 @@ import { DamagePopup } from './DamagePopup';
 import { MATORAN_DEX } from '../../../data/matoran';
 import { MatoranAvatar } from '../../../components/MatoranAvatar';
 
-export function AllyCard({
-  combatant,
-  onClick,
-}: {
-  combatant: Combatant;
-  onClick: () => void;
-}) {
+export function AllyCard({ combatant, onClick }: { combatant: Combatant; onClick: () => void }) {
   const prevHpRef = useRef(combatant.hp);
   const [damage, setDamage] = useState<number | null>(null);
   const [healing, setHealing] = useState<number | null>(null);
@@ -19,36 +13,21 @@ export function AllyCard({
   const [maxCooldown, setMaxCooldown] = useState<number>(0);
 
   useEffect(() => {
-    setSelected(
-      combatant.hp > 0 &&
-        (combatant.maskPower?.active || combatant.willUseAbility),
-    );
+    setSelected(combatant.hp > 0 && (combatant.maskPower?.active || combatant.willUseAbility));
   }, [combatant.willUseAbility, combatant.maskPower?.active, combatant.hp]);
 
   useEffect(() => {
     setDisabled(
       combatant.hp <= 0 ||
-        ((combatant.maskPower?.effect?.cooldown?.amount ?? 0) > 0 &&
-          !combatant.maskPower?.active),
+        ((combatant.maskPower?.effect?.cooldown?.amount ?? 0) > 0 && !combatant.maskPower?.active)
     );
-  }, [
-    combatant.hp,
-    combatant.maskPower?.effect?.cooldown?.amount,
-    combatant.maskPower?.active,
-  ]);
+  }, [combatant.hp, combatant.maskPower?.effect?.cooldown?.amount, combatant.maskPower?.active]);
 
   useEffect(() => {
-    if (
-      combatant.maskPower &&
-      combatant.maskPower?.effect?.cooldown?.amount > maxCooldown
-    ) {
+    if (combatant.maskPower && combatant.maskPower?.effect?.cooldown?.amount > maxCooldown) {
       setMaxCooldown(combatant.maskPower?.effect?.cooldown?.amount);
     }
-  }, [
-    combatant.maskPower,
-    combatant.maskPower?.effect?.cooldown?.amount,
-    maxCooldown,
-  ]);
+  }, [combatant.maskPower, combatant.maskPower?.effect?.cooldown?.amount, maxCooldown]);
 
   useEffect(() => {
     if (combatant.hp < prevHpRef.current) {
@@ -80,24 +59,24 @@ export function AllyCard({
           maskOverride: combatant.maskPower?.shortName,
           exp: 0,
         }}
-        styles='matoran-avatar model-preview'
+        styles="matoran-avatar model-preview"
       />
-      <div className='card-header'>
+      <div className="card-header">
         {dex.name}
-        <div className='level-label'>Level {combatant.lvl}</div>
+        <div className="level-label">Level {combatant.lvl}</div>
       </div>
       {combatant.maskPower?.effect?.cooldown && (
         <div
-          className='cooldown-fill'
+          className="cooldown-fill"
           style={{
             height: `${combatant.maskPower?.effect?.cooldown?.amount === 0 ? 0 : (combatant.maskPower?.effect?.cooldown?.amount / maxCooldown) * 100}%`,
           }}
         ></div>
       )}
-      <div className='hp-bar'>
+      <div className="hp-bar">
         HP: {combatant.hp}/{combatant.maxHp}
-        {damage && <DamagePopup damage={damage} direction='up' isHealing={false} />}
-        {healing && <DamagePopup damage={healing} direction='up' isHealing={true} />}
+        {damage && <DamagePopup damage={damage} direction="up" isHealing={false} />}
+        {healing && <DamagePopup damage={healing} direction="up" isHealing={true} />}
       </div>
     </div>
   );

@@ -8,26 +8,22 @@ export const BattleSelector: React.FC = () => {
   const navigate = useNavigate();
   const { battle, completedQuests } = useGame();
   return (
-    <div className='page-container'>
-      <h1 className='title'>Select an Encounter</h1>
-      <div className='encounter-list'>
+    <div className="page-container">
+      <h1 className="title">Select an Encounter</h1>
+      <div className="encounter-list">
         {ENCOUNTERS.filter(
-          (e) =>
-            !e.unlockedAfter ||
-            e.unlockedAfter.every((id) => completedQuests.includes(id))
+          (e) => !e.unlockedAfter || e.unlockedAfter.every((id) => completedQuests.includes(id))
         ).map((encounter) => (
-          <div key={encounter.id} className='encounter'>
-            <div className='encounter-header'>
+          <div key={encounter.id} className="encounter">
+            <div className="encounter-header">
               {encounter.headliner && (
                 <ElementTag element={COMBATANT_DEX[encounter.headliner].element} />
               )}
               <h2>{encounter.name}</h2>
-              <span className='difficulty'>
-                Difficulty: {encounter.difficulty}
-              </span>
+              <span className="difficulty">Difficulty: {encounter.difficulty}</span>
             </div>
             <CompositedImage
-              className='enemy-avatar'
+              className="enemy-avatar"
               images={[
                 `${import.meta.env.BASE_URL}/avatar/Bohrok/${
                   COMBATANT_DEX[encounter.headliner].name
@@ -35,12 +31,10 @@ export const BattleSelector: React.FC = () => {
               ]}
               colors={['#fff']}
             />
-            <p className='description'>{encounter.description}</p>
-            <p className='loot'>
-              Loot: {encounter.loot.map((l) => l.id).join(', ')}
-            </p>
+            <p className="description">{encounter.description}</p>
+            <p className="loot">Loot: {encounter.loot.map((l) => l.id).join(', ')}</p>
             <button
-              className='confirm-button'
+              className="confirm-button"
               onClick={() => {
                 battle.startBattle(encounter);
                 navigate('/battle');

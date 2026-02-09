@@ -4,10 +4,7 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
-import {
-  getAnimationTimeScale,
-  setupAnimationForTestMode,
-} from '../../utils/testMode';
+import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
 import {
   applyStandardPlasticToObject,
   getStandardPlasticMaterial,
@@ -20,9 +17,7 @@ export const ToaPohatuMataModel = forwardRef<
   }
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);
-  const { nodes, animations } = useGLTF(
-    import.meta.env.BASE_URL + 'toa_pohatu_mata.glb',
-  );
+  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'toa_pohatu_mata.glb');
 
   const { actions, mixer } = useAnimations(animations, group);
 
@@ -78,8 +73,7 @@ export const ToaPohatuMataModel = forwardRef<
   }, [nodes]);
 
   useEffect(() => {
-    const maskColor = (matoran.maskColorOverride ||
-      matoran.colors.mask) as Color;
+    const maskColor = (matoran.maskColorOverride || matoran.colors.mask) as Color;
     nodes.Masks.children.forEach((mask) => {
       const mesh = mask as Mesh;
       let mat = getStandardPlasticMaterial(maskColor);
@@ -111,8 +105,8 @@ export const ToaPohatuMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <group name='Scene'>
-        <group name='Toa' position={[0, 2.5, 0]} scale={37}>
+      <group name="Scene">
+        <group name="Toa" position={[0, 2.5, 0]} scale={37}>
           <primitive object={nodes.Waist} />
           <primitive object={nodes.LegIKTargetL} />
           <primitive object={nodes.LegIKTargetR} />

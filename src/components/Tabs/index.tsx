@@ -13,7 +13,7 @@ export const Tabs = ({
 }) => {
   return (
     <div className={`tabs-container ${classNames}`}>
-      <div className='tabs-inner'>
+      <div className="tabs-inner">
         {tabs.map((tab) => (
           <button
             key={tab}
@@ -24,7 +24,7 @@ export const Tabs = ({
           </button>
         ))}
       </div>
-      <div className='divider'></div>
+      <div className="divider"></div>
     </div>
   );
 };

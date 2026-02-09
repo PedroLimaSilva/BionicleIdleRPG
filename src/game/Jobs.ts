@@ -27,26 +27,19 @@ export function getAvailableJobs(gameState: GameState): MatoranJob[] {
     .filter((job) => isJobUnlocked(job, gameState));
 }
 
-export function getJobStatus(
-  matoran: RecruitedCharacterData
-): ProductivityEffect {
+export function getJobStatus(matoran: RecruitedCharacterData): ProductivityEffect {
   if (!matoran.assignment?.job) return ProductivityEffect.Idle;
 
   const matoran_dex = MATORAN_DEX[matoran.id];
 
   const affinity = JOB_DETAILS[matoran.assignment.job].elementAffinity;
-  if (affinity.favored.includes(matoran_dex.element))
-    return ProductivityEffect.Boosted;
-  if (affinity.opposed.includes(matoran_dex.element))
-    return ProductivityEffect.Penalized;
+  if (affinity.favored.includes(matoran_dex.element)) return ProductivityEffect.Boosted;
+  if (affinity.opposed.includes(matoran_dex.element)) return ProductivityEffect.Penalized;
 
   return ProductivityEffect.Neutral;
 }
 
-export function getProductivityModifier(
-  job: MatoranJob,
-  matoran: RecruitedCharacterData
-): number {
+export function getProductivityModifier(job: MatoranJob, matoran: RecruitedCharacterData): number {
   const { elementAffinity } = JOB_DETAILS[job];
 
   const matoran_dex = MATORAN_DEX[matoran.id];
@@ -86,10 +79,7 @@ function approximateBinomial(trials: number, probability: number): number {
   return Math.max(0, gaussian);
 }
 
-function rollJobRewards(
-  assignment: JobAssignment,
-  now = Date.now()
-): Inventory {
+function rollJobRewards(assignment: JobAssignment, now = Date.now()): Inventory {
   const elapsedSeconds = Math.max(0, (now - assignment.assignedAt) / 1000);
   const job = JOB_DETAILS[assignment.job];
   const drops: Inventory = {};
@@ -97,10 +87,7 @@ function rollJobRewards(
   if (!job.rewards) return drops;
 
   for (const reward of job.rewards) {
-    const count = approximateBinomial(
-      Math.floor(elapsedSeconds),
-      reward.chance
-    );
+    const count = approximateBinomial(Math.floor(elapsedSeconds), reward.chance);
     if (count > 0) {
       drops[reward.item] = count;
     }

@@ -1,11 +1,7 @@
 .currency {
   &-bar {
     padding: 1rem 2rem;
-    background: linear-gradient(
-      180deg,
-      rgba(26, 26, 30, 0.95) 0%,
-      rgba(20, 20, 25, 0.9) 100%
-    );
+    background: linear-gradient(180deg, rgba(26, 26, 30, 0.95) 0%, rgba(20, 20, 25, 0.9) 100%);
     border-radius: 50px 50px 0 0;
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.4),
@@ -48,17 +44,13 @@
     height: 25px;
     border-radius: 25px;
     overflow: hidden;
-    position:relative
+    position: relative;
   }
   &-fill {
     position: absolute;
     bottom: 0;
     left: 0;
-    background: linear-gradient(
-      90deg,
-      var(--color-accent),
-      var(--color-accent-hover)
-    );
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover));
     border-radius: 25px;
     height: 100%;
     transition: width var(--transition-slow);

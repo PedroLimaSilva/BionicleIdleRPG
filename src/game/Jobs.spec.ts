@@ -28,50 +28,32 @@ describe('Jobs', () => {
     };
 
     test('returns 1.2 for favored element (Fire matoran on CharcoalMaker)', () => {
-      const modifier = getProductivityModifier(
-        MatoranJob.CharcoalMaker,
-        mockFireMatoran
-      );
+      const modifier = getProductivityModifier(MatoranJob.CharcoalMaker, mockFireMatoran);
       expect(modifier).toBe(1.2);
     });
 
     test('returns 0.8 for opposed element (Ice matoran on CharcoalMaker)', () => {
-      const modifier = getProductivityModifier(
-        MatoranJob.CharcoalMaker,
-        mockIceMatoran
-      );
+      const modifier = getProductivityModifier(MatoranJob.CharcoalMaker, mockIceMatoran);
       expect(modifier).toBe(0.8);
     });
 
     test('returns 1.0 for neutral element (Water matoran on CharcoalMaker)', () => {
-      const modifier = getProductivityModifier(
-        MatoranJob.CharcoalMaker,
-        mockWaterMatoran
-      );
+      const modifier = getProductivityModifier(MatoranJob.CharcoalMaker, mockWaterMatoran);
       expect(modifier).toBe(1.0);
     });
 
     test('returns 1.2 for Water matoran on AlgaeHarvester', () => {
-      const modifier = getProductivityModifier(
-        MatoranJob.AlgaeHarvester,
-        mockWaterMatoran
-      );
+      const modifier = getProductivityModifier(MatoranJob.AlgaeHarvester, mockWaterMatoran);
       expect(modifier).toBe(1.2);
     });
 
     test('returns 1.2 for Ice matoran on IceSculptor', () => {
-      const modifier = getProductivityModifier(
-        MatoranJob.IceSculptor,
-        mockIceMatoran
-      );
+      const modifier = getProductivityModifier(MatoranJob.IceSculptor, mockIceMatoran);
       expect(modifier).toBe(1.2);
     });
 
     test('returns 0.8 for Fire matoran on IceSculptor (opposed)', () => {
-      const modifier = getProductivityModifier(
-        MatoranJob.IceSculptor,
-        mockFireMatoran
-      );
+      const modifier = getProductivityModifier(MatoranJob.IceSculptor, mockFireMatoran);
       expect(modifier).toBe(0.8);
     });
   });
@@ -135,15 +117,11 @@ describe('Jobs', () => {
     });
 
     test('returns true when required progress is met', () => {
-      expect(isJobUnlocked(MatoranJob.AlgaeHarvester, mockGameState)).toBe(
-        true
-      );
+      expect(isJobUnlocked(MatoranJob.AlgaeHarvester, mockGameState)).toBe(true);
     });
 
     test('returns false when required progress is not met', () => {
-      expect(isJobUnlocked(MatoranJob.ProtodermisSmelter, mockGameState)).toBe(
-        false
-      );
+      expect(isJobUnlocked(MatoranJob.ProtodermisSmelter, mockGameState)).toBe(false);
     });
   });
 
