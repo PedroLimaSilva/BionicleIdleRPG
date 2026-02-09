@@ -1,4 +1,4 @@
-import { VitePWA } from 'vite-plugin-pwa';
+import { VitePWA, type IconResource } from 'vite-plugin-pwa';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { watch } from 'vite-plugin-watch';
@@ -77,7 +77,7 @@ export default defineConfig({
             purpose: 'any',
             design: 'liquid-glass',
           },
-        ] satisfies ExtendedIconResource[] as typeof undefined,
+        ] satisfies ExtendedIconResource[] as unknown as IconResource[],
         // Extended manifest fields for dark mode theming
         ...({ dark_theme_color: '#2d2d2d', dark_background_color: '#2d2d2d' } as Record<
           string,
