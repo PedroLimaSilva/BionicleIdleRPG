@@ -8,15 +8,42 @@ import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
 import { MATORAN_DEX } from '../../data/matoran';
 import { QUESTS } from '../../data/quests';
+import { isMatoran, isToa } from '../../services/matoranUtils';
+import { useMemo, useState } from 'react';
+import { Tabs } from '../../components/Tabs';
 
 export const CharacterInventory: React.FC = () => {
   const { recruitedCharacters, buyableCharacters } = useGame();
 
+  const tabs = useMemo(() => {
+    const base = ['matoran'];
+    if (recruitedCharacters.some((matoran) => isToa(MATORAN_DEX[matoran.id]))) {
+      base.push('toa');
+    }
+    return base;
+  }, [recruitedCharacters]);
+
+  const [activeTab, setActiveTab] = useState<'matoran' | 'toa'>('matoran');
+
+  const characters = useMemo(() => {
+    return recruitedCharacters.filter((matoran) => {
+      if (activeTab === 'matoran') {
+        return isMatoran(MATORAN_DEX[matoran.id]);
+      }
+      return isToa(MATORAN_DEX[matoran.id]);
+    });
+  }, [recruitedCharacters, activeTab]);
+
   return (
     <div className='page-container'>
-      {/* <h1 className='title'>Characters</h1> */}
+      <Tabs
+        tabs={tabs}
+        classNames='character-inventory-tabs'
+        activeTab={activeTab}
+        onTabChange={(tab: string) => setActiveTab(tab as 'matoran' | 'toa')}
+      />
       <div className='character-grid'>
-        {recruitedCharacters.map((matoran) => {
+        {characters.map((matoran) => {
           const jobStatus = getJobStatus(matoran);
 
           const matoran_dex = MATORAN_DEX[matoran.id];
