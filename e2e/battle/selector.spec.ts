@@ -5,7 +5,7 @@ test.describe('Battle Nav Item', () => {
   test('should display battle nav item if quest requirements are met', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      completedQuests: ['mnog_return_to_shore'],
+      completedQuests: ['bohrok_legend_of_krana'],
     });
     await goto(page, '/battle');
 

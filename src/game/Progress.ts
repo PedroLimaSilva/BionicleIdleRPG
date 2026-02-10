@@ -1,5 +1,5 @@
+import { BOHROK_KRANA_LEGEND_QUEST_ID } from '../data/quests/bohrok_swarm';
 import { GameState } from '../types/GameState';
-import { BOHROK_KRANA_LEGEND_QUEST_ID } from './Krana';
 
 export function areBattlesUnlocked(quests: GameState['completedQuests']) {
   // Battles become available once the Bohrok legend is revealed and
