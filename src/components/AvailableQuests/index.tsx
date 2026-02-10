@@ -5,6 +5,8 @@ import { getAvailableQuests } from '../../game/Quests';
 import { Inventory } from '../../services/inventoryUtils';
 import { RecruitedCharacterData } from '../../types/Matoran';
 import { Quest, QuestItemRequirement } from '../../types/Quests';
+import { KranaCollection } from '../../types/Krana';
+import { areAllKranaCollected } from '../../game/Krana';
 import './index.scss';
 
 interface AvailableQuestsProps {
@@ -13,6 +15,7 @@ interface AvailableQuestsProps {
   activeQuestIds: string[];
   recruitedCharacters: RecruitedCharacterData[];
   inventory: Inventory;
+  collectedKrana?: KranaCollection;
   startQuest: (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => void;
 }
 
@@ -22,6 +25,7 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
   activeQuestIds,
   recruitedCharacters,
   inventory,
+  collectedKrana,
   startQuest,
 }) => {
   const available = getAvailableQuests(allQuests, completedQuestIds, activeQuestIds);
@@ -34,9 +38,16 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
   const hasItems = (items: QuestItemRequirement[] = []) =>
     items.every((req) => (inventory[req.id] || 0) >= req.amount);
 
+  const hasAllKrana = (quest: Quest) => {
+    if (!quest.requirements.requiresAllKrana) return true;
+    if (!collectedKrana) return false;
+    return areAllKranaCollected(collectedKrana);
+  };
+
   const isRequirementMet = (quest: Quest) =>
     hasMatoran(quest.requirements.matoran, quest.requirements.minLevel) &&
-    hasItems(quest.requirements.items);
+    hasItems(quest.requirements.items) &&
+    hasAllKrana(quest);
 
   return (
     <div className="available-quests">
@@ -87,6 +98,12 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                     );
                   })}
                 </div>
+
+                {quest.requirements.requiresAllKrana && !hasAllKrana(quest) && (
+                  <p className="available-quests__item-meta">
+                    Requires all Krana to be collected before this quest can begin.
+                  </p>
+                )}
 
                 <div className="available-quests__rewards">
                   <strong>Rewards:</strong>

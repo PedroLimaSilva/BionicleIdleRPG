@@ -9,6 +9,7 @@ import { GameState } from '../types/GameState';
 import { useQuestState } from './useQuestState';
 import { useBattleState } from './useBattleState';
 import { clamp } from '../utils/math';
+import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -16,6 +17,10 @@ export const useGameLogic = (): GameState => {
   const [version] = useState(initialState.version);
 
   const { inventory, addItemToInventory } = useInventoryState(initialState.inventory);
+
+  const [collectedKrana, setCollectedKrana] = useState<KranaCollection>(
+    initialState.collectedKrana ?? {}
+  );
 
   const [widgets, setWidgets] = useState(initialState.widgets);
   const [widgetCap] = useState(initialState.widgetCap);
@@ -69,6 +74,7 @@ export const useGameLogic = (): GameState => {
     widgets,
     widgetCap,
     inventory,
+    collectedKrana,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     activeQuests,
@@ -83,6 +89,7 @@ export const useGameLogic = (): GameState => {
     widgets,
     widgetCap,
     inventory,
+    collectedKrana,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     addItemToInventory,
@@ -97,5 +104,17 @@ export const useGameLogic = (): GameState => {
     removeActivityLogEntry,
     clearActivityLog,
     battle,
+    collectKrana: (element: KranaElement, id: KranaId) => {
+      setCollectedKrana((prev) => {
+        const existingForElement = prev[element] ?? [];
+        if (existingForElement.includes(id)) {
+          return prev;
+        }
+        return {
+          ...prev,
+          [element]: [...existingForElement, id],
+        };
+      });
+    },
   };
 };

@@ -15,6 +15,7 @@ export const QuestsPage = () => {
     completeQuest,
     recruitedCharacters,
     inventory,
+    collectedKrana,
   } = useGame();
 
   const getQuestById = (id: string) => QUESTS.find((q) => q.id === id);
@@ -94,6 +95,7 @@ export const QuestsPage = () => {
         completedQuestIds={completedQuests}
         recruitedCharacters={recruitedCharacters}
         inventory={inventory}
+        collectedKrana={collectedKrana}
         startQuest={startQuest}
       />
 
