@@ -16,17 +16,17 @@
     display: none;
   }
 
-  .divider {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-  }
-
   .tabs-inner {
     display: flex;
     flex-wrap: nowrap;
     width: fit-content;
     gap: 0.5rem;
   }
+}
+
+.divider {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }

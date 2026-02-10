@@ -12,6 +12,7 @@ import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { JobAssignment } from './JobAssignment';
 import { Tabs } from '../../components/Tabs';
+import { CharacterChronicle } from './Chronicle';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -33,6 +34,9 @@ export const CharacterDetail: React.FC = () => {
     }
     if (matoran.quest || isMatoran(matoran)) {
       base.push('tasks');
+    }
+    if (matoran.chronicle && matoran.chronicle.length > 0) {
+      base.push('chronicle');
     }
     return base;
   }, [matoran]);
@@ -64,12 +68,14 @@ export const CharacterDetail: React.FC = () => {
           <div className="divider"></div>
         </div>
       </div>
-      <Tabs
-        tabs={tabs}
-        classNames="character-detail-tabs"
-        activeTab={activeTab}
-        onTabChange={(tab: string) => setActiveTab(tab)}
-      />
+      <div className="character-detail-tabs">
+        <Tabs
+          tabs={tabs}
+          classNames="character-detail-tabs"
+          activeTab={activeTab}
+          onTabChange={(tab: string) => setActiveTab(tab)}
+        />
+      </div>
       <div className="character-detail-content">
         <div className="character-detail-section" id={activeTab}>
           {activeTab === 'stats' && (
@@ -114,6 +120,9 @@ export const CharacterDetail: React.FC = () => {
                 </div>
               )}
             </div>
+          )}
+          {activeTab === 'chronicle' && matoran.chronicle && (
+            <CharacterChronicle matoran={matoran} />
           )}
         </div>
       </div>

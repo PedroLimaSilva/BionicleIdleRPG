@@ -129,6 +129,9 @@
 
 .character-detail-tabs {
   grid-area: tabs;
+  width: 100%;
+  max-width: min(var(--container-max-w), calc(100vw - 4rem));
+  position: relative;
 }
 
 .character-detail-section {

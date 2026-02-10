@@ -7,24 +7,26 @@ export const Tabs = ({
   onTabChange,
 }: {
   tabs: string[];
-  classNames: string;
+  classNames?: string;
   activeTab: string;
   onTabChange: (tab: string) => void;
 }) => {
   return (
-    <div className={`tabs-container ${classNames}`}>
-      <div className="tabs-inner">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => onTabChange(tab)}
-          >
-            {tab}
-          </button>
-        ))}
+    <>
+      <div className={`tabs-container ${classNames}`}>
+        <div className="tabs-inner">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
+              onClick={() => onTabChange(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
       </div>
       <div className="divider"></div>
-    </div>
+    </>
   );
 };
