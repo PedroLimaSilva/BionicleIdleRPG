@@ -13,12 +13,8 @@ interface ProductivityBadgeProps {
 
 const ProductivityBadge: React.FC<ProductivityBadgeProps> = ({ modifier }) => {
   const labels = {
-    [ProductivityEffect.Boosted]: `+${Math.round(
-      (modifier - 1) * 100
-    )}% productivity`,
-    [ProductivityEffect.Penalized]: `-${Math.round(
-      (1 - modifier) * 100
-    )}% productivity`,
+    [ProductivityEffect.Boosted]: `+${Math.round((modifier - 1) * 100)}% productivity`,
+    [ProductivityEffect.Penalized]: `-${Math.round((1 - modifier) * 100)}% productivity`,
     [ProductivityEffect.Neutral]: `No productivity effect`,
   };
 
@@ -31,9 +27,7 @@ const ProductivityBadge: React.FC<ProductivityBadgeProps> = ({ modifier }) => {
     effect = ProductivityEffect.Penalized;
   }
 
-  return (
-    <span className={`productivity-badge ${effect}`}>{labels[effect]}</span>
-  );
+  return <span className={`productivity-badge ${effect}`}>{labels[effect]}</span>;
 };
 
 interface JobCardProps {
@@ -53,22 +47,20 @@ export const JobCard: React.FC<JobCardProps> = ({
 }) => {
   return (
     <div className={`job-card ${classNames}`}>
-      <h3 className='job-title'>{title}</h3>
+      <h3 className="job-title">{title}</h3>
       <ProductivityBadge modifier={modifier} />
-      <p className='job-description'>{description}</p>
-      <div className='job-rates'>
-        <div className='exp-rates'>
-          Base rate: <span className='code-style'>{baseRate}</span>
+      <p className="job-description">{description}</p>
+      <div className="job-rates">
+        <div className="exp-rates">
+          Base rate: <span className="code-style">{baseRate}</span>
           <br />
-          Modifier: <span className='code-style'>{modifier}</span>
+          Modifier: <span className="code-style">{modifier}</span>
           <br />
           <strong>Exp rate:</strong>{' '}
-          <span className='code-style'>
-            {(baseRate * modifier).toFixed(2)} Exp/second
-          </span>
+          <span className="code-style">{(baseRate * modifier).toFixed(2)} Exp/second</span>
           <br />
           <strong>Widget rate:</strong>{' '}
-          <span className='code-style'>
+          <span className="code-style">
             {(baseRate * modifier * WIDGET_RATE * 60).toFixed(0)} Widgets/minute
           </span>
         </div>

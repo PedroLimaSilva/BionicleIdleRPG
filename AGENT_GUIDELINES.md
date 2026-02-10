@@ -3,6 +3,7 @@
 ## Project Purpose and Scope
 
 This is a **web-based idle RPG game** set in the Bionicle universe. It is a single-page React application with:
+
 - Idle/incremental gameplay where characters generate resources over time (including offline)
 - Quest-based story progression with unlock chains
 - Turn-based combat with elemental affinities and mask powers
@@ -325,6 +326,7 @@ The 3D canvas uses React portals to render into `#canvas-mount`.
 ### The Dual Character Pattern
 
 Characters exist as:
+
 - `BaseMatoran` in `MATORAN_DEX` (static, never changes)
 - `RecruitedCharacterData` in state (runtime, minimal data)
 - Combined via `getRecruitedMatoran(id, recruitedCharacters)` when full data is needed

@@ -5,6 +5,7 @@ This directory contains end-to-end (E2E) visual regression tests using Playwrigh
 ## Overview
 
 These tests validate the UI and prevent visual regressions by:
+
 - Taking screenshots of key pages and components
 - Comparing them against baseline snapshots
 - Testing across multiple viewports (Desktop Chrome, Mobile Chrome Portrait/Landscape)
@@ -16,6 +17,7 @@ These tests validate the UI and prevent visual regressions by:
 Screenshots differ between macOS and Linux (CI environment). See [DOCKER_TESTING.md](./DOCKER_TESTING.md) for details.
 
 **Quick commands:**
+
 ```bash
 # Update snapshots for CI (Linux/Docker)
 yarn test:e2e:docker:update
@@ -27,26 +29,31 @@ yarn test:e2e:docker
 ## Running Tests
 
 ### Run all tests (headless)
+
 ```bash
 yarn test:e2e
 ```
 
 ### Run tests with UI mode (interactive)
+
 ```bash
 yarn test:e2e:ui
 ```
 
 ### Run tests in headed mode (see browser)
+
 ```bash
 yarn test:e2e:headed
 ```
 
 ### Debug tests
+
 ```bash
 yarn test:e2e:debug
 ```
 
 ### View test report
+
 ```bash
 yarn test:e2e:report
 ```
@@ -152,6 +159,7 @@ Different test scenarios have different tolerance levels for pixel differences:
 ## CI/CD Integration
 
 Tests run automatically on:
+
 - Pull requests
 - Pushes to master/main branches
 
@@ -162,6 +170,7 @@ Results are uploaded as artifacts in GitHub Actions.
 ### Tests failing due to minor pixel differences
 
 If tests fail with small pixel differences that are acceptable:
+
 1. Review the diff images in the test report
 2. If changes are intentional, update snapshots
 3. If tolerance is too strict, adjust `maxDiffPixels` in the test
@@ -183,4 +192,3 @@ On first run, Playwright will generate baseline snapshots. These should be commi
 5. **Keep tests focused** - Each test should validate a specific page or component
 6. **Use appropriate timeouts** - Wait for content to load before taking screenshots (use helper functions like `waitForCanvas()`)
 7. **Set reasonable tolerances** - Balance between catching regressions and avoiding flaky tests
-

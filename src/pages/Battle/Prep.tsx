@@ -25,9 +25,7 @@ export const BattlePrep: React.FC = () => {
     [TeamPosition.Middle]: undefined,
     [TeamPosition.Right]: undefined,
   });
-  const [selectingIndex, setSelectingIndex] = useState<TeamPosition>(
-    TeamPosition.Left
-  );
+  const [selectingIndex, setSelectingIndex] = useState<TeamPosition>(TeamPosition.Left);
 
   const handleClickRecruitedCharacter = (recruited: RecruitedCharacterData) => {
     const newSelectedTeam = { ...selectedTeam };
@@ -42,9 +40,7 @@ export const BattlePrep: React.FC = () => {
     newSelectedTeam[selectingIndex] = recruited;
     setSelectedTeam(newSelectedTeam);
 
-    const nextEmpty = Object.values(newSelectedTeam).findIndex(
-      (member) => member === undefined
-    );
+    const nextEmpty = Object.values(newSelectedTeam).findIndex((member) => member === undefined);
     setSelectingIndex(nextEmpty !== -1 ? nextEmpty : MAX_TEAM_SIZE);
   };
 
@@ -52,27 +48,24 @@ export const BattlePrep: React.FC = () => {
     setSelectingIndex(index);
   };
 
-  const selectable = recruitedCharacters.filter((c) =>
-    isToaMata(MATORAN_DEX[c.id])
-  );
+  const selectable = recruitedCharacters.filter((c) => isToaMata(MATORAN_DEX[c.id]));
 
   if (!currentEncounter) return null;
 
   return (
-    <div className='page-container'>
-      <h1 className='title'>Select Your Team</h1>
-      <div className='battle-prep'>
+    <div className="page-container battle">
+      <h1 className="title">Select Your Team</h1>
+      <div className="battle-arena"></div>
+      <div className="battle-prep">
         <h2>Preparing for: {currentEncounter.name}</h2>
 
-        <div className='battle-prep__selected-team'>
+        <div className="battle-prep__selected-team">
           {Object.values(selectedTeam).map((member, index) => {
             const focused = index === selectingIndex;
             if (!member) {
               return (
                 <div
-                  className={`character-card missing ${
-                    focused ? 'focused' : ''
-                  }`}
+                  className={`character-card missing ${focused ? 'focused' : ''}`}
                   key={`missing+${index}`}
                   onClick={() => handleClickSelectedCharacter(index)}
                 >
@@ -91,13 +84,11 @@ export const BattlePrep: React.FC = () => {
               >
                 <MatoranAvatar
                   matoran={{ ...matoran_dex, ...member }}
-                  styles='matoran-avatar model-preview'
+                  styles="matoran-avatar model-preview"
                 />
-                <div className='card-header'>
+                <div className="card-header">
                   {matoran_dex.name}
-                  <div className='level-label'>
-                    Level {getLevelFromExp(member.exp)}
-                  </div>
+                  <div className="level-label">Level {getLevelFromExp(member.exp)}</div>
                 </div>
               </div>
             );
@@ -119,31 +110,25 @@ export const BattlePrep: React.FC = () => {
               >
                 <MatoranAvatar
                   matoran={{ ...matoran_dex, ...recruited }}
-                  styles='matoran-avatar model-preview'
+                  styles="matoran-avatar model-preview"
                 />
-                <div className='card-header'>
+                <div className="card-header">
                   {matoran_dex.name}
-                  <div className='level-label'>
-                    Level {getLevelFromExp(recruited.exp)}
-                  </div>
+                  <div className="level-label">Level {getLevelFromExp(recruited.exp)}</div>
                 </div>
               </div>
             );
           })}
         </div>
 
-        <div className='battle-buttons'>
-          <button className='cancel-button' onClick={retreat}>
+        <div className="battle-buttons">
+          <button className="cancel-button" onClick={retreat}>
             Retreat
           </button>
           <button
-            className='confirm-button'
+            className="confirm-button"
             disabled={Object.values(selectedTeam).some((m) => !m)}
-            onClick={() =>
-              confirmTeam(
-                Object.values(selectedTeam) as RecruitedCharacterData[]
-              )
-            }
+            onClick={() => confirmTeam(Object.values(selectedTeam) as RecruitedCharacterData[])}
           >
             Begin Battle
           </button>

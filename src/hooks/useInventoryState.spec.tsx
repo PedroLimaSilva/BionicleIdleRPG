@@ -10,7 +10,7 @@ describe('useInventoryState', () => {
   describe('initialization', () => {
     test('initializes with empty inventory', () => {
       const { result } = renderHook(() => useInventoryState({}));
-      
+
       expect(result.current.inventory).toEqual({});
     });
 
@@ -21,7 +21,7 @@ describe('useInventoryState', () => {
       };
 
       const { result } = renderHook(() => useInventoryState(initialInventory));
-      
+
       expect(result.current.inventory).toEqual(initialInventory);
     });
   });
@@ -135,4 +135,3 @@ describe('useInventoryState', () => {
     });
   });
 });
-

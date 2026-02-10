@@ -14,14 +14,11 @@ type TickResult = {
   logs: ActivityLogEntry[];
 };
 
-export function tickMatoranJobExp(
-  matoran: RecruitedCharacterData,
-  now: number
-): TickResult {
+export function tickMatoranJobExp(matoran: RecruitedCharacterData, now: number): TickResult {
   const [updated, exp, loot] = applyJobExp(matoran, now);
   const earnedWidgets = Math.floor(exp * WIDGET_RATE);
-  
-  const matoran_dex = MATORAN_DEX[matoran.id]
+
+  const matoran_dex = MATORAN_DEX[matoran.id];
 
   const logs: ActivityLogEntry[] = [];
 

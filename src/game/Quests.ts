@@ -7,8 +7,7 @@ export function getAvailableQuests(
 ): Quest[] {
   return allQuests.filter((quest) => {
     const isUnlocked =
-      !quest.unlockedAfter ||
-      quest.unlockedAfter.every((id) => completedQuestIds.includes(id));
+      !quest.unlockedAfter || quest.unlockedAfter.every((id) => completedQuestIds.includes(id));
     const isNotStarted = !activeQuestIds.includes(quest.id);
     const isNotCompleted = !completedQuestIds.includes(quest.id);
 

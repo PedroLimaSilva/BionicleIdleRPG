@@ -1,19 +1,17 @@
 import { useEffect, useRef } from 'react';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { Color, LegoColor } from '../../types/Colors';
 import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
+import {
+  applyStandardPlasticToObject,
+  getStandardPlasticMaterial,
+} from './StandardPlasticMaterial';
 
-export function ToaOnuaMataModel({
-  matoran,
-}: {
-  matoran: RecruitedCharacterData & BaseMatoran;
-}) {
+export function ToaOnuaMataModel({ matoran }: { matoran: RecruitedCharacterData & BaseMatoran }) {
   const group = useRef<Group>(null);
-  const { nodes, materials, animations } = useGLTF(
-    import.meta.env.BASE_URL + 'toa_onua_mata.glb'
-  );
+  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'toa_onua_mata.glb');
 
   const { actions, mixer } = useAnimations(animations, group);
 
@@ -35,21 +33,30 @@ export function ToaOnuaMataModel({
   }, [actions, mixer]);
 
   useEffect(() => {
+    if (group.current) applyStandardPlasticToObject(group.current);
+  }, [nodes]);
+
+  useEffect(() => {
+    const maskColor = (matoran.maskColorOverride || matoran.colors.mask) as Color;
     nodes.Masks.children.forEach((mask) => {
       const mesh = mask as Mesh;
-      mesh.material = materials['Onua Black02'].clone();
-      const mat = mesh.material as MeshStandardMaterial;
-      mat.color.set(
-        (matoran.maskColorOverride || matoran.colors.mask) as Color
-      );
-      mat.metalness =
-        matoran.maskColorOverride === LegoColor.PearlGold ? 0.5 : 0;
-      if (mask.name === Mask.Kaukau) {
-        mat.transparent = true;
-        mat.opacity = 0.8;
+      let mat = getStandardPlasticMaterial(maskColor);
+      const needsTransparent = mask.name === Mask.Kaukau;
+      const needsMetalness = matoran.maskColorOverride === LegoColor.PearlGold;
+      if (needsTransparent || needsMetalness) {
+        mat = mat.clone();
+        if (needsTransparent) {
+          mat.transparent = true;
+          mat.opacity = 0.8;
+        }
+        if (needsMetalness) {
+          mat.metalness = 0.5;
+          mat.roughness = 0.3;
+        }
       }
+      mesh.material = mat;
     });
-  }, [nodes, materials, matoran]);
+  }, [nodes, matoran]);
 
   useEffect(() => {
     const maskTarget = matoran.maskOverride || matoran.mask;
@@ -62,8 +69,8 @@ export function ToaOnuaMataModel({
 
   return (
     <group ref={group} dispose={null}>
-      <group name='Scene'>
-        <group name='Toa'>
+      <group name="Scene">
+        <group name="Toa" position={[0, 2.5, 0]}>
           <primitive object={nodes.Body} />
         </group>
       </group>

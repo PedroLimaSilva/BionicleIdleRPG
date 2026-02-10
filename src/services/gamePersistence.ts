@@ -1,7 +1,4 @@
-import {
-  CURRENT_GAME_STATE_VERSION,
-  INITIAL_GAME_STATE,
-} from '../data/gameState';
+import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameState';
 import { GameItemId } from '../data/loot';
 import { applyOfflineJobExp } from '../game/Jobs';
 import { GameState } from '../types/GameState';
@@ -24,13 +21,12 @@ export function loadGameState() {
       }
       if (isValidGameState(parsed)) {
         const [recruitedCharacters, logs, currency, loot] = applyOfflineJobExp(
-          parsed.recruitedCharacters,
+          parsed.recruitedCharacters
         );
 
         Object.entries(loot).forEach(([item, amount]) => {
           const itemId = item as GameItemId;
-          parsed.inventory[itemId] =
-            (parsed.inventory[itemId] || 0) + (amount as number);
+          parsed.inventory[itemId] = (parsed.inventory[itemId] || 0) + (amount as number);
         });
 
         return {

@@ -21,119 +21,118 @@ export interface CombatantModelHandle {
   playAnimation: (name: 'Attack' | 'Hit' | 'Idle') => Promise<void>;
 }
 
-export const CombatantModel = forwardRef<
-  CombatantModelHandle,
-  CombatantModelProps
->(({ combatant, position, side }, ref) => {
-  const modelGroup = useRef<Group>(null);
+export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelProps>(
+  ({ combatant, position, side }, ref) => {
+    const modelGroup = useRef<Group>(null);
 
-  const childRef = useRef<CombatantModelHandle>(null);
+    const childRef = useRef<CombatantModelHandle>(null);
 
-  useImperativeHandle(ref, () => ({
-    playAnimation: (name) => {
-      return childRef.current?.playAnimation(name) ?? Promise.resolve();
-    },
-  }));
+    useImperativeHandle(ref, () => ({
+      playAnimation: (name) => {
+        return childRef.current?.playAnimation(name) ?? Promise.resolve();
+      },
+    }));
 
-  const rotation: Euler = [0, side === 'team' ? Math.PI : 0, 0];
+    const rotation: Euler = [0, side === 'team' ? Math.PI : 0, 0];
 
-  const model = (() => {
-    switch (combatant.model) {
-      case 'bohrok':
-        return (
-          <group scale={0.175} position={[0, 0.215, -0.15]}>
-            <BohrokModel ref={childRef} name={combatant.name} />
-          </group>
-        );
-      case 'Toa_Kopaka':
-        return (
-          <group scale={0.04} position={[0, 0.375, 0]}>
-            <ToaKopakaMataModel
-              ref={childRef}
-              matoran={{
-                maskOverride: combatant.maskPower?.shortName,
-                ...MATORAN_DEX[combatant.id],
-                ...combatant,
-                exp: 0,
-              }}
-            />
-          </group>
-        );
-      case 'Toa_Tahu':
-        return (
-          <group scale={0.04} position={[0, 0.375, 0]}>
-            <ToaTahuMataModel
-              ref={childRef}
-             matoran={{
-                maskOverride: combatant.maskPower?.shortName,
-                ...MATORAN_DEX[combatant.id],
-                ...combatant,
-                exp: 0,
-              }}
-            />
-          </group>
-        );
-      case 'Toa_Pohatu':
-        return (
-          <group scale={0.04} position={[0, 0.375, 0]}>
-            <ToaPohatuMataModel
-              ref={childRef}
-             matoran={{
-                maskOverride: combatant.maskPower?.shortName,
-                ...MATORAN_DEX[combatant.id],
-                ...combatant,
-                exp: 0,
-              }}
-            />
-          </group>
-        );
-      case 'Toa_Onua':
-        return (
-          <group scale={0.04} position={[0, 0.375, 0]}>
-            <ToaOnuaMataModel
-             matoran={{
-                maskOverride: combatant.maskPower?.shortName,
-                ...MATORAN_DEX[combatant.id],
-                ...combatant,
-                exp: 0,
-              }}
-            />
-          </group>
-        );
-      case 'Toa_Lewa':
-        return (
-          <group scale={0.04} position={[0, 0.375, 0]}>
-            <ToaLewaMataModel
-             matoran={{
-                maskOverride: combatant.maskPower?.shortName,
-                ...MATORAN_DEX[combatant.id],
-                ...combatant,
-                exp: 0,
-              }}
-            />
-          </group>
-        );
-      case 'Toa_Gali':
-        return (
-          <group scale={0.04} position={[0, 0.375, 0]}>
-            <ToaGaliMataModel
-              ref={childRef}
-             matoran={{
-                maskOverride: combatant.maskPower?.shortName,
-                ...MATORAN_DEX[combatant.id],
-                ...combatant,
-                exp: 0,
-              }}
-            />
-          </group>
-        );
-      default:
-        return null;
-    }
-  })();
-  return (
-    <group ref={modelGroup} position={position} rotation={rotation}>
-      {model}
-    </group>
-  );
-});
+    const model = (() => {
+      switch (combatant.model) {
+        case 'bohrok':
+          return (
+            <group scale={0.175} position={[0, 0.215, -0.15]}>
+              <BohrokModel ref={childRef} name={combatant.name} />
+            </group>
+          );
+        case 'Toa_Kopaka':
+          return (
+            <group scale={0.04} position={[0, 0.375, 0]}>
+              <ToaKopakaMataModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...MATORAN_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Tahu':
+          return (
+            <group scale={0.04} position={[0, 0.375, 0]}>
+              <ToaTahuMataModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...MATORAN_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Pohatu':
+          return (
+            <group scale={0.04} position={[0, 0.375, 0]}>
+              <ToaPohatuMataModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...MATORAN_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Onua':
+          return (
+            <group scale={0.04} position={[0, 0.375, 0]}>
+              <ToaOnuaMataModel
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...MATORAN_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Lewa':
+          return (
+            <group scale={0.04} position={[0, 0.375, 0]}>
+              <ToaLewaMataModel
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...MATORAN_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Gali':
+          return (
+            <group scale={0.04} position={[0, 0.375, 0]}>
+              <ToaGaliMataModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...MATORAN_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                }}
+              />
+            </group>
+          );
+        default:
+          return null;
+      }
+    })();
+    return (
+      <group ref={modelGroup} position={position} rotation={rotation}>
+        {model}
+      </group>
+    );
+  }
+);

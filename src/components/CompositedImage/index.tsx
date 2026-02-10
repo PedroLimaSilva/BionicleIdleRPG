@@ -10,11 +10,7 @@ function arraysEqual(a: string[], b: string[]) {
   return a.length === b.length && a.every((v, i) => v === b[i]);
 }
 
-export const CompositedImage: React.FC<CompositedImageProps> = ({
-  images,
-  colors,
-  className,
-}) => {
+export const CompositedImage: React.FC<CompositedImageProps> = ({ images, colors, className }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prevImages = useRef<string[]>([]);
 

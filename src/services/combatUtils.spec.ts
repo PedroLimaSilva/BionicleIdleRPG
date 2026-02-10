@@ -197,23 +197,13 @@ describe('chooseTarget', () => {
     });
 
     test('applies mask override when provided', () => {
-      const combatant = generateCombatantStats(
-        'test-id',
-        'Toa_Tahu',
-        1,
-        Mask.Kaukau
-      );
+      const combatant = generateCombatantStats('test-id', 'Toa_Tahu', 1, Mask.Kaukau);
 
       expect(combatant.maskPower).toBeDefined();
     });
 
     test('initializes mask power cooldown to 0', () => {
-      const combatant = generateCombatantStats(
-        'test-id',
-        'Toa_Tahu',
-        1,
-        Mask.Hau
-      );
+      const combatant = generateCombatantStats('test-id', 'Toa_Tahu', 1, Mask.Hau);
 
       expect(combatant.maskPower?.effect.cooldown.amount).toBe(0);
     });
@@ -364,5 +354,4 @@ describe('chooseTarget', () => {
       expect(tahu.maskPower?.active).toBeFalsy();
     });
   });
-
 });

@@ -27,26 +27,26 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
       }`}
     >
       {shouldShowCurrencyBar(pathname) && <CurrencyBar isPortrait={isPortrait} />}
-      <nav className='nav-bar'>
+      <nav className="nav-bar">
         {areBattlesUnlocked(completedQuests) && (
-          <NavLink to='/battle' className='nav-item'>
+          <NavLink to="/battle" className="nav-item">
             <Swords />
             <label>Battle</label>
           </NavLink>
         )}
-        <NavLink to='/quests' className='nav-item'>
+        <NavLink to="/quests" className="nav-item">
           <Map />
           <label>Quests</label>
         </NavLink>
-        <NavLink to='/characters' className='nav-item'>
+        <NavLink to="/characters" className="nav-item">
           <UserCircle2 />
           <label>Characters</label>
         </NavLink>
-        <NavLink to='/inventory' className='nav-item'>
+        <NavLink to="/inventory" className="nav-item">
           <Backpack />
           <label>Inventory</label>
         </NavLink>
-        <NavLink to='/settings' className='nav-item'>
+        <NavLink to="/settings" className="nav-item">
           <Settings />
           <label>Settings</label>
         </NavLink>

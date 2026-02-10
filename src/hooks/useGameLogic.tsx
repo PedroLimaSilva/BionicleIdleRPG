@@ -15,9 +15,7 @@ export const useGameLogic = (): GameState => {
 
   const [version] = useState(initialState.version);
 
-  const { inventory, addItemToInventory } = useInventoryState(
-    initialState.inventory
-  );
+  const { inventory, addItemToInventory } = useInventoryState(initialState.inventory);
 
   const [widgets, setWidgets] = useState(initialState.widgets);
   const [widgetCap] = useState(initialState.widgetCap);
@@ -39,12 +37,8 @@ export const useGameLogic = (): GameState => {
     addItemToInventory
   );
 
-  const {
-    activityLog,
-    addActivityLog,
-    removeActivityLogEntry,
-    clearActivityLog,
-  } = useActivityLogState(initialState.activityLog);
+  const { activityLog, addActivityLog, removeActivityLogEntry, clearActivityLog } =
+    useActivityLogState(initialState.activityLog);
 
   useJobTickEffect(
     recruitedCharacters,
@@ -54,13 +48,7 @@ export const useGameLogic = (): GameState => {
     addActivityLog
   );
 
-  const {
-    activeQuests,
-    completedQuests,
-    startQuest,
-    cancelQuest,
-    completeQuest,
-  } = useQuestState({
+  const { activeQuests, completedQuests, startQuest, cancelQuest, completeQuest } = useQuestState({
     initialActive: initialState.activeQuests,
     initialCompleted: initialState.completedQuests,
     characters: recruitedCharacters,

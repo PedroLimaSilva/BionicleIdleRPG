@@ -1,0 +1,32 @@
+// recreate the tabs component from the character detail page
+.tabs-container {
+  justify-self: center;
+  width: fit-content;
+  overflow-x: scroll;
+  padding: 0.5rem;
+  padding-bottom: calc(1rem + 2px);
+  scroll-behavior: smooth;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  top: 0;
+  position: sticky;
+  z-index: 100;
+  margin-top: 0.5rem;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .divider {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .tabs-inner {
+    display: flex;
+    flex-wrap: nowrap;
+    width: fit-content;
+    gap: 0.5rem;
+  }
+}

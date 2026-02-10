@@ -57,14 +57,7 @@ export const MASK_HUNT: Quest[] = [
       'Following a chance encounter between Kopaka and Pohatu, they find the other four Toa gathered near the slopes of Mount Ihu. Though tensions arise between their differing personalities and priorities, they come to a shared understanding: each must search for the scattered Kanohi and grow stronger in preparation for the battle against Makuta. They part ways with a mutual vow to reunite when the time is right.',
     durationSeconds: 30 * 60, // 2 minutes
     requirements: {
-      matoran: [
-        'Toa_Tahu',
-        'Toa_Gali',
-        'Toa_Kopaka',
-        'Toa_Lewa',
-        'Toa_Onua',
-        'Toa_Pohatu',
-      ],
+      matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 1,
       items: [],
     },
@@ -73,7 +66,7 @@ export const MASK_HUNT: Quest[] = [
       currency: 500,
       loot: {},
     },
-    unlockedAfter: ['mnog_tahu_unlock_01','maskhunt_kopaka_pohatu_icecliff'],
+    unlockedAfter: ['mnog_tahu_unlock_01', 'maskhunt_kopaka_pohatu_icecliff'],
   },
   {
     id: 'maskhunt_tahu_cave_akaku',
@@ -258,10 +251,7 @@ export const MASK_HUNT: Quest[] = [
         [GameItemId.BurnishedAlloy]: 100,
       },
     },
-    unlockedAfter: [
-      'mnog_search_for_matoro',
-      'mnog_lewa_v_onua',
-    ],
+    unlockedAfter: ['mnog_search_for_matoro', 'mnog_lewa_v_onua'],
   },
   {
     id: 'story_toa_second_council',
@@ -270,14 +260,7 @@ export const MASK_HUNT: Quest[] = [
       'After a string of difficult battles and strange visions, the Toa reconvene—this time at Onua’s request. They share what they’ve learned: visions, near-deaths, and the masks they’ve found. For the first time, they speak openly of trust and strategy. Realizing they’ve made little progress alone, the Toa agree: from now on, they will work together to gather the remaining Masks of Power. Unity will be their path forward.',
     durationSeconds: 120, // 2 minutes
     requirements: {
-      matoran: [
-        'Toa_Tahu',
-        'Toa_Gali',
-        'Toa_Kopaka',
-        'Toa_Lewa',
-        'Toa_Onua',
-        'Toa_Pohatu',
-      ],
+      matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 6,
       items: [],
     },
@@ -356,14 +339,7 @@ export const MASK_HUNT: Quest[] = [
       'Outside a massive Nui-Jaga nest, the Toa assemble to plan their next move. Tahu pushes for a direct assault, but Gali argues for a strategic approach—driving the Rahi into the open where they can be fought safely. Onua sides with Gali, while Pohatu dismisses the risk. When Lewa asks Kopaka’s thoughts, the Toa of Ice coldly rejects Tahu’s aggressive plan. Tensions rise and tempers flare until Tahu hurls a fireball in frustration, accidentally igniting the brush. The smoke flushes the Nui-Jaga out—and the Toa are forced to fight them head-on, together.',
     durationSeconds: 720, // 12 minutes
     requirements: {
-      matoran: [
-        'Toa_Tahu',
-        'Toa_Gali',
-        'Toa_Kopaka',
-        'Toa_Lewa',
-        'Toa_Onua',
-        'Toa_Pohatu',
-      ],
+      matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 10,
       items: [],
     },
@@ -384,14 +360,7 @@ export const MASK_HUNT: Quest[] = [
       'With battles behind them and lessons hard-won, the Toa gather one last time. They have seen visions, saved villages, and clashed with one another—but now, united in purpose, they set out to retrieve the final Kanohi needed to complete their sets. Across icy cliffs, jungle treetops, volcanic depths, and desert shrines, they coordinate their search with precision and trust. The last Masks of Power await, and with them, the strength to face what lies beneath the island.',
     durationSeconds: 900, // 15 minutes
     requirements: {
-      matoran: [
-        'Toa_Tahu',
-        'Toa_Gali',
-        'Toa_Kopaka',
-        'Toa_Lewa',
-        'Toa_Onua',
-        'Toa_Pohatu',
-      ],
+      matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 11,
       items: [],
     },
@@ -408,14 +377,7 @@ export const MASK_HUNT: Quest[] = [
       'With every Kanohi collected, the Toa journey to the sacred temple of Kini-Nui. The island is quiet as they arrive, standing together beneath ancient carvings that speak of prophecy and shadow.',
     durationSeconds: 300, // 5 minutes
     requirements: {
-      matoran: [
-        'Toa_Tahu',
-        'Toa_Gali',
-        'Toa_Kopaka',
-        'Toa_Lewa',
-        'Toa_Onua',
-        'Toa_Pohatu',
-      ],
+      matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 12,
       items: [],
     },
@@ -433,14 +395,7 @@ export const MASK_HUNT: Quest[] = [
       'With the Chronicler’s Company standing watch above, the six Toa descend into the ancient tunnels beneath Kini-Nui. The air grows colder, and the light from the surface fades behind them. Whispers echo through the stone — memories of long-forgotten battles and shadows yet to come. Though the path is unclear, one thing is certain: they will face whatever lies beneath, together.',
     durationSeconds: 300, // 5 minutes
     requirements: {
-      matoran: [
-        'Toa_Tahu',
-        'Toa_Gali',
-        'Toa_Kopaka',
-        'Toa_Lewa',
-        'Toa_Onua',
-        'Toa_Pohatu',
-      ],
+      matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 12,
       items: [],
     },

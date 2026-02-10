@@ -1,6 +1,7 @@
 .composited-avatar {
   position: relative;
-  > img, > canvas {
+  > img,
+  > canvas {
     position: absolute;
     left: 50%;
     top: 0;

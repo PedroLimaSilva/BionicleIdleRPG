@@ -25,7 +25,8 @@ export const DamagePopup = ({
 
   return (
     <div ref={popupRef} className={`damage-popup float-${direction} ${isHealing ? 'healing' : ''}`}>
-      {isHealing ? '+' : '-'}{damage}
+      {isHealing ? '+' : '-'}
+      {damage}
     </div>
   );
 };

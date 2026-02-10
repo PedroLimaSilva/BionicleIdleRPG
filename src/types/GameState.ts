@@ -16,9 +16,9 @@ export type GameState = {
   recruitedCharacters: RecruitedCharacterData[];
   activeQuests: QuestProgress[];
   completedQuests: string[];
-  battle: BattleState,
+  battle: BattleState;
   recruitCharacter: (character: ListedCharacterData) => void;
-  setMaskOverride: (id: RecruitedCharacterData["id"], color: LegoColor, mask: Mask) => void;
+  setMaskOverride: (id: RecruitedCharacterData['id'], color: LegoColor, mask: Mask) => void;
   addItemToInventory: (item: GameItemId, amount: number) => void;
   assignJobToMatoran: (matoranId: RecruitedCharacterData['id'], job: MatoranJob) => void;
   removeJobFromMatoran: (matoranId: RecruitedCharacterData['id']) => void;

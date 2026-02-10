@@ -147,12 +147,7 @@ describe('matoranUtils', () => {
       };
       const buyableCharacters: ListedCharacterData[] = [character];
 
-      const result = recruitMatoran(
-        character,
-        150,
-        buyableCharacters,
-        mockAddItem,
-      );
+      const result = recruitMatoran(character, 150, buyableCharacters, mockAddItem);
 
       expect(result.updatedWidgets).toBe(50);
       expect(result.newRecruit).toEqual({ id: 'Jala', exp: 0 });
@@ -167,12 +162,7 @@ describe('matoranUtils', () => {
       };
       const buyableCharacters: ListedCharacterData[] = [character];
 
-      const result = recruitMatoran(
-        character,
-        50,
-        buyableCharacters,
-        mockAddItem,
-      );
+      const result = recruitMatoran(character, 50, buyableCharacters, mockAddItem);
 
       expect(result.updatedWidgets).toBe(50);
       expect(result.newRecruit).toBeNull();
@@ -193,12 +183,7 @@ describe('matoranUtils', () => {
       };
       const buyableCharacters: ListedCharacterData[] = [character1, character2];
 
-      const result = recruitMatoran(
-        character1,
-        150,
-        buyableCharacters,
-        mockAddItem,
-      );
+      const result = recruitMatoran(character1, 150, buyableCharacters, mockAddItem);
 
       expect(result.updatedBuyable).toHaveLength(1);
       expect(result.updatedBuyable[0].id).toBe('Hali');
@@ -253,9 +238,7 @@ describe('matoranUtils', () => {
       const result = assignJob('Jala', MatoranJob.CharcoalMaker, matoran);
 
       const afterTime = Date.now();
-      expect(result[0].assignment?.assignedAt).toBeGreaterThanOrEqual(
-        beforeTime,
-      );
+      expect(result[0].assignment?.assignedAt).toBeGreaterThanOrEqual(beforeTime);
       expect(result[0].assignment?.assignedAt).toBeLessThanOrEqual(afterTime);
     });
 
@@ -357,10 +340,7 @@ describe('matoranUtils', () => {
     });
 
     test('adds multiple masks for multiple quests', () => {
-      const masks = masksCollected(mockToa, [
-        'maskhunt_tahu_cave_akaku',
-        'maskhunt_tahu_miru',
-      ]);
+      const masks = masksCollected(mockToa, ['maskhunt_tahu_cave_akaku', 'maskhunt_tahu_miru']);
       expect(masks).toContain(Mask.Hau);
       expect(masks).toContain(Mask.Akaku);
       expect(masks).toContain(Mask.Miru);

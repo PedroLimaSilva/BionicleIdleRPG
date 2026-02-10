@@ -5,11 +5,7 @@ button {
   font-size: 1em;
   font-weight: 600;
   font-family: var(--font-display);
-  background: linear-gradient(
-    135deg,
-    var(--color-surface-mid),
-    var(--color-surface-high)
-  );
+  background: linear-gradient(135deg, var(--color-surface-mid), var(--color-surface-high));
   color: var(--color-text);
   cursor: pointer;
   transition: all var(--transition-base);
@@ -27,11 +23,7 @@ button {
   }
 
   &:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      var(--color-surface-high),
-      var(--color-surface-elevated)
-    );
+    background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
     border-color: var(--color-accent);
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);

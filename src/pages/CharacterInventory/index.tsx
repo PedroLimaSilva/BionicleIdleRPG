@@ -8,15 +8,44 @@ import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
 import { MATORAN_DEX } from '../../data/matoran';
 import { QUESTS } from '../../data/quests';
+import { isMatoran, isToa } from '../../services/matoranUtils';
+import { useMemo, useState } from 'react';
+import { Tabs } from '../../components/Tabs';
 
 export const CharacterInventory: React.FC = () => {
   const { recruitedCharacters, buyableCharacters } = useGame();
 
+  const tabs = useMemo(() => {
+    const base = ['matoran'];
+    if (recruitedCharacters.some((matoran) => isToa(MATORAN_DEX[matoran.id]))) {
+      base.push('toa');
+    }
+    return base;
+  }, [recruitedCharacters]);
+
+  const [activeTab, setActiveTab] = useState<'matoran' | 'toa'>('matoran');
+
+  const characters = useMemo(() => {
+    return recruitedCharacters.filter((matoran) => {
+      if (activeTab === 'matoran') {
+        return isMatoran(MATORAN_DEX[matoran.id]);
+      }
+      return isToa(MATORAN_DEX[matoran.id]);
+    });
+  }, [recruitedCharacters, activeTab]);
+
   return (
-    <div className='page-container'>
-      {/* <h1 className='title'>Characters</h1> */}
-      <div className='character-grid'>
-        {recruitedCharacters.map((matoran) => {
+    <div className="page-container">
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Tabs
+          tabs={tabs}
+          classNames="character-inventory-tabs"
+          activeTab={activeTab}
+          onTabChange={(tab: string) => setActiveTab(tab as 'matoran' | 'toa')}
+        />
+      </div>
+      <div className="character-grid">
+        {characters.map((matoran) => {
           const jobStatus = getJobStatus(matoran);
 
           const matoran_dex = MATORAN_DEX[matoran.id];
@@ -28,17 +57,14 @@ export const CharacterInventory: React.FC = () => {
                   matoran={{ ...matoran_dex, ...matoran }}
                   styles={'matoran-avatar model-preview'}
                 />
-                <div className='card-header'>
+                <div className="card-header">
                   {'  ' + matoran_dex.name}
-                  <div className='level-label'>
-                    Level {getLevelFromExp(matoran.exp)}
-                  </div>
+                  <div className="level-label">Level {getLevelFromExp(matoran.exp)}</div>
                   <JobStatusBadge
                     label={
                       matoran.assignment?.job
                         ? JOB_DETAILS[matoran.assignment?.job].label
-                        : QUESTS.find((q) => q.id === matoran.quest)?.name ||
-                          jobStatus
+                        : QUESTS.find((q) => q.id === matoran.quest)?.name || jobStatus
                     }
                     status={jobStatus}
                   />
@@ -49,9 +75,9 @@ export const CharacterInventory: React.FC = () => {
         })}
       </div>
       {buyableCharacters.length !== 0 && (
-        <div className='recruit-button'>
-          <Link to='/recruitment'>
-            <button type='button' className='recruitment-button'>
+        <div className="recruit-button">
+          <Link to="/recruitment">
+            <button type="button" className="recruitment-button">
               Recruit More
             </button>
           </Link>

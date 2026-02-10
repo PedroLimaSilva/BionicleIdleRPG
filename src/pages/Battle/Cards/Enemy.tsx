@@ -27,11 +27,11 @@ export function EnemyCard({ enemy }: { enemy: Combatant }) {
       key={enemy.id}
       className={`enemy-card element-${enemy.element}`}
     >
-      <div className='name'>{COMBATANT_DEX[enemy.id]?.name || enemy.id}</div>
-      <div className='hp-bar'>
+      <div className="name">{COMBATANT_DEX[enemy.id]?.name || enemy.id}</div>
+      <div className="hp-bar">
         HP: {enemy.hp}/{enemy.maxHp}
-        {damage && <DamagePopup damage={damage} direction='down' isHealing={false} />}
-        {healing && <DamagePopup damage={healing} direction='down' isHealing={true} />}
+        {damage && <DamagePopup damage={damage} direction="down" isHealing={false} />}
+        {healing && <DamagePopup damage={healing} direction="down" isHealing={true} />}
       </div>
     </div>
   );

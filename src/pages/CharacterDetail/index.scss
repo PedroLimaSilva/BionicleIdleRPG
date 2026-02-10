@@ -12,7 +12,7 @@
   display: grid;
   column-gap: 2rem;
   grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   grid-template-areas:
     'visualization'
     'tabs'
@@ -36,7 +36,7 @@
   border: 2px solid var(--theme-element-primary);
   border-radius: var(--border-radius-lg);
   width: 100%;
-  max-width: var(--container-max-w);
+  max-width: min(var(--container-max-w), calc(100vw - 4rem));
   color: var(--theme-element-primary);
   box-shadow:
     var(--theme-element-glow-strong),
@@ -60,11 +60,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(
-      circle,
-      var(--theme-element-glow-transparent) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(circle, var(--theme-element-glow-transparent) 0%, transparent 70%);
     opacity: 0.1;
     animation: pulse 4s ease-in-out infinite;
   }
@@ -108,25 +104,24 @@
   position: relative;
   // min-height: var(--character-detail-model-h);
   height: 50vh;
+  .divider {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
 }
 
 .divider {
   height: 2px;
-  background: radial-gradient(
-    circle,
-    var(--theme-element-glow) 0%,
-    transparent 70%
-  );
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+  background: radial-gradient(circle, var(--theme-element-glow) 0%, transparent 70%);
 }
 
 .character-detail-content {
   grid-area: content;
   margin: 0 auto;
   width: 100%;
-  max-width: var(--container-max-w);
+  max-width: min(var(--container-max-w), calc(100vw - 4rem));
+
   .divider {
     position: relative;
   }
@@ -134,34 +129,13 @@
 
 .character-detail-tabs {
   grid-area: tabs;
-  justify-self: center;
-  width: fit-content;
-  overflow-x: scroll;
-  padding: 0.5rem;
-  padding-bottom: calc(1rem + 2px);
-  scroll-behavior: smooth;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-  top: 0;
-  position: sticky;
-  z-index: 100;
-  margin-top: 0.5rem;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  .character-detail-tabs-inner {
-    display: flex;
-    flex-wrap: nowrap;
-    width: fit-content;
-    gap: 0.5rem;
-  }
 }
 
 .character-detail-section {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
   .element-tag {
     align-self: center;
   }

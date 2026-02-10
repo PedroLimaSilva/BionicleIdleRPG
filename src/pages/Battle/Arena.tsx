@@ -42,18 +42,18 @@ export function Arena({ team, enemies }: ArenaProps) {
 
   const { nodes, materials } = useGLTF(
     import.meta.env.BASE_URL + '/arena.glb'
-  ) as GLTFResult;
+  ) as unknown as GLTFResult;
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).combatantRefs = combatantRefs.current;
   }, [team, enemies]);
   return (
-    <Stage shadows='contact'>
+    <Stage shadows="contact">
       <group dispose={null}>
-        <group name='Scene'>
+        <group name="Scene">
           <OrthographicCamera
-            name='Camera'
+            name="Camera"
             makeDefault={true}
             zoom={200}
             far={1000}
@@ -67,37 +67,37 @@ export function Arena({ team, enemies }: ArenaProps) {
             material={materials.Ground}
           /> */}
           <mesh
-            name='PlaneEM'
+            name="PlaneEM"
             geometry={nodes.PlaneEM.geometry}
             material={materials.Places}
             position={[0, 0.025, -0.5]}
           />
           <mesh
-            name='PlaneTM'
+            name="PlaneTM"
             geometry={nodes.PlaneTM.geometry}
             material={materials.Places}
             position={[0, 0.025, 0.5]}
           />
           <mesh
-            name='PlaneEL'
+            name="PlaneEL"
             geometry={nodes.PlaneEL.geometry}
             material={materials.Places}
             position={[-0.5, 0.025, -0.75]}
           />
           <mesh
-            name='PlaneER'
+            name="PlaneER"
             geometry={nodes.PlaneER.geometry}
             material={materials.Places}
             position={[0.5, 0.025, -0.75]}
           />
           <mesh
-            name='PlaneTL'
+            name="PlaneTL"
             geometry={nodes.PlaneTL.geometry}
             material={materials.Places}
             position={[-0.5, 0.025, 0.75]}
           />
           <mesh
-            name='PlaneTR'
+            name="PlaneTR"
             geometry={nodes.PlaneTR.geometry}
             material={materials.Places}
             position={[0.5, 0.025, 0.75]}
@@ -107,7 +107,7 @@ export function Arena({ team, enemies }: ArenaProps) {
             <CombatantModel
               key={c.id}
               combatant={c}
-              side='team'
+              side="team"
               position={TEAM_POSITIONS[i]}
               ref={(ref) => {
                 if (ref) combatantRefs.current[c.id] = ref;
@@ -120,7 +120,7 @@ export function Arena({ team, enemies }: ArenaProps) {
               <CombatantModel
                 key={c.id}
                 combatant={c}
-                side='enemy'
+                side="enemy"
                 position={ENEMY_POSITIONS[i]}
                 ref={(ref) => {
                   if (ref) combatantRefs.current[c.id] = ref;

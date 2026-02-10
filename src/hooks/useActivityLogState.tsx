@@ -3,8 +3,7 @@ import { ActivityLogEntry, LogType } from '../types/Logging';
 import { createLogEntry, removeLogEntry } from '../services/activityLogUtils';
 
 export function useActivityLogState(initialLog: ActivityLogEntry[]) {
-  const [activityLog, setActivityLog] =
-    useState<ActivityLogEntry[]>(initialLog);
+  const [activityLog, setActivityLog] = useState<ActivityLogEntry[]>(initialLog);
 
   const addActivityLog = (message: string, type: LogType) => {
     setActivityLog((log) => [...log, createLogEntry(message, type)]);

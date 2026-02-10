@@ -94,7 +94,7 @@ export async function waitForCanvas(page: Page, timeout = 10000) {
   await page.waitForSelector('canvas', { timeout, state: 'visible' });
 
   // Give WebGL time to render initial frame
-  await page.waitForTimeout(1500);
+  await page.waitForTimeout(3000);
 }
 
 /**
@@ -167,7 +167,7 @@ export async function disableCSSAnimations(page: Page) {
         transition-duration: 0s !important;
         transition-delay: 0s !important;
       }
-    `
+    `,
   });
 }
 
@@ -177,7 +177,7 @@ export async function disableCSSAnimations(page: Page) {
 export async function waitForAvatars(page: Page, timeout = 10000) {
   await page.waitForSelector('.composited-avatar, .matoran-avatar', {
     timeout,
-    state: 'attached'
+    state: 'attached',
   });
   // Give time for images to fully render
   await page.waitForTimeout(1000);
@@ -189,7 +189,7 @@ export async function waitForAvatars(page: Page, timeout = 10000) {
 export async function waitForCharacterCards(page: Page, timeout = 10000) {
   await page.waitForSelector('.character-card, .matoran-card', {
     timeout,
-    state: 'visible'
+    state: 'visible',
   });
   await page.waitForTimeout(500);
 }
@@ -209,4 +209,3 @@ export const SCREENSHOT_OPTIONS = {
     threshold: 0.3,
   },
 };
-

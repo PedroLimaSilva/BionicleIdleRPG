@@ -11,11 +11,7 @@
   padding: 1.25rem;
   padding-bottom: 2rem;
   text-align: center;
-  background: linear-gradient(
-    135deg,
-    var(--color-surface-low) 0%,
-    var(--color-surface-mid) 100%
-  );
+  background: linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-mid) 100%);
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
@@ -47,11 +43,7 @@
     transform: translate(-50%, -50%) scale(0);
     width: 100%;
     height: 100%;
-    background: radial-gradient(
-      circle,
-      var(--theme-element-glow-transparent) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(circle, var(--theme-element-glow-transparent) 0%, transparent 70%);
     opacity: 0;
     transition: all var(--transition-slow);
     pointer-events: none;
@@ -141,11 +133,7 @@
   margin-top: 2rem;
 
   button {
-    background: linear-gradient(
-      135deg,
-      var(--color-surface-mid),
-      var(--color-surface-high)
-    );
+    background: linear-gradient(135deg, var(--color-surface-mid), var(--color-surface-high));
     color: var(--color-accent);
     padding: 0.75rem 2rem;
     border: 2px solid var(--color-accent);
@@ -160,11 +148,7 @@
       0 0 12px var(--color-accent-hover);
 
     &:hover {
-      background: linear-gradient(
-        135deg,
-        var(--color-surface-high),
-        var(--color-surface-elevated)
-      );
+      background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
       box-shadow:
         var(--shadow-glow),
         0 0 20px var(--color-accent-hover);

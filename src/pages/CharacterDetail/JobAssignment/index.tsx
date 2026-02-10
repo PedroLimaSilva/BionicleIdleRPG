@@ -6,16 +6,12 @@ import { getProductivityModifier } from '../../../game/Jobs';
 import { Modal } from '../../../components/Modal';
 import { JobList } from '../../../components/JobList';
 
-export function JobAssignment({
-  matoran,
-}: {
-  matoran: BaseMatoran & RecruitedCharacterData;
-}) {
+export function JobAssignment({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const [assigningJob, setAssigningJob] = useState(false);
 
   const jobDetails = useMemo(
     () => matoran && matoran.assignment && JOB_DETAILS[matoran.assignment.job],
-    [matoran],
+    [matoran]
   );
 
   return (
@@ -30,23 +26,20 @@ export function JobAssignment({
             baseRate={jobDetails.rate}
             modifier={getProductivityModifier(
               matoran.assignment.job,
-              matoran as RecruitedCharacterData,
+              matoran as RecruitedCharacterData
             )}
           />
         </>
       )}
 
       {!matoran.quest && (
-        <button className='elemental-btn' onClick={() => setAssigningJob(true)}>
+        <button className="elemental-btn" onClick={() => setAssigningJob(true)}>
           {matoran.assignment ? 'Change Job' : 'Assign Job'}
         </button>
       )}
 
       {assigningJob && (
-        <Modal
-          onClose={() => setAssigningJob(false)}
-          classNames={`element-${matoran.element}`}
-        >
+        <Modal onClose={() => setAssigningJob(false)} classNames={`element-${matoran.element}`}>
           <JobList
             matoran={matoran as RecruitedCharacterData}
             onAssign={() => {

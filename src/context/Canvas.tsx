@@ -1,14 +1,22 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { useLocation } from 'react-router-dom';
+import { SRGBColorSpace } from 'three';
 import { SceneCanvasContext } from '../hooks/useSceneCanvas';
 import { Perf } from 'r3f-perf';
 import { getDebugMode } from '../services/gamePersistence';
 
-export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+/** Set sRGB output once for the whole app so postprocessing and materials look correct. */
+function SetSRGBColorSpace() {
+  const gl = useThree((s) => s.gl);
+  useEffect(() => {
+    gl.outputColorSpace = SRGBColorSpace;
+  }, [gl]);
+  return null;
+}
+
+export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [scene, setScene] = useState<React.ReactNode>(null);
   const [target, setTarget] = useState<HTMLElement | null>(null);
 
@@ -22,10 +30,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
       setTarget(el);
 
       // Optional: dynamically assign a route-based class
-      el.className = `canvas-mount route-${location.pathname.replace(
-        /\//g,
-        '-',
-      )}`;
+      el.className = `canvas-mount route-${location.pathname.replace(/\//g, '-')}`;
 
       setTimeout(() => {}, 0);
     }
@@ -36,11 +41,12 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
       {target &&
         createPortal(
-          <Canvas className='shared-canvas' orthographic>
-            {debugMode && <Perf position='top-left' />}
+          <Canvas className="shared-canvas" orthographic>
+            <SetSRGBColorSpace />
+            {debugMode && <Perf position="top-left" />}
             {scene}
           </Canvas>,
-          target,
+          target
         )}
     </SceneCanvasContext.Provider>
   );

@@ -11,9 +11,7 @@
 }
 
 .inventory-item {
-  background: linear-gradient(135deg,
-      var(--color-surface-low) 0%,
-      var(--color-surface-mid) 100%);
+  background: linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-mid) 100%);
   border: 2px solid var(--color-border-muted);
   border-radius: var(--border-radius-md);
   padding: 1.25rem;
@@ -43,9 +41,11 @@
     transform: translateY(-4px) scale(1.05);
     border-color: var(--theme-element-glow);
     box-shadow: var(--shadow-glow);
-    background: linear-gradient(135deg,
-        var(--color-surface-mid) 0%,
-        var(--color-surface-high) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--color-surface-mid) 0%,
+      var(--color-surface-high) 100%
+    );
 
     &::before {
       opacity: 1;

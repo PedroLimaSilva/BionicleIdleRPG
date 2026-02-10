@@ -5,10 +5,7 @@ import { ElementTribe, Mask } from '../types/Matoran';
 
 declare global {
   interface Window {
-    combatantRefs: Record<
-      string,
-      { playAnimation?: (name: string) => Promise<void> }
-    >;
+    combatantRefs: Record<string, { playAnimation?: (name: string) => Promise<void> }>;
   }
 }
 
@@ -24,10 +21,7 @@ declare global {
  * E  | 🌑 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 0.5 | 1.5 |
  * R  | 🌕 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.5 | 0.5 |
  */
-const elementEffectiveness: Record<
-  ElementTribe,
-  Record<ElementTribe, number>
-> = {
+const elementEffectiveness: Record<ElementTribe, Record<ElementTribe, number>> = {
   [ElementTribe.Fire]: {
     [ElementTribe.Fire]: 1.0,
     [ElementTribe.Water]: 1.0,
@@ -123,11 +117,8 @@ export function calculateAtkDmg(attacker: Combatant, defender: Combatant): numbe
     rawDamage = Math.floor(rawDamage * attacker.maskPower.effect.multiplier);
   }
 
-  const multiplier =
-    elementEffectiveness[attacker.element]?.[defender.element] ?? 1.0;
-  const final = Math.floor(
-    (rawDamage + Math.floor(Math.random() * 5)) * multiplier
-  );
+  const multiplier = elementEffectiveness[attacker.element]?.[defender.element] ?? 1.0;
+  const final = Math.floor((rawDamage + Math.floor(Math.random() * 5)) * multiplier);
   return Math.max(1, final);
 }
 
@@ -302,9 +293,7 @@ function triggerMaskPowers(
       if (isTeam) {
         currentTeam = currentTeam.map((t) => (t.id === actor.id ? actor : t));
       } else {
-        currentEnemies = currentEnemies.map((t) =>
-          t.id === actor.id ? actor : t
-        );
+        currentEnemies = currentEnemies.map((t) => (t.id === actor.id ? actor : t));
       }
     }
   }

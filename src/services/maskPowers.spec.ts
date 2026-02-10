@@ -1,11 +1,6 @@
 import { BattleStrategy, Combatant } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
-import {
-  generateCombatantStats,
-  calculateAtkDmg,
-  applyDamage,
-  applyHealing,
-} from './combatUtils';
+import { generateCombatantStats, calculateAtkDmg, applyDamage, applyHealing } from './combatUtils';
 
 describe('Mask Powers - Combat Mechanics', () => {
   let defender: Combatant;
@@ -39,12 +34,7 @@ describe('Mask Powers - Combat Mechanics', () => {
   describe('ATK_MULT - Attack Multiplier Masks', () => {
     describe('Pakari - Mask of Strength', () => {
       test('multiplies attack damage by 3x when active', () => {
-        const attacker = generateCombatantStats(
-          'onua',
-          'Toa_Onua',
-          1,
-          Mask.Pakari,
-        );
+        const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Pakari);
 
         // Calculate damage without mask power
         const normalDamage = calculateAtkDmg(attacker, defender);
@@ -64,12 +54,7 @@ describe('Mask Powers - Combat Mechanics', () => {
       });
 
       test('does not boost damage when inactive', () => {
-        const attacker = generateCombatantStats(
-          'onua',
-          'Toa_Onua',
-          1,
-          Mask.Pakari,
-        );
+        const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Pakari);
 
         // Ensure mask is inactive
         if (attacker.maskPower) {
@@ -87,12 +72,7 @@ describe('Mask Powers - Combat Mechanics', () => {
 
     describe('Akaku - Mask of X-Ray Vision', () => {
       test('multiplies attack damage by 1.5x when active', () => {
-        const attacker = generateCombatantStats(
-          'kopaka',
-          'Toa_Kopaka',
-          1,
-          Mask.Akaku,
-        );
+        const attacker = generateCombatantStats('kopaka', 'Toa_Kopaka', 1, Mask.Akaku);
 
         // Calculate damage without mask power
         const normalDamage = calculateAtkDmg(attacker, defender);
@@ -166,12 +146,7 @@ describe('Mask Powers - Combat Mechanics', () => {
 
     describe('Mahiki - Mask of Illusion', () => {
       test('provides full immunity when active', () => {
-        const target = generateCombatantStats(
-          'lewa',
-          'Toa_Lewa',
-          1,
-          Mask.Mahiki,
-        );
+        const target = generateCombatantStats('lewa', 'Toa_Lewa', 1, Mask.Mahiki);
         const incomingDamage = 35;
 
         // Activate mask power
@@ -190,12 +165,7 @@ describe('Mask Powers - Combat Mechanics', () => {
   describe('HEAL - Healing Masks', () => {
     describe('Kaukau - Mask of Water Breathing', () => {
       test('heals 20% of max HP when active', () => {
-        const combatant = generateCombatantStats(
-          'gali',
-          'Toa_Gali',
-          1,
-          Mask.Kaukau,
-        );
+        const combatant = generateCombatantStats('gali', 'Toa_Gali', 1, Mask.Kaukau);
 
         // Damage the combatant first
         combatant.hp = 50; // Half health
@@ -214,12 +184,7 @@ describe('Mask Powers - Combat Mechanics', () => {
       });
 
       test('does not heal when inactive', () => {
-        const combatant = generateCombatantStats(
-          'gali',
-          'Toa_Gali',
-          1,
-          Mask.Kaukau,
-        );
+        const combatant = generateCombatantStats('gali', 'Toa_Gali', 1, Mask.Kaukau);
 
         // Damage the combatant first
         combatant.hp = 50;
@@ -236,12 +201,7 @@ describe('Mask Powers - Combat Mechanics', () => {
       });
 
       test('does not heal above max HP', () => {
-        const combatant = generateCombatantStats(
-          'gali',
-          'Toa_Gali',
-          1,
-          Mask.Kaukau,
-        );
+        const combatant = generateCombatantStats('gali', 'Toa_Gali', 1, Mask.Kaukau);
 
         // Set HP to near max
         const maxHp = combatant.maxHp;

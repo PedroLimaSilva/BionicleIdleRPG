@@ -4,7 +4,7 @@
 
 This document identifies technical debt, inconsistencies, and architectural improvements for the Bionicle Idle RPG project. It is organized by priority and impact, with clear acceptance criteria for each item.
 
-**Important:** This roadmap describes *potential* improvements. Items should only be implemented when explicitly prioritized and approved.
+**Important:** This roadmap describes _potential_ improvements. Items should only be implemented when explicitly prioritized and approved.
 
 ---
 
@@ -15,12 +15,14 @@ This document identifies technical debt, inconsistencies, and architectural impr
 **Issue:** Mixed use of `alert()` and activity log for user feedback.
 
 **Current locations:**
+
 - `src/services/matoranUtils.ts` - uses `alert()` for insufficient widgets
 - `src/pages/Recruitment/index.tsx` - uses `alert()` for successful recruitment
 
 **Recommendation:** Replace `alert()` calls with proper UI feedback (toast notifications or activity log).
 
 **Acceptance Criteria:**
+
 - No `alert()` calls remain in codebase
 - User feedback is visible and non-blocking
 - Feedback is consistent across all actions
@@ -36,6 +38,7 @@ This document identifies technical debt, inconsistencies, and architectural impr
 **Recommendation:** Use camelCase consistently for local variables.
 
 **Acceptance Criteria:**
+
 - All local variables use camelCase
 - No functional changes
 - TypeScript compiles without errors
@@ -53,6 +56,7 @@ This document identifies technical debt, inconsistencies, and architectural impr
 **Recommendation:** Implement migration functions for version upgrades.
 
 **Proposed approach:**
+
 ```typescript
 type Migration = (oldState: any) => any;
 
@@ -74,6 +78,7 @@ function migrateState(state: any, targetVersion: number): any {
 ```
 
 **Acceptance Criteria:**
+
 - Old saves are migrated instead of discarded
 - Migration failures fall back to initial state
 - Each version bump includes a migration function
@@ -89,12 +94,9 @@ function migrateState(state: any, targetVersion: number): any {
 **Recommendation:** Add validation in `addToInventory` utility.
 
 **Proposed approach:**
+
 ```typescript
-export function addToInventory(
-  inventory: Inventory,
-  item: GameItemId,
-  amount: number
-): Inventory {
+export function addToInventory(inventory: Inventory, item: GameItemId, amount: number): Inventory {
   const newAmount = (inventory[item] || 0) + amount;
   if (newAmount < 0) {
     console.error(`Attempted to set ${item} to negative value: ${newAmount}`);
@@ -108,6 +110,7 @@ export function addToInventory(
 ```
 
 **Acceptance Criteria:**
+
 - Negative inventory values are prevented
 - Error is logged when attempted
 - Existing functionality is preserved
@@ -123,6 +126,7 @@ export function addToInventory(
 **Recommendation:** Add validation function that detects cycles in `unlockedAfter` chains.
 
 **Proposed approach:**
+
 ```typescript
 function detectQuestCycles(quests: Quest[]): string[] {
   // Implement topological sort or DFS cycle detection
@@ -131,6 +135,7 @@ function detectQuestCycles(quests: Quest[]): string[] {
 ```
 
 **Acceptance Criteria:**
+
 - Cycles are detected at build time or app initialization
 - Error is logged with cycle details
 - Development build fails if cycles exist
@@ -146,11 +151,13 @@ function detectQuestCycles(quests: Quest[]): string[] {
 **Current:** Only `combatUtils.spec.ts` exists.
 
 **Recommendation:** Add tests for critical game logic in `src/game/`:
+
 - `Levelling.ts` - exp calculations
 - `Jobs.ts` - productivity modifiers, offline progress, reward rolling
 - `Quests.ts` - quest availability filtering
 
 **Acceptance Criteria:**
+
 - Core game logic has >80% test coverage
 - Tests run in CI/CD pipeline
 - Tests verify invariants (e.g., exp never decreases, time flows forward)
@@ -166,6 +173,7 @@ function detectQuestCycles(quests: Quest[]): string[] {
 **Recommendation:** Implement automatic pruning (e.g., keep last 100 entries or last 24 hours).
 
 **Proposed approach:**
+
 ```typescript
 const MAX_LOG_ENTRIES = 100;
 
@@ -176,6 +184,7 @@ function pruneActivityLog(log: ActivityLogEntry[]): ActivityLogEntry[] {
 ```
 
 **Acceptance Criteria:**
+
 - Log size is bounded
 - Oldest entries are removed first
 - No memory leaks during long sessions
@@ -189,6 +198,7 @@ function pruneActivityLog(log: ActivityLogEntry[]): ActivityLogEntry[] {
 **Recommendation:** Add development-mode assertions for critical invariants.
 
 **Examples:**
+
 ```typescript
 // In development only
 if (process.env.NODE_ENV === 'development') {
@@ -208,6 +218,7 @@ if (process.env.NODE_ENV === 'development') {
 ```
 
 **Acceptance Criteria:**
+
 - Assertions run in development mode only
 - No performance impact in production
 - Violations are logged with context
@@ -221,11 +232,13 @@ if (process.env.NODE_ENV === 'development') {
 **Issue:** Commented code suggests incomplete features or abandoned approaches.
 
 **Locations:**
+
 - `src/pages/CharacterDetail/index.tsx` lines 65-67 (combatant stats)
 
 **Recommendation:** Either implement the feature or remove the comment.
 
 **Acceptance Criteria:**
+
 - No commented-out code remains
 - If feature is needed, create a task to implement it properly
 
@@ -240,10 +253,12 @@ if (process.env.NODE_ENV === 'development') {
 **Recommendation:** Either populate the fields or remove them from the type.
 
 **Decision needed:**
+
 - Are these fields planned for future features?
 - Should they be removed to reduce confusion?
 
 **Acceptance Criteria:**
+
 - All items have complete metadata, OR
 - Unused fields are removed from type definition
 
@@ -258,10 +273,12 @@ if (process.env.NODE_ENV === 'development') {
 **Recommendation:** Either implement tag-based mechanics or remove the system.
 
 **Decision needed:**
+
 - Are tags planned for quest requirements or special abilities?
 - Should the system be removed as premature abstraction?
 
 **Acceptance Criteria:**
+
 - Tags are used in at least one game mechanic, OR
 - Tag system is removed from types and data
 
@@ -272,6 +289,7 @@ if (process.env.NODE_ENV === 'development') {
 **Issue:** Mixed use of seconds and milliseconds creates conversion overhead.
 
 **Current:**
+
 - State stores milliseconds
 - Quest durations defined in seconds
 - `getCurrentTimestamp()` returns seconds
@@ -279,6 +297,7 @@ if (process.env.NODE_ENV === 'development') {
 **Recommendation:** Standardize on milliseconds everywhere, convert only at display time.
 
 **Acceptance Criteria:**
+
 - All stored timestamps use milliseconds
 - Quest durations stored in milliseconds
 - Conversion to human-readable units happens only in UI
@@ -296,6 +315,7 @@ if (process.env.NODE_ENV === 'development') {
 **Recommendation:** Implement modal or embedded player for quest cutscenes.
 
 **Acceptance Criteria:**
+
 - Cutscenes play when quest is completed
 - Player can skip cutscenes
 - Cutscenes don't block game progression
@@ -311,10 +331,12 @@ if (process.env.NODE_ENV === 'development') {
 **Recommendation:** Either implement stage transformation (e.g., Matoran → Toa) or document that stages are fixed.
 
 **Decision needed:**
+
 - Should characters transform between stages?
 - Is this a planned feature or fixed character property?
 
 **Acceptance Criteria:**
+
 - Stage transformation is implemented with quest rewards, OR
 - Documentation clarifies that stages are immutable character properties
 
@@ -329,6 +351,7 @@ if (process.env.NODE_ENV === 'development') {
 **Recommendation:** Either complete individual mask hunt quests or document the intended unlock pattern.
 
 **Acceptance Criteria:**
+
 - All masks have individual unlock quests, OR
 - Documentation clarifies which masks are only available via final collection
 
@@ -345,6 +368,7 @@ if (process.env.NODE_ENV === 'development') {
 **Recommendation:** Only process characters with active assignments.
 
 **Proposed approach:**
+
 ```typescript
 setRecruitedCharacters((prev) =>
   prev.map((matoran) => {
@@ -355,6 +379,7 @@ setRecruitedCharacters((prev) =>
 ```
 
 **Acceptance Criteria:**
+
 - Idle characters are skipped during tick processing
 - No functional changes to job mechanics
 - Performance improvement measurable with 20+ characters
@@ -370,6 +395,7 @@ setRecruitedCharacters((prev) =>
 **Recommendation:** Load models on-demand when character is viewed.
 
 **Acceptance Criteria:**
+
 - Models load only when needed
 - Loading states are shown to user
 - No regression in 3D rendering quality
@@ -385,11 +411,13 @@ setRecruitedCharacters((prev) =>
 **Recommendation:** Use `useMemo` for expensive derived state.
 
 **Examples:**
+
 - Quest availability filtering
 - Job unlock status
 - Mask collection status
 
 **Acceptance Criteria:**
+
 - Expensive computations are memoized
 - Dependencies are correctly specified
 - No stale data issues
@@ -437,6 +465,7 @@ This roadmap does NOT include:
 ## Maintenance Notes
 
 **This document should be updated when:**
+
 - New technical debt is discovered
 - Roadmap items are completed
 - Priorities change based on user feedback or business needs

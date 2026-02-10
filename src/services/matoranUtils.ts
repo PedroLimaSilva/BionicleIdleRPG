@@ -13,11 +13,9 @@ import { MATORAN_DEX } from '../data/matoran';
 import { GameState } from '../types/GameState';
 
 export function isMatoran(matoran: BaseMatoran) {
-  return [
-    MatoranStage.Diminished,
-    MatoranStage.Rebuilt,
-    MatoranStage.Metru,
-  ].includes(matoran.stage);
+  return [MatoranStage.Diminished, MatoranStage.Rebuilt, MatoranStage.Metru].includes(
+    matoran.stage
+  );
 }
 
 export function isToa(matoran: BaseMatoran) {
@@ -188,7 +186,5 @@ export function removeJob(
   id: RecruitedCharacterData['id'],
   matoran: RecruitedCharacterData[]
 ): RecruitedCharacterData[] {
-  return matoran.map((m) =>
-    m.id === id ? { ...m, assignment: undefined } : m
-  );
+  return matoran.map((m) => (m.id === id ? { ...m, assignment: undefined } : m));
 }

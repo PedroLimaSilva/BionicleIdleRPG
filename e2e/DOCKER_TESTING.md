@@ -3,6 +3,7 @@
 ## Problem
 
 Visual regression tests produce different screenshots on different operating systems due to:
+
 - Font rendering differences between macOS and Linux
 - WebGL/GPU rendering variations
 - Browser rendering engine differences
@@ -25,11 +26,13 @@ Use Docker to run Playwright tests in the same Linux environment as CI, ensuring
 ### Quick Start
 
 1. **Build the Docker image** (first time only, or after dependency changes):
+
    ```bash
    yarn test:e2e:docker:build
    ```
 
 2. **Run tests in Docker** (matches CI environment):
+
    ```bash
    yarn test:e2e:docker
    ```
@@ -115,6 +118,7 @@ yarn test:e2e:docker
 ### Docker build is slow / stuck at "Building playwright"
 
 **This is normal on first build!** The build process:
+
 1. Downloads Playwright base image (~1GB)
 2. Installs all node dependencies
 3. Installs Playwright browsers (chromium, webkit)
@@ -122,6 +126,7 @@ yarn test:e2e:docker
 **First build can take 5-10 minutes.** Subsequent builds are much faster due to Docker layer caching.
 
 **To monitor progress:**
+
 ```bash
 # Build with verbose output
 docker-compose -f docker-compose.playwright.yml build --progress=plain
@@ -131,6 +136,7 @@ docker build -f Dockerfile.playwright -t bionicle-playwright .
 ```
 
 **Speed up future builds:**
+
 - Added `.dockerignore` to exclude unnecessary files
 - Docker caches layers, so only changed files trigger rebuilds
 - Keep `package.json` stable to reuse dependency layer
@@ -138,6 +144,7 @@ docker build -f Dockerfile.playwright -t bionicle-playwright .
 ### Dev server not accessible from Docker
 
 Make sure your dev server is running on the host:
+
 ```bash
 # In a separate terminal
 yarn dev
@@ -155,6 +162,7 @@ docker-compose -f docker-compose.playwright.yml build --no-cache
 ### Snapshots still differ in CI
 
 1. Make sure you updated snapshots using Docker:
+
    ```bash
    yarn test:e2e:docker:update
    ```
@@ -181,8 +189,8 @@ yarn test:e2e:docker
 ## CI Configuration
 
 The GitHub Actions workflow (`.github/workflows/main.yml`) automatically:
+
 - Sets `CI=true` environment variable
 - Runs on `ubuntu-latest`
 - Uses the same Playwright version as Docker
 - Compares against snapshots in `*-snapshots/` directories
-

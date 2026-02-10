@@ -2,12 +2,7 @@
 
 import { LogType } from '../types/Logging';
 import { MatoranJob } from '../types/Jobs';
-import {
-  ListedCharacterData,
-  BaseMatoran,
-  Mask,
-  RecruitedCharacterData,
-} from '../types/Matoran';
+import { ListedCharacterData, BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { GameState } from '../types/GameState';
 import { Quest } from '../types/Quests';
 import { LISTED_MATORAN_DATA, RECRUITED_MATORAN_DATA } from './matoran';
@@ -33,10 +28,7 @@ export const INITIAL_GAME_STATE: GameState = {
   addItemToInventory: function (_item: string, _amount: number): void {
     throw new Error('Function not implemented.');
   },
-  assignJobToMatoran: function (
-    _id: BaseMatoran['id'],
-    _job: MatoranJob
-  ): void {
+  assignJobToMatoran: function (_id: BaseMatoran['id'], _job: MatoranJob): void {
     throw new Error('Function not implemented.');
   },
   removeJobFromMatoran: function (_id: BaseMatoran['id']): void {
@@ -51,10 +43,7 @@ export const INITIAL_GAME_STATE: GameState = {
   removeActivityLogEntry: function (_id: string): void {
     throw new Error('Function not implemented.');
   },
-  startQuest: function (
-    _quest: Quest,
-    _assignedMatoran: BaseMatoran['id'][]
-  ): void {
+  startQuest: function (_quest: Quest, _assignedMatoran: BaseMatoran['id'][]): void {
     throw new Error('Function not implemented.');
   },
   cancelQuest: function (_questId: string): void {

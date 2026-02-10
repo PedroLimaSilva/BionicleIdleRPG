@@ -71,15 +71,11 @@ export const INITIAL_BATTLE_STATE: BattleState = {
 
 export const useBattleState = (): BattleState => {
   const [phase, setPhase] = useState<BattlePhase>(INITIAL_BATTLE_STATE.phase);
-  const [currentEncounter, setCurrentEncounter] = useState<
-    EnemyEncounter | undefined
-  >(INITIAL_BATTLE_STATE.currentEncounter);
-  const [currentWave, setCurrentWave] = useState(
-    INITIAL_BATTLE_STATE.currentWave
+  const [currentEncounter, setCurrentEncounter] = useState<EnemyEncounter | undefined>(
+    INITIAL_BATTLE_STATE.currentEncounter
   );
-  const [enemies, setEnemies] = useState<Combatant[]>(
-    INITIAL_BATTLE_STATE.enemies
-  );
+  const [currentWave, setCurrentWave] = useState(INITIAL_BATTLE_STATE.currentWave);
+  const [enemies, setEnemies] = useState<Combatant[]>(INITIAL_BATTLE_STATE.enemies);
   const [team, setTeam] = useState<Combatant[]>(INITIAL_BATTLE_STATE.team);
   const [actionQueue, setActionQueue] = useState<(() => void)[]>([]);
   const [isRunningRound, setIsRunningRound] = useState(false);
@@ -118,11 +114,7 @@ export const useBattleState = (): BattleState => {
   };
 
   const toggleAbility = (toa: Combatant) => {
-    if (
-      toa.maskPower &&
-      toa.hp > 0 &&
-      toa.maskPower.effect.cooldown.amount === 0
-    ) {
+    if (toa.maskPower && toa.hp > 0 && toa.maskPower.effect.cooldown.amount === 0) {
       toa.willUseAbility = !toa.willUseAbility;
       const updatedTeam = team.map((t) => (t.id === toa.id ? toa : t));
       setTeam(updatedTeam);
@@ -159,13 +151,7 @@ export const useBattleState = (): BattleState => {
   const confirmTeam = (team: RecruitedCharacterData[]) => {
     setTeam(
       team.map(({ id, exp, maskColorOverride, maskOverride }) =>
-        generateCombatantStats(
-          id,
-          id,
-          getLevelFromExp(exp),
-          maskOverride,
-          maskColorOverride
-        )
+        generateCombatantStats(id, id, getLevelFromExp(exp), maskOverride, maskColorOverride)
       ) // add stats
     );
     setCurrentWave(0);
@@ -179,9 +165,7 @@ export const useBattleState = (): BattleState => {
 
   const runRound = () => {
     const queue: (() => void)[] = [];
-    queueCombatRound(team, enemies, setTeam, setEnemies, (fn) =>
-      queue.push(fn)
-    );
+    queueCombatRound(team, enemies, setTeam, setEnemies, (fn) => queue.push(fn));
     setActionQueue(queue);
   };
 

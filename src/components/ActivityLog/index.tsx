@@ -11,16 +11,19 @@ export const ActivityLog = () => {
       if (!scheduled.current.has(entry.id)) {
         scheduled.current.add(entry.id);
 
-        setTimeout(() => {
-          removeActivityLogEntry(entry.id);
-          scheduled.current.delete(entry.id); // clean up after removal
-        }, 10000 + index * 500); // 10s base, slight delay per item
+        setTimeout(
+          () => {
+            removeActivityLogEntry(entry.id);
+            scheduled.current.delete(entry.id); // clean up after removal
+          },
+          10000 + index * 500
+        ); // 10s base, slight delay per item
       }
     });
   }, [activityLog, removeActivityLogEntry]);
 
   return (
-    <div className='activity-log'>
+    <div className="activity-log">
       <h3>Activity Log</h3>
       <div>
         <ul>

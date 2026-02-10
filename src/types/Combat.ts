@@ -44,14 +44,7 @@ interface CombatDuration {
 }
 
 type MaskEffect = {
-  type:
-    | 'ATK_MULT'
-    | 'DMG_MITIGATOR'
-    | 'HEAL'
-    | 'AGGRO'
-    | 'SPEED'
-    | 'ACCURACY_MULT'
-    | 'CONFUSION';
+  type: 'ATK_MULT' | 'DMG_MITIGATOR' | 'HEAL' | 'AGGRO' | 'SPEED' | 'ACCURACY_MULT' | 'CONFUSION';
   duration: CombatDuration;
   cooldown: CombatDuration;
   multiplier?: number;
