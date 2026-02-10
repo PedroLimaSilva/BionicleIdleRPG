@@ -69,12 +69,7 @@ export const CharacterDetail: React.FC = () => {
         </div>
       </div>
       <div className="character-detail-tabs">
-        <Tabs
-          tabs={tabs}
-          classNames="character-detail-tabs"
-          activeTab={activeTab}
-          onTabChange={(tab: string) => setActiveTab(tab)}
-        />
+        <Tabs tabs={tabs} activeTab={activeTab} onTabChange={(tab: string) => setActiveTab(tab)} />
       </div>
       <div className="character-detail-content">
         <div className="character-detail-section" id={activeTab}>

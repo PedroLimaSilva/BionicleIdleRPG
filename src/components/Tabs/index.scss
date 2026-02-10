@@ -1,6 +1,7 @@
 // recreate the tabs component from the character detail page
 .tabs-container {
   justify-self: center;
+  max-width: 100%;
   width: fit-content;
   overflow-x: scroll;
   padding: 0.5rem;

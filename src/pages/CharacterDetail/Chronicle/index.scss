@@ -13,11 +13,7 @@
 .chronicle-section {
   border-radius: var(--border-radius-md);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: radial-gradient(
-    circle at top left,
-    rgba(255, 255, 255, 0.04),
-    transparent 55%
-  );
+  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.04), transparent 55%);
   overflow: hidden;
 }
 
@@ -120,13 +116,14 @@
 }
 
 .chronicle-entry__description {
-  padding: 0 0.75rem 0.75rem;
-  font-size: 0.9rem;
+  font-size: 0.9em;
+  padding: 1em 1em 0.25em;
   color: var(--color-text-muted);
 }
 
 .chronicle-entry__description p {
   margin: 0;
+  text-align: left;
 }
 
 .chronicle-modal .modal-content {
@@ -152,4 +149,3 @@
 .chronicle-modal__description {
   margin: 0;
 }
-
