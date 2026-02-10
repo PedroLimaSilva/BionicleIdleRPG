@@ -5,6 +5,14 @@
   margin: 1rem 0;
 }
 
+.character-inventory-tabs {
+  width: 100%;
+  max-width: calc(100vw - 4rem);
+  position: relative;
+  display: 'flex';
+  justify-content: 'center';
+}
+
 .character-card {
   border: 2px solid var(--color-border-muted);
   border-radius: var(--border-radius-md);

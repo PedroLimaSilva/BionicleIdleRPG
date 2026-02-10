@@ -1,6 +1,7 @@
 // recreate the tabs component from the character detail page
 .tabs-container {
   justify-self: center;
+  max-width: 100%;
   width: fit-content;
   overflow-x: scroll;
   padding: 0.5rem;
@@ -16,17 +17,17 @@
     display: none;
   }
 
-  .divider {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-  }
-
   .tabs-inner {
     display: flex;
     flex-wrap: nowrap;
     width: fit-content;
     gap: 0.5rem;
   }
+}
+
+.divider {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }

@@ -36,10 +36,9 @@ export const CharacterInventory: React.FC = () => {
 
   return (
     <div className="page-container">
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div className="character-inventory-tabs">
         <Tabs
           tabs={tabs}
-          classNames="character-inventory-tabs"
           activeTab={activeTab}
           onTabChange={(tab: string) => setActiveTab(tab as 'matoran' | 'toa')}
         />
