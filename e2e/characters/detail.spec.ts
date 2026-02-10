@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import {
+  disableCSSAnimations,
   goto,
   INITIAL_GAME_STATE,
   setupGameState,
@@ -20,6 +21,7 @@ test.describe('Character Detail Page', () => {
       });
 
       await goto(page, '/characters/Takua');
+      await disableCSSAnimations(page);
       await waitForCanvas(page);
     });
     test('should render matoran character detail page', async ({ page }) => {
@@ -49,6 +51,7 @@ test.describe('Character Detail Page', () => {
       const jalaLink = page.locator('a').filter({ hasText: 'Jala' });
       await jalaLink.click();
       await expect(page).toHaveURL(new RegExp(`/characters/Jala`));
+      await disableCSSAnimations(page);
       await waitForCanvas(page);
 
       await expect(page).toHaveScreenshot({
@@ -84,6 +87,7 @@ test.describe('Character Detail Page', () => {
             ],
           });
           await goto(page, `/characters/${characterId}`);
+          await disableCSSAnimations(page);
           await waitForCanvas(page);
 
           // Take screenshot of the entire page including 3D scene
@@ -106,6 +110,7 @@ test.describe('Character Detail Page', () => {
         recruitedCharacters: [{ id: 'Jala', exp: 0 }],
       });
       await goto(page, '/characters/Jala');
+      await disableCSSAnimations(page);
       await waitForCanvas(page);
 
       const chronicleTab = page.getByRole('button', { name: 'chronicle' });
@@ -119,6 +124,7 @@ test.describe('Character Detail Page', () => {
         completedQuests: [],
       });
       await goto(page, '/characters/Takua');
+      await disableCSSAnimations(page);
       await waitForCanvas(page);
 
       await page.getByRole('button', { name: 'chronicle' }).click();
@@ -140,6 +146,7 @@ test.describe('Character Detail Page', () => {
         completedQuests: ['mnog_find_canister_beach'],
       });
       await goto(page, '/characters/Takua');
+      await disableCSSAnimations(page);
       await waitForCanvas(page);
 
       await page.getByRole('button', { name: 'chronicle' }).click();
@@ -158,6 +165,7 @@ test.describe('Character Detail Page', () => {
         completedQuests: ['story_toa_arrival'],
       });
       await goto(page, '/characters/Toa_Tahu');
+      await disableCSSAnimations(page);
       await waitForCanvas(page);
 
       await page.getByRole('button', { name: 'chronicle' }).click();
