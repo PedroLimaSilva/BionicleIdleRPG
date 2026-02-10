@@ -165,7 +165,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
       <ambientLight intensity={0.2} />
       <group ref={characterRootRef}>
         <PresentationControls
-          global={false}
+          global={true}
           snap={false}
           speed={2}
           zoom={1}
