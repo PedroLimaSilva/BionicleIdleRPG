@@ -3,7 +3,7 @@
 import { LogType } from '../types/Logging';
 import { MatoranJob } from '../types/Jobs';
 import { ListedCharacterData, BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
-import { GameState } from '../types/GameState';
+import { BattleRewardParams, GameState } from '../types/GameState';
 import { Quest } from '../types/Quests';
 import { LISTED_MATORAN_DATA, RECRUITED_MATORAN_DATA } from './matoran';
 import { LegoColor } from '../types/Colors';
@@ -62,6 +62,9 @@ export const INITIAL_GAME_STATE: GameState = {
     throw new Error('Function not implemented.');
   },
   collectKrana: function (_element: KranaElement, _id: KranaId): void {
+    throw new Error('Function not implemented.');
+  },
+  applyBattleRewards: function (_params: BattleRewardParams): void {
     throw new Error('Function not implemented.');
   },
 };

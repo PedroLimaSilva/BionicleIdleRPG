@@ -1,5 +1,5 @@
 import { GameItemId } from '../data/loot';
-import { BattleState } from '../hooks/useBattleState';
+import { BattleState, BattlePhase } from '../hooks/useBattleState';
 import { Inventory } from '../services/inventoryUtils';
 import { LegoColor } from './Colors';
 import { MatoranJob } from './Jobs';
@@ -7,6 +7,15 @@ import { ActivityLogEntry, LogType } from './Logging';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
 import { Quest, QuestProgress } from './Quests';
 import { KranaCollection, KranaElement, KranaId } from './Krana';
+import { Combatant, EnemyEncounter } from './Combat';
+
+export type BattleRewardParams = {
+  encounter: EnemyEncounter;
+  phase: BattlePhase;
+  currentWave: number;
+  enemies: Combatant[];
+  team: Combatant[];
+};
 
 export type GameState = {
   version: number;
@@ -32,6 +41,7 @@ export type GameState = {
   addActivityLog: (message: string, type: LogType) => void;
   removeActivityLogEntry: (id: string) => void;
   clearActivityLog: () => void;
+  applyBattleRewards: (params: BattleRewardParams) => void;
 };
 
 export type PartialGameState = Pick<

@@ -10,6 +10,11 @@ import { useQuestState } from './useQuestState';
 import { useBattleState } from './useBattleState';
 import { clamp } from '../utils/math';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
+import { BattleRewardParams } from '../types/GameState';
+import {
+  computeBattleExpTotal,
+  getParticipantIds,
+} from '../game/BattleRewards';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -115,6 +120,24 @@ export const useGameLogic = (): GameState => {
           [element]: [...existingForElement, id],
         };
       });
+    },
+    applyBattleRewards: (params: BattleRewardParams) => {
+      const totalExp = computeBattleExpTotal(
+        params.encounter,
+        params.phase,
+        params.currentWave,
+        params.enemies
+      );
+      const participantIds = getParticipantIds(params.team);
+      if (participantIds.length === 0 || totalExp === 0) return;
+      const expPerParticipant = Math.floor(totalExp / participantIds.length);
+      setRecruitedCharacters((prev) =>
+        prev.map((m) =>
+          participantIds.includes(m.id)
+            ? { ...m, exp: m.exp + expPerParticipant }
+            : m
+        )
+      );
     },
   };
 };

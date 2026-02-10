@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 import { BattlePhase } from '../../hooks/useBattleState';
 import { useEffect } from 'react';
@@ -6,11 +6,15 @@ import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { Arena } from './Arena';
+import {
+  getEnemiesDefeatedCount,
+  computeBattleExpTotal,
+} from '../../game/BattleRewards';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
-  const { battle } = useGame();
-  const { currentEncounter, phase } = battle;
+  const { battle, applyBattleRewards } = useGame();
+  const { currentEncounter, phase, currentWave, enemies, team } = battle;
   const { setScene } = useSceneCanvas();
 
   useEffect(() => {
@@ -44,21 +48,49 @@ export const BattlePage: React.FC = () => {
     phase === BattlePhase.Defeat ||
     phase === BattlePhase.Victory
   ) {
+    const enemiesDefeated =
+      currentEncounter &&
+      getEnemiesDefeatedCount(currentEncounter, phase, currentWave, enemies);
+    const expTotal =
+      currentEncounter &&
+      computeBattleExpTotal(currentEncounter, phase, currentWave, enemies);
+    const participantCount = team.length;
+
+    const handleCollectRewards = () => {
+      if (currentEncounter) {
+        applyBattleRewards({
+          encounter: currentEncounter,
+          phase,
+          currentWave,
+          enemies,
+          team,
+        });
+      }
+      battle.endBattle();
+      navigate('/battle/selector');
+    };
+
     return (
       <div className="page-container battle">
         <h1 style={{ fontSize: '8vw' }}>{phase}</h1>
         <div className="battle-arena">
-          <p>Battle summary goes here</p>
+          <p>Enemies defeated: {enemiesDefeated ?? 0}</p>
+          {expTotal !== undefined && expTotal > 0 && (
+            <p>
+              EXP earned: {expTotal} total
+              {participantCount > 0 && (
+                <> ({Math.floor(expTotal / participantCount)} per Toa)</>
+              )}
+            </p>
+          )}
         </div>
         <div
           className="battle-buttons"
           style={{ justifyContent: 'center', paddingBottom: '132px' }}
         >
-          <Link to="/battle/selector">
-            <button className="confirm-button" onClick={() => {}}>
-              Collect Rewards
-            </button>
-          </Link>
+          <button className="confirm-button" onClick={handleCollectRewards}>
+            Collect Rewards
+          </button>
         </div>
       </div>
     );

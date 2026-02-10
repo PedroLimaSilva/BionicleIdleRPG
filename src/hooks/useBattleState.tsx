@@ -33,6 +33,7 @@ export interface BattleState {
   playActionQueue: () => Promise<void>;
   actionQueue: (() => void)[];
   isRunningRound: boolean;
+  endBattle: () => void;
 }
 
 export const INITIAL_BATTLE_STATE: BattleState = {
@@ -67,6 +68,9 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   },
   actionQueue: [],
   isRunningRound: false,
+  endBattle: function (): void {
+    throw new Error('Function not implemented.');
+  },
 };
 
 export const useBattleState = (): BattleState => {
@@ -145,7 +149,14 @@ export const useBattleState = (): BattleState => {
     } else {
       setPhase(BattlePhase.Retreated);
     }
-    // optionally clear other state
+  };
+
+  const endBattle = () => {
+    setPhase(BattlePhase.Idle);
+    setCurrentEncounter(undefined);
+    setCurrentWave(0);
+    setTeam([]);
+    setEnemies([]);
   };
 
   const confirmTeam = (team: RecruitedCharacterData[]) => {
@@ -193,6 +204,6 @@ export const useBattleState = (): BattleState => {
     playActionQueue,
     isRunningRound,
     actionQueue,
-    // ADD COLLECT REWARDS
+    endBattle,
   };
 };
