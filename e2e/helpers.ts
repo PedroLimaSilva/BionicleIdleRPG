@@ -98,6 +98,22 @@ export async function waitForCanvas(page: Page, timeout = 10000) {
 }
 
 /**
+ * Disable canvas rendering for e2e tests by hiding it.
+ * Use in tests that don't need the 3D scene (e.g. Chronicle tab) to avoid WebGL wait and speed up runs.
+ */
+export async function hideCanvas(page: Page, canvasTimeout = 5000) {
+  await page.waitForSelector('canvas', { state: 'attached', timeout: canvasTimeout }).catch(() => {
+    // Canvas may not exist yet or at all; continue
+  });
+  await page.evaluate(() => {
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+      canvas.style.display = 'none';
+    }
+  });
+}
+
+/**
  * Wait for a specific console message to appear
  * Useful for waiting for models/animations to load
  */

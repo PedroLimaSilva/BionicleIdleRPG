@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import {
   disableCSSAnimations,
   goto,
+  hideCanvas,
   INITIAL_GAME_STATE,
   setupGameState,
   waitForCanvas,
@@ -111,7 +112,7 @@ test.describe('Character Detail Page', () => {
       });
       await goto(page, '/characters/Jala');
       await disableCSSAnimations(page);
-      await waitForCanvas(page);
+      await hideCanvas(page);
 
       const chronicleTab = page.getByRole('button', { name: 'chronicle' });
       await expect(chronicleTab).toBeHidden();
@@ -125,7 +126,7 @@ test.describe('Character Detail Page', () => {
       });
       await goto(page, '/characters/Takua');
       await disableCSSAnimations(page);
-      await waitForCanvas(page);
+      await hideCanvas(page);
 
       await page.getByRole('button', { name: 'chronicle' }).click();
 
@@ -147,7 +148,7 @@ test.describe('Character Detail Page', () => {
       });
       await goto(page, '/characters/Takua');
       await disableCSSAnimations(page);
-      await waitForCanvas(page);
+      await hideCanvas(page);
 
       await page.getByRole('button', { name: 'chronicle' }).click();
 
@@ -166,7 +167,7 @@ test.describe('Character Detail Page', () => {
       });
       await goto(page, '/characters/Toa_Tahu');
       await disableCSSAnimations(page);
-      await waitForCanvas(page);
+      await hideCanvas(page);
 
       await page.getByRole('button', { name: 'chronicle' }).click();
 
