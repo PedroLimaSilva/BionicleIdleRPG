@@ -51,7 +51,10 @@
 }
 
 .chronicle-section__chevron {
-  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
 }
 
 .chronicle-section__body {
@@ -102,11 +105,9 @@
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.9);
 }
 
-.chronicle-entry__checkbox--checked::after {
-  content: '✔';
-  font-size: 0.8rem;
-  line-height: 1;
+.chronicle-entry__check-icon {
   color: var(--theme-element-accent);
+  flex-shrink: 0;
 }
 
 .chronicle-entry__title {

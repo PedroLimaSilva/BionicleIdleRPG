@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Check, ChevronDown, ChevronRight } from 'lucide-react';
 import { useGame } from '../../../context/Game';
 import type { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { getCharacterChronicle } from '../../../services/chronicleUtils';
@@ -94,7 +95,11 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
                   {section.entries.filter((e) => e.isUnlocked).length}/{section.entries.length} unlocked
                 </span>
                 <span className="chronicle-section__chevron" aria-hidden="true">
-                  {isSectionExpanded ? '▾' : '▸'}
+                  {isSectionExpanded ? (
+                    <ChevronDown size={18} strokeWidth={2.5} />
+                  ) : (
+                    <ChevronRight size={18} strokeWidth={2.5} />
+                  )}
                 </span>
               </div>
             </button>
@@ -119,7 +124,11 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
                             entry.isUnlocked ? 'chronicle-entry__checkbox--checked' : ''
                           }`}
                           aria-hidden="true"
-                        />
+                        >
+                          {entry.isUnlocked && (
+                            <Check size={12} strokeWidth={3} className="chronicle-entry__check-icon" />
+                          )}
+                        </span>
                         <div className="chronicle-entry__title">{entry.title}</div>
                       </button>
 
