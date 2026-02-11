@@ -112,11 +112,12 @@ export function getCharacterChronicle(
 
 When a character evolves (e.g., via quest reward):
 
-1. **Update `recruitedCharacters`**: Replace the old id with the new one; preserve `chronicleId`; drop `maskOverride` and `maskColorOverride`.
+1. **Update `recruitedCharacters`**: Replace the old id with the new one; drop `maskOverride` and `maskColorOverride`.
    ```typescript
-   // Before: { id: 'Toa_Tahu', chronicleId: 'tahu', exp: 5000, maskOverride: Mask.Miru, ... }
-   // After:  { id: 'Toa_Tahu_Nuva', chronicleId: 'tahu', exp: 5000, ... }
+   // Before: { id: 'Toa_Tahu', exp: 5000, maskOverride: Mask.Miru, ... }
+   // After:  { id: 'Toa_Tahu_Nuva', exp: 5000, ... }
    ```
+   Chronicle identity is derived from the new dex entry; no need to store it.
 2. **Preserve progress**: EXP, assignment, and quest stay on the same recruited slot. **Remove mask overrides**—each evolution grants new masks; the previous form’s mask overrides are lost.
 3. **Chronicle progress**: Unlock state is driven by `completedQuests` (global), not per-character. Since both `Toa_Tahu` and `Toa_Tahu_Nuva` use `chronicleId: 'tahu'`, they see the same chronicle and same unlock state. No migration needed.
 
@@ -161,20 +162,6 @@ Chronicles are a **mixture of historical log and to-do list**. The same chronicl
 
 ---
 
-## RecruitedCharacterData: Stable Identity
+## Chronicle Identity
 
-Add `chronicleId` to `RecruitedCharacterData` so we can track "this is still Tahu" across evolutions even when `id` changes:
-
-```typescript
-export type RecruitedCharacterData = {
-  id: string;           // matoran dex id (changes on evolution)
-  chronicleId: string;  // stable: e.g. "tahu" - same across forms
-  exp: number;
-  assignment?: JobAssignment;
-  quest?: Quest['id'];
-  maskOverride?: Mask;
-  maskColorOverride?: LegoColor;
-};
-```
-
-When a character evolves, `id` updates to the new dex entry; `chronicleId` stays the same (e.g. `"tahu"`).
+`chronicleId` is not stored on `RecruitedCharacterData`. It is derived from `MATORAN_DEX[matoran.id].chronicleId` whenever needed. When a character evolves, `id` updates to the new dex entry; that new entry shares the same `chronicleId`, so the chronicle is stable across forms without duplicating data.
