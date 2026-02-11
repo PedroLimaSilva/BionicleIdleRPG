@@ -19,6 +19,9 @@ export function loadGameState() {
       if (!parsed.widgetCap) {
         parsed.widgetCap = INITIAL_GAME_STATE.widgetCap;
       }
+      if (!parsed.collectedKrana) {
+        parsed.collectedKrana = {};
+      }
       if (isValidGameState(parsed)) {
         const [recruitedCharacters, logs, currency, loot] = applyOfflineJobExp(
           parsed.recruitedCharacters

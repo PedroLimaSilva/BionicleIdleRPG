@@ -11,6 +11,9 @@ export interface QuestRequirement {
   matoran?: RecruitedCharacterData['id'][]; // Required Matoran by ID
   items?: QuestItemRequirement[];
   minLevel?: number; // Minimum level required for all assigned Matoran
+  // Optional: requires all Krana to be collected (Bohrok Swarm arc).
+  // This is derived at runtime from global Krana state and not persisted separately.
+  requiresAllKrana?: boolean;
 }
 
 export interface QuestReward {

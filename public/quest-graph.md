@@ -224,6 +224,36 @@ XP: 800"]
 (5m)
 Currency: 2000
 XP: 5000"]
+  bohrok_swarm_intro["Beware the Bohrok
+(10m)
+Loot: 
+Currency: 2000
+XP: 1500"]
+  bohrok_ta_koro_defense["Siege of Ta-Koro
+(15m)
+Loot: 
+Currency: 2200
+XP: 1800"]
+  bohrok_legend_of_krana["Legend of the Krana
+(5m)
+Loot: 
+Currency: 1000
+XP: 800"]
+  bohrok_krana_hunt["Hunt for the Krana
+(30m)
+Loot: 
+Currency: 2600
+XP: 2200"]
+  bohrok_into_the_bohrok_nest["Into the Bohrok Nest
+(20m)
+Loot: 
+Currency: 3000
+XP: 2600"]
+  bohrok_evolve_toa_nuva["Dawn of the Toa Nuva
+(25m)
+Loot: 
+Currency: 5000
+XP: 4000"]
   story_toa_arrival --> maskhunt_kopaka_pohatu_icecliff
   mnog_tahu_unlock_01 --> story_toa_council
   maskhunt_kopaka_pohatu_icecliff --> story_toa_council
@@ -282,6 +312,12 @@ XP: 5000"]
   story_kini_nui_descent --> mnog_gali_call
   mnog_gali_call --> mnog_witness_makuta_battle
   mnog_witness_makuta_battle --> mnog_return_to_shore
+  mnog_return_to_shore --> bohrok_swarm_intro
+  bohrok_swarm_intro --> bohrok_ta_koro_defense
+  bohrok_ta_koro_defense --> bohrok_legend_of_krana
+  bohrok_legend_of_krana --> bohrok_krana_hunt
+  bohrok_krana_hunt --> bohrok_into_the_bohrok_nest
+  bohrok_into_the_bohrok_nest --> bohrok_evolve_toa_nuva
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff

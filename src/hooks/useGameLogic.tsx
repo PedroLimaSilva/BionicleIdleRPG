@@ -9,6 +9,19 @@ import { GameState } from '../types/GameState';
 import { useQuestState } from './useQuestState';
 import { useBattleState } from './useBattleState';
 import { clamp } from '../utils/math';
+import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
+import { BattleRewardParams, KranaReward } from '../types/GameState';
+import {
+  computeBattleExpTotal,
+  getDefeatedEnemyElements,
+  getParticipantIds,
+} from '../game/BattleRewards';
+import {
+  ALL_KRANA_IDS,
+  isKranaCollectionActive,
+  isKranaCollected,
+  isKranaElement,
+} from '../game/Krana';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -16,6 +29,10 @@ export const useGameLogic = (): GameState => {
   const [version] = useState(initialState.version);
 
   const { inventory, addItemToInventory } = useInventoryState(initialState.inventory);
+
+  const [collectedKrana, setCollectedKrana] = useState<KranaCollection>(
+    initialState.collectedKrana ?? {}
+  );
 
   const [widgets, setWidgets] = useState(initialState.widgets);
   const [widgetCap] = useState(initialState.widgetCap);
@@ -69,6 +86,7 @@ export const useGameLogic = (): GameState => {
     widgets,
     widgetCap,
     inventory,
+    collectedKrana,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     activeQuests,
@@ -83,6 +101,7 @@ export const useGameLogic = (): GameState => {
     widgets,
     widgetCap,
     inventory,
+    collectedKrana,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     addItemToInventory,
@@ -97,5 +116,62 @@ export const useGameLogic = (): GameState => {
     removeActivityLogEntry,
     clearActivityLog,
     battle,
+    collectKrana: (element: KranaElement, id: KranaId) => {
+      setCollectedKrana((prev) => {
+        const existingForElement = prev[element] ?? [];
+        if (existingForElement.includes(id)) {
+          return prev;
+        }
+        return {
+          ...prev,
+          [element]: [...existingForElement, id],
+        };
+      });
+    },
+    applyBattleRewards: (params: BattleRewardParams) => {
+      const totalExp = computeBattleExpTotal(
+        params.encounter,
+        params.phase,
+        params.currentWave,
+        params.enemies
+      );
+      const participantIds = getParticipantIds(params.team);
+      if (participantIds.length > 0 && totalExp > 0) {
+        const expPerParticipant = Math.floor(totalExp / participantIds.length);
+        setRecruitedCharacters((prev) =>
+          prev.map((m) =>
+            participantIds.includes(m.id) ? { ...m, exp: m.exp + expPerParticipant } : m
+          )
+        );
+      }
+
+      // Apply Krana: use pre-computed list from battle screen, or roll now if not provided.
+      const toApply: KranaReward[] = params.kranaToApply ?? [];
+      if (toApply.length === 0 && isKranaCollectionActive(completedQuests)) {
+        const defeatedElements = getDefeatedEnemyElements(
+          params.encounter,
+          params.phase,
+          params.currentWave,
+          params.enemies
+        );
+        for (const element of defeatedElements) {
+          if (!isKranaElement(element)) continue;
+          const kranaId = ALL_KRANA_IDS[Math.floor(Math.random() * ALL_KRANA_IDS.length)];
+          if (!isKranaCollected(collectedKrana, element, kranaId)) {
+            toApply.push({ element, kranaId });
+          }
+        }
+      }
+      for (const { element, kranaId } of toApply) {
+        setCollectedKrana((prev) => {
+          const existing = prev[element] ?? [];
+          if (existing.includes(kranaId)) return prev;
+          return {
+            ...prev,
+            [element]: [...existing, kranaId],
+          };
+        });
+      }
+    },
   };
 };

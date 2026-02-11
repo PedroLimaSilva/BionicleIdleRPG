@@ -19,7 +19,7 @@ export const enum Mask {
   Mahiki = 'Mahiki',
 }
 
-export const enum ElementTribe {
+export enum ElementTribe {
   Water = 'Water',
   Fire = 'Fire',
   Air = 'Air',
