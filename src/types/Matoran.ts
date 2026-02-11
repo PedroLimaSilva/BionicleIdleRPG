@@ -69,8 +69,6 @@ export type ListedCharacterData = {
 
 export type RecruitedCharacterData = {
   id: string;
-  /** Stable identity across evolutions (e.g. "tahu") */
-  chronicleId?: string;
   exp: number;
   assignment?: JobAssignment;
   quest?: Quest['id'];

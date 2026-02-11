@@ -144,10 +144,8 @@ export function recruitMatoran(
     };
   }
 
-  const base = MATORAN_DEX[character.id];
   const recruitedCharacter: RecruitedCharacterData = {
     id: character.id,
-    ...(base?.chronicleId && { chronicleId: base.chronicleId }),
     exp: 0,
   };
 
