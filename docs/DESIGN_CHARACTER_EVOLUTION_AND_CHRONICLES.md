@@ -138,14 +138,14 @@ Evolutions are **surprise twists**—they should not be exposed in the UI (e.g. 
 
 ## Implementation Order
 
-1. **Phase 1 – Chronicle extraction**
+1. **Phase 1 – Chronicle extraction** ✅ *Completed*
    - Create `src/data/chronicles.ts` with `CHRONICLES_BY_ID` and `CHRONICLE_IDS`.
    - Add `chronicleId` to `BaseMatoran`, remove `chronicle`.
    - Update `chronicleUtils.ts` to resolve via chronicle ID.
    - Update `matoran.ts` to use `chronicleId` instead of inline chronicle.
    - Run tests and fix any breakage.
 
-2. **Phase 2 – Evolution-ready dex entries**
+2. **Phase 2 – Evolution-ready dex entries** *In progress*
    - Add `Toa_Tahu_Nuva` (and other Nuva) entries to MATORAN_DEX when ready to implement evolution.
    - Add `ToaTahuNuvaModel` etc. to `CharacterScene` and wire stage/id branching.
 

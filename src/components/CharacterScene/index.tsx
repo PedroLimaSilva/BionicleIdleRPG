@@ -13,6 +13,7 @@ import { ToaPohatuMataModel } from './ToaPohatuMataModel';
 import { ToaKopakaMataModel } from './ToaKopakaMataModel';
 import { ToaOnuaMataModel } from './ToaOnuaMataModel';
 import { ToaLewaMataModel } from './ToaLewaMataModel';
+import { ToaNuvaPlaceholderModel } from './ToaNuvaPlaceholderModel';
 import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 
 function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
@@ -56,6 +57,12 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
             </group>
           );
       }
+    case MatoranStage.ToaNuva:
+      return (
+        <group position={[0, 7, 0]}>
+          <ToaNuvaPlaceholderModel matoran={matoran} />
+        </group>
+      );
     case MatoranStage.Diminished:
     default:
       return <DiminishedMatoranModel matoran={matoran} />;

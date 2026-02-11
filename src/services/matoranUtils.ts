@@ -19,7 +19,7 @@ export function isMatoran(matoran: BaseMatoran) {
 }
 
 export function isToa(matoran: BaseMatoran) {
-  return isToaMata(matoran);
+  return isToaMata(matoran) || matoran.stage === MatoranStage.ToaNuva;
 }
 
 export function isToaMata(matoran: BaseMatoran) {
