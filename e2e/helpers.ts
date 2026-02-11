@@ -117,12 +117,13 @@ export function isMobile(testInfo: TestInfo): boolean {
 /**
  * Wait for 3D canvas to be ready
  * Note: Animations are automatically paused when TEST_MODE is enabled in localStorage
+ * In CI/Docker, software WebGL is slower - allow more time for initial frame
  */
 export async function waitForCanvas(page: Page, timeout = 10000) {
   await page.waitForSelector('canvas', { timeout, state: 'visible' });
 
-  // Give WebGL time to render initial frame
-  await page.waitForTimeout(3000);
+  const isCI = !!process.env.CI || !!process.env.PLAYWRIGHT_DOCKER;
+  await page.waitForTimeout(isCI ? 6000 : 3000);
 }
 
 /**
@@ -180,7 +181,9 @@ export async function waitForConsoleMessage(
  * await goto(page, '/recruitment');
  * await modelLoadPromise;
  */
-export function waitForModelLoad(page: Page, timeout = 10000): Promise<void> {
+/** In CI/Docker, software WebGL loads models slower */
+const modelLoadTimeout = process.env.CI || process.env.PLAYWRIGHT_DOCKER ? 20000 : 10000;
+export function waitForModelLoad(page: Page, timeout = modelLoadTimeout): Promise<void> {
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       page.off('console', handler);

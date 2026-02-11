@@ -48,9 +48,9 @@ test.describe('Battle Flow', () => {
     await page.locator('.encounter button.confirm-button').first().click();
 
     await page.locator('h1.title').waitFor({ state: 'visible', timeout: 5000 });
-    await page.waitForTimeout(5000);
-
     const teamSelector = page.locator('.battle-prep__team-selector .character-card');
+    await teamSelector.first().waitFor({ state: 'visible', timeout: 20000 });
+
     await teamSelector.nth(0).click();
     await teamSelector.nth(1).click();
     await teamSelector.nth(2).click();
