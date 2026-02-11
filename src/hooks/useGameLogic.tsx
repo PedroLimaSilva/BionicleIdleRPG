@@ -10,11 +10,18 @@ import { useQuestState } from './useQuestState';
 import { useBattleState } from './useBattleState';
 import { clamp } from '../utils/math';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
-import { BattleRewardParams } from '../types/GameState';
+import { BattleRewardParams, KranaReward } from '../types/GameState';
 import {
   computeBattleExpTotal,
+  getDefeatedEnemyElements,
   getParticipantIds,
 } from '../game/BattleRewards';
+import {
+  ALL_KRANA_IDS,
+  isKranaCollectionActive,
+  isKranaCollected,
+  KRANA_ELEMENTS,
+} from '../game/Krana';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -129,15 +136,42 @@ export const useGameLogic = (): GameState => {
         params.enemies
       );
       const participantIds = getParticipantIds(params.team);
-      if (participantIds.length === 0 || totalExp === 0) return;
-      const expPerParticipant = Math.floor(totalExp / participantIds.length);
-      setRecruitedCharacters((prev) =>
-        prev.map((m) =>
-          participantIds.includes(m.id)
-            ? { ...m, exp: m.exp + expPerParticipant }
-            : m
-        )
-      );
+      if (participantIds.length > 0 && totalExp > 0) {
+        const expPerParticipant = Math.floor(totalExp / participantIds.length);
+        setRecruitedCharacters((prev) =>
+          prev.map((m) =>
+            participantIds.includes(m.id) ? { ...m, exp: m.exp + expPerParticipant } : m
+          )
+        );
+      }
+
+      // Apply Krana: use pre-computed list from battle screen, or roll now if not provided.
+      let toApply: KranaReward[] = params.kranaToApply ?? [];
+      if (toApply.length === 0 && isKranaCollectionActive(completedQuests)) {
+        const defeatedElements = getDefeatedEnemyElements(
+          params.encounter,
+          params.phase,
+          params.currentWave,
+          params.enemies
+        );
+        for (const element of defeatedElements) {
+          if (!KRANA_ELEMENTS.includes(element)) continue;
+          const kranaId = ALL_KRANA_IDS[Math.floor(Math.random() * ALL_KRANA_IDS.length)];
+          if (!isKranaCollected(collectedKrana, element, kranaId)) {
+            toApply.push({ element, kranaId });
+          }
+        }
+      }
+      for (const { element, kranaId } of toApply) {
+        setCollectedKrana((prev) => {
+          const existing = prev[element] ?? [];
+          if (existing.includes(kranaId)) return prev;
+          return {
+            ...prev,
+            [element]: [...existing, kranaId],
+          };
+        });
+      }
     },
   };
 };

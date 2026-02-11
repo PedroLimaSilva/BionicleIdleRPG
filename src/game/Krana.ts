@@ -1,5 +1,9 @@
 import { ElementTribe } from '../types/Matoran';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
+import {
+  BOHROK_EVOLVE_TOA_NUVA_QUEST_ID,
+  BOHROK_KRANA_LEGEND_QUEST_ID,
+} from '../data/quests/bohrok_swarm';
 
 export const ALL_KRANA_IDS: KranaId[] = ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'];
 
@@ -40,6 +44,18 @@ export function areAllKranaCollected(collectedKrana: KranaCollection): boolean {
   });
 }
 
+export function isKranaCollectionUnlocked(completedQuests: string[]): boolean {
+  return completedQuests.includes(BOHROK_KRANA_LEGEND_QUEST_ID);
+}
+
+export function isKranaArcCompleted(completedQuests: string[]): boolean {
+  return completedQuests.includes(BOHROK_EVOLVE_TOA_NUVA_QUEST_ID);
+}
+
+export function isKranaCollectionActive(completedQuests: string[]): boolean {
+  return isKranaCollectionUnlocked(completedQuests) && !isKranaArcCompleted(completedQuests);
+}
+
 // --- Battle loot helpers ---
 
 const COLOR_TO_ELEMENT: Record<string, KranaElement | undefined> = {
@@ -49,6 +65,16 @@ const COLOR_TO_ELEMENT: Record<string, KranaElement | undefined> = {
   white: ElementTribe.Ice,
   green: ElementTribe.Stone,
   orange: ElementTribe.Water,
+};
+
+/** Color name per Krana element, used for UI tinting (e.g. Krana collection tab). */
+export const ELEMENT_TO_KRANA_COLOR: Record<KranaElement, string> = {
+  [ElementTribe.Fire]: 'blue',
+  [ElementTribe.Water]: 'orange',
+  [ElementTribe.Air]: 'red',
+  [ElementTribe.Earth]: 'lime',
+  [ElementTribe.Ice]: 'white',
+  [ElementTribe.Stone]: 'green',
 };
 
 function isKranaDropId(id: string): boolean {

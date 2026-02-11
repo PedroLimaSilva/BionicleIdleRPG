@@ -8,6 +8,9 @@ import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
 import { Quest, QuestProgress } from './Quests';
 import { KranaCollection, KranaElement, KranaId } from './Krana';
 import { Combatant, EnemyEncounter } from './Combat';
+import type { KranaElement, KranaId } from './Krana';
+
+export type KranaReward = { element: KranaElement; kranaId: KranaId };
 
 export type BattleRewardParams = {
   encounter: EnemyEncounter;
@@ -15,6 +18,8 @@ export type BattleRewardParams = {
   currentWave: number;
   enemies: Combatant[];
   team: Combatant[];
+  /** When provided, these Krana are applied instead of rolling (used so UI can show then apply the same list). */
+  kranaToApply?: KranaReward[];
 };
 
 export type GameState = {

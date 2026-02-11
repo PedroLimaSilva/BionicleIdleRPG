@@ -1,0 +1,80 @@
+.krana-collection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.krana-collection__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+// Krana tint colors from game/Krana.ts COLOR_TO_ELEMENT (element -> color name)
+.krana-color--red {
+  --krana-tint: #d60202;
+}
+.krana-color--blue {
+  --krana-tint: #036be3;
+}
+.krana-color--lime {
+  --krana-tint: #84ff00;
+}
+.krana-color--white {
+  --krana-tint: #00e1ff;
+}
+.krana-color--green {
+  --krana-tint: #006e06;
+}
+.krana-color--orange {
+  --krana-tint: #ff7300;
+}
+
+.krana-collection__slot {
+  aspect-ratio: 1;
+  border-radius: var(--border-radius-md, 8px);
+  overflow: hidden;
+  border: 2px solid var(--theme-element-primary, currentColor);
+}
+
+.krana-collection__slot--collected {
+  opacity: 1;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--theme-element-primary) 40%, transparent);
+}
+
+.krana-collection__slot--uncollected {
+  opacity: 0.5;
+}
+
+.krana-collection__img-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-mid, #2a2a2a);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--krana-tint);
+    mix-blend-mode: multiply;
+    opacity: 1;
+    z-index: 1;
+    pointer-events: none;
+  }
+}
+
+.krana-collection__slot--collected .krana-collection__img-wrap {
+  background: var(--color-surface-high, #333);
+}
+
+.krana-collection__img {
+  position: relative;
+  z-index: 1;
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+}

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 import { BattlePhase } from '../../hooks/useBattleState';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
@@ -9,13 +9,33 @@ import { Arena } from './Arena';
 import {
   getEnemiesDefeatedCount,
   computeBattleExpTotal,
+  computeKranaRewardsForBattle,
 } from '../../game/BattleRewards';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
-  const { battle, applyBattleRewards } = useGame();
+  const { battle, applyBattleRewards, completedQuests, collectedKrana } = useGame();
   const { currentEncounter, phase, currentWave, enemies, team } = battle;
   const { setScene } = useSceneCanvas();
+
+  const kranaRewards = useMemo(() => {
+    if (
+      !currentEncounter ||
+      (phase !== BattlePhase.Victory &&
+        phase !== BattlePhase.Defeat &&
+        phase !== BattlePhase.Retreated)
+    ) {
+      return [];
+    }
+    return computeKranaRewardsForBattle(
+      currentEncounter,
+      phase,
+      currentWave,
+      enemies,
+      completedQuests,
+      collectedKrana
+    );
+  }, [currentEncounter, phase, currentWave, enemies, completedQuests, collectedKrana]);
 
   useEffect(() => {
     if (!currentEncounter) {
@@ -49,11 +69,9 @@ export const BattlePage: React.FC = () => {
     phase === BattlePhase.Victory
   ) {
     const enemiesDefeated =
-      currentEncounter &&
-      getEnemiesDefeatedCount(currentEncounter, phase, currentWave, enemies);
+      currentEncounter && getEnemiesDefeatedCount(currentEncounter, phase, currentWave, enemies);
     const expTotal =
-      currentEncounter &&
-      computeBattleExpTotal(currentEncounter, phase, currentWave, enemies);
+      currentEncounter && computeBattleExpTotal(currentEncounter, phase, currentWave, enemies);
     const participantCount = team.length;
 
     const handleCollectRewards = () => {
@@ -64,6 +82,7 @@ export const BattlePage: React.FC = () => {
           currentWave,
           enemies,
           team,
+          kranaToApply: kranaRewards,
         });
       }
       battle.endBattle();
@@ -78,9 +97,12 @@ export const BattlePage: React.FC = () => {
           {expTotal !== undefined && expTotal > 0 && (
             <p>
               EXP earned: {expTotal} total
-              {participantCount > 0 && (
-                <> ({Math.floor(expTotal / participantCount)} per Toa)</>
-              )}
+              {participantCount > 0 && <> ({Math.floor(expTotal / participantCount)} per Toa)</>}
+            </p>
+          )}
+          {kranaRewards.length > 0 && (
+            <p>
+              Krana recovered: {kranaRewards.map((r) => `${r.kranaId} (${r.element})`).join(', ')}
             </p>
           )}
         </div>
