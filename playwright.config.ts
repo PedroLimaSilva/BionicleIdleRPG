@@ -34,6 +34,13 @@ export default defineConfig({
   /* Snapshot path template - different for CI vs local */
   snapshotPathTemplate,
 
+  /* Timeouts: CI/Docker are slower (no GPU, software WebGL) - use higher limits */
+  timeout: isCI ? 90_000 : 30_000,
+  expect: {
+    timeout: isCI ? 30_000 : 5_000,
+  },
+  globalTimeout: isCI ? 45 * 60 * 1000 : undefined,
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -79,6 +86,6 @@ export default defineConfig({
     command: 'yarn dev',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
+    timeout: isCI ? 180_000 : 120_000,
   },
 });

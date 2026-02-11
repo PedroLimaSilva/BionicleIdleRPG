@@ -1,19 +1,23 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CompositedImage } from '../../components/CompositedImage';
 import { ElementTag } from '../../components/ElementTag';
 import { useGame } from '../../context/Game';
 import { COMBATANT_DEX, ENCOUNTERS } from '../../data/combat';
+import { getVisibleEncounters } from '../../game/encounterVisibility';
 
 export const BattleSelector: React.FC = () => {
   const navigate = useNavigate();
-  const { battle, completedQuests } = useGame();
+  const { battle, completedQuests, collectedKrana } = useGame();
+  const visibleEncounters = useMemo(
+    () => getVisibleEncounters(ENCOUNTERS, collectedKrana, completedQuests),
+    [collectedKrana, completedQuests]
+  );
   return (
     <div className="page-container">
       <h1 className="title">Select an Encounter</h1>
       <div className="encounter-list">
-        {ENCOUNTERS.filter(
-          (e) => !e.unlockedAfter || e.unlockedAfter.every((id) => completedQuests.includes(id))
-        ).map((encounter) => (
+        {visibleEncounters.map((encounter) => (
           <div key={encounter.id} className="encounter">
             <div className="encounter-header">
               {encounter.headliner && (

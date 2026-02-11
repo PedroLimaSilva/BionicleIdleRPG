@@ -13,15 +13,10 @@ import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
 import { BattleRewardParams, KranaReward } from '../types/GameState';
 import {
   computeBattleExpTotal,
-  getDefeatedEnemyElements,
+  computeKranaRewardsForBattle,
   getParticipantIds,
 } from '../game/BattleRewards';
-import {
-  ALL_KRANA_IDS,
-  isKranaCollectionActive,
-  isKranaCollected,
-  isKranaElement,
-} from '../game/Krana';
+import { isKranaCollectionActive } from '../game/Krana';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -146,21 +141,16 @@ export const useGameLogic = (): GameState => {
       }
 
       // Apply Krana: use pre-computed list from battle screen, or roll now if not provided.
-      const toApply: KranaReward[] = params.kranaToApply ?? [];
+      let toApply: KranaReward[] = params.kranaToApply ?? [];
       if (toApply.length === 0 && isKranaCollectionActive(completedQuests)) {
-        const defeatedElements = getDefeatedEnemyElements(
+        toApply = computeKranaRewardsForBattle(
           params.encounter,
           params.phase,
           params.currentWave,
-          params.enemies
+          params.enemies,
+          completedQuests,
+          collectedKrana
         );
-        for (const element of defeatedElements) {
-          if (!isKranaElement(element)) continue;
-          const kranaId = ALL_KRANA_IDS[Math.floor(Math.random() * ALL_KRANA_IDS.length)];
-          if (!isKranaCollected(collectedKrana, element, kranaId)) {
-            toApply.push({ element, kranaId });
-          }
-        }
       }
       for (const { element, kranaId } of toApply) {
         setCollectedKrana((prev) => {

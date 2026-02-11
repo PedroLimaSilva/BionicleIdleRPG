@@ -100,3 +100,8 @@ export function parseKranaDropId(id: string): { element: KranaElement; kranaId: 
 
   return { element, kranaId: normalizedId };
 }
+
+/** Whether a loot id is a krana drop (format krana-{id}-{color}). */
+export function isKranaLootId(id: string): boolean {
+  return parseKranaDropId(id) !== null;
+}
