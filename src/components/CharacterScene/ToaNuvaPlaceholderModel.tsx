@@ -10,7 +10,7 @@ export function ToaNuvaPlaceholderModel({
   const color = matoran.colors?.body ?? LegoColor.DarkGray;
 
   return (
-    <mesh castShadow receiveShadow>
+    <mesh position={[0, 8, -0.4]}>
       <cylinderGeometry args={[1.5, 1.8, 8, 16]} />
       <meshStandardMaterial color={color} />
     </mesh>
