@@ -22,37 +22,37 @@ When recruited characters evolve (e.g., Toa Mata → Toa Nuva), their **ID chang
 
 ## Proposed Architecture
 
-### 1. Chronicle Sets (Declared by Lineage/Stage)
+### 1. Chronicle Sets (Declared by Chronicle ID)
 
-Extract chronicles into a separate structure, keyed by **character lineage** (the person across forms), not by matoran dex id:
+Extract chronicles into a separate structure, keyed by **chronicle ID**—the character’s unique name (no honorifics like `TOA_`), shared across all forms of that character:
 
 ```typescript
 // src/data/chronicles.ts
 
 import type { ChronicleEntry } from '../types/Chronicle';
 
-/** Chronicle lineage keys - one per character "person" whose story persists across evolutions */
-export const CHRONICLE_LINEAGES = {
-  TOA_TAHU: 'TOA_TAHU',
-  TOA_GALI: 'TOA_GALI',
-  TOA_POHATU: 'TOA_POHATU',
-  TOA_ONUA: 'TOA_ONUA',
-  TOA_KOPAKA: 'TOA_KOPAKA',
-  TOA_LEWA: 'TOA_LEWA',
-  TAKUA: 'TAKUA',
-  // ... future lineages
+/** Chronicle IDs - one per character "person" whose story persists across evolutions. Use unique names only (e.g. TAHU, not TOA_TAHU). */
+export const CHRONICLE_IDS = {
+  TAHU: 'tahu',
+  GALI: 'gali',
+  POHATU: 'pohatu',
+  ONUA: 'onua',
+  KOPAKA: 'kopaka',
+  LEWA: 'lewa',
+  TAKUA: 'takua',
+  // ... future characters
 } as const;
 
-export type ChronicleLineage = (typeof CHRONICLE_LINEAGES)[keyof typeof CHRONICLE_LINEAGES];
+export type ChronicleId = (typeof CHRONICLE_IDS)[keyof typeof CHRONICLE_IDS];
 
-/** Chronicle entries declared once per lineage, reused by all forms of that character */
-export const CHRONICLES_BY_LINEAGE: Record<ChronicleLineage, ChronicleEntry[]> = {
-  [CHRONICLE_LINEAGES.TOA_TAHU]: [
+/** Chronicle entries declared once per chronicle ID, reused by all forms of that character */
+export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
+  [CHRONICLE_IDS.TAHU]: [
     { id: 'tahu_arrival_mata_nui', section: 'Arrival on Mata Nui', ... },
     { id: 'tahu_first_trials', ... },
     // ...
   ],
-  [CHRONICLE_LINEAGES.TOA_GALI]: [...],
+  [CHRONICLE_IDS.GALI]: [...],
   // ...
 };
 ```
@@ -70,23 +70,23 @@ export type BaseMatoran = {
   stage: MatoranStage;
   colors: { ... };
   tags?: MatoranTag[];
-  /** Reference to shared chronicle set - multiple matoran entries can share the same lineage */
-  chronicleLineage?: ChronicleLineage;  // replaces: chronicle?: ChronicleEntry[];
+  /** Reference to shared chronicle set - multiple matoran entries can share the same chronicle ID */
+  chronicleId?: ChronicleId;  // replaces: chronicle?: ChronicleEntry[];
 };
 ```
 
 ### 3. MATORAN_DEX: Evolved Forms as New Entries, Same Chronicle
 
-| Evolution              | Matoran Dex ID       | Chronicle Lineage |
-|------------------------|----------------------|-------------------|
-| Tahu (Mata)            | `Toa_Tahu`           | `TOA_TAHU`        |
-| Tahu (Nuva)            | `Toa_Tahu_Nuva`     | `TOA_TAHU`        |
-| Takua (Diminished)     | `Takua`              | `TAKUA`           |
-| Takua (future form)    | `Takua_Turaga` (etc.)| `TAKUA`           |
+| Evolution              | Matoran Dex ID       | Chronicle ID |
+|------------------------|----------------------|--------------|
+| Tahu (Mata)            | `Toa_Tahu`           | `tahu`       |
+| Tahu (Nuva)            | `Toa_Tahu_Nuva`      | `tahu`       |
+| Takua (Diminished)     | `Takua`              | `takua`      |
+| Takua (future form)    | `Takua_Turaga` (etc.)| `takua`      |
 
-Each dex entry has its own: model key, stats, name, colors. All share the same `chronicleLineage` for that character.
+Each dex entry has its own: model key, stats, name, colors. All share the same `chronicleId` for that character.
 
-### 4. Chronicle Lookup: Resolve via Lineage
+### 4. Chronicle Lookup: Resolve via Chronicle ID
 
 ```typescript
 // chronicleUtils.ts
@@ -96,9 +96,9 @@ export function getCharacterChronicle(
   progress: ChronicleProgressContext
 ): ChronicleEntryWithState[] {
   const base = MATORAN_DEX[characterId];
-  if (!base?.chronicleLineage) return [];
+  if (!base?.chronicleId) return [];
 
-  const entries = CHRONICLES_BY_LINEAGE[base.chronicleLineage];
+  const entries = CHRONICLES_BY_ID[base.chronicleId];
   if (!entries?.length) return [];
 
   return entries.map((entry) => ({
@@ -112,51 +112,36 @@ export function getCharacterChronicle(
 
 When a character evolves (e.g., via quest reward):
 
-1. **Update `recruitedCharacters`**: Replace the old id with the new one.
+1. **Update `recruitedCharacters`**: Replace the old id with the new one; preserve `chronicleId`; drop `maskOverride` and `maskColorOverride`.
    ```typescript
-   // Before: { id: 'Toa_Tahu', exp: 5000, ... }
-   // After:  { id: 'Toa_Tahu_Nuva', exp: 5000, ... }
+   // Before: { id: 'Toa_Tahu', chronicleId: 'tahu', exp: 5000, maskOverride: Mask.Miru, ... }
+   // After:  { id: 'Toa_Tahu_Nuva', chronicleId: 'tahu', exp: 5000, ... }
    ```
-2. **Preserve progress**: EXP, assignment, quest, mask overrides stay on the same recruited slot.
-3. **Chronicle progress**: Unlock state is driven by `completedQuests` (global), not per-character. Since both `Toa_Tahu` and `Toa_Tahu_Nuva` use `chronicleLineage: TOA_TAHU`, they see the same chronicle and same unlock state. No migration needed.
+2. **Preserve progress**: EXP, assignment, and quest stay on the same recruited slot. **Remove mask overrides**—each evolution grants new masks; the previous form’s mask overrides are lost.
+3. **Chronicle progress**: Unlock state is driven by `completedQuests` (global), not per-character. Since both `Toa_Tahu` and `Toa_Tahu_Nuva` use `chronicleId: 'tahu'`, they see the same chronicle and same unlock state. No migration needed.
 
 ---
 
 ## Data Migration
 
-- **MATORAN_DEX**: Remove inline `chronicle`, add `chronicleLineage` to each entry that had chronicles.
+- **MATORAN_DEX**: Remove inline `chronicle`, add `chronicleId` to each entry that had chronicles.
 - **Save migration**: Not required for chronicle refactoring. If we add evolution *after* this refactor, a future migration would handle `recruitedCharacters` id updates when evolving (e.g., v10 migration).
 
 ---
 
-## Evolution Metadata (Optional)
+## Evolution as Surprise
 
-To support "what can this character evolve into?", we can add:
-
-```typescript
-// Optional evolution chain metadata
-type EvolutionChain = {
-  from: string;   // matoran dex id
-  to: string;     // matoran dex id
-  trigger?: 'QUEST' | 'ITEM' | 'LEVEL';
-  triggerId?: string;
-};
-
-export const EVOLUTION_CHAINS: EvolutionChain[] = [
-  { from: 'Toa_Tahu', to: 'Toa_Tahu_Nuva', trigger: 'QUEST', triggerId: 'story_nuva_evolution' },
-  // ...
-];
-```
+Evolutions are **surprise twists**—they should not be exposed in the UI (e.g. no "evolve" button or preview of future forms). Triggers (quest completion, item use, etc.) are internal only; the player discovers evolution when it happens.
 
 ---
 
 ## Implementation Order
 
 1. **Phase 1 – Chronicle extraction**
-   - Create `src/data/chronicles.ts` with `CHRONICLES_BY_LINEAGE` and `CHRONICLE_LINEAGES`.
-   - Add `chronicleLineage` to `BaseMatoran`, remove `chronicle`.
-   - Update `chronicleUtils.ts` to resolve via lineage.
-   - Update `matoran.ts` to use `chronicleLineage` instead of inline chronicle.
+   - Create `src/data/chronicles.ts` with `CHRONICLES_BY_ID` and `CHRONICLE_IDS`.
+   - Add `chronicleId` to `BaseMatoran`, remove `chronicle`.
+   - Update `chronicleUtils.ts` to resolve via chronicle ID.
+   - Update `matoran.ts` to use `chronicleId` instead of inline chronicle.
    - Run tests and fix any breakage.
 
 2. **Phase 2 – Evolution-ready dex entries**
@@ -170,7 +155,26 @@ export const EVOLUTION_CHAINS: EvolutionChain[] = [
 
 ---
 
-## Open Questions
+## Chronicle Visibility by Stage
 
-- **Lineage vs. Stage**: Should chronicles be keyed purely by lineage, or by lineage+stage? (e.g., separate `TOA_TAHU_MATA` vs `TOA_TAHU_NUVA` if Nuva gets additional chronicle sections.) Current design assumes one lineage = one chronicle; we can extend later if Nuva-era chronicles differ.
-- **RecruitedCharacterData identity**: Should we add a stable `lineageId` for UI/analytics ("this is still Tahu") even when `id` changes? Useful for tracking "same character" across evolutions.
+Chronicles are a **mixture of historical log and to-do list**. The same chronicle content is shared across stages, but some entries can be **hidden until certain stages**. For example: the Toa Mata know their ultimate destiny is to defeat Makuta and awaken the Great Spirit, but they do not yet know they will face the Rahkshi or undergo mutations. Those future entries remain hidden until the character reaches the relevant stage. This can be implemented by adding an optional `visibleFromStage?: MatoranStage` to `ChronicleEntry`; entries without it are always visible once their unlock condition is met.
+
+---
+
+## RecruitedCharacterData: Stable Identity
+
+Add `chronicleId` to `RecruitedCharacterData` so we can track "this is still Tahu" across evolutions even when `id` changes:
+
+```typescript
+export type RecruitedCharacterData = {
+  id: string;           // matoran dex id (changes on evolution)
+  chronicleId: string;  // stable: e.g. "tahu" - same across forms
+  exp: number;
+  assignment?: JobAssignment;
+  quest?: Quest['id'];
+  maskOverride?: Mask;
+  maskColorOverride?: LegoColor;
+};
+```
+
+When a character evolves, `id` updates to the new dex entry; `chronicleId` stays the same (e.g. `"tahu"`).
