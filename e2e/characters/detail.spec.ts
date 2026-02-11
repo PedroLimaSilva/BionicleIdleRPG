@@ -134,7 +134,7 @@ test.describe('Character Detail Page', () => {
       await expect(chronicle).toBeVisible();
       await chronicle.click();
       await expect(await page.locator('.chronicle-section__title').first().textContent()).toEqual(
-        'Chronicler’s Duty'
+        "Chronicler's Duty"
       );
       // No entries should show as unlocked (no checked checkbox)
       await expect(page.locator('.chronicle-entry__checkbox--checked')).toHaveCount(0);
