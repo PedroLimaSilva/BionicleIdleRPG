@@ -3,8 +3,8 @@ import { BattlePhase } from '../hooks/useBattleState';
 import { ElementTribe } from '../types/Matoran';
 import { COMBATANT_DEX } from '../data/combat';
 import type { KranaReward } from '../types/GameState';
-import { KranaCollection, KranaId } from '../types/Krana';
-import { ALL_KRANA_IDS, isKranaCollected, isKranaCollectionActive, isKranaElement } from './Krana';
+import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
+import { ALL_KRANA_IDS, isKranaCollected, isKranaCollectionActive, isKranaElement, parseKranaDropId } from './Krana';
 
 /** EXP granted per defeated enemy, scaled by enemy level. */
 const EXP_PER_LEVEL = 5;
@@ -107,8 +107,21 @@ export function getDefeatedEnemyElements(
   return elements;
 }
 
+/** Get krana loot entries from encounter that match the given element. */
+function getKranaLootForElement(encounter: EnemyEncounter, element: ElementTribe): { element: KranaElement; kranaId: KranaId; chance: number }[] {
+  const result: { element: KranaElement; kranaId: KranaId; chance: number }[] = [];
+  for (const drop of encounter.loot) {
+    const parsed = parseKranaDropId(drop.id);
+    if (parsed && parsed.element === element) {
+      result.push({ element: parsed.element, kranaId: parsed.kranaId, chance: drop.chance });
+    }
+  }
+  return result;
+}
+
 /**
  * Compute which Krana would be awarded for this battle (one roll per defeated enemy).
+ * Uses the encounter's loot table when available; falls back to random krana for that element.
  * Used to display on the battle end screen and to apply the same list when collecting.
  */
 export function computeKranaRewardsForBattle(
@@ -124,10 +137,23 @@ export function computeKranaRewardsForBattle(
   const rewards: KranaReward[] = [];
   for (const element of elements) {
     if (!isKranaElement(element)) continue;
-    const kranaId = ALL_KRANA_IDS[Math.floor(Math.random() * ALL_KRANA_IDS.length)];
-    if (!isKranaCollected(collectedKrana, element, kranaId)) {
-      rewards.push({ element, kranaId: kranaId as KranaId });
+    const kranaLoot = getKranaLootForElement(encounter, element);
+    let awarded: KranaReward | null = null;
+    if (kranaLoot.length > 0) {
+      for (const { element: el, kranaId, chance } of kranaLoot) {
+        if (!isKranaCollected(collectedKrana, el, kranaId) && Math.random() < chance) {
+          awarded = { element: el, kranaId };
+          break;
+        }
+      }
     }
+    if (!awarded) {
+      const kranaId = ALL_KRANA_IDS[Math.floor(Math.random() * ALL_KRANA_IDS.length)];
+      if (!isKranaCollected(collectedKrana, element, kranaId)) {
+        awarded = { element, kranaId };
+      }
+    }
+    if (awarded) rewards.push(awarded);
   }
   return rewards;
 }

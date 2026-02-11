@@ -6,9 +6,8 @@ import { MatoranJob } from './Jobs';
 import { ActivityLogEntry, LogType } from './Logging';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
 import { Quest, QuestProgress } from './Quests';
-import { KranaCollection } from './Krana';
+import { KranaCollection, KranaElement, KranaId } from './Krana';
 import { Combatant, EnemyEncounter } from './Combat';
-import type { KranaElement, KranaId } from './Krana';
 
 export type KranaReward = { element: KranaElement; kranaId: KranaId };
 

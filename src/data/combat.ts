@@ -352,100 +352,53 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
 
 export const TEAM_POSITION_LABELS = ['Middle', 'Left', 'Right'];
 
+/** Krana drop ids by color: blue=Fire, orange=Water, red=Air, green=Stone, lime=Earth, white=Ice */
+const KRANA_BY_COLOR = {
+  blue: ['krana-xa-blue', 'krana-bo-blue', 'krana-su-blue', 'krana-za-blue', 'krana-vu-blue', 'krana-ja-blue', 'krana-yo-blue', 'krana-ca-blue'],
+  orange: ['krana-xa-orange', 'krana-bo-orange', 'krana-su-orange', 'krana-za-orange', 'krana-vu-orange', 'krana-ja-orange', 'krana-yo-orange', 'krana-ca-orange'],
+  red: ['krana-xa-red', 'krana-bo-red', 'krana-su-red', 'krana-za-red', 'krana-vu-red', 'krana-ja-red', 'krana-yo-red', 'krana-ca-red'],
+  green: ['krana-xa-green', 'krana-bo-green', 'krana-su-green', 'krana-za-green', 'krana-vu-green', 'krana-ja-green', 'krana-yo-green', 'krana-ca-green'],
+  lime: ['krana-xa-lime', 'krana-bo-lime', 'krana-su-lime', 'krana-za-lime', 'krana-vu-lime', 'krana-ja-lime', 'krana-yo-lime', 'krana-ca-lime'],
+  white: ['krana-xa-white', 'krana-bo-white', 'krana-su-white', 'krana-za-white', 'krana-vu-white', 'krana-ja-white', 'krana-yo-white', 'krana-ca-white'],
+} as const;
+
+function makeLoot(color: keyof typeof KRANA_BY_COLOR, indices: [number, number], chance = 0.15): { id: string; chance: number }[] {
+  return indices.map((i) => ({ id: KRANA_BY_COLOR[color][i], chance }));
+}
+
+function makeBohrokWave(bohrokId: string, lvl: number, count: number): { id: string; lvl: number }[] {
+  return Array.from({ length: count }, () => ({ id: bohrokId, lvl }));
+}
+
 export const ENCOUNTERS: EnemyEncounter[] = [
-  {
-    id: 'tahnok',
-    name: 'Tahnok Swarm',
-    headliner: 'tahnok',
-    waves: [
-      [
-        {
-          id: 'tahnok',
-          lvl: 20,
-        },
-        {
-          id: 'tahnok',
-          lvl: 20,
-        },
-        {
-          id: 'tahnok',
-          lvl: 20,
-        },
-      ],
-      [
-        {
-          id: 'nuhvok',
-          lvl: 20,
-        },
-        {
-          id: 'tahnok',
-          lvl: 20,
-        },
-      ],
-    ],
-    description: 'An aggressive swarm of fire-spewing Bohrok.',
-    difficulty: 1,
-    loot: [
-      { id: 'krana-ja-blue', chance: 0.15 },
-      { id: 'krana-zu-blue', chance: 0.1 },
-    ],
-  },
-  {
-    id: 'gahlok',
-    name: 'Gahlok Swarm',
-    headliner: 'gahlok',
-    waves: [
-      [
-        {
-          id: 'gahlok',
-          lvl: 20,
-        },
-      ],
-      [
-        {
-          id: 'gahlok',
-          lvl: 20,
-        },
-      ],
-      [
-        {
-          id: 'gahlok',
-          lvl: 20,
-        },
-        {
-          id: 'gahlok',
-          lvl: 20,
-        },
-        {
-          id: 'gahlok',
-          lvl: 20,
-        },
-      ],
-    ],
-    description: 'Swift and evasive attackers.',
-    difficulty: 1,
-    loot: [
-      { id: 'krana-vu-orange', chance: 0.12 },
-      { id: 'krana-ja-orange', chance: 0.1 },
-    ],
-  },
-  {
-    id: 'lehvak',
-    name: 'Lehvak Swarm',
-    waves: [
-      [
-        {
-          id: 'lehvak',
-          lvl: 20,
-        },
-      ],
-    ],
-    headliner: 'lehvak',
-    description: 'Swift and evasive attackers.',
-    difficulty: 1,
-    loot: [
-      { id: 'krana-vu-red', chance: 0.12 },
-      { id: 'krana-ja-red', chance: 0.1 },
-    ],
-  },
+  // Tahnok (Fire / blue) - 4 tiers
+  { id: 'tahnok-1', name: 'Tahnok Swarm', headliner: 'tahnok', difficulty: 1, description: 'An aggressive swarm of fire-spewing Bohrok.', waves: [[...makeBohrokWave('tahnok', 20, 3)], [...makeBohrokWave('tahnok', 20, 2)]], loot: makeLoot('blue', [0, 1]) },
+  { id: 'tahnok-2', name: 'Tahnok Swarm II', headliner: 'tahnok', difficulty: 2, description: 'Hardened fire Bohrok with greater numbers.', waves: [[...makeBohrokWave('tahnok', 25, 3)], [...makeBohrokWave('nuhvok', 25, 1), ...makeBohrokWave('tahnok', 25, 2)]], loot: makeLoot('blue', [2, 3]) },
+  { id: 'tahnok-3', name: 'Tahnok Swarm III', headliner: 'tahnok', difficulty: 3, description: 'Elite fire Bohrok in coordinated waves.', waves: [[...makeBohrokWave('tahnok', 30, 4)], [...makeBohrokWave('tahnok', 30, 3)]], loot: makeLoot('blue', [4, 5]) },
+  { id: 'tahnok-4', name: 'Tahnok Swarm IV', headliner: 'tahnok', difficulty: 4, description: 'The fiercest fire swarms on Mata Nui.', waves: [[...makeBohrokWave('tahnok', 35, 4)], [...makeBohrokWave('nuhvok', 35, 2), ...makeBohrokWave('tahnok', 35, 2)]], loot: makeLoot('blue', [6, 7]) },
+  // Gahlok (Water / orange) - 4 tiers
+  { id: 'gahlok-1', name: 'Gahlok Swarm', headliner: 'gahlok', difficulty: 1, description: 'Swift and evasive water attackers.', waves: [[...makeBohrokWave('gahlok', 20, 2)], [...makeBohrokWave('gahlok', 20, 3)]], loot: makeLoot('orange', [0, 1]) },
+  { id: 'gahlok-2', name: 'Gahlok Swarm II', headliner: 'gahlok', difficulty: 2, description: 'Stronger water Bohrok with corrosive tactics.', waves: [[...makeBohrokWave('gahlok', 25, 3)], [...makeBohrokWave('gahlok', 25, 4)]], loot: makeLoot('orange', [2, 3]) },
+  { id: 'gahlok-3', name: 'Gahlok Swarm III', headliner: 'gahlok', difficulty: 3, description: 'Elite water swarms that strike in unison.', waves: [[...makeBohrokWave('gahlok', 30, 4)], [...makeBohrokWave('gahlok', 30, 4)]], loot: makeLoot('orange', [4, 5]) },
+  { id: 'gahlok-4', name: 'Gahlok Swarm IV', headliner: 'gahlok', difficulty: 4, description: 'The most dangerous water swarms.', waves: [[...makeBohrokWave('gahlok', 35, 5)], [...makeBohrokWave('gahlok', 35, 4)]], loot: makeLoot('orange', [6, 7]) },
+  // Lehvak (Air / red) - 4 tiers
+  { id: 'lehvak-1', name: 'Lehvak Swarm', headliner: 'lehvak', difficulty: 1, description: 'Swift and evasive air attackers.', waves: [[...makeBohrokWave('lehvak', 20, 2)], [...makeBohrokWave('lehvak', 20, 2)]], loot: makeLoot('red', [0, 1]) },
+  { id: 'lehvak-2', name: 'Lehvak Swarm II', headliner: 'lehvak', difficulty: 2, description: 'Hardened air Bohrok with acid spray.', waves: [[...makeBohrokWave('lehvak', 25, 3)], [...makeBohrokWave('lehvak', 25, 3)]], loot: makeLoot('red', [2, 3]) },
+  { id: 'lehvak-3', name: 'Lehvak Swarm III', headliner: 'lehvak', difficulty: 3, description: 'Elite air swarms with relentless strikes.', waves: [[...makeBohrokWave('lehvak', 30, 4)], [...makeBohrokWave('lehvak', 30, 3)]], loot: makeLoot('red', [4, 5]) },
+  { id: 'lehvak-4', name: 'Lehvak Swarm IV', headliner: 'lehvak', difficulty: 4, description: 'The fiercest air swarms on Mata Nui.', waves: [[...makeBohrokWave('lehvak', 35, 4)], [...makeBohrokWave('lehvak', 35, 4)]], loot: makeLoot('red', [6, 7]) },
+  // Pahrak (Stone / green) - 4 tiers
+  { id: 'pahrak-1', name: 'Pahrak Swarm', headliner: 'pahrak', difficulty: 1, description: 'Stone Bohrok that absorb and reflect damage.', waves: [[...makeBohrokWave('pahrak', 20, 2)], [...makeBohrokWave('pahrak', 20, 2)]], loot: makeLoot('green', [0, 1]) },
+  { id: 'pahrak-2', name: 'Pahrak Swarm II', headliner: 'pahrak', difficulty: 2, description: 'Hardened stone Bohrok with greater resilience.', waves: [[...makeBohrokWave('pahrak', 25, 3)], [...makeBohrokWave('pahrak', 25, 3)]], loot: makeLoot('green', [2, 3]) },
+  { id: 'pahrak-3', name: 'Pahrak Swarm III', headliner: 'pahrak', difficulty: 3, description: 'Elite stone swarms in coordinated formation.', waves: [[...makeBohrokWave('pahrak', 30, 4)], [...makeBohrokWave('pahrak', 30, 3)]], loot: makeLoot('green', [4, 5]) },
+  { id: 'pahrak-4', name: 'Pahrak Swarm IV', headliner: 'pahrak', difficulty: 4, description: 'The most resilient stone swarms.', waves: [[...makeBohrokWave('pahrak', 35, 4)], [...makeBohrokWave('pahrak', 35, 4)]], loot: makeLoot('green', [6, 7]) },
+  // Nuhvok (Earth / lime) - 4 tiers
+  { id: 'nuhvok-1', name: 'Nuhvok Swarm', headliner: 'nuhvok', difficulty: 1, description: 'Earth Bohrok that strike from below.', waves: [[...makeBohrokWave('nuhvok', 20, 2)], [...makeBohrokWave('nuhvok', 20, 2)]], loot: makeLoot('lime', [0, 1]) },
+  { id: 'nuhvok-2', name: 'Nuhvok Swarm II', headliner: 'nuhvok', difficulty: 2, description: 'Hardened earth Bohrok with burrowing tactics.', waves: [[...makeBohrokWave('nuhvok', 25, 3)], [...makeBohrokWave('tahnok', 25, 1), ...makeBohrokWave('nuhvok', 25, 2)]], loot: makeLoot('lime', [2, 3]) },
+  { id: 'nuhvok-3', name: 'Nuhvok Swarm III', headliner: 'nuhvok', difficulty: 3, description: 'Elite earth swarms with devastating strikes.', waves: [[...makeBohrokWave('nuhvok', 30, 4)], [...makeBohrokWave('nuhvok', 30, 3)]], loot: makeLoot('lime', [4, 5]) },
+  { id: 'nuhvok-4', name: 'Nuhvok Swarm IV', headliner: 'nuhvok', difficulty: 4, description: 'The fiercest earth swarms on Mata Nui.', waves: [[...makeBohrokWave('nuhvok', 35, 4)], [...makeBohrokWave('nuhvok', 35, 4)]], loot: makeLoot('lime', [6, 7]) },
+  // Kohrak (Ice / white) - 4 tiers
+  { id: 'kohrak-1', name: 'Kohrak Swarm', headliner: 'kohrak', difficulty: 1, description: 'Ice Bohrok that freeze and slow.', waves: [[...makeBohrokWave('kohrak', 20, 2)], [...makeBohrokWave('kohrak', 20, 2)]], loot: makeLoot('white', [0, 1]) },
+  { id: 'kohrak-2', name: 'Kohrak Swarm II', headliner: 'kohrak', difficulty: 2, description: 'Hardened ice Bohrok with chilling power.', waves: [[...makeBohrokWave('kohrak', 25, 3)], [...makeBohrokWave('kohrak', 25, 3)]], loot: makeLoot('white', [2, 3]) },
+  { id: 'kohrak-3', name: 'Kohrak Swarm III', headliner: 'kohrak', difficulty: 3, description: 'Elite ice swarms in frost formation.', waves: [[...makeBohrokWave('kohrak', 30, 4)], [...makeBohrokWave('kohrak', 30, 3)]], loot: makeLoot('white', [4, 5]) },
+  { id: 'kohrak-4', name: 'Kohrak Swarm IV', headliner: 'kohrak', difficulty: 4, description: 'The most frigid ice swarms on Mata Nui.', waves: [[...makeBohrokWave('kohrak', 35, 4)], [...makeBohrokWave('kohrak', 35, 4)]], loot: makeLoot('white', [6, 7]) },
 ];
