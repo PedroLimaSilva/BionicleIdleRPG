@@ -146,7 +146,7 @@ export const useGameLogic = (): GameState => {
       }
 
       // Apply Krana: use pre-computed list from battle screen, or roll now if not provided.
-      let toApply: KranaReward[] = params.kranaToApply ?? [];
+      const toApply: KranaReward[] = params.kranaToApply ?? [];
       if (toApply.length === 0 && isKranaCollectionActive(completedQuests)) {
         const defeatedElements = getDefeatedEnemyElements(
           params.encounter,
@@ -155,10 +155,10 @@ export const useGameLogic = (): GameState => {
           params.enemies
         );
         for (const element of defeatedElements) {
-          if (!KRANA_ELEMENTS.includes(element)) continue;
+          if (!KRANA_ELEMENTS.includes(element as KranaElement)) continue;
           const kranaId = ALL_KRANA_IDS[Math.floor(Math.random() * ALL_KRANA_IDS.length)];
-          if (!isKranaCollected(collectedKrana, element, kranaId)) {
-            toApply.push({ element, kranaId });
+          if (!isKranaCollected(collectedKrana, element as KranaElement, kranaId)) {
+            toApply.push({ element: element as KranaElement, kranaId });
           }
         }
       }

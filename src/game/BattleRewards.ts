@@ -2,9 +2,8 @@ import { Combatant, EnemyEncounter } from '../types/Combat';
 import { BattlePhase } from '../hooks/useBattleState';
 import { ElementTribe } from '../types/Matoran';
 import { COMBATANT_DEX } from '../data/combat';
-import type { KranaElement, KranaId } from '../types/Krana';
 import type { KranaReward } from '../types/GameState';
-import { KranaCollection } from '../types/Krana';
+import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
 import { ALL_KRANA_IDS, isKranaCollected, isKranaCollectionActive, KRANA_ELEMENTS } from './Krana';
 
 /** EXP granted per defeated enemy, scaled by enemy level. */
@@ -124,10 +123,10 @@ export function computeKranaRewardsForBattle(
   const elements = getDefeatedEnemyElements(encounter, phase, currentWave, currentEnemies);
   const rewards: KranaReward[] = [];
   for (const element of elements) {
-    if (!KRANA_ELEMENTS.includes(element)) continue;
+    if (!KRANA_ELEMENTS.includes(element as KranaElement)) continue;
     const kranaId = ALL_KRANA_IDS[Math.floor(Math.random() * ALL_KRANA_IDS.length)];
-    if (!isKranaCollected(collectedKrana, element, kranaId)) {
-      rewards.push({ element, kranaId });
+    if (!isKranaCollected(collectedKrana, element as KranaElement, kranaId)) {
+      rewards.push({ element: element as KranaElement, kranaId: kranaId as KranaId });
     }
   }
   return rewards;
