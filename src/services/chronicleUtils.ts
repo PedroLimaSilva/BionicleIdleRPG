@@ -1,3 +1,4 @@
+import { CHRONICLES_BY_ID, type ChronicleId } from '../data/chronicles';
 import { MATORAN_DEX } from '../data/matoran';
 import type { ChronicleEntryWithState, ChronicleUnlockCondition } from '../types/Chronicle';
 import type { GameState } from '../types/GameState';
@@ -11,11 +12,13 @@ export function getCharacterChronicle(
   progress: ChronicleProgressContext
 ): ChronicleEntryWithState[] {
   const base = MATORAN_DEX[characterId];
-  if (!base || !base.chronicle || base.chronicle.length === 0) {
-    return [];
-  }
+  const chronicleId = base?.chronicleId;
+  if (!chronicleId || !(chronicleId in CHRONICLES_BY_ID)) return [];
 
-  return base.chronicle.map((entry) => ({
+  const entries = CHRONICLES_BY_ID[chronicleId as ChronicleId];
+  if (!entries?.length) return [];
+
+  return entries.map((entry) => ({
     ...entry,
     isUnlocked: isChronicleEntryUnlocked(entry.unlockCondition, progress),
   }));

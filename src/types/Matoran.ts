@@ -1,7 +1,6 @@
 import { GameItemId } from '../data/loot';
 import { LegoColor } from './Colors';
 import { JobAssignment } from './Jobs';
-import type { ChronicleEntry } from './Chronicle';
 import { Quest } from './Quests';
 
 export const enum Mask {
@@ -58,7 +57,8 @@ export type BaseMatoran = {
     eyes: LegoColor;
   };
   tags?: MatoranTag[];
-  chronicle?: ChronicleEntry[];
+  /** Reference to shared chronicle set - multiple matoran entries can share the same chronicle ID */
+  chronicleId?: string;
 };
 
 export type ListedCharacterData = {
@@ -69,6 +69,8 @@ export type ListedCharacterData = {
 
 export type RecruitedCharacterData = {
   id: string;
+  /** Stable identity across evolutions (e.g. "tahu") */
+  chronicleId?: string;
   exp: number;
   assignment?: JobAssignment;
   quest?: Quest['id'];
