@@ -6,7 +6,7 @@ import { MatoranJob } from './Jobs';
 import { ActivityLogEntry, LogType } from './Logging';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
 import { Quest, QuestProgress } from './Quests';
-import { KranaCollection, KranaElement, KranaId } from './Krana';
+import { KranaCollection } from './Krana';
 import { Combatant, EnemyEncounter } from './Combat';
 import type { KranaElement, KranaId } from './Krana';
 
