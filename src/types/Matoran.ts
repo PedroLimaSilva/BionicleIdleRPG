@@ -5,11 +5,17 @@ import { Quest } from './Quests';
 
 export const enum Mask {
   Hau = 'Hau',
+  Hau_Nuva = 'Hau_Nuva',
   Kaukau = 'Kaukau',
+  Kaukau_Nuva = 'Kaukau_Nuva',
   Huna = 'Huna',
+  Huna_Nuva = 'Huna_Nuva',
   Kakama = 'Kakama',
+  Kakama_Nuva = 'Kakama_Nuva',
   Akaku = 'Akaku',
+  Akaku_Nuva = 'Akaku_Nuva',
   Pakari = 'Pakari',
+  Pakari_Nuva = 'Pakari_Nuva',
   Miru = 'Miru',
   Ruru = 'Ruru',
   Komau = 'Komau',

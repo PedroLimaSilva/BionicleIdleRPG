@@ -23,16 +23,17 @@ export const ToaTahuNuvaModel = forwardRef<
 
   useEffect(() => {
     const maskColor = matoran.maskColorOverride || matoran.colors.mask;
-    // TODO: add all masks to the blender and reexport
-    const mesh = nodes.Hau as Mesh;
-    const mat = getStandardPlasticMaterial(maskColor);
-    mesh.material = mat;
+    nodes.Masks.children.forEach((mask) => {
+      const mesh = mask as Mesh;
+      let mat = getStandardPlasticMaterial(maskColor);
+      mesh.material = mat;
+    });
   }, [nodes, matoran]);
 
   return (
     <group ref={group} dispose={null}>
       <group name="Toa" position={[0, 10.2, 0]}>
-        <primitive object={nodes.Body} />
+        <primitive object={nodes.Body} scale={1} />
       </group>
     </group>
   );

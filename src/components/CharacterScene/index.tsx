@@ -16,6 +16,7 @@ import { ToaNuvaPlaceholderModel } from './ToaNuvaPlaceholderModel';
 import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 import { ToaTahuMataModel } from './ToaTahuMataModel';
 import { ToaTahuNuvaModel } from './Nuva/TahuNuvaModel';
+import { ToaGaliNuvaModel } from './Nuva/GaliNuvaModel';
 
 function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   switch (matoran.stage) {
@@ -53,7 +54,7 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
     case MatoranStage.ToaNuva:
       switch (matoran.id) {
         case 'Toa_Gali':
-          return <ToaGaliMataModel matoran={matoran} />;
+          return <ToaGaliNuvaModel matoran={matoran} />;
         case 'Toa_Tahu':
           return <ToaTahuNuvaModel matoran={matoran} />;
         default:

@@ -22,10 +22,11 @@ export const ToaGaliNuvaModel = forwardRef<
 
   useEffect(() => {
     const maskColor = matoran.maskColorOverride || matoran.colors.mask;
-    // TODO: add all masks to the blender and reexport
-    const mesh = nodes.Kaukau as Mesh;
-    const mat = getStandardPlasticMaterial(maskColor);
-    mesh.material = mat;
+    nodes.Masks.children.forEach((mask) => {
+      const mesh = mask as Mesh;
+      let mat = getStandardPlasticMaterial(maskColor);
+      mesh.material = mat;
+    });
   }, [nodes, matoran]);
 
   return (
