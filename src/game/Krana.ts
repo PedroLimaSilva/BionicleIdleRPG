@@ -7,15 +7,15 @@ import {
 
 export const ALL_KRANA_IDS: KranaId[] = ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'];
 
-// Only the six Toa elements participate in Krana collection.
-export const KRANA_ELEMENTS: KranaElement[] = [
-  ElementTribe.Fire,
-  ElementTribe.Water,
-  ElementTribe.Air,
-  ElementTribe.Earth,
-  ElementTribe.Ice,
-  ElementTribe.Stone,
-];
+/** Type guard: true if element is a Krana-eligible Toa element (excludes Light/Shadow). */
+export function isKranaElement(element: ElementTribe): element is KranaElement {
+  return element !== ElementTribe.Light && element !== ElementTribe.Shadow;
+}
+
+/** All six Toa elements that participate in Krana collection (derived from enum). */
+function getKranaElements(): KranaElement[] {
+  return (Object.values(ElementTribe) as ElementTribe[]).filter(isKranaElement);
+}
 
 export function isKranaCollected(
   collectedKrana: KranaCollection,
@@ -38,7 +38,7 @@ export function getElementKranaProgress(
 }
 
 export function areAllKranaCollected(collectedKrana: KranaCollection): boolean {
-  return KRANA_ELEMENTS.every((element) => {
+  return getKranaElements().every((element) => {
     const collected = collectedKrana[element] ?? [];
     return ALL_KRANA_IDS.every((id) => collected.includes(id));
   });

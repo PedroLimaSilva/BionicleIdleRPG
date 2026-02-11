@@ -20,7 +20,7 @@ import {
   ALL_KRANA_IDS,
   isKranaCollectionActive,
   isKranaCollected,
-  KRANA_ELEMENTS,
+  isKranaElement,
 } from '../game/Krana';
 
 export const useGameLogic = (): GameState => {
@@ -155,10 +155,10 @@ export const useGameLogic = (): GameState => {
           params.enemies
         );
         for (const element of defeatedElements) {
-          if (!KRANA_ELEMENTS.includes(element as KranaElement)) continue;
+          if (!isKranaElement(element)) continue;
           const kranaId = ALL_KRANA_IDS[Math.floor(Math.random() * ALL_KRANA_IDS.length)];
-          if (!isKranaCollected(collectedKrana, element as KranaElement, kranaId)) {
-            toApply.push({ element: element as KranaElement, kranaId });
+          if (!isKranaCollected(collectedKrana, element, kranaId)) {
+            toApply.push({ element, kranaId });
           }
         }
       }
