@@ -7,6 +7,7 @@ export const INITIAL_GAME_STATE: PartialGameState = {
   widgets: 0,
   widgetCap: 2000,
   inventory: {},
+  collectedKrana: {},
   recruitedCharacters: [],
   buyableCharacters: [],
   activeQuests: [],
@@ -24,6 +25,23 @@ export async function enableTestMode(page: Page) {
 }
 
 /**
+ * Injects CSS to hide the 3D canvas before any page loads.
+ * Call before goto() to avoid WebGL initialization blocking navigation timeouts.
+ */
+export async function addCanvasHidingInitScript(page: Page) {
+  await page.addInitScript(() => {
+    const style = document.createElement('style');
+    style.id = 'e2e-hide-canvas';
+    style.textContent = `#canvas-mount canvas, canvas { display: none !important; }`;
+    if (document.head) {
+      document.head.appendChild(style);
+    } else {
+      document.documentElement.prepend(style);
+    }
+  });
+}
+
+/**
  * Creates a game state and stores it in localStorage to be loaded by the game
  * Also enables test mode automatically
  */
@@ -34,21 +52,31 @@ export async function setupGameState(page: Page, gameState: PartialGameState) {
   }, gameState);
 }
 
+export type GotoOptions = {
+  /** Use 'domcontentloaded' to avoid waiting for heavy assets (WebGL, 3D models). Default: 'load' */
+  waitUntil?: 'load' | 'domcontentloaded';
+  /** Inject script to hide canvas before nav - speeds up pages with 3D scene */
+  hideCanvasBeforeNav?: boolean;
+};
+
 /**
  * Navigate to a path
  * Constructs full URL with base path /BionicleIdleRPG/ to match React Router basename
  *
  * Note: Test mode is enabled via localStorage (set by setupGameState or enableTestMode)
  */
-export async function goto(page: Page, path: string) {
-  // Ensure path starts with /
+export async function goto(page: Page, path: string, options?: GotoOptions) {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-
-  // Construct full URL with base path
   const basePath = '/BionicleIdleRPG';
   const fullPath = `${basePath}${normalizedPath}`;
 
-  await page.goto(fullPath);
+  if (options?.hideCanvasBeforeNav) {
+    await addCanvasHidingInitScript(page);
+  }
+
+  await page.goto(fullPath, {
+    waitUntil: options?.waitUntil ?? 'load',
+  });
 }
 
 /**

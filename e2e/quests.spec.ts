@@ -55,6 +55,10 @@ test.describe('Quests Page', () => {
     });
 
     await goto(page, '/quest-tree');
+    // wait for the page to have a p element with the text "The Arrival of the Toa"
+    await page
+      .locator('p:has-text("The Arrival of the Toa")')
+      .waitFor({ state: 'visible', timeout: 10000 });
     await expect(page).toHaveScreenshot({
       fullPage: true,
       maxDiffPixels: 150,
