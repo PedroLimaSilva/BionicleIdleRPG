@@ -21,11 +21,7 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
     case MatoranStage.ToaMata:
       switch (matoran.id) {
         case 'Toa_Gali':
-          return (
-            <group position={[0, 7.1, 0]}>
-              <ToaGaliMataModel matoran={matoran} />
-            </group>
-          );
+          return <ToaGaliMataModel matoran={matoran} />;
         case 'Toa_Pohatu':
           return (
             <group position={[0, 6.4, 0]}>
