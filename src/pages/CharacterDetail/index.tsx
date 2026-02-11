@@ -40,7 +40,7 @@ export const CharacterDetail: React.FC = () => {
     if (matoran.quest || isMatoran(matoran)) {
       base.push('tasks');
     }
-    if (matoran.chronicle && matoran.chronicle.length > 0) {
+    if (matoran.chronicleId) {
       base.push('chronicle');
     }
     return base;
@@ -122,7 +122,7 @@ export const CharacterDetail: React.FC = () => {
               )}
             </div>
           )}
-          {activeTab === 'chronicle' && matoran.chronicle && (
+          {activeTab === 'chronicle' && matoran.chronicleId && (
             <CharacterChronicle matoran={matoran} />
           )}
         </div>

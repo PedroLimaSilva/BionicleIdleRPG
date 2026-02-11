@@ -330,6 +330,8 @@ if (process.env.NODE_ENV === 'development') {
 
 **Recommendation:** Either implement stage transformation (e.g., Matoran → Toa) or document that stages are fixed.
 
+**Design:** See [DESIGN_CHARACTER_EVOLUTION_AND_CHRONICLES.md](../docs/DESIGN_CHARACTER_EVOLUTION_AND_CHRONICLES.md) for proposed architecture: evolution changes character ID (new MATORAN_DEX entry), chronicles extracted to lineage-based consts and reused across evolved forms.
+
 **Decision needed:**
 
 - Should characters transform between stages?
