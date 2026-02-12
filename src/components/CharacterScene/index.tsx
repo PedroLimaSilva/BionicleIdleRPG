@@ -3,7 +3,7 @@ import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { EffectComposer, SSAO, SelectiveBloom } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
-import { Mesh, MeshStandardMaterial, Object3D, OrthographicCamera } from 'three';
+import { Mesh, MeshStandardMaterial, Object3D } from 'three';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
@@ -25,29 +25,13 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
         case 'Toa_Gali':
           return <ToaGaliMataModel matoran={matoran} />;
         case 'Toa_Pohatu':
-          return (
-            <group position={[0, 6.4, 0]}>
-              <ToaPohatuMataModel matoran={matoran} />
-            </group>
-          );
+          return <ToaPohatuMataModel matoran={matoran} />;
         case 'Toa_Kopaka':
-          return (
-            <group position={[0, 6.9, 0]}>
-              <ToaKopakaMataModel matoran={matoran} />
-            </group>
-          );
+          return <ToaKopakaMataModel matoran={matoran} />;
         case 'Toa_Onua':
-          return (
-            <group position={[0, 7, 0]}>
-              <ToaOnuaMataModel matoran={matoran} />
-            </group>
-          );
+          return <ToaOnuaMataModel matoran={matoran} />;
         case 'Toa_Lewa':
-          return (
-            <group position={[0, 7, 0]}>
-              <ToaLewaMataModel matoran={matoran} />
-            </group>
-          );
+          return <ToaLewaMataModel matoran={matoran} />;
         default:
           return <ToaTahuMataModel matoran={matoran} />;
       }

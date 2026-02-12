@@ -105,12 +105,7 @@ export const ToaTahuMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <group name="Toa" position={[0, 0, -0.4]}>
-        <primitive object={nodes.Body} />
-        <primitive object={nodes.Root} />
-        <primitive object={nodes.LegIKTargetL} />
-        <primitive object={nodes.LegIKTargetR} />
-      </group>
+      <primitive object={nodes.Tahu} scale={1} position={[0, 9.5, -0.4]} />
     </group>
   );
 });

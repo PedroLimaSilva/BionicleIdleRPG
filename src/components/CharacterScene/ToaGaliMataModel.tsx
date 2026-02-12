@@ -104,9 +104,7 @@ export const ToaGaliMataModel = forwardRef<
   return (
     <group ref={group} dispose={null}>
       <group name="Scene">
-        <group name="Toa" position={[0, 9.6, 0]}>
-          <primitive object={nodes.Body} />
-        </group>
+        <primitive object={nodes.Gali} scale={1} position={[0, 9.6, 0]} />
       </group>
     </group>
   );
