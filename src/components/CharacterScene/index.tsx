@@ -122,7 +122,7 @@ function CharacterFraming() {
   const size = useThree((s) => s.size);
 
   useEffect(() => {
-    if (!(camera instanceof OrthographicCamera)) return;
+    if (camera.type !== 'OrthographicCamera') return;
 
     // Skip when container has no layout yet (e.g. hidden via CSS).
     // OrthographicCamera.updateProjectionMatrix() divides by zoom internally;
