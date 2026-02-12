@@ -25,7 +25,7 @@ export const ToaTahuNuvaModel = forwardRef<
     const maskColor = matoran.maskColorOverride || matoran.colors.mask;
     nodes.Masks.children.forEach((mask) => {
       const mesh = mask as Mesh;
-      let mat = getStandardPlasticMaterial(maskColor);
+      const mat = getStandardPlasticMaterial(maskColor);
       mesh.material = mat;
     });
   }, [nodes, matoran]);
