@@ -51,9 +51,13 @@ test.describe('Battle Flow', () => {
     const teamSelector = page.locator('.battle-prep__team-selector .character-card');
     await teamSelector.first().waitFor({ state: 'visible', timeout: 20000 });
 
+    const selectedTeam = await page.locator('.battle-prep__selected-team .character-card');
     await teamSelector.nth(0).click();
+    await expect(selectedTeam.nth(0)).toContainText('Tahu');
     await teamSelector.nth(1).click();
+    await expect(selectedTeam.nth(1)).toContainText('Gali');
     await teamSelector.nth(2).click();
+    await expect(selectedTeam.nth(2)).toContainText('Kopaka');
 
     const beginButton = page
       .locator('button.confirm-button')

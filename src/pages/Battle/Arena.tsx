@@ -49,7 +49,7 @@ export function Arena({ team, enemies }: ArenaProps) {
     (window as any).combatantRefs = combatantRefs.current;
   }, [team, enemies]);
   return (
-    <Stage shadows="contact">
+    <Stage>
       <group dispose={null}>
         <group name="Scene">
           <OrthographicCamera

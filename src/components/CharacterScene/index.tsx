@@ -7,24 +7,23 @@ import { Mesh, MeshStandardMaterial, Object3D, OrthographicCamera } from 'three'
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
-import { ToaTahuMataModel } from './ToaTahuMataModel';
 import { ToaGaliMataModel } from './ToaGaliMataModel';
 import { ToaPohatuMataModel } from './ToaPohatuMataModel';
 import { ToaKopakaMataModel } from './ToaKopakaMataModel';
 import { ToaOnuaMataModel } from './ToaOnuaMataModel';
 import { ToaLewaMataModel } from './ToaLewaMataModel';
+import { ToaNuvaPlaceholderModel } from './ToaNuvaPlaceholderModel';
 import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
+import { ToaTahuMataModel } from './ToaTahuMataModel';
+import { ToaTahuNuvaModel } from './Nuva/TahuNuvaModel';
+import { ToaGaliNuvaModel } from './Nuva/GaliNuvaModel';
 
 function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   switch (matoran.stage) {
     case MatoranStage.ToaMata:
       switch (matoran.id) {
         case 'Toa_Gali':
-          return (
-            <group position={[0, 7.1, 0]}>
-              <ToaGaliMataModel matoran={matoran} />
-            </group>
-          );
+          return <ToaGaliMataModel matoran={matoran} />;
         case 'Toa_Pohatu':
           return (
             <group position={[0, 6.4, 0]}>
@@ -50,11 +49,16 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
             </group>
           );
         default:
-          return (
-            <group position={[0, 7.4, 0]}>
-              <ToaTahuMataModel matoran={matoran} />
-            </group>
-          );
+          return <ToaTahuMataModel matoran={matoran} />;
+      }
+    case MatoranStage.ToaNuva:
+      switch (matoran.id) {
+        case 'Toa_Gali':
+          return <ToaGaliNuvaModel matoran={matoran} />;
+        case 'Toa_Tahu':
+          return <ToaTahuNuvaModel matoran={matoran} />;
+        default:
+          return <ToaNuvaPlaceholderModel matoran={matoran} />;
       }
     case MatoranStage.Diminished:
     default:
@@ -63,7 +67,7 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
 }
 
 /** Names that identify eye/glowing-eye/lens meshes in Matoran and Toa GLTFs (mesh or material). */
-export const EYE_MESH_NAMES = ['Brain', 'GlowingEyes', 'Eyes', 'Eye', 'glowing_eyes', 'lens'];
+export const EYE_MESH_NAMES = ['Brain', 'Eye', 'glow', 'lens'];
 
 function isEyeMesh(mesh: Mesh): boolean {
   const name = (mesh.name || '').toLowerCase();
