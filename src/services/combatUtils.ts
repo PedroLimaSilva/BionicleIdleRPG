@@ -188,9 +188,12 @@ function decrementMaskPowerCounter(
       // Set cooldown when effect expires
       const originalMask = COMBATANT_DEX[combatant.id]?.mask;
       if (originalMask) {
-        updatedMaskPower.effect.cooldown = {
-          ...MASK_POWERS[originalMask].effect.cooldown,
-        };
+        const power = MASK_POWERS[originalMask];
+        if (power) {
+          updatedMaskPower.effect.cooldown = {
+            ...power.effect.cooldown,
+          };
+        }
       }
     }
     changed = true;
