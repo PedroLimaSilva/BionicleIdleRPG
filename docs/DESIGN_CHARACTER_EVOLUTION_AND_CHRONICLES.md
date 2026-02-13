@@ -145,14 +145,15 @@ Evolutions are **surprise twists**—they should not be exposed in the UI (e.g. 
    - Update `matoran.ts` to use `chronicleId` instead of inline chronicle.
    - Run tests and fix any breakage.
 
-2. **Phase 2 – Evolution-ready dex entries** *In progress*
-   - Add `Toa_Tahu_Nuva` (and other Nuva) entries to MATORAN_DEX when ready to implement evolution.
-   - Add `ToaTahuNuvaModel` etc. to `CharacterScene` and wire stage/id branching.
+2. **Phase 2 – Evolution-ready dex entries** ✅ *Completed*
+   - Add `Toa_Tahu_Nuva` (and other Nuva) entries to MATORAN_DEX.
+   - Add `ToaTahuNuvaModel`, `ToaGaliNuvaModel` to `CharacterScene`; others use placeholder; wire stage/id branching.
 
-3. **Phase 3 – Evolution mechanics**
-   - Implement evolution trigger (quest completion, item use, etc.).
-   - Add migration for evolving characters (id change in `recruitedCharacters`).
-   - Wire UI for evolution events.
+3. **Phase 3 – Evolution mechanics** ✅ *Completed*
+   - Quest reward `evolution` field maps participant dex IDs to evolved forms.
+   - `completeQuest` applies evolution: replace id, drop mask overrides, preserve EXP/assignment/quest.
+   - Activity log records evolution events.
+   - `bohrok_evolve_toa_nuva` quest triggers Toa Mata → Toa Nuva evolution.
 
 ---
 

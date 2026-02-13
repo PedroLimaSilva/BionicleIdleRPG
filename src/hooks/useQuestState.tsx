@@ -91,14 +91,31 @@ export const useQuestState = ({
       ...prev,
     ]);
 
-    // Reassign Matoran with updated exp
+    // Reassign Matoran with updated exp and evolution
+    const evolution = quest.rewards.evolution;
+    const evolvedIds = evolution
+      ? active.assignedMatoran.filter((id) => evolution[id]).map((id) => evolution[id])
+      : [];
+
     setRecruitedCharacters((prev) => {
       const updated = prev.map((char) => {
         if (active.assignedMatoran.includes(char.id)) {
+          const evolvedId = evolution?.[char.id];
+          const xp = char.exp + (quest.rewards.xpPerMatoran ?? 0);
+
+          if (evolvedId) {
+            return {
+              id: evolvedId,
+              exp: xp,
+              assignment: undefined,
+              quest: undefined,
+            };
+          }
+
           return {
             ...char,
             quest: undefined,
-            exp: char.exp + (quest.rewards.xpPerMatoran ?? 0),
+            exp: xp,
           };
         } else if (
           (quest.id === 'mnog_kini_nui_arrival' || quest.id === 'mnog_gali_call') &&
@@ -115,6 +132,11 @@ export const useQuestState = ({
 
       return updated;
     });
+
+    if (evolvedIds.length > 0) {
+      const names = evolvedIds.map((id) => MATORAN_DEX[id]?.name ?? id).join(', ');
+      addActivityLog(`${names} evolved!`, LogType.Event);
+    }
 
     addWidgets(quest.rewards.currency || 0);
     // Mark as complete

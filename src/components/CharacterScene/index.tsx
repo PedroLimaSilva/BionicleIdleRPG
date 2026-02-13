@@ -37,9 +37,9 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
       }
     case MatoranStage.ToaNuva:
       switch (matoran.id) {
-        case 'Toa_Gali':
+        case 'Toa_Gali_Nuva':
           return <ToaGaliNuvaModel matoran={matoran} />;
-        case 'Toa_Tahu':
+        case 'Toa_Tahu_Nuva':
           return <ToaTahuNuvaModel matoran={matoran} />;
         default:
           return <ToaNuvaPlaceholderModel matoran={matoran} />;

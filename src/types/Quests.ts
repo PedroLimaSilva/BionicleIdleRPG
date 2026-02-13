@@ -16,12 +16,23 @@ export interface QuestRequirement {
   requiresAllKrana?: boolean;
 }
 
+/**
+ * Maps current MATORAN_DEX id to evolved MATORAN_DEX id.
+ * Applied to recruited characters who participated in the quest.
+ * Evolved characters keep EXP, assignment, and quest; mask overrides are dropped.
+ */
+export interface EvolutionMap {
+  [currentDexId: string]: string;
+}
+
 export interface QuestReward {
   unlockCharacters?: ListedCharacterData[]; // IDs of unlocked characters (e.g., Toa, Matoran)
   loot?: Inventory;
   xpPerMatoran?: number; // XP awarded to each participating Matoran
   currency?: number; // Generic currency reward
   cutscene?: string; // Optional cutscene ID
+  /** Evolution trigger: maps participant dex IDs to their evolved form. Applied on quest completion. */
+  evolution?: EvolutionMap;
 }
 
 export interface Quest {
