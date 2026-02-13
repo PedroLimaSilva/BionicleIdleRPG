@@ -106,11 +106,7 @@ export const ToaPohatuMataModel = forwardRef<
   return (
     <group ref={group} dispose={null}>
       <group name="Scene">
-        <group name="Toa" position={[0, 2.5, 0]} scale={37}>
-          <primitive object={nodes.Waist} />
-          <primitive object={nodes.LegIKTargetL} />
-          <primitive object={nodes.LegIKTargetR} />
-        </group>
+        <primitive object={nodes.Pohatu} position={[0, 9, 0]} scale={37} />
       </group>
     </group>
   );

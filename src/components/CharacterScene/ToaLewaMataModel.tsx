@@ -69,11 +69,7 @@ export function ToaLewaMataModel({ matoran }: { matoran: RecruitedCharacterData 
 
   return (
     <group ref={group} dispose={null}>
-      <group name="Scene">
-        <group name="Toa" position={[0, 2.5, 0]}>
-          <primitive object={nodes.Body} />
-        </group>
-      </group>
+      <primitive object={nodes.Lewa} scale={1} position={[0, 9.6, 0]} />
     </group>
   );
 }
