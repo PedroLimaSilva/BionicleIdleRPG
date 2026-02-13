@@ -43,6 +43,8 @@ export interface Quest {
   requirements: QuestRequirement;
   rewards: QuestReward;
   unlockedAfter?: string[]; // Optional prerequisites
+  /** Optional section for grouping in the completed quests UI (e.g. "Bohrok Swarms", "Infected Rahi / Hunt for the Masks") */
+  section?: string;
 }
 
 export interface QuestProgress {
