@@ -13,6 +13,22 @@ export const enum BattleStrategy {
   MostEffective = 'MostEffective', // Will target the enemy it estimates will take more damage from an attack
 }
 
+/** Debuff applied to a combatant. DEFENSE = increased damage taken; CONFUSION = attacks own team. */
+export type TargetDebuff =
+  | {
+      type: 'DEFENSE';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round';
+      sourceSide: 'team' | 'enemy';
+    }
+  | {
+      type: 'CONFUSION';
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round';
+      sourceSide: 'team' | 'enemy';
+    };
+
 export interface Combatant {
   id: string;
   name: string;
@@ -20,6 +36,7 @@ export interface Combatant {
   lvl: number;
   maskPower?: MaskPower;
   maskColorOverride?: LegoColor;
+  debuffs?: TargetDebuff[];
   element: ElementTribe;
   maxHp: number;
   hp: number;
@@ -44,11 +61,22 @@ interface CombatDuration {
 }
 
 type MaskEffect = {
-  type: 'ATK_MULT' | 'DMG_MITIGATOR' | 'HEAL' | 'AGGRO' | 'SPEED' | 'ACCURACY_MULT' | 'CONFUSION';
+  type:
+    | 'ATK_MULT'
+    | 'DMG_MITIGATOR'
+    | 'HEAL'
+    | 'AGGRO'
+    | 'SPEED'
+    | 'ACCURACY_MULT'
+    | 'DEBUFF';
   duration: CombatDuration;
   cooldown: CombatDuration;
   multiplier?: number;
   target: 'self' | 'enemy' | 'allEnemies';
+  /** For DEBUFF: subtype (DEFENSE = increased damage taken, CONFUSION = attack own team) */
+  debuffType?: 'DEFENSE' | 'CONFUSION';
+  /** For DEBUFF: duration of the debuff on the target (e.g. 2 rounds) */
+  debuffDuration?: CombatDuration;
 };
 
 export interface CombatantTemplate {

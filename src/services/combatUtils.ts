@@ -1,6 +1,6 @@
 import { COMBATANT_DEX, MASK_POWERS } from '../data/combat';
 import { LegoColor } from '../types/Colors';
-import { BattleStrategy, Combatant } from '../types/Combat';
+import { BattleStrategy, Combatant, TargetDebuff } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 
 declare global {
@@ -104,7 +104,11 @@ const elementEffectiveness: Record<ElementTribe, Record<ElementTribe, number>> =
   },
 };
 
-export function calculateAtkDmg(attacker: Combatant, defender: Combatant): number {
+export function calculateAtkDmg(
+  attacker: Combatant,
+  defender: Combatant,
+  attackerSide?: 'team' | 'enemy'
+): number {
   let rawDamage = Math.max(1, attacker.attack - defender.defense);
 
   // Apply attacker's ATK_MULT mask power (e.g., Pakari - Mask of Strength)
@@ -115,6 +119,14 @@ export function calculateAtkDmg(attacker: Combatant, defender: Combatant): numbe
     attacker.maskPower.effect.multiplier
   ) {
     rawDamage = Math.floor(rawDamage * attacker.maskPower.effect.multiplier);
+  }
+
+  // Apply DEFENSE debuff on defender: allies deal +multiplier damage (e.g. Akaku)
+  const defenseDebuff = defender.debuffs?.find(
+    (d) => d.type === 'DEFENSE' && attackerSide !== undefined && d.sourceSide === attackerSide
+  );
+  if (defenseDebuff?.type === 'DEFENSE') {
+    rawDamage = Math.floor(rawDamage * defenseDebuff.multiplier);
   }
 
   const multiplier = elementEffectiveness[attacker.element]?.[defender.element] ?? 1.0;
@@ -138,6 +150,75 @@ export function applyDamage(target: Combatant, damage: number): Combatant {
     ...target,
     hp: Math.max(0, target.hp - finalDamage),
   };
+}
+
+/** Applies DEBUFF mask effect to the defender (e.g. Akaku DEFENSE, Komau CONFUSION). */
+function applyDebuffToTarget(
+  attacker: Combatant,
+  target: Combatant,
+  attackerSide: 'team' | 'enemy'
+): Combatant {
+  const effect = attacker.maskPower?.effect;
+  if (
+    !attacker.maskPower?.active ||
+    effect?.type !== 'DEBUFF' ||
+    effect?.target !== 'enemy' ||
+    !effect?.debuffDuration
+  ) {
+    return target;
+  }
+
+  const durationUnit =
+    effect.debuffDuration.unit === 'turn' || effect.debuffDuration.unit === 'round'
+      ? effect.debuffDuration.unit
+      : 'turn';
+
+  if (effect.debuffType === 'DEFENSE' && effect.multiplier) {
+    const debuff: TargetDebuff = {
+      type: 'DEFENSE',
+      multiplier: effect.multiplier,
+      durationRemaining: effect.debuffDuration.amount,
+      durationUnit,
+      sourceSide: attackerSide,
+    };
+    const existingDebuffs = target.debuffs ?? [];
+    return { ...target, debuffs: [...existingDebuffs, debuff] };
+  }
+
+  if (effect.debuffType === 'CONFUSION') {
+    const debuff: TargetDebuff = {
+      type: 'CONFUSION',
+      durationRemaining: effect.debuffDuration.amount,
+      durationUnit,
+      sourceSide: attackerSide,
+    };
+    const existingDebuffs = target.debuffs ?? [];
+    return { ...target, debuffs: [...existingDebuffs, debuff] };
+  }
+
+  return target;
+}
+
+/** Decrements debuff durations. For 'turn': only on the combatant whose turn it is. For 'round': all. */
+function decrementDebuffDurations(
+  combatants: Combatant[],
+  unit: 'turn' | 'round',
+  onlyForCombatantId?: string
+): Combatant[] {
+  return combatants.map((c) => {
+    if (!c.debuffs?.length) return c;
+    if (unit === 'turn' && onlyForCombatantId !== undefined && c.id !== onlyForCombatantId) {
+      return c;
+    }
+    const updatedDebuffs = c.debuffs
+      .map((d) =>
+        d.durationUnit === unit && d.durationRemaining > 0
+          ? { ...d, durationRemaining: d.durationRemaining - 1 }
+          : d
+      )
+      .filter((d) => d.durationRemaining > 0);
+    return { ...c, debuffs: updatedDebuffs.length > 0 ? updatedDebuffs : undefined };
+  });
 }
 
 export function applyHealing(combatant: Combatant): Combatant {
@@ -364,11 +445,36 @@ export function queueCombatRound(
         console.log(`${healedSelf.id} healed for ${healedSelf.hp - oldHp} HP`);
       }
 
-      const targets = opponentList.filter((t) => t.hp > 0);
-      if (targets.length === 0) return;
+      // CONFUSION: attack own allies instead of enemies (or self if alone)
+      const isConfused = self.debuffs?.some(
+        (d) => d.type === 'CONFUSION' && d.durationRemaining > 0
+      );
+      const effectiveOpponentList = isConfused
+        ? actorList.filter((t) => t.hp > 0 && t.id !== self.id)
+        : opponentList;
 
-      const target = chooseTarget(self, targets);
-      const damage = calculateAtkDmg(self, target);
+      let targets = effectiveOpponentList.filter((t) => t.hp > 0);
+      if (targets.length === 0) {
+        if (isConfused && self.hp > 0) {
+          targets = [self];
+        } else {
+          return;
+        }
+      }
+
+      let target = chooseTarget(self, targets);
+
+      // Apply DEBUFF mask effect to target (e.g. Akaku DEFENSE, Komau CONFUSION) - only when not confused
+      if (!isConfused) {
+        target = applyDebuffToTarget(self, target, isTeam ? 'team' : 'enemy');
+      }
+      const newOpponentListForMark = opponentList.map((t) => (t.id === target.id ? target : t));
+      if (opponentList !== newOpponentListForMark) {
+        if (isTeam) currentEnemies = newOpponentListForMark;
+        else currentTeam = newOpponentListForMark;
+      }
+
+      const damage = calculateAtkDmg(self, target, isTeam ? 'team' : 'enemy');
 
       // Expect 3D combatant refs to be globally accessible for now
       const actorRef = window.combatantRefs?.[self.id];
@@ -396,19 +502,26 @@ export function queueCombatRound(
       self = decrementMaskPowerCounter(self, 'turn');
 
       // Update both attacker and defender in their respective lists
-      const newActorList = actorList.map((c) => (c.id === self.id ? self : c));
+      // When confused, target is in actorList (attacking allies), so update both in actorList
+      const newActorList = actorList.map((c) =>
+        c.id === self.id ? self : c.id === updatedTarget.id ? updatedTarget : c
+      );
       const newOpponentList = opponentList.map((t) =>
         t.id === updatedTarget.id ? updatedTarget : t
       );
 
+      // Decrement turn-based debuffs (e.g. CONFUSION) - only for the actor whose turn it is
+      const nextActorList = decrementDebuffDurations(newActorList, 'turn', self.id);
+      const nextOpponentList = decrementDebuffDurations(newOpponentList, 'turn', self.id);
+
       if (isTeam) {
-        currentTeam = newActorList;
-        currentEnemies = newOpponentList;
+        currentTeam = nextActorList;
+        currentEnemies = nextOpponentList;
         setTeam(currentTeam);
         setEnemies(currentEnemies);
       } else {
-        currentTeam = newOpponentList;
-        currentEnemies = newActorList;
+        currentTeam = nextOpponentList;
+        currentEnemies = nextActorList;
         setTeam(currentTeam);
         setEnemies(currentEnemies);
       }
@@ -421,10 +534,14 @@ export function queueCombatRound(
     });
   }
 
-  // Decrement 'round' unit counters at the end of the round
+  // Decrement 'round' unit counters and round-based debuffs at the end of the round
   enqueue(async () => {
-    currentTeam = currentTeam.map((c) => decrementMaskPowerCounter(c, 'round'));
-    currentEnemies = currentEnemies.map((c) => decrementMaskPowerCounter(c, 'round'));
+    let nextTeam = currentTeam.map((c) => decrementMaskPowerCounter(c, 'round'));
+    let nextEnemies = currentEnemies.map((c) => decrementMaskPowerCounter(c, 'round'));
+    nextTeam = decrementDebuffDurations(nextTeam, 'round');
+    nextEnemies = decrementDebuffDurations(nextEnemies, 'round');
+    currentTeam = nextTeam;
+    currentEnemies = nextEnemies;
     setTeam(currentTeam);
     setEnemies(currentEnemies);
   });

@@ -246,7 +246,7 @@ describe('Battle Simulation', () => {
       expect(gali.hp).toBeGreaterThanOrEqual(hpStart);
     });
 
-    test('Akaku (2 turn duration) ATK_MULT is applied during simulation', async () => {
+    test('Akaku marks target; allies deal +50% damage for 2 turns', async () => {
       const team = createTeamFromRecruited([{ id: 'Toa_Kopaka', exp: 0 }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -261,10 +261,14 @@ describe('Battle Simulation', () => {
       await sim.runRound();
       const enemyHpAfter = sim.enemies[0].hp;
 
-      // Kopaka with Akaku active deals 1.5x damage; enemy should take significant damage
+      // Kopaka marks on attack; enemy should take damage (1.5x when marked)
       expect(enemyHpBefore - enemyHpAfter).toBeGreaterThan(0);
       const kopaka = sim.team.find((t) => t.id === 'Toa_Kopaka')!;
-      expect(kopaka.maskPower?.effect.type).toBe('ATK_MULT');
+      expect(kopaka.maskPower?.effect.type).toBe('DEBUFF');
+      expect(kopaka.maskPower?.effect.debuffType).toBe('DEFENSE');
+      // Debuff lasts 2 rounds; after round 1, enemy has 1 round left (decremented at end of round)
+      const enemy = sim.enemies[0];
+      expect(enemy.debuffs?.some((d) => d.type === 'DEFENSE')).toBe(true);
     });
 
     test('Miru (2 hit duration) provides mitigation for first 2 hits', async () => {
@@ -333,6 +337,52 @@ describe('Battle Simulation', () => {
       expect(lewa.maskPower?.effect.type).toBe('AGGRO');
       // Huna makes Lewa untargetable; round completes
       expect(sim.team.length).toBe(2);
+    });
+
+    test('Komau CONFUSION makes enemy attack their own team', async () => {
+      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0, maskOverride: Mask.Komau }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }, { id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
+
+      const enemyHpsBefore = sim.enemies.map((e) => e.hp);
+      await sim.runRound();
+
+      // One enemy should have CONFUSION debuff (the one Tahu attacked)
+      const confusedEnemy = sim.enemies.find((e) =>
+        e.debuffs?.some((d) => d.type === 'CONFUSION')
+      );
+      expect(confusedEnemy).toBeDefined();
+
+      // Total enemy HP should have decreased (Tahu's attack + confused enemy attacking ally)
+      const enemyHpsAfter = sim.enemies.map((e) => e.hp);
+      const totalBefore = enemyHpsBefore.reduce((a, b) => a + b, 0);
+      const totalAfter = enemyHpsAfter.reduce((a, b) => a + b, 0);
+      expect(totalAfter).toBeLessThan(totalBefore);
+    });
+
+    test('Komau CONFUSION: confused enemy attacks itself when alone', async () => {
+      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0, maskOverride: Mask.Komau }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
+
+      const enemyHpBefore = sim.enemies[0].hp;
+      await sim.runRound();
+
+      const enemy = sim.enemies[0];
+      expect(enemy.debuffs?.some((d) => d.type === 'CONFUSION')).toBe(true);
+      expect(enemy.hp).toBeLessThan(enemyHpBefore);
     });
 
     test('Kakama grants Pohatu two attacks in one round', async () => {

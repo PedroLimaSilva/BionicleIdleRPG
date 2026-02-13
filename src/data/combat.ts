@@ -5,19 +5,15 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   [Mask.Akaku]: {
     shortName: Mask.Akaku,
     longName: 'Mask of X-Ray Vision',
-    description: 'Marks target; allies deal +50% damage to them for 2 turns',
+    description: 'Marks target; allies deal +50% damage to them for 2 rounds',
     effect: {
-      duration: {
-        amount: 2,
-        unit: 'turn',
-      },
-      cooldown: {
-        amount: 4,
-        unit: 'turn',
-      },
-      type: 'ATK_MULT',
+      duration: { amount: 1, unit: 'attack' },
+      cooldown: { amount: 4, unit: 'turn' },
+      type: 'DEBUFF',
+      debuffType: 'DEFENSE',
       multiplier: 1.5,
-      target: 'self',
+      target: 'enemy',
+      debuffDuration: { amount: 2, unit: 'round' },
     },
   },
   [Mask.Hau]: {
@@ -149,18 +145,14 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   [Mask.Komau]: {
     shortName: Mask.Komau,
     longName: 'Mask of Mind Control',
-    description: 'Forces one enemy to attack oneself for 3 turns',
+    description: 'Forces one enemy to attack their own team for 3 turns',
     effect: {
-      duration: {
-        amount: 3,
-        unit: 'turn',
-      },
-      cooldown: {
-        amount: 4,
-        unit: 'turn',
-      },
-      type: 'CONFUSION',
+      duration: { amount: 1, unit: 'attack' },
+      cooldown: { amount: 4, unit: 'turn' },
+      type: 'DEBUFF',
+      debuffType: 'CONFUSION',
       target: 'enemy',
+      debuffDuration: { amount: 3, unit: 'turn' },
     },
   },
   [Mask.Rau]: {

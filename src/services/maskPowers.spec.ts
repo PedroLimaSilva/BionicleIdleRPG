@@ -76,23 +76,47 @@ describe('Mask Powers - Combat Mechanics', () => {
       });
     });
 
-    describe('Akaku - Mask of X-Ray Vision', () => {
-      test('multiplies attack damage by 1.5x when active', () => {
-        const attacker = generateCombatantStats('kopaka', 'Toa_Kopaka', 1, Mask.Akaku);
+    describe('Akaku - Mask of X-Ray Vision (DEBUFF DEFENSE)', () => {
+      test('allies deal +50% damage to target with DEFENSE debuff', () => {
+        const attacker = generateCombatantStats('tahu', 'Toa_Tahu', 1);
+        const debuffedDefender: Combatant = {
+          ...defender,
+          debuffs: [
+            {
+              type: 'DEFENSE',
+              multiplier: 1.5,
+              durationRemaining: 2,
+              durationUnit: 'round',
+              sourceSide: 'team',
+            },
+          ],
+        };
 
-        // Calculate damage without mask power
         const normalDamage = calculateAtkDmg(attacker, defender);
+        const damageVsDebuffed = calculateAtkDmg(attacker, debuffedDefender, 'team');
 
-        // Activate the mask power
-        if (attacker.maskPower) {
-          attacker.maskPower.active = true;
-        }
+        expect(damageVsDebuffed).toBe(Math.floor(normalDamage * 1.5));
+      });
 
-        // Calculate damage with mask power active
-        const boostedDamage = calculateAtkDmg(attacker, defender);
+      test('DEFENSE debuff does not benefit enemy attackers', () => {
+        const attacker = generateCombatantStats('tahnok', 'tahnok', 1);
+        const debuffedDefender: Combatant = {
+          ...defender,
+          debuffs: [
+            {
+              type: 'DEFENSE',
+              multiplier: 1.5,
+              durationRemaining: 2,
+              durationUnit: 'round',
+              sourceSide: 'team',
+            },
+          ],
+        };
 
-        // Akaku should multiply damage by 1.5x
-        expect(boostedDamage).toBe(Math.floor(normalDamage * 1.5));
+        const normalDamage = calculateAtkDmg(attacker, defender);
+        const damageVsDebuffed = calculateAtkDmg(attacker, debuffedDefender, 'enemy');
+
+        expect(damageVsDebuffed).toBe(normalDamage);
       });
     });
   });
