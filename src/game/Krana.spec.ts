@@ -7,6 +7,7 @@ import {
 import {
   ALL_KRANA_IDS,
   ELEMENT_TO_KRANA_COLOR,
+  formatKranaLootLabel,
   getElementKranaProgress,
   isKranaArcCompleted,
   isKranaCollectionActive,
@@ -174,6 +175,19 @@ describe('Krana', () => {
     test('returns false for invalid ids', () => {
       expect(isKranaLootId('krana-xx-blue')).toBe(false);
       expect(isKranaLootId('charcoal')).toBe(false);
+    });
+  });
+
+  describe('formatKranaLootLabel', () => {
+    test('returns user-friendly label for krana loot ids', () => {
+      expect(formatKranaLootLabel('krana-ja-blue')).toBe('Ja Krana');
+      expect(formatKranaLootLabel('krana-vu-orange')).toBe('Vu Krana');
+      expect(formatKranaLootLabel('krana-xa-lime')).toBe('Xa Krana');
+    });
+
+    test('returns null for non-krana ids', () => {
+      expect(formatKranaLootLabel('charcoal')).toBeNull();
+      expect(formatKranaLootLabel('krana-xx-blue')).toBeNull();
     });
   });
 
