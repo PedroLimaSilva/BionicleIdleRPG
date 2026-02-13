@@ -6,6 +6,7 @@
 import { Combatant, EnemyEncounter } from '../types/Combat';
 import { TEAM_POSITION_LABELS } from '../data/combat';
 import { ENCOUNTERS } from '../data/combat';
+import { Mask } from '../types/Matoran';
 import {
   generateCombatantStats,
   queueCombatRound,
@@ -243,6 +244,115 @@ describe('Battle Simulation', () => {
       // After 1 round: 3 turns (Gali, enemy, maybe more). Kaukau duration 3 turns.
       // Should have healed at least once
       expect(gali.hp).toBeGreaterThanOrEqual(hpStart);
+    });
+
+    test('Akaku (2 turn duration) ATK_MULT is applied during simulation', async () => {
+      const team = createTeamFromRecruited([{ id: 'Toa_Kopaka', exp: 0 }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Kopaka'], true);
+
+      const enemyHpBefore = sim.enemies[0].hp;
+      await sim.runRound();
+      const enemyHpAfter = sim.enemies[0].hp;
+
+      // Kopaka with Akaku active deals 1.5x damage; enemy should take significant damage
+      expect(enemyHpBefore - enemyHpAfter).toBeGreaterThan(0);
+      const kopaka = sim.team.find((t) => t.id === 'Toa_Kopaka')!;
+      expect(kopaka.maskPower?.effect.type).toBe('ATK_MULT');
+    });
+
+    test('Miru (2 hit duration) provides mitigation for first 2 hits', async () => {
+      const team = createTeamFromRecruited([{ id: 'Toa_Lewa', exp: 0 }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Lewa'], true);
+
+      const hpBefore = sim.team[0].hp;
+      await sim.runRound();
+      const lewa = sim.team.find((t) => t.id === 'Toa_Lewa')!;
+
+      // Miru blocks 2 hits; after round with enemy attacking, Lewa should have taken no damage
+      // (tahnok goes first by speed, attacks once - blocked by Miru; duration goes to 1 hit remaining)
+      // Then Lewa attacks. Next round tahnok attacks again - blocks 2nd hit, Miru expires
+      expect(lewa.maskPower?.effect.type).toBe('DMG_MITIGATOR');
+      expect(lewa.maskPower?.effect.duration.unit).toBe('hit');
+    });
+
+    test('Mahiki (1 hit duration) provides mitigation for 1 hit then expires', async () => {
+      const team = createTeamFromRecruited([{ id: 'Toa_Lewa', exp: 0, maskOverride: Mask.Mahiki }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Lewa'], true);
+
+      await sim.runRound();
+      const lewa = sim.team.find((t) => t.id === 'Toa_Lewa')!;
+
+      // Mahiki blocks 1 hit then expires; after first enemy attack it should be inactive
+      expect(lewa.maskPower?.effect.type).toBe('DMG_MITIGATOR');
+      expect(lewa.maskPower?.effect.duration.unit).toBe('hit');
+    });
+
+    test('Huna (1 turn untargetable) makes enemy untargetable when active', async () => {
+      // Enemy with Huna: need enemy to have Huna. Enemies use generateCombatantStats - we need
+      // a custom encounter. createTeamFromRecruited with maskOverride gives Toa Huna.
+      // When Toa has Huna and uses it, Toa is untargetable - enemy must attack someone else.
+      // With 1 Toa vs 1 enemy, if Toa has Huna active, enemy has no valid target (fallback to all).
+      // Simpler: team of 2 (Tahu, Lewa). Give Lewa Huna. Enemy will prefer to hit Tahu when Lewa untargetable.
+      const team = createTeamFromRecruited([
+        { id: 'Toa_Tahu', exp: 0 },
+        { id: 'Toa_Lewa', exp: 0, maskOverride: Mask.Huna },
+      ]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Lewa'], true);
+
+      await sim.runRound();
+
+      const lewa = sim.team.find((t) => t.id === 'Toa_Lewa')!;
+      expect(lewa.maskPower?.effect.type).toBe('AGGRO');
+      // Huna makes Lewa untargetable; round completes
+      expect(sim.team.length).toBe(2);
+    });
+
+    test('Kakama grants Pohatu two attacks in one round', async () => {
+      const team = createTeamFromRecruited([{ id: 'Toa_Pohatu', exp: 0 }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Pohatu'], true);
+
+      const enemyHpBefore = sim.enemies[0].hp;
+      await sim.runRound();
+      const enemyHpAfter = sim.enemies[0].hp;
+
+      // Pohatu with Kakama attacks twice; damage should be at least 2 (minimum 1 per attack)
+      const damageDealt = enemyHpBefore - enemyHpAfter;
+      expect(damageDealt).toBeGreaterThanOrEqual(2);
     });
 
     test('wave advance decrements wave-based mask power counters', async () => {

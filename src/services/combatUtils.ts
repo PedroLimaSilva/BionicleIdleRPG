@@ -167,6 +167,7 @@ function decrementMaskPowerCounter(
 
   const updatedMaskPower = { ...combatant.maskPower };
   let changed = false;
+  let cooldownJustSetFromExpiry = false;
 
   // Decrement duration if active and unit matches
   if (
@@ -193,14 +194,16 @@ function decrementMaskPowerCounter(
           updatedMaskPower.effect.cooldown = {
             ...power.effect.cooldown,
           };
+          cooldownJustSetFromExpiry = true;
         }
       }
     }
     changed = true;
   }
 
-  // Decrement cooldown if not active and unit matches
+  // Decrement cooldown if not active and unit matches (skip if we just set it from expiry)
   if (
+    !cooldownJustSetFromExpiry &&
     !updatedMaskPower.active &&
     updatedMaskPower.effect.cooldown.unit === unit &&
     updatedMaskPower.effect.cooldown.amount > 0

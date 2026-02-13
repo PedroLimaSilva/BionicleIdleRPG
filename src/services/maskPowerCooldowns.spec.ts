@@ -72,7 +72,9 @@ describe('Mask Power Cooldowns', () => {
 
       expect(updated.maskPower?.active).toBe(false);
       expect(updated.maskPower?.effect.duration.amount).toBe(0);
-      // Cooldown should be set from the original mask data when duration expires
+      // Cooldown should be copied from MASK_POWERS when duration expires (Hau has wave cooldown of 1)
+      expect(updated.maskPower?.effect.cooldown.amount).toBe(1);
+      expect(updated.maskPower?.effect.cooldown.unit).toBe('wave');
     });
 
     test('decrements cooldown when mask power is inactive', () => {

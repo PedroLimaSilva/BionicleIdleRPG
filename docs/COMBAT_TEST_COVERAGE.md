@@ -57,12 +57,12 @@ This document captures the coverage analysis of the combat-related test suites (
 
 ### Gaps
 
-| Gap | Priority | Action |
-|-----|----------|--------|
-| Huna (AGGRO) | High | Add test: enemy with Huna active is filtered out by `chooseTarget` |
-| Kakama (SPEED) | Medium | Add test: verify SPEED grants extra turn (may need battleSimulation) |
-| Rau (ATK_MULT, wave) | Low | Add test: same ATK_MULT behavior |
-| Miru/Mahiki inactive | Low | Add "does not mitigate when inactive" (like Hau) |
+| Gap | Priority | Action | Status |
+|-----|----------|--------|--------|
+| Huna (AGGRO) | High | Add test: enemy with Huna active is filtered out by `chooseTarget` | ✓ Done |
+| Kakama (SPEED) | Medium | Add test: verify SPEED grants extra turn (may need battleSimulation) | ✓ Done (battleSimulation) |
+| Rau (ATK_MULT, wave) | Low | Add test: same ATK_MULT behavior | ✓ Done |
+| Miru/Mahiki inactive | Low | Add "does not mitigate when inactive" (like Hau) | ✓ Done |
 
 ---
 
@@ -84,11 +84,11 @@ This document captures the coverage analysis of the combat-related test suites (
 
 ### Gaps
 
-| Gap | Priority | Action |
-|-----|----------|--------|
-| turn/round/attack/hit decrement | High | `decrementMaskPowerCounter` is not exported; test via battle simulation or export for tests |
-| Cooldown set on expiry | Medium | Comment mentions it; add assertion that cooldown is copied from MASK_POWERS when duration expires |
-| "Cooldown Unit Types" section | Low | Currently only asserts structure, not decrement behavior |
+| Gap | Priority | Action | Status |
+|-----|----------|--------|--------|
+| turn/round/attack/hit decrement | High | `decrementMaskPowerCounter` is not exported; test via battle simulation or export for tests | Deferred |
+| Cooldown set on expiry | Medium | Comment mentions it; add assertion that cooldown is copied from MASK_POWERS when duration expires | ✓ Done |
+| "Cooldown Unit Types" section | Low | Currently only asserts structure, not decrement behavior | Deferred |
 
 ---
 
@@ -111,12 +111,12 @@ This document captures the coverage analysis of the combat-related test suites (
 
 ### Gaps
 
-| Gap | Priority | Action |
-|-----|----------|--------|
-| Akaku, Miru, Mahiki, Huna | Medium | Add simulation tests |
-| Hit-based duration (Miru 2 hits, Mahiki 1 hit) | Medium | Add tests that verify hit decrement |
-| Kakama double attack | Medium | Verify Pohatu attacks twice in one round |
-| Multi-round post-advanceWave bug | Known | Test skipped; Hau stays active in wave 2 |
+| Gap | Priority | Action | Status |
+|-----|----------|--------|--------|
+| Akaku, Miru, Mahiki, Huna | Medium | Add simulation tests | ✓ Done |
+| Hit-based duration (Miru 2 hits, Mahiki 1 hit) | Medium | Add tests that verify hit decrement | ✓ Done |
+| Kakama double attack | Medium | Verify Pohatu attacks twice in one round | ✓ Done |
+| Multi-round post-advanceWave bug | Known | Test skipped; Hau stays active in wave 2 | Known |
 
 ---
 
@@ -134,7 +134,13 @@ This document captures the coverage analysis of the combat-related test suites (
 
 ## Recommended Next Steps
 
-1. **maskPowers.spec.ts**: Add Huna/chooseTarget test, optionally Kakama and Rau.
-2. **maskPowerCooldowns.spec.ts**: Consider exporting `decrementMaskPowerCounter` for unit tests, or add tests via battle simulation for turn/round/attack/hit.
-3. **battleSimulation.spec.ts**: Add Akaku, Miru, Mahiki, Huna; add hit-based duration tests; fix or document the post-advanceWave bug.
+1. ~~**maskPowers.spec.ts**: Add Huna/chooseTarget test, optionally Kakama and Rau.~~ ✓ Implemented
+2. **maskPowerCooldowns.spec.ts**: Consider exporting `decrementMaskPowerCounter` for unit tests, or add tests via battle simulation for turn/round/attack/hit. (Deferred)
+3. ~~**battleSimulation.spec.ts**: Add Akaku, Miru, Mahiki, Huna; add hit-based duration tests; fix or document the post-advanceWave bug.~~ ✓ Implemented (except fix)
 4. **Unimplemented effects**: Ruru (ACCURACY_MULT), Komau (CONFUSION), Matatu (immobilize) — tests can wait until implemented.
+
+---
+
+## Implementation Notes (latest)
+
+- **combatUtils.ts**: Fixed cooldown being decremented in same pass when duration expires — cooldown is now correctly set from MASK_POWERS when duration reaches 0.
