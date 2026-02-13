@@ -331,9 +331,9 @@ export function queueCombatRound(
     setEnemies,
     enqueue
   );
-  currentTeam = updatedActors?.currentTeam;
-  currentEnemies = updatedActors?.currentEnemies;
-  turnOrder = updatedActors?.turnOrder;
+  currentTeam = updatedActors?.currentTeam ?? currentTeam;
+  currentEnemies = updatedActors?.currentEnemies ?? currentEnemies;
+  turnOrder = updatedActors?.turnOrder ?? turnOrder;
 
   for (const actor of turnOrder) {
     const isTeam = actor.side === 'team';
