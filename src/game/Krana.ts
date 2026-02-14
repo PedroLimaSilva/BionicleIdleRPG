@@ -105,3 +105,10 @@ export function parseKranaDropId(id: string): { element: KranaElement; kranaId: 
 export function isKranaLootId(id: string): boolean {
   return parseKranaDropId(id) !== null;
 }
+
+/** Human-readable label for krana loot (e.g. "Ja Krana"). Returns null for non-krana. */
+export function formatKranaLootLabel(id: string): string | null {
+  const parsed = parseKranaDropId(id);
+  if (!parsed) return null;
+  return `${parsed.kranaId} Krana`;
+}
