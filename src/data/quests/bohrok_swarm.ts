@@ -32,6 +32,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     },
     // Begins after the original Mangaia / Kini-Nui arc concludes.
     unlockedAfter: ['mnog_return_to_shore'],
+    section: 'Bohrok Swarms',
   },
   {
     id: 'bohrok_ta_koro_defense',
@@ -50,6 +51,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       loot: {},
     },
     unlockedAfter: ['bohrok_swarm_intro'],
+    section: 'Bohrok Swarms',
   },
   {
     id: BOHROK_KRANA_LEGEND_QUEST_ID,
@@ -68,6 +70,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       loot: {},
     },
     unlockedAfter: ['bohrok_ta_koro_defense'],
+    section: 'Bohrok Swarms',
   },
   {
     id: 'bohrok_krana_hunt',
@@ -86,6 +89,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       loot: {},
     },
     unlockedAfter: ['bohrok_legend_of_krana'],
+    section: 'Bohrok Swarms',
   },
   {
     id: 'bohrok_into_the_bohrok_nest',
@@ -106,6 +110,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       loot: {},
     },
     unlockedAfter: ['bohrok_krana_hunt'],
+    section: 'Bohrok Swarms',
   },
   {
     id: 'bohrok_evolve_toa_nuva',
@@ -132,5 +137,6 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       },
     },
     unlockedAfter: ['bohrok_into_the_bohrok_nest'],
+    section: 'Bohrok Swarms',
   },
 ];
