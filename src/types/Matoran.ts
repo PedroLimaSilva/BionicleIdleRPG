@@ -61,6 +61,7 @@ export type BaseMatoran = {
     feet: LegoColor;
     arms: LegoColor;
     eyes: LegoColor;
+    face: LegoColor;
   };
   tags?: MatoranTag[];
   /** Reference to shared chronicle set - multiple matoran entries can share the same chronicle ID */
