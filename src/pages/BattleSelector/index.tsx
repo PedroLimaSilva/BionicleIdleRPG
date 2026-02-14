@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CompositedImage } from '../../components/CompositedImage';
 import { ElementTag } from '../../components/ElementTag';
 import { ITEM_DICTIONARY } from '../../data/loot';
 import { useGame } from '../../context/Game';
 import { COMBATANT_DEX, ENCOUNTERS } from '../../data/combat';
 import { getVisibleEncounters } from '../../game/encounterVisibility';
-import { formatKranaLootLabel, isKranaCollected, parseKranaDropId } from '../../game/Krana';
+import { isKranaCollected, parseKranaDropId } from '../../game/Krana';
 import type { KranaCollection } from '../../types/Krana';
 
 /** Returns loot items to display, excluding already-collected krana. */
@@ -23,12 +22,23 @@ function getDisplayableLoot(
   });
 }
 
-/** Formats a loot item for display (never shows raw krana loot ids). */
-function formatLootLabel(id: string): string {
-  const kranaLabel = formatKranaLootLabel(id);
-  if (kranaLabel) return kranaLabel;
-  const item = ITEM_DICTIONARY[id as keyof typeof ITEM_DICTIONARY];
-  return item?.name ?? id;
+/** Renders a loot item - krana uses the same images as KranaCollection. */
+function LootTag({ drop }: { drop: { id: string } }) {
+  const parsed = parseKranaDropId(drop.id);
+  if (parsed) {
+    return (
+      <span className="loot-tag loot-tag--krana" title={`Krana ${parsed.kranaId}`}>
+        <img
+          src={`${import.meta.env.BASE_URL}/avatar/Krana/${parsed.kranaId}.webp`}
+          alt={`Krana ${parsed.kranaId}`}
+          className="loot-tag__krana-img"
+        />
+      </span>
+    );
+  }
+  const item = ITEM_DICTIONARY[drop.id as keyof typeof ITEM_DICTIONARY];
+  const label = item?.name ?? drop.id;
+  return <span className="loot-tag">{label}</span>;
 }
 
 export const BattleSelector: React.FC = () => {
@@ -53,14 +63,10 @@ export const BattleSelector: React.FC = () => {
                 <h2>{encounter.name}</h2>
                 <span className="difficulty">Difficulty: {encounter.difficulty}</span>
               </div>
-              <CompositedImage
+              <img
                 className="enemy-avatar"
-                images={[
-                  `${import.meta.env.BASE_URL}/avatar/Bohrok/${
-                    COMBATANT_DEX[encounter.headliner].name
-                  }.png`,
-                ]}
-                colors={['#fff']}
+                src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${COMBATANT_DEX[encounter.headliner].name}.png`}
+                alt=""
               />
               <p className="description">{encounter.description}</p>
               {displayableLoot.length > 0 && (
@@ -68,9 +74,7 @@ export const BattleSelector: React.FC = () => {
                   <span className="loot-label">Possible loot:</span>
                   <div className="loot-tags">
                     {displayableLoot.map((drop) => (
-                      <span key={drop.id} className="loot-tag">
-                        {formatLootLabel(drop.id)}
-                      </span>
+                      <LootTag key={drop.id} drop={drop} />
                     ))}
                   </div>
                 </div>
