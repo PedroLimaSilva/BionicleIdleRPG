@@ -30,9 +30,15 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
 }) => {
   const available = getAvailableQuests(allQuests, completedQuestIds, activeQuestIds);
 
+  /** Characters must exist, meet level, and NOT be on another quest */
   const hasMatoran = (requiredIds: string[] = [], minLevel: number = 1) =>
     requiredIds.every((id) =>
-      recruitedCharacters.some((m) => m.id === id && getLevelFromExp(m.exp) >= minLevel)
+      recruitedCharacters.some(
+        (m) =>
+          m.id === id &&
+          getLevelFromExp(m.exp) >= minLevel &&
+          !m.quest /* not already on a quest */
+      )
     );
 
   const hasItems = (items: QuestItemRequirement[] = []) =>
@@ -69,12 +75,14 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                   <strong>Matoran:</strong>
                   <br />
                   {quest.requirements.matoran?.map((id) => {
-                    const has = recruitedCharacters.some(
-                      (m) =>
-                        m.id === id && getLevelFromExp(m.exp) >= (quest.requirements.minLevel ?? 1)
-                    );
+                    const matoran = recruitedCharacters.find((m) => m.id === id);
+                    const levelMet =
+                      matoran && getLevelFromExp(matoran.exp) >= (quest.requirements.minLevel ?? 1);
+                    const available = levelMet && !matoran?.quest;
+                    const busy = levelMet && matoran?.quest;
+                    const status = available ? 'met' : busy ? 'busy' : 'missing';
                     return (
-                      <span key={id} className={`requirement-chip ${has ? 'met' : 'missing'}`}>
+                      <span key={id} className={`requirement-chip ${status}`} title={busy ? 'On another quest' : undefined}>
                         {MATORAN_DEX[id].name}
                       </span>
                     );

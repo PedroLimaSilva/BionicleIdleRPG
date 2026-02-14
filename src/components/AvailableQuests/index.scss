@@ -61,6 +61,12 @@
       border-color: #f44336;
       color: #ffc1c1;
     }
+
+    &.busy {
+      background-color: #3a2d1d;
+      border-color: #ff9800;
+      color: #ffe0b2;
+    }
   }
 
   &__rewards {
