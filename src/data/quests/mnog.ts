@@ -3,6 +3,7 @@ import { GameItemId } from '../loot';
 
 export const MNOG_QUEST_LINE: Quest[] = [
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_find_canister_beach',
     name: 'The Canister on the shore',
     description:
@@ -55,6 +56,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['story_toa_arrival'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_tahu_unlock_01',
     name: 'A disturbance in the Forest',
     description:
@@ -88,6 +90,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_find_canister_beach'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_ga_koro_sos',
     name: 'A call for help',
     description:
@@ -116,6 +119,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_tahu_unlock_01'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_restore_ga_koro',
     name: 'Ga-Koro Under Siege',
     description:
@@ -160,6 +164,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_ga_koro_sos', 'story_toa_council'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_po_koro_sickness',
     name: 'A Game Gone Wrong',
     description: `Maku confided that she hasn't heard from Huki in a long time.
@@ -196,6 +201,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_restore_ga_koro'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_po_koro_cave_investigation',
     name: 'Cave of the Corrupted',
     description:
@@ -224,6 +230,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_po_koro_sickness', 'story_toa_council'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_recruit_hewkii',
     name: 'Koli Champion Recovered',
     description:
@@ -271,6 +278,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_po_koro_cave_investigation'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_arrive_onu_koro',
     name: 'Into the Underground',
     description: `Takua travels through the rocky tunnels toward Onu-Koro, following rumors of mining troubles.`,
@@ -317,6 +325,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_recruit_hewkii'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_onu_koro_lava_problem',
     name: 'Redirection',
     description:
@@ -344,6 +353,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_arrive_onu_koro'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_meet_taipu',
     name: 'Meet Taipu',
     description:
@@ -381,6 +391,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_onu_koro_lava_problem'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_enter_le_wahi',
     name: 'Enter Le-Wahi',
     description:
@@ -402,6 +413,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_meet_taipu'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_flight_to_hive',
     name: 'Flight to the Hive',
     description:
@@ -465,6 +477,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_enter_le_wahi'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_rescue_from_hive',
     name: 'Rescue from the Hive',
     description:
@@ -483,6 +496,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_flight_to_hive'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_lewa_v_onua',
     name: 'Trapped in the Hive',
     description:
@@ -505,6 +519,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     ],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_arrive_ko_koro',
     name: 'Journey to Ko-Koro',
     description:
@@ -558,6 +573,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_lewa_v_onua'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_search_for_matoro',
     name: 'Search for Matoro',
     description:
@@ -602,6 +618,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_arrive_ko_koro', 'maskhunt_kopaka_mahiki_huna'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_summon_chroniclers_company',
     name: 'Summon the Chronicler’s Company',
     description:
@@ -635,6 +652,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_search_for_matoro'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_journey_to_kini_nui_1',
     name: 'Passage to Kini-Nui',
     description:
@@ -652,6 +670,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_summon_chroniclers_company'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_journey_to_kini_nui_2',
     name: 'Ravine Crossing',
     description:
@@ -669,6 +688,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_journey_to_kini_nui_1'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_journey_to_kini_nui_3',
     name: 'Rockslide Ahead',
     description:
@@ -693,6 +713,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_journey_to_kini_nui_2'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_journey_to_kini_nui_4',
     name: 'The Silent Gate',
     description:
@@ -722,6 +743,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_journey_to_kini_nui_3'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_kini_nui_arrival',
     name: 'Arrival at Kini-Nui',
     description:
@@ -739,6 +761,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['story_kini_nui_gathering', 'mnog_journey_to_kini_nui_4'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_kini_nui_defense',
     name: 'Defense of Kini-Nui',
     description:
@@ -756,6 +779,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_kini_nui_arrival'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_gali_call',
     name: "Gali's Call",
     description:
@@ -780,6 +804,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_kini_nui_defense', 'story_kini_nui_descent'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_witness_makuta_battle',
     name: 'Confronting Chaos',
     description:
@@ -797,6 +822,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     unlockedAfter: ['mnog_gali_call'],
   },
   {
+    section: "The Cronicler's Journey",
     id: 'mnog_return_to_shore',
     name: 'Return to the Shore',
     description:

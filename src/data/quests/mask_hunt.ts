@@ -28,7 +28,7 @@ export const MASK_HUNT: Quest[] = [
       loot: {},
     },
     unlockedAfter: [],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_kopaka_pohatu_icecliff',
@@ -50,7 +50,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['story_toa_arrival'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'story_toa_council',
@@ -69,7 +69,7 @@ export const MASK_HUNT: Quest[] = [
       loot: {},
     },
     unlockedAfter: ['mnog_tahu_unlock_01', 'maskhunt_kopaka_pohatu_icecliff'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_tahu_cave_akaku',
@@ -91,7 +91,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['story_toa_council'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_lewa_pakari',
@@ -113,7 +113,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['story_toa_council'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_kopaka_mahiki_huna',
@@ -135,7 +135,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['story_toa_council'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_lewa_kakama_komau',
@@ -157,7 +157,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['maskhunt_lewa_pakari'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_onua_matatu_hau',
@@ -179,7 +179,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['story_toa_council'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_onua_jungle_rumor',
@@ -197,7 +197,7 @@ export const MASK_HUNT: Quest[] = [
       currency: 600,
     },
     unlockedAfter: ['maskhunt_onua_matatu_hau'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_gali_miru',
@@ -219,7 +219,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['mnog_restore_ga_koro'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_gali_rescue',
@@ -241,7 +241,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['maskhunt_gali_miru', 'maskhunt_tahu_cave_akaku'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_kopaka_pakari',
@@ -263,7 +263,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['mnog_search_for_matoro', 'mnog_lewa_v_onua'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'story_toa_second_council',
@@ -282,7 +282,7 @@ export const MASK_HUNT: Quest[] = [
       loot: {},
     },
     unlockedAfter: ['maskhunt_kopaka_pakari', 'maskhunt_gali_rescue'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_tahu_miru',
@@ -304,7 +304,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['story_toa_second_council'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_pohatu_kaukau_bluff',
@@ -325,7 +325,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['story_toa_second_council'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_forest_tahu_kakama',
@@ -346,7 +346,7 @@ export const MASK_HUNT: Quest[] = [
       },
     },
     unlockedAfter: ['story_toa_second_council'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'story_nui_jaga_nest',
@@ -368,7 +368,7 @@ export const MASK_HUNT: Quest[] = [
       'maskhunt_forest_tahu_kakama',
       'maskhunt_pohatu_kaukau_bluff',
     ],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'maskhunt_final_collection',
@@ -386,7 +386,7 @@ export const MASK_HUNT: Quest[] = [
       currency: 1600,
     },
     unlockedAfter: ['story_nui_jaga_nest'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'story_kini_nui_gathering',
@@ -405,7 +405,7 @@ export const MASK_HUNT: Quest[] = [
       loot: {},
     },
     unlockedAfter: ['maskhunt_final_collection'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
   {
     id: 'story_kini_nui_descent',
@@ -425,6 +425,6 @@ export const MASK_HUNT: Quest[] = [
       loot: {},
     },
     unlockedAfter: ['mnog_kini_nui_arrival'],
-    section: 'Infected Rahi / Hunt for the Masks',
+    section: 'Arrival of the Toa',
   },
 ];

@@ -10,9 +10,10 @@ import { MATORAN_DEX } from '../../data/matoran';
 const DEFAULT_SECTION_LABEL = 'Other Quests';
 
 const SECTION_ORDER: Record<string, number> = {
-  'Infected Rahi / Hunt for the Masks': 0,
-  'Bohrok Swarms': 1,
-  [DEFAULT_SECTION_LABEL]: 2,
+  'Arrival of the Toa': 0,
+  "The Cronicler's Journey": 1,
+  'Bohrok Swarms': 2,
+  [DEFAULT_SECTION_LABEL]: 3,
 };
 
 type SectionGroup = {
