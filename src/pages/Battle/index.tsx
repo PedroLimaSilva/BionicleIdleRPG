@@ -90,27 +90,29 @@ export const BattlePage: React.FC = () => {
     };
 
     return (
-      <div className="page-container battle">
-        <h1 style={{ fontSize: '8vw' }}>{phase}</h1>
-        <div className="battle-arena">
-          <p>Enemies defeated: {enemiesDefeated ?? 0}</p>
-          {expTotal !== undefined && expTotal > 0 && (
-            <p>
-              EXP earned: {expTotal} total
-              {participantCount > 0 && <> ({Math.floor(expTotal / participantCount)} per Toa)</>}
-            </p>
-          )}
-          {kranaRewards.length > 0 && (
-            <p>
-              Krana recovered: {kranaRewards.map((r) => `${r.kranaId} (${r.element})`).join(', ')}
-            </p>
-          )}
-        </div>
-        <div
-          className="battle-buttons"
-          style={{ justifyContent: 'center', paddingBottom: '132px' }}
-        >
-          <button className="confirm-button" onClick={handleCollectRewards}>
+      <div className="page-container battle battle--outcome">
+        <h1 className="battle-outcome__title">{phase}</h1>
+        <div className="battle-rewards-panel">
+          <p className="battle-rewards-panel__row">Enemies defeated: {enemiesDefeated ?? 0}</p>
+          <p className="battle-rewards-panel__row battle-rewards-panel__exp">
+            {expTotal !== undefined && expTotal > 0 ? (
+              <>
+                EXP earned: {expTotal} total
+                {participantCount > 0 && <> ({Math.floor(expTotal / participantCount)} per Toa)</>}
+              </>
+            ) : (
+              <span className="battle-rewards-panel__empty">EXP earned: 0</span>
+            )}
+          </p>
+          <p className="battle-rewards-panel__row battle-rewards-panel__krana">
+            Krana recovered:{' '}
+            {kranaRewards.length > 0 ? (
+              kranaRewards.map((r) => `${r.kranaId} (${r.element})`).join(', ')
+            ) : (
+              <span className="battle-rewards-panel__empty">None</span>
+            )}
+          </p>
+          <button className="confirm-button battle-rewards-panel__collect" onClick={handleCollectRewards}>
             Collect Rewards
           </button>
         </div>
