@@ -7,11 +7,7 @@ import { Combatant, EnemyEncounter } from '../types/Combat';
 import { TEAM_POSITION_LABELS } from '../data/combat';
 import { ENCOUNTERS } from '../data/combat';
 import { Mask } from '../types/Matoran';
-import {
-  generateCombatantStats,
-  queueCombatRound,
-  decrementWaveCounters,
-} from './combatUtils';
+import { generateCombatantStats, queueCombatRound, decrementWaveCounters } from './combatUtils';
 import { getLevelFromExp } from '../game/Levelling';
 import type { RecruitedCharacterData } from '../types/Matoran';
 
@@ -38,11 +34,7 @@ class BattleSimulator {
   currentWave: number;
   encounter: EnemyEncounter;
 
-  constructor(
-    team: Combatant[],
-    encounter: EnemyEncounter,
-    currentWave = 0
-  ) {
+  constructor(team: Combatant[], encounter: EnemyEncounter, currentWave = 0) {
     this.team = cloneCombatants(team);
     this.enemies = encounter.waves[currentWave].map(({ id, lvl }, index) =>
       generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
@@ -143,7 +135,6 @@ describe('Battle Simulation', () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
-
 
   describe('full battle flow', () => {
     test('runs battle from team confirm through rounds to victory', async () => {
@@ -303,7 +294,6 @@ describe('Battle Simulation', () => {
       const sim = new BattleSimulator(team, customEncounter);
       sim.team = setAbilities(sim.team, ['Toa_Lewa'], true);
 
-      const hpBefore = sim.team[0].hp;
       await sim.runRound();
       const lewa = sim.team.find((t) => t.id === 'Toa_Lewa')!;
 
@@ -365,7 +355,12 @@ describe('Battle Simulation', () => {
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
-        waves: [[{ id: 'tahnok', lvl: 1 }, { id: 'tahnok', lvl: 1 }]],
+        waves: [
+          [
+            { id: 'tahnok', lvl: 1 },
+            { id: 'tahnok', lvl: 1 },
+          ],
+        ],
       };
 
       const sim = new BattleSimulator(team, customEncounter);
@@ -375,9 +370,7 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       // One enemy should have CONFUSION debuff (the one Tahu attacked)
-      const confusedEnemy = sim.enemies.find((e) =>
-        e.debuffs?.some((d) => d.type === 'CONFUSION')
-      );
+      const confusedEnemy = sim.enemies.find((e) => e.debuffs?.some((d) => d.type === 'CONFUSION'));
       expect(confusedEnemy).toBeDefined();
 
       // Total enemy HP should have decreased (Tahu's attack + confused enemy attacking ally)
@@ -431,10 +424,7 @@ describe('Battle Simulation', () => {
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
-        waves: [
-          [{ id: 'tahnok', lvl: 1 }],
-          [{ id: 'tahnok', lvl: 1 }],
-        ],
+        waves: [[{ id: 'tahnok', lvl: 1 }], [{ id: 'tahnok', lvl: 1 }]],
       };
 
       const sim = new BattleSimulator(team, customEncounter);
@@ -480,7 +470,7 @@ describe('Battle Simulation', () => {
       expect(tahu.maskPower?.active).toBe(false);
     });
 
-    test.skip('multi-round: 1 round wave 1 then wave 2 - both Hau and Kakama', async () => {
+    test('multi-round: 1 round wave 1 then wave 2 - both Hau and Kakama', async () => {
       const team = createTeamFromRecruited([
         { id: 'Toa_Tahu', exp: 2000 },
         { id: 'Toa_Pohatu', exp: 2000 },
@@ -534,10 +524,7 @@ describe('Battle Simulation', () => {
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
-        waves: [
-          [{ id: 'tahnok', lvl: 1 }],
-          [{ id: 'tahnok', lvl: 1 }],
-        ],
+        waves: [[{ id: 'tahnok', lvl: 1 }], [{ id: 'tahnok', lvl: 1 }]],
       };
 
       const sim = new BattleSimulator(team, customEncounter);
@@ -574,10 +561,7 @@ describe('Battle Simulation', () => {
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
-        waves: [
-          [{ id: 'tahnok', lvl: 1 }],
-          [{ id: 'tahnok', lvl: 1 }],
-        ],
+        waves: [[{ id: 'tahnok', lvl: 1 }], [{ id: 'tahnok', lvl: 1 }]],
       };
       const sim = new BattleSimulator(team, customEncounter, 1); // start in wave 2
       sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
@@ -591,10 +575,7 @@ describe('Battle Simulation', () => {
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
-        waves: [
-          [{ id: 'tahnok', lvl: 1 }],
-          [{ id: 'tahnok', lvl: 1 }],
-        ],
+        waves: [[{ id: 'tahnok', lvl: 1 }], [{ id: 'tahnok', lvl: 1 }]],
       };
 
       const sim = new BattleSimulator(team, customEncounter);
@@ -617,10 +598,7 @@ describe('Battle Simulation', () => {
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
-        waves: [
-          [{ id: 'tahnok', lvl: 1 }],
-          [{ id: 'tahnok', lvl: 1 }],
-        ],
+        waves: [[{ id: 'tahnok', lvl: 1 }], [{ id: 'tahnok', lvl: 1 }]],
       };
 
       const sim = new BattleSimulator(team, customEncounter);

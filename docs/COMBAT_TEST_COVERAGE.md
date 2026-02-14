@@ -33,9 +33,57 @@ Mask powers activated in wave 2 (e.g. Hau) could stay active past their intended
 | Hau expires in wave 2 — start directly in wave 2 (1 Toa) | ✓ Pass |
 | Hau expires in wave 2 — start directly in wave 2 (2 Toa) | ✓ Pass |
 | Hau expires in wave 2 — empty wave 1, advance, then wave 2 round | ✓ Pass |
-| Hau expires in wave 2 — run wave 1 rounds first, then advance | ✗ Fail (tests skipped) |
+| Hau expires in wave 2 — single Toa, run wave 1 until defeat, advance | ✓ Pass |
+| Hau expires in wave 2 — 2 Toa, Hau only in wave 1, defeat, advance | Skipped (previously failed) |
+| Hau expires in wave 2 — 2 Toa, Hau + Kakama in wave 1, defeat, advance | ✗ Fail |
+| Hau expires in wave 2 — 2 Toa, multiple wave 1 rounds, advance | ✗ Fail (skipped) |
 
-The multi-round case (wave 1 rounds → advance → wave 2 round) still fails; root cause is under investigation.
+The multi-round case (wave 1 rounds → advance → wave 2 round) still fails; see Root Cause Analysis below.
+
+### Root Cause Analysis
+
+#### Observed pattern
+
+| Scenario | Wave 1 | Wave 2 | Result |
+|----------|--------|--------|--------|
+| Start directly in wave 2 (1 or 2 Toa) | N/A | Hau activates, round runs | ✓ Pass |
+| Empty wave 1, advance | No rounds run | Hau activates, round runs | ✓ Pass |
+| Single Toa: run wave 1 until defeat, advance | Multiple rounds, Hau only | Hau activates | ✓ Pass |
+| 2 Toa: 1 round wave 1 (Hau + Kakama), defeat, advance | 1 round with both powers | Hau activates | ✗ Fail |
+| 2 Toa: multiple wave 1 rounds, defeat, advance | Many rounds | Hau activates | ✗ Fail |
+
+The failure correlates with **using both Hau and Kakama in wave 1**, not with the number of wave 1 rounds. Single-Toa flow (Hau only) passes; 2-Toa flow with Kakama in wave 1 fails.
+
+#### Hypotheses
+
+1. **Kakama turn-order side effects**  
+   When Kakama is used, `triggerMaskPowers` inserts a cloned Pohatu (`{ ...actor, maskPower: { ...actor.maskPower } }`) into the turn order, so there are two entries with `id === 'Toa_Pohatu'`. Both steps resolve `self` via `actorList.find(c => c.id === actor.id)`, so they operate on the same combatant. That alone does not explain Hau failing in wave 2, but it changes how `currentTeam` is built and passed through the round. Kakama may be creating subtle object-sharing or state-handling differences that surface only after advance.
+
+2. **Shared references after wave 1**  
+   Wave 1 round 1 with Hau + Kakama updates both Tahu and Pohatu in `currentTeam`. `triggerMaskPowers` replaces team members with `actor` from the `all` array (`{ ...c, side: 'team' }`), which shares `maskPower` with the original. Although `cloneCombatants(this.team)` is used at round start, the mutated objects may still be referenced elsewhere (e.g. in closures or the turn order), so `this.team` could end up with shared state that survives into wave 2 and affects the round-end decrement.
+
+3. **Early-exit and `setTeam` order**  
+   With 2 high-level Toa, wave 2’s tahnok often dies on Tahu’s first hit. Later steps (Pohatu, tahnok) return early and do not call `setTeam`. `getLatestState()` should still return the team from Tahu’s step, and the round-end runs after all steps. This path was validated for other cases; if it were wrong, the single-Toa case would also fail, so this is a lower-priority hypothesis.
+
+4. **`stateRef` lifecycle across rounds**  
+   Each `runRound()` creates a new `stateRef`, and `getLatestState` closes over it. The round-end step should see the current round’s state. The failure when Kakama is used in wave 1 suggests the problem is not a simple cross-round closure, but possibly how state is constructed or updated when Kakama alters the turn order.
+
+#### Most likely cause
+
+The strongest correlation is **Kakama usage in wave 1**. The combination of:
+
+- Inserting a second actor with the same id in the turn order
+- Replacing team members with shallow-copied `actor` objects in `triggerMaskPowers`
+- Shared `maskPower` references between `all` and the team
+
+may leave shared references that survive to wave 2. When the round-end step decrements Hau, it may be acting on a Tahu that is not the same object reference as the one whose state is ultimately written to `this.team`, or a stale copy may overwrite the decremented state.
+
+#### Suggested next steps
+
+1. Add logging in the round-end step: log `getLatestState().team` before decrement and the decremented team before `setTeam`, and confirm which Tahu instance has Hau active.
+2. Ensure full isolation: after wave 1, do `this.team = structuredClone(this.team)` before the wave 2 round and re-run the failing test.
+3. Try the failing flow with Kakama disabled in wave 1 (only Hau) to see if Hau-expiry passes with 2 Toa.
+4. In `triggerMaskPowers`, use `structuredClone` when replacing team members with `actor` to eliminate shared references.
 
 ---
 
@@ -179,7 +227,7 @@ The multi-round case (wave 1 rounds → advance → wave 2 round) still fails; r
 
 | Gap | Priority | Status |
 |-----|----------|--------|
-| Multi-round post-advanceWave bug | Known | Hau stays active in wave 2 when wave 1 rounds were run first. Isolated case (start in wave 2, empty wave 1) passes. Root cause under investigation. 3 tests skipped. |
+| Multi-round post-advanceWave bug | Known | Hau stays active in wave 2 when wave 1 used Kakama (2 Toa). Single-Toa and isolated cases pass. See **Root Cause Analysis** in Recent Changes. 2–3 tests skipped/fail. |
 
 ---
 
