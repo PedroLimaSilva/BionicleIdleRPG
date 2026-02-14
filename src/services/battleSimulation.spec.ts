@@ -48,13 +48,6 @@ class BattleSimulator {
     let team = cloneCombatants(this.team);
     let enemies = cloneCombatants(this.enemies);
 
-    const setTeam = (t: Combatant[]) => {
-      team = t;
-    };
-    const setEnemies = (e: Combatant[]) => {
-      enemies = e;
-    };
-
     const stateRef = { team, enemies };
     const setTeamWithRef = (t: Combatant[]) => {
       team = t;
@@ -116,8 +109,6 @@ function createTeamFromRecruited(data: RecruitedCharacterData[]): Combatant[] {
 }
 
 describe('Battle Simulation', () => {
-  let mockRandom: jest.SpyInstance;
-
   beforeAll(() => {
     // combatUtils accesses window.combatantRefs - node has no window
     (globalThis as unknown as { window: { combatantRefs: Record<string, unknown> } }).window = {
@@ -128,7 +119,7 @@ describe('Battle Simulation', () => {
   beforeEach(() => {
     // No combatantRefs entries - animations are no-ops, Promise.all([]) resolves immediately
     // Deterministic damage (minimal variance)
-    mockRandom = jest.spyOn(Math, 'random').mockReturnValue(0);
+    jest.spyOn(Math, 'random').mockReturnValue(0);
     jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
