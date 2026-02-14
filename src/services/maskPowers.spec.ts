@@ -1,6 +1,12 @@
 import { BattleStrategy, Combatant } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
-import { generateCombatantStats, calculateAtkDmg, applyDamage, applyHealing } from './combatUtils';
+import {
+  generateCombatantStats,
+  calculateAtkDmg,
+  applyDamage,
+  applyHealing,
+  chooseTarget,
+} from './combatUtils';
 
 describe('Mask Powers - Combat Mechanics', () => {
   let defender: Combatant;
@@ -70,23 +76,47 @@ describe('Mask Powers - Combat Mechanics', () => {
       });
     });
 
-    describe('Akaku - Mask of X-Ray Vision', () => {
-      test('multiplies attack damage by 1.5x when active', () => {
-        const attacker = generateCombatantStats('kopaka', 'Toa_Kopaka', 1, Mask.Akaku);
+    describe('Akaku - Mask of X-Ray Vision (DEBUFF DEFENSE)', () => {
+      test('allies deal +50% damage to target with DEFENSE debuff', () => {
+        const attacker = generateCombatantStats('tahu', 'Toa_Tahu', 1);
+        const debuffedDefender: Combatant = {
+          ...defender,
+          debuffs: [
+            {
+              type: 'DEFENSE',
+              multiplier: 1.5,
+              durationRemaining: 2,
+              durationUnit: 'round',
+              sourceSide: 'team',
+            },
+          ],
+        };
 
-        // Calculate damage without mask power
         const normalDamage = calculateAtkDmg(attacker, defender);
+        const damageVsDebuffed = calculateAtkDmg(attacker, debuffedDefender, 'team');
 
-        // Activate the mask power
-        if (attacker.maskPower) {
-          attacker.maskPower.active = true;
-        }
+        expect(damageVsDebuffed).toBe(Math.floor(normalDamage * 1.5));
+      });
 
-        // Calculate damage with mask power active
-        const boostedDamage = calculateAtkDmg(attacker, defender);
+      test('DEFENSE debuff does not benefit enemy attackers', () => {
+        const attacker = generateCombatantStats('tahnok', 'tahnok', 1);
+        const debuffedDefender: Combatant = {
+          ...defender,
+          debuffs: [
+            {
+              type: 'DEFENSE',
+              multiplier: 1.5,
+              durationRemaining: 2,
+              durationUnit: 'round',
+              sourceSide: 'team',
+            },
+          ],
+        };
 
-        // Akaku should multiply damage by 1.5x
-        expect(boostedDamage).toBe(Math.floor(normalDamage * 1.5));
+        const normalDamage = calculateAtkDmg(attacker, defender);
+        const damageVsDebuffed = calculateAtkDmg(attacker, debuffedDefender, 'enemy');
+
+        expect(damageVsDebuffed).toBe(normalDamage);
       });
     });
   });
@@ -142,6 +172,19 @@ describe('Mask Powers - Combat Mechanics', () => {
         // Miru should provide full immunity (0 damage)
         expect(damaged.hp).toBe(target.hp);
       });
+
+      test('does not mitigate damage when inactive', () => {
+        const target = generateCombatantStats('lewa', 'Toa_Lewa', 1, Mask.Miru);
+        const incomingDamage = 40;
+
+        if (target.maskPower) {
+          target.maskPower.active = false;
+        }
+
+        const damaged = applyDamage(target, incomingDamage);
+
+        expect(damaged.hp).toBe(target.hp - incomingDamage);
+      });
     });
 
     describe('Mahiki - Mask of Illusion', () => {
@@ -159,6 +202,71 @@ describe('Mask Powers - Combat Mechanics', () => {
         // Mahiki should provide full immunity (0 damage)
         expect(damaged.hp).toBe(target.hp);
       });
+
+      test('does not mitigate damage when inactive', () => {
+        const target = generateCombatantStats('lewa', 'Toa_Lewa', 1, Mask.Mahiki);
+        const incomingDamage = 35;
+
+        if (target.maskPower) {
+          target.maskPower.active = false;
+        }
+
+        const damaged = applyDamage(target, incomingDamage);
+
+        expect(damaged.hp).toBe(target.hp - incomingDamage);
+      });
+    });
+  });
+
+  describe('AGGRO - Untargetable Masks (Huna)', () => {
+    test('chooseTarget filters out enemy with Huna active', () => {
+      const attacker = generateCombatantStats('tahu', 'Toa_Tahu', 1);
+      const targetWithHuna = generateCombatantStats('enemy_huna', 'tahnok', 1, Mask.Huna);
+      const targetNormal = generateCombatantStats('enemy_normal', 'tahnok', 1);
+
+      if (targetWithHuna.maskPower) {
+        targetWithHuna.maskPower.active = true;
+      }
+
+      const targets = [targetWithHuna, targetNormal];
+
+      // With Random strategy, mock Math.random to always pick first valid target (index 0 or 1)
+      // Since Huna enemy is filtered out, validTargets = [targetNormal], so we always get targetNormal
+      const chosen = chooseTarget(attacker, targets);
+
+      expect(chosen.id).toBe('enemy_normal');
+      expect(chosen.id).not.toBe('enemy_huna');
+    });
+
+    test('chooseTarget includes enemy with Huna when inactive', () => {
+      const attacker = generateCombatantStats('tahu', 'Toa_Tahu', 1);
+      const targetWithHuna = generateCombatantStats('enemy_huna', 'tahnok', 1, Mask.Huna);
+
+      if (targetWithHuna.maskPower) {
+        targetWithHuna.maskPower.active = false;
+      }
+
+      const targets = [targetWithHuna];
+
+      const chosen = chooseTarget(attacker, targets);
+
+      expect(chosen.id).toBe('enemy_huna');
+    });
+  });
+
+  describe('ATK_MULT - Rau (wave duration)', () => {
+    test('multiplies attack damage by 1.5x when active', () => {
+      const attacker = generateCombatantStats('kopaka', 'Toa_Kopaka', 1, Mask.Rau);
+
+      const normalDamage = calculateAtkDmg(attacker, defender);
+
+      if (attacker.maskPower) {
+        attacker.maskPower.active = true;
+      }
+
+      const boostedDamage = calculateAtkDmg(attacker, defender);
+
+      expect(boostedDamage).toBe(Math.floor(normalDamage * 1.5));
     });
   });
 

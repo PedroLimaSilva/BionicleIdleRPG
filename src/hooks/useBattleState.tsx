@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Combatant, EnemyEncounter } from '../types/Combat';
 import { RecruitedCharacterData } from '../types/Matoran';
 import { getLevelFromExp } from '../game/Levelling';
@@ -83,6 +83,10 @@ export const useBattleState = (): BattleState => {
   const [team, setTeam] = useState<Combatant[]>(INITIAL_BATTLE_STATE.team);
   const [actionQueue, setActionQueue] = useState<(() => void)[]>([]);
   const [isRunningRound, setIsRunningRound] = useState(false);
+  const teamRef = useRef(team);
+  const enemiesRef = useRef(enemies);
+  teamRef.current = team;
+  enemiesRef.current = enemies;
 
   useEffect(() => {
     const allTeamDefeated = team.length && team.every((t) => t.hp <= 0);
@@ -176,7 +180,26 @@ export const useBattleState = (): BattleState => {
 
   const runRound = () => {
     const queue: (() => void)[] = [];
-    queueCombatRound(team, enemies, setTeam, setEnemies, (fn) => queue.push(fn));
+    const setTeamWithRef = (t: Combatant[]) => {
+      teamRef.current = t;
+      setTeam(t);
+    };
+    const setEnemiesWithRef = (e: Combatant[]) => {
+      enemiesRef.current = e;
+      setEnemies(e);
+    };
+    const getLatestState = () => ({
+      team: teamRef.current,
+      enemies: enemiesRef.current,
+    });
+    queueCombatRound(
+      team,
+      enemies,
+      setTeamWithRef,
+      setEnemiesWithRef,
+      (fn) => queue.push(fn),
+      getLatestState
+    );
     setActionQueue(queue);
   };
 
