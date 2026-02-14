@@ -463,7 +463,7 @@ export function queueCombatRound(
         (d) => d.type === 'CONFUSION' && d.durationRemaining > 0
       );
       const effectiveOpponentList = isConfused
-        ? actorList.filter((t) => t.hp > 0 && t.id !== self.id)
+        ? actorList.filter((t) => t.hp > 0 && t.id !== actor.id)
         : opponentList;
 
       let targets = effectiveOpponentList.filter((t) => t.hp > 0);
