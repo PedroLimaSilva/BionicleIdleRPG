@@ -35,7 +35,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   const group = useRef<Group>(null);
   const { nodes, materials, animations } = useGLTF(import.meta.env.BASE_URL + 'matoran_master.glb');
   const { actions, mixer } = useAnimations(animations, group);
-  console.log(nodes);
+
   useEffect(() => {
     const idle = actions['Idle'];
     if (!idle) return;
