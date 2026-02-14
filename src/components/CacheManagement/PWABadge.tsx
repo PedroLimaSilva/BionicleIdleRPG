@@ -33,7 +33,7 @@ export function PWABadge() {
     <div className="PWABadge" role="alert" aria-labelledby="toast-message">
       {needRefresh && (
         <div className="PWABadge-toast">
-          <div className="PWABadge-message">
+          <div className="PWABadge-toast-message">
             {offlineReady ? (
               <span id="toast-message">App ready to work offline</span>
             ) : (
