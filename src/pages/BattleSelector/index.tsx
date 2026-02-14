@@ -5,7 +5,7 @@ import { ITEM_DICTIONARY } from '../../data/loot';
 import { useGame } from '../../context/Game';
 import { COMBATANT_DEX, ENCOUNTERS } from '../../data/combat';
 import { getVisibleEncounters } from '../../game/encounterVisibility';
-import { isKranaCollected, parseKranaDropId } from '../../game/Krana';
+import { ELEMENT_TO_KRANA_COLOR, isKranaCollected, parseKranaDropId } from '../../game/Krana';
 import type { KranaCollection } from '../../types/Krana';
 
 /** Returns loot items to display, excluding already-collected krana. */
@@ -25,9 +25,13 @@ function getDisplayableLoot(
 /** Renders a loot item - krana uses the same images as KranaCollection. */
 function LootTag({ drop }: { drop: { id: string } }) {
   const parsed = parseKranaDropId(drop.id);
+  const color = parsed ? ELEMENT_TO_KRANA_COLOR[parsed.element] : undefined;
   if (parsed) {
     return (
-      <span className="loot-tag loot-tag--krana" title={`Krana ${parsed.kranaId}`}>
+      <span
+        className={`loot-tag krana-collection__img-wrap loot-tag--krana krana-color--${color}`}
+        title={`Krana ${parsed.kranaId}`}
+      >
         <img
           src={`${import.meta.env.BASE_URL}/avatar/Krana/${parsed.kranaId}.webp`}
           alt={`Krana ${parsed.kranaId}`}
@@ -80,15 +84,15 @@ export const BattleSelector: React.FC = () => {
                 </div>
               )}
               <button
-              className="confirm-button"
-              onClick={() => {
-                battle.startBattle(encounter);
-                navigate('/battle');
-              }}
-            >
-              Start Battle
-            </button>
-          </div>
+                className="confirm-button"
+                onClick={() => {
+                  battle.startBattle(encounter);
+                  navigate('/battle');
+                }}
+              >
+                Start Battle
+              </button>
+            </div>
           );
         })}
       </div>
