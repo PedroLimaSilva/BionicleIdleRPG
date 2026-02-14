@@ -449,7 +449,7 @@ describe('Battle Simulation', () => {
       expect(tahuAfterWave.maskPower?.effect.cooldown.amount).toBe(0);
     });
 
-    test.skip('multi-round: 1 round wave 1 then wave 2 - Hau only (no Kakama)', async () => {
+    test('multi-round: 1 round wave 1 then wave 2 - Hau only (no Kakama)', async () => {
       const team = createTeamFromRecruited([
         { id: 'Toa_Tahu', exp: 2000 },
         { id: 'Toa_Pohatu', exp: 2000 },
@@ -516,7 +516,7 @@ describe('Battle Simulation', () => {
       expect(tahu.maskPower?.active).toBe(false);
     });
 
-    test.skip('multi-round battle with mask power toggling between rounds', async () => {
+    test('multi-round battle with mask power toggling between rounds', async () => {
       const team = createTeamFromRecruited([
         { id: 'Toa_Tahu', exp: 2000 },
         { id: 'Toa_Pohatu', exp: 2000 },

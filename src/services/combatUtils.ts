@@ -240,7 +240,8 @@ export function applyHealing(combatant: Combatant): Combatant {
 /**
  * Decrements mask power duration/cooldown for a specific unit type
  */
-function decrementMaskPowerCounter(
+// exported for unit tests (maskPowerCooldowns.spec.ts)
+export function decrementMaskPowerCounter(
   combatant: Combatant,
   unit: 'attack' | 'hit' | 'turn' | 'round' | 'wave'
 ): Combatant {
@@ -267,16 +268,13 @@ function decrementMaskPowerCounter(
     // Deactivate if duration expires
     if (updatedMaskPower.effect.duration.amount === 0) {
       updatedMaskPower.active = false;
-      // Set cooldown when effect expires
-      const originalMask = COMBATANT_DEX[combatant.id]?.mask;
-      if (originalMask) {
-        const power = MASK_POWERS[originalMask];
-        if (power) {
-          updatedMaskPower.effect.cooldown = {
-            ...power.effect.cooldown,
-          };
-          cooldownJustSetFromExpiry = true;
-        }
+      // Set cooldown when effect expires (use shortName so overrides & positional IDs work)
+      const power = MASK_POWERS[updatedMaskPower.shortName];
+      if (power) {
+        updatedMaskPower.effect.cooldown = {
+          ...power.effect.cooldown,
+        };
+        cooldownJustSetFromExpiry = true;
       }
     }
     changed = true;
@@ -367,12 +365,24 @@ function triggerMaskPowers(
 
     if (actor.maskPower && actor.willUseAbility) {
       actor.willUseAbility = false;
-      actor.maskPower.active = true;
+
+      // Reset duration to original value from MASK_POWERS when (re-)activating,
+      // and create new maskPower/effect objects to avoid shared-reference mutations.
+      const originalPower = MASK_POWERS[actor.maskPower.shortName];
+      const originalDuration = originalPower?.effect.duration ?? actor.maskPower.effect.duration;
+      actor.maskPower = {
+        ...actor.maskPower,
+        active: true,
+        effect: {
+          ...actor.maskPower.effect,
+          duration: { ...originalDuration },
+        },
+      };
 
       // Special case: SPEED mask grants an extra turn this round
       if (actor.maskPower.effect.type === 'SPEED') {
         // Clone the actor for the second turn to avoid object mutation issues
-        const clonedActor = { ...actor, maskPower: { ...actor.maskPower } };
+        const clonedActor = { ...actor, maskPower: structuredClone(actor.maskPower) };
         newTurnOrder.push(clonedActor);
       }
 
