@@ -41,6 +41,13 @@ export const useQuestState = ({
   const [completedQuests, setCompletedQuestIds] = useState<string[]>(initialCompleted);
 
   const startQuest = (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => {
+    // Guard: do not assign quest to characters who already have an ongoing quest
+    const busy = assignedMatoran.filter((id) => {
+      const char = characters.find((c) => c.id === id);
+      return char?.quest;
+    });
+    if (busy.length > 0) return;
+
     const now = getCurrentTimestamp();
     const endsAt = now + (getDebugMode() ? 1 : quest.durationSeconds);
 
