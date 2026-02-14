@@ -89,6 +89,54 @@
   }
 }
 
+// Rewards collection panel – centered card with background, consistent layout
+.battle--outcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1.5rem;
+  justify-content: space-between;
+
+  .battle-outcome__title {
+    font-size: 8vw;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.battle-rewards-panel {
+  width: 100%;
+  max-width: 420px;
+  padding: 1.5rem 2rem;
+  background-color: var(--color-surface-high);
+  border: 1px solid var(--color-border-muted);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+
+  &__row {
+    margin: 0;
+    min-height: 1.5em;
+    font-size: 1rem;
+  }
+
+  &__exp,
+  &__krana {
+    flex-shrink: 0;
+  }
+
+  &__empty {
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  &__collect {
+    margin-top: 0.5rem;
+  }
+}
+
 .battle {
   display: flex;
   flex-direction: column;
