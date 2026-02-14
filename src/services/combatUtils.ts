@@ -397,7 +397,8 @@ export function queueCombatRound(
   enemies: Combatant[],
   setTeam: (team: Combatant[]) => void,
   setEnemies: (enemies: Combatant[]) => void,
-  enqueue: (step: () => Promise<void>) => void
+  enqueue: (step: () => Promise<void>) => void,
+  getLatestState?: () => { team: Combatant[]; enemies: Combatant[] }
 ) {
   const all = [
     ...team.map((c) => ({ ...c, side: 'team' })),
@@ -427,7 +428,9 @@ export function queueCombatRound(
       const opponentList = isTeam ? currentEnemies : currentTeam;
 
       let self = actorList.find((c) => c.id === actor.id);
-      if (!self || self.hp <= 0) return;
+      if (!self || self.hp <= 0) {
+        return;
+      }
 
       // Apply healing at the start of the turn (e.g., Kaukau - Mask of Water Breathing)
       const oldHp = self.hp;
@@ -534,10 +537,21 @@ export function queueCombatRound(
     });
   }
 
-  // Decrement 'round' unit counters and round-based debuffs at the end of the round
+  // Always run round-end decrements as a final step so mask powers expire correctly
+  // regardless of turn order or early exits (e.g. all enemies defeated mid-round)
   enqueue(async () => {
-    let nextTeam = currentTeam.map((c) => decrementMaskPowerCounter(c, 'round'));
-    let nextEnemies = currentEnemies.map((c) => decrementMaskPowerCounter(c, 'round'));
+    // Sync with latest state when provided (avoids stale closure when steps update external state)
+    if (getLatestState) {
+      const latest = getLatestState();
+      currentTeam = latest.team;
+      currentEnemies = latest.enemies;
+    }
+    let nextTeam = currentTeam.map((c) =>
+      decrementMaskPowerCounter(c, 'round')
+    );
+    let nextEnemies = currentEnemies.map((c) =>
+      decrementMaskPowerCounter(c, 'round')
+    );
     nextTeam = decrementDebuffDurations(nextTeam, 'round');
     nextEnemies = decrementDebuffDurations(nextEnemies, 'round');
     currentTeam = nextTeam;

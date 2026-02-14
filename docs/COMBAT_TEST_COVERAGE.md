@@ -4,6 +4,41 @@ This document captures the coverage analysis of the combat-related test suites (
 
 ---
 
+## Recent Changes (Mask Power Duration Bug Fix)
+
+### Problem
+Mask powers activated in wave 2 (e.g. Hau) could stay active past their intended duration—they should expire at round end but sometimes remained active.
+
+### Changes Made
+
+1. **combatUtils.ts – Round-end logic**
+   - Round-end decrements (mask power duration, debuff duration) now run as a **dedicated final step** after all actor turns, instead of inside the last actor’s step.
+   - Ensures round-end always runs, including when combat ends early (all enemies defeated mid-round).
+
+2. **combatUtils.ts – getLatestState callback**
+   - `queueCombatRound` accepts an optional `getLatestState?: () => { team; enemies }` callback.
+   - The round-end step uses this to read the latest team/enemies before decrementing, avoiding stale closures.
+
+3. **BattleSimulator (battleSimulation.spec.ts)**
+   - Uses `stateRef`, `setTeamWithRef`, `setEnemiesWithRef`, and `getLatestState` so the round-end step always sees up-to-date state.
+
+4. **useBattleState.tsx**
+   - Added `teamRef` and `enemiesRef` to track the latest team/enemies across async steps.
+   - `runRound` passes `setTeamWithRef`, `setEnemiesWithRef`, and `getLatestState` to `queueCombatRound`.
+
+### Test Status
+
+| Scenario | Status |
+|----------|--------|
+| Hau expires in wave 2 — start directly in wave 2 (1 Toa) | ✓ Pass |
+| Hau expires in wave 2 — start directly in wave 2 (2 Toa) | ✓ Pass |
+| Hau expires in wave 2 — empty wave 1, advance, then wave 2 round | ✓ Pass |
+| Hau expires in wave 2 — run wave 1 rounds first, then advance | ✗ Fail (tests skipped) |
+
+The multi-round case (wave 1 rounds → advance → wave 2 round) still fails; root cause is under investigation.
+
+---
+
 ## Test Files in Scope
 
 | File | Scope |
@@ -26,7 +61,7 @@ This document captures the coverage analysis of the combat-related test suites (
 | Pakari | ATK_MULT (3x) | attack(1) | turn(2) | ✓ |
 | Miru | DMG_MITIGATOR (0, 2 hits) | hit(2) | wave(1) | ✓ |
 | Ruru | ACCURACY_MULT (0.5) | turn(2) | turn(4) | ✗ |
-| Komau | CONFUSION | turn(3) | turn(4) | ✗ |
+| Komau | CONFUSION | turn(3) | turn(4) | ✓ |
 | Rau | ATK_MULT (1.5x, wave) | wave(1) | wave(2) | ✓ |
 | Matatu | Immobilize enemy | wave(1) | turn(2) | ✗ |
 | Mahiki | DMG_MITIGATOR (0, 1 hit) | hit(1) | turn(2) | ✓ |
@@ -99,24 +134,52 @@ This document captures the coverage analysis of the combat-related test suites (
 - Full battle from team confirm to victory
 - Mask power lifecycle: activation → effect → deactivation between rounds
 - Wave advance and wave-based cooldowns
+- Mask power expiry in wave 2 (post-advanceWave scenarios)
+
+### Test structure
+
+| Test | Status |
+|------|--------|
+| runs battle from team confirm through rounds to victory | ✓ |
+| Hau (1 round duration) is inactive after round ends | ✓ |
+| Kakama (1 round duration) is inactive after round ends | ✓ |
+| Pakari (1 attack duration) is inactive after first attack | ✓ |
+| Kaukau (3 turn duration) heals for 3 turns then expires | ✓ |
+| Akaku marks target; allies deal +50% damage for 2 turns | ✓ |
+| Miru (2 hit duration) provides mitigation for first 2 hits | ✓ |
+| Mahiki (1 hit duration) provides mitigation for 1 hit then expires | ✓ |
+| Huna (1 turn untargetable) makes enemy untargetable when active | ✓ |
+| Komau CONFUSION makes enemy attack their own team | ✓ |
+| Komau CONFUSION: confused enemy attacks itself when alone | ✓ |
+| Kakama grants Pohatu two attacks in one round | ✓ |
+| wave advance decrements wave-based mask power counters | ✓ |
+| multi-round: 1 round wave 1 then wave 2 – Hau only (no Kakama) | Skipped |
+| multi-round: 1 round wave 1 then wave 2 – both Hau and Kakama | Skipped |
+| multi-round battle with mask power toggling (empty wave 1) | ✓ |
+| multi-round battle with mask power toggling between rounds | Skipped |
+| Hau expires correctly in wave 2 with 2 Toa (starts directly in wave 2) | ✓ |
+| Hau expires correctly in wave 2 with single Toa (isolated repro) | ✓ |
+| no mask power bleeds from round N to round N+1 when duration expired | ✓ |
 
 ### Masks covered (lifecycle)
 
 | Mask | Tested? | Notes |
 |------|---------|-------|
-| Hau | ✓ | Round duration, inactive after round, wave cooldown |
-| Kakama | ✓ | Round duration |
+| Hau | ✓ | Round duration, inactive after round, wave cooldown, wave 2 expiry (isolated) |
+| Kakama | ✓ | Round duration, double attack |
 | Pakari | ✓ | Attack duration |
 | Kaukau | ✓ | Turn duration |
+| Akaku | ✓ | DEFENSE debuff, turn duration |
+| Miru | ✓ | Hit duration (2 hits) |
+| Mahiki | ✓ | Hit duration (1 hit) |
+| Huna | ✓ | AGGRO untargetable |
+| Komau | ✓ | CONFUSION debuff |
 
-### Gaps
+### Gaps / Known issues
 
-| Gap | Priority | Action | Status |
-|-----|----------|--------|--------|
-| Akaku, Miru, Mahiki, Huna | Medium | Add simulation tests | ✓ Done |
-| Hit-based duration (Miru 2 hits, Mahiki 1 hit) | Medium | Add tests that verify hit decrement | ✓ Done |
-| Kakama double attack | Medium | Verify Pohatu attacks twice in one round | ✓ Done |
-| Multi-round post-advanceWave bug | Known | Test skipped; Hau stays active in wave 2 | Known |
+| Gap | Priority | Status |
+|-----|----------|--------|
+| Multi-round post-advanceWave bug | Known | Hau stays active in wave 2 when wave 1 rounds were run first. Isolated case (start in wave 2, empty wave 1) passes. Root cause under investigation. 3 tests skipped. |
 
 ---
 
@@ -124,9 +187,9 @@ This document captures the coverage analysis of the combat-related test suites (
 
 | Aspect | maskPowers | maskPowerCooldowns | battleSimulation |
 |--------|------------|--------------------|------------------|
-| Masks tested | 6 of 12 | N/A (wave only) | 4 of 12 |
+| Masks tested | 6 of 12 | N/A (wave only) | 9 of 12 |
 | Effect types tested | 3 of 7 | - | - |
-| Duration units exercised | - | 1 of 5 (wave) | round, attack, turn |
+| Duration units exercised | - | 1 of 5 (wave) | round, attack, turn, hit |
 | Cooldown units exercised | - | 1 of 2 (wave) | wave |
 | Full combat flow | ✗ | ✗ | ✓ |
 
@@ -136,11 +199,15 @@ This document captures the coverage analysis of the combat-related test suites (
 
 1. ~~**maskPowers.spec.ts**: Add Huna/chooseTarget test, optionally Kakama and Rau.~~ ✓ Implemented
 2. **maskPowerCooldowns.spec.ts**: Consider exporting `decrementMaskPowerCounter` for unit tests, or add tests via battle simulation for turn/round/attack/hit. (Deferred)
-3. ~~**battleSimulation.spec.ts**: Add Akaku, Miru, Mahiki, Huna; add hit-based duration tests; fix or document the post-advanceWave bug.~~ ✓ Implemented (except fix)
-4. **Unimplemented effects**: Ruru (ACCURACY_MULT), Komau (CONFUSION), Matatu (immobilize) — tests can wait until implemented.
+3. ~~**battleSimulation.spec.ts**: Add Akaku, Miru, Mahiki, Huna; add hit-based duration tests.~~ ✓ Implemented
+4. **battleSimulation.spec.ts**: Fix multi-round post-advanceWave bug (Hau stays active in wave 2 when wave 1 rounds run first). Root cause under investigation.
+5. **Unimplemented effects**: Ruru (ACCURACY_MULT), Matatu (immobilize) — tests can wait until implemented. Komau (CONFUSION) — ✓ Implemented.
 
 ---
 
-## Implementation Notes (latest)
+## Implementation Notes
 
-- **combatUtils.ts**: Fixed cooldown being decremented in same pass when duration expires — cooldown is now correctly set from MASK_POWERS when duration reaches 0.
+- **combatUtils.ts**: Cooldown is correctly set from MASK_POWERS when duration expires; not decremented in same pass.
+- **combatUtils.ts**: Round-end decrements (mask power duration, debuffs) run as a dedicated final step after all actor turns, so they always execute regardless of turn order or early exits.
+- **combatUtils.ts**: Optional `getLatestState` callback allows round-end to read latest team/enemies and avoid stale closures.
+- **useBattleState.tsx**: Uses refs and `getLatestState` so the round-end step receives current team/enemies during async step execution.
