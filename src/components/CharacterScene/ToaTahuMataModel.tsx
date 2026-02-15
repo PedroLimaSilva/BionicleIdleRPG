@@ -1,9 +1,10 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import { Color, Group, LoopOnce, Mesh, MeshPhysicalMaterial } from 'three';
+import { Group, LoopOnce } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
+import { useMask } from '../../hooks/useMask';
 
 export const ToaTahuMataModel = forwardRef<
   CombatantModelHandle,
@@ -63,23 +64,10 @@ export const ToaTahuMataModel = forwardRef<
     };
   }, [actions]);
 
-  useEffect(() => {
-    const maskColor = matoran.maskColorOverride || matoran.colors.mask;
-    nodes.Masks.children.forEach((mask) => {
-      const mesh = mask as Mesh;
-      const mat = mesh.material as MeshPhysicalMaterial;
-      mat.color = new Color(maskColor);
-    });
-  }, [nodes, matoran]);
-
-  useEffect(() => {
-    const maskTarget = matoran.maskOverride || matoran.mask;
-
-    nodes.Masks.children.forEach((mask) => {
-      const isTarget = mask.name === maskTarget;
-      mask.visible = isTarget;
-    });
-  }, [nodes, matoran]);
+  // Inject the active mask from the shared masks.glb
+  const maskTarget = matoran.maskOverride || matoran.mask;
+  const maskColor = matoran.maskColorOverride || matoran.colors.mask;
+  useMask(nodes.Masks, maskTarget, maskColor);
 
   return (
     <group ref={group} dispose={null}>
