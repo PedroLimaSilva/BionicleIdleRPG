@@ -6,6 +6,7 @@ import { Color } from '../../types/Colors';
 import { setupAnimationForTestMode } from '../../utils/testMode';
 import { MeshPhysicalMaterial } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
+import { useMask } from '../../hooks/useMask';
 
 const MAT_COLOR_MAP = {
   Face: 'face',
@@ -73,21 +74,20 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
         materialName === 'GlowingEyes' &&
         original.emissive &&
         (original.emissiveIntensity ?? 0) > 0;
-      const needsTransparent = original.transparent;
 
-      if (needsEmissive || needsTransparent) {
+      if (needsEmissive) {
         if (needsEmissive && original.emissive) {
           original.emissive = new ThreeColor(color);
           original.emissiveIntensity = original.emissiveIntensity ?? 0;
         }
       }
     });
-
-    nodes.Masks?.children.forEach((mask) => {
-      const isTarget = mask.name === matoran.mask;
-      mask.visible = isTarget;
-    });
   }, [nodes, materials, matoran]);
+
+  // Inject the active mask from the shared masks.glb
+  const maskTarget = matoran.mask;
+  const maskColor = matoran.colors.mask;
+  useMask(nodes.Masks, maskTarget, maskColor);
 
   return (
     <group ref={group} dispose={null}>
