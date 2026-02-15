@@ -17,6 +17,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Hau,
     stage: MatoranStage.ToaMata,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Red,
       body: LegoColor.Red,
       feet: LegoColor.Red,
@@ -33,6 +34,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Kaukau,
     stage: MatoranStage.ToaMata,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Blue,
       body: LegoColor.Blue,
       feet: LegoColor.Blue,
@@ -48,6 +50,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Kakama,
     stage: MatoranStage.ToaMata,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Brown,
       body: LegoColor.Brown,
       feet: LegoColor.Brown,
@@ -63,6 +66,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Pakari,
     stage: MatoranStage.ToaMata,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Black,
       body: LegoColor.Black,
       feet: LegoColor.Black,
@@ -78,6 +82,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Akaku,
     stage: MatoranStage.ToaMata,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.White,
       body: LegoColor.White,
       feet: LegoColor.White,
@@ -93,6 +98,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Miru,
     stage: MatoranStage.ToaMata,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Green,
       body: LegoColor.Green,
       feet: LegoColor.Green,
@@ -108,6 +114,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Hau,
     stage: MatoranStage.ToaNuva,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Red,
       body: LegoColor.Red,
       feet: LegoColor.Red,
@@ -124,6 +131,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Kaukau,
     stage: MatoranStage.ToaNuva,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Blue,
       body: LegoColor.Blue,
       feet: LegoColor.Blue,
@@ -139,6 +147,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Kakama,
     stage: MatoranStage.ToaNuva,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Brown,
       body: LegoColor.Brown,
       feet: LegoColor.Brown,
@@ -154,6 +163,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Pakari,
     stage: MatoranStage.ToaNuva,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Black,
       body: LegoColor.Black,
       feet: LegoColor.Black,
@@ -169,6 +179,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Akaku,
     stage: MatoranStage.ToaNuva,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.White,
       body: LegoColor.White,
       feet: LegoColor.White,
@@ -184,6 +195,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Miru,
     stage: MatoranStage.ToaNuva,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Green,
       body: LegoColor.Green,
       feet: LegoColor.Green,
@@ -199,6 +211,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     mask: Mask.Pakari,
     stage: MatoranStage.Diminished,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Red,
       body: LegoColor.Red,
       feet: LegoColor.Red,
@@ -214,6 +227,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     element: ElementTribe.Light,
     stage: MatoranStage.Diminished,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.MediumBlue,
       body: LegoColor.Red,
       feet: LegoColor.Yellow,
@@ -229,6 +243,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     element: ElementTribe.Fire,
     stage: MatoranStage.Diminished,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Yellow,
       body: LegoColor.Red,
       feet: LegoColor.Yellow,
@@ -244,6 +259,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     element: ElementTribe.Water,
     isMaskTransparent: true,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Blue,
       body: LegoColor.MediumBlue,
       feet: LegoColor.Blue,
@@ -258,6 +274,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Stone,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.DarkOrange,
       body: LegoColor.Tan,
       feet: LegoColor.DarkOrange,
@@ -272,6 +289,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Earth,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Orange,
       body: LegoColor.Black,
       feet: LegoColor.DarkGray,
@@ -286,6 +304,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Earth,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Purple,
       body: LegoColor.Black,
       feet: LegoColor.Purple,
@@ -300,6 +319,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Air,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.DarkTurquoise,
       body: LegoColor.Lime,
       feet: LegoColor.DarkTurquoise,
@@ -314,6 +334,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Ice,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.SandBlue,
       body: LegoColor.White,
       feet: LegoColor.SandBlue,
@@ -328,6 +349,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Water,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Blue,
       body: LegoColor.MediumBlue,
       feet: LegoColor.Blue,
@@ -343,6 +365,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Ice,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.SandBlue,
       body: LegoColor.White,
       feet: LegoColor.SandBlue,
@@ -358,6 +381,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     element: ElementTribe.Stone,
     isMaskTransparent: true,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.DarkOrange,
       body: LegoColor.Tan,
       feet: LegoColor.DarkOrange,
@@ -372,6 +396,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Earth,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Black,
       body: LegoColor.Tan,
       feet: LegoColor.Black,
@@ -387,6 +412,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Air,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Lime,
       body: LegoColor.DarkTurquoise,
       feet: LegoColor.Lime,
@@ -402,6 +428,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Ice,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.SandBlue,
       body: LegoColor.White,
       feet: LegoColor.SandBlue,
@@ -417,6 +444,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     stage: MatoranStage.Diminished,
     element: ElementTribe.Stone,
     colors: {
+      face: LegoColor.DarkGray,
       mask: LegoColor.Black,
       body: LegoColor.Tan,
       feet: LegoColor.Black,
