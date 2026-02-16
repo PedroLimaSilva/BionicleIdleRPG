@@ -18,6 +18,7 @@ function SetSRGBColorSpace() {
 
 export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [scene, setScene] = useState<React.ReactNode>(null);
+  const [sceneReady, setSceneReady] = useState(false);
   const [target, setTarget] = useState<HTMLElement | null>(null);
 
   const [debugMode] = useState(getDebugMode());
@@ -31,13 +32,14 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
       // Optional: dynamically assign a route-based class
       el.className = `canvas-mount route-${location.pathname.replace(/\//g, '-')}`;
+      el.dataset.sceneReady = String(sceneReady);
 
       setTimeout(() => {}, 0);
     }
-  }, [location.pathname]);
+  }, [location.pathname, sceneReady]);
 
   return (
-    <SceneCanvasContext.Provider value={{ setScene, scene }}>
+    <SceneCanvasContext.Provider value={{ setScene, scene, sceneReady, setSceneReady }}>
       {children}
       {target &&
         createPortal(

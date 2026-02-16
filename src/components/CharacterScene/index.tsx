@@ -1,6 +1,7 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
+import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { EffectComposer, SSAO, SelectiveBloom } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import { Object3D } from 'three';
@@ -85,6 +86,19 @@ function CharacterFraming() {
   return null;
 }
 
+/**
+ * Signals to the canvas context when the character model has finished loading.
+ * Renders inside Suspense so it only mounts after CharacterModel resolves.
+ */
+function SceneReadyNotifier() {
+  const { setSceneReady } = useSceneCanvas();
+  useEffect(() => {
+    setSceneReady(true);
+    return () => setSceneReady(false);
+  }, [setSceneReady]);
+  return null;
+}
+
 export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const characterRootRef = useRef<Object3D>(null);
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
@@ -120,6 +134,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
         >
           <Suspense fallback={null}>
             <CharacterModel matoran={matoran} />
+            <SceneReadyNotifier />
           </Suspense>
         </PresentationControls>
       </group>

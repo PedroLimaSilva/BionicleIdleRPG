@@ -25,6 +25,9 @@
       z-index: 1;
       left: calc(anchor(left) - 4rem);
       right: calc(anchor(right) - 4rem);
+      &[data-scene-ready='false'] {
+        visibility: hidden;
+      }
     }
     &.route--battle {
       display: block;
