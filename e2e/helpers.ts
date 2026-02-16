@@ -129,8 +129,7 @@ export async function waitForCanvas(page: Page, timeout = 10000) {
   await page.waitForSelector('canvas', { timeout, state: 'visible' });
 
   // Brief buffer for WebGL to render the first frame
-  const isCI = !!process.env.CI || !!process.env.PLAYWRIGHT_DOCKER;
-  await page.waitForTimeout(isCI ? 2000 : 500);
+  await page.waitForTimeout(500);
 }
 
 /**
