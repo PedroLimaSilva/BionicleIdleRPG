@@ -47,8 +47,16 @@ function loadMasksNodes(): Promise<Record<string, Object3D>> {
  * @param masksParent - The Object3D to parent the mask to (e.g. `nodes.Masks`)
  * @param maskName    - The name of the mask mesh in masks.glb (must match the Mask enum value)
  * @param maskColor   - The color to tint the mask
+ * @param glowColor   - Optional color for emissive "glow" materials (e.g. lens glow matching eye color).
+ *                       When provided, materials whose names include "glow" (case-insensitive) will use
+ *                       this color for both their base color and emissive color instead of maskColor.
  */
-export function useMask(masksParent: Object3D | undefined, maskName: string, maskColor: string) {
+export function useMask(
+  masksParent: Object3D | undefined,
+  maskName: string,
+  maskColor: string,
+  glowColor?: string
+) {
   const [masksNodes, setMasksNodes] = useState<Record<string, Object3D> | null>(masksNodesCache);
   const maskRef = useRef<Object3D | null>(null);
 
@@ -112,11 +120,21 @@ export function useMask(masksParent: Object3D | undefined, maskName: string, mas
       if ((child as Mesh).isMesh) {
         const mat = (child as Mesh).material;
         if (mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial) {
-          mat.color = new Color(maskColor);
+          const isGlow = mat.name.toLowerCase().includes('glow');
+
+          if (isGlow && glowColor) {
+            const col = new Color(glowColor);
+            mat.color = col;
+            if (mat.emissive) {
+              mat.emissive = col.clone();
+            }
+          } else {
+            mat.color = new Color(maskColor);
+          }
         }
       }
     });
-  }, [masksNodes, masksParent, maskName, maskColor]);
+  }, [masksNodes, masksParent, maskName, maskColor, glowColor]);
 
   return maskRef.current;
 }

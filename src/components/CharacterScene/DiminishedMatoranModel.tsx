@@ -87,7 +87,8 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.mask;
   const maskColor = matoran.colors.mask;
-  useMask(nodes.Masks, maskTarget, maskColor);
+  const glowColor = matoran.colors.eyes;
+  useMask(nodes.Masks, maskTarget, maskColor, glowColor);
 
   return (
     <group ref={group} dispose={null}>
