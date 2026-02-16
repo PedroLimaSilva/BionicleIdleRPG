@@ -16,7 +16,7 @@ export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
   const { battle, applyBattleRewards, completedQuests, collectedKrana } = useGame();
   const { currentEncounter, phase, currentWave, enemies, team } = battle;
-  const { setScene } = useSceneCanvas();
+  const { setScene, setSceneReady } = useSceneCanvas();
 
   const kranaRewards = useMemo(() => {
     if (
@@ -45,11 +45,16 @@ export const BattlePage: React.FC = () => {
 
   useEffect(() => {
     if (currentEncounter) {
+      setSceneReady(false);
       setScene(<Arena team={battle.team} enemies={battle.enemies} />);
     } else {
-      setScene(null); // or show something else
+      setScene(null);
     }
-  }, [setScene, currentEncounter, battle.team, battle.enemies, phase]);
+    return () => {
+      setSceneReady(false);
+      setScene(null);
+    };
+  }, [setScene, setSceneReady, currentEncounter, battle.team, battle.enemies, phase]);
 
   if (!currentEncounter) {
     return null;

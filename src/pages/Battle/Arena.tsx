@@ -3,8 +3,9 @@ import { useGLTF, Environment } from '@react-three/drei';
 import { GLTF } from 'three-stdlib';
 import { Combatant } from '../../types/Combat';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
+import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -88,6 +89,19 @@ function ArenaFraming() {
   return null;
 }
 
+/**
+ * Signals to the canvas context when the arena scene has finished loading.
+ * Renders inside Suspense so it only mounts after arena and combatant models resolve.
+ */
+function ArenaReadyNotifier() {
+  const { setSceneReady } = useSceneCanvas();
+  useEffect(() => {
+    setSceneReady(true);
+    return () => setSceneReady(false);
+  }, [setSceneReady]);
+  return null;
+}
+
 export function Arena({ team, enemies }: ArenaProps) {
   const combatantRefs = useRef<Record<string, CombatantModelHandle>>({});
 
@@ -149,31 +163,34 @@ export function Arena({ team, enemies }: ArenaProps) {
           position={[0.5, -0.075, 0.75]}
         />
 
-        {team.map((c, i) => (
-          <CombatantModel
-            key={c.id}
-            combatant={c}
-            side="team"
-            position={TEAM_POSITIONS[i]}
-            ref={(ref) => {
-              if (ref) combatantRefs.current[c.id] = ref;
-            }}
-          />
-        ))}
-
-        {enemies.map((c, i) => {
-          return (
+        <Suspense fallback={null}>
+          {team.map((c, i) => (
             <CombatantModel
               key={c.id}
               combatant={c}
-              side="enemy"
-              position={ENEMY_POSITIONS[i]}
+              side="team"
+              position={TEAM_POSITIONS[i]}
               ref={(ref) => {
                 if (ref) combatantRefs.current[c.id] = ref;
               }}
             />
-          );
-        })}
+          ))}
+
+          {enemies.map((c, i) => {
+            return (
+              <CombatantModel
+                key={c.id}
+                combatant={c}
+                side="enemy"
+                position={ENEMY_POSITIONS[i]}
+                ref={(ref) => {
+                  if (ref) combatantRefs.current[c.id] = ref;
+                }}
+              />
+            );
+          })}
+          <ArenaReadyNotifier />
+        </Suspense>
       </group>
     </group>
   );

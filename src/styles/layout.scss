@@ -32,6 +32,9 @@
     &.route--battle {
       display: block;
       z-index: -1;
+      &[data-scene-ready='false'] {
+        visibility: hidden;
+      }
     }
   }
 
