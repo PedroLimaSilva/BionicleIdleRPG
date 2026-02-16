@@ -56,7 +56,11 @@ export const CharacterDetail: React.FC = () => {
       setSceneReady(false);
       setScene(null);
     };
-  }, [matoran, setScene, setSceneReady]);
+    // Only reset when switching characters (id). matoran gets new refs from game state updates
+    // (exp, quests, recruitedCharacters); depending on it would clear the scene repeatedly
+    // before SceneReadyNotifier can fire, leaving data-scene-ready stuck false.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally omit matoran
+  }, [id, setScene, setSceneReady]);
 
   // const combatantStats = useMemo(() => {
   //   return COMBATANT_DEX[matoran.id] || null;
