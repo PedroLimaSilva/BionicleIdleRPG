@@ -1,17 +1,13 @@
 import { useEffect, useRef } from 'react';
-import { Group, Mesh } from 'three';
+import { Group } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
-import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
-import { Color, LegoColor } from '../../types/Colors';
+import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
 import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
-import {
-  applyStandardPlasticToObject,
-  getStandardPlasticMaterial,
-} from './StandardPlasticMaterial';
+import { useMask } from '../../hooks/useMask';
 
 export function ToaOnuaMataModel({ matoran }: { matoran: RecruitedCharacterData & BaseMatoran }) {
   const group = useRef<Group>(null);
-  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'toa_onua_mata.glb');
+  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/onua.glb');
 
   const { actions, mixer } = useAnimations(animations, group);
 
@@ -32,40 +28,11 @@ export function ToaOnuaMataModel({ matoran }: { matoran: RecruitedCharacterData 
     };
   }, [actions, mixer]);
 
-  useEffect(() => {
-    if (group.current) applyStandardPlasticToObject(group.current);
-  }, [nodes]);
-
-  useEffect(() => {
-    const maskColor = (matoran.maskColorOverride || matoran.colors.mask) as Color;
-    nodes.Masks.children.forEach((mask) => {
-      const mesh = mask as Mesh;
-      let mat = getStandardPlasticMaterial(maskColor);
-      const needsTransparent = mask.name === Mask.Kaukau;
-      const needsMetalness = matoran.maskColorOverride === LegoColor.PearlGold;
-      if (needsTransparent || needsMetalness) {
-        mat = mat.clone();
-        if (needsTransparent) {
-          mat.transparent = true;
-          mat.opacity = 0.8;
-        }
-        if (needsMetalness) {
-          mat.metalness = 0.5;
-          mat.roughness = 0.3;
-        }
-      }
-      mesh.material = mat;
-    });
-  }, [nodes, matoran]);
-
-  useEffect(() => {
-    const maskTarget = matoran.maskOverride || matoran.mask;
-
-    nodes.Masks.children.forEach((mask) => {
-      const isTarget = mask.name === maskTarget;
-      mask.visible = isTarget;
-    });
-  }, [nodes, matoran]);
+  // Inject the active mask from the shared masks.glb
+  const maskTarget = matoran.maskOverride || matoran.mask;
+  const maskColor = matoran.maskColorOverride || matoran.colors.mask;
+  const glowColor = matoran.colors.eyes;
+  useMask(nodes.Masks, maskTarget, maskColor, glowColor);
 
   return (
     <group ref={group} dispose={null}>
