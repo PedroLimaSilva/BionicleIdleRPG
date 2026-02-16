@@ -23,7 +23,7 @@ const CHARACTER_INVENTORY_GAME_STATE = {
     },
     {
       id: 'Jala',
-      exp: 0,
+      exp: 20000, // High exp so job gains during E2E tests don't cause level-up
       assignment: {
         job: MatoranJob.CharcoalMaker,
         expRatePerSecond: 1.5,
