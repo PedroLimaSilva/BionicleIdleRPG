@@ -1,38 +1,26 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { Group, LoopOnce } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
-import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
-import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
-import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
-import { useMask } from '../../hooks/useMask';
+import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
+import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
+import { getAnimationTimeScale, setupAnimationForTestMode } from '../../../utils/testMode';
+import { useMask } from '../../../hooks/useMask';
 
-export const ToaGaliMataModel = forwardRef<
+export const PohatuMataModel = forwardRef<
   CombatantModelHandle,
   {
     matoran: RecruitedCharacterData & BaseMatoran;
   }
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);
-  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/gali.glb');
+  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/pohatu.glb');
 
   const { actions, mixer } = useAnimations(animations, group);
 
   useEffect(() => {
     // Set mixer timeScale based on test mode
     mixer.timeScale = getAnimationTimeScale();
-
-    const idle = actions['Idle'];
-    if (!idle) return;
-
-    idle.reset().play();
-
-    // In test mode, force animation to frame 0 and pause
-    setupAnimationForTestMode(idle);
-
-    return () => {
-      idle.fadeOut(0.2);
-    };
-  }, [actions, mixer]);
+  }, [mixer]);
 
   useImperativeHandle(ref, () => ({
     playAnimation: (name) => {
@@ -62,6 +50,20 @@ export const ToaGaliMataModel = forwardRef<
     },
   }));
 
+  useEffect(() => {
+    const idle = actions['Idle'];
+    if (!idle) return;
+
+    idle.reset().play();
+
+    // In test mode, force animation to frame 0 and pause
+    setupAnimationForTestMode(idle);
+
+    return () => {
+      idle.fadeOut(0.2);
+    };
+  }, [actions]);
+
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.maskOverride || matoran.mask;
   const maskColor = matoran.maskColorOverride || matoran.colors.mask;
@@ -70,7 +72,7 @@ export const ToaGaliMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Gali} scale={1} position={[0, 9.6, 0]} />
+      <primitive object={nodes.Pohatu} position={[0, 9, 0]} scale={37} />
     </group>
   );
 });

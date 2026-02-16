@@ -1,25 +1,38 @@
-import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { Group, LoopOnce } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
-import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
-import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
-import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
-import { useMask } from '../../hooks/useMask';
+import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
+import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
+import { getAnimationTimeScale, setupAnimationForTestMode } from '../../../utils/testMode';
+import { useMask } from '../../../hooks/useMask';
 
-export const ToaKopakaMataModel = forwardRef<
+export const GaliMataModel = forwardRef<
   CombatantModelHandle,
   {
     matoran: RecruitedCharacterData & BaseMatoran;
   }
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);
-  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/kopaka.glb');
+  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/gali.glb');
+
   const { actions, mixer } = useAnimations(animations, group);
 
   useEffect(() => {
     // Set mixer timeScale based on test mode
     mixer.timeScale = getAnimationTimeScale();
-  }, [mixer]);
+
+    const idle = actions['Idle'];
+    if (!idle) return;
+
+    idle.reset().play();
+
+    // In test mode, force animation to frame 0 and pause
+    setupAnimationForTestMode(idle);
+
+    return () => {
+      idle.fadeOut(0.2);
+    };
+  }, [actions, mixer]);
 
   useImperativeHandle(ref, () => ({
     playAnimation: (name) => {
@@ -49,19 +62,6 @@ export const ToaKopakaMataModel = forwardRef<
     },
   }));
 
-  useEffect(() => {
-    const idle = actions['Idle'];
-    if (!idle) return;
-    idle.reset().play();
-
-    // In test mode, force animation to frame 0 and pause
-    setupAnimationForTestMode(idle);
-
-    return () => {
-      idle.fadeOut(0.2);
-    };
-  }, [actions]);
-
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.maskOverride || matoran.mask;
   const maskColor = matoran.maskColorOverride || matoran.colors.mask;
@@ -70,7 +70,7 @@ export const ToaKopakaMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Kopaka} scale={1} position={[0, 9.4, -0.4]} />
+      <primitive object={nodes.Gali} scale={1} position={[0, 9.6, 0]} />
     </group>
   );
 });

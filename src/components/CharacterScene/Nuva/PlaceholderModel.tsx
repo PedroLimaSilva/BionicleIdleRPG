@@ -1,5 +1,5 @@
-import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
-import { LegoColor } from '../../types/Colors';
+import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
+import { LegoColor } from '../../../types/Colors';
 
 /** Placeholder cylinder for Toa Nuva until real models are available. */
 export function ToaNuvaPlaceholderModel({
