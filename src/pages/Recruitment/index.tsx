@@ -1,15 +1,14 @@
-import { startTransition, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import './index.scss';
-import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { ListedCharacterData } from '../../types/Matoran';
 import { useGame } from '../../context/Game';
 import { ITEM_DICTIONARY } from '../../data/loot';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { MATORAN_DEX } from '../../data/matoran';
-import { isMatoran } from '../../services/matoranUtils';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const Recruitment: React.FC = () => {
   const { widgets, recruitCharacter, buyableCharacters, inventory } = useGame();
@@ -18,6 +17,7 @@ export const Recruitment: React.FC = () => {
   const navigate = useNavigate();
 
   const [selectedMatoran, setSelectedMatoran] = useState<ListedCharacterData | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const canRecruit = useMemo(() => {
     const hasRequiredItems = (matoran: ListedCharacterData): boolean => {
@@ -42,11 +42,19 @@ export const Recruitment: React.FC = () => {
     };
   }, [selectedMatoran, setScene]);
 
-  const handleRecruit = (matoran: ListedCharacterData) => {
-    startTransition(() => {
-      setSelectedMatoran(matoran);
-    });
-  };
+  const selectPrev = useCallback(() => {
+    if (!selectedMatoran) return;
+    const idx = buyableCharacters.findIndex((c) => c.id === selectedMatoran.id);
+    const prev = buyableCharacters[idx - 1] ?? buyableCharacters[buyableCharacters.length - 1];
+    if (prev) setSelectedMatoran(prev);
+  }, [selectedMatoran, buyableCharacters]);
+
+  const selectNext = useCallback(() => {
+    if (!selectedMatoran) return;
+    const idx = buyableCharacters.findIndex((c) => c.id === selectedMatoran.id);
+    const next = buyableCharacters[idx + 1] ?? buyableCharacters[0];
+    if (next) setSelectedMatoran(next);
+  }, [selectedMatoran, buyableCharacters]);
 
   const confirmRecruitment = () => {
     if (selectedMatoran && canRecruit) {
@@ -62,65 +70,66 @@ export const Recruitment: React.FC = () => {
 
   return (
     <div className="recruitment-screen">
-      <div className="recruitment-preview">
+      <div className="recruitment-preview" onClick={() => setIsExpanded(false)}>
         {selectedMatoran && (
-          <div>
-            <div
-              key={selectedMatoran.id}
-              className={`recruitment-overlay ${isMatoran(MATORAN_DEX[selectedMatoran.id]) ? 'top' : 'bottom'}`}
+          <>
+            <button
+              type="button"
+              className="recruitment-arrow recruitment-arrow--left"
+              onClick={selectPrev}
+              aria-label="Previous character"
             >
-              <div className="requirement-list">
-                <h4>Required to Recruit:</h4>
-                <ul>
-                  <li className={widgets >= selectedMatoran.cost ? 'has-enough' : 'not-enough'}>
-                    {widgets >= selectedMatoran.cost ? '✅' : '❌'} {selectedMatoran.cost} widgets
-                  </li>
-                  {selectedMatoran.requiredItems?.map(({ item, quantity }) => {
-                    const owned = inventory[item] || 0;
-                    const hasEnough = owned >= quantity;
-                    return (
-                      <li
-                        key={`${selectedMatoran.id}-${item}`}
-                        className={hasEnough ? 'has-enough' : 'not-enough'}
-                      >
-                        {hasEnough ? '✅' : '❌'} {ITEM_DICTIONARY[item].name} ({owned} / {quantity}
-                        )
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-
-              <button
-                className={`elemental-btn ${
-                  canRecruit ? '' : 'disabled'
-                } element-${MATORAN_DEX[selectedMatoran.id].element}`}
-                onClick={confirmRecruitment}
-              >
-                Recruit
-              </button>
-            </div>
-          </div>
+              <ChevronLeft size={32} />
+            </button>
+            <button
+              type="button"
+              className="recruitment-arrow recruitment-arrow--right"
+              onClick={selectNext}
+              aria-label="Next character"
+            >
+              <ChevronRight size={32} />
+            </button>
+          </>
         )}
       </div>
+      {selectedMatoran && (
+        <div
+          className={`requirement-drawer ${isExpanded ? 'expanded' : ''} element-${MATORAN_DEX[selectedMatoran.id].element}`}
+        >
+          <h1 className="character-name" onClick={() => setIsExpanded(!isExpanded)}>
+            {selectedMatoran ? MATORAN_DEX[selectedMatoran.id].name : ''}
+          </h1>
+          <div className="requirement-list">
+            <h4 onClick={() => setIsExpanded(!isExpanded)}>Requirements</h4>
+            <ul>
+              <li className={widgets >= selectedMatoran.cost ? 'has-enough' : 'not-enough'}>
+                {widgets >= selectedMatoran.cost ? '✅' : '❌'} {selectedMatoran.cost} widgets
+              </li>
+              {selectedMatoran.requiredItems?.map(({ item, quantity }) => {
+                const owned = inventory[item] || 0;
+                const hasEnough = owned >= quantity;
+                return (
+                  <li
+                    key={`${selectedMatoran.id}-${item}`}
+                    className={hasEnough ? 'has-enough' : 'not-enough'}
+                  >
+                    {hasEnough ? '✅' : '❌'} {ITEM_DICTIONARY[item].name} ({owned} / {quantity})
+                  </li>
+                );
+              })}
+            </ul>
 
-      <div className="matoran-selector">
-        <div className="scroll-row">
-          {buyableCharacters.map((matoran) => (
-            <div
-              key={matoran.id}
-              className={`card element-${MATORAN_DEX[matoran.id].element}`}
-              onClick={() => handleRecruit(matoran)}
+            <button
+              className={`elemental-btn ${
+                canRecruit ? '' : 'disabled'
+              } element-${MATORAN_DEX[selectedMatoran.id].element}`}
+              onClick={confirmRecruitment}
             >
-              <MatoranAvatar
-                matoran={{ ...MATORAN_DEX[matoran.id], exp: 0 }}
-                styles={'mask-preview matoran-avatar'}
-              />
-              <div className="name">{MATORAN_DEX[matoran.id].name}</div>
-            </div>
-          ))}
+              Recruit
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

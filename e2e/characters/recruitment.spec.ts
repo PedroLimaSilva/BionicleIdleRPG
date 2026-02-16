@@ -1,17 +1,18 @@
 import { test, expect } from '@playwright/test';
-import { goto, INITIAL_GAME_STATE, setupGameState, waitForModelLoad } from '../helpers';
+import { goto, INITIAL_GAME_STATE, setupGameState, waitForCanvas } from '../helpers';
 
 const RECRUITMENT_GAME_STATE = {
   ...INITIAL_GAME_STATE,
+  widgets: 100,
   buyableCharacters: [
     {
       id: 'Toa_Tahu',
-      cost: 100,
+      cost: 500,
       requiredItems: [],
     },
     {
       id: 'Jala',
-      cost: 500,
+      cost: 100,
       requiredItems: [],
     },
     {
@@ -63,23 +64,15 @@ const RECRUITMENT_GAME_STATE = {
 };
 
 test.describe('Recruitment Page', () => {
-  test('should display recruitment page with character list', async ({ page }) => {
+  test('should display recruitment page with character visualization and requirements drawer', async ({
+    page,
+  }) => {
     await setupGameState(page, RECRUITMENT_GAME_STATE);
-
-    // Set up listener for model load BEFORE navigation
-    const modelLoadPromise = waitForModelLoad(page);
 
     await goto(page, '/recruitment');
 
-    // Wait for page to be fully loaded and ready
-    // Wait for character cards to be in the DOM
-    await page.locator('.card').first().waitFor({ state: 'visible', timeout: 10000 });
-
-    // Wait for canvas to be present
-    await page.waitForSelector('canvas', { state: 'visible', timeout: 10000 });
-
-    // Wait for the 3D model to be loaded and paused
-    await modelLoadPromise;
+    // Wait for canvas  to be present
+    await waitForCanvas(page);
 
     // Take a full page screenshot
     await expect(page).toHaveScreenshot({
