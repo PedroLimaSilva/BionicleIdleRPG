@@ -20,6 +20,7 @@ import { GameItemId } from '../data/loot';
 import { LegoColor } from '../types/Colors';
 
 const MOCK_COLORS = {
+  face: LegoColor.LightGray,
   mask: LegoColor.Black,
   body: LegoColor.Black,
   feet: LegoColor.Black,

@@ -1,9 +1,9 @@
-import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { EffectComposer, SSAO, SelectiveBloom } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
-import { Mesh, MeshStandardMaterial, Object3D } from 'three';
+import { Object3D } from 'three';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
@@ -17,6 +17,7 @@ import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 import { ToaTahuMataModel } from './ToaTahuMataModel';
 import { ToaTahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { ToaGaliNuvaModel } from './Nuva/GaliNuvaModel';
+import { useEyeMeshes } from './selectiveBloom';
 
 function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   switch (matoran.stage) {
@@ -48,49 +49,6 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
     default:
       return <DiminishedMatoranModel matoran={matoran} />;
   }
-}
-
-/** Names that identify eye/glowing-eye/lens meshes in Matoran and Toa GLTFs (mesh or material). */
-export const EYE_MESH_NAMES = ['Brain', 'Eye', 'glow', 'lens'];
-
-function isEyeMesh(mesh: Mesh): boolean {
-  const name = (mesh.name || '').toLowerCase();
-  const matName = ((mesh.material as { name?: string })?.name ?? '').toLowerCase();
-  return EYE_MESH_NAMES.some(
-    (eye) => name.includes(eye.toLowerCase()) || matName.includes(eye.toLowerCase())
-  );
-}
-
-/** Collects only eye meshes (by name) that have emissive material, for selective bloom */
-function useEyeMeshes(
-  characterRootRef: React.RefObject<Object3D | null>,
-  matoran: BaseMatoran & RecruitedCharacterData
-) {
-  const [eyeMeshes, setEyeMeshes] = useState<Object3D[]>([]);
-
-  useLayoutEffect(() => {
-    const root = characterRootRef.current;
-    if (!root) {
-      setEyeMeshes([]);
-      return;
-    }
-    const collect = () => {
-      const collected: Object3D[] = [];
-      root.traverse((obj) => {
-        if (!(obj as Mesh).isMesh) return;
-        const mesh = obj as Mesh;
-        const mat = mesh.material as MeshStandardMaterial | undefined;
-        if (mat && (mat.emissiveIntensity ?? 0) > 0 && isEyeMesh(mesh)) {
-          collected.push(mesh);
-        }
-      });
-      setEyeMeshes(collected);
-    };
-    const id = setTimeout(collect, 0);
-    return () => clearTimeout(id);
-  }, [matoran, characterRootRef]);
-
-  return eyeMeshes;
 }
 
 /**
