@@ -49,21 +49,12 @@ export const CharacterDetail: React.FC = () => {
   useEffect(() => {
     if (!matoran) return;
 
-    // Clear the scene first so the previous model is fully dismounted.
-    // Defer mounting the new scene so React commits the null state before we render the next model.
     setSceneReady(false);
-    setScene(null);
-
-    const rafId = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setScene(<CharacterScene matoran={matoran} />);
-      });
-    });
+    setScene(<CharacterScene matoran={matoran} />);
 
     return () => {
       setSceneReady(false);
       setScene(null);
-      cancelAnimationFrame(rafId);
     };
   }, [matoran, setScene, setSceneReady]);
 
