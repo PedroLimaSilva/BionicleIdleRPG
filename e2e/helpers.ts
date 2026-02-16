@@ -116,14 +116,21 @@ export function isMobile(testInfo: TestInfo): boolean {
 
 /**
  * Wait for 3D canvas to be ready
+ * Uses data-scene-ready attribute for a deterministic wait (character detail, battle, recruitment).
+ * Replaces fixed 3–6s delay with waiting for the actual ready signal.
  * Note: Animations are automatically paused when TEST_MODE is enabled in localStorage
- * In CI/Docker, software WebGL is slower - allow more time for initial frame
  */
 export async function waitForCanvas(page: Page, timeout = 10000) {
+  await page.waitForSelector('canvas', { timeout, state: 'attached' });
+
+  // Wait for the scene to signal it's loaded (models resolved, Suspense boundaries settled)
+  await page.waitForSelector('#canvas-mount[data-scene-ready="true"]', { timeout });
+
   await page.waitForSelector('canvas', { timeout, state: 'visible' });
 
+  // Brief buffer for WebGL to render the first frame
   const isCI = !!process.env.CI || !!process.env.PLAYWRIGHT_DOCKER;
-  await page.waitForTimeout(isCI ? 6000 : 3000);
+  await page.waitForTimeout(isCI ? 2000 : 500);
 }
 
 /**
