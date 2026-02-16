@@ -1,12 +1,12 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { Group, LoopOnce } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
-import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
-import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
-import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
-import { useMask } from '../../hooks/useMask';
+import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
+import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
+import { getAnimationTimeScale, setupAnimationForTestMode } from '../../../utils/testMode';
+import { useMask } from '../../../hooks/useMask';
 
-export const ToaTahuMataModel = forwardRef<
+export const TahuMataModel = forwardRef<
   CombatantModelHandle,
   {
     matoran: RecruitedCharacterData & BaseMatoran;

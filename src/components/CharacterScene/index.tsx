@@ -7,14 +7,14 @@ import { Object3D } from 'three';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
-import { ToaGaliMataModel } from './ToaGaliMataModel';
-import { ToaPohatuMataModel } from './ToaPohatuMataModel';
-import { ToaKopakaMataModel } from './ToaKopakaMataModel';
-import { ToaOnuaMataModel } from './ToaOnuaMataModel';
-import { ToaLewaMataModel } from './ToaLewaMataModel';
-import { ToaNuvaPlaceholderModel } from './ToaNuvaPlaceholderModel';
+import { GaliMataModel } from './Mata/GaliMataModel';
+import { PohatuMataModel } from './Mata/PohatuMataModel';
+import { KopakaMataModel } from './Mata/KopakaMataModel';
+import { OnuaMataModel } from './Mata/OnuaMataModel';
+import { LewaMataModel } from './Mata/LewaMataModel';
+import { ToaNuvaPlaceholderModel } from './Nuva/PlaceholderModel';
 import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
-import { ToaTahuMataModel } from './ToaTahuMataModel';
+import { TahuMataModel } from './Mata/TahuMataModel';
 import { ToaTahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { ToaGaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { useEyeMeshes } from './selectiveBloom';
@@ -24,17 +24,17 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
     case MatoranStage.ToaMata:
       switch (matoran.id) {
         case 'Toa_Gali':
-          return <ToaGaliMataModel matoran={matoran} />;
+          return <GaliMataModel matoran={matoran} />;
         case 'Toa_Pohatu':
-          return <ToaPohatuMataModel matoran={matoran} />;
+          return <PohatuMataModel matoran={matoran} />;
         case 'Toa_Kopaka':
-          return <ToaKopakaMataModel matoran={matoran} />;
+          return <KopakaMataModel matoran={matoran} />;
         case 'Toa_Onua':
-          return <ToaOnuaMataModel matoran={matoran} />;
+          return <OnuaMataModel matoran={matoran} />;
         case 'Toa_Lewa':
-          return <ToaLewaMataModel matoran={matoran} />;
+          return <LewaMataModel matoran={matoran} />;
         default:
-          return <ToaTahuMataModel matoran={matoran} />;
+          return <TahuMataModel matoran={matoran} />;
       }
     case MatoranStage.ToaNuva:
       switch (matoran.id) {

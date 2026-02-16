@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
-import { Group } from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
-import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
-import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
-import { useMask } from '../../hooks/useMask';
+import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
+import { Group } from 'three';
+import { getAnimationTimeScale, setupAnimationForTestMode } from '../../../utils/testMode';
+import { useMask } from '../../../hooks/useMask';
 
-export function ToaOnuaMataModel({ matoran }: { matoran: RecruitedCharacterData & BaseMatoran }) {
+export function LewaMataModel({ matoran }: { matoran: RecruitedCharacterData & BaseMatoran }) {
   const group = useRef<Group>(null);
-  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/onua.glb');
+  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/lewa.glb');
 
   const { actions, mixer } = useAnimations(animations, group);
 
@@ -36,7 +36,7 @@ export function ToaOnuaMataModel({ matoran }: { matoran: RecruitedCharacterData 
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Onua} scale={1} position={[0, 9.6, 0]} />
+      <primitive object={nodes.Lewa} scale={1} position={[0, 9.6, 0]} />
     </group>
   );
 }
