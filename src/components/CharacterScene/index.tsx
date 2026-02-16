@@ -94,7 +94,8 @@ function SceneReadyNotifier() {
   const { setSceneReady } = useSceneCanvas();
   useEffect(() => {
     setSceneReady(true);
-    return () => setSceneReady(false);
+    // Don't set false on unmount - parent handles that when changing scenes.
+    // Clearing here can hide the canvas if Suspense re-shows fallback or Strict Mode double-mounts.
   }, [setSceneReady]);
   return null;
 }

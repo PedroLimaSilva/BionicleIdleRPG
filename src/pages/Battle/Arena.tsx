@@ -97,7 +97,7 @@ function ArenaReadyNotifier() {
   const { setSceneReady } = useSceneCanvas();
   useEffect(() => {
     setSceneReady(true);
-    return () => setSceneReady(false);
+    // Don't set false on unmount - Battle page cleanup handles that when changing scenes.
   }, [setSceneReady]);
   return null;
 }
