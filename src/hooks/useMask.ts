@@ -36,13 +36,39 @@ function loadMasksNodes(): Promise<Record<string, Object3D>> {
   return masksLoadPromise;
 }
 
-function setMaskMaterialsOpacity(mask: Object3D, opacity: number) {
+type MatType = MeshPhysicalMaterial | MeshStandardMaterial;
+
+function captureOriginalOpacities(
+  mask: Object3D
+): Map<MatType, number> {
+  const map = new Map<MatType, number>();
   mask.traverse((child) => {
     if ((child as Mesh).isMesh) {
       const mat = (child as Mesh).material;
       if (mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial) {
-        mat.transparent = opacity < 1;
-        mat.opacity = opacity;
+        map.set(mat, mat.opacity);
+      }
+    }
+  });
+  return map;
+}
+
+function setMaskMaterialsOpacity(
+  mask: Object3D,
+  t: number,
+  opacitiesMap?: Map<MatType, number>,
+  /** For outgoing: fade from original to 0. For incoming: fade from 0 to original. */
+  direction: 'out' | 'in' = 'in'
+) {
+  mask.traverse((child) => {
+    if ((child as Mesh).isMesh) {
+      const mat = (child as Mesh).material;
+      if (mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial) {
+        const original = opacitiesMap?.get(mat) ?? 1;
+        const targetOpacity =
+          direction === 'in' ? t * original : original * (1 - t);
+        mat.transparent = targetOpacity < 1;
+        mat.opacity = targetOpacity;
       }
     }
   });
@@ -75,6 +101,8 @@ export function useMask(
   const [masksNodes, setMasksNodes] = useState<Record<string, Object3D> | null>(masksNodesCache);
   const maskRef = useRef<Object3D | null>(null);
   const outgoingMaskRef = useRef<Object3D | null>(null);
+  const outgoingOpacitiesRef = useRef<Map<MatType, number> | null>(null);
+  const incomingOpacitiesRef = useRef<Map<MatType, number> | null>(null);
   const animationStartRef = useRef<number>(0);
   const prevMaskNameRef = useRef<string | null>(null);
   const latestMaskNameRef = useRef(maskName);
@@ -113,6 +141,8 @@ export function useMask(
     if (existingOutgoing) {
       masksParent.remove(existingOutgoing);
       outgoingMaskRef.current = null;
+      outgoingOpacitiesRef.current = null;
+      incomingOpacitiesRef.current = null;
     }
 
     const isMaskChange =
@@ -125,6 +155,7 @@ export function useMask(
       oldMask.scale.setScalar(1);
       masksParent.add(oldMask);
       outgoingMaskRef.current = oldMask;
+      outgoingOpacitiesRef.current = captureOriginalOpacities(oldMask);
       animationStartRef.current = performance.now();
       maskRef.current = null;
     }
@@ -132,6 +163,7 @@ export function useMask(
     const clone = source.clone(true);
 
     // Clone materials so color changes are per-instance
+    let incomingOpacities: Map<MatType, number> | null = null;
     clone.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
@@ -142,6 +174,8 @@ export function useMask(
         ) {
           const mat = originalMat.clone();
           if (isMaskChange) {
+            if (!incomingOpacities) incomingOpacities = new Map();
+            incomingOpacities.set(mat, mat.opacity);
             mat.transparent = true;
             mat.opacity = 0;
           }
@@ -149,6 +183,9 @@ export function useMask(
         }
       }
     });
+    if (isMaskChange && incomingOpacities) {
+      incomingOpacitiesRef.current = incomingOpacities;
+    }
 
     masksParent.add(clone);
     maskRef.current = clone;
@@ -179,26 +216,42 @@ export function useMask(
 
     const scale = 1 + (OUTGOING_SCALE_END - 1) * t;
     outgoing.scale.setScalar(scale);
-    setMaskMaterialsOpacity(outgoing, 1 - t);
+    setMaskMaterialsOpacity(
+      outgoing,
+      t,
+      outgoingOpacitiesRef.current ?? undefined,
+      'out'
+    );
 
     const incoming = maskRef.current;
     if (incoming) {
-      setMaskMaterialsOpacity(incoming, t);
+      setMaskMaterialsOpacity(
+        incoming,
+        t,
+        incomingOpacitiesRef.current ?? undefined,
+        'in'
+      );
     }
 
     if (t >= 1) {
       masksParentRef.current?.remove(outgoing);
       outgoingMaskRef.current = null;
-      if (incoming) {
-        setMaskMaterialsOpacity(incoming, 1);
+      outgoingOpacitiesRef.current = null;
+      if (incoming && incomingOpacitiesRef.current) {
         incoming.traverse((child) => {
           if ((child as Mesh).isMesh) {
             const mat = (child as Mesh).material;
-            if (mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial) {
-              mat.transparent = false;
+            if (
+              mat instanceof MeshPhysicalMaterial ||
+              mat instanceof MeshStandardMaterial
+            ) {
+              const original = incomingOpacitiesRef.current!.get(mat) ?? 1;
+              mat.opacity = original;
+              mat.transparent = original < 1;
             }
           }
         });
+        incomingOpacitiesRef.current = null;
       }
     }
   });
