@@ -208,9 +208,9 @@ export function useMask(
     const clone = source.clone(true);
 
     // Clone materials so color changes are per-instance.
-    // Every material is marked transparent + DoubleSide so that during a
-    // cross-fade the outgoing mask never depth-clips the incoming one, and
-    // back faces stay visible while semi-transparent.
+    // Every material is marked transparent + DoubleSide + depthWrite off so
+    // that during a cross-fade neither mask depth-clips the other, and back
+    // faces stay visible while semi-transparent.
     clone.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
@@ -218,6 +218,7 @@ export function useMask(
         if (isStandardMat(originalMat)) {
           const mat = originalMat.clone();
           mat.transparent = true;
+          mat.depthWrite = false;
           mat.side = DoubleSide;
           mesh.material = mat;
         }
