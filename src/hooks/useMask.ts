@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
+import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
+const MASK_CHANGE_DURATION = 0.35;
+const OUTGOING_SCALE_END = 1.2;
 
 // Module-level cache so the file is only fetched once across all instances
 let masksNodesCache: Record<string, Object3D> | null = null;
@@ -33,6 +36,18 @@ function loadMasksNodes(): Promise<Record<string, Object3D>> {
   return masksLoadPromise;
 }
 
+function setMaskMaterialsOpacity(mask: Object3D, opacity: number) {
+  mask.traverse((child) => {
+    if ((child as Mesh).isMesh) {
+      const mat = (child as Mesh).material;
+      if (mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial) {
+        mat.transparent = opacity < 1;
+        mat.opacity = opacity;
+      }
+    }
+  });
+}
+
 /**
  * Loads a mask from the shared masks.glb, clones it, and attaches it to the
  * given parent Object3D (typically `nodes.Masks` in a character model).
@@ -59,6 +74,13 @@ export function useMask(
 ) {
   const [masksNodes, setMasksNodes] = useState<Record<string, Object3D> | null>(masksNodesCache);
   const maskRef = useRef<Object3D | null>(null);
+  const outgoingMaskRef = useRef<Object3D | null>(null);
+  const animationStartRef = useRef<number>(0);
+  const prevMaskNameRef = useRef<string | null>(null);
+  const latestMaskNameRef = useRef(maskName);
+  latestMaskNameRef.current = maskName;
+  const masksParentRef = useRef<Object3D | undefined>(masksParent);
+  masksParentRef.current = masksParent;
 
   // Load masks.glb imperatively (no Suspense)
   useEffect(() => {
@@ -86,6 +108,27 @@ export function useMask(
       return;
     }
 
+    // If a transition was in progress, abort it and remove the outgoing mask
+    const existingOutgoing = outgoingMaskRef.current;
+    if (existingOutgoing) {
+      masksParent.remove(existingOutgoing);
+      outgoingMaskRef.current = null;
+    }
+
+    const isMaskChange =
+      prevMaskNameRef.current !== null && prevMaskNameRef.current !== maskName;
+    const oldMask = maskRef.current;
+
+    if (isMaskChange && oldMask) {
+      // Start transition: keep old mask as outgoing, create new as incoming
+      masksParent.remove(oldMask);
+      oldMask.scale.setScalar(1);
+      masksParent.add(oldMask);
+      outgoingMaskRef.current = oldMask;
+      animationStartRef.current = performance.now();
+      maskRef.current = null;
+    }
+
     const clone = source.clone(true);
 
     // Clone materials so color changes are per-instance
@@ -97,19 +140,68 @@ export function useMask(
           originalMat instanceof MeshPhysicalMaterial ||
           originalMat instanceof MeshStandardMaterial
         ) {
-          mesh.material = originalMat.clone();
+          const mat = originalMat.clone();
+          if (isMaskChange) {
+            mat.transparent = true;
+            mat.opacity = 0;
+          }
+          mesh.material = mat;
         }
       }
     });
 
     masksParent.add(clone);
     maskRef.current = clone;
+    prevMaskNameRef.current = maskName;
 
     return () => {
-      masksParent.remove(clone);
-      maskRef.current = null;
+      // Don't remove the mask in cleanup if we're transitioning to a different mask -
+      // the new effect will use it as the outgoing animation
+      const isTransitioning = latestMaskNameRef.current !== maskName;
+      if (!isTransitioning) {
+        if (outgoingMaskRef.current !== clone) {
+          masksParent.remove(clone);
+        }
+        if (maskRef.current === clone) {
+          maskRef.current = null;
+        }
+      }
     };
   }, [masksNodes, masksParent, maskName]);
+
+  // Animate mask change: outgoing scales up + fades out, incoming fades in
+  useFrame(() => {
+    const outgoing = outgoingMaskRef.current;
+    if (!outgoing) return;
+
+    const elapsed = (performance.now() - animationStartRef.current) / 1000;
+    const t = Math.min(elapsed / MASK_CHANGE_DURATION, 1);
+
+    const scale = 1 + (OUTGOING_SCALE_END - 1) * t;
+    outgoing.scale.setScalar(scale);
+    setMaskMaterialsOpacity(outgoing, 1 - t);
+
+    const incoming = maskRef.current;
+    if (incoming) {
+      setMaskMaterialsOpacity(incoming, t);
+    }
+
+    if (t >= 1) {
+      masksParentRef.current?.remove(outgoing);
+      outgoingMaskRef.current = null;
+      if (incoming) {
+        setMaskMaterialsOpacity(incoming, 1);
+        incoming.traverse((child) => {
+          if ((child as Mesh).isMesh) {
+            const mat = (child as Mesh).material;
+            if (mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial) {
+              mat.transparent = false;
+            }
+          }
+        });
+      }
+    }
+  });
 
   // Apply color to the mask's material(s)
   useEffect(() => {
