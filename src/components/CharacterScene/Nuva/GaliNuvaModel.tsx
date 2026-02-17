@@ -10,6 +10,7 @@ export const GaliNuvaModel = forwardRef<
   {
     matoran: RecruitedCharacterData & BaseMatoran;
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >(({ matoran: _matoran }, _ref) => {
   const group = useRef<Group>(null);
   const { nodes } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/gali.glb');
