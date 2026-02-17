@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
+import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -9,7 +9,7 @@ const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 /** Duration of the mask swap transition in seconds */
 const TRANSITION_DURATION = 0.35;
 
-/** How much the old mask scales up during the exit animation (1 → 1 + this) */
+/** How much the old mask scales up during the exit animation (multiplied on top of the original scale) */
 const EXIT_SCALE_AMOUNT = 0.5;
 
 // Module-level cache so the file is only fetched once across all instances
@@ -93,6 +93,28 @@ function finalizeOpacities(root: Object3D, opacityMap: Map<string, number>): voi
   });
 }
 
+/** Apply mask color and optional glow color to every mesh material under `root` */
+function applyMaskColors(root: Object3D, maskColor: string, glowColor?: string): void {
+  root.traverse((child) => {
+    if ((child as Mesh).isMesh) {
+      const mat = (child as Mesh).material;
+      if (isStandardMat(mat)) {
+        const isGlow = mat.name.toLowerCase().includes('glow');
+
+        if (isGlow && glowColor) {
+          const col = new Color(glowColor);
+          mat.color = col;
+          if (mat.emissive) {
+            mat.emissive = col.clone();
+          }
+        } else {
+          mat.color = new Color(maskColor);
+        }
+      }
+    }
+  });
+}
+
 interface TransitionState {
   active: boolean;
   progress: number;
@@ -102,6 +124,8 @@ interface TransitionState {
   oldOpacities: Map<string, number>;
   /** Target opacities of the NEW mask's materials (fade from 0 → these) */
   targetOpacities: Map<string, number>;
+  /** Original scale of the OLD mask before the exit animation began */
+  oldScale: Vector3;
 }
 
 /**
@@ -138,6 +162,13 @@ export function useMask(
   const masksParentRef = useRef<Object3D | undefined>(masksParent);
   masksParentRef.current = masksParent;
 
+  // Keep color props in refs so the attachment effect can read them eagerly
+  // without adding them to its dependency array (which would re-clone on color change)
+  const maskColorRef = useRef(maskColor);
+  maskColorRef.current = maskColor;
+  const glowColorRef = useRef(glowColor);
+  glowColorRef.current = glowColor;
+
   const transitionRef = useRef<TransitionState>({
     active: false,
     progress: 0,
@@ -145,6 +176,7 @@ export function useMask(
     newMask: null,
     oldOpacities: new Map(),
     targetOpacities: new Map(),
+    oldScale: new Vector3(1, 1, 1),
   });
 
   // Load masks.glb imperatively (no Suspense)
@@ -186,6 +218,12 @@ export function useMask(
       }
     });
 
+    // Apply colors eagerly so they're correct before the first animation frame.
+    // (useEffect runs asynchronously after paint, and useFrame/rAF can fire
+    // before the next useEffect — applying colors here avoids the brief flash
+    // of un-tinted GLB-default colors during the fade-in.)
+    applyMaskColors(clone, maskColorRef.current, glowColorRef.current);
+
     const prevMask = maskRef.current;
     const isChange =
       prevMaskNameRef.current !== null &&
@@ -201,6 +239,9 @@ export function useMask(
 
       const oldOpacities = collectOpacities(prevMask);
       const targetOpacities = collectOpacities(clone);
+
+      // Capture the old mask's current scale so the exit animation is relative
+      const oldScale = prevMask.scale.clone();
 
       // Ensure old mask materials are transparent so we can fade them
       prevMask.traverse((child) => {
@@ -222,6 +263,7 @@ export function useMask(
         newMask: clone,
         oldOpacities,
         targetOpacities,
+        oldScale,
       };
     } else if (prevMask) {
       // Not a mask-name change (e.g. masksNodes just loaded); swap silently
@@ -260,10 +302,14 @@ export function useMask(
     tr.progress = Math.min(1, tr.progress + delta / TRANSITION_DURATION);
     const t = easeOutCubic(tr.progress);
 
-    // Old mask: scale up and fade out
+    // Old mask: scale up relative to its original scale and fade out
     if (tr.oldMask) {
-      const s = 1 + t * EXIT_SCALE_AMOUNT;
-      tr.oldMask.scale.set(s, s, s);
+      const factor = 1 + t * EXIT_SCALE_AMOUNT;
+      tr.oldMask.scale.set(
+        tr.oldScale.x * factor,
+        tr.oldScale.y * factor,
+        tr.oldScale.z * factor
+      );
       setOpacities(tr.oldMask, tr.oldOpacities, 1 - t);
     }
 
@@ -289,29 +335,12 @@ export function useMask(
     }
   });
 
-  // Apply color to the mask's material(s)
+  // Apply color when only the color props change (maskName unchanged)
   useEffect(() => {
     const mask = maskRef.current;
     if (!mask) return;
 
-    mask.traverse((child) => {
-      if ((child as Mesh).isMesh) {
-        const mat = (child as Mesh).material;
-        if (mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial) {
-          const isGlow = mat.name.toLowerCase().includes('glow');
-
-          if (isGlow && glowColor) {
-            const col = new Color(glowColor);
-            mat.color = col;
-            if (mat.emissive) {
-              mat.emissive = col.clone();
-            }
-          } else {
-            mat.color = new Color(maskColor);
-          }
-        }
-      }
-    });
+    applyMaskColors(mask, maskColor, glowColor);
   }, [masksNodes, masksParent, maskName, maskColor, glowColor]);
 
   return maskRef.current;
