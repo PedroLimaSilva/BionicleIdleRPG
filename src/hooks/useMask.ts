@@ -67,8 +67,8 @@ function collectOpacities(root: Object3D): Map<string, number> {
 
 /**
  * Set every standard material's opacity to `baseOpacity * factor`.
- * Also disables depthWrite so that two overlapping masks in the same
- * parent bone don't depth-clip each other during the cross-fade.
+ * Also disables depthWrite so the fading-out mask doesn't depth-clip
+ * the new mask that sits behind it in the same parent bone.
  */
 function setAnimatedOpacity(root: Object3D, opacities: Map<string, number>, factor: number): void {
   root.traverse((child) => {
@@ -78,19 +78,6 @@ function setAnimatedOpacity(root: Object3D, opacities: Map<string, number>, fact
         const base = opacities.get(mat.uuid) ?? 1;
         mat.opacity = base * factor;
         mat.depthWrite = false;
-      }
-    }
-  });
-}
-
-/** Restore every material to its resting opacity and re-enable depthWrite */
-function restoreAfterAnimation(root: Object3D, opacities: Map<string, number>): void {
-  root.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mat = (child as Mesh).material;
-      if (isStandardMat(mat)) {
-        mat.opacity = opacities.get(mat.uuid) ?? 1;
-        mat.depthWrite = true;
       }
     }
   });
@@ -122,11 +109,8 @@ interface TransitionState {
   active: boolean;
   progress: number;
   oldMask: Object3D | null;
-  newMask: Object3D | null;
   /** Resting opacities of the OLD mask's materials (fade from these → 0) */
   oldOpacities: Map<string, number>;
-  /** Resting opacities of the NEW mask's materials (fade from 0 → these) */
-  newOpacities: Map<string, number>;
   /** Original scale of the OLD mask before the exit animation began */
   oldScale: Vector3;
 }
@@ -141,13 +125,13 @@ interface TransitionState {
  *
  * The mask is cloned so each character gets its own geometry instance and
  * material, allowing per-character color overrides without affecting others.
- * All cloned materials are marked `transparent` and `DoubleSide` so that
- * masks can cross-fade without depth-buffer clipping or back-face culling
- * artifacts.
+ * All cloned materials are marked `transparent` so that alpha blending is
+ * always available (needed for the exit animation and for masks like Kaukau
+ * that have sub-1 opacity).
  *
  * When the mask changes (e.g. selecting a different mask in the equipment tab),
- * the old mask scales up and fades out while the new mask fades in. The first
- * mask shown on load appears immediately with no transition.
+ * the new mask appears immediately while the old mask scales up and fades out.
+ * The first mask shown on load appears immediately with no transition.
  *
  * @param masksParent - The Object3D to parent the mask to (e.g. `nodes.Masks`)
  * @param maskName    - The name of the mask mesh in masks.glb (must match the Mask enum value)
@@ -179,9 +163,7 @@ export function useMask(
     active: false,
     progress: 0,
     oldMask: null,
-    newMask: null,
     oldOpacities: new Map(),
-    newOpacities: new Map(),
     oldScale: new Vector3(1, 1, 1),
   });
 
@@ -248,19 +230,13 @@ export function useMask(
       }
 
       const oldOpacities = collectOpacities(prevMask);
-      const newOpacities = collectOpacities(clone);
       const oldScale = prevMask.scale.clone();
-
-      // Start new mask fully transparent
-      setAnimatedOpacity(clone, newOpacities, 0);
 
       transitionRef.current = {
         active: true,
         progress: 0,
         oldMask: prevMask,
-        newMask: clone,
         oldOpacities,
-        newOpacities,
         oldScale,
       };
     } else if (prevMask) {
@@ -311,25 +287,15 @@ export function useMask(
       setAnimatedOpacity(tr.oldMask, tr.oldOpacities, 1 - t);
     }
 
-    // New mask: fade in toward each material's resting opacity
-    if (tr.newMask) {
-      setAnimatedOpacity(tr.newMask, tr.newOpacities, t);
-    }
-
-    // Finished — clean up old mask and restore new mask to resting opacity
+    // Finished — remove the old mask from the scene
     if (tr.progress >= 1) {
       const parent = masksParentRef.current;
       if (parent && tr.oldMask) {
         parent.remove(tr.oldMask);
       }
 
-      if (tr.newMask) {
-        restoreAfterAnimation(tr.newMask, tr.newOpacities);
-      }
-
       tr.active = false;
       tr.oldMask = null;
-      tr.newMask = null;
     }
   });
 
