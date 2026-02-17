@@ -1,14 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  Color,
-  DoubleSide,
-  Mesh,
-  MeshPhysicalMaterial,
-  MeshStandardMaterial,
-  Object3D,
-  Side,
-  Vector3,
-} from 'three';
+import { Color, DoubleSide, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -60,63 +51,40 @@ function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3);
 }
 
-/** Snapshot of the material properties we modify during the transition */
-interface MatSnapshot {
-  opacity: number;
-  transparent: boolean;
-  side: Side;
-}
-
-/** Collect a snapshot of every standard material under an Object3D */
-function collectMatState(root: Object3D): Map<string, MatSnapshot> {
-  const map = new Map<string, MatSnapshot>();
+/** Collect material uuid → its resting opacity for every mesh under an Object3D */
+function collectOpacities(root: Object3D): Map<string, number> {
+  const map = new Map<string, number>();
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
       const mat = (child as Mesh).material;
       if (isStandardMat(mat)) {
-        map.set(mat.uuid, {
-          opacity: mat.opacity,
-          transparent: mat.transparent,
-          side: mat.side,
-        });
+        map.set(mat.uuid, mat.opacity);
       }
     }
   });
   return map;
 }
 
-/**
- * Set every standard material under `root` to a fraction of its base opacity.
- * Forces `transparent = true` and `side = DoubleSide` while animating so that
- * semi-transparent geometry renders correctly from all angles.
- */
-function setAnimatedOpacity(root: Object3D, snapshots: Map<string, MatSnapshot>, factor: number): void {
+/** Set every standard material's opacity to `baseOpacity * factor` */
+function setAnimatedOpacity(root: Object3D, opacities: Map<string, number>, factor: number): void {
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
       const mat = (child as Mesh).material;
       if (isStandardMat(mat)) {
-        const snap = snapshots.get(mat.uuid);
-        const baseOpacity = snap?.opacity ?? 1;
-        mat.transparent = true;
-        mat.side = DoubleSide;
-        mat.opacity = baseOpacity * factor;
+        const base = opacities.get(mat.uuid) ?? 1;
+        mat.opacity = base * factor;
       }
     }
   });
 }
 
-/** Restore every material to its original state from the snapshot */
-function restoreMatState(root: Object3D, snapshots: Map<string, MatSnapshot>): void {
+/** Restore every material to its resting opacity */
+function restoreOpacities(root: Object3D, opacities: Map<string, number>): void {
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
       const mat = (child as Mesh).material;
       if (isStandardMat(mat)) {
-        const snap = snapshots.get(mat.uuid);
-        if (snap) {
-          mat.opacity = snap.opacity;
-          mat.transparent = snap.transparent;
-          mat.side = snap.side;
-        }
+        mat.opacity = opacities.get(mat.uuid) ?? 1;
       }
     }
   });
@@ -149,10 +117,10 @@ interface TransitionState {
   progress: number;
   oldMask: Object3D | null;
   newMask: Object3D | null;
-  /** Snapshot of the OLD mask's material state (fade from these → 0) */
-  oldSnapshots: Map<string, MatSnapshot>;
-  /** Snapshot of the NEW mask's material state (fade from 0 → these) */
-  newSnapshots: Map<string, MatSnapshot>;
+  /** Resting opacities of the OLD mask's materials (fade from these → 0) */
+  oldOpacities: Map<string, number>;
+  /** Resting opacities of the NEW mask's materials (fade from 0 → these) */
+  newOpacities: Map<string, number>;
   /** Original scale of the OLD mask before the exit animation began */
   oldScale: Vector3;
 }
@@ -167,6 +135,9 @@ interface TransitionState {
  *
  * The mask is cloned so each character gets its own geometry instance and
  * material, allowing per-character color overrides without affecting others.
+ * All cloned materials are marked `transparent` and `DoubleSide` so that
+ * masks can cross-fade without depth-buffer clipping or back-face culling
+ * artifacts.
  *
  * When the mask changes (e.g. selecting a different mask in the equipment tab),
  * the old mask scales up and fades out while the new mask fades in. The first
@@ -203,8 +174,8 @@ export function useMask(
     progress: 0,
     oldMask: null,
     newMask: null,
-    oldSnapshots: new Map(),
-    newSnapshots: new Map(),
+    oldOpacities: new Map(),
+    newOpacities: new Map(),
     oldScale: new Vector3(1, 1, 1),
   });
 
@@ -236,13 +207,19 @@ export function useMask(
 
     const clone = source.clone(true);
 
-    // Clone materials so color changes are per-instance
+    // Clone materials so color changes are per-instance.
+    // Every material is marked transparent + DoubleSide so that during a
+    // cross-fade the outgoing mask never depth-clips the incoming one, and
+    // back faces stay visible while semi-transparent.
     clone.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
         const originalMat = mesh.material;
         if (isStandardMat(originalMat)) {
-          mesh.material = originalMat.clone();
+          const mat = originalMat.clone();
+          mat.transparent = true;
+          mat.side = DoubleSide;
+          mesh.material = mat;
         }
       }
     });
@@ -266,22 +243,20 @@ export function useMask(
         masksParent.remove(tr.oldMask);
       }
 
-      const oldSnapshots = collectMatState(prevMask);
-      const newSnapshots = collectMatState(clone);
-
-      // Capture the old mask's current scale so the exit animation is relative
+      const oldOpacities = collectOpacities(prevMask);
+      const newOpacities = collectOpacities(clone);
       const oldScale = prevMask.scale.clone();
 
-      // Start new mask fully transparent (DoubleSide set inside setAnimatedOpacity)
-      setAnimatedOpacity(clone, newSnapshots, 0);
+      // Start new mask fully transparent
+      setAnimatedOpacity(clone, newOpacities, 0);
 
       transitionRef.current = {
         active: true,
         progress: 0,
         oldMask: prevMask,
         newMask: clone,
-        oldSnapshots,
-        newSnapshots,
+        oldOpacities,
+        newOpacities,
         oldScale,
       };
     } else if (prevMask) {
@@ -329,24 +304,23 @@ export function useMask(
         tr.oldScale.y * factor,
         tr.oldScale.z * factor
       );
-      setAnimatedOpacity(tr.oldMask, tr.oldSnapshots, 1 - t);
+      setAnimatedOpacity(tr.oldMask, tr.oldOpacities, 1 - t);
     }
 
-    // New mask: fade in toward each material's original opacity
+    // New mask: fade in toward each material's resting opacity
     if (tr.newMask) {
-      setAnimatedOpacity(tr.newMask, tr.newSnapshots, t);
+      setAnimatedOpacity(tr.newMask, tr.newOpacities, t);
     }
 
-    // Finished — clean up old mask and restore final material state
+    // Finished — clean up old mask and restore new mask to resting opacity
     if (tr.progress >= 1) {
       const parent = masksParentRef.current;
       if (parent && tr.oldMask) {
         parent.remove(tr.oldMask);
       }
 
-      // Restore the new mask's materials to their exact original state
       if (tr.newMask) {
-        restoreMatState(tr.newMask, tr.newSnapshots);
+        restoreOpacities(tr.newMask, tr.newOpacities);
       }
 
       tr.active = false;
