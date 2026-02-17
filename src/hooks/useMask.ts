@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Color, DoubleSide, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -65,7 +65,11 @@ function collectOpacities(root: Object3D): Map<string, number> {
   return map;
 }
 
-/** Set every standard material's opacity to `baseOpacity * factor` */
+/**
+ * Set every standard material's opacity to `baseOpacity * factor`.
+ * Also disables depthWrite so that two overlapping masks in the same
+ * parent bone don't depth-clip each other during the cross-fade.
+ */
 function setAnimatedOpacity(root: Object3D, opacities: Map<string, number>, factor: number): void {
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
@@ -73,18 +77,20 @@ function setAnimatedOpacity(root: Object3D, opacities: Map<string, number>, fact
       if (isStandardMat(mat)) {
         const base = opacities.get(mat.uuid) ?? 1;
         mat.opacity = base * factor;
+        mat.depthWrite = false;
       }
     }
   });
 }
 
-/** Restore every material to its resting opacity */
-function restoreOpacities(root: Object3D, opacities: Map<string, number>): void {
+/** Restore every material to its resting opacity and re-enable depthWrite */
+function restoreAfterAnimation(root: Object3D, opacities: Map<string, number>): void {
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
       const mat = (child as Mesh).material;
       if (isStandardMat(mat)) {
         mat.opacity = opacities.get(mat.uuid) ?? 1;
+        mat.depthWrite = true;
       }
     }
   });
@@ -208,9 +214,8 @@ export function useMask(
     const clone = source.clone(true);
 
     // Clone materials so color changes are per-instance.
-    // Every material is marked transparent + DoubleSide + depthWrite off so
-    // that during a cross-fade neither mask depth-clips the other, and back
-    // faces stay visible while semi-transparent.
+    // Mark transparent so alpha blending is always available (needed for
+    // cross-fade and for masks like Kaukau that have opacity < 1).
     clone.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
@@ -218,8 +223,6 @@ export function useMask(
         if (isStandardMat(originalMat)) {
           const mat = originalMat.clone();
           mat.transparent = true;
-          mat.depthWrite = false;
-          mat.side = DoubleSide;
           mesh.material = mat;
         }
       }
@@ -321,7 +324,7 @@ export function useMask(
       }
 
       if (tr.newMask) {
-        restoreOpacities(tr.newMask, tr.newOpacities);
+        restoreAfterAnimation(tr.newMask, tr.newOpacities);
       }
 
       tr.active = false;
