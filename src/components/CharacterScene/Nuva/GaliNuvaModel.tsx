@@ -5,12 +5,12 @@ import { forwardRef, useRef } from 'react';
 import { Group } from 'three';
 import { useArmor } from '../../../hooks/useArmor';
 
-export const ToaGaliNuvaModel = forwardRef<
+export const GaliNuvaModel = forwardRef<
   CombatantModelHandle,
   {
     matoran: RecruitedCharacterData & BaseMatoran;
   }
->(({ matoran }, _ref) => {
+>(({ matoran: _matoran }, _ref) => {
   const group = useRef<Group>(null);
   const { nodes } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/gali.glb');
 

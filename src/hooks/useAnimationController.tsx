@@ -1,10 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { AnimationAction, AnimationMixer, Event, LoopOnce } from 'three';
-import {
-  getAnimationTimeScale,
-  shouldDisableAnimations,
-  setupAnimationForTestMode,
-} from '../utils/testMode';
+import { shouldDisableAnimations } from '../utils/testMode';
 
 type AnimationControllerOptions = {
   mixer: AnimationMixer;
@@ -13,6 +9,10 @@ type AnimationControllerOptions = {
   interval?: number;
 };
 
+/**
+ * Schedules random flavor animations (e.g. Tilt Head) on top of idle.
+ * Requires useIdleAnimation to be called first for mixer timeScale and idle setup.
+ */
 export function useAnimationController({
   mixer,
   idle,
@@ -23,18 +23,7 @@ export function useAnimationController({
   const timeout = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!idle) return;
-
-    // Set mixer timeScale based on test mode
-    mixer.timeScale = getAnimationTimeScale();
-
-    // Don't restart if already running
-    if (!idle.isRunning()) {
-      idle.reset().play();
-    }
-
-    // In test mode, force animation to frame 0 and pause
-    setupAnimationForTestMode(idle);
+    if (!idle || flavors.length === 0) return;
 
     const handleFinished = (event: Event) => {
       const action = (event as unknown as { action: AnimationAction }).action;

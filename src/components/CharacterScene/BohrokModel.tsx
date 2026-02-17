@@ -1,9 +1,9 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
-import { Group, LoopOnce, Mesh, MeshStandardMaterial } from 'three';
-import { useAnimations, useGLTF } from '@react-three/drei';
+import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { useGLTF } from '@react-three/drei';
 import { Color, LegoColor } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
-import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
+import { useCombatAnimations } from '../../hooks/useCombatAnimations';
 
 const BOHROK_COLORS: Record<string, { main: LegoColor; secondary: LegoColor; eyes: LegoColor }> = {
   Tahnok: {
@@ -45,54 +45,13 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
 
   const bodyInstance = useMemo(() => nodes.Body.clone(true), [nodes]);
 
-  const { actions, mixer } = useAnimations(animations, group);
+  const { playAnimation } = useCombatAnimations(animations, group, {
+    modelId: name,
+    actionTimeScale: 2,
+    transitionMode: 'stopAll',
+  });
 
-  useEffect(() => {
-    // Set mixer timeScale based on test mode
-    mixer.timeScale = getAnimationTimeScale();
-
-    const idle = actions['Idle'];
-    if (!idle) return;
-
-    idle.reset().play();
-
-    // In test mode, force animation to frame 0 and pause
-    setupAnimationForTestMode(idle);
-
-    return () => {
-      idle.fadeOut(0.2);
-    };
-  }, [actions, mixer]);
-
-  useImperativeHandle(ref, () => ({
-    playAnimation: (actionName) => {
-      return new Promise<void>((resolve) => {
-        const action = actions[actionName];
-        console.log(`Playing '${actionName}' on ${name}`);
-        if (!action) {
-          console.warn(`Animation '${actionName}' not found for ${name}`);
-          return resolve();
-        }
-        mixer.stopAllAction();
-        action.reset();
-        action.setLoop(LoopOnce, 1);
-        action.clampWhenFinished = true;
-        action.setEffectiveTimeScale(2);
-        action.play();
-
-        const onComplete = () => {
-          console.log(`Completed '${actionName}' on ${name}`);
-          mixer.removeEventListener('finished', onComplete);
-          resolve();
-          const idle = actions['Idle'];
-          if (!idle) return;
-          idle.reset().fadeIn(0.2).play();
-        };
-
-        mixer.addEventListener('finished', onComplete);
-      });
-    },
-  }));
+  useImperativeHandle(ref, () => ({ playAnimation }));
 
   useEffect(() => {
     const colorScheme = BOHROK_COLORS[name];

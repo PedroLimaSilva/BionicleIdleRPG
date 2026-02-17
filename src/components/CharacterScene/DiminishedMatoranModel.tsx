@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { BaseMatoran } from '../../types/Matoran';
 import { Color as ThreeColor, Group, Vector3 } from 'three';
-import { useAnimationController } from '../../hooks/useAnimationController';
-import { Color } from '../../types/Colors';
-import { setupAnimationForTestMode } from '../../utils/testMode';
 import { MeshPhysicalMaterial } from 'three';
-import { useAnimations, useGLTF } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
+import { useAnimationController } from '../../hooks/useAnimationController';
+import { useIdleAnimation } from '../../hooks/useIdleAnimation';
 import { useMask } from '../../hooks/useMask';
+import { Color } from '../../types/Colors';
 
 const MAT_COLOR_MAP = {
   Face: 'face',
@@ -35,21 +35,7 @@ const MAT_COLOR_MAP = {
 export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   const group = useRef<Group>(null);
   const { nodes, materials, animations } = useGLTF(import.meta.env.BASE_URL + 'matoran_master.glb');
-  const { actions, mixer } = useAnimations(animations, group);
-
-  useEffect(() => {
-    const idle = actions['Idle'];
-    if (!idle) return;
-
-    idle.reset().play();
-
-    // In test mode, force animation to frame 0 and pause
-    setupAnimationForTestMode(idle);
-
-    return () => {
-      idle.fadeOut(0.2);
-    };
-  }, [actions]);
+  const { actions, mixer } = useIdleAnimation(animations, group);
 
   useAnimationController({
     mixer,

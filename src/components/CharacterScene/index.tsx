@@ -15,8 +15,8 @@ import { LewaMataModel } from './Mata/LewaMataModel';
 import { ToaNuvaPlaceholderModel } from './Nuva/PlaceholderModel';
 import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 import { TahuMataModel } from './Mata/TahuMataModel';
-import { ToaTahuNuvaModel } from './Nuva/TahuNuvaModel';
-import { ToaGaliNuvaModel } from './Nuva/GaliNuvaModel';
+import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
+import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { useEyeMeshes } from './selectiveBloom';
 
 function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
@@ -24,7 +24,7 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
     case MatoranStage.ToaMata:
       switch (matoran.id) {
         case 'Toa_Gali':
-          return <GaliMataModel matoran={matoran} />;
+          return <GaliNuvaModel matoran={matoran} />;
         case 'Toa_Pohatu':
           return <PohatuMataModel matoran={matoran} />;
         case 'Toa_Kopaka':
@@ -39,9 +39,9 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
     case MatoranStage.ToaNuva:
       switch (matoran.id) {
         case 'Toa_Gali_Nuva':
-          return <ToaGaliNuvaModel matoran={matoran} />;
+          return <GaliNuvaModel matoran={matoran} />;
         case 'Toa_Tahu_Nuva':
-          return <ToaTahuNuvaModel matoran={matoran} />;
+          return <TahuNuvaModel matoran={matoran} />;
         default:
           return <ToaNuvaPlaceholderModel matoran={matoran} />;
       }
