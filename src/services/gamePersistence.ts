@@ -67,6 +67,27 @@ export function saveDebugMode(value: boolean) {
   localStorage.setItem('DEBUG_MODE', debugMode.toString());
 }
 
+let shadowsEnabled: boolean | undefined;
+
+export function getShadowsEnabled() {
+  if (shadowsEnabled !== undefined) {
+    return shadowsEnabled;
+  }
+  const stored = localStorage.getItem('SHADOWS_ENABLED');
+  if (stored !== null) {
+    const parsed = JSON.parse(stored) as boolean;
+    shadowsEnabled = parsed;
+    return parsed;
+  }
+  shadowsEnabled = true;
+  return true;
+}
+
+export function saveShadowsEnabled(value: boolean) {
+  shadowsEnabled = value;
+  localStorage.setItem('SHADOWS_ENABLED', JSON.stringify(shadowsEnabled));
+}
+
 function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
   return (
     data &&

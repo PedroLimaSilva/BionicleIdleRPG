@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react';
-import { getDebugMode, resetGameData, saveDebugMode } from '../../services/gamePersistence';
+import { resetGameData } from '../../services/gamePersistence';
+import { useSettings } from '../../context/Settings';
 import './index.scss';
 
 export default function SettingsPage() {
-  const [debugMode, setDebugMode] = useState(getDebugMode());
-
-  useEffect(() => {
-    saveDebugMode(debugMode);
-  }, [debugMode]);
+  const { debugMode, setDebugMode, shadowsEnabled, setShadowsEnabled } = useSettings();
 
   return (
     <div className="page-container">
@@ -209,6 +205,13 @@ export default function SettingsPage() {
           <div
             className={`toggle-placeholder ${debugMode ? 'on' : ''}`}
             onClick={() => setDebugMode(!debugMode)}
+          />
+        </label>
+        <label className="settings-option">
+          <span>3D Scene Shadows</span>
+          <div
+            className={`toggle-placeholder ${shadowsEnabled ? 'on' : ''}`}
+            onClick={() => setShadowsEnabled(!shadowsEnabled)}
           />
         </label>
 

@@ -5,6 +5,7 @@ import { Combatant } from '../../types/Combat';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
 import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
+import { useSettings } from '../../context/Settings';
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -90,6 +91,8 @@ function ArenaFraming() {
 
 export function Arena({ team, enemies }: ArenaProps) {
   const combatantRefs = useRef<Record<string, CombatantModelHandle>>({});
+  const sceneGroupRef = useRef<THREE.Group>(null);
+  const { shadowsEnabled } = useSettings();
 
   const { nodes, materials } = useGLTF(
     import.meta.env.BASE_URL + '/arena.glb'
@@ -99,14 +102,41 @@ export function Arena({ team, enemies }: ArenaProps) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).combatantRefs = combatantRefs.current;
   }, [team, enemies]);
+
+  useEffect(() => {
+    if (!shadowsEnabled || !sceneGroupRef.current) return;
+    const applyCastShadow = () => {
+      sceneGroupRef.current?.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          if (mesh.name.startsWith('Plane')) return;
+          mesh.castShadow = true;
+        }
+      });
+    };
+    applyCastShadow();
+    const t = setTimeout(applyCastShadow, 500);
+    return () => clearTimeout(t);
+  }, [shadowsEnabled, team, enemies]);
+
   return (
     <group dispose={null}>
       <ArenaFraming />
       <Environment preset="city" />
-      <directionalLight position={[3, 5, 2]} intensity={1.2} />
+      <directionalLight
+        position={[3, 5, 2]}
+        intensity={1.2}
+        castShadow={shadowsEnabled}
+        shadow-mapSize={[2048, 2048]}
+        shadow-camera-far={10}
+        shadow-camera-left={-3}
+        shadow-camera-right={3}
+        shadow-camera-top={3}
+        shadow-camera-bottom={-3}
+      />
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />
-      <group name="Scene">
+      <group name="Scene" ref={sceneGroupRef}>
         {/* <mesh
             name='Ground'
             geometry={nodes.Ground.geometry}
@@ -117,36 +147,42 @@ export function Arena({ team, enemies }: ArenaProps) {
           geometry={nodes.PlaneEM.geometry}
           material={materials.Places}
           position={[0, 0.025, -0.5]}
+          receiveShadow={shadowsEnabled}
         />
         <mesh
           name="PlaneTM"
           geometry={nodes.PlaneTM.geometry}
           material={materials.Places}
           position={[0, -0.075, 0.5]}
+          receiveShadow={shadowsEnabled}
         />
         <mesh
           name="PlaneEL"
           geometry={nodes.PlaneEL.geometry}
           material={materials.Places}
           position={[-0.5, 0.025, -0.75]}
+          receiveShadow={shadowsEnabled}
         />
         <mesh
           name="PlaneER"
           geometry={nodes.PlaneER.geometry}
           material={materials.Places}
           position={[0.5, 0.025, -0.75]}
+          receiveShadow={shadowsEnabled}
         />
         <mesh
           name="PlaneTL"
           geometry={nodes.PlaneTL.geometry}
           material={materials.Places}
           position={[-0.5, -0.075, 0.75]}
+          receiveShadow={shadowsEnabled}
         />
         <mesh
           name="PlaneTR"
           geometry={nodes.PlaneTR.geometry}
           material={materials.Places}
           position={[0.5, -0.075, 0.75]}
+          receiveShadow={shadowsEnabled}
         />
 
         {team.map((c, i) => (

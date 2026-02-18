@@ -3,7 +3,10 @@ import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { EffectComposer, SSAO, SelectiveBloom } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
-import { Object3D } from 'three';
+import { Mesh, Object3D } from 'three';
+
+import { useSettings } from '../../context/Settings';
+import { CYLINDER_RADIUS } from './BoundsCylinder';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
@@ -13,7 +16,7 @@ import { KopakaMataModel } from './Mata/KopakaMataModel';
 import { OnuaMataModel } from './Mata/OnuaMataModel';
 import { LewaMataModel } from './Mata/LewaMataModel';
 import { ToaNuvaPlaceholderModel } from './Nuva/PlaceholderModel';
-import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
+import { CYLINDER_HEIGHT } from './BoundsCylinder';
 import { TahuMataModel } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
@@ -89,6 +92,16 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
   const characterRootRef = useRef<Object3D>(null);
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
   const eyeMeshes = useEyeMeshes(characterRootRef, matoran);
+  const { shadowsEnabled } = useSettings();
+
+  useEffect(() => {
+    if (!shadowsEnabled || !characterRootRef.current) return;
+    characterRootRef.current.traverse((child) => {
+      if ((child as Mesh).isMesh) {
+        (child as Mesh).castShadow = true;
+      }
+    });
+  }, [shadowsEnabled, matoran]);
 
   return (
     <>
@@ -100,6 +113,13 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
         }}
         position={[3, 5, 2]}
         intensity={1.2}
+        castShadow={shadowsEnabled}
+        shadow-mapSize={[2048, 2048]}
+        shadow-camera-far={150}
+        shadow-camera-left={-CYLINDER_RADIUS * 1.5}
+        shadow-camera-right={CYLINDER_RADIUS * 1.5}
+        shadow-camera-top={CYLINDER_RADIUS * 1.5}
+        shadow-camera-bottom={-CYLINDER_RADIUS * 1.5}
       />
       <directionalLight
         ref={(el) => {
@@ -109,6 +129,12 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
         intensity={0.4}
       />
       <ambientLight intensity={0.2} />
+      {shadowsEnabled && (
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+          <planeGeometry args={[CYLINDER_RADIUS * 3, CYLINDER_RADIUS * 3]} />
+          <meshStandardMaterial color="#1a1a1a" />
+        </mesh>
+      )}
       <group ref={characterRootRef}>
         <PresentationControls
           global={true}
