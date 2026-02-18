@@ -7,6 +7,15 @@ import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/Settings';
 
+function EnvironmentIntensity({ value }: { value: number }) {
+  const scene = useThree((s) => s.scene);
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (scene as any).environmentIntensity = value;
+  }, [scene, value]);
+  return null;
+}
+
 type GLTFResult = GLTF & {
   nodes: {
     Ground: THREE.Mesh;
@@ -124,6 +133,7 @@ export function Arena({ team, enemies }: ArenaProps) {
     <group dispose={null}>
       <ArenaFraming />
       <Environment preset="city" />
+      <EnvironmentIntensity value={0.4} />
       <directionalLight
         ref={(el) => {
           if (el && el.parent && !el.target.parent) {
@@ -143,8 +153,8 @@ export function Arena({ team, enemies }: ArenaProps) {
         shadow-bias={-0.0005}
         shadow-normalBias={0.005}
       />
-      <directionalLight position={[-3, 2, -2]} intensity={0.4} />
-      <ambientLight intensity={0.2} />
+      <directionalLight position={[-3, 2, -2]} intensity={0.15} />
+      <ambientLight intensity={0.05} />
       <group name="Scene" ref={sceneGroupRef}>
         {/* <mesh
             name='Ground'

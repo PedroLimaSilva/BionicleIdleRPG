@@ -25,6 +25,16 @@ import { useEyeMeshes } from './selectiveBloom';
 /** Vertical center of the character framing volume. */
 const CHARACTER_CENTER_Y = CYLINDER_HEIGHT / 2;
 
+/** Scale down environment map contribution so IBL doesn't wash out shadows. */
+function EnvironmentIntensity({ value }: { value: number }) {
+  const scene = useThree((s) => s.scene);
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (scene as any).environmentIntensity = value;
+  }, [scene, value]);
+  return null;
+}
+
 function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   switch (matoran.stage) {
     case MatoranStage.ToaMata:
@@ -126,6 +136,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
     <>
       <CharacterFraming />
       <Environment preset="city" />
+      <EnvironmentIntensity value={0.4} />
       <directionalLight
         ref={setMainLightRef}
         position={[3, CHARACTER_CENTER_Y + 8, 10]}
@@ -146,9 +157,9 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
           if (el) setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
         }}
         position={[-3, CHARACTER_CENTER_Y + 2, -2]}
-        intensity={0.4}
+        intensity={0.15}
       />
-      <ambientLight intensity={0.2} />
+      <ambientLight intensity={0.05} />
       {shadowsEnabled && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
           <planeGeometry args={[CYLINDER_RADIUS * 3, CYLINDER_RADIUS * 3]} />
