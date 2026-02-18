@@ -25,6 +25,7 @@ type GLTFResult = GLTF & {
 interface ArenaProps {
   team: Combatant[];
   enemies: Combatant[];
+  currentWave: number;
 }
 
 const TEAM_POSITIONS: [number, number, number][] = [
@@ -88,7 +89,7 @@ function ArenaFraming() {
   return null;
 }
 
-export function Arena({ team, enemies }: ArenaProps) {
+export function Arena({ team, enemies, currentWave }: ArenaProps) {
   const combatantRefs = useRef<Record<string, CombatantModelHandle>>({});
 
   const { nodes, materials } = useGLTF(
@@ -164,7 +165,7 @@ export function Arena({ team, enemies }: ArenaProps) {
         {enemies.map((c, i) => {
           return (
             <CombatantModel
-              key={c.id}
+              key={`${c.id}-w${currentWave}`}
               combatant={c}
               side="enemy"
               position={ENEMY_POSITIONS[i]}

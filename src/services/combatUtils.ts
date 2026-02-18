@@ -497,8 +497,14 @@ export function queueCombatRound(
 
       if (actorRef && actorRef.playAnimation)
         animationPromises.push(actorRef.playAnimation?.('Attack'));
-      if (targetRef && targetRef.playAnimation)
-        animationPromises.push(targetRef.playAnimation?.('Hit'));
+      if (targetRef && targetRef.playAnimation) {
+        const willBeDefeated = target.hp - damage <= 0;
+        if (willBeDefeated) {
+          animationPromises.push(targetRef.playAnimation('Defeat'));
+        } else {
+          animationPromises.push(targetRef.playAnimation('Hit'));
+        }
+      }
 
       await Promise.all(animationPromises);
 

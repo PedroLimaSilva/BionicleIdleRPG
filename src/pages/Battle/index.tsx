@@ -45,11 +45,11 @@ export const BattlePage: React.FC = () => {
 
   useEffect(() => {
     if (currentEncounter) {
-      setScene(<Arena team={battle.team} enemies={battle.enemies} />);
+      setScene(<Arena team={battle.team} enemies={battle.enemies} currentWave={currentWave} />);
     } else {
       setScene(null); // or show something else
     }
-  }, [setScene, currentEncounter, battle.team, battle.enemies, phase]);
+  }, [setScene, currentEncounter, battle.team, battle.enemies, currentWave, phase]);
 
   if (!currentEncounter) {
     return null;

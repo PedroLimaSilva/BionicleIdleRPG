@@ -18,7 +18,7 @@ interface CombatantModelProps {
 }
 
 export interface CombatantModelHandle {
-  playAnimation: (name: 'Attack' | 'Hit' | 'Idle') => Promise<void>;
+  playAnimation: (name: 'Attack' | 'Hit' | 'Defeat' | 'Idle') => Promise<void>;
 }
 
 export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelProps>(
