@@ -48,6 +48,7 @@ export function usePlayAnimation(
         const onComplete = () => {
           mixer.removeEventListener('finished', onComplete);
           resolve();
+          if (name === 'Defeat') return;
           const idle = actions['Idle'];
           if (idle) {
             idle.reset().fadeIn(0.2).play();
