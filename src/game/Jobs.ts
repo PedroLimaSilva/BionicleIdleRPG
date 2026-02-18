@@ -53,8 +53,41 @@ export function getProductivityModifier(job: MatoranJob, matoran: RecruitedChara
   }
 }
 
-function computeEarnedExp(assignment: JobAssignment, now = Date.now()): number {
-  const elapsedSeconds = Math.max(0, (now - assignment.assignedAt) / 1000);
+const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
+const EIGHTEEN_HOURS_MS = 18 * 60 * 60 * 1000;
+const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Applies diminishing returns for offline job rewards:
+ * - 0-12h: full rewards (1.0x)
+ * - 12-18h: half rewards (0.5x)
+ * - 18-24h: quarter rewards (0.25x)
+ * - Beyond 24h: no additional rewards
+ */
+function getEffectiveElapsedMs(elapsedMs: number): number {
+  if (elapsedMs <= 0) return 0;
+  const capped = Math.min(elapsedMs, TWENTY_FOUR_HOURS_MS);
+
+  let effective = 0;
+  // 0-12h: full
+  effective += Math.min(TWELVE_HOURS_MS, capped) * 1.0;
+  // 12-18h: half
+  effective += Math.min(6 * 60 * 60 * 1000, Math.max(0, capped - TWELVE_HOURS_MS)) * 0.5;
+  // 18-24h: quarter
+  effective += Math.min(6 * 60 * 60 * 1000, Math.max(0, capped - EIGHTEEN_HOURS_MS)) * 0.25;
+
+  return effective;
+}
+
+function computeEarnedExp(
+  assignment: JobAssignment,
+  now = Date.now(),
+  effectiveElapsedSeconds?: number
+): number {
+  const elapsedSeconds =
+    effectiveElapsedSeconds !== undefined
+      ? effectiveElapsedSeconds
+      : Math.max(0, (now - assignment.assignedAt) / 1000);
   return Math.floor(elapsedSeconds * assignment.expRatePerSecond);
 }
 
@@ -79,8 +112,15 @@ function approximateBinomial(trials: number, probability: number): number {
   return Math.max(0, gaussian);
 }
 
-function rollJobRewards(assignment: JobAssignment, now = Date.now()): Inventory {
-  const elapsedSeconds = Math.max(0, (now - assignment.assignedAt) / 1000);
+function rollJobRewards(
+  assignment: JobAssignment,
+  now = Date.now(),
+  effectiveElapsedSeconds?: number
+): Inventory {
+  const elapsedSeconds =
+    effectiveElapsedSeconds !== undefined
+      ? effectiveElapsedSeconds
+      : Math.max(0, (now - assignment.assignedAt) / 1000);
   const job = JOB_DETAILS[assignment.job];
   const drops: Inventory = {};
 
@@ -97,15 +137,15 @@ function rollJobRewards(assignment: JobAssignment, now = Date.now()): Inventory 
 }
 
 export function applyOfflineJobExp(
-  characters: RecruitedCharacterData[]
+  characters: RecruitedCharacterData[],
+  now = Date.now()
 ): [RecruitedCharacterData[], ActivityLogEntry[], number, Inventory] {
-  const now = Date.now();
   const logs: ActivityLogEntry[] = [];
   let currencyGain = 0;
   const loot: Inventory = {};
 
   const updated = characters.map((m) => {
-    const [updatedMatoran, earned, rewards] = applyJobExp(m, now);
+    const [updatedMatoran, earned, rewards] = applyJobExp(m, now, true);
     const matoran = MATORAN_DEX[m.id];
 
     Object.entries(rewards).forEach(([item, amount]) => {
@@ -137,12 +177,19 @@ export function applyOfflineJobExp(
 
 export function applyJobExp(
   matoran: RecruitedCharacterData,
-  now = Date.now()
+  now = Date.now(),
+  applyDiminishingReturns = false
 ): [RecruitedCharacterData, number, Inventory] {
   if (!matoran.assignment) return [matoran, 0, {}];
 
-  const earnedExp = computeEarnedExp(matoran.assignment);
-  const rewards = rollJobRewards(matoran.assignment);
+  const rawElapsedMs = Math.max(0, now - matoran.assignment.assignedAt);
+  const effectiveElapsedSeconds =
+    applyDiminishingReturns
+      ? getEffectiveElapsedMs(rawElapsedMs) / 1000
+      : undefined;
+
+  const earnedExp = computeEarnedExp(matoran.assignment, now, effectiveElapsedSeconds);
+  const rewards = rollJobRewards(matoran.assignment, now, effectiveElapsedSeconds);
 
   return [
     {
