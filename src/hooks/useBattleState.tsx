@@ -7,6 +7,7 @@ import {
   generateCombatantStats,
   queueCombatRound,
   decrementWaveCounters,
+  hasReadyMaskPowers,
 } from '../services/combatUtils';
 
 export const enum BattlePhase {
@@ -205,9 +206,40 @@ export const useBattleState = (): BattleState => {
 
   const playActionQueue = async () => {
     setIsRunningRound(true);
-    for (const step of actionQueue) {
-      await step();
+
+    let queue = [...actionQueue];
+
+    while (queue.length > 0) {
+      for (const step of queue) {
+        await step();
+      }
+
+      const latestTeam = teamRef.current;
+      const latestEnemies = enemiesRef.current;
+      const enemiesAlive = latestEnemies.some((e) => e.hp > 0);
+      const teamAlive = latestTeam.some((t) => t.hp > 0);
+
+      if (!enemiesAlive || !teamAlive || hasReadyMaskPowers(latestTeam)) {
+        break;
+      }
+
+      queue = [];
+      queueCombatRound(
+        latestTeam,
+        latestEnemies,
+        (t: Combatant[]) => {
+          teamRef.current = t;
+          setTeam(t);
+        },
+        (e: Combatant[]) => {
+          enemiesRef.current = e;
+          setEnemies(e);
+        },
+        (fn) => queue.push(fn),
+        () => ({ team: teamRef.current, enemies: enemiesRef.current })
+      );
     }
+
     setActionQueue([]);
     setIsRunningRound(false);
   };

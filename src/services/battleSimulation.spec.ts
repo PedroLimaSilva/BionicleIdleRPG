@@ -7,7 +7,12 @@ import { Combatant, EnemyEncounter } from '../types/Combat';
 import { TEAM_POSITION_LABELS } from '../data/combat';
 import { ENCOUNTERS } from '../data/combat';
 import { Mask } from '../types/Matoran';
-import { generateCombatantStats, queueCombatRound, decrementWaveCounters } from './combatUtils';
+import {
+  generateCombatantStats,
+  queueCombatRound,
+  decrementWaveCounters,
+  hasReadyMaskPowers,
+} from './combatUtils';
 import { getLevelFromExp } from '../game/Levelling';
 import type { RecruitedCharacterData } from '../types/Matoran';
 
@@ -78,6 +83,25 @@ class BattleSimulator {
 
     this.team = team;
     this.enemies = enemies;
+  }
+
+  /**
+   * Run rounds with auto-progression: keeps running rounds automatically
+   * until a mask power becomes ready or the battle ends.
+   * Mirrors the updated playActionQueue logic in useBattleState.
+   * Returns the number of rounds executed.
+   */
+  async runWithAutoProgression(): Promise<number> {
+    let roundsRun = 0;
+
+    do {
+      await this.runRound();
+      roundsRun++;
+
+      if (this.allEnemiesDefeated || this.allTeamDefeated) break;
+    } while (!hasReadyMaskPowers(this.team));
+
+    return roundsRun;
   }
 
   advanceWave(): void {
@@ -579,6 +603,131 @@ describe('Battle Simulation', () => {
 
       const tahu = sim.team.find((t) => t.id === 'Toa_Tahu')!;
       expect(tahu.maskPower?.active).toBe(false);
+    });
+
+    test('auto-progression runs multiple rounds when no mask powers are ready', async () => {
+      const team = createTeamFromRecruited([
+        { id: 'Toa_Tahu', exp: 0 },
+        { id: 'Toa_Onua', exp: 0 },
+      ]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+
+      // Activate both mask powers so they go on cooldown after round 1
+      sim.team = setAbilities(sim.team, ['Toa_Tahu', 'Toa_Onua'], true);
+      await sim.runRound();
+
+      // Both powers are now on cooldown
+      expect(hasReadyMaskPowers(sim.team)).toBe(false);
+
+      // Auto-progression should run multiple rounds until powers come off cooldown
+      // or the enemy is defeated
+      const roundsRun = await sim.runWithAutoProgression();
+      expect(roundsRun).toBeGreaterThanOrEqual(1);
+
+      // Battle should have progressed: either enemy defeated or a power is ready
+      const enemyDefeated = sim.allEnemiesDefeated;
+      const powersReady = hasReadyMaskPowers(sim.team);
+      expect(enemyDefeated || powersReady).toBe(true);
+    });
+
+    test('auto-progression stops when a mask power becomes ready', async () => {
+      // High-level Onua so he can survive several rounds against a level 10 enemy
+      const team = createTeamFromRecruited([
+        { id: 'Toa_Onua', exp: 5000 }, // Pakari: 2 turn cooldown
+      ]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      // Moderate enemy: survives a few rounds but doesn't one-shot Onua
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'pahrak', lvl: 10 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+
+      // Activate Pakari to put it on cooldown (2 turns)
+      sim.team = setAbilities(sim.team, ['Toa_Onua'], true);
+      await sim.runRound();
+
+      const onua = sim.team.find((t) => t.id === 'Toa_Onua')!;
+      expect(onua.maskPower?.active).toBe(false);
+      expect(onua.maskPower?.effect.cooldown.amount).toBeGreaterThan(0);
+
+      // Auto-progression should run rounds until Pakari comes off cooldown
+      const roundsRun = await sim.runWithAutoProgression();
+
+      if (!sim.allEnemiesDefeated && !sim.allTeamDefeated) {
+        expect(hasReadyMaskPowers(sim.team)).toBe(true);
+        expect(roundsRun).toBeGreaterThanOrEqual(1);
+      }
+    });
+
+    test('auto-progression stops immediately when mask powers are already ready', async () => {
+      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0 }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 50 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      // Powers start ready (cooldown === 0)
+      expect(hasReadyMaskPowers(sim.team)).toBe(true);
+
+      // Auto-progression runs exactly 1 round then stops
+      const roundsRun = await sim.runWithAutoProgression();
+      expect(roundsRun).toBe(1);
+
+      if (!sim.allEnemiesDefeated && !sim.allTeamDefeated) {
+        expect(hasReadyMaskPowers(sim.team)).toBe(true);
+      }
+    });
+
+    test('auto-progression stops on team defeat', async () => {
+      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0 }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      // Overwhelmingly strong enemy
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'pahrak', lvl: 99 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      // Activate Hau to put it on cooldown, so auto-progression is triggered
+      sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
+      await sim.runRound();
+
+      if (!sim.allTeamDefeated) {
+        await sim.runWithAutoProgression();
+      }
+      // Should not loop infinitely - either team defeated or power ready
+      expect(sim.allTeamDefeated || hasReadyMaskPowers(sim.team)).toBe(true);
+    });
+
+    test('auto-progression stops on enemy defeat', async () => {
+      const team = createTeamFromRecruited([
+        { id: 'Toa_Tahu', exp: 5000 },
+        { id: 'Toa_Onua', exp: 5000 },
+      ]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      // Use both powers so cooldowns engage
+      sim.team = setAbilities(sim.team, ['Toa_Tahu', 'Toa_Onua'], true);
+
+      const roundsRun = await sim.runWithAutoProgression();
+      expect(roundsRun).toBeGreaterThanOrEqual(1);
+      // High level team vs level 1 enemy - should be defeated
+      expect(sim.allEnemiesDefeated).toBe(true);
     });
 
     test('no mask power bleeds from round N to round N+1 when duration expired', async () => {

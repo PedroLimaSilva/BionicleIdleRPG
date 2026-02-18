@@ -1,6 +1,6 @@
 import { BattleStrategy, Combatant } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
-import { chooseTarget, generateCombatantStats } from './combatUtils';
+import { chooseTarget, generateCombatantStats, hasReadyMaskPowers } from './combatUtils';
 
 describe('chooseTarget', () => {
   const targets: Combatant[] = [
@@ -352,6 +352,69 @@ describe('chooseTarget', () => {
 
       // active can be false or undefined (both mean inactive)
       expect(tahu.maskPower?.active).toBeFalsy();
+    });
+  });
+
+  describe('hasReadyMaskPowers', () => {
+    const baseCombatant: Combatant = {
+      id: 'test',
+      name: 'Test',
+      model: 'test',
+      lvl: 1,
+      element: ElementTribe.Fire,
+      maxHp: 100,
+      hp: 100,
+      attack: 10,
+      defense: 5,
+      speed: 5,
+      strategy: BattleStrategy.Random,
+      willUseAbility: false,
+    };
+
+    test('returns true when a combatant has mask power off cooldown', () => {
+      const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1);
+      expect(hasReadyMaskPowers([tahu])).toBe(true);
+    });
+
+    test('returns false when combatant has no mask power', () => {
+      expect(hasReadyMaskPowers([baseCombatant])).toBe(false);
+    });
+
+    test('returns false when mask power is on cooldown', () => {
+      const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1);
+      tahu.maskPower!.effect.cooldown.amount = 3;
+      expect(hasReadyMaskPowers([tahu])).toBe(false);
+    });
+
+    test('returns false when mask power is currently active', () => {
+      const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1);
+      tahu.maskPower!.active = true;
+      expect(hasReadyMaskPowers([tahu])).toBe(false);
+    });
+
+    test('returns false when combatant is dead', () => {
+      const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1);
+      tahu.hp = 0;
+      expect(hasReadyMaskPowers([tahu])).toBe(false);
+    });
+
+    test('returns true if at least one team member has ready power', () => {
+      const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1);
+      tahu.maskPower!.effect.cooldown.amount = 3;
+      const onua = generateCombatantStats('onua', 'Toa_Onua', 1);
+      expect(hasReadyMaskPowers([tahu, onua])).toBe(true);
+    });
+
+    test('returns false when all mask powers are on cooldown', () => {
+      const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1);
+      tahu.maskPower!.effect.cooldown.amount = 1;
+      const onua = generateCombatantStats('onua', 'Toa_Onua', 1);
+      onua.maskPower!.effect.cooldown.amount = 2;
+      expect(hasReadyMaskPowers([tahu, onua])).toBe(false);
+    });
+
+    test('returns false for empty team', () => {
+      expect(hasReadyMaskPowers([])).toBe(false);
     });
   });
 });
