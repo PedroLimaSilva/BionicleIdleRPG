@@ -3,7 +3,7 @@ import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { EffectComposer, SSAO, SelectiveBloom } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
-import { Mesh, Object3D } from 'three';
+import { DirectionalLight, Mesh, Object3D } from 'three';
 
 import { useSettings } from '../../context/Settings';
 import { CYLINDER_RADIUS } from './BoundsCylinder';
@@ -21,6 +21,19 @@ import { TahuMataModel } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { useEyeMeshes } from './selectiveBloom';
+
+/** Vertical center of the character framing volume. */
+const CHARACTER_CENTER_Y = CYLINDER_HEIGHT / 2;
+
+/** Scale down environment map contribution so IBL doesn't wash out shadows. */
+function EnvironmentIntensity({ value }: { value: number }) {
+  const scene = useThree((s) => s.scene);
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (scene as any).environmentIntensity = value;
+  }, [scene, value]);
+  return null;
+}
 
 function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   switch (matoran.stage) {
@@ -93,42 +106,60 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
   const eyeMeshes = useEyeMeshes(characterRootRef, matoran);
   const { shadowsEnabled } = useSettings();
-
   useEffect(() => {
     if (!shadowsEnabled || !characterRootRef.current) return;
-    characterRootRef.current.traverse((child) => {
-      if ((child as Mesh).isMesh) {
-        (child as Mesh).castShadow = true;
-      }
-    });
+    const applyShadowProps = () => {
+      characterRootRef.current?.traverse((child) => {
+        if ((child as Mesh).isMesh) {
+          const mesh = child as Mesh;
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+        }
+      });
+    };
+    applyShadowProps();
+    const t = setTimeout(applyShadowProps, 500);
+    return () => clearTimeout(t);
   }, [shadowsEnabled, matoran]);
+
+  const setMainLightRef = (el: DirectionalLight | null) => {
+    if (el) {
+      setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
+      el.target.position.set(0, CHARACTER_CENTER_Y, 0);
+      if (el.parent && !el.target.parent) {
+        el.parent.add(el.target);
+      }
+    }
+  };
 
   return (
     <>
       <CharacterFraming />
       <Environment preset="city" />
+      <EnvironmentIntensity value={0.4} />
       <directionalLight
-        ref={(el) => {
-          if (el) setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
-        }}
-        position={[3, 5, 2]}
+        ref={setMainLightRef}
+        position={[3, CHARACTER_CENTER_Y + 8, 10]}
         intensity={1.2}
         castShadow={shadowsEnabled}
         shadow-mapSize={[2048, 2048]}
-        shadow-camera-far={150}
-        shadow-camera-left={-CYLINDER_RADIUS * 1.5}
-        shadow-camera-right={CYLINDER_RADIUS * 1.5}
-        shadow-camera-top={CYLINDER_RADIUS * 1.5}
-        shadow-camera-bottom={-CYLINDER_RADIUS * 1.5}
+        shadow-camera-near={0.5}
+        shadow-camera-far={50}
+        shadow-camera-left={-CYLINDER_RADIUS * 2}
+        shadow-camera-right={CYLINDER_RADIUS * 2}
+        shadow-camera-top={CYLINDER_HEIGHT * 0.75}
+        shadow-camera-bottom={-CYLINDER_HEIGHT * 0.75}
+        shadow-bias={-0.0005}
+        shadow-normalBias={0.01}
       />
       <directionalLight
         ref={(el) => {
           if (el) setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
         }}
-        position={[-3, 2, -2]}
-        intensity={0.4}
+        position={[-3, CHARACTER_CENTER_Y + 2, -2]}
+        intensity={0.15}
       />
-      <ambientLight intensity={0.2} />
+      <ambientLight intensity={0.05} />
       {shadowsEnabled && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
           <planeGeometry args={[CYLINDER_RADIUS * 3, CYLINDER_RADIUS * 3]} />

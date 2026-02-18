@@ -198,9 +198,12 @@ export function useMask(
     // Clone materials so color changes are per-instance.
     // Mark transparent so alpha blending is always available (needed for
     // cross-fade and for masks like Kaukau that have opacity < 1).
+    // Enable castShadow so masks cast shadows onto the face behind them.
     clone.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
         const originalMat = mesh.material;
         if (isStandardMat(originalMat)) {
           const mat = originalMat.clone();
