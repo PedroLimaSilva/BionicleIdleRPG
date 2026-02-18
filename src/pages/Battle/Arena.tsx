@@ -105,17 +105,18 @@ export function Arena({ team, enemies }: ArenaProps) {
 
   useEffect(() => {
     if (!shadowsEnabled || !sceneGroupRef.current) return;
-    const applyCastShadow = () => {
+    const applyShadowProps = () => {
       sceneGroupRef.current?.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           const mesh = child as THREE.Mesh;
           if (mesh.name.startsWith('Plane')) return;
           mesh.castShadow = true;
+          mesh.receiveShadow = true;
         }
       });
     };
-    applyCastShadow();
-    const t = setTimeout(applyCastShadow, 500);
+    applyShadowProps();
+    const t = setTimeout(applyShadowProps, 500);
     return () => clearTimeout(t);
   }, [shadowsEnabled, team, enemies]);
 
@@ -133,6 +134,8 @@ export function Arena({ team, enemies }: ArenaProps) {
         shadow-camera-right={3}
         shadow-camera-top={3}
         shadow-camera-bottom={-3}
+        shadow-bias={-0.0001}
+        shadow-normalBias={0.02}
       />
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />

@@ -98,7 +98,9 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
     if (!shadowsEnabled || !characterRootRef.current) return;
     characterRootRef.current.traverse((child) => {
       if ((child as Mesh).isMesh) {
-        (child as Mesh).castShadow = true;
+        const mesh = child as Mesh;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
       }
     });
   }, [shadowsEnabled, matoran]);
@@ -120,6 +122,8 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
         shadow-camera-right={CYLINDER_RADIUS * 1.5}
         shadow-camera-top={CYLINDER_RADIUS * 1.5}
         shadow-camera-bottom={-CYLINDER_RADIUS * 1.5}
+        shadow-bias={-0.0001}
+        shadow-normalBias={0.02}
       />
       <directionalLight
         ref={(el) => {
