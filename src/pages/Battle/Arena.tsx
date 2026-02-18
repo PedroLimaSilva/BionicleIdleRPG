@@ -125,17 +125,23 @@ export function Arena({ team, enemies }: ArenaProps) {
       <ArenaFraming />
       <Environment preset="city" />
       <directionalLight
-        position={[3, 5, 2]}
+        ref={(el) => {
+          if (el && el.parent && !el.target.parent) {
+            el.target.position.set(0, -0.25, 0);
+            el.parent.add(el.target);
+          }
+        }}
+        position={[2, 3, 4]}
         intensity={1.2}
         castShadow={shadowsEnabled}
         shadow-mapSize={[2048, 2048]}
-        shadow-camera-far={10}
+        shadow-camera-far={15}
         shadow-camera-left={-3}
         shadow-camera-right={3}
         shadow-camera-top={3}
         shadow-camera-bottom={-3}
-        shadow-bias={-0.0001}
-        shadow-normalBias={0.02}
+        shadow-bias={-0.0005}
+        shadow-normalBias={0.005}
       />
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
       <ambientLight intensity={0.2} />
