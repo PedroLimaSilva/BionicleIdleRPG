@@ -359,5 +359,114 @@ describe('Jobs', () => {
       expect(currencyGain).toBe(0);
       expect(loot).toEqual({});
     });
+
+    describe('diminishing returns for offline rewards', () => {
+      const ratePerSecond = 1.0;
+      const msPerHour = 60 * 60 * 1000;
+
+      test('first 12 hours give full rewards', () => {
+        const now = 1000000000000; // fixed timestamp for determinism
+        const tenHoursAgo = now - 10 * msPerHour;
+        const characters: RecruitedCharacterData[] = [
+          {
+            id: 'Jala',
+            exp: 0,
+            assignment: {
+              job: MatoranJob.CharcoalMaker,
+              expRatePerSecond: ratePerSecond,
+              assignedAt: tenHoursAgo,
+            },
+          },
+        ];
+
+        const [updated] = applyOfflineJobExp(characters, now);
+
+        // 10 hours = 36000 seconds, full rate → 36000 exp
+        expect(updated[0].exp).toBe(36000);
+      });
+
+      test('12-18 hours give half rewards for the extra 6h', () => {
+        const now = 1000000000000;
+        const fifteenHoursAgo = now - 15 * msPerHour;
+        const characters: RecruitedCharacterData[] = [
+          {
+            id: 'Jala',
+            exp: 0,
+            assignment: {
+              job: MatoranJob.CharcoalMaker,
+              expRatePerSecond: ratePerSecond,
+              assignedAt: fifteenHoursAgo,
+            },
+          },
+        ];
+
+        const [updated] = applyOfflineJobExp(characters, now);
+
+        // 12h full (43200s) + 3h at half (10800 * 0.5 = 5400 effective) = 48600 exp
+        expect(updated[0].exp).toBe(48600);
+      });
+
+      test('18-24 hours give quarter rewards for the extra 6h', () => {
+        const now = 1000000000000;
+        const twentyOneHoursAgo = now - 21 * msPerHour;
+        const characters: RecruitedCharacterData[] = [
+          {
+            id: 'Jala',
+            exp: 0,
+            assignment: {
+              job: MatoranJob.CharcoalMaker,
+              expRatePerSecond: ratePerSecond,
+              assignedAt: twentyOneHoursAgo,
+            },
+          },
+        ];
+
+        const [updated] = applyOfflineJobExp(characters, now);
+
+        // 12h full (43200) + 6h half (21600*0.5=10800) + 3h quarter (10800*0.25=2700) = 56700 exp
+        expect(updated[0].exp).toBe(56700);
+      });
+
+      test('past 24 hours gives no additional rewards beyond 24h cap', () => {
+        const now = 1000000000000;
+        const thirtyHoursAgo = now - 30 * msPerHour;
+        const characters: RecruitedCharacterData[] = [
+          {
+            id: 'Jala',
+            exp: 0,
+            assignment: {
+              job: MatoranJob.CharcoalMaker,
+              expRatePerSecond: ratePerSecond,
+              assignedAt: thirtyHoursAgo,
+            },
+          },
+        ];
+
+        const [updated] = applyOfflineJobExp(characters, now);
+
+        // Capped at 24h: 12h full (43200) + 6h half (10800) + 6h quarter (5400) = 59400 exp
+        expect(updated[0].exp).toBe(59400);
+      });
+
+      test('online applyJobExp does NOT apply diminishing returns', () => {
+        const now = 1000000000000;
+        const fifteenHoursAgo = now - 15 * msPerHour;
+        const matoran: RecruitedCharacterData = {
+          id: 'Jala',
+          exp: 0,
+          assignment: {
+            job: MatoranJob.CharcoalMaker,
+            expRatePerSecond: ratePerSecond,
+            assignedAt: fifteenHoursAgo,
+          },
+        };
+
+        // Online tick - no diminishing returns
+        const [updated] = applyJobExp(matoran, now);
+
+        // 15 hours = 54000 seconds, full rate
+        expect(updated.exp).toBe(54000);
+      });
+    });
   });
 });
