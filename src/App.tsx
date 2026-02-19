@@ -7,6 +7,7 @@ import { CharacterDetail } from './pages/CharacterDetail/index.tsx';
 
 import { GameProvider } from './context/Game.tsx';
 import { SceneCanvasProvider } from './context/Canvas.tsx';
+import { SettingsProvider } from './context/Settings.tsx';
 
 import './styles/index.scss';
 import { ActivityLog } from './components/ActivityLog/index.tsx';
@@ -70,30 +71,32 @@ export function App() {
 
   return (
     <GameProvider>
-      <Router basename="/BionicleIdleRPG/">
-        <SceneCanvasProvider>
-          <div className="app-container">
-            <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
-              <div id="canvas-mount"></div>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/battle/selector" element={<BattleSelector />} />
-                <Route path="/battle" element={<BattlePage />} />
-                <Route path="/characters" element={<CharacterInventory />} />
-                <Route path="/characters/:id" element={<CharacterDetail />} />
-                <Route path="/recruitment" element={<Recruitment />} />
-                <Route path="/quests" element={<QuestsPage />} />
-                <Route path="/quest-tree" element={<QuestTreePage />} />
-                <Route path="/inventory" element={<InventoryPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-            <NavBar isPortrait={isPortrait} />
-          </div>
-          <PWABadge />
-        </SceneCanvasProvider>
-      </Router>
+      <SettingsProvider>
+        <Router basename="/BionicleIdleRPG/">
+          <SceneCanvasProvider>
+            <div className="app-container">
+              <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
+                <div id="canvas-mount"></div>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/battle/selector" element={<BattleSelector />} />
+                  <Route path="/battle" element={<BattlePage />} />
+                  <Route path="/characters" element={<CharacterInventory />} />
+                  <Route path="/characters/:id" element={<CharacterDetail />} />
+                  <Route path="/recruitment" element={<Recruitment />} />
+                  <Route path="/quests" element={<QuestsPage />} />
+                  <Route path="/quest-tree" element={<QuestTreePage />} />
+                  <Route path="/inventory" element={<InventoryPage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+              <NavBar isPortrait={isPortrait} />
+            </div>
+            <PWABadge />
+          </SceneCanvasProvider>
+        </Router>
+      </SettingsProvider>
     </GameProvider>
   );
 }
