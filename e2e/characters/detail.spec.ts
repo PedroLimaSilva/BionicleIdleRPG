@@ -105,17 +105,21 @@ test.describe('Character Detail Page', () => {
   });
 
   test.describe('Chronicle', () => {
-    test('should not show Chronicle tab for character without chronicle', async ({ page }) => {
+    test('should show Chronicle tab for Matoran with chronicles', async ({ page }) => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
         recruitedCharacters: [{ id: 'Jala', exp: 0 }],
+        completedQuests: [],
       });
       await goto(page, '/characters/Jala');
       await disableCSSAnimations(page);
       await hideCanvas(page);
 
       const chronicleTab = page.getByRole('button', { name: 'chronicle' });
-      await expect(chronicleTab).toBeHidden();
+      await expect(chronicleTab).toBeVisible();
+      await chronicleTab.click();
+      await expect(page.locator('.character-chronicle')).toBeVisible();
+      await expect(page.locator('.chronicle-section__title').first()).toContainText('Ta-Koro');
     });
 
     test('should show all entries locked when no quests completed', async ({ page }) => {

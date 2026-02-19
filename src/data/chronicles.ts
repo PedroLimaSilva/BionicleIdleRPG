@@ -9,6 +9,21 @@ export const CHRONICLE_IDS = {
   KOPAKA: 'kopaka',
   LEWA: 'lewa',
   TAKUA: 'takua',
+  KAPURA: 'kapura',
+  JALA: 'jala',
+  HALI: 'hali',
+  HUKI: 'huki',
+  NUPARU: 'nuparu',
+  ONEPU: 'onepu',
+  KONGU: 'kongu',
+  MATORO: 'matoro',
+  MAKU: 'maku',
+  LUMI: 'lumi',
+  KIVI: 'kivi',
+  TAIPU: 'taipu',
+  TAMARU: 'tamaru',
+  KOPEKE: 'kopeke',
+  HAFU: 'hafu',
 } as const;
 
 export type ChronicleId = (typeof CHRONICLE_IDS)[keyof typeof CHRONICLE_IDS];
@@ -389,6 +404,531 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_gali_call',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.KAPURA]: [
+    {
+      id: 'kapura_ta_koro_life',
+      section: 'Ta-Koro',
+      title: 'The Slow Walker',
+      description:
+        'Kapura serves Ta-Koro as a villager who practices the ancient art of the slow walk—a form of meditation that brings inner calm. His unconventional ways set him apart, but his loyalty to the village runs deep.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_find_canister_beach',
+      },
+    },
+    {
+      id: 'kapura_disturbance_forest',
+      section: 'Ta-Koro',
+      title: 'Into the Smoky Forest',
+      description:
+        'When strange smoke rises where none should be, Kapura joins Jala to investigate the disturbance in the Ta-Wahi forest. Their journey leads to the awakening of the Toa Mata—proof that the prophecies were true.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_tahu_unlock_01',
+      },
+    },
+    {
+      id: 'kapura_chroniclers_company',
+      section: "Chronicler's Company",
+      title: 'The Call to Kini-Nui',
+      description:
+        'Chosen by Turaga Vakama to represent Ta-Koro, Kapura joins Takua and the Chronicler\'s Company on the sacred journey to Kini-Nui, bringing his quiet steadfastness to the band of brave Matoran.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_summon_chroniclers_company',
+      },
+    },
+    {
+      id: 'kapura_defense_kini_nui',
+      section: "Chronicler's Company",
+      title: 'Holding the Line',
+      description:
+        "While the Toa descend into darkness, Kapura stands with the Chronicler's Company at Kini-Nui, facing wave after wave of Rahi in Makuta's final assault on the surface.",
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_kini_nui_defense',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.JALA]: [
+    {
+      id: 'jala_captain_ta_koro',
+      section: 'Ta-Koro',
+      title: 'Captain of the Guard',
+      description:
+        'Jala serves as captain of the Ta-Koro guard, responsible for the safety of the village and its Matoran. His courage and leadership make him a natural defender of the flame.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_find_canister_beach',
+      },
+    },
+    {
+      id: 'jala_investigate_disturbance',
+      section: 'Ta-Koro',
+      title: 'Smoke in the Forest',
+      description:
+        'Jala leads Kapura into the forest to investigate strange smoke—and discovers the canister that brought Tahu to Mata Nui. The arrival of the Toa changes everything Jala thought he knew.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_tahu_unlock_01',
+      },
+    },
+    {
+      id: 'jala_bohrok_defense',
+      section: 'Bohrok War',
+      title: "Jala's Stand",
+      description:
+        'When the Bohrok Kohrak strike Ta-Koro, Jala rallies the village guard to hold the line. With the Toa still en route, he leads the defense with flame and courage until reinforcements arrive.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_jala_ta_koro_defense',
+      },
+    },
+    {
+      id: 'jala_siege_ta_koro',
+      section: 'Bohrok War',
+      title: 'Siege of Ta-Koro',
+      description:
+        'As Tahu arrives to push the Kohrak into the lava moat, Jala and his guard fight alongside the Toa of Fire. The siege proves that Matoran and Toa must stand together against the swarms.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_ta_koro_defense',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.HALI]: [
+    {
+      id: 'hali_ga_koro_villager',
+      section: 'Ga-Koro',
+      title: 'Villager of the Waters',
+      description:
+        'Hali is a Ga-Matoran who calls the lily-pad village of Ga-Koro home. Like her fellow villagers, she tends to the waters and looks to Turaga Nokama for guidance.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_restore_ga_koro',
+      },
+    },
+    {
+      id: 'hali_liberated',
+      section: 'Ga-Koro',
+      title: 'Freed from the Depths',
+      description:
+        'When Ga-Koro was attacked and its villagers trapped underwater, Hali was among those rescued by Takua and Gali. The experience deepened her gratitude for the Toa and the Chronicler.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_restore_ga_koro',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.HUKI]: [
+    {
+      id: 'huki_koli_champion',
+      section: 'Po-Koro',
+      title: 'Champion of the Stone',
+      description:
+        'Huki is known across Po-Koro as a champion Koli player—a sport beloved by the Po-Matoran. His skill on the field has made him a village favorite.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_po_koro_sickness',
+      },
+    },
+    {
+      id: 'huki_corrupted_koli',
+      section: 'Po-Koro',
+      title: 'The Sickness',
+      description:
+        'Huki and many Po-Matoran fell ill after using corrupted Koli balls in recent matches. The source was traced to a Rahi nest—and to Makuta\'s influence spreading across the island.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_po_koro_cave_investigation',
+      },
+    },
+    {
+      id: 'huki_recovered',
+      section: 'Po-Koro',
+      title: 'Koli Champion Recovered',
+      description:
+        'With the cave of corrupted Koli balls sealed by Takua and Pohatu, Huki recovered. Inspired by Takua\'s courage, he offered to join the journey ahead—ready to defend his village and friends.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_recruit_hewkii',
+      },
+    },
+    {
+      id: 'huki_bohrok_defense',
+      section: 'Bohrok War',
+      title: 'Hold the Stone Village',
+      description:
+        'When the Tahnok swarm threatened Po-Koro, Huki stood with Hafu at the village gates. Together they held the line as fire Bohrok swept across the desert.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_po_koro_defense',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.NUPARU]: [
+    {
+      id: 'nuparu_miner_inventor',
+      section: 'Onu-Koro',
+      title: 'Miner and Dreamer',
+      description:
+        'Nuparu works the tunnels of Onu-Koro as a miner, but his true passion is invention. He studies ancient machinery and dreams of creations that could protect the Matoran.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_arrive_onu_koro',
+      },
+    },
+    {
+      id: 'nuparu_lava_redirect',
+      section: 'Onu-Koro',
+      title: 'When the Tunnels Flood',
+      description:
+        'When lava blocked Onu-Koro\'s main tunnel, Nuparu witnessed Takua redirect the flow using ancient pumps. The encounter with old technology sparked new ideas in the young inventor.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_onu_koro_lava_problem',
+      },
+    },
+    {
+      id: 'nuparu_boxor',
+      section: 'Bohrok War',
+      title: 'The Invention of the Boxor',
+      description:
+        "Trapped with Onepu and Taipu as the Gahlok flooded Onu-Koro, Nuparu refused to yield. He scavenged Bohrok shells and ancient machinery to create the Boxor—a walking exo-suit that let the Matoran fight back and reclaim their home.",
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_onu_koro_boxor',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.ONEPU]: [
+    {
+      id: 'onepu_ussalry',
+      section: 'Onu-Koro',
+      title: 'Rider of the Ussal',
+      description:
+        'Onepu is a prominent member of the Ussalry—Onu-Koro\'s mounted guard who ride Ussal crabs through the tunnels. He takes pride in defending the underground village.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_arrive_onu_koro',
+      },
+    },
+    {
+      id: 'onepu_gahlok_trap',
+      section: 'Bohrok War',
+      title: 'Trapped in the Flood',
+      description:
+        'When the water Bohrok Gahlok flooded Onu-Koro, Onepu was trapped with Nuparu and Taipu. Cut off from escape, he fought beside them as Nuparu built the Boxor to reclaim their home.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_onu_koro_boxor',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.KONGU]: [
+    {
+      id: 'kongu_le_koro_pilot',
+      section: 'Le-Koro',
+      title: 'Pilot of the Canopy',
+      description:
+        'Kongu is a skilled Kahu rider, navigating the treetops of Le-Wahi with confidence. When the Nui-Rama abducted the Le-Matoran, he was among the few who remained to plan the rescue.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_flight_to_hive',
+      },
+    },
+    {
+      id: 'kongu_rescue_hive',
+      section: 'Le-Koro',
+      title: 'Flight to the Hive',
+      description:
+        'Kongu joined Takua and Tamaru on a daring Kahu flight to the Nui-Rama hive. Their mission: rescue the captive Le-Matoran—including Taipu—from Makuta\'s corrupted creatures.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_rescue_from_hive',
+      },
+    },
+    {
+      id: 'kongu_trapped_hive',
+      section: 'Le-Koro',
+      title: 'Trapped in the Hive',
+      description:
+        'Inside the hive, Kongu\'s Kahu was downed and he was trapped with the others. Only the arrival of Onua and Lewa—freed from the infected mask—brought rescue. The experience forged bonds that would last.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_lewa_v_onua',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.MATORO]: [
+    {
+      id: 'matoro_translator',
+      section: 'Ko-Koro',
+      title: "Nuju's Voice",
+      description:
+        'Matoro serves as translator for Turaga Nuju, who speaks only in gesture and whistle. Without Matoro, the wisdom of the icy Turaga would remain locked in silence.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_arrive_ko_koro',
+      },
+    },
+    {
+      id: 'matoro_lost_snow',
+      section: 'Ko-Koro',
+      title: 'Lost in the White',
+      description:
+        "Matoro went missing in the icy wastes of Ko-Wahi, hunted by Rahi. Takua and Kopaka followed faint traces in the snow until they found him—and brought him home to his village.",
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_search_for_matoro',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.MAKU]: [
+    {
+      id: 'maku_plea_help',
+      section: 'Ga-Koro',
+      title: 'A Call for Help',
+      description:
+        'When Ga-Koro came under attack, Maku sailed to Ta-Wahi to plead for aid. She found Takua at the coast and moved him with her urgency—setting in motion the journey that would save her village.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_ga_koro_sos',
+      },
+    },
+    {
+      id: 'maku_chroniclers_company',
+      section: "Chronicler's Company",
+      title: 'Chosen for the Company',
+      description:
+        'After Ga-Koro was restored, Maku was chosen to represent her village in the Chronicler\'s Company. She joined Takua and the others on the sacred journey to Kini-Nui.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_recruit_hewkii',
+      },
+    },
+    {
+      id: 'maku_defense_kini_nui',
+      section: "Chronicler's Company",
+      title: 'Defense of the Temple',
+      description:
+        "Maku stood with the Chronicler's Company at Kini-Nui, facing the Rahi waves while the Toa descended into darkness. Her courage helped hold the line until the battle below was won.",
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_kini_nui_defense',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.LUMI]: [
+    {
+      id: 'lumi_ko_koro',
+      section: 'Ko-Koro',
+      title: 'Villager of the Ice',
+      description:
+        'Lumi is a Ko-Matoran who dwells in the silent village of Ko-Koro, high in the frozen peaks of Ko-Wahi. She finds peace in the snow and the wisdom of Turaga Nuju.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_arrive_ko_koro',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.KIVI]: [
+    {
+      id: 'kivi_po_koro',
+      section: 'Po-Koro',
+      title: 'Stone Village Healer',
+      description:
+        'Kivi is a Po-Matoran who tended to the sick when the corrupted Koli balls brought illness to Po-Koro. Her care helped the afflicted villagers through the worst of the outbreak.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_po_koro_sickness',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.TAIPU]: [
+    {
+      id: 'taipu_eager_explorer',
+      section: 'Onu-Koro',
+      title: 'Eager to Explore',
+      description:
+        'Taipu is an Onu-Matoran with a restless spirit. When Takua opened the tunnels to Le-Wahi, Taipu was eager to join the adventure—and to see the world beyond the underground.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_meet_taipu',
+      },
+    },
+    {
+      id: 'taipu_nui_rama_capture',
+      section: "Chronicler's Company",
+      title: 'Taken by the Hive',
+      description:
+        'A Nui-Rama ambushed Takua and Taipu in Le-Wahi, snatching Taipu and carrying him to the hive. Forced to work alongside the captive Le-Matoran, he awaited rescue.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_enter_le_wahi',
+      },
+    },
+    {
+      id: 'taipu_rescued',
+      section: "Chronicler's Company",
+      title: 'Rescue from the Hive',
+      description:
+        'Takua, Tamaru, and Kongu flew to the Nui-Rama hive and found Taipu among the captives. Rescued from bondage, Taipu joined the Chronicler\'s Company for the journey to Kini-Nui.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_rescue_from_hive',
+      },
+    },
+    {
+      id: 'taipu_gahlok_trap',
+      section: 'Bohrok War',
+      title: 'Trapped with the Inventor',
+      description:
+        'When the Gahlok flooded Onu-Koro, Taipu was trapped with Onepu and Nuparu. He witnessed Nuparu\'s invention of the Boxor—and fought alongside his friends to reclaim their home.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_onu_koro_boxor',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.TAMARU]: [
+    {
+      id: 'tamaru_afraid_heights',
+      section: 'Le-Koro',
+      title: 'Brave Despite Fear',
+      description:
+        'Tamaru is a Le-Matoran who fears heights—a difficult burden in a village built in the treetops. Yet when the Nui-Rama took his people, he found the courage to fly.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_flight_to_hive',
+      },
+    },
+    {
+      id: 'tamaru_rescue_flight',
+      section: 'Le-Koro',
+      title: 'Flight to the Hive',
+      description:
+        'Tamaru joined Kongu and Takua on the Kahu flight to the Nui-Rama hive. Overcoming his fear of heights, he helped rescue the captive Le-Matoran and Taipu.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_rescue_from_hive',
+      },
+    },
+    {
+      id: 'tamaru_ravine_crossing',
+      section: "Chronicler's Company",
+      title: 'The Ravine Crossing',
+      description:
+        'When the Chronicler\'s Company reached a deep ravine on the path to Kini-Nui, Tamaru proposed a daring method to cross. His knowledge of Le-Wahi and his courage helped the company press onward.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_journey_to_kini_nui_2',
+      },
+    },
+    {
+      id: 'tamaru_defense_kini_nui',
+      section: "Chronicler's Company",
+      title: 'Defense of Kini-Nui',
+      description:
+        "Tamaru stood with the Chronicler's Company at Kini-Nui, holding the line against Rahi while the Toa descended. His bravery—despite his fear of heights—proved that courage comes in many forms.",
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_kini_nui_defense',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.KOPEKE]: [
+    {
+      id: 'kopeke_ko_koro_silent',
+      section: 'Ko-Koro',
+      title: 'The Silent One',
+      description:
+        'Kopeke is a Ko-Matoran who rarely speaks. His quiet nature fits the solemn atmosphere of Ko-Koro, and his loyalty runs deep.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_arrive_ko_koro',
+      },
+    },
+    {
+      id: 'kopeke_chroniclers_company',
+      section: "Chronicler's Company",
+      title: 'Chosen for Ko-Koro',
+      description:
+        'Turaga Nuju chose Kopeke to represent Ko-Koro in the Chronicler\'s Company. Together with Takua, he journeyed to gather the other Matoran before the sacred trek to Kini-Nui.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_summon_chroniclers_company',
+      },
+    },
+    {
+      id: 'kopeke_silent_gate',
+      section: "Chronicler's Company",
+      title: 'The Silent Gate',
+      description:
+        'At the great stone gate on the path to Kini-Nui, the Chronicler\'s Company needed to unlock a hidden mechanism. Kopeke\'s patience and observation helped the group find a way through.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_journey_to_kini_nui_4',
+      },
+    },
+    {
+      id: 'kopeke_defense_kini_nui',
+      section: "Chronicler's Company",
+      title: 'Holding the Shrine',
+      description:
+        "Kopeke stood with the Chronicler's Company at Kini-Nui, defending the sacred temple while the Toa descended. In silence, he fought—and held.",
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_kini_nui_defense',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.HAFU]: [
+    {
+      id: 'hafu_carver',
+      section: 'Po-Koro',
+      title: 'Carver of Stone',
+      description:
+        'Hafu is a master carver of Po-Koro, creating sculptures and works of art from the stone of the desert. His carvings are treasured throughout the village.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_summon_chroniclers_company',
+      },
+    },
+    {
+      id: 'hafu_chroniclers_company',
+      section: "Chronicler's Company",
+      title: 'The Journey to Kini-Nui',
+      description:
+        'Chosen by Turaga Onewa to represent Po-Koro, Hafu joined the Chronicler\'s Company. He brought his strength and skill to the journey—and would soon need both.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_journey_to_kini_nui_1',
+      },
+    },
+    {
+      id: 'hafu_rockslide',
+      section: "Chronicler's Company",
+      title: 'Rockslide Ahead',
+      description:
+        'When a rockslide blocked the path to Kini-Nui, Hafu put his carving tools to unexpected use—helping the Company clear a way through the rubble.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_journey_to_kini_nui_3',
+      },
+    },
+    {
+      id: 'hafu_bohrok_sacrifice',
+      section: 'Bohrok War',
+      title: 'Sacrifice at the Gates',
+      description:
+        "When the Tahnok swarm threatened Po-Koro, Hafu stood with Huki at the village gates. To slow the Bohrok, Hafu shattered his own carvings—his life's work—to block the tunnels and buy time for the villagers to flee.",
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_po_koro_defense',
       },
     },
   ],
