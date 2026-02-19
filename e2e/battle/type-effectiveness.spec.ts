@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { enableTestMode, goto } from './helpers';
+import { enableTestMode, goto } from '../helpers';
 
 test.describe('Type Effectiveness', () => {
   test('should display type effectiveness table with screenshot', async ({ page }) => {
