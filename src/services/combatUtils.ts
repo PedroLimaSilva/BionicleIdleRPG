@@ -578,6 +578,20 @@ export function queueCombatRound(
 }
 
 /**
+ * Returns true if any alive team member has a mask power off cooldown and not currently active.
+ * Used to decide whether to pause between rounds (so the player can toggle abilities).
+ */
+export function hasReadyMaskPowers(team: Combatant[]): boolean {
+  return team.some(
+    (c) =>
+      c.hp > 0 &&
+      c.maskPower &&
+      !c.maskPower.active &&
+      c.maskPower.effect.cooldown.amount === 0
+  );
+}
+
+/**
  * Decrements wave-based mask power counters for all combatants
  * Should be called when advancing to a new wave
  */
