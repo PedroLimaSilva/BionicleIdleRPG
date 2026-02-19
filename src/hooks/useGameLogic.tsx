@@ -140,9 +140,15 @@ export const useGameLogic = (): GameState => {
         );
       }
 
-      // Apply Krana: use pre-computed list from battle screen, or roll now if not provided.
+      // Apply Krana: use pre-computed list from battle screen when provided (so display and
+      // collection stay in sync). Only roll when kranaToApply was not passed at all.
+      const kranaExplicitlyProvided = params.kranaToApply !== undefined;
       let toApply: KranaReward[] = params.kranaToApply ?? [];
-      if (toApply.length === 0 && isKranaCollectionActive(completedQuests)) {
+      if (
+        !kranaExplicitlyProvided &&
+        toApply.length === 0 &&
+        isKranaCollectionActive(completedQuests)
+      ) {
         toApply = computeKranaRewardsForBattle(
           params.encounter,
           params.phase,
