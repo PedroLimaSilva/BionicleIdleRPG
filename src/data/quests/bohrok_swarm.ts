@@ -35,6 +35,25 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     section: 'Bohrok Swarms',
   },
   {
+    id: 'bohrok_jala_ta_koro_defense',
+    name: 'Jala’s Stand at Ta-Koro',
+    description:
+      'As the Bohrok swarms descend on Mata Nui, the ice Bohrok Kohrak strike at Ta-Koro. With the Toa still en route, Captain Jala rallies the village guard to hold the line. Armed with flame and courage, he leads the defense of his home until reinforcements arrive.',
+    durationSeconds: 12 * 60, // 12 minutes
+    requirements: {
+      matoran: ['Jala'],
+      minLevel: 12,
+      items: [],
+    },
+    rewards: {
+      xpPerMatoran: 1600,
+      currency: 2100,
+      loot: {},
+    },
+    unlockedAfter: ['mnog_return_to_shore'],
+    section: 'Bohrok Swarms',
+  },
+  {
     id: 'bohrok_ta_koro_defense',
     name: 'Siege of Ta-Koro',
     description:
@@ -54,6 +73,44 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     section: 'Bohrok Swarms',
   },
   {
+    id: 'bohrok_po_koro_defense',
+    name: 'Hold the Stone Village',
+    description:
+      'The fire Bohrok Tahnok sweep across the desert, scorching everything in their path. As flames threaten Po-Koro, the carver Hafu and Koli champion Huki stand together at the village gates. With stone and spirit, they turn back the swarm until the Toa can lend their strength.',
+    durationSeconds: 14 * 60, // 14 minutes
+    requirements: {
+      matoran: ['Hafu', 'Huki'],
+      minLevel: 12,
+      items: [],
+    },
+    rewards: {
+      xpPerMatoran: 1700,
+      currency: 2300,
+      loot: {},
+    },
+    unlockedAfter: ['bohrok_swarm_intro'],
+    section: 'Bohrok Swarms',
+  },
+  {
+    id: 'bohrok_onu_koro_boxor',
+    name: 'The Invention of the Boxor',
+    description:
+      'Flooded by the water Bohrok Gahlok, Onu-Koro is cut off and its tunnels fill with corrosive streams. Trapped with Onepu and Taipu, Nuparu refuses to yield—he scavenges Bohrok shells and ancient machinery to create the Boxor, a walking exo-suit that lets the Matoran fight back and reclaim their home.',
+    durationSeconds: 18 * 60, // 18 minutes
+    requirements: {
+      matoran: ['Onepu', 'Nuparu', 'Taipu'],
+      minLevel: 12,
+      items: [],
+    },
+    rewards: {
+      xpPerMatoran: 2000,
+      currency: 2500,
+      loot: {},
+    },
+    unlockedAfter: ['bohrok_ta_koro_defense'],
+    section: 'Bohrok Swarms',
+  },
+  {
     id: BOHROK_KRANA_LEGEND_QUEST_ID,
     name: 'Legend of the Krana',
     description:
@@ -70,6 +127,25 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       loot: {},
     },
     unlockedAfter: ['bohrok_ta_koro_defense'],
+    section: 'Bohrok Swarms',
+  },
+  {
+    id: 'bohrok_lewa_krana_rescue',
+    name: 'Freed from the Krana',
+    description:
+      'During the hunt for Krana, a Bohrok attaches its Krana to Lewa’s face—and the Toa of Air is no longer himself. Compelled by the swarm’s will, he turns against his brothers. Onua, steady and grounded, pursues him into the jungle. Through patience and strength, he pries the Krana free and restores Lewa to his senses, proving that even the fiercest possession can be overcome by Unity.',
+    durationSeconds: 15 * 60, // 15 minutes
+    requirements: {
+      matoran: ['Toa_Lewa', 'Toa_Onua'],
+      minLevel: 13,
+      items: [],
+    },
+    rewards: {
+      xpPerMatoran: 2100,
+      currency: 2400,
+      loot: {},
+    },
+    unlockedAfter: ['bohrok_legend_of_krana'],
     section: 'Bohrok Swarms',
   },
   {
