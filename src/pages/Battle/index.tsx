@@ -92,6 +92,7 @@ export const BattlePage: React.FC = () => {
     return (
       <div className="page-container battle battle--outcome">
         <h1 className="battle-outcome__title">{phase}</h1>
+        <div className="battle-arena"></div>
         <div className="battle-rewards-panel">
           <p className="battle-rewards-panel__row">Enemies defeated: {enemiesDefeated ?? 0}</p>
           <p className="battle-rewards-panel__row battle-rewards-panel__exp">
@@ -112,7 +113,10 @@ export const BattlePage: React.FC = () => {
               <span className="battle-rewards-panel__empty">None</span>
             )}
           </p>
-          <button className="confirm-button battle-rewards-panel__collect" onClick={handleCollectRewards}>
+          <button
+            className="confirm-button battle-rewards-panel__collect"
+            onClick={handleCollectRewards}
+          >
             Collect Rewards
           </button>
         </div>
