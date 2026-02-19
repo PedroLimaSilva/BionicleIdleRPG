@@ -57,7 +57,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_ta_koro_defense',
     name: 'Siege of Ta-Koro',
     description:
-      'The Bohrok descend on Ta-Koro in force, shattering stone and fire alike. Tahu leads the defense, pushing the swarm back long enough for the Matoran to evacuate. Turaga Vakama, seeing the mechanical swarms firsthand, recognizes them from the old legends—the awakening he had long feared has come.',
+      'As the Kohrak siege Ta-Koro, Tahu ambushes them, pushing the swarm into the lava moat. Turaga Vakama, seeing the mechanical swarms firsthand, recognizes them from the old legends—the awakening he had long feared has come.',
     durationSeconds: 15 * 60, // 15 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Takua'],
@@ -76,7 +76,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_po_koro_defense',
     name: 'Hold the Stone Village',
     description:
-      'The fire Bohrok Tahnok sweep across the desert, scorching everything in their path. As flames threaten Po-Koro, the carver Hafu and Koli champion Huki stand together at the village gates. With stone and spirit, they turn back the swarm until the Toa can lend their strength.',
+      'The fire Bohrok Tahnok sweep across the desert, scorching everything in their path. As flames threaten Po-Koro, the carver Hafu and Koli champion Huki stand together at the village gates. Hafu is forced to sacrifice his life\'s work—shattering his carvings to block the tunnels and slow the swarm—buying precious time for the villagers to flee.',
     durationSeconds: 14 * 60, // 14 minutes
     requirements: {
       matoran: ['Hafu', 'Huki'],
