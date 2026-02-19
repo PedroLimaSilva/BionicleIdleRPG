@@ -413,7 +413,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Ta-Koro',
       title: 'The Slow Walker',
       description:
-        'Kapura serves Ta-Koro as a villager who practices the ancient art of the slow walk—a form of meditation that brings inner calm. His unconventional ways set him apart, but his loyalty to the village runs deep.',
+        'Encouraged by Turaga Vakama, he spends most of his time practicing his art of moving slowly. His unconventional ways set him apart, but his loyalty to the village runs deep.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_find_canister_beach',
@@ -424,7 +424,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Ta-Koro',
       title: 'Into the Smoky Forest',
       description:
-        'When strange smoke rises where none should be, Kapura joins Jala to investigate the disturbance in the Ta-Wahi forest. Their journey leads to the awakening of the Toa Mata—proof that the prophecies were true.',
+        'When strange smoke rises where none should be, Kapura joins Jala to investigate the disturbance in the Ta-Wahi forest. They ambush what they believe is causing trouble, only to find the prophesied Toa Tahu',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_tahu_unlock_01',
@@ -435,7 +435,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: "Chronicler's Company",
       title: 'The Call to Kini-Nui',
       description:
-        'Chosen by Turaga Vakama to represent Ta-Koro, Kapura joins Takua and the Chronicler\'s Company on the sacred journey to Kini-Nui, bringing his quiet steadfastness to the band of brave Matoran.',
+        'After years of practice, Kapura discovers that by walking very slowly he can move great distances. Chosen by Turaga Vakama to represent Ta-Koro, Kapura finds Takua to join him on the sacred journey to Kini-Nui.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_summon_chroniclers_company',
@@ -470,7 +470,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Ta-Koro',
       title: 'Smoke in the Forest',
       description:
-        'Jala leads Kapura into the forest to investigate strange smoke—and discovers the canister that brought Tahu to Mata Nui. The arrival of the Toa changes everything Jala thought he knew.',
+        'When strange smoke rises where none should be, Kapura joins Jala to investigate the disturbance in the Ta-Wahi forest. They ambush what they believe is causing trouble, only to find the prophesied Toa Tahu',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_tahu_unlock_01',
@@ -540,7 +540,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Po-Koro',
       title: 'The Sickness',
       description:
-        'Huki and many Po-Matoran fell ill after using corrupted Koli balls in recent matches. The source was traced to a Rahi nest—and to Makuta\'s influence spreading across the island.',
+        'Huki and many Po-Matoran fell ill after using corrupted Koli balls in recent matches. The source was traced to a Rahi nest.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_po_koro_cave_investigation',
@@ -551,7 +551,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Po-Koro',
       title: 'Koli Champion Recovered',
       description:
-        'With the cave of corrupted Koli balls sealed by Takua and Pohatu, Huki recovered. Inspired by Takua\'s courage, he offered to join the journey ahead—ready to defend his village and friends.',
+        'With the cave of corrupted Koli balls sealed by Takua and Pohatu, Huki recovered. Inspired by Takua\'s courage, he offered to join the journey ahead.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_recruit_hewkii',
@@ -597,7 +597,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'The Invention of the Boxor',
       description:
-        "Trapped with Onepu and Taipu as the Gahlok flooded Onu-Koro, Nuparu refused to yield. He scavenged Bohrok shells and ancient machinery to create the Boxor—a walking exo-suit that let the Matoran fight back and reclaim their home.",
+        "Trapped with Onepu and Taipu as the Gahlok flooded Onu-Koro, Nuparu refused to yield. He scavenged Bohrok shells and ancient machinery to create the Boxor, a walking exo-suit that let the Matoran fight back and reclaim their home.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_onu_koro_boxor',
@@ -645,7 +645,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Le-Koro',
       title: 'Flight to the Hive',
       description:
-        'Kongu joined Takua and Tamaru on a daring Kahu flight to the Nui-Rama hive. Their mission: rescue the captive Le-Matoran—including Taipu—from Makuta\'s corrupted creatures.',
+        'Kongu joined Takua and Tamaru on a daring Kahu flight to the Nui-Rama hive. Their mission: rescue the captive Le-Matoran, including Taipu, from Makuta\'s corrupted creatures.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_rescue_from_hive',
@@ -656,7 +656,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Le-Koro',
       title: 'Trapped in the Hive',
       description:
-        'Inside the hive, Kongu\'s Kahu was downed and he was trapped with the others. Only the arrival of Onua and Lewa—freed from the infected mask—brought rescue. The experience forged bonds that would last.',
+        'Inside the hive, Kongu\'s Kahu was downed and he was trapped with the others. After Toa Onua helped Toa Lewa be freed from the infected mask, Kongu and the Le-Matoran were able to be rescued.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_lewa_v_onua',
@@ -693,7 +693,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Ga-Koro',
       title: 'A Call for Help',
       description:
-        'When Ga-Koro came under attack, Maku sailed to Ta-Wahi to plead for aid. She found Takua at the coast and moved him with her urgency—setting in motion the journey that would save her village.',
+        'When Ga-Koro came under attack, Maku sailed to Ta-Wahi to plead for aid. She found Takua at the coast and moved him with her urgency, setting in motion the journey that would save her village.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_ga_koro_sos',
@@ -728,7 +728,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Ko-Koro',
       title: 'Villager of the Ice',
       description:
-        'Lumi is a Ko-Matoran who dwells in the silent village of Ko-Koro, high in the frozen peaks of Ko-Wahi. She finds peace in the snow and the wisdom of Turaga Nuju.',
+        'Lumi is a Ko-Matoran who dwells in the silent village of Ko-Koro, high in the frozen peaks of Ko-Wahi. He finds peace in the snow and the wisdom of Turaga Nuju.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_arrive_ko_koro',
@@ -741,7 +741,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Po-Koro',
       title: 'Stone Village Healer',
       description:
-        'Kivi is a Po-Matoran who tended to the sick when the corrupted Koli balls brought illness to Po-Koro. Her care helped the afflicted villagers through the worst of the outbreak.',
+        'Kivi is a Po-Matoran who tended to the sick when the corrupted Koli balls brought illness to Po-Koro. His care helped the afflicted villagers through the worst of the outbreak.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_po_koro_sickness',
@@ -754,7 +754,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Onu-Koro',
       title: 'Eager to Explore',
       description:
-        'Taipu is an Onu-Matoran with a restless spirit. When Takua opened the tunnels to Le-Wahi, Taipu was eager to join the adventure—and to see the world beyond the underground.',
+        'Taipu is an Onu-Matoran with a restless spirit. When he finally opened the tunnels to Le-Wahi, Taipu was eager to join Takua and see the world beyond the underground.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_meet_taipu',
@@ -787,7 +787,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Trapped with the Inventor',
       description:
-        'When the Gahlok flooded Onu-Koro, Taipu was trapped with Onepu and Nuparu. He witnessed Nuparu\'s invention of the Boxor—and fought alongside his friends to reclaim their home.',
+        'When the Gahlok flooded Onu-Koro, Taipu was trapped with Onepu and Nuparu. He witnessed Nuparu\'s invention of the Boxor and fought alongside his friends to reclaim their home.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_onu_koro_boxor',
@@ -800,7 +800,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Le-Koro',
       title: 'Brave Despite Fear',
       description:
-        'Tamaru is a Le-Matoran who fears heights—a difficult burden in a village built in the treetops. Yet when the Nui-Rama took his people, he found the courage to fly.',
+        'Tamaru is a Le-Matoran who fears heights, a difficult burden in a village built in the treetops. Yet when the Nui-Rama took his people, he found the courage to fly.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_flight_to_hive',
@@ -914,7 +914,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: "Chronicler's Company",
       title: 'Rockslide Ahead',
       description:
-        'When a rockslide blocked the path to Kini-Nui, Hafu put his carving tools to unexpected use—helping the Company clear a way through the rubble.',
+        'When a rockslide blocked the path to Kini-Nui, Hafu put his carving tools to unexpected use, helping the Company clear a way through the rubble.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_journey_to_kini_nui_3',
@@ -925,7 +925,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Sacrifice at the Gates',
       description:
-        "When the Tahnok swarm threatened Po-Koro, Hafu stood with Huki at the village gates. To slow the Bohrok, Hafu shattered his own carvings—his life's work—to block the tunnels and buy time for the villagers to flee.",
+        "When the Tahnok swarm threatened Po-Koro, Hafu stood with Huki at the village gates. To slow the Bohrok, Hafu toppled his own carvings, his life's work, to block the tunnels and buy time for the villagers to flee.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_po_koro_defense',
