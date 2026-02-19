@@ -455,10 +455,10 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Elite fire Bohrok in coordinated waves.',
     waves: [
       [...makeBohrokWave('tahnok', 30, 3)],
-      [...makeBohrokWave('tahnok', 30, 3)],
+      [...makeBohrokWave('lehvak', 30, 1), ...makeBohrokWave('tahnok', 30, 2)],
       [...makeBohrokWave('tahnok', 30, 1)],
     ],
-    loot: makeLoot('blue', [4, 5]),
+    loot: [...makeLoot('blue', [4, 5]), ...makeLoot('red', [4, 5])],
   },
   {
     id: 'tahnok-4',
@@ -492,10 +492,10 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Stronger water Bohrok with corrosive tactics.',
     waves: [
       [...makeBohrokWave('gahlok', 25, 3)],
-      [...makeBohrokWave('gahlok', 25, 3)],
+      [...makeBohrokWave('lehvak', 25, 1), ...makeBohrokWave('gahlok', 25, 2)],
       [...makeBohrokWave('gahlok', 25, 1)],
     ],
-    loot: makeLoot('orange', [2, 3]),
+    loot: [...makeLoot('orange', [2, 3]), ...makeLoot('red', [2, 3])],
   },
   {
     id: 'gahlok-3',
@@ -505,11 +505,11 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Elite water swarms that strike in unison.',
     waves: [
       [...makeBohrokWave('gahlok', 30, 3)],
-      [...makeBohrokWave('gahlok', 30, 3)],
+      [...makeBohrokWave('kohrak', 30, 1), ...makeBohrokWave('gahlok', 30, 2)],
       [...makeBohrokWave('gahlok', 30, 3)],
       [...makeBohrokWave('gahlok', 30, 1)],
     ],
-    loot: makeLoot('orange', [4, 5]),
+    loot: [...makeLoot('orange', [4, 5]), ...makeLoot('white', [4, 5])],
   },
   {
     id: 'gahlok-4',
@@ -519,11 +519,11 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'The most dangerous water swarms.',
     waves: [
       [...makeBohrokWave('gahlok', 35, 3)],
-      [...makeBohrokWave('gahlok', 35, 3)],
-      [...makeBohrokWave('gahlok', 35, 3)],
+      [...makeBohrokWave('kohrak', 35, 2), ...makeBohrokWave('gahlok', 35, 1)],
+      [...makeBohrokWave('lehvak', 35, 1), ...makeBohrokWave('gahlok', 35, 2)],
       [...makeBohrokWave('gahlok', 35, 2)],
     ],
-    loot: makeLoot('orange', [6, 7]),
+    loot: [...makeLoot('orange', [6, 7]), ...makeLoot('white', [6, 7]), ...makeLoot('red', [6, 7])],
   },
   // Lehvak (Air / red) - 4 tiers
   {
@@ -541,8 +541,11 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'lehvak',
     difficulty: 2,
     description: 'Hardened air Bohrok with acid spray.',
-    waves: [[...makeBohrokWave('lehvak', 25, 3)], [...makeBohrokWave('lehvak', 25, 3)]],
-    loot: makeLoot('red', [2, 3]),
+    waves: [
+      [...makeBohrokWave('lehvak', 25, 3)],
+      [...makeBohrokWave('pahrak', 25, 1), ...makeBohrokWave('lehvak', 25, 2)],
+    ],
+    loot: [...makeLoot('red', [2, 3]), ...makeLoot('green', [2, 3])],
   },
   {
     id: 'lehvak-3',
@@ -552,10 +555,10 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Elite air swarms with relentless strikes.',
     waves: [
       [...makeBohrokWave('lehvak', 30, 3)],
-      [...makeBohrokWave('lehvak', 30, 3)],
+      [...makeBohrokWave('gahlok', 30, 1), ...makeBohrokWave('lehvak', 30, 2)],
       [...makeBohrokWave('lehvak', 30, 1)],
     ],
-    loot: makeLoot('red', [4, 5]),
+    loot: [...makeLoot('red', [4, 5]), ...makeLoot('orange', [4, 5])],
   },
   {
     id: 'lehvak-4',
@@ -565,11 +568,11 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'The fiercest air swarms on Mata Nui.',
     waves: [
       [...makeBohrokWave('lehvak', 35, 3)],
-      [...makeBohrokWave('lehvak', 35, 3)],
+      [...makeBohrokWave('tahnok', 35, 1), ...makeBohrokWave('lehvak', 35, 2)],
       [...makeBohrokWave('lehvak', 35, 3)],
       [...makeBohrokWave('lehvak', 35, 1)],
     ],
-    loot: makeLoot('red', [6, 7]),
+    loot: [...makeLoot('red', [6, 7]), ...makeLoot('blue', [6, 7])],
   },
   // Pahrak (Stone / green) - 4 tiers
   {
@@ -587,8 +590,11 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'pahrak',
     difficulty: 2,
     description: 'Hardened stone Bohrok with greater resilience.',
-    waves: [[...makeBohrokWave('pahrak', 25, 3)], [...makeBohrokWave('pahrak', 25, 3)]],
-    loot: makeLoot('green', [2, 3]),
+    waves: [
+      [...makeBohrokWave('pahrak', 25, 3)],
+      [...makeBohrokWave('nuhvok', 25, 1), ...makeBohrokWave('pahrak', 25, 2)],
+    ],
+    loot: [...makeLoot('green', [2, 3]), ...makeLoot('lime', [2, 3])],
   },
   {
     id: 'pahrak-3',
@@ -598,10 +604,10 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Elite stone swarms in coordinated formation.',
     waves: [
       [...makeBohrokWave('pahrak', 30, 3)],
-      [...makeBohrokWave('pahrak', 30, 3)],
+      [...makeBohrokWave('kohrak', 30, 1), ...makeBohrokWave('pahrak', 30, 2)],
       [...makeBohrokWave('pahrak', 30, 1)],
     ],
-    loot: makeLoot('green', [4, 5]),
+    loot: [...makeLoot('green', [4, 5]), ...makeLoot('white', [4, 5])],
   },
   {
     id: 'pahrak-4',
@@ -611,11 +617,11 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'The most resilient stone swarms.',
     waves: [
       [...makeBohrokWave('pahrak', 35, 3)],
-      [...makeBohrokWave('pahrak', 35, 3)],
+      [...makeBohrokWave('lehvak', 35, 1), ...makeBohrokWave('pahrak', 35, 2)],
       [...makeBohrokWave('pahrak', 35, 3)],
       [...makeBohrokWave('pahrak', 35, 1)],
     ],
-    loot: makeLoot('green', [6, 7]),
+    loot: [...makeLoot('green', [6, 7]), ...makeLoot('red', [6, 7])],
   },
   // Nuhvok (Earth / lime) - 4 tiers
   {
@@ -647,10 +653,10 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Elite earth swarms with devastating strikes.',
     waves: [
       [...makeBohrokWave('nuhvok', 30, 3)],
-      [...makeBohrokWave('nuhvok', 30, 3)],
+      [...makeBohrokWave('pahrak', 30, 1), ...makeBohrokWave('nuhvok', 30, 2)],
       [...makeBohrokWave('nuhvok', 30, 1)],
     ],
-    loot: makeLoot('lime', [4, 5]),
+    loot: [...makeLoot('lime', [4, 5]), ...makeLoot('green', [4, 5])],
   },
   {
     id: 'nuhvok-4',
@@ -660,11 +666,11 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'The fiercest earth swarms on Mata Nui.',
     waves: [
       [...makeBohrokWave('nuhvok', 35, 3)],
-      [...makeBohrokWave('nuhvok', 35, 3)],
+      [...makeBohrokWave('kohrak', 35, 1), ...makeBohrokWave('nuhvok', 35, 2)],
       [...makeBohrokWave('nuhvok', 35, 3)],
       [...makeBohrokWave('nuhvok', 35, 1)],
     ],
-    loot: makeLoot('lime', [6, 7]),
+    loot: [...makeLoot('lime', [6, 7]), ...makeLoot('white', [6, 7])],
   },
   // Kohrak (Ice / white) - 4 tiers
   {
@@ -682,8 +688,11 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'kohrak',
     difficulty: 2,
     description: 'Hardened ice Bohrok with chilling power.',
-    waves: [[...makeBohrokWave('kohrak', 25, 3)], [...makeBohrokWave('kohrak', 25, 3)]],
-    loot: makeLoot('white', [2, 3]),
+    waves: [
+      [...makeBohrokWave('kohrak', 25, 3)],
+      [...makeBohrokWave('gahlok', 25, 1), ...makeBohrokWave('kohrak', 25, 2)],
+    ],
+    loot: [...makeLoot('white', [2, 3]), ...makeLoot('orange', [2, 3])],
   },
   {
     id: 'kohrak-3',
@@ -693,10 +702,10 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Elite ice swarms in frost formation.',
     waves: [
       [...makeBohrokWave('kohrak', 30, 3)],
-      [...makeBohrokWave('kohrak', 30, 3)],
+      [...makeBohrokWave('lehvak', 30, 1), ...makeBohrokWave('kohrak', 30, 2)],
       [...makeBohrokWave('kohrak', 30, 1)],
     ],
-    loot: makeLoot('white', [4, 5]),
+    loot: [...makeLoot('white', [4, 5]), ...makeLoot('red', [4, 5])],
   },
   {
     id: 'kohrak-4',
@@ -706,10 +715,10 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'The most frigid ice swarms on Mata Nui.',
     waves: [
       [...makeBohrokWave('kohrak', 35, 3)],
-      [...makeBohrokWave('kohrak', 35, 3)],
+      [...makeBohrokWave('tahnok', 35, 1), ...makeBohrokWave('kohrak', 35, 2)],
       [...makeBohrokWave('kohrak', 35, 3)],
       [...makeBohrokWave('kohrak', 35, 1)],
     ],
-    loot: makeLoot('white', [6, 7]),
+    loot: [...makeLoot('white', [6, 7]), ...makeLoot('blue', [6, 7])],
   },
 ];
