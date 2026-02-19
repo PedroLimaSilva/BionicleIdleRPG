@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Combatant, EnemyEncounter } from '../types/Combat';
 import { RecruitedCharacterData } from '../types/Matoran';
 import { getLevelFromExp } from '../game/Levelling';
-import { TEAM_POSITION_LABELS } from '../data/combat';
 import {
   generateCombatantStats,
   queueCombatRound,
@@ -116,7 +115,7 @@ export const useBattleState = (): BattleState => {
     setTeam([]);
     setEnemies(
       encounter!.waves[0].map(({ id, lvl }, index) =>
-        generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
+        generateCombatantStats(`${id}-${index}`, id, lvl)
       )
     );
     setPhase(BattlePhase.Preparing);
@@ -142,7 +141,7 @@ export const useBattleState = (): BattleState => {
     // Load new enemies for the next wave
     setEnemies(
       currentEncounter.waves[nextWave].map(({ id, lvl }, index) =>
-        generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
+        generateCombatantStats(`${id}-${index}`, id, lvl)
       )
     );
   };
@@ -173,7 +172,7 @@ export const useBattleState = (): BattleState => {
     setCurrentWave(0);
     setEnemies(
       currentEncounter!.waves[0].map(({ id, lvl }, index) =>
-        generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
+        generateCombatantStats(`${id}-${index}`, id, lvl)
       )
     );
     setPhase(BattlePhase.Inprogress);

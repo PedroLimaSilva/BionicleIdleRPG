@@ -342,8 +342,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   },
 };
 
-export const TEAM_POSITION_LABELS = ['Middle', 'Left', 'Right'];
-
 /** Krana drop ids by color: blue=Fire, orange=Water, red=Air, green=Stone, lime=Earth, white=Ice */
 const KRANA_BY_COLOR = {
   blue: [

@@ -4,7 +4,6 @@
  * mask powers incorrectly staying active across round boundaries.
  */
 import { Combatant, EnemyEncounter } from '../types/Combat';
-import { TEAM_POSITION_LABELS } from '../data/combat';
 import { ENCOUNTERS } from '../data/combat';
 import { Mask } from '../types/Matoran';
 import {
@@ -42,7 +41,7 @@ class BattleSimulator {
   constructor(team: Combatant[], encounter: EnemyEncounter, currentWave = 0) {
     this.team = cloneCombatants(team);
     this.enemies = encounter.waves[currentWave].map(({ id, lvl }, index) =>
-      generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
+      generateCombatantStats(`${id}-${index}`, id, lvl)
     );
     this.currentWave = currentWave;
     this.encounter = encounter;
@@ -108,7 +107,7 @@ class BattleSimulator {
     this.team = decrementWaveCounters(this.team);
     this.currentWave++;
     this.enemies = this.encounter.waves[this.currentWave].map(({ id, lvl }, index) =>
-      generateCombatantStats(`${id} ${TEAM_POSITION_LABELS[index]}`, id, lvl)
+      generateCombatantStats(`${id}-${index}`, id, lvl)
     );
   }
 

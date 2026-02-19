@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { COMBATANT_DEX } from '../../../data/combat';
 import { Combatant } from '../../../types/Combat';
 import { DamagePopup } from './DamagePopup';
 
@@ -27,7 +26,7 @@ export function EnemyCard({ enemy }: { enemy: Combatant }) {
       key={enemy.id}
       className={`enemy-card element-${enemy.element}`}
     >
-      <div className="name">{COMBATANT_DEX[enemy.id]?.name || enemy.id}</div>
+      <div className="name">{enemy.name}</div>
       <div className="hp-bar">
         HP: {enemy.hp}/{enemy.maxHp}
         {damage && <DamagePopup damage={damage} direction="down" isHealing={false} />}
