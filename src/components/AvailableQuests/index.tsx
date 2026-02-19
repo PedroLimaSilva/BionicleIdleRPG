@@ -7,6 +7,7 @@ import { RecruitedCharacterData } from '../../types/Matoran';
 import { Quest, QuestItemRequirement } from '../../types/Quests';
 import { KranaCollection } from '../../types/Krana';
 import { areAllKranaCollected } from '../../game/Krana';
+import { Tooltip } from '../Tooltip';
 import './index.scss';
 
 interface AvailableQuestsProps {
@@ -82,9 +83,11 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                     const busy = levelMet && matoran?.quest;
                     const status = available ? 'met' : busy ? 'busy' : 'missing';
                     return (
-                      <span key={id} className={`requirement-chip ${status}`} title={busy ? 'On another quest' : undefined}>
-                        {MATORAN_DEX[id].name}
-                      </span>
+                      <Tooltip key={id} content={busy ? 'On another quest' : undefined}>
+                        <span className={`requirement-chip ${status}`}>
+                          {MATORAN_DEX[id].name}
+                        </span>
+                      </Tooltip>
                     );
                   })}
                   {quest.requirements.minLevel && (

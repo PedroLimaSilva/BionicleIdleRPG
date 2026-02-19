@@ -1,0 +1,61 @@
+.tooltip {
+  position: relative; // For fallback absolute positioning of content
+  display: inline-flex;
+
+  &__trigger {
+    display: inherit;
+    cursor: inherit;
+    outline: none;
+
+    // Anchor for CSS Anchor Positioning (Chrome 125+, Safari 18+)
+    anchor-name: --tooltip-anchor;
+  }
+
+  &__content {
+    position: fixed;
+    position-anchor: --tooltip-anchor;
+    inset-area: block-start;
+    margin-block-end: 0.5rem;
+    position-try-fallbacks: flip-block, flip-inline;
+    width: max-content;
+    max-width: min(220px, 90vw);
+    padding: 0.5rem 0.75rem;
+    background-color: var(--color-surface-high, #1a1a1a);
+    border: 1px solid var(--color-border-muted, #333);
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.5));
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.15s ease,
+      visibility 0.15s ease;
+    pointer-events: none;
+  }
+
+  &:hover &__content,
+  &__trigger:focus-visible + &__content {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  // Fallback for browsers without CSS Anchor Positioning
+  @supports not (anchor-name: --tooltip-anchor) {
+    &__trigger {
+      anchor-name: unset;
+    }
+
+    &__content {
+      position: absolute;
+      bottom: calc(100% + 0.5rem);
+      left: 50%;
+      transform: translateX(-50%);
+      position-anchor: unset;
+      inset-area: unset;
+      position-try-fallbacks: unset;
+      margin-block-end: unset;
+    }
+  }
+}

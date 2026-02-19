@@ -1,5 +1,6 @@
 import { Mask } from '../../types/Matoran';
 import { MASK_POWERS } from '../../data/combat';
+import { Tooltip } from '../Tooltip';
 
 import './index.scss';
 
@@ -18,12 +19,15 @@ export function MaskPowerTooltip({ mask, children }: MaskPowerTooltipProps) {
   }
 
   return (
-    <div className="mask-power-tooltip">
+    <Tooltip
+      content={
+        <>
+          <span className="mask-power-tooltip__title">{longName ?? mask}</span>
+          <span className="mask-power-tooltip__description">{description}</span>
+        </>
+      }
+    >
       {children}
-      <div className="mask-power-tooltip__content" role="tooltip">
-        <span className="mask-power-tooltip__title">{longName ?? mask}</span>
-        <span className="mask-power-tooltip__description">{description}</span>
-      </div>
-    </div>
+    </Tooltip>
   );
 }

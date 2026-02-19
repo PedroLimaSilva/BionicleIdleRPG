@@ -1,44 +1,12 @@
-.mask-power-tooltip {
-  position: relative;
-  display: inline-block;
+// Mask power tooltip content styling (used inside Tooltip)
+.mask-power-tooltip__title {
+  display: block;
+  font-weight: 600;
+  color: var(--theme-element-accent, #7dd3fc);
+  margin-bottom: 0.25rem;
+}
 
-  &__content {
-    position: absolute;
-    bottom: calc(100% + 0.5rem);
-    left: 50%;
-    transform: translateX(-50%);
-    width: max-content;
-    max-width: 220px;
-    padding: 0.5rem 0.75rem;
-    background-color: var(--color-surface-high, #1a1a1a);
-    border: 1px solid var(--color-border-muted, #333);
-    border-radius: 0.5rem;
-    font-size: 0.8125rem;
-    line-height: 1.35;
-    box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.5));
-    z-index: 100;
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.15s ease,
-      visibility 0.15s ease;
-    pointer-events: none;
-  }
-
-  &:hover &__content {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  &__title {
-    display: block;
-    font-weight: 600;
-    color: var(--theme-element-accent, #7dd3fc);
-    margin-bottom: 0.25rem;
-  }
-
-  &__description {
-    display: block;
-    color: var(--color-text-primary, #e5e5e5);
-  }
+.mask-power-tooltip__description {
+  display: block;
+  color: var(--color-text-primary, #e5e5e5);
 }
