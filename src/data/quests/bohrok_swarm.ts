@@ -57,7 +57,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_ta_koro_defense',
     name: 'Siege of Ta-Koro',
     description:
-      'The Bohrok descend on Ta-Koro in force, shattering stone and fire alike. Tahu leads the defense of the village, pushing the swarm back long enough for the Matoran to evacuate and for a single Bohrok to be captured for study.',
+      'The Bohrok descend on Ta-Koro in force, shattering stone and fire alike. Tahu leads the defense, pushing the swarm back long enough for the Matoran to evacuate. Turaga Vakama, seeing the mechanical swarms firsthand, recognizes them from the old legends—the awakening he had long feared has come.',
     durationSeconds: 15 * 60, // 15 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Takua'],
@@ -114,7 +114,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: BOHROK_KRANA_LEGEND_QUEST_ID,
     name: 'Legend of the Krana',
     description:
-      'With a captured Bohrok before them, Turaga Vakama reveals the ancient legend of the swarms and the Krana that control them. The Toa learn that only by collecting the Krana from each Bohrok type can they hope to reach the heart of the nests and end the threat to Mata Nui.',
+      'Having recognized the Bohrok from the old legends, Turaga Vakama gathers the Toa and reveals the ancient tale of the swarms and the Krana that control them. The Toa learn that only by collecting the Krana from each Bohrok type can they hope to reach the heart of the nests and end the threat to Mata Nui.',
     durationSeconds: 5 * 60, // 5 minutes
     requirements: {
       matoran: ['Takua'],
