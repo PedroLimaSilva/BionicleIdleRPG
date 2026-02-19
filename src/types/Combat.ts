@@ -29,6 +29,17 @@ export type TargetDebuff =
       sourceSide: 'team' | 'enemy';
     };
 
+/**
+ * Buff applied to a combatant (e.g. from Nuva mask powers that affect the whole team).
+ * Mirror of mask power effects but as instances that can be applied to multiple targets.
+ */
+export type TargetBuff =
+  | { type: 'DMG_MITIGATOR'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round' | 'hit'; sourceId: string }
+  | { type: 'HEAL'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round'; sourceId: string }
+  | { type: 'ATK_MULT'; multiplier: number; durationRemaining: number; durationUnit: 'attack' | 'round'; sourceId: string }
+  | { type: 'AGGRO'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round'; sourceId: string }
+  | { type: 'SPEED'; multiplier: number; durationRemaining: number; durationUnit: 'round'; sourceId: string };
+
 export interface Combatant {
   id: string;
   name: string;
@@ -37,6 +48,7 @@ export interface Combatant {
   maskPower?: MaskPower;
   maskColorOverride?: LegoColor;
   debuffs?: TargetDebuff[];
+  buffs?: TargetBuff[];
   element: ElementTribe;
   maxHp: number;
   hp: number;
@@ -72,7 +84,7 @@ type MaskEffect = {
   duration: CombatDuration;
   cooldown: CombatDuration;
   multiplier?: number;
-  target: 'self' | 'enemy' | 'allEnemies';
+  target: 'self' | 'enemy' | 'allEnemies' | 'team';
   /** For DEBUFF: subtype (DEFENSE = increased damage taken, CONFUSION = attack own team) */
   debuffType?: 'DEFENSE' | 'CONFUSION';
   /** For DEBUFF: duration of the debuff on the target (e.g. 2 rounds) */

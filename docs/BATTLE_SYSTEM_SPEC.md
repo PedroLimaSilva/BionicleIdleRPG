@@ -117,7 +117,7 @@ interface MaskEffect {
   duration: CombatDuration; // How long the effect lasts
   cooldown: CombatDuration; // How long until it can be used again
   multiplier?: number; // Effect strength
-  target: 'self' | 'enemy' | 'allEnemies';
+  target: 'self' | 'enemy' | 'allEnemies' | 'team';
 }
 
 interface CombatDuration {
@@ -125,6 +125,17 @@ interface CombatDuration {
   amount: number;
 }
 ```
+
+### Mask Powers as Buffs/Debuffs
+
+Mask powers can apply effects to multiple targets:
+
+- **target: 'self'** – Effect stays on the caster (original behavior)
+- **target: 'enemy'** – Debuff applied to attacked enemy (e.g. Akaku, Komau)
+- **target: 'allEnemies'** – Debuff applied to all enemies (e.g. Ruru)
+- **target: 'team'** – Buff applied to all allies (Nuva masks)
+
+When `target: 'team'`, the mask power creates `TargetBuff` instances on each ally. Buffs have their own duration/cooldown lifecycle, and damage/healing logic checks both `maskPower.active` and `buffs` on each combatant.
 
 ### Mask Power Lifecycle
 
@@ -187,6 +198,6 @@ interface CombatDuration {
 - ✅ Mask power duration tracking (all unit types)
 - ✅ Mask power cooldown tracking (all unit types)
 - ❌ Advanced mask effects (ACCURACY_MULT, CONFUSION, immobilization)
-- ❌ Nuva mask powers (team-wide effects)
+- ✅ Nuva mask powers (team-wide effects via buffs)
 - ❌ Reward distribution
 - ❌ Experience gain
