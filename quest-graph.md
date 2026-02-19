@@ -229,16 +229,36 @@ XP: 5000"]
 Loot: 
 Currency: 2000
 XP: 1500"]
+  bohrok_jala_ta_koro_defense["Jala’s Stand at Ta-Koro
+(12m)
+Loot: 
+Currency: 2100
+XP: 1600"]
   bohrok_ta_koro_defense["Siege of Ta-Koro
 (15m)
 Loot: 
 Currency: 2200
 XP: 1800"]
+  bohrok_po_koro_defense["Hold the Stone Village
+(14m)
+Loot: 
+Currency: 2300
+XP: 1700"]
+  bohrok_onu_koro_boxor["The Invention of the Boxor
+(18m)
+Loot: 
+Currency: 2500
+XP: 2000"]
   bohrok_legend_of_krana["Legend of the Krana
 (5m)
 Loot: 
 Currency: 1000
 XP: 800"]
+  bohrok_lewa_krana_rescue["Freed from the Krana
+(15m)
+Loot: 
+Currency: 2400
+XP: 2100"]
   bohrok_krana_hunt["Hunt for the Krana
 (30m)
 Loot: 
@@ -313,8 +333,12 @@ XP: 4000"]
   mnog_gali_call --> mnog_witness_makuta_battle
   mnog_witness_makuta_battle --> mnog_return_to_shore
   mnog_return_to_shore --> bohrok_swarm_intro
+  mnog_return_to_shore --> bohrok_jala_ta_koro_defense
   bohrok_swarm_intro --> bohrok_ta_koro_defense
+  bohrok_swarm_intro --> bohrok_po_koro_defense
+  bohrok_ta_koro_defense --> bohrok_onu_koro_boxor
   bohrok_ta_koro_defense --> bohrok_legend_of_krana
+  bohrok_legend_of_krana --> bohrok_lewa_krana_rescue
   bohrok_legend_of_krana --> bohrok_krana_hunt
   bohrok_krana_hunt --> bohrok_into_the_bohrok_nest
   bohrok_into_the_bohrok_nest --> bohrok_evolve_toa_nuva
