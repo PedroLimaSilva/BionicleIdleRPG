@@ -1,3 +1,18 @@
+.battle-selector__type-chart-link {
+  display: block;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--color-text);
+    text-decoration: underline;
+  }
+}
+
 .encounter {
   border: 1px solid var(--color-border-muted);
   padding: 1rem;

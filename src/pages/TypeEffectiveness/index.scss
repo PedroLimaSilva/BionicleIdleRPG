@@ -1,0 +1,116 @@
+.type-effectiveness {
+  padding-bottom: 2rem;
+
+  &__intro {
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  &__table-wrap {
+    overflow-x: auto;
+    margin: 0 auto 1.5rem;
+    max-width: min(95vw, 700px);
+    border-radius: 12px;
+    background: var(--color-surface-low);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+
+    th,
+    td {
+      padding: 0.4rem 0.35rem;
+      text-align: center;
+      border: 1px solid var(--color-border-muted);
+    }
+  }
+
+  &__corner {
+    background: var(--color-surface-mid);
+    min-width: 80px;
+  }
+
+  &__header {
+    background: var(--color-surface-mid);
+
+    .element-tag {
+      font-size: 0.75rem;
+      padding: 0.2em 0.5em;
+
+      img {
+        height: 0.85em;
+        width: 0.85em;
+      }
+    }
+  }
+
+  &__row-header {
+    background: var(--color-surface-mid);
+    text-align: right;
+    padding-right: 0.5rem;
+
+    .element-tag {
+      font-size: 0.75rem;
+      padding: 0.2em 0.5em;
+
+      img {
+        height: 0.85em;
+        width: 0.85em;
+      }
+    }
+  }
+
+  &__cell {
+    min-width: 2.5rem;
+    font-weight: 600;
+
+    &--strong {
+      background: rgba(0, 180, 80, 0.25);
+      color: #5effa3;
+    }
+
+    &--normal {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--color-text-muted);
+    }
+
+    &--weak {
+      background: rgba(180, 60, 60, 0.25);
+      color: #ff8080;
+    }
+  }
+
+  &__legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  &__legend-item {
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+
+    &.type-effectiveness__cell--strong {
+      background: rgba(0, 180, 80, 0.25);
+      color: #5effa3;
+    }
+
+    &.type-effectiveness__cell--normal {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    &.type-effectiveness__cell--weak {
+      background: rgba(180, 60, 60, 0.25);
+      color: #ff8080;
+    }
+  }
+}
