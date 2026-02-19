@@ -143,14 +143,21 @@ export function computeKranaRewardsForBattle(
   if (!isKranaCollectionActive(completedQuests)) return [];
   const elements = getDefeatedEnemyElements(encounter, phase, currentWave, currentEnemies);
   const rewards: KranaReward[] = [];
+  const awardedThisBattle = new Set<string>();
   for (const element of elements) {
     if (!isKranaElement(element)) continue;
     const kranaLoot = getKranaLootForElement(encounter, element);
     let awarded: KranaReward | null = null;
     if (kranaLoot.length > 0) {
       for (const { element: el, kranaId, chance } of kranaLoot) {
-        if (!isKranaCollected(collectedKrana, el, kranaId) && Math.random() < chance) {
+        const key = `${el}:${kranaId}`;
+        if (
+          !isKranaCollected(collectedKrana, el, kranaId) &&
+          !awardedThisBattle.has(key) &&
+          Math.random() < chance
+        ) {
           awarded = { element: el, kranaId };
+          awardedThisBattle.add(key);
           break;
         }
       }
