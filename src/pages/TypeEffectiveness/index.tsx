@@ -11,8 +11,6 @@ const ELEMENT_ORDER: ElementTribe[] = [
   ElementTribe.Stone,
   ElementTribe.Earth,
   ElementTribe.Air,
-  ElementTribe.Shadow,
-  ElementTribe.Light,
 ];
 
 function getMultiplierLabel(multiplier: number): string {
