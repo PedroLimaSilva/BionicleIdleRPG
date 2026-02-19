@@ -117,7 +117,7 @@ test.describe('Battle Flow', () => {
       completedQuests: ['bohrok_legend_of_krana'],
       recruitedCharacters: TOA_WITH_EXP,
       collectedKrana: {
-        Fire: ['Vu', 'Ja', 'Yo', 'Ca'],
+        Fire: ['Xa', 'Bo', 'Su', 'Za'],
         Water: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
         Air: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
         Earth: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
