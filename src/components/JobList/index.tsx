@@ -5,7 +5,6 @@ import { useGame } from '../../context/Game';
 import { getAvailableJobs, getProductivityModifier } from '../../game/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { JobCard } from './JobCard';
-import { Tooltip } from '../Tooltip';
 import { RecruitedCharacterData } from '../../types/Matoran';
 
 type JobListProps = {
@@ -42,19 +41,17 @@ export function JobList({ matoran, onCancel }: JobListProps) {
           const { label, description, rate } = JOB_DETAILS[job];
           const modifier = getProductivityModifier(job, matoran);
           return (
-            <Tooltip key={job} content={description}>
-              <div onClick={() => setSelectedJob(job)}>
-                <JobCard
-                  classNames={`${selectedJob === job ? 'selected' : ''} ${
-                    matoran.assignment?.job === job ? 'assigned' : ''
-                  }`}
-                  title={label}
-                  description={description}
-                  baseRate={rate}
-                  modifier={modifier}
-                />
-              </div>
-            </Tooltip>
+            <div onClick={() => setSelectedJob(job)}>
+              <JobCard
+                classNames={`${selectedJob === job ? 'selected' : ''} ${
+                  matoran.assignment?.job === job ? 'assigned' : ''
+                }`}
+                title={label}
+                description={description}
+                baseRate={rate}
+                modifier={modifier}
+              />
+            </div>
           );
         })}
       </div>
