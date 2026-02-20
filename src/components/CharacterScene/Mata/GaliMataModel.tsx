@@ -14,7 +14,10 @@ export const GaliMataModel = forwardRef<
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/gali.glb');
-  const { playAnimation } = useCombatAnimations(animations, group, { modelId: matoran.id });
+  const { playAnimation } = useCombatAnimations(animations, group, {
+    modelId: matoran.id,
+    attackResolveAtFraction: 0.6,
+  });
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 

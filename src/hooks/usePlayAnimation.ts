@@ -1,14 +1,17 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import type { AnimationAction, AnimationMixer } from 'three';
 import { LoopOnce } from 'three';
 
 export type UsePlayAnimationOptions = {
   /** ID for console warnings when animation not found (e.g. matoran.id) */
   modelId?: string;
-  /** Time scale for one-shot actions (Attack, Hit). Default: 1.5 */
+  /** Time scale for one-shot actions (Attack, Hit). Default: 1 */
   actionTimeScale?: number;
   /** How to transition before playing an action. Default: 'fadeIdle' */
   transitionMode?: 'fadeIdle' | 'stopAll';
+  /** For Attack: resolve promise at this fraction through (0-1). Default: 0.5. Hit/Defeat always resolve at end. */
+  attackResolveAtFraction?: number;
 };
 
 /**
@@ -20,7 +23,28 @@ export function usePlayAnimation(
   mixer: AnimationMixer,
   options: UsePlayAnimationOptions = {}
 ) {
-  const { modelId, actionTimeScale = 1.5, transitionMode = 'fadeIdle' } = options;
+  const {
+    modelId,
+    actionTimeScale = 1,
+    transitionMode = 'fadeIdle',
+    attackResolveAtFraction = 0.5,
+  } = options;
+
+  const pendingAttackResolve = useRef<{
+    action: AnimationAction;
+    resolve: () => void;
+    resolveAtTime: number;
+    hasResolved: boolean;
+  } | null>(null);
+
+  useFrame(() => {
+    const pending = pendingAttackResolve.current;
+    if (!pending || pending.hasResolved) return;
+    if (pending.action.time >= pending.resolveAtTime) {
+      pending.hasResolved = true;
+      pending.resolve();
+    }
+  });
 
   const playAnimation = useCallback(
     (name: string): Promise<void> => {
@@ -45,20 +69,49 @@ export function usePlayAnimation(
         action.setEffectiveTimeScale(actionTimeScale);
         action.play();
 
-        const onComplete = () => {
-          mixer.removeEventListener('finished', onComplete);
-          resolve();
-          if (name === 'Defeat') return;
-          const idle = actions['Idle'];
-          if (idle) {
-            idle.reset().fadeIn(0.2).play();
-          }
-        };
+        const isAttackWithEarlyResolve = name === 'Attack';
 
-        mixer.addEventListener('finished', onComplete);
+        if (isAttackWithEarlyResolve) {
+          const clip = action.getClip();
+          const resolveAtTime = clip.duration * attackResolveAtFraction;
+          pendingAttackResolve.current = {
+            action,
+            resolve,
+            resolveAtTime,
+            hasResolved: false,
+          };
+
+          const onFinished = (e: { action: AnimationAction }) => {
+            if (e.action !== action) return;
+            mixer.removeEventListener('finished', onFinished);
+            const pending = pendingAttackResolve.current;
+            if (pending && pending.action === action) {
+              pendingAttackResolve.current = null;
+              if (!pending.hasResolved) pending.resolve();
+            }
+            const idle = actions['Idle'];
+            if (idle) {
+              idle.reset().fadeIn(0.2).play();
+            }
+          };
+
+          mixer.addEventListener('finished', onFinished);
+        } else {
+          const onComplete = () => {
+            mixer.removeEventListener('finished', onComplete);
+            resolve();
+            if (name === 'Defeat') return;
+            const idle = actions['Idle'];
+            if (idle) {
+              idle.reset().fadeIn(0.2).play();
+            }
+          };
+
+          mixer.addEventListener('finished', onComplete);
+        }
       });
     },
-    [actions, mixer, modelId, actionTimeScale, transitionMode]
+    [actions, mixer, modelId, actionTimeScale, transitionMode, attackResolveAtFraction]
   );
 
   return playAnimation;
