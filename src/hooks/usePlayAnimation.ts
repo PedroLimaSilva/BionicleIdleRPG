@@ -6,7 +6,7 @@ import { LoopOnce } from 'three';
 export type UsePlayAnimationOptions = {
   /** ID for console warnings when animation not found (e.g. matoran.id) */
   modelId?: string;
-  /** Time scale for one-shot actions (Attack, Hit). Default: 1.5 */
+  /** Time scale for one-shot actions (Attack, Hit). Default: 1 */
   actionTimeScale?: number;
   /** How to transition before playing an action. Default: 'fadeIdle' */
   transitionMode?: 'fadeIdle' | 'stopAll';
@@ -25,7 +25,7 @@ export function usePlayAnimation(
 ) {
   const {
     modelId,
-    actionTimeScale = 1.5,
+    actionTimeScale = 1,
     transitionMode = 'fadeIdle',
     attackResolveAtFraction = 0.5,
   } = options;

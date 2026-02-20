@@ -14,7 +14,10 @@ export const KopakaMataModel = forwardRef<
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/kopaka.glb');
-  const { playAnimation } = useCombatAnimations(animations, group, { modelId: matoran.id });
+  const { playAnimation } = useCombatAnimations(animations, group, {
+    modelId: matoran.id,
+    attackResolveAtFraction: 0.25,
+  });
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 

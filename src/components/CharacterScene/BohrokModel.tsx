@@ -49,6 +49,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
     modelId: name,
     actionTimeScale: 2,
     transitionMode: 'stopAll',
+    attackResolveAtFraction: 0.1,
   });
 
   useImperativeHandle(ref, () => ({ playAnimation }));
