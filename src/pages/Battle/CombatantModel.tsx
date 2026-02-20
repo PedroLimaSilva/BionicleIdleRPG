@@ -31,6 +31,8 @@ interface CombatantModelProps {
 export interface PlayAnimationOptions {
   /** When set, combatant rotates to face this target during the animation, then restores original orientation. */
   faceTargetId?: string;
+  /** Internal: called when animation fully ends (used when CombatantModel calls child for Attack). */
+  onAnimationComplete?: () => void;
 }
 
 export interface CombatantModelHandle {
@@ -91,11 +93,21 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           }
         }
 
-        try {
-          await (childRef.current?.playAnimation(name) ?? Promise.resolve());
-        } finally {
-          if (faceTargetId && name !== 'Defeat' && facingY !== null) {
+        const startRestore = () => {
+          if (facingY !== null) {
             restoreRef.current = { from: facingY, startTimeMs: performance.now() };
+          }
+        };
+
+        try {
+          const callOptions =
+            name === 'Attack' && faceTargetId && facingY !== null
+              ? { onAnimationComplete: startRestore }
+              : undefined;
+          await (childRef.current?.playAnimation(name, callOptions) ?? Promise.resolve());
+        } finally {
+          if (faceTargetId && name === 'Hit' && facingY !== null) {
+            startRestore();
           }
         }
       },
