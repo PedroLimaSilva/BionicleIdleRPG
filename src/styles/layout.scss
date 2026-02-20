@@ -29,6 +29,8 @@
     &.route--battle {
       display: block;
       z-index: -1;
+      left: calc(anchor(left) - 2rem);
+      right: calc(anchor(right) - 2rem);
     }
   }
 
