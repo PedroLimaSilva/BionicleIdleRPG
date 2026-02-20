@@ -5,7 +5,11 @@ import { ElementTribe, Mask } from '../types/Matoran';
 
 declare global {
   interface Window {
-    combatantRefs: Record<string, { playAnimation?: (name: string) => Promise<void> }>;
+    combatantRefs: Record<
+      string,
+      { playAnimation?: (name: string, options?: { faceTargetId?: string }) => Promise<void> }
+    >;
+    combatantPositions?: Record<string, [number, number, number]>;
   }
 }
 
@@ -496,7 +500,7 @@ export function queueCombatRound(
 
       // Await Attack - resolves at contact frame (attackResolveAtFraction)
       if (actorRef?.playAnimation) {
-        await actorRef.playAnimation('Attack');
+        await actorRef.playAnimation('Attack', { faceTargetId: target.id });
       }
 
       // Apply damage and update state when contact occurs (HP bar drops at impact)
@@ -539,9 +543,9 @@ export function queueCombatRound(
       // Await target reaction so next turn doesn't start before hit/defeat finishes
       if (targetRef?.playAnimation) {
         if (willBeDefeated) {
-          await targetRef.playAnimation('Defeat');
+          await targetRef.playAnimation('Defeat', { faceTargetId: self.id });
         } else {
-          await targetRef.playAnimation('Hit');
+          await targetRef.playAnimation('Hit', { faceTargetId: self.id });
         }
       }
 

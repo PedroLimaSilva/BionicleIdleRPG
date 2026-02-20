@@ -8,7 +8,7 @@ import { PohatuMataModel } from '../../components/CharacterScene/Mata/PohatuMata
 import { OnuaMataModel } from '../../components/CharacterScene/Mata/OnuaMataModel';
 import { LewaMataModel } from '../../components/CharacterScene/Mata/LewaMataModel';
 import { GaliMataModel } from '../../components/CharacterScene/Mata/GaliMataModel';
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { Group } from 'three';
 
 interface CombatantModelProps {
@@ -17,23 +17,65 @@ interface CombatantModelProps {
   side: 'enemy' | 'team';
 }
 
+export interface PlayAnimationOptions {
+  /** When set, combatant rotates to face this target during the animation, then restores original orientation. */
+  faceTargetId?: string;
+}
+
 export interface CombatantModelHandle {
-  playAnimation: (name: 'Attack' | 'Hit' | 'Defeat' | 'Idle') => Promise<void>;
+  playAnimation: (
+    name: 'Attack' | 'Hit' | 'Defeat' | 'Idle',
+    options?: PlayAnimationOptions
+  ) => Promise<void>;
+}
+
+/** Compute Y rotation (radians) to face target from self position. Team faces -Z by default, enemy +Z. */
+function getFacingRotation(
+  selfPos: [number, number, number],
+  targetPos: [number, number, number],
+  side: 'team' | 'enemy'
+): number {
+  const dx = targetPos[0] - selfPos[0];
+  const dz = targetPos[2] - selfPos[2];
+  const angle = Math.atan2(dx, dz);
+  return side === 'team' ? angle + Math.PI : angle;
 }
 
 export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelProps>(
   ({ combatant, position, side }, ref) => {
     const modelGroup = useRef<Group>(null);
+    const childRef = useRef<CombatantModelHandle | null>(null);
 
-    const childRef = useRef<CombatantModelHandle>(null);
+    const baseRotationY = side === 'team' ? Math.PI : 0;
+    const [overrideRotationY, setOverrideRotationY] = useState<number | null>(null);
+    const rotationY = overrideRotationY ?? baseRotationY;
 
     useImperativeHandle(ref, () => ({
-      playAnimation: (name) => {
-        return childRef.current?.playAnimation(name) ?? Promise.resolve();
+      playAnimation: async (name, options) => {
+        const faceTargetId = options?.faceTargetId;
+
+        if (faceTargetId && (name === 'Attack' || name === 'Hit' || name === 'Defeat')) {
+          const positions = (window as { combatantPositions?: Record<string, [number, number, number]> })
+            .combatantPositions;
+          const selfPos = positions?.[combatant.id];
+          const targetPos = positions?.[faceTargetId];
+
+          if (selfPos && targetPos) {
+            setOverrideRotationY(getFacingRotation(selfPos, targetPos, side));
+          }
+        }
+
+        try {
+          await (childRef.current?.playAnimation(name) ?? Promise.resolve());
+        } finally {
+          if (faceTargetId) {
+            setOverrideRotationY(null);
+          }
+        }
       },
     }));
 
-    const rotation: Euler = [0, side === 'team' ? Math.PI : 0, 0];
+    const rotation: Euler = [0, rotationY, 0];
 
     const model = (() => {
       switch (combatant.model) {
