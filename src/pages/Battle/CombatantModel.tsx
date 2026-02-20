@@ -9,7 +9,18 @@ import { OnuaMataModel } from '../../components/CharacterScene/Mata/OnuaMataMode
 import { LewaMataModel } from '../../components/CharacterScene/Mata/LewaMataModel';
 import { GaliMataModel } from '../../components/CharacterScene/Mata/GaliMataModel';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { Group } from 'three';
+
+const ROTATION_RESTORE_DURATION = 0.25;
+
+/** Linear interpolation between two angles, taking the shortest path. */
+function lerpAngle(from: number, to: number, t: number): number {
+  let diff = to - from;
+  while (diff > Math.PI) diff -= 2 * Math.PI;
+  while (diff < -Math.PI) diff += 2 * Math.PI;
+  return from + diff * t;
+}
 
 interface CombatantModelProps {
   combatant: Combatant;
@@ -29,16 +40,14 @@ export interface CombatantModelHandle {
   ) => Promise<void>;
 }
 
-/** Compute Y rotation (radians) to face target from self position. Team faces -Z by default, enemy +Z. */
+/** Compute Y rotation (radians) to face target from self position. Model +Z axis rotates to point at target. */
 function getFacingRotation(
   selfPos: [number, number, number],
-  targetPos: [number, number, number],
-  side: 'team' | 'enemy'
+  targetPos: [number, number, number]
 ): number {
   const dx = targetPos[0] - selfPos[0];
   const dz = targetPos[2] - selfPos[2];
-  const angle = Math.atan2(dx, dz);
-  return side === 'team' ? angle + Math.PI : angle;
+  return Math.atan2(dx, dz);
 }
 
 export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelProps>(
@@ -48,28 +57,45 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
 
     const baseRotationY = side === 'team' ? Math.PI : 0;
     const [overrideRotationY, setOverrideRotationY] = useState<number | null>(null);
+    const restoreRef = useRef<{ from: number; startTimeMs: number } | null>(null);
+
+    useFrame(() => {
+      const restore = restoreRef.current;
+      if (!restore) return;
+      const elapsedSec = (performance.now() - restore.startTimeMs) / 1000;
+      const t = Math.min(1, elapsedSec / ROTATION_RESTORE_DURATION);
+      setOverrideRotationY(lerpAngle(restore.from, baseRotationY, t));
+      if (t >= 1) {
+        restoreRef.current = null;
+        setOverrideRotationY(null);
+      }
+    });
+
     const rotationY = overrideRotationY ?? baseRotationY;
 
     useImperativeHandle(ref, () => ({
       playAnimation: async (name, options) => {
         const faceTargetId = options?.faceTargetId;
+        const shouldFace = faceTargetId && (name === 'Attack' || name === 'Hit' || name === 'Defeat');
 
-        if (faceTargetId && (name === 'Attack' || name === 'Hit' || name === 'Defeat')) {
+        let facingY: number | null = null;
+        if (shouldFace) {
           const positions = (window as { combatantPositions?: Record<string, [number, number, number]> })
             .combatantPositions;
           const selfPos = positions?.[combatant.id];
           const targetPos = positions?.[faceTargetId];
 
           if (selfPos && targetPos) {
-            setOverrideRotationY(getFacingRotation(selfPos, targetPos, side));
+            facingY = getFacingRotation(selfPos, targetPos);
+            setOverrideRotationY(facingY);
           }
         }
 
         try {
           await (childRef.current?.playAnimation(name) ?? Promise.resolve());
         } finally {
-          if (faceTargetId) {
-            setOverrideRotationY(null);
+          if (faceTargetId && name !== 'Defeat' && facingY !== null) {
+            restoreRef.current = { from: facingY, startTimeMs: performance.now() };
           }
         }
       },
