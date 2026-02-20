@@ -7,6 +7,7 @@ import {
 } from '../../../game/Krana';
 import type { KranaElement } from '../../../types/Krana';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
+import { Tooltip } from '../../../components/Tooltip';
 import './index.scss';
 
 interface KranaCollectionProps {
@@ -33,23 +34,26 @@ export function KranaCollection({ matoran }: KranaCollectionProps) {
         {ALL_KRANA_IDS.map((kranaId) => {
           const collected = progress.collected.includes(kranaId);
           return (
-            <div
+            <Tooltip
               key={kranaId}
-              className={`krana-collection__slot krana-collection__slot--${
-                collected ? 'collected' : 'uncollected'
-              } krana-color--${kranaColor}`}
-              title={
+              content={
                 collected ? `Krana ${kranaId} (collected)` : `Krana ${kranaId} (not yet recovered)`
               }
             >
-              <div className="krana-collection__img-wrap">
-                <img
-                  src={`${import.meta.env.BASE_URL}/avatar/Krana/${kranaId}.webp`}
-                  alt={kranaId}
-                  className="krana-collection__img"
-                />
+              <div
+                className={`krana-collection__slot krana-collection__slot--${
+                  collected ? 'collected' : 'uncollected'
+                } krana-color--${kranaColor}`}
+              >
+                <div className="krana-collection__img-wrap">
+                  <img
+                    src={`${import.meta.env.BASE_URL}/avatar/Krana/${kranaId}.webp`}
+                    alt={kranaId}
+                    className="krana-collection__img"
+                  />
+                </div>
               </div>
-            </div>
+            </Tooltip>
           );
         })}
       </div>

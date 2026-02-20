@@ -1,0 +1,12 @@
+// Mask power tooltip content styling (used inside Tooltip)
+.mask-power-tooltip__title {
+  display: block;
+  font-weight: 600;
+  color: var(--theme-element-accent, #7dd3fc);
+  margin-bottom: 0.25rem;
+}
+
+.mask-power-tooltip__description {
+  display: block;
+  color: var(--color-text-primary, #e5e5e5);
+}

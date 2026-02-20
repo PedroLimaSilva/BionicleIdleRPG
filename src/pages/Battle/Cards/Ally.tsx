@@ -3,6 +3,7 @@ import { Combatant } from '../../../types/Combat';
 import { DamagePopup } from './DamagePopup';
 import { MATORAN_DEX } from '../../../data/matoran';
 import { MatoranAvatar } from '../../../components/MatoranAvatar';
+import { MaskPowerTooltip } from '../../../components/MaskPowerTooltip';
 
 export function AllyCard({ combatant, onClick }: { combatant: Combatant; onClick: () => void }) {
   const prevHpRef = useRef(combatant.hp);
@@ -52,15 +53,17 @@ export function AllyCard({ combatant, onClick }: { combatant: Combatant; onClick
         disabled ? 'disabled' : ''
       } ${selected && 'selected'}`}
     >
-      <MatoranAvatar
-        matoran={{
-          ...dex,
-          ...combatant,
-          maskOverride: combatant.maskPower?.shortName,
-          exp: 0,
-        }}
-        styles="matoran-avatar model-preview"
-      />
+      <MaskPowerTooltip mask={combatant.maskPower?.shortName}>
+        <MatoranAvatar
+          matoran={{
+            ...dex,
+            ...combatant,
+            maskOverride: combatant.maskPower?.shortName,
+            exp: 0,
+          }}
+          styles="matoran-avatar model-preview"
+        />
+      </MaskPowerTooltip>
       <div className="card-header">
         {dex.name}
         <div className="level-label">Level {combatant.lvl}</div>

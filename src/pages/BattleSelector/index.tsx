@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ElementTag } from '../../components/ElementTag';
+import { Tooltip } from '../../components/Tooltip';
 import { ITEM_DICTIONARY } from '../../data/loot';
 import { useGame } from '../../context/Game';
 import { COMBATANT_DEX, ENCOUNTERS } from '../../data/combat';
@@ -28,16 +29,17 @@ function LootTag({ drop }: { drop: { id: string } }) {
   const color = parsed ? ELEMENT_TO_KRANA_COLOR[parsed.element] : undefined;
   if (parsed) {
     return (
-      <span
-        className={`loot-tag krana-collection__img-wrap loot-tag--krana krana-color--${color}`}
-        title={`Krana ${parsed.kranaId}`}
-      >
-        <img
-          src={`${import.meta.env.BASE_URL}/avatar/Krana/${parsed.kranaId}.webp`}
-          alt={`Krana ${parsed.kranaId}`}
-          className="loot-tag__krana-img"
-        />
-      </span>
+      <Tooltip content={`Krana ${parsed.kranaId}`}>
+        <span
+          className={`loot-tag krana-collection__img-wrap loot-tag--krana krana-color--${color}`}
+        >
+          <img
+            src={`${import.meta.env.BASE_URL}/avatar/Krana/${parsed.kranaId}.webp`}
+            alt={`Krana ${parsed.kranaId}`}
+            className="loot-tag__krana-img"
+          />
+        </span>
+      </Tooltip>
     );
   }
   const item = ITEM_DICTIONARY[drop.id as keyof typeof ITEM_DICTIONARY];

@@ -41,7 +41,7 @@ export function JobList({ matoran, onCancel }: JobListProps) {
           const { label, description, rate } = JOB_DETAILS[job];
           const modifier = getProductivityModifier(job, matoran);
           return (
-            <div key={job} onClick={() => setSelectedJob(job)} title={description}>
+            <div onClick={() => setSelectedJob(job)}>
               <JobCard
                 classNames={`${selectedJob === job ? 'selected' : ''} ${
                   matoran.assignment?.job === job ? 'assigned' : ''
