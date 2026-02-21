@@ -22,12 +22,14 @@ export default function SettingsPage() {
           <strong>In other words, YOU WILL LOSE YOUR PROGRESS</strong>
         </p>
         <p>
-          Core mechanics include jobs, character progression, story quests, elemental bonuses, and
-          collectible loot. It will follow the original storyline from 2001 to 2010
+          Core mechanics include jobs, character progression, story quests, turn-based combat with
+          mask powers and elemental affinities, Krana collection, character chronicles, and
+          collectible loot. It will follow the original storyline from 2001 to 2010.
         </p>
         <p>
-          This app is built with React and Vite, optimized for modern browsers and mobile play. See
-          the Credits section below for more information about the project and how to contribute.
+          This app is built with React, TypeScript, Vite, and React Three Fiber for 3D visuals. It
+          is optimized for modern browsers and mobile play. See the Credits section below for more
+          information about the project and how to contribute.
         </p>
       </div>
       <h1 className="title">Credits & Acknowledgments</h1>
