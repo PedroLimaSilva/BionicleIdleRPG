@@ -21,12 +21,16 @@ export type TargetDebuff =
       durationRemaining: number;
       durationUnit: 'turn' | 'round';
       sourceSide: 'team' | 'enemy';
+      /** Caster's combatant id - used for visual feedback (e.g. glow caster's mask) */
+      sourceId?: string;
     }
   | {
       type: 'CONFUSION';
       durationRemaining: number;
       durationUnit: 'turn' | 'round';
       sourceSide: 'team' | 'enemy';
+      /** Caster's combatant id - used for visual feedback (e.g. glow caster's mask) */
+      sourceId?: string;
     };
 
 /**

@@ -224,6 +224,7 @@ function applyDebuffToTarget(
       durationRemaining: effect.debuffDuration.amount,
       durationUnit,
       sourceSide: attackerSide,
+      sourceId: attacker.id,
     };
     const existingDebuffs = target.debuffs ?? [];
     return { ...target, debuffs: [...existingDebuffs, debuff] };
@@ -235,6 +236,7 @@ function applyDebuffToTarget(
       durationRemaining: effect.debuffDuration.amount,
       durationUnit,
       sourceSide: attackerSide,
+      sourceId: attacker.id,
     };
     const existingDebuffs = target.debuffs ?? [];
     return { ...target, debuffs: [...existingDebuffs, debuff] };
@@ -671,6 +673,41 @@ export function hasReadyMaskPowers(team: Combatant[]): boolean {
       !c.maskPower.active &&
       c.maskPower.effect.cooldown.amount === 0
   );
+}
+
+/**
+ * Returns combatant IDs whose mask powers are currently producing an active effect.
+ * Used for visual feedback: the caster's mask should glow, not the target's.
+ *
+ * - Self-targeted: combatant has maskPower.active
+ * - Team-targeted: combatant is sourceId of buffs on allies (Hau Nuva, etc.)
+ * - Enemy-targeted: combatant is sourceId of debuffs on enemies (Komau, Akaku)
+ */
+export function getCasterIdsWithActiveEffects(
+  team: Combatant[],
+  enemies: Combatant[]
+): Set<string> {
+  const ids = new Set<string>();
+
+  for (const c of team) {
+    if (c.maskPower?.active) {
+      ids.add(c.id);
+    }
+    for (const buff of c.buffs ?? []) {
+      if (buff.durationRemaining > 0 && buff.sourceId) {
+        ids.add(buff.sourceId);
+      }
+    }
+  }
+  for (const e of enemies) {
+    for (const debuff of e.debuffs ?? []) {
+      if (debuff.durationRemaining > 0 && debuff.sourceId) {
+        ids.add(debuff.sourceId);
+      }
+    }
+  }
+
+  return ids;
 }
 
 /**

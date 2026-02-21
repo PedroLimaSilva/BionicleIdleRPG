@@ -5,7 +5,11 @@ import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { useIdleAnimation } from '../../../hooks/useIdleAnimation';
 import { useMask } from '../../../hooks/useMask';
 
-export function LewaMataModel({ matoran }: { matoran: RecruitedCharacterData & BaseMatoran }) {
+export function LewaMataModel({
+  matoran,
+}: {
+  matoran: RecruitedCharacterData & BaseMatoran & { maskGlow?: boolean };
+}) {
   const group = useRef<Group>(null);
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/lewa.glb');
 
@@ -14,7 +18,7 @@ export function LewaMataModel({ matoran }: { matoran: RecruitedCharacterData & B
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.maskOverride || matoran.mask;
   const maskColor = matoran.maskColorOverride || matoran.colors.mask;
-  const glowColor = matoran.colors.eyes;
+  const glowColor = matoran.maskGlow ? '#aaffff' : matoran.colors.eyes;
   useMask(nodes.Masks, maskTarget, maskColor, glowColor);
 
   return (

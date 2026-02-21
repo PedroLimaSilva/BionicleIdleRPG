@@ -9,7 +9,7 @@ import { useMask } from '../../../hooks/useMask';
 export const GaliMataModel = forwardRef<
   CombatantModelHandle,
   {
-    matoran: RecruitedCharacterData & BaseMatoran;
+    matoran: RecruitedCharacterData & BaseMatoran & { maskGlow?: boolean };
   }
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);
@@ -24,7 +24,7 @@ export const GaliMataModel = forwardRef<
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.maskOverride || matoran.mask;
   const maskColor = matoran.maskColorOverride || matoran.colors.mask;
-  const glowColor = matoran.colors.eyes;
+  const glowColor = matoran.maskGlow ? '#aaffff' : matoran.colors.eyes;
   useMask(nodes.Masks, maskTarget, maskColor, glowColor);
 
   return (
