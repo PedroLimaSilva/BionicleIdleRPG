@@ -1,12 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useGame } from '../../context/Game';
 import { EnemyCard } from './Cards/Enemy';
 import { AllyCard } from './Cards/Ally';
+import { getCasterIdsWithActiveEffects } from '../../services/combatUtils';
 
 export const BattleInProgress = () => {
   const { battle } = useGame();
   const { currentWave, enemies, team, actionQueue, playActionQueue, isRunningRound, retreat } =
     battle;
+  const casterIds = useMemo(() => getCasterIdsWithActiveEffects(team, enemies), [team, enemies]);
 
   useEffect(() => {
     if (actionQueue && actionQueue.length > 0 && isRunningRound === false) {
@@ -39,7 +41,12 @@ export const BattleInProgress = () => {
         <div className="ally-side">
           <div className="toa-team">
             {team.map((toa, i) => (
-              <AllyCard key={i} combatant={toa} onClick={() => battle.toggleAbility(toa)} />
+              <AllyCard
+                key={i}
+                combatant={toa}
+                maskGlow={casterIds.has(toa.id)}
+                onClick={() => battle.toggleAbility(toa)}
+              />
             ))}
           </div>
         </div>
