@@ -7,9 +7,5 @@ interface JobStatusBadgeProps {
 }
 
 export const JobStatusBadge: React.FC<JobStatusBadgeProps> = ({ label, status }) => {
-  return (
-    <span className={`job-status-badge ${status}`} title={label || 'Idle'}>
-      {label || 'Idle'}
-    </span>
-  );
+  return <span className={`job-status-badge ${status}`}>{label || 'Idle'}</span>;
 };

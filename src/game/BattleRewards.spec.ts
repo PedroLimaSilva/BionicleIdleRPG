@@ -277,5 +277,33 @@ describe('BattleRewards', () => {
 
       jest.spyOn(Math, 'random').mockRestore();
     });
+
+    test('does not award same krana twice when multiple enemies share element', () => {
+      jest.spyOn(Math, 'random').mockReturnValue(0); // always succeed
+
+      const encounter = mockEncounter(
+        [
+          [
+            { id: 'tahnok', lvl: 20 },
+            { id: 'tahnok', lvl: 20 },
+            { id: 'tahnok', lvl: 20 },
+          ],
+        ],
+        [{ id: 'krana-ja-blue', chance: 1 }]
+      );
+      const rewards = computeKranaRewardsForBattle(
+        encounter,
+        BattlePhase.Victory,
+        0,
+        [],
+        completedQuests,
+        {}
+      );
+
+      expect(rewards).toHaveLength(1);
+      expect(rewards[0]).toEqual({ element: ElementTribe.Fire, kranaId: 'Ja' });
+
+      jest.spyOn(Math, 'random').mockRestore();
+    });
   });
 });

@@ -5,7 +5,11 @@ import { ElementTribe, Mask } from '../types/Matoran';
 
 declare global {
   interface Window {
-    combatantRefs: Record<string, { playAnimation?: (name: string) => Promise<void> }>;
+    combatantRefs: Record<
+      string,
+      { playAnimation?: (name: string, options?: { faceTargetId?: string }) => Promise<void> }
+    >;
+    combatantPositions?: Record<string, [number, number, number]>;
   }
 }
 
@@ -21,7 +25,7 @@ declare global {
  * E  | 🌑 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 0.5 | 1.5 |
  * R  | 🌕 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.5 | 0.5 |
  */
-const elementEffectiveness: Record<ElementTribe, Record<ElementTribe, number>> = {
+export const ELEMENT_EFFECTIVENESS: Record<ElementTribe, Record<ElementTribe, number>> = {
   [ElementTribe.Fire]: {
     [ElementTribe.Fire]: 1.0,
     [ElementTribe.Water]: 1.0,
@@ -130,7 +134,7 @@ export function calculateAtkDmg(
     rawDamage = Math.floor(rawDamage * defenseDebuff.multiplier);
   }
 
-  const multiplier = elementEffectiveness[attacker.element]?.[defender.element] ?? 1.0;
+  const multiplier = ELEMENT_EFFECTIVENESS[attacker.element]?.[defender.element] ?? 1.0;
   const final = Math.floor((rawDamage + Math.floor(Math.random() * 5)) * multiplier);
   return Math.max(1, final);
 }
@@ -563,27 +567,18 @@ export function queueCombatRound(
       }
 
       const damage = calculateAtkDmg(self, target, isTeam ? 'team' : 'enemy');
+      const willBeDefeated = target.hp - damage <= 0;
 
       // Expect 3D combatant refs to be globally accessible for now
       const actorRef = window.combatantRefs?.[self.id];
       const targetRef = window.combatantRefs?.[target.id];
 
-      const animationPromises: Promise<void>[] = [];
-
-      if (actorRef && actorRef.playAnimation)
-        animationPromises.push(actorRef.playAnimation?.('Attack'));
-      if (targetRef && targetRef.playAnimation) {
-        const willBeDefeated = target.hp - damage <= 0;
-        if (willBeDefeated) {
-          animationPromises.push(targetRef.playAnimation('Defeat'));
-        } else {
-          animationPromises.push(targetRef.playAnimation('Hit'));
-        }
+      // Await Attack - resolves at contact frame (attackResolveAtFraction)
+      if (actorRef?.playAnimation) {
+        await actorRef.playAnimation('Attack', { faceTargetId: target.id });
       }
 
-      await Promise.all(animationPromises);
-
-      // Apply damage and update state
+      // Apply damage and update state when contact occurs (HP bar drops at impact)
       let updatedTarget = applyDamage(target, damage);
 
       // Decrement 'attack' unit counters for attacker (mask + buffs)
@@ -621,6 +616,15 @@ export function queueCombatRound(
         currentEnemies = nextActorList;
         setTeam(currentTeam);
         setEnemies(currentEnemies);
+      }
+
+      // Await target reaction so next turn doesn't start before hit/defeat finishes
+      if (targetRef?.playAnimation) {
+        if (willBeDefeated) {
+          await targetRef.playAnimation('Defeat', { faceTargetId: self.id });
+        } else {
+          await targetRef.playAnimation('Hit', { faceTargetId: self.id });
+        }
       }
 
       console.log(

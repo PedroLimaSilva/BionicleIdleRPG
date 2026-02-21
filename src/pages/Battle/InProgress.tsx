@@ -24,9 +24,10 @@ export const BattleInProgress = () => {
           <div className="enemy-list">
             {enemies
               .toSorted((a, b) => {
-                const positionA = a.id.split(' ')[1];
-                const positionB = b.id.split(' ')[1];
-                return positionA.localeCompare(positionB);
+                const iA = parseInt(a.id.split('-').pop() ?? '0', 10);
+                const iB = parseInt(b.id.split('-').pop() ?? '0', 10);
+                const order = [1, 0, 2]; // left, middle, right
+                return order.indexOf(iA) - order.indexOf(iB);
               })
               .map((enemy, i) => (
                 <EnemyCard key={i} enemy={enemy} />

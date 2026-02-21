@@ -219,6 +219,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       eyes: LegoColor.TransNeonRed,
     },
     tags: [MatoranTag.ChroniclersCompany],
+    chronicleId: CHRONICLE_IDS.KAPURA,
   },
   Takua: {
     id: 'Takua',
@@ -250,6 +251,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.Red,
       eyes: LegoColor.TransNeonRed,
     },
+    chronicleId: CHRONICLE_IDS.JALA,
   },
   Hali: {
     id: 'Hali',
@@ -266,6 +268,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.MediumBlue,
       eyes: LegoColor.TransNeonYellow,
     },
+    chronicleId: CHRONICLE_IDS.HALI,
   },
   Huki: {
     id: 'Huki',
@@ -281,6 +284,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.Tan,
       eyes: LegoColor.TransNeonOrange,
     },
+    chronicleId: CHRONICLE_IDS.HUKI,
   },
   Nuparu: {
     id: 'Nuparu',
@@ -296,6 +300,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.Black,
       eyes: LegoColor.Green,
     },
+    chronicleId: CHRONICLE_IDS.NUPARU,
   },
   Onepu: {
     id: 'Onepu',
@@ -311,6 +316,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.Black,
       eyes: LegoColor.Green,
     },
+    chronicleId: CHRONICLE_IDS.ONEPU,
   },
   Kongu: {
     id: 'Kongu',
@@ -326,6 +332,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.Lime,
       eyes: LegoColor.TransNeonGreen,
     },
+    chronicleId: CHRONICLE_IDS.KONGU,
   },
   Matoro: {
     id: 'Matoro',
@@ -341,6 +348,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.White,
       eyes: LegoColor.MediumBlue,
     },
+    chronicleId: CHRONICLE_IDS.MATORO,
   },
   Maku: {
     id: 'Maku',
@@ -357,6 +365,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       eyes: LegoColor.TransNeonYellow,
     },
     tags: [MatoranTag.ChroniclersCompany],
+    chronicleId: CHRONICLE_IDS.MAKU,
   },
   Lumi: {
     id: 'Lumi',
@@ -372,6 +381,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.White,
       eyes: LegoColor.MediumBlue,
     },
+    chronicleId: CHRONICLE_IDS.LUMI,
   },
   Kivi: {
     id: 'Kivi',
@@ -388,6 +398,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.Tan,
       eyes: LegoColor.TransNeonOrange,
     },
+    chronicleId: CHRONICLE_IDS.KIVI,
   },
   Taipu: {
     id: 'Taipu',
@@ -404,6 +415,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       eyes: LegoColor.Green,
     },
     tags: [MatoranTag.ChroniclersCompany],
+    chronicleId: CHRONICLE_IDS.TAIPU,
   },
   Tamaru: {
     id: 'Tamaru',
@@ -420,6 +432,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       eyes: LegoColor.TransNeonGreen,
     },
     tags: [MatoranTag.ChroniclersCompany],
+    chronicleId: CHRONICLE_IDS.TAMARU,
   },
   Kopeke: {
     id: 'Kopeke',
@@ -436,6 +449,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       eyes: LegoColor.MediumBlue,
     },
     tags: [MatoranTag.ChroniclersCompany],
+    chronicleId: CHRONICLE_IDS.KOPEKE,
   },
   Hafu: {
     id: 'Hafu',
@@ -452,6 +466,99 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       eyes: LegoColor.TransNeonOrange,
     },
     tags: [MatoranTag.ChroniclersCompany],
+    chronicleId: CHRONICLE_IDS.HAFU,
+  },
+
+  // Bohrok - Repurposed as assistants after the Bahrag were imprisoned
+  tahnok: {
+    id: 'tahnok',
+    name: 'Tahnok',
+    mask: Mask.Pakari,
+    stage: MatoranStage.Bohrok,
+    element: ElementTribe.Fire,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.Red,
+      body: LegoColor.Red,
+      feet: LegoColor.Red,
+      arms: LegoColor.Orange,
+      eyes: LegoColor.Blue,
+    },
+  },
+  gahlok: {
+    id: 'gahlok',
+    name: 'Gahlok',
+    mask: Mask.Pakari,
+    stage: MatoranStage.Bohrok,
+    element: ElementTribe.Water,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.Blue,
+      body: LegoColor.Blue,
+      feet: LegoColor.Blue,
+      arms: LegoColor.MediumBlue,
+      eyes: LegoColor.Orange,
+    },
+  },
+  lehvak: {
+    id: 'lehvak',
+    name: 'Lehvak',
+    mask: Mask.Pakari,
+    stage: MatoranStage.Bohrok,
+    element: ElementTribe.Air,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.Green,
+      body: LegoColor.Green,
+      feet: LegoColor.Green,
+      arms: LegoColor.Lime,
+      eyes: LegoColor.Red,
+    },
+  },
+  pahrak: {
+    id: 'pahrak',
+    name: 'Pahrak',
+    mask: Mask.Pakari,
+    stage: MatoranStage.Bohrok,
+    element: ElementTribe.Stone,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.Brown,
+      body: LegoColor.Brown,
+      feet: LegoColor.Brown,
+      arms: LegoColor.Tan,
+      eyes: LegoColor.Green,
+    },
+  },
+  nuhvok: {
+    id: 'nuhvok',
+    name: 'Nuhvok',
+    mask: Mask.Pakari,
+    stage: MatoranStage.Bohrok,
+    element: ElementTribe.Earth,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.Black,
+      body: LegoColor.Black,
+      feet: LegoColor.Black,
+      arms: LegoColor.DarkGray,
+      eyes: LegoColor.Lime,
+    },
+  },
+  kohrak: {
+    id: 'kohrak',
+    name: 'Kohrak',
+    mask: Mask.Pakari,
+    stage: MatoranStage.Bohrok,
+    element: ElementTribe.Ice,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.White,
+      body: LegoColor.White,
+      feet: LegoColor.White,
+      arms: LegoColor.LightGray,
+      eyes: LegoColor.MediumBlue,
+    },
   },
 };
 

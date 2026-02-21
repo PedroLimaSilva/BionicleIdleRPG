@@ -4,6 +4,7 @@ import { RecruitedCharacterData } from '../../types/Matoran';
 import { MATORAN_DEX } from '../../data/matoran';
 import { isToaMata } from '../../services/matoranUtils';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
+import { MaskPowerTooltip } from '../../components/MaskPowerTooltip';
 import { getLevelFromExp } from '../../game/Levelling';
 
 const MAX_TEAM_SIZE = 3;
@@ -74,6 +75,7 @@ export const BattlePrep: React.FC = () => {
               );
             }
             const matoran_dex = MATORAN_DEX[member.id];
+            const activeMask = member.maskOverride ?? matoran_dex.mask;
             return (
               <div
                 className={`character-card element-${matoran_dex.element} ${
@@ -82,10 +84,12 @@ export const BattlePrep: React.FC = () => {
                 key={`${member.id}+${index}`}
                 onClick={() => handleClickSelectedCharacter(index)}
               >
-                <MatoranAvatar
-                  matoran={{ ...matoran_dex, ...member }}
-                  styles="matoran-avatar model-preview"
-                />
+                <MaskPowerTooltip mask={activeMask}>
+                  <MatoranAvatar
+                    matoran={{ ...matoran_dex, ...member }}
+                    styles="matoran-avatar model-preview"
+                  />
+                </MaskPowerTooltip>
                 <div className="card-header">
                   {matoran_dex.name}
                   <div className="level-label">Level {getLevelFromExp(member.exp)}</div>
@@ -102,16 +106,19 @@ export const BattlePrep: React.FC = () => {
         >
           {selectable.map((recruited) => {
             const matoran_dex = MATORAN_DEX[recruited.id];
+            const activeMask = recruited.maskOverride ?? matoran_dex.mask;
             return (
               <div
                 className={`card character-card element-${matoran_dex.element}`}
                 key={recruited.id}
                 onClick={() => handleClickRecruitedCharacter(recruited)}
               >
-                <MatoranAvatar
-                  matoran={{ ...matoran_dex, ...recruited }}
-                  styles="matoran-avatar model-preview"
-                />
+                <MaskPowerTooltip mask={activeMask}>
+                  <MatoranAvatar
+                    matoran={{ ...matoran_dex, ...recruited }}
+                    styles="matoran-avatar model-preview"
+                  />
+                </MaskPowerTooltip>
                 <div className="card-header">
                   {matoran_dex.name}
                   <div className="level-label">Level {getLevelFromExp(recruited.exp)}</div>

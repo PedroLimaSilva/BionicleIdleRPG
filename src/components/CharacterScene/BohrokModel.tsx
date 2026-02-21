@@ -49,6 +49,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
     modelId: name,
     actionTimeScale: 2,
     transitionMode: 'stopAll',
+    attackResolveAtFraction: 0.1,
   });
 
   useImperativeHandle(ref, () => ({ playAnimation }));
@@ -96,7 +97,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={bodyInstance} />
+      <primitive object={bodyInstance} scale={1} position={[0, 0, 0]} />
     </group>
   );
 });
