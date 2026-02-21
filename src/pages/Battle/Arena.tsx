@@ -3,8 +3,7 @@ import { useGLTF, Environment } from '@react-three/drei';
 import { GLTF } from 'three-stdlib';
 import { Combatant } from '../../types/Combat';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
-import { getCasterIdsWithActiveEffects } from '../../services/combatUtils';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/Settings';
 
@@ -104,8 +103,6 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
   const combatantRefs = useRef<Record<string, CombatantModelHandle>>({});
   const sceneGroupRef = useRef<THREE.Group>(null);
   const { shadowsEnabled } = useSettings();
-
-  const casterIds = useMemo(() => getCasterIdsWithActiveEffects(team, enemies), [team, enemies]);
 
   const { nodes, materials } = useGLTF(
     import.meta.env.BASE_URL + '/arena.glb'
@@ -226,7 +223,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
             combatant={c}
             side="team"
             position={TEAM_POSITIONS[i]}
-            maskGlow={casterIds.has(c.id)}
+            maskGlow={!!c.maskPower?.active}
             ref={(ref) => {
               if (ref) combatantRefs.current[c.id] = ref;
             }}

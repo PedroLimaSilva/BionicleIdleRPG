@@ -5,15 +5,7 @@ import { MATORAN_DEX } from '../../../data/matoran';
 import { MatoranAvatar } from '../../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../../components/MaskPowerTooltip';
 
-export function AllyCard({
-  combatant,
-  maskGlow = false,
-  onClick,
-}: {
-  combatant: Combatant;
-  maskGlow?: boolean;
-  onClick: () => void;
-}) {
+export function AllyCard({ combatant, onClick }: { combatant: Combatant; onClick: () => void }) {
   const prevHpRef = useRef(combatant.hp);
   const [damage, setDamage] = useState<number | null>(null);
   const [healing, setHealing] = useState<number | null>(null);
@@ -22,11 +14,8 @@ export function AllyCard({
   const [maxCooldown, setMaxCooldown] = useState<number>(0);
 
   useEffect(() => {
-    setSelected(
-      combatant.hp > 0 &&
-        (combatant.maskPower?.active || combatant.willUseAbility || maskGlow)
-    );
-  }, [combatant.willUseAbility, combatant.maskPower?.active, combatant.hp, maskGlow]);
+    setSelected(combatant.hp > 0 && (combatant.maskPower?.active || combatant.willUseAbility));
+  }, [combatant.willUseAbility, combatant.maskPower?.active, combatant.hp]);
 
   useEffect(() => {
     setDisabled(

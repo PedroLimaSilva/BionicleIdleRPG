@@ -196,12 +196,12 @@ function applyBuffToCombatant(combatant: Combatant, buff: TargetBuff): Combatant
   return { ...combatant, buffs };
 }
 
-/** Applies DEBUFF mask effect to the defender (e.g. Akaku DEFENSE, Komau CONFUSION). */
+/** Applies DEBUFF mask effect to the defender. Returns updated target and attacker (caster gets active+duration for glow). */
 function applyDebuffToTarget(
   attacker: Combatant,
   target: Combatant,
   attackerSide: 'team' | 'enemy'
-): Combatant {
+): { target: Combatant; attacker: Combatant } {
   const effect = attacker.maskPower?.effect;
   if (
     !attacker.maskPower?.active ||
@@ -209,13 +209,15 @@ function applyDebuffToTarget(
     effect?.target !== 'enemy' ||
     !effect?.debuffDuration
   ) {
-    return target;
+    return { target, attacker };
   }
 
   const durationUnit =
     effect.debuffDuration.unit === 'turn' || effect.debuffDuration.unit === 'round'
       ? effect.debuffDuration.unit
       : 'turn';
+
+  const debuffDuration = { ...effect.debuffDuration };
 
   if (effect.debuffType === 'DEFENSE' && effect.multiplier) {
     const debuff: TargetDebuff = {
@@ -224,10 +226,20 @@ function applyDebuffToTarget(
       durationRemaining: effect.debuffDuration.amount,
       durationUnit,
       sourceSide: attackerSide,
-      sourceId: attacker.id,
     };
     const existingDebuffs = target.debuffs ?? [];
-    return { ...target, debuffs: [...existingDebuffs, debuff] };
+    const updatedTarget = { ...target, debuffs: [...existingDebuffs, debuff] };
+    const updatedAttacker: Combatant = {
+      ...attacker,
+      maskPower: attacker.maskPower
+        ? {
+            ...attacker.maskPower,
+            active: true,
+            effect: { ...attacker.maskPower.effect, duration: debuffDuration },
+          }
+        : undefined,
+    };
+    return { target: updatedTarget, attacker: updatedAttacker };
   }
 
   if (effect.debuffType === 'CONFUSION') {
@@ -236,13 +248,23 @@ function applyDebuffToTarget(
       durationRemaining: effect.debuffDuration.amount,
       durationUnit,
       sourceSide: attackerSide,
-      sourceId: attacker.id,
     };
     const existingDebuffs = target.debuffs ?? [];
-    return { ...target, debuffs: [...existingDebuffs, debuff] };
+    const updatedTarget = { ...target, debuffs: [...existingDebuffs, debuff] };
+    const updatedAttacker: Combatant = {
+      ...attacker,
+      maskPower: attacker.maskPower
+        ? {
+            ...attacker.maskPower,
+            active: true,
+            effect: { ...attacker.maskPower.effect, duration: debuffDuration },
+          }
+        : undefined,
+    };
+    return { target: updatedTarget, attacker: updatedAttacker };
   }
 
-  return target;
+  return { target, attacker };
 }
 
 /** Decrements debuff durations. For 'turn': only on the combatant whose turn it is. For 'round': all. */
@@ -427,13 +449,12 @@ function triggerMaskPowers(
       const originalPower = MASK_POWERS[actor.maskPower.shortName];
 
       if (effect.target === 'team' && isTeam) {
-        // Team-wide mask (e.g. Nuva): apply buff to all allies, put caster on cooldown
+        // Team-wide mask (e.g. Nuva): apply buff to allies and set caster active for duration
         const buff = createBuffFromMaskEffect(effect, actor.id);
         if (buff) {
           currentTeam = currentTeam.map((t) =>
             t.hp > 0 ? applyBuffToCombatant(t, buff) : t
           );
-          // SPEED buff: grant extra turn to all buffed allies (add them to turn order again)
           if (effect.type === 'SPEED') {
             const aliveAllies = currentTeam.filter((t) => t.hp > 0);
             for (const ally of aliveAllies) {
@@ -441,33 +462,22 @@ function triggerMaskPowers(
             }
           }
         }
-        // Put caster on cooldown (no active duration on caster)
-        actor.maskPower = {
-          ...actor.maskPower,
-          active: false,
-          effect: {
-            ...actor.maskPower.effect,
-            cooldown: { ...(originalPower?.effect.cooldown ?? effect.cooldown) },
-          },
-        };
-        console.log('activating team mask power', actor.id, actor.maskPower.shortName);
-      } else {
-        // Self/enemy/allEnemies: original behavior
-        const originalDuration = originalPower?.effect.duration ?? effect.duration;
-        actor.maskPower = {
-          ...actor.maskPower,
-          active: true,
-          effect: {
-            ...actor.maskPower.effect,
-            duration: { ...originalDuration },
-          },
-        };
-        if (effect.type === 'SPEED') {
-          const clonedActor = { ...actor, maskPower: structuredClone(actor.maskPower) };
-          newTurnOrder.push(clonedActor);
-        }
-        console.log('activating mask power', actor.id, actor.maskPower);
       }
+      // Self, team, enemy, allEnemies: set active=true and duration on caster (unified)
+      const originalDuration = originalPower?.effect.duration ?? effect.duration;
+      actor.maskPower = {
+        ...actor.maskPower,
+        active: true,
+        effect: {
+          ...actor.maskPower.effect,
+          duration: { ...originalDuration },
+        },
+      };
+      if (effect.type === 'SPEED' && effect.target !== 'team') {
+        const clonedActor = { ...actor, maskPower: structuredClone(actor.maskPower) };
+        newTurnOrder.push(clonedActor);
+      }
+      console.log('activating mask power', actor.id, actor.maskPower.shortName);
 
       if (isTeam) {
         currentTeam = currentTeam.map((t) => (t.id === actor.id ? actor : t));
@@ -558,9 +568,15 @@ export function queueCombatRound(
 
       let target = chooseTarget(self, targets);
 
-      // Apply DEBUFF mask effect to target (e.g. Akaku DEFENSE, Komau CONFUSION) - only when not confused
+      // Apply DEBUFF mask effect to target - caster gets active+duration for glow
       if (!isConfused) {
-        target = applyDebuffToTarget(self, target, isTeam ? 'team' : 'enemy');
+        const { target: markedTarget, attacker: debuffCaster } = applyDebuffToTarget(
+          self,
+          target,
+          isTeam ? 'team' : 'enemy'
+        );
+        target = markedTarget;
+        self = debuffCaster;
       }
       const newOpponentListForMark = opponentList.map((t) => (t.id === target.id ? target : t));
       if (opponentList !== newOpponentListForMark) {
@@ -673,41 +689,6 @@ export function hasReadyMaskPowers(team: Combatant[]): boolean {
       !c.maskPower.active &&
       c.maskPower.effect.cooldown.amount === 0
   );
-}
-
-/**
- * Returns combatant IDs whose mask powers are currently producing an active effect.
- * Used for visual feedback: the caster's mask should glow, not the target's.
- *
- * - Self-targeted: combatant has maskPower.active
- * - Team-targeted: combatant is sourceId of buffs on allies (Hau Nuva, etc.)
- * - Enemy-targeted: combatant is sourceId of debuffs on enemies (Komau, Akaku)
- */
-export function getCasterIdsWithActiveEffects(
-  team: Combatant[],
-  enemies: Combatant[]
-): Set<string> {
-  const ids = new Set<string>();
-
-  for (const c of team) {
-    if (c.maskPower?.active) {
-      ids.add(c.id);
-    }
-    for (const buff of c.buffs ?? []) {
-      if (buff.durationRemaining > 0 && buff.sourceId) {
-        ids.add(buff.sourceId);
-      }
-    }
-  }
-  for (const e of enemies) {
-    for (const debuff of e.debuffs ?? []) {
-      if (debuff.durationRemaining > 0 && debuff.sourceId) {
-        ids.add(debuff.sourceId);
-      }
-    }
-  }
-
-  return ids;
 }
 
 /**
