@@ -20,18 +20,21 @@ export const CharacterInventory: React.FC = () => {
     if (recruitedCharacters.some((matoran) => isToa(MATORAN_DEX[matoran.id]))) {
       base.push('toa');
     }
+    if (recruitedCharacters.some((matoran) => isBohrok(MATORAN_DEX[matoran.id]))) {
+      base.push('other');
+    }
     return base;
   }, [recruitedCharacters]);
 
-  const [activeTab, setActiveTab] = useState<'matoran' | 'toa'>('matoran');
+  const [activeTab, setActiveTab] = useState<'matoran' | 'toa' | 'other'>('matoran');
 
   const characters = useMemo(() => {
     return recruitedCharacters.filter((matoran) => {
-      if (activeTab === 'matoran') {
-        const dex = MATORAN_DEX[matoran.id];
-        return isMatoran(dex) || isBohrok(dex);
-      }
-      return isToa(MATORAN_DEX[matoran.id]);
+      const dex = MATORAN_DEX[matoran.id];
+      if (activeTab === 'matoran') return isMatoran(dex);
+      if (activeTab === 'toa') return isToa(dex);
+      if (activeTab === 'other') return isBohrok(dex);
+      return false;
     });
   }, [recruitedCharacters, activeTab]);
 
@@ -41,7 +44,7 @@ export const CharacterInventory: React.FC = () => {
         <Tabs
           tabs={tabs}
           activeTab={activeTab}
-          onTabChange={(tab: string) => setActiveTab(tab as 'matoran' | 'toa')}
+          onTabChange={(tab: string) => setActiveTab(tab as 'matoran' | 'toa' | 'other')}
         />
       </div>
       <div className="character-grid">
