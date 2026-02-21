@@ -22,9 +22,6 @@ export function loadGameState() {
       if (!parsed.collectedKrana) {
         parsed.collectedKrana = {};
       }
-      if (parsed.nuvaSymbolsSequestered === undefined) {
-        parsed.nuvaSymbolsSequestered = false;
-      }
       if (isValidGameState(parsed)) {
         const [recruitedCharacters, logs, currency, loot] = applyOfflineJobExp(
           parsed.recruitedCharacters

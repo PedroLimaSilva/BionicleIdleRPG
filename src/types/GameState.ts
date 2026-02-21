@@ -31,8 +31,6 @@ export type GameState = {
   recruitedCharacters: RecruitedCharacterData[];
   activeQuests: QuestProgress[];
   completedQuests: string[];
-  /** True when Bohrok Kal have sequestered the Nuva symbols; Toa Nuva stats are diminished. */
-  nuvaSymbolsSequestered: boolean;
   battle: BattleState;
   recruitCharacter: (character: ListedCharacterData) => void;
   setMaskOverride: (id: RecruitedCharacterData['id'], color: LegoColor, mask: Mask) => void;
@@ -61,5 +59,4 @@ export type PartialGameState = Pick<
   | 'recruitedCharacters'
   | 'activeQuests'
   | 'completedQuests'
-  | 'nuvaSymbolsSequestered'
 >;

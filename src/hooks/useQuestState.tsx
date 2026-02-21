@@ -23,7 +23,6 @@ interface UseQuestStateOptions {
   addItemToInventory: (item: GameItemId, amount: number) => void;
   setRecruitedCharacters: React.Dispatch<React.SetStateAction<RecruitedCharacterData[]>>;
   setBuyableCharacters: React.Dispatch<React.SetStateAction<ListedCharacterData[]>>;
-  setNuvaSymbolsSequestered?: (value: boolean) => void;
   addActivityLog: GameState['addActivityLog'];
   addWidgets: (widgets: number) => void;
 }
@@ -35,7 +34,6 @@ export const useQuestState = ({
   addItemToInventory,
   setRecruitedCharacters,
   setBuyableCharacters,
-  setNuvaSymbolsSequestered,
   addWidgets,
   addActivityLog,
 }: UseQuestStateOptions) => {
@@ -151,15 +149,6 @@ export const useQuestState = ({
     // Mark as complete
     setActiveQuests((prev) => prev.filter((q) => q.questId !== quest.id));
     setCompletedQuestIds((prev) => [...prev, quest.id]);
-
-    // Bohrok Kal arc: sequester symbols when arc starts, reclaim when final quest completes
-    if (setNuvaSymbolsSequestered) {
-      if (quest.id === 'bohrok_kal_stolen_symbols') {
-        setNuvaSymbolsSequestered(true);
-      } else if (quest.id === 'bohrok_kal_final_confrontation') {
-        setNuvaSymbolsSequestered(false);
-      }
-    }
 
     addActivityLog(`Completed quest: ${quest.name}`, LogType.Event);
   };

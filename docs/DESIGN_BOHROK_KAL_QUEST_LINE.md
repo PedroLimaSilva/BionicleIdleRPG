@@ -54,18 +54,18 @@ We invest in a **story battle system** for key quest moments:
 
 1. **Quest-triggered battles**: Quest can specify a story battle; launching/completing it advances the quest.
 2. **Scripted outcome**: `scriptedOutcome: 'win' | 'loss'`. Loss advances quest, no penalty.
-3. **Stat modifiers**: `nuvaSymbolsSequestered` — Toa Nuva receive stat penalty when true.
+3. **Stat modifiers**: `isNuvaSymbolsSequestered(completedQuests)` — derived; Toa Nuva receive stat penalty when true.
 4. **Encounter types**: Repeatable (battle selector) vs story (quest-triggered, one-off).
 
 ### Data Model
 
-- **GameState**: `nuvaSymbolsSequestered?: boolean` — true when Bohrok Kal arc starts, false when final quest completes.
+- **Derived**: `isNuvaSymbolsSequestered(completedQuests)` — true when `bohrok_kal_stolen_symbols` completed and `bohrok_kal_final_confrontation` not yet completed.
 - **Quest**: Optional `storyBattle?: { encounterId: string; trigger: 'onStart' | 'onComplete'; scriptedOutcome: 'win' | 'loss' }`.
 - **EnemyEncounter**: Optional `scriptedOutcome?: 'win' | 'loss'` for story battles.
 
 ### Implementation Phases
 
-1. **Phase 1**: Add `nuvaSymbolsSequestered` state and stat modifier for Toa Nuva.
+1. **Phase 1**: Add `isNuvaSymbolsSequestered(completedQuests)` and stat modifier for Toa Nuva.
 2. **Phase 2**: Add `scriptedOutcome`; defeat with `scriptedOutcome === 'loss'` advances quest.
 3. **Phase 3**: Quest-triggered battle flow.
 4. **Phase 4**: Bohrok Kal combatants, encounters, and quest line content.

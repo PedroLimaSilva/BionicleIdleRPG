@@ -17,6 +17,7 @@ import {
   getParticipantIds,
 } from '../game/BattleRewards';
 import { isKranaCollectionActive } from '../game/Krana';
+import { isNuvaSymbolsSequestered } from '../game/nuvaSymbols';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -31,10 +32,6 @@ export const useGameLogic = (): GameState => {
 
   const [widgets, setWidgets] = useState(initialState.widgets);
   const [widgetCap] = useState(initialState.widgetCap);
-
-  const [nuvaSymbolsSequestered, setNuvaSymbolsSequestered] = useState(
-    initialState.nuvaSymbolsSequestered ?? false
-  );
 
   const {
     recruitedCharacters,
@@ -71,14 +68,13 @@ export const useGameLogic = (): GameState => {
     addItemToInventory,
     setRecruitedCharacters,
     setBuyableCharacters,
-    setNuvaSymbolsSequestered,
     addWidgets: (widgets: number) => {
       setWidgets((prev) => clamp(prev + widgets, 0, widgetCap));
     },
     addActivityLog,
   });
 
-  const battle = useBattleState(nuvaSymbolsSequestered);
+  const battle = useBattleState(isNuvaSymbolsSequestered(completedQuests));
 
   // Auto-save when critical state changes
   useGamePersistence({
@@ -98,7 +94,6 @@ export const useGameLogic = (): GameState => {
     version,
     activeQuests,
     completedQuests,
-    nuvaSymbolsSequestered,
     activityLog,
     widgets,
     widgetCap,
