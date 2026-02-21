@@ -74,7 +74,9 @@ export const BattleSelector: React.FC = () => {
               </div>
               <img
                 className="enemy-avatar"
-                src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${COMBATANT_DEX[encounter.headliner].name}.png`}
+                src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${
+                  COMBATANT_DEX[encounter.headliner].name.replace(/ Kal$/, '')
+                }.png`}
                 alt=""
               />
               <p className="description">{encounter.description}</p>

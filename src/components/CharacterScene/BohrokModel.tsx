@@ -36,6 +36,37 @@ const BOHROK_COLORS: Record<string, { main: LegoColor; secondary: LegoColor; eye
     secondary: LegoColor.LightGray,
     eyes: LegoColor.MediumBlue,
   },
+  // Bohrok Kal - metallic elite variants
+  'Tahnok Kal': {
+    main: LegoColor.Red,
+    secondary: LegoColor.PearlGold,
+    eyes: LegoColor.TransNeonYellow,
+  },
+  'Gahlok Kal': {
+    main: LegoColor.Blue,
+    secondary: LegoColor.PearlGold,
+    eyes: LegoColor.TransNeonYellow,
+  },
+  'Lehvak Kal': {
+    main: LegoColor.Green,
+    secondary: LegoColor.PearlGold,
+    eyes: LegoColor.TransNeonYellow,
+  },
+  'Pahrak Kal': {
+    main: LegoColor.Brown,
+    secondary: LegoColor.PearlGold,
+    eyes: LegoColor.TransNeonYellow,
+  },
+  'Nuhvok Kal': {
+    main: LegoColor.Black,
+    secondary: LegoColor.PearlGold,
+    eyes: LegoColor.TransNeonYellow,
+  },
+  'Kohrak Kal': {
+    main: LegoColor.White,
+    secondary: LegoColor.PearlGold,
+    eyes: LegoColor.TransNeonYellow,
+  },
 };
 
 export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({ name }, ref) => {

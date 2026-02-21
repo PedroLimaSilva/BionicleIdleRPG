@@ -280,6 +280,31 @@ Unlock: tahnok, gahlok, lehvak, pahrak, nuhvok, kohrak
 Loot: 
 Currency: 3000
 XP: 1200"]
+  bohrok_kal_stolen_symbols["The Stolen Symbols
+(5m)
+Loot: 
+Currency: 3000
+XP: 2000"]
+  bohrok_kal_first_strikes["First Strikes
+(12m)
+Loot: 
+Currency: 3500
+XP: 2200"]
+  bohrok_kal_scattered["Scattered
+(18m)
+Loot: 
+Currency: 4000
+XP: 2500"]
+  bohrok_kal_gathering_strength["Gathering Strength
+(15m)
+Loot: 
+Currency: 4500
+XP: 2800"]
+  bohrok_kal_final_confrontation["The Final Confrontation
+(25m)
+Loot: 
+Currency: 6000
+XP: 5000"]
   story_toa_arrival --> maskhunt_kopaka_pohatu_icecliff
   mnog_tahu_unlock_01 --> story_toa_council
   maskhunt_kopaka_pohatu_icecliff --> story_toa_council
@@ -349,6 +374,11 @@ XP: 1200"]
   bohrok_krana_hunt --> bohrok_into_the_bohrok_nest
   bohrok_into_the_bohrok_nest --> bohrok_evolve_toa_nuva
   bohrok_evolve_toa_nuva --> bohrok_assistants
+  bohrok_assistants --> bohrok_kal_stolen_symbols
+  bohrok_kal_stolen_symbols --> bohrok_kal_first_strikes
+  bohrok_kal_first_strikes --> bohrok_kal_scattered
+  bohrok_kal_scattered --> bohrok_kal_gathering_strength
+  bohrok_kal_gathering_strength --> bohrok_kal_final_confrontation
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff
