@@ -82,50 +82,20 @@ Design considerations for adding the Bohrok Kal arc after the Toa Nuva evolution
 
 ---
 
-## Recommendation: Hybrid of A + B
+## Chosen Approach: Option C + Story Battles + Nuva Symbols
 
-- **Quests**: Timer-based narrative quests (like Bohrok Swarm). Descriptions cover defeats and the arc.
-- **Story battles**: A few key encounters are **scripted story battles** with Bohrok Kal models:
-  - First encounter: scripted loss (or unwinnable).
-  - Intermediate encounters: scripted losses.
-  - Final encounter: scripted win (or first truly winnable battle).
+- **Quests**: Timer-based narrative quests. Bohrok Kal encounters appear in the battle selector but do not block quest progress.
+- **Nuva symbols**: Sequestered by the Bohrok Kal at the arc start. Toa Nuva stats are diminished while symbols are sequestered—both narrative justification and mechanical effect.
+- **Story battles**: We will invest in a story battle system to support scripted encounters triggered by quest flow (e.g. First Strikes, Final Confrontation). These use BK models and predetermined outcomes.
 
-This gives:
-- Use of Bohrok Kal models in battles.
-- Strong sense that they are overpowered.
-- “Toa never win until the end” without grind.
-- A clear arc: defeats → final victory.
 
 ---
 
-## Nuva Symbols: Include Them?
+## Nuva Symbols: Sequestered (Stat Diminishment)
 
-### Canon
-
-The Bohrok Kal steal the Nuva symbols, which hold much of the Toa Nuva’s power. That’s why they are stronger than the Toa.
-
-### Option 1: Include Nuva Symbols
-
-- **Opening quest**: Bohrok Kal steal the Nuva symbols. This explains their power and the Toa’s weakness.
-- **Mechanic**: Optional; could be a narrative-only beat. No special grind (e.g. no “collect symbols” loop).
-- **Final quest**: Toa reclaim the symbols; power restored; they win.
-- **Pros**: Fits canon, clear story logic.
-- **Cons**: Requires some representation of “symbols” (narrative, items, or UI).
-
-### Option 2: Omit Nuva Symbols
-
-- Bohrok Kal are simply “elite Bohrok” with higher stats.
-- **Pros**: Simpler; fewer systems.
-- **Cons**: Less canon-aligned; weaker explanation for their strength.
-
-### Recommendation
-
-**Include them as a narrative element, not a grind mechanic.**
-
-- Opening quest: “The Stolen Symbols” — Bohrok Kal steal the Nuva symbols. Narrative text only.
-- No “collect 6 symbols” or similar grind.
-- Final quest: “Reclaiming the Symbols” — Toa defeat the Kal and get them back.
-- Optional: symbols could appear as a simple UI state (e.g. “Nuva symbols: stolen / reclaimed”) for flavor.
+- **Narrative**: Explains why the Kal are overpowered and the Toa struggle—the symbols hold much of the Toa Nuva's power.
+- **Mechanical**: Toa Nuva stats are diminished while symbols are sequestered. When symbols are reclaimed (final quest), stats restore to full.
+- **No grind**: No "collect symbols" loop. Symbols are stolen in the opening quest and reclaimed when the Toa triumph in the final confrontation.
 
 ---
 
@@ -161,9 +131,129 @@ The Bohrok Kal steal the Nuva symbols, which hold much of the Toa Nuva’s power
 
 ---
 
+## Quest-by-Quest: Do Story Battles Make Sense?
+
+**When a story battle helps:**
+- The encounter is the **dramatic focus** of the quest.
+- The win/loss **drives the narrative** and should feel earned.
+- Showing BK models in the arena adds something text cannot.
+- It’s a **single**, focused moment rather than a long sequence.
+
+**When a story battle doesn’t help:**
+- The quest covers many events or a broad timespan.
+- The defeat is retreat/regrouping, not a clear fight.
+- It would slow pacing or repeat what the text already says.
+- The quest is about discovery, planning, or non-combat actions.
+
+### 1. The Stolen Symbols — **No story battle**
+
+- Inciting incident: theft, ambush, symbols taken.
+- Not framed as a pitched battle; the Toa may be caught off-guard.
+- **Verdict:** Narrative only. A battle would miss the point.
+
+### 2. First Strikes — **Optional story battle**
+
+- First real confrontation: Kal hit villages, Toa respond and are driven back.
+
+**With story battle:**
+- Player sees BK in the arena and experiences the power gap.
+- Scripted loss: team is overwhelmed; defeat advances the quest.
+- **Risk:** “You’re going to lose” can feel bad if not set up clearly (e.g. pre-battle text: “The Toa rush to defend the village, knowing the odds are against them…”).
+
+**Without story battle:**
+- Text describes the retreat and sets the stakes.
+- Simpler to implement; no new flow.
+
+**Verdict:** Optional. Only add if you want BK models to appear early; otherwise, narrative is enough.
+
+### 3. Scattered — **No story battle (or at most one)**
+
+- Toa split up; each faces a Kal and loses or retreats.
+- That could imply **six** fights (one per Toa/Kal pair).
+- Six scripted losses would be repetitive and long.
+- **Verdict:** Narrative only. Or a single representative battle (e.g. Tahu vs Tahnok Kal) that stands for all six, but that’s marginal.
+
+### 4. Gathering Strength — **No story battle**
+
+- Planning, regrouping, intel. No combat focus.
+- **Verdict:** Narrative only.
+
+### 5. The Final Confrontation — **Yes, story battle**
+
+- The climax: the one fight the Toa win.
+- A winnable story battle gives the player agency and payoff after the losing streak.
+- **Verdict:** Strong fit for a story battle.
+
+---
+
+## Story Battle Strategy Summary
+
+| Quest                | Story battle? | Rationale                                      |
+|----------------------|---------------|-------------------------------------------------|
+| The Stolen Symbols   | No            | Ambush/theft, not a battle.                     |
+| First Strikes        | Optional      | First confrontation; can establish threat.     |
+| Scattered            | No            | Six losses would be repetitive; narrative fits. |
+| Gathering Strength   | No            | No combat; planning and regrouping.             |
+| The Final Confrontation | **Yes**   | Climax; player earns the win.                   |
+
+**Minimal implementation:** Only the final quest has a story battle. Defeats live in quest text; BK models appear in the climax.
+
+**Moderate implementation:** First Strikes (scripted loss) + Final (win). Two story battles. Enough to show BK early and contrast loss vs. victory.
+
+**Full narrative:** No story battles at all. All encounters in text. Simplest; BK models only in cutscenes or not at all.
+
+---
+
+## Story Battle System (Investment)
+
+We will build a **story battle system** to support scripted encounters that are triggered by quest flow, use predetermined outcomes, and integrate with the existing battle arena.
+
+### Goals
+
+- Battles triggered **from quests** (not only from the battle selector).
+- **Scripted outcomes**: Win or loss predetermined by design; player plays through the encounter but outcome is fixed.
+- Use existing battle arena, models, and combat logic where possible.
+- Support **stat modifiers** (e.g. diminished Toa Nuva when symbols are sequestered).
+
+### Core Components
+
+1. **Quest-triggered battles**
+   - Quest definition can specify: "when started" or "when completed" — launch a story battle.
+   - Or: a quest step requires completing a story battle before the timer can finish.
+   - Flow: Player starts/advances quest — story battle launches — on battle end (win or scripted loss), quest continues.
+
+2. **Scripted outcome**
+   - Encounter or battle config has `scriptedOutcome: 'win' | 'loss'`.
+   - If `'loss'`: Battle plays out; when team is defeated, treat as "story loss" — quest advances, no penalty.
+   - If `'win'`: Battle is winnable; victory advances quest.
+   - UX: Pre-battle text (e.g. "The Toa rush to defend the village, knowing the odds are against them…") to set expectations for scripted losses.
+
+3. **Stat modifiers**
+   - Global state: `nuvaSymbolsSequestered: boolean`.
+   - When true, Toa Nuva receive a stat penalty (e.g. -30% or similar) in relevant battles.
+   - Applied at combatant initialization for story battles and optionally for Bohrok Kal encounters.
+
+4. **Encounter types**
+   - **Repeatable encounters** (existing): Battle selector, optional, rewards on victory. Bohrok Kal can appear here with tuned difficulty; no progress gate.
+   - **Story battles** (new): Quest-triggered, one-off, scripted outcome. Block or advance quest flow.
+
+### Data Model (Draft)
+
+- **Quest**: Optional `storyBattle?: { encounterId: string; trigger: 'onStart' | 'onComplete'; scriptedOutcome: 'win' | 'loss' }`.
+- **EnemyEncounter**: Optional `scriptedOutcome?: 'win' | 'loss'` for story-battle-only encounters.
+- **GameState**: `nuvaSymbolsSequestered?: boolean` — set true when Bohrok Kal arc starts, false when final quest completes.
+
+### Implementation Phases
+
+1. **Phase 1**: Add `nuvaSymbolsSequestered` state and stat modifier for Toa Nuva. No UI yet; used when computing combat stats.
+2. **Phase 2**: Add `scriptedOutcome` to encounter/quest model; when battle ends in defeat and `scriptedOutcome === 'loss'`, treat as success for quest advancement.
+3. **Phase 3**: Quest-triggered battle flow — starting/completing a quest can launch a story battle; battle completion (win or scripted loss) advances the quest.
+4. **Phase 4**: Bohrok Kal combatants, encounters, and quest line content.
+
+---
+
 ## Implementation Notes
 
 - **Bohrok Kal models**: Can reuse `bohrok_master.glb` with a different color scheme (e.g. metallic/chrome) if a dedicated Kal model is not available.
 - **Combatants**: Add `tahnok_kal`, `gahlok_kal`, etc. to `COMBATANT_DEX` with elevated stats.
-- **Story battle support**: Either a `scriptedOutcome: 'loss' | 'win'` flag on encounters, or a separate “story battle” flow that bypasses normal victory/defeat logic.
 - **Encounter visibility**: Bohrok Kal encounters only appear during (or after) the Bohrok Kal quest line and are filtered by `unlockedAfter` as today.
