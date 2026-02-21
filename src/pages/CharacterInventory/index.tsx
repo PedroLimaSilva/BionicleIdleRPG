@@ -8,7 +8,7 @@ import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
 import { MATORAN_DEX } from '../../data/matoran';
 import { QUESTS } from '../../data/quests';
-import { isMatoran, isToa } from '../../services/matoranUtils';
+import { isBohrok, isMatoran, isToa } from '../../services/matoranUtils';
 import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 
@@ -22,13 +22,20 @@ export const CharacterInventory: React.FC = () => {
     if (recruitedCharacters.some((matoran) => isToa(MATORAN_DEX[matoran.id]))) {
       base.push('toa');
     }
+    if (recruitedCharacters.some((matoran) => isBohrok(MATORAN_DEX[matoran.id]))) {
+      base.push('other');
+    }
     return base;
   }, [recruitedCharacters]);
 
-  const [activeTab, setActiveTab] = useState<'matoran' | 'toa'>(() => {
+  const [activeTab, setActiveTab] = useState<'matoran' | 'toa' | 'other'>(() => {
     try {
-      const stored = sessionStorage.getItem(CHARACTERS_TAB_KEY) as 'matoran' | 'toa' | null;
-      if (stored === 'matoran' || stored === 'toa') {
+      const stored = sessionStorage.getItem(CHARACTERS_TAB_KEY) as
+        | 'matoran'
+        | 'toa'
+        | 'other'
+        | null;
+      if (stored === 'matoran' || stored === 'toa' || stored === 'other') {
         return stored;
       }
     } catch {
@@ -37,18 +44,15 @@ export const CharacterInventory: React.FC = () => {
     return 'matoran';
   });
 
-  const handleTabChange = useCallback(
-    (tab: string) => {
-      const value = tab as 'matoran' | 'toa';
-      setActiveTab(value);
-      try {
-        sessionStorage.setItem(CHARACTERS_TAB_KEY, value);
-      } catch {
-        /* ignore storage errors */
-      }
-    },
-    []
-  );
+  const handleTabChange = useCallback((tab: string) => {
+    const value = tab as 'matoran' | 'toa' | 'other';
+    setActiveTab(value);
+    try {
+      sessionStorage.setItem(CHARACTERS_TAB_KEY, value);
+    } catch {
+      /* ignore storage errors */
+    }
+  }, []);
 
   // If stored tab isn't available (e.g. toa tab hidden when no Toa recruited), fall back to matoran
   const effectiveTab = tabs.includes(activeTab) ? activeTab : 'matoran';
@@ -65,11 +69,7 @@ export const CharacterInventory: React.FC = () => {
   return (
     <div className="page-container">
       <div className="character-inventory-tabs">
-        <Tabs
-          tabs={tabs}
-          activeTab={effectiveTab}
-          onTabChange={handleTabChange}
-        />
+        <Tabs tabs={tabs} activeTab={effectiveTab} onTabChange={handleTabChange} />
       </div>
       <div className="character-grid">
         {characters.map((matoran) => {

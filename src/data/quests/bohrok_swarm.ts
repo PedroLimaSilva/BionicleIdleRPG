@@ -5,6 +5,7 @@ import { Quest } from '../../types/Quests';
 // This quest both unlocks battles and starts Krana collection.
 export const BOHROK_KRANA_LEGEND_QUEST_ID = 'bohrok_legend_of_krana';
 export const BOHROK_EVOLVE_TOA_NUVA_QUEST_ID = 'bohrok_evolve_toa_nuva';
+export const BOHROK_RECRUITMENT_QUEST_ID = 'bohrok_assistants';
 
 // Bohrok Swarm arc (Beware the Bohrok).
 // These quests cover the key beats of BIONICLE Chronicles 2:
@@ -213,6 +214,33 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       },
     },
     unlockedAfter: ['bohrok_into_the_bohrok_nest'],
+    section: 'Bohrok Swarms',
+  },
+  {
+    id: BOHROK_RECRUITMENT_QUEST_ID,
+    name: 'Bohrok Assistants',
+    description:
+      'With the Bahrag imprisoned and the swarms dormant, the Matoran discover that the Bohrok can be repurposed. Nuparu, drawing on his experience with the Boxor, leads efforts to retrofit the mechanical shells into useful assistants. The villages begin recruiting the docile Bohrok to aid in reconstruction and everyday tasks across Mata Nui.',
+    durationSeconds: 15 * 60, // 15 minutes
+    requirements: {
+      matoran: ['Nuparu', 'Onepu'],
+      minLevel: 14,
+      items: [],
+    },
+    rewards: {
+      xpPerMatoran: 1200,
+      currency: 3000,
+      loot: {},
+      unlockCharacters: [
+        { id: 'tahnok', cost: 150, requiredItems: [] },
+        { id: 'gahlok', cost: 150, requiredItems: [] },
+        { id: 'lehvak', cost: 150, requiredItems: [] },
+        { id: 'pahrak', cost: 150, requiredItems: [] },
+        { id: 'nuhvok', cost: 150, requiredItems: [] },
+        { id: 'kohrak', cost: 150, requiredItems: [] },
+      ],
+    },
+    unlockedAfter: ['bohrok_evolve_toa_nuva'],
     section: 'Bohrok Swarms',
   },
 ];
