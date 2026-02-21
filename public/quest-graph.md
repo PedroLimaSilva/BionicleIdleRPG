@@ -274,6 +274,12 @@ XP: 2600"]
 Loot: 
 Currency: 5000
 XP: 4000"]
+  bohrok_assistants["Bohrok Assistants
+(15m)
+Unlock: tahnok, gahlok, lehvak, pahrak, nuhvok, kohrak
+Loot: 
+Currency: 3000
+XP: 1200"]
   story_toa_arrival --> maskhunt_kopaka_pohatu_icecliff
   mnog_tahu_unlock_01 --> story_toa_council
   maskhunt_kopaka_pohatu_icecliff --> story_toa_council
@@ -342,6 +348,7 @@ XP: 4000"]
   bohrok_legend_of_krana --> bohrok_krana_hunt
   bohrok_krana_hunt --> bohrok_into_the_bohrok_nest
   bohrok_into_the_bohrok_nest --> bohrok_evolve_toa_nuva
+  bohrok_evolve_toa_nuva --> bohrok_assistants
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff

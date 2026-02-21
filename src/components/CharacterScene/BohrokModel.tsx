@@ -97,7 +97,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={bodyInstance} />
+      <primitive object={bodyInstance} scale={1} position={[0, 0, 0]} />
     </group>
   );
 });
