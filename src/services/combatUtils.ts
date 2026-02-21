@@ -196,7 +196,8 @@ function applyBuffToCombatant(combatant: Combatant, buff: TargetBuff): Combatant
   return { ...combatant, buffs };
 }
 
-/** Applies DEBUFF mask effect to the defender. Returns updated target and attacker (caster gets active+duration for glow). */
+/** Applies DEBUFF mask effect to the defender. Does NOT extend attacker's mask duration (would cause
+ * re-application on each attack). The mask's original 1-attack duration gets consumed by decrementMaskPowerCounter. */
 function applyDebuffToTarget(
   attacker: Combatant,
   target: Combatant,
@@ -217,8 +218,6 @@ function applyDebuffToTarget(
       ? effect.debuffDuration.unit
       : 'turn';
 
-  const debuffDuration = { ...effect.debuffDuration };
-
   if (effect.debuffType === 'DEFENSE' && effect.multiplier) {
     const debuff: TargetDebuff = {
       type: 'DEFENSE',
@@ -229,17 +228,7 @@ function applyDebuffToTarget(
     };
     const existingDebuffs = target.debuffs ?? [];
     const updatedTarget = { ...target, debuffs: [...existingDebuffs, debuff] };
-    const updatedAttacker: Combatant = {
-      ...attacker,
-      maskPower: attacker.maskPower
-        ? {
-            ...attacker.maskPower,
-            active: true,
-            effect: { ...attacker.maskPower.effect, duration: debuffDuration },
-          }
-        : undefined,
-    };
-    return { target: updatedTarget, attacker: updatedAttacker };
+    return { target: updatedTarget, attacker };
   }
 
   if (effect.debuffType === 'CONFUSION') {
@@ -251,17 +240,7 @@ function applyDebuffToTarget(
     };
     const existingDebuffs = target.debuffs ?? [];
     const updatedTarget = { ...target, debuffs: [...existingDebuffs, debuff] };
-    const updatedAttacker: Combatant = {
-      ...attacker,
-      maskPower: attacker.maskPower
-        ? {
-            ...attacker.maskPower,
-            active: true,
-            effect: { ...attacker.maskPower.effect, duration: debuffDuration },
-          }
-        : undefined,
-    };
-    return { target: updatedTarget, attacker: updatedAttacker };
+    return { target: updatedTarget, attacker };
   }
 
   return { target, attacker };
@@ -568,15 +547,14 @@ export function queueCombatRound(
 
       let target = chooseTarget(self, targets);
 
-      // Apply DEBUFF mask effect to target - caster gets active+duration for glow
+      // Apply DEBUFF mask effect to target (Akaku, Komau)
       if (!isConfused) {
-        const { target: markedTarget, attacker: debuffCaster } = applyDebuffToTarget(
+        const { target: markedTarget } = applyDebuffToTarget(
           self,
           target,
           isTeam ? 'team' : 'enemy'
         );
         target = markedTarget;
-        self = debuffCaster;
       }
       const newOpponentListForMark = opponentList.map((t) => (t.id === target.id ? target : t));
       if (opponentList !== newOpponentListForMark) {

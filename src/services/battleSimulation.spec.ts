@@ -413,6 +413,42 @@ describe('Battle Simulation', () => {
       expect(enemy.hp).toBeLessThan(enemyHpBefore);
     });
 
+    test('Komau CONFUSION lasts exactly 3 turns (no re-application)', async () => {
+      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0, maskOverride: Mask.Komau }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [
+          [
+            { id: 'tahnok', lvl: 1 },
+            { id: 'tahnok', lvl: 1 },
+            { id: 'tahnok', lvl: 1 },
+          ],
+        ],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
+
+      await sim.runRound();
+      const confusedAfterR1 = sim.enemies.find((e) =>
+        e.debuffs?.some((d) => d.type === 'CONFUSION' && d.durationRemaining > 0)
+      );
+      expect(confusedAfterR1).toBeDefined();
+      const confusionsAfterR1 = confusedAfterR1!.debuffs!.filter((d) => d.type === 'CONFUSION').length;
+      expect(confusionsAfterR1).toBe(1);
+
+      for (let r = 0; r < 5; r++) {
+        sim.team = setAbilities(sim.team, [], false);
+        await sim.runRound();
+      }
+
+      const confusedAfterR6 = sim.enemies.find((e) =>
+        e.debuffs?.some((d) => d.type === 'CONFUSION' && d.durationRemaining > 0)
+      );
+      expect(confusedAfterR6).toBeUndefined();
+    });
+
     test('Kakama grants Pohatu two attacks in one round', async () => {
       const team = createTeamFromRecruited([{ id: 'Toa_Pohatu', exp: 0 }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
