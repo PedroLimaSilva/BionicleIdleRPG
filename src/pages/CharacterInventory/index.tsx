@@ -62,7 +62,10 @@ export const CharacterInventory: React.FC = () => {
       if (effectiveTab === 'matoran') {
         return isMatoran(MATORAN_DEX[matoran.id]);
       }
-      return isToa(MATORAN_DEX[matoran.id]);
+      if (effectiveTab === 'toa') {
+        return isToa(MATORAN_DEX[matoran.id]);
+      }
+      return !isToa(MATORAN_DEX[matoran.id]) && !isMatoran(MATORAN_DEX[matoran.id]);
     });
   }, [recruitedCharacters, effectiveTab]);
 
