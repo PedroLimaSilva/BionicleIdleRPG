@@ -149,12 +149,16 @@ Different test scenarios have different tolerance levels for pixel differences:
 ## Test Structure
 
 - `homepage.spec.ts` - Homepage and navigation
-- `recruitment.spec.ts` - Character recruitment page
-- `character-inventory.spec.ts` - Character inventory and cards
-- `3d-scene.spec.ts` - 3D character scenes (WebGL)
-- `quests.spec.ts` - Quest page
+- `characters/recruitment.spec.ts` - Character recruitment page
+- `characters/inventory.spec.ts` - Character inventory and cards
+- `characters/detail/index.spec.ts` - Character detail page
+- `characters/detail/modelRendering.spec.ts` - 3D character model rendering (WebGL)
+- `quests.spec.ts` - Quest page and quest tree
 - `inventory.spec.ts` - Inventory page
-- `battle.spec.ts` - Battle selector and battle pages
+- `battle/selector.spec.ts` - Battle selector
+- `battle/flow.spec.ts` - Battle flow (prep, combat, victory/defeat)
+- `battle/type-effectiveness.spec.ts` - Type effectiveness page
+- `settings.spec.ts` - Settings page (about, credits, game reset)
 
 ## CI/CD Integration
 
@@ -185,7 +189,7 @@ On first run, Playwright will generate baseline snapshots. These should be commi
 
 ## Best Practices
 
-1. **Always use `gotoWithTestMode()`** - Never use `page.goto()` directly; always use the helper to ensure animations are paused
+1. **Always use `enableTestMode()` + `goto()`** - Never use `page.goto()` directly; use `enableTestMode(page)` before navigation and `goto(page, path)` so animations are paused for consistent screenshots
 2. **Wait for specific elements, not networkidle** - Use `page.locator('.element').waitFor({ state: 'visible' })` instead of `page.waitForLoadState('networkidle')` for better mobile compatibility
 3. **Review diffs carefully** - Always inspect visual changes before updating snapshots
 4. **Test on multiple viewports** - Ensure responsive design works correctly
