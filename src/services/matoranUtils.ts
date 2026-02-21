@@ -18,6 +18,10 @@ export function isMatoran(matoran: BaseMatoran) {
   );
 }
 
+export function isBohrok(matoran: BaseMatoran) {
+  return matoran.stage === MatoranStage.Bohrok;
+}
+
 export function isToaNuva(matoran: BaseMatoran) {
   return matoran.stage === MatoranStage.ToaNuva;
 }

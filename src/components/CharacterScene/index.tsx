@@ -20,6 +20,7 @@ import { CYLINDER_HEIGHT } from './BoundsCylinder';
 import { TahuMataModel } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
+import { BohrokModel } from './BohrokModel';
 import { useEyeMeshes } from './selectiveBloom';
 
 /** Vertical center of the character framing volume. */
@@ -61,6 +62,8 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
         default:
           return <ToaNuvaPlaceholderModel matoran={matoran} />;
       }
+    case MatoranStage.Bohrok:
+      return <BohrokModel name={matoran.name} />;
     case MatoranStage.Diminished:
     default:
       return <DiminishedMatoranModel matoran={matoran} />;

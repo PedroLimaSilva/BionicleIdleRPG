@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
+import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 
 import { CompositedImage } from '../CompositedImage';
 
@@ -21,6 +21,17 @@ export function MatoranAvatar({
   const mask = useMemo(() => {
     return getMask(matoran);
   }, [matoran]);
+
+  // Bohrok use a single pre-rendered avatar image
+  if (matoran.stage === MatoranStage.Bohrok) {
+    return (
+      <img
+        className={`composited-avatar ${styles}`}
+        src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${matoran.name}.png`}
+        alt={matoran.name}
+      />
+    );
+  }
 
   return (
     <CompositedImage
