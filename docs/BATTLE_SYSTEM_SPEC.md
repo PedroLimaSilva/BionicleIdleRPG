@@ -186,7 +186,8 @@ interface CombatDuration {
 - ✅ Mask power effect application (ATK_MULT, DMG_MITIGATOR, HEAL, AGGRO, SPEED)
 - ✅ Mask power duration tracking (all unit types)
 - ✅ Mask power cooldown tracking (all unit types)
-- ❌ Advanced mask effects (ACCURACY_MULT, CONFUSION, immobilization)
+- ✅ Komau CONFUSION effect
+- ✅ Reward distribution (EXP, loot, Krana)
+- ✅ Experience gain (persisted on Collect Rewards)
+- ❌ Advanced mask effects (ACCURACY_MULT for Ruru, Matatu immobilize)
 - ❌ Nuva mask powers (team-wide effects)
-- ❌ Reward distribution
-- ❌ Experience gain

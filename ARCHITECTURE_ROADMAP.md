@@ -148,9 +148,9 @@ function detectQuestCycles(quests: Quest[]): string[] {
 
 **Issue:** Minimal test coverage, especially for pure game logic functions.
 
-**Current:** Only `combatUtils.spec.ts` exists.
+**Current:** Tests exist for `combatUtils`, `Levelling`, `Jobs`, `Quests`, `BattleRewards`, `Krana`, `encounterVisibility`, and various hooks/services. Coverage is improved but not yet comprehensive.
 
-**Recommendation:** Add tests for critical game logic in `src/game/`:
+**Recommendation:** Continue adding tests for critical game logic in `src/game/`:
 
 - `Levelling.ts` - exp calculations
 - `Jobs.ts` - productivity modifiers, offline progress, reward rolling
@@ -233,7 +233,7 @@ if (process.env.NODE_ENV === 'development') {
 
 **Locations:**
 
-- `src/pages/CharacterDetail/index.tsx` lines 65-67 (combatant stats)
+- `src/pages/CharacterDetail/index.tsx` (combatant stats in stats tab)
 
 **Recommendation:** Either implement the feature or remove the comment.
 
@@ -322,25 +322,11 @@ if (process.env.NODE_ENV === 'development') {
 
 ---
 
-### 6.2 Clarify Character Stage Transformation
+### 6.2 Character Stage Transformation ✅ Implemented
 
-**Issue:** Characters have `stage` property but no transformation logic.
+**Status:** Evolution is implemented. See [DESIGN_CHARACTER_EVOLUTION_AND_CHRONICLES.md](docs/DESIGN_CHARACTER_EVOLUTION_AND_CHRONICLES.md).
 
-**Current:** Stage is immutable after character creation.
-
-**Recommendation:** Either implement stage transformation (e.g., Matoran → Toa) or document that stages are fixed.
-
-**Design:** See [DESIGN_CHARACTER_EVOLUTION_AND_CHRONICLES.md](../docs/DESIGN_CHARACTER_EVOLUTION_AND_CHRONICLES.md) for proposed architecture: evolution changes character ID (new MATORAN_DEX entry), chronicles extracted to lineage-based consts and reused across evolved forms.
-
-**Decision needed:**
-
-- Should characters transform between stages?
-- Is this a planned feature or fixed character property?
-
-**Acceptance Criteria:**
-
-- Stage transformation is implemented with quest rewards, OR
-- Documentation clarifies that stages are immutable character properties
+**Implementation:** Quest rewards can include an `evolution` field that maps participant dex IDs to evolved forms (e.g., Toa Mata → Toa Nuva). The `bohrok_evolve_toa_nuva` quest triggers this. Evolution replaces the character ID, drops mask overrides, and preserves EXP/assignment/quest.
 
 ---
 
