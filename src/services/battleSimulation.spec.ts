@@ -763,5 +763,44 @@ describe('Battle Simulation', () => {
       }));
       expect(afterRound2.every((a) => a.active === false)).toBe(true);
     });
+
+    test('active mask power does NOT re-trigger when willUseAbility is false', async () => {
+      // Kaukau Nuva: 2-turn HEAL buff on team. Caster stays active for 2 turns.
+      const team = createTeamFromRecruited([
+        { id: 'Toa_Gali', exp: 0, maskOverride: Mask.KaukauNuva },
+        { id: 'Toa_Tahu', exp: 0 },
+        { id: 'Toa_Onua', exp: 0 },
+      ]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [
+          [{ id: 'tahnok', lvl: 1 }, { id: 'tahnok', lvl: 1 }],
+          [{ id: 'tahnok', lvl: 1 }],
+        ],
+      };
+      const sim = new BattleSimulator(team, customEncounter);
+
+      // Round 1: activate Kaukau Nuva - applies HEAL buff to all allies
+      sim.team = setAbilities(sim.team, ['Toa_Gali'], true);
+      await sim.runRound();
+
+      const buffCountAfterRound1 = sim.team.reduce(
+        (sum, t) => sum + (t.buffs?.filter((b) => b.type === 'HEAL').length ?? 0),
+        0
+      );
+      expect(buffCountAfterRound1).toBe(3);
+
+      // Round 2: do NOT activate - willUseAbility stays false for everyone
+      sim.team = setAbilities(sim.team, [], false);
+      await sim.runRound();
+
+      // Must NOT have re-applied buffs (would stack to 6 if re-triggered)
+      const buffCountAfterRound2 = sim.team.reduce(
+        (sum, t) => sum + (t.buffs?.filter((b) => b.type === 'HEAL').length ?? 0),
+        0
+      );
+      expect(buffCountAfterRound2).toBeLessThanOrEqual(3);
+    });
   });
 });
