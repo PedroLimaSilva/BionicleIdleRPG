@@ -19,6 +19,7 @@ export const INITIAL_GAME_STATE: GameState = {
   widgets: 10,
   completedQuests: [],
   activeQuests: [],
+  nuvaSymbolsSequestered: false,
   recruitedCharacters: RECRUITED_MATORAN_DATA,
   buyableCharacters: LISTED_MATORAN_DATA,
   inventory: {},

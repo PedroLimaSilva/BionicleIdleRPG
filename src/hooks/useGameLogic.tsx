@@ -32,6 +32,10 @@ export const useGameLogic = (): GameState => {
   const [widgets, setWidgets] = useState(initialState.widgets);
   const [widgetCap] = useState(initialState.widgetCap);
 
+  const [nuvaSymbolsSequestered, setNuvaSymbolsSequestered] = useState(
+    initialState.nuvaSymbolsSequestered ?? false
+  );
+
   const {
     recruitedCharacters,
     setRecruitedCharacters,
@@ -67,13 +71,14 @@ export const useGameLogic = (): GameState => {
     addItemToInventory,
     setRecruitedCharacters,
     setBuyableCharacters,
+    setNuvaSymbolsSequestered,
     addWidgets: (widgets: number) => {
       setWidgets((prev) => clamp(prev + widgets, 0, widgetCap));
     },
     addActivityLog,
   });
 
-  const battle = useBattleState();
+  const battle = useBattleState(nuvaSymbolsSequestered);
 
   // Auto-save when critical state changes
   useGamePersistence({
@@ -86,12 +91,14 @@ export const useGameLogic = (): GameState => {
     buyableCharacters: buyableCharacters,
     activeQuests,
     completedQuests,
+    nuvaSymbolsSequestered,
   });
 
   return {
     version,
     activeQuests,
     completedQuests,
+    nuvaSymbolsSequestered,
     activityLog,
     widgets,
     widgetCap,

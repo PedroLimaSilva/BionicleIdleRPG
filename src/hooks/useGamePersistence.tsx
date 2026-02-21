@@ -12,6 +12,7 @@ export function useGamePersistence({
   buyableCharacters,
   activeQuests,
   completedQuests,
+  nuvaSymbolsSequestered,
 }: PartialGameState) {
   useEffect(() => {
     const stateToSave: PartialGameState = {
@@ -24,6 +25,7 @@ export function useGamePersistence({
       buyableCharacters: buyableCharacters,
       activeQuests,
       completedQuests,
+      nuvaSymbolsSequestered,
     };
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
@@ -37,5 +39,6 @@ export function useGamePersistence({
     recruitedCharacters,
     activeQuests,
     completedQuests,
+    nuvaSymbolsSequestered,
   ]);
 }
