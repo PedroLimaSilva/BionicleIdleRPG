@@ -14,6 +14,11 @@ export type UsePlayAnimationOptions = {
   attackResolveAtFraction?: number;
 };
 
+export type PlayAnimationCallOptions = {
+  /** Called when the animation fully ends (e.g. for Attack, when animation completes, not when promise resolves). */
+  onAnimationComplete?: () => void;
+};
+
 /**
  * Provides playAnimation to run one-shot actions (Attack, Hit) with return-to-idle.
  * Requires useIdleAnimation to be called first - pass its actions and mixer.
@@ -47,7 +52,7 @@ export function usePlayAnimation(
   });
 
   const playAnimation = useCallback(
-    (name: string): Promise<void> => {
+    (name: string, callOptions?: PlayAnimationCallOptions): Promise<void> => {
       return new Promise((resolve) => {
         const action = actions[name];
         if (!action) {
@@ -93,6 +98,7 @@ export function usePlayAnimation(
             if (idle) {
               idle.reset().fadeIn(0.2).play();
             }
+            callOptions?.onAnimationComplete?.();
           };
 
           mixer.addEventListener('finished', onFinished);

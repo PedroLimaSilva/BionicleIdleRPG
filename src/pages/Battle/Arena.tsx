@@ -114,6 +114,18 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
   }, [team, enemies]);
 
   useEffect(() => {
+    const positions: Record<string, [number, number, number]> = {};
+    team.forEach((c, i) => {
+      positions[c.id] = TEAM_POSITIONS[i];
+    });
+    enemies.forEach((c, i) => {
+      positions[c.id] = ENEMY_POSITIONS[i];
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).combatantPositions = positions;
+  }, [team, enemies]);
+
+  useEffect(() => {
     if (!shadowsEnabled || !sceneGroupRef.current) return;
     const applyShadowProps = () => {
       sceneGroupRef.current?.traverse((child) => {
