@@ -9,8 +9,10 @@ import { useGame } from '../../context/Game';
 import { MATORAN_DEX } from '../../data/matoran';
 import { QUESTS } from '../../data/quests';
 import { isBohrok, isMatoran, isToa } from '../../services/matoranUtils';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
+
+const CHARACTERS_TAB_KEY = 'characters-tab';
 
 export const CharacterInventory: React.FC = () => {
   const { recruitedCharacters, buyableCharacters } = useGame();
@@ -26,26 +28,48 @@ export const CharacterInventory: React.FC = () => {
     return base;
   }, [recruitedCharacters]);
 
-  const [activeTab, setActiveTab] = useState<'matoran' | 'toa' | 'other'>('matoran');
+  const [activeTab, setActiveTab] = useState<'matoran' | 'toa' | 'other'>(() => {
+    try {
+      const stored = sessionStorage.getItem(CHARACTERS_TAB_KEY) as
+        | 'matoran'
+        | 'toa'
+        | 'other'
+        | null;
+      if (stored === 'matoran' || stored === 'toa' || stored === 'other') {
+        return stored;
+      }
+    } catch {
+      /* ignore storage errors */
+    }
+    return 'matoran';
+  });
+
+  const handleTabChange = useCallback((tab: string) => {
+    const value = tab as 'matoran' | 'toa' | 'other';
+    setActiveTab(value);
+    try {
+      sessionStorage.setItem(CHARACTERS_TAB_KEY, value);
+    } catch {
+      /* ignore storage errors */
+    }
+  }, []);
+
+  // If stored tab isn't available (e.g. toa tab hidden when no Toa recruited), fall back to matoran
+  const effectiveTab = tabs.includes(activeTab) ? activeTab : 'matoran';
 
   const characters = useMemo(() => {
     return recruitedCharacters.filter((matoran) => {
-      const dex = MATORAN_DEX[matoran.id];
-      if (activeTab === 'matoran') return isMatoran(dex);
-      if (activeTab === 'toa') return isToa(dex);
-      if (activeTab === 'other') return isBohrok(dex);
-      return false;
+      if (effectiveTab === 'matoran') {
+        return isMatoran(MATORAN_DEX[matoran.id]);
+      }
+      return isToa(MATORAN_DEX[matoran.id]);
     });
-  }, [recruitedCharacters, activeTab]);
+  }, [recruitedCharacters, effectiveTab]);
 
   return (
     <div className="page-container">
       <div className="character-inventory-tabs">
-        <Tabs
-          tabs={tabs}
-          activeTab={activeTab}
-          onTabChange={(tab: string) => setActiveTab(tab as 'matoran' | 'toa' | 'other')}
-        />
+        <Tabs tabs={tabs} activeTab={effectiveTab} onTabChange={handleTabChange} />
       </div>
       <div className="character-grid">
         {characters.map((matoran) => {
