@@ -158,7 +158,7 @@ Different test scenarios have different tolerance levels for pixel differences:
 - `battle/selector.spec.ts` - Battle selector
 - `battle/flow.spec.ts` - Battle flow (prep, combat, victory/defeat)
 - `battle/type-effectiveness.spec.ts` - Type effectiveness page
-- `settings.spec.ts` - Settings page (about, credits, game reset)
+- `settings.spec.ts` - Settings page (about, credits, disclaimers, game reset, debug mode, shadows)
 
 ## CI/CD Integration
 

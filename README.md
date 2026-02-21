@@ -149,7 +149,7 @@ src/
 │   ├── Recruitment/    # Character recruitment page
 │   ├── Quests/         # Quest management page
 │   ├── QuestTree/      # Quest dependency graph
-│   ├── Settings/       # About, credits, game reset, debug mode
+│   ├── Settings/       # About, credits, disclaimers, game reset, debug mode, 3D shadows
 │   ├── TypeEffectiveness/ # Element strengths/weaknesses
 │   └── ...
 ├── services/           # Utility services
@@ -223,6 +223,18 @@ The game includes 3D models for:
 
 Models are stored in `public/` as GLB files and rendered using React Three Fiber.
 
+## ⚙️ Settings Page
+
+The Settings page (`/settings`) includes:
+
+- **About** – App description, PWA info, and core mechanics
+- **Credits & Acknowledgments** – 3D model attribution, technologies, source code link, license
+- **Disclaimers** – Intellectual property notice (LEGO / Bionicle)
+- **Game Options**:
+  - **Reset Game Data** – Clear all progress and start fresh (with confirmation)
+  - **Quest Debug mode** – Shorten quest durations to 1 second and show FPS/render metrics in the 3D canvas
+  - **3D Scene Shadows** – Toggle shadow rendering in character and battle scenes
+
 ## 💾 Game Persistence
 
 The game automatically saves to localStorage:
@@ -234,7 +246,7 @@ The game automatically saves to localStorage:
 
 ## 🐛 Debug Mode
 
-Enable **Quest Debug mode** in the Settings page to:
+Enable **Quest Debug mode** (in Settings) to:
 
 - Shorten quest durations to 1 second (for testing)
 - Display performance metrics (FPS, render times) in the 3D canvas
