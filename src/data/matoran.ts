@@ -111,7 +111,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Toa_Tahu_Nuva',
     name: 'Toa Tahu Nuva',
     element: ElementTribe.Fire,
-    mask: Mask.Hau,
+    mask: Mask.HauNuva,
     stage: MatoranStage.ToaNuva,
     colors: {
       face: LegoColor.DarkGray,
@@ -128,7 +128,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     name: 'Toa Gali Nuva',
     element: ElementTribe.Water,
     isMaskTransparent: true,
-    mask: Mask.Kaukau,
+    mask: Mask.KaukauNuva,
     stage: MatoranStage.ToaNuva,
     colors: {
       face: LegoColor.DarkGray,
@@ -144,7 +144,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Toa_Pohatu_Nuva',
     name: 'Toa Pohatu Nuva',
     element: ElementTribe.Stone,
-    mask: Mask.Kakama,
+    mask: Mask.KakamaNuva,
     stage: MatoranStage.ToaNuva,
     colors: {
       face: LegoColor.DarkGray,
@@ -160,7 +160,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Toa_Onua_Nuva',
     name: 'Toa Onua Nuva',
     element: ElementTribe.Earth,
-    mask: Mask.Pakari,
+    mask: Mask.PakariNuva,
     stage: MatoranStage.ToaNuva,
     colors: {
       face: LegoColor.DarkGray,
@@ -176,7 +176,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Toa_Kopaka_Nuva',
     name: 'Toa Kopaka Nuva',
     element: ElementTribe.Ice,
-    mask: Mask.Akaku,
+    mask: Mask.AkakuNuva,
     stage: MatoranStage.ToaNuva,
     colors: {
       face: LegoColor.DarkGray,
@@ -192,7 +192,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     id: 'Toa_Lewa_Nuva',
     name: 'Toa Lewa Nuva',
     element: ElementTribe.Air,
-    mask: Mask.Miru,
+    mask: Mask.MiruNuva,
     stage: MatoranStage.ToaNuva,
     colors: {
       face: LegoColor.DarkGray,
