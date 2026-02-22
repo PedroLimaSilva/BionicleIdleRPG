@@ -27,7 +27,7 @@ export function MatoranAvatar({
     return (
       <img
         className={`composited-avatar ${styles}`}
-        src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${matoran.name}.png`}
+        src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${matoran.name}.webp`}
         alt={matoran.name}
       />
     );
