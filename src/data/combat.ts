@@ -409,7 +409,9 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseSpeed: 9,
   },
 
-  // Bohrok Kal - Elite variants empowered by Nuva symbols; elevated stats
+  // Bohrok Kal - Elite variants with non-elemental abilities; elevated stats
+  // Tahnok-Kal: Electricity | Gahlok-Kal: Magnetism | Lehvak-Kal: Vacuum
+  // Pahrak-Kal: Plasma | Nuhvok-Kal: Gravity | Kohrak-Kal: Sonics
   tahnok_kal: {
     id: 'tahnok_kal',
     name: 'Tahnok Kal',
@@ -878,7 +880,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'Tahnok Kal',
     headliner: 'tahnok_kal',
     difficulty: 5,
-    description: 'An elite fire Bohrok Kal empowered by stolen Nuva symbols.',
+    description: 'Bohrok-Kal of Electricity, empowered by stolen Nuva symbols.',
     waves: [[...makeBohrokWave('tahnok_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
@@ -888,7 +890,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'Gahlok Kal',
     headliner: 'gahlok_kal',
     difficulty: 5,
-    description: 'An elite water Bohrok Kal wielding stolen power.',
+    description: 'Bohrok-Kal of Magnetism, wielding stolen Nuva symbols.',
     waves: [[...makeBohrokWave('gahlok_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
@@ -898,7 +900,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'Lehvak Kal',
     headliner: 'lehvak_kal',
     difficulty: 5,
-    description: 'An elite air Bohrok Kal that strikes with fury.',
+    description: 'Bohrok-Kal of Vacuum, empowered by stolen Nuva symbols.',
     waves: [[...makeBohrokWave('lehvak_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
@@ -908,7 +910,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'Pahrak Kal',
     headliner: 'pahrak_kal',
     difficulty: 5,
-    description: 'An elite stone Bohrok Kal nearly indestructible.',
+    description: 'Bohrok-Kal of Plasma, empowered by stolen Nuva symbols.',
     waves: [[...makeBohrokWave('pahrak_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
@@ -918,7 +920,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'Nuhvok Kal',
     headliner: 'nuhvok_kal',
     difficulty: 5,
-    description: 'An elite earth Bohrok Kal that strikes from the depths.',
+    description: 'Bohrok-Kal of Gravity, empowered by stolen Nuva symbols.',
     waves: [[...makeBohrokWave('nuhvok_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
@@ -928,7 +930,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'Kohrak Kal',
     headliner: 'kohrak_kal',
     difficulty: 5,
-    description: 'An elite ice Bohrok Kal that freezes all in its path.',
+    description: 'Bohrok-Kal of Sonics, empowered by stolen Nuva symbols.',
     waves: [[...makeBohrokWave('kohrak_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
@@ -938,7 +940,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'Tahnok Kal & Gahlok Kal',
     headliner: 'bohrok_kal_pair',
     difficulty: 5,
-    description: 'Fire and water Bohrok Kal attack together.',
+    description: 'Bohrok-Kal of Electricity and Magnetism attack together.',
     waves: [
       [
         ...makeBohrokWave('tahnok_kal', 45, 1),
@@ -953,7 +955,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'Lehvak Kal & Pahrak Kal',
     headliner: 'bohrok_kal_pair',
     difficulty: 5,
-    description: 'Air and stone Bohrok Kal in a coordinated assault.',
+    description: 'Bohrok-Kal of Vacuum and Plasma in a coordinated assault.',
     waves: [
       [
         ...makeBohrokWave('lehvak_kal', 45, 1),
@@ -968,7 +970,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'Nuhvok Kal, Kohrak Kal & Tahnok Kal',
     headliner: 'bohrok_kal_trio',
     difficulty: 5,
-    description: 'Three Bohrok Kal converge—earth, ice, and fire.',
+    description: 'Three Bohrok Kal converge—Gravity, Sonics, and Electricity.',
     waves: [
       [
         ...makeBohrokWave('nuhvok_kal', 45, 1),
@@ -984,7 +986,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'The Final Confrontation',
     headliner: 'tahnok_kal',
     difficulty: 6,
-    description: 'All six Bohrok Kal united. The Toa must stand together to reclaim the Nuva symbols.',
+    description: 'All six Bohrok Kal united—Electricity, Magnetism, Vacuum, Plasma, Gravity, and Sonics. The Toa must stand together to reclaim the Nuva symbols.',
     waves: [
       [
         ...makeBohrokWave('tahnok_kal', 32, 1),
