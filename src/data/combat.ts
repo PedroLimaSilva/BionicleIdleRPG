@@ -998,6 +998,6 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       ],
     ],
     loot: [],
-    unlockedAfter: ['bohrok_kal_gathering_strength'],
+    unlockedAfter: ['bohrok_kal_race_to_nest'],
   },
 ];

@@ -280,27 +280,32 @@ Unlock: tahnok, gahlok, lehvak, pahrak, nuhvok, kohrak
 Loot: 
 Currency: 3000
 XP: 1200"]
-  bohrok_kal_stolen_symbols["The Stolen Symbols
-(5m)
+  bohrok_kal_reconstruction["Reconstruction
+(8m)
+Loot: 
+Currency: 2500
+XP: 1500"]
+  bohrok_kal_scattered_aid["Scattered to the Villages
+(10m)
 Loot: 
 Currency: 3000
-XP: 2000"]
-  bohrok_kal_first_strikes["First Strikes
-(12m)
-Loot: 
-Currency: 3500
-XP: 2200"]
-  bohrok_kal_scattered["Scattered
-(18m)
-Loot: 
-Currency: 4000
-XP: 2500"]
-  bohrok_kal_gathering_strength["Gathering Strength
+XP: 1800"]
+  bohrok_kal_stolen_symbols["The Stolen Symbols
 (15m)
 Loot: 
+Currency: 3500
+XP: 2000"]
+  bohrok_kal_sighting["Sighting in Po-Wahi
+(12m)
+Loot: 
+Currency: 4000
+XP: 2400"]
+  bohrok_kal_race_to_nest["Race to the Nest
+(18m)
+Loot: 
 Currency: 4500
-XP: 2800"]
-  bohrok_kal_final_confrontation["The Final Confrontation
+XP: 3000"]
+  bohrok_kal_final_confrontation["At the Nuva Cube
 (25m)
 Loot: 
 Currency: 6000
@@ -374,11 +379,12 @@ XP: 5000"]
   bohrok_krana_hunt --> bohrok_into_the_bohrok_nest
   bohrok_into_the_bohrok_nest --> bohrok_evolve_toa_nuva
   bohrok_evolve_toa_nuva --> bohrok_assistants
-  bohrok_assistants --> bohrok_kal_stolen_symbols
-  bohrok_kal_stolen_symbols --> bohrok_kal_first_strikes
-  bohrok_kal_first_strikes --> bohrok_kal_scattered
-  bohrok_kal_scattered --> bohrok_kal_gathering_strength
-  bohrok_kal_gathering_strength --> bohrok_kal_final_confrontation
+  bohrok_assistants --> bohrok_kal_reconstruction
+  bohrok_kal_reconstruction --> bohrok_kal_scattered_aid
+  bohrok_kal_scattered_aid --> bohrok_kal_stolen_symbols
+  bohrok_kal_stolen_symbols --> bohrok_kal_sighting
+  bohrok_kal_sighting --> bohrok_kal_race_to_nest
+  bohrok_kal_race_to_nest --> bohrok_kal_final_confrontation
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff
