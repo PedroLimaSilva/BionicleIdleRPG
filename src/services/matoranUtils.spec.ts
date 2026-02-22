@@ -346,5 +346,35 @@ describe('matoranUtils', () => {
       expect(masks).toContain(Mask.Akaku);
       expect(masks).toContain(Mask.Miru);
     });
+
+    describe('Toa Nuva', () => {
+      const mockToaNuva: BaseMatoran = {
+        id: 'Toa_Tahu_Nuva',
+        name: 'Toa Tahu Nuva',
+        element: ElementTribe.Fire,
+        stage: MatoranStage.ToaNuva,
+        mask: Mask.HauNuva,
+        colors: MOCK_COLORS,
+      };
+
+      test('returns only dex mask when no quests completed', () => {
+        const masks = masksCollected(mockToaNuva, []);
+        expect(masks).toEqual([Mask.HauNuva]);
+      });
+
+      test('returns only dex mask even when final collection quest is completed', () => {
+        const masks = masksCollected(mockToaNuva, ['maskhunt_final_collection']);
+        expect(masks).toEqual([Mask.HauNuva]);
+      });
+
+      test('returns only dex mask even when mask hunt quests are completed', () => {
+        const masks = masksCollected(mockToaNuva, [
+          'maskhunt_final_collection',
+          'maskhunt_tahu_cave_akaku',
+          'maskhunt_tahu_miru',
+        ]);
+        expect(masks).toEqual([Mask.HauNuva]);
+      });
+    });
   });
 });
