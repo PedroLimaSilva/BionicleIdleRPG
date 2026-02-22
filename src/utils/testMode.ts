@@ -31,6 +31,14 @@ export function shouldDisableAnimations(): boolean {
 }
 
 /**
+ * Check if selective bloom should be disabled
+ * Disabled in test mode to avoid flaky screenshots from post-processing timing
+ */
+export function shouldDisableSelectiveBloom(): boolean {
+  return isTestMode();
+}
+
+/**
  * Setup an animation action for test mode
  * In test mode, the action is paused at time 0
  * In normal mode, the action plays normally
