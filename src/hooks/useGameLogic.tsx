@@ -87,7 +87,6 @@ export const useGameLogic = (): GameState => {
     buyableCharacters: buyableCharacters,
     activeQuests,
     completedQuests,
-    nuvaSymbolsSequestered,
   });
 
   return {
