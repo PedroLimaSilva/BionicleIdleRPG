@@ -205,10 +205,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     unlock: { requiredProgress: ['bohrok_assistants'] },
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
-    rewards: [
-      { item: GameItemId.StructuralReinforcement, chance: 1.0 },
-      { item: GameItemId.ProtodermisPatch, chance: 0.3 },
-    ],
   },
   [MatoranJob.GaKoroRebuilder]: {
     label: '🌊 Ga-Koro Rebuilder',
@@ -220,10 +216,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     unlock: { requiredProgress: ['bohrok_assistants'] },
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
-    rewards: [
-      { item: GameItemId.WaterSeal, chance: 1.0 },
-      { item: GameItemId.ProtodermisPatch, chance: 0.3 },
-    ],
   },
   [MatoranJob.LeKoroRebuilder]: {
     label: '🌲 Le-Koro Rebuilder',
@@ -235,10 +227,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     unlock: { requiredProgress: ['bohrok_assistants'] },
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
-    rewards: [
-      { item: GameItemId.JungleTimber, chance: 1.0 },
-      { item: GameItemId.ProtodermisPatch, chance: 0.3 },
-    ],
   },
   [MatoranJob.PoKoroRebuilder]: {
     label: '🪨 Po-Koro Rebuilder',
@@ -250,10 +238,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     unlock: { requiredProgress: ['bohrok_assistants'] },
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
-    rewards: [
-      { item: GameItemId.CarvingFragment, chance: 1.0 },
-      { item: GameItemId.ProtodermisPatch, chance: 0.3 },
-    ],
   },
   [MatoranJob.OnuKoroRebuilder]: {
     label: '⛏️ Onu-Koro Rebuilder',
@@ -265,10 +249,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     unlock: { requiredProgress: ['bohrok_assistants'] },
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
-    rewards: [
-      { item: GameItemId.TunnelBrace, chance: 1.0 },
-      { item: GameItemId.ProtodermisPatch, chance: 0.3 },
-    ],
   },
   [MatoranJob.KoKoroRebuilder]: {
     label: '❄️ Ko-Koro Rebuilder',
@@ -280,9 +260,5 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     unlock: { requiredProgress: ['bohrok_assistants'] },
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
-    rewards: [
-      { item: GameItemId.FrostSeal, chance: 1.0 },
-      { item: GameItemId.ProtodermisPatch, chance: 0.3 },
-    ],
   },
 };
