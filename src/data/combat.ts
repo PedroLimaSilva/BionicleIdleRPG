@@ -470,6 +470,27 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseDefense: 20,
     baseSpeed: 15,
   },
+  // Headliners for multi-Kal encounters (avatar uses Tahnok Kal)
+  bohrok_kal_pair: {
+    id: 'bohrok_kal_pair',
+    name: 'Bohrok Kal',
+    model: 'bohrok',
+    element: ElementTribe.Fire,
+    baseHp: 140,
+    baseAttack: 38,
+    baseDefense: 18,
+    baseSpeed: 14,
+  },
+  bohrok_kal_trio: {
+    id: 'bohrok_kal_trio',
+    name: 'Bohrok Kal',
+    model: 'bohrok',
+    element: ElementTribe.Fire,
+    baseHp: 140,
+    baseAttack: 38,
+    baseDefense: 18,
+    baseSpeed: 14,
+  },
 };
 
 /** Krana drop ids by color: blue=Fire, orange=Water, red=Air, green=Stone, lime=Earth, white=Ice */
@@ -850,17 +871,15 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     loot: [...makeLoot('white', [6, 7]), ...makeLoot('blue', [6, 7])],
   },
 
-  // Bohrok Kal - Elite encounters; no Krana; unlocked during Bohrok Kal arc
+  // Bohrok Kal - Elite encounters; each Kal is unique. Unwinnable until final.
+  // 1, 2, or 3 Kal per encounter; multi-Kal waves use different types.
   {
     id: 'tahnok_kal-1',
     name: 'Tahnok Kal',
     headliner: 'tahnok_kal',
     difficulty: 5,
     description: 'An elite fire Bohrok Kal empowered by stolen Nuva symbols.',
-    waves: [
-      [...makeBohrokWave('tahnok_kal', 45, 1)],
-      [...makeBohrokWave('tahnok_kal', 45, 2)],
-    ],
+    waves: [[...makeBohrokWave('tahnok_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
   },
@@ -870,10 +889,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'gahlok_kal',
     difficulty: 5,
     description: 'An elite water Bohrok Kal wielding stolen power.',
-    waves: [
-      [...makeBohrokWave('gahlok_kal', 45, 1)],
-      [...makeBohrokWave('gahlok_kal', 45, 2)],
-    ],
+    waves: [[...makeBohrokWave('gahlok_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
   },
@@ -883,10 +899,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'lehvak_kal',
     difficulty: 5,
     description: 'An elite air Bohrok Kal that strikes with fury.',
-    waves: [
-      [...makeBohrokWave('lehvak_kal', 45, 1)],
-      [...makeBohrokWave('lehvak_kal', 45, 2)],
-    ],
+    waves: [[...makeBohrokWave('lehvak_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
   },
@@ -896,10 +909,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'pahrak_kal',
     difficulty: 5,
     description: 'An elite stone Bohrok Kal nearly indestructible.',
-    waves: [
-      [...makeBohrokWave('pahrak_kal', 45, 1)],
-      [...makeBohrokWave('pahrak_kal', 45, 2)],
-    ],
+    waves: [[...makeBohrokWave('pahrak_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
   },
@@ -909,10 +919,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'nuhvok_kal',
     difficulty: 5,
     description: 'An elite earth Bohrok Kal that strikes from the depths.',
-    waves: [
-      [...makeBohrokWave('nuhvok_kal', 45, 1)],
-      [...makeBohrokWave('nuhvok_kal', 45, 2)],
-    ],
+    waves: [[...makeBohrokWave('nuhvok_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
   },
@@ -922,9 +929,52 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'kohrak_kal',
     difficulty: 5,
     description: 'An elite ice Bohrok Kal that freezes all in its path.',
+    waves: [[...makeBohrokWave('kohrak_kal', 45, 1)]],
+    loot: [],
+    unlockedAfter: ['bohrok_kal_stolen_symbols'],
+  },
+  {
+    id: 'bohrok_kal_pair_1',
+    name: 'Tahnok Kal & Gahlok Kal',
+    headliner: 'bohrok_kal_pair',
+    difficulty: 5,
+    description: 'Fire and water Bohrok Kal attack together.',
     waves: [
-      [...makeBohrokWave('kohrak_kal', 45, 1)],
-      [...makeBohrokWave('kohrak_kal', 45, 2)],
+      [
+        ...makeBohrokWave('tahnok_kal', 45, 1),
+        ...makeBohrokWave('gahlok_kal', 45, 1),
+      ],
+    ],
+    loot: [],
+    unlockedAfter: ['bohrok_kal_stolen_symbols'],
+  },
+  {
+    id: 'bohrok_kal_pair_2',
+    name: 'Lehvak Kal & Pahrak Kal',
+    headliner: 'bohrok_kal_pair',
+    difficulty: 5,
+    description: 'Air and stone Bohrok Kal in a coordinated assault.',
+    waves: [
+      [
+        ...makeBohrokWave('lehvak_kal', 45, 1),
+        ...makeBohrokWave('pahrak_kal', 45, 1),
+      ],
+    ],
+    loot: [],
+    unlockedAfter: ['bohrok_kal_stolen_symbols'],
+  },
+  {
+    id: 'bohrok_kal_trio',
+    name: 'Nuhvok Kal, Kohrak Kal & Tahnok Kal',
+    headliner: 'bohrok_kal_trio',
+    difficulty: 5,
+    description: 'Three Bohrok Kal converge—earth, ice, and fire.',
+    waves: [
+      [
+        ...makeBohrokWave('nuhvok_kal', 45, 1),
+        ...makeBohrokWave('kohrak_kal', 45, 1),
+        ...makeBohrokWave('tahnok_kal', 45, 1),
+      ],
     ],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
@@ -936,8 +986,16 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     difficulty: 6,
     description: 'All six Bohrok Kal united. The Toa must stand together to reclaim the Nuva symbols.',
     waves: [
-      [...makeBohrokWave('tahnok_kal', 32, 1), ...makeBohrokWave('gahlok_kal', 32, 1), ...makeBohrokWave('lehvak_kal', 32, 1)],
-      [...makeBohrokWave('pahrak_kal', 32, 1), ...makeBohrokWave('nuhvok_kal', 32, 1), ...makeBohrokWave('kohrak_kal', 32, 1)],
+      [
+        ...makeBohrokWave('tahnok_kal', 32, 1),
+        ...makeBohrokWave('gahlok_kal', 32, 1),
+        ...makeBohrokWave('lehvak_kal', 32, 1),
+      ],
+      [
+        ...makeBohrokWave('pahrak_kal', 32, 1),
+        ...makeBohrokWave('nuhvok_kal', 32, 1),
+        ...makeBohrokWave('kohrak_kal', 32, 1),
+      ],
     ],
     loot: [],
     unlockedAfter: ['bohrok_kal_gathering_strength'],

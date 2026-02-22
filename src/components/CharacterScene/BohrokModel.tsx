@@ -67,6 +67,11 @@ const BOHROK_COLORS: Record<string, { main: LegoColor; secondary: LegoColor; eye
     secondary: LegoColor.PearlGold,
     eyes: LegoColor.TransNeonYellow,
   },
+  'Bohrok Kal': {
+    main: LegoColor.Red,
+    secondary: LegoColor.PearlGold,
+    eyes: LegoColor.TransNeonYellow,
+  },
 };
 
 export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({ name }, ref) => {
