@@ -16,7 +16,7 @@ export const LewaMataModel = forwardRef<
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/lewa.glb');
   const { playAnimation } = useCombatAnimations(animations, group, {
     modelId: matoran.id,
-    attackResolveAtFraction: 0.56,
+    attackResolveAtFraction: 0.4,
   });
 
   useImperativeHandle(ref, () => ({ playAnimation }));
