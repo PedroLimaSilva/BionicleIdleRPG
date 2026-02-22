@@ -5,6 +5,8 @@ import { MASK_POWERS } from '../../../data/combat';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../../types/Matoran';
 import { CompositedImage } from '../../../components/CompositedImage';
 
+import './index.scss';
+
 export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const { setMaskOverride, completedQuests } = useGame();
 
@@ -21,14 +23,14 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCh
 
   return (
     <>
-      {masks.length && (
-        <div>
-          <p>Masks Collected:</p>
-          <div className="scroll-row mask-collection">
+      {masks.length > 0 && (
+        <div className="mask-inventory-section">
+          <p className="mask-inventory-section__title">Masks</p>
+          <div className={`mask-inventory-grid element-${matoran.element}`}>
             {masks.map((mask) => (
               <div
                 key={mask}
-                className={`card element-${matoran.element}`}
+                className={`mask-card element-${matoran.element}`}
                 onClick={() => handeMaskOverride(matoran, mask)}
               >
                 <CompositedImage

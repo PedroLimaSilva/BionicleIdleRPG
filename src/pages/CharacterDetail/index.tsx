@@ -32,7 +32,7 @@ export const CharacterDetail: React.FC = () => {
   const tabs = useMemo(() => {
     const base = ['stats'];
     if (isToa(matoran)) {
-      base.push('equipment');
+      base.push('inventory');
     }
     if (isToaMata(matoran) && isKranaCollectionActive(completedQuests)) {
       base.push('krana');
@@ -103,7 +103,7 @@ export const CharacterDetail: React.FC = () => {
               )*/}
             </>
           )}
-          {activeTab === 'equipment' && isToa(matoran) && <MaskCollection matoran={matoran} />}
+          {activeTab === 'inventory' && isToa(matoran) && <MaskCollection matoran={matoran} />}
           {activeTab === 'krana' && isToaMata(matoran) && <KranaCollection matoran={matoran} />}
 
           {activeTab === 'tasks' && (
