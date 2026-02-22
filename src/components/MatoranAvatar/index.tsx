@@ -22,12 +22,13 @@ export function MatoranAvatar({
     return getMask(matoran);
   }, [matoran]);
 
-  // Bohrok use a single pre-rendered avatar image
-  if (matoran.stage === MatoranStage.Bohrok) {
+  // Bohrok and Bohrok Kal use pre-rendered avatar images (Bohrok Kal fall back to base Bohrok image)
+  if (matoran.stage === MatoranStage.Bohrok || matoran.stage === MatoranStage.BohrokKal) {
+    const avatarName = matoran.name.replace(/\s+Kal$/, ''); // "Tahnok Kal" -> "Tahnok"
     return (
       <img
         className={`composited-avatar ${styles}`}
-        src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${matoran.name}.png`}
+        src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${avatarName}.png`}
         alt={matoran.name}
       />
     );

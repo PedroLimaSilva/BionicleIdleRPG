@@ -63,9 +63,10 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
           return <ToaNuvaPlaceholderModel matoran={matoran} />;
       }
     case MatoranStage.Bohrok:
+    case MatoranStage.BohrokKal:
       return (
         <group scale={4.5} position={[0, 5.6, -3.5]}>
-          <BohrokModel name={matoran.name} />
+          <BohrokModel name={matoran.name.replace(/\s+Kal$/, '')} />
         </group>
       );
     case MatoranStage.Diminished:

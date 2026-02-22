@@ -18,9 +18,18 @@ export function tickMatoranJobExp(matoran: RecruitedCharacterData, now: number):
   const [updated, exp, loot] = applyJobExp(matoran, now);
   const earnedWidgets = Math.floor(exp * WIDGET_RATE);
 
-  const matoran_dex = MATORAN_DEX[matoran.id];
+  const matoran_dex = MATORAN_DEX[updated.id];
 
   const logs: ActivityLogEntry[] = [];
+
+  if (updated.id !== matoran.id) {
+    logs.push({
+      id: crypto.randomUUID(),
+      message: `${MATORAN_DEX[matoran.id]?.name ?? matoran.id} evolved into ${matoran_dex.name}!`,
+      type: LogType.Event,
+      timestamp: now,
+    });
+  }
 
   if (earnedWidgets > 0) {
     logs.push({

@@ -149,6 +149,21 @@ describe('Jobs', () => {
       // AlgaeHarvester requires 'mnog_ga_koro_sos'
       expect(available).toContain(MatoranJob.AlgaeHarvester);
     });
+
+    test('filters Koro rebuild jobs to Bohrok only when matoran provided', () => {
+      const mockGameState: GameState = {
+        completedQuests: ['bohrok_assistants'],
+      } as GameState;
+
+      const bohrokMatoran = { id: 'tahnok', exp: 0 } as RecruitedCharacterData;
+      const matoranMatoran = { id: 'Jala', exp: 0 } as RecruitedCharacterData;
+
+      const bohrokJobs = getAvailableJobs(mockGameState, bohrokMatoran);
+      const matoranJobs = getAvailableJobs(mockGameState, matoranMatoran);
+
+      expect(bohrokJobs).toContain(MatoranJob.TaKoroRebuilder);
+      expect(matoranJobs).not.toContain(MatoranJob.TaKoroRebuilder);
+    });
   });
 
   describe('applyJobExp', () => {

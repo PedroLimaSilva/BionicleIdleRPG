@@ -46,6 +46,7 @@ export const enum MatoranStage {
   Rebuilt = 'Rebuilt',
   Metru = 'Metru',
   Bohrok = 'Bohrok',
+  BohrokKal = 'Bohrok Kal',
 }
 
 // Static data for any Matoran

@@ -6,6 +6,7 @@ import { GameItemId, ITEM_DICTIONARY } from '../data/loot';
 import { GameState } from '../types/GameState';
 import { Inventory } from '../services/inventoryUtils';
 import { MATORAN_DEX } from '../data/matoran';
+import { evolveBohrokToKalIfReady } from './BohrokEvolution';
 
 export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const jobData = JOB_DETAILS[job];
@@ -21,10 +22,24 @@ export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   return progressMet;
 }
 
-export function getAvailableJobs(gameState: GameState): MatoranJob[] {
-  return Object.keys(JOB_DETAILS)
+export function getAvailableJobs(
+  gameState: GameState,
+  matoran?: RecruitedCharacterData
+): MatoranJob[] {
+  let jobs = Object.keys(JOB_DETAILS)
     .filter((key): key is MatoranJob => key in MatoranJob)
     .filter((job) => isJobUnlocked(job, gameState));
+
+  if (matoran) {
+    const matoranDex = MATORAN_DEX[matoran.id];
+    jobs = jobs.filter((job) => {
+      const { allowedStages } = JOB_DETAILS[job];
+      if (!allowedStages) return true;
+      return allowedStages.includes(matoranDex.stage);
+    });
+  }
+
+  return jobs;
 }
 
 export function getJobStatus(matoran: RecruitedCharacterData): ProductivityEffect {
@@ -146,7 +161,8 @@ export function applyOfflineJobExp(
 
   const updated = characters.map((m) => {
     const [updatedMatoran, earned, rewards] = applyJobExp(m, now, true);
-    const matoran = MATORAN_DEX[m.id];
+    const evolvedMatoran = evolveBohrokToKalIfReady(updatedMatoran);
+    const matoran = MATORAN_DEX[evolvedMatoran.id];
 
     Object.entries(rewards).forEach(([item, amount]) => {
       const itemId = item as GameItemId;
@@ -169,7 +185,16 @@ export function applyOfflineJobExp(
       });
     }
 
-    return updatedMatoran;
+    if (evolvedMatoran.id !== m.id) {
+      logs.push({
+        id: crypto.randomUUID(),
+        message: `${MATORAN_DEX[m.id]?.name ?? m.id} evolved into ${matoran.name}!`,
+        type: LogType.Event,
+        timestamp: now,
+      });
+    }
+
+    return evolvedMatoran;
   });
 
   return [updated, logs, currencyGain, loot];
@@ -191,16 +216,16 @@ export function applyJobExp(
   const earnedExp = computeEarnedExp(matoran.assignment, now, effectiveElapsedSeconds);
   const rewards = rollJobRewards(matoran.assignment, now, effectiveElapsedSeconds);
 
-  return [
-    {
-      ...matoran,
-      exp: matoran.exp + earnedExp,
-      assignment: {
-        ...matoran.assignment,
-        assignedAt: now, // reset timer
-      },
+  const updatedMatoran: RecruitedCharacterData = {
+    ...matoran,
+    exp: matoran.exp + earnedExp,
+    assignment: {
+      ...matoran.assignment,
+      assignedAt: now, // reset timer
     },
-    earnedExp,
-    rewards,
-  ];
+  };
+
+  const evolvedMatoran = evolveBohrokToKalIfReady(updatedMatoran);
+
+  return [evolvedMatoran, earnedExp, rewards];
 }

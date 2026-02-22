@@ -26,6 +26,14 @@ export enum GameItemId {
   FrostChisel = 'FrostChisel',
   DataTablet = 'DataTablet',
   CipherKey = 'CipherKey',
+  StructuralReinforcement = 'StructuralReinforcement',
+  ProtodermisPatch = 'ProtodermisPatch',
+  LavaBrick = 'LavaBrick',
+  WaterSeal = 'WaterSeal',
+  JungleTimber = 'JungleTimber',
+  CarvingFragment = 'CarvingFragment',
+  TunnelBrace = 'TunnelBrace',
+  FrostSeal = 'FrostSeal',
 }
 
 export interface GameItem {
@@ -156,5 +164,44 @@ export const ITEM_DICTIONARY: Record<GameItemId, GameItem> = {
     name: 'Cipher Key',
     element: ElementTribe.Ice,
     sources: [MatoranJob.KnowledgeScribe],
+  },
+  [GameItemId.StructuralReinforcement]: {
+    name: 'Structural Reinforcement',
+    element: ElementTribe.Fire,
+    sources: [MatoranJob.TaKoroRebuilder],
+  },
+  [GameItemId.ProtodermisPatch]: {
+    name: 'Protodermis Patch',
+    element: ElementTribe.Fire,
+    sources: [MatoranJob.TaKoroRebuilder],
+  },
+  [GameItemId.LavaBrick]: {
+    name: 'Lava Brick',
+    element: ElementTribe.Fire,
+  },
+  [GameItemId.WaterSeal]: {
+    name: 'Water Seal',
+    element: ElementTribe.Water,
+    sources: [MatoranJob.GaKoroRebuilder],
+  },
+  [GameItemId.JungleTimber]: {
+    name: 'Jungle Timber',
+    element: ElementTribe.Air,
+    sources: [MatoranJob.LeKoroRebuilder],
+  },
+  [GameItemId.CarvingFragment]: {
+    name: 'Carving Fragment',
+    element: ElementTribe.Stone,
+    sources: [MatoranJob.PoKoroRebuilder],
+  },
+  [GameItemId.TunnelBrace]: {
+    name: 'Tunnel Brace',
+    element: ElementTribe.Earth,
+    sources: [MatoranJob.OnuKoroRebuilder],
+  },
+  [GameItemId.FrostSeal]: {
+    name: 'Frost Seal',
+    element: ElementTribe.Ice,
+    sources: [MatoranJob.KoKoroRebuilder],
   },
 };

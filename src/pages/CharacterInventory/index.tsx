@@ -8,7 +8,7 @@ import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
 import { MATORAN_DEX } from '../../data/matoran';
 import { QUESTS } from '../../data/quests';
-import { isBohrok, isMatoran, isToa } from '../../services/matoranUtils';
+import { isBohrokOrKal, isMatoran, isToa } from '../../services/matoranUtils';
 import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 
@@ -22,7 +22,7 @@ export const CharacterInventory: React.FC = () => {
     if (recruitedCharacters.some((matoran) => isToa(MATORAN_DEX[matoran.id]))) {
       base.push('toa');
     }
-    if (recruitedCharacters.some((matoran) => isBohrok(MATORAN_DEX[matoran.id]))) {
+    if (recruitedCharacters.some((matoran) => isBohrokOrKal(MATORAN_DEX[matoran.id]))) {
       base.push('other');
     }
     return base;

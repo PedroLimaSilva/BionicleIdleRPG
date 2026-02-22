@@ -18,8 +18,8 @@ export function JobList({ matoran, onCancel }: JobListProps) {
   const game = useGame();
 
   const jobs = useMemo(() => {
-    return getAvailableJobs(game);
-  }, [game]);
+    return getAvailableJobs(game, matoran);
+  }, [game, matoran]);
 
   const handleAssign = () => {
     if (!selectedJob) return;
