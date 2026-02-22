@@ -31,11 +31,11 @@ export function shouldDisableAnimations(): boolean {
 }
 
 /**
- * Check if selective bloom should be disabled
+ * Check if selective bloom should be enabled
  * Disabled in test mode to avoid flaky screenshots from post-processing timing
  */
-export function shouldDisableSelectiveBloom(): boolean {
-  return isTestMode();
+export function shouldEnableSelectiveBloom(): boolean {
+  return !isTestMode();
 }
 
 /**
