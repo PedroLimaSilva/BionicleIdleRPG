@@ -1,6 +1,7 @@
+import type { RefObject } from 'react';
 import { useCallback, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import type { AnimationAction, AnimationMixer } from 'three';
+import type { AnimationAction, AnimationMixer, Group, SkinnedMesh } from 'three';
 import { LoopOnce } from 'three';
 
 export type UsePlayAnimationOptions = {
@@ -12,12 +13,29 @@ export type UsePlayAnimationOptions = {
   transitionMode?: 'fadeIdle' | 'stopAll';
   /** For Attack: resolve promise at this fraction through (0-1). Default: 0.5. Hit/Defeat always resolve at end. */
   attackResolveAtFraction?: number;
+  /** Ref to the model group - used to reset skeleton to bind pose before replay (fixes baked quaternion animations playing with less movement on 2nd run) */
+  groupRef?: RefObject<Group | null>;
 };
 
 export type PlayAnimationCallOptions = {
   /** Called when the animation fully ends (e.g. for Attack, when animation completes, not when promise resolves). */
   onAnimationComplete?: () => void;
 };
+
+/**
+ * Resets all skeletons in the model to their bind pose.
+ * Required before replaying animations when using baked quaternion bone rotations from Blender:
+ * without this, bones retain state from the previous play and the second run shows much less movement.
+ * @see https://github.com/mrdoob/three.js/issues/24772
+ */
+function resetSkeletonToBindPose(root: Group): void {
+  root.updateMatrixWorld(true);
+  root.traverse((object) => {
+    if ((object as SkinnedMesh).isSkinnedMesh) {
+      (object as SkinnedMesh).skeleton.pose();
+    }
+  });
+}
 
 /**
  * Provides playAnimation to run one-shot actions (Attack, Hit) with return-to-idle.
@@ -33,6 +51,7 @@ export function usePlayAnimation(
     actionTimeScale = 1,
     transitionMode = 'fadeIdle',
     attackResolveAtFraction = 0.5,
+    groupRef,
   } = options;
 
   const pendingAttackResolve = useRef<{
@@ -66,6 +85,14 @@ export function usePlayAnimation(
           mixer.stopAllAction();
         } else {
           actions['Idle']?.fadeOut(0.2);
+        }
+
+        // Reset skeleton to bind pose before replay. Fixes baked quaternion animations
+        // from Blender playing with much less movement on the second run (bones retain
+        // state from previous play otherwise).
+        const root = groupRef?.current;
+        if (root) {
+          resetSkeletonToBindPose(root);
         }
 
         action.reset();
@@ -117,7 +144,7 @@ export function usePlayAnimation(
         }
       });
     },
-    [actions, mixer, modelId, actionTimeScale, transitionMode, attackResolveAtFraction]
+    [actions, mixer, modelId, actionTimeScale, transitionMode, attackResolveAtFraction, groupRef]
   );
 
   return playAnimation;

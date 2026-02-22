@@ -15,7 +15,10 @@ export function useCombatAnimations(
   options: UseCombatAnimationsOptions = {}
 ) {
   const { actions, mixer } = useIdleAnimation(animations, groupRef);
-  const playAnimation = usePlayAnimation(actions, mixer, options);
+  const playAnimation = usePlayAnimation(actions, mixer, {
+    ...options,
+    groupRef,
+  });
 
   return { playAnimation };
 }
