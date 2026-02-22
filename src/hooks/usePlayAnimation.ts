@@ -95,6 +95,8 @@ export function usePlayAnimation(
           resetSkeletonToBindPose(root);
         }
 
+        // Stop fully deactivates before reset+play - required for clean replay
+        action.stop();
         action.reset();
         action.setLoop(LoopOnce, 1);
         action.clampWhenFinished = true;
@@ -121,6 +123,9 @@ export function usePlayAnimation(
               pendingAttackResolve.current = null;
               if (!pending.hasResolved) pending.resolve();
             }
+            // Must fade out the finished action - otherwise it stays active (clampWhenFinished)
+            // and keeps blending its end pose with Idle, causing much less movement on 2nd play
+            action.fadeOut(0.2);
             const idle = actions['Idle'];
             if (idle) {
               idle.reset().fadeIn(0.2).play();
@@ -134,6 +139,9 @@ export function usePlayAnimation(
             mixer.removeEventListener('finished', onComplete);
             resolve();
             if (name === 'Defeat') return;
+            // Must fade out the finished action - otherwise it stays active (clampWhenFinished)
+            // and keeps blending its end pose with Idle, causing much less movement on 2nd play
+            action.fadeOut(0.2);
             const idle = actions['Idle'];
             if (idle) {
               idle.reset().fadeIn(0.2).play();
