@@ -17,6 +17,7 @@ import {
   getParticipantIds,
 } from '../game/BattleRewards';
 import { isKranaCollectionActive } from '../game/Krana';
+import { isNuvaSymbolsSequestered } from '../game/nuvaSymbols';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -73,7 +74,7 @@ export const useGameLogic = (): GameState => {
     addActivityLog,
   });
 
-  const battle = useBattleState();
+  const battle = useBattleState(isNuvaSymbolsSequestered(completedQuests));
 
   // Auto-save when critical state changes
   useGamePersistence({

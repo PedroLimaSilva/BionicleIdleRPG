@@ -603,23 +603,61 @@ export function decrementWaveCounters(combatants: Combatant[]): Combatant[] {
   return combatants.map((c) => decrementMaskPowerCounter(c, 'wave'));
 }
 
+/** When true and combatant is Toa Nuva, stats are reduced (Nuva symbols sequestered). */
+const NUVA_SEQUESTERED_STAT_MULTIPLIER = 0.7;
+
+const TOA_NUVA_TEMPLATE_IDS = [
+  'Toa_Tahu_Nuva',
+  'Toa_Gali_Nuva',
+  'Toa_Pohatu_Nuva',
+  'Toa_Onua_Nuva',
+  'Toa_Kopaka_Nuva',
+  'Toa_Lewa_Nuva',
+] as const;
+
+export interface GenerateCombatantStatsOptions {
+  maskOverride?: Mask;
+  maskColorOverride?: LegoColor;
+  /** When true and templateId is Toa Nuva, stats are diminished. */
+  nuvaSymbolsSequestered?: boolean;
+}
+
 export function generateCombatantStats(
   id: string,
   templateId: string,
   lvl: number,
-  maskOverride?: Mask,
-  maskColorOverride?: LegoColor
+  options?: GenerateCombatantStatsOptions | Mask,
+  maskColorOverrideArg?: LegoColor
 ): Combatant {
+  // Backward compat: allow (maskOverride, maskColorOverride) as 4th/5th args
+  const opts: GenerateCombatantStatsOptions =
+    options !== undefined &&
+    typeof options === 'object' &&
+    options !== null &&
+    !('shortName' in options)
+      ? (options as GenerateCombatantStatsOptions)
+      : { maskOverride: options as Mask | undefined, maskColorOverride: maskColorOverrideArg };
+
   const template = COMBATANT_DEX[templateId];
   if (!template) {
     console.error('Missing base stats for ', templateId);
   }
 
-  const maxHp = template.baseHp + lvl * 10;
-  const attack = template.baseAttack + lvl * 3;
-  const defense = template.baseDefense + lvl * 2;
-  const speed = template.baseSpeed + lvl * 1;
-  const mask = maskOverride || template.mask;
+  let maxHp = template.baseHp + lvl * 10;
+  let attack = template.baseAttack + lvl * 3;
+  let defense = template.baseDefense + lvl * 2;
+  let speed = template.baseSpeed + lvl * 1;
+
+  const isToaNuva = TOA_NUVA_TEMPLATE_IDS.includes(templateId as (typeof TOA_NUVA_TEMPLATE_IDS)[number]);
+  if (opts.nuvaSymbolsSequestered && isToaNuva) {
+    const mult = NUVA_SEQUESTERED_STAT_MULTIPLIER;
+    maxHp = Math.max(1, Math.floor(maxHp * mult));
+    attack = Math.max(1, Math.floor(attack * mult));
+    defense = Math.max(0, Math.floor(defense * mult));
+    speed = Math.max(1, Math.floor(speed * mult));
+  }
+
+  const mask = opts.maskOverride || template.mask;
   const maskPower = mask && structuredClone(MASK_POWERS[mask]);
   if (maskPower) {
     maskPower.effect.cooldown.amount = 0;
@@ -631,7 +669,7 @@ export function generateCombatantStats(
     model: template.model,
     lvl,
     maskPower,
-    maskColorOverride,
+    maskColorOverride: opts.maskColorOverride,
     element: template.element,
     maxHp,
     hp: maxHp,

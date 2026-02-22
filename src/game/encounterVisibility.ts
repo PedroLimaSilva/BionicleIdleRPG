@@ -42,11 +42,14 @@ export function getVisibleEncounters(
   const visible: EnemyEncounter[] = [];
   for (const list of byHeadliner.values()) {
     const sorted = [...list].sort((a, b) => a.difficulty - b.difficulty);
-    const firstWithUncollected = sorted.find(
-      (e) => hasKranaLoot(e) && !areAllEncounterKranaCollected(e, collectedKrana)
+    // Show lowest-difficulty encounter that has uncollected krana, or has no krana (e.g. Bohrok Kal)
+    const firstToShow = sorted.find(
+      (e) =>
+        !hasKranaLoot(e) ||
+        !areAllEncounterKranaCollected(e, collectedKrana)
     );
-    if (firstWithUncollected) {
-      visible.push(firstWithUncollected);
+    if (firstToShow) {
+      visible.push(firstToShow);
     }
   }
 
