@@ -170,7 +170,7 @@
     width: 100%;
     bottom: 0;
     left: 0;
-    padding: 2rem 2rem 5rem;
+    padding: 2rem;
     background-color: var(--color-surface-low);
     border-radius: 0.75rem;
 
@@ -189,18 +189,20 @@
       gap: 1rem;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 1fr;
-      margin-bottom: 1rem;
     }
 
     &__team-selector {
       transition:
         max-height 0.3s ease-in-out,
-        opacity 0.3s ease-in-out;
+        opacity 0.3s ease-in-out,
+        margin 0.3s ease-in-out;
       max-height: 400px;
+      margin-bottom: 0;
 
       &.hidden {
         max-height: 0;
         opacity: 0;
+        margin-bottom: -2rem;
       }
     }
 
