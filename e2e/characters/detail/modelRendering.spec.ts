@@ -91,6 +91,39 @@ test.describe('Character Model Rendering', () => {
         });
       }
     );
+
+    [
+      'Toa_Gali_Nuva',
+      'Toa_Kopaka_Nuva',
+      'Toa_Lewa_Nuva',
+      'Toa_Onua_Nuva',
+      'Toa_Pohatu_Nuva',
+      'Toa_Tahu_Nuva',
+    ].forEach((characterId) => {
+      test(`should render ${characterId} character detail page`, async ({ page }) => {
+        await setupGameState(page, {
+          ...INITIAL_GAME_STATE,
+          recruitedCharacters: [
+            {
+              id: characterId,
+              exp: 0,
+            },
+          ],
+        });
+        await goto(page, `/characters/${characterId}`);
+        await disableCSSAnimations(page);
+        await waitForCanvas(page);
+
+        // Take screenshot of the entire page including 3D scene
+        await expect(page).toHaveScreenshot({
+          fullPage: true,
+          timeout: 15000,
+          // Moderate tolerance for WebGL rendering differences
+          maxDiffPixels: 300,
+          threshold: 0.2,
+        });
+      });
+    });
   });
 
   test.describe('Bohrok Characters', () => {
@@ -119,5 +152,32 @@ test.describe('Character Model Rendering', () => {
         });
       });
     });
+    ['tahnok_kal', 'gahlok_kal', 'lehvak_kal', 'pahrak_kal', 'nuhvok_kal', 'kohrak_kal'].forEach(
+      (characterId) => {
+        test(`should render ${characterId} character detail page`, async ({ page }) => {
+          await setupGameState(page, {
+            ...INITIAL_GAME_STATE,
+            recruitedCharacters: [
+              {
+                id: characterId,
+                exp: 0,
+              },
+            ],
+          });
+          await goto(page, `/characters/${characterId}`);
+          await disableCSSAnimations(page);
+          await waitForCanvas(page);
+
+          // Take screenshot of the entire page including 3D scene
+          await expect(page).toHaveScreenshot({
+            fullPage: true,
+            timeout: 15000,
+            // Moderate tolerance for WebGL rendering differences
+            maxDiffPixels: 300,
+            threshold: 0.2,
+          });
+        });
+      }
+    );
   });
 });

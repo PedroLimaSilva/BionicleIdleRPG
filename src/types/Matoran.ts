@@ -22,6 +22,7 @@ export const enum Mask {
   Rau = 'Rau',
   Matatu = 'Matatu',
   Mahiki = 'Mahiki',
+  Vahi = 'Vahi',
 }
 
 export enum ElementTribe {
@@ -46,6 +47,7 @@ export const enum MatoranStage {
   Rebuilt = 'Rebuilt',
   Metru = 'Metru',
   Bohrok = 'Bohrok',
+  BohrokKal = 'BohrokKal',
 }
 
 // Static data for any Matoran

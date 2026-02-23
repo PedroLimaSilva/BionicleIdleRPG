@@ -197,7 +197,8 @@ When `target: 'team'`, the mask power creates `TargetBuff` instances on each all
 - ✅ Mask power effect application (ATK_MULT, DMG_MITIGATOR, HEAL, AGGRO, SPEED)
 - ✅ Mask power duration tracking (all unit types)
 - ✅ Mask power cooldown tracking (all unit types)
-- ❌ Advanced mask effects (ACCURACY_MULT, CONFUSION, immobilization)
-- ✅ Nuva mask powers (team-wide effects via buffs)
-- ❌ Reward distribution
-- ❌ Experience gain
+- ✅ Komau CONFUSION effect
+- ✅ Reward distribution (EXP, loot, Krana)
+- ✅ Experience gain (persisted on Collect Rewards)
+- ❌ Advanced mask effects (ACCURACY_MULT for Ruru, Matatu immobilize)
+- ✅ Nuva mask powers (team-wide effects)

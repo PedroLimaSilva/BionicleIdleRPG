@@ -54,29 +54,13 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
-  /* Configure projects for major browsers and mobile viewports */
+  /* Single Desktop project - responsiveness tested in dedicated e2e/responsiveness.spec.ts */
   projects: [
     {
       name: 'Desktop Chrome',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 1080 },
-      },
-    },
-
-    {
-      name: 'Mobile Chrome Portrait',
-      use: {
-        ...devices['Pixel 7'],
-        // Portrait is default orientation
-      },
-    },
-
-    {
-      name: 'Mobile Chrome Landscape',
-      use: {
-        ...devices['Pixel 7'],
-        viewport: { width: 851, height: 393 }, // Landscape dimensions for Pixel 5
       },
     },
   ],

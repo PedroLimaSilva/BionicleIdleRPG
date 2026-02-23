@@ -129,7 +129,7 @@ interface TransitionState {
  * always available (needed for the exit animation and for masks like Kaukau
  * that have sub-1 opacity).
  *
- * When the mask changes (e.g. selecting a different mask in the equipment tab),
+ * When the mask changes (e.g. selecting a different mask in the character inventory tab),
  * the new mask appears immediately while the old mask scales up and fades out.
  * The first mask shown on load appears immediately with no transition.
  *

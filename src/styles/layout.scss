@@ -23,6 +23,7 @@
     &[class*='route--characters-'] {
       display: block;
       z-index: 1;
+      top: 2rem;
       left: calc(anchor(left) - 4rem);
       right: calc(anchor(right) - 4rem);
     }
@@ -83,5 +84,6 @@
     color: var(--color-accent);
     text-shadow: 0 0 12px var(--color-accent-hover);
     letter-spacing: 0.1em;
+    word-break: break-word;
   }
 }

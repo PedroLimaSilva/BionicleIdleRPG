@@ -339,7 +339,10 @@ Characters exist as:
 
 Debug mode is stored separately from game state in localStorage under `DEBUG_MODE` key.
 
-It currently only affects quest duration (1 second instead of actual duration).
+It affects:
+
+- Quest duration (1 second instead of actual duration, for testing)
+- 3D canvas: displays Perf overlay (FPS, render times) when enabled
 
 **DO NOT** add debug mode checks that affect game balance or progression in production.
 

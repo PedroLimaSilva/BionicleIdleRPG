@@ -5,6 +5,9 @@ import { MASK_POWERS } from '../../../data/combat';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../../types/Matoran';
 import { CompositedImage } from '../../../components/CompositedImage';
 
+import './index.scss';
+import { Tooltip } from '../../../components/Tooltip';
+
 export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const { setMaskOverride, completedQuests } = useGame();
 
@@ -12,41 +15,40 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCh
     return masksCollected(matoran, completedQuests);
   }, [matoran, completedQuests]);
 
-  const activeMask = matoran.maskOverride || matoran.mask;
-  const maskDescription = MASK_POWERS[activeMask]?.description || 'Unknown Mask Power';
-
   const handeMaskOverride = (matoran: RecruitedCharacterData & BaseMatoran, mask: Mask) => {
     setMaskOverride(matoran.id, matoran.maskColorOverride || matoran.colors.mask, mask);
   };
 
   return (
     <>
-      {masks.length && (
-        <div>
-          <p>Masks Collected:</p>
-          <div className="scroll-row mask-collection">
+      {masks.length > 0 && (
+        <div className="mask-inventory-section">
+          <h3 className="mask-inventory-section__title">Masks</h3>
+          <div className={`mask-inventory-grid element-${matoran.element}`}>
             {masks.map((mask) => (
               <div
                 key={mask}
-                className={`card element-${matoran.element}`}
+                className={`mask-card`}
                 onClick={() => handeMaskOverride(matoran, mask)}
               >
-                <CompositedImage
-                  className="mask-preview"
-                  images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.png`]}
-                  colors={[matoran.maskColorOverride || matoran.colors.mask]}
-                />
-                <div className="name">{mask}</div>
+                <Tooltip
+                  content={
+                    <div>
+                      <h3>{MASK_POWERS[mask]?.longName ?? 'Unknown Mask'}</h3>
+                      <p>{MASK_POWERS[mask]?.description || 'Unknown Mask Power'}</p>
+                    </div>
+                  }
+                >
+                  <CompositedImage
+                    className="mask-preview"
+                    images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.webp`]}
+                    colors={[matoran.maskColorOverride || matoran.colors.mask]}
+                  />
+                  <div className="name">{mask}</div>
+                </Tooltip>
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {activeMask && (
-        <div>
-          <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>
-          <p>{maskDescription}</p>
         </div>
       )}
     </>
