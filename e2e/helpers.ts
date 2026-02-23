@@ -125,12 +125,13 @@ export const VIEWPORTS = {
 const MOBILE_BREAKPOINT = 768;
 
 /**
- * Hover or tap based on viewport width - for use in responsiveness tests
- * that manually set viewport size via page.setViewportSize()
+ * Hover or click based on viewport width - for use in responsiveness tests
+ * that manually set viewport size via page.setViewportSize().
+ * Uses click() for mobile viewports since Desktop Chrome lacks touch support.
  */
 export async function viewportAwareHover(locator: Locator, viewportWidth: number) {
   if (viewportWidth < MOBILE_BREAKPOINT) {
-    await locator.tap();
+    await locator.click();
   } else {
     await locator.hover();
   }

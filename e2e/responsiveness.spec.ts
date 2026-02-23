@@ -7,6 +7,8 @@ import {
   VIEWPORTS,
   viewportAwareHover,
   waitForCharacterCards,
+  disableCSSAnimations,
+  hideCanvas,
 } from './helpers';
 
 /**
@@ -32,19 +34,37 @@ test.describe('Responsiveness', () => {
         });
       });
 
-      test('navigation works across key pages', async ({ page }) => {
-        await enableTestMode(page);
+      test('quests page with ongoing, available, and completed quests', async ({ page }) => {
+        await setupGameState(page, {
+          ...INITIAL_GAME_STATE,
+          widgets: 10000,
+          recruitedCharacters: [
+            { id: 'Takua', exp: 10000 },
+            { id: 'Toa_Tahu', exp: 0 },
+            { id: 'Toa_Gali', exp: 0 },
+            { id: 'Toa_Kopaka', exp: 0 },
+            { id: 'Toa_Lewa', exp: 0 },
+            { id: 'Toa_Onua', exp: 0 },
+            { id: 'Toa_Pohatu', exp: 0 },
+          ],
+          activeQuests: [
+            {
+              questId: 'mnog_find_canister_beach',
+              startedAt: 0,
+              endsAt: Math.floor(Date.now() / 1000) - 1, // Past = "Complete!" for stable screenshots
+              assignedMatoran: ['Takua'],
+            },
+          ],
+          completedQuests: ['story_toa_arrival', 'mnog_ga_koro_sos'],
+        });
         await page.setViewportSize(size);
+        await goto(page, '/quests');
 
-        const routes = ['/', '/recruitment', '/characters', '/inventory', '/quests'];
-        for (const route of routes) {
-          await goto(page, route);
-          await page.locator('.page-container, .activity-log, .nav-bar').first().waitFor({
-            state: 'visible',
-            timeout: 10000,
-          });
-        }
-        // Final screenshot of quests page
+        await page
+          .locator('h2.quests-page__title')
+          .first()
+          .waitFor({ state: 'visible', timeout: 10000 });
+
         await expect(page).toHaveScreenshot(`quests-${name}.png`, {
           fullPage: true,
           maxDiffPixels: 150,
@@ -73,20 +93,94 @@ test.describe('Responsiveness', () => {
         });
       });
 
-      test('character page renders', async ({ page }) => {
-        await setupGameState(page, {
-          ...INITIAL_GAME_STATE,
-          recruitedCharacters: [{ id: 'Takua', exp: 0 }],
-        });
+      test('settings page', async ({ page }) => {
+        await enableTestMode(page);
         await page.setViewportSize(size);
-        await goto(page, '/characters');
+        await goto(page, '/settings');
 
-        await waitForCharacterCards(page);
-        await expect(page.locator('.character-card, .matoran-card').first()).toBeVisible();
+        await expect(page.locator('h1').first()).toContainText('ABOUT THIS APP');
 
-        await expect(page).toHaveScreenshot(`characters-${name}.png`, {
+        await expect(page).toHaveScreenshot(`settings-${name}.png`, {
           fullPage: true,
           maxDiffPixels: 150,
+        });
+      });
+
+      test.describe('character route', () => {
+        const CHARACTER_ROUTE_GAME_STATE = {
+          ...INITIAL_GAME_STATE,
+          widgets: 500,
+          recruitedCharacters: [
+            { id: 'Takua', exp: 0 },
+            { id: 'Jala', exp: 5000 },
+            { id: 'Toa_Tahu', exp: 0 },
+            { id: 'Toa_Gali', exp: 0 },
+            { id: 'Toa_Kopaka', exp: 0 },
+          ],
+          completedQuests: ['story_toa_arrival', 'bohrok_legend_of_krana'],
+          collectedKrana: {
+            Fire: ['Xa', 'Bo'],
+            Water: [],
+            Air: [],
+            Earth: [],
+            Ice: [],
+            Stone: [],
+          },
+        };
+
+        test('character inventory with Matoran and Toa', async ({ page }) => {
+          await setupGameState(page, CHARACTER_ROUTE_GAME_STATE);
+          await page.setViewportSize(size);
+          await goto(page, '/characters');
+
+          await waitForCharacterCards(page);
+          const firstCard = page.locator('.character-card, .matoran-card').first();
+          await viewportAwareHover(firstCard, size.width);
+
+          await expect(page).toHaveScreenshot(`characters-inventory-${name}.png`, {
+            fullPage: true,
+            maxDiffPixels: 150,
+          });
+        });
+
+        test('Toa detail: stats, equipment, krana, chronicle', async ({ page }) => {
+          await setupGameState(page, CHARACTER_ROUTE_GAME_STATE);
+          await page.setViewportSize(size);
+          await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
+
+          await page.locator('.character-detail').waitFor({ state: 'visible', timeout: 10000 });
+          await hideCanvas(page);
+          await disableCSSAnimations(page);
+
+          // Stats tab (default)
+          await expect(page).toHaveScreenshot(`toa-detail-stats-${name}.png`, {
+            fullPage: true,
+            maxDiffPixels: 150,
+          });
+
+          // Equipment tab
+          await page.getByRole('button', { name: 'equipment' }).click();
+          await expect(page.locator('.mask-collection').first()).toBeVisible();
+          await expect(page).toHaveScreenshot(`toa-detail-equipment-${name}.png`, {
+            fullPage: true,
+            maxDiffPixels: 150,
+          });
+
+          // Krana tab
+          await page.getByRole('button', { name: 'krana' }).click();
+          await expect(page.locator('.krana-collection')).toBeVisible();
+          await expect(page).toHaveScreenshot(`toa-detail-krana-${name}.png`, {
+            fullPage: true,
+            maxDiffPixels: 150,
+          });
+
+          // Chronicle tab
+          await page.getByRole('button', { name: 'chronicle' }).click();
+          await expect(page.locator('.character-chronicle')).toBeVisible();
+          await expect(page).toHaveScreenshot(`toa-detail-chronicle-${name}.png`, {
+            fullPage: true,
+            maxDiffPixels: 150,
+          });
         });
       });
     });
