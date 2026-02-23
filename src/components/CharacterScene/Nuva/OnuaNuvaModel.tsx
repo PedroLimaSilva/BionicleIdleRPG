@@ -14,12 +14,12 @@ export const OnuaNuvaModel = forwardRef<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >(({ matoran }, _ref) => {
   const group = useRef<Group>(null);
-  const { nodes } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/onua.glb');
-  const modelClone = useMemo(() => nodes.Body.clone(true), [nodes.Body]);
+  const { scene } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/onua.glb');
+  const modelClone = useMemo(() => scene.clone(true), [scene]);
 
-  useArmor(nodes.ChestPlateHolder, 'Chest');
-  useArmor(nodes.PlateHolderL, 'Shoulder');
-  useArmor(nodes.PlateHolderR, 'Shoulder');
+  useArmor(modelClone.getObjectByName('ChestPlateHolder') ?? undefined, 'Chest');
+  useArmor(modelClone.getObjectByName('PlateHolderL') ?? undefined, 'Shoulder');
+  useArmor(modelClone.getObjectByName('PlateHolderR') ?? undefined, 'Shoulder');
 
   useNuvaMask(modelClone, matoran);
 
