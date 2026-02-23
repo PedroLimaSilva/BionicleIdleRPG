@@ -1,9 +1,10 @@
 import { useGLTF } from '@react-three/drei';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
-import { forwardRef, useRef } from 'react';
+import { forwardRef, useMemo, useRef } from 'react';
 import { Group } from 'three';
 import { useArmor } from '../../../hooks/useArmor';
+import { useNuvaMask } from '../../../hooks/useNuvaMask';
 
 export const LewaNuvaModel = forwardRef<
   CombatantModelHandle,
@@ -11,17 +12,21 @@ export const LewaNuvaModel = forwardRef<
     matoran: RecruitedCharacterData & BaseMatoran;
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
->(({ matoran: _matoran }, _ref) => {
+>(({ matoran }, _ref) => {
   const group = useRef<Group>(null);
   const { nodes } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/lewa.glb');
+  const modelClone = useMemo(() => nodes.Hip.clone(true), [nodes.Hip]);
 
   useArmor(nodes.ChestPlateHolder, 'Chest');
   useArmor(nodes.PlateHolderL, 'Shoulder');
   useArmor(nodes.PlateHolderR, 'Shoulder');
 
+  const glowColor = matoran.colors.eyes;
+  useNuvaMask(modelClone, matoran, glowColor);
+
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Hip} scale={1} position={[0, 9.375, -0.4]} />
+      <primitive object={modelClone} scale={1} position={[0, 9.375, -0.4]} />
     </group>
   );
 });

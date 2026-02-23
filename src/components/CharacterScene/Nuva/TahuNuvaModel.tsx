@@ -1,7 +1,7 @@
 import { useGLTF } from '@react-three/drei';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
-import { forwardRef, useRef } from 'react';
+import { forwardRef, useMemo, useRef } from 'react';
 import { Group } from 'three';
 import { useArmor } from '../../../hooks/useArmor';
 import { useIdleAnimation } from '../../../hooks/useIdleAnimation';
@@ -16,6 +16,7 @@ export const TahuNuvaModel = forwardRef<
 >(({ matoran }, _ref) => {
   const group = useRef<Group>(null);
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/tahu.glb');
+  const modelClone = useMemo(() => nodes.Tahu.clone(true), [nodes.Tahu]);
 
   useIdleAnimation(animations, group);
 
@@ -23,13 +24,12 @@ export const TahuNuvaModel = forwardRef<
   useArmor(nodes.PlateHolderL, 'Shoulder');
   useArmor(nodes.PlateHolderR, 'Shoulder');
 
-  const maskTarget = matoran.maskOverride || matoran.mask;
   const glowColor = matoran.colors.eyes;
-  useNuvaMask(nodes.Masks, maskTarget, matoran, glowColor);
+  useNuvaMask(modelClone, matoran, glowColor);
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Tahu} scale={1} position={[0, 10.15, 0]} />
+      <primitive object={modelClone} scale={1} position={[0, 10.15, 0]} />
     </group>
   );
 });

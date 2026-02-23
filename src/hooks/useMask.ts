@@ -138,7 +138,7 @@ interface TransitionState {
  *
  * @param masksParent - The Object3D to parent the mask to (e.g. `nodes.Masks`)
  * @param maskName    - The name of the mask mesh in masks.glb (must match the Mask enum value)
- * @param matoranOrColor - Character data (Mata/Diminished) or pre-computed mask color string (e.g. from useNuvaMask)
+ * @param matoranOrColor - Character data (Mata/Diminished) for mask color derivation
  * @param glowColor      - Optional color for emissive "glow" materials (e.g. lens glow matching eye color).
  *                         When provided, materials whose names include "glow" (case-insensitive) will use
  *                         this color for both their base color and emissive color instead of maskColor.
@@ -146,16 +146,14 @@ interface TransitionState {
 export function useMask(
   masksParent: Object3D | undefined,
   maskName: string,
-  matoranOrColor: (BaseMatoran & RecruitedCharacterData) | string,
+  matoranOrColor: BaseMatoran & RecruitedCharacterData,
   glowColor?: string
 ) {
   const { completedQuests } = useGame();
   const maskColor =
-    typeof matoranOrColor === 'string'
-      ? matoranOrColor
-      : matoranOrColor.stage === MatoranStage.ToaMata
-        ? getEffectiveMataMaskColor(matoranOrColor, completedQuests)
-        : (matoranOrColor.maskColorOverride ?? matoranOrColor.colors.mask);
+    matoranOrColor.stage === MatoranStage.ToaMata
+      ? getEffectiveMataMaskColor(matoranOrColor, completedQuests)
+      : (matoranOrColor.maskColorOverride ?? matoranOrColor.colors.mask);
   const [masksNodes, setMasksNodes] = useState<Record<string, Object3D> | null>(masksNodesCache);
   const maskRef = useRef<Object3D | null>(null);
   const prevMaskNameRef = useRef<string | null>(null);
