@@ -15,7 +15,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
-      cutscene: 'u0DYYVupuGQ',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_canister_beach' },
       unlockCharacters: [
         {
           id: 'Kapura',
@@ -108,7 +108,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       ],
     },
     rewards: {
-      cutscene: 'qRVxnc26NDI',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_ga_koro_sos' },
       loot: {
         [GameItemId.WaterAlgae]: 100,
         [GameItemId.GaPearl]: 50,
