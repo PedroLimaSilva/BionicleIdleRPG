@@ -11,8 +11,6 @@ import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
 import { MATORAN_DEX } from '../data/matoran';
 import { GameState } from '../types/GameState';
-import { LegoColor } from '../types/Colors';
-import { isNuvaSymbolsSequestered } from '../game/nuvaSymbols';
 
 export function isMatoran(matoran: BaseMatoran) {
   return [MatoranStage.Diminished, MatoranStage.Rebuilt, MatoranStage.Metru].includes(
@@ -138,20 +136,6 @@ export function getRecruitedMatoran(
     ...MATORAN_DEX[id],
     ...recruitedMatoran.find((m) => m.id === id)!,
   };
-}
-
-/**
- * When nuva symbols are sequestered, Toa Nuva masks should appear light gray.
- * Returns matoran with maskColorOverride set when applicable.
- */
-export function withSequesteredMaskOverride<T extends BaseMatoran & RecruitedCharacterData>(
-  matoran: T,
-  completedQuests: string[]
-): T {
-  if (!isNuvaSymbolsSequestered(completedQuests) || !isToaNuva(matoran)) {
-    return matoran;
-  }
-  return { ...matoran, maskColorOverride: LegoColor.LightGray };
 }
 
 export function recruitMatoran(

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useGame } from '../../context/Game';
 import { RecruitedCharacterData } from '../../types/Matoran';
 import { MATORAN_DEX } from '../../data/matoran';
-import { isToa, withSequesteredMaskOverride } from '../../services/matoranUtils';
+import { isToa } from '../../services/matoranUtils';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../components/MaskPowerTooltip';
 import { getLevelFromExp } from '../../game/Levelling';
@@ -16,7 +16,7 @@ const enum TeamPosition {
 }
 
 export const BattlePrep: React.FC = () => {
-  const { battle, recruitedCharacters, completedQuests } = useGame();
+  const { battle, recruitedCharacters } = useGame();
   const { currentEncounter, confirmTeam, retreat } = battle;
 
   const [selectedTeam, setSelectedTeam] = useState<
@@ -86,10 +86,7 @@ export const BattlePrep: React.FC = () => {
               >
                 <MaskPowerTooltip mask={activeMask}>
                   <MatoranAvatar
-                    matoran={withSequesteredMaskOverride(
-                      { ...matoran_dex, ...member },
-                      completedQuests
-                    )}
+                    matoran={{ ...matoran_dex, ...member }}
                     styles="matoran-avatar model-preview"
                   />
                 </MaskPowerTooltip>
@@ -118,10 +115,7 @@ export const BattlePrep: React.FC = () => {
               >
                 <MaskPowerTooltip mask={activeMask}>
                   <MatoranAvatar
-                    matoran={withSequesteredMaskOverride(
-                      { ...matoran_dex, ...recruited },
-                      completedQuests
-                    )}
+                    matoran={{ ...matoran_dex, ...recruited }}
                     styles="matoran-avatar model-preview"
                   />
                 </MaskPowerTooltip>

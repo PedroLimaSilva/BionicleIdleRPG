@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Combatant, EnemyEncounter } from '../types/Combat';
 import { RecruitedCharacterData } from '../types/Matoran';
 import { getLevelFromExp } from '../game/Levelling';
-import { LegoColor } from '../types/Colors';
 import {
   generateCombatantStats,
   queueCombatRound,
@@ -175,15 +174,14 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
 
   const confirmTeam = (team: RecruitedCharacterData[]) => {
     setTeam(
-      team.map(({ id, exp, maskColorOverride, maskOverride }) => {
-        const isToaNuva = TOA_NUVA_IDS.includes(id as (typeof TOA_NUVA_IDS)[number]);
-        return generateCombatantStats(id, id, getLevelFromExp(exp), {
+      team.map(({ id, exp, maskColorOverride, maskOverride }) =>
+        generateCombatantStats(id, id, getLevelFromExp(exp), {
           maskOverride,
-          maskColorOverride:
-            nuvaSymbolsSequestered && isToaNuva ? LegoColor.LightGray : maskColorOverride,
-          nuvaSymbolsSequestered: nuvaSymbolsSequestered && isToaNuva,
-        });
-      })
+          maskColorOverride,
+          nuvaSymbolsSequestered:
+            nuvaSymbolsSequestered && TOA_NUVA_IDS.includes(id as (typeof TOA_NUVA_IDS)[number]),
+        })
+      )
     );
     setCurrentWave(0);
     setEnemies(

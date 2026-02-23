@@ -7,13 +7,7 @@ import { ElementTag } from '../../components/ElementTag';
 import { useEffect, useMemo, useState } from 'react';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
-import {
-  getRecruitedMatoran,
-  isMatoran,
-  isToa,
-  isToaMata,
-  withSequesteredMaskOverride,
-} from '../../services/matoranUtils';
+import { getRecruitedMatoran, isMatoran, isToa, isToaMata } from '../../services/matoranUtils';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { KranaCollection } from './KranaCollection';
@@ -30,12 +24,8 @@ export const CharacterDetail: React.FC = () => {
   const { setScene } = useSceneCanvas();
 
   const matoran = useMemo(
-    () =>
-      withSequesteredMaskOverride(
-        getRecruitedMatoran(String(id), recruitedCharacters)!,
-        completedQuests
-      ),
-    [id, recruitedCharacters, completedQuests]
+    () => getRecruitedMatoran(String(id), recruitedCharacters)!,
+    [id, recruitedCharacters]
   );
 
   const [activeTab, setActiveTab] = useState('stats');

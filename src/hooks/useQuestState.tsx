@@ -8,8 +8,12 @@ import { LogType } from '../types/Logging';
 import { QUESTS } from '../data/quests';
 import { GameItemId } from '../data/loot';
 import { LegoColor } from '../types/Colors';
-import { isToaMata } from '../services/matoranUtils';
+import { isToaMata, isToaNuva } from '../services/matoranUtils';
 import { MATORAN_DEX } from '../data/matoran';
+import {
+  BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID,
+  BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID,
+} from '../game/nuvaSymbols';
 import { getDebugMode } from '../services/gamePersistence';
 
 export function getCurrentTimestamp(): number {
@@ -119,11 +123,23 @@ export const useQuestState = ({
             };
           }
 
-          return {
+          let result: RecruitedCharacterData = {
             ...char,
             quest: undefined,
             exp: xp,
           };
+
+          if (quest.id === BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID && isToaNuva(MATORAN_DEX[char.id])) {
+            result = { ...result, maskColorOverride: LegoColor.LightGray };
+          } else if (
+            quest.id === BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID &&
+            isToaNuva(MATORAN_DEX[char.id])
+          ) {
+            const { maskColorOverride: _, ...rest } = result;
+            result = rest;
+          }
+
+          return result;
         } else if (
           (quest.id === 'mnog_kini_nui_arrival' || quest.id === 'mnog_gali_call') &&
           isToaMata(MATORAN_DEX[char.id])
@@ -132,6 +148,20 @@ export const useQuestState = ({
             ...char,
             maskColorOverride: LegoColor.PearlGold,
           };
+        } else if (
+          quest.id === BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID &&
+          isToaNuva(MATORAN_DEX[char.id])
+        ) {
+          return {
+            ...char,
+            maskColorOverride: LegoColor.LightGray,
+          };
+        } else if (
+          quest.id === BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID &&
+          isToaNuva(MATORAN_DEX[char.id])
+        ) {
+          const { maskColorOverride: _, ...rest } = char;
+          return rest;
         } else {
           return char;
         }
