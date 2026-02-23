@@ -6,6 +6,47 @@ import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
 import { MATORAN_DEX } from '../../data/matoran';
 
+/** Cache key: materialName + color. Shared across all Bohrok instances with same scheme. */
+const bohrokMaterialCache = new Map<string, MeshStandardMaterial>();
+
+function getBohrokMaterial(
+  original: MeshStandardMaterial,
+  colorScheme: { body: string; arms: string; eyes: string }
+): MeshStandardMaterial {
+  const name = original.name;
+  let color: string;
+  let cacheKey: string;
+
+  if (name === 'Bohrok_Main') {
+    color = colorScheme.body;
+    cacheKey = `Bohrok_Main_${color}`;
+  } else if (name === 'Bohrok_Secondary') {
+    color = colorScheme.arms;
+    cacheKey = `Bohrok_Secondary_${color}`;
+  } else if (name === 'Bohrok_Eye' || name === 'Bohrok_Iris') {
+    color = colorScheme.eyes;
+    cacheKey = `${name}_${color}`;
+  } else if (name === 'Krana') {
+    color = colorScheme.eyes;
+    cacheKey = `Krana_${color}`;
+  } else {
+    // Unknown material: clone to avoid mutating shared original
+    const cloned = original.clone();
+    return cloned;
+  }
+
+  let mat = bohrokMaterialCache.get(cacheKey);
+  if (!mat) {
+    mat = original.clone();
+    mat.color.set(color as Color);
+    if (name === 'Bohrok_Eye' || name === 'Bohrok_Iris') {
+      mat.emissive.set(color as Color);
+    }
+    bohrokMaterialCache.set(cacheKey, mat);
+  }
+  return mat;
+}
+
 export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ id }, ref) => {
   const group = useRef<Group>(null);
 
@@ -29,25 +70,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
       if (!(child instanceof Mesh)) return;
 
       const originalMaterial = child.material as MeshStandardMaterial;
-      const cloned = originalMaterial.clone();
-
-      // Set custom color logic based on mesh name or usage
-      if (cloned.name === 'Bohrok_Main') {
-        cloned.color.set(colorScheme.body as Color);
-      } else if (cloned.name === 'Bohrok_Secondary') {
-        cloned.color.set(colorScheme.arms as Color);
-      } else if (
-        cloned.name === 'Bohrok_Eye' ||
-        cloned.name === 'Bohrok_Iris' ||
-        cloned.name === 'Krana'
-      ) {
-        cloned.color.set(colorScheme.eyes as Color);
-        if (cloned.name === 'Bohrok_Eye' || cloned.name === 'Bohrok_Iris') {
-          cloned.emissive.set(colorScheme.eyes as Color);
-        }
-      }
-
-      child.material = cloned;
+      child.material = getBohrokMaterial(originalMaterial, colorScheme);
     });
 
     const shieldTarget = id.replace(/^./, (char) => char.toUpperCase());
