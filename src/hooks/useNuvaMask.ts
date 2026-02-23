@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
-import { BaseMatoran, RecruitedCharacterData } from '../types/Matoran';
+import { BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { useGame } from '../context/Game';
 import { getEffectiveNuvaMaskColor } from '../game/maskColor';
 
@@ -10,10 +10,28 @@ function isStandardMat(mat: unknown): mat is StandardMat {
   return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
 }
 
+const MASK_NAMES = [
+  Mask.HauNuva,
+  Mask.KaukauNuva,
+  Mask.KakamaNuva,
+  Mask.AkakuNuva,
+  Mask.PakariNuva,
+  Mask.MiruNuva,
+  Mask.Akaku,
+  Mask.Miru,
+  Mask.Kakama,
+  Mask.Kaukau,
+  Mask.Hau,
+];
+
+function isMaskName(name: string): boolean {
+  return Object.values(MASK_NAMES).includes(name as unknown as Mask);
+}
+
 function isMaskMaterial(mat: { name?: string }, meshName?: string): boolean {
-  const name = (mat.name ?? '').toLowerCase();
-  const mesh = (meshName ?? '').toLowerCase();
-  return name.includes('mask') || mesh.includes('mask');
+  const matName = mat.name ?? '';
+  const mesh = meshName ?? '';
+  return isMaskName(mesh) || isMaskName(matName);
 }
 
 /**
