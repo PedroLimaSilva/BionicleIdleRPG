@@ -6,7 +6,12 @@ import {
   assignJob,
   removeJob,
   masksCollected,
+  withSequesteredMaskOverride,
 } from './matoranUtils';
+import {
+  BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID,
+  BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID,
+} from '../game/nuvaSymbols';
 import {
   BaseMatoran,
   ListedCharacterData,
@@ -375,6 +380,56 @@ describe('matoranUtils', () => {
         ]);
         expect(masks).toEqual([Mask.HauNuva]);
       });
+    });
+  });
+
+  describe('withSequesteredMaskOverride', () => {
+    const toaNuva: BaseMatoran & RecruitedCharacterData = {
+      id: 'Toa_Tahu_Nuva',
+      name: 'Toa Tahu Nuva',
+      element: ElementTribe.Fire,
+      stage: MatoranStage.ToaNuva,
+      mask: Mask.HauNuva,
+      colors: MOCK_COLORS,
+      exp: 0,
+    };
+
+    test('returns matoran unchanged when nuva symbols not sequestered', () => {
+      const result = withSequesteredMaskOverride(toaNuva, []);
+      expect(result).toBe(toaNuva);
+      expect(result.maskColorOverride).toBeUndefined();
+    });
+
+    test('returns matoran unchanged when final confrontation completed', () => {
+      const result = withSequesteredMaskOverride(toaNuva, [
+        BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID,
+        BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID,
+      ]);
+      expect(result.maskColorOverride).toBeUndefined();
+    });
+
+    test('sets maskColorOverride to LightGray for Toa Nuva when sequestered', () => {
+      const result = withSequesteredMaskOverride(toaNuva, [
+        BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID,
+      ]);
+      expect(result.maskColorOverride).toBe(LegoColor.LightGray);
+    });
+
+    test('returns matoran unchanged for Toa Mata when sequestered', () => {
+      const toaMata: BaseMatoran & RecruitedCharacterData = {
+        id: 'Toa_Tahu',
+        name: 'Toa Tahu',
+        element: ElementTribe.Fire,
+        stage: MatoranStage.ToaMata,
+        mask: Mask.Hau,
+        colors: MOCK_COLORS,
+        exp: 0,
+      };
+      const result = withSequesteredMaskOverride(toaMata, [
+        BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID,
+      ]);
+      expect(result).toBe(toaMata);
+      expect(result.maskColorOverride).toBeUndefined();
     });
   });
 });
