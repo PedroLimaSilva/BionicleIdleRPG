@@ -15,7 +15,7 @@ import { JobAssignment } from './JobAssignment';
 import { Tabs } from '../../components/Tabs';
 import { CharacterChronicle } from './Chronicle';
 import { isKranaCollectionActive } from '../../game/Krana';
-import { MASK_POWERS, MASK_DISPLAY_ONLY } from '../../data/combat';
+import { MASK_POWERS } from '../../data/combat';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -61,10 +61,7 @@ export const CharacterDetail: React.FC = () => {
       return { activeMask: undefined, maskDescription: '' };
     }
     const activeMask = matoran.maskOverride || matoran.mask;
-    const maskDescription =
-      MASK_POWERS[activeMask]?.description ??
-      MASK_DISPLAY_ONLY[activeMask]?.description ??
-      'Unknown Mask Power';
+    const maskDescription = MASK_POWERS[activeMask]?.description || 'Unknown Mask Power';
     return { activeMask, maskDescription };
   }, [matoran]);
 
@@ -94,11 +91,7 @@ export const CharacterDetail: React.FC = () => {
               <ElementTag element={matoran.element} showName={true} />
               {isToa(matoran) && activeMask && (
                 <div>
-                  <h3>
-                    {MASK_POWERS[activeMask]?.longName ??
-                      MASK_DISPLAY_ONLY[activeMask]?.longName ??
-                      'Unknown Mask'}
-                  </h3>
+                  <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>
                   <p>{maskDescription}</p>
                 </div>
               )}

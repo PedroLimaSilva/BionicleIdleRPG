@@ -209,16 +209,18 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
       target: 'self',
     },
   },
-};
-
-/** Display-only mask info for masks without combat effects (e.g. Vahi) */
-export const MASK_DISPLAY_ONLY: Partial<
-  Record<Mask, { longName: string; description: string }>
-> = {
   [Mask.Vahi]: {
+    shortName: Mask.Vahi,
     longName: 'Mask of Time',
     description:
       'The legendary Vahi. Turaga Vakama entrusted it to Tahu for use only in the direst emergency. No combat effect.',
+    effect: {
+      duration: { amount: 1, unit: 'turn' },
+      cooldown: { amount: 999, unit: 'wave' },
+      type: 'HEAL',
+      multiplier: 0,
+      target: 'self',
+    },
   },
 };
 
