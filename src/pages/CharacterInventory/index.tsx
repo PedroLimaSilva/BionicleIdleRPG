@@ -8,14 +8,14 @@ import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
 import { MATORAN_DEX } from '../../data/matoran';
 import { QUESTS } from '../../data/quests';
-import { isBohrok, isMatoran, isToa } from '../../services/matoranUtils';
+import { isBohrok, isMatoran, isToa, withSequesteredMaskOverride } from '../../services/matoranUtils';
 import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 
 const CHARACTERS_TAB_KEY = 'characters-tab';
 
 export const CharacterInventory: React.FC = () => {
-  const { recruitedCharacters, buyableCharacters } = useGame();
+  const { recruitedCharacters, buyableCharacters, completedQuests } = useGame();
 
   const tabs = useMemo(() => {
     const base = ['matoran'];
@@ -84,7 +84,10 @@ export const CharacterInventory: React.FC = () => {
             <Link key={matoran.id} to={`/characters/${matoran.id}`}>
               <div className={`character-card element-${matoran_dex.element}`}>
                 <MatoranAvatar
-                  matoran={{ ...matoran_dex, ...matoran }}
+                  matoran={withSequesteredMaskOverride(
+                    { ...matoran_dex, ...matoran },
+                    completedQuests
+                  )}
                   styles={'matoran-avatar model-preview'}
                 />
                 <div className="card-header">
