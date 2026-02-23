@@ -7,13 +7,7 @@ import { GameState } from '../types/GameState';
 import { LogType } from '../types/Logging';
 import { QUESTS } from '../data/quests';
 import { GameItemId } from '../data/loot';
-import { LegoColor } from '../types/Colors';
-import { isToaMata, isToaNuva } from '../services/matoranUtils';
 import { MATORAN_DEX } from '../data/matoran';
-import {
-  BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID,
-  BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID,
-} from '../game/nuvaSymbols';
 import { getDebugMode } from '../services/gamePersistence';
 
 export function getCurrentTimestamp(): number {
@@ -108,8 +102,8 @@ export const useQuestState = ({
       ? active.assignedMatoran.filter((id) => evolution[id]).map((id) => evolution[id])
       : [];
 
-    setRecruitedCharacters((prev) => {
-      let updated = prev.map((char) => {
+    setRecruitedCharacters((prev) =>
+      prev.map((char) => {
         if (active.assignedMatoran.includes(char.id)) {
           const evolvedId = evolution?.[char.id];
           const xp = char.exp + (quest.rewards.xpPerMatoran ?? 0);
@@ -128,35 +122,10 @@ export const useQuestState = ({
             quest: undefined,
             exp: xp,
           };
-        } else if (
-          (quest.id === 'mnog_kini_nui_arrival' || quest.id === 'mnog_gali_call') &&
-          isToaMata(MATORAN_DEX[char.id])
-        ) {
-          return {
-            ...char,
-            maskColorOverride: LegoColor.PearlGold,
-          };
         }
         return char;
-      });
-
-      // Update Toa Nuva mask overrides when Bohrok Kal quests complete
-      if (
-        quest.id === BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID ||
-        quest.id === BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID
-      ) {
-        updated = updated.map((char) => {
-          if (!isToaNuva(MATORAN_DEX[char.id])) return char;
-          if (quest.id === BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID) {
-            return { ...char, maskColorOverride: LegoColor.LightGray };
-          }
-          const { maskColorOverride: _, ...rest } = char;
-          return rest;
-        });
-      }
-
-      return updated;
-    });
+      })
+    );
 
     if (evolvedIds.length > 0) {
       const names = evolvedIds.map((id) => MATORAN_DEX[id]?.name ?? id).join(', ');

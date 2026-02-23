@@ -1,5 +1,7 @@
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
+import { useGame } from '../../../context/Game';
+import { isNuvaSymbolsSequestered } from '../../../game/nuvaSymbols';
 
 /** Placeholder cylinder for Toa Nuva until real models are available. */
 export function ToaNuvaPlaceholderModel({
@@ -7,7 +9,10 @@ export function ToaNuvaPlaceholderModel({
 }: {
   matoran: BaseMatoran & RecruitedCharacterData;
 }) {
-  const color = matoran.colors?.body ?? LegoColor.DarkGray;
+  const { completedQuests } = useGame();
+  const color = isNuvaSymbolsSequestered(completedQuests)
+    ? LegoColor.LightGray
+    : (matoran.colors?.body ?? LegoColor.DarkGray);
 
   return (
     <mesh position={[0, 8, -0.4]}>
