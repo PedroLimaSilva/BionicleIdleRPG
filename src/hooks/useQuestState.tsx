@@ -109,7 +109,7 @@ export const useQuestState = ({
       : [];
 
     setRecruitedCharacters((prev) => {
-      const updated = prev.map((char) => {
+      let updated = prev.map((char) => {
         if (active.assignedMatoran.includes(char.id)) {
           const evolvedId = evolution?.[char.id];
           const xp = char.exp + (quest.rewards.xpPerMatoran ?? 0);
@@ -123,23 +123,11 @@ export const useQuestState = ({
             };
           }
 
-          let result: RecruitedCharacterData = {
+          return {
             ...char,
             quest: undefined,
             exp: xp,
           };
-
-          if (quest.id === BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID && isToaNuva(MATORAN_DEX[char.id])) {
-            result = { ...result, maskColorOverride: LegoColor.LightGray };
-          } else if (
-            quest.id === BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID &&
-            isToaNuva(MATORAN_DEX[char.id])
-          ) {
-            const { maskColorOverride: _, ...rest } = result;
-            result = rest;
-          }
-
-          return result;
         } else if (
           (quest.id === 'mnog_kini_nui_arrival' || quest.id === 'mnog_gali_call') &&
           isToaMata(MATORAN_DEX[char.id])
@@ -148,24 +136,24 @@ export const useQuestState = ({
             ...char,
             maskColorOverride: LegoColor.PearlGold,
           };
-        } else if (
-          quest.id === BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID &&
-          isToaNuva(MATORAN_DEX[char.id])
-        ) {
-          return {
-            ...char,
-            maskColorOverride: LegoColor.LightGray,
-          };
-        } else if (
-          quest.id === BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID &&
-          isToaNuva(MATORAN_DEX[char.id])
-        ) {
+        }
+        return char;
+      });
+
+      // Update Toa Nuva mask overrides when Bohrok Kal quests complete
+      if (
+        quest.id === BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID ||
+        quest.id === BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID
+      ) {
+        updated = updated.map((char) => {
+          if (!isToaNuva(MATORAN_DEX[char.id])) return char;
+          if (quest.id === BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID) {
+            return { ...char, maskColorOverride: LegoColor.LightGray };
+          }
           const { maskColorOverride: _, ...rest } = char;
           return rest;
-        } else {
-          return char;
-        }
-      });
+        });
+      }
 
       return updated;
     });
