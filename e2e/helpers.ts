@@ -114,6 +114,29 @@ export function isMobile(testInfo: TestInfo): boolean {
   return testInfo.project.name.includes('Mobile');
 }
 
+/** Viewport sizes for responsiveness tests */
+export const VIEWPORTS = {
+  desktop: { width: 1920, height: 1080 },
+  mobilePortrait: { width: 412, height: 915 }, // Pixel 7
+  mobileLandscape: { width: 851, height: 393 },
+} as const;
+
+/** Breakpoint below which we use tap instead of hover (mobile) */
+const MOBILE_BREAKPOINT = 768;
+
+/**
+ * Hover or click based on viewport width - for use in responsiveness tests
+ * that manually set viewport size via page.setViewportSize().
+ * Uses click() for mobile viewports since Desktop Chrome lacks touch support.
+ */
+export async function viewportAwareHover(locator: Locator, viewportWidth: number) {
+  if (viewportWidth < MOBILE_BREAKPOINT) {
+    await locator.click();
+  } else {
+    await locator.hover();
+  }
+}
+
 /**
  * Wait for 3D canvas to be ready
  * Note: Animations are automatically paused when TEST_MODE is enabled in localStorage

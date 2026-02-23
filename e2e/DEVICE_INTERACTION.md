@@ -2,140 +2,45 @@
 
 ## Overview
 
-Different devices require different interaction methods:
+Main e2e tests run once on Desktop only. **Responsiveness tests** (`responsiveness.spec.ts`) explicitly test different viewports by calling `page.setViewportSize()` and use viewport-aware helpers for interactions.
 
-- **Desktop**: Hover interactions (mouse)
-- **Mobile**: Tap interactions (touch)
+- **Desktop** (width ≥ 768px): Hover interactions (mouse)
+- **Mobile** (width < 768px): Click interactions (Desktop Chrome lacks touch; click simulates tap for tooltips/dropdowns)
 
-## Helper Functions
+## Responsiveness Tests
 
-### `deviceHover(locator, testInfo)`
+For tests that manually set viewport size, use `viewportAwareHover()`:
 
-Automatically chooses the correct interaction based on the device:
+### `viewportAwareHover(locator, viewportWidth)`
 
-- Mobile projects: Uses `tap()`
-- Desktop projects: Uses `hover()`
-
-**Example:**
+Chooses tap vs hover based on viewport width:
 
 ```typescript
-import { test, expect } from '@playwright/test';
-import { setupGameState, goto, deviceHover } from './helpers';
+import { VIEWPORTS, viewportAwareHover } from './helpers';
 
-test('should interact with item', async ({ page }, testInfo) => {
-  await setupGameState(page, GAME_STATE);
+test('inventory at mobile viewport', async ({ page }) => {
+  await page.setViewportSize(VIEWPORTS.mobilePortrait);
   await goto(page, '/inventory');
 
-  const firstItem = page.locator('.inventory-item').first();
+  const item = page.locator('.inventory-item').first();
+  await viewportAwareHover(item, VIEWPORTS.mobilePortrait.width);
 
-  // Automatically taps on mobile, hovers on desktop
-  await deviceHover(firstItem, testInfo);
-
-  await expect(page).toHaveScreenshot('item-interaction.png');
+  await expect(page).toHaveScreenshot('inventory-mobile.png');
 });
 ```
 
-### `isMobile(testInfo)`
+### `VIEWPORTS` constant
 
-Check if the current test is running on a mobile device:
+Predefined viewport sizes for responsiveness tests:
 
-**Example:**
+- `VIEWPORTS.desktop` - 1920x1080
+- `VIEWPORTS.mobilePortrait` - 412x915 (Pixel 7)
+- `VIEWPORTS.mobileLandscape` - 851x393
 
-```typescript
-test('should show different UI on mobile', async ({ page }, testInfo) => {
-  await goto(page, '/page');
+## Main Tests (Desktop Only)
 
-  if (isMobile(testInfo)) {
-    // Mobile-specific assertions
-    await expect(page.locator('.mobile-menu')).toBeVisible();
-  } else {
-    // Desktop-specific assertions
-    await expect(page.locator('.desktop-nav')).toBeVisible();
-  }
-});
-```
+Main tests run only on Desktop. Use standard `locator.hover()` for hover interactions—no viewport checks needed.
 
-## Manual Conditional Logic
+## Legacy Helpers
 
-If you need more control, you can check the project name directly:
-
-```typescript
-test('custom interaction', async ({ page }, testInfo) => {
-  const element = page.locator('.element');
-
-  if (testInfo.project.name.includes('Mobile')) {
-    // Mobile-specific interaction
-    await element.tap();
-    await element.tap(); // Double tap
-  } else {
-    // Desktop-specific interaction
-    await element.hover();
-    await element.click();
-  }
-});
-```
-
-## Project Names
-
-The following project names are configured:
-
-- `Desktop Chrome` - Desktop browser (1920x1080)
-- `Mobile Chrome Portrait` - Mobile portrait (Pixel 7)
-- `Mobile Chrome Landscape` - Mobile landscape (Pixel 7)
-
-All projects with "Mobile" in the name are considered mobile devices.
-
-## Best Practices
-
-1. **Use `deviceHover()` for simple interactions** - Cleaner and more maintainable
-2. **Use `isMobile()` for conditional logic** - More readable than checking project name
-3. **Use manual checks for complex scenarios** - When you need fine-grained control
-4. **Always pass `testInfo`** - Add it as the second parameter to your test function
-
-## Common Patterns
-
-### Hover/Tap then Screenshot
-
-```typescript
-test('item hover state', async ({ page }, testInfo) => {
-  await goto(page, '/items');
-
-  const item = page.locator('.item').first();
-  await deviceHover(item, testInfo);
-
-  await expect(page).toHaveScreenshot('item-hover.png');
-});
-```
-
-### Multiple Items
-
-```typescript
-test('all items', async ({ page }, testInfo) => {
-  await goto(page, '/items');
-
-  const items = await page.locator('.item').all();
-
-  for (const item of items) {
-    await deviceHover(item, testInfo);
-    await expect(page).toHaveScreenshot({ maxDiffPixels: 100 });
-  }
-});
-```
-
-### Conditional Assertions
-
-```typescript
-test('responsive layout', async ({ page }, testInfo) => {
-  await goto(page, '/page');
-
-  if (isMobile(testInfo)) {
-    // Mobile: hamburger menu
-    await expect(page.locator('.hamburger')).toBeVisible();
-  } else {
-    // Desktop: full navigation
-    await expect(page.locator('.nav-bar')).toBeVisible();
-  }
-
-  await expect(page).toHaveScreenshot('layout.png');
-});
-```
+`deviceHover(locator, testInfo)` and `isMobile(testInfo)` remain available for compatibility but are unused since we no longer run tests across multiple projects. Use `viewportAwareHover()` in responsiveness tests instead.
