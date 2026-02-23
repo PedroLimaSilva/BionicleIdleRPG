@@ -56,15 +56,18 @@ export const CharacterDetail: React.FC = () => {
     };
   }, [matoran, setScene]);
 
-  // const combatantStats = useMemo(() => {
-  //   return COMBATANT_DEX[matoran.id] || null;
-  // }, [matoran]);
+  const { activeMask, maskDescription } = useMemo(() => {
+    if (!isToa(matoran)) {
+      return { activeMask: undefined, maskDescription: '' };
+    }
+    const activeMask = matoran.maskOverride || matoran.mask;
+    const maskDescription = MASK_POWERS[activeMask]?.description || 'Unknown Mask Power';
+    return { activeMask, maskDescription };
+  }, [matoran]);
 
   if (!matoran) {
     return <p>Something is wrong, this matoran does not exist</p>;
   }
-  const activeMask = matoran.maskOverride || matoran.mask;
-  const maskDescription = MASK_POWERS[activeMask]?.description || 'Unknown Mask Power';
 
   return (
     <div className={`page-container character-detail element-${matoran.element}`}>
@@ -86,7 +89,7 @@ export const CharacterDetail: React.FC = () => {
             <>
               <LevelProgress exp={matoran.exp} />
               <ElementTag element={matoran.element} showName={true} />
-              {activeMask && (
+              {isToa(matoran) && activeMask && (
                 <div>
                   <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>
                   <p>{maskDescription}</p>
