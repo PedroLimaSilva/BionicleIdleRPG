@@ -15,9 +15,6 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCh
     return masksCollected(matoran, completedQuests);
   }, [matoran, completedQuests]);
 
-  const activeMask = matoran.maskOverride || matoran.mask;
-  const maskDescription = MASK_POWERS[activeMask]?.description || 'Unknown Mask Power';
-
   const handeMaskOverride = (matoran: RecruitedCharacterData & BaseMatoran, mask: Mask) => {
     setMaskOverride(matoran.id, matoran.maskColorOverride || matoran.colors.mask, mask);
   };
@@ -37,8 +34,8 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCh
                 <Tooltip
                   content={
                     <div>
-                      <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>
-                      <p>{maskDescription}</p>
+                      <h3>{MASK_POWERS[mask]?.longName ?? 'Unknown Mask'}</h3>
+                      <p>{MASK_POWERS[mask]?.description || 'Unknown Mask Power'}</p>
                     </div>
                   }
                 >
