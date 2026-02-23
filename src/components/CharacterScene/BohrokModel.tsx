@@ -30,9 +30,8 @@ function getBohrokMaterial(
     color = colorScheme.eyes;
     cacheKey = `Krana_${color}`;
   } else {
-    // Unknown material: clone to avoid mutating shared original
-    const cloned = original.clone();
-    return cloned;
+    // Unknown material: leave as-is, came from GLTF as needed
+    return original;
   }
 
   let mat = bohrokMaterialCache.get(cacheKey);
