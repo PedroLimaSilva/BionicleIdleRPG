@@ -149,5 +149,17 @@ describe('encounterVisibility', () => {
       expect(visible).toHaveLength(1);
       expect(visible[0].id).toBe('unlocked');
     });
+
+    test('shows encounters with no krana loot (e.g. Bohrok Kal)', () => {
+      const encounters: EnemyEncounter[] = [
+        mockEncounter('tahnok_kal-1', 'tahnok_kal', 5, [], ['bohrok_kal_stolen_symbols']),
+      ];
+      const collected = {};
+      const completed = ['bohrok_kal_stolen_symbols'];
+
+      const visible = getVisibleEncounters(encounters, collected, completed);
+      expect(visible).toHaveLength(1);
+      expect(visible[0].id).toBe('tahnok_kal-1');
+    });
   });
 });
