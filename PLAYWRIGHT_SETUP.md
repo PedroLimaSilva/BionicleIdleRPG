@@ -13,27 +13,14 @@ Successfully set up Playwright for visual regression testing of your Bionicle Id
 
 ### Browsers & Viewports
 
-Tests run across 3 different configurations:
+Tests run once on **Desktop Chrome** (1920x1080). Responsiveness is tested in dedicated `responsiveness.spec.ts` tests that explicitly exercise desktop, mobile portrait (412x915), and mobile landscape (851x393) viewports.
 
-1. **Desktop Chrome** - 1920x1080 viewport (Chromium engine)
-2. **Mobile Chrome Portrait** - Pixel 7 (Chromium engine)
-3. **Mobile Chrome Landscape** - Pixel 7 landscape (851x393, Chromium engine)
-
-**Why Chromium everywhere?** Ensures consistency between local development (macOS) and CI (Linux).
+**Why Chromium?** Ensures consistency between local development (macOS) and CI (Linux).
 
 ### Test Coverage
 
-Created 7 test files covering all major pages:
-
-- ✅ `homepage.spec.ts` - Homepage and navigation bar
-- ✅ `recruitment.spec.ts` - Character recruitment page with avatars
-- ✅ `character-inventory.spec.ts` - Character inventory and cards
-- ✅ `3d-scene.spec.ts` - 3D character scenes (WebGL rendering)
-- ✅ `quests.spec.ts` - Quest page
-- ✅ `inventory.spec.ts` - Inventory page
-- ✅ `battle.spec.ts` - Battle selector and battle pages
-
-**Total: 39 tests** (13 tests × 3 viewports)
+- Main tests run once on Desktop
+- `responsiveness.spec.ts` - Dedicated tests that go through the app at different screen sizes
 
 ## Available Commands
 
@@ -171,7 +158,7 @@ yarn test:e2e:report
 1. **Always use `gotoWithTestMode()`** - This is critical for preventing flaky tests due to animations
 2. **Run tests before committing** - Catch visual regressions early
 3. **Review diffs carefully** - Don't blindly update snapshots
-4. **Test on multiple viewports** - Ensure responsive design works
+4. **Responsiveness** - Use `responsiveness.spec.ts` for viewport-specific tests
 5. **Use appropriate tolerances** - Balance strictness vs. flakiness
 6. **Keep tests focused** - One page/component per test file
 

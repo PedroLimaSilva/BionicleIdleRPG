@@ -68,11 +68,7 @@ test.describe('Character Inventory Page', () => {
   });
 
   test.describe('Character Cards', () => {
-    // Skip test if not on Desktop
-    test('should display character cards with avatars', async ({ page }, testInfo) => {
-      if (testInfo.project.name.includes('Mobile')) {
-        test.skip();
-      }
+    test('should display character cards with avatars', async ({ page }) => {
       await setupGameState(page, CHARACTER_INVENTORY_GAME_STATE);
       await goto(page, '/characters');
 
