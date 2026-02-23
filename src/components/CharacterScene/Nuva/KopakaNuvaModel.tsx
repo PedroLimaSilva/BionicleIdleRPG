@@ -21,8 +21,7 @@ export const KopakaNuvaModel = forwardRef<
   useArmor(nodes.PlateHolderL, 'Shoulder');
   useArmor(nodes.PlateHolderR, 'Shoulder');
 
-  const glowColor = matoran.colors.eyes;
-  useNuvaMask(modelClone, matoran, glowColor);
+  useNuvaMask(modelClone, matoran);
 
   return (
     <group ref={group} dispose={null}>

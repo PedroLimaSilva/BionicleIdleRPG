@@ -20,11 +20,11 @@ function isMaskMaterial(mat: { name?: string }, meshName?: string): boolean {
  * Applies mask color to the Toa Nuva model's baked-in mask.
  * Does NOT use useMask (Mata masks.glb) — Nuva will eventually load its own masks file.
  * For now, only changes the color of mask materials in the given model root.
+ * Nuva masks do not have glow materials (unlike Mata Akaku).
  */
 export function useNuvaMask(
   modelRoot: Object3D | undefined,
-  matoran: BaseMatoran & RecruitedCharacterData,
-  glowColor?: string
+  matoran: BaseMatoran & RecruitedCharacterData
 ) {
   const { completedQuests } = useGame();
   const maskColor = getEffectiveNuvaMaskColor(matoran, completedQuests);
@@ -46,14 +46,7 @@ export function useNuvaMask(
         mesh.material = targetMat;
       }
 
-      const isGlow = targetMat.name.toLowerCase().includes('glow');
-      if (isGlow && glowColor) {
-        const col = new Color(glowColor);
-        targetMat.color.copy(col);
-        if (targetMat.emissive) targetMat.emissive.copy(col);
-      } else {
-        targetMat.color.copy(new Color(maskColor));
-      }
+      targetMat.color.copy(new Color(maskColor));
     });
-  }, [modelRoot, maskColor, glowColor]);
+  }, [modelRoot, maskColor]);
 }
