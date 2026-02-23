@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { BaseMatoran, RecruitedCharacterData } from '../types/Matoran';
 import { useGame } from '../context/Game';
@@ -21,6 +21,7 @@ function isMaskMaterial(mat: { name?: string }, meshName?: string): boolean {
  * Does NOT use useMask (Mata masks.glb) — Nuva will eventually load its own masks file.
  * For now, only changes the color of mask materials in the given model root.
  * Nuva masks do not have glow materials (unlike Mata Akaku).
+ * No cloning needed: mask has its own material and mesh; no Toa appears twice with different colors.
  */
 export function useNuvaMask(
   modelRoot: Object3D | undefined,
@@ -28,7 +29,6 @@ export function useNuvaMask(
 ) {
   const { completedQuests } = useGame();
   const maskColor = getEffectiveNuvaMaskColor(matoran, completedQuests);
-  const clonedMaterialsRef = useRef<Map<string, StandardMat>>(new Map());
 
   useEffect(() => {
     if (!modelRoot) return;
@@ -39,14 +39,7 @@ export function useNuvaMask(
       const mat = mesh.material;
       if (!isStandardMat(mat) || !isMaskMaterial(mat, mesh.name)) return;
 
-      let targetMat = clonedMaterialsRef.current.get(mesh.uuid);
-      if (!targetMat) {
-        targetMat = mat.clone();
-        clonedMaterialsRef.current.set(mesh.uuid, targetMat);
-        mesh.material = targetMat;
-      }
-
-      targetMat.color.copy(new Color(maskColor));
+      mat.color.copy(new Color(maskColor));
     });
   }, [modelRoot, maskColor]);
 }
