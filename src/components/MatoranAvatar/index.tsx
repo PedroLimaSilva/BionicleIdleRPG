@@ -6,7 +6,7 @@ import { CompositedImage } from '../CompositedImage';
 import './index.scss';
 
 function getMask(matoran: BaseMatoran & RecruitedCharacterData) {
-  return `${import.meta.env.BASE_URL}/avatar/Kanohi/${matoran.maskOverride || matoran.mask}.png`;
+  return `${import.meta.env.BASE_URL}/avatar/Kanohi/${matoran.maskOverride || matoran.mask}.webp`;
 }
 
 export function MatoranAvatar({
@@ -27,7 +27,7 @@ export function MatoranAvatar({
     return (
       <img
         className={`composited-avatar ${styles}`}
-        src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${matoran.name}.png`}
+        src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${matoran.name}.webp`}
         alt={matoran.name}
       />
     );

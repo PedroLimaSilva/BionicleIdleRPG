@@ -58,7 +58,7 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - **Styling**: SCSS
 - **PWA Support**: Vite PWA plugin with Workbox
 - **State Management**: React Context API with custom hooks
-- **Testing**: Jest
+- **Testing**: Jest (unit tests), Playwright (E2E visual regression)
 - **Package Manager**: Yarn
 
 ## 🚀 Getting Started
@@ -101,7 +101,9 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - `yarn build` - Build the project for production
 - `yarn preview` - Preview the production build
 - `yarn lint` - Run ESLint
-- `yarn test` - Run tests in watch mode
+- `yarn test` - Run unit tests in watch mode
+- `yarn test:ci` - Run unit tests in CI mode with coverage
+- `yarn test:e2e` - Run E2E visual regression tests (Playwright)
 - `yarn deploy` - Build and deploy to GitHub Pages
 
 ## 📁 Project Structure
@@ -113,30 +115,42 @@ src/
 │   ├── CharacterScene/ # 3D character rendering
 │   ├── MatoranAvatar/  # Character avatar components
 │   ├── JobList/        # Job assignment UI
+│   ├── Modal/          # Modal dialogs
+│   ├── Tabs/           # Tab navigation
 │   └── ...
 ├── context/            # React Context providers
 │   ├── Game.tsx        # Game state context
-│   └── Canvas.tsx      # 3D canvas context
+│   ├── Canvas.tsx      # 3D canvas context
+│   └── Settings.tsx    # Settings (debug mode, shadows)
 ├── data/               # Game data definitions
 │   ├── matoran.ts      # Character definitions
 │   ├── jobs.ts         # Job definitions
 │   ├── quests/         # Quest definitions
+│   ├── chronicles.ts   # Character chronicle entries
 │   ├── loot.ts         # Item definitions
 │   └── combat.ts       # Combat data
 ├── game/               # Game logic
 │   ├── Jobs.ts         # Job processing logic
 │   ├── Levelling.ts    # XP and leveling calculations
-│   └── Quests.ts       # Quest processing logic
+│   ├── Quests.ts       # Quest processing logic
+│   ├── BattleRewards.ts # Battle EXP and Krana rewards
+│   └── Krana.ts        # Krana collection logic
 ├── hooks/              # Custom React hooks
 │   ├── useGameLogic.tsx      # Main game logic hook
 │   ├── useGamePersistence.tsx # Save/load functionality
 │   ├── useBattleState.tsx    # Battle state management
 │   └── ...
 ├── pages/              # Page components
-│   ├── Battle/         # Battle page
-│   ├── CharacterDetail/ # Character detail page
+│   ├── Battle/         # Battle page (selector, prep, in-progress)
+│   ├── BattleSelector/ # Battle selection
+│   ├── CharacterDetail/ # Character detail (stats, chronicle, masks, krana)
+│   ├── CharacterInventory/ # Character roster/cards
+│   ├── Inventory/      # Item inventory
 │   ├── Recruitment/    # Character recruitment page
 │   ├── Quests/         # Quest management page
+│   ├── QuestTree/      # Quest dependency graph
+│   ├── Settings/       # About, credits, disclaimers, game reset, debug mode, 3D shadows
+│   ├── TypeEffectiveness/ # Element strengths/weaknesses
 │   └── ...
 ├── services/           # Utility services
 │   ├── gamePersistence.ts # LocalStorage management
@@ -209,6 +223,18 @@ The game includes 3D models for:
 
 Models are stored in `public/` as GLB files and rendered using React Three Fiber.
 
+## ⚙️ Settings Page
+
+The Settings page (`/settings`) includes:
+
+- **About** – App description, PWA info, and core mechanics
+- **Credits & Acknowledgments** – 3D model attribution, technologies, source code link, license
+- **Disclaimers** – Intellectual property notice (LEGO / Bionicle)
+- **Game Options**:
+  - **Reset Game Data** – Clear all progress and start fresh (with confirmation)
+  - **Quest Debug mode** – Shorten quest durations to 1 second and show FPS/render metrics in the 3D canvas
+  - **3D Scene Shadows** – Toggle shadow rendering in character and battle scenes
+
 ## 💾 Game Persistence
 
 The game automatically saves to localStorage:
@@ -220,10 +246,10 @@ The game automatically saves to localStorage:
 
 ## 🐛 Debug Mode
 
-Enable debug mode in the Settings page to see:
+Enable **Quest Debug mode** (in Settings) to:
 
-- Performance metrics (FPS, render times)
-- Additional debugging information
+- Shorten quest durations to 1 second (for testing)
+- Display performance metrics (FPS, render times) in the 3D canvas
 
 ## 📝 Development Notes
 

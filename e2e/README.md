@@ -8,7 +8,7 @@ These tests validate the UI and prevent visual regressions by:
 
 - Taking screenshots of key pages and components
 - Comparing them against baseline snapshots
-- Testing across multiple viewports (Desktop Chrome, Mobile Chrome Portrait/Landscape)
+- Running responsiveness tests in `responsiveness.spec.ts` at desktop, mobile portrait, and mobile landscape viewports
 
 ## Important: Docker for Consistent Screenshots
 
@@ -70,13 +70,7 @@ yarn test:e2e:update-snapshots
 
 ## Test Configuration
 
-Tests are configured in `playwright.config.ts` with:
-
-- **Desktop Chrome**: 1920x1080 viewport (Chromium engine)
-- **Mobile Chrome Portrait**: Pixel 7 (default orientation, Chromium engine)
-- **Mobile Chrome Landscape**: Pixel 7 landscape (851x393, Chromium engine)
-
-**Note**: All tests use Chromium for consistency between local development and CI environments.
+Tests run once on **Desktop Chrome** (1920x1080). Responsiveness is tested separately in `responsiveness.spec.ts`, which explicitly exercises desktop, mobile portrait (412x915), and mobile landscape (851x393) viewports. This keeps the main test suite fast while ensuring responsive design is validated.
 
 ## Animation Handling
 
@@ -149,12 +143,17 @@ Different test scenarios have different tolerance levels for pixel differences:
 ## Test Structure
 
 - `homepage.spec.ts` - Homepage and navigation
-- `recruitment.spec.ts` - Character recruitment page
-- `character-inventory.spec.ts` - Character inventory and cards
-- `3d-scene.spec.ts` - 3D character scenes (WebGL)
-- `quests.spec.ts` - Quest page
+- `responsiveness.spec.ts` - Dedicated tests for desktop, mobile portrait, and mobile landscape viewports
+- `characters/recruitment.spec.ts` - Character recruitment page
+- `characters/inventory.spec.ts` - Character inventory and cards
+- `characters/detail/index.spec.ts` - Character detail page
+- `characters/detail/modelRendering.spec.ts` - 3D character model rendering (WebGL)
+- `quests.spec.ts` - Quest page and quest tree
 - `inventory.spec.ts` - Inventory page
-- `battle.spec.ts` - Battle selector and battle pages
+- `battle/selector.spec.ts` - Battle selector
+- `battle/flow.spec.ts` - Battle flow (prep, combat, victory/defeat)
+- `battle/type-effectiveness.spec.ts` - Type effectiveness page
+- `settings.spec.ts` - Settings page (about, credits, disclaimers, game reset, debug mode, shadows)
 
 ## CI/CD Integration
 
@@ -185,10 +184,10 @@ On first run, Playwright will generate baseline snapshots. These should be commi
 
 ## Best Practices
 
-1. **Always use `gotoWithTestMode()`** - Never use `page.goto()` directly; always use the helper to ensure animations are paused
+1. **Always use `enableTestMode()` + `goto()`** - Never use `page.goto()` directly; use `enableTestMode(page)` before navigation and `goto(page, path)` so animations are paused for consistent screenshots
 2. **Wait for specific elements, not networkidle** - Use `page.locator('.element').waitFor({ state: 'visible' })` instead of `page.waitForLoadState('networkidle')` for better mobile compatibility
 3. **Review diffs carefully** - Always inspect visual changes before updating snapshots
-4. **Test on multiple viewports** - Ensure responsive design works correctly
+4. **Responsiveness tests** - Use `responsiveness.spec.ts` for viewport-specific tests; use `viewportAwareHover()` for tap/hover based on viewport width
 5. **Keep tests focused** - Each test should validate a specific page or component
 6. **Use appropriate timeouts** - Wait for content to load before taking screenshots (use helper functions like `waitForCanvas()`)
 7. **Set reasonable tolerances** - Balance between catching regressions and avoiding flaky tests

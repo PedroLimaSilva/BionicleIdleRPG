@@ -33,7 +33,7 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCh
               >
                 <CompositedImage
                   className="mask-preview"
-                  images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.png`]}
+                  images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.webp`]}
                   colors={[matoran.maskColorOverride || matoran.colors.mask]}
                 />
                 <div className="name">{mask}</div>

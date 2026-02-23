@@ -78,7 +78,7 @@ export const BattleSelector: React.FC = () => {
                   ['bohrok_kal_pair', 'bohrok_kal_trio'].includes(encounter.headliner)
                     ? 'Tahnok'
                     : COMBATANT_DEX[encounter.headliner].name.replace(/ Kal$/, '')
-                }.png`}
+                }.webp`}
                 alt=""
               />
               <p className="description">{encounter.description}</p>

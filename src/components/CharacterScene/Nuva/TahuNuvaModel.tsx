@@ -4,6 +4,7 @@ import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { forwardRef, useRef } from 'react';
 import { Group } from 'three';
 import { useArmor } from '../../../hooks/useArmor';
+import { useIdleAnimation } from '../../../hooks/useIdleAnimation';
 
 export const TahuNuvaModel = forwardRef<
   CombatantModelHandle,
@@ -13,7 +14,9 @@ export const TahuNuvaModel = forwardRef<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >(({ matoran: _matoran }, _ref) => {
   const group = useRef<Group>(null);
-  const { nodes } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/tahu.glb');
+  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/tahu.glb');
+
+  useIdleAnimation(animations, group);
 
   useArmor(nodes.ChestPlateHolder, 'Chest');
   useArmor(nodes.PlateHolderL, 'Shoulder');
@@ -21,7 +24,7 @@ export const TahuNuvaModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Body} scale={1} position={[0, 9.75, 0]} />
+      <primitive object={nodes.Tahu} scale={1} position={[0, 10.15, 0]} />
     </group>
   );
 });

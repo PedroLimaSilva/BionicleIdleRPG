@@ -81,12 +81,14 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     useImperativeHandle(ref, () => ({
       playAnimation: async (name, options) => {
         const faceTargetId = options?.faceTargetId;
-        const shouldFace = faceTargetId && (name === 'Attack' || name === 'Hit' || name === 'Defeat');
+        const shouldFace =
+          faceTargetId && (name === 'Attack' || name === 'Hit' || name === 'Defeat');
 
         let facingY: number | null = null;
         if (shouldFace) {
-          const positions = (window as { combatantPositions?: Record<string, [number, number, number]> })
-            .combatantPositions;
+          const positions = (
+            window as { combatantPositions?: Record<string, [number, number, number]> }
+          ).combatantPositions;
           const selfPos = positions?.[combatant.id];
           const targetPos = positions?.[faceTargetId];
 
@@ -172,6 +174,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.04} position={[0, 0.375, 0]}>
               <OnuaMataModel
+                ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
                   ...MATORAN_DEX[combatant.id],
@@ -185,6 +188,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.04} position={[0, 0.375, 0]}>
               <LewaMataModel
+                ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
                   ...MATORAN_DEX[combatant.id],
