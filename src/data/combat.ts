@@ -209,6 +209,19 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
       target: 'self',
     },
   },
+  [Mask.Vahi]: {
+    shortName: Mask.Vahi,
+    longName: 'Mask of Time',
+    description:
+      'The legendary Vahi. Turaga Vakama entrusted it to Tahu for use only in the direst emergency. No combat effect.',
+    effect: {
+      duration: { amount: 1, unit: 'turn' },
+      cooldown: { amount: 999, unit: 'wave' },
+      type: 'HEAL',
+      multiplier: 0,
+      target: 'self',
+    },
+  },
 };
 
 export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
