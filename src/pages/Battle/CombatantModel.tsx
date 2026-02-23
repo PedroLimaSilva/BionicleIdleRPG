@@ -125,7 +125,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
         case 'bohrok':
           return (
             <group scale={0.175} position={[0, 0.215, -0.15]}>
-              <BohrokModel ref={childRef} name={combatant.name} />
+              <BohrokModel ref={childRef} id={combatant.id.split('-')[0]} />
             </group>
           );
         case 'Toa_Kopaka':

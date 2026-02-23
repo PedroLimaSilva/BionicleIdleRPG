@@ -1,80 +1,12 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { useGLTF } from '@react-three/drei';
-import { Color, LegoColor } from '../../types/Colors';
+import { Color } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
+import { MATORAN_DEX } from '../../data/matoran';
 
-const BOHROK_COLORS: Record<string, { main: LegoColor; secondary: LegoColor; eyes: LegoColor }> = {
-  Tahnok: {
-    main: LegoColor.Red,
-    secondary: LegoColor.Orange,
-    eyes: LegoColor.Blue,
-  },
-  Gahlok: {
-    main: LegoColor.Blue,
-    secondary: LegoColor.MediumBlue,
-    eyes: LegoColor.Orange,
-  },
-  Lehvak: {
-    main: LegoColor.Green,
-    secondary: LegoColor.Lime,
-    eyes: LegoColor.Red,
-  },
-  Pahrak: {
-    main: LegoColor.Brown,
-    secondary: LegoColor.Tan,
-    eyes: LegoColor.Green,
-  },
-  Nuhvok: {
-    main: LegoColor.Black,
-    secondary: LegoColor.DarkGray,
-    eyes: LegoColor.Lime,
-  },
-  Kohrak: {
-    main: LegoColor.White,
-    secondary: LegoColor.LightGray,
-    eyes: LegoColor.MediumBlue,
-  },
-  // Bohrok Kal - metallic elite variants
-  'Tahnok Kal': {
-    main: LegoColor.Red,
-    secondary: LegoColor.PearlGold,
-    eyes: LegoColor.TransNeonYellow,
-  },
-  'Gahlok Kal': {
-    main: LegoColor.Blue,
-    secondary: LegoColor.PearlGold,
-    eyes: LegoColor.TransNeonYellow,
-  },
-  'Lehvak Kal': {
-    main: LegoColor.Green,
-    secondary: LegoColor.PearlGold,
-    eyes: LegoColor.TransNeonYellow,
-  },
-  'Pahrak Kal': {
-    main: LegoColor.Brown,
-    secondary: LegoColor.PearlGold,
-    eyes: LegoColor.TransNeonYellow,
-  },
-  'Nuhvok Kal': {
-    main: LegoColor.Black,
-    secondary: LegoColor.PearlGold,
-    eyes: LegoColor.TransNeonYellow,
-  },
-  'Kohrak Kal': {
-    main: LegoColor.White,
-    secondary: LegoColor.PearlGold,
-    eyes: LegoColor.TransNeonYellow,
-  },
-  'Bohrok Kal': {
-    main: LegoColor.Red,
-    secondary: LegoColor.PearlGold,
-    eyes: LegoColor.TransNeonYellow,
-  },
-};
-
-export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({ name }, ref) => {
+export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ id }, ref) => {
   const group = useRef<Group>(null);
 
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'bohrok_master.glb');
@@ -82,7 +14,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
   const bodyInstance = useMemo(() => nodes.Body.clone(true), [nodes]);
 
   const { playAnimation } = useCombatAnimations(animations, group, {
-    modelId: name,
+    modelId: id,
     actionTimeScale: 2,
     transitionMode: 'stopAll',
     attackResolveAtFraction: 0.1,
@@ -91,7 +23,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
   useImperativeHandle(ref, () => ({ playAnimation }));
 
   useEffect(() => {
-    const colorScheme = BOHROK_COLORS[name];
+    const colorScheme = MATORAN_DEX[id].colors;
 
     bodyInstance.traverse((child) => {
       if (!(child instanceof Mesh)) return;
@@ -101,9 +33,9 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
 
       // Set custom color logic based on mesh name or usage
       if (cloned.name === 'Bohrok_Main') {
-        cloned.color.set(colorScheme.main as Color);
+        cloned.color.set(colorScheme.body as Color);
       } else if (cloned.name === 'Bohrok_Secondary') {
-        cloned.color.set(colorScheme.secondary as Color);
+        cloned.color.set(colorScheme.arms as Color);
       } else if (
         cloned.name === 'Bohrok_Eye' ||
         cloned.name === 'Bohrok_Iris' ||
@@ -118,7 +50,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
       child.material = cloned;
     });
 
-    const shieldTarget = name;
+    const shieldTarget = id.replace(/^./, (char) => char.toUpperCase());
     ['R', 'L'].forEach((suffix) => {
       bodyInstance.traverse((child) => {
         if (child.name === `Hand${suffix}`) {
@@ -129,7 +61,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
         }
       });
     });
-  }, [bodyInstance, name]);
+  }, [bodyInstance, id]);
 
   return (
     <group ref={group} dispose={null}>
