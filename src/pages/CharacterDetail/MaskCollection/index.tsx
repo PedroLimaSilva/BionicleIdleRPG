@@ -6,6 +6,7 @@ import { BaseMatoran, Mask, RecruitedCharacterData } from '../../../types/Matora
 import { CompositedImage } from '../../../components/CompositedImage';
 
 import './index.scss';
+import { Tooltip } from '../../../components/Tooltip';
 
 export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const { setMaskOverride, completedQuests } = useGame();
@@ -25,30 +26,32 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCh
     <>
       {masks.length > 0 && (
         <div className="mask-inventory-section">
-          <p className="mask-inventory-section__title">Masks</p>
+          <h3 className="mask-inventory-section__title">Masks</h3>
           <div className={`mask-inventory-grid element-${matoran.element}`}>
             {masks.map((mask) => (
               <div
                 key={mask}
-                className={`mask-card element-${matoran.element}`}
+                className={`mask-card`}
                 onClick={() => handeMaskOverride(matoran, mask)}
               >
-                <CompositedImage
-                  className="mask-preview"
-                  images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.webp`]}
-                  colors={[matoran.maskColorOverride || matoran.colors.mask]}
-                />
-                <div className="name">{mask}</div>
+                <Tooltip
+                  content={
+                    <div>
+                      <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>
+                      <p>{maskDescription}</p>
+                    </div>
+                  }
+                >
+                  <CompositedImage
+                    className="mask-preview"
+                    images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.webp`]}
+                    colors={[matoran.maskColorOverride || matoran.colors.mask]}
+                  />
+                  <div className="name">{mask}</div>
+                </Tooltip>
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {activeMask && (
-        <div>
-          <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>
-          <p>{maskDescription}</p>
         </div>
       )}
     </>

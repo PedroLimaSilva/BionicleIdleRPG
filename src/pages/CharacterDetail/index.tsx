@@ -15,6 +15,7 @@ import { JobAssignment } from './JobAssignment';
 import { Tabs } from '../../components/Tabs';
 import { CharacterChronicle } from './Chronicle';
 import { isKranaCollectionActive } from '../../game/Krana';
+import { MASK_POWERS } from '../../data/combat';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -62,6 +63,9 @@ export const CharacterDetail: React.FC = () => {
   if (!matoran) {
     return <p>Something is wrong, this matoran does not exist</p>;
   }
+  const activeMask = matoran.maskOverride || matoran.mask;
+  const maskDescription = MASK_POWERS[activeMask]?.description || 'Unknown Mask Power';
+
   return (
     <div className={`page-container character-detail element-${matoran.element}`}>
       <div className="character-detail-visualization">
@@ -82,25 +86,12 @@ export const CharacterDetail: React.FC = () => {
             <>
               <LevelProgress exp={matoran.exp} />
               <ElementTag element={matoran.element} showName={true} />
-              {/* combatantStats && (
-                <div className='character-detail-section combatant-stats'>
-                  <h3>Combat Stats</h3>
-                  <ul>
-                    <li>
-                      <strong>HP:</strong> {combatantStats.baseHp}
-                    </li>
-                    <li>
-                      <strong>Attack:</strong> {combatantStats.baseAttack}
-                    </li>
-                    <li>
-                      <strong>Defense:</strong> {combatantStats.baseDefense}
-                    </li>
-                    <li>
-                      <strong>Speed:</strong> {combatantStats.baseSpeed}
-                    </li>
-                  </ul>
+              {activeMask && (
+                <div>
+                  <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>
+                  <p>{maskDescription}</p>
                 </div>
-              )*/}
+              )}
             </>
           )}
           {activeTab === 'inventory' && isToa(matoran) && <MaskCollection matoran={matoran} />}
