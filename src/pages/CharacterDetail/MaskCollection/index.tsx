@@ -44,7 +44,7 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCh
                     images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.webp`]}
                     colors={[matoran.maskColorOverride || matoran.colors.mask]}
                   />
-                  <div className="name">{MASK_POWERS[mask]?.longName ?? mask}</div>
+                  <div className="name">{(MASK_POWERS[mask]?.shortName ?? mask).replace(/_/g, ' ')}</div>
                 </Tooltip>
               </div>
             ))}

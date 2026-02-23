@@ -210,11 +210,11 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     },
   },
 
-  // Toa Nuva masks — same powers as Mata counterparts, enhanced
+  // Toa Nuva masks — powers benefit all allies
   [Mask.HauNuva]: {
     shortName: Mask.HauNuva,
-    longName: 'Great Mask of Shielding',
-    description: 'Grants full immunity to all damage for 1 round',
+    longName: 'Great Nuva Mask of Shielding',
+    description: 'Grants full immunity to all damage for 1 round to all allies',
     effect: {
       duration: {
         amount: 1,
@@ -231,8 +231,8 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
   [Mask.KaukauNuva]: {
     shortName: Mask.KaukauNuva,
-    longName: 'Great Mask of Water Breathing',
-    description: 'Heals self each turn for 3 turns',
+    longName: 'Great Nuva Mask of Water Breathing',
+    description: 'Heals all allies each turn for 3 turns',
     effect: {
       duration: {
         amount: 3,
@@ -249,8 +249,8 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
   [Mask.KakamaNuva]: {
     shortName: Mask.KakamaNuva,
-    longName: 'Great Mask of Speed',
-    description: 'User attacks twice this round',
+    longName: 'Great Nuva Mask of Speed',
+    description: 'All allies attack twice this round',
     effect: {
       duration: {
         amount: 1,
@@ -267,8 +267,8 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
   [Mask.AkakuNuva]: {
     shortName: Mask.AkakuNuva,
-    longName: 'Great Mask of X-Ray Vision',
-    description: 'Marks target; allies deal +50% damage to them for 2 rounds',
+    longName: 'Great Nuva Mask of X-Ray Vision',
+    description: 'Marks target; all allies deal +50% damage to them for 2 rounds',
     effect: {
       duration: { amount: 1, unit: 'attack' },
       cooldown: { amount: 4, unit: 'turn' },
@@ -281,8 +281,8 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
   [Mask.PakariNuva]: {
     shortName: Mask.PakariNuva,
-    longName: 'Great Mask of Strength',
-    description: 'Next attack deals 3x damage',
+    longName: 'Great Nuva Mask of Strength',
+    description: "All allies' next attack deals 3x damage",
     effect: {
       duration: {
         amount: 1,
@@ -299,8 +299,8 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
   [Mask.MiruNuva]: {
     shortName: Mask.MiruNuva,
-    longName: 'Great Mask of Levitation',
-    description: 'Evades next 2 attacks; unaffected by ground-based effects',
+    longName: 'Great Nuva Mask of Levitation',
+    description: 'All allies evade next 2 attacks; unaffected by ground-based effects',
     effect: {
       duration: {
         amount: 2,
