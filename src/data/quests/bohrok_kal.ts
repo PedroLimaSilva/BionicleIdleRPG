@@ -15,10 +15,10 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
     id: 'bohrok_kal_reconstruction',
     name: 'Reconstruction',
     description:
-      'With the Bahrag imprisoned, the Bohrok are reprogrammed to serve the Matoran. Reconstruction of the Koros begins. Nuva Symbols appear in the Suvas. Turaga Vakama gives Tahu Nuva the Vahi—the Mask of Time—and asks him to keep its existence secret, and to use it only in the direst emergency.',
+      'While the Ta-Matoran repair the damage to Ta-Koro, a strange symbol appears on the Toa Suva shrine. Turaga Vakama recognizes what it is and requests a private conversation with Tahu. He gives him the Vahi—the Mask of Time—and asks him to keep its existence secret, and to use it only in the direst emergency.',
     durationSeconds: 8 * 60,
     requirements: {
-      matoran: ['Toa_Tahu_Nuva', 'Takua'],
+      matoran: ['Toa_Tahu_Nuva'],
       minLevel: 18,
       items: [],
     },
