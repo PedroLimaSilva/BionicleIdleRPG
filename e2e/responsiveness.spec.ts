@@ -159,10 +159,10 @@ test.describe('Responsiveness', () => {
             maxDiffPixels: 150,
           });
 
-          // Equipment tab
-          await page.getByRole('button', { name: 'equipment' }).click();
-          await expect(page.locator('.mask-collection').first()).toBeVisible();
-          await expect(page).toHaveScreenshot(`toa-detail-equipment-${name}.png`, {
+          // Inventory tab
+          await page.getByRole('button', { name: 'inventory' }).click();
+          await expect(page.locator('.mask-inventory-section').first()).toBeVisible();
+          await expect(page).toHaveScreenshot(`toa-detail-inventory-${name}.png`, {
             fullPage: true,
             maxDiffPixels: 150,
           });
