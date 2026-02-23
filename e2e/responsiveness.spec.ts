@@ -10,6 +10,7 @@ import {
   disableCSSAnimations,
   hideCanvas,
 } from './helpers';
+import { KranaId } from '../src/types/Krana';
 
 /**
  * Dedicated responsiveness tests - verify the app works at different screen sizes.
@@ -119,7 +120,7 @@ test.describe('Responsiveness', () => {
           ],
           completedQuests: ['story_toa_arrival', 'bohrok_legend_of_krana'],
           collectedKrana: {
-            Fire: ['Xa', 'Bo'],
+            Fire: ['Xa' as KranaId, 'Bo' as KranaId],
             Water: [],
             Air: [],
             Earth: [],
