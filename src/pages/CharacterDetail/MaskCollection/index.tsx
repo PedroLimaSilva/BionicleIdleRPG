@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useGame } from '../../../context/Game';
 import { masksCollected } from '../../../services/matoranUtils';
-import { MASK_POWERS } from '../../../data/combat';
+import { MASK_POWERS, MASK_DISPLAY_ONLY } from '../../../data/combat';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../../types/Matoran';
 import { CompositedImage } from '../../../components/CompositedImage';
 
@@ -34,8 +34,16 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCh
                 <Tooltip
                   content={
                     <div>
-                      <h3>{MASK_POWERS[mask]?.longName ?? 'Unknown Mask'}</h3>
-                      <p>{MASK_POWERS[mask]?.description || 'Unknown Mask Power'}</p>
+                      <h3>
+                        {MASK_POWERS[mask]?.longName ??
+                          MASK_DISPLAY_ONLY[mask]?.longName ??
+                          'Unknown Mask'}
+                      </h3>
+                      <p>
+                        {MASK_POWERS[mask]?.description ??
+                          MASK_DISPLAY_ONLY[mask]?.description ??
+                          'Unknown Mask Power'}
+                      </p>
                     </div>
                   }
                 >

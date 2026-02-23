@@ -211,6 +211,17 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
 };
 
+/** Display-only mask info for masks without combat effects (e.g. Vahi) */
+export const MASK_DISPLAY_ONLY: Partial<
+  Record<Mask, { longName: string; description: string }>
+> = {
+  [Mask.Vahi]: {
+    longName: 'Mask of Time',
+    description:
+      'The legendary Vahi. Turaga Vakama entrusted it to Tahu for use only in the direst emergency. No combat effect.',
+  },
+};
+
 export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   Toa_Kopaka: {
     id: 'Toa_Kopaka',
