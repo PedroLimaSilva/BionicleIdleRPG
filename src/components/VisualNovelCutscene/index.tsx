@@ -1,6 +1,10 @@
 import { useState, useCallback } from 'react';
 import { MATORAN_DEX } from '../../data/matoran';
-import type { VisualNovelCutscene as VisualNovelCutsceneType } from '../../types/Cutscenes';
+import type {
+  VisualNovelCutscene as VisualNovelCutsceneType,
+  VisualNovelStep,
+} from '../../types/Cutscenes';
+import { isDialogueStep, isVideoStep } from '../../types/Cutscenes';
 import './index.scss';
 
 type Props = {
@@ -10,8 +14,8 @@ type Props = {
 
 export function VisualNovelCutscene({ cutscene, onClose }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const line = cutscene.dialogue[currentIndex];
-  const isLast = currentIndex >= cutscene.dialogue.length - 1;
+  const step = cutscene.steps[currentIndex];
+  const isLast = currentIndex >= cutscene.steps.length - 1;
 
   const handleAdvance = useCallback(() => {
     if (isLast) {
@@ -44,13 +48,9 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
           }
         : {};
 
-  if (!line) {
+  if (!step) {
     return null;
   }
-
-  const speaker = MATORAN_DEX[line.speakerId];
-  const speakerName = speaker?.name ?? line.speakerId;
-  const portraitColor = speaker?.colors?.body ?? '#6D6E5C';
 
   return (
     <div
@@ -63,40 +63,11 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
     >
       <div className="visual-novel-cutscene__background" style={backgroundStyle} />
 
-      <div className="visual-novel-cutscene__content">
-        <div className="visual-novel-cutscene__portrait-area">
-          {line.portraitUrl ? (
-            <img
-              src={line.portraitUrl}
-              alt={speakerName}
-              className="visual-novel-cutscene__portrait visual-novel-cutscene__portrait--img"
-            />
-          ) : (
-            <div
-              className="visual-novel-cutscene__portrait visual-novel-cutscene__portrait--avatar"
-              style={{ backgroundColor: portraitColor }}
-              aria-hidden
-            >
-              <span className="visual-novel-cutscene__portrait-initial">
-                {speakerName.charAt(0)}
-              </span>
-            </div>
-          )}
-        </div>
-
-        <div className="visual-novel-cutscene__dialogue-box">
-          <div className="visual-novel-cutscene__speaker-name">{speakerName}</div>
-          <p className="visual-novel-cutscene__text">{line.text}</p>
-          <button
-            type="button"
-            className="visual-novel-cutscene__advance"
-            onClick={handleAdvance}
-            aria-label={isLast ? 'Close cutscene' : 'Next'}
-          >
-            {isLast ? 'Close' : 'Next ›'}
-          </button>
-        </div>
-      </div>
+      {isVideoStep(step) ? (
+        <VideoStepView videoId={step.videoId} onAdvance={handleAdvance} isLast={isLast} />
+      ) : (
+        <DialogueStepView step={step} onAdvance={handleAdvance} isLast={isLast} />
+      )}
 
       <button
         type="button"
@@ -105,6 +76,93 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
         aria-label="Close cutscene"
       >
         ✕
+      </button>
+    </div>
+  );
+}
+
+function DialogueStepView({
+  step,
+  onAdvance,
+  isLast,
+}: {
+  step: Extract<VisualNovelStep, { type: 'dialogue' }>;
+  onAdvance: () => void;
+  isLast: boolean;
+}) {
+  if (!isDialogueStep(step)) return null;
+  const speaker = MATORAN_DEX[step.speakerId];
+  const speakerName = speaker?.name ?? step.speakerId;
+  const portraitColor = speaker?.colors?.body ?? '#6D6E5C';
+
+  return (
+    <div className="visual-novel-cutscene__content">
+      <div className="visual-novel-cutscene__portrait-area">
+        {step.portraitUrl ? (
+          <img
+            src={step.portraitUrl}
+            alt={speakerName}
+            className="visual-novel-cutscene__portrait visual-novel-cutscene__portrait--img"
+          />
+        ) : (
+          <div
+            className="visual-novel-cutscene__portrait visual-novel-cutscene__portrait--avatar"
+            style={{ backgroundColor: portraitColor }}
+            aria-hidden
+          >
+            <span className="visual-novel-cutscene__portrait-initial">
+              {speakerName.charAt(0)}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="visual-novel-cutscene__dialogue-box">
+        <div className="visual-novel-cutscene__speaker-name">{speakerName}</div>
+        <p className="visual-novel-cutscene__text">{step.text}</p>
+        <button
+          type="button"
+          className="visual-novel-cutscene__advance"
+          onClick={onAdvance}
+          aria-label={isLast ? 'Close cutscene' : 'Next'}
+        >
+          {isLast ? 'Close' : 'Next ›'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function VideoStepView({
+  videoId,
+  onAdvance,
+  isLast,
+}: {
+  videoId: string;
+  onAdvance: () => void;
+  isLast: boolean;
+}) {
+  return (
+    <div className="visual-novel-cutscene__content visual-novel-cutscene__content--video">
+      <div className="visual-novel-cutscene__video-wrapper">
+        <iframe
+          width="100%"
+          height="100%"
+          src={`https://www.youtube.com/embed/${videoId}?si=nxWcOaAKDqTtrf2b`}
+          title="Cutscene video"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      </div>
+      <button
+        type="button"
+        className="visual-novel-cutscene__advance visual-novel-cutscene__advance--video"
+        onClick={onAdvance}
+        aria-label={isLast ? 'Close cutscene' : 'Next'}
+      >
+        {isLast ? 'Close' : 'Next ›'}
       </button>
     </div>
   );

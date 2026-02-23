@@ -7,10 +7,11 @@
 export type YouTubeCutscene = string;
 
 /**
- * A single line of dialogue in a visual novel cutscene.
+ * A dialogue step in a visual novel cutscene.
  * speakerId maps to MATORAN_DEX for name/portrait; portraitUrl overrides if provided.
  */
-export interface DialogueLine {
+export interface DialogueStep {
+  type: 'dialogue';
   speakerId: string; // Character ID from MATORAN_DEX
   text: string;
   /** Optional custom portrait image URL; if absent, uses character colors for avatar */
@@ -20,15 +21,37 @@ export interface DialogueLine {
 }
 
 /**
+ * A video step - embeds a YouTube video within the visual novel flow.
+ */
+export interface VideoStep {
+  type: 'video';
+  videoId: string;
+}
+
+/** A single step in a visual novel cutscene: dialogue or video */
+export type VisualNovelStep = DialogueStep | VideoStep;
+
+/**
  * Visual novel cutscene definition.
- * Dialogue on screen with speaker portraits and background.
+ * Steps can be dialogue (with portraits) or video (YouTube embed).
  */
 export interface VisualNovelCutscene {
   id: string;
   /** Background image URL or CSS gradient/color placeholder */
   background: string | { type: 'gradient'; from: string; to: string };
-  /** Ordered dialogue lines */
-  dialogue: DialogueLine[];
+  /** Ordered steps: dialogue lines and/or video embeds */
+  steps: VisualNovelStep[];
+}
+
+/** @deprecated Use DialogueStep - kept for migration */
+export type DialogueLine = Omit<DialogueStep, 'type'>;
+
+export function isDialogueStep(step: VisualNovelStep): step is DialogueStep {
+  return step.type === 'dialogue';
+}
+
+export function isVideoStep(step: VisualNovelStep): step is VideoStep {
+  return step.type === 'video';
 }
 
 /**
