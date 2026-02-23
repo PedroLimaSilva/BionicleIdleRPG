@@ -6,11 +6,7 @@ import { useGame } from '../../context/Game';
 import { QUESTS } from '../../data/quests';
 import { VISUAL_NOVEL_CUTSCENES } from '../../data/cutscenes';
 import { QuestProgress } from '../../types/Quests';
-import {
-  normalizeCutsceneRef,
-  isYouTubeCutscene,
-  isVisualNovelCutscene,
-} from '../../types/Cutscenes';
+import type { VisualNovelCutsceneRef } from '../../types/Cutscenes';
 import './index.scss';
 import { MATORAN_DEX } from '../../data/matoran';
 
@@ -56,9 +52,7 @@ export const QuestsPage = () => {
     return false;
   };
 
-  const [activeCutscene, setActiveCutscene] = useState<
-    { type: 'youtube'; videoId: string } | { type: 'visual_novel'; cutsceneId: string } | null
-  >(null);
+  const [activeCutscene, setActiveCutscene] = useState<VisualNovelCutsceneRef | null>(null);
   const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
@@ -98,9 +92,7 @@ export const QuestsPage = () => {
     });
   }, [completedSections]);
 
-  const handleCutscene = (
-    ref: { type: 'youtube'; videoId: string } | { type: 'visual_novel'; cutsceneId: string }
-  ) => {
+  const handleCutscene = (ref: VisualNovelCutsceneRef) => {
     setActiveCutscene(ref);
   };
 
@@ -139,8 +131,7 @@ export const QuestsPage = () => {
                     disabled={!canComplete(progress)}
                     onClick={() => {
                       completeQuest(quest);
-                      const ref = normalizeCutsceneRef(quest.rewards.cutscene);
-                      if (ref) handleCutscene(ref);
+                      if (quest.rewards.cutscene) handleCutscene(quest.rewards.cutscene);
                     }}
                   >
                     Complete Quest
@@ -219,10 +210,7 @@ export const QuestsPage = () => {
                             {quest.rewards.cutscene && (
                               <button
                                 className="quests-page__complete"
-                                onClick={() => {
-                                  const ref = normalizeCutsceneRef(quest.rewards.cutscene);
-                                  if (ref) handleCutscene(ref);
-                                }}
+                                onClick={() => handleCutscene(quest.rewards.cutscene!)}
                               >
                                 Replay Cutscene
                               </button>
@@ -238,35 +226,12 @@ export const QuestsPage = () => {
           })}
         </div>
       )}
-      {activeCutscene && isYouTubeCutscene(activeCutscene) && (
-        <div className="modal-overlay" onClick={() => setActiveCutscene(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setActiveCutscene(null)}>
-              ✖
-            </button>
-            <div className="modal-video-wrapper">
-              <iframe
-                width="100%"
-                height="100%"
-                src={`https://www.youtube.com/embed/${activeCutscene.videoId}?si=nxWcOaAKDqTtrf2b&amp`}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
-            </div>
-          </div>
-        </div>
+      {activeCutscene && VISUAL_NOVEL_CUTSCENES[activeCutscene.cutsceneId] && (
+        <VisualNovelCutscene
+          cutscene={VISUAL_NOVEL_CUTSCENES[activeCutscene.cutsceneId]!}
+          onClose={() => setActiveCutscene(null)}
+        />
       )}
-      {activeCutscene &&
-        isVisualNovelCutscene(activeCutscene) &&
-        VISUAL_NOVEL_CUTSCENES[activeCutscene.cutsceneId] && (
-          <VisualNovelCutscene
-            cutscene={VISUAL_NOVEL_CUTSCENES[activeCutscene.cutsceneId]!}
-            onClose={() => setActiveCutscene(null)}
-          />
-        )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { GameItemId } from '../data/loot';
 import { Inventory } from '../services/inventoryUtils';
 import { ListedCharacterData, RecruitedCharacterData } from './Matoran';
-import type { CutsceneRef } from './Cutscenes';
+import type { VisualNovelCutsceneRef } from './Cutscenes';
 
 export interface QuestItemRequirement {
   id: GameItemId; // Item ID
@@ -31,8 +31,8 @@ export interface QuestReward {
   loot?: Inventory;
   xpPerMatoran?: number; // XP awarded to each participating Matoran
   currency?: number; // Generic currency reward
-  /** Legacy: YouTube video ID (string). New: CutsceneRef for YouTube or visual novel. */
-  cutscene?: string | CutsceneRef;
+  /** Visual novel cutscene ID. All cutscenes (including video-only) use the visual novel system. */
+  cutscene?: VisualNovelCutsceneRef;
   /** Evolution trigger: maps participant dex IDs to their evolved form. Applied on quest completion. */
   evolution?: EvolutionMap;
 }

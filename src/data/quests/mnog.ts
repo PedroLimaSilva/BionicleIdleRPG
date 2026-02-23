@@ -79,7 +79,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       ],
     },
     rewards: {
-      cutscene: 'Cn5jxci0RiQ',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_tahu_unlock_01' },
       loot: {
         [GameItemId.Charcoal]: 1000,
         [GameItemId.BurnishedAlloy]: 500,
@@ -137,7 +137,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       ],
     },
     rewards: {
-      cutscene: 'Fud_TgE_GTs',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_restore_ga_koro' },
       loot: {
         [GameItemId.WaterAlgae]: 1000,
         [GameItemId.GaPearl]: 500,
@@ -219,7 +219,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       ],
     },
     rewards: {
-      cutscene: 'EZdYj1GQR4s',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_po_koro_cave_investigation' },
       loot: {
         [GameItemId.StoneBlock]: 1000,
         [GameItemId.GemShard]: 500,
@@ -406,7 +406,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       loot: {
         [GameItemId.JungleResin]: 100,
       },
-      cutscene: 'vM0lWqZ9uD4',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_enter_le_wahi' },
       xpPerMatoran: 300,
       currency: 600,
     },
@@ -470,7 +470,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
         [GameItemId.FeatherTufts]: 800,
         [GameItemId.JungleResin]: 400,
       },
-      cutscene: '3feiWoDhKzo',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_flight_to_hive' },
       xpPerMatoran: 500,
       currency: 700,
     },
@@ -489,7 +489,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
-      cutscene: 'dsSugRBjusI',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_rescue_from_hive' },
       xpPerMatoran: 1000,
       currency: 1200,
     },
@@ -508,7 +508,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
-      cutscene: 'tggBKXjwPow',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_lewa_v_onua' },
       xpPerMatoran: 1000,
       currency: 1200,
     },
@@ -591,7 +591,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       ],
     },
     rewards: {
-      cutscene: 'vp9RVeTHNfA',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_search_for_matoro' },
       unlockCharacters: [
         {
           id: 'Matoro',
@@ -665,7 +665,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     rewards: {
       xpPerMatoran: 1000,
       currency: 1200,
-      cutscene: 'HJI0snTJetM',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_journey_to_kini_nui_1' },
     },
     unlockedAfter: ['mnog_summon_chroniclers_company'],
   },
@@ -683,7 +683,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     rewards: {
       xpPerMatoran: 1000,
       currency: 1000,
-      cutscene: 'gx8dUv8I3-Y',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_journey_to_kini_nui_2' },
     },
     unlockedAfter: ['mnog_journey_to_kini_nui_1'],
   },
@@ -708,7 +708,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     rewards: {
       xpPerMatoran: 1000,
       currency: 1100,
-      cutscene: 'qXCfYwpGBqY',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_journey_to_kini_nui_3' },
     },
     unlockedAfter: ['mnog_journey_to_kini_nui_2'],
   },
@@ -738,7 +738,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     rewards: {
       xpPerMatoran: 1000,
       currency: 900,
-      cutscene: 'lts_AXCvj60',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_journey_to_kini_nui_4' },
     },
     unlockedAfter: ['mnog_journey_to_kini_nui_3'],
   },
@@ -754,7 +754,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       minLevel: 20,
     },
     rewards: {
-      cutscene: 'xfM3OOL7NJU',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_kini_nui_arrival' },
       xpPerMatoran: 2000,
       currency: 1500,
     },
@@ -774,7 +774,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     rewards: {
       xpPerMatoran: 2000,
       currency: 1800,
-      cutscene: 'ISmkk9Vg8IM',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_kini_nui_defense' },
     },
     unlockedAfter: ['mnog_kini_nui_arrival'],
   },
@@ -799,7 +799,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     rewards: {
       xpPerMatoran: 300,
       currency: 1000,
-      cutscene: 'In1jZ3pZE9k',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_gali_call' },
     },
     unlockedAfter: ['mnog_kini_nui_defense', 'story_kini_nui_descent'],
   },
@@ -817,7 +817,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     rewards: {
       xpPerMatoran: 800,
       currency: 1600,
-      cutscene: 'kQbHb3eNzzs',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_witness_makuta_battle' },
     },
     unlockedAfter: ['mnog_gali_call'],
   },
@@ -836,7 +836,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     rewards: {
       xpPerMatoran: 5000,
       currency: 2000,
-      cutscene: 'h0KeJl6i7Ns',
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_return_to_shore' },
     },
     unlockedAfter: ['mnog_witness_makuta_battle'],
   },
