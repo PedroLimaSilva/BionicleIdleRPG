@@ -23,6 +23,10 @@ import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { BohrokModel } from './BohrokModel';
 import { useEyeMeshes } from './selectiveBloom';
+import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
+import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
+import { LewaNuvaModel } from './Nuva/LewaNuvaModel';
+import { KopakaNuvaModel } from './Nuva/KopakaNuvaModel';
 
 /** Vertical center of the character framing volume. */
 const CHARACTER_CENTER_Y = CYLINDER_HEIGHT / 2;
@@ -56,6 +60,14 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
       }
     case MatoranStage.ToaNuva:
       switch (matoran.id) {
+        case 'Toa_Kopaka_Nuva':
+          return <KopakaNuvaModel matoran={matoran} />;
+        case 'Toa_Lewa_Nuva':
+          return <LewaNuvaModel matoran={matoran} />;
+        case 'Toa_Pohatu_Nuva':
+          return <PohatuNuvaModel matoran={matoran} />;
+        case 'Toa_Onua_Nuva':
+          return <OnuaNuvaModel matoran={matoran} />;
         case 'Toa_Gali_Nuva':
           return <GaliNuvaModel matoran={matoran} />;
         case 'Toa_Tahu_Nuva':
