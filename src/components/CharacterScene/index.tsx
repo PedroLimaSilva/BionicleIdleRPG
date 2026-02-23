@@ -16,7 +16,6 @@ import { PohatuMataModel } from './Mata/PohatuMataModel';
 import { KopakaMataModel } from './Mata/KopakaMataModel';
 import { OnuaMataModel } from './Mata/OnuaMataModel';
 import { LewaMataModel } from './Mata/LewaMataModel';
-import { ToaNuvaPlaceholderModel } from './Nuva/PlaceholderModel';
 import { CYLINDER_HEIGHT } from './BoundsCylinder';
 import { TahuMataModel } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
@@ -73,7 +72,7 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
         case 'Toa_Tahu_Nuva':
           return <TahuNuvaModel matoran={matoran} />;
         default:
-          return <ToaNuvaPlaceholderModel matoran={matoran} />;
+          return <TahuNuvaModel matoran={matoran} />;
       }
     case MatoranStage.BohrokKal:
     case MatoranStage.Bohrok:
