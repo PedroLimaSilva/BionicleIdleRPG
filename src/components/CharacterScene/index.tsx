@@ -6,6 +6,7 @@ import { BlendFunction } from 'postprocessing';
 import { DirectionalLight, Mesh, Object3D } from 'three';
 
 import { useSettings } from '../../context/Settings';
+import { shouldEnableSelectiveBloom } from '../../utils/testMode';
 import { CYLINDER_RADIUS } from './BoundsCylinder';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
@@ -197,7 +198,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
           bias={0.5}
           luminanceInfluence={0.35}
         />
-        {lightsForBloom.length > 0 ? (
+        {lightsForBloom.length > 0 && shouldEnableSelectiveBloom() ? (
           <SelectiveBloom
             selection={eyeMeshes}
             lights={lightsForBloom}
