@@ -157,7 +157,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. Their Krana-Kal turn silver and project a force field. The Toa feed power to the symbols—and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Tahu\'s power returns.',
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. Their Krana-Kal turn silver and project a force field. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Tahu\'s power returns.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -214,7 +214,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Beware the Bohrok',
       description:
-        'Fresh from the depths, the Toa expect peace—instead they find villages under attack from mechanical swarms. Gali joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Gali joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_swarm_intro',
@@ -247,21 +247,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Dawn of the Toa Nuva',
       description:
-        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins—only to be plunged into energized protodermis. Gali emerges transformed, a Toa Nuva.',
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Gali emerges transformed, a Toa Nuva.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_evolve_toa_nuva',
-      },
-    },
-    {
-      id: 'gali_scattered_aid',
-      section: 'Bohrok Kal',
-      title: 'Scattered to the Villages',
-      description:
-        'The Toa Nuva agree to split up and help their villages with reconstruction. Gali returns to Ga-Koro to lend her newfound strength to the effort.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_scattered_aid',
       },
     },
     {
@@ -269,32 +258,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Gali\'s elemental power vanishes. Nearly drowned by a tidal wave she can no longer control, she is scattered and helpless.',
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Gali\'s elemental power vanishes. Nearly drowned by a tidal wave she can no longer control, she is alone and helpless.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
-      },
-    },
-    {
-      id: 'gali_sighting_po_wahi',
-      section: 'Bohrok Kal',
-      title: 'Sighting in Po-Wahi',
-      description:
-        'Gali reveals that two Bohrok Kal were seen in Po-Wahi. The Toa give chase, splitting into two groups: one to pursue the Kal, the other to investigate the Bahrag. The Kal speak of finding the Bahrag and freeing them.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_sighting',
-      },
-    },
-    {
-      id: 'gali_race_to_nest',
-      section: 'Bohrok Kal',
-      title: 'Race to the Nest',
-      description:
-        'The Toa Nuva race to the Bohrok nest, hoping to reach it before the Kal. They plan to use the Exo-Toa armor to stop the Bohrok Kal from placing the Nuva symbols on the Nuva Cube.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_race_to_nest',
       },
     },
     {
@@ -302,7 +269,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols—and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Gali\'s power returns.',
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Gali\'s power returns.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -326,7 +293,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Arrival on Mata Nui',
       title: 'Footfalls on the Ice Cliff',
       description:
-        'Chasing Rahi tracks from the desert into Ko-Wahi, Pohatu collides—literally and figuratively—with Kopaka as they uncover a mask on a perilous cliffside.',
+        'Chasing Rahi tracks from the desert into Ko-Wahi, Pohatu collides, literally and figuratively, with Kopaka as they uncover a mask on a perilous cliffside.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'maskhunt_kopaka_pohatu_icecliff',
@@ -370,21 +337,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Beware the Bohrok',
       description:
-        'Fresh from the depths, the Toa expect peace—instead they find villages under attack from mechanical swarms. Pohatu joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Pohatu joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_swarm_intro',
-      },
-    },
-    {
-      id: 'pohatu_po_koro_defense',
-      section: 'Bohrok War',
-      title: 'Hold the Stone Village',
-      description:
-        'When the fire Bohrok Tahnok sweep across the desert toward Po-Koro, Pohatu races to aid his village. Hafu and Huki hold the gates, but the Toa of Stone brings his strength to the defense.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_po_koro_defense',
       },
     },
     {
@@ -414,21 +370,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Dawn of the Toa Nuva',
       description:
-        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins—only to be plunged into energized protodermis. Pohatu emerges transformed, a Toa Nuva.',
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Pohatu emerges transformed, a Toa Nuva.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_evolve_toa_nuva',
-      },
-    },
-    {
-      id: 'pohatu_scattered_aid',
-      section: 'Bohrok Kal',
-      title: 'Scattered to the Villages',
-      description:
-        'The Toa Nuva agree to split up and help their villages with reconstruction. Pohatu returns to Po-Koro to lend his newfound strength to the effort.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_scattered_aid',
       },
     },
     {
@@ -436,32 +381,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Pohatu\'s elemental power vanishes. The Toa of Stone, who once ran faster than the wind, is scattered and helpless.',
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Pohatu\'s elemental power vanishes. The Toa of Stone, who once ran faster than the wind, is alone and helpless.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
-      },
-    },
-    {
-      id: 'pohatu_sighting_po_wahi',
-      section: 'Bohrok Kal',
-      title: 'Sighting in Po-Wahi',
-      description:
-        'Gali reveals that two Bohrok Kal were seen in Po-Wahi. The Toa give chase, splitting into two groups: one to pursue the Kal, the other to investigate the Bahrag. The Kal speak of finding the Bahrag and freeing them.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_sighting',
-      },
-    },
-    {
-      id: 'pohatu_race_to_nest',
-      section: 'Bohrok Kal',
-      title: 'Race to the Nest',
-      description:
-        'The Toa Nuva race to the Bohrok nest, hoping to reach it before the Kal. They plan to use the Exo-Toa armor to stop the Bohrok Kal from placing the Nuva symbols on the Nuva Cube.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_race_to_nest',
       },
     },
     {
@@ -469,7 +392,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols—and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Pohatu\'s power returns.',
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Pohatu\'s power returns.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -537,7 +460,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Beware the Bohrok',
       description:
-        'Fresh from the depths, the Toa expect peace—instead they find villages under attack from mechanical swarms. Onua joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Onua joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_swarm_intro',
@@ -581,21 +504,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Dawn of the Toa Nuva',
       description:
-        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins—only to be plunged into energized protodermis. Onua emerges transformed, a Toa Nuva.',
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Onua emerges transformed, a Toa Nuva.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_evolve_toa_nuva',
-      },
-    },
-    {
-      id: 'onua_scattered_aid',
-      section: 'Bohrok Kal',
-      title: 'Scattered to the Villages',
-      description:
-        'The Toa Nuva agree to split up and help their villages with reconstruction. Onua returns to Onu-Koro to lend his newfound strength to the effort.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_scattered_aid',
       },
     },
     {
@@ -603,32 +515,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Onua\'s elemental power vanishes. The Toa of Earth, who once moved through stone like water, is scattered and helpless.',
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Onua\'s elemental power vanishes. The Toa of Earth, who once moved through stone like water, is alone and helpless.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
-      },
-    },
-    {
-      id: 'onua_sighting_po_wahi',
-      section: 'Bohrok Kal',
-      title: 'Sighting in Po-Wahi',
-      description:
-        'Gali reveals that two Bohrok Kal were seen in Po-Wahi. The Toa give chase, splitting into two groups: one to pursue the Kal, the other to investigate the Bahrag. The Kal speak of finding the Bahrag and freeing them.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_sighting',
-      },
-    },
-    {
-      id: 'onua_race_to_nest',
-      section: 'Bohrok Kal',
-      title: 'Race to the Nest',
-      description:
-        'The Toa Nuva race to the Bohrok nest, hoping to reach it before the Kal. They plan to use the Exo-Toa armor to stop the Bohrok Kal from placing the Nuva symbols on the Nuva Cube.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_race_to_nest',
       },
     },
     {
@@ -636,7 +526,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols—and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Onua\'s power returns.',
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Onua\'s power returns.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -704,7 +594,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Beware the Bohrok',
       description:
-        'Fresh from the depths, the Toa expect peace—instead they find villages under attack from mechanical swarms. Kopaka joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Kopaka joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_swarm_intro',
@@ -726,7 +616,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Into the Bohrok Nest',
       description:
-        'Following the trail of the Bohrok Va, Kopaka discovers the hidden entrance to the nest. With the Krana gathered, the Toa descend—Kopaka\'s blade ready for whatever lies below.',
+        'Following the trail of the Bohrok Va, Kopaka discovers the hidden entrance to the nest. With the Krana gathered, the Toa descend, Kopaka\'s blade ready for whatever lies below.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_into_the_bohrok_nest',
@@ -737,21 +627,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Dawn of the Toa Nuva',
       description:
-        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins—only to be plunged into energized protodermis. Kopaka emerges transformed, a Toa Nuva.',
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Kopaka emerges transformed, a Toa Nuva.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_evolve_toa_nuva',
-      },
-    },
-    {
-      id: 'kopaka_scattered_aid',
-      section: 'Bohrok Kal',
-      title: 'Scattered to the Villages',
-      description:
-        'The Toa Nuva agree to split up and help their villages with reconstruction. Kopaka returns to Ko-Koro to lend his newfound strength to the effort.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_scattered_aid',
       },
     },
     {
@@ -759,32 +638,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Kopaka\'s elemental power vanishes. He falls from an ice bridge without his power—the Toa of Ice, helpless in his own domain.',
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Kopaka\'s elemental power vanishes. He falls from an ice bridge without his power. Alone and without his elemental powers, he is helpless.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
-      },
-    },
-    {
-      id: 'kopaka_sighting_po_wahi',
-      section: 'Bohrok Kal',
-      title: 'Sighting in Po-Wahi',
-      description:
-        'Gali reveals that two Bohrok Kal were seen in Po-Wahi. The Toa give chase, splitting into two groups: one to pursue the Kal, the other to investigate the Bahrag. The Kal speak of finding the Bahrag and freeing them.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_sighting',
-      },
-    },
-    {
-      id: 'kopaka_race_to_nest',
-      section: 'Bohrok Kal',
-      title: 'Race to the Nest',
-      description:
-        'The Toa Nuva race to the Bohrok nest, hoping to reach it before the Kal. They plan to use the Exo-Toa armor to stop the Bohrok Kal from placing the Nuva symbols on the Nuva Cube.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_race_to_nest',
       },
     },
     {
@@ -792,7 +649,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols—and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Kopaka\'s power returns.',
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Kopaka\'s power returns.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -860,7 +717,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Beware the Bohrok',
       description:
-        'Fresh from the depths, the Toa expect peace—instead they find villages under attack from mechanical swarms. Lewa joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Lewa joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_swarm_intro',
@@ -871,7 +728,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Freed from the Krana',
       description:
-        'During the hunt for Krana, a Bohrok attaches its Krana to Lewa\'s face—and he is no longer himself. Compelled by the swarm\'s will, he turns against his brothers. Onua pursues him into the jungle and, through patience and strength, pries the Krana free. Lewa returns to his senses.',
+        'During the hunt for Krana, a Bohrok attaches its Krana to Lewa\'s face, and he is no longer himself. Compelled by the swarm\'s will, he turns against his brothers. Onua pursues him into the jungle and, through patience and strength, pries the Krana free. Lewa returns to his senses.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_lewa_krana_rescue',
@@ -904,21 +761,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Dawn of the Toa Nuva',
       description:
-        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins—only to be plunged into energized protodermis. Lewa emerges transformed, a Toa Nuva.',
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Lewa emerges transformed, a Toa Nuva.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_evolve_toa_nuva',
-      },
-    },
-    {
-      id: 'lewa_scattered_aid',
-      section: 'Bohrok Kal',
-      title: 'Scattered to the Villages',
-      description:
-        'The Toa Nuva agree to split up and help their villages with reconstruction. Lewa returns to Le-Wahi to lend his newfound strength to the effort.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_scattered_aid',
       },
     },
     {
@@ -926,32 +772,10 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Lewa\'s elemental power vanishes. His airborne display is cut short miles above Mata Nui—Kongu rescues him on a Gukko. The Toa of Air, grounded and helpless.',
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Lewa\'s elemental power vanishes. His airborne display is cut short miles above Mata Nui. Kongu rescues him on a Gukko. Alone and without his elemental powers, he is helpless.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
-      },
-    },
-    {
-      id: 'lewa_sighting_po_wahi',
-      section: 'Bohrok Kal',
-      title: 'Sighting in Po-Wahi',
-      description:
-        'Gali reveals that two Bohrok Kal were seen in Po-Wahi. The Toa give chase, splitting into two groups: one to pursue the Kal, the other to investigate the Bahrag. The Kal speak of finding the Bahrag and freeing them.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_sighting',
-      },
-    },
-    {
-      id: 'lewa_race_to_nest',
-      section: 'Bohrok Kal',
-      title: 'Race to the Nest',
-      description:
-        'The Toa Nuva race to the Bohrok nest, hoping to reach it before the Kal. They plan to use the Exo-Toa armor to stop the Bohrok Kal from placing the Nuva symbols on the Nuva Cube.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_kal_race_to_nest',
       },
     },
     {
@@ -959,7 +783,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols—and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Lewa\'s power returns.',
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Lewa\'s power returns.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -1031,17 +855,6 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_ta_koro_defense',
-      },
-    },
-    {
-      id: 'takua_legend_of_krana',
-      section: 'Bohrok War',
-      title: 'Legend of the Krana',
-      description:
-        'Having recognized the Bohrok from the old legends, Vakama gathers the Toa and reveals the ancient tale of the swarms and the Krana that control them. Takua listens as the Toa learn that only by collecting the Krana from each Bohrok type can they hope to reach the heart of the nests.',
-      unlockCondition: {
-        type: 'QUEST_COMPLETED',
-        questId: 'bohrok_legend_of_krana',
       },
     },
   ],
