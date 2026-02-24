@@ -526,7 +526,6 @@ export function queueCombatRound(
           currentEnemies = newActorList;
           setEnemies(currentEnemies);
         }
-        console.log(`${healedSelf.id} healed for ${healedSelf.hp - oldHp} HP`);
       }
 
       // CONFUSION: attack own allies instead of enemies (or self if alone)
@@ -623,12 +622,6 @@ export function queueCombatRound(
           await targetRef.playAnimation('Hit', { faceTargetId: self.id });
         }
       }
-
-      console.log(
-        `${self.id} (${actor.side}) attacked ${target.id} (${
-          isTeam ? 'enemy' : 'team'
-        }) for ${damage} damage → HP: ${target.hp} → ${updatedTarget.hp}`
-      );
     });
   }
 
