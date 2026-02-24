@@ -578,18 +578,13 @@ export function queueCombatRound(
 
       // Update both attacker and defender in their respective lists
       // When confused, target is in actorList (attacking allies), so update both in actorList
-      const newActorList = actorList.map((c) =>
+      // self already has turn-based effects decremented above
+      const nextActorList = actorList.map((c) =>
         c.id === self.id ? self : c.id === updatedTarget.id ? updatedTarget : c
       );
-      const newOpponentList = opponentList.map((t) =>
+      const nextOpponentList = opponentList.map((t) =>
         t.id === updatedTarget.id ? updatedTarget : t
       );
-
-      // Decrement turn-based debuffs - only for the actor whose turn it is
-      const nextActorList = newActorList.map((c) =>
-        c.id === self.id ? decrementEffectDurations(c, 'turn') : c
-      );
-      const nextOpponentList = newOpponentList;
 
       if (isTeam) {
         currentTeam = nextActorList;
