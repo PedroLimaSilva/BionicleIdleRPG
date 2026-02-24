@@ -456,10 +456,11 @@ function triggerMaskPowers(
         const clonedActor = { ...actor, maskPower: structuredClone(actor.maskPower) };
         newTurnOrder.push(clonedActor);
       }
-      console.log('activating mask power', actor.id, actor.maskPower.shortName);
-
       if (isTeam) {
-        currentTeam = currentTeam.map((t) => (t.id === actor.id ? actor : t));
+        // Merge maskPower updates into buffed caster (don't overwrite with actor—would drop buffs)
+        currentTeam = currentTeam.map((t) =>
+          t.id === actor.id ? { ...t, maskPower: actor.maskPower } : t
+        );
       } else {
         currentEnemies = currentEnemies.map((t) => (t.id === actor.id ? actor : t));
       }
