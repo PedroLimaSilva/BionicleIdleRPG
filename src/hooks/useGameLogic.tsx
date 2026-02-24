@@ -135,17 +135,19 @@ export const useGameLogic = (): GameState => {
     evolveBohrokToKal: (matoranId: RecruitedCharacterData['id']) => {
       const matoran = recruitedCharacters.find((m) => m.id === matoranId);
       if (!matoran || !canEvolveBohrokToKal(matoran)) return false;
-      if (widgets < BOHROK_KAL_EVOLUTION_COST) return false;
 
-      setWidgets((prev) => prev - BOHROK_KAL_EVOLUTION_COST);
-      const evolved = evolveBohrokToKal(matoran);
-      setRecruitedCharacters((prev) =>
-        prev.map((m) => (m.id === matoranId ? evolved : m))
-      );
-      addActivityLog(
-        `${MATORAN_DEX[matoranId]?.name ?? matoranId} evolved into ${MATORAN_DEX[evolved.id]?.name ?? evolved.id}!`,
-        LogType.Event
-      );
+      setWidgets((prev) => {
+        if (prev < BOHROK_KAL_EVOLUTION_COST) return prev;
+        const evolved = evolveBohrokToKal(matoran);
+        setRecruitedCharacters((prevChars) =>
+          prevChars.map((m) => (m.id === matoranId ? evolved : m))
+        );
+        addActivityLog(
+          `${MATORAN_DEX[matoranId]?.name ?? matoranId} evolved into ${MATORAN_DEX[evolved.id]?.name ?? evolved.id}!`,
+          LogType.Event
+        );
+        return prev - BOHROK_KAL_EVOLUTION_COST;
+      });
       return true;
     },
     applyBattleRewards: (params: BattleRewardParams) => {

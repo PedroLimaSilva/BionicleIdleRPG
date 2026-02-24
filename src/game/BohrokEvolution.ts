@@ -6,14 +6,7 @@ import { getLevelFromExp } from './Levelling';
 export const BOHROK_KAL_LEVEL = 100;
 export const BOHROK_KAL_EVOLUTION_COST = 5000;
 
-const BOHROK_TO_KAL_ID: Record<string, string> = {
-  tahnok: 'tahnok_kal',
-  gahlok: 'gahlok_kal',
-  lehvak: 'lehvak_kal',
-  pahrak: 'pahrak_kal',
-  nuhvok: 'nuhvok_kal',
-  kohrak: 'kohrak_kal',
-};
+const BOHROK_KAL_SUFFIX = '_kal';
 
 /**
  * Returns true if the Bohrok can evolve to Bohrok Kal (level 100 reached).
@@ -25,20 +18,16 @@ export function canEvolveBohrokToKal(matoran: RecruitedCharacterData): boolean {
   }
 
   const level = getLevelFromExp(matoran.exp);
-  return level >= BOHROK_KAL_LEVEL && !!BOHROK_TO_KAL_ID[matoran.id];
+  return level >= BOHROK_KAL_LEVEL && !matoran.id.endsWith(BOHROK_KAL_SUFFIX);
 }
 
 /**
  * Returns the evolved Bohrok Kal character data. Call only when canEvolveBohrokToKal is true.
  */
 export function evolveBohrokToKal(matoran: RecruitedCharacterData): RecruitedCharacterData {
-  const evolvedId = BOHROK_TO_KAL_ID[matoran.id];
-  if (!evolvedId) {
-    return matoran;
-  }
-
+  if (matoran.id.endsWith(BOHROK_KAL_SUFFIX)) return matoran;
   return {
     ...matoran,
-    id: evolvedId,
+    id: `${matoran.id}${BOHROK_KAL_SUFFIX}`,
   };
 }

@@ -219,7 +219,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   },
   [MatoranJob.LeKoroRebuilder]: {
     label: '🌲 Le-Koro Rebuilder',
-    description: 'Rebuilds tree-dwellings and restores chute systems in Le-Koro.',
+    description: 'Rebuilds tree-dwellings and restores village structures in Le-Koro.',
     rate: 1.5,
     elementAffinity: {
       favored: [ElementTribe.Air],
@@ -252,7 +252,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   },
   [MatoranJob.KoKoroRebuilder]: {
     label: '❄️ Ko-Koro Rebuilder',
-    description: 'Repairs ice structures and restores stasis systems in Ko-Koro.',
+    description: 'Repairs ice structures and restores village buildings in Ko-Koro.',
     rate: 1.5,
     elementAffinity: {
       favored: [ElementTribe.Ice],

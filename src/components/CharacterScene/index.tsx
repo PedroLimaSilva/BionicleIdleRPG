@@ -9,7 +9,12 @@ import { useSettings } from '../../context/Settings';
 import { shouldEnableSelectiveBloom } from '../../utils/testMode';
 import { CYLINDER_RADIUS } from './BoundsCylinder';
 
-import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
+import {
+  BaseMatoran,
+  MatoranStage,
+  RecruitedCharacterData,
+} from '../../types/Matoran';
+import { isBohrokOrKal } from '../../services/matoranUtils';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
 import { GaliMataModel } from './Mata/GaliMataModel';
 import { PohatuMataModel } from './Mata/PohatuMataModel';
@@ -41,6 +46,14 @@ function EnvironmentIntensity({ value }: { value: number }) {
 }
 
 function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
+  if (isBohrokOrKal(matoran)) {
+    return (
+      <group scale={4.5} position={[0, 5.6, -3.5]}>
+        <BohrokModel name={matoran.name.replace(/\s+Kal$/, '')} />
+      </group>
+    );
+  }
+
   switch (matoran.stage) {
     case MatoranStage.ToaMata:
       switch (matoran.id) {
@@ -74,14 +87,6 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
         default:
           return <TahuNuvaModel matoran={matoran} />;
       }
-    case MatoranStage.BohrokKal:
-    case MatoranStage.Bohrok:
-    case MatoranStage.BohrokKal:
-      return (
-        <group scale={4.5} position={[0, 5.6, -3.5]}>
-          <BohrokModel id={matoran.id} />
-        </group>
-      );
     case MatoranStage.Diminished:
     default:
       return <DiminishedMatoranModel matoran={matoran} />;
