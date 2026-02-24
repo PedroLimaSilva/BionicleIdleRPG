@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { enableTestMode, goto, INITIAL_GAME_STATE, setupGameState, deviceHover } from './helpers';
+import { enableTestMode, goto, INITIAL_GAME_STATE, setupGameState } from './helpers';
 
 const INVENTORY_GAME_STATE = {
   ...INITIAL_GAME_STATE,
@@ -27,7 +27,7 @@ test.describe('Inventory Page', () => {
     });
   });
 
-  test('should display inventory page', async ({ page }, testInfo) => {
+  test('should display inventory page', async ({ page }) => {
     await setupGameState(page, INVENTORY_GAME_STATE);
     await goto(page, '/inventory');
 
@@ -37,9 +37,7 @@ test.describe('Inventory Page', () => {
       .waitFor({ state: 'visible', timeout: 10000 });
 
     const firstItem = page.locator('.inventory-item').first();
-
-    // Mobile: tap, Desktop: hover
-    await deviceHover(firstItem, testInfo);
+    await firstItem.hover();
 
     // Take a screenshot
     await expect(page).toHaveScreenshot('inventory-page.png', {

@@ -22,6 +22,7 @@ export const enum Mask {
   Rau = 'Rau',
   Matatu = 'Matatu',
   Mahiki = 'Mahiki',
+  Vahi = 'Vahi',
 }
 
 export enum ElementTribe {
@@ -46,7 +47,7 @@ export const enum MatoranStage {
   Rebuilt = 'Rebuilt',
   Metru = 'Metru',
   Bohrok = 'Bohrok',
-  BohrokKal = 'Bohrok Kal',
+  BohrokKal = 'BohrokKal',
 }
 
 // Static data for any Matoran
@@ -82,7 +83,6 @@ export type RecruitedCharacterData = {
   assignment?: JobAssignment;
   quest?: Quest['id'];
   maskOverride?: Mask;
-  maskColorOverride?: LegoColor;
 };
 
 export type ItemRequirement = {

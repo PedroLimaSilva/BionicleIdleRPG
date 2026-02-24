@@ -1,44 +1,52 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { useGLTF } from '@react-three/drei';
-import { Color, LegoColor } from '../../types/Colors';
+import { Color } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
+import { MATORAN_DEX } from '../../data/matoran';
 
-const BOHROK_COLORS: Record<string, { main: LegoColor; secondary: LegoColor; eyes: LegoColor }> = {
-  Tahnok: {
-    main: LegoColor.Red,
-    secondary: LegoColor.Orange,
-    eyes: LegoColor.Blue,
-  },
-  Gahlok: {
-    main: LegoColor.Blue,
-    secondary: LegoColor.MediumBlue,
-    eyes: LegoColor.Orange,
-  },
-  Lehvak: {
-    main: LegoColor.Green,
-    secondary: LegoColor.Lime,
-    eyes: LegoColor.Red,
-  },
-  Pahrak: {
-    main: LegoColor.Brown,
-    secondary: LegoColor.Tan,
-    eyes: LegoColor.Green,
-  },
-  Nuhvok: {
-    main: LegoColor.Black,
-    secondary: LegoColor.DarkGray,
-    eyes: LegoColor.Lime,
-  },
-  Kohrak: {
-    main: LegoColor.White,
-    secondary: LegoColor.LightGray,
-    eyes: LegoColor.MediumBlue,
-  },
-};
+/** Cache key: materialName + color. Shared across all Bohrok instances with same scheme. */
+const bohrokMaterialCache = new Map<string, MeshStandardMaterial>();
 
-export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({ name }, ref) => {
+function getBohrokMaterial(
+  original: MeshStandardMaterial,
+  colorScheme: { body: string; arms: string; eyes: string }
+): MeshStandardMaterial {
+  const name = original.name;
+  let color: string;
+  let cacheKey: string;
+
+  if (name === 'Bohrok_Main') {
+    color = colorScheme.body;
+    cacheKey = `Bohrok_Main_${color}`;
+  } else if (name === 'Bohrok_Secondary') {
+    color = colorScheme.arms;
+    cacheKey = `Bohrok_Secondary_${color}`;
+  } else if (name === 'Bohrok_Eye' || name === 'Bohrok_Iris') {
+    color = colorScheme.eyes;
+    cacheKey = `${name}_${color}`;
+  } else if (name === 'Krana') {
+    color = colorScheme.eyes;
+    cacheKey = `Krana_${color}`;
+  } else {
+    // Unknown material: leave as-is, came from GLTF as needed
+    return original;
+  }
+
+  let mat = bohrokMaterialCache.get(cacheKey);
+  if (!mat) {
+    mat = original.clone();
+    mat.color.set(color as Color);
+    if (name === 'Bohrok_Eye' || name === 'Bohrok_Iris') {
+      mat.emissive.set(color as Color);
+    }
+    bohrokMaterialCache.set(cacheKey, mat);
+  }
+  return mat;
+}
+
+export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ id }, ref) => {
   const group = useRef<Group>(null);
 
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'bohrok_master.glb');
@@ -46,7 +54,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
   const bodyInstance = useMemo(() => nodes.Body.clone(true), [nodes]);
 
   const { playAnimation } = useCombatAnimations(animations, group, {
-    modelId: name,
+    modelId: id,
     actionTimeScale: 2,
     transitionMode: 'stopAll',
     attackResolveAtFraction: 0.1,
@@ -55,34 +63,16 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
   useImperativeHandle(ref, () => ({ playAnimation }));
 
   useEffect(() => {
-    const colorScheme = BOHROK_COLORS[name];
+    const colorScheme = MATORAN_DEX[id].colors;
 
     bodyInstance.traverse((child) => {
       if (!(child instanceof Mesh)) return;
 
       const originalMaterial = child.material as MeshStandardMaterial;
-      const cloned = originalMaterial.clone();
-
-      // Set custom color logic based on mesh name or usage
-      if (cloned.name === 'Bohrok_Main') {
-        cloned.color.set(colorScheme.main as Color);
-      } else if (cloned.name === 'Bohrok_Secondary') {
-        cloned.color.set(colorScheme.secondary as Color);
-      } else if (
-        cloned.name === 'Bohrok_Eye' ||
-        cloned.name === 'Bohrok_Iris' ||
-        cloned.name === 'Krana'
-      ) {
-        cloned.color.set(colorScheme.eyes as Color);
-        if (cloned.name === 'Bohrok_Eye' || cloned.name === 'Bohrok_Iris') {
-          cloned.emissive.set(colorScheme.eyes as Color);
-        }
-      }
-
-      child.material = cloned;
+      child.material = getBohrokMaterial(originalMaterial, colorScheme);
     });
 
-    const shieldTarget = name;
+    const shieldTarget = id.replace(/^./, (char) => char.toUpperCase());
     ['R', 'L'].forEach((suffix) => {
       bodyInstance.traverse((child) => {
         if (child.name === `Hand${suffix}`) {
@@ -93,7 +83,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { name: string }>(({
         }
       });
     });
-  }, [bodyInstance, name]);
+  }, [bodyInstance, id]);
 
   return (
     <group ref={group} dispose={null}>

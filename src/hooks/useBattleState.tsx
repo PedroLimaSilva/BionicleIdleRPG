@@ -73,7 +73,16 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   },
 };
 
-export const useBattleState = (): BattleState => {
+const TOA_NUVA_IDS = [
+  'Toa_Tahu_Nuva',
+  'Toa_Gali_Nuva',
+  'Toa_Pohatu_Nuva',
+  'Toa_Onua_Nuva',
+  'Toa_Kopaka_Nuva',
+  'Toa_Lewa_Nuva',
+] as const;
+
+export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   const [phase, setPhase] = useState<BattlePhase>(INITIAL_BATTLE_STATE.phase);
   const [currentEncounter, setCurrentEncounter] = useState<EnemyEncounter | undefined>(
     INITIAL_BATTLE_STATE.currentEncounter
@@ -165,9 +174,13 @@ export const useBattleState = (): BattleState => {
 
   const confirmTeam = (team: RecruitedCharacterData[]) => {
     setTeam(
-      team.map(({ id, exp, maskColorOverride, maskOverride }) =>
-        generateCombatantStats(id, id, getLevelFromExp(exp), maskOverride, maskColorOverride)
-      ) // add stats
+      team.map(({ id, exp, maskOverride }) =>
+        generateCombatantStats(id, id, getLevelFromExp(exp), {
+          maskOverride,
+          nuvaSymbolsSequestered:
+            nuvaSymbolsSequestered && TOA_NUVA_IDS.includes(id as (typeof TOA_NUVA_IDS)[number]),
+        })
+      )
     );
     setCurrentWave(0);
     setEnemies(

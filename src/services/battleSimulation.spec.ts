@@ -126,8 +126,8 @@ class BattleSimulator {
 
 /** Create team from recruited character data (like confirmTeam) */
 function createTeamFromRecruited(data: RecruitedCharacterData[]): Combatant[] {
-  return data.map(({ id, exp, maskColorOverride, maskOverride }) =>
-    generateCombatantStats(id, id, getLevelFromExp(exp), maskOverride, maskColorOverride)
+  return data.map(({ id, exp, maskOverride }) =>
+    generateCombatantStats(id, id, getLevelFromExp(exp), maskOverride)
   );
 }
 

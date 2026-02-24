@@ -207,6 +207,27 @@ describe('chooseTarget', () => {
 
       expect(combatant.maskPower?.effect.cooldown.amount).toBe(0);
     });
+
+    test('diminishes Toa Nuva stats when nuvaSymbolsSequestered', () => {
+      const full = generateCombatantStats('tahu-nuva', 'Toa_Tahu_Nuva', 10);
+      const sequestered = generateCombatantStats('tahu-nuva', 'Toa_Tahu_Nuva', 10, {
+        nuvaSymbolsSequestered: true,
+      });
+
+      expect(sequestered.maxHp).toBeLessThan(full.maxHp);
+      expect(sequestered.attack).toBeLessThan(full.attack);
+      expect(sequestered.defense).toBeLessThan(full.defense);
+      expect(sequestered.speed).toBeLessThan(full.speed);
+    });
+
+    test('does not diminish Toa Mata when nuvaSymbolsSequestered', () => {
+      const normal = generateCombatantStats('tahu', 'Toa_Tahu', 10);
+      const withFlag = generateCombatantStats('tahu', 'Toa_Tahu', 10, {
+        nuvaSymbolsSequestered: true,
+      });
+      expect(withFlag.maxHp).toBe(normal.maxHp);
+      expect(withFlag.attack).toBe(normal.attack);
+    });
   });
 
   // Skipping these tests as they are not actually testing the type effectiveness
