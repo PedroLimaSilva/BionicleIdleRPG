@@ -28,6 +28,21 @@ function setAbilities(team: Combatant[], ids: string[], use: boolean): Combatant
   );
 }
 
+/** Add full immunity (DMG_MITIGATOR multiplier 0) for given rounds. Ensures no combatants die. */
+function addImmunityBuff(team: Combatant[], rounds: number): Combatant[] {
+  const buff = {
+    type: 'DMG_MITIGATOR' as const,
+    multiplier: 0,
+    durationRemaining: rounds,
+    durationUnit: 'round' as const,
+    sourceId: 'test-immunity',
+  };
+  return team.map((t) => ({
+    ...t,
+    buffs: [...(t.buffs ?? []), buff],
+  }));
+}
+
 /**
  * Battle simulator - runs combat rounds without React, for unit testing.
  * Mirrors the logic in useBattleState + queueCombatRound.
@@ -801,12 +816,15 @@ describe('Battle Simulation', () => {
     });
 
     test('active mask power does NOT re-trigger when willUseAbility is false', async () => {
-      // Kaukau Nuva: 2-turn HEAL buff on team.
-      const team = createTeamFromRecruited([
-        { id: 'Toa_Gali', exp: 0, maskOverride: Mask.KaukauNuva },
-        { id: 'Toa_Tahu', exp: 0 },
-        { id: 'Toa_Onua', exp: 0 },
-      ]);
+      // Kaukau Nuva: 2-turn HEAL buff on team. Immunity buff ensures no combatants die.
+      const team = addImmunityBuff(
+        createTeamFromRecruited([
+          { id: 'Toa_Gali', exp: 0, maskOverride: Mask.KaukauNuva },
+          { id: 'Toa_Tahu', exp: 0 },
+          { id: 'Toa_Onua', exp: 0 },
+        ]),
+        2
+      );
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -822,18 +840,18 @@ describe('Battle Simulation', () => {
         (sum, t) => sum + (t.buffs?.filter((b) => b.type === 'HEAL').length ?? 0),
         0
       );
-      expect(buffCountAfterRound1).toBeGreaterThanOrEqual(1);
+      expect(buffCountAfterRound1).toBe(3);
 
       // Round 2: do NOT activate - willUseAbility stays false for everyone
       sim.team = setAbilities(sim.team, [], false);
       await sim.runRound();
 
-      // Must NOT have re-applied buffs (would stack if re-triggered)
+      // Must NOT have re-applied buffs (would stack to 6 if re-triggered)
       const buffCountAfterRound2 = sim.team.reduce(
         (sum, t) => sum + (t.buffs?.filter((b) => b.type === 'HEAL').length ?? 0),
         0
       );
-      expect(buffCountAfterRound2).toBeLessThanOrEqual(buffCountAfterRound1);
+      expect(buffCountAfterRound2).toBeLessThanOrEqual(3);
     });
   });
 });
