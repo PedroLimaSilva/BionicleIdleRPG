@@ -146,14 +146,14 @@ interface TransitionState {
 export function useMask(
   masksParent: Object3D | undefined,
   maskName: string,
-  matoran: BaseMatoran & { maskColorOverride?: string; maskOverride?: string },
+  matoran: BaseMatoran & { maskOverride?: string },
   glowColor?: string
 ) {
   const { completedQuests } = useGame();
   const maskColor =
     matoran.stage === MatoranStage.ToaMata
       ? getEffectiveMataMaskColor(matoran, completedQuests)
-      : (matoran.maskColorOverride ?? matoran.colors.mask);
+      : matoran.colors.mask;
   const [masksNodes, setMasksNodes] = useState<Record<string, Object3D> | null>(masksNodesCache);
   const maskRef = useRef<Object3D | null>(null);
   const prevMaskNameRef = useRef<string | null>(null);

@@ -15,7 +15,7 @@ When recruited characters evolve (e.g., Toa Mata → Toa Nuva), their **ID chang
 ## Problem
 
 - Evolution changes: **model**, **base stats**, **name** (stage-specific).
-- Evolution *does not* change: **chronicle** (same person, same story).
+- Evolution _does not_ change: **chronicle** (same person, same story).
 - Keeping chronicles inline leads to duplication when adding `Toa_Tahu_Nuva`, `Toa_Gali_Nuva`, etc.
 
 ---
@@ -77,12 +77,12 @@ export type BaseMatoran = {
 
 ### 3. MATORAN_DEX: Evolved Forms as New Entries, Same Chronicle
 
-| Evolution              | Matoran Dex ID       | Chronicle ID |
-|------------------------|----------------------|--------------|
-| Tahu (Mata)            | `Toa_Tahu`           | `tahu`       |
-| Tahu (Nuva)            | `Toa_Tahu_Nuva`      | `tahu`       |
-| Takua (Diminished)     | `Takua`              | `takua`      |
-| Takua (future form)    | `Takua_Turaga` (etc.)| `takua`      |
+| Evolution           | Matoran Dex ID        | Chronicle ID |
+| ------------------- | --------------------- | ------------ |
+| Tahu (Mata)         | `Toa_Tahu`            | `tahu`       |
+| Tahu (Nuva)         | `Toa_Tahu_Nuva`       | `tahu`       |
+| Takua (Diminished)  | `Takua`               | `takua`      |
+| Takua (future form) | `Takua_Turaga` (etc.) | `takua`      |
 
 Each dex entry has its own: model key, stats, name, colors. All share the same `chronicleId` for that character.
 
@@ -112,7 +112,7 @@ export function getCharacterChronicle(
 
 When a character evolves (e.g., via quest reward):
 
-1. **Update `recruitedCharacters`**: Replace the old id with the new one; drop `maskOverride` and `maskColorOverride`.
+1. **Update `recruitedCharacters`**: Replace the old id with the new one; drop `maskOverride`.
    ```typescript
    // Before: { id: 'Toa_Tahu', exp: 5000, maskOverride: Mask.Miru, ... }
    // After:  { id: 'Toa_Tahu_Nuva', exp: 5000, ... }
@@ -126,7 +126,7 @@ When a character evolves (e.g., via quest reward):
 ## Data Migration
 
 - **MATORAN_DEX**: Remove inline `chronicle`, add `chronicleId` to each entry that had chronicles.
-- **Save migration**: Not required for chronicle refactoring. If we add evolution *after* this refactor, a future migration would handle `recruitedCharacters` id updates when evolving (e.g., v10 migration).
+- **Save migration**: Not required for chronicle refactoring. If we add evolution _after_ this refactor, a future migration would handle `recruitedCharacters` id updates when evolving (e.g., v10 migration).
 
 ---
 
@@ -138,18 +138,18 @@ Evolutions are **surprise twists**—they should not be exposed in the UI (e.g. 
 
 ## Implementation Order
 
-1. **Phase 1 – Chronicle extraction** ✅ *Completed*
+1. **Phase 1 – Chronicle extraction** ✅ _Completed_
    - Create `src/data/chronicles.ts` with `CHRONICLES_BY_ID` and `CHRONICLE_IDS`.
    - Add `chronicleId` to `BaseMatoran`, remove `chronicle`.
    - Update `chronicleUtils.ts` to resolve via chronicle ID.
    - Update `matoran.ts` to use `chronicleId` instead of inline chronicle.
    - Run tests and fix any breakage.
 
-2. **Phase 2 – Evolution-ready dex entries** ✅ *Completed*
+2. **Phase 2 – Evolution-ready dex entries** ✅ _Completed_
    - Add `Toa_Tahu_Nuva` (and other Nuva) entries to MATORAN_DEX.
    - Add `ToaTahuNuvaModel`, `ToaGaliNuvaModel` to `CharacterScene`; others use placeholder; wire stage/id branching.
 
-3. **Phase 3 – Evolution mechanics** ✅ *Completed*
+3. **Phase 3 – Evolution mechanics** ✅ _Completed_
    - Quest reward `evolution` field maps participant dex IDs to evolved forms.
    - `completeQuest` applies evolution: replace id, drop mask overrides, preserve EXP/assignment/quest.
    - Activity log records evolution events.
