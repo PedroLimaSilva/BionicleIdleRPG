@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { useGame } from '../context/Game';
@@ -8,32 +7,12 @@ import { getEffectiveNuvaMaskColor } from '../game/maskColor';
 
 const NUVA_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/masks.glb';
 
-// Module-level cache
-let nuvaMasksNodesCache: Record<string, Object3D> | null = null;
-let nuvaMasksLoadPromise: Promise<Record<string, Object3D>> | null = null;
-
-function loadNuvaMasksNodes(): Promise<Record<string, Object3D>> {
-  if (nuvaMasksNodesCache) return Promise.resolve(nuvaMasksNodesCache);
-  if (nuvaMasksLoadPromise) return nuvaMasksLoadPromise;
-
-  nuvaMasksLoadPromise = new Promise((resolve, reject) => {
-    const loader = new GLTFLoader();
-    loader.load(
-      NUVA_MASKS_GLB_PATH,
-      (gltf) => {
-        const nodes: Record<string, Object3D> = {};
-        gltf.scene.traverse((child) => {
-          if (child.name) nodes[child.name] = child;
-        });
-        nuvaMasksNodesCache = nodes;
-        resolve(nodes);
-      },
-      undefined,
-      reject
-    );
+function buildNuvaMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
+  const nodes: Record<string, Object3D> = {};
+  gltf.scene.traverse((child) => {
+    if (child.name) nodes[child.name] = child;
   });
-
-  return nuvaMasksLoadPromise;
+  return nodes;
 }
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
@@ -87,24 +66,9 @@ export function useNuvaMask(
   const maskFileName = getMaskFileName(maskName);
   const maskColor = getEffectiveNuvaMaskColor(matoran, completedQuests);
 
-  const [masksNodes, setMasksNodes] = useState<Record<string, Object3D> | null>(
-    nuvaMasksNodesCache
-  );
+  const gltf = useGLTF(NUVA_MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
+  const masksNodes = useMemo(() => buildNuvaMaskNodes(gltf), [gltf]);
   const maskRef = useRef<Object3D | null>(null);
-
-  useEffect(() => {
-    if (nuvaMasksNodesCache) {
-      setMasksNodes(nuvaMasksNodesCache);
-      return;
-    }
-    let cancelled = false;
-    loadNuvaMasksNodes().then((nodes) => {
-      if (!cancelled) setMasksNodes(nodes);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   useEffect(() => {
     if (!masksNodes || !masksParent) return;
@@ -154,6 +118,5 @@ export function useNuvaMask(
 }
 
 useNuvaMask.preload = () => {
-  loadNuvaMasksNodes();
-  useGLTF.preload(NUVA_MASKS_GLB_PATH);
+  useGLTF.preload(NUVA_MASKS_GLB_PATH); // useDraco=true by default
 };
