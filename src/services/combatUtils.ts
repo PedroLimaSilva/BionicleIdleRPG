@@ -113,7 +113,13 @@ export function calculateAtkDmg(
   defender: Combatant,
   attackerSide?: 'team' | 'enemy'
 ): number {
-  let rawDamage = Math.max(1, attacker.attack - defender.defense);
+  // DEFENSE multiplies the defense stat: >1 = fortify, <1 = weaken
+  let defenseMult = 1;
+  for (const e of defender.effects ?? []) {
+    if (e.durationRemaining > 0 && e.type === 'DEFENSE') defenseMult *= e.multiplier;
+  }
+  const effectiveDefense = defender.defense * defenseMult;
+  let rawDamage = Math.max(1, attacker.attack - effectiveDefense);
 
   // Apply attacker's ATK_MULT (mask power or buff, e.g. Pakari / Pakari Nuva)
   const atkMult = attacker.maskPower?.active &&
@@ -132,14 +138,14 @@ export function calculateAtkDmg(
 }
 
 export function applyDamage(target: Combatant, damage: number): Combatant {
-  // All damage-taken modifiers (DEFENSE weaken/fortify, DMG_MITIGATOR shield) applied by value
+  // DMG_MITIGATOR multiplies final damage (0 = immunity, 0.5 = half, 1 = normal)
   let mult = 1;
   if (target.maskPower?.active && target.maskPower.effect.type === 'DMG_MITIGATOR' && target.maskPower.effect.multiplier !== undefined) {
     mult *= target.maskPower.effect.multiplier;
   }
   for (const e of target.effects ?? []) {
     if (e.durationRemaining <= 0) continue;
-    if (e.type === 'DMG_MITIGATOR' || e.type === 'DEFENSE') mult *= e.multiplier;
+    if (e.type === 'DMG_MITIGATOR') mult *= e.multiplier;
   }
   const finalDamage = Math.floor(damage * mult);
 

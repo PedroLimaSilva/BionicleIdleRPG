@@ -12,8 +12,8 @@ Combat logic does not branch on "buff vs debuff"—it simply applies the effect 
 | Type | Trigger | Value semantics | Example |
 |------|---------|-----------------|---------|
 | **HEAL** | End/start of turn | `hp += maxHp * multiplier`; positive = heal, negative = poison | 0.1 = heal 10%, -0.1 = lose 10% HP |
-| **DEFENSE** | Damage calculation (defender) | `damage *= multiplier`; >1 = weaken, <1 = fortify | 1.5 = take 50% more, 0.5 = take 50% less |
-| **DMG_MITIGATOR** | Damage calculation (defender) | Same as DEFENSE; 0 = immunity | 0 = no damage, 0.5 = half damage |
+| **DEFENSE** | Damage calculation (defender) | Multiplies defense stat: `effectiveDefense = defense * multiplier`; >1 = fortify, <1 = weaken | 1.5 = 50% more defense, 0.5 = half defense |
+| **DMG_MITIGATOR** | Damage calculation (defender) | Multiplies final damage; 0 = immunity | 0 = no damage, 0.5 = half damage |
 | **ATK_MULT** | Damage calculation (attacker) | `damage *= multiplier` | 2 = deal double, 0.5 = deal half |
 | **SPEED** | Turn order determination | Adds/removes turns | 2 = extra turn, -1 = skip turn |
 | **AGGRO** | Target choice | multiplier 0 = untargetable | Affects who can be selected |
@@ -27,6 +27,7 @@ Combat logic does not branch on "buff vs debuff"—it simply applies the effect 
 
 ## Implementation Notes
 
-- **Damage-taken effects** (DEFENSE, DMG_MITIGATOR) are applied together in `applyDamage` by multiplying. No separate handling for "buff" vs "debuff".
+- **DEFENSE** multiplies the defender's defense stat in `calculateAtkDmg` (effectiveDefense = defense × multiplier). >1 = fortify, <1 = weaken.
+- **DMG_MITIGATOR** multiplies final damage in `applyDamage` (shield; 0 = immunity).
 - **HEAL** supports negative multiplier (poison); `hp` is clamped to `[0, maxHp]`.
 - **Future**: DEFENSE and DMG_MITIGATOR could merge into a single `DAMAGE_TAKEN` type—both multiply incoming damage. The distinction (Akaku weakens vs Hau shields) is only in mask flavor; the math is identical.

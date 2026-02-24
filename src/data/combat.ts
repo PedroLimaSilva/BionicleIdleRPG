@@ -5,13 +5,13 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   [Mask.Akaku]: {
     shortName: Mask.Akaku,
     longName: 'Mask of X-Ray Vision',
-    description: 'Marks target; allies deal +50% damage to them for 2 rounds',
+    description: 'Marks target; halves their effective defense for 2 rounds',
     effect: {
       duration: { amount: 1, unit: 'attack' },
       cooldown: { amount: 4, unit: 'turn' },
       type: 'DEBUFF',
       debuffType: 'DEFENSE',
-      multiplier: 1.5,
+      multiplier: 0.5,
       target: 'enemy',
       debuffDuration: { amount: 2, unit: 'round' },
     },

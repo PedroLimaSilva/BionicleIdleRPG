@@ -77,14 +77,14 @@ describe('Mask Powers - Combat Mechanics', () => {
     });
 
     describe('Akaku - Mask of X-Ray Vision (DEBUFF DEFENSE)', () => {
-      test('DEFENSE effect increases damage taken (value-based, applied in applyDamage)', () => {
+      test('DEFENSE effect multiplies defense stat: <1 = weaken, >1 = fortify', () => {
         const attacker = generateCombatantStats('tahu', 'Toa_Tahu', 1);
-        const debuffedDefender: Combatant = {
+        const weakenedDefender: Combatant = {
           ...defender,
           effects: [
             {
               type: 'DEFENSE',
-              multiplier: 1.5,
+              multiplier: 0.5,
               durationRemaining: 2,
               durationUnit: 'round',
               sourceId: 'caster',
@@ -92,13 +92,10 @@ describe('Mask Powers - Combat Mechanics', () => {
           ],
         };
 
-        const baseDamage = calculateAtkDmg(attacker, defender);
-        const normalResult = applyDamage(defender, baseDamage);
-        const debuffedResult = applyDamage(debuffedDefender, baseDamage);
+        const normalDamage = calculateAtkDmg(attacker, defender);
+        const weakenedDamage = calculateAtkDmg(attacker, weakenedDefender);
 
-        const normalLost = defender.hp - normalResult.hp;
-        const debuffedLost = debuffedDefender.hp - debuffedResult.hp;
-        expect(debuffedLost).toBe(Math.floor(normalLost * 1.5));
+        expect(weakenedDamage).toBeGreaterThan(normalDamage);
       });
     });
   });
