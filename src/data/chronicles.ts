@@ -75,6 +75,94 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         questId: 'story_kini_nui_descent',
       },
     },
+    {
+      id: 'tahu_bohrok_awakening',
+      section: 'Bohrok War',
+      title: 'Beware the Bohrok',
+      description:
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Rushing to Ta-Koro, Tahu clashes with the Bohrok for the first time and realizes a new threat has awakened.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_swarm_intro',
+      },
+    },
+    {
+      id: 'tahu_siege_ta_koro',
+      section: 'Bohrok War',
+      title: 'Siege of Ta-Koro',
+      description:
+        'As the Kohrak besiege his village, Tahu ambushes the swarm and drives them into the lava moat. Vakama, seeing the mechanical invaders firsthand, recognizes them from the old legends. The awakening he feared has come.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_ta_koro_defense',
+      },
+    },
+    {
+      id: 'tahu_krana_hunt',
+      section: 'Bohrok War',
+      title: 'Hunt for the Krana',
+      description:
+        'Heeding Vakama\'s warning, Tahu returns to Ta-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_krana_hunt',
+      },
+    },
+    {
+      id: 'tahu_into_bohrok_nest',
+      section: 'Bohrok War',
+      title: 'Into the Bohrok Nest',
+      description:
+        'With the Krana gathered, the Toa descend into the Bohrok nest beneath the island. Tahu leads the way into the darkness, toward the queens of the swarm.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_into_the_bohrok_nest',
+      },
+    },
+    {
+      id: 'tahu_dawn_of_nuva',
+      section: 'Bohrok War',
+      title: 'Dawn of the Toa Nuva',
+      description:
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Tahu emerges transformed, as Toa Nuva.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_evolve_toa_nuva',
+      },
+    },
+    {
+      id: 'tahu_vahi_entrusted',
+      section: 'Bohrok Kal',
+      title: 'The Vahi Entrusted',
+      description:
+        'While Ta-Koro repairs, a strange symbol appears on the Toa Suva. Vakama recognizes it and gives Tahu the Vahi, the Mask of Time But he must keep it secret and use only it in the direst emergency.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_reconstruction',
+      },
+    },
+    {
+      id: 'tahu_symbols_stolen',
+      section: 'Bohrok Kal',
+      title: 'Power Stripped Away',
+      description:
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Tahu\'s elemental power vanishes. Buried by rubble when he tries to stop one of the Kal. Alone and without his elemental powers, he is helpless.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_stolen_symbols',
+      },
+    },
+    {
+      id: 'tahu_at_nuva_cube',
+      section: 'Bohrok Kal',
+      title: 'At the Nuva Cube',
+      description:
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. Their Krana-Kal turn silver and project a force field. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Tahu\'s power returns.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_final_confrontation',
+      },
+    },
   ],
   [CHRONICLE_IDS.GALI]: [
     {
@@ -121,6 +209,72 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         questId: 'story_kini_nui_descent',
       },
     },
+    {
+      id: 'gali_bohrok_awakening',
+      section: 'Bohrok War',
+      title: 'Beware the Bohrok',
+      description:
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Gali joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_swarm_intro',
+      },
+    },
+    {
+      id: 'gali_krana_hunt',
+      section: 'Bohrok War',
+      title: 'Hunt for the Krana',
+      description:
+        'Heeding Vakama\'s warning, Gali returns to Ga-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_krana_hunt',
+      },
+    },
+    {
+      id: 'gali_into_bohrok_nest',
+      section: 'Bohrok War',
+      title: 'Into the Bohrok Nest',
+      description:
+        'With the Krana gathered, the Toa descend into the Bohrok nest beneath the island. Gali trusts in Unity as they advance toward the queens of the swarm.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_into_the_bohrok_nest',
+      },
+    },
+    {
+      id: 'gali_dawn_of_nuva',
+      section: 'Bohrok War',
+      title: 'Dawn of the Toa Nuva',
+      description:
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Gali emerges transformed, a Toa Nuva.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_evolve_toa_nuva',
+      },
+    },
+    {
+      id: 'gali_symbols_stolen',
+      section: 'Bohrok Kal',
+      title: 'Power Stripped Away',
+      description:
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Gali\'s elemental power vanishes. Nearly drowned by a tidal wave she can no longer control, she is alone and helpless.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_stolen_symbols',
+      },
+    },
+    {
+      id: 'gali_at_nuva_cube',
+      section: 'Bohrok Kal',
+      title: 'At the Nuva Cube',
+      description:
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Gali\'s power returns.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_final_confrontation',
+      },
+    },
   ],
   [CHRONICLE_IDS.POHATU]: [
     {
@@ -139,7 +293,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Arrival on Mata Nui',
       title: 'Footfalls on the Ice Cliff',
       description:
-        'Chasing Rahi tracks from the desert into Ko-Wahi, Pohatu collides—literally and figuratively—with Kopaka as they uncover a mask on a perilous cliffside.',
+        'Chasing Rahi tracks from the desert into Ko-Wahi, Pohatu collides, literally and figuratively, with Kopaka as they uncover a mask on a perilous cliffside.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'maskhunt_kopaka_pohatu_icecliff',
@@ -176,6 +330,72 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'story_kini_nui_descent',
+      },
+    },
+    {
+      id: 'pohatu_bohrok_awakening',
+      section: 'Bohrok War',
+      title: 'Beware the Bohrok',
+      description:
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Pohatu joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_swarm_intro',
+      },
+    },
+    {
+      id: 'pohatu_krana_hunt',
+      section: 'Bohrok War',
+      title: 'Hunt for the Krana',
+      description:
+        'Heeding Vakama\'s warning, Pohatu returns to Po-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_krana_hunt',
+      },
+    },
+    {
+      id: 'pohatu_into_bohrok_nest',
+      section: 'Bohrok War',
+      title: 'Into the Bohrok Nest',
+      description:
+        'With the Krana gathered, the Toa descend into the Bohrok nest beneath the island. Pohatu brings his unshakable footing to the descent toward the queens of the swarm.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_into_the_bohrok_nest',
+      },
+    },
+    {
+      id: 'pohatu_dawn_of_nuva',
+      section: 'Bohrok War',
+      title: 'Dawn of the Toa Nuva',
+      description:
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Pohatu emerges transformed, a Toa Nuva.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_evolve_toa_nuva',
+      },
+    },
+    {
+      id: 'pohatu_symbols_stolen',
+      section: 'Bohrok Kal',
+      title: 'Power Stripped Away',
+      description:
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Pohatu\'s elemental power vanishes. The Toa of Stone, who once ran faster than the wind, is alone and helpless.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_stolen_symbols',
+      },
+    },
+    {
+      id: 'pohatu_at_nuva_cube',
+      section: 'Bohrok Kal',
+      title: 'At the Nuva Cube',
+      description:
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Pohatu\'s power returns.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_final_confrontation',
       },
     },
   ],
@@ -235,6 +455,83 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         questId: 'story_kini_nui_descent',
       },
     },
+    {
+      id: 'onua_bohrok_awakening',
+      section: 'Bohrok War',
+      title: 'Beware the Bohrok',
+      description:
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Onua joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_swarm_intro',
+      },
+    },
+    {
+      id: 'onua_freed_lewa',
+      section: 'Bohrok War',
+      title: 'Freed from the Krana',
+      description:
+        'When a Bohrok attaches its Krana to Lewa\'s face, the Toa of Air turns against his brothers. Onua, steady and grounded, pursues him into the jungle. Through patience and strength, he pries the Krana free and restores Lewa to his senses.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_lewa_krana_rescue',
+      },
+    },
+    {
+      id: 'onua_krana_hunt',
+      section: 'Bohrok War',
+      title: 'Hunt for the Krana',
+      description:
+        'Heeding Vakama\'s warning, Onua returns to Onu-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_krana_hunt',
+      },
+    },
+    {
+      id: 'onua_into_bohrok_nest',
+      section: 'Bohrok War',
+      title: 'Into the Bohrok Nest',
+      description:
+        'With the Krana gathered, the Toa descend into the Bohrok nest beneath the island. Onua leads the way through stone and darkness toward the queens of the swarm.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_into_the_bohrok_nest',
+      },
+    },
+    {
+      id: 'onua_dawn_of_nuva',
+      section: 'Bohrok War',
+      title: 'Dawn of the Toa Nuva',
+      description:
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Onua emerges transformed, a Toa Nuva.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_evolve_toa_nuva',
+      },
+    },
+    {
+      id: 'onua_symbols_stolen',
+      section: 'Bohrok Kal',
+      title: 'Power Stripped Away',
+      description:
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Onua\'s elemental power vanishes. The Toa of Earth, who once moved through stone like water, is alone and helpless.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_stolen_symbols',
+      },
+    },
+    {
+      id: 'onua_at_nuva_cube',
+      section: 'Bohrok Kal',
+      title: 'At the Nuva Cube',
+      description:
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Onua\'s power returns.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_final_confrontation',
+      },
+    },
   ],
   [CHRONICLE_IDS.KOPAKA]: [
     {
@@ -290,6 +587,72 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'story_kini_nui_descent',
+      },
+    },
+    {
+      id: 'kopaka_bohrok_awakening',
+      section: 'Bohrok War',
+      title: 'Beware the Bohrok',
+      description:
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Kopaka joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_swarm_intro',
+      },
+    },
+    {
+      id: 'kopaka_krana_hunt',
+      section: 'Bohrok War',
+      title: 'Hunt for the Krana',
+      description:
+        'Heeding Vakama\'s warning, Kopaka returns to Ko-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_krana_hunt',
+      },
+    },
+    {
+      id: 'kopaka_into_bohrok_nest',
+      section: 'Bohrok War',
+      title: 'Into the Bohrok Nest',
+      description:
+        'Following the trail of the Bohrok Va, Kopaka discovers the hidden entrance to the nest. With the Krana gathered, the Toa descend, Kopaka\'s blade ready for whatever lies below.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_into_the_bohrok_nest',
+      },
+    },
+    {
+      id: 'kopaka_dawn_of_nuva',
+      section: 'Bohrok War',
+      title: 'Dawn of the Toa Nuva',
+      description:
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Kopaka emerges transformed, a Toa Nuva.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_evolve_toa_nuva',
+      },
+    },
+    {
+      id: 'kopaka_symbols_stolen',
+      section: 'Bohrok Kal',
+      title: 'Power Stripped Away',
+      description:
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Kopaka\'s elemental power vanishes. He falls from an ice bridge without his power. Alone and without his elemental powers, he is helpless.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_stolen_symbols',
+      },
+    },
+    {
+      id: 'kopaka_at_nuva_cube',
+      section: 'Bohrok Kal',
+      title: 'At the Nuva Cube',
+      description:
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Kopaka\'s power returns.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_final_confrontation',
       },
     },
   ],
@@ -349,6 +712,83 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         questId: 'story_kini_nui_descent',
       },
     },
+    {
+      id: 'lewa_bohrok_awakening',
+      section: 'Bohrok War',
+      title: 'Beware the Bohrok',
+      description:
+        'Fresh from the depths, the Toa expect peace, but instead they find villages under attack from mechanical swarms. Lewa joins the others rushing to Ta-Koro, clashing with the Bohrok for the first time.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_swarm_intro',
+      },
+    },
+    {
+      id: 'lewa_freed_from_krana',
+      section: 'Bohrok War',
+      title: 'Freed from the Krana',
+      description:
+        'During the hunt for Krana, a Bohrok attaches its Krana to Lewa\'s face, and he is no longer himself. Compelled by the swarm\'s will, he turns against his brothers. Onua pursues him into the jungle and, through patience and strength, pries the Krana free. Lewa returns to his senses.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_lewa_krana_rescue',
+      },
+    },
+    {
+      id: 'lewa_krana_hunt',
+      section: 'Bohrok War',
+      title: 'Hunt for the Krana',
+      description:
+        'Heeding Vakama\'s warning, Lewa returns to Le-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_krana_hunt',
+      },
+    },
+    {
+      id: 'lewa_into_bohrok_nest',
+      section: 'Bohrok War',
+      title: 'Into the Bohrok Nest',
+      description:
+        'With the Krana gathered, the Toa descend into the Bohrok nest beneath the island. Lewa brings the spirit of Le-Wahi even into the depths, toward the queens of the swarm.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_into_the_bohrok_nest',
+      },
+    },
+    {
+      id: 'lewa_dawn_of_nuva',
+      section: 'Bohrok War',
+      title: 'Dawn of the Toa Nuva',
+      description:
+        'Deep in the nest, the Toa don Exo-Toa armor and confront the Bahrag. By combining their elemental powers, they imprison the twins, only to be plunged into energized protodermis. Lewa emerges transformed, a Toa Nuva.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_evolve_toa_nuva',
+      },
+    },
+    {
+      id: 'lewa_symbols_stolen',
+      section: 'Bohrok Kal',
+      title: 'Power Stripped Away',
+      description:
+        'The Bohrok Kal steal the Nuva symbols from the Suvas. Lewa\'s elemental power vanishes. His airborne display is cut short miles above Mata Nui. Kongu rescues him on a Gukko. Alone and without his elemental powers, he is helpless.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_stolen_symbols',
+      },
+    },
+    {
+      id: 'lewa_at_nuva_cube',
+      section: 'Bohrok Kal',
+      title: 'At the Nuva Cube',
+      description:
+        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Lewa\'s power returns.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_final_confrontation',
+      },
+    },
   ],
   [CHRONICLE_IDS.TAKUA]: [
     {
@@ -404,6 +844,17 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_gali_call',
+      },
+    },
+    {
+      id: 'takua_siege_ta_koro',
+      section: 'Bohrok War',
+      title: 'Siege of Ta-Koro',
+      description:
+        'As the Kohrak besiege Ta-Koro, Takua fights alongside Tahu. Together they push the swarm into the lava moat. Vakama, seeing the mechanical invaders firsthand, recognizes them from the old legends.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_ta_koro_defense',
       },
     },
   ],
