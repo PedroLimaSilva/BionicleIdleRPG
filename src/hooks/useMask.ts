@@ -123,7 +123,7 @@ interface TransitionState {
 export function useMask(
   masksParent: Object3D | undefined,
   maskName: string,
-  matoran: BaseMatoran & { maskColorOverride?: string; maskOverride?: string },
+  matoran: BaseMatoran & { maskOverride?: string },
   glowColor?: string
 ) {
   const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
@@ -133,7 +133,7 @@ export function useMask(
   const maskColor =
     matoran.stage === MatoranStage.ToaMata
       ? getEffectiveMataMaskColor(matoran, completedQuests)
-      : (matoran.maskColorOverride ?? matoran.colors.mask);
+      : matoran.colors.mask;
   const maskRef = useRef<Object3D | null>(null);
   const prevMaskNameRef = useRef<string | null>(null);
   const masksParentRef = useRef<Object3D | undefined>(masksParent);

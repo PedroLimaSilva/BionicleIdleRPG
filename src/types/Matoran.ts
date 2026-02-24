@@ -83,7 +83,6 @@ export type RecruitedCharacterData = {
   assignment?: JobAssignment;
   quest?: Quest['id'];
   maskOverride?: Mask;
-  maskColorOverride?: LegoColor;
 };
 
 export type ItemRequirement = {

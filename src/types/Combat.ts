@@ -1,4 +1,3 @@
-import { LegoColor } from './Colors';
 import { GameState } from './GameState';
 import { ElementTribe, Mask } from './Matoran';
 
@@ -35,7 +34,6 @@ export interface Combatant {
   model: string;
   lvl: number;
   maskPower?: MaskPower;
-  maskColorOverride?: LegoColor;
   debuffs?: TargetDebuff[];
   element: ElementTribe;
   maxHp: number;
@@ -61,14 +59,7 @@ interface CombatDuration {
 }
 
 type MaskEffect = {
-  type:
-    | 'ATK_MULT'
-    | 'DMG_MITIGATOR'
-    | 'HEAL'
-    | 'AGGRO'
-    | 'SPEED'
-    | 'ACCURACY_MULT'
-    | 'DEBUFF';
+  type: 'ATK_MULT' | 'DMG_MITIGATOR' | 'HEAL' | 'AGGRO' | 'SPEED' | 'ACCURACY_MULT' | 'DEBUFF';
   duration: CombatDuration;
   cooldown: CombatDuration;
   multiplier?: number;
