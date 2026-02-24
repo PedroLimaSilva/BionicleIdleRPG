@@ -1,45 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const ARMOR_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/armor.glb';
 
-// Module-level cache so the file is only fetched once across all instances
-let armorNodesCache: Record<string, Object3D> | null = null;
-let armorLoadPromise: Promise<Record<string, Object3D>> | null = null;
-
-function loadArmorNodes(): Promise<Record<string, Object3D>> {
-  if (armorNodesCache) return Promise.resolve(armorNodesCache);
-  if (armorLoadPromise) return armorLoadPromise;
-
-  armorLoadPromise = new Promise((resolve, reject) => {
-    const loader = new GLTFLoader();
-    loader.load(
-      ARMOR_GLB_PATH,
-      (gltf) => {
-        const nodes: Record<string, Object3D> = {};
-        gltf.scene.traverse((child) => {
-          if (child.name) nodes[child.name] = child;
-        });
-        armorNodesCache = nodes;
-        resolve(nodes);
-      },
-      undefined,
-      reject
-    );
+function buildArmorNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
+  const nodes: Record<string, Object3D> = {};
+  gltf.scene.traverse((child) => {
+    if (child.name) nodes[child.name] = child;
   });
-
-  return armorLoadPromise;
+  return nodes;
 }
 
 /**
  * Loads an armor piece from the shared Toa_Nuva/armor.glb, clones it, and
  * attaches it to the given Object3D (an attachment node in the character model).
  *
- * Uses imperative loading (GLTFLoader) instead of useGLTF so it does NOT
- * trigger React Suspense -- the parent component's animation setup and
- * effects are never interrupted.
+ * Uses useGLTF (with useDraco for Draco-compressed models from gltfjsx --transform).
  *
  * The armor is cloned so each character gets its own geometry instance and
  * material, allowing per-character color overrides without affecting others.
@@ -62,24 +39,9 @@ export function useArmor(
   armorColor?: string,
   glowColor?: string
 ) {
-  const [armorNodes, setArmorNodes] = useState<Record<string, Object3D> | null>(armorNodesCache);
+  const gltf = useGLTF(ARMOR_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
+  const armorNodes = useMemo(() => buildArmorNodes(gltf), [gltf]);
   const armorRef = useRef<Object3D | null>(null);
-
-  // Load armor.glb imperatively (no Suspense)
-  useEffect(() => {
-    if (armorNodesCache) {
-      setArmorNodes(armorNodesCache);
-      return;
-    }
-
-    let cancelled = false;
-    loadArmorNodes().then((nodes) => {
-      if (!cancelled) setArmorNodes(nodes);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   // Clone the armor and attach to parent when data is ready
   useEffect(() => {
@@ -147,6 +109,5 @@ export function useArmor(
 
 // Kick off loading early (call from preload.ts)
 useArmor.preload = () => {
-  loadArmorNodes();
-  useGLTF.preload(ARMOR_GLB_PATH);
+  useGLTF.preload(ARMOR_GLB_PATH); // useDraco=true by default
 };
