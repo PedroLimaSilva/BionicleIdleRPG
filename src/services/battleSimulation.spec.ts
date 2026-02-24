@@ -810,13 +810,7 @@ describe('Battle Simulation', () => {
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
-        waves: [
-          [
-            { id: 'tahnok', lvl: 5 },
-            { id: 'tahnok', lvl: 5 },
-            { id: 'tahnok', lvl: 5 },
-          ],
-        ],
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
       };
       const sim = new BattleSimulator(team, customEncounter);
 
