@@ -29,13 +29,10 @@ describe('maskColor', () => {
       exp: 0,
     };
 
-    test('returns user maskColorOverride when set', () => {
-      const matoran = { ...toaMata, maskColorOverride: LegoColor.PearlGold };
-      expect(getEffectiveMataMaskColor(matoran, ['mnog_kini_nui_arrival'])).toBe(LegoColor.PearlGold);
-    });
-
     test('returns PearlGold when gold mask quests completed', () => {
-      expect(getEffectiveMataMaskColor(toaMata, ['mnog_kini_nui_arrival'])).toBe(LegoColor.PearlGold);
+      expect(getEffectiveMataMaskColor(toaMata, ['mnog_kini_nui_arrival'])).toBe(
+        LegoColor.PearlGold
+      );
       expect(getEffectiveMataMaskColor(toaMata, ['mnog_gali_call'])).toBe(LegoColor.PearlGold);
     });
 
@@ -54,13 +51,6 @@ describe('maskColor', () => {
       colors: MOCK_COLORS,
       exp: 0,
     };
-
-    test('returns user maskColorOverride when set', () => {
-      const matoran = { ...toaNuva, maskColorOverride: LegoColor.PearlGold };
-      expect(getEffectiveNuvaMaskColor(matoran, [BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID])).toBe(
-        LegoColor.PearlGold
-      );
-    });
 
     test('returns LightGray when nuva symbols sequestered', () => {
       expect(getEffectiveNuvaMaskColor(toaNuva, [BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID])).toBe(
