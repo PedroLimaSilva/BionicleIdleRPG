@@ -51,6 +51,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'dialogue',
         speakerId: 'Takua',
         text: 'What is that? A large canister... washed ashore. And those footprints—they lead toward Ta-Wahi.',
+        position: 'left',
       },
       {
         type: 'video',
@@ -60,6 +61,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'dialogue',
         speakerId: 'Takua',
         text: 'Something important has happened here. I must follow this trail.',
+        position: 'left',
       },
     ],
   },
@@ -75,11 +77,13 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'dialogue',
         speakerId: 'Maku',
         text: 'Takua! Ga-Koro is under attack! A Rahi has driven our people into the water!',
+        position: 'left',
       },
       {
         type: 'dialogue',
         speakerId: 'Takua',
         text: 'I will help. Tell me what I need to do.',
+        position: 'right',
       },
       {
         type: 'video',
@@ -89,6 +93,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'dialogue',
         speakerId: 'Maku',
         text: 'Please—hurry! The villagers cannot hold out much longer.',
+        position: 'left',
       },
     ],
   },

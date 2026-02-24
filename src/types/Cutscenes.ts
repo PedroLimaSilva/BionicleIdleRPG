@@ -11,7 +11,11 @@ export interface DialogueStep {
   type: 'dialogue';
   speakerId: string; // Character ID from MATORAN_DEX
   text: string;
-  /** Optional custom portrait image URL; if absent, uses character colors for avatar */
+  /** Speaker side: portrait and text alignment. Default 'left'. */
+  position?: 'left' | 'right';
+  /** Portrait: 'avatar' (colored box + initial) or 'image' (use portraitUrl). Default: 'image' if portraitUrl set, else 'avatar'. */
+  portraitType?: 'avatar' | 'image';
+  /** Custom portrait image URL; used when portraitType is 'image'. */
   portraitUrl?: string;
   /** Optional emotion/variant for portrait (e.g. "happy", "sad") - for future use */
   emotion?: string;

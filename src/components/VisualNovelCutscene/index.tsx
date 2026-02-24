@@ -94,29 +94,37 @@ function DialogueStepView({
   const speaker = MATORAN_DEX[step.speakerId];
   const speakerName = speaker?.name ?? step.speakerId;
   const portraitColor = speaker?.colors?.body ?? '#6D6E5C';
+  const position = step.position ?? 'left';
+  const useImage =
+    step.portraitType === 'image' || (step.portraitType !== 'avatar' && step.portraitUrl);
+
+  const portrait = useImage && step.portraitUrl ? (
+    <img
+      src={step.portraitUrl}
+      alt={speakerName}
+      className="visual-novel-cutscene__portrait visual-novel-cutscene__portrait--img"
+    />
+  ) : (
+    <div
+      className="visual-novel-cutscene__portrait visual-novel-cutscene__portrait--avatar"
+      style={{ backgroundColor: portraitColor }}
+      aria-hidden
+    >
+      <span className="visual-novel-cutscene__portrait-initial">
+        {speakerName.charAt(0)}
+      </span>
+    </div>
+  );
 
   return (
-    <div className="visual-novel-cutscene__content">
-      <div className="visual-novel-cutscene__portrait-area">
-        {step.portraitUrl ? (
-          <img
-            src={step.portraitUrl}
-            alt={speakerName}
-            className="visual-novel-cutscene__portrait visual-novel-cutscene__portrait--img"
-          />
-        ) : (
-          <div
-            className="visual-novel-cutscene__portrait visual-novel-cutscene__portrait--avatar"
-            style={{ backgroundColor: portraitColor }}
-            aria-hidden
-          >
-            <span className="visual-novel-cutscene__portrait-initial">
-              {speakerName.charAt(0)}
-            </span>
-          </div>
-        )}
-      </div>
-
+    <div
+      className={`visual-novel-cutscene__content visual-novel-cutscene__content--dialogue visual-novel-cutscene__content--${position}`}
+    >
+      {position === 'left' && (
+        <div className="visual-novel-cutscene__speaker-side">
+          {portrait}
+        </div>
+      )}
       <div className="visual-novel-cutscene__dialogue-box">
         <div className="visual-novel-cutscene__speaker-name">{speakerName}</div>
         <p className="visual-novel-cutscene__text">{step.text}</p>
@@ -129,6 +137,11 @@ function DialogueStepView({
           {isLast ? 'Close' : 'Next ›'}
         </button>
       </div>
+      {position === 'right' && (
+        <div className="visual-novel-cutscene__speaker-side">
+          {portrait}
+        </div>
+      )}
     </div>
   );
 }
