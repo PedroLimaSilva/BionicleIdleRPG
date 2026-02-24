@@ -4,6 +4,7 @@ import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { forwardRef, useRef } from 'react';
 import { Group } from 'three';
 import { useArmor } from '../../../hooks/useArmor';
+import { useNuvaMask } from '../../../hooks/useNuvaMask';
 
 export const KopakaNuvaModel = forwardRef<
   CombatantModelHandle,
@@ -11,13 +12,15 @@ export const KopakaNuvaModel = forwardRef<
     matoran: RecruitedCharacterData & BaseMatoran;
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
->(({ matoran: _matoran }, _ref) => {
+>(({ matoran }, _ref) => {
   const group = useRef<Group>(null);
   const { nodes } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/kopaka.glb');
 
   useArmor(nodes.ChestPlateHolder, 'Chest');
   useArmor(nodes.PlateHolderL, 'Shoulder');
   useArmor(nodes.PlateHolderR, 'Shoulder');
+
+  useNuvaMask(nodes.Masks, matoran);
 
   return (
     <group ref={group} dispose={null}>

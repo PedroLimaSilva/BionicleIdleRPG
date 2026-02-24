@@ -126,6 +126,48 @@ test.describe('Character Model Rendering', () => {
     });
   });
 
+  test.describe('Mask color overrides', () => {
+    test('should render Toa Tahu with gold mask when Kini-Nui quests completed', async ({
+      page,
+    }) => {
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [{ id: 'Toa_Tahu', exp: 0 }],
+        completedQuests: ['mnog_kini_nui_arrival'],
+      });
+      await goto(page, '/characters/Toa_Tahu');
+      await disableCSSAnimations(page);
+      await waitForCanvas(page);
+
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        timeout: 15000,
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
+
+    test('should render Toa Tahu Nuva with grey mask when nuva symbols sequestered', async ({
+      page,
+    }) => {
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [{ id: 'Toa_Tahu_Nuva', exp: 0 }],
+        completedQuests: ['bohrok_kal_reconstruction', 'bohrok_kal_stolen_symbols'],
+      });
+      await goto(page, '/characters/Toa_Tahu_Nuva');
+      await disableCSSAnimations(page);
+      await waitForCanvas(page);
+
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        timeout: 15000,
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
+  });
+
   test.describe('Bohrok Characters', () => {
     ['tahnok', 'gahlok', 'lehvak', 'pahrak', 'nuhvok', 'kohrak'].forEach((characterId) => {
       test(`should render ${characterId} character detail page`, async ({ page }) => {
