@@ -1,11 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { Combatant } from '../../../types/Combat';
+import { hasActiveEffectFromSource } from '../../../services/combatUtils';
 import { DamagePopup } from './DamagePopup';
 import { MATORAN_DEX } from '../../../data/matoran';
 import { MatoranAvatar } from '../../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../../components/MaskPowerTooltip';
 
-export function AllyCard({ combatant, onClick }: { combatant: Combatant; onClick: () => void }) {
+export function AllyCard({
+  combatant,
+  onClick,
+  team = [],
+  enemies = [],
+}: {
+  combatant: Combatant;
+  onClick: () => void;
+  team?: Combatant[];
+  enemies?: Combatant[];
+}) {
   const prevHpRef = useRef(combatant.hp);
   const [damage, setDamage] = useState<number | null>(null);
   const [healing, setHealing] = useState<number | null>(null);
@@ -13,16 +24,19 @@ export function AllyCard({ combatant, onClick }: { combatant: Combatant; onClick
   const [disabled, setDisabled] = useState<boolean>(false);
   const [maxCooldown, setMaxCooldown] = useState<number>(0);
 
+  const maskActive =
+    !!combatant.maskPower?.active || hasActiveEffectFromSource(team, enemies, combatant.id);
+
   useEffect(() => {
-    setSelected(combatant.hp > 0 && (combatant.maskPower?.active || combatant.willUseAbility));
-  }, [combatant.willUseAbility, combatant.maskPower?.active, combatant.hp]);
+    setSelected(combatant.hp > 0 && (maskActive || combatant.willUseAbility));
+  }, [combatant.willUseAbility, maskActive, combatant.hp]);
 
   useEffect(() => {
     setDisabled(
       combatant.hp <= 0 ||
-        ((combatant.maskPower?.effect?.cooldown?.amount ?? 0) > 0 && !combatant.maskPower?.active)
+        ((combatant.maskPower?.effect?.cooldown?.amount ?? 0) > 0 && !maskActive)
     );
-  }, [combatant.hp, combatant.maskPower?.effect?.cooldown?.amount, combatant.maskPower?.active]);
+  }, [combatant.hp, combatant.maskPower?.effect?.cooldown?.amount, maskActive]);
 
   useEffect(() => {
     if (combatant.maskPower && combatant.maskPower?.effect?.cooldown?.amount > maxCooldown) {

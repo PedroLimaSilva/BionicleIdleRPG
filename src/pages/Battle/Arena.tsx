@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { useGLTF, Environment } from '@react-three/drei';
 import { GLTF } from 'three-stdlib';
 import { Combatant } from '../../types/Combat';
+import { hasActiveEffectFromSource } from '../../services/combatUtils';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
 import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
@@ -223,7 +224,9 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
             combatant={c}
             side="team"
             position={TEAM_POSITIONS[i]}
-            maskPowerActive={!!c.maskPower?.active}
+            maskPowerActive={
+              !!c.maskPower?.active || hasActiveEffectFromSource(team, enemies, c.id)
+            }
             ref={(ref) => {
               if (ref) combatantRefs.current[c.id] = ref;
             }}

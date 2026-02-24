@@ -126,9 +126,9 @@ export function calculateAtkDmg(
     rawDamage = Math.floor(rawDamage * atkMult);
   }
 
-  // Apply DEFENSE debuff on defender: allies deal +multiplier damage (e.g. Akaku)
+  // Apply DEFENSE debuff on defender: target takes more damage from any attacker
   const defenseDebuff = defender.debuffs?.find(
-    (d) => d.type === 'DEFENSE' && attackerSide !== undefined && d.sourceSide === attackerSide
+    (d) => d.type === 'DEFENSE' && d.durationRemaining > 0
   );
   if (defenseDebuff?.type === 'DEFENSE') {
     rawDamage = Math.floor(rawDamage * defenseDebuff.multiplier);
@@ -200,8 +200,7 @@ function applyBuffToCombatant(combatant: Combatant, buff: TargetBuff): Combatant
  * re-application on each attack). The mask's original 1-attack duration gets consumed by decrementMaskPowerCounter. */
 function applyDebuffToTarget(
   attacker: Combatant,
-  target: Combatant,
-  attackerSide: 'team' | 'enemy'
+  target: Combatant
 ): { target: Combatant; attacker: Combatant } {
   const effect = attacker.maskPower?.effect;
   if (
@@ -224,7 +223,7 @@ function applyDebuffToTarget(
       multiplier: effect.multiplier,
       durationRemaining: effect.debuffDuration.amount,
       durationUnit,
-      sourceSide: attackerSide,
+      sourceId: attacker.id,
     };
     const existingDebuffs = target.debuffs ?? [];
     const updatedTarget = { ...target, debuffs: [...existingDebuffs, debuff] };
@@ -236,7 +235,7 @@ function applyDebuffToTarget(
       type: 'CONFUSION',
       durationRemaining: effect.debuffDuration.amount,
       durationUnit,
-      sourceSide: attackerSide,
+      sourceId: attacker.id,
     };
     const existingDebuffs = target.debuffs ?? [];
     const updatedTarget = { ...target, debuffs: [...existingDebuffs, debuff] };
@@ -551,11 +550,7 @@ export function queueCombatRound(
 
       // Apply DEBUFF mask effect to target (Akaku, Komau)
       if (!isConfused) {
-        const { target: markedTarget } = applyDebuffToTarget(
-          self,
-          target,
-          isTeam ? 'team' : 'enemy'
-        );
+        const { target: markedTarget } = applyDebuffToTarget(self, target);
         target = markedTarget;
       }
       const newOpponentListForMark = opponentList.map((t) => (t.id === target.id ? target : t));
@@ -652,17 +647,34 @@ export function queueCombatRound(
 }
 
 /**
- * Returns true if any alive team member has a mask power off cooldown and not currently active.
- * Used to decide whether to pause between rounds (so the player can toggle abilities).
+ * Returns true if any buff or debuff with sourceId exists on team or enemies (durationRemaining > 0).
+ * Used as source of truth for mask UI (caster glow while effect is active).
  */
-export function hasReadyMaskPowers(team: Combatant[]): boolean {
-  return team.some(
-    (c) =>
-      c.hp > 0 &&
-      c.maskPower &&
-      !c.maskPower.active &&
-      c.maskPower.effect.cooldown.amount === 0
-  );
+export function hasActiveEffectFromSource(
+  team: Combatant[],
+  enemies: Combatant[],
+  sourceId: string
+): boolean {
+  const hasFrom = (list: Combatant[]) =>
+    list.some(
+      (c) =>
+        c.buffs?.some((b) => b.sourceId === sourceId && b.durationRemaining > 0) ||
+        c.debuffs?.some((d) => d.sourceId === sourceId && d.durationRemaining > 0)
+    );
+  return hasFrom(team) || hasFrom(enemies);
+}
+
+/**
+ * Returns true if any alive team member has a mask power off cooldown and not currently active.
+ * Uses buffs/debuffs as source of truth for "active" when enemies provided.
+ */
+export function hasReadyMaskPowers(team: Combatant[], enemies: Combatant[] = []): boolean {
+  return team.some((c) => {
+    if (c.hp <= 0 || !c.maskPower || c.maskPower.effect.cooldown.amount !== 0) return false;
+    const maskActive =
+      c.maskPower.active || hasActiveEffectFromSource(team, enemies, c.id);
+    return !maskActive;
+  });
 }
 
 /**

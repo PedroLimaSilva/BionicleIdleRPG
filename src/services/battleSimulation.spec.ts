@@ -113,7 +113,7 @@ class BattleSimulator {
       roundsRun++;
 
       if (this.allEnemiesDefeated || this.allTeamDefeated) break;
-    } while (!hasReadyMaskPowers(this.team));
+    } while (!hasReadyMaskPowers(this.team, this.enemies));
 
     return roundsRun;
   }
@@ -673,7 +673,7 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       // Both powers are now on cooldown
-      expect(hasReadyMaskPowers(sim.team)).toBe(false);
+      expect(hasReadyMaskPowers(sim.team, sim.enemies)).toBe(false);
 
       // Auto-progression should run multiple rounds until powers come off cooldown
       // or the enemy is defeated
@@ -682,7 +682,7 @@ describe('Battle Simulation', () => {
 
       // Battle should have progressed: either enemy defeated or a power is ready
       const enemyDefeated = sim.allEnemiesDefeated;
-      const powersReady = hasReadyMaskPowers(sim.team);
+      const powersReady = hasReadyMaskPowers(sim.team, sim.enemies);
       expect(enemyDefeated || powersReady).toBe(true);
     });
 
@@ -712,7 +712,7 @@ describe('Battle Simulation', () => {
       const roundsRun = await sim.runWithAutoProgression();
 
       if (!sim.allEnemiesDefeated && !sim.allTeamDefeated) {
-        expect(hasReadyMaskPowers(sim.team)).toBe(true);
+        expect(hasReadyMaskPowers(sim.team, sim.enemies)).toBe(true);
         expect(roundsRun).toBeGreaterThanOrEqual(1);
       }
     });
@@ -727,14 +727,14 @@ describe('Battle Simulation', () => {
 
       const sim = new BattleSimulator(team, customEncounter);
       // Powers start ready (cooldown === 0)
-      expect(hasReadyMaskPowers(sim.team)).toBe(true);
+      expect(hasReadyMaskPowers(sim.team, sim.enemies)).toBe(true);
 
       // Auto-progression runs exactly 1 round then stops
       const roundsRun = await sim.runWithAutoProgression();
       expect(roundsRun).toBe(1);
 
       if (!sim.allEnemiesDefeated && !sim.allTeamDefeated) {
-        expect(hasReadyMaskPowers(sim.team)).toBe(true);
+        expect(hasReadyMaskPowers(sim.team, sim.enemies)).toBe(true);
       }
     });
 
@@ -756,7 +756,7 @@ describe('Battle Simulation', () => {
         await sim.runWithAutoProgression();
       }
       // Should not loop infinitely - either team defeated or power ready
-      expect(sim.allTeamDefeated || hasReadyMaskPowers(sim.team)).toBe(true);
+      expect(sim.allTeamDefeated || hasReadyMaskPowers(sim.team, sim.enemies)).toBe(true);
     });
 
     test('auto-progression stops on enemy defeat', async () => {

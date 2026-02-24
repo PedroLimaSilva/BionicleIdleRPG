@@ -77,7 +77,7 @@ describe('Mask Powers - Combat Mechanics', () => {
     });
 
     describe('Akaku - Mask of X-Ray Vision (DEBUFF DEFENSE)', () => {
-      test('allies deal +50% damage to target with DEFENSE debuff', () => {
+      test('DEFENSE debuff increases damage from any attacker', () => {
         const attacker = generateCombatantStats('tahu', 'Toa_Tahu', 1);
         const debuffedDefender: Combatant = {
           ...defender,
@@ -87,36 +87,15 @@ describe('Mask Powers - Combat Mechanics', () => {
               multiplier: 1.5,
               durationRemaining: 2,
               durationUnit: 'round',
-              sourceSide: 'team',
+              sourceId: 'caster',
             },
           ],
         };
 
         const normalDamage = calculateAtkDmg(attacker, defender);
-        const damageVsDebuffed = calculateAtkDmg(attacker, debuffedDefender, 'team');
+        const damageVsDebuffed = calculateAtkDmg(attacker, debuffedDefender);
 
         expect(damageVsDebuffed).toBe(Math.floor(normalDamage * 1.5));
-      });
-
-      test('DEFENSE debuff does not benefit enemy attackers', () => {
-        const attacker = generateCombatantStats('tahnok', 'tahnok', 1);
-        const debuffedDefender: Combatant = {
-          ...defender,
-          debuffs: [
-            {
-              type: 'DEFENSE',
-              multiplier: 1.5,
-              durationRemaining: 2,
-              durationUnit: 'round',
-              sourceSide: 'team',
-            },
-          ],
-        };
-
-        const normalDamage = calculateAtkDmg(attacker, defender);
-        const damageVsDebuffed = calculateAtkDmg(attacker, debuffedDefender, 'enemy');
-
-        expect(damageVsDebuffed).toBe(normalDamage);
       });
     });
   });

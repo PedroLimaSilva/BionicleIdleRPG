@@ -232,7 +232,7 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
       const enemiesAlive = latestEnemies.some((e) => e.hp > 0);
       const teamAlive = latestTeam.some((t) => t.hp > 0);
 
-      if (!enemiesAlive || !teamAlive || hasReadyMaskPowers(latestTeam)) {
+      if (!enemiesAlive || !teamAlive || hasReadyMaskPowers(latestTeam, latestEnemies)) {
         break;
       }
 

@@ -135,7 +135,7 @@ Mask powers can apply effects to multiple targets:
 - **target: 'allEnemies'** – Debuff applied to all enemies (e.g. Ruru)
 - **target: 'team'** – Buff applied to all allies (Nuva masks)
 
-When `target: 'team'`, the mask power creates `TargetBuff` instances on each ally. Buffs have their own duration/cooldown lifecycle, and damage/healing logic checks both `maskPower.active` and `buffs` on each combatant.
+When `target: 'team'`, the mask power creates `TargetBuff` instances on each ally. Buffs and debuffs share a unified structure: both use `sourceId` (caster) and `durationRemaining`/`durationUnit`. The mask UI derives "active" from buffs/debuffs with `sourceId === caster.id` as the source of truth. DEFENSE debuffs increase damage from any attacker (the debuff weakens the defender).
 
 ### Mask Power Lifecycle
 
