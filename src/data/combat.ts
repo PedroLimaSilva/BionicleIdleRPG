@@ -213,7 +213,7 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   // Nuva masks - team-wide effects
   [Mask.HauNuva]: {
     shortName: Mask.HauNuva,
-    longName: 'Great Mask of Shielding',
+    longName: 'Great Nuva Mask of Shielding',
     description: 'Shields the whole team from damage for 1 round',
     effect: {
       duration: { amount: 1, unit: 'round' },
@@ -225,7 +225,7 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
   [Mask.KaukauNuva]: {
     shortName: Mask.KaukauNuva,
-    longName: 'Great Mask of Water Breathing',
+    longName: 'Great Nuva Mask of Water Breathing',
     description: 'Heals the whole team each turn for 2 turns',
     effect: {
       duration: { amount: 2, unit: 'turn' },
@@ -237,8 +237,8 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
   [Mask.KakamaNuva]: {
     shortName: Mask.KakamaNuva,
-    longName: 'Great Mask of Speed',
-    description: 'The whole team attacks twice this round',
+    longName: 'Great Nuva Mask of Speed',
+    description: 'All allies attack twice this round',
     effect: {
       duration: { amount: 1, unit: 'round' },
       cooldown: { amount: 3, unit: 'wave' },
@@ -249,7 +249,7 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
   [Mask.AkakuNuva]: {
     shortName: Mask.AkakuNuva,
-    longName: 'Great Mask of X-Ray Vision',
+    longName: 'Great Nuva Mask of X-Ray Vision',
     description: 'All allies deal +30% damage for 2 rounds',
     effect: {
       duration: { amount: 2, unit: 'round' },
@@ -261,7 +261,7 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
   [Mask.PakariNuva]: {
     shortName: Mask.PakariNuva,
-    longName: 'Great Mask of Strength',
+    longName: 'Great Nuva Mask of Strength',
     description: 'All allies deal 2x damage on their next attack',
     effect: {
       duration: { amount: 1, unit: 'attack' },
@@ -273,7 +273,7 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   },
   [Mask.MiruNuva]: {
     shortName: Mask.MiruNuva,
-    longName: 'Great Mask of Levitation',
+    longName: 'Great Nuva Mask of Levitation',
     description: 'The whole team evades the next hit',
     effect: {
       duration: { amount: 1, unit: 'hit' },
