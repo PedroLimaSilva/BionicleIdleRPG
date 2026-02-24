@@ -209,6 +209,112 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
       target: 'self',
     },
   },
+
+  // Toa Nuva masks — powers benefit all allies
+  [Mask.HauNuva]: {
+    shortName: Mask.HauNuva,
+    longName: 'Great Nuva Mask of Shielding',
+    description: 'Grants full immunity to all damage for 1 round to all allies',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'round',
+      },
+      cooldown: {
+        amount: 1,
+        unit: 'wave',
+      },
+      type: 'DMG_MITIGATOR',
+      multiplier: 0,
+      target: 'self',
+    },
+  },
+  [Mask.KaukauNuva]: {
+    shortName: Mask.KaukauNuva,
+    longName: 'Great Nuva Mask of Water Breathing',
+    description: 'Heals all allies each turn for 3 turns',
+    effect: {
+      duration: {
+        amount: 3,
+        unit: 'turn',
+      },
+      cooldown: {
+        amount: 1,
+        unit: 'wave',
+      },
+      type: 'HEAL',
+      multiplier: 0.2,
+      target: 'self',
+    },
+  },
+  [Mask.KakamaNuva]: {
+    shortName: Mask.KakamaNuva,
+    longName: 'Great Nuva Mask of Speed',
+    description: 'All allies attack twice this round',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'round',
+      },
+      cooldown: {
+        amount: 5,
+        unit: 'turn',
+      },
+      type: 'SPEED',
+      multiplier: 2,
+      target: 'self',
+    },
+  },
+  [Mask.AkakuNuva]: {
+    shortName: Mask.AkakuNuva,
+    longName: 'Great Nuva Mask of X-Ray Vision',
+    description: 'Marks target; all allies deal +50% damage to them for 2 rounds',
+    effect: {
+      duration: { amount: 1, unit: 'attack' },
+      cooldown: { amount: 4, unit: 'turn' },
+      type: 'DEBUFF',
+      debuffType: 'DEFENSE',
+      multiplier: 1.5,
+      target: 'enemy',
+      debuffDuration: { amount: 2, unit: 'round' },
+    },
+  },
+  [Mask.PakariNuva]: {
+    shortName: Mask.PakariNuva,
+    longName: 'Great Nuva Mask of Strength',
+    description: "All allies' next attack deals 3x damage",
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'attack',
+      },
+      cooldown: {
+        amount: 2,
+        unit: 'turn',
+      },
+      type: 'ATK_MULT',
+      multiplier: 3,
+      target: 'self',
+    },
+  },
+  [Mask.MiruNuva]: {
+    shortName: Mask.MiruNuva,
+    longName: 'Great Nuva Mask of Levitation',
+    description: 'All allies evade next 2 attacks; unaffected by ground-based effects',
+    effect: {
+      duration: {
+        amount: 2,
+        unit: 'hit',
+      },
+      cooldown: {
+        amount: 1,
+        unit: 'wave',
+      },
+      type: 'DMG_MITIGATOR',
+      multiplier: 0,
+      target: 'self',
+    },
+  },
   [Mask.Vahi]: {
     shortName: Mask.Vahi,
     longName: 'Mask of Time',
