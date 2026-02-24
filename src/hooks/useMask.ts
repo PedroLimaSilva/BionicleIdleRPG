@@ -3,6 +3,9 @@ import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vect
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { useGame } from '../context/Game';
+import { getEffectiveMataMaskColor } from '../game/maskColor';
+import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../types/Matoran';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 
@@ -135,17 +138,22 @@ interface TransitionState {
  *
  * @param masksParent - The Object3D to parent the mask to (e.g. `nodes.Masks`)
  * @param maskName    - The name of the mask mesh in masks.glb (must match the Mask enum value)
- * @param maskColor   - The color to tint the mask
- * @param glowColor   - Optional color for emissive "glow" materials (e.g. lens glow matching eye color).
- *                       When provided, materials whose names include "glow" (case-insensitive) will use
- *                       this color for both their base color and emissive color instead of maskColor.
+ * @param matoranOrColor - Character data (Mata/Diminished) for mask color derivation
+ * @param glowColor      - Optional color for emissive "glow" materials (e.g. lens glow matching eye color).
+ *                         When provided, materials whose names include "glow" (case-insensitive) will use
+ *                         this color for both their base color and emissive color instead of maskColor.
  */
 export function useMask(
   masksParent: Object3D | undefined,
   maskName: string,
-  maskColor: string,
+  matoranOrColor: BaseMatoran & RecruitedCharacterData,
   glowColor?: string
 ) {
+  const { completedQuests } = useGame();
+  const maskColor =
+    matoranOrColor.stage === MatoranStage.ToaMata
+      ? getEffectiveMataMaskColor(matoranOrColor, completedQuests)
+      : (matoranOrColor.maskColorOverride ?? matoranOrColor.colors.mask);
   const [masksNodes, setMasksNodes] = useState<Record<string, Object3D> | null>(masksNodesCache);
   const maskRef = useRef<Object3D | null>(null);
   const prevMaskNameRef = useRef<string | null>(null);
