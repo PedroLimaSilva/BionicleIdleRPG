@@ -10,7 +10,10 @@ import { LewaMataModel } from '../../components/CharacterScene/Mata/LewaMataMode
 import { GaliMataModel } from '../../components/CharacterScene/Mata/GaliMataModel';
 import { TahuNuvaModel } from '../../components/CharacterScene/Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from '../../components/CharacterScene/Nuva/GaliNuvaModel';
-import { ToaNuvaPlaceholderModel } from '../../components/CharacterScene/Nuva/PlaceholderModel';
+import { KopakaNuvaModel } from '../../components/CharacterScene/Nuva/KopakaNuvaModel';
+import { LewaNuvaModel } from '../../components/CharacterScene/Nuva/LewaNuvaModel';
+import { OnuaNuvaModel } from '../../components/CharacterScene/Nuva/OnuaNuvaModel';
+import { PohatuNuvaModel } from '../../components/CharacterScene/Nuva/PohatuNuvaModel';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Group } from 'three';
@@ -249,12 +252,52 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
             </group>
           );
         case 'Toa_Pohatu_Nuva':
+          return (
+            <group scale={0.04} position={[0, 0.375, 0]}>
+              <PohatuNuvaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...MATORAN_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                }}
+              />
+            </group>
+          );
         case 'Toa_Onua_Nuva':
+          return (
+            <group scale={0.04} position={[0, 0.375, 0]}>
+              <OnuaNuvaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...MATORAN_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                }}
+              />
+            </group>
+          );
         case 'Toa_Kopaka_Nuva':
+          return (
+            <group scale={0.04} position={[0, 0.375, 0]}>
+              <KopakaNuvaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...MATORAN_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                }}
+              />
+            </group>
+          );
         case 'Toa_Lewa_Nuva':
           return (
             <group scale={0.04} position={[0, 0.375, 0]}>
-              <ToaNuvaPlaceholderModel
+              <LewaNuvaModel
+                ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
                   ...MATORAN_DEX[combatant.id],

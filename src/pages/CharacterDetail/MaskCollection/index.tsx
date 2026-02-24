@@ -1,22 +1,33 @@
 import { useMemo } from 'react';
 import { useGame } from '../../../context/Game';
 import { masksCollected } from '../../../services/matoranUtils';
+import { getEffectiveMaskColor } from '../../../game/maskColor';
 import { MASK_POWERS } from '../../../data/combat';
-import { BaseMatoran, Mask, RecruitedCharacterData } from '../../../types/Matoran';
+import { BaseMatoran, Mask } from '../../../types/Matoran';
 import { CompositedImage } from '../../../components/CompositedImage';
 
 import './index.scss';
 import { Tooltip } from '../../../components/Tooltip';
+import { LegoColor } from '../../../types/Colors';
 
-export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
+export function MaskCollection({
+  matoran,
+}: {
+  matoran: BaseMatoran & { maskColorOverride?: string; maskOverride?: string };
+}) {
   const { setMaskOverride, completedQuests } = useGame();
 
   const masks = useMemo(() => {
     return masksCollected(matoran, completedQuests);
   }, [matoran, completedQuests]);
 
-  const handeMaskOverride = (matoran: RecruitedCharacterData & BaseMatoran, mask: Mask) => {
-    setMaskOverride(matoran.id, matoran.maskColorOverride || matoran.colors.mask, mask);
+  const effectiveMaskColor = getEffectiveMaskColor(matoran, completedQuests);
+
+  const handeMaskOverride = (
+    matoran: BaseMatoran & { maskColorOverride?: string; maskOverride?: string },
+    mask: Mask
+  ) => {
+    setMaskOverride(matoran.id, getEffectiveMaskColor(matoran, completedQuests) as LegoColor, mask);
   };
 
   return (
@@ -42,9 +53,11 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & RecruitedCh
                   <CompositedImage
                     className="mask-preview"
                     images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.webp`]}
-                    colors={[matoran.maskColorOverride || matoran.colors.mask]}
+                    colors={[effectiveMaskColor]}
                   />
-                  <div className="name">{(MASK_POWERS[mask]?.shortName ?? mask).replace(/_/g, ' ')}</div>
+                  <div className="name">
+                    {(MASK_POWERS[mask]?.shortName ?? mask).replace(/_/g, ' ')}
+                  </div>
                 </Tooltip>
               </div>
             ))}
