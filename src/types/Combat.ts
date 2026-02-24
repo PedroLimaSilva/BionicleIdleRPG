@@ -14,8 +14,9 @@ export const enum BattleStrategy {
 }
 
 /**
- * Effect applied to a combatant (buff or debuff). Single unified type; positive vs negative
- * is inherent in the effect type (e.g. HEAL vs DEFENSE).
+ * Effect applied to a combatant. Type determines WHEN (which phase); value determines WHAT.
+ * No buff/debuff distinction—multiplier sign determines direction (e.g. HEAL +0.1 = heal 10%,
+ * HEAL -0.1 = poison; DEFENSE 1.5 = weaken, DEFENSE 0.5 = fortify).
  */
 export type TargetEffect =
   | { type: 'DMG_MITIGATOR'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round' | 'hit'; sourceId: string }

@@ -126,31 +126,22 @@ export function calculateAtkDmg(
     rawDamage = Math.floor(rawDamage * atkMult);
   }
 
-  // Apply DEFENSE effect on defender: target takes more damage from any attacker
-  const defenseEffect = defender.effects?.find(
-    (e) => e.type === 'DEFENSE' && e.durationRemaining > 0
-  );
-  if (defenseEffect?.type === 'DEFENSE') {
-    rawDamage = Math.floor(rawDamage * defenseEffect.multiplier);
-  }
-
   const multiplier = ELEMENT_EFFECTIVENESS[attacker.element]?.[defender.element] ?? 1.0;
   const final = Math.floor((rawDamage + Math.floor(Math.random() * 5)) * multiplier);
   return Math.max(1, final);
 }
 
 export function applyDamage(target: Combatant, damage: number): Combatant {
-  let finalDamage = damage;
-
-  // Apply defender's DMG_MITIGATOR (mask power or buff, e.g. Hau / Hau Nuva)
-  const dmgMult = target.maskPower?.active &&
-    target.maskPower.effect.type === 'DMG_MITIGATOR' &&
-    target.maskPower.effect.multiplier !== undefined
-    ? target.maskPower.effect.multiplier
-    : target.effects?.find((e) => e.type === 'DMG_MITIGATOR' && e.durationRemaining > 0)?.multiplier;
-  if (dmgMult !== undefined) {
-    finalDamage = Math.floor(damage * dmgMult);
+  // All damage-taken modifiers (DEFENSE weaken/fortify, DMG_MITIGATOR shield) applied by value
+  let mult = 1;
+  if (target.maskPower?.active && target.maskPower.effect.type === 'DMG_MITIGATOR' && target.maskPower.effect.multiplier !== undefined) {
+    mult *= target.maskPower.effect.multiplier;
   }
+  for (const e of target.effects ?? []) {
+    if (e.durationRemaining <= 0) continue;
+    if (e.type === 'DMG_MITIGATOR' || e.type === 'DEFENSE') mult *= e.multiplier;
+  }
+  const finalDamage = Math.floor(damage * mult);
 
   return {
     ...target,
@@ -267,8 +258,9 @@ export function applyHealing(combatant: Combatant): Combatant {
     ? combatant.maskPower.effect.multiplier
     : combatant.effects?.find((e) => e.type === 'HEAL' && e.durationRemaining > 0)?.multiplier;
   if (healMult !== undefined) {
-    const healAmount = Math.floor(combatant.maxHp * healMult);
-    return { ...combatant, hp: Math.min(combatant.maxHp, combatant.hp + healAmount) };
+    const delta = Math.floor(combatant.maxHp * healMult);
+    const newHp = Math.max(0, Math.min(combatant.maxHp, combatant.hp + delta));
+    return { ...combatant, hp: newHp };
   }
   return combatant;
 }
