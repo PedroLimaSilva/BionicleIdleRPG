@@ -20,7 +20,6 @@ import { QuestTreePage } from './pages/QuestTree/index.tsx';
 import { BattleSelector } from './pages/BattleSelector/index.tsx';
 import { BattlePage } from './pages/Battle/index.tsx';
 import TypeEffectivenessPage from './pages/TypeEffectiveness/index.tsx';
-import { CutsceneTestPage } from './pages/CutsceneTest/index.tsx';
 import { NavBar } from './components/NavBar/index.tsx';
 
 const HomePage: React.FC = () => (
@@ -90,7 +89,6 @@ export function App() {
                   <Route path="/quest-tree" element={<QuestTreePage />} />
                   <Route path="/inventory" element={<InventoryPage />} />
                   <Route path="/type-effectiveness" element={<TypeEffectivenessPage />} />
-                  <Route path="/cutscene-test" element={<CutsceneTestPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
