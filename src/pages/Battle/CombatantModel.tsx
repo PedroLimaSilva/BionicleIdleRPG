@@ -32,8 +32,8 @@ interface CombatantModelProps {
   combatant: Combatant;
   position: [number, number, number];
   side: 'enemy' | 'team';
-  /** When true, the caster's mask glows (effect is active on others) */
-  maskGlow?: boolean;
+  /** When true, the caster's mask power is active (effect applied to targets) */
+  maskPowerActive?: boolean;
 }
 
 export interface PlayAnimationOptions {
@@ -61,7 +61,7 @@ function getFacingRotation(
 }
 
 export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelProps>(
-  ({ combatant, position, side, maskGlow = false }, ref) => {
+  ({ combatant, position, side, maskPowerActive = false }, ref) => {
     const modelGroup = useRef<Group>(null);
     const childRef = useRef<CombatantModelHandle | null>(null);
 
@@ -143,7 +143,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...MATORAN_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
-                  maskGlow,
+                  maskPowerActive,
                 }}
               />
             </group>
@@ -158,7 +158,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...MATORAN_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
-                  maskGlow,
+                  maskPowerActive,
                 }}
               />
             </group>
@@ -173,7 +173,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...MATORAN_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
-                  maskGlow,
+                  maskPowerActive,
                 }}
               />
             </group>
@@ -188,7 +188,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...MATORAN_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
-                  maskGlow,
+                  maskPowerActive,
                 }}
               />
             </group>
@@ -203,7 +203,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...MATORAN_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
-                  maskGlow,
+                  maskPowerActive,
                 }}
               />
             </group>
@@ -218,7 +218,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...MATORAN_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
-                  maskGlow,
+                  maskPowerActive,
                 }}
               />
             </group>

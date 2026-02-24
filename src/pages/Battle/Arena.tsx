@@ -223,7 +223,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
             combatant={c}
             side="team"
             position={TEAM_POSITIONS[i]}
-            maskGlow={!!c.maskPower?.active}
+            maskPowerActive={!!c.maskPower?.active}
             ref={(ref) => {
               if (ref) combatantRefs.current[c.id] = ref;
             }}
