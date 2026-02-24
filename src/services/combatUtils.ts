@@ -121,14 +121,22 @@ export function calculateAtkDmg(
   const effectiveDefense = defender.defense * defenseMult;
   let rawDamage = Math.max(1, attacker.attack - effectiveDefense);
 
-  // Apply attacker's ATK_MULT (mask power or buff, e.g. Pakari / Pakari Nuva)
-  const atkMult = attacker.maskPower?.active &&
+  // Apply attacker's ATK_MULT (mask power + buffs stack multiplicatively)
+  let atkMult = 1;
+  if (
+    attacker.maskPower?.active &&
     attacker.maskPower.effect.type === 'ATK_MULT' &&
     attacker.maskPower.effect.target === 'self' &&
     attacker.maskPower.effect.multiplier
-    ? attacker.maskPower.effect.multiplier
-    : attacker.effects?.find((e) => e.type === 'ATK_MULT' && e.durationRemaining > 0)?.multiplier;
-  if (atkMult) {
+  ) {
+    atkMult *= attacker.maskPower.effect.multiplier;
+  }
+  for (const e of attacker.effects ?? []) {
+    if (e.type === 'ATK_MULT' && e.durationRemaining > 0 && e.multiplier) {
+      atkMult *= e.multiplier;
+    }
+  }
+  if (atkMult !== 1) {
     rawDamage = Math.floor(rawDamage * atkMult);
   }
 
@@ -257,13 +265,21 @@ function decrementEffectDurations(
 }
 
 export function applyHealing(combatant: Combatant): Combatant {
-  // Apply HEAL (mask power or buff, e.g. Kaukau / Kaukau Nuva)
-  const healMult = combatant.maskPower?.active &&
+  // Apply HEAL (mask power + buffs stack additively)
+  let healMult = 0;
+  if (
+    combatant.maskPower?.active &&
     combatant.maskPower.effect.type === 'HEAL' &&
     combatant.maskPower.effect.multiplier !== undefined
-    ? combatant.maskPower.effect.multiplier
-    : combatant.effects?.find((e) => e.type === 'HEAL' && e.durationRemaining > 0)?.multiplier;
-  if (healMult !== undefined) {
+  ) {
+    healMult += combatant.maskPower.effect.multiplier;
+  }
+  for (const e of combatant.effects ?? []) {
+    if (e.type === 'HEAL' && e.durationRemaining > 0 && e.multiplier !== undefined) {
+      healMult += e.multiplier;
+    }
+  }
+  if (healMult !== 0) {
     const delta = Math.floor(combatant.maxHp * healMult);
     const newHp = Math.max(0, Math.min(combatant.maxHp, combatant.hp + delta));
     return { ...combatant, hp: newHp };
