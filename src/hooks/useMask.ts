@@ -2,6 +2,9 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
+import { useGame } from '../context/Game';
+import { getEffectiveMataMaskColor } from '../game/maskColor';
+import { BaseMatoran, MatoranStage } from '../types/Matoran';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 
@@ -112,20 +115,25 @@ interface TransitionState {
  *
  * @param masksParent - The Object3D to parent the mask to (e.g. `nodes.Masks`)
  * @param maskName    - The name of the mask mesh in masks.glb (must match the Mask enum value)
- * @param maskColor   - The color to tint the mask
+ * @param matoran     - Character data (Mata/Diminished) for mask color derivation
  * @param glowColor   - Optional color for emissive "glow" materials (e.g. lens glow matching eye color).
- *                       When provided, materials whose names include "glow" (case-insensitive) will use
- *                       this color for both their base color and emissive color instead of maskColor.
+ *                      When provided, materials whose names include "glow" (case-insensitive) will use
+ *                      this color for both their base color and emissive color instead of maskColor.
  */
 export function useMask(
   masksParent: Object3D | undefined,
   maskName: string,
-  maskColor: string,
+  matoran: BaseMatoran & { maskColorOverride?: string; maskOverride?: string },
   glowColor?: string
 ) {
   const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
   const masksNodes = useMemo(() => buildMaskNodes(gltf), [gltf]);
+  const { completedQuests } = useGame();
 
+  const maskColor =
+    matoran.stage === MatoranStage.ToaMata
+      ? getEffectiveMataMaskColor(matoran, completedQuests)
+      : (matoran.maskColorOverride ?? matoran.colors.mask);
   const maskRef = useRef<Object3D | null>(null);
   const prevMaskNameRef = useRef<string | null>(null);
   const masksParentRef = useRef<Object3D | undefined>(masksParent);
@@ -184,9 +192,7 @@ export function useMask(
 
     const prevMask = maskRef.current;
     const isChange =
-      prevMaskNameRef.current !== null &&
-      prevMaskNameRef.current !== maskName &&
-      prevMask !== null;
+      prevMaskNameRef.current !== null && prevMaskNameRef.current !== maskName && prevMask !== null;
 
     if (isChange && prevMask) {
       // Cancel any already-running transition and clean up its old mask
@@ -245,11 +251,7 @@ export function useMask(
     // Old mask: scale up relative to its original scale and fade out
     if (tr.oldMask) {
       const factor = 1 + t * EXIT_SCALE_AMOUNT;
-      tr.oldMask.scale.set(
-        tr.oldScale.x * factor,
-        tr.oldScale.y * factor,
-        tr.oldScale.z * factor
-      );
+      tr.oldMask.scale.set(tr.oldScale.x * factor, tr.oldScale.y * factor, tr.oldScale.z * factor);
       setAnimatedOpacity(tr.oldMask, tr.oldOpacities, 1 - t);
     }
 

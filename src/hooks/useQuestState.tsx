@@ -7,8 +7,6 @@ import { GameState } from '../types/GameState';
 import { LogType } from '../types/Logging';
 import { QUESTS } from '../data/quests';
 import { GameItemId } from '../data/loot';
-import { LegoColor } from '../types/Colors';
-import { isToaMata } from '../services/matoranUtils';
 import { MATORAN_DEX } from '../data/matoran';
 import { getDebugMode } from '../services/gamePersistence';
 
@@ -104,8 +102,8 @@ export const useQuestState = ({
       ? active.assignedMatoran.filter((id) => evolution[id]).map((id) => evolution[id])
       : [];
 
-    setRecruitedCharacters((prev) => {
-      const updated = prev.map((char) => {
+    setRecruitedCharacters((prev) =>
+      prev.map((char) => {
         if (active.assignedMatoran.includes(char.id)) {
           const evolvedId = evolution?.[char.id];
           const xp = char.exp + (quest.rewards.xpPerMatoran ?? 0);
@@ -124,21 +122,10 @@ export const useQuestState = ({
             quest: undefined,
             exp: xp,
           };
-        } else if (
-          (quest.id === 'mnog_kini_nui_arrival' || quest.id === 'mnog_gali_call') &&
-          isToaMata(MATORAN_DEX[char.id])
-        ) {
-          return {
-            ...char,
-            maskColorOverride: LegoColor.PearlGold,
-          };
-        } else {
-          return char;
         }
-      });
-
-      return updated;
-    });
+        return char;
+      })
+    );
 
     if (evolvedIds.length > 0) {
       const names = evolvedIds.map((id) => MATORAN_DEX[id]?.name ?? id).join(', ');
