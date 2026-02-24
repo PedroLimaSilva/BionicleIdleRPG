@@ -801,7 +801,7 @@ describe('Battle Simulation', () => {
     });
 
     test('active mask power does NOT re-trigger when willUseAbility is false', async () => {
-      // Kaukau Nuva: 2-turn HEAL buff on team. Caster stays active for 2 turns.
+      // Kaukau Nuva: 2-turn HEAL buff on team. Use weak team + tanky enemies so round 2 has targets.
       const team = createTeamFromRecruited([
         { id: 'Toa_Gali', exp: 0, maskOverride: Mask.KaukauNuva },
         { id: 'Toa_Tahu', exp: 0 },
@@ -811,8 +811,11 @@ describe('Battle Simulation', () => {
       const customEncounter: EnemyEncounter = {
         ...encounter,
         waves: [
-          [{ id: 'tahnok', lvl: 1 }, { id: 'tahnok', lvl: 1 }],
-          [{ id: 'tahnok', lvl: 1 }],
+          [
+            { id: 'tahnok', lvl: 5 },
+            { id: 'tahnok', lvl: 5 },
+            { id: 'tahnok', lvl: 5 },
+          ],
         ],
       };
       const sim = new BattleSimulator(team, customEncounter);
