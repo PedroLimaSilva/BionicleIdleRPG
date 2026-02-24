@@ -846,12 +846,12 @@ describe('Battle Simulation', () => {
       sim.team = setAbilities(sim.team, [], false);
       await sim.runRound();
 
-      // Must NOT have re-applied buffs (would stack to 6 if re-triggered)
+      // Turn-based HEAL buffs expire in round 2; count must decrease (no re-application)
       const buffCountAfterRound2 = sim.team.reduce(
         (sum, t) => sum + (t.buffs?.filter((b) => b.type === 'HEAL').length ?? 0),
         0
       );
-      expect(buffCountAfterRound2).toBeLessThanOrEqual(3);
+      expect(buffCountAfterRound2).toBeLessThan(buffCountAfterRound1);
     });
   });
 });
