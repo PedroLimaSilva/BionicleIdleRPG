@@ -132,7 +132,10 @@ export const useGameLogic = (): GameState => {
         };
       });
     },
-    evolveBohrokToKal: (matoranId: RecruitedCharacterData['id']) => {
+    evolveBohrokToKal: (
+      matoranId: RecruitedCharacterData['id'],
+      onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
+    ) => {
       const matoran = recruitedCharacters.find((m) => m.id === matoranId);
       if (!matoran || !canEvolveBohrokToKal(matoran)) return false;
 
@@ -146,6 +149,7 @@ export const useGameLogic = (): GameState => {
           `${MATORAN_DEX[matoranId]?.name ?? matoranId} evolved into ${MATORAN_DEX[evolved.id]?.name ?? evolved.id}!`,
           LogType.Event
         );
+        onSuccess?.(evolved.id);
         return prev - BOHROK_KAL_EVOLUTION_COST;
       });
       return true;

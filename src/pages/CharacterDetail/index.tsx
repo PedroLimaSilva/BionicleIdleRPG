@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 
 import './index.scss';
@@ -29,6 +29,7 @@ import { MASK_POWERS } from '../../data/combat';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { recruitedCharacters, completedQuests, widgets, evolveBohrokToKal } = useGame();
 
   const { setScene } = useSceneCanvas();
@@ -108,7 +109,11 @@ export const CharacterDetail: React.FC = () => {
                     type="button"
                     className="evolve-button"
                     disabled={widgets < BOHROK_KAL_EVOLUTION_COST}
-                    onClick={() => evolveBohrokToKal(matoran.id)}
+                    onClick={() =>
+                      evolveBohrokToKal(matoran.id, (evolvedId) =>
+                        navigate(`/characters/${evolvedId}`, { replace: true })
+                      )
+                    }
                   >
                     Evolve to Bohrok Kal ({BOHROK_KAL_EVOLUTION_COST} widgets)
                   </button>

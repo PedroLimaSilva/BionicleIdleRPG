@@ -31,6 +31,9 @@ export function getAvailableJobs(
 
   if (matoran) {
     const matoranDex = MATORAN_DEX[matoran.id];
+    if (!matoranDex) {
+      return jobs.filter((job) => !JOB_DETAILS[job].allowedStages);
+    }
     jobs = jobs.filter((job) => {
       const { allowedStages } = JOB_DETAILS[job];
       if (!allowedStages) return true;
