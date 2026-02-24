@@ -29,7 +29,6 @@ export function getEffectiveNuvaMaskColor(
   matoran: BaseMatoran & { maskColorOverride?: string; maskOverride?: string },
   completedQuests: string[]
 ): string {
-  if (matoran.maskColorOverride) return matoran.maskColorOverride;
   if (isNuvaSymbolsSequestered(completedQuests)) return LegoColor.LightGray;
   return matoran.colors.mask;
 }
