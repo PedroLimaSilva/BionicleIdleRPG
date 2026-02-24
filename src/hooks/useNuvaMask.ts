@@ -1,21 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
-import {
-  Color,
-  Group,
-  Mesh,
-  MeshPhysicalMaterial,
-  MeshStandardMaterial,
-  Object3D,
-} from 'three';
+import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { useGame } from '../context/Game';
 import { getEffectiveNuvaMaskColor } from '../game/maskColor';
 
 const NUVA_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/masks.glb';
-
-/** Lenses are children of Akaku in the source; gltfjsx --transform flattens the tree. */
-const AKAKU_LENS_NODE_NAMES = ['Lens_1', 'Lens_2', 'Lens_3', 'Lens_4'];
 
 function buildNuvaMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
   const nodes: Record<string, Object3D> = {};
@@ -89,19 +79,7 @@ export function useNuvaMask(
       return;
     }
 
-    // Akaku: gltfjsx --transform flattens the tree, so lenses are siblings. Reassemble mask + lenses.
-    let clone: Object3D;
-    if (maskFileName === 'Akaku') {
-      const group = new Group();
-      group.add(source.clone(true));
-      for (const lensName of AKAKU_LENS_NODE_NAMES) {
-        const lensNode = masksNodes[lensName];
-        if (lensNode) group.add(lensNode.clone(true));
-      }
-      clone = group;
-    } else {
-      clone = source.clone(true);
-    }
+    const clone = source.clone(true);
 
     clone.traverse((child) => {
       if ((child as Mesh).isMesh) {
