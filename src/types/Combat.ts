@@ -13,32 +13,18 @@ export const enum BattleStrategy {
   MostEffective = 'MostEffective', // Will target the enemy it estimates will take more damage from an attack
 }
 
-/** Debuff applied to a combatant. Mirrors TargetBuff structure; sourceId identifies caster. */
-export type TargetDebuff =
-  | {
-      type: 'DEFENSE';
-      multiplier: number;
-      durationRemaining: number;
-      durationUnit: 'turn' | 'round';
-      sourceId: string;
-    }
-  | {
-      type: 'CONFUSION';
-      durationRemaining: number;
-      durationUnit: 'turn' | 'round';
-      sourceId: string;
-    };
-
 /**
- * Buff applied to a combatant (e.g. from Nuva mask powers that affect the whole team).
- * Mirror of mask power effects but as instances that can be applied to multiple targets.
+ * Effect applied to a combatant (buff or debuff). Single unified type; positive vs negative
+ * is inherent in the effect type (e.g. HEAL vs DEFENSE).
  */
-export type TargetBuff =
+export type TargetEffect =
   | { type: 'DMG_MITIGATOR'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round' | 'hit'; sourceId: string }
   | { type: 'HEAL'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round'; sourceId: string }
   | { type: 'ATK_MULT'; multiplier: number; durationRemaining: number; durationUnit: 'attack' | 'round'; sourceId: string }
   | { type: 'AGGRO'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round'; sourceId: string }
-  | { type: 'SPEED'; multiplier: number; durationRemaining: number; durationUnit: 'round'; sourceId: string };
+  | { type: 'SPEED'; multiplier: number; durationRemaining: number; durationUnit: 'round'; sourceId: string }
+  | { type: 'DEFENSE'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round'; sourceId: string }
+  | { type: 'CONFUSION'; durationRemaining: number; durationUnit: 'turn' | 'round'; sourceId: string };
 
 export interface Combatant {
   id: string;
@@ -47,8 +33,7 @@ export interface Combatant {
   lvl: number;
   maskPower?: MaskPower;
   maskColorOverride?: LegoColor;
-  debuffs?: TargetDebuff[];
-  buffs?: TargetBuff[];
+  effects?: TargetEffect[];
   element: ElementTribe;
   maxHp: number;
   hp: number;

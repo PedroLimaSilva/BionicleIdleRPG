@@ -30,7 +30,7 @@ function setAbilities(team: Combatant[], ids: string[], use: boolean): Combatant
 
 /** Add full immunity (DMG_MITIGATOR multiplier 0) for given rounds. Ensures no combatants die. */
 function addImmunityBuff(team: Combatant[], rounds: number): Combatant[] {
-  const buff = {
+  const eff = {
     type: 'DMG_MITIGATOR' as const,
     multiplier: 0,
     durationRemaining: rounds,
@@ -39,7 +39,7 @@ function addImmunityBuff(team: Combatant[], rounds: number): Combatant[] {
   };
   return team.map((t) => ({
     ...t,
-    buffs: [...(t.buffs ?? []), buff],
+    effects: [...(t.effects ?? []), eff],
   }));
 }
 
@@ -309,7 +309,7 @@ describe('Battle Simulation', () => {
       expect(kopaka.maskPower?.effect.debuffType).toBe('DEFENSE');
       // Debuff lasts 2 rounds; after round 1, enemy has 1 round left (decremented at end of round)
       const enemy = sim.enemies[0];
-      expect(enemy.debuffs?.some((d) => d.type === 'DEFENSE')).toBe(true);
+      expect(enemy.effects?.some((e) => e.type === 'DEFENSE')).toBe(true);
     });
 
     test('Miru (2 hit duration) provides mitigation for first 2 hits', async () => {
@@ -399,7 +399,7 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       // One enemy should have CONFUSION debuff (the one Tahu attacked)
-      const confusedEnemy = sim.enemies.find((e) => e.debuffs?.some((d) => d.type === 'CONFUSION'));
+      const confusedEnemy = sim.enemies.find((e) => e.effects?.some((eff) => eff.type === 'CONFUSION'));
       expect(confusedEnemy).toBeDefined();
 
       // Total enemy HP should have decreased (Tahu's attack + confused enemy attacking ally)
@@ -424,7 +424,7 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       const enemy = sim.enemies[0];
-      expect(enemy.debuffs?.some((d) => d.type === 'CONFUSION')).toBe(true);
+      expect(enemy.effects?.some((e) => e.type === 'CONFUSION')).toBe(true);
       expect(enemy.hp).toBeLessThan(enemyHpBefore);
     });
 
@@ -447,10 +447,10 @@ describe('Battle Simulation', () => {
 
       await sim.runRound();
       const confusedAfterR1 = sim.enemies.find((e) =>
-        e.debuffs?.some((d) => d.type === 'CONFUSION' && d.durationRemaining > 0)
+        e.effects?.some((eff) => eff.type === 'CONFUSION' && eff.durationRemaining > 0)
       );
       expect(confusedAfterR1).toBeDefined();
-      const confusionsAfterR1 = confusedAfterR1!.debuffs!.filter((d) => d.type === 'CONFUSION').length;
+      const confusionsAfterR1 = confusedAfterR1!.effects!.filter((e) => e.type === 'CONFUSION').length;
       expect(confusionsAfterR1).toBe(1);
 
       for (let r = 0; r < 5; r++) {
@@ -459,7 +459,7 @@ describe('Battle Simulation', () => {
       }
 
       const confusedAfterR6 = sim.enemies.find((e) =>
-        e.debuffs?.some((d) => d.type === 'CONFUSION' && d.durationRemaining > 0)
+        e.effects?.some((eff) => eff.type === 'CONFUSION' && eff.durationRemaining > 0)
       );
       expect(confusedAfterR6).toBeUndefined();
     });
@@ -837,7 +837,7 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       const buffCountAfterRound1 = sim.team.reduce(
-        (sum, t) => sum + (t.buffs?.filter((b) => b.type === 'HEAL').length ?? 0),
+        (sum, t) => sum + (t.effects?.filter((e) => e.type === 'HEAL').length ?? 0),
         0
       );
       expect(buffCountAfterRound1).toBe(3);
@@ -848,7 +848,7 @@ describe('Battle Simulation', () => {
 
       // Turn-based HEAL buffs expire in round 2; count must decrease (no re-application)
       const buffCountAfterRound2 = sim.team.reduce(
-        (sum, t) => sum + (t.buffs?.filter((b) => b.type === 'HEAL').length ?? 0),
+        (sum, t) => sum + (t.effects?.filter((e) => e.type === 'HEAL').length ?? 0),
         0
       );
       expect(buffCountAfterRound2).toBeLessThan(buffCountAfterRound1);
