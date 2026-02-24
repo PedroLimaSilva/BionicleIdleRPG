@@ -457,9 +457,11 @@ function triggerMaskPowers(
         newTurnOrder.push(clonedActor);
       }
       if (isTeam) {
-        // Merge maskPower updates into buffed caster (don't overwrite with actor—would drop buffs)
+        // Merge maskPower + willUseAbility into buffed caster (don't overwrite with actor—would drop buffs)
         currentTeam = currentTeam.map((t) =>
-          t.id === actor.id ? { ...t, maskPower: actor.maskPower } : t
+          t.id === actor.id
+            ? { ...t, maskPower: actor.maskPower, willUseAbility: false }
+            : t
         );
       } else {
         currentEnemies = currentEnemies.map((t) => (t.id === actor.id ? actor : t));
