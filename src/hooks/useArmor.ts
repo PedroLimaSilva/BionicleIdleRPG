@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const ARMOR_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/armor.glb';
+
+/** Draco decoder path (CDN) - required for Draco-compressed GLB files from gltfjsx --transform */
+const DRACO_DECODER_PATH = 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/';
 
 // Module-level cache so the file is only fetched once across all instances
 let armorNodesCache: Record<string, Object3D> | null = null;
@@ -15,6 +19,9 @@ function loadArmorNodes(): Promise<Record<string, Object3D>> {
 
   armorLoadPromise = new Promise((resolve, reject) => {
     const loader = new GLTFLoader();
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath(DRACO_DECODER_PATH);
+    loader.setDRACOLoader(dracoLoader);
     loader.load(
       ARMOR_GLB_PATH,
       (gltf) => {

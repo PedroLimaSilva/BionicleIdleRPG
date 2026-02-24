@@ -2,9 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
+
+/** Draco decoder path (CDN) - required for Draco-compressed GLB files from gltfjsx --transform */
+const DRACO_DECODER_PATH = 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/';
 
 /** Duration of the mask swap transition in seconds */
 const TRANSITION_DURATION = 0.35;
@@ -22,6 +26,9 @@ function loadMasksNodes(): Promise<Record<string, Object3D>> {
 
   masksLoadPromise = new Promise((resolve, reject) => {
     const loader = new GLTFLoader();
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath(DRACO_DECODER_PATH);
+    loader.setDRACOLoader(dracoLoader);
     loader.load(
       MASKS_GLB_PATH,
       (gltf) => {
