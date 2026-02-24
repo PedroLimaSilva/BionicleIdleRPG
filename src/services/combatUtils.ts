@@ -1,5 +1,4 @@
 import { COMBATANT_DEX, MASK_POWERS } from '../data/combat';
-import { LegoColor } from '../types/Colors';
 import { BattleStrategy, Combatant, TargetEffect } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 
@@ -108,11 +107,7 @@ export const ELEMENT_EFFECTIVENESS: Record<ElementTribe, Record<ElementTribe, nu
   },
 };
 
-export function calculateAtkDmg(
-  attacker: Combatant,
-  defender: Combatant,
-  attackerSide?: 'team' | 'enemy'
-): number {
+export function calculateAtkDmg(attacker: Combatant, defender: Combatant): number {
   // DEFENSE multiplies the defense stat: >1 = fortify, <1 = weaken
   let defenseMult = 1;
   for (const e of defender.effects ?? []) {
@@ -148,7 +143,11 @@ export function calculateAtkDmg(
 export function applyDamage(target: Combatant, damage: number): Combatant {
   // DMG_MITIGATOR multiplies final damage (0 = immunity, 0.5 = half, 1 = normal)
   let mult = 1;
-  if (target.maskPower?.active && target.maskPower.effect.type === 'DMG_MITIGATOR' && target.maskPower.effect.multiplier !== undefined) {
+  if (
+    target.maskPower?.active &&
+    target.maskPower.effect.type === 'DMG_MITIGATOR' &&
+    target.maskPower.effect.multiplier !== undefined
+  ) {
     mult *= target.maskPower.effect.multiplier;
   }
   for (const e of target.effects ?? []) {
@@ -173,23 +172,54 @@ function createEffectFromMaskEffect(
 
   switch (effect.type) {
     case 'DMG_MITIGATOR': {
-      const unit = dur.unit === 'turn' || dur.unit === 'round' || dur.unit === 'hit' ? dur.unit : 'round';
-      return { type: 'DMG_MITIGATOR', multiplier: effect.multiplier ?? 1, durationRemaining: amount, durationUnit: unit, sourceId };
+      const unit =
+        dur.unit === 'turn' || dur.unit === 'round' || dur.unit === 'hit' ? dur.unit : 'round';
+      return {
+        type: 'DMG_MITIGATOR',
+        multiplier: effect.multiplier ?? 1,
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
     }
     case 'HEAL': {
       const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'turn';
-      return { type: 'HEAL', multiplier: effect.multiplier ?? 0, durationRemaining: amount, durationUnit: unit, sourceId };
+      return {
+        type: 'HEAL',
+        multiplier: effect.multiplier ?? 0,
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
     }
     case 'ATK_MULT': {
       const unit = dur.unit === 'attack' || dur.unit === 'round' ? dur.unit : 'round';
-      return { type: 'ATK_MULT', multiplier: effect.multiplier ?? 1, durationRemaining: amount, durationUnit: unit, sourceId };
+      return {
+        type: 'ATK_MULT',
+        multiplier: effect.multiplier ?? 1,
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
     }
     case 'AGGRO': {
       const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'turn';
-      return { type: 'AGGRO', multiplier: effect.multiplier ?? 0, durationRemaining: amount, durationUnit: unit, sourceId };
+      return {
+        type: 'AGGRO',
+        multiplier: effect.multiplier ?? 0,
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
     }
     case 'SPEED':
-      return { type: 'SPEED', multiplier: effect.multiplier ?? 2, durationRemaining: amount, durationUnit: 'round', sourceId };
+      return {
+        type: 'SPEED',
+        multiplier: effect.multiplier ?? 2,
+        durationRemaining: amount,
+        durationUnit: 'round',
+        sourceId,
+      };
     default:
       return null;
   }
@@ -354,8 +384,13 @@ export function decrementMaskPowerCounter(
 export function chooseTarget(self: Combatant, targets: Combatant[]): Combatant {
   // Filter out untargetable enemies (AGGRO mask power or buff with multiplier 0)
   const targetableEnemies = targets.filter((t) => {
-    const aggroself = t.maskPower?.active && t.maskPower.effect.type === 'AGGRO' && t.maskPower.effect.multiplier === 0;
-    const aggrobuff = t.effects?.some((e) => e.type === 'AGGRO' && e.multiplier === 0 && e.durationRemaining > 0);
+    const aggroself =
+      t.maskPower?.active &&
+      t.maskPower.effect.type === 'AGGRO' &&
+      t.maskPower.effect.multiplier === 0;
+    const aggrobuff = t.effects?.some(
+      (e) => e.type === 'AGGRO' && e.multiplier === 0 && e.durationRemaining > 0
+    );
     return !aggroself && !aggrobuff;
   });
 
@@ -420,9 +455,7 @@ function triggerMaskPowers(
         // Team-wide mask (e.g. Nuva): apply buff to allies and set caster active for duration
         const eff = createEffectFromMaskEffect(effect, actor.id);
         if (eff) {
-          currentTeam = currentTeam.map((t) =>
-            t.hp > 0 ? applyEffectToCombatant(t, eff) : t
-          );
+          currentTeam = currentTeam.map((t) => (t.hp > 0 ? applyEffectToCombatant(t, eff) : t));
           if (effect.type === 'SPEED') {
             const aliveAllies = currentTeam.filter((t) => t.hp > 0);
             for (const ally of aliveAllies) {
@@ -448,9 +481,7 @@ function triggerMaskPowers(
       if (isTeam) {
         // Merge maskPower + willUseAbility into buffed caster (don't overwrite with actor—would drop buffs)
         currentTeam = currentTeam.map((t) =>
-          t.id === actor.id
-            ? { ...t, maskPower: actor.maskPower, willUseAbility: false }
-            : t
+          t.id === actor.id ? { ...t, maskPower: actor.maskPower, willUseAbility: false } : t
         );
       } else {
         currentEnemies = currentEnemies.map((t) => (t.id === actor.id ? actor : t));
@@ -549,7 +580,7 @@ export function queueCombatRound(
         else currentTeam = newOpponentListForMark;
       }
 
-      const damage = calculateAtkDmg(self, target, isTeam ? 'team' : 'enemy');
+      const damage = calculateAtkDmg(self, target);
       const willBeDefeated = target.hp - damage <= 0;
 
       // Expect 3D combatant refs to be globally accessible for now
@@ -641,10 +672,7 @@ export function hasActiveEffectFromSource(
   sourceId: string
 ): boolean {
   const hasFrom = (list: Combatant[]) =>
-    list.some(
-      (c) =>
-        c.effects?.some((e) => e.sourceId === sourceId && e.durationRemaining > 0)
-    );
+    list.some((c) => c.effects?.some((e) => e.sourceId === sourceId && e.durationRemaining > 0));
   return hasFrom(team) || hasFrom(enemies);
 }
 
@@ -655,8 +683,7 @@ export function hasActiveEffectFromSource(
 export function hasReadyMaskPowers(team: Combatant[], enemies: Combatant[] = []): boolean {
   return team.some((c) => {
     if (c.hp <= 0 || !c.maskPower || c.maskPower.effect.cooldown.amount !== 0) return false;
-    const maskActive =
-      c.maskPower.active || hasActiveEffectFromSource(team, enemies, c.id);
+    const maskActive = c.maskPower.active || hasActiveEffectFromSource(team, enemies, c.id);
     return !maskActive;
   });
 }
@@ -683,7 +710,6 @@ const TOA_NUVA_TEMPLATE_IDS = [
 
 export interface GenerateCombatantStatsOptions {
   maskOverride?: Mask;
-  maskColorOverride?: LegoColor;
   /** When true and templateId is Toa Nuva, stats are diminished. */
   nuvaSymbolsSequestered?: boolean;
 }
@@ -692,17 +718,16 @@ export function generateCombatantStats(
   id: string,
   templateId: string,
   lvl: number,
-  options?: GenerateCombatantStatsOptions | Mask,
-  maskColorOverrideArg?: LegoColor
+  options?: GenerateCombatantStatsOptions | Mask
 ): Combatant {
-  // Backward compat: allow (maskOverride, maskColorOverride) as 4th/5th args
+  // Backward compat: allow (maskOverride) as 4th/5th args
   const opts: GenerateCombatantStatsOptions =
     options !== undefined &&
     typeof options === 'object' &&
     options !== null &&
     !('shortName' in options)
       ? (options as GenerateCombatantStatsOptions)
-      : { maskOverride: options as Mask | undefined, maskColorOverride: maskColorOverrideArg };
+      : { maskOverride: options as Mask | undefined };
 
   const template = COMBATANT_DEX[templateId];
   if (!template) {
@@ -714,7 +739,9 @@ export function generateCombatantStats(
   let defense = template.baseDefense + lvl * 2;
   let speed = template.baseSpeed + lvl * 1;
 
-  const isToaNuva = TOA_NUVA_TEMPLATE_IDS.includes(templateId as (typeof TOA_NUVA_TEMPLATE_IDS)[number]);
+  const isToaNuva = TOA_NUVA_TEMPLATE_IDS.includes(
+    templateId as (typeof TOA_NUVA_TEMPLATE_IDS)[number]
+  );
   if (opts.nuvaSymbolsSequestered && isToaNuva) {
     const mult = NUVA_SEQUESTERED_STAT_MULTIPLIER;
     maxHp = Math.max(1, Math.floor(maxHp * mult));
@@ -735,7 +762,6 @@ export function generateCombatantStats(
     model: template.model,
     lvl,
     maskPower,
-    maskColorOverride: opts.maskColorOverride,
     element: template.element,
     maxHp,
     hp: maxHp,

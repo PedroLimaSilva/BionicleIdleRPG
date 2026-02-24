@@ -1,4 +1,3 @@
-import { LegoColor } from './Colors';
 import { GameState } from './GameState';
 import { ElementTribe, Mask } from './Matoran';
 
@@ -19,13 +18,54 @@ export const enum BattleStrategy {
  * HEAL -0.1 = poison; DEFENSE >1 = fortify, DEFENSE <1 = weaken).
  */
 export type TargetEffect =
-  | { type: 'DMG_MITIGATOR'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round' | 'hit'; sourceId: string }
-  | { type: 'HEAL'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round'; sourceId: string }
-  | { type: 'ATK_MULT'; multiplier: number; durationRemaining: number; durationUnit: 'attack' | 'round'; sourceId: string }
-  | { type: 'AGGRO'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round'; sourceId: string }
-  | { type: 'SPEED'; multiplier: number; durationRemaining: number; durationUnit: 'round'; sourceId: string }
-  | { type: 'DEFENSE'; multiplier: number; durationRemaining: number; durationUnit: 'turn' | 'round'; sourceId: string }
-  | { type: 'CONFUSION'; durationRemaining: number; durationUnit: 'turn' | 'round'; sourceId: string };
+  | {
+      type: 'DMG_MITIGATOR';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round' | 'hit';
+      sourceId: string;
+    }
+  | {
+      type: 'HEAL';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round';
+      sourceId: string;
+    }
+  | {
+      type: 'ATK_MULT';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'attack' | 'round';
+      sourceId: string;
+    }
+  | {
+      type: 'AGGRO';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round';
+      sourceId: string;
+    }
+  | {
+      type: 'SPEED';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'round';
+      sourceId: string;
+    }
+  | {
+      type: 'DEFENSE';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round';
+      sourceId: string;
+    }
+  | {
+      type: 'CONFUSION';
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round';
+      sourceId: string;
+    };
 
 export interface Combatant {
   id: string;
@@ -33,7 +73,6 @@ export interface Combatant {
   model: string;
   lvl: number;
   maskPower?: MaskPower;
-  maskColorOverride?: LegoColor;
   effects?: TargetEffect[];
   element: ElementTribe;
   maxHp: number;
@@ -59,14 +98,7 @@ interface CombatDuration {
 }
 
 type MaskEffect = {
-  type:
-    | 'ATK_MULT'
-    | 'DMG_MITIGATOR'
-    | 'HEAL'
-    | 'AGGRO'
-    | 'SPEED'
-    | 'ACCURACY_MULT'
-    | 'DEBUFF';
+  type: 'ATK_MULT' | 'DMG_MITIGATOR' | 'HEAL' | 'AGGRO' | 'SPEED' | 'ACCURACY_MULT' | 'DEBUFF';
   duration: CombatDuration;
   cooldown: CombatDuration;
   multiplier?: number;

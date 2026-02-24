@@ -174,10 +174,9 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
 
   const confirmTeam = (team: RecruitedCharacterData[]) => {
     setTeam(
-      team.map(({ id, exp, maskColorOverride, maskOverride }) =>
+      team.map(({ id, exp, maskOverride }) =>
         generateCombatantStats(id, id, getLevelFromExp(exp), {
           maskOverride,
-          maskColorOverride,
           nuvaSymbolsSequestered:
             nuvaSymbolsSequestered && TOA_NUVA_IDS.includes(id as (typeof TOA_NUVA_IDS)[number]),
         })

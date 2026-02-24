@@ -6,7 +6,6 @@ import { useCharactersState } from './useCharactersState';
 import { ListedCharacterData, RecruitedCharacterData, Mask } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { GameItemId } from '../data/loot';
-import { LegoColor } from '../types/Colors';
 
 describe('useCharactersState', () => {
   const mockAddItemToInventory = jest.fn();
@@ -252,7 +251,7 @@ describe('useCharactersState', () => {
   });
 
   describe('setMaskOverride', () => {
-    test('sets mask and color override for specific matoran', () => {
+    test('sets mask override for specific matoran', () => {
       const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 0 }];
 
       const { result } = renderHook(() =>
@@ -266,11 +265,10 @@ describe('useCharactersState', () => {
       );
 
       act(() => {
-        result.current.setMaskOverride('Jala', LegoColor.PearlGold, Mask.Hau);
+        result.current.setMaskOverride('Jala', Mask.Hau);
       });
 
       expect(result.current.recruitedCharacters[0].maskOverride).toBe(Mask.Hau);
-      expect(result.current.recruitedCharacters[0].maskColorOverride).toBe(LegoColor.PearlGold);
     });
 
     test('does not affect other matoran', () => {
@@ -290,11 +288,10 @@ describe('useCharactersState', () => {
       );
 
       act(() => {
-        result.current.setMaskOverride('Jala', LegoColor.PearlGold, Mask.Hau);
+        result.current.setMaskOverride('Jala', Mask.Hau);
       });
 
       expect(result.current.recruitedCharacters[1].maskOverride).toBeUndefined();
-      expect(result.current.recruitedCharacters[1].maskColorOverride).toBeUndefined();
     });
   });
 });

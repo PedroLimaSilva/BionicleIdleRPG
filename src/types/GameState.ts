@@ -1,7 +1,6 @@
 import { GameItemId } from '../data/loot';
 import { BattleState, BattlePhase } from '../hooks/useBattleState';
 import { Inventory } from '../services/inventoryUtils';
-import { LegoColor } from './Colors';
 import { MatoranJob } from './Jobs';
 import { ActivityLogEntry, LogType } from './Logging';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
@@ -33,7 +32,7 @@ export type GameState = {
   completedQuests: string[];
   battle: BattleState;
   recruitCharacter: (character: ListedCharacterData) => void;
-  setMaskOverride: (id: RecruitedCharacterData['id'], color: LegoColor, mask: Mask) => void;
+  setMaskOverride: (id: RecruitedCharacterData['id'], mask: Mask) => void;
   collectKrana: (element: KranaElement, id: KranaId) => void;
   addItemToInventory: (item: GameItemId, amount: number) => void;
   assignJobToMatoran: (matoranId: RecruitedCharacterData['id'], job: MatoranJob) => void;

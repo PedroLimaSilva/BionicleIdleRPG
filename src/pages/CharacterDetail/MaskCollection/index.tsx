@@ -8,13 +8,8 @@ import { CompositedImage } from '../../../components/CompositedImage';
 
 import './index.scss';
 import { Tooltip } from '../../../components/Tooltip';
-import { LegoColor } from '../../../types/Colors';
 
-export function MaskCollection({
-  matoran,
-}: {
-  matoran: BaseMatoran & { maskColorOverride?: string; maskOverride?: string };
-}) {
+export function MaskCollection({ matoran }: { matoran: BaseMatoran & { maskOverride?: string } }) {
   const { setMaskOverride, completedQuests } = useGame();
 
   const masks = useMemo(() => {
@@ -23,11 +18,8 @@ export function MaskCollection({
 
   const effectiveMaskColor = getEffectiveMaskColor(matoran, completedQuests);
 
-  const handeMaskOverride = (
-    matoran: BaseMatoran & { maskColorOverride?: string; maskOverride?: string },
-    mask: Mask
-  ) => {
-    setMaskOverride(matoran.id, getEffectiveMaskColor(matoran, completedQuests) as LegoColor, mask);
+  const handeMaskOverride = (matoran: BaseMatoran & { maskOverride?: string }, mask: Mask) => {
+    setMaskOverride(matoran.id, mask);
   };
 
   return (
