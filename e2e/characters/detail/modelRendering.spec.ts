@@ -153,7 +153,7 @@ test.describe('Character Model Rendering', () => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
         recruitedCharacters: [{ id: 'Toa_Tahu_Nuva', exp: 0 }],
-        completedQuests: ['bohrok_kal_stolen_symbols'],
+        completedQuests: ['bohrok_kal_reconstruction', 'bohrok_kal_stolen_symbols'],
       });
       await goto(page, '/characters/Toa_Tahu_Nuva');
       await disableCSSAnimations(page);
