@@ -20,7 +20,7 @@ export const OnuaNuvaModel = forwardRef<
   useArmor(nodes.PlateHolderL, 'Shoulder');
   useArmor(nodes.PlateHolderR, 'Shoulder');
 
-  useNuvaMask(nodes.Body, matoran);
+  useNuvaMask(nodes.Masks, matoran);
 
   return (
     <group ref={group} dispose={null}>
