@@ -11,12 +11,20 @@ import { useBattleState } from './useBattleState';
 import { clamp } from '../utils/math';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
 import { BattleRewardParams, KranaReward } from '../types/GameState';
+import { RecruitedCharacterData } from '../types/Matoran';
+import { LogType } from '../types/Logging';
+import { MATORAN_DEX } from '../data/matoran';
 import {
   computeBattleExpTotal,
   computeKranaRewardsForBattle,
   getParticipantIds,
 } from '../game/BattleRewards';
 import { isKranaCollectionActive } from '../game/Krana';
+import {
+  canEvolveBohrokToKal,
+  evolveBohrokToKal,
+  BOHROK_KAL_EVOLUTION_COST,
+} from '../game/BohrokEvolution';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -122,6 +130,22 @@ export const useGameLogic = (): GameState => {
           [element]: [...existingForElement, id],
         };
       });
+    },
+    evolveBohrokToKal: (matoranId: RecruitedCharacterData['id']) => {
+      const matoran = recruitedCharacters.find((m) => m.id === matoranId);
+      if (!matoran || !canEvolveBohrokToKal(matoran)) return false;
+      if (widgets < BOHROK_KAL_EVOLUTION_COST) return false;
+
+      setWidgets((prev) => prev - BOHROK_KAL_EVOLUTION_COST);
+      const evolved = evolveBohrokToKal(matoran);
+      setRecruitedCharacters((prev) =>
+        prev.map((m) => (m.id === matoranId ? evolved : m))
+      );
+      addActivityLog(
+        `${MATORAN_DEX[matoranId]?.name ?? matoranId} evolved into ${MATORAN_DEX[evolved.id]?.name ?? evolved.id}!`,
+        LogType.Event
+      );
+      return true;
     },
     applyBattleRewards: (params: BattleRewardParams) => {
       const totalExp = computeBattleExpTotal(

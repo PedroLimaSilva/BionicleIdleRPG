@@ -3,7 +3,8 @@ import { MATORAN_DEX } from '../data/matoran';
 import { MatoranStage } from '../types/Matoran';
 import { getLevelFromExp } from './Levelling';
 
-const BOHROK_KAL_LEVEL = 100;
+export const BOHROK_KAL_LEVEL = 100;
+export const BOHROK_KAL_EVOLUTION_COST = 5000;
 
 const BOHROK_TO_KAL_ID: Record<string, string> = {
   tahnok: 'tahnok_kal',
@@ -15,22 +16,22 @@ const BOHROK_TO_KAL_ID: Record<string, string> = {
 };
 
 /**
- * Evolves a Bohrok to Bohrok Kal when they reach level 100.
- * Returns the same matoran if evolution does not apply.
+ * Returns true if the Bohrok can evolve to Bohrok Kal (level 100 reached).
  */
-export function evolveBohrokToKalIfReady(
-  matoran: RecruitedCharacterData
-): RecruitedCharacterData {
+export function canEvolveBohrokToKal(matoran: RecruitedCharacterData): boolean {
   const matoranDex = MATORAN_DEX[matoran.id];
   if (!matoranDex || matoranDex.stage !== MatoranStage.Bohrok) {
-    return matoran;
+    return false;
   }
 
   const level = getLevelFromExp(matoran.exp);
-  if (level < BOHROK_KAL_LEVEL) {
-    return matoran;
-  }
+  return level >= BOHROK_KAL_LEVEL && !!BOHROK_TO_KAL_ID[matoran.id];
+}
 
+/**
+ * Returns the evolved Bohrok Kal character data. Call only when canEvolveBohrokToKal is true.
+ */
+export function evolveBohrokToKal(matoran: RecruitedCharacterData): RecruitedCharacterData {
   const evolvedId = BOHROK_TO_KAL_ID[matoran.id];
   if (!evolvedId) {
     return matoran;

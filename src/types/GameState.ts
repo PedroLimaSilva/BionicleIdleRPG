@@ -46,6 +46,7 @@ export type GameState = {
   removeActivityLogEntry: (id: string) => void;
   clearActivityLog: () => void;
   applyBattleRewards: (params: BattleRewardParams) => void;
+  evolveBohrokToKal: (matoranId: RecruitedCharacterData['id']) => boolean;
 };
 
 export type PartialGameState = Pick<

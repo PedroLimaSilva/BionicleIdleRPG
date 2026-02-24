@@ -22,15 +22,6 @@ export function tickMatoranJobExp(matoran: RecruitedCharacterData, now: number):
 
   const logs: ActivityLogEntry[] = [];
 
-  if (updated.id !== matoran.id) {
-    logs.push({
-      id: crypto.randomUUID(),
-      message: `${MATORAN_DEX[matoran.id]?.name ?? matoran.id} evolved into ${matoran_dex.name}!`,
-      type: LogType.Event,
-      timestamp: now,
-    });
-  }
-
   if (earnedWidgets > 0) {
     logs.push({
       id: crypto.randomUUID(),

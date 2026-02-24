@@ -7,7 +7,17 @@ import { ElementTag } from '../../components/ElementTag';
 import { useEffect, useMemo, useState } from 'react';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
-import { getRecruitedMatoran, isMatoran, isToa, isToaMata } from '../../services/matoranUtils';
+import {
+  getRecruitedMatoran,
+  isMatoran,
+  isToa,
+  isToaMata,
+  isBohrok,
+} from '../../services/matoranUtils';
+import {
+  canEvolveBohrokToKal,
+  BOHROK_KAL_EVOLUTION_COST,
+} from '../../game/BohrokEvolution';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { KranaCollection } from './KranaCollection';
@@ -18,7 +28,7 @@ import { isKranaCollectionActive } from '../../game/Krana';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
-  const { recruitedCharacters, completedQuests } = useGame();
+  const { recruitedCharacters, completedQuests, widgets, evolveBohrokToKal } = useGame();
 
   const { setScene } = useSceneCanvas();
 
@@ -82,6 +92,26 @@ export const CharacterDetail: React.FC = () => {
             <>
               <LevelProgress exp={matoran.exp} />
               <ElementTag element={matoran.element} showName={true} />
+              {isBohrok(matoran) && canEvolveBohrokToKal(matoran) && (
+                <div className="bohrok-evolve-section">
+                  <p>
+                    This Bohrok has reached level 100 and can evolve into Bohrok Kal.
+                  </p>
+                  <button
+                    type="button"
+                    className="evolve-button"
+                    disabled={widgets < BOHROK_KAL_EVOLUTION_COST}
+                    onClick={() => evolveBohrokToKal(matoran.id)}
+                  >
+                    Evolve to Bohrok Kal ({BOHROK_KAL_EVOLUTION_COST} widgets)
+                  </button>
+                  {widgets < BOHROK_KAL_EVOLUTION_COST && (
+                    <p className="evolve-hint">
+                      Need {BOHROK_KAL_EVOLUTION_COST - widgets} more widgets
+                    </p>
+                  )}
+                </div>
+              )}
               {/* combatantStats && (
                 <div className='character-detail-section combatant-stats'>
                   <h3>Combat Stats</h3>

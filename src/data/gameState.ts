@@ -67,4 +67,7 @@ export const INITIAL_GAME_STATE: GameState = {
   applyBattleRewards: function (_params: BattleRewardParams): void {
     throw new Error('Function not implemented.');
   },
+  evolveBohrokToKal: function (_matoranId: RecruitedCharacterData['id']): boolean {
+    throw new Error('Function not implemented.');
+  },
 };
