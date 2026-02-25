@@ -83,6 +83,8 @@ export type RecruitedCharacterData = {
   assignment?: JobAssignment;
   quest?: Quest['id'];
   maskOverride?: Mask;
+  /** Overrides stage from MATORAN_DEX when present (e.g. Rebuilt after Naming Day). */
+  stage?: MatoranStage;
 };
 
 export type ItemRequirement = {

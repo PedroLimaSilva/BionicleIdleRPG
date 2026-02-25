@@ -1,3 +1,4 @@
+import { MatoranStage } from '../../types/Matoran';
 import { Quest } from '../../types/Quests';
 import {
   BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID,
@@ -123,6 +124,62 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       loot: {},
     },
     unlockedAfter: ['bohrok_kal_race_to_nest'],
+    section: 'Bohrok Kal',
+  },
+  {
+    id: 'bohrok_kal_naming_day',
+    name: 'The Naming Day',
+    description:
+      'After the Bohrok-Kal were defeated, the Turaga gather the Matoran population at Kini-Nui. There, they reveal Takua and Jala—rebuilt into taller forms—and the Matoran cheer. The Turaga teach the villagers how to rebuild themselves to better prepare for any upcoming threats. A Naming Day ceremony follows: Jala becomes Jaller, Maku becomes Macku, and Huki becomes Hewkii, honored for their heroism during the crisis. All who attended are rebuilt into stronger forms.',
+    durationSeconds: 12 * 60,
+    requirements: {
+      matoran: [
+        'Kapura',
+        'Takua',
+        'Jala',
+        'Hali',
+        'Huki',
+        'Nuparu',
+        'Onepu',
+        'Kongu',
+        'Matoro',
+        'Maku',
+        'Lumi',
+        'Kivi',
+        'Taipu',
+        'Tamaru',
+        'Kopeke',
+        'Hafu',
+      ],
+      minLevel: 1,
+      items: [],
+    },
+    rewards: {
+      xpPerMatoran: 1500,
+      currency: 2000,
+      loot: {},
+      evolution: {
+        Jala: 'Jaller',
+        Maku: 'Macku',
+        Huki: 'Hewkii',
+      },
+      stageOverrides: {
+        Kapura: MatoranStage.Rebuilt,
+        Takua: MatoranStage.Rebuilt,
+        Hali: MatoranStage.Rebuilt,
+        Nuparu: MatoranStage.Rebuilt,
+        Onepu: MatoranStage.Rebuilt,
+        Kongu: MatoranStage.Rebuilt,
+        Matoro: MatoranStage.Rebuilt,
+        Lumi: MatoranStage.Rebuilt,
+        Kivi: MatoranStage.Rebuilt,
+        Taipu: MatoranStage.Rebuilt,
+        Tamaru: MatoranStage.Rebuilt,
+        Kopeke: MatoranStage.Rebuilt,
+        Hafu: MatoranStage.Rebuilt,
+      },
+    },
+    unlockedAfter: [BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID],
     section: 'Bohrok Kal',
   },
 ];
