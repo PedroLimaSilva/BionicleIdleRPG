@@ -649,10 +649,10 @@ export function queueCombatRound(
       currentTeam = latest.team;
       currentEnemies = latest.enemies;
     }
-    let nextTeam = currentTeam.map((c) =>
+    const nextTeam = currentTeam.map((c) =>
       decrementEffectDurations(decrementMaskPowerCounter(c, 'round'), 'round')
     );
-    let nextEnemies = currentEnemies.map((c) =>
+    const nextEnemies = currentEnemies.map((c) =>
       decrementEffectDurations(decrementMaskPowerCounter(c, 'round'), 'round')
     );
     currentTeam = nextTeam;
