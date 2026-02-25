@@ -18,7 +18,7 @@ export function tickMatoranJobExp(matoran: RecruitedCharacterData, now: number):
   const [updated, exp, loot] = applyJobExp(matoran, now);
   const earnedWidgets = Math.floor(exp * WIDGET_RATE);
 
-  const matoran_dex = MATORAN_DEX[matoran.id];
+  const matoran_dex = MATORAN_DEX[updated.id];
 
   const logs: ActivityLogEntry[] = [];
 

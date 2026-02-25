@@ -1,5 +1,6 @@
 import { JobDetails, MatoranJob } from '../types/Jobs';
 import { ElementTribe } from '../types/Matoran';
+import { MatoranStage } from '../types/Matoran';
 import { GameItemId } from './loot';
 
 export const WIDGET_RATE = 0.2;
@@ -192,5 +193,72 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       { item: GameItemId.DataTablet, chance: 1.0 },
       { item: GameItemId.CipherKey, chance: 0.08 },
     ],
+  },
+  // Bohrok Koro rebuild jobs - require recruitment quest, Bohrok only
+  [MatoranJob.TaKoroRebuilder]: {
+    label: '🏠 Ta-Koro Rebuilder',
+    description: 'Repairs lava-damaged structures and reinforces village walls in Ta-Koro.',
+    rate: 1.5,
+    elementAffinity: {
+      favored: [ElementTribe.Fire],
+      opposed: [ElementTribe.Ice],
+    },
+    unlock: { requiredProgress: ['bohrok_assistants'] },
+    allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
+  },
+  [MatoranJob.GaKoroRebuilder]: {
+    label: '🌊 Ga-Koro Rebuilder',
+    description: 'Restores lily-pad platforms and repairs water systems in Ga-Koro.',
+    rate: 1.5,
+    elementAffinity: {
+      favored: [ElementTribe.Water],
+      opposed: [],
+    },
+    unlock: { requiredProgress: ['bohrok_assistants'] },
+    allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
+  },
+  [MatoranJob.LeKoroRebuilder]: {
+    label: '🌲 Le-Koro Rebuilder',
+    description: 'Rebuilds tree-dwellings and restores village structures in Le-Koro.',
+    rate: 1.5,
+    elementAffinity: {
+      favored: [ElementTribe.Air],
+      opposed: [],
+    },
+    unlock: { requiredProgress: ['bohrok_assistants'] },
+    allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
+  },
+  [MatoranJob.PoKoroRebuilder]: {
+    label: '🪨 Po-Koro Rebuilder',
+    description: 'Repairs carvings and restores desert structures in Po-Koro.',
+    rate: 1.5,
+    elementAffinity: {
+      favored: [ElementTribe.Stone],
+      opposed: [],
+    },
+    unlock: { requiredProgress: ['bohrok_assistants'] },
+    allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
+  },
+  [MatoranJob.OnuKoroRebuilder]: {
+    label: '⛏️ Onu-Koro Rebuilder',
+    description: 'Reinforces tunnel supports and restores mine passages in Onu-Koro.',
+    rate: 1.5,
+    elementAffinity: {
+      favored: [ElementTribe.Earth],
+      opposed: [],
+    },
+    unlock: { requiredProgress: ['bohrok_assistants'] },
+    allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
+  },
+  [MatoranJob.KoKoroRebuilder]: {
+    label: '❄️ Ko-Koro Rebuilder',
+    description: 'Repairs ice structures and restores village buildings in Ko-Koro.',
+    rate: 1.5,
+    elementAffinity: {
+      favored: [ElementTribe.Ice],
+      opposed: [ElementTribe.Fire],
+    },
+    unlock: { requiredProgress: ['bohrok_assistants'] },
+    allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
   },
 };

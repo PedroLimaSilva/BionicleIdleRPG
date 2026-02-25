@@ -26,8 +26,8 @@ export function MatoranAvatar({
     return getMask(matoran);
   }, [matoran]);
 
-  // Bohrok use a single pre-rendered avatar image
-  if (matoran.stage === MatoranStage.Bohrok) {
+  // Bohrok and Bohrok Kal use pre-rendered avatar images
+  if (matoran.stage === MatoranStage.Bohrok || matoran.stage === MatoranStage.BohrokKal) {
     return (
       <img
         className={`composited-avatar ${styles}`}

@@ -21,10 +21,27 @@ export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   return progressMet;
 }
 
-export function getAvailableJobs(gameState: GameState): MatoranJob[] {
-  return Object.keys(JOB_DETAILS)
+export function getAvailableJobs(
+  gameState: GameState,
+  matoran?: RecruitedCharacterData
+): MatoranJob[] {
+  let jobs = Object.keys(JOB_DETAILS)
     .filter((key): key is MatoranJob => key in MatoranJob)
     .filter((job) => isJobUnlocked(job, gameState));
+
+  if (matoran) {
+    const matoranDex = MATORAN_DEX[matoran.id];
+    if (!matoranDex) {
+      return jobs.filter((job) => !JOB_DETAILS[job].allowedStages);
+    }
+    jobs = jobs.filter((job) => {
+      const { allowedStages } = JOB_DETAILS[job];
+      if (!allowedStages) return true;
+      return allowedStages.includes(matoranDex.stage);
+    });
+  }
+
+  return jobs;
 }
 
 export function getJobStatus(matoran: RecruitedCharacterData): ProductivityEffect {
@@ -146,7 +163,7 @@ export function applyOfflineJobExp(
 
   const updated = characters.map((m) => {
     const [updatedMatoran, earned, rewards] = applyJobExp(m, now, true);
-    const matoran = MATORAN_DEX[m.id];
+    const matoran = MATORAN_DEX[updatedMatoran.id];
 
     Object.entries(rewards).forEach(([item, amount]) => {
       const itemId = item as GameItemId;

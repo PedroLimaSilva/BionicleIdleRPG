@@ -21,7 +21,7 @@
     "test:e2e:docker:build": "docker-compose -f docker-compose.playwright.yml build",
     "deploy": "yarn build && gh-pages -d dist",
     "preview": "vite preview",
-    "compress": "npx gltfjsx --transform --types --keepnames --keepgroups --keepmeshes --keepmaterials",
+    "compress": "bash scripts/compress-glb.sh",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:unused-css": "tsx tools/check-unused-css.ts"
@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
+    "@gltf-transform/cli": "^4.3.0",
     "@playwright/test": "^1.58.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
