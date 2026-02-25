@@ -1,6 +1,6 @@
 import { GameItemId } from '../data/loot';
 import { Inventory } from '../services/inventoryUtils';
-import { ListedCharacterData, RecruitedCharacterData } from './Matoran';
+import { ListedCharacterData, MatoranStage, RecruitedCharacterData } from './Matoran';
 import type { VisualNovelCutsceneRef } from './Cutscenes';
 
 export interface QuestItemRequirement {
@@ -35,6 +35,8 @@ export interface QuestReward {
   cutscene?: VisualNovelCutsceneRef;
   /** Evolution trigger: maps participant dex IDs to their evolved form. Applied on quest completion. */
   evolution?: EvolutionMap;
+  /** Stage overrides for participants who keep their ID but change form (e.g. Diminished → Rebuilt). */
+  stageOverrides?: { [participantId: string]: MatoranStage };
 }
 
 export interface Quest {

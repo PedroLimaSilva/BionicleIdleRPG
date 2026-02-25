@@ -28,6 +28,21 @@ function setAbilities(team: Combatant[], ids: string[], use: boolean): Combatant
   );
 }
 
+/** Add full immunity (DMG_MITIGATOR multiplier 0) for given rounds. Ensures no combatants die. */
+function addImmunityBuff(team: Combatant[], rounds: number): Combatant[] {
+  const eff = {
+    type: 'DMG_MITIGATOR' as const,
+    multiplier: 0,
+    durationRemaining: rounds,
+    durationUnit: 'round' as const,
+    sourceId: 'test-immunity',
+  };
+  return team.map((t) => ({
+    ...t,
+    effects: [...(t.effects ?? []), eff],
+  }));
+}
+
 /**
  * Battle simulator - runs combat rounds without React, for unit testing.
  * Mirrors the logic in useBattleState + queueCombatRound.
@@ -98,7 +113,7 @@ class BattleSimulator {
       roundsRun++;
 
       if (this.allEnemiesDefeated || this.allTeamDefeated) break;
-    } while (!hasReadyMaskPowers(this.team));
+    } while (!hasReadyMaskPowers(this.team, this.enemies));
 
     return roundsRun;
   }
@@ -290,11 +305,10 @@ describe('Battle Simulation', () => {
       // Kopaka marks on attack; enemy should take damage (1.5x when marked)
       expect(enemyHpBefore - enemyHpAfter).toBeGreaterThan(0);
       const kopaka = sim.team.find((t) => t.id === 'Toa_Kopaka')!;
-      expect(kopaka.maskPower?.effect.type).toBe('DEBUFF');
-      expect(kopaka.maskPower?.effect.debuffType).toBe('DEFENSE');
-      // Debuff lasts 2 rounds; after round 1, enemy has 1 round left (decremented at end of round)
+      expect(kopaka.maskPower?.effect.type).toBe('DEFENSE');
+      // DEFENSE effect lasts 2 rounds; after round 1, enemy has 1 round left (decremented at end of round)
       const enemy = sim.enemies[0];
-      expect(enemy.debuffs?.some((d) => d.type === 'DEFENSE')).toBe(true);
+      expect(enemy.effects?.some((e) => e.type === 'DEFENSE')).toBe(true);
     });
 
     test('Miru (2 hit duration) provides mitigation for first 2 hits', async () => {
@@ -384,7 +398,9 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       // One enemy should have CONFUSION debuff (the one Tahu attacked)
-      const confusedEnemy = sim.enemies.find((e) => e.debuffs?.some((d) => d.type === 'CONFUSION'));
+      const confusedEnemy = sim.enemies.find((e) =>
+        e.effects?.some((eff) => eff.type === 'CONFUSION')
+      );
       expect(confusedEnemy).toBeDefined();
 
       // Total enemy HP should have decreased (Tahu's attack + confused enemy attacking ally)
@@ -409,8 +425,46 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       const enemy = sim.enemies[0];
-      expect(enemy.debuffs?.some((d) => d.type === 'CONFUSION')).toBe(true);
+      expect(enemy.effects?.some((e) => e.type === 'CONFUSION')).toBe(true);
       expect(enemy.hp).toBeLessThan(enemyHpBefore);
+    });
+
+    test('Komau CONFUSION lasts exactly 3 turns (no re-application)', async () => {
+      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0, maskOverride: Mask.Komau }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [
+          [
+            { id: 'tahnok', lvl: 1 },
+            { id: 'tahnok', lvl: 1 },
+            { id: 'tahnok', lvl: 1 },
+          ],
+        ],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
+
+      await sim.runRound();
+      const confusedAfterR1 = sim.enemies.find((e) =>
+        e.effects?.some((eff) => eff.type === 'CONFUSION' && eff.durationRemaining > 0)
+      );
+      expect(confusedAfterR1).toBeDefined();
+      const confusionsAfterR1 = confusedAfterR1!.effects!.filter(
+        (e) => e.type === 'CONFUSION'
+      ).length;
+      expect(confusionsAfterR1).toBe(1);
+
+      for (let r = 0; r < 5; r++) {
+        sim.team = setAbilities(sim.team, [], false);
+        await sim.runRound();
+      }
+
+      const confusedAfterR6 = sim.enemies.find((e) =>
+        e.effects?.some((eff) => eff.type === 'CONFUSION' && eff.durationRemaining > 0)
+      );
+      expect(confusedAfterR6).toBeUndefined();
     });
 
     test('Kakama grants Pohatu two attacks in one round', async () => {
@@ -449,7 +503,7 @@ describe('Battle Simulation', () => {
       // Hau expires, goes on cooldown (1 wave)
       const tahuAfterRound = sim.team.find((t) => t.id === 'Toa_Tahu')!;
       expect(tahuAfterRound.maskPower?.active).toBe(false);
-      expect(tahuAfterRound.maskPower?.effect.cooldown.amount).toBeGreaterThan(0);
+      expect(tahuAfterRound.maskPower?.cooldown.amount).toBeGreaterThan(0);
 
       // Defeat wave 1 and advance (high-level Tahu kills level 1 tahnok quickly)
       for (let i = 0; i < 10 && !sim.allEnemiesDefeated; i++) {
@@ -460,7 +514,7 @@ describe('Battle Simulation', () => {
 
       // After wave advance, Hau cooldown (wave-based) should decrement
       const tahuAfterWave = sim.team.find((t) => t.id === 'Toa_Tahu')!;
-      expect(tahuAfterWave.maskPower?.effect.cooldown.amount).toBe(0);
+      expect(tahuAfterWave.maskPower?.cooldown.amount).toBe(0);
     });
 
     test('multi-round: 1 round wave 1 then wave 2 - Hau only (no Kakama)', async () => {
@@ -556,7 +610,7 @@ describe('Battle Simulation', () => {
       expect(sim.allEnemiesDefeated).toBe(true);
       sim.advanceWave();
 
-      expect(sim.team.find((t) => t.id === 'Toa_Tahu')!.maskPower?.effect.cooldown.amount).toBe(0);
+      expect(sim.team.find((t) => t.id === 'Toa_Tahu')!.maskPower?.cooldown.amount).toBe(0);
 
       // Wave 2 round 1: activate Hau
       sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
@@ -622,7 +676,7 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       // Both powers are now on cooldown
-      expect(hasReadyMaskPowers(sim.team)).toBe(false);
+      expect(hasReadyMaskPowers(sim.team, sim.enemies)).toBe(false);
 
       // Auto-progression should run multiple rounds until powers come off cooldown
       // or the enemy is defeated
@@ -631,7 +685,7 @@ describe('Battle Simulation', () => {
 
       // Battle should have progressed: either enemy defeated or a power is ready
       const enemyDefeated = sim.allEnemiesDefeated;
-      const powersReady = hasReadyMaskPowers(sim.team);
+      const powersReady = hasReadyMaskPowers(sim.team, sim.enemies);
       expect(enemyDefeated || powersReady).toBe(true);
     });
 
@@ -655,13 +709,13 @@ describe('Battle Simulation', () => {
 
       const onua = sim.team.find((t) => t.id === 'Toa_Onua')!;
       expect(onua.maskPower?.active).toBe(false);
-      expect(onua.maskPower?.effect.cooldown.amount).toBeGreaterThan(0);
+      expect(onua.maskPower?.cooldown.amount).toBeGreaterThan(0);
 
       // Auto-progression should run rounds until Pakari comes off cooldown
       const roundsRun = await sim.runWithAutoProgression();
 
       if (!sim.allEnemiesDefeated && !sim.allTeamDefeated) {
-        expect(hasReadyMaskPowers(sim.team)).toBe(true);
+        expect(hasReadyMaskPowers(sim.team, sim.enemies)).toBe(true);
         expect(roundsRun).toBeGreaterThanOrEqual(1);
       }
     });
@@ -676,14 +730,14 @@ describe('Battle Simulation', () => {
 
       const sim = new BattleSimulator(team, customEncounter);
       // Powers start ready (cooldown === 0)
-      expect(hasReadyMaskPowers(sim.team)).toBe(true);
+      expect(hasReadyMaskPowers(sim.team, sim.enemies)).toBe(true);
 
       // Auto-progression runs exactly 1 round then stops
       const roundsRun = await sim.runWithAutoProgression();
       expect(roundsRun).toBe(1);
 
       if (!sim.allEnemiesDefeated && !sim.allTeamDefeated) {
-        expect(hasReadyMaskPowers(sim.team)).toBe(true);
+        expect(hasReadyMaskPowers(sim.team, sim.enemies)).toBe(true);
       }
     });
 
@@ -705,7 +759,7 @@ describe('Battle Simulation', () => {
         await sim.runWithAutoProgression();
       }
       // Should not loop infinitely - either team defeated or power ready
-      expect(sim.allTeamDefeated || hasReadyMaskPowers(sim.team)).toBe(true);
+      expect(sim.allTeamDefeated || hasReadyMaskPowers(sim.team, sim.enemies)).toBe(true);
     });
 
     test('auto-progression stops on enemy defeat', async () => {
@@ -762,6 +816,45 @@ describe('Battle Simulation', () => {
         active: t.maskPower?.active,
       }));
       expect(afterRound2.every((a) => a.active === false)).toBe(true);
+    });
+
+    test('active mask power does NOT re-trigger when willUseAbility is false', async () => {
+      // Kaukau Nuva: 2-turn HEAL buff on team. Immunity buff ensures no combatants die.
+      const team = addImmunityBuff(
+        createTeamFromRecruited([
+          { id: 'Toa_Gali', exp: 0, maskOverride: Mask.KaukauNuva },
+          { id: 'Toa_Tahu', exp: 0 },
+          { id: 'Toa_Onua', exp: 0 },
+        ]),
+        2
+      );
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+      const sim = new BattleSimulator(team, customEncounter);
+
+      // Round 1: activate Kaukau Nuva - applies HEAL buff to all allies
+      sim.team = setAbilities(sim.team, ['Toa_Gali'], true);
+      await sim.runRound();
+
+      const buffCountAfterRound1 = sim.team.reduce(
+        (sum, t) => sum + (t.effects?.filter((e) => e.type === 'HEAL').length ?? 0),
+        0
+      );
+      expect(buffCountAfterRound1).toBe(3);
+
+      // Round 2: do NOT activate - willUseAbility stays false for everyone
+      sim.team = setAbilities(sim.team, [], false);
+      await sim.runRound();
+
+      // Turn-based HEAL buffs expire in round 2; count must decrease (no re-application)
+      const buffCountAfterRound2 = sim.team.reduce(
+        (sum, t) => sum + (t.effects?.filter((e) => e.type === 'HEAL').length ?? 0),
+        0
+      );
+      expect(buffCountAfterRound2).toBeLessThan(buffCountAfterRound1);
     });
   });
 });

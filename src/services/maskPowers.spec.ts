@@ -45,12 +45,18 @@ describe('Mask Powers - Combat Mechanics', () => {
         // Calculate damage without mask power
         const normalDamage = calculateAtkDmg(attacker, defender);
 
-        // Activate the mask power
-        if (attacker.maskPower) {
-          attacker.maskPower.active = true;
-        }
+        // Add ATK_MULT effect (as mask activation would)
+        attacker.effects = [
+          {
+            type: 'ATK_MULT',
+            multiplier: 3,
+            durationRemaining: 1,
+            durationUnit: 'attack',
+            sourceId: attacker.id,
+          },
+        ];
 
-        // Calculate damage with mask power active
+        // Calculate damage with effect active
         const boostedDamage = calculateAtkDmg(attacker, defender);
 
         // Pakari should triple the raw damage before element effectiveness
@@ -59,13 +65,11 @@ describe('Mask Powers - Combat Mechanics', () => {
         expect(boostedDamage).toBeGreaterThan(normalDamage);
       });
 
-      test('does not boost damage when inactive', () => {
+      test('does not boost damage when no effect', () => {
         const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Pakari);
 
-        // Ensure mask is inactive
-        if (attacker.maskPower) {
-          attacker.maskPower.active = false;
-        }
+        // No ATK_MULT effect
+        attacker.effects = [];
 
         const damage1 = calculateAtkDmg(attacker, defender);
         const damage2 = calculateAtkDmg(attacker, defender);
@@ -77,46 +81,25 @@ describe('Mask Powers - Combat Mechanics', () => {
     });
 
     describe('Akaku - Mask of X-Ray Vision (DEBUFF DEFENSE)', () => {
-      test('allies deal +50% damage to target with DEFENSE debuff', () => {
+      test('DEFENSE effect multiplies defense stat: <1 = weaken, >1 = fortify', () => {
         const attacker = generateCombatantStats('tahu', 'Toa_Tahu', 1);
-        const debuffedDefender: Combatant = {
+        const weakenedDefender: Combatant = {
           ...defender,
-          debuffs: [
+          effects: [
             {
               type: 'DEFENSE',
-              multiplier: 1.5,
+              multiplier: 0.5,
               durationRemaining: 2,
               durationUnit: 'round',
-              sourceSide: 'team',
+              sourceId: 'caster',
             },
           ],
         };
 
         const normalDamage = calculateAtkDmg(attacker, defender);
-        const damageVsDebuffed = calculateAtkDmg(attacker, debuffedDefender, 'team');
+        const weakenedDamage = calculateAtkDmg(attacker, weakenedDefender);
 
-        expect(damageVsDebuffed).toBe(Math.floor(normalDamage * 1.5));
-      });
-
-      test('DEFENSE debuff does not benefit enemy attackers', () => {
-        const attacker = generateCombatantStats('tahnok', 'tahnok', 1);
-        const debuffedDefender: Combatant = {
-          ...defender,
-          debuffs: [
-            {
-              type: 'DEFENSE',
-              multiplier: 1.5,
-              durationRemaining: 2,
-              durationUnit: 'round',
-              sourceSide: 'team',
-            },
-          ],
-        };
-
-        const normalDamage = calculateAtkDmg(attacker, defender);
-        const damageVsDebuffed = calculateAtkDmg(attacker, debuffedDefender, 'enemy');
-
-        expect(damageVsDebuffed).toBe(normalDamage);
+        expect(weakenedDamage).toBeGreaterThan(normalDamage);
       });
     });
   });
@@ -131,24 +114,27 @@ describe('Mask Powers - Combat Mechanics', () => {
         const damagedWithoutMask = applyDamage(target, incomingDamage);
         expect(damagedWithoutMask.hp).toBe(target.hp - incomingDamage);
 
-        // With mask power active
-        if (target.maskPower) {
-          target.maskPower.active = true;
-        }
+        // Add DMG_MITIGATOR effect (as mask activation would)
+        target.effects = [
+          {
+            type: 'DMG_MITIGATOR',
+            multiplier: 0,
+            durationRemaining: 1,
+            durationUnit: 'round',
+            sourceId: target.id,
+          },
+        ];
         const damagedWithMask = applyDamage(target, incomingDamage);
 
         // Hau should provide full immunity (0 damage)
         expect(damagedWithMask.hp).toBe(target.hp);
       });
 
-      test('does not mitigate damage when inactive', () => {
+      test('does not mitigate damage when no effect', () => {
         const target = generateCombatantStats('tahu', 'Toa_Tahu', 1, Mask.Hau);
         const incomingDamage = 50;
 
-        // Ensure mask is inactive
-        if (target.maskPower) {
-          target.maskPower.active = false;
-        }
+        target.effects = [];
 
         const damaged = applyDamage(target, incomingDamage);
 
@@ -158,14 +144,19 @@ describe('Mask Powers - Combat Mechanics', () => {
     });
 
     describe('Miru - Mask of Levitation', () => {
-      test('provides full immunity when active', () => {
+      test('provides full immunity when effect active', () => {
         const target = generateCombatantStats('lewa', 'Toa_Lewa', 1, Mask.Miru);
         const incomingDamage = 40;
 
-        // Activate mask power
-        if (target.maskPower) {
-          target.maskPower.active = true;
-        }
+        target.effects = [
+          {
+            type: 'DMG_MITIGATOR',
+            multiplier: 0,
+            durationRemaining: 1,
+            durationUnit: 'hit',
+            sourceId: target.id,
+          },
+        ];
 
         const damaged = applyDamage(target, incomingDamage);
 
@@ -173,13 +164,11 @@ describe('Mask Powers - Combat Mechanics', () => {
         expect(damaged.hp).toBe(target.hp);
       });
 
-      test('does not mitigate damage when inactive', () => {
+      test('does not mitigate damage when no effect', () => {
         const target = generateCombatantStats('lewa', 'Toa_Lewa', 1, Mask.Miru);
         const incomingDamage = 40;
 
-        if (target.maskPower) {
-          target.maskPower.active = false;
-        }
+        target.effects = [];
 
         const damaged = applyDamage(target, incomingDamage);
 
@@ -188,14 +177,19 @@ describe('Mask Powers - Combat Mechanics', () => {
     });
 
     describe('Mahiki - Mask of Illusion', () => {
-      test('provides full immunity when active', () => {
+      test('provides full immunity when effect active', () => {
         const target = generateCombatantStats('lewa', 'Toa_Lewa', 1, Mask.Mahiki);
         const incomingDamage = 35;
 
-        // Activate mask power
-        if (target.maskPower) {
-          target.maskPower.active = true;
-        }
+        target.effects = [
+          {
+            type: 'DMG_MITIGATOR',
+            multiplier: 0,
+            durationRemaining: 1,
+            durationUnit: 'hit',
+            sourceId: target.id,
+          },
+        ];
 
         const damaged = applyDamage(target, incomingDamage);
 
@@ -219,14 +213,20 @@ describe('Mask Powers - Combat Mechanics', () => {
   });
 
   describe('AGGRO - Untargetable Masks (Huna)', () => {
-    test('chooseTarget filters out enemy with Huna active', () => {
+    test('chooseTarget filters out enemy with AGGRO effect (untargetable)', () => {
       const attacker = generateCombatantStats('tahu', 'Toa_Tahu', 1);
       const targetWithHuna = generateCombatantStats('enemy_huna', 'tahnok', 1, Mask.Huna);
       const targetNormal = generateCombatantStats('enemy_normal', 'tahnok', 1);
 
-      if (targetWithHuna.maskPower) {
-        targetWithHuna.maskPower.active = true;
-      }
+      targetWithHuna.effects = [
+        {
+          type: 'AGGRO',
+          multiplier: 0,
+          durationRemaining: 1,
+          durationUnit: 'turn',
+          sourceId: targetWithHuna.id,
+        },
+      ];
 
       const targets = [targetWithHuna, targetNormal];
 
@@ -238,13 +238,11 @@ describe('Mask Powers - Combat Mechanics', () => {
       expect(chosen.id).not.toBe('enemy_huna');
     });
 
-    test('chooseTarget includes enemy with Huna when inactive', () => {
+    test('chooseTarget includes enemy when no AGGRO effect', () => {
       const attacker = generateCombatantStats('tahu', 'Toa_Tahu', 1);
       const targetWithHuna = generateCombatantStats('enemy_huna', 'tahnok', 1, Mask.Huna);
 
-      if (targetWithHuna.maskPower) {
-        targetWithHuna.maskPower.active = false;
-      }
+      targetWithHuna.effects = [];
 
       const targets = [targetWithHuna];
 
@@ -255,14 +253,20 @@ describe('Mask Powers - Combat Mechanics', () => {
   });
 
   describe('ATK_MULT - Rau (wave duration)', () => {
-    test('multiplies attack damage by 1.5x when active', () => {
+    test('multiplies attack damage by 1.5x when effect active', () => {
       const attacker = generateCombatantStats('kopaka', 'Toa_Kopaka', 1, Mask.Rau);
 
       const normalDamage = calculateAtkDmg(attacker, defender);
 
-      if (attacker.maskPower) {
-        attacker.maskPower.active = true;
-      }
+      attacker.effects = [
+        {
+          type: 'ATK_MULT',
+          multiplier: 1.5,
+          durationRemaining: 1,
+          durationUnit: 'round',
+          sourceId: attacker.id,
+        },
+      ];
 
       const boostedDamage = calculateAtkDmg(attacker, defender);
 
@@ -272,17 +276,22 @@ describe('Mask Powers - Combat Mechanics', () => {
 
   describe('HEAL - Healing Masks', () => {
     describe('Kaukau - Mask of Water Breathing', () => {
-      test('heals 20% of max HP when active', () => {
+      test('heals 20% of max HP when HEAL effect active', () => {
         const combatant = generateCombatantStats('gali', 'Toa_Gali', 1, Mask.Kaukau);
 
         // Damage the combatant first
         combatant.hp = 50; // Half health
         const maxHp = combatant.maxHp;
 
-        // Activate mask power
-        if (combatant.maskPower) {
-          combatant.maskPower.active = true;
-        }
+        combatant.effects = [
+          {
+            type: 'HEAL',
+            multiplier: 0.2,
+            durationRemaining: 1,
+            durationUnit: 'turn',
+            sourceId: combatant.id,
+          },
+        ];
 
         const healed = applyHealing(combatant);
 
@@ -291,16 +300,13 @@ describe('Mask Powers - Combat Mechanics', () => {
         expect(healed.hp).toBe(50 + expectedHeal);
       });
 
-      test('does not heal when inactive', () => {
+      test('does not heal when no HEAL effect', () => {
         const combatant = generateCombatantStats('gali', 'Toa_Gali', 1, Mask.Kaukau);
 
         // Damage the combatant first
         combatant.hp = 50;
 
-        // Ensure mask is inactive
-        if (combatant.maskPower) {
-          combatant.maskPower.active = false;
-        }
+        combatant.effects = [];
 
         const healed = applyHealing(combatant);
 
@@ -315,10 +321,15 @@ describe('Mask Powers - Combat Mechanics', () => {
         const maxHp = combatant.maxHp;
         combatant.hp = maxHp - 5; // 5 HP below max
 
-        // Activate mask power
-        if (combatant.maskPower) {
-          combatant.maskPower.active = true;
-        }
+        combatant.effects = [
+          {
+            type: 'HEAL',
+            multiplier: 0.2,
+            durationRemaining: 1,
+            durationUnit: 'turn',
+            sourceId: combatant.id,
+          },
+        ];
 
         const healed = applyHealing(combatant);
 
@@ -338,7 +349,7 @@ describe('Mask Powers - Combat Mechanics', () => {
     test('mask powers start with 0 cooldown', () => {
       const combatant = generateCombatantStats('tahu', 'Toa_Tahu', 1, Mask.Hau);
 
-      expect(combatant.maskPower?.effect.cooldown.amount).toBe(0);
+      expect(combatant.maskPower?.cooldown.amount).toBe(0);
     });
 
     test('willUseAbility starts false', () => {

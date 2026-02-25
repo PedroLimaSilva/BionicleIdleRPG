@@ -9,7 +9,7 @@ import { useMask } from '../../../hooks/useMask';
 export const GaliMataModel = forwardRef<
   CombatantModelHandle,
   {
-    matoran: RecruitedCharacterData & BaseMatoran;
+    matoran: RecruitedCharacterData & BaseMatoran & { maskPowerActive?: boolean };
   }
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);

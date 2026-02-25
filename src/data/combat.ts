@@ -5,314 +5,278 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   [Mask.Akaku]: {
     shortName: Mask.Akaku,
     longName: 'Mask of X-Ray Vision',
-    description: 'Marks target; allies deal +50% damage to them for 2 rounds',
+    description: 'Marks target; halves their effective defense for 2 rounds',
+    target: 'enemy',
+    cooldown: { amount: 4, unit: 'turn' },
     effect: {
-      duration: { amount: 1, unit: 'attack' },
-      cooldown: { amount: 4, unit: 'turn' },
-      type: 'DEBUFF',
-      debuffType: 'DEFENSE',
-      multiplier: 1.5,
-      target: 'enemy',
-      debuffDuration: { amount: 2, unit: 'round' },
+      duration: { amount: 2, unit: 'round' },
+      type: 'DEFENSE',
+      multiplier: 0.5,
     },
   },
   [Mask.Hau]: {
     shortName: Mask.Hau,
     longName: 'Mask of Shielding',
     description: 'Grants full immunity to all damage for 1 round',
+    target: 'self',
+    cooldown: {
+      amount: 1,
+      unit: 'wave',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'round',
       },
-      cooldown: {
-        amount: 1,
-        unit: 'wave',
-      },
       type: 'DMG_MITIGATOR',
       multiplier: 0,
-      target: 'self',
     },
   },
   [Mask.Kaukau]: {
     shortName: Mask.Kaukau,
     longName: 'Mask of Water Breathing',
     description: 'Heals self each turn for 3 turns',
+    target: 'self',
+    cooldown: {
+      amount: 1,
+      unit: 'wave',
+    },
     effect: {
       duration: {
         amount: 3,
         unit: 'turn',
       },
-      cooldown: {
-        amount: 1,
-        unit: 'wave',
-      },
       type: 'HEAL',
       multiplier: 0.2,
-      target: 'self',
     },
   },
   [Mask.Huna]: {
     shortName: Mask.Huna,
     longName: 'Mask of Concealment',
     description: 'Becomes untargetable for 1 turn',
+    target: 'self',
+    cooldown: {
+      amount: 3,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'turn',
       },
-      cooldown: {
-        amount: 3,
-        unit: 'turn',
-      },
       type: 'AGGRO',
       multiplier: 0,
-      target: 'self',
     },
   },
   [Mask.Kakama]: {
     shortName: Mask.Kakama,
     longName: 'Mask of Speed',
     description: 'User attacks twice this round',
+    target: 'self',
+    cooldown: {
+      amount: 5,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'round',
       },
-      cooldown: {
-        amount: 5,
-        unit: 'turn',
-      },
       type: 'SPEED',
       multiplier: 2,
-      target: 'self',
     },
   },
   [Mask.Pakari]: {
     shortName: Mask.Pakari,
     longName: 'Mask of Strength',
     description: 'Next attack deals 3x damage',
+    target: 'self',
+    cooldown: {
+      amount: 2,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'attack',
       },
-      cooldown: {
-        amount: 2,
-        unit: 'turn',
-      },
       type: 'ATK_MULT',
       multiplier: 3,
-      target: 'self',
     },
   },
   [Mask.Miru]: {
     shortName: Mask.Miru,
     longName: 'Mask of Levitation',
     description: 'Evades next 2 attacks; unaffected by ground-based effects',
+    target: 'self',
+    cooldown: {
+      amount: 1,
+      unit: 'wave',
+    },
     effect: {
       duration: {
         amount: 2,
         unit: 'hit',
       },
-      cooldown: {
-        amount: 1,
-        unit: 'wave',
-      },
       type: 'DMG_MITIGATOR',
       multiplier: 0,
-      target: 'self',
     },
   },
   [Mask.Ruru]: {
     shortName: Mask.Ruru,
     longName: 'Mask of Night Vision',
     description: 'Blinds all enemies, reducing hit chance for 2 turns',
+    target: 'allEnemies',
+    cooldown: {
+      amount: 4,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 2,
         unit: 'turn',
       },
-      cooldown: {
-        amount: 4,
-        unit: 'turn',
-      },
       type: 'ACCURACY_MULT',
       multiplier: 0.5,
-      target: 'allEnemies',
     },
   },
   [Mask.Komau]: {
     shortName: Mask.Komau,
     longName: 'Mask of Mind Control',
     description: 'Forces one enemy to attack their own team for 3 turns',
+    target: 'enemy',
+    cooldown: { amount: 4, unit: 'turn' },
     effect: {
-      duration: { amount: 1, unit: 'attack' },
-      cooldown: { amount: 4, unit: 'turn' },
-      type: 'DEBUFF',
-      debuffType: 'CONFUSION',
-      target: 'enemy',
-      debuffDuration: { amount: 3, unit: 'turn' },
+      duration: { amount: 3, unit: 'turn' },
+      type: 'CONFUSION',
     },
   },
   [Mask.Rau]: {
     shortName: Mask.Rau,
     longName: 'Mask of Translation',
     description: `Changes the user's Element so the all attacks are super effective on any enemy. Lasts until the end of the current wave.`,
+    target: 'self',
+    cooldown: {
+      amount: 2,
+      unit: 'wave',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'wave',
       },
-      cooldown: {
-        amount: 2,
-        unit: 'wave',
-      },
       type: 'ATK_MULT',
       multiplier: 1.5,
-      target: 'self',
     },
   },
   [Mask.Matatu]: {
     shortName: Mask.Matatu,
     longName: 'Mask of Telekinesis',
     description: 'Immobilizes enemy, preventing them from attacking for 1 wave',
+    target: 'enemy',
+    cooldown: {
+      amount: 2,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'wave',
       },
-      cooldown: {
-        amount: 2,
-        unit: 'turn',
-      },
       type: 'ATK_MULT',
       multiplier: 0,
-      target: 'enemy',
     },
   },
   [Mask.Mahiki]: {
     shortName: Mask.Mahiki,
     longName: 'Mask of Illusion',
     description: 'Summons a clone to absorb 1 hit',
+    target: 'self',
+    cooldown: {
+      amount: 2,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'hit',
       },
-      cooldown: {
-        amount: 2,
-        unit: 'turn',
-      },
       type: 'DMG_MITIGATOR',
       multiplier: 0,
-      target: 'self',
     },
   },
 
-  // Toa Nuva masks — powers benefit all allies
+  // Nuva masks - team-wide effects
   [Mask.HauNuva]: {
     shortName: Mask.HauNuva,
     longName: 'Great Nuva Mask of Shielding',
-    description: 'Grants full immunity to all damage for 1 round to all allies',
+    description: 'Shields the whole team from damage for 1 round',
+    target: 'team',
+    cooldown: { amount: 2, unit: 'wave' },
     effect: {
-      duration: {
-        amount: 1,
-        unit: 'round',
-      },
-      cooldown: {
-        amount: 1,
-        unit: 'wave',
-      },
+      duration: { amount: 1, unit: 'round' },
       type: 'DMG_MITIGATOR',
       multiplier: 0,
-      target: 'self',
     },
   },
   [Mask.KaukauNuva]: {
     shortName: Mask.KaukauNuva,
     longName: 'Great Nuva Mask of Water Breathing',
-    description: 'Heals all allies each turn for 3 turns',
+    description: 'Heals the whole team each turn for 2 turns',
+    target: 'team',
+    cooldown: { amount: 2, unit: 'wave' },
     effect: {
-      duration: {
-        amount: 3,
-        unit: 'turn',
-      },
-      cooldown: {
-        amount: 1,
-        unit: 'wave',
-      },
+      duration: { amount: 2, unit: 'turn' },
       type: 'HEAL',
-      multiplier: 0.2,
-      target: 'self',
+      multiplier: 0.15,
     },
   },
   [Mask.KakamaNuva]: {
     shortName: Mask.KakamaNuva,
     longName: 'Great Nuva Mask of Speed',
     description: 'All allies attack twice this round',
+    target: 'team',
+    cooldown: { amount: 3, unit: 'wave' },
     effect: {
-      duration: {
-        amount: 1,
-        unit: 'round',
-      },
-      cooldown: {
-        amount: 5,
-        unit: 'turn',
-      },
+      duration: { amount: 1, unit: 'round' },
       type: 'SPEED',
       multiplier: 2,
-      target: 'self',
     },
   },
   [Mask.AkakuNuva]: {
     shortName: Mask.AkakuNuva,
     longName: 'Great Nuva Mask of X-Ray Vision',
-    description: 'Marks target; all allies deal +50% damage to them for 2 rounds',
+    description: 'All allies deal +30% damage for 2 rounds',
+    target: 'team',
+    cooldown: { amount: 3, unit: 'turn' },
     effect: {
-      duration: { amount: 1, unit: 'attack' },
-      cooldown: { amount: 4, unit: 'turn' },
-      type: 'DEBUFF',
-      debuffType: 'DEFENSE',
-      multiplier: 1.5,
-      target: 'enemy',
-      debuffDuration: { amount: 2, unit: 'round' },
+      duration: { amount: 2, unit: 'round' },
+      type: 'ATK_MULT',
+      multiplier: 1.3,
     },
   },
   [Mask.PakariNuva]: {
     shortName: Mask.PakariNuva,
     longName: 'Great Nuva Mask of Strength',
-    description: "All allies' next attack deals 3x damage",
+    description: 'All allies deal 2x damage on their next attack',
+    target: 'team',
+    cooldown: { amount: 3, unit: 'turn' },
     effect: {
-      duration: {
-        amount: 1,
-        unit: 'attack',
-      },
-      cooldown: {
-        amount: 2,
-        unit: 'turn',
-      },
+      duration: { amount: 1, unit: 'attack' },
       type: 'ATK_MULT',
-      multiplier: 3,
-      target: 'self',
+      multiplier: 2,
     },
   },
   [Mask.MiruNuva]: {
     shortName: Mask.MiruNuva,
     longName: 'Great Nuva Mask of Levitation',
-    description: 'All allies evade next 2 attacks; unaffected by ground-based effects',
+    description: 'The whole team evades the next hit',
+    target: 'team',
+    cooldown: { amount: 2, unit: 'wave' },
     effect: {
-      duration: {
-        amount: 2,
-        unit: 'hit',
-      },
-      cooldown: {
-        amount: 1,
-        unit: 'wave',
-      },
+      duration: { amount: 1, unit: 'hit' },
       type: 'DMG_MITIGATOR',
       multiplier: 0,
-      target: 'self',
     },
   },
   [Mask.Vahi]: {
@@ -320,12 +284,12 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Time',
     description:
       'The legendary Vahi. Turaga Vakama entrusted it to Tahu for use only in the direst emergency. No combat effect.',
+    target: 'self',
+    cooldown: { amount: 999, unit: 'wave' },
     effect: {
       duration: { amount: 1, unit: 'turn' },
-      cooldown: { amount: 999, unit: 'wave' },
       type: 'HEAL',
       multiplier: 0,
-      target: 'self',
     },
   },
 };
@@ -1060,12 +1024,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'bohrok_kal_pair',
     difficulty: 5,
     description: 'Bohrok-Kal of Electricity and Magnetism attack together.',
-    waves: [
-      [
-        ...makeBohrokWave('tahnok_kal', 45, 1),
-        ...makeBohrokWave('gahlok_kal', 45, 1),
-      ],
-    ],
+    waves: [[...makeBohrokWave('tahnok_kal', 45, 1), ...makeBohrokWave('gahlok_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
   },
@@ -1075,12 +1034,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'bohrok_kal_pair',
     difficulty: 5,
     description: 'Bohrok-Kal of Vacuum and Plasma in a coordinated assault.',
-    waves: [
-      [
-        ...makeBohrokWave('lehvak_kal', 45, 1),
-        ...makeBohrokWave('pahrak_kal', 45, 1),
-      ],
-    ],
+    waves: [[...makeBohrokWave('lehvak_kal', 45, 1), ...makeBohrokWave('pahrak_kal', 45, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
   },
@@ -1105,7 +1059,8 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     name: 'The Final Confrontation',
     headliner: 'tahnok_kal',
     difficulty: 6,
-    description: 'All six Bohrok Kal united—Electricity, Magnetism, Vacuum, Plasma, Gravity, and Sonics. The Toa must stand together to reclaim the Nuva symbols.',
+    description:
+      'All six Bohrok Kal united—Electricity, Magnetism, Vacuum, Plasma, Gravity, and Sonics. The Toa must stand together to reclaim the Nuva symbols.',
     waves: [
       [
         ...makeBohrokWave('tahnok_kal', 32, 1),

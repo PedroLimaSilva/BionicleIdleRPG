@@ -1,5 +1,5 @@
 import { COMBATANT_DEX, MASK_POWERS } from '../data/combat';
-import { BattleStrategy, Combatant, TargetDebuff } from '../types/Combat';
+import { BattleStrategy, Combatant, TargetEffect } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 
 declare global {
@@ -107,29 +107,24 @@ export const ELEMENT_EFFECTIVENESS: Record<ElementTribe, Record<ElementTribe, nu
   },
 };
 
-export function calculateAtkDmg(
-  attacker: Combatant,
-  defender: Combatant,
-  attackerSide?: 'team' | 'enemy'
-): number {
-  let rawDamage = Math.max(1, attacker.attack - defender.defense);
-
-  // Apply attacker's ATK_MULT mask power (e.g., Pakari - Mask of Strength)
-  if (
-    attacker.maskPower?.active &&
-    attacker.maskPower.effect.type === 'ATK_MULT' &&
-    attacker.maskPower.effect.target === 'self' &&
-    attacker.maskPower.effect.multiplier
-  ) {
-    rawDamage = Math.floor(rawDamage * attacker.maskPower.effect.multiplier);
+export function calculateAtkDmg(attacker: Combatant, defender: Combatant): number {
+  // DEFENSE multiplies the defense stat: >1 = fortify, <1 = weaken
+  let defenseMult = 1;
+  for (const e of defender.effects ?? []) {
+    if (e.durationRemaining > 0 && e.type === 'DEFENSE') defenseMult *= e.multiplier;
   }
+  const effectiveDefense = defender.defense * defenseMult;
+  let rawDamage = Math.max(1, attacker.attack - effectiveDefense);
 
-  // Apply DEFENSE debuff on defender: allies deal +multiplier damage (e.g. Akaku)
-  const defenseDebuff = defender.debuffs?.find(
-    (d) => d.type === 'DEFENSE' && attackerSide !== undefined && d.sourceSide === attackerSide
-  );
-  if (defenseDebuff?.type === 'DEFENSE') {
-    rawDamage = Math.floor(rawDamage * defenseDebuff.multiplier);
+  // Effects drive changes. ATK_MULT effects stack multiplicatively.
+  let atkMult = 1;
+  for (const e of attacker.effects ?? []) {
+    if (e.type === 'ATK_MULT' && e.durationRemaining > 0 && e.multiplier) {
+      atkMult *= e.multiplier;
+    }
+  }
+  if (atkMult !== 1) {
+    rawDamage = Math.floor(rawDamage * atkMult);
   }
 
   const multiplier = ELEMENT_EFFECTIVENESS[attacker.element]?.[defender.element] ?? 1.0;
@@ -138,16 +133,13 @@ export function calculateAtkDmg(
 }
 
 export function applyDamage(target: Combatant, damage: number): Combatant {
-  let finalDamage = damage;
-
-  // Apply defender's DMG_MITIGATOR mask power (e.g., Hau - Mask of Shielding, Miru - Mask of Levitation)
-  if (
-    target.maskPower?.active &&
-    target.maskPower.effect.type === 'DMG_MITIGATOR' &&
-    target.maskPower.effect.multiplier !== undefined
-  ) {
-    finalDamage = Math.floor(damage * target.maskPower.effect.multiplier);
+  // Effects drive changes. DMG_MITIGATOR multiplies final damage (0 = immunity, 0.5 = half, 1 = normal).
+  let mult = 1;
+  for (const e of target.effects ?? []) {
+    if (e.durationRemaining <= 0) continue;
+    if (e.type === 'DMG_MITIGATOR') mult *= e.multiplier;
   }
+  const finalDamage = Math.floor(damage * mult);
 
   return {
     ...target,
@@ -155,87 +147,147 @@ export function applyDamage(target: Combatant, damage: number): Combatant {
   };
 }
 
-/** Applies DEBUFF mask effect to the defender (e.g. Akaku DEFENSE, Komau CONFUSION). */
-function applyDebuffToTarget(
-  attacker: Combatant,
-  target: Combatant,
-  attackerSide: 'team' | 'enemy'
-): Combatant {
-  const effect = attacker.maskPower?.effect;
-  if (
-    !attacker.maskPower?.active ||
-    effect?.type !== 'DEBUFF' ||
-    effect?.target !== 'enemy' ||
-    !effect?.debuffDuration
-  ) {
-    return target;
+/** Creates a TargetEffect from a mask effect for application to multiple targets (e.g. team-wide Nuva masks). */
+function createEffectFromMaskEffect(
+  effect: NonNullable<Combatant['maskPower']>['effect'],
+  sourceId: string
+): TargetEffect | null {
+  const dur = effect.duration;
+  const amount = dur.amount;
+
+  switch (effect.type) {
+    case 'DMG_MITIGATOR': {
+      const unit =
+        dur.unit === 'turn' || dur.unit === 'round' || dur.unit === 'hit' ? dur.unit : 'round';
+      return {
+        type: 'DMG_MITIGATOR',
+        multiplier: effect.multiplier ?? 1,
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
+    }
+    case 'HEAL': {
+      const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'turn';
+      return {
+        type: 'HEAL',
+        multiplier: effect.multiplier ?? 0,
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
+    }
+    case 'ATK_MULT': {
+      const unit = dur.unit === 'attack' || dur.unit === 'round' ? dur.unit : 'round';
+      return {
+        type: 'ATK_MULT',
+        multiplier: effect.multiplier ?? 1,
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
+    }
+    case 'AGGRO': {
+      const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'turn';
+      return {
+        type: 'AGGRO',
+        multiplier: effect.multiplier ?? 0,
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
+    }
+    case 'SPEED':
+      return {
+        type: 'SPEED',
+        multiplier: effect.multiplier ?? 2,
+        durationRemaining: amount,
+        durationUnit: 'round',
+        sourceId,
+      };
+    case 'DEFENSE': {
+      const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'round';
+      return {
+        type: 'DEFENSE',
+        multiplier: effect.multiplier ?? 1,
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
+    }
+    case 'CONFUSION': {
+      const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'turn';
+      return {
+        type: 'CONFUSION',
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
+    }
+    default:
+      return null;
   }
-
-  const durationUnit =
-    effect.debuffDuration.unit === 'turn' || effect.debuffDuration.unit === 'round'
-      ? effect.debuffDuration.unit
-      : 'turn';
-
-  if (effect.debuffType === 'DEFENSE' && effect.multiplier) {
-    const debuff: TargetDebuff = {
-      type: 'DEFENSE',
-      multiplier: effect.multiplier,
-      durationRemaining: effect.debuffDuration.amount,
-      durationUnit,
-      sourceSide: attackerSide,
-    };
-    const existingDebuffs = target.debuffs ?? [];
-    return { ...target, debuffs: [...existingDebuffs, debuff] };
-  }
-
-  if (effect.debuffType === 'CONFUSION') {
-    const debuff: TargetDebuff = {
-      type: 'CONFUSION',
-      durationRemaining: effect.debuffDuration.amount,
-      durationUnit,
-      sourceSide: attackerSide,
-    };
-    const existingDebuffs = target.debuffs ?? [];
-    return { ...target, debuffs: [...existingDebuffs, debuff] };
-  }
-
-  return target;
 }
 
-/** Decrements debuff durations. For 'turn': only on the combatant whose turn it is. For 'round': all. */
-function decrementDebuffDurations(
-  combatants: Combatant[],
-  unit: 'turn' | 'round',
-  onlyForCombatantId?: string
-): Combatant[] {
-  return combatants.map((c) => {
-    if (!c.debuffs?.length) return c;
-    if (unit === 'turn' && onlyForCombatantId !== undefined && c.id !== onlyForCombatantId) {
-      return c;
-    }
-    const updatedDebuffs = c.debuffs
-      .map((d) =>
-        d.durationUnit === unit && d.durationRemaining > 0
-          ? { ...d, durationRemaining: d.durationRemaining - 1 }
-          : d
-      )
-      .filter((d) => d.durationRemaining > 0);
-    return { ...c, debuffs: updatedDebuffs.length > 0 ? updatedDebuffs : undefined };
-  });
+/** Applies an effect to a combatant (adds to effects array). */
+function applyEffectToCombatant(combatant: Combatant, eff: TargetEffect): Combatant {
+  const effects = [...(combatant.effects ?? []), eff];
+  return { ...combatant, effects };
+}
+
+/** Applies on-attack mask effect to the target (e.g. Akaku DEFENSE, Komau CONFUSION).
+ * Only applies when mask is active and target is 'enemy'. */
+function applyOnAttackEffectToTarget(
+  attacker: Combatant,
+  target: Combatant
+): { target: Combatant; attacker: Combatant } {
+  const effect = attacker.maskPower?.effect;
+  if (!attacker.maskPower?.active || attacker.maskPower.target !== 'enemy' || !effect) {
+    return { target, attacker };
+  }
+
+  // Only DEFENSE and CONFUSION are applied on attack to enemy targets
+  if (effect.type !== 'DEFENSE' && effect.type !== 'CONFUSION') {
+    return { target, attacker };
+  }
+
+  const eff = createEffectFromMaskEffect(effect, attacker.id);
+  if (!eff) {
+    return { target, attacker };
+  }
+
+  const effects = [...(target.effects ?? []), eff];
+  return { target: { ...target, effects }, attacker };
+}
+
+/** Decrements effect durations for a combatant. Handles all effect types (buffs and debuffs). */
+function decrementEffectDurations(
+  combatant: Combatant,
+  unit: 'attack' | 'hit' | 'turn' | 'round'
+): Combatant {
+  if (!combatant.effects?.length) return combatant;
+  const updatedEffects = combatant.effects
+    .map((e) =>
+      e.durationUnit === unit && e.durationRemaining > 0
+        ? { ...e, durationRemaining: e.durationRemaining - 1 }
+        : e
+    )
+    .filter((e) => e.durationRemaining > 0);
+  return { ...combatant, effects: updatedEffects.length > 0 ? updatedEffects : undefined };
 }
 
 export function applyHealing(combatant: Combatant): Combatant {
-  // Apply HEAL mask power (e.g., Kaukau - Mask of Water Breathing)
-  if (
-    combatant.maskPower?.active &&
-    combatant.maskPower.effect.type === 'HEAL' &&
-    combatant.maskPower.effect.multiplier !== undefined
-  ) {
-    const healAmount = Math.floor(combatant.maxHp * combatant.maskPower.effect.multiplier);
-    return {
-      ...combatant,
-      hp: Math.min(combatant.maxHp, combatant.hp + healAmount),
-    };
+  // Effects drive changes. If combatant has HEAL effect(s), apply them (stack additively).
+  let healMult = 0;
+  for (const e of combatant.effects ?? []) {
+    if (e.type === 'HEAL' && e.durationRemaining > 0 && e.multiplier !== undefined) {
+      healMult += e.multiplier;
+    }
+  }
+  if (healMult !== 0) {
+    const delta = Math.floor(combatant.maxHp * healMult);
+    const newHp = Math.max(0, Math.min(combatant.maxHp, combatant.hp + delta));
+    return { ...combatant, hp: newHp };
   }
   return combatant;
 }
@@ -274,8 +326,8 @@ export function decrementMaskPowerCounter(
       // Set cooldown when effect expires (use shortName so overrides & positional IDs work)
       const power = MASK_POWERS[updatedMaskPower.shortName];
       if (power) {
-        updatedMaskPower.effect.cooldown = {
-          ...power.effect.cooldown,
+        updatedMaskPower.cooldown = {
+          ...power.cooldown,
         };
         cooldownJustSetFromExpiry = true;
       }
@@ -287,15 +339,12 @@ export function decrementMaskPowerCounter(
   if (
     !cooldownJustSetFromExpiry &&
     !updatedMaskPower.active &&
-    updatedMaskPower.effect.cooldown.unit === unit &&
-    updatedMaskPower.effect.cooldown.amount > 0
+    updatedMaskPower.cooldown.unit === unit &&
+    updatedMaskPower.cooldown.amount > 0
   ) {
-    updatedMaskPower.effect = {
-      ...updatedMaskPower.effect,
-      cooldown: {
-        ...updatedMaskPower.effect.cooldown,
-        amount: updatedMaskPower.effect.cooldown.amount - 1,
-      },
+    updatedMaskPower.cooldown = {
+      ...updatedMaskPower.cooldown,
+      amount: updatedMaskPower.cooldown.amount - 1,
     };
     changed = true;
   }
@@ -305,15 +354,13 @@ export function decrementMaskPowerCounter(
 
 // exported only for tests
 export function chooseTarget(self: Combatant, targets: Combatant[]): Combatant {
-  // Filter out untargetable enemies (AGGRO mask power with multiplier 0)
-  const targetableEnemies = targets.filter(
-    (t) =>
-      !(
-        t.maskPower?.active &&
-        t.maskPower.effect.type === 'AGGRO' &&
-        t.maskPower.effect.multiplier === 0
-      )
-  );
+  // Filter out untargetable enemies (AGGRO effect with multiplier 0)
+  const targetableEnemies = targets.filter((t) => {
+    const untargetable = t.effects?.some(
+      (e) => e.type === 'AGGRO' && e.multiplier === 0 && e.durationRemaining > 0
+    );
+    return !untargetable;
+  });
 
   // If all enemies are untargetable, fall back to all targets
   const validTargets = targetableEnemies.length > 0 ? targetableEnemies : targets;
@@ -369,10 +416,42 @@ function triggerMaskPowers(
     if (actor.maskPower && actor.willUseAbility) {
       actor.willUseAbility = false;
 
-      // Reset duration to original value from MASK_POWERS when (re-)activating,
-      // and create new maskPower/effect objects to avoid shared-reference mutations.
+      const effect = actor.maskPower.effect;
       const originalPower = MASK_POWERS[actor.maskPower.shortName];
-      const originalDuration = originalPower?.effect.duration ?? actor.maskPower.effect.duration;
+
+      if (actor.maskPower.target === 'team' && isTeam) {
+        // Team-wide mask (e.g. Nuva): apply effect to all allies (including caster)
+        const eff = createEffectFromMaskEffect(effect, actor.id);
+        if (eff) {
+          currentTeam = currentTeam.map((t) => (t.hp > 0 ? applyEffectToCombatant(t, eff) : t));
+          if (effect.type === 'SPEED') {
+            const aliveAllies = currentTeam.filter((t) => t.hp > 0);
+            for (const ally of aliveAllies) {
+              newTurnOrder.push({ ...ally, side: 'team' });
+            }
+          }
+        }
+      } else if (actor.maskPower.target === 'self') {
+        // Self-target: apply effect to caster. Effects drive changes; mask target is only for application.
+        const eff = createEffectFromMaskEffect(effect, actor.id);
+        if (eff) {
+          if (isTeam) {
+            currentTeam = currentTeam.map((t) =>
+              t.id === actor.id ? applyEffectToCombatant(t, eff) : t
+            );
+          } else {
+            currentEnemies = currentEnemies.map((t) =>
+              t.id === actor.id ? applyEffectToCombatant(t, eff) : t
+            );
+          }
+          if (effect.type === 'SPEED') {
+            const clonedActor = { ...actor, maskPower: structuredClone(actor.maskPower) };
+            newTurnOrder.push(clonedActor);
+          }
+        }
+      }
+      // Set active=true and duration on caster (for UI/cooldown; effects drive actual changes)
+      const originalDuration = originalPower?.effect.duration ?? effect.duration;
       actor.maskPower = {
         ...actor.maskPower,
         active: true,
@@ -381,24 +460,17 @@ function triggerMaskPowers(
           duration: { ...originalDuration },
         },
       };
-
-      // Special case: SPEED mask grants an extra turn this round
-      if (actor.maskPower.effect.type === 'SPEED') {
-        // Clone the actor for the second turn to avoid object mutation issues
-        const clonedActor = { ...actor, maskPower: structuredClone(actor.maskPower) };
-        newTurnOrder.push(clonedActor);
-      }
-
-      console.log('activating mask power', actor.id, actor.maskPower);
       if (isTeam) {
-        currentTeam = currentTeam.map((t) => (t.id === actor.id ? actor : t));
+        // Merge maskPower + willUseAbility into buffed caster (don't overwrite with actor—would drop buffs)
+        currentTeam = currentTeam.map((t) =>
+          t.id === actor.id ? { ...t, maskPower: actor.maskPower, willUseAbility: false } : t
+        );
       } else {
         currentEnemies = currentEnemies.map((t) => (t.id === actor.id ? actor : t));
       }
     }
   }
   enqueue(async () => {
-    // Apply mask powers
     setEnemies(currentEnemies);
     setTeam(currentTeam);
   });
@@ -458,12 +530,11 @@ export function queueCombatRound(
           currentEnemies = newActorList;
           setEnemies(currentEnemies);
         }
-        console.log(`${healedSelf.id} healed for ${healedSelf.hp - oldHp} HP`);
       }
 
       // CONFUSION: attack own allies instead of enemies (or self if alone)
-      const isConfused = self.debuffs?.some(
-        (d) => d.type === 'CONFUSION' && d.durationRemaining > 0
+      const isConfused = self.effects?.some(
+        (e) => e.type === 'CONFUSION' && e.durationRemaining > 0
       );
       const effectiveOpponentList = isConfused
         ? actorList.filter((t) => t.hp > 0 && t.id !== actor.id)
@@ -480,9 +551,10 @@ export function queueCombatRound(
 
       let target = chooseTarget(self, targets);
 
-      // Apply DEBUFF mask effect to target (e.g. Akaku DEFENSE, Komau CONFUSION) - only when not confused
+      // Apply on-attack mask effect to target (Akaku DEFENSE, Komau CONFUSION)
       if (!isConfused) {
-        target = applyDebuffToTarget(self, target, isTeam ? 'team' : 'enemy');
+        const { target: markedTarget } = applyOnAttackEffectToTarget(self, target);
+        target = markedTarget;
       }
       const newOpponentListForMark = opponentList.map((t) => (t.id === target.id ? target : t));
       if (opponentList !== newOpponentListForMark) {
@@ -490,7 +562,7 @@ export function queueCombatRound(
         else currentTeam = newOpponentListForMark;
       }
 
-      const damage = calculateAtkDmg(self, target, isTeam ? 'team' : 'enemy');
+      const damage = calculateAtkDmg(self, target);
       const willBeDefeated = target.hp - damage <= 0;
 
       // Expect 3D combatant refs to be globally accessible for now
@@ -505,27 +577,27 @@ export function queueCombatRound(
       // Apply damage and update state when contact occurs (HP bar drops at impact)
       let updatedTarget = applyDamage(target, damage);
 
-      // Decrement 'attack' unit counters for attacker
+      // Decrement 'attack' unit counters for attacker (mask + buffs)
       self = decrementMaskPowerCounter(self, 'attack');
+      self = decrementEffectDurations(self, 'attack');
 
-      // Decrement 'hit' unit counters for defender
+      // Decrement 'hit' unit counters for defender (mask + buffs)
       updatedTarget = decrementMaskPowerCounter(updatedTarget, 'hit');
+      updatedTarget = decrementEffectDurations(updatedTarget, 'hit');
 
       // Decrement 'turn' unit counters ONLY for the combatant whose turn it is
       self = decrementMaskPowerCounter(self, 'turn');
+      self = decrementEffectDurations(self, 'turn');
 
       // Update both attacker and defender in their respective lists
       // When confused, target is in actorList (attacking allies), so update both in actorList
-      const newActorList = actorList.map((c) =>
+      // self already has turn-based effects decremented above
+      const nextActorList = actorList.map((c) =>
         c.id === self.id ? self : c.id === updatedTarget.id ? updatedTarget : c
       );
-      const newOpponentList = opponentList.map((t) =>
+      const nextOpponentList = opponentList.map((t) =>
         t.id === updatedTarget.id ? updatedTarget : t
       );
-
-      // Decrement turn-based debuffs (e.g. CONFUSION) - only for the actor whose turn it is
-      const nextActorList = decrementDebuffDurations(newActorList, 'turn', self.id);
-      const nextOpponentList = decrementDebuffDurations(newOpponentList, 'turn', self.id);
 
       if (isTeam) {
         currentTeam = nextActorList;
@@ -547,12 +619,6 @@ export function queueCombatRound(
           await targetRef.playAnimation('Hit', { faceTargetId: self.id });
         }
       }
-
-      console.log(
-        `${self.id} (${actor.side}) attacked ${target.id} (${
-          isTeam ? 'enemy' : 'team'
-        }) for ${damage} damage → HP: ${target.hp} → ${updatedTarget.hp}`
-      );
     });
   }
 
@@ -565,10 +631,12 @@ export function queueCombatRound(
       currentTeam = latest.team;
       currentEnemies = latest.enemies;
     }
-    let nextTeam = currentTeam.map((c) => decrementMaskPowerCounter(c, 'round'));
-    let nextEnemies = currentEnemies.map((c) => decrementMaskPowerCounter(c, 'round'));
-    nextTeam = decrementDebuffDurations(nextTeam, 'round');
-    nextEnemies = decrementDebuffDurations(nextEnemies, 'round');
+    const nextTeam = currentTeam.map((c) =>
+      decrementEffectDurations(decrementMaskPowerCounter(c, 'round'), 'round')
+    );
+    const nextEnemies = currentEnemies.map((c) =>
+      decrementEffectDurations(decrementMaskPowerCounter(c, 'round'), 'round')
+    );
     currentTeam = nextTeam;
     currentEnemies = nextEnemies;
     setTeam(currentTeam);
@@ -577,14 +645,29 @@ export function queueCombatRound(
 }
 
 /**
- * Returns true if any alive team member has a mask power off cooldown and not currently active.
- * Used to decide whether to pause between rounds (so the player can toggle abilities).
+ * Returns true if any buff or debuff with sourceId exists on team or enemies (durationRemaining > 0).
+ * Used as source of truth for mask UI (caster glow while effect is active).
  */
-export function hasReadyMaskPowers(team: Combatant[]): boolean {
-  return team.some(
-    (c) =>
-      c.hp > 0 && c.maskPower && !c.maskPower.active && c.maskPower.effect.cooldown.amount === 0
-  );
+export function hasActiveEffectFromSource(
+  team: Combatant[],
+  enemies: Combatant[],
+  sourceId: string
+): boolean {
+  const hasFrom = (list: Combatant[]) =>
+    list.some((c) => c.effects?.some((e) => e.sourceId === sourceId && e.durationRemaining > 0));
+  return hasFrom(team) || hasFrom(enemies);
+}
+
+/**
+ * Returns true if any alive team member has a mask power off cooldown and not currently active.
+ * Uses buffs/debuffs as source of truth for "active" when enemies provided.
+ */
+export function hasReadyMaskPowers(team: Combatant[], enemies: Combatant[] = []): boolean {
+  return team.some((c) => {
+    if (c.hp <= 0 || !c.maskPower || c.maskPower.cooldown.amount !== 0) return false;
+    const maskActive = c.maskPower.active || hasActiveEffectFromSource(team, enemies, c.id);
+    return !maskActive;
+  });
 }
 
 /**
@@ -652,7 +735,7 @@ export function generateCombatantStats(
   const mask = opts.maskOverride || template.mask;
   const maskPower = mask && structuredClone(MASK_POWERS[mask]);
   if (maskPower) {
-    maskPower.effect.cooldown.amount = 0;
+    maskPower.cooldown.amount = 0;
   }
 
   return {

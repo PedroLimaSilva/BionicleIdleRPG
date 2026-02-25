@@ -485,6 +485,57 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     chronicleId: CHRONICLE_IDS.HAFU,
   },
 
+  // Rebuilt Matoran with new names (Naming Day ceremony, post–Bohrok Kal)
+  Jaller: {
+    id: 'Jaller',
+    name: 'Jaller',
+    mask: Mask.Hau,
+    element: ElementTribe.Fire,
+    stage: MatoranStage.Rebuilt,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.Yellow,
+      body: LegoColor.Red,
+      feet: LegoColor.Yellow,
+      arms: LegoColor.Red,
+      eyes: LegoColor.TransNeonRed,
+    },
+    chronicleId: CHRONICLE_IDS.JALA,
+  },
+  Macku: {
+    id: 'Macku',
+    name: 'Macku',
+    mask: Mask.Huna,
+    stage: MatoranStage.Rebuilt,
+    element: ElementTribe.Water,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.Blue,
+      body: LegoColor.MediumBlue,
+      feet: LegoColor.Blue,
+      arms: LegoColor.MediumBlue,
+      eyes: LegoColor.TransNeonYellow,
+    },
+    tags: [MatoranTag.ChroniclersCompany],
+    chronicleId: CHRONICLE_IDS.MAKU,
+  },
+  Hewkii: {
+    id: 'Hewkii',
+    name: 'Hewkii',
+    mask: Mask.Kakama,
+    stage: MatoranStage.Rebuilt,
+    element: ElementTribe.Stone,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.DarkOrange,
+      body: LegoColor.Tan,
+      feet: LegoColor.DarkOrange,
+      arms: LegoColor.Tan,
+      eyes: LegoColor.TransNeonOrange,
+    },
+    chronicleId: CHRONICLE_IDS.HUKI,
+  },
+
   // Bohrok - Repurposed as assistants after the Bahrag were imprisoned
   tahnok: {
     id: 'tahnok',
