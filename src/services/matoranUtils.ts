@@ -22,6 +22,14 @@ export function isBohrok(matoran: BaseMatoran) {
   return matoran.stage === MatoranStage.Bohrok;
 }
 
+export function isBohrokKal(matoran: BaseMatoran) {
+  return matoran.stage === MatoranStage.BohrokKal;
+}
+
+export function isBohrokOrKal(matoran: BaseMatoran) {
+  return isBohrok(matoran) || isBohrokKal(matoran);
+}
+
 export function isToaNuva(matoran: BaseMatoran) {
   return matoran.stage === MatoranStage.ToaNuva;
 }
