@@ -116,16 +116,8 @@ export function calculateAtkDmg(attacker: Combatant, defender: Combatant): numbe
   const effectiveDefense = defender.defense * defenseMult;
   let rawDamage = Math.max(1, attacker.attack - effectiveDefense);
 
-  // Apply attacker's ATK_MULT (mask power + buffs stack multiplicatively)
+  // Effects drive changes. ATK_MULT effects stack multiplicatively.
   let atkMult = 1;
-  if (
-    attacker.maskPower?.active &&
-    attacker.maskPower.effect.type === 'ATK_MULT' &&
-    attacker.maskPower.effect.target === 'self' &&
-    attacker.maskPower.effect.multiplier
-  ) {
-    atkMult *= attacker.maskPower.effect.multiplier;
-  }
   for (const e of attacker.effects ?? []) {
     if (e.type === 'ATK_MULT' && e.durationRemaining > 0 && e.multiplier) {
       atkMult *= e.multiplier;
@@ -141,15 +133,8 @@ export function calculateAtkDmg(attacker: Combatant, defender: Combatant): numbe
 }
 
 export function applyDamage(target: Combatant, damage: number): Combatant {
-  // DMG_MITIGATOR multiplies final damage (0 = immunity, 0.5 = half, 1 = normal)
+  // Effects drive changes. DMG_MITIGATOR multiplies final damage (0 = immunity, 0.5 = half, 1 = normal).
   let mult = 1;
-  if (
-    target.maskPower?.active &&
-    target.maskPower.effect.type === 'DMG_MITIGATOR' &&
-    target.maskPower.effect.multiplier !== undefined
-  ) {
-    mult *= target.maskPower.effect.multiplier;
-  }
   for (const e of target.effects ?? []) {
     if (e.durationRemaining <= 0) continue;
     if (e.type === 'DMG_MITIGATOR') mult *= e.multiplier;
@@ -295,15 +280,8 @@ function decrementEffectDurations(
 }
 
 export function applyHealing(combatant: Combatant): Combatant {
-  // Apply HEAL (mask power + buffs stack additively)
+  // Effects drive changes. If combatant has HEAL effect(s), apply them (stack additively).
   let healMult = 0;
-  if (
-    combatant.maskPower?.active &&
-    combatant.maskPower.effect.type === 'HEAL' &&
-    combatant.maskPower.effect.multiplier !== undefined
-  ) {
-    healMult += combatant.maskPower.effect.multiplier;
-  }
   for (const e of combatant.effects ?? []) {
     if (e.type === 'HEAL' && e.durationRemaining > 0 && e.multiplier !== undefined) {
       healMult += e.multiplier;
@@ -382,16 +360,10 @@ export function decrementMaskPowerCounter(
 
 // exported only for tests
 export function chooseTarget(self: Combatant, targets: Combatant[]): Combatant {
-  // Filter out untargetable enemies (AGGRO mask power or buff with multiplier 0)
+  // Filter out untargetable enemies (AGGRO effect with multiplier 0)
   const targetableEnemies = targets.filter((t) => {
-    const aggroself =
-      t.maskPower?.active &&
-      t.maskPower.effect.type === 'AGGRO' &&
-      t.maskPower.effect.multiplier === 0;
-    const aggrobuff = t.effects?.some(
-      (e) => e.type === 'AGGRO' && e.multiplier === 0 && e.durationRemaining > 0
-    );
-    return !aggroself && !aggrobuff;
+    const untargetable = t.effects?.some((e) => e.type === 'AGGRO' && e.multiplier === 0 && e.durationRemaining > 0);
+    return !untargetable;
   });
 
   // If all enemies are untargetable, fall back to all targets
@@ -452,7 +424,7 @@ function triggerMaskPowers(
       const originalPower = MASK_POWERS[actor.maskPower.shortName];
 
       if (effect.target === 'team' && isTeam) {
-        // Team-wide mask (e.g. Nuva): apply buff to allies and set caster active for duration
+        // Team-wide mask (e.g. Nuva): apply effect to all allies (including caster)
         const eff = createEffectFromMaskEffect(effect, actor.id);
         if (eff) {
           currentTeam = currentTeam.map((t) => (t.hp > 0 ? applyEffectToCombatant(t, eff) : t));
@@ -463,8 +435,26 @@ function triggerMaskPowers(
             }
           }
         }
+      } else if (effect.target === 'self') {
+        // Self-target: apply effect to caster. Effects drive changes; mask target is only for application.
+        const eff = createEffectFromMaskEffect(effect, actor.id);
+        if (eff) {
+          if (isTeam) {
+            currentTeam = currentTeam.map((t) =>
+              t.id === actor.id ? applyEffectToCombatant(t, eff) : t
+            );
+          } else {
+            currentEnemies = currentEnemies.map((t) =>
+              t.id === actor.id ? applyEffectToCombatant(t, eff) : t
+            );
+          }
+          if (effect.type === 'SPEED') {
+            const clonedActor = { ...actor, maskPower: structuredClone(actor.maskPower) };
+            newTurnOrder.push(clonedActor);
+          }
+        }
       }
-      // Self, team, enemy, allEnemies: set active=true and duration on caster (unified)
+      // Set active=true and duration on caster (for UI/cooldown; effects drive actual changes)
       const originalDuration = originalPower?.effect.duration ?? effect.duration;
       actor.maskPower = {
         ...actor.maskPower,
@@ -474,10 +464,6 @@ function triggerMaskPowers(
           duration: { ...originalDuration },
         },
       };
-      if (effect.type === 'SPEED' && effect.target !== 'team') {
-        const clonedActor = { ...actor, maskPower: structuredClone(actor.maskPower) };
-        newTurnOrder.push(clonedActor);
-      }
       if (isTeam) {
         // Merge maskPower + willUseAbility into buffed caster (don't overwrite with actor—would drop buffs)
         currentTeam = currentTeam.map((t) =>
