@@ -310,6 +310,11 @@ XP: 3000"]
 Loot: 
 Currency: 6000
 XP: 5000"]
+  bohrok_kal_naming_day["The Naming Day
+(12m)
+Loot: 
+Currency: 2000
+XP: 1500"]
   story_toa_arrival --> maskhunt_kopaka_pohatu_icecliff
   mnog_tahu_unlock_01 --> story_toa_council
   maskhunt_kopaka_pohatu_icecliff --> story_toa_council
@@ -385,6 +390,7 @@ XP: 5000"]
   bohrok_kal_stolen_symbols --> bohrok_kal_sighting
   bohrok_kal_sighting --> bohrok_kal_race_to_nest
   bohrok_kal_race_to_nest --> bohrok_kal_final_confrontation
+  bohrok_kal_final_confrontation --> bohrok_kal_naming_day
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff
