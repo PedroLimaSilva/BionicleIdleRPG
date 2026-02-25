@@ -1,5 +1,6 @@
 import { GameItemId } from '../data/loot';
 import { ElementTribe } from './Matoran';
+import { MatoranStage } from './Matoran';
 import { Quest } from './Quests';
 
 export enum MatoranJob {
@@ -15,6 +16,12 @@ export enum MatoranJob {
   StasisTechnician = 'StasisTechnician',
   IceSculptor = 'IceSculptor',
   KnowledgeScribe = 'KnowledgeScribe',
+  TaKoroRebuilder = 'TaKoroRebuilder',
+  GaKoroRebuilder = 'GaKoroRebuilder',
+  LeKoroRebuilder = 'LeKoroRebuilder',
+  PoKoroRebuilder = 'PoKoroRebuilder',
+  OnuKoroRebuilder = 'OnuKoroRebuilder',
+  KoKoroRebuilder = 'KoKoroRebuilder',
 }
 
 type JobReward = {
@@ -33,6 +40,8 @@ export interface JobDetails {
   unlock: {
     requiredProgress?: Quest['id'][];
   };
+  /** If set, only characters with these stages can be assigned this job. */
+  allowedStages?: MatoranStage[];
   rewards?: JobReward[];
 }
 

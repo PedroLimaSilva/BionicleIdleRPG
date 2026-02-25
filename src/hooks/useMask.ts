@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { useGame } from '../context/Game';
 import { getEffectiveMataMaskColor } from '../game/maskColor';
 import { BaseMatoran, MatoranStage } from '../types/Matoran';
@@ -15,32 +14,12 @@ const TRANSITION_DURATION = 0.35;
 /** How much the old mask scales up during the exit animation (multiplied on top of the original scale) */
 const EXIT_SCALE_AMOUNT = 0.5;
 
-// Module-level cache so the file is only fetched once across all instances
-let masksNodesCache: Record<string, Object3D> | null = null;
-let masksLoadPromise: Promise<Record<string, Object3D>> | null = null;
-
-function loadMasksNodes(): Promise<Record<string, Object3D>> {
-  if (masksNodesCache) return Promise.resolve(masksNodesCache);
-  if (masksLoadPromise) return masksLoadPromise;
-
-  masksLoadPromise = new Promise((resolve, reject) => {
-    const loader = new GLTFLoader();
-    loader.load(
-      MASKS_GLB_PATH,
-      (gltf) => {
-        const nodes: Record<string, Object3D> = {};
-        gltf.scene.traverse((child) => {
-          if (child.name) nodes[child.name] = child;
-        });
-        masksNodesCache = nodes;
-        resolve(nodes);
-      },
-      undefined,
-      reject
-    );
+function buildMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
+  const nodes: Record<string, Object3D> = {};
+  gltf.scene.traverse((child) => {
+    if (child.name) nodes[child.name] = child;
   });
-
-  return masksLoadPromise;
+  return nodes;
 }
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
@@ -122,9 +101,7 @@ interface TransitionState {
  * Loads a mask from the shared masks.glb, clones it, and attaches it to the
  * given parent Object3D (typically `nodes.Masks` in a character model).
  *
- * Uses imperative loading (GLTFLoader) instead of useGLTF so it does NOT
- * trigger React Suspense -- the parent component's animation setup and
- * effects are never interrupted.
+ * Uses useGLTF (with useDraco for Draco-compressed models from gltfjsx --transform).
  *
  * The mask is cloned so each character gets its own geometry instance and
  * material, allowing per-character color overrides without affecting others.
@@ -146,15 +123,17 @@ interface TransitionState {
 export function useMask(
   masksParent: Object3D | undefined,
   maskName: string,
-  matoran: BaseMatoran & { maskColorOverride?: string; maskOverride?: string },
+  matoran: BaseMatoran & { maskOverride?: string },
   glowColor?: string
 ) {
+  const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
+  const masksNodes = useMemo(() => buildMaskNodes(gltf), [gltf]);
   const { completedQuests } = useGame();
+
   const maskColor =
     matoran.stage === MatoranStage.ToaMata
       ? getEffectiveMataMaskColor(matoran, completedQuests)
-      : (matoran.maskColorOverride ?? matoran.colors.mask);
-  const [masksNodes, setMasksNodes] = useState<Record<string, Object3D> | null>(masksNodesCache);
+      : matoran.colors.mask;
   const maskRef = useRef<Object3D | null>(null);
   const prevMaskNameRef = useRef<string | null>(null);
   const masksParentRef = useRef<Object3D | undefined>(masksParent);
@@ -174,22 +153,6 @@ export function useMask(
     oldOpacities: new Map(),
     oldScale: new Vector3(1, 1, 1),
   });
-
-  // Load masks.glb imperatively (no Suspense)
-  useEffect(() => {
-    if (masksNodesCache) {
-      setMasksNodes(masksNodesCache);
-      return;
-    }
-
-    let cancelled = false;
-    loadMasksNodes().then((nodes) => {
-      if (!cancelled) setMasksNodes(nodes);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   // Clone the mask and attach to parent; animate transitions between masks
   useEffect(() => {
@@ -317,8 +280,5 @@ export function useMask(
 
 // Kick off loading early (call from preload.ts)
 useMask.preload = () => {
-  // Start the imperative load
-  loadMasksNodes();
-  // Also warm the drei/useGLTF cache in case anything else needs it
-  useGLTF.preload(MASKS_GLB_PATH);
+  useGLTF.preload(MASKS_GLB_PATH); // useDraco=true by default
 };

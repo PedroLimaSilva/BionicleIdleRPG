@@ -144,6 +144,36 @@
   }
 }
 
+.bohrok-evolve-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--theme-element-primary);
+  border-radius: var(--border-radius-md);
+  background: var(--color-surface-mid);
+
+  .evolve-button {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    background: var(--theme-element-primary);
+    color: var(--color-surface-high);
+    border: none;
+    border-radius: var(--border-radius-md);
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .evolve-hint {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+}
+
 @keyframes shimmer {
   0% {
     left: -100%;

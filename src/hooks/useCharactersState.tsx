@@ -3,7 +3,6 @@ import { ListedCharacterData, Mask, RecruitedCharacterData } from '../types/Mato
 import { GameItemId } from '../data/loot';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
-import { LegoColor } from '../types/Colors';
 
 export function useCharactersState(
   initialRecruited: RecruitedCharacterData[],
@@ -42,11 +41,11 @@ export function useCharactersState(
     setRecruitedCharacters((prev) => removeJob(id, prev));
   };
 
-  const setMaskOverride = (id: RecruitedCharacterData['id'], color: LegoColor, mask: Mask) => {
+  const setMaskOverride = (id: RecruitedCharacterData['id'], mask: Mask) => {
     setRecruitedCharacters((prev) =>
       prev.map((m) => {
         if (id === m.id) {
-          return { ...m, maskOverride: mask, maskColorOverride: color };
+          return { ...m, maskOverride: mask };
         }
         return m;
       })

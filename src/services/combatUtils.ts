@@ -1,5 +1,4 @@
 import { COMBATANT_DEX, MASK_POWERS } from '../data/combat';
-import { LegoColor } from '../types/Colors';
 import { BattleStrategy, Combatant, TargetDebuff } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 
@@ -566,12 +565,8 @@ export function queueCombatRound(
       currentTeam = latest.team;
       currentEnemies = latest.enemies;
     }
-    let nextTeam = currentTeam.map((c) =>
-      decrementMaskPowerCounter(c, 'round')
-    );
-    let nextEnemies = currentEnemies.map((c) =>
-      decrementMaskPowerCounter(c, 'round')
-    );
+    let nextTeam = currentTeam.map((c) => decrementMaskPowerCounter(c, 'round'));
+    let nextEnemies = currentEnemies.map((c) => decrementMaskPowerCounter(c, 'round'));
     nextTeam = decrementDebuffDurations(nextTeam, 'round');
     nextEnemies = decrementDebuffDurations(nextEnemies, 'round');
     currentTeam = nextTeam;
@@ -588,10 +583,7 @@ export function queueCombatRound(
 export function hasReadyMaskPowers(team: Combatant[]): boolean {
   return team.some(
     (c) =>
-      c.hp > 0 &&
-      c.maskPower &&
-      !c.maskPower.active &&
-      c.maskPower.effect.cooldown.amount === 0
+      c.hp > 0 && c.maskPower && !c.maskPower.active && c.maskPower.effect.cooldown.amount === 0
   );
 }
 
@@ -617,7 +609,6 @@ const TOA_NUVA_TEMPLATE_IDS = [
 
 export interface GenerateCombatantStatsOptions {
   maskOverride?: Mask;
-  maskColorOverride?: LegoColor;
   /** When true and templateId is Toa Nuva, stats are diminished. */
   nuvaSymbolsSequestered?: boolean;
 }
@@ -626,17 +617,16 @@ export function generateCombatantStats(
   id: string,
   templateId: string,
   lvl: number,
-  options?: GenerateCombatantStatsOptions | Mask,
-  maskColorOverrideArg?: LegoColor
+  options?: GenerateCombatantStatsOptions | Mask
 ): Combatant {
-  // Backward compat: allow (maskOverride, maskColorOverride) as 4th/5th args
+  // Backward compat: allow (maskOverride) as 4th/5th args
   const opts: GenerateCombatantStatsOptions =
     options !== undefined &&
     typeof options === 'object' &&
     options !== null &&
     !('shortName' in options)
       ? (options as GenerateCombatantStatsOptions)
-      : { maskOverride: options as Mask | undefined, maskColorOverride: maskColorOverrideArg };
+      : { maskOverride: options as Mask | undefined };
 
   const template = COMBATANT_DEX[templateId];
   if (!template) {
@@ -648,7 +638,9 @@ export function generateCombatantStats(
   let defense = template.baseDefense + lvl * 2;
   let speed = template.baseSpeed + lvl * 1;
 
-  const isToaNuva = TOA_NUVA_TEMPLATE_IDS.includes(templateId as (typeof TOA_NUVA_TEMPLATE_IDS)[number]);
+  const isToaNuva = TOA_NUVA_TEMPLATE_IDS.includes(
+    templateId as (typeof TOA_NUVA_TEMPLATE_IDS)[number]
+  );
   if (opts.nuvaSymbolsSequestered && isToaNuva) {
     const mult = NUVA_SEQUESTERED_STAT_MULTIPLIER;
     maxHp = Math.max(1, Math.floor(maxHp * mult));
@@ -669,7 +661,6 @@ export function generateCombatantStats(
     model: template.model,
     lvl,
     maskPower,
-    maskColorOverride: opts.maskColorOverride,
     element: template.element,
     maxHp,
     hp: maxHp,

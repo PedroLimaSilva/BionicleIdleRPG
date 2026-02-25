@@ -6,7 +6,6 @@ import { ListedCharacterData, BaseMatoran, Mask, RecruitedCharacterData } from '
 import { BattleRewardParams, GameState } from '../types/GameState';
 import { Quest } from '../types/Quests';
 import { LISTED_MATORAN_DATA, RECRUITED_MATORAN_DATA } from './matoran';
-import { LegoColor } from '../types/Colors';
 import { INITIAL_BATTLE_STATE } from '../hooks/useBattleState';
 import { KranaElement, KranaId } from '../types/Krana';
 
@@ -54,17 +53,19 @@ export const INITIAL_GAME_STATE: GameState = {
   completeQuest: function (_quest: Quest): void {
     throw new Error('Function not implemented.');
   },
-  setMaskOverride: function (
-    _id: RecruitedCharacterData['id'],
-    _color: LegoColor,
-    _mask: Mask
-  ): void {
+  setMaskOverride: function (_id: RecruitedCharacterData['id'], _mask: Mask): void {
     throw new Error('Function not implemented.');
   },
   collectKrana: function (_element: KranaElement, _id: KranaId): void {
     throw new Error('Function not implemented.');
   },
   applyBattleRewards: function (_params: BattleRewardParams): void {
+    throw new Error('Function not implemented.');
+  },
+  evolveBohrokToKal: function (
+    _matoranId: RecruitedCharacterData['id'],
+    _onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
+  ): boolean {
     throw new Error('Function not implemented.');
   },
 };
