@@ -5,13 +5,14 @@ import { Color } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
 import { MATORAN_DEX } from '../../data/matoran';
+import { BaseMatoran } from '../../types/Matoran';
 
 /** Cache key: materialName + color. Shared across all Bohrok instances with same scheme. */
 const bohrokMaterialCache = new Map<string, MeshStandardMaterial>();
 
 function getBohrokMaterial(
   original: MeshStandardMaterial,
-  colorScheme: { body: string; arms: string; eyes: string }
+  colorScheme: BaseMatoran['colors']
 ): MeshStandardMaterial {
   const name = original.name;
   let color: string;
@@ -29,6 +30,12 @@ function getBohrokMaterial(
   } else if (name === 'Krana') {
     color = colorScheme.eyes;
     cacheKey = `Krana_${color}`;
+  } else if (name === 'Bohrok_Feet') {
+    color = colorScheme.feet;
+    cacheKey = `Feet_${color}`;
+  } else if (name === 'Bohrok_Joints' || name === 'Bohrok Kal Shield') {
+    color = colorScheme.face;
+    cacheKey = `Joints_${color}`;
   } else {
     // Unknown material: leave as-is, came from GLTF as needed
     return original;
@@ -64,16 +71,41 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
 
   useEffect(() => {
     const colorScheme = MATORAN_DEX[id].colors;
+    const [name, kal] = id.split('_');
+    const uppercaseName = name.replace(/^./, (char) => char.toUpperCase());
+    const isKal = kal !== undefined;
+
+    const hiddenMeshes: string[] = [];
+    if (isKal) {
+      hiddenMeshes.push('Part-41671p01_dot_dat003', 'Part-41671p01_dot_dat003_1');
+      hiddenMeshes.push(
+        ...[
+          'TahnokSymbol',
+          'NuhvokSymbol',
+          'GahlokSymbol',
+          'LehvakSymbol',
+          'PahrakSymbol',
+          'KohrakSymbol',
+        ].filter((e) => !e.includes(uppercaseName))
+      );
+    } else {
+      hiddenMeshes.push('FacePlateSilver');
+    }
 
     bodyInstance.traverse((child) => {
       if (!(child instanceof Mesh)) return;
+
+      if (hiddenMeshes.includes(child.name)) {
+        child.visible = false;
+        return;
+      }
 
       const originalMaterial = child.material as MeshStandardMaterial;
       child.material = getBohrokMaterial(originalMaterial, colorScheme);
     });
 
-    const shieldTarget = id.replace(/^./, (char) => char.toUpperCase());
-    ['R', 'L'].forEach((suffix) => {
+    const shieldTarget = uppercaseName.concat(isKal ? 'Kal' : '');
+    ['L', 'R'].forEach((suffix) => {
       bodyInstance.traverse((child) => {
         if (child.name === `Hand${suffix}`) {
           child.children.forEach((shield) => {
