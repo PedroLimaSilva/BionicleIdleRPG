@@ -135,7 +135,7 @@ Mask powers can apply effects to multiple targets:
 - **target: 'allEnemies'** – Debuff applied to all enemies (e.g. Ruru)
 - **target: 'team'** – Buff applied to all allies (Nuva masks)
 
-When `target: 'team'`, the mask power creates `TargetEffect` instances on each ally. All effects (buffs and debuffs) use a single unified type and `effects` array: `sourceId` (caster), `durationRemaining`/`durationUnit`. The mask UI derives "active" from effects with `sourceId === caster.id`. DEFENSE effects increase damage from any attacker (weakens the defender).
+When `target: 'team'`, the mask power creates `TargetEffect` instances on each ally. All effects (buffs and debuffs) use a single unified type and `effects` array: `sourceId` (caster), `durationRemaining`/`durationUnit`. The mask UI derives "active" from effects with `sourceId === caster.id`.
 
 ### Mask Power Lifecycle
 
