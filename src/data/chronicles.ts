@@ -857,6 +857,17 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         questId: 'bohrok_ta_koro_defense',
       },
     },
+    {
+      id: 'takua_naming_day',
+      section: 'Bohrok Kal',
+      title: 'The Naming Day',
+      description:
+        'At Kini-Nui, the Turaga reveal Takua and Jala rebuilt into taller forms. The Matoran cheer as they learn to rebuild themselves. Takua stands among the honored at the Naming Day ceremony.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_naming_day',
+      },
+    },
   ],
   [CHRONICLE_IDS.KAPURA]: [
     {
@@ -949,6 +960,17 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         questId: 'bohrok_ta_koro_defense',
       },
     },
+    {
+      id: 'jala_naming_day',
+      section: 'Bohrok Kal',
+      title: 'The Naming Day',
+      description:
+        'At Kini-Nui, the Turaga reveal Jala and Takua rebuilt into taller forms. For his heroism during the Bohrok crisis, Jala is honored with a new name: Jaller.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_naming_day',
+      },
+    },
   ],
   [CHRONICLE_IDS.HALI]: [
     {
@@ -1017,6 +1039,17 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_po_koro_defense',
+      },
+    },
+    {
+      id: 'huki_naming_day',
+      section: 'Bohrok Kal',
+      title: 'The Naming Day',
+      description:
+        'At Kini-Nui, the Turaga teach the Matoran to rebuild themselves. For his heroism during the Bohrok crisis, Huki is honored with a new name: Hewkii.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_naming_day',
       },
     },
   ],
@@ -1170,6 +1203,17 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_kini_nui_defense',
+      },
+    },
+    {
+      id: 'maku_naming_day',
+      section: 'Bohrok Kal',
+      title: 'The Naming Day',
+      description:
+        'At Kini-Nui, the Turaga reveal Takua and Jala rebuilt into taller forms. For her heroism during the Bohrok crisis, Maku is honored with a new name: Macku.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'bohrok_kal_naming_day',
       },
     },
   ],

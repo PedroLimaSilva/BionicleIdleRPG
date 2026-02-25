@@ -6,9 +6,13 @@ import { JobStatusBadge } from '../../components/JobStatusBadge';
 import { getJobStatus } from '../../game/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
-import { MATORAN_DEX } from '../../data/matoran';
 import { QUESTS } from '../../data/quests';
-import { isBohrokOrKal, isMatoran, isToa } from '../../services/matoranUtils';
+import {
+  getEffectiveMatoran,
+  isBohrokOrKal,
+  isMatoran,
+  isToa,
+} from '../../services/matoranUtils';
 import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 
@@ -19,10 +23,10 @@ export const CharacterInventory: React.FC = () => {
 
   const tabs = useMemo(() => {
     const base = ['matoran'];
-    if (recruitedCharacters.some((matoran) => isToa(MATORAN_DEX[matoran.id]))) {
+    if (recruitedCharacters.some((m) => isToa(getEffectiveMatoran(m)))) {
       base.push('toa');
     }
-    if (recruitedCharacters.some((matoran) => isBohrokOrKal(MATORAN_DEX[matoran.id]))) {
+    if (recruitedCharacters.some((m) => isBohrokOrKal(getEffectiveMatoran(m)))) {
       base.push('other');
     }
     return base;
@@ -59,13 +63,14 @@ export const CharacterInventory: React.FC = () => {
 
   const characters = useMemo(() => {
     return recruitedCharacters.filter((matoran) => {
+      const effective = getEffectiveMatoran(matoran);
       if (effectiveTab === 'matoran') {
-        return isMatoran(MATORAN_DEX[matoran.id]);
+        return isMatoran(effective);
       }
       if (effectiveTab === 'toa') {
-        return isToa(MATORAN_DEX[matoran.id]);
+        return isToa(effective);
       }
-      return !isToa(MATORAN_DEX[matoran.id]) && !isMatoran(MATORAN_DEX[matoran.id]);
+      return !isToa(effective) && !isMatoran(effective);
     });
   }, [recruitedCharacters, effectiveTab]);
 
@@ -78,17 +83,17 @@ export const CharacterInventory: React.FC = () => {
         {characters.map((matoran) => {
           const jobStatus = getJobStatus(matoran);
 
-          const matoran_dex = MATORAN_DEX[matoran.id];
+          const effective = getEffectiveMatoran(matoran);
 
           return (
             <Link key={matoran.id} to={`/characters/${matoran.id}`}>
-              <div className={`character-card element-${matoran_dex.element}`}>
+              <div className={`character-card element-${effective.element}`}>
                 <MatoranAvatar
-                  matoran={{ ...matoran_dex, ...matoran }}
+                  matoran={effective}
                   styles={'matoran-avatar model-preview'}
                 />
                 <div className="card-header">
-                  {'  ' + matoran_dex.name}
+                  {'  ' + effective.name}
                   <div className="level-label">Level {getLevelFromExp(matoran.exp)}</div>
                   <JobStatusBadge
                     label={

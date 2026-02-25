@@ -140,6 +140,7 @@ export function masksCollected(
   return masks;
 }
 
+/** Returns merged base + recruited data. Recruited stage/maskOverride override MATORAN_DEX. */
 export function getRecruitedMatoran(
   id: string,
   recruitedMatoran: RecruitedCharacterData[]
@@ -147,6 +148,16 @@ export function getRecruitedMatoran(
   return {
     ...MATORAN_DEX[id],
     ...recruitedMatoran.find((m) => m.id === id)!,
+  };
+}
+
+/** Returns effective BaseMatoran for a recruited character (dex + runtime overrides like stage). */
+export function getEffectiveMatoran(
+  matoran: RecruitedCharacterData
+): BaseMatoran & RecruitedCharacterData {
+  return {
+    ...MATORAN_DEX[matoran.id],
+    ...matoran,
   };
 }
 

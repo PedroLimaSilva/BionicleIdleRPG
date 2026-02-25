@@ -96,8 +96,9 @@ export const useQuestState = ({
       ...prev,
     ]);
 
-    // Reassign Matoran with updated exp and evolution
+    // Reassign Matoran with updated exp, evolution, and stage overrides
     const evolution = quest.rewards.evolution;
+    const stageOverrides = quest.rewards.stageOverrides;
     const evolvedIds = evolution
       ? active.assignedMatoran.filter((id) => evolution[id]).map((id) => evolution[id])
       : [];
@@ -106,6 +107,7 @@ export const useQuestState = ({
       prev.map((char) => {
         if (active.assignedMatoran.includes(char.id)) {
           const evolvedId = evolution?.[char.id];
+          const stageOverride = stageOverrides?.[char.id];
           const xp = char.exp + (quest.rewards.xpPerMatoran ?? 0);
 
           if (evolvedId) {
@@ -121,6 +123,7 @@ export const useQuestState = ({
             ...char,
             quest: undefined,
             exp: xp,
+            ...(stageOverride !== undefined && { stage: stageOverride }),
           };
         }
         return char;
@@ -130,6 +133,13 @@ export const useQuestState = ({
     if (evolvedIds.length > 0) {
       const names = evolvedIds.map((id) => MATORAN_DEX[id]?.name ?? id).join(', ');
       addActivityLog(`${names} evolved!`, LogType.Event);
+    }
+
+    const stageOverrideCount = stageOverrides
+      ? active.assignedMatoran.filter((id) => stageOverrides[id] && !evolution?.[id]).length
+      : 0;
+    if (stageOverrideCount > 0) {
+      addActivityLog(`${stageOverrideCount} Matoran rebuilt into stronger forms!`, LogType.Event);
     }
 
     addWidgets(quest.rewards.currency || 0);
