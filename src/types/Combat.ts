@@ -88,6 +88,8 @@ export interface MaskPower {
   description: string;
   shortName: Mask;
   longName: string;
+  /** Who the mask affects when activated (self, team, enemy, allEnemies) */
+  target: 'self' | 'enemy' | 'allEnemies' | 'team';
   effect: MaskEffect;
   active?: boolean;
 }
@@ -102,7 +104,6 @@ type MaskEffect = {
   duration: CombatDuration;
   cooldown: CombatDuration;
   multiplier?: number;
-  target: 'self' | 'enemy' | 'allEnemies' | 'team';
   /** For DEBUFF: subtype (DEFENSE = increased damage taken, CONFUSION = attack own team) */
   debuffType?: 'DEFENSE' | 'CONFUSION';
   /** For DEBUFF: duration of the debuff on the target (e.g. 2 rounds) */

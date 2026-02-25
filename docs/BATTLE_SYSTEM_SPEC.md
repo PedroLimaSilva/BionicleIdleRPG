@@ -108,6 +108,7 @@ interface MaskPower {
   description: string;
   shortName: Mask;
   longName: string;
+  target: 'self' | 'enemy' | 'allEnemies' | 'team'; // Who the mask affects when activated
   effect: MaskEffect;
   active?: boolean; // Whether the power is currently active
 }
@@ -117,7 +118,6 @@ interface MaskEffect {
   duration: CombatDuration; // How long the effect lasts
   cooldown: CombatDuration; // How long until it can be used again
   multiplier?: number; // Effect strength
-  target: 'self' | 'enemy' | 'allEnemies' | 'team';
 }
 
 interface CombatDuration {

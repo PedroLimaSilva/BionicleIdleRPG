@@ -226,7 +226,7 @@ function applyDebuffToTarget(
   if (
     !attacker.maskPower?.active ||
     effect?.type !== 'DEBUFF' ||
-    effect?.target !== 'enemy' ||
+    attacker.maskPower.target !== 'enemy' ||
     !effect?.debuffDuration
   ) {
     return { target, attacker };
@@ -423,7 +423,7 @@ function triggerMaskPowers(
       const effect = actor.maskPower.effect;
       const originalPower = MASK_POWERS[actor.maskPower.shortName];
 
-      if (effect.target === 'team' && isTeam) {
+      if (actor.maskPower.target === 'team' && isTeam) {
         // Team-wide mask (e.g. Nuva): apply effect to all allies (including caster)
         const eff = createEffectFromMaskEffect(effect, actor.id);
         if (eff) {
@@ -435,7 +435,7 @@ function triggerMaskPowers(
             }
           }
         }
-      } else if (effect.target === 'self') {
+      } else if (actor.maskPower.target === 'self') {
         // Self-target: apply effect to caster. Effects drive changes; mask target is only for application.
         const eff = createEffectFromMaskEffect(effect, actor.id);
         if (eff) {
