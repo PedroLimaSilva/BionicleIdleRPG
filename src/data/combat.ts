@@ -7,13 +7,11 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of X-Ray Vision',
     description: 'Marks target; halves their effective defense for 2 rounds',
     target: 'enemy',
+    cooldown: { amount: 4, unit: 'turn' },
     effect: {
-      duration: { amount: 1, unit: 'attack' },
-      cooldown: { amount: 4, unit: 'turn' },
-      type: 'DEBUFF',
-      debuffType: 'DEFENSE',
+      duration: { amount: 2, unit: 'round' },
+      type: 'DEFENSE',
       multiplier: 0.5,
-      debuffDuration: { amount: 2, unit: 'round' },
     },
   },
   [Mask.Hau]: {
@@ -21,14 +19,14 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Shielding',
     description: 'Grants full immunity to all damage for 1 round',
     target: 'self',
+    cooldown: {
+      amount: 1,
+      unit: 'wave',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'round',
-      },
-      cooldown: {
-        amount: 1,
-        unit: 'wave',
       },
       type: 'DMG_MITIGATOR',
       multiplier: 0,
@@ -39,14 +37,14 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Water Breathing',
     description: 'Heals self each turn for 3 turns',
     target: 'self',
+    cooldown: {
+      amount: 1,
+      unit: 'wave',
+    },
     effect: {
       duration: {
         amount: 3,
         unit: 'turn',
-      },
-      cooldown: {
-        amount: 1,
-        unit: 'wave',
       },
       type: 'HEAL',
       multiplier: 0.2,
@@ -57,13 +55,13 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Concealment',
     description: 'Becomes untargetable for 1 turn',
     target: 'self',
+    cooldown: {
+      amount: 3,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 1,
-        unit: 'turn',
-      },
-      cooldown: {
-        amount: 3,
         unit: 'turn',
       },
       type: 'AGGRO',
@@ -75,14 +73,14 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Speed',
     description: 'User attacks twice this round',
     target: 'self',
+    cooldown: {
+      amount: 5,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'round',
-      },
-      cooldown: {
-        amount: 5,
-        unit: 'turn',
       },
       type: 'SPEED',
       multiplier: 2,
@@ -93,14 +91,14 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Strength',
     description: 'Next attack deals 3x damage',
     target: 'self',
+    cooldown: {
+      amount: 2,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'attack',
-      },
-      cooldown: {
-        amount: 2,
-        unit: 'turn',
       },
       type: 'ATK_MULT',
       multiplier: 3,
@@ -111,14 +109,14 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Levitation',
     description: 'Evades next 2 attacks; unaffected by ground-based effects',
     target: 'self',
+    cooldown: {
+      amount: 1,
+      unit: 'wave',
+    },
     effect: {
       duration: {
         amount: 2,
         unit: 'hit',
-      },
-      cooldown: {
-        amount: 1,
-        unit: 'wave',
       },
       type: 'DMG_MITIGATOR',
       multiplier: 0,
@@ -129,13 +127,13 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Night Vision',
     description: 'Blinds all enemies, reducing hit chance for 2 turns',
     target: 'allEnemies',
+    cooldown: {
+      amount: 4,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 2,
-        unit: 'turn',
-      },
-      cooldown: {
-        amount: 4,
         unit: 'turn',
       },
       type: 'ACCURACY_MULT',
@@ -147,12 +145,10 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Mind Control',
     description: 'Forces one enemy to attack their own team for 3 turns',
     target: 'enemy',
+    cooldown: { amount: 4, unit: 'turn' },
     effect: {
-      duration: { amount: 1, unit: 'attack' },
-      cooldown: { amount: 4, unit: 'turn' },
-      type: 'DEBUFF',
-      debuffType: 'CONFUSION',
-      debuffDuration: { amount: 3, unit: 'turn' },
+      duration: { amount: 3, unit: 'turn' },
+      type: 'CONFUSION',
     },
   },
   [Mask.Rau]: {
@@ -160,13 +156,13 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Translation',
     description: `Changes the user's Element so the all attacks are super effective on any enemy. Lasts until the end of the current wave.`,
     target: 'self',
+    cooldown: {
+      amount: 2,
+      unit: 'wave',
+    },
     effect: {
       duration: {
         amount: 1,
-        unit: 'wave',
-      },
-      cooldown: {
-        amount: 2,
         unit: 'wave',
       },
       type: 'ATK_MULT',
@@ -178,14 +174,14 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Telekinesis',
     description: 'Immobilizes enemy, preventing them from attacking for 1 wave',
     target: 'enemy',
+    cooldown: {
+      amount: 2,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'wave',
-      },
-      cooldown: {
-        amount: 2,
-        unit: 'turn',
       },
       type: 'ATK_MULT',
       multiplier: 0,
@@ -196,14 +192,14 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Mask of Illusion',
     description: 'Summons a clone to absorb 1 hit',
     target: 'self',
+    cooldown: {
+      amount: 2,
+      unit: 'turn',
+    },
     effect: {
       duration: {
         amount: 1,
         unit: 'hit',
-      },
-      cooldown: {
-        amount: 2,
-        unit: 'turn',
       },
       type: 'DMG_MITIGATOR',
       multiplier: 0,
@@ -216,9 +212,9 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Great Nuva Mask of Shielding',
     description: 'Shields the whole team from damage for 1 round',
     target: 'team',
+    cooldown: { amount: 2, unit: 'wave' },
     effect: {
       duration: { amount: 1, unit: 'round' },
-      cooldown: { amount: 2, unit: 'wave' },
       type: 'DMG_MITIGATOR',
       multiplier: 0,
     },
@@ -228,9 +224,9 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Great Nuva Mask of Water Breathing',
     description: 'Heals the whole team each turn for 2 turns',
     target: 'team',
+    cooldown: { amount: 2, unit: 'wave' },
     effect: {
       duration: { amount: 2, unit: 'turn' },
-      cooldown: { amount: 2, unit: 'wave' },
       type: 'HEAL',
       multiplier: 0.15,
     },
@@ -240,9 +236,9 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Great Nuva Mask of Speed',
     description: 'All allies attack twice this round',
     target: 'team',
+    cooldown: { amount: 3, unit: 'wave' },
     effect: {
       duration: { amount: 1, unit: 'round' },
-      cooldown: { amount: 3, unit: 'wave' },
       type: 'SPEED',
       multiplier: 2,
     },
@@ -252,9 +248,9 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Great Nuva Mask of X-Ray Vision',
     description: 'All allies deal +30% damage for 2 rounds',
     target: 'team',
+    cooldown: { amount: 3, unit: 'turn' },
     effect: {
       duration: { amount: 2, unit: 'round' },
-      cooldown: { amount: 3, unit: 'turn' },
       type: 'ATK_MULT',
       multiplier: 1.3,
     },
@@ -264,9 +260,9 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Great Nuva Mask of Strength',
     description: 'All allies deal 2x damage on their next attack',
     target: 'team',
+    cooldown: { amount: 3, unit: 'turn' },
     effect: {
       duration: { amount: 1, unit: 'attack' },
-      cooldown: { amount: 3, unit: 'turn' },
       type: 'ATK_MULT',
       multiplier: 2,
     },
@@ -276,9 +272,9 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     longName: 'Great Nuva Mask of Levitation',
     description: 'The whole team evades the next hit',
     target: 'team',
+    cooldown: { amount: 2, unit: 'wave' },
     effect: {
       duration: { amount: 1, unit: 'hit' },
-      cooldown: { amount: 2, unit: 'wave' },
       type: 'DMG_MITIGATOR',
       multiplier: 0,
     },
@@ -289,9 +285,9 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     description:
       'The legendary Vahi. Turaga Vakama entrusted it to Tahu for use only in the direst emergency. No combat effect.',
     target: 'self',
+    cooldown: { amount: 999, unit: 'wave' },
     effect: {
       duration: { amount: 1, unit: 'turn' },
-      cooldown: { amount: 999, unit: 'wave' },
       type: 'HEAL',
       multiplier: 0,
     },

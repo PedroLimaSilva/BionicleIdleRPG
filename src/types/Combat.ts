@@ -90,6 +90,7 @@ export interface MaskPower {
   longName: string;
   /** Who the mask affects when activated (self, team, enemy, allEnemies) */
   target: 'self' | 'enemy' | 'allEnemies' | 'team';
+  cooldown: CombatDuration;
   effect: MaskEffect;
   active?: boolean;
 }
@@ -100,14 +101,17 @@ interface CombatDuration {
 }
 
 type MaskEffect = {
-  type: 'ATK_MULT' | 'DMG_MITIGATOR' | 'HEAL' | 'AGGRO' | 'SPEED' | 'ACCURACY_MULT' | 'DEBUFF';
+  type:
+    | 'ATK_MULT'
+    | 'DMG_MITIGATOR'
+    | 'HEAL'
+    | 'AGGRO'
+    | 'SPEED'
+    | 'ACCURACY_MULT'
+    | 'DEFENSE'
+    | 'CONFUSION';
   duration: CombatDuration;
-  cooldown: CombatDuration;
   multiplier?: number;
-  /** For DEBUFF: subtype (DEFENSE = increased damage taken, CONFUSION = attack own team) */
-  debuffType?: 'DEFENSE' | 'CONFUSION';
-  /** For DEBUFF: duration of the debuff on the target (e.g. 2 rounds) */
-  debuffDuration?: CombatDuration;
 };
 
 export interface CombatantTemplate {

@@ -305,9 +305,8 @@ describe('Battle Simulation', () => {
       // Kopaka marks on attack; enemy should take damage (1.5x when marked)
       expect(enemyHpBefore - enemyHpAfter).toBeGreaterThan(0);
       const kopaka = sim.team.find((t) => t.id === 'Toa_Kopaka')!;
-      expect(kopaka.maskPower?.effect.type).toBe('DEBUFF');
-      expect(kopaka.maskPower?.effect.debuffType).toBe('DEFENSE');
-      // Debuff lasts 2 rounds; after round 1, enemy has 1 round left (decremented at end of round)
+      expect(kopaka.maskPower?.effect.type).toBe('DEFENSE');
+      // DEFENSE effect lasts 2 rounds; after round 1, enemy has 1 round left (decremented at end of round)
       const enemy = sim.enemies[0];
       expect(enemy.effects?.some((e) => e.type === 'DEFENSE')).toBe(true);
     });
@@ -399,7 +398,9 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       // One enemy should have CONFUSION debuff (the one Tahu attacked)
-      const confusedEnemy = sim.enemies.find((e) => e.effects?.some((eff) => eff.type === 'CONFUSION'));
+      const confusedEnemy = sim.enemies.find((e) =>
+        e.effects?.some((eff) => eff.type === 'CONFUSION')
+      );
       expect(confusedEnemy).toBeDefined();
 
       // Total enemy HP should have decreased (Tahu's attack + confused enemy attacking ally)
@@ -450,7 +451,9 @@ describe('Battle Simulation', () => {
         e.effects?.some((eff) => eff.type === 'CONFUSION' && eff.durationRemaining > 0)
       );
       expect(confusedAfterR1).toBeDefined();
-      const confusionsAfterR1 = confusedAfterR1!.effects!.filter((e) => e.type === 'CONFUSION').length;
+      const confusionsAfterR1 = confusedAfterR1!.effects!.filter(
+        (e) => e.type === 'CONFUSION'
+      ).length;
       expect(confusionsAfterR1).toBe(1);
 
       for (let r = 0; r < 5; r++) {
@@ -500,7 +503,7 @@ describe('Battle Simulation', () => {
       // Hau expires, goes on cooldown (1 wave)
       const tahuAfterRound = sim.team.find((t) => t.id === 'Toa_Tahu')!;
       expect(tahuAfterRound.maskPower?.active).toBe(false);
-      expect(tahuAfterRound.maskPower?.effect.cooldown.amount).toBeGreaterThan(0);
+      expect(tahuAfterRound.maskPower?.cooldown.amount).toBeGreaterThan(0);
 
       // Defeat wave 1 and advance (high-level Tahu kills level 1 tahnok quickly)
       for (let i = 0; i < 10 && !sim.allEnemiesDefeated; i++) {
@@ -511,7 +514,7 @@ describe('Battle Simulation', () => {
 
       // After wave advance, Hau cooldown (wave-based) should decrement
       const tahuAfterWave = sim.team.find((t) => t.id === 'Toa_Tahu')!;
-      expect(tahuAfterWave.maskPower?.effect.cooldown.amount).toBe(0);
+      expect(tahuAfterWave.maskPower?.cooldown.amount).toBe(0);
     });
 
     test('multi-round: 1 round wave 1 then wave 2 - Hau only (no Kakama)', async () => {
@@ -607,7 +610,7 @@ describe('Battle Simulation', () => {
       expect(sim.allEnemiesDefeated).toBe(true);
       sim.advanceWave();
 
-      expect(sim.team.find((t) => t.id === 'Toa_Tahu')!.maskPower?.effect.cooldown.amount).toBe(0);
+      expect(sim.team.find((t) => t.id === 'Toa_Tahu')!.maskPower?.cooldown.amount).toBe(0);
 
       // Wave 2 round 1: activate Hau
       sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
@@ -706,7 +709,7 @@ describe('Battle Simulation', () => {
 
       const onua = sim.team.find((t) => t.id === 'Toa_Onua')!;
       expect(onua.maskPower?.active).toBe(false);
-      expect(onua.maskPower?.effect.cooldown.amount).toBeGreaterThan(0);
+      expect(onua.maskPower?.cooldown.amount).toBeGreaterThan(0);
 
       // Auto-progression should run rounds until Pakari comes off cooldown
       const roundsRun = await sim.runWithAutoProgression();

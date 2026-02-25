@@ -205,6 +205,25 @@ function createEffectFromMaskEffect(
         durationUnit: 'round',
         sourceId,
       };
+    case 'DEFENSE': {
+      const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'round';
+      return {
+        type: 'DEFENSE',
+        multiplier: effect.multiplier ?? 1,
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
+    }
+    case 'CONFUSION': {
+      const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'turn';
+      return {
+        type: 'CONFUSION',
+        durationRemaining: amount,
+        durationUnit: unit,
+        sourceId,
+      };
+    }
     default:
       return null;
   }
@@ -216,51 +235,29 @@ function applyEffectToCombatant(combatant: Combatant, eff: TargetEffect): Combat
   return { ...combatant, effects };
 }
 
-/** Applies DEBUFF mask effect to the defender. Does NOT extend attacker's mask duration (would cause
- * re-application on each attack). The mask's original 1-attack duration gets consumed by decrementMaskPowerCounter. */
-function applyDebuffToTarget(
+/** Applies on-attack mask effect to the target (e.g. Akaku DEFENSE, Komau CONFUSION).
+ * Only applies when mask is active and target is 'enemy'. */
+function applyOnAttackEffectToTarget(
   attacker: Combatant,
   target: Combatant
 ): { target: Combatant; attacker: Combatant } {
   const effect = attacker.maskPower?.effect;
-  if (
-    !attacker.maskPower?.active ||
-    effect?.type !== 'DEBUFF' ||
-    attacker.maskPower.target !== 'enemy' ||
-    !effect?.debuffDuration
-  ) {
+  if (!attacker.maskPower?.active || attacker.maskPower.target !== 'enemy' || !effect) {
     return { target, attacker };
   }
 
-  const durationUnit =
-    effect.debuffDuration.unit === 'turn' || effect.debuffDuration.unit === 'round'
-      ? effect.debuffDuration.unit
-      : 'turn';
-
-  if (effect.debuffType === 'DEFENSE' && effect.multiplier) {
-    const eff: TargetEffect = {
-      type: 'DEFENSE',
-      multiplier: effect.multiplier,
-      durationRemaining: effect.debuffDuration.amount,
-      durationUnit,
-      sourceId: attacker.id,
-    };
-    const effects = [...(target.effects ?? []), eff];
-    return { target: { ...target, effects }, attacker };
+  // Only DEFENSE and CONFUSION are applied on attack to enemy targets
+  if (effect.type !== 'DEFENSE' && effect.type !== 'CONFUSION') {
+    return { target, attacker };
   }
 
-  if (effect.debuffType === 'CONFUSION') {
-    const eff: TargetEffect = {
-      type: 'CONFUSION',
-      durationRemaining: effect.debuffDuration.amount,
-      durationUnit,
-      sourceId: attacker.id,
-    };
-    const effects = [...(target.effects ?? []), eff];
-    return { target: { ...target, effects }, attacker };
+  const eff = createEffectFromMaskEffect(effect, attacker.id);
+  if (!eff) {
+    return { target, attacker };
   }
 
-  return { target, attacker };
+  const effects = [...(target.effects ?? []), eff];
+  return { target: { ...target, effects }, attacker };
 }
 
 /** Decrements effect durations for a combatant. Handles all effect types (buffs and debuffs). */
@@ -329,8 +326,8 @@ export function decrementMaskPowerCounter(
       // Set cooldown when effect expires (use shortName so overrides & positional IDs work)
       const power = MASK_POWERS[updatedMaskPower.shortName];
       if (power) {
-        updatedMaskPower.effect.cooldown = {
-          ...power.effect.cooldown,
+        updatedMaskPower.cooldown = {
+          ...power.cooldown,
         };
         cooldownJustSetFromExpiry = true;
       }
@@ -342,15 +339,12 @@ export function decrementMaskPowerCounter(
   if (
     !cooldownJustSetFromExpiry &&
     !updatedMaskPower.active &&
-    updatedMaskPower.effect.cooldown.unit === unit &&
-    updatedMaskPower.effect.cooldown.amount > 0
+    updatedMaskPower.cooldown.unit === unit &&
+    updatedMaskPower.cooldown.amount > 0
   ) {
-    updatedMaskPower.effect = {
-      ...updatedMaskPower.effect,
-      cooldown: {
-        ...updatedMaskPower.effect.cooldown,
-        amount: updatedMaskPower.effect.cooldown.amount - 1,
-      },
+    updatedMaskPower.cooldown = {
+      ...updatedMaskPower.cooldown,
+      amount: updatedMaskPower.cooldown.amount - 1,
     };
     changed = true;
   }
@@ -362,7 +356,9 @@ export function decrementMaskPowerCounter(
 export function chooseTarget(self: Combatant, targets: Combatant[]): Combatant {
   // Filter out untargetable enemies (AGGRO effect with multiplier 0)
   const targetableEnemies = targets.filter((t) => {
-    const untargetable = t.effects?.some((e) => e.type === 'AGGRO' && e.multiplier === 0 && e.durationRemaining > 0);
+    const untargetable = t.effects?.some(
+      (e) => e.type === 'AGGRO' && e.multiplier === 0 && e.durationRemaining > 0
+    );
     return !untargetable;
   });
 
@@ -555,9 +551,9 @@ export function queueCombatRound(
 
       let target = chooseTarget(self, targets);
 
-      // Apply DEBUFF mask effect to target (Akaku, Komau)
+      // Apply on-attack mask effect to target (Akaku DEFENSE, Komau CONFUSION)
       if (!isConfused) {
-        const { target: markedTarget } = applyDebuffToTarget(self, target);
+        const { target: markedTarget } = applyOnAttackEffectToTarget(self, target);
         target = markedTarget;
       }
       const newOpponentListForMark = opponentList.map((t) => (t.id === target.id ? target : t));
@@ -668,7 +664,7 @@ export function hasActiveEffectFromSource(
  */
 export function hasReadyMaskPowers(team: Combatant[], enemies: Combatant[] = []): boolean {
   return team.some((c) => {
-    if (c.hp <= 0 || !c.maskPower || c.maskPower.effect.cooldown.amount !== 0) return false;
+    if (c.hp <= 0 || !c.maskPower || c.maskPower.cooldown.amount !== 0) return false;
     const maskActive = c.maskPower.active || hasActiveEffectFromSource(team, enemies, c.id);
     return !maskActive;
   });
@@ -739,7 +735,7 @@ export function generateCombatantStats(
   const mask = opts.maskOverride || template.mask;
   const maskPower = mask && structuredClone(MASK_POWERS[mask]);
   if (maskPower) {
-    maskPower.effect.cooldown.amount = 0;
+    maskPower.cooldown.amount = 0;
   }
 
   return {

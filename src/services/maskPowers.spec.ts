@@ -47,7 +47,13 @@ describe('Mask Powers - Combat Mechanics', () => {
 
         // Add ATK_MULT effect (as mask activation would)
         attacker.effects = [
-          { type: 'ATK_MULT', multiplier: 3, durationRemaining: 1, durationUnit: 'attack', sourceId: attacker.id },
+          {
+            type: 'ATK_MULT',
+            multiplier: 3,
+            durationRemaining: 1,
+            durationUnit: 'attack',
+            sourceId: attacker.id,
+          },
         ];
 
         // Calculate damage with effect active
@@ -110,7 +116,13 @@ describe('Mask Powers - Combat Mechanics', () => {
 
         // Add DMG_MITIGATOR effect (as mask activation would)
         target.effects = [
-          { type: 'DMG_MITIGATOR', multiplier: 0, durationRemaining: 1, durationUnit: 'round', sourceId: target.id },
+          {
+            type: 'DMG_MITIGATOR',
+            multiplier: 0,
+            durationRemaining: 1,
+            durationUnit: 'round',
+            sourceId: target.id,
+          },
         ];
         const damagedWithMask = applyDamage(target, incomingDamage);
 
@@ -137,7 +149,13 @@ describe('Mask Powers - Combat Mechanics', () => {
         const incomingDamage = 40;
 
         target.effects = [
-          { type: 'DMG_MITIGATOR', multiplier: 0, durationRemaining: 1, durationUnit: 'hit', sourceId: target.id },
+          {
+            type: 'DMG_MITIGATOR',
+            multiplier: 0,
+            durationRemaining: 1,
+            durationUnit: 'hit',
+            sourceId: target.id,
+          },
         ];
 
         const damaged = applyDamage(target, incomingDamage);
@@ -164,7 +182,13 @@ describe('Mask Powers - Combat Mechanics', () => {
         const incomingDamage = 35;
 
         target.effects = [
-          { type: 'DMG_MITIGATOR', multiplier: 0, durationRemaining: 1, durationUnit: 'hit', sourceId: target.id },
+          {
+            type: 'DMG_MITIGATOR',
+            multiplier: 0,
+            durationRemaining: 1,
+            durationUnit: 'hit',
+            sourceId: target.id,
+          },
         ];
 
         const damaged = applyDamage(target, incomingDamage);
@@ -195,7 +219,13 @@ describe('Mask Powers - Combat Mechanics', () => {
       const targetNormal = generateCombatantStats('enemy_normal', 'tahnok', 1);
 
       targetWithHuna.effects = [
-        { type: 'AGGRO', multiplier: 0, durationRemaining: 1, durationUnit: 'turn', sourceId: targetWithHuna.id },
+        {
+          type: 'AGGRO',
+          multiplier: 0,
+          durationRemaining: 1,
+          durationUnit: 'turn',
+          sourceId: targetWithHuna.id,
+        },
       ];
 
       const targets = [targetWithHuna, targetNormal];
@@ -229,7 +259,13 @@ describe('Mask Powers - Combat Mechanics', () => {
       const normalDamage = calculateAtkDmg(attacker, defender);
 
       attacker.effects = [
-        { type: 'ATK_MULT', multiplier: 1.5, durationRemaining: 1, durationUnit: 'round', sourceId: attacker.id },
+        {
+          type: 'ATK_MULT',
+          multiplier: 1.5,
+          durationRemaining: 1,
+          durationUnit: 'round',
+          sourceId: attacker.id,
+        },
       ];
 
       const boostedDamage = calculateAtkDmg(attacker, defender);
@@ -248,7 +284,13 @@ describe('Mask Powers - Combat Mechanics', () => {
         const maxHp = combatant.maxHp;
 
         combatant.effects = [
-          { type: 'HEAL', multiplier: 0.2, durationRemaining: 1, durationUnit: 'turn', sourceId: combatant.id },
+          {
+            type: 'HEAL',
+            multiplier: 0.2,
+            durationRemaining: 1,
+            durationUnit: 'turn',
+            sourceId: combatant.id,
+          },
         ];
 
         const healed = applyHealing(combatant);
@@ -280,7 +322,13 @@ describe('Mask Powers - Combat Mechanics', () => {
         combatant.hp = maxHp - 5; // 5 HP below max
 
         combatant.effects = [
-          { type: 'HEAL', multiplier: 0.2, durationRemaining: 1, durationUnit: 'turn', sourceId: combatant.id },
+          {
+            type: 'HEAL',
+            multiplier: 0.2,
+            durationRemaining: 1,
+            durationUnit: 'turn',
+            sourceId: combatant.id,
+          },
         ];
 
         const healed = applyHealing(combatant);
@@ -301,7 +349,7 @@ describe('Mask Powers - Combat Mechanics', () => {
     test('mask powers start with 0 cooldown', () => {
       const combatant = generateCombatantStats('tahu', 'Toa_Tahu', 1, Mask.Hau);
 
-      expect(combatant.maskPower?.effect.cooldown.amount).toBe(0);
+      expect(combatant.maskPower?.cooldown.amount).toBe(0);
     });
 
     test('willUseAbility starts false', () => {

@@ -131,7 +131,7 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   };
 
   const toggleAbility = (toa: Combatant) => {
-    if (toa.maskPower && toa.hp > 0 && toa.maskPower.effect.cooldown.amount === 0) {
+    if (toa.maskPower && toa.hp > 0 && toa.maskPower.cooldown.amount === 0) {
       toa.willUseAbility = !toa.willUseAbility;
       const updatedTeam = team.map((t) => (t.id === toa.id ? toa : t));
       setTeam(updatedTeam);

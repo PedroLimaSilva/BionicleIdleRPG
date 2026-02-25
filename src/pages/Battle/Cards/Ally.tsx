@@ -33,16 +33,15 @@ export function AllyCard({
 
   useEffect(() => {
     setDisabled(
-      combatant.hp <= 0 ||
-        ((combatant.maskPower?.effect?.cooldown?.amount ?? 0) > 0 && !maskActive)
+      combatant.hp <= 0 || ((combatant.maskPower?.cooldown?.amount ?? 0) > 0 && !maskActive)
     );
-  }, [combatant.hp, combatant.maskPower?.effect?.cooldown?.amount, maskActive]);
+  }, [combatant.hp, combatant.maskPower?.cooldown?.amount, maskActive]);
 
   useEffect(() => {
-    if (combatant.maskPower && combatant.maskPower?.effect?.cooldown?.amount > maxCooldown) {
-      setMaxCooldown(combatant.maskPower?.effect?.cooldown?.amount);
+    if (combatant.maskPower && combatant.maskPower?.cooldown?.amount > maxCooldown) {
+      setMaxCooldown(combatant.maskPower?.cooldown?.amount);
     }
-  }, [combatant.maskPower, combatant.maskPower?.effect?.cooldown?.amount, maxCooldown]);
+  }, [combatant.maskPower, combatant.maskPower?.cooldown?.amount, maxCooldown]);
 
   useEffect(() => {
     if (combatant.hp < prevHpRef.current) {
@@ -82,11 +81,11 @@ export function AllyCard({
         {dex.name}
         <div className="level-label">Level {combatant.lvl}</div>
       </div>
-      {combatant.maskPower?.effect?.cooldown && (
+      {combatant.maskPower?.cooldown && (
         <div
           className="cooldown-fill"
           style={{
-            height: `${combatant.maskPower?.effect?.cooldown?.amount === 0 ? 0 : (combatant.maskPower?.effect?.cooldown?.amount / maxCooldown) * 100}%`,
+            height: `${combatant.maskPower?.cooldown?.amount === 0 ? 0 : (combatant.maskPower?.cooldown?.amount / maxCooldown) * 100}%`,
           }}
         ></div>
       )}
