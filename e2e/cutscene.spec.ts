@@ -61,6 +61,8 @@ test.describe('Visual Novel Cutscene - Responsiveness', () => {
           maxDiffPixels: 200,
         });
         await page.locator('.visual-novel-cutscene__advance').click();
+
+        await page.locator('.visual-novel-cutscene__advance').click();
         await expect(page.locator('.visual-novel-cutscene__speaker-name')).toContainText('Takua');
         await expect(page).toHaveScreenshot(`cutscene-dialogue-${name}-right.png`, {
           maxDiffPixels: 200,

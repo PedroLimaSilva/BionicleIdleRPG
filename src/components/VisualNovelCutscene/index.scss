@@ -43,22 +43,22 @@
       .visual-novel-cutscene__speaker-name {
         text-align: left;
       }
-      .visual-novel-cutscene__advance {
-        margin-left: 0;
-        margin-right: auto;
-      }
     }
 
     &--right {
       .visual-novel-cutscene__dialogue-box {
         text-align: right;
+        grid-template-areas:
+          'name portrait'
+          'content content';
+        grid-template-columns: 1fr 70px;
       }
       .visual-novel-cutscene__speaker-name {
         text-align: right;
       }
-      .visual-novel-cutscene__advance {
-        margin-left: auto;
-        margin-right: 0;
+      .visual-novel-cutscene__speaker-side {
+        left: auto;
+        right: 30px;
       }
     }
 
@@ -72,8 +72,10 @@
 
   &__speaker-side {
     display: flex;
+    grid-area: portrait;
     align-items: flex-end;
-    flex-shrink: 0;
+    position: relative;
+    left: -50px;
   }
 
   &__video-wrapper {
@@ -91,10 +93,7 @@
   }
 
   &__portrait {
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-
-    &--img {
+    &-img {
       max-width: 280px;
       max-height: 320px;
       width: auto;
@@ -102,53 +101,58 @@
       object-fit: contain;
     }
 
-    &--avatar {
+    &-avatar {
       width: 140px;
       height: 140px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 3px solid rgba(255, 255, 255, 0.2);
-    }
-
-    &-initial {
-      font-size: 3rem;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.9);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
   }
 
   &__dialogue-box {
     flex: 1;
+    display: grid;
+    grid-template-areas:
+      'portrait name'
+      'content content';
+    grid-template-columns: 70px 1fr;
+    grid-template-rows: 1.5rem auto;
     min-width: 0;
     max-width: 640px;
     background: rgba(0, 0, 0, 0.85);
     border: 2px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
     padding: 1.25rem 1.5rem;
+    padding-top: 0.5rem;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
   }
 
   &__speaker-name {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #e8c547;
-    margin-bottom: 0.5rem;
+    font-family: var(--font-display);
     text-transform: uppercase;
     letter-spacing: 0.08em;
+    grid-area: name;
   }
 
   &__text {
     font-size: 1.05rem;
     line-height: 1.6;
     color: #e8e8e8;
-    margin: 0 0 1rem 0;
+    grid-area: content;
+    p {
+      margin-bottom: 0.3rem;
+      margin-top: 0.5rem;
+    }
   }
 
   &__advance {
     display: block;
     margin-left: auto;
+    margin-right: 0;
     min-height: calc(0.8rem + 1.5em);
     padding: 0.4rem 1rem;
     font-size: 0.9rem;

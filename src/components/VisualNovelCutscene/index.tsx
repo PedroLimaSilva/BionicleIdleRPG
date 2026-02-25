@@ -6,6 +6,7 @@ import type {
 } from '../../types/Cutscenes';
 import { isDialogueStep, isVideoStep } from '../../types/Cutscenes';
 import './index.scss';
+import { MatoranAvatar } from '../MatoranAvatar';
 
 type Props = {
   cutscene: VisualNovelCutsceneType;
@@ -93,55 +94,43 @@ function DialogueStepView({
   if (!isDialogueStep(step)) return null;
   const speaker = MATORAN_DEX[step.speakerId];
   const speakerName = speaker?.name ?? step.speakerId;
-  const portraitColor = speaker?.colors?.body ?? '#6D6E5C';
   const position = step.position ?? 'left';
   const useImage =
     step.portraitType === 'image' || (step.portraitType !== 'avatar' && step.portraitUrl);
 
-  const portrait = useImage && step.portraitUrl ? (
-    <img
-      src={step.portraitUrl}
-      alt={speakerName}
-      className="visual-novel-cutscene__portrait visual-novel-cutscene__portrait--img"
-    />
-  ) : (
-    <div
-      className="visual-novel-cutscene__portrait visual-novel-cutscene__portrait--avatar"
-      style={{ backgroundColor: portraitColor }}
-      aria-hidden
-    >
-      <span className="visual-novel-cutscene__portrait-initial">
-        {speakerName.charAt(0)}
-      </span>
-    </div>
-  );
+  const portrait =
+    useImage && step.portraitUrl ? (
+      <img
+        src={step.portraitUrl}
+        alt={speakerName}
+        className="visual-novel-cutscene__portrait-img"
+      />
+    ) : (
+      <MatoranAvatar
+        matoran={{ ...speaker, exp: 0 }}
+        styles="visual-novel-cutscene__portrait-avatar"
+      />
+    );
 
   return (
     <div
       className={`visual-novel-cutscene__content visual-novel-cutscene__content--dialogue visual-novel-cutscene__content--${position}`}
     >
-      {position === 'left' && (
-        <div className="visual-novel-cutscene__speaker-side">
-          {portrait}
-        </div>
-      )}
       <div className="visual-novel-cutscene__dialogue-box">
+        <div className="visual-novel-cutscene__speaker-side">{portrait}</div>
         <div className="visual-novel-cutscene__speaker-name">{speakerName}</div>
-        <p className="visual-novel-cutscene__text">{step.text}</p>
-        <button
-          type="button"
-          className="visual-novel-cutscene__advance"
-          onClick={onAdvance}
-          aria-label={isLast ? 'Close cutscene' : 'Next'}
-        >
-          {isLast ? 'Close' : 'Next ›'}
-        </button>
-      </div>
-      {position === 'right' && (
-        <div className="visual-novel-cutscene__speaker-side">
-          {portrait}
+        <div className="visual-novel-cutscene__text">
+          <p>{step.text} </p>
+          <button
+            type="button"
+            className="visual-novel-cutscene__advance"
+            onClick={onAdvance}
+            aria-label={isLast ? 'Close cutscene' : 'Next'}
+          >
+            {isLast ? 'Close' : 'Next ›'}
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

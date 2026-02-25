@@ -100,12 +100,18 @@ Currency: 100
 XP: 1000"]
   mnog_find_canister_beach["The Canister on the shore
 (1m)
-Unlock: Kapura, Jala
 Loot: Charcoal=100, BurnishedAlloy=50
+Currency: 500
+XP: 150"]
+  mnog_takua_meets_kapura["The Art of Moving Slowly
+(5m)
+Unlock: Kapura
+Loot: Charcoal=1000, BurnishedAlloy=500
 Currency: 500
 XP: 150"]
   mnog_tahu_unlock_01["A disturbance in the Forest
 (5m)
+Unlock: Jala
 Loot: Charcoal=1000, BurnishedAlloy=500
 Currency: 500
 XP: 150"]
@@ -120,6 +126,12 @@ Unlock: Hali
 Loot: WaterAlgae=1000, GaPearl=500
 Currency: 600
 XP: 200"]
+  mnog_po_wahi_desert["The way to Po-Koro
+(15m)
+Unlock: Hafu
+Loot: StoneBlock=100, GemShard=50
+Currency: 500
+XP: 250"]
   mnog_po_koro_sickness["A Game Gone Wrong
 (15m)
 Unlock: Kivi
@@ -336,11 +348,13 @@ XP: 5000"]
   maskhunt_final_collection --> story_kini_nui_gathering
   mnog_kini_nui_arrival --> story_kini_nui_descent
   story_toa_arrival --> mnog_find_canister_beach
-  mnog_find_canister_beach --> mnog_tahu_unlock_01
+  mnog_find_canister_beach --> mnog_takua_meets_kapura
+  mnog_takua_meets_kapura --> mnog_tahu_unlock_01
   mnog_tahu_unlock_01 --> mnog_ga_koro_sos
   mnog_ga_koro_sos --> mnog_restore_ga_koro
   story_toa_council --> mnog_restore_ga_koro
-  mnog_restore_ga_koro --> mnog_po_koro_sickness
+  mnog_restore_ga_koro --> mnog_po_wahi_desert
+  mnog_po_wahi_desert --> mnog_po_koro_sickness
   mnog_po_koro_sickness --> mnog_po_koro_cave_investigation
   story_toa_council --> mnog_po_koro_cave_investigation
   mnog_po_koro_cave_investigation --> mnog_recruit_hewkii

@@ -6,8 +6,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     section: "The Cronicler's Journey",
     id: 'mnog_find_canister_beach',
     name: 'The Canister on the shore',
-    description:
-      'Takua finds a large cylindrical canister that washed ashore. Large footsteps lead from it to Ta-Wahi',
+    description: 'Takua awakes on the shore of Ta-Wahi. He has no memory of how he got there.',
     durationSeconds: 1 * 60, // 1 minute
     requirements: {
       matoran: ['Takua'],
@@ -16,6 +15,40 @@ export const MNOG_QUEST_LINE: Quest[] = [
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_canister_beach' },
+      loot: {
+        [GameItemId.Charcoal]: 100,
+        [GameItemId.BurnishedAlloy]: 50,
+      },
+      xpPerMatoran: 150,
+      currency: 500,
+    },
+    unlockedAfter: ['story_toa_arrival'],
+  },
+  {
+    section: "The Cronicler's Journey",
+    id: 'mnog_takua_meets_kapura',
+    name: 'The Art of Moving Slowly',
+    description:
+      'Entering the forest, Takua gets lost and meets Kapura, a Matoran who seems to be lost too.',
+    durationSeconds: 5 * 60, // 5 minutes
+    requirements: {
+      matoran: ['Takua'],
+      minLevel: 5,
+      items: [
+        {
+          id: GameItemId.Charcoal,
+          amount: 100,
+          consumed: true,
+        },
+        {
+          id: GameItemId.BurnishedAlloy,
+          amount: 50,
+          consumed: true,
+        },
+      ],
+    },
+    rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_takua_meets_kapura' },
       unlockCharacters: [
         {
           id: 'Kapura',
@@ -31,39 +64,24 @@ export const MNOG_QUEST_LINE: Quest[] = [
             },
           ],
         },
-        {
-          id: 'Jala',
-          cost: 200,
-          requiredItems: [
-            {
-              item: GameItemId.Charcoal,
-              quantity: 300,
-            },
-            {
-              item: GameItemId.BurnishedAlloy,
-              quantity: 100,
-            },
-          ],
-        },
       ],
       loot: {
-        [GameItemId.Charcoal]: 100,
-        [GameItemId.BurnishedAlloy]: 50,
+        [GameItemId.Charcoal]: 1000,
+        [GameItemId.BurnishedAlloy]: 500,
       },
       xpPerMatoran: 150,
       currency: 500,
     },
-    unlockedAfter: ['story_toa_arrival'],
+    unlockedAfter: ['mnog_find_canister_beach'],
   },
   {
     section: "The Cronicler's Journey",
     id: 'mnog_tahu_unlock_01',
     name: 'A disturbance in the Forest',
-    description:
-      'Jala and Kapura investigate a strange disturbance deep in the Ta-Wahi forest. Smoke rises where none should be—could the ancient legends be true?',
+    description: 'Takua proceeds to Ta-Koro were he meets Jala, Captain of the Ta-Koro Guard.',
     durationSeconds: 5 * 60, // 5 minutes
     requirements: {
-      matoran: ['Jala', 'Kapura'],
+      matoran: ['Takua'],
       minLevel: 5,
       items: [
         {
@@ -80,6 +98,23 @@ export const MNOG_QUEST_LINE: Quest[] = [
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_tahu_unlock_01' },
+      unlockCharacters: [
+        // TODO: MOVE JALA TO A LATER QUEST
+        {
+          id: 'Jala',
+          cost: 200,
+          requiredItems: [
+            {
+              item: GameItemId.Charcoal,
+              quantity: 300,
+            },
+            {
+              item: GameItemId.BurnishedAlloy,
+              quantity: 100,
+            },
+          ],
+        },
+      ],
       loot: {
         [GameItemId.Charcoal]: 1000,
         [GameItemId.BurnishedAlloy]: 500,
@@ -87,14 +122,14 @@ export const MNOG_QUEST_LINE: Quest[] = [
       xpPerMatoran: 150,
       currency: 500,
     },
-    unlockedAfter: ['mnog_find_canister_beach'],
+    unlockedAfter: ['mnog_takua_meets_kapura'],
   },
   {
     section: "The Cronicler's Journey",
     id: 'mnog_ga_koro_sos',
     name: 'A call for help',
     description:
-      'Jala mentioned a distress call from Ga-Koro. Back at the Ta-Wahi coast, Takua meets Maku, who pleads for help—Ga-Koro is under attack by a Rahi! Moved by her urgency, Takua sets sail to offer aid.',
+      'Jala mentioned a distress call from Ga-Koro. Takua offers to help. He returns to the coast of Ta-Wahi and meets Maku.',
     durationSeconds: 20 * 60, // 20 minutes
     requirements: {
       matoran: ['Takua'],
@@ -122,8 +157,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     section: "The Cronicler's Journey",
     id: 'mnog_restore_ga_koro',
     name: 'Ga-Koro Under Siege',
-    description:
-      'Takua finds the villagers of Ga-Koro trapped underwater. Takua needs to find a way to release them.',
+    description: 'Takua reaches Ga-Koro and finds the village completely deserted.',
     durationSeconds: 10 * 60, // 10 minutes
     requirements: {
       matoran: ['Takua', 'Toa_Gali'],
@@ -165,13 +199,47 @@ export const MNOG_QUEST_LINE: Quest[] = [
   },
   {
     section: "The Cronicler's Journey",
-    id: 'mnog_po_koro_sickness',
-    name: 'A Game Gone Wrong',
+    id: 'mnog_po_wahi_desert',
+    name: 'The way to Po-Koro',
     description: `Maku confided that she hasn't heard from Huki in a long time.
        She asks if you can sail to Po-Koro.
-       Arriving in the stone village of Po-Koro, 
-       Takua finds many villagers—including famous Koli player Huki—sick.
-       Suspicion turns to the Koli balls used in recent matches.`,
+       Po-Wahi is a dry, arid land of sand and stone and the way too Po-Koro is a long journey.`,
+    durationSeconds: 15 * 60, // 15 min
+    requirements: {
+      matoran: ['Takua'],
+      minLevel: 7,
+      items: [],
+    },
+    rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_po_wahi_desert' },
+      xpPerMatoran: 250,
+      currency: 500,
+      unlockCharacters: [
+        {
+          id: 'Hafu',
+          cost: 600,
+          requiredItems: [
+            {
+              item: GameItemId.StoneBlock,
+              quantity: 150,
+            },
+          ],
+        },
+      ],
+      loot: {
+        [GameItemId.StoneBlock]: 100,
+        [GameItemId.GemShard]: 50,
+      },
+    },
+    unlockedAfter: ['mnog_restore_ga_koro'],
+  },
+  {
+    section: "The Cronicler's Journey",
+    id: 'mnog_po_koro_sickness',
+    name: 'A Game Gone Wrong',
+    description: `Takua finally arrives at the stone village of Po-Koro, 
+      Takua finds many villagers have fallen ill, including famous Koli player Huki.
+      A salesman approaches Takua.`,
     durationSeconds: 15 * 60, // 15 min
     requirements: {
       matoran: ['Takua'],
@@ -180,6 +248,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     },
     rewards: {
       xpPerMatoran: 250,
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_po_koro_sickness' },
       currency: 500,
       unlockCharacters: [
         {
@@ -198,14 +267,14 @@ export const MNOG_QUEST_LINE: Quest[] = [
         [GameItemId.GemShard]: 50,
       },
     },
-    unlockedAfter: ['mnog_restore_ga_koro'],
+    unlockedAfter: ['mnog_po_wahi_desert'],
   },
   {
     section: "The Cronicler's Journey",
     id: 'mnog_po_koro_cave_investigation',
     name: 'Cave of the Corrupted',
     description:
-      'Takua follows the trail of the infected Koli balls to a dark cave outside Po-Koro. Inside, he discovers a Rahi nest and a stash of corrupted balls. Toa Pohatu arrives just in time to help seal the cave.',
+      'Takua finds an infected Koli ball while exploring an area of Po-Wahi. He finds a cave. Inside, he discovers a Rahi nest and a stash of corrupted balls. Toa Pohatu arrives just in time to help seal the cave.',
     durationSeconds: 10 * 60, // 10 min
     requirements: {
       matoran: ['Takua', 'Toa_Pohatu'],
@@ -233,8 +302,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     section: "The Cronicler's Journey",
     id: 'mnog_recruit_hewkii',
     name: 'Koli Champion Recovered',
-    description:
-      'With the source of the corruption destroyed, Huki finally begins to recover. Inspired by Takua’s courage, he offers to join the journey ahead.',
+    description: 'With the source of the corruption destroyed, Huki finally begins to recover.',
     durationSeconds: 5 * 60, // 5 minutes
     requirements: {
       matoran: ['Takua'],
@@ -242,6 +310,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_recruit_hewkii' },
       unlockCharacters: [
         {
           id: 'Huki',

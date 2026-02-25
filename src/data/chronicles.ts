@@ -19,6 +19,7 @@ export const CHRONICLE_IDS = {
   MATORO: 'matoro',
   MAKU: 'maku',
   LUMI: 'lumi',
+  AHKMOU: 'ahkmou',
   KIVI: 'kivi',
   TAIPU: 'taipu',
   TAMARU: 'tamaru',
@@ -102,7 +103,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Hunt for the Krana',
       description:
-        'Heeding Vakama\'s warning, Tahu returns to Ta-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+        "Heeding Vakama's warning, Tahu returns to Ta-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_krana_hunt',
@@ -146,7 +147,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Tahu\'s elemental power vanishes. Buried by rubble when he tries to stop one of the Kal. Alone and without his elemental powers, he is helpless.',
+        "The Bohrok Kal steal the Nuva symbols from the Suvas. Tahu's elemental power vanishes. Buried by rubble when he tries to stop one of the Kal. Alone and without his elemental powers, he is helpless.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
@@ -157,7 +158,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. Their Krana-Kal turn silver and project a force field. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Tahu\'s power returns.',
+        "At the last moment, Tahu summons the Vahi and slows time around the Kal. Their Krana-Kal turn silver and project a force field. The Toa feed power to the symbols, and the Kal's own powers spiral out of control, destroying them. The symbols are reclaimed. Tahu's power returns.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -225,7 +226,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Hunt for the Krana',
       description:
-        'Heeding Vakama\'s warning, Gali returns to Ga-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+        "Heeding Vakama's warning, Gali returns to Ga-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_krana_hunt',
@@ -258,7 +259,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Gali\'s elemental power vanishes. Nearly drowned by a tidal wave she can no longer control, she is alone and helpless.',
+        "The Bohrok Kal steal the Nuva symbols from the Suvas. Gali's elemental power vanishes. Nearly drowned by a tidal wave she can no longer control, she is alone and helpless.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
@@ -269,7 +270,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Gali\'s power returns.',
+        "At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal's own powers spiral out of control, destroying them. The symbols are reclaimed. Gali's power returns.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -348,7 +349,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Hunt for the Krana',
       description:
-        'Heeding Vakama\'s warning, Pohatu returns to Po-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+        "Heeding Vakama's warning, Pohatu returns to Po-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_krana_hunt',
@@ -381,7 +382,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Pohatu\'s elemental power vanishes. The Toa of Stone, who once ran faster than the wind, is alone and helpless.',
+        "The Bohrok Kal steal the Nuva symbols from the Suvas. Pohatu's elemental power vanishes. The Toa of Stone, who once ran faster than the wind, is alone and helpless.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
@@ -392,7 +393,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Pohatu\'s power returns.',
+        "At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal's own powers spiral out of control, destroying them. The symbols are reclaimed. Pohatu's power returns.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -471,7 +472,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Freed from the Krana',
       description:
-        'When a Bohrok attaches its Krana to Lewa\'s face, the Toa of Air turns against his brothers. Onua, steady and grounded, pursues him into the jungle. Through patience and strength, he pries the Krana free and restores Lewa to his senses.',
+        "When a Bohrok attaches its Krana to Lewa's face, the Toa of Air turns against his brothers. Onua, steady and grounded, pursues him into the jungle. Through patience and strength, he pries the Krana free and restores Lewa to his senses.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_lewa_krana_rescue',
@@ -482,7 +483,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Hunt for the Krana',
       description:
-        'Heeding Vakama\'s warning, Onua returns to Onu-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+        "Heeding Vakama's warning, Onua returns to Onu-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_krana_hunt',
@@ -515,7 +516,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Onua\'s elemental power vanishes. The Toa of Earth, who once moved through stone like water, is alone and helpless.',
+        "The Bohrok Kal steal the Nuva symbols from the Suvas. Onua's elemental power vanishes. The Toa of Earth, who once moved through stone like water, is alone and helpless.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
@@ -526,7 +527,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Onua\'s power returns.',
+        "At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal's own powers spiral out of control, destroying them. The symbols are reclaimed. Onua's power returns.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -605,7 +606,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Hunt for the Krana',
       description:
-        'Heeding Vakama\'s warning, Kopaka returns to Ko-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+        "Heeding Vakama's warning, Kopaka returns to Ko-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_krana_hunt',
@@ -616,7 +617,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Into the Bohrok Nest',
       description:
-        'Following the trail of the Bohrok Va, Kopaka discovers the hidden entrance to the nest. With the Krana gathered, the Toa descend, Kopaka\'s blade ready for whatever lies below.',
+        "Following the trail of the Bohrok Va, Kopaka discovers the hidden entrance to the nest. With the Krana gathered, the Toa descend, Kopaka's blade ready for whatever lies below.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_into_the_bohrok_nest',
@@ -638,7 +639,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Kopaka\'s elemental power vanishes. He falls from an ice bridge without his power. Alone and without his elemental powers, he is helpless.',
+        "The Bohrok Kal steal the Nuva symbols from the Suvas. Kopaka's elemental power vanishes. He falls from an ice bridge without his power. Alone and without his elemental powers, he is helpless.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
@@ -649,7 +650,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Kopaka\'s power returns.',
+        "At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal's own powers spiral out of control, destroying them. The symbols are reclaimed. Kopaka's power returns.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -728,7 +729,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Freed from the Krana',
       description:
-        'During the hunt for Krana, a Bohrok attaches its Krana to Lewa\'s face, and he is no longer himself. Compelled by the swarm\'s will, he turns against his brothers. Onua pursues him into the jungle and, through patience and strength, pries the Krana free. Lewa returns to his senses.',
+        "During the hunt for Krana, a Bohrok attaches its Krana to Lewa's face, and he is no longer himself. Compelled by the swarm's will, he turns against his brothers. Onua pursues him into the jungle and, through patience and strength, pries the Krana free. Lewa returns to his senses.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_lewa_krana_rescue',
@@ -739,7 +740,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Hunt for the Krana',
       description:
-        'Heeding Vakama\'s warning, Lewa returns to Le-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.',
+        "Heeding Vakama's warning, Lewa returns to Le-Wahi to battle the Bohrok and tear the Krana from their heads. Only a full set will unlock the path into the nests.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_krana_hunt',
@@ -772,7 +773,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'Power Stripped Away',
       description:
-        'The Bohrok Kal steal the Nuva symbols from the Suvas. Lewa\'s elemental power vanishes. His airborne display is cut short miles above Mata Nui. Kongu rescues him on a Gukko. Alone and without his elemental powers, he is helpless.',
+        "The Bohrok Kal steal the Nuva symbols from the Suvas. Lewa's elemental power vanishes. His airborne display is cut short miles above Mata Nui. Kongu rescues him on a Gukko. Alone and without his elemental powers, he is helpless.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_stolen_symbols',
@@ -783,7 +784,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok Kal',
       title: 'At the Nuva Cube',
       description:
-        'At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal\'s own powers spiral out of control, destroying them. The symbols are reclaimed. Lewa\'s power returns.',
+        "At the last moment, Tahu summons the Vahi and slows time around the Kal. The Toa feed power to the symbols, and the Kal's own powers spiral out of control, destroying them. The symbols are reclaimed. Lewa's power returns.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_final_confrontation',
@@ -1002,7 +1003,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Po-Koro',
       title: 'Koli Champion Recovered',
       description:
-        'With the cave of corrupted Koli balls sealed by Takua and Pohatu, Huki recovered. Inspired by Takua\'s courage, he offered to join the journey ahead.',
+        "With the cave of corrupted Koli balls sealed by Takua and Pohatu, Huki recovered. Inspired by Takua's courage, he offered to join the journey ahead.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_recruit_hewkii',
@@ -1037,7 +1038,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Onu-Koro',
       title: 'When the Tunnels Flood',
       description:
-        'When lava blocked Onu-Koro\'s main tunnel, Nuparu witnessed Takua redirect the flow using ancient pumps. The encounter with old technology sparked new ideas in the young inventor.',
+        "When lava blocked Onu-Koro's main tunnel, Nuparu witnessed Takua redirect the flow using ancient pumps. The encounter with old technology sparked new ideas in the young inventor.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_onu_koro_lava_problem',
@@ -1048,7 +1049,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'The Invention of the Boxor',
       description:
-        "Trapped with Onepu and Taipu as the Gahlok flooded Onu-Koro, Nuparu refused to yield. He scavenged Bohrok shells and ancient machinery to create the Boxor, a walking exo-suit that let the Matoran fight back and reclaim their home.",
+        'Trapped with Onepu and Taipu as the Gahlok flooded Onu-Koro, Nuparu refused to yield. He scavenged Bohrok shells and ancient machinery to create the Boxor, a walking exo-suit that let the Matoran fight back and reclaim their home.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_onu_koro_boxor',
@@ -1061,7 +1062,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Onu-Koro',
       title: 'Rider of the Ussal',
       description:
-        'Onepu is a prominent member of the Ussalry—Onu-Koro\'s mounted guard who ride Ussal crabs through the tunnels. He takes pride in defending the underground village.',
+        "Onepu is a prominent member of the Ussalry—Onu-Koro's mounted guard who ride Ussal crabs through the tunnels. He takes pride in defending the underground village.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_arrive_onu_koro',
@@ -1096,7 +1097,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Le-Koro',
       title: 'Flight to the Hive',
       description:
-        'Kongu joined Takua and Tamaru on a daring Kahu flight to the Nui-Rama hive. Their mission: rescue the captive Le-Matoran, including Taipu, from Makuta\'s corrupted creatures.',
+        "Kongu joined Takua and Tamaru on a daring Kahu flight to the Nui-Rama hive. Their mission: rescue the captive Le-Matoran, including Taipu, from Makuta's corrupted creatures.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_rescue_from_hive',
@@ -1107,7 +1108,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Le-Koro',
       title: 'Trapped in the Hive',
       description:
-        'Inside the hive, Kongu\'s Kahu was downed and he was trapped with the others. After Toa Onua helped Toa Lewa be freed from the infected mask, Kongu and the Le-Matoran were able to be rescued.',
+        "Inside the hive, Kongu's Kahu was downed and he was trapped with the others. After Toa Onua helped Toa Lewa be freed from the infected mask, Kongu and the Le-Matoran were able to be rescued.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_lewa_v_onua',
@@ -1131,7 +1132,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Ko-Koro',
       title: 'Lost in the White',
       description:
-        "Matoro went missing in the icy wastes of Ko-Wahi, hunted by Rahi. Takua and Kopaka followed faint traces in the snow until they found him—and brought him home to his village.",
+        'Matoro went missing in the icy wastes of Ko-Wahi, hunted by Rahi. Takua and Kopaka followed faint traces in the snow until they found him—and brought him home to his village.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_search_for_matoro',
@@ -1155,7 +1156,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: "Chronicler's Company",
       title: 'Chosen for the Company',
       description:
-        'After Ga-Koro was restored, Maku was chosen to represent her village in the Chronicler\'s Company. She joined Takua and the others on the sacred journey to Kini-Nui.',
+        "After Ga-Koro was restored, Maku was chosen to represent her village in the Chronicler's Company. She joined Takua and the others on the sacred journey to Kini-Nui.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_recruit_hewkii',
@@ -1227,7 +1228,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: "Chronicler's Company",
       title: 'Rescue from the Hive',
       description:
-        'Takua, Tamaru, and Kongu flew to the Nui-Rama hive and found Taipu among the captives. Rescued from bondage, Taipu joined the Chronicler\'s Company for the journey to Kini-Nui.',
+        "Takua, Tamaru, and Kongu flew to the Nui-Rama hive and found Taipu among the captives. Rescued from bondage, Taipu joined the Chronicler's Company for the journey to Kini-Nui.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_rescue_from_hive',
@@ -1238,7 +1239,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Bohrok War',
       title: 'Trapped with the Inventor',
       description:
-        'When the Gahlok flooded Onu-Koro, Taipu was trapped with Onepu and Nuparu. He witnessed Nuparu\'s invention of the Boxor and fought alongside his friends to reclaim their home.',
+        "When the Gahlok flooded Onu-Koro, Taipu was trapped with Onepu and Nuparu. He witnessed Nuparu's invention of the Boxor and fought alongside his friends to reclaim their home.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_onu_koro_boxor',
@@ -1273,7 +1274,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: "Chronicler's Company",
       title: 'The Ravine Crossing',
       description:
-        'When the Chronicler\'s Company reached a deep ravine on the path to Kini-Nui, Tamaru proposed a daring method to cross. His knowledge of Le-Wahi and his courage helped the company press onward.',
+        "When the Chronicler's Company reached a deep ravine on the path to Kini-Nui, Tamaru proposed a daring method to cross. His knowledge of Le-Wahi and his courage helped the company press onward.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_journey_to_kini_nui_2',
@@ -1308,7 +1309,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: "Chronicler's Company",
       title: 'Chosen for Ko-Koro',
       description:
-        'Turaga Nuju chose Kopeke to represent Ko-Koro in the Chronicler\'s Company. Together with Takua, he journeyed to gather the other Matoran before the sacred trek to Kini-Nui.',
+        "Turaga Nuju chose Kopeke to represent Ko-Koro in the Chronicler's Company. Together with Takua, he journeyed to gather the other Matoran before the sacred trek to Kini-Nui.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_summon_chroniclers_company',
@@ -1319,7 +1320,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: "Chronicler's Company",
       title: 'The Silent Gate',
       description:
-        'At the great stone gate on the path to Kini-Nui, the Chronicler\'s Company needed to unlock a hidden mechanism. Kopeke\'s patience and observation helped the group find a way through.',
+        "At the great stone gate on the path to Kini-Nui, the Chronicler's Company needed to unlock a hidden mechanism. Kopeke's patience and observation helped the group find a way through.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_journey_to_kini_nui_4',
@@ -1354,7 +1355,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: "Chronicler's Company",
       title: 'The Journey to Kini-Nui',
       description:
-        'Chosen by Turaga Onewa to represent Po-Koro, Hafu joined the Chronicler\'s Company. He brought his strength and skill to the journey—and would soon need both.',
+        "Chosen by Turaga Onewa to represent Po-Koro, Hafu joined the Chronicler's Company. He brought his strength and skill to the journey—and would soon need both.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_journey_to_kini_nui_1',
