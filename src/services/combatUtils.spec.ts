@@ -205,7 +205,7 @@ describe('chooseTarget', () => {
     test('initializes mask power cooldown to 0', () => {
       const combatant = generateCombatantStats('test-id', 'Toa_Tahu', 1, Mask.Hau);
 
-      expect(combatant.maskPower?.effect.cooldown.amount).toBe(0);
+      expect(combatant.maskPower?.cooldown.amount).toBe(0);
     });
 
     test('diminishes Toa Nuva stats when nuvaSymbolsSequestered', () => {
@@ -363,9 +363,9 @@ describe('chooseTarget', () => {
       expect(tahu.maskPower?.effect.duration).toBeDefined();
       expect(tahu.maskPower?.effect.duration.unit).toBeDefined();
       expect(tahu.maskPower?.effect.duration.amount).toBeGreaterThanOrEqual(0);
-      expect(tahu.maskPower?.effect.cooldown).toBeDefined();
-      expect(tahu.maskPower?.effect.cooldown.unit).toBeDefined();
-      expect(tahu.maskPower?.effect.cooldown.amount).toBeGreaterThanOrEqual(0);
+      expect(tahu.maskPower?.cooldown).toBeDefined();
+      expect(tahu.maskPower?.cooldown.unit).toBeDefined();
+      expect(tahu.maskPower?.cooldown.amount).toBeGreaterThanOrEqual(0);
     });
 
     test('mask power starts inactive or undefined', () => {
@@ -403,7 +403,7 @@ describe('chooseTarget', () => {
 
     test('returns false when mask power is on cooldown', () => {
       const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1);
-      tahu.maskPower!.effect.cooldown.amount = 3;
+      tahu.maskPower!.cooldown.amount = 3;
       expect(hasReadyMaskPowers([tahu])).toBe(false);
     });
 
@@ -421,16 +421,16 @@ describe('chooseTarget', () => {
 
     test('returns true if at least one team member has ready power', () => {
       const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1);
-      tahu.maskPower!.effect.cooldown.amount = 3;
+      tahu.maskPower!.cooldown.amount = 3;
       const onua = generateCombatantStats('onua', 'Toa_Onua', 1);
       expect(hasReadyMaskPowers([tahu, onua])).toBe(true);
     });
 
     test('returns false when all mask powers are on cooldown', () => {
       const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1);
-      tahu.maskPower!.effect.cooldown.amount = 1;
+      tahu.maskPower!.cooldown.amount = 1;
       const onua = generateCombatantStats('onua', 'Toa_Onua', 1);
-      onua.maskPower!.effect.cooldown.amount = 2;
+      onua.maskPower!.cooldown.amount = 2;
       expect(hasReadyMaskPowers([tahu, onua])).toBe(false);
     });
 

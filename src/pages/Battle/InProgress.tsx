@@ -39,7 +39,13 @@ export const BattleInProgress = () => {
         <div className="ally-side">
           <div className="toa-team">
             {team.map((toa, i) => (
-              <AllyCard key={i} combatant={toa} onClick={() => battle.toggleAbility(toa)} />
+              <AllyCard
+                key={i}
+                combatant={toa}
+                onClick={() => battle.toggleAbility(toa)}
+                team={team}
+                enemies={enemies}
+              />
             ))}
           </div>
         </div>

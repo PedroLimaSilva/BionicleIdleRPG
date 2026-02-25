@@ -22,13 +22,13 @@ describe('Mask Power Cooldowns', () => {
           description: 'Test mask',
           shortName: Mask.Pakari,
           longName: 'Test Mask',
+          target: 'self',
           active: true,
+          cooldown: { unit: 'wave', amount: 0 },
           effect: {
             type: 'ATK_MULT',
-            target: 'self',
             multiplier: 1.5,
             duration: { unit: 'wave', amount: 3 },
-            cooldown: { unit: 'wave', amount: 0 },
           },
         },
       };
@@ -57,13 +57,13 @@ describe('Mask Power Cooldowns', () => {
           description: 'Test mask',
           shortName: Mask.Hau,
           longName: 'Test Mask',
+          target: 'self',
           active: true,
+          cooldown: { unit: 'wave', amount: 0 },
           effect: {
             type: 'DMG_MITIGATOR',
-            target: 'self',
             multiplier: 0.5,
             duration: { unit: 'wave', amount: 1 },
-            cooldown: { unit: 'wave', amount: 0 },
           },
         },
       };
@@ -73,8 +73,8 @@ describe('Mask Power Cooldowns', () => {
       expect(updated.maskPower?.active).toBe(false);
       expect(updated.maskPower?.effect.duration.amount).toBe(0);
       // Cooldown should be copied from MASK_POWERS when duration expires (Hau has wave cooldown of 1)
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(1);
-      expect(updated.maskPower?.effect.cooldown.unit).toBe('wave');
+      expect(updated.maskPower?.cooldown.amount).toBe(1);
+      expect(updated.maskPower?.cooldown.unit).toBe('wave');
     });
 
     test('decrements cooldown when mask power is inactive', () => {
@@ -95,20 +95,20 @@ describe('Mask Power Cooldowns', () => {
           description: 'Test mask',
           shortName: Mask.Pakari,
           longName: 'Test Mask',
+          target: 'self',
           active: false,
+          cooldown: { unit: 'wave', amount: 3 },
           effect: {
             type: 'ATK_MULT',
-            target: 'self',
             multiplier: 1.5,
             duration: { unit: 'wave', amount: 2 },
-            cooldown: { unit: 'wave', amount: 3 },
           },
         },
       };
 
       const [updated] = decrementWaveCounters([combatant]);
 
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(2);
+      expect(updated.maskPower?.cooldown.amount).toBe(2);
       expect(updated.maskPower?.active).toBe(false);
     });
 
@@ -130,13 +130,13 @@ describe('Mask Power Cooldowns', () => {
           description: 'Test mask',
           shortName: Mask.Pakari,
           longName: 'Test Mask',
+          target: 'self',
           active: true,
+          cooldown: { unit: 'turn', amount: 0 },
           effect: {
             type: 'ATK_MULT',
-            target: 'self',
             multiplier: 1.5,
             duration: { unit: 'turn', amount: 3 },
-            cooldown: { unit: 'turn', amount: 0 },
           },
         },
       };
@@ -167,13 +167,13 @@ describe('Mask Power Cooldowns', () => {
             description: 'Test mask',
             shortName: Mask.Pakari,
             longName: 'Test Mask',
+            target: 'self',
             active: true,
+            cooldown: { unit: 'wave', amount: 0 },
             effect: {
               type: 'ATK_MULT',
-              target: 'self',
               multiplier: 1.5,
               duration: { unit: 'wave', amount: 2 },
-              cooldown: { unit: 'wave', amount: 0 },
             },
           },
         },
@@ -194,13 +194,13 @@ describe('Mask Power Cooldowns', () => {
             description: 'Test mask',
             shortName: Mask.Kaukau,
             longName: 'Test Mask',
+            target: 'self',
             active: false,
+            cooldown: { unit: 'wave', amount: 3 },
             effect: {
               type: 'HEAL',
-              target: 'self',
               multiplier: 0.2,
               duration: { unit: 'wave', amount: 1 },
-              cooldown: { unit: 'wave', amount: 3 },
             },
           },
         },
@@ -209,7 +209,7 @@ describe('Mask Power Cooldowns', () => {
       const updated = decrementWaveCounters(combatants);
 
       expect(updated[0].maskPower?.effect.duration.amount).toBe(1);
-      expect(updated[1].maskPower?.effect.cooldown.amount).toBe(2);
+      expect(updated[1].maskPower?.cooldown.amount).toBe(2);
     });
 
     test('cooldown does not go below 0', () => {
@@ -230,13 +230,13 @@ describe('Mask Power Cooldowns', () => {
           description: 'Test mask',
           shortName: Mask.Pakari,
           longName: 'Test Mask',
+          target: 'self',
           active: false,
+          cooldown: { unit: 'wave', amount: 0 },
           effect: {
             type: 'ATK_MULT',
-            target: 'self',
             multiplier: 1.5,
             duration: { unit: 'wave', amount: 2 },
-            cooldown: { unit: 'wave', amount: 0 },
           },
         },
       };
@@ -244,7 +244,7 @@ describe('Mask Power Cooldowns', () => {
       const [updated] = decrementWaveCounters([combatant]);
 
       // Cooldown is already 0, should stay 0
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(0);
+      expect(updated.maskPower?.cooldown.amount).toBe(0);
     });
   });
 
@@ -287,13 +287,13 @@ describe('Mask Power Cooldowns', () => {
           description: 'Test',
           shortName,
           longName: 'Test Mask',
+          target: 'self',
           active,
+          cooldown: { unit: cooldownUnit, amount: cooldownAmount },
           effect: {
             type: 'ATK_MULT',
-            target: 'self' as const,
             multiplier: 3,
             duration: { unit: durationUnit, amount: durationAmount },
-            cooldown: { unit: cooldownUnit, amount: cooldownAmount },
           },
         },
       };
@@ -320,8 +320,8 @@ describe('Mask Power Cooldowns', () => {
       expect(updated.maskPower?.effect.duration.amount).toBe(0);
       expect(updated.maskPower?.active).toBe(false);
       // Cooldown copied from MASK_POWERS[Pakari] (turn-based, amount 2)
-      expect(updated.maskPower?.effect.cooldown.unit).toBe('turn');
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(2);
+      expect(updated.maskPower?.cooldown.unit).toBe('turn');
+      expect(updated.maskPower?.cooldown.amount).toBe(2);
     });
 
     test('hit-based duration decrements on "hit" unit', () => {
@@ -347,8 +347,8 @@ describe('Mask Power Cooldowns', () => {
       expect(updated.maskPower?.effect.duration.amount).toBe(0);
       expect(updated.maskPower?.active).toBe(false);
       // Cooldown copied from MASK_POWERS[Miru] (wave-based, amount 1)
-      expect(updated.maskPower?.effect.cooldown.unit).toBe('wave');
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(1);
+      expect(updated.maskPower?.cooldown.unit).toBe('wave');
+      expect(updated.maskPower?.cooldown.amount).toBe(1);
     });
 
     test('turn-based duration decrements on "turn" unit', () => {
@@ -374,8 +374,8 @@ describe('Mask Power Cooldowns', () => {
       expect(updated.maskPower?.effect.duration.amount).toBe(0);
       expect(updated.maskPower?.active).toBe(false);
       // Cooldown copied from MASK_POWERS[Kaukau] (wave-based, amount 1)
-      expect(updated.maskPower?.effect.cooldown.unit).toBe('wave');
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(1);
+      expect(updated.maskPower?.cooldown.unit).toBe('wave');
+      expect(updated.maskPower?.cooldown.amount).toBe(1);
     });
 
     test('round-based duration decrements on "round" unit', () => {
@@ -401,8 +401,8 @@ describe('Mask Power Cooldowns', () => {
       expect(updated.maskPower?.effect.duration.amount).toBe(0);
       expect(updated.maskPower?.active).toBe(false);
       // Cooldown copied from MASK_POWERS[Hau] (wave-based, amount 1)
-      expect(updated.maskPower?.effect.cooldown.unit).toBe('wave');
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(1);
+      expect(updated.maskPower?.cooldown.unit).toBe('wave');
+      expect(updated.maskPower?.cooldown.amount).toBe(1);
     });
 
     // ─── Cooldown decrements ───
@@ -416,7 +416,7 @@ describe('Mask Power Cooldowns', () => {
         cooldownAmount: 3,
       });
       const updated = decrementMaskPowerCounter(c, 'turn');
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(2);
+      expect(updated.maskPower?.cooldown.amount).toBe(2);
       expect(updated.maskPower?.active).toBe(false);
     });
 
@@ -429,7 +429,7 @@ describe('Mask Power Cooldowns', () => {
         cooldownAmount: 2,
       });
       const updated = decrementMaskPowerCounter(c, 'wave');
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(1);
+      expect(updated.maskPower?.cooldown.amount).toBe(1);
       expect(updated.maskPower?.active).toBe(false);
     });
 
@@ -449,7 +449,7 @@ describe('Mask Power Cooldowns', () => {
         cooldownAmount: 3,
       });
       const updated = decrementMaskPowerCounter(c, 'wave');
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(3);
+      expect(updated.maskPower?.cooldown.amount).toBe(3);
     });
 
     test('returns same combatant when no maskPower is present', () => {
@@ -484,7 +484,7 @@ describe('Mask Power Cooldowns', () => {
       const updated = decrementMaskPowerCounter(c, 'attack');
       expect(updated.maskPower?.active).toBe(false);
       // Cooldown just set from MASK_POWERS[Pakari] = 2, should NOT be decremented to 1
-      expect(updated.maskPower?.effect.cooldown.amount).toBe(2);
+      expect(updated.maskPower?.cooldown.amount).toBe(2);
     });
   });
 });

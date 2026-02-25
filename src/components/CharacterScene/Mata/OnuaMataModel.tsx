@@ -9,7 +9,7 @@ import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 export const OnuaMataModel = forwardRef<
   CombatantModelHandle,
   {
-    matoran: RecruitedCharacterData & BaseMatoran;
+    matoran: RecruitedCharacterData & BaseMatoran & { maskPowerActive?: boolean };
   }
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);

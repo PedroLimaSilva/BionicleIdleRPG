@@ -12,20 +12,59 @@ export const enum BattleStrategy {
   MostEffective = 'MostEffective', // Will target the enemy it estimates will take more damage from an attack
 }
 
-/** Debuff applied to a combatant. DEFENSE = increased damage taken; CONFUSION = attacks own team. */
-export type TargetDebuff =
+/**
+ * Effect applied to a combatant. Type determines WHEN (which phase); value determines WHAT.
+ * No buff/debuff distinction—multiplier sign determines direction (e.g. HEAL +0.1 = heal 10%,
+ * HEAL -0.1 = poison; DEFENSE >1 = fortify, DEFENSE <1 = weaken).
+ */
+export type TargetEffect =
+  | {
+      type: 'DMG_MITIGATOR';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round' | 'hit';
+      sourceId: string;
+    }
+  | {
+      type: 'HEAL';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round';
+      sourceId: string;
+    }
+  | {
+      type: 'ATK_MULT';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'attack' | 'round';
+      sourceId: string;
+    }
+  | {
+      type: 'AGGRO';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round';
+      sourceId: string;
+    }
+  | {
+      type: 'SPEED';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'round';
+      sourceId: string;
+    }
   | {
       type: 'DEFENSE';
       multiplier: number;
       durationRemaining: number;
       durationUnit: 'turn' | 'round';
-      sourceSide: 'team' | 'enemy';
+      sourceId: string;
     }
   | {
       type: 'CONFUSION';
       durationRemaining: number;
       durationUnit: 'turn' | 'round';
-      sourceSide: 'team' | 'enemy';
+      sourceId: string;
     };
 
 export interface Combatant {
@@ -34,7 +73,7 @@ export interface Combatant {
   model: string;
   lvl: number;
   maskPower?: MaskPower;
-  debuffs?: TargetDebuff[];
+  effects?: TargetEffect[];
   element: ElementTribe;
   maxHp: number;
   hp: number;
@@ -49,6 +88,9 @@ export interface MaskPower {
   description: string;
   shortName: Mask;
   longName: string;
+  /** Who the mask affects when activated (self, team, enemy, allEnemies) */
+  target: 'self' | 'enemy' | 'allEnemies' | 'team';
+  cooldown: CombatDuration;
   effect: MaskEffect;
   active?: boolean;
 }
@@ -59,15 +101,17 @@ interface CombatDuration {
 }
 
 type MaskEffect = {
-  type: 'ATK_MULT' | 'DMG_MITIGATOR' | 'HEAL' | 'AGGRO' | 'SPEED' | 'ACCURACY_MULT' | 'DEBUFF';
+  type:
+    | 'ATK_MULT'
+    | 'DMG_MITIGATOR'
+    | 'HEAL'
+    | 'AGGRO'
+    | 'SPEED'
+    | 'ACCURACY_MULT'
+    | 'DEFENSE'
+    | 'CONFUSION';
   duration: CombatDuration;
-  cooldown: CombatDuration;
   multiplier?: number;
-  target: 'self' | 'enemy' | 'allEnemies';
-  /** For DEBUFF: subtype (DEFENSE = increased damage taken, CONFUSION = attack own team) */
-  debuffType?: 'DEFENSE' | 'CONFUSION';
-  /** For DEBUFF: duration of the debuff on the target (e.g. 2 rounds) */
-  debuffDuration?: CombatDuration;
 };
 
 export interface CombatantTemplate {
