@@ -31,6 +31,30 @@ export type ChronicleId = (typeof CHRONICLE_IDS)[keyof typeof CHRONICLE_IDS];
 
 /** Chronicle entries declared once per chronicle ID, reused by all forms of that character */
 export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
+  [CHRONICLE_IDS.AHKMOU]: [
+    {
+      id: 'ahkmou_arrival_mata_nui',
+      section: 'Mata Nui',
+      title: 'Awakening in the Depths',
+      description:
+        'Ahkmou awakens in the dark tunnels of Onu-Wahi, his memory erased but his connection to the earth instinctive.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'story_toa_arrival',
+      },
+    },
+    {
+      id: 'ahkmou_arrival_mata_nui',
+      section: 'Mata Nui',
+      title: 'The poisoned Comet',
+      description:
+        'A strange illness falls upon the Matoran of Po-Koro. Other Po-Matoran accused Ahkmou of poisoning them with his corrupted Koli balls, but he claims he did nothing wrong.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mnog_po_koro_sickness',
+      },
+    },
+  ],
   [CHRONICLE_IDS.TAHU]: [
     {
       id: 'tahu_arrival_mata_nui',
