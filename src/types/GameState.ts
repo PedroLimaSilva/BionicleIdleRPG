@@ -2,7 +2,6 @@ import { GameItemId } from '../data/loot';
 import { BattleState, BattlePhase } from '../hooks/useBattleState';
 import { Inventory } from '../services/inventoryUtils';
 import { MatoranJob } from './Jobs';
-import { ActivityLogEntry, LogType } from './Logging';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
 import { Quest, QuestProgress } from './Quests';
 import { KranaCollection, KranaElement, KranaId } from './Krana';
@@ -37,13 +36,9 @@ export type GameState = {
   addItemToInventory: (item: GameItemId, amount: number) => void;
   assignJobToMatoran: (matoranId: RecruitedCharacterData['id'], job: MatoranJob) => void;
   removeJobFromMatoran: (matoranId: RecruitedCharacterData['id']) => void;
-  activityLog: ActivityLogEntry[];
   startQuest: (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => void;
   cancelQuest: (questId: string) => void;
   completeQuest: (quest: Quest) => void;
-  addActivityLog: (message: string, type: LogType) => void;
-  removeActivityLogEntry: (id: string) => void;
-  clearActivityLog: () => void;
   applyBattleRewards: (params: BattleRewardParams) => void;
   evolveBohrokToKal: (
     matoranId: RecruitedCharacterData['id'],
