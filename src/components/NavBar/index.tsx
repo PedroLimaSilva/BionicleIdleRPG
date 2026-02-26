@@ -43,7 +43,7 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
             <label>Battle</label>
           </NavLink>
         )}
-        <NavLink to="/quests" className="nav-item">
+        <NavLink to="/" className="nav-item">
           <Map />
           <label>Quests</label>
         </NavLink>

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { RecruitedCharacterData } from '../types/Matoran';
 import { GameItemId } from '../data/loot';
-import { ActivityLogEntry } from '../types/Logging';
 import { tickMatoranJobExp } from '../services/jobUtils';
 
 export function useJobTickEffect(
@@ -11,7 +10,6 @@ export function useJobTickEffect(
   ) => void,
   addWidgets: (amount: number) => void,
   addItemToInventory: (item: GameItemId, amount: number) => void,
-  addActivityLog: (message: string, type: ActivityLogEntry['type']) => void,
   intervalMs: number = 5000
 ) {
   useEffect(() => {
@@ -20,16 +18,12 @@ export function useJobTickEffect(
 
       setRecruitedCharacters((prev) =>
         prev.map((matoran) => {
-          const { updatedMatoran, earnedWidgets, earnedLoot, logs } = tickMatoranJobExp(
-            matoran,
-            now
-          );
+          const { updatedMatoran, earnedWidgets, earnedLoot } = tickMatoranJobExp(matoran, now);
 
           if (earnedWidgets > 0) addWidgets(earnedWidgets);
           Object.entries(earnedLoot).forEach(([item, amount]) => {
             addItemToInventory(item as GameItemId, amount);
           });
-          logs.forEach((log) => addActivityLog(log.message, log.type));
 
           return updatedMatoran;
         })
@@ -42,7 +36,6 @@ export function useJobTickEffect(
     setRecruitedCharacters,
     addWidgets,
     addItemToInventory,
-    addActivityLog,
     intervalMs,
   ]);
 }

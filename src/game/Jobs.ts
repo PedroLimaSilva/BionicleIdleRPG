@@ -1,8 +1,7 @@
 import { JOB_DETAILS } from '../data/jobs';
 import { JobAssignment, MatoranJob, ProductivityEffect } from '../types/Jobs';
 import { RecruitedCharacterData } from '../types/Matoran';
-import { ActivityLogEntry, LogType } from '../types/Logging';
-import { GameItemId, ITEM_DICTIONARY } from '../data/loot';
+import { GameItemId } from '../data/loot';
 import { GameState } from '../types/GameState';
 import { Inventory } from '../services/inventoryUtils';
 import { MATORAN_DEX } from '../data/matoran';
@@ -156,40 +155,26 @@ function rollJobRewards(
 export function applyOfflineJobExp(
   characters: RecruitedCharacterData[],
   now = Date.now()
-): [RecruitedCharacterData[], ActivityLogEntry[], number, Inventory] {
-  const logs: ActivityLogEntry[] = [];
+): [RecruitedCharacterData[], number, Inventory] {
   let currencyGain = 0;
   const loot: Inventory = {};
 
   const updated = characters.map((m) => {
     const [updatedMatoran, earned, rewards] = applyJobExp(m, now, true);
-    const matoran = MATORAN_DEX[updatedMatoran.id];
 
     Object.entries(rewards).forEach(([item, amount]) => {
       const itemId = item as GameItemId;
       loot[itemId] = (loot[itemId] ?? 0) + amount;
-      logs.push({
-        id: crypto.randomUUID(),
-        message: `${matoran.name} found ${amount} ${ITEM_DICTIONARY[itemId].name} while you were away.`,
-        type: LogType.Loot,
-        timestamp: now,
-      });
     });
 
     if (earned > 0) {
       currencyGain += earned;
-      logs.push({
-        id: crypto.randomUUID(),
-        message: `${matoran.name} gained ${earned} EXP while you were away.`,
-        type: LogType.Gain,
-        timestamp: now,
-      });
     }
 
     return updatedMatoran;
   });
 
-  return [updated, logs, currencyGain, loot];
+  return [updated, currencyGain, loot];
 }
 
 export function applyJobExp(

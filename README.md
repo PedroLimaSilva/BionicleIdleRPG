@@ -111,7 +111,6 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 ```
 src/
 ├── components/          # React components
-│   ├── ActivityLog/    # Activity log component
 │   ├── CharacterScene/ # 3D character rendering
 │   ├── MatoranAvatar/  # Character avatar components
 │   ├── JobList/        # Job assignment UI

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { LogType } from '../types/Logging';
 import { MatoranJob } from '../types/Jobs';
 import { ListedCharacterData, BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { BattleRewardParams, GameState } from '../types/GameState';
@@ -14,7 +13,6 @@ export const CURRENT_GAME_STATE_VERSION = 9; // ONLY UPDATE IF BREAKING CHANGES 
 export const INITIAL_GAME_STATE: GameState = {
   version: CURRENT_GAME_STATE_VERSION,
   widgetCap: 2000,
-  activityLog: [],
   widgets: 10,
   completedQuests: [],
   activeQuests: [],
@@ -33,15 +31,6 @@ export const INITIAL_GAME_STATE: GameState = {
     throw new Error('Function not implemented.');
   },
   removeJobFromMatoran: function (_id: BaseMatoran['id']): void {
-    throw new Error('Function not implemented.');
-  },
-  addActivityLog: function (_message: string, _type: LogType): void {
-    throw new Error('Function not implemented.');
-  },
-  clearActivityLog: function (): void {
-    throw new Error('Function not implemented.');
-  },
-  removeActivityLogEntry: function (_id: string): void {
     throw new Error('Function not implemented.');
   },
   startQuest: function (_quest: Quest, _assignedMatoran: BaseMatoran['id'][]): void {
