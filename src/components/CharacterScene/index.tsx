@@ -15,6 +15,7 @@ import {
   RecruitedCharacterData,
 } from '../../types/Matoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
+import { RebuiltMatoranModel } from './RebuiltMatoranModel';
 import { GaliMataModel } from './Mata/GaliMataModel';
 import { PohatuMataModel } from './Mata/PohatuMataModel';
 import { KopakaMataModel } from './Mata/KopakaMataModel';
@@ -86,6 +87,9 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
         </group>
       );
     case MatoranStage.Diminished:
+      return <DiminishedMatoranModel matoran={matoran} />;
+    case MatoranStage.Rebuilt:
+      return <RebuiltMatoranModel matoran={matoran} />;
     default:
       return <DiminishedMatoranModel matoran={matoran} />;
   }
