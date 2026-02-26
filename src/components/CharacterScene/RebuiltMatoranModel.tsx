@@ -21,7 +21,7 @@ const MAT_COLOR_MAP = {
 
 export function RebuiltMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   const group = useRef<Group>(null);
-  const { nodes, materials, animations } = useGLTF(import.meta.env.BASE_URL + 'matoran_rebuilt.glb');
+  const { nodes, materials, animations } = useGLTF(import.meta.env.BASE_URL + 'rebuilt.glb');
   const { actions, mixer } = useIdleAnimation(animations, group);
 
   useAnimationController({
