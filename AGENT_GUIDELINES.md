@@ -146,14 +146,13 @@ The game runs entirely in the browser. All game logic must support offline progr
 
 1. Only these fields are persisted: `version`, `protodermis`, `protodermisCap`, `inventory`, `recruitedCharacters`, `buyableCharacters`, `activeQuests`, `completedQuests`
 2. Battle state is NOT persisted (battles reset on page refresh)
-3. Activity log is NOT persisted (regenerated on load for offline progress only)
-4. Save version must match `CURRENT_GAME_STATE_VERSION` or the save is rejected
+3. Save version must match `CURRENT_GAME_STATE_VERSION` or the save is rejected
 
 **NEVER** add new fields to persistence without updating `useGamePersistence` and `loadGameState`.
 
 **NEVER** change `CURRENT_GAME_STATE_VERSION` without providing migration logic or accepting that old saves will be lost.
 
-**NEVER** persist battle state or activity log.
+**NEVER** persist battle state.
 
 ---
 

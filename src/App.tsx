@@ -10,7 +10,6 @@ import { SceneCanvasProvider } from './context/Canvas.tsx';
 import { SettingsProvider } from './context/Settings.tsx';
 
 import './styles/index.scss';
-import { ActivityLog } from './components/ActivityLog/index.tsx';
 import { useEffect, useState } from 'react';
 import { preloadAssets } from './preload.ts';
 import { InventoryPage } from './pages/Inventory/index.tsx';
@@ -21,14 +20,6 @@ import { BattleSelector } from './pages/BattleSelector/index.tsx';
 import { BattlePage } from './pages/Battle/index.tsx';
 import TypeEffectivenessPage from './pages/TypeEffectiveness/index.tsx';
 import { NavBar } from './components/NavBar/index.tsx';
-
-const HomePage: React.FC = () => (
-  <div className="page-container">
-    <h1>Welcome to Mata Nui</h1>
-    <p>Embark on your journey to recruit Matoran and help them become legends!</p>
-    <ActivityLog />
-  </div>
-);
 
 const NotFound: React.FC = () => (
   <div className="page-container">
@@ -79,7 +70,7 @@ export function App() {
               <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
                 <div id="canvas-mount"></div>
                 <Routes>
-                  <Route path="/" element={<HomePage />} />
+                  <Route path="/" element={<QuestsPage />} />
                   <Route path="/battle/selector" element={<BattleSelector />} />
                   <Route path="/battle" element={<BattlePage />} />
                   <Route path="/characters" element={<CharacterInventory />} />

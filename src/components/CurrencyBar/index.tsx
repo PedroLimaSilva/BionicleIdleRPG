@@ -6,7 +6,9 @@ export const CurrencyBar = ({ isPortrait }: { isPortrait: boolean }) => {
   const { protodermis, protodermisCap } = useGame();
 
   return (
-    <div className={`currency-bar currency-bar--protodermis ${isPortrait ? 'portrait' : 'landscape'}`}>
+    <div
+      className={`currency-bar currency-bar--protodermis ${isPortrait ? 'portrait' : 'landscape'}`}
+    >
       <div className="currency-progress">
         <div
           className="currency-fill"
@@ -17,7 +19,7 @@ export const CurrencyBar = ({ isPortrait }: { isPortrait: boolean }) => {
           }
         ></div>
         <div className="currency-label">
-          {protodermis}/{protodermisCap} Protodermis
+          {protodermis}/{protodermisCap}
         </div>
       </div>
     </div>

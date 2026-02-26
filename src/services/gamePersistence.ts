@@ -28,7 +28,7 @@ export function loadGameState() {
         parsed.collectedKrana = {};
       }
       if (isValidGameState(parsed)) {
-        const [recruitedCharacters, logs, currency, loot] = applyOfflineJobExp(
+        const [recruitedCharacters, currency, loot] = applyOfflineJobExp(
           parsed.recruitedCharacters
         );
 
@@ -41,7 +41,6 @@ export function loadGameState() {
           ...parsed,
           recruitedCharacters,
           protodermis: clamp(parsed.protodermis + currency, 0, parsed.protodermisCap),
-          activityLog: logs,
         };
       }
     } catch (e) {
