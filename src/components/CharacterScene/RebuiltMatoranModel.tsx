@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { BaseMatoran } from '../../types/Matoran';
-import { Color as ThreeColor, Group, Vector3 } from 'three';
+import { Color as ThreeColor, Group } from 'three';
 import { MeshPhysicalMaterial } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
@@ -10,10 +10,10 @@ import { Color } from '../../types/Colors';
 
 const MAT_COLOR_MAP = {
   Face: 'face',
-  'Foot.L': 'feet',
-  'Foot.R': 'feet',
-  'Arm.L': 'arms',
-  'Arm.R': 'arms',
+  Feet: 'feet',
+  Arms: 'arms',
+  Arm: 'arms',
+  Hands: 'feet',
   Torso: 'body',
   Brain: 'eyes',
   GlowingEyes: 'eyes',
@@ -64,7 +64,7 @@ export function RebuiltMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
   return (
     <group ref={group} dispose={null}>
-      <primitive scale={1} object={nodes.Body} position={new Vector3(0, 2.55, 0)} />
+      <primitive scale={1} object={nodes.Body} position={[0, 3.65, -1]} />
     </group>
   );
 }
