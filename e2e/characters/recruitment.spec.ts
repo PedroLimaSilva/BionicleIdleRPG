@@ -3,7 +3,7 @@ import { goto, hideCanvas, INITIAL_GAME_STATE, setupGameState } from '../helpers
 
 const RECRUITMENT_GAME_STATE = {
   ...INITIAL_GAME_STATE,
-  widgets: 100,
+  protodermis: 100,
   buyableCharacters: [
     {
       id: 'Toa_Tahu',

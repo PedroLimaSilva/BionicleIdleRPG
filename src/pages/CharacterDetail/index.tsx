@@ -31,7 +31,7 @@ import { MASK_POWERS } from '../../data/combat';
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recruitedCharacters, completedQuests, widgets, evolveBohrokToKal } = useGame();
+  const { recruitedCharacters, completedQuests, protodermis, evolveBohrokToKal } = useGame();
 
   const { setScene } = useSceneCanvas();
 
@@ -109,18 +109,18 @@ export const CharacterDetail: React.FC = () => {
                   <button
                     type="button"
                     className="evolve-button"
-                    disabled={widgets < BOHROK_KAL_EVOLUTION_COST}
+                    disabled={protodermis < BOHROK_KAL_EVOLUTION_COST}
                     onClick={() =>
                       evolveBohrokToKal(matoran.id, (evolvedId) =>
                         navigate(`/characters/${evolvedId}`, { replace: true })
                       )
                     }
                   >
-                    Evolve to Bohrok Kal ({BOHROK_KAL_EVOLUTION_COST} widgets)
+                    Evolve to Bohrok Kal ({BOHROK_KAL_EVOLUTION_COST} protodermis)
                   </button>
-                  {widgets < BOHROK_KAL_EVOLUTION_COST && (
+                  {protodermis < BOHROK_KAL_EVOLUTION_COST && (
                     <p className="evolve-hint">
-                      Need {BOHROK_KAL_EVOLUTION_COST - widgets} more widgets
+                      Need {BOHROK_KAL_EVOLUTION_COST - protodermis} more protodermis
                     </p>
                   )}
                 </div>

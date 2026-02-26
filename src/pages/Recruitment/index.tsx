@@ -11,7 +11,7 @@ import { MATORAN_DEX } from '../../data/matoran';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const Recruitment: React.FC = () => {
-  const { widgets, recruitCharacter, buyableCharacters, inventory } = useGame();
+  const { protodermis, recruitCharacter, buyableCharacters, inventory } = useGame();
   const { setScene } = useSceneCanvas();
 
   const navigate = useNavigate();
@@ -26,8 +26,8 @@ export const Recruitment: React.FC = () => {
       });
     };
 
-    return selectedMatoran && widgets >= selectedMatoran.cost && hasRequiredItems(selectedMatoran);
-  }, [selectedMatoran, widgets, inventory]);
+    return selectedMatoran && protodermis >= selectedMatoran.cost && hasRequiredItems(selectedMatoran);
+  }, [selectedMatoran, protodermis, inventory]);
 
   useEffect(() => {
     setSelectedMatoran(buyableCharacters[0] || null);
@@ -102,8 +102,8 @@ export const Recruitment: React.FC = () => {
           <div className="requirement-list">
             <h4 onClick={() => setIsExpanded(!isExpanded)}>Requirements</h4>
             <ul>
-              <li className={widgets >= selectedMatoran.cost ? 'has-enough' : 'not-enough'}>
-                {widgets >= selectedMatoran.cost ? '✅' : '❌'} {selectedMatoran.cost} widgets
+              <li className={protodermis >= selectedMatoran.cost ? 'has-enough' : 'not-enough'}>
+                {protodermis >= selectedMatoran.cost ? '✅' : '❌'} {selectedMatoran.cost} protodermis
               </li>
               {selectedMatoran.requiredItems?.map(({ item, quantity }) => {
                 const owned = inventory[item] || 0;

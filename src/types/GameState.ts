@@ -21,8 +21,8 @@ export type BattleRewardParams = {
 
 export type GameState = {
   version: number;
-  widgets: number;
-  widgetCap: number;
+  protodermis: number;
+  protodermisCap: number;
   inventory: Inventory;
   collectedKrana: KranaCollection;
   buyableCharacters: ListedCharacterData[];
@@ -49,8 +49,8 @@ export type GameState = {
 export type PartialGameState = Pick<
   GameState,
   | 'version'
-  | 'widgets'
-  | 'widgetCap'
+  | 'protodermis'
+  | 'protodermisCap'
   | 'inventory'
   | 'collectedKrana'
   | 'buyableCharacters'

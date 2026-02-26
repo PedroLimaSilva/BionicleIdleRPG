@@ -7,8 +7,8 @@ import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
 export function useCharactersState(
   initialRecruited: RecruitedCharacterData[],
   initialBuyable: ListedCharacterData[],
-  widgets: number,
-  setWidgets: (amount: number) => void,
+  protodermis: number,
+  setProtodermis: (amount: number) => void,
   addItemToInventory: (item: GameItemId, amount: number) => void
 ) {
   const [recruitedCharacters, setRecruitedCharacters] =
@@ -19,16 +19,16 @@ export function useCharactersState(
   );
 
   const recruitCharacter = (character: ListedCharacterData) => {
-    const { updatedWidgets, newRecruit, updatedBuyable } = recruitMatoran(
+    const { updatedProtodermis, newRecruit, updatedBuyable } = recruitMatoran(
       character,
-      widgets,
+      protodermis,
       buyableCharacters,
       addItemToInventory
     );
 
     if (!newRecruit) return;
 
-    setWidgets(updatedWidgets);
+    setProtodermis(updatedProtodermis);
     setRecruitedCharacters((prev) => [...prev, newRecruit]);
     setBuyableCharacters(updatedBuyable);
   };

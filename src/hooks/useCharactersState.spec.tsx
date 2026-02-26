@@ -9,15 +9,15 @@ import { GameItemId } from '../data/loot';
 
 describe('useCharactersState', () => {
   const mockAddItemToInventory = jest.fn();
-  let mockWidgets = 1000;
-  const mockSetWidgets = jest.fn((amount: number) => {
-    mockWidgets = amount;
+  let mockProtodermis = 1000;
+  const mockSetProtodermis = jest.fn((amount: number) => {
+    mockProtodermis = amount;
   });
 
   beforeEach(() => {
     mockAddItemToInventory.mockClear();
-    mockSetWidgets.mockClear();
-    mockWidgets = 1000;
+    mockSetProtodermis.mockClear();
+    mockProtodermis = 1000;
     global.alert = jest.fn();
   });
 
@@ -30,8 +30,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           initialBuyable,
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
@@ -51,8 +51,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           initialBuyable,
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
@@ -63,7 +63,7 @@ describe('useCharactersState', () => {
   });
 
   describe('recruitCharacter', () => {
-    test('recruits character when enough widgets', () => {
+    test('recruits character when enough protodermis', () => {
       const initialRecruited: RecruitedCharacterData[] = [];
       const character: ListedCharacterData = {
         id: 'Jala',
@@ -76,8 +76,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           initialBuyable,
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
@@ -86,13 +86,13 @@ describe('useCharactersState', () => {
         result.current.recruitCharacter(character);
       });
 
-      expect(mockSetWidgets).toHaveBeenCalledWith(900);
+      expect(mockSetProtodermis).toHaveBeenCalledWith(900);
       expect(result.current.recruitedCharacters).toHaveLength(1);
       expect(result.current.recruitedCharacters[0]).toEqual({ id: 'Jala', exp: 0 });
       expect(result.current.buyableCharacters).toHaveLength(0);
     });
 
-    test('does not recruit when insufficient widgets', () => {
+    test('does not recruit when insufficient protodermis', () => {
       const initialRecruited: RecruitedCharacterData[] = [];
       const character: ListedCharacterData = {
         id: 'Jala',
@@ -105,8 +105,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           initialBuyable,
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
@@ -135,8 +135,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           initialBuyable,
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
@@ -161,8 +161,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           [],
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
@@ -183,8 +183,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           [],
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
@@ -216,8 +216,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           [],
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
@@ -236,8 +236,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           [],
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
@@ -258,8 +258,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           [],
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
@@ -281,8 +281,8 @@ describe('useCharactersState', () => {
         useCharactersState(
           initialRecruited,
           [],
-          mockWidgets,
-          mockSetWidgets,
+          mockProtodermis,
+          mockSetProtodermis,
           mockAddItemToInventory
         )
       );
