@@ -279,10 +279,9 @@ describe('Jobs', () => {
 
   describe('applyOfflineJobExp', () => {
     test('returns empty arrays when no characters', () => {
-      const [updated, logs, currencyGain, loot] = applyOfflineJobExp([]);
+      const [updated, currencyGain, loot] = applyOfflineJobExp([]);
 
       expect(updated).toEqual([]);
-      expect(logs).toEqual([]);
       expect(currencyGain).toBe(0);
       expect(loot).toEqual({});
     });
@@ -310,13 +309,12 @@ describe('Jobs', () => {
         },
       ];
 
-      const [updated, logs, currencyGain] = applyOfflineJobExp(characters);
+      const [updated, currencyGain] = applyOfflineJobExp(characters);
 
       expect(updated).toHaveLength(2);
       expect(updated[0].exp).toBeGreaterThan(0);
       expect(updated[1].exp).toBeGreaterThan(0);
       expect(currencyGain).toBeGreaterThan(0);
-      expect(logs.length).toBeGreaterThan(0);
     });
 
     test('aggregates loot from multiple matoran', () => {
@@ -333,31 +331,10 @@ describe('Jobs', () => {
         },
       ];
 
-      const [, , , loot] = applyOfflineJobExp(characters);
+      const [, , loot] = applyOfflineJobExp(characters);
 
       // Loot should be an object (may have items based on RNG)
       expect(typeof loot).toBe('object');
-    });
-
-    test('generates activity logs for earned exp', () => {
-      const now = Date.now();
-      const characters: RecruitedCharacterData[] = [
-        {
-          id: 'Jala',
-          exp: 0,
-          assignment: {
-            job: MatoranJob.CharcoalMaker,
-            expRatePerSecond: 1.0,
-            assignedAt: now - 10000,
-          },
-        },
-      ];
-
-      const [, logs] = applyOfflineJobExp(characters);
-
-      // Should have at least one log for exp gain
-      const expLogs = logs.filter((log) => log.message.includes('gained'));
-      expect(expLogs.length).toBeGreaterThan(0);
     });
 
     test('does not process matoran without jobs', () => {
@@ -366,11 +343,10 @@ describe('Jobs', () => {
         { id: 'Hali', exp: 50 },
       ];
 
-      const [updated, logs, currencyGain, loot] = applyOfflineJobExp(characters);
+      const [updated, currencyGain, loot] = applyOfflineJobExp(characters);
 
       expect(updated[0].exp).toBe(100);
       expect(updated[1].exp).toBe(50);
-      expect(logs).toEqual([]);
       expect(currencyGain).toBe(0);
       expect(loot).toEqual({});
     });

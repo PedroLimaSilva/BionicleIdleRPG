@@ -3,11 +3,8 @@
 import { useState } from 'react';
 import { Quest, QuestProgress } from '../types/Quests';
 import { ListedCharacterData, RecruitedCharacterData } from '../types/Matoran';
-import { GameState } from '../types/GameState';
-import { LogType } from '../types/Logging';
 import { QUESTS } from '../data/quests';
 import { GameItemId } from '../data/loot';
-import { MATORAN_DEX } from '../data/matoran';
 import { getDebugMode } from '../services/gamePersistence';
 
 export function getCurrentTimestamp(): number {
@@ -21,7 +18,6 @@ interface UseQuestStateOptions {
   addItemToInventory: (item: GameItemId, amount: number) => void;
   setRecruitedCharacters: React.Dispatch<React.SetStateAction<RecruitedCharacterData[]>>;
   setBuyableCharacters: React.Dispatch<React.SetStateAction<ListedCharacterData[]>>;
-  addActivityLog: GameState['addActivityLog'];
   addWidgets: (widgets: number) => void;
 }
 
@@ -33,7 +29,6 @@ export const useQuestState = ({
   setRecruitedCharacters,
   setBuyableCharacters,
   addWidgets,
-  addActivityLog,
 }: UseQuestStateOptions) => {
   const [activeQuests, setActiveQuests] = useState<QuestProgress[]>(initialActive);
   const [completedQuests, setCompletedQuestIds] = useState<string[]>(initialCompleted);
@@ -72,7 +67,6 @@ export const useQuestState = ({
     );
 
     setRecruitedCharacters(updatedCharacters);
-    addActivityLog(`Started quest: ${quest.name}`, LogType.Event);
   };
 
   const completeQuest = (quest: Quest) => {
@@ -99,9 +93,6 @@ export const useQuestState = ({
     // Reassign Matoran with updated exp, evolution, and stage overrides
     const evolution = quest.rewards.evolution;
     const stageOverrides = quest.rewards.stageOverrides;
-    const evolvedIds = evolution
-      ? active.assignedMatoran.filter((id) => evolution[id]).map((id) => evolution[id])
-      : [];
 
     setRecruitedCharacters((prev) =>
       prev.map((char) => {
@@ -130,24 +121,10 @@ export const useQuestState = ({
       })
     );
 
-    if (evolvedIds.length > 0) {
-      const names = evolvedIds.map((id) => MATORAN_DEX[id]?.name ?? id).join(', ');
-      addActivityLog(`${names} evolved!`, LogType.Event);
-    }
-
-    const stageOverrideCount = stageOverrides
-      ? active.assignedMatoran.filter((id) => stageOverrides[id] && !evolution?.[id]).length
-      : 0;
-    if (stageOverrideCount > 0) {
-      addActivityLog(`${stageOverrideCount} Matoran rebuilt into stronger forms!`, LogType.Event);
-    }
-
     addWidgets(quest.rewards.currency || 0);
     // Mark as complete
     setActiveQuests((prev) => prev.filter((q) => q.questId !== quest.id));
     setCompletedQuestIds((prev) => [...prev, quest.id]);
-
-    addActivityLog(`Completed quest: ${quest.name}`, LogType.Event);
   };
 
   const cancelQuest = (questId: string) => {
@@ -168,7 +145,6 @@ export const useQuestState = ({
 
     setRecruitedCharacters(updatedCharacters);
     setActiveQuests((prev) => prev.filter((q) => q.questId !== questId));
-    addActivityLog(`Cancelled quest: ${questId}`, LogType.Event);
   };
 
   return {
