@@ -22,7 +22,7 @@ interface UseQuestStateOptions {
   setRecruitedCharacters: React.Dispatch<React.SetStateAction<RecruitedCharacterData[]>>;
   setBuyableCharacters: React.Dispatch<React.SetStateAction<ListedCharacterData[]>>;
   addActivityLog: GameState['addActivityLog'];
-  addWidgets: (widgets: number) => void;
+  addProtodermis: (amount: number) => void;
 }
 
 export const useQuestState = ({
@@ -32,7 +32,7 @@ export const useQuestState = ({
   addItemToInventory,
   setRecruitedCharacters,
   setBuyableCharacters,
-  addWidgets,
+  addProtodermis,
   addActivityLog,
 }: UseQuestStateOptions) => {
   const [activeQuests, setActiveQuests] = useState<QuestProgress[]>(initialActive);
@@ -142,7 +142,7 @@ export const useQuestState = ({
       addActivityLog(`${stageOverrideCount} Matoran rebuilt into stronger forms!`, LogType.Event);
     }
 
-    addWidgets(quest.rewards.currency || 0);
+    addProtodermis(quest.rewards.currency || 0);
     // Mark as complete
     setActiveQuests((prev) => prev.filter((q) => q.questId !== quest.id));
     setCompletedQuestIds((prev) => [...prev, quest.id]);

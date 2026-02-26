@@ -55,6 +55,16 @@
     height: 100%;
     transition: width var(--transition-slow);
   }
+
+  &-bar--protodermis .currency-fill {
+    background: linear-gradient(
+      90deg,
+      #c0c0c0,
+      #e8e8e8,
+      #a8a8a8
+    );
+    box-shadow: 0 0 8px rgba(192, 192, 192, 0.5);
+  }
   &-label {
     position: absolute;
     right: 50%;

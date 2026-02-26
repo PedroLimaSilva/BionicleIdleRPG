@@ -16,8 +16,13 @@ export function loadGameState() {
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
-      if (!parsed.widgetCap) {
-        parsed.widgetCap = INITIAL_GAME_STATE.widgetCap;
+      // Migrate old save keys (widgets/widgetCap) to protodermis/protodermisCap
+      if (parsed.protodermis === undefined && typeof parsed.widgets === 'number') {
+        parsed.protodermis = parsed.widgets;
+        parsed.protodermisCap = parsed.widgetCap ?? INITIAL_GAME_STATE.protodermisCap;
+      }
+      if (!parsed.protodermisCap) {
+        parsed.protodermisCap = INITIAL_GAME_STATE.protodermisCap;
       }
       if (!parsed.collectedKrana) {
         parsed.collectedKrana = {};
@@ -35,7 +40,7 @@ export function loadGameState() {
         return {
           ...parsed,
           recruitedCharacters,
-          widgets: clamp(parsed.widgets + currency, 0, parsed.widgetCap),
+          protodermis: clamp(parsed.protodermis + currency, 0, parsed.protodermisCap),
           activityLog: logs,
         };
       }
@@ -93,7 +98,7 @@ function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
     data &&
     typeof data === 'object' &&
     data.version === CURRENT_GAME_STATE_VERSION &&
-    typeof data.widgets === 'number' &&
+    typeof data.protodermis === 'number' &&
     typeof data.inventory === 'object' &&
     Array.isArray(data.recruitedCharacters)
   );

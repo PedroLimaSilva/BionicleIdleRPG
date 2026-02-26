@@ -1,5 +1,5 @@
 import { applyJobExp } from '../game/Jobs';
-import { WIDGET_RATE } from '../data/jobs';
+import { PROTODERMIS_RATE } from '../data/jobs';
 import { RecruitedCharacterData } from '../types/Matoran';
 import { LogType } from '../types/Logging';
 import { ActivityLogEntry } from '../types/Logging';
@@ -8,7 +8,7 @@ import { MATORAN_DEX } from '../data/matoran';
 
 type TickResult = {
   updatedMatoran: RecruitedCharacterData;
-  earnedWidgets: number;
+  earnedProtodermis: number;
   earnedLoot: Inventory;
   expGained: number;
   logs: ActivityLogEntry[];
@@ -16,17 +16,17 @@ type TickResult = {
 
 export function tickMatoranJobExp(matoran: RecruitedCharacterData, now: number): TickResult {
   const [updated, exp, loot] = applyJobExp(matoran, now);
-  const earnedWidgets = Math.floor(exp * WIDGET_RATE);
+  const earnedProtodermis = Math.floor(exp * PROTODERMIS_RATE);
 
   const matoran_dex = MATORAN_DEX[updated.id];
 
   const logs: ActivityLogEntry[] = [];
 
-  if (earnedWidgets > 0) {
+  if (earnedProtodermis > 0) {
     logs.push({
       id: crypto.randomUUID(),
-      message: `${matoran_dex.name} earned ${earnedWidgets} widgets`,
-      type: LogType.Widgets,
+      message: `${matoran_dex.name} earned ${earnedProtodermis} protodermis`,
+      type: LogType.Protodermis,
       timestamp: now,
     });
   }
@@ -51,7 +51,7 @@ export function tickMatoranJobExp(matoran: RecruitedCharacterData, now: number):
 
   return {
     updatedMatoran: updated,
-    earnedWidgets,
+    earnedProtodermis,
     earnedLoot: loot,
     expGained: exp,
     logs,

@@ -6,7 +6,7 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 
 ### Character Management
 
-- **Recruitment System**: Recruit Matoran and Toa characters using widgets (currency) and required items
+- **Recruitment System**: Recruit Matoran and Toa characters using protodermis (currency) and required items
 - **Character Progression**: Characters gain XP from jobs and quests, leveling up to become more powerful
 - **Character Customization**: Override mask colors and appearances
 - **3D Character Rendering**: View your characters in 3D using React Three Fiber
@@ -16,7 +16,7 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - **Job System**: Assign characters to element-based jobs that produce resources over time
   - Jobs have element affinities (Fire, Water, Air, Ice, Stone, Earth, Light, Shadow)
   - Characters with matching elements perform better at jobs
-  - Jobs produce items and widgets automatically while you're away
+  - Jobs produce items and protodermis automatically while you're away
 - **Offline Progress**: Game continues to generate resources when you're not playing
 
 ### Quest System
@@ -192,7 +192,7 @@ Jobs are element-based activities that generate resources:
 - Characters with matching elements perform better
 - Jobs have different production rates
 - Some jobs require quest completion to unlock
-- Jobs generate widgets (currency) and items over time
+- Jobs generate protodermis (currency) and items over time
 
 ### Quests
 
@@ -200,7 +200,7 @@ Quests are story-driven activities:
 
 - Require specific characters, items, or minimum levels
 - Have time-based durations
-- Reward XP, items, currency, and character unlocks
+- Reward XP, items, protodermis, and character unlocks
 - Unlock new content as you progress
 
 ### Combat

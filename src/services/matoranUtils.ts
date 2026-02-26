@@ -163,18 +163,18 @@ export function getEffectiveMatoran(
 
 export function recruitMatoran(
   character: ListedCharacterData,
-  widgets: number,
+  protodermis: number,
   buyableCharacters: ListedCharacterData[],
   addItem: (item: GameItemId, amount: number) => void
 ): {
-  updatedWidgets: number;
+  updatedProtodermis: number;
   newRecruit: RecruitedCharacterData | null;
   updatedBuyable: ListedCharacterData[];
 } {
-  if (widgets < character.cost) {
-    alert('Not enough widgets!');
+  if (protodermis < character.cost) {
+    alert('Not enough protodermis!');
     return {
-      updatedWidgets: widgets,
+      updatedProtodermis: protodermis,
       newRecruit: null,
       updatedBuyable: buyableCharacters,
     };
@@ -190,7 +190,7 @@ export function recruitMatoran(
   });
 
   return {
-    updatedWidgets: widgets - character.cost,
+    updatedProtodermis: protodermis - character.cost,
     newRecruit: recruitedCharacter,
     updatedBuyable: buyableCharacters.filter((m) => m.id !== character.id),
   };

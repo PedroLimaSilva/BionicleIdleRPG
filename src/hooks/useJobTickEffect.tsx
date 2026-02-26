@@ -9,7 +9,7 @@ export function useJobTickEffect(
   setRecruitedCharacters: (
     fn: (prev: RecruitedCharacterData[]) => RecruitedCharacterData[]
   ) => void,
-  addWidgets: (amount: number) => void,
+  addProtodermis: (amount: number) => void,
   addItemToInventory: (item: GameItemId, amount: number) => void,
   addActivityLog: (message: string, type: ActivityLogEntry['type']) => void,
   intervalMs: number = 5000
@@ -20,12 +20,12 @@ export function useJobTickEffect(
 
       setRecruitedCharacters((prev) =>
         prev.map((matoran) => {
-          const { updatedMatoran, earnedWidgets, earnedLoot, logs } = tickMatoranJobExp(
+          const { updatedMatoran, earnedProtodermis, earnedLoot, logs } = tickMatoranJobExp(
             matoran,
             now
           );
 
-          if (earnedWidgets > 0) addWidgets(earnedWidgets);
+          if (earnedProtodermis > 0) addProtodermis(earnedProtodermis);
           Object.entries(earnedLoot).forEach(([item, amount]) => {
             addItemToInventory(item as GameItemId, amount);
           });
@@ -40,7 +40,7 @@ export function useJobTickEffect(
   }, [
     recruitedCharacters,
     setRecruitedCharacters,
-    addWidgets,
+    addProtodermis,
     addItemToInventory,
     addActivityLog,
     intervalMs,

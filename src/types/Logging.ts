@@ -3,7 +3,7 @@ export const enum LogType {
   Active = 'active',
   Event = 'event',
   Loot = 'loot',
-  Widgets = 'widgets',
+  Protodermis = 'protodermis',
 }
 
 export type ActivityLogEntry = {

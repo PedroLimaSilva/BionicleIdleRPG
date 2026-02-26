@@ -16,7 +16,7 @@ This document identifies technical debt, inconsistencies, and architectural impr
 
 **Current locations:**
 
-- `src/services/matoranUtils.ts` - uses `alert()` for insufficient widgets
+- `src/services/matoranUtils.ts` - uses `alert()` for insufficient protodermis
 - `src/pages/Recruitment/index.tsx` - uses `alert()` for successful recruitment
 
 **Recommendation:** Replace `alert()` calls with proper UI feedback (toast notifications or activity log).

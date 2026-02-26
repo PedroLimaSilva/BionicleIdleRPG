@@ -3,21 +3,21 @@ import { useGame } from '../../context/Game';
 import './index.scss';
 
 export const CurrencyBar = ({ isPortrait }: { isPortrait: boolean }) => {
-  const { widgets, widgetCap } = useGame();
+  const { protodermis, protodermisCap } = useGame();
 
   return (
-    <div className={`currency-bar ${isPortrait ? 'portrait' : 'landscape'}`}>
+    <div className={`currency-bar currency-bar--protodermis ${isPortrait ? 'portrait' : 'landscape'}`}>
       <div className="currency-progress">
         <div
           className="currency-fill"
           style={
             isPortrait
-              ? { width: `${(widgets / widgetCap) * 100}%` }
-              : { height: `${(widgets / widgetCap) * 100}%` }
+              ? { width: `${(protodermis / protodermisCap) * 100}%` }
+              : { height: `${(protodermis / protodermisCap) * 100}%` }
           }
         ></div>
         <div className="currency-label">
-          {widgets}/{widgetCap}
+          {protodermis}/{protodermisCap} Protodermis
         </div>
       </div>
     </div>

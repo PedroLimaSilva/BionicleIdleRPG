@@ -123,10 +123,10 @@
       opacity: 0.8;
     }
 
-    &.widgets::before {
+    &.protodermis::before {
       content: '🪙';
       margin-right: 0.5rem;
-      color: var(--color-accent);
+      color: #c0c0c0;
       opacity: 0.9;
     }
 
