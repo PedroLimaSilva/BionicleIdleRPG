@@ -168,6 +168,25 @@ test.describe('Character Model Rendering', () => {
     });
   });
 
+  test.describe('Rebuilt Matoran', () => {
+    test('should render rebuilt matoran character detail page', async ({ page }) => {
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [{ id: 'Jaller', exp: 0 }],
+      });
+      await goto(page, '/characters/Jaller');
+      await disableCSSAnimations(page);
+      await waitForCanvas(page);
+
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        timeout: 15000,
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
+  });
+
   test.describe('Bohrok Characters', () => {
     ['tahnok', 'gahlok', 'lehvak', 'pahrak', 'nuhvok', 'kohrak'].forEach((characterId) => {
       test(`should render ${characterId} character detail page`, async ({ page }) => {
