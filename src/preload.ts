@@ -6,6 +6,7 @@ import { useNuvaMask } from './hooks/useNuvaMask';
 // Preload models once at app start
 export function preloadAssets() {
   useGLTF.preload(import.meta.env.BASE_URL + 'matoran_master.glb');
+  useGLTF.preload(import.meta.env.BASE_URL + 'matoran_rebuilt.glb');
   useMask.preload();
   useArmor.preload();
   useNuvaMask.preload();
