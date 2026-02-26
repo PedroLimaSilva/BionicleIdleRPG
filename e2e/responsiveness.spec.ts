@@ -25,8 +25,7 @@ test.describe('Responsiveness', () => {
         await page.setViewportSize(size);
         await goto(page, '/');
 
-        await expect(page.locator('h1')).toContainText('Welcome to Mata Nui');
-        await expect(page.locator('.activity-log')).toBeVisible();
+        await expect(page.locator('h2.quests-page__title').first()).toContainText('Ongoing Quests');
         await expect(page.locator('.nav-bar')).toBeVisible();
 
         await expect(page).toHaveScreenshot(`homepage-${name}.png`, {

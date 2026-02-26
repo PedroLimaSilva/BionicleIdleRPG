@@ -3,7 +3,6 @@ import { loadGameState } from '../services/gamePersistence';
 import { useInventoryState } from './useInventoryState';
 import { useCharactersState } from './useCharactersState';
 import { useJobTickEffect } from './useJobTickEffect';
-import { useActivityLogState } from './useActivityLogState';
 import { useGamePersistence } from './useGamePersistence';
 import { GameState } from '../types/GameState';
 import { useQuestState } from './useQuestState';
@@ -12,8 +11,6 @@ import { clamp } from '../utils/math';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
 import { BattleRewardParams, KranaReward } from '../types/GameState';
 import { RecruitedCharacterData } from '../types/Matoran';
-import { LogType } from '../types/Logging';
-import { MATORAN_DEX } from '../data/matoran';
 import {
   computeBattleExpTotal,
   computeKranaRewardsForBattle,
@@ -58,15 +55,11 @@ export const useGameLogic = (): GameState => {
     addItemToInventory
   );
 
-  const { activityLog, addActivityLog, removeActivityLogEntry, clearActivityLog } =
-    useActivityLogState(initialState.activityLog);
-
   useJobTickEffect(
     recruitedCharacters,
     setRecruitedCharacters,
     (amount) => setWidgets((prev) => clamp(prev + amount, 0, widgetCap)),
-    addItemToInventory,
-    addActivityLog
+    addItemToInventory
   );
 
   const { activeQuests, completedQuests, startQuest, cancelQuest, completeQuest } = useQuestState({
@@ -79,7 +72,6 @@ export const useGameLogic = (): GameState => {
     addWidgets: (widgets: number) => {
       setWidgets((prev) => clamp(prev + widgets, 0, widgetCap));
     },
-    addActivityLog,
   });
 
   const battle = useBattleState(isNuvaSymbolsSequestered(completedQuests));
@@ -101,7 +93,6 @@ export const useGameLogic = (): GameState => {
     version,
     activeQuests,
     completedQuests,
-    activityLog,
     widgets,
     widgetCap,
     inventory,
@@ -116,9 +107,6 @@ export const useGameLogic = (): GameState => {
     startQuest,
     cancelQuest,
     completeQuest,
-    addActivityLog,
-    removeActivityLogEntry,
-    clearActivityLog,
     battle,
     collectKrana: (element: KranaElement, id: KranaId) => {
       setCollectedKrana((prev) => {
@@ -144,10 +132,6 @@ export const useGameLogic = (): GameState => {
         const evolved = evolveBohrokToKal(matoran);
         setRecruitedCharacters((prevChars) =>
           prevChars.map((m) => (m.id === matoranId ? evolved : m))
-        );
-        addActivityLog(
-          `${MATORAN_DEX[matoranId]?.name ?? matoranId} evolved into ${MATORAN_DEX[evolved.id]?.name ?? evolved.id}!`,
-          LogType.Event
         );
         onSuccess?.(evolved.id);
         return prev - BOHROK_KAL_EVOLUTION_COST;
