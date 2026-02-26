@@ -15,21 +15,8 @@ const MAT_COLOR_MAP = {
   'Arm.L': 'arms',
   'Arm.R': 'arms',
   Torso: 'body',
-  Mask: 'mask',
   Brain: 'eyes',
   GlowingEyes: 'eyes',
-  Akaku: 'mask',
-  Hau: 'mask',
-  Huna: 'mask',
-  Kakama: 'mask',
-  Kaukau: 'mask',
-  Komau: 'mask',
-  Mahiki: 'mask',
-  Matatu: 'mask',
-  Miru: 'mask',
-  Pakari: 'mask',
-  Rau: 'mask',
-  Ruru: 'mask',
 };
 
 export function RebuiltMatoranModel({ matoran }: { matoran: BaseMatoran }) {
