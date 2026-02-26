@@ -57,4 +57,10 @@ export const INITIAL_GAME_STATE: GameState = {
   ): boolean {
     throw new Error('Function not implemented.');
   },
+  evolveMatoranToRebuilt: function (
+    _matoranId: RecruitedCharacterData['id'],
+    _onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
+  ): boolean {
+    throw new Error('Function not implemented.');
+  },
 };

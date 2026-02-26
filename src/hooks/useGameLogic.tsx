@@ -22,6 +22,11 @@ import {
   evolveBohrokToKal,
   BOHROK_KAL_EVOLUTION_COST,
 } from '../game/BohrokEvolution';
+import {
+  canEvolveMatoranToRebuilt,
+  evolveMatoranToRebuilt,
+  MATORAN_REBUILT_COST,
+} from '../game/MatoranEvolution';
 import { isNuvaSymbolsSequestered } from '../game/nuvaSymbols';
 
 export const useGameLogic = (): GameState => {
@@ -135,6 +140,28 @@ export const useGameLogic = (): GameState => {
         );
         onSuccess?.(evolved.id);
         return prev - BOHROK_KAL_EVOLUTION_COST;
+      });
+      return true;
+    },
+    evolveMatoranToRebuilt: (
+      matoranId: RecruitedCharacterData['id'],
+      onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
+    ) => {
+      const matoran = recruitedCharacters.find((m) => m.id === matoranId);
+      if (
+        !matoran ||
+        !canEvolveMatoranToRebuilt(matoran, completedQuests)
+      )
+        return false;
+
+      setWidgets((prev) => {
+        if (prev < MATORAN_REBUILT_COST) return prev;
+        const evolved = evolveMatoranToRebuilt(matoran);
+        setRecruitedCharacters((prevChars) =>
+          prevChars.map((m) => (m.id === matoranId ? evolved : m))
+        );
+        onSuccess?.(evolved.id);
+        return prev - MATORAN_REBUILT_COST;
       });
       return true;
     },
