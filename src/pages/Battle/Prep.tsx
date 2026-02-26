@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useGame } from '../../context/Game';
 import { RecruitedCharacterData } from '../../types/Matoran';
 import { MATORAN_DEX } from '../../data/matoran';
-import { isToa } from '../../services/matoranUtils';
+import { getEffectiveMatoran, isToa } from '../../services/matoranUtils';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../components/MaskPowerTooltip';
 import { getLevelFromExp } from '../../game/Levelling';
@@ -49,7 +49,9 @@ export const BattlePrep: React.FC = () => {
     setSelectingIndex(index);
   };
 
-  const selectable = recruitedCharacters.filter((c) => isToa(MATORAN_DEX[c.id]));
+  const selectable = recruitedCharacters.filter((c) =>
+    isToa(getEffectiveMatoran(c))
+  );
 
   if (!currentEncounter) return null;
 

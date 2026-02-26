@@ -1,7 +1,7 @@
 import { RecruitedCharacterData } from '../types/Matoran';
-import { MATORAN_DEX } from '../data/matoran';
 import { MatoranStage } from '../types/Matoran';
 import { getLevelFromExp } from './Levelling';
+import { getEffectiveStage } from './characterStage';
 
 export const BOHROK_KAL_LEVEL = 100;
 export const BOHROK_KAL_EVOLUTION_COST = 5000;
@@ -12,8 +12,8 @@ const BOHROK_KAL_SUFFIX = '_kal';
  * Returns true if the Bohrok can evolve to Bohrok Kal (level 100 reached).
  */
 export function canEvolveBohrokToKal(matoran: RecruitedCharacterData): boolean {
-  const matoranDex = MATORAN_DEX[matoran.id];
-  if (!matoranDex || matoranDex.stage !== MatoranStage.Bohrok) {
+  const effectiveStage = getEffectiveStage(matoran);
+  if (effectiveStage !== MatoranStage.Bohrok) {
     return false;
   }
 

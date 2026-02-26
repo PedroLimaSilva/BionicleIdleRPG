@@ -5,6 +5,7 @@ import { GameItemId } from '../data/loot';
 import { GameState } from '../types/GameState';
 import { Inventory } from '../services/inventoryUtils';
 import { MATORAN_DEX } from '../data/matoran';
+import { getEffectiveStage } from './characterStage';
 
 export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const jobData = JOB_DETAILS[job];
@@ -29,6 +30,7 @@ export function getAvailableJobs(
     .filter((job) => isJobUnlocked(job, gameState));
 
   if (matoran) {
+    const effectiveStage = getEffectiveStage(matoran);
     const matoranDex = MATORAN_DEX[matoran.id];
     if (!matoranDex) {
       return jobs.filter((job) => !JOB_DETAILS[job].allowedStages);
@@ -36,7 +38,7 @@ export function getAvailableJobs(
     jobs = jobs.filter((job) => {
       const { allowedStages } = JOB_DETAILS[job];
       if (!allowedStages) return true;
-      return allowedStages.includes(matoranDex.stage);
+      return effectiveStage !== undefined && allowedStages.includes(effectiveStage);
     });
   }
 

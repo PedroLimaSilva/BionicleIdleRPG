@@ -1,7 +1,7 @@
 import { RecruitedCharacterData } from '../types/Matoran';
-import { MATORAN_DEX } from '../data/matoran';
 import { MatoranStage } from '../types/Matoran';
 import { getLevelFromExp } from './Levelling';
+import { getEffectiveStage } from './characterStage';
 
 export const NAMING_DAY_QUEST_ID = 'bohrok_kal_naming_day';
 export const MATORAN_REBUILT_LEVEL = 50;
@@ -89,8 +89,7 @@ export function canEvolveMatoranToRebuilt(
     return false;
   }
 
-  const baseDex = MATORAN_DEX[matoran.id];
-  const effectiveStage = matoran.stage ?? baseDex?.stage;
+  const effectiveStage = getEffectiveStage(matoran);
   if (effectiveStage !== MatoranStage.Diminished) {
     return false;
   }

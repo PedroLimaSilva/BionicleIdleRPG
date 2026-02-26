@@ -9,6 +9,7 @@ import { MatoranJob } from '../types/Jobs';
 import { GameItemId } from '../data/loot';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
+import { getEffectiveStage } from '../game/characterStage';
 import { MATORAN_DEX } from '../data/matoran';
 import { GameState } from '../types/GameState';
 
@@ -160,6 +161,9 @@ export function getEffectiveMatoran(
     ...matoran,
   };
 }
+
+/** Re-export for callers that need effective stage from RecruitedCharacterData. */
+export { getEffectiveStage };
 
 export function recruitMatoran(
   character: ListedCharacterData,
