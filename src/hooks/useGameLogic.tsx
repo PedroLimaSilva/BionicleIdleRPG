@@ -27,6 +27,11 @@ import {
   evolveMatoranToRebuilt,
   MATORAN_REBUILT_COST,
 } from '../game/MatoranEvolution';
+import {
+  canEvolveToaToNuva,
+  evolveToaToNuva,
+  TOA_NUVA_COST,
+} from '../game/ToaEvolution';
 import { isNuvaSymbolsSequestered } from '../game/nuvaSymbols';
 
 export const useGameLogic = (): GameState => {
@@ -162,6 +167,24 @@ export const useGameLogic = (): GameState => {
         );
         onSuccess?.(evolved.id);
         return prev - MATORAN_REBUILT_COST;
+      });
+      return true;
+    },
+    evolveToaToNuva: (
+      matoranId: RecruitedCharacterData['id'],
+      onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
+    ) => {
+      const matoran = recruitedCharacters.find((m) => m.id === matoranId);
+      if (!matoran || !canEvolveToaToNuva(matoran, completedQuests)) return false;
+
+      setWidgets((prev) => {
+        if (prev < TOA_NUVA_COST) return prev;
+        const evolved = evolveToaToNuva(matoran);
+        setRecruitedCharacters((prevChars) =>
+          prevChars.map((m) => (m.id === matoranId ? evolved : m))
+        );
+        onSuccess?.(evolved.id);
+        return prev - TOA_NUVA_COST;
       });
       return true;
     },

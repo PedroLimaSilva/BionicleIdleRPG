@@ -23,6 +23,10 @@ import {
   canEvolveMatoranToRebuilt,
   MATORAN_REBUILT_COST,
 } from '../../game/MatoranEvolution';
+import {
+  canEvolveToaToNuva,
+  TOA_NUVA_COST,
+} from '../../game/ToaEvolution';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { KranaCollection } from './KranaCollection';
@@ -41,6 +45,7 @@ export const CharacterDetail: React.FC = () => {
     widgets,
     evolveBohrokToKal,
     evolveMatoranToRebuilt,
+    evolveToaToNuva,
   } = useGame();
 
   const { setScene } = useSceneCanvas();
@@ -159,6 +164,31 @@ export const CharacterDetail: React.FC = () => {
                     {widgets < MATORAN_REBUILT_COST && (
                       <p className="evolve-hint">
                         Need {MATORAN_REBUILT_COST - widgets} more widgets
+                      </p>
+                    )}
+                  </div>
+                )}
+              {isToaMata(matoran) &&
+                canEvolveToaToNuva(matoran, completedQuests) && (
+                  <div className="bohrok-evolve-section">
+                    <p>
+                      This Toa has reached level 50 and can evolve into Toa Nuva.
+                    </p>
+                    <button
+                      type="button"
+                      className="evolve-button"
+                      disabled={widgets < TOA_NUVA_COST}
+                      onClick={() =>
+                        evolveToaToNuva(matoran.id, (evolvedId) =>
+                          navigate(`/characters/${evolvedId}`, { replace: true })
+                        )
+                      }
+                    >
+                      Evolve to Toa Nuva ({TOA_NUVA_COST} widgets)
+                    </button>
+                    {widgets < TOA_NUVA_COST && (
+                      <p className="evolve-hint">
+                        Need {TOA_NUVA_COST - widgets} more widgets
                       </p>
                     )}
                   </div>

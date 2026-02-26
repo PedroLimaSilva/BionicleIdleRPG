@@ -215,4 +215,52 @@ test.describe('Character Detail Page', () => {
       });
     });
   });
+
+  test.describe('Toa Nuva evolution', () => {
+    const expBelow50 = 1000;
+    const expLevel50 = 36000;
+
+    test('should not show evolve section when Dawn of the Toa Nuva complete but level below 50', async ({
+      page,
+    }) => {
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [{ id: 'Toa_Tahu', exp: expBelow50 }],
+        completedQuests: ['bohrok_evolve_toa_nuva'],
+        widgets: 3000,
+      });
+      await goto(page, '/characters/Toa_Tahu');
+      await disableCSSAnimations(page);
+      await hideCanvas(page);
+
+      await expect(page.locator('.bohrok-evolve-section')).not.toBeVisible();
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
+
+    test('should show evolve section when Dawn of the Toa Nuva complete and level 50+', async ({
+      page,
+    }) => {
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [{ id: 'Toa_Tahu', exp: expLevel50 }],
+        completedQuests: ['bohrok_evolve_toa_nuva'],
+        widgets: 3000,
+      });
+      await goto(page, '/characters/Toa_Tahu');
+      await disableCSSAnimations(page);
+      await hideCanvas(page);
+
+      await expect(page.locator('.bohrok-evolve-section')).toBeVisible();
+      await expect(page.getByText(/Evolve to Toa Nuva/)).toBeVisible();
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
+  });
 });

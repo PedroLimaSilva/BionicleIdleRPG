@@ -48,6 +48,10 @@ export type GameState = {
     matoranId: RecruitedCharacterData['id'],
     onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
   ) => boolean;
+  evolveToaToNuva: (
+    matoranId: RecruitedCharacterData['id'],
+    onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
+  ) => boolean;
 };
 
 export type PartialGameState = Pick<
