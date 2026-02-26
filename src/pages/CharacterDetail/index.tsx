@@ -13,6 +13,7 @@ import {
   isToa,
   isToaMata,
   isBohrok,
+  isBohrokOrKal,
 } from '../../services/matoranUtils';
 import {
   canEvolveBohrokToKal,
@@ -49,7 +50,7 @@ export const CharacterDetail: React.FC = () => {
     if (isToaMata(matoran) && isKranaCollectionActive(completedQuests)) {
       base.push('krana');
     }
-    if (matoran.quest || isMatoran(matoran)) {
+    if (matoran.quest || isMatoran(matoran) || isBohrokOrKal(matoran)) {
       base.push('tasks');
     }
     if (matoran.chronicleId) {
@@ -138,7 +139,9 @@ export const CharacterDetail: React.FC = () => {
           {activeTab === 'tasks' && (
             <div>
               {/* Job Assignement  */}
-              {isMatoran(matoran) && <JobAssignment matoran={matoran} />}
+              {(isMatoran(matoran) || isBohrokOrKal(matoran)) && (
+                <JobAssignment matoran={matoran} />
+              )}
 
               {/* Assigned Quest  */}
               {matoran.quest && (
