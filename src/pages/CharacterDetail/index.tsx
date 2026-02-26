@@ -18,6 +18,10 @@ import {
   canEvolveBohrokToKal,
   BOHROK_KAL_EVOLUTION_COST,
 } from '../../game/BohrokEvolution';
+import {
+  canEvolveMatoranToRebuilt,
+  MATORAN_REBUILT_COST,
+} from '../../game/MatoranEvolution';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { KranaCollection } from './KranaCollection';
@@ -30,7 +34,13 @@ import { MASK_POWERS } from '../../data/combat';
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recruitedCharacters, completedQuests, widgets, evolveBohrokToKal } = useGame();
+  const {
+    recruitedCharacters,
+    completedQuests,
+    widgets,
+    evolveBohrokToKal,
+    evolveMatoranToRebuilt,
+  } = useGame();
 
   const { setScene } = useSceneCanvas();
 
@@ -124,6 +134,34 @@ export const CharacterDetail: React.FC = () => {
                   )}
                 </div>
               )}
+              {isMatoran(matoran) &&
+                canEvolveMatoranToRebuilt(matoran, completedQuests) && (
+                  <div className="bohrok-evolve-section">
+                    <p>
+                      This Matoran has reached level 50 and can be rebuilt into a
+                      stronger form.
+                    </p>
+                    <button
+                      type="button"
+                      className="evolve-button"
+                      disabled={widgets < MATORAN_REBUILT_COST}
+                      onClick={() =>
+                        evolveMatoranToRebuilt(matoran.id, (evolvedId) => {
+                          if (evolvedId !== matoran.id) {
+                            navigate(`/characters/${evolvedId}`, { replace: true });
+                          }
+                        })
+                      }
+                    >
+                      Upgrade to Rebuilt ({MATORAN_REBUILT_COST} widgets)
+                    </button>
+                    {widgets < MATORAN_REBUILT_COST && (
+                      <p className="evolve-hint">
+                        Need {MATORAN_REBUILT_COST - widgets} more widgets
+                      </p>
+                    )}
+                  </div>
+                )}
               {isToa(matoran) && activeMask && (
                 <div>
                   <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>
