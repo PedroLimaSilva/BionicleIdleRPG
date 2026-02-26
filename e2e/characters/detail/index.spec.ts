@@ -116,4 +116,103 @@ test.describe('Character Detail Page', () => {
       });
     });
   });
+
+  test.describe('Matoran Rebuilt upgrade', () => {
+    // exp 1000 = level 1; MATORAN_REBUILT_LEVEL = 50
+    const expBelow50 = 1000;
+    const expLevel50 = 36000; // safely level 50+
+
+    test('should not show upgrade section when Naming Day complete but level below 50', async ({
+      page,
+    }) => {
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [{ id: 'Kapura', exp: expBelow50 }],
+        completedQuests: ['bohrok_kal_naming_day'],
+        widgets: 1000,
+      });
+      await goto(page, '/characters/Kapura');
+      await disableCSSAnimations(page);
+      await hideCanvas(page);
+
+      // Stats tab is default; upgrade section should not appear
+      await expect(page.locator('.bohrok-evolve-section')).not.toBeVisible();
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
+
+    test('should show upgrade section when Naming Day complete and level 50+', async ({
+      page,
+    }) => {
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [{ id: 'Kapura', exp: expLevel50 }],
+        completedQuests: ['bohrok_kal_naming_day'],
+        widgets: 1000,
+      });
+      await goto(page, '/characters/Kapura');
+      await disableCSSAnimations(page);
+      await hideCanvas(page);
+
+      await expect(page.locator('.bohrok-evolve-section')).toBeVisible();
+      await expect(page.getByText(/Upgrade to Rebuilt/)).toBeVisible();
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
+  });
+
+  test.describe('Bohrok Kal evolution', () => {
+    // BOHROK_KAL_LEVEL = 100
+    const expBelow100 = 1000;
+    const expLevel100 = 98503;
+
+    test('should not show evolve section when Bohrok below level 100', async ({
+      page,
+    }) => {
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [{ id: 'tahnok', exp: expBelow100 }],
+        completedQuests: [],
+        widgets: 5000,
+      });
+      await goto(page, '/characters/tahnok');
+      await disableCSSAnimations(page);
+      await hideCanvas(page);
+
+      await expect(page.locator('.bohrok-evolve-section')).not.toBeVisible();
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
+
+    test('should show evolve section when Bohrok at level 100+', async ({
+      page,
+    }) => {
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [{ id: 'tahnok', exp: expLevel100 }],
+        completedQuests: [],
+        widgets: 5000,
+      });
+      await goto(page, '/characters/tahnok');
+      await disableCSSAnimations(page);
+      await hideCanvas(page);
+
+      await expect(page.locator('.bohrok-evolve-section')).toBeVisible();
+      await expect(page.getByText(/Evolve to Bohrok Kal/)).toBeVisible();
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
+  });
 });
