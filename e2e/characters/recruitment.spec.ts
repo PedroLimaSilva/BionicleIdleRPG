@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goto, INITIAL_GAME_STATE, setupGameState } from '../helpers';
+import { goto, hideCanvas, INITIAL_GAME_STATE, setupGameState } from '../helpers';
 
 const RECRUITMENT_GAME_STATE = {
   ...INITIAL_GAME_STATE,
@@ -75,6 +75,7 @@ test.describe('Recruitment Page', () => {
     });
 
     await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 10000 });
+    await hideCanvas(page);
 
     // Take a full page screenshot (canvas hidden - model rendering tested elsewhere)
     await expect(page).toHaveScreenshot({
