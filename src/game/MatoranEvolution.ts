@@ -7,6 +7,44 @@ export const NAMING_DAY_QUEST_ID = 'bohrok_kal_naming_day';
 export const MATORAN_REBUILT_LEVEL = 50;
 export const MATORAN_REBUILT_COST = 1000;
 
+/** Config for character evolution: ID changes and/or stage overrides. */
+export interface EvolutionConfig {
+  /** Maps participant IDs to their evolved form (new ID). */
+  evolutionMap?: Record<string, string>;
+  /** Stage override for participants who keep their ID. */
+  stageOverride?: MatoranStage;
+}
+
+/**
+ * Generic evolution: applies evolutionMap (ID change) or stageOverride (same ID).
+ * If evolutionMap has an entry for matoran.id, returns evolved character with new ID.
+ * Otherwise, if stageOverride is set, returns matoran with stage override.
+ */
+export function evolveCharacter(
+  matoran: RecruitedCharacterData,
+  config: EvolutionConfig
+): RecruitedCharacterData {
+  const evolvedId = config.evolutionMap?.[matoran.id];
+
+  if (evolvedId) {
+    return {
+      id: evolvedId,
+      exp: matoran.exp,
+      assignment: undefined,
+      quest: undefined,
+    };
+  }
+
+  if (config.stageOverride !== undefined) {
+    return {
+      ...matoran,
+      stage: config.stageOverride,
+    };
+  }
+
+  return matoran;
+}
+
 /** Diminished matoran IDs that can evolve to Rebuilt after Naming Day. */
 const UPGRADEABLE_DIMINISHED_IDS = [
   'Kapura',
@@ -27,11 +65,13 @@ const UPGRADEABLE_DIMINISHED_IDS = [
   'Hafu',
 ] as const;
 
-/** Maps diminished IDs to their Rebuilt form (name change). Others get stage override only. */
-const EVOLUTION_MAP: Record<string, string> = {
-  Jala: 'Jaller',
-  Maku: 'Macku',
-  Huki: 'Hewkii',
+const MATORAN_REBUILT_EVOLUTION: EvolutionConfig = {
+  evolutionMap: {
+    Jala: 'Jaller',
+    Maku: 'Macku',
+    Huki: 'Hewkii',
+  },
+  stageOverride: MatoranStage.Rebuilt,
 };
 
 /**
@@ -66,19 +106,5 @@ export function canEvolveMatoranToRebuilt(
 export function evolveMatoranToRebuilt(
   matoran: RecruitedCharacterData
 ): RecruitedCharacterData {
-  const evolvedId = EVOLUTION_MAP[matoran.id];
-
-  if (evolvedId) {
-    return {
-      id: evolvedId,
-      exp: matoran.exp,
-      assignment: undefined,
-      quest: undefined,
-    };
-  }
-
-  return {
-    ...matoran,
-    stage: MatoranStage.Rebuilt,
-  };
+  return evolveCharacter(matoran, MATORAN_REBUILT_EVOLUTION);
 }

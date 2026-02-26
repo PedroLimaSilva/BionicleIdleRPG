@@ -1,5 +1,6 @@
 import {
   canEvolveMatoranToRebuilt,
+  evolveCharacter,
   evolveMatoranToRebuilt,
   MATORAN_REBUILT_LEVEL,
 } from './MatoranEvolution';
@@ -55,6 +56,34 @@ describe('MatoranEvolution', () => {
       expect(canEvolveMatoranToRebuilt(matoran, completedWithNamingDay)).toBe(
         false
       );
+    });
+  });
+
+  describe('evolveCharacter', () => {
+    test('applies evolutionMap (ID change)', () => {
+      const matoran: RecruitedCharacterData = { id: 'Jala', exp: 100 };
+      const result = evolveCharacter(matoran, {
+        evolutionMap: { Jala: 'Jaller' },
+        stageOverride: MatoranStage.Rebuilt,
+      });
+      expect(result.id).toBe('Jaller');
+      expect(result.exp).toBe(100);
+    });
+
+    test('applies stageOverride when no evolutionMap entry', () => {
+      const matoran: RecruitedCharacterData = { id: 'Kapura', exp: 100 };
+      const result = evolveCharacter(matoran, {
+        evolutionMap: { Jala: 'Jaller' },
+        stageOverride: MatoranStage.Rebuilt,
+      });
+      expect(result.id).toBe('Kapura');
+      expect(result.stage).toBe(MatoranStage.Rebuilt);
+    });
+
+    test('returns matoran unchanged when config has no applicable rules', () => {
+      const matoran: RecruitedCharacterData = { id: 'Kapura', exp: 100 };
+      const result = evolveCharacter(matoran, {});
+      expect(result).toEqual(matoran);
     });
   });
 
