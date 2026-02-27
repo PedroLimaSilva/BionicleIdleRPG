@@ -154,22 +154,6 @@
     margin-left: auto;
     margin-right: 0;
     min-height: calc(0.8rem + 1.5em);
-    padding: 0.4rem 1rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #fff;
-    background: rgba(232, 197, 71, 0.3);
-    border: 1px solid rgba(232, 197, 71, 0.5);
-    border-radius: 6px;
-    cursor: pointer;
-    transition:
-      background 0.2s,
-      border-color 0.2s;
-
-    &:hover {
-      background: rgba(232, 197, 71, 0.45);
-      border-color: rgba(232, 197, 71, 0.7);
-    }
   }
 
   &__close {

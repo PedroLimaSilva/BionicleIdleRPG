@@ -123,7 +123,7 @@ function DialogueStepView({
           <p>{step.text} </p>
           <button
             type="button"
-            className="visual-novel-cutscene__advance"
+            className={`visual-novel-cutscene__advance elemental-btn element-${speaker?.element}`}
             onClick={onAdvance}
             aria-label={isLast ? 'Close cutscene' : 'Next'}
           >
