@@ -21,7 +21,7 @@ export const DamagePopup = ({
   const travelDistance = direction === 'up' ? -40 : 40;
   const transition = buildTransition(
     {
-      duration: MOTION_DURATION.slow,
+      duration: MOTION_DURATION.verySlow,
       ease: MOTION_EASING.standard,
     },
     shouldReduceMotion
@@ -31,8 +31,8 @@ export const DamagePopup = ({
     <motion.div
       key={popup.id}
       className={`damage-popup ${direction} ${isHealing ? 'healing' : ''}`}
-      initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 0.5 }}
-      animate={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: travelDistance, scale: 1 }}
+      initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+      animate={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: travelDistance, scale: 2 }}
       transition={transition}
       onAnimationComplete={() => onComplete(popup.id)}
     >

@@ -2,8 +2,9 @@ import type { Transition } from 'motion/react';
 
 export const MOTION_DURATION = {
   quick: 0.16,
-  base: 0.22,
-  slow: 0.3,
+  base: 0.3,
+  slow: 0.5,
+  verySlow: 1.0,
 } as const;
 
 export const MOTION_EASING = {
