@@ -90,31 +90,13 @@ export const useQuestState = ({
       ...prev,
     ]);
 
-    // Reassign Matoran with updated exp, evolution, and stage overrides
-    const evolution = quest.rewards.evolution;
-    const stageOverrides = quest.rewards.stageOverrides;
-
     setRecruitedCharacters((prev) =>
       prev.map((char) => {
         if (active.assignedMatoran.includes(char.id)) {
-          const evolvedId = evolution?.[char.id];
-          const stageOverride = stageOverrides?.[char.id];
-          const xp = char.exp + (quest.rewards.xpPerMatoran ?? 0);
-
-          if (evolvedId) {
-            return {
-              id: evolvedId,
-              exp: xp,
-              assignment: undefined,
-              quest: undefined,
-            };
-          }
-
           return {
             ...char,
             quest: undefined,
-            exp: xp,
-            ...(stageOverride !== undefined && { stage: stageOverride }),
+            exp: char.exp + (quest.rewards.xpPerMatoran ?? 0),
           };
         }
         return char;

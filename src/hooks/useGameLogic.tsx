@@ -18,10 +18,10 @@ import {
 } from '../game/BattleRewards';
 import { isKranaCollectionActive } from '../game/Krana';
 import {
-  canEvolveBohrokToKal,
-  evolveBohrokToKal,
-  BOHROK_KAL_EVOLUTION_COST,
-} from '../game/BohrokEvolution';
+  getAvailableEvolution,
+  meetsEvolutionLevel,
+  applyCharacterEvolution,
+} from '../game/CharacterEvolution';
 import { isNuvaSymbolsSequestered } from '../game/nuvaSymbols';
 
 export const useGameLogic = (): GameState => {
@@ -125,21 +125,24 @@ export const useGameLogic = (): GameState => {
         };
       });
     },
-    evolveBohrokToKal: (
+    evolveCharacter: (
       matoranId: RecruitedCharacterData['id'],
       onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
     ) => {
       const matoran = recruitedCharacters.find((m) => m.id === matoranId);
-      if (!matoran || !canEvolveBohrokToKal(matoran)) return false;
+      if (!matoran) return false;
+
+      const evolution = getAvailableEvolution(matoran, completedQuests);
+      if (!evolution || !meetsEvolutionLevel(matoran, evolution)) return false;
 
       setProtodermis((prev) => {
-        if (prev < BOHROK_KAL_EVOLUTION_COST) return prev;
-        const evolved = evolveBohrokToKal(matoran);
+        if (prev < evolution.protodermisCost) return prev;
+        const evolved = applyCharacterEvolution(matoran, evolution);
         setRecruitedCharacters((prevChars) =>
           prevChars.map((m) => (m.id === matoranId ? evolved : m))
         );
         onSuccess?.(evolved.id);
-        return prev - BOHROK_KAL_EVOLUTION_COST;
+        return prev - evolution.protodermisCost;
       });
       return true;
     },

@@ -12,13 +12,9 @@ import {
   isMatoran,
   isToa,
   isToaMata,
-  isBohrok,
   isBohrokOrKal,
 } from '../../services/matoranUtils';
-import {
-  canEvolveBohrokToKal,
-  BOHROK_KAL_EVOLUTION_COST,
-} from '../../game/BohrokEvolution';
+import { getAvailableEvolution, meetsEvolutionLevel } from '../../game/CharacterEvolution';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { KranaCollection } from './KranaCollection';
@@ -27,11 +23,13 @@ import { Tabs } from '../../components/Tabs';
 import { CharacterChronicle } from './Chronicle';
 import { isKranaCollectionActive } from '../../game/Krana';
 import { MASK_POWERS } from '../../data/combat';
+import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
+import { getLevelFromExp } from '../../game/Levelling';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recruitedCharacters, completedQuests, protodermis, evolveBohrokToKal } = useGame();
+  const { recruitedCharacters, completedQuests, protodermis, evolveCharacter } = useGame();
 
   const { setScene } = useSceneCanvas();
 
@@ -98,40 +96,18 @@ export const CharacterDetail: React.FC = () => {
       <div className="character-detail-content">
         <div className="character-detail-section" id={activeTab}>
           {activeTab === 'stats' && (
-            <>
-              <LevelProgress exp={matoran.exp} />
-              <ElementTag element={matoran.element} showName={true} />
-              {isBohrok(matoran) && canEvolveBohrokToKal(matoran) && (
-                <div className="bohrok-evolve-section">
-                  <p>
-                    This Bohrok has reached level 100 and can evolve into Bohrok Kal.
-                  </p>
-                  <button
-                    type="button"
-                    className="evolve-button"
-                    disabled={protodermis < BOHROK_KAL_EVOLUTION_COST}
-                    onClick={() =>
-                      evolveBohrokToKal(matoran.id, (evolvedId) =>
-                        navigate(`/characters/${evolvedId}`, { replace: true })
-                      )
-                    }
-                  >
-                    Evolve to Bohrok Kal ({BOHROK_KAL_EVOLUTION_COST} protodermis)
-                  </button>
-                  {protodermis < BOHROK_KAL_EVOLUTION_COST && (
-                    <p className="evolve-hint">
-                      Need {BOHROK_KAL_EVOLUTION_COST - protodermis} more protodermis
-                    </p>
-                  )}
-                </div>
-              )}
-              {isToa(matoran) && activeMask && (
-                <div>
-                  <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>
-                  <p>{maskDescription}</p>
-                </div>
-              )}
-            </>
+            <StatsTab
+              matoran={matoran}
+              completedQuests={completedQuests}
+              protodermis={protodermis}
+              activeMask={activeMask}
+              maskDescription={maskDescription}
+              onEvolveCharacter={(id) =>
+                evolveCharacter(id, (evolvedId) =>
+                  navigate(`/characters/${evolvedId}`, { replace: true })
+                )
+              }
+            />
           )}
           {activeTab === 'inventory' && isToa(matoran) && <MaskCollection matoran={matoran} />}
           {activeTab === 'krana' && isToaMata(matoran) && <KranaCollection matoran={matoran} />}
@@ -162,3 +138,60 @@ export const CharacterDetail: React.FC = () => {
     </div>
   );
 };
+
+function StatsTab({
+  matoran,
+  completedQuests,
+  protodermis,
+  activeMask,
+  maskDescription,
+  onEvolveCharacter,
+}: {
+  matoran: BaseMatoran & RecruitedCharacterData;
+  completedQuests: string[];
+  protodermis: number;
+  activeMask: Mask | undefined;
+  maskDescription: string;
+  onEvolveCharacter: (id: string) => void;
+}) {
+  const evolution = getAvailableEvolution(matoran, completedQuests);
+  const level = getLevelFromExp(matoran.exp);
+  const hasLevel = evolution ? meetsEvolutionLevel(matoran, evolution) : false;
+  const hasFunds = evolution ? protodermis >= evolution.protodermisCost : false;
+  const canEvolve = hasLevel && hasFunds;
+
+  return (
+    <>
+      <LevelProgress exp={matoran.exp} />
+      <ElementTag element={matoran.element} showName={true} />
+      {evolution && (
+        <div className="evolve-section">
+          <div className="requirement-list">
+            <h4>{evolution.label}</h4>
+            <ul>
+              <li className={hasLevel ? 'has-enough' : 'not-enough'}>
+                {hasLevel ? '✅' : '❌'} Level {evolution.levelRequired} (currently {level})
+              </li>
+              <li className={hasFunds ? 'has-enough' : 'not-enough'}>
+                {hasFunds ? '✅' : '❌'} {evolution.protodermisCost} protodermis
+              </li>
+            </ul>
+            <button
+              type="button"
+              className={`elemental-btn element-${matoran.element}${canEvolve ? '' : ' disabled'}`}
+              onClick={() => canEvolve && onEvolveCharacter(matoran.id)}
+            >
+              {evolution.label}
+            </button>
+          </div>
+        </div>
+      )}
+      {isToa(matoran) && activeMask && (
+        <div>
+          <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>
+          <p>{maskDescription}</p>
+        </div>
+      )}
+    </>
+  );
+}
