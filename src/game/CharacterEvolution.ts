@@ -39,7 +39,7 @@ export const EVOLUTION_PATHS: EvolutionPath[] = [
     stageOverrides: {
       Kapura: MatoranStage.Rebuilt,
       Takua: MatoranStage.Rebuilt,
-      Hali: MatoranStage.Rebuilt,
+      Hahli: MatoranStage.Rebuilt,
       Nuparu: MatoranStage.Rebuilt,
       Onepu: MatoranStage.Rebuilt,
       Kongu: MatoranStage.Rebuilt,

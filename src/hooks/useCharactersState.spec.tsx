@@ -24,7 +24,7 @@ describe('useCharactersState', () => {
   describe('initialization', () => {
     test('initializes with provided recruited and buyable characters', () => {
       const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
-      const initialBuyable: ListedCharacterData[] = [{ id: 'Hali', cost: 50, requiredItems: [] }];
+      const initialBuyable: ListedCharacterData[] = [{ id: 'Hahli', cost: 50, requiredItems: [] }];
 
       const { result } = renderHook(() =>
         useCharactersState(
@@ -44,7 +44,7 @@ describe('useCharactersState', () => {
       const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
       const initialBuyable: ListedCharacterData[] = [
         { id: 'Jala', cost: 50, requiredItems: [] },
-        { id: 'Hali', cost: 50, requiredItems: [] },
+        { id: 'Hahli', cost: 50, requiredItems: [] },
       ];
 
       const { result } = renderHook(() =>
@@ -58,7 +58,7 @@ describe('useCharactersState', () => {
       );
 
       expect(result.current.buyableCharacters).toHaveLength(1);
-      expect(result.current.buyableCharacters[0].id).toBe('Hali');
+      expect(result.current.buyableCharacters[0].id).toBe('Hahli');
     });
   });
 
@@ -154,7 +154,7 @@ describe('useCharactersState', () => {
     test('assigns job to specific matoran', () => {
       const initialRecruited: RecruitedCharacterData[] = [
         { id: 'Jala', exp: 0 },
-        { id: 'Hali', exp: 0 },
+        { id: 'Hahli', exp: 0 },
       ];
 
       const { result } = renderHook(() =>
@@ -274,7 +274,7 @@ describe('useCharactersState', () => {
     test('does not affect other matoran', () => {
       const initialRecruited: RecruitedCharacterData[] = [
         { id: 'Jala', exp: 0 },
-        { id: 'Hali', exp: 0 },
+        { id: 'Hahli', exp: 0 },
       ];
 
       const { result } = renderHook(() =>

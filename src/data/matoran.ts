@@ -253,9 +253,9 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     },
     chronicleId: CHRONICLE_IDS.JALA,
   },
-  Hali: {
-    id: 'Hali',
-    name: 'Hali',
+  Hahli: {
+    id: 'Hahli',
+    name: 'Hahli',
     mask: Mask.Kaukau,
     stage: MatoranStage.Diminished,
     element: ElementTribe.Water,
@@ -268,7 +268,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.MediumBlue,
       eyes: LegoColor.TransNeonYellow,
     },
-    chronicleId: CHRONICLE_IDS.HALI,
+    chronicleId: CHRONICLE_IDS.Hahli,
   },
   Huki: {
     id: 'Huki',

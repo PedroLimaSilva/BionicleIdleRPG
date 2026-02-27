@@ -11,7 +11,7 @@ export const CHRONICLE_IDS = {
   TAKUA: 'takua',
   KAPURA: 'kapura',
   JALA: 'jala',
-  HALI: 'hali',
+  Hahli: 'Hahli',
   HUKI: 'huki',
   NUPARU: 'nuparu',
   ONEPU: 'onepu',
@@ -997,24 +997,24 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       },
     },
   ],
-  [CHRONICLE_IDS.HALI]: [
+  [CHRONICLE_IDS.Hahli]: [
     {
-      id: 'hali_ga_koro_villager',
+      id: 'Hahli_ga_koro_villager',
       section: 'Ga-Koro',
       title: 'Villager of the Waters',
       description:
-        'Hali is a Ga-Matoran who calls the lily-pad village of Ga-Koro home. Like her fellow villagers, she tends to the waters and looks to Turaga Nokama for guidance.',
+        'Hahli is a Ga-Matoran who calls the lily-pad village of Ga-Koro home. Like her fellow villagers, she tends to the waters and looks to Turaga Nokama for guidance.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_restore_ga_koro',
       },
     },
     {
-      id: 'hali_liberated',
+      id: 'Hahli_liberated',
       section: 'Ga-Koro',
       title: 'Freed from the Depths',
       description:
-        'When Ga-Koro was attacked and its villagers trapped underwater, Hali was among those rescued by Takua and Gali. The experience deepened her gratitude for the Toa and the Chronicler.',
+        'When Ga-Koro was attacked and its villagers trapped underwater, Hahli was among those rescued by Takua and Gali. The experience deepened her gratitude for the Toa and the Chronicler.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_restore_ga_koro',

@@ -16,7 +16,7 @@ test.describe('Character Model Rendering', () => {
         recruitedCharacters: [
           ...INITIAL_GAME_STATE.recruitedCharacters,
           { id: 'Takua', exp: 0 },
-          { id: 'Hali', exp: 0 },
+          { id: 'Hahli', exp: 0 },
         ],
       });
 
@@ -48,9 +48,9 @@ test.describe('Character Model Rendering', () => {
         threshold: 0.2,
       });
 
-      const jalaLink = page.locator('a').filter({ hasText: 'Hali' });
+      const jalaLink = page.locator('a').filter({ hasText: 'Hahli' });
       await jalaLink.click();
-      await expect(page).toHaveURL(new RegExp(`/characters/Hali`));
+      await expect(page).toHaveURL(new RegExp(`/characters/Hahli`));
       await disableCSSAnimations(page);
       await waitForCanvas(page);
 

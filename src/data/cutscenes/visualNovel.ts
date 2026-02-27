@@ -347,7 +347,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Hali',
+        speakerId: 'Hahli',
         portraitType: 'avatar',
         text: `
           Help us! There is a water pump that can raise the hut again!
