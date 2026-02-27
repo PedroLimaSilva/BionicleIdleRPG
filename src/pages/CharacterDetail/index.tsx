@@ -15,18 +15,9 @@ import {
   isBohrok,
   isBohrokOrKal,
 } from '../../services/matoranUtils';
-import {
-  canEvolveBohrokToKal,
-  BOHROK_KAL_EVOLUTION_COST,
-} from '../../game/BohrokEvolution';
-import {
-  canEvolveMatoranToRebuilt,
-  MATORAN_REBUILT_COST,
-} from '../../game/MatoranEvolution';
-import {
-  canEvolveToaToNuva,
-  TOA_NUVA_COST,
-} from '../../game/ToaEvolution';
+import { canEvolveBohrokToKal, BOHROK_KAL_EVOLUTION_COST } from '../../game/BohrokEvolution';
+import { canEvolveMatoranToRebuilt, MATORAN_REBUILT_COST } from '../../game/MatoranEvolution';
+import { canEvolveToaToNuva, TOA_NUVA_COST } from '../../game/ToaEvolution';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { KranaCollection } from './KranaCollection';
@@ -39,12 +30,7 @@ import { MASK_POWERS } from '../../data/combat';
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const {
-    recruitedCharacters,
-    completedQuests,
-    widgets,
-    evolveCharacter,
-  } = useGame();
+  const { recruitedCharacters, completedQuests, protodermis, evolveCharacter } = useGame();
 
   const { setScene } = useSceneCanvas();
 
@@ -116,81 +102,72 @@ export const CharacterDetail: React.FC = () => {
               <ElementTag element={matoran.element} showName={true} />
               {isBohrok(matoran) && canEvolveBohrokToKal(matoran) && (
                 <div className="bohrok-evolve-section">
-                  <p>
-                    This Bohrok has reached level 100 and can evolve into Bohrok Kal.
-                  </p>
+                  <p>This Bohrok has reached level 100 and can evolve into Bohrok Kal.</p>
                   <button
                     type="button"
                     className="evolve-button"
-                    disabled={widgets < BOHROK_KAL_EVOLUTION_COST}
+                    disabled={protodermis < BOHROK_KAL_EVOLUTION_COST}
                     onClick={() =>
                       evolveCharacter(matoran.id, 'bohrok_kal', (evolvedId) =>
                         navigate(`/characters/${evolvedId}`, { replace: true })
                       )
                     }
                   >
-                    Evolve to Bohrok Kal ({BOHROK_KAL_EVOLUTION_COST} widgets)
+                    Evolve to Bohrok Kal ({BOHROK_KAL_EVOLUTION_COST} protodermis)
                   </button>
-                  {widgets < BOHROK_KAL_EVOLUTION_COST && (
+                  {protodermis < BOHROK_KAL_EVOLUTION_COST && (
                     <p className="evolve-hint">
-                      Need {BOHROK_KAL_EVOLUTION_COST - widgets} more widgets
+                      Need {BOHROK_KAL_EVOLUTION_COST - protodermis} more protodermis
                     </p>
                   )}
                 </div>
               )}
-              {isMatoran(matoran) &&
-                canEvolveMatoranToRebuilt(matoran, completedQuests) && (
-                  <div className="bohrok-evolve-section">
-                    <p>
-                      This Matoran has reached level 50 and can be rebuilt into a
-                      stronger form.
+              {isMatoran(matoran) && canEvolveMatoranToRebuilt(matoran, completedQuests) && (
+                <div className="bohrok-evolve-section">
+                  <p>This Matoran has reached level 50 and can be rebuilt into a stronger form.</p>
+                  <button
+                    type="button"
+                    className="evolve-button"
+                    disabled={protodermis < MATORAN_REBUILT_COST}
+                    onClick={() =>
+                      evolveCharacter(matoran.id, 'matoran_rebuilt', (evolvedId) => {
+                        if (evolvedId !== matoran.id) {
+                          navigate(`/characters/${evolvedId}`, { replace: true });
+                        }
+                      })
+                    }
+                  >
+                    Upgrade to Rebuilt ({MATORAN_REBUILT_COST} protodermis)
+                  </button>
+                  {protodermis < MATORAN_REBUILT_COST && (
+                    <p className="evolve-hint">
+                      Need {MATORAN_REBUILT_COST - protodermis} more protodermis
                     </p>
-                    <button
-                      type="button"
-                      className="evolve-button"
-                      disabled={widgets < MATORAN_REBUILT_COST}
-                      onClick={() =>
-                        evolveCharacter(matoran.id, 'matoran_rebuilt', (evolvedId) => {
-                          if (evolvedId !== matoran.id) {
-                            navigate(`/characters/${evolvedId}`, { replace: true });
-                          }
-                        })
-                      }
-                    >
-                      Upgrade to Rebuilt ({MATORAN_REBUILT_COST} widgets)
-                    </button>
-                    {widgets < MATORAN_REBUILT_COST && (
-                      <p className="evolve-hint">
-                        Need {MATORAN_REBUILT_COST - widgets} more widgets
-                      </p>
-                    )}
-                  </div>
-                )}
-              {isToaMata(matoran) &&
-                canEvolveToaToNuva(matoran, completedQuests) && (
-                  <div className="bohrok-evolve-section">
-                    <p>
-                      This Toa has reached level 50 and can evolve into Toa Nuva.
+                  )}
+                </div>
+              )}
+              {isToaMata(matoran) && canEvolveToaToNuva(matoran, completedQuests) && (
+                <div className="bohrok-evolve-section">
+                  <p>This Toa has reached level 50 and can evolve into Toa Nuva.</p>
+                  <button
+                    type="button"
+                    className="evolve-button"
+                    disabled={protodermis < TOA_NUVA_COST}
+                    onClick={() =>
+                      evolveCharacter(matoran.id, 'toa_nuva', (evolvedId) =>
+                        navigate(`/characters/${evolvedId}`, { replace: true })
+                      )
+                    }
+                  >
+                    Evolve to Toa Nuva ({TOA_NUVA_COST} protodermis)
+                  </button>
+                  {protodermis < TOA_NUVA_COST && (
+                    <p className="evolve-hint">
+                      Need {TOA_NUVA_COST - protodermis} more protodermis
                     </p>
-                    <button
-                      type="button"
-                      className="evolve-button"
-                      disabled={widgets < TOA_NUVA_COST}
-                      onClick={() =>
-                        evolveCharacter(matoran.id, 'toa_nuva', (evolvedId) =>
-                          navigate(`/characters/${evolvedId}`, { replace: true })
-                        )
-                      }
-                    >
-                      Evolve to Toa Nuva ({TOA_NUVA_COST} widgets)
-                    </button>
-                    {widgets < TOA_NUVA_COST && (
-                      <p className="evolve-hint">
-                        Need {TOA_NUVA_COST - widgets} more widgets
-                      </p>
-                    )}
-                  </div>
-                )}
+                  )}
+                </div>
+              )}
               {isToa(matoran) && activeMask && (
                 <div>
                   <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>

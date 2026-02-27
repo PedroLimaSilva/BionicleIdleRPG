@@ -37,7 +37,7 @@ test.describe('Responsiveness', () => {
       test('quests page with ongoing, available, and completed quests', async ({ page }) => {
         await setupGameState(page, {
           ...INITIAL_GAME_STATE,
-          widgets: 10000,
+          protodermis: 10000,
           recruitedCharacters: [
             { id: 'Takua', exp: 10000 },
             { id: 'Toa_Tahu', exp: 0 },
@@ -109,7 +109,7 @@ test.describe('Responsiveness', () => {
       test.describe('character route', () => {
         const CHARACTER_ROUTE_GAME_STATE = {
           ...INITIAL_GAME_STATE,
-          widgets: 500,
+          protodermis: 500,
           recruitedCharacters: [
             { id: 'Takua', exp: 0 },
             { id: 'Jala', exp: 5000 },

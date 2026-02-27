@@ -32,8 +32,8 @@ export const useGameLogic = (): GameState => {
     initialState.collectedKrana ?? {}
   );
 
-  const [widgets, setWidgets] = useState(initialState.widgets);
-  const [widgetCap] = useState(initialState.widgetCap);
+  const [protodermis, setProtodermis] = useState(initialState.protodermis);
+  const [protodermisCap, setProtodermisCap] = useState(initialState.protodermisCap);
 
   const {
     recruitedCharacters,
@@ -47,15 +47,15 @@ export const useGameLogic = (): GameState => {
   } = useCharactersState(
     initialState.recruitedCharacters,
     initialState.buyableCharacters,
-    widgets,
-    setWidgets,
+    protodermis,
+    setProtodermis,
     addItemToInventory
   );
 
   useJobTickEffect(
     recruitedCharacters,
     setRecruitedCharacters,
-    (amount) => setWidgets((prev) => clamp(prev + amount, 0, widgetCap)),
+    (amount) => setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap)),
     addItemToInventory
   );
 
@@ -66,8 +66,13 @@ export const useGameLogic = (): GameState => {
     addItemToInventory,
     setRecruitedCharacters,
     setBuyableCharacters,
-    addWidgets: (widgets: number) => {
-      setWidgets((prev) => clamp(prev + widgets, 0, widgetCap));
+    addProtodermis: (amount: number) => {
+      if (amount > protodermisCap) {
+        setProtodermisCap(amount);
+        setProtodermis(amount);
+      } else {
+        setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap));
+      }
     },
   });
 
@@ -76,8 +81,8 @@ export const useGameLogic = (): GameState => {
   // Auto-save when critical state changes
   useGamePersistence({
     version,
-    widgets,
-    widgetCap,
+    protodermis,
+    protodermisCap,
     inventory,
     collectedKrana,
     recruitedCharacters,
@@ -90,8 +95,8 @@ export const useGameLogic = (): GameState => {
     version,
     activeQuests,
     completedQuests,
-    widgets,
-    widgetCap,
+    protodermis,
+    protodermisCap,
     inventory,
     collectedKrana,
     recruitedCharacters,
@@ -126,7 +131,7 @@ export const useGameLogic = (): GameState => {
       const matoran = recruitedCharacters.find((m) => m.id === matoranId);
       if (!matoran || !handler.canEvolve(matoran, completedQuests)) return false;
 
-      setWidgets((prev) => {
+      setProtodermis((prev) => {
         if (prev < handler.cost) return prev;
         const evolved = handler.evolve(matoran);
         setRecruitedCharacters((prevChars) =>

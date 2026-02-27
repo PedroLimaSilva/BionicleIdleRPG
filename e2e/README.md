@@ -125,7 +125,7 @@ test('should render 3D scene', async ({ page }) => {
 
 // Or with game state (automatically enables test mode):
 test('should render with custom state', async ({ page }) => {
-  await setupGameState(page, { widgets: 1000, inventory: {} });
+  await setupGameState(page, { protodermis: 1000, inventory: {} });
   await goto(page, '/characters');
 
   await expect(page).toHaveScreenshot('scene.png');
