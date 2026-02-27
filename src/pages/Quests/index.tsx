@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { AvailableQuests } from '../../components/AvailableQuests';
+import { VisualNovelCutscene } from '../../components/VisualNovelCutscene';
 import { useGame } from '../../context/Game';
 import { QUESTS } from '../../data/quests';
+import { VISUAL_NOVEL_CUTSCENES } from '../../data/cutscenes';
 import { QuestProgress } from '../../types/Quests';
+import type { VisualNovelCutsceneRef } from '../../types/Cutscenes';
 import './index.scss';
 import { MATORAN_DEX } from '../../data/matoran';
 
@@ -49,7 +52,7 @@ export const QuestsPage = () => {
     return false;
   };
 
-  const [cutsceneUrl, setCutsceneUrl] = useState<string | null>(null);
+  const [activeCutscene, setActiveCutscene] = useState<VisualNovelCutsceneRef | null>(null);
   const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
@@ -89,8 +92,8 @@ export const QuestsPage = () => {
     });
   }, [completedSections]);
 
-  const handleCutscene = (cutscene: string) => {
-    setCutsceneUrl(cutscene);
+  const handleCutscene = (ref: VisualNovelCutsceneRef) => {
+    setActiveCutscene(ref);
   };
 
   return (
@@ -223,26 +226,11 @@ export const QuestsPage = () => {
           })}
         </div>
       )}
-      {cutsceneUrl && (
-        <div className="modal-overlay" onClick={() => setCutsceneUrl(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setCutsceneUrl(null)}>
-              ✖
-            </button>
-            <div className="modal-video-wrapper">
-              <iframe
-                width="100%"
-                height="100%"
-                src={`https://www.youtube.com/embed/${cutsceneUrl}?si=nxWcOaAKDqTtrf2b&amp`}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
-            </div>
-          </div>
-        </div>
+      {activeCutscene && VISUAL_NOVEL_CUTSCENES[activeCutscene.cutsceneId] && (
+        <VisualNovelCutscene
+          cutscene={VISUAL_NOVEL_CUTSCENES[activeCutscene.cutsceneId]!}
+          onClose={() => setActiveCutscene(null)}
+        />
       )}
     </div>
   );

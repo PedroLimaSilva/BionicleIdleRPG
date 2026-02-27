@@ -1,0 +1,200 @@
+.visual-novel-cutscene {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: #0a0a0a;
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &__background {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  &__content {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1.5rem;
+    gap: 1rem;
+
+    &--dialogue {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 1.25rem;
+    }
+
+    &--left {
+      .visual-novel-cutscene__dialogue-box {
+        text-align: left;
+      }
+      .visual-novel-cutscene__speaker-name {
+        text-align: left;
+      }
+    }
+
+    &--right {
+      .visual-novel-cutscene__dialogue-box {
+        text-align: right;
+        grid-template-areas:
+          'name portrait'
+          'content content';
+        grid-template-columns: 1fr 70px;
+      }
+      .visual-novel-cutscene__speaker-name {
+        text-align: right;
+      }
+      .visual-novel-cutscene__speaker-side {
+        left: auto;
+        right: 30px;
+      }
+    }
+
+    &--video {
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem;
+      max-height: 100vh;
+    }
+  }
+
+  &__speaker-side {
+    display: flex;
+    grid-area: portrait;
+    align-items: flex-end;
+    position: relative;
+    left: -50px;
+  }
+
+  &__video-wrapper {
+    width: 100%;
+    max-width: 900px;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    background: #000;
+
+    iframe {
+      display: block;
+    }
+  }
+
+  &__portrait {
+    &-img {
+      max-width: 280px;
+      max-height: 320px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    &-avatar {
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__dialogue-box {
+    flex: 1;
+    display: grid;
+    grid-template-areas:
+      'portrait name'
+      'content content';
+    grid-template-columns: 70px 1fr;
+    grid-template-rows: 1.5rem auto;
+    min-width: 0;
+    max-width: 640px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    padding-top: 0.5rem;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  &__speaker-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #e8c547;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    grid-area: name;
+  }
+
+  &__text {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #e8e8e8;
+    grid-area: content;
+    p {
+      margin-bottom: 0.3rem;
+      margin-top: 0.5rem;
+    }
+  }
+
+  &__advance {
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+    min-height: calc(0.8rem + 1.5em);
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(232, 197, 71, 0.3);
+    border: 1px solid rgba(232, 197, 71, 0.5);
+    border-radius: 6px;
+    cursor: pointer;
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+
+    &:hover {
+      background: rgba(232, 197, 71, 0.45);
+      border-color: rgba(232, 197, 71, 0.7);
+    }
+  }
+
+  &__close {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 10;
+    transition:
+      background 0.2s,
+      color 0.2s;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+    }
+  }
+}

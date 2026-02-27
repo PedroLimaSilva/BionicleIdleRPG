@@ -383,6 +383,22 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     },
     chronicleId: CHRONICLE_IDS.LUMI,
   },
+  Ahkmou: {
+    id: 'Ahkmou',
+    name: 'Ahkmou',
+    mask: Mask.Rau,
+    stage: MatoranStage.Metru,
+    element: ElementTribe.Stone,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.Black,
+      body: LegoColor.Tan,
+      feet: LegoColor.DarkOrange,
+      arms: LegoColor.Tan,
+      eyes: LegoColor.TransNeonOrange,
+    },
+    chronicleId: CHRONICLE_IDS.AHKMOU,
+  },
   Kivi: {
     id: 'Kivi',
     name: 'Kivi',
@@ -398,7 +414,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.Tan,
       eyes: LegoColor.TransNeonOrange,
     },
-    chronicleId: CHRONICLE_IDS.KIVI,
+    chronicleId: CHRONICLE_IDS.AHKMOU,
   },
   Taipu: {
     id: 'Taipu',
