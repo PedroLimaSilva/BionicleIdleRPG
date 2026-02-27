@@ -1,5 +1,6 @@
 import { GameItemId } from '../data/loot';
 import { BattleState, BattlePhase } from '../hooks/useBattleState';
+import type { EvolutionType } from './Evolution';
 import { Inventory } from '../services/inventoryUtils';
 import { MatoranJob } from './Jobs';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
@@ -40,16 +41,10 @@ export type GameState = {
   cancelQuest: (questId: string) => void;
   completeQuest: (quest: Quest) => void;
   applyBattleRewards: (params: BattleRewardParams) => void;
-  evolveBohrokToKal: (
+  /** Evolve a character (Bohrok→Kal, Matoran→Rebuilt, Toa Mata→Nuva). */
+  evolveCharacter: (
     matoranId: RecruitedCharacterData['id'],
-    onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
-  ) => boolean;
-  evolveMatoranToRebuilt: (
-    matoranId: RecruitedCharacterData['id'],
-    onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
-  ) => boolean;
-  evolveToaToNuva: (
-    matoranId: RecruitedCharacterData['id'],
+    evolutionType: EvolutionType,
     onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
   ) => boolean;
 };

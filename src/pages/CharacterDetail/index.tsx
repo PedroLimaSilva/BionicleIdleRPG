@@ -43,9 +43,7 @@ export const CharacterDetail: React.FC = () => {
     recruitedCharacters,
     completedQuests,
     widgets,
-    evolveBohrokToKal,
-    evolveMatoranToRebuilt,
-    evolveToaToNuva,
+    evolveCharacter,
   } = useGame();
 
   const { setScene } = useSceneCanvas();
@@ -126,7 +124,7 @@ export const CharacterDetail: React.FC = () => {
                     className="evolve-button"
                     disabled={widgets < BOHROK_KAL_EVOLUTION_COST}
                     onClick={() =>
-                      evolveBohrokToKal(matoran.id, (evolvedId) =>
+                      evolveCharacter(matoran.id, 'bohrok_kal', (evolvedId) =>
                         navigate(`/characters/${evolvedId}`, { replace: true })
                       )
                     }
@@ -152,7 +150,7 @@ export const CharacterDetail: React.FC = () => {
                       className="evolve-button"
                       disabled={widgets < MATORAN_REBUILT_COST}
                       onClick={() =>
-                        evolveMatoranToRebuilt(matoran.id, (evolvedId) => {
+                        evolveCharacter(matoran.id, 'matoran_rebuilt', (evolvedId) => {
                           if (evolvedId !== matoran.id) {
                             navigate(`/characters/${evolvedId}`, { replace: true });
                           }
@@ -179,7 +177,7 @@ export const CharacterDetail: React.FC = () => {
                       className="evolve-button"
                       disabled={widgets < TOA_NUVA_COST}
                       onClick={() =>
-                        evolveToaToNuva(matoran.id, (evolvedId) =>
+                        evolveCharacter(matoran.id, 'toa_nuva', (evolvedId) =>
                           navigate(`/characters/${evolvedId}`, { replace: true })
                         )
                       }
