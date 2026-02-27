@@ -20,7 +20,10 @@ export function MatoranAvatar({
 }) {
   const { completedQuests } = useGame();
   const { colors } = matoran;
-  const maskColor = getEffectiveMaskColor(matoran, completedQuests);
+  const maskColor = useMemo(
+    () => getEffectiveMaskColor(matoran, completedQuests),
+    [matoran.colors.mask, completedQuests]
+  );
 
   const mask = useMemo(() => {
     return getMask(matoran);
@@ -39,6 +42,7 @@ export function MatoranAvatar({
 
   return (
     <CompositedImage
+      key={matoran.name}
       className={`composited-avatar ${styles}`}
       images={[
         `${import.meta.env.BASE_URL}/avatar/Brain.png`,

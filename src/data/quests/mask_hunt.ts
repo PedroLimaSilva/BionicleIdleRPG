@@ -14,7 +14,7 @@ export const MASK_HUNT: Quest[] = [
       items: [],
     },
     rewards: {
-      cutscene: 'Fk47EDfWK10',
+      cutscene: { type: 'visual_novel', cutsceneId: 'story_toa_arrival' },
       unlockCharacters: [
         { id: 'Toa_Tahu', cost: 100, requiredItems: [] },
         { id: 'Toa_Gali', cost: 100, requiredItems: [] },
@@ -419,7 +419,7 @@ export const MASK_HUNT: Quest[] = [
       items: [],
     },
     rewards: {
-      cutscene: 'oken0zw1D-U',
+      cutscene: { type: 'visual_novel', cutsceneId: 'story_kini_nui_descent' },
       xpPerMatoran: 1000,
       currency: 100,
       loot: {},

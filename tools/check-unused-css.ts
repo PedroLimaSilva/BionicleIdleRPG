@@ -51,10 +51,7 @@ async function main(): Promise<void> {
   }
 
   // Gather all content files (where class names appear)
-  const contentPaths = [
-    INDEX_HTML,
-    ...globFiles(SRC_DIR, /\.(tsx?|jsx?|html)$/),
-  ];
+  const contentPaths = [INDEX_HTML, ...globFiles(SRC_DIR, /\.(tsx?|jsx?|html)$/)];
   const contentFiles = contentPaths.filter((f) => {
     try {
       return existsSync(f) && statSync(f).isFile();
@@ -114,7 +111,6 @@ async function main(): Promise<void> {
       greedy: [
         /krana-color--/,
         /krana-collection__slot/,
-        /chronicle-modal/,
         /model-display/,
         /job-label/,
         /job-rate/,
@@ -123,17 +119,10 @@ async function main(): Promise<void> {
         /route--/,
         /#canvas-mount/,
         /main-content/,
+        /visual-novel-cutscene__content--/,
       ],
       // Preserve element selectors and pseudo-classes
-      deep: [
-        /^h[1-6]$/,
-        /:hover/,
-        /:focus/,
-        /:active/,
-        /:disabled/,
-        /::before/,
-        /::after/,
-      ],
+      deep: [/^h[1-6]$/, /:hover/, /:focus/, /:active/, /:disabled/, /::before/, /::after/],
     },
   });
 
@@ -164,7 +153,7 @@ async function main(): Promise<void> {
     console.error('');
   }
   console.error(
-    'Remove these unused classes or add them to the safelist in tools/check-unused-css.ts if they are used dynamically.\n',
+    'Remove these unused classes or add them to the safelist in tools/check-unused-css.ts if they are used dynamically.\n'
   );
   process.exit(1);
 }
