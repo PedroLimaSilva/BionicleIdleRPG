@@ -87,6 +87,7 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
     });
     await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
+    await hideCanvas(page);
 
     const evolveSection = page.locator('.evolve-section');
     const requirementItems = evolveSection.locator('.requirement-list li');
@@ -95,6 +96,10 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
 
     const evolveButton = evolveSection.locator('button.elemental-btn');
     await expect(evolveButton).not.toHaveClass(/disabled/);
+    await expect(page).toHaveScreenshot({
+      fullPage: true,
+      threshold: 0.2,
+    });
 
     await evolveButton.click();
 
