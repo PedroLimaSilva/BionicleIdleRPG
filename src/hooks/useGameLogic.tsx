@@ -22,6 +22,11 @@ import {
   evolveBohrokToKal,
   BOHROK_KAL_EVOLUTION_COST,
 } from '../game/BohrokEvolution';
+import {
+  getAvailableEvolution,
+  meetsEvolutionLevel,
+  applyCharacterEvolution,
+} from '../game/CharacterEvolution';
 import { isNuvaSymbolsSequestered } from '../game/nuvaSymbols';
 
 export const useGameLogic = (): GameState => {
@@ -141,6 +146,21 @@ export const useGameLogic = (): GameState => {
         onSuccess?.(evolved.id);
         return prev - BOHROK_KAL_EVOLUTION_COST;
       });
+      return true;
+    },
+    evolveCharacter: (
+      matoranId: RecruitedCharacterData['id'],
+      onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
+    ) => {
+      const matoran = recruitedCharacters.find((m) => m.id === matoranId);
+      if (!matoran) return false;
+
+      const evolution = getAvailableEvolution(matoran, completedQuests);
+      if (!evolution || !meetsEvolutionLevel(matoran)) return false;
+
+      const evolved = applyCharacterEvolution(matoran, evolution);
+      setRecruitedCharacters((prev) => prev.map((m) => (m.id === matoranId ? evolved : m)));
+      onSuccess?.(evolved.id);
       return true;
     },
     applyBattleRewards: (params: BattleRewardParams) => {
