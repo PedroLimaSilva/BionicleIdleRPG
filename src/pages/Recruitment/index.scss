@@ -86,7 +86,8 @@
     background: var(--color-surface-mid);
   }
 
-  &.expanded {
+  &.expanded,
+  &:hover {
     transform: translateY(calc(-100% + 50px));
   }
 
@@ -113,8 +114,8 @@
   top: calc(100% - 75px);
   right: 200px;
 
-  &.expanded {
+  &.expanded,
+  &:hover {
     transform: translateY(calc(-100% + 75px));
   }
 }
-
