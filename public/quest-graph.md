@@ -122,7 +122,7 @@ Currency: 600
 XP: 200"]
   mnog_restore_ga_koro["Ga-Koro Under Siege
 (10m)
-Unlock: Hali
+Unlock: Hahli
 Loot: WaterAlgae=1000, GaPearl=500
 Currency: 600
 XP: 200"]

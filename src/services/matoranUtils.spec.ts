@@ -178,7 +178,7 @@ describe('matoranUtils', () => {
         requiredItems: [],
       };
       const character2: ListedCharacterData = {
-        id: 'Hali',
+        id: 'Hahli',
         cost: 100,
         requiredItems: [],
       };
@@ -187,7 +187,7 @@ describe('matoranUtils', () => {
       const result = recruitMatoran(character1, 150, buyableCharacters, mockAddItem);
 
       expect(result.updatedBuyable).toHaveLength(1);
-      expect(result.updatedBuyable[0].id).toBe('Hali');
+      expect(result.updatedBuyable[0].id).toBe('Hahli');
     });
 
     test('consumes required items when recruiting', () => {
@@ -212,7 +212,7 @@ describe('matoranUtils', () => {
     test('assigns job to specific matoran', () => {
       const matoran: RecruitedCharacterData[] = [
         { id: 'Jala', exp: 0 },
-        { id: 'Hali', exp: 0 },
+        { id: 'Hahli', exp: 0 },
       ];
 
       const result = assignJob('Jala', MatoranJob.CharcoalMaker, matoran);
@@ -246,12 +246,12 @@ describe('matoranUtils', () => {
     test('does not modify other matoran', () => {
       const matoran: RecruitedCharacterData[] = [
         { id: 'Jala', exp: 100 },
-        { id: 'Hali', exp: 200 },
+        { id: 'Hahli', exp: 200 },
       ];
 
       const result = assignJob('Jala', MatoranJob.CharcoalMaker, matoran);
 
-      expect(result[1]).toEqual({ id: 'Hali', exp: 200 });
+      expect(result[1]).toEqual({ id: 'Hahli', exp: 200 });
     });
   });
 
@@ -294,7 +294,7 @@ describe('matoranUtils', () => {
           },
         },
         {
-          id: 'Hali',
+          id: 'Hahli',
           exp: 0,
           assignment: {
             job: MatoranJob.AlgaeHarvester,

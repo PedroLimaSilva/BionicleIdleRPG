@@ -178,7 +178,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       },
       unlockCharacters: [
         {
-          id: 'Hali',
+          id: 'Hahli',
           cost: 1200,
           requiredItems: [
             {

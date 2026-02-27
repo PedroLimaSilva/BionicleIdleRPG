@@ -23,7 +23,7 @@ describe('Jobs', () => {
     };
 
     const mockWaterMatoran: RecruitedCharacterData = {
-      id: 'Hali',
+      id: 'Hahli',
       exp: 0,
     };
 
@@ -95,7 +95,7 @@ describe('Jobs', () => {
 
     test('returns Neutral for neutral element', () => {
       const matoran: RecruitedCharacterData = {
-        id: 'Hali',
+        id: 'Hahli',
         exp: 0,
         assignment: {
           job: MatoranJob.CharcoalMaker,
@@ -299,7 +299,7 @@ describe('Jobs', () => {
           },
         },
         {
-          id: 'Hali',
+          id: 'Hahli',
           exp: 0,
           assignment: {
             job: MatoranJob.AlgaeHarvester,
@@ -340,7 +340,7 @@ describe('Jobs', () => {
     test('does not process matoran without jobs', () => {
       const characters: RecruitedCharacterData[] = [
         { id: 'Jala', exp: 100 },
-        { id: 'Hali', exp: 50 },
+        { id: 'Hahli', exp: 50 },
       ];
 
       const [updated, currencyGain, loot] = applyOfflineJobExp(characters);
