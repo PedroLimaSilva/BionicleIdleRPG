@@ -12,18 +12,9 @@ import {
   isMatoran,
   isToa,
   isToaMata,
-  isBohrok,
   isBohrokOrKal,
 } from '../../services/matoranUtils';
-import {
-  canEvolveBohrokToKal,
-  BOHROK_KAL_EVOLUTION_COST,
-} from '../../game/BohrokEvolution';
-import {
-  getAvailableEvolution,
-  meetsEvolutionLevel,
-  EVOLUTION_LEVEL_REQUIREMENT,
-} from '../../game/CharacterEvolution';
+import { getAvailableEvolution, meetsEvolutionLevel } from '../../game/CharacterEvolution';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { KranaCollection } from './KranaCollection';
@@ -38,8 +29,7 @@ import { getLevelFromExp } from '../../game/Levelling';
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recruitedCharacters, completedQuests, protodermis, evolveBohrokToKal, evolveCharacter } =
-    useGame();
+  const { recruitedCharacters, completedQuests, evolveCharacter } = useGame();
 
   const { setScene } = useSceneCanvas();
 
@@ -109,16 +99,10 @@ export const CharacterDetail: React.FC = () => {
             <StatsTab
               matoran={matoran}
               completedQuests={completedQuests}
-              protodermis={protodermis}
               activeMask={activeMask}
               maskDescription={maskDescription}
               onEvolveCharacter={(id) =>
                 evolveCharacter(id, (evolvedId) =>
-                  navigate(`/characters/${evolvedId}`, { replace: true })
-                )
-              }
-              onEvolveBohrok={(id) =>
-                evolveBohrokToKal(id, (evolvedId) =>
                   navigate(`/characters/${evolvedId}`, { replace: true })
                 )
               }
@@ -157,23 +141,19 @@ export const CharacterDetail: React.FC = () => {
 function StatsTab({
   matoran,
   completedQuests,
-  protodermis,
   activeMask,
   maskDescription,
   onEvolveCharacter,
-  onEvolveBohrok,
 }: {
   matoran: BaseMatoran & RecruitedCharacterData;
   completedQuests: string[];
-  protodermis: number;
   activeMask: Mask | undefined;
   maskDescription: string;
   onEvolveCharacter: (id: string) => void;
-  onEvolveBohrok: (id: string) => void;
 }) {
   const evolution = getAvailableEvolution(matoran, completedQuests);
   const level = getLevelFromExp(matoran.exp);
-  const bohrokCanEvolve = isBohrok(matoran) && canEvolveBohrokToKal(matoran);
+  const canEvolve = evolution ? meetsEvolutionLevel(matoran, evolution) : false;
 
   return (
     <>
@@ -181,40 +161,22 @@ function StatsTab({
       <ElementTag element={matoran.element} showName={true} />
       {evolution && (
         <div className="evolve-section">
-          {meetsEvolutionLevel(matoran) ? (
+          {canEvolve ? (
             <p>{matoran.name} is ready to evolve!</p>
           ) : (
             <p>
-              {matoran.name} needs to reach level {EVOLUTION_LEVEL_REQUIREMENT} to evolve (currently
+              {matoran.name} needs to reach level {evolution.levelRequired} to evolve (currently
               level {level}).
             </p>
           )}
           <button
             type="button"
             className="confirm-button"
-            disabled={!meetsEvolutionLevel(matoran)}
+            disabled={!canEvolve}
             onClick={() => onEvolveCharacter(matoran.id)}
           >
             {evolution.label}
           </button>
-        </div>
-      )}
-      {bohrokCanEvolve && (
-        <div className="evolve-section">
-          <p>This Bohrok has reached level 100 and can evolve into Bohrok Kal.</p>
-          <button
-            type="button"
-            className="confirm-button"
-            disabled={protodermis < BOHROK_KAL_EVOLUTION_COST}
-            onClick={() => onEvolveBohrok(matoran.id)}
-          >
-            Evolve to Bohrok Kal ({BOHROK_KAL_EVOLUTION_COST} protodermis)
-          </button>
-          {protodermis < BOHROK_KAL_EVOLUTION_COST && (
-            <p className="evolve-hint">
-              Need {BOHROK_KAL_EVOLUTION_COST - protodermis} more protodermis
-            </p>
-          )}
         </div>
       )}
       {isToa(matoran) && activeMask && (

@@ -40,10 +40,6 @@ export type GameState = {
   cancelQuest: (questId: string) => void;
   completeQuest: (quest: Quest) => void;
   applyBattleRewards: (params: BattleRewardParams) => void;
-  evolveBohrokToKal: (
-    matoranId: RecruitedCharacterData['id'],
-    onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
-  ) => boolean;
   evolveCharacter: (
     matoranId: RecruitedCharacterData['id'],
     onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void

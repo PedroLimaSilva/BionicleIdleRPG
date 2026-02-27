@@ -9,7 +9,9 @@ function expForLevel(level: number): number {
 }
 
 const LOW_LEVEL_EXP = expForLevel(10);
-const HIGH_LEVEL_EXP = expForLevel(51);
+const LEVEL_51_EXP = expForLevel(51);
+const LEVEL_99_EXP = expForLevel(99);
+const LEVEL_100_EXP = expForLevel(100);
 
 test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
   test('shows disabled evolve button when quest completed but level < 50', async ({ page }) => {
@@ -37,7 +39,7 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
   }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      recruitedCharacters: [{ id: 'Toa_Tahu', exp: HIGH_LEVEL_EXP }],
+      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_51_EXP }],
       completedQuests: [TOA_NUVA_QUEST],
     });
     await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
@@ -64,7 +66,7 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
   test('does not show evolve button when quest not completed', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      recruitedCharacters: [{ id: 'Toa_Tahu', exp: HIGH_LEVEL_EXP }],
+      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_51_EXP }],
       completedQuests: [],
     });
     await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
@@ -95,7 +97,7 @@ test.describe('Character Evolution - Matoran Naming Day (ID change)', () => {
   test('shows enabled evolve button and evolves on click', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      recruitedCharacters: [{ id: 'Jala', exp: HIGH_LEVEL_EXP }],
+      recruitedCharacters: [{ id: 'Jala', exp: LEVEL_51_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
     });
     await goto(page, '/characters/Jala', { hideCanvasBeforeNav: true });
@@ -133,7 +135,7 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
   test('shows enabled upgrade button and upgrades on click', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      recruitedCharacters: [{ id: 'Kapura', exp: HIGH_LEVEL_EXP }],
+      recruitedCharacters: [{ id: 'Kapura', exp: LEVEL_51_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
     });
     await goto(page, '/characters/Kapura', { hideCanvasBeforeNav: true });
@@ -145,19 +147,80 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
 
     await evolveButton.click();
 
-    // Stage override keeps the same ID, so URL stays the same
     await expect(page).toHaveURL(/\/characters\/Kapura/);
-    // After upgrading, the evolve section should disappear
     await expect(page.locator('.evolve-section')).not.toBeVisible();
   });
 
   test('does not show upgrade button when stage already applied', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      recruitedCharacters: [{ id: 'Kapura', exp: HIGH_LEVEL_EXP, stage: 'Rebuilt' }],
+      recruitedCharacters: [{ id: 'Kapura', exp: LEVEL_51_EXP, stage: 'Rebuilt' }],
       completedQuests: [NAMING_DAY_QUEST],
     });
     await goto(page, '/characters/Kapura', { hideCanvasBeforeNav: true });
+    await disableCSSAnimations(page);
+
+    await expect(page.locator('.evolve-section')).not.toBeVisible();
+  });
+});
+
+test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
+  test('shows disabled evolve button when quest completed but level < 100', async ({ page }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_99_EXP }],
+      completedQuests: [NAMING_DAY_QUEST],
+    });
+    await goto(page, '/characters/tahnok', { hideCanvasBeforeNav: true });
+    await disableCSSAnimations(page);
+
+    const evolveSection = page.locator('.evolve-section');
+    await expect(evolveSection).toBeVisible();
+
+    const evolveButton = evolveSection.locator('button.confirm-button');
+    await expect(evolveButton).toBeVisible();
+    await expect(evolveButton).toBeDisabled();
+    await expect(evolveButton).toContainText('Evolve to Tahnok Kal');
+
+    await expect(evolveSection).toContainText('needs to reach level 100');
+  });
+
+  test('shows enabled evolve button and evolves when quest completed and level >= 100', async ({
+    page,
+  }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_100_EXP }],
+      completedQuests: [NAMING_DAY_QUEST],
+    });
+    await goto(page, '/characters/tahnok', { hideCanvasBeforeNav: true });
+    await disableCSSAnimations(page);
+
+    const evolveSection = page.locator('.evolve-section');
+    await expect(evolveSection).toBeVisible();
+
+    const evolveButton = evolveSection.locator('button.confirm-button');
+    await expect(evolveButton).toBeVisible();
+    await expect(evolveButton).toBeEnabled();
+    await expect(evolveButton).toContainText('Evolve to Tahnok Kal');
+
+    await expect(evolveSection).toContainText('is ready to evolve');
+
+    await evolveButton.click();
+
+    await expect(page).toHaveURL(/\/characters\/tahnok_kal/);
+    await expect(page.locator('.character-name')).toContainText('Tahnok Kal');
+
+    await expect(page.locator('.evolve-section')).not.toBeVisible();
+  });
+
+  test('does not show evolve button when naming day quest not completed', async ({ page }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_100_EXP }],
+      completedQuests: [],
+    });
+    await goto(page, '/characters/tahnok', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
 
     await expect(page.locator('.evolve-section')).not.toBeVisible();
