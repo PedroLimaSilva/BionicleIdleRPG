@@ -24,7 +24,6 @@ import { CharacterChronicle } from './Chronicle';
 import { isKranaCollectionActive } from '../../game/Krana';
 import { MASK_POWERS } from '../../data/combat';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
-import { getLevelFromExp } from '../../game/Levelling';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -155,7 +154,6 @@ function StatsTab({
   onEvolveCharacter: (id: string) => void;
 }) {
   const evolution = getAvailableEvolution(matoran, completedQuests);
-  const level = getLevelFromExp(matoran.exp);
   const hasLevel = evolution ? meetsEvolutionLevel(matoran, evolution) : false;
   const hasFunds = evolution ? protodermis >= evolution.protodermisCost : false;
   const canEvolve = hasLevel && hasFunds;
@@ -170,7 +168,7 @@ function StatsTab({
             <h4>{evolution.label}</h4>
             <ul>
               <li className={hasLevel ? 'has-enough' : 'not-enough'}>
-                {hasLevel ? '✅' : '❌'} Level {evolution.levelRequired} (currently {level})
+                {hasLevel ? '✅' : '❌'} Level {evolution.levelRequired}
               </li>
               <li className={hasFunds ? 'has-enough' : 'not-enough'}>
                 {hasFunds ? '✅' : '❌'} {evolution.protodermisCost} protodermis
