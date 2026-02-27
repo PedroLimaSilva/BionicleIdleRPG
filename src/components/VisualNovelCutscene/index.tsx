@@ -137,18 +137,20 @@ function DialogueStepView({
     step.portraitType === 'image' || (step.portraitType !== 'avatar' && step.portraitUrl);
 
   const portrait =
-    useImage && step.portraitUrl ? (
-      <img
-        src={step.portraitUrl}
-        alt={speakerName}
-        className="visual-novel-cutscene__portrait-img"
-      />
-    ) : (
-      <MatoranAvatar
-        matoran={{ ...speaker, exp: 0 }}
-        styles="visual-novel-cutscene__portrait-avatar"
-      />
-    );
+    step.portraitType !== 'none' ? (
+      useImage && step.portraitUrl ? (
+        <img
+          src={step.portraitUrl}
+          alt={speakerName}
+          className="visual-novel-cutscene__portrait-img"
+        />
+      ) : (
+        <MatoranAvatar
+          matoran={{ ...speaker, exp: 0 }}
+          styles="visual-novel-cutscene__portrait-avatar"
+        />
+      )
+    ) : undefined;
 
   return (
     <div

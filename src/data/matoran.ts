@@ -10,6 +10,21 @@ import {
 } from '../types/Matoran';
 
 export const MATORAN_DEX: Record<string, BaseMatoran> = {
+  Turaga_Nuju: {
+    id: 'Turaga_Nuju',
+    name: 'Turaga Nuju',
+    mask: Mask.Matatu,
+    stage: MatoranStage.Turaga,
+    element: ElementTribe.Ice,
+    colors: {
+      face: LegoColor.White,
+      mask: LegoColor.LightGray,
+      body: LegoColor.Black,
+      feet: LegoColor.White,
+      arms: LegoColor.LightGray,
+      eyes: LegoColor.MediumBlue,
+    },
+  },
   Toa_Tahu: {
     id: 'Toa_Tahu',
     name: 'Toa Tahu',

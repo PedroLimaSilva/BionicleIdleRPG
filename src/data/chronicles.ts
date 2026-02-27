@@ -321,7 +321,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         'Chasing Rahi tracks from the desert into Ko-Wahi, Pohatu collides, literally and figuratively, with Kopaka as they uncover a mask on a perilous cliffside.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
-        questId: 'maskhunt_kopaka_pohatu_icecliff',
+        questId: 'maskhunt_kopaka_matoro_icecliff',
       },
     },
     {
@@ -578,7 +578,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         'Investigating Rahi threats along an icy precipice, Kopaka reluctantly fights beside Pohatu, proving that even he cannot always stand alone.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
-        questId: 'maskhunt_kopaka_pohatu_icecliff',
+        questId: 'maskhunt_kopaka_matoro_icecliff',
       },
     },
     {

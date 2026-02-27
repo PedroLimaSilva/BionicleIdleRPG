@@ -6,7 +6,12 @@ Unlock: Toa_Tahu, Toa_Gali, Toa_Kopaka, Toa_Lewa, Toa_Onua, Toa_Pohatu
 Loot: 
 Currency: 200
 XP: 100"]
-  maskhunt_kopaka_pohatu_icecliff["The Cliffside Encounter
+  maskhunt_kopaka_matoro_icecliff["The Cliffside Encounter
+(8m)
+Loot: IceChip=100, StoneBlock=100
+Currency: 400
+XP: 450"]
+  maskhunt_kopaka_pohatu_icecliff["The Place of Far-Seeing
 (8m)
 Loot: IceChip=100, StoneBlock=100
 Currency: 400
@@ -327,7 +332,8 @@ XP: 5000"]
 Loot: 
 Currency: 2000
 XP: 1500"]
-  story_toa_arrival --> maskhunt_kopaka_pohatu_icecliff
+  story_toa_arrival --> maskhunt_kopaka_matoro_icecliff
+  maskhunt_kopaka_matoro_icecliff --> maskhunt_kopaka_pohatu_icecliff
   mnog_tahu_unlock_01 --> story_toa_council
   maskhunt_kopaka_pohatu_icecliff --> story_toa_council
   story_toa_council --> maskhunt_tahu_cave_akaku
