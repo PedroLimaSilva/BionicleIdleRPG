@@ -24,7 +24,6 @@ import { CharacterChronicle } from './Chronicle';
 import { isKranaCollectionActive } from '../../game/Krana';
 import { MASK_POWERS } from '../../data/combat';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
-import { getLevelFromExp } from '../../game/Levelling';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
