@@ -5,6 +5,7 @@ import { UserCircle2, Backpack, Settings, Map, Swords } from 'lucide-react';
 import { BattlePhase } from '../../hooks/useBattleState';
 import { areBattlesUnlocked } from '../../game/Progress';
 import { getVisibleEncounters } from '../../game/encounterVisibility';
+import { BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID } from '../../game/nuvaSymbols';
 import { ENCOUNTERS } from '../../data/combat';
 import { CurrencyBar } from '../CurrencyBar';
 
@@ -19,8 +20,13 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
     () => getVisibleEncounters(ENCOUNTERS, collectedKrana, completedQuests),
     [collectedKrana, completedQuests]
   );
+  const bohrokKalDefeated = completedQuests.includes(
+    BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID
+  );
   const showBattleRoute =
-    areBattlesUnlocked(completedQuests) && visibleEncounters.length > 0;
+    areBattlesUnlocked(completedQuests) &&
+    visibleEncounters.length > 0 &&
+    !bohrokKalDefeated;
 
   return (
     <div
