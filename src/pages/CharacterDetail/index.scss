@@ -153,6 +153,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  .evolve-hint {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
 }
 
 @keyframes shimmer {

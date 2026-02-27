@@ -8,6 +8,7 @@ export const BOHROK_KAL_LEVEL_REQUIREMENT = 100;
 export interface EvolutionPath {
   unlockedByQuest: string;
   levelRequired: number;
+  protodermisCost: number;
   evolutions: Record<string, string>;
   stageOverrides?: Record<string, MatoranStage>;
 }
@@ -16,6 +17,7 @@ export const EVOLUTION_PATHS: EvolutionPath[] = [
   {
     unlockedByQuest: 'bohrok_evolve_toa_nuva',
     levelRequired: EVOLUTION_LEVEL_REQUIREMENT,
+    protodermisCost: 5000,
     evolutions: {
       Toa_Tahu: 'Toa_Tahu_Nuva',
       Toa_Gali: 'Toa_Gali_Nuva',
@@ -28,6 +30,7 @@ export const EVOLUTION_PATHS: EvolutionPath[] = [
   {
     unlockedByQuest: 'bohrok_kal_naming_day',
     levelRequired: EVOLUTION_LEVEL_REQUIREMENT,
+    protodermisCost: 1000,
     evolutions: {
       Jala: 'Jaller',
       Maku: 'Macku',
@@ -52,6 +55,7 @@ export const EVOLUTION_PATHS: EvolutionPath[] = [
   {
     unlockedByQuest: 'bohrok_kal_naming_day',
     levelRequired: BOHROK_KAL_LEVEL_REQUIREMENT,
+    protodermisCost: 5000,
     evolutions: {
       tahnok: 'tahnok_kal',
       gahlok: 'gahlok_kal',
@@ -68,6 +72,7 @@ export interface AvailableEvolution {
   stageOverride?: MatoranStage;
   label: string;
   levelRequired: number;
+  protodermisCost: number;
 }
 
 /**
@@ -88,6 +93,7 @@ export function getAvailableEvolution(
         evolvedId,
         label: `Evolve to ${evolvedName}`,
         levelRequired: path.levelRequired,
+        protodermisCost: path.protodermisCost,
       };
     }
 
@@ -99,6 +105,7 @@ export function getAvailableEvolution(
           stageOverride: targetStage,
           label: `Upgrade to ${targetStage} form`,
           levelRequired: path.levelRequired,
+          protodermisCost: path.protodermisCost,
         };
       }
     }

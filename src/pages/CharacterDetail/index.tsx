@@ -29,7 +29,7 @@ import { getLevelFromExp } from '../../game/Levelling';
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recruitedCharacters, completedQuests, evolveCharacter } = useGame();
+  const { recruitedCharacters, completedQuests, protodermis, evolveCharacter } = useGame();
 
   const { setScene } = useSceneCanvas();
 
@@ -99,6 +99,7 @@ export const CharacterDetail: React.FC = () => {
             <StatsTab
               matoran={matoran}
               completedQuests={completedQuests}
+              protodermis={protodermis}
               activeMask={activeMask}
               maskDescription={maskDescription}
               onEvolveCharacter={(id) =>
@@ -141,19 +142,23 @@ export const CharacterDetail: React.FC = () => {
 function StatsTab({
   matoran,
   completedQuests,
+  protodermis,
   activeMask,
   maskDescription,
   onEvolveCharacter,
 }: {
   matoran: BaseMatoran & RecruitedCharacterData;
   completedQuests: string[];
+  protodermis: number;
   activeMask: Mask | undefined;
   maskDescription: string;
   onEvolveCharacter: (id: string) => void;
 }) {
   const evolution = getAvailableEvolution(matoran, completedQuests);
   const level = getLevelFromExp(matoran.exp);
-  const canEvolve = evolution ? meetsEvolutionLevel(matoran, evolution) : false;
+  const hasLevel = evolution ? meetsEvolutionLevel(matoran, evolution) : false;
+  const hasFunds = evolution ? protodermis >= evolution.protodermisCost : false;
+  const canEvolve = hasLevel && hasFunds;
 
   return (
     <>
@@ -161,7 +166,7 @@ function StatsTab({
       <ElementTag element={matoran.element} showName={true} />
       {evolution && (
         <div className="evolve-section">
-          {canEvolve ? (
+          {hasLevel ? (
             <p>{matoran.name} is ready to evolve!</p>
           ) : (
             <p>
@@ -175,8 +180,13 @@ function StatsTab({
             disabled={!canEvolve}
             onClick={() => onEvolveCharacter(matoran.id)}
           >
-            {evolution.label}
+            {evolution.label} ({evolution.protodermisCost} protodermis)
           </button>
+          {hasLevel && !hasFunds && (
+            <p className="evolve-hint">
+              Need {evolution.protodermisCost - protodermis} more protodermis
+            </p>
+          )}
         </div>
       )}
       {isToa(matoran) && activeMask && (

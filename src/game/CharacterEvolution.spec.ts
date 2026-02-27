@@ -23,12 +23,13 @@ describe('CharacterEvolution', () => {
       expect(getAvailableEvolution(char, [])).toBeNull();
     });
 
-    test('returns evolution for Toa Mata after bohrok_evolve_toa_nuva quest', () => {
+    test('returns evolution with correct cost for Toa Mata', () => {
       const char: RecruitedCharacterData = { id: 'Toa_Tahu', exp: 100000 };
       const result = getAvailableEvolution(char, ['bohrok_evolve_toa_nuva']);
       expect(result).not.toBeNull();
       expect(result!.evolvedId).toBe('Toa_Tahu_Nuva');
       expect(result!.levelRequired).toBe(EVOLUTION_LEVEL_REQUIREMENT);
+      expect(result!.protodermisCost).toBe(5000);
     });
 
     test('returns evolution for all Toa Mata', () => {
@@ -58,20 +59,22 @@ describe('CharacterEvolution', () => {
   });
 
   describe('getAvailableEvolution - Naming Day', () => {
-    test('returns evolution for Matoran naming day (Jala -> Jaller)', () => {
+    test('returns evolution with correct cost for Matoran ID change', () => {
       const char: RecruitedCharacterData = { id: 'Jala', exp: 100000 };
       const result = getAvailableEvolution(char, ['bohrok_kal_naming_day']);
       expect(result).not.toBeNull();
       expect(result!.evolvedId).toBe('Jaller');
       expect(result!.levelRequired).toBe(EVOLUTION_LEVEL_REQUIREMENT);
+      expect(result!.protodermisCost).toBe(1000);
     });
 
-    test('returns stage override for Matoran naming day (Kapura -> Rebuilt)', () => {
+    test('returns stage override with correct cost for Matoran', () => {
       const char: RecruitedCharacterData = { id: 'Kapura', exp: 100000 };
       const result = getAvailableEvolution(char, ['bohrok_kal_naming_day']);
       expect(result).not.toBeNull();
       expect(result!.stageOverride).toBe(MatoranStage.Rebuilt);
       expect(result!.levelRequired).toBe(EVOLUTION_LEVEL_REQUIREMENT);
+      expect(result!.protodermisCost).toBe(1000);
     });
 
     test('returns null for stage override when already applied', () => {
@@ -80,14 +83,12 @@ describe('CharacterEvolution', () => {
         exp: 100000,
         stage: MatoranStage.Rebuilt,
       };
-      const result = getAvailableEvolution(char, ['bohrok_kal_naming_day']);
-      expect(result).toBeNull();
+      expect(getAvailableEvolution(char, ['bohrok_kal_naming_day'])).toBeNull();
     });
 
     test('returns null for characters not in any evolution map', () => {
       const char: RecruitedCharacterData = { id: 'Nuparu', exp: 100000 };
-      const result = getAvailableEvolution(char, ['bohrok_evolve_toa_nuva']);
-      expect(result).toBeNull();
+      expect(getAvailableEvolution(char, ['bohrok_evolve_toa_nuva'])).toBeNull();
     });
   });
 
@@ -97,12 +98,13 @@ describe('CharacterEvolution', () => {
       expect(getAvailableEvolution(char, [])).toBeNull();
     });
 
-    test('returns evolution for Bohrok after naming day quest', () => {
+    test('returns evolution with correct cost and level for Bohrok', () => {
       const char: RecruitedCharacterData = { id: 'tahnok', exp: 100000 };
       const result = getAvailableEvolution(char, ['bohrok_kal_naming_day']);
       expect(result).not.toBeNull();
       expect(result!.evolvedId).toBe('tahnok_kal');
       expect(result!.levelRequired).toBe(BOHROK_KAL_LEVEL_REQUIREMENT);
+      expect(result!.protodermisCost).toBe(5000);
     });
 
     test('returns evolution for all Bohrok types', () => {
@@ -112,6 +114,7 @@ describe('CharacterEvolution', () => {
         const result = getAvailableEvolution(char, ['bohrok_kal_naming_day']);
         expect(result?.evolvedId).toBe(`${id}_kal`);
         expect(result?.levelRequired).toBe(BOHROK_KAL_LEVEL_REQUIREMENT);
+        expect(result?.protodermisCost).toBe(5000);
       });
     });
   });
@@ -121,11 +124,13 @@ describe('CharacterEvolution', () => {
       evolvedId: 'test',
       label: 'Test',
       levelRequired: EVOLUTION_LEVEL_REQUIREMENT,
+      protodermisCost: 1000,
     };
     const evo100: AvailableEvolution = {
       evolvedId: 'test',
       label: 'Test',
       levelRequired: BOHROK_KAL_LEVEL_REQUIREMENT,
+      protodermisCost: 5000,
     };
 
     test('returns false below level 50 for standard evolution', () => {
@@ -158,6 +163,7 @@ describe('CharacterEvolution', () => {
         evolvedId: 'Toa_Tahu_Nuva',
         label: 'Evolve',
         levelRequired: 50,
+        protodermisCost: 5000,
       };
       const result = applyCharacterEvolution(char, evolution);
       expect(result.id).toBe('Toa_Tahu_Nuva');
@@ -171,6 +177,7 @@ describe('CharacterEvolution', () => {
         stageOverride: MatoranStage.Rebuilt,
         label: 'Upgrade',
         levelRequired: 50,
+        protodermisCost: 1000,
       };
       const result = applyCharacterEvolution(char, evolution);
       expect(result.id).toBe('Kapura');
@@ -188,6 +195,7 @@ describe('CharacterEvolution', () => {
         evolvedId: 'Toa_Tahu_Nuva',
         label: 'Evolve',
         levelRequired: 50,
+        protodermisCost: 5000,
       };
       const result = applyCharacterEvolution(char, evolution);
       expect(result.maskOverride).toBeUndefined();
@@ -197,8 +205,9 @@ describe('CharacterEvolution', () => {
       const char: RecruitedCharacterData = { id: 'tahnok', exp: expFor100 };
       const evolution: AvailableEvolution = {
         evolvedId: 'tahnok_kal',
-        label: 'Evolve to Tahnok-Kal',
+        label: 'Evolve to Tahnok Kal',
         levelRequired: 100,
+        protodermisCost: 5000,
       };
       const result = applyCharacterEvolution(char, evolution);
       expect(result.id).toBe('tahnok_kal');
@@ -211,6 +220,7 @@ describe('CharacterEvolution', () => {
         evolvedId: 'Jaller',
         label: 'Evolve',
         levelRequired: 50,
+        protodermisCost: 1000,
       };
       const result = applyCharacterEvolution(char, evolution);
       expect(result.exp).toBe(50000);

@@ -17,6 +17,8 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
   test('shows disabled evolve button when quest completed but level < 50', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 10000,
+      protodermisCap: 10000,
       recruitedCharacters: [{ id: 'Toa_Tahu', exp: LOW_LEVEL_EXP }],
       completedQuests: [TOA_NUVA_QUEST],
     });
@@ -30,15 +32,15 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
     await expect(evolveButton).toBeVisible();
     await expect(evolveButton).toBeDisabled();
     await expect(evolveButton).toContainText('Evolve to Toa Tahu Nuva');
+    await expect(evolveButton).toContainText('5000 protodermis');
 
     await expect(evolveSection).toContainText('needs to reach level 50');
   });
 
-  test('shows enabled evolve button and evolves when quest completed and level >= 50', async ({
-    page,
-  }) => {
+  test('shows disabled button when level met but not enough protodermis', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 100,
       recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_51_EXP }],
       completedQuests: [TOA_NUVA_QUEST],
     });
@@ -46,26 +48,42 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
     await disableCSSAnimations(page);
 
     const evolveSection = page.locator('.evolve-section');
-    await expect(evolveSection).toBeVisible();
-
     const evolveButton = evolveSection.locator('button.confirm-button');
-    await expect(evolveButton).toBeVisible();
+    await expect(evolveButton).toBeDisabled();
+    await expect(evolveSection).toContainText('is ready to evolve');
+    await expect(evolveSection).toContainText('more protodermis');
+  });
+
+  test('shows enabled evolve button and evolves when quest completed and level >= 50 with enough protodermis', async ({
+    page,
+  }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      protodermis: 5000,
+      protodermisCap: 10000,
+      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_51_EXP }],
+      completedQuests: [TOA_NUVA_QUEST],
+    });
+    await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
+    await disableCSSAnimations(page);
+
+    const evolveSection = page.locator('.evolve-section');
+    const evolveButton = evolveSection.locator('button.confirm-button');
     await expect(evolveButton).toBeEnabled();
     await expect(evolveButton).toContainText('Evolve to Toa Tahu Nuva');
-
-    await expect(evolveSection).toContainText('is ready to evolve');
 
     await evolveButton.click();
 
     await expect(page).toHaveURL(/\/characters\/Toa_Tahu_Nuva/);
     await expect(page.locator('.character-name')).toContainText('Toa Tahu Nuva');
-
     await expect(page.locator('.evolve-section')).not.toBeVisible();
   });
 
   test('does not show evolve button when quest not completed', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 10000,
+      protodermisCap: 10000,
       recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_51_EXP }],
       completedQuests: [],
     });
@@ -80,23 +98,24 @@ test.describe('Character Evolution - Matoran Naming Day (ID change)', () => {
   test('shows disabled evolve button when quest completed but level < 50', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 5000,
+      protodermisCap: 10000,
       recruitedCharacters: [{ id: 'Jala', exp: LOW_LEVEL_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
     });
     await goto(page, '/characters/Jala', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
 
-    const evolveSection = page.locator('.evolve-section');
-    await expect(evolveSection).toBeVisible();
-
-    const evolveButton = evolveSection.locator('button.confirm-button');
+    const evolveButton = page.locator('.evolve-section button.confirm-button');
     await expect(evolveButton).toBeDisabled();
     await expect(evolveButton).toContainText('Evolve to Jaller');
+    await expect(evolveButton).toContainText('1000 protodermis');
   });
 
   test('shows enabled evolve button and evolves on click', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 1000,
       recruitedCharacters: [{ id: 'Jala', exp: LEVEL_51_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
     });
@@ -105,7 +124,6 @@ test.describe('Character Evolution - Matoran Naming Day (ID change)', () => {
 
     const evolveButton = page.locator('.evolve-section button.confirm-button');
     await expect(evolveButton).toBeEnabled();
-    await expect(evolveButton).toContainText('Evolve to Jaller');
 
     await evolveButton.click();
 
@@ -118,23 +136,24 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
   test('shows disabled upgrade button when quest completed but level < 50', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 5000,
+      protodermisCap: 10000,
       recruitedCharacters: [{ id: 'Kapura', exp: LOW_LEVEL_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
     });
     await goto(page, '/characters/Kapura', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
 
-    const evolveSection = page.locator('.evolve-section');
-    await expect(evolveSection).toBeVisible();
-
-    const evolveButton = evolveSection.locator('button.confirm-button');
+    const evolveButton = page.locator('.evolve-section button.confirm-button');
     await expect(evolveButton).toBeDisabled();
     await expect(evolveButton).toContainText('Upgrade to Rebuilt form');
+    await expect(evolveButton).toContainText('1000 protodermis');
   });
 
   test('shows enabled upgrade button and upgrades on click', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 1000,
       recruitedCharacters: [{ id: 'Kapura', exp: LEVEL_51_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
     });
@@ -143,7 +162,6 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
 
     const evolveButton = page.locator('.evolve-section button.confirm-button');
     await expect(evolveButton).toBeEnabled();
-    await expect(evolveButton).toContainText('Upgrade to Rebuilt form');
 
     await evolveButton.click();
 
@@ -154,6 +172,8 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
   test('does not show upgrade button when stage already applied', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 5000,
+      protodermisCap: 10000,
       recruitedCharacters: [{ id: 'Kapura', exp: LEVEL_51_EXP, stage: 'Rebuilt' }],
       completedQuests: [NAMING_DAY_QUEST],
     });
@@ -168,6 +188,8 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
   test('shows disabled evolve button when quest completed but level < 100', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 10000,
+      protodermisCap: 10000,
       recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_99_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
     });
@@ -175,21 +197,17 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
     await disableCSSAnimations(page);
 
     const evolveSection = page.locator('.evolve-section');
-    await expect(evolveSection).toBeVisible();
-
     const evolveButton = evolveSection.locator('button.confirm-button');
-    await expect(evolveButton).toBeVisible();
     await expect(evolveButton).toBeDisabled();
     await expect(evolveButton).toContainText('Evolve to Tahnok Kal');
-
+    await expect(evolveButton).toContainText('5000 protodermis');
     await expect(evolveSection).toContainText('needs to reach level 100');
   });
 
-  test('shows enabled evolve button and evolves when quest completed and level >= 100', async ({
-    page,
-  }) => {
+  test('shows disabled button when level met but not enough protodermis', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 100,
       recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_100_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
     });
@@ -197,26 +215,42 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
     await disableCSSAnimations(page);
 
     const evolveSection = page.locator('.evolve-section');
-    await expect(evolveSection).toBeVisible();
-
     const evolveButton = evolveSection.locator('button.confirm-button');
-    await expect(evolveButton).toBeVisible();
+    await expect(evolveButton).toBeDisabled();
+    await expect(evolveSection).toContainText('is ready to evolve');
+    await expect(evolveSection).toContainText('more protodermis');
+  });
+
+  test('shows enabled evolve button and evolves when quest completed and level >= 100 with enough protodermis', async ({
+    page,
+  }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      protodermis: 5000,
+      protodermisCap: 10000,
+      recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_100_EXP }],
+      completedQuests: [NAMING_DAY_QUEST],
+    });
+    await goto(page, '/characters/tahnok', { hideCanvasBeforeNav: true });
+    await disableCSSAnimations(page);
+
+    const evolveSection = page.locator('.evolve-section');
+    const evolveButton = evolveSection.locator('button.confirm-button');
     await expect(evolveButton).toBeEnabled();
     await expect(evolveButton).toContainText('Evolve to Tahnok Kal');
-
-    await expect(evolveSection).toContainText('is ready to evolve');
 
     await evolveButton.click();
 
     await expect(page).toHaveURL(/\/characters\/tahnok_kal/);
     await expect(page.locator('.character-name')).toContainText('Tahnok Kal');
-
     await expect(page.locator('.evolve-section')).not.toBeVisible();
   });
 
   test('does not show evolve button when naming day quest not completed', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      protodermis: 10000,
+      protodermisCap: 10000,
       recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_100_EXP }],
       completedQuests: [],
     });

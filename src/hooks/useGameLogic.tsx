@@ -135,9 +135,15 @@ export const useGameLogic = (): GameState => {
       const evolution = getAvailableEvolution(matoran, completedQuests);
       if (!evolution || !meetsEvolutionLevel(matoran, evolution)) return false;
 
-      const evolved = applyCharacterEvolution(matoran, evolution);
-      setRecruitedCharacters((prev) => prev.map((m) => (m.id === matoranId ? evolved : m)));
-      onSuccess?.(evolved.id);
+      setProtodermis((prev) => {
+        if (prev < evolution.protodermisCost) return prev;
+        const evolved = applyCharacterEvolution(matoran, evolution);
+        setRecruitedCharacters((prevChars) =>
+          prevChars.map((m) => (m.id === matoranId ? evolved : m))
+        );
+        onSuccess?.(evolved.id);
+        return prev - evolution.protodermisCost;
+      });
       return true;
     },
     applyBattleRewards: (params: BattleRewardParams) => {
