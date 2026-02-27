@@ -121,7 +121,7 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                   <ul>
                     {quest.rewards.currency && (
                       <li>
-                        <span className="reward-label">Currency:</span> {quest.rewards.currency}
+                        <span className="reward-label">Protodermis:</span> {quest.rewards.currency}
                       </li>
                     )}
                     {quest.rewards.loot &&

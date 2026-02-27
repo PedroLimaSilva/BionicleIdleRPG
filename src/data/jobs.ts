@@ -3,7 +3,7 @@ import { ElementTribe } from '../types/Matoran';
 import { MatoranStage } from '../types/Matoran';
 import { GameItemId } from './loot';
 
-export const WIDGET_RATE = 0.2;
+export const PROTODERMIS_RATE = 0.2;
 
 export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   [MatoranJob.CharcoalMaker]: {

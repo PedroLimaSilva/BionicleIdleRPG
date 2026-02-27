@@ -18,7 +18,7 @@ interface UseQuestStateOptions {
   addItemToInventory: (item: GameItemId, amount: number) => void;
   setRecruitedCharacters: React.Dispatch<React.SetStateAction<RecruitedCharacterData[]>>;
   setBuyableCharacters: React.Dispatch<React.SetStateAction<ListedCharacterData[]>>;
-  addWidgets: (widgets: number) => void;
+  addProtodermis: (amount: number) => void;
 }
 
 export const useQuestState = ({
@@ -28,7 +28,7 @@ export const useQuestState = ({
   addItemToInventory,
   setRecruitedCharacters,
   setBuyableCharacters,
-  addWidgets,
+  addProtodermis,
 }: UseQuestStateOptions) => {
   const [activeQuests, setActiveQuests] = useState<QuestProgress[]>(initialActive);
   const [completedQuests, setCompletedQuestIds] = useState<string[]>(initialCompleted);
@@ -121,7 +121,7 @@ export const useQuestState = ({
       })
     );
 
-    addWidgets(quest.rewards.currency || 0);
+    addProtodermis(quest.rewards.currency || 0);
     // Mark as complete
     setActiveQuests((prev) => prev.filter((q) => q.questId !== quest.id));
     setCompletedQuestIds((prev) => [...prev, quest.id]);

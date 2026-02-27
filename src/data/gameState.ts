@@ -12,8 +12,8 @@ export const CURRENT_GAME_STATE_VERSION = 9; // ONLY UPDATE IF BREAKING CHANGES 
 
 export const INITIAL_GAME_STATE: GameState = {
   version: CURRENT_GAME_STATE_VERSION,
-  widgetCap: 2000,
-  widgets: 10,
+  protodermisCap: 2000,
+  protodermis: 10,
   completedQuests: [],
   activeQuests: [],
   recruitedCharacters: RECRUITED_MATORAN_DATA,

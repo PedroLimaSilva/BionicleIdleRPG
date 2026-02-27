@@ -144,7 +144,7 @@ The game runs entirely in the browser. All game logic must support offline progr
 
 **MUST ENFORCE:**
 
-1. Only these fields are persisted: `version`, `widgets`, `inventory`, `recruitedCharacters`, `buyableCharacters`, `activeQuests`, `completedQuests`
+1. Only these fields are persisted: `version`, `protodermis`, `protodermisCap`, `inventory`, `recruitedCharacters`, `buyableCharacters`, `activeQuests`, `completedQuests`
 2. Battle state is NOT persisted (battles reset on page refresh)
 3. Save version must match `CURRENT_GAME_STATE_VERSION` or the save is rejected
 

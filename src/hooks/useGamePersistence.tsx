@@ -4,8 +4,8 @@ import { PartialGameState } from '../types/GameState';
 
 export function useGamePersistence({
   version,
-  widgets,
-  widgetCap,
+  protodermis,
+  protodermisCap,
   inventory,
   collectedKrana,
   recruitedCharacters,
@@ -16,8 +16,8 @@ export function useGamePersistence({
   useEffect(() => {
     const stateToSave: PartialGameState = {
       version,
-      widgets,
-      widgetCap,
+      protodermis,
+      protodermisCap,
       inventory,
       collectedKrana,
       recruitedCharacters,
@@ -29,8 +29,8 @@ export function useGamePersistence({
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
   }, [
     version,
-    widgets,
-    widgetCap,
+    protodermis,
+    protodermisCap,
     inventory,
     collectedKrana,
     buyableCharacters,

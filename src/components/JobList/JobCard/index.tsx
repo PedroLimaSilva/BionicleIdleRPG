@@ -1,4 +1,4 @@
-import { WIDGET_RATE } from '../../../data/jobs';
+import { PROTODERMIS_RATE } from '../../../data/jobs';
 import './index.scss';
 
 const enum ProductivityEffect {
@@ -59,9 +59,9 @@ export const JobCard: React.FC<JobCardProps> = ({
           <strong>Exp rate:</strong>{' '}
           <span className="code-style">{(baseRate * modifier).toFixed(2)} Exp/second</span>
           <br />
-          <strong>Widget rate:</strong>{' '}
+          <strong>Protodermis rate:</strong>{' '}
           <span className="code-style">
-            {(baseRate * modifier * WIDGET_RATE * 60).toFixed(0)} Widgets/minute
+            {(baseRate * modifier * PROTODERMIS_RATE * 60).toFixed(0)} Protodermis/minute
           </span>
         </div>
       </div>

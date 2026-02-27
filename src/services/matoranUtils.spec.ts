@@ -140,7 +140,7 @@ describe('matoranUtils', () => {
       global.alert = jest.fn();
     });
 
-    test('recruits character when enough widgets', () => {
+    test('recruits character when enough protodermis', () => {
       const character: ListedCharacterData = {
         id: 'Jala',
         cost: 100,
@@ -150,12 +150,12 @@ describe('matoranUtils', () => {
 
       const result = recruitMatoran(character, 150, buyableCharacters, mockAddItem);
 
-      expect(result.updatedWidgets).toBe(50);
+      expect(result.updatedProtodermis).toBe(50);
       expect(result.newRecruit).toEqual({ id: 'Jala', exp: 0 });
       expect(result.updatedBuyable).toHaveLength(0);
     });
 
-    test('fails to recruit when not enough widgets', () => {
+    test('fails to recruit when not enough protodermis', () => {
       const character: ListedCharacterData = {
         id: 'Jala',
         cost: 100,
@@ -165,10 +165,10 @@ describe('matoranUtils', () => {
 
       const result = recruitMatoran(character, 50, buyableCharacters, mockAddItem);
 
-      expect(result.updatedWidgets).toBe(50);
+      expect(result.updatedProtodermis).toBe(50);
       expect(result.newRecruit).toBeNull();
       expect(result.updatedBuyable).toEqual(buyableCharacters);
-      expect(global.alert).toHaveBeenCalledWith('Not enough widgets!');
+      expect(global.alert).toHaveBeenCalledWith('Not enough protodermis!');
     });
 
     test('removes recruited character from buyable list', () => {
