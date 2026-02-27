@@ -155,7 +155,6 @@ function StatsTab({
   onEvolveCharacter: (id: string) => void;
 }) {
   const evolution = getAvailableEvolution(matoran, completedQuests);
-  const level = getLevelFromExp(matoran.exp);
   const hasLevel = evolution ? meetsEvolutionLevel(matoran, evolution) : false;
   const hasFunds = evolution ? protodermis >= evolution.protodermisCost : false;
   const canEvolve = hasLevel && hasFunds;
