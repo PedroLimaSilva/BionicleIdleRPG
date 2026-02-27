@@ -7,14 +7,10 @@ import { getJobStatus } from '../../game/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
 import { QUESTS } from '../../data/quests';
-import {
-  getEffectiveMatoran,
-  isBohrokOrKal,
-  isMatoran,
-  isToa,
-} from '../../services/matoranUtils';
+import { getEffectiveMatoran, isBohrokOrKal, isMatoran, isToa } from '../../services/matoranUtils';
 import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
+import { MATORAN_DEX } from '../../data/matoran';
 
 const CHARACTERS_TAB_KEY = 'characters-tab';
 
@@ -63,6 +59,9 @@ export const CharacterInventory: React.FC = () => {
 
   const characters = useMemo(() => {
     return recruitedCharacters.filter((matoran) => {
+      if (!MATORAN_DEX[matoran.id]) {
+        return false;
+      }
       const effective = getEffectiveMatoran(matoran);
       if (effectiveTab === 'matoran') {
         return isMatoran(effective);
@@ -88,10 +87,7 @@ export const CharacterInventory: React.FC = () => {
           return (
             <Link key={matoran.id} to={`/characters/${matoran.id}`}>
               <div className={`character-card element-${effective.element}`}>
-                <MatoranAvatar
-                  matoran={effective}
-                  styles={'matoran-avatar model-preview'}
-                />
+                <MatoranAvatar matoran={effective} styles={'matoran-avatar model-preview'} />
                 <div className="card-header">
                   {'  ' + effective.name}
                   <div className="level-label">Level {getLevelFromExp(matoran.exp)}</div>
