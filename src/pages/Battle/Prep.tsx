@@ -49,7 +49,9 @@ export const BattlePrep: React.FC = () => {
     setSelectingIndex(index);
   };
 
-  const selectable = recruitedCharacters.filter((c) => isToa(MATORAN_DEX[c.id]));
+  const selectable = recruitedCharacters.filter(
+    (c) => MATORAN_DEX[c.id] && isToa(MATORAN_DEX[c.id])
+  );
 
   if (!currentEncounter) return null;
 
