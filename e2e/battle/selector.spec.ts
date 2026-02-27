@@ -34,6 +34,17 @@ test.describe('Battle Nav Item', () => {
     await page.locator('.nav-bar').waitFor({ state: 'visible', timeout: 10000 });
     await expect(page.locator('nav a[href*="/battle"]')).not.toBeVisible();
   });
+
+  test('should hide battle nav item after Bohrok Kal are defeated', async ({ page }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      completedQuests: ['bohrok_legend_of_krana', 'bohrok_kal_final_confrontation'],
+    });
+    await goto(page, '/');
+
+    await page.locator('.nav-bar').waitFor({ state: 'visible', timeout: 10000 });
+    await expect(page.locator('nav a[href*="/battle"]')).not.toBeVisible();
+  });
 });
 
 test.describe('Battle Selector', () => {
