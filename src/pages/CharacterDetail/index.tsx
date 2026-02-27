@@ -167,11 +167,17 @@ function StatsTab({
       {evolution && (
         <div className="evolve-section">
           {hasLevel ? (
-            <p>{matoran.name} is ready to evolve!</p>
+            <p>
+              {matoran.name} is ready to evolve!
+              <br />
+              Consumes {evolution.protodermisCost} protodermis
+            </p>
           ) : (
             <p>
               {matoran.name} needs to reach level {evolution.levelRequired} to evolve (currently
               level {level}).
+              <br />
+              Consumes {evolution.protodermisCost} protodermis
             </p>
           )}
           <button
@@ -180,7 +186,7 @@ function StatsTab({
             disabled={!canEvolve}
             onClick={() => onEvolveCharacter(matoran.id)}
           >
-            {evolution.label} ({evolution.protodermisCost} protodermis)
+            {evolution.label}
           </button>
           {hasLevel && !hasFunds && (
             <p className="evolve-hint">
