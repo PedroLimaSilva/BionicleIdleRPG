@@ -170,7 +170,7 @@ function StatsTab({
             <h4>{evolution.label}</h4>
             <ul>
               <li className={hasLevel ? 'has-enough' : 'not-enough'}>
-                {hasLevel ? '✅' : '❌'} Level {evolution.levelRequired} (currently {level})
+                {hasLevel ? '✅' : '❌'} Level {evolution.levelRequired}
               </li>
               <li className={hasFunds ? 'has-enough' : 'not-enough'}>
                 {hasFunds ? '✅' : '❌'} {evolution.protodermisCost} protodermis
