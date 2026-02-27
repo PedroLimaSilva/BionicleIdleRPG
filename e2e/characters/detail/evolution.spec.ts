@@ -35,13 +35,16 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
     const evolveSection = page.locator('.evolve-section');
     await expect(evolveSection).toBeVisible();
 
-    const evolveButton = evolveSection.locator('button.confirm-button');
-    await expect(evolveButton).toBeVisible();
-    await expect(evolveButton).toBeDisabled();
+    const requirementItems = evolveSection.locator('.requirement-list li');
+    await expect(requirementItems.nth(0)).toHaveClass(/not-enough/);
+    await expect(requirementItems.nth(0)).toContainText('Level 50');
+    await expect(requirementItems.nth(1)).toHaveClass(/has-enough/);
+    await expect(requirementItems.nth(1)).toContainText('5000 protodermis');
+
+    const evolveButton = evolveSection.locator('button.elemental-btn');
+    await expect(evolveButton).toHaveClass(/disabled/);
     await expect(evolveButton).toContainText('Evolve to Toa Tahu Nuva');
 
-    await expect(evolveSection).toContainText('needs to reach level 50');
-    await expect(evolveSection).toContainText('5000 protodermis');
     await expect(page).toHaveScreenshot({
       fullPage: true,
       threshold: 0.2,
@@ -60,19 +63,21 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
     await hideCanvas(page);
 
     const evolveSection = page.locator('.evolve-section');
-    const evolveButton = evolveSection.locator('button.confirm-button');
-    await expect(evolveButton).toBeDisabled();
-    await expect(evolveSection).toContainText('is ready to evolve');
-    await expect(evolveSection).toContainText('more protodermis');
+    const requirementItems = evolveSection.locator('.requirement-list li');
+    await expect(requirementItems.nth(0)).toHaveClass(/has-enough/);
+    await expect(requirementItems.nth(1)).toHaveClass(/not-enough/);
+    await expect(requirementItems.nth(1)).toContainText('5000 protodermis');
+
+    const evolveButton = evolveSection.locator('button.elemental-btn');
+    await expect(evolveButton).toHaveClass(/disabled/);
+
     await expect(page).toHaveScreenshot({
       fullPage: true,
       threshold: 0.2,
     });
   });
 
-  test('shows enabled evolve button and evolves when quest completed and level >= 50 with enough protodermis', async ({
-    page,
-  }) => {
+  test('evolves when all requirements met', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       protodermis: 5000,
@@ -84,9 +89,12 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
     await disableCSSAnimations(page);
 
     const evolveSection = page.locator('.evolve-section');
-    const evolveButton = evolveSection.locator('button.confirm-button');
-    await expect(evolveButton).toBeEnabled();
-    await expect(evolveButton).toContainText('Evolve to Toa Tahu Nuva');
+    const requirementItems = evolveSection.locator('.requirement-list li');
+    await expect(requirementItems.nth(0)).toHaveClass(/has-enough/);
+    await expect(requirementItems.nth(1)).toHaveClass(/has-enough/);
+
+    const evolveButton = evolveSection.locator('button.elemental-btn');
+    await expect(evolveButton).not.toHaveClass(/disabled/);
 
     await evolveButton.click();
 
@@ -123,16 +131,18 @@ test.describe('Character Evolution - Matoran Naming Day (ID change)', () => {
     await disableCSSAnimations(page);
     await hideCanvas(page);
 
-    const evolveButton = page.locator('.evolve-section button.confirm-button');
-    await expect(evolveButton).toBeDisabled();
+    const evolveSection = page.locator('.evolve-section');
+    const evolveButton = evolveSection.locator('button.elemental-btn');
+    await expect(evolveButton).toHaveClass(/disabled/);
     await expect(evolveButton).toContainText('Evolve to Jaller');
+
     await expect(page).toHaveScreenshot({
       fullPage: true,
       threshold: 0.2,
     });
   });
 
-  test('shows enabled evolve button and evolves on click', async ({ page }) => {
+  test('evolves on click when requirements met', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       protodermis: 1000,
@@ -142,8 +152,8 @@ test.describe('Character Evolution - Matoran Naming Day (ID change)', () => {
     await goto(page, '/characters/Jala', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
 
-    const evolveButton = page.locator('.evolve-section button.confirm-button');
-    await expect(evolveButton).toBeEnabled();
+    const evolveButton = page.locator('.evolve-section button.elemental-btn');
+    await expect(evolveButton).not.toHaveClass(/disabled/);
 
     await evolveButton.click();
 
@@ -167,18 +177,18 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
 
     const evolveSection = page.locator('.evolve-section');
     await expect(evolveSection).toContainText('1000 protodermis');
-    await expect(evolveSection).toContainText('needs to reach level 50');
 
-    const evolveButton = page.locator('.evolve-section button.confirm-button');
-    await expect(evolveButton).toBeDisabled();
+    const evolveButton = evolveSection.locator('button.elemental-btn');
+    await expect(evolveButton).toHaveClass(/disabled/);
     await expect(evolveButton).toContainText('Upgrade to Rebuilt form');
+
     await expect(page).toHaveScreenshot({
       fullPage: true,
       threshold: 0.2,
     });
   });
 
-  test('shows enabled upgrade button and upgrades on click', async ({ page }) => {
+  test('upgrades on click when requirements met', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       protodermis: 1000,
@@ -188,8 +198,8 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
     await goto(page, '/characters/Kapura', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
 
-    const evolveButton = page.locator('.evolve-section button.confirm-button');
-    await expect(evolveButton).toBeEnabled();
+    const evolveButton = page.locator('.evolve-section button.elemental-btn');
+    await expect(evolveButton).not.toHaveClass(/disabled/);
 
     await evolveButton.click();
 
@@ -226,12 +236,16 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
     await hideCanvas(page);
 
     const evolveSection = page.locator('.evolve-section');
-    await expect(evolveSection).toContainText('5000 protodermis');
-    await expect(evolveSection).toContainText('needs to reach level 100');
+    const requirementItems = evolveSection.locator('.requirement-list li');
+    await expect(requirementItems.nth(0)).toHaveClass(/not-enough/);
+    await expect(requirementItems.nth(0)).toContainText('Level 100');
+    await expect(requirementItems.nth(1)).toHaveClass(/has-enough/);
+    await expect(requirementItems.nth(1)).toContainText('5000 protodermis');
 
-    const evolveButton = evolveSection.locator('button.confirm-button');
-    await expect(evolveButton).toBeDisabled();
+    const evolveButton = evolveSection.locator('button.elemental-btn');
+    await expect(evolveButton).toHaveClass(/disabled/);
     await expect(evolveButton).toContainText('Evolve to Tahnok Kal');
+
     await expect(page).toHaveScreenshot({
       fullPage: true,
       threshold: 0.2,
@@ -250,19 +264,20 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
     await hideCanvas(page);
 
     const evolveSection = page.locator('.evolve-section');
-    const evolveButton = evolveSection.locator('button.confirm-button');
-    await expect(evolveButton).toBeDisabled();
-    await expect(evolveSection).toContainText('is ready to evolve');
-    await expect(evolveSection).toContainText('more protodermis');
+    const requirementItems = evolveSection.locator('.requirement-list li');
+    await expect(requirementItems.nth(0)).toHaveClass(/has-enough/);
+    await expect(requirementItems.nth(1)).toHaveClass(/not-enough/);
+
+    const evolveButton = evolveSection.locator('button.elemental-btn');
+    await expect(evolveButton).toHaveClass(/disabled/);
+
     await expect(page).toHaveScreenshot({
       fullPage: true,
       threshold: 0.2,
     });
   });
 
-  test('shows enabled evolve button and evolves when quest completed and level >= 100 with enough protodermis', async ({
-    page,
-  }) => {
+  test('evolves when all requirements met', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       protodermis: 5000,
@@ -274,9 +289,8 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
     await disableCSSAnimations(page);
 
     const evolveSection = page.locator('.evolve-section');
-    const evolveButton = evolveSection.locator('button.confirm-button');
-    await expect(evolveButton).toBeEnabled();
-    await expect(evolveButton).toContainText('Evolve to Tahnok Kal');
+    const evolveButton = evolveSection.locator('button.elemental-btn');
+    await expect(evolveButton).not.toHaveClass(/disabled/);
 
     await evolveButton.click();
 

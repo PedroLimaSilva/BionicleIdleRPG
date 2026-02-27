@@ -146,17 +146,14 @@
 
 .evolve-section {
   margin-top: 1rem;
-  padding: 1rem;
   border: 1px solid var(--theme-element-primary);
   border-radius: var(--border-radius-md);
   background: var(--color-surface-mid);
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
 
-  .evolve-hint {
-    font-size: 0.9rem;
-    opacity: 0.8;
+  button {
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
   }
 }
 

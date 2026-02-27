@@ -166,33 +166,24 @@ function StatsTab({
       <ElementTag element={matoran.element} showName={true} />
       {evolution && (
         <div className="evolve-section">
-          {hasLevel ? (
-            <p>
-              {matoran.name} is ready to evolve!
-              <br />
-              Consumes {evolution.protodermisCost} protodermis
-            </p>
-          ) : (
-            <p>
-              {matoran.name} needs to reach level {evolution.levelRequired} to evolve (currently
-              level {level}).
-              <br />
-              Consumes {evolution.protodermisCost} protodermis
-            </p>
-          )}
-          <button
-            type="button"
-            className="confirm-button"
-            disabled={!canEvolve}
-            onClick={() => onEvolveCharacter(matoran.id)}
-          >
-            {evolution.label}
-          </button>
-          {hasLevel && !hasFunds && (
-            <p className="evolve-hint">
-              Need {evolution.protodermisCost - protodermis} more protodermis
-            </p>
-          )}
+          <div className="requirement-list">
+            <h4>{evolution.label}</h4>
+            <ul>
+              <li className={hasLevel ? 'has-enough' : 'not-enough'}>
+                {hasLevel ? '✅' : '❌'} Level {evolution.levelRequired} (currently {level})
+              </li>
+              <li className={hasFunds ? 'has-enough' : 'not-enough'}>
+                {hasFunds ? '✅' : '❌'} {evolution.protodermisCost} protodermis
+              </li>
+            </ul>
+            <button
+              type="button"
+              className={`elemental-btn element-${matoran.element}${canEvolve ? '' : ' disabled'}`}
+              onClick={() => canEvolve && onEvolveCharacter(matoran.id)}
+            >
+              {evolution.label}
+            </button>
+          </div>
         </div>
       )}
       {isToa(matoran) && activeMask && (
