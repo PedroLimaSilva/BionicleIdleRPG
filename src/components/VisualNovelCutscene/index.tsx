@@ -32,8 +32,7 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
     (e: React.KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        const isDialogueOrNarration =
-          step?.type === 'dialogue' || step?.type === 'narration';
+        const isDialogueOrNarration = step?.type === 'dialogue' || step?.type === 'narration';
         if (isDialogueOrNarration && advanceOrSkipRef.current) {
           advanceOrSkipRef.current();
         } else {
@@ -218,11 +217,10 @@ function DialogueStepView({
         <div className={`visual-novel-cutscene__speaker-name element-${speaker?.element}`}>
           {speakerName}
         </div>
-        <div className="visual-novel-cutscene__text">
+        <div className={`visual-novel-cutscene__text element-${speaker?.element}`}>
           <p>
             {displayedText}
-            {!isComplete && <span className="visual-novel-cutscene__cursor" />}
-            {' '}
+            {!isComplete && <span className="visual-novel-cutscene__cursor" />}{' '}
           </p>
           <span className={`visual-novel-cutscene__advance`}>
             {isLast ? 'Press to close' : 'Press to continue'}
