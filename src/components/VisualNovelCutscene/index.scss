@@ -20,17 +20,6 @@
   }
 }
 
-@keyframes dialogue-box-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .visual-novel-cutscene {
   position: fixed;
   inset: 0;
@@ -159,11 +148,6 @@
     padding-top: 0.5rem;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
     text-align: left;
-    animation: dialogue-box-fade-in 0.3s ease-out forwards;
-  }
-
-  &__dialogue-box {
-    animation-delay: 0.1s;
   }
 
   &__narration-box {
