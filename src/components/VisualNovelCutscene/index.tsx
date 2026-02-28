@@ -110,7 +110,7 @@ function NarrationStepView({
         aria-label={isLast ? 'Close cutscene' : 'Next'}
       >
         <div className="visual-novel-cutscene__text">
-          {text}
+          <p>{text}</p>
           <span className={`visual-novel-cutscene__advance`}>
             {isLast ? 'Press to close' : 'Press to continue'}
           </span>

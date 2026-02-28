@@ -78,7 +78,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'story_toa_council',
     name: 'The Toa Council',
     description:
-      'Following a chance encounter between Kopaka and Pohatu, they find the other four Toa gathered near the slopes of Mount Ihu. Though tensions arise between their differing personalities and priorities, they come to a shared understanding: each must search for the scattered Kanohi and grow stronger in preparation for the battle against Makuta. They part ways with a mutual vow to reunite when the time is right.',
+      'Following a chance encounter between Kopaka and Pohatu, they find the other four Toa gathered near the slopes of Mount Ihu.',
     durationSeconds: 30 * 60, // 2 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
@@ -88,6 +88,7 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       xpPerMatoran: 1000,
       currency: 500,
+      cutscene: { type: 'visual_novel', cutsceneId: 'story_toa_council' },
       loot: {},
     },
     unlockedAfter: ['mnog_tahu_unlock_01', 'maskhunt_kopaka_pohatu_icecliff'],
