@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { AvailableQuests } from '../../components/AvailableQuests';
 import { VisualNovelCutscene } from '../../components/VisualNovelCutscene';
 import { useGame } from '../../context/Game';
@@ -9,6 +10,7 @@ import { QuestProgress } from '../../types/Quests';
 import type { VisualNovelCutsceneRef } from '../../types/Cutscenes';
 import './index.scss';
 import { MATORAN_DEX } from '../../data/matoran';
+import { MOTION_DURATION, MOTION_EASING, buildTransition } from '../../motion/transitions';
 
 const DEFAULT_SECTION_LABEL = 'Other Quests';
 
@@ -22,6 +24,20 @@ const SECTION_ORDER: Record<string, number> = {
 type SectionGroup = {
   section: string;
   questIds: string[];
+};
+
+const COMPLETED_SECTION_OPEN = {
+  opacity: 1,
+  height: 'auto',
+  paddingTop: '0.5rem',
+  paddingBottom: '0.75rem',
+};
+
+const COMPLETED_SECTION_CLOSED = {
+  opacity: 0,
+  height: 0,
+  paddingTop: 0,
+  paddingBottom: 0,
 };
 
 export const QuestsPage = () => {
@@ -55,6 +71,14 @@ export const QuestsPage = () => {
   const [activeCutscene, setActiveCutscene] = useState<VisualNovelCutsceneRef | null>(null);
   const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const shouldReduceMotion = useReducedMotion() ?? false;
+  const accordionTransition = buildTransition(
+    {
+      duration: MOTION_DURATION.base,
+      ease: MOTION_EASING.standard,
+    },
+    shouldReduceMotion
+  );
 
   const completedSections = useMemo<SectionGroup[]>(() => {
     const questOrder = new Map(QUESTS.map((q, i) => [q.id, i]));
@@ -185,42 +209,64 @@ export const QuestsPage = () => {
                     </span>
                   </span>
                 </button>
-                {isSectionExpanded && (
-                  <ul className="quests-page__list quests-page__completed">
-                    {sec.questIds.map((id) => {
-                      const quest = getQuestById(id);
-                      const isExpanded = expandedQuestId === id;
+                <AnimatePresence initial={false}>
+                  {isSectionExpanded && (
+                    <motion.ul
+                      key={`${sec.section}-completed-list`}
+                      className="quests-page__list quests-page__completed"
+                      initial={
+                        shouldReduceMotion ? COMPLETED_SECTION_OPEN : COMPLETED_SECTION_CLOSED
+                      }
+                      animate={COMPLETED_SECTION_OPEN}
+                      exit={COMPLETED_SECTION_CLOSED}
+                      transition={accordionTransition}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      {sec.questIds.map((id) => {
+                        const quest = getQuestById(id);
+                        const isExpanded = expandedQuestId === id;
 
-                      if (!quest) return null;
+                        if (!quest) return null;
 
-                      return (
-                        <li key={id} className="quests-page__item">
-                          <div
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => setExpandedQuestId(isExpanded ? null : id)}
-                          >
-                            <h3 className="quests-page__item-title">{quest.name}</h3>
-                          </div>
-                          <div
-                            className={`quests-page__accordion-content ${
-                              isExpanded ? 'quests-page__accordion-content--expanded' : ''
-                            }`}
-                          >
-                            <p className="quests-page__item-desc">{quest.description}</p>
-                            {quest.rewards.cutscene && (
-                              <button
-                                className="quests-page__complete"
-                                onClick={() => handleCutscene(quest.rewards.cutscene!)}
-                              >
-                                Replay Cutscene
-                              </button>
-                            )}
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
+                        return (
+                          <li key={id} className="quests-page__item">
+                            <div
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => setExpandedQuestId(isExpanded ? null : id)}
+                            >
+                              <h3 className="quests-page__item-title">{quest.name}</h3>
+                            </div>
+                            <AnimatePresence initial={false}>
+                              {isExpanded && (
+                                <motion.div
+                                  key={`${id}-content`}
+                                  className="quests-page__accordion-content quests-page__accordion-content--expanded"
+                                  initial={
+                                    shouldReduceMotion ? { opacity: 1 } : { opacity: 0, height: 0 }
+                                  }
+                                  animate={{ opacity: 1, height: 'auto' }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  transition={accordionTransition}
+                                  style={{ overflow: 'hidden' }}
+                                >
+                                  <p className="quests-page__item-desc">{quest.description}</p>
+                                  {quest.rewards.cutscene && (
+                                    <button
+                                      className="quests-page__complete"
+                                      onClick={() => handleCutscene(quest.rewards.cutscene!)}
+                                    >
+                                      Replay Cutscene
+                                    </button>
+                                  )}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </li>
+                        );
+                      })}
+                    </motion.ul>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Combatant } from '../../../types/Combat';
 import { hasActiveEffectFromSource } from '../../../services/combatUtils';
-import { DamagePopup } from './DamagePopup';
+import { DamagePopup, DamagePopupEvent } from './DamagePopup';
 import { MATORAN_DEX } from '../../../data/matoran';
 import { MatoranAvatar } from '../../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../../components/MaskPowerTooltip';
@@ -18,8 +18,9 @@ export function AllyCard({
   enemies?: Combatant[];
 }) {
   const prevHpRef = useRef(combatant.hp);
-  const [damage, setDamage] = useState<number | null>(null);
-  const [healing, setHealing] = useState<number | null>(null);
+  const popupSequenceRef = useRef(0);
+  const [damage, setDamage] = useState<DamagePopupEvent | null>(null);
+  const [healing, setHealing] = useState<DamagePopupEvent | null>(null);
   const [selected, setSelected] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(false);
   const [maxCooldown, setMaxCooldown] = useState<number>(0);
@@ -46,11 +47,17 @@ export function AllyCard({
   useEffect(() => {
     if (combatant.hp < prevHpRef.current) {
       // HP decreased - damage taken
-      setDamage(prevHpRef.current - combatant.hp);
+      setDamage({
+        id: ++popupSequenceRef.current,
+        value: prevHpRef.current - combatant.hp,
+      });
       setHealing(null); // Clear any healing popup
     } else if (combatant.hp > prevHpRef.current) {
       // HP increased - healing received
-      setHealing(combatant.hp - prevHpRef.current);
+      setHealing({
+        id: ++popupSequenceRef.current,
+        value: combatant.hp - prevHpRef.current,
+      });
       setDamage(null); // Clear any damage popup
     }
     prevHpRef.current = combatant.hp;
@@ -91,8 +98,26 @@ export function AllyCard({
       )}
       <div className="hp-bar">
         HP: {combatant.hp}/{combatant.maxHp}
-        {damage && <DamagePopup damage={damage} direction="up" isHealing={false} />}
-        {healing && <DamagePopup damage={healing} direction="up" isHealing={true} />}
+        {damage && (
+          <DamagePopup
+            popup={damage}
+            direction="up"
+            isHealing={false}
+            onComplete={(id) => {
+              setDamage((current) => (current?.id === id ? null : current));
+            }}
+          />
+        )}
+        {healing && (
+          <DamagePopup
+            popup={healing}
+            direction="up"
+            isHealing={true}
+            onComplete={(id) => {
+              setHealing((current) => (current?.id === id ? null : current));
+            }}
+          />
+        )}
       </div>
     </div>
   );

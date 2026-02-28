@@ -5,6 +5,7 @@ import { JobCard } from '../../../components/JobList/JobCard';
 import { getProductivityModifier } from '../../../game/Jobs';
 import { Modal } from '../../../components/Modal';
 import { JobList } from '../../../components/JobList';
+import { AnimatePresence } from 'motion/react';
 
 export function JobAssignment({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const [assigningJob, setAssigningJob] = useState(false);
@@ -38,17 +39,19 @@ export function JobAssignment({ matoran }: { matoran: BaseMatoran & RecruitedCha
         </button>
       )}
 
-      {assigningJob && (
-        <Modal onClose={() => setAssigningJob(false)} classNames={`element-${matoran.element}`}>
-          <JobList
-            matoran={matoran as RecruitedCharacterData}
-            onAssign={() => {
-              setAssigningJob(false);
-            }}
-            onCancel={() => setAssigningJob(false)}
-          />
-        </Modal>
-      )}
+      <AnimatePresence>
+        {assigningJob && (
+          <Modal onClose={() => setAssigningJob(false)} classNames={`element-${matoran.element}`}>
+            <JobList
+              matoran={matoran as RecruitedCharacterData}
+              onAssign={() => {
+                setAssigningJob(false);
+              }}
+              onCancel={() => setAssigningJob(false)}
+            />
+          </Modal>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

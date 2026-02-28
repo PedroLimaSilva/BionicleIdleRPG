@@ -310,53 +310,19 @@
   pointer-events: none;
   touch-action: none;
   z-index: 2;
-  transform: translate(-50%, 0);
+  transform: translateX(-50%);
   color: red;
   font-weight: bold;
 
   &.healing {
     color: #00ff00; // Bright green for healing
   }
-}
 
-@keyframes float-up {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, 0) scale(0.5);
+  &.up {
+    top: 0;
   }
 
-  50% {
-    transform: translate(-50%, -20px) scale(3);
+  &.down {
+    bottom: 0;
   }
-
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -40px);
-  }
-}
-
-.float-up {
-  top: 0;
-  animation: float-up 0.8s ease-out forwards;
-}
-
-@keyframes float-down {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-
-  50% {
-    transform: translate(-50%, 20px) scale(3);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate(-50%, 40px);
-  }
-}
-
-.float-down {
-  bottom: 0;
-  animation: float-down 0.8s ease-out forwards;
 }
