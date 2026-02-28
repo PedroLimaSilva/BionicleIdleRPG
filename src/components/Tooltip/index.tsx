@@ -1,4 +1,4 @@
-import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import './index.scss';
@@ -48,7 +48,7 @@ export function Tooltip({ content, children }: TooltipProps) {
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
   const tooltipId = useId();
 
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     const trigger = triggerRef.current;
     const tooltipEl = contentRef.current;
     if (!trigger || !tooltipEl || !visible) return;
@@ -127,12 +127,12 @@ export function Tooltip({ content, children }: TooltipProps) {
     }
 
     setPosition({ top, left });
-  };
+  }, [visible]);
 
   useLayoutEffect(() => {
     if (!visible) return;
     updatePosition();
-  }, [visible]);
+  }, [visible, updatePosition]);
 
   useEffect(() => {
     if (!visible) return;
@@ -152,7 +152,7 @@ export function Tooltip({ content, children }: TooltipProps) {
       window.removeEventListener('scroll', handleScrollOrResize, true);
       scrollParents.forEach((el) => el.removeEventListener('scroll', handleScrollOrResize));
     };
-  }, [visible]);
+  }, [visible, updatePosition]);
 
   const showTooltip = () => setVisible(true);
   const hideTooltip = () => {

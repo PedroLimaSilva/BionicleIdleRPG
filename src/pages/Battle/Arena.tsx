@@ -6,7 +6,7 @@ import { hasActiveEffectFromSource } from '../../services/combatUtils';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
 import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
-import { useSettings } from '../../context/Settings';
+import { useSettings } from '../../context/useSettings';
 
 function EnvironmentIntensity({ value }: { value: number }) {
   const scene = useThree((s) => s.scene);

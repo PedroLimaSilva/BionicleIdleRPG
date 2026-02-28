@@ -1,5 +1,5 @@
 import { resetGameData } from '../../services/gamePersistence';
-import { useSettings } from '../../context/Settings';
+import { useSettings } from '../../context/useSettings';
 import './index.scss';
 
 export default function SettingsPage() {

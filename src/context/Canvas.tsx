@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { PCFSoftShadowMap, SRGBColorSpace } from 'three';
 import { SceneCanvasContext } from '../hooks/useSceneCanvas';
 import { Perf } from 'r3f-perf';
-import { useSettings } from './Settings';
+import { useSettings } from './useSettings';
 
 /** Set sRGB output once for the whole app so postprocessing and materials look correct. */
 function SetSRGBColorSpace() {

@@ -399,7 +399,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     },
     chronicleId: CHRONICLE_IDS.AHKMOU,
   },
-  : {
+  Kivi: {
     id: 'Kivi',
     name: 'Kivi',
     mask: Mask.Kaukau,
