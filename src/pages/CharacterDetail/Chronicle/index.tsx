@@ -121,9 +121,18 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
               {isSectionExpanded && (
                 <motion.div
                   className="chronicle-section__body"
-                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
+                  initial={
+                    shouldReduceMotion
+                      ? { opacity: 1 }
+                      : { opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }
+                  }
+                  animate={{
+                    opacity: 1,
+                    height: 'auto',
+                    paddingTop: '0.5rem',
+                    paddingBottom: '0.75rem',
+                  }}
+                  exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
                   transition={accordionTransition}
                   style={{ overflow: 'hidden' }}
                 >
@@ -162,14 +171,21 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
                             <motion.div
                               className="chronicle-entry__description"
                               initial={
-                                shouldReduceMotion ? { opacity: 1 } : { opacity: 0, height: 0 }
+                                shouldReduceMotion
+                                  ? { opacity: 1 }
+                                  : { opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }
                               }
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
+                              animate={{
+                                opacity: 1,
+                                height: 'auto',
+                                paddingTop: '1em',
+                                paddingBottom: '1em',
+                              }}
+                              exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
                               transition={accordionTransition}
                               style={{ overflow: 'hidden' }}
                             >
-                              <p>{entry.description}</p>
+                              {entry.description}
                             </motion.div>
                           )}
                         </AnimatePresence>

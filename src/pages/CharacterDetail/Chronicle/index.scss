@@ -58,7 +58,7 @@
 }
 
 .chronicle-section__body {
-  padding: 0.5rem 0.75rem 0.75rem;
+  padding: 0 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -118,11 +118,7 @@
 
 .chronicle-entry__description {
   font-size: 0.9em;
-  padding: 1em 1em 0.25em;
+  padding: 0 1em;
   color: var(--color-text-muted);
-}
-
-.chronicle-entry__description p {
-  margin: 0;
   text-align: left;
 }
