@@ -26,6 +26,20 @@ type SectionGroup = {
   questIds: string[];
 };
 
+const COMPLETED_SECTION_OPEN = {
+  opacity: 1,
+  height: 'auto',
+  paddingTop: 8,
+  paddingBottom: 12,
+};
+
+const COMPLETED_SECTION_CLOSED = {
+  opacity: 0,
+  height: 0,
+  paddingTop: 0,
+  paddingBottom: 0,
+};
+
 export const QuestsPage = () => {
   const {
     activeQuests,
@@ -200,9 +214,9 @@ export const QuestsPage = () => {
                     <motion.ul
                       key={`${sec.section}-completed-list`}
                       className="quests-page__list quests-page__completed"
-                      initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
+                      initial={shouldReduceMotion ? COMPLETED_SECTION_OPEN : COMPLETED_SECTION_CLOSED}
+                      animate={COMPLETED_SECTION_OPEN}
+                      exit={COMPLETED_SECTION_CLOSED}
                       transition={accordionTransition}
                       style={{ overflow: 'hidden' }}
                     >
