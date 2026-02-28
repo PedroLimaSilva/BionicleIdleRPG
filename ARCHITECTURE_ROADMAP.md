@@ -31,7 +31,7 @@ This document identifies technical debt, inconsistencies, and architectural impr
 
 ### 2.2 Standardize Variable Naming Conventions
 
-**Issue:** Inconsistent use of `matoran_dex` (snake_case) vs `matoranDex` (camelCase) for local variables.
+**Issue:** Inconsistent use of `CHARACTER_DEX` (snake_case) vs `matoranDex` (camelCase) for local variables.
 
 **Locations:** Multiple files in `src/game/` and `src/services/`
 

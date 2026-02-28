@@ -4,7 +4,7 @@ import { useGLTF } from '@react-three/drei';
 import { Color } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
-import { MATORAN_DEX } from '../../data/matoran';
+import { CHARACTER_DEX } from '../../data/dex/index';
 import { BaseMatoran } from '../../types/Matoran';
 
 /** Cache key: materialName + color. Shared across all Bohrok instances with same scheme. */
@@ -70,7 +70,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
   useImperativeHandle(ref, () => ({ playAnimation }));
 
   useEffect(() => {
-    const colorScheme = MATORAN_DEX[id].colors;
+    const colorScheme = CHARACTER_DEX[id].colors;
     const [name, kal] = id.split('_');
     const uppercaseName = name.replace(/^./, (char) => char.toUpperCase());
     const isKal = kal !== undefined;

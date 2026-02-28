@@ -18,7 +18,7 @@ export interface QuestRequirement {
 }
 
 /**
- * Maps current MATORAN_DEX id to evolved MATORAN_DEX id.
+ * Maps current CHARACTER_DEX id to evolved CHARACTER_DEX id.
  * Applied to recruited characters who participated in the quest.
  * Evolved characters keep EXP, assignment, and quest; mask overrides are dropped.
  */

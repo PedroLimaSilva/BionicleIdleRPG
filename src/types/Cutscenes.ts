@@ -5,11 +5,11 @@
 
 /**
  * A dialogue step in a visual novel cutscene.
- * speakerId maps to MATORAN_DEX for name/portrait; portraitUrl overrides if provided.
+ * speakerId maps to CHARACTER_DEX for name/portrait; portraitUrl overrides if provided.
  */
 export interface DialogueStep {
   type: 'dialogue';
-  speakerId: string; // Character ID from MATORAN_DEX
+  speakerId: string; // Character ID from CHARACTER_DEX
   text: string;
   /** Speaker side: portrait and text alignment. Default 'left'. */
   position?: 'left' | 'right';

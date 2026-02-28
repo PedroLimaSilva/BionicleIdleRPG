@@ -1,5 +1,5 @@
 import { CHRONICLES_BY_ID, type ChronicleId } from '../data/chronicles';
-import { MATORAN_DEX } from '../data/matoran';
+import { CHARACTER_DEX } from '../data/dex/index';
 import type { ChronicleEntryWithState, ChronicleUnlockCondition } from '../types/Chronicle';
 import type { GameState } from '../types/GameState';
 
@@ -11,7 +11,7 @@ export function getCharacterChronicle(
   characterId: string,
   progress: ChronicleProgressContext
 ): ChronicleEntryWithState[] {
-  const base = MATORAN_DEX[characterId];
+  const base = CHARACTER_DEX[characterId];
   const chronicleId = base?.chronicleId;
   if (!chronicleId || !(chronicleId in CHRONICLES_BY_ID)) return [];
 

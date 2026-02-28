@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Combatant } from '../../../types/Combat';
 import { hasActiveEffectFromSource } from '../../../services/combatUtils';
 import { DamagePopup, DamagePopupEvent } from './DamagePopup';
-import { MATORAN_DEX } from '../../../data/matoran';
+import { CHARACTER_DEX } from '../../../data/dex/index';
 import { MatoranAvatar } from '../../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../../components/MaskPowerTooltip';
 
@@ -63,7 +63,7 @@ export function AllyCard({
     prevHpRef.current = combatant.hp;
   }, [combatant.hp]);
 
-  const dex = MATORAN_DEX[combatant.id];
+  const dex = CHARACTER_DEX[combatant.id as keyof typeof CHARACTER_DEX];
   return (
     <div
       id={`combatant-${combatant.id}`}

@@ -1,7 +1,7 @@
 import { Combatant } from '../../types/Combat';
 import { BohrokModel } from '../../components/CharacterScene/BohrokModel';
 import { KopakaMataModel } from '../../components/CharacterScene/Mata/KopakaMataModel';
-import { MATORAN_DEX } from '../../data/matoran';
+import { CHARACTER_DEX } from '../../data/dex/index';
 import { Euler } from '@react-three/fiber';
 import { TahuMataModel } from '../../components/CharacterScene/Mata/TahuMataModel';
 import { PohatuMataModel } from '../../components/CharacterScene/Mata/PohatuMataModel';
@@ -140,7 +140,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                   maskPowerActive,
@@ -155,7 +155,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                   maskPowerActive,
@@ -170,7 +170,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                   maskPowerActive,
@@ -185,7 +185,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                   maskPowerActive,
@@ -200,7 +200,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                   maskPowerActive,
@@ -215,7 +215,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                   maskPowerActive,
@@ -230,7 +230,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                 }}
@@ -244,7 +244,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                 }}
@@ -258,7 +258,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                 }}
@@ -272,7 +272,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                 }}
@@ -286,7 +286,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                 }}
@@ -300,7 +300,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
-                  ...MATORAN_DEX[combatant.id],
+                  ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
                 }}

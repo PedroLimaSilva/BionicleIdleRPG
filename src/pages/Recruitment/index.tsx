@@ -7,7 +7,7 @@ import { useGame } from '../../context/Game';
 import { ITEM_DICTIONARY } from '../../data/loot';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
-import { MATORAN_DEX } from '../../data/matoran';
+import { CHARACTER_DEX } from '../../data/dex/index';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const Recruitment: React.FC = () => {
@@ -26,7 +26,9 @@ export const Recruitment: React.FC = () => {
       });
     };
 
-    return selectedMatoran && protodermis >= selectedMatoran.cost && hasRequiredItems(selectedMatoran);
+    return (
+      selectedMatoran && protodermis >= selectedMatoran.cost && hasRequiredItems(selectedMatoran)
+    );
   }, [selectedMatoran, protodermis, inventory]);
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export const Recruitment: React.FC = () => {
 
   useEffect(() => {
     if (selectedMatoran) {
-      setScene(<CharacterScene matoran={{ ...MATORAN_DEX[selectedMatoran.id], exp: 0 }} />);
+      setScene(<CharacterScene matoran={{ ...CHARACTER_DEX[selectedMatoran.id], exp: 0 }} />);
     }
     return () => {
       setScene(null);
@@ -58,7 +60,7 @@ export const Recruitment: React.FC = () => {
 
   const confirmRecruitment = () => {
     if (selectedMatoran && canRecruit) {
-      alert(`${MATORAN_DEX[selectedMatoran.id].name} has been recruited!`);
+      alert(`${CHARACTER_DEX[selectedMatoran.id].name} has been recruited!`);
       recruitCharacter(selectedMatoran);
       const nextFocusedCharacter = buyableCharacters[0] || null;
       if (!nextFocusedCharacter || buyableCharacters.length === 1) {
@@ -94,16 +96,17 @@ export const Recruitment: React.FC = () => {
       </div>
       {selectedMatoran && (
         <div
-          className={`requirement-drawer ${isExpanded ? 'expanded' : ''} element-${MATORAN_DEX[selectedMatoran.id].element}`}
+          className={`requirement-drawer ${isExpanded ? 'expanded' : ''} element-${CHARACTER_DEX[selectedMatoran.id].element}`}
         >
           <h1 className="character-name" onClick={() => setIsExpanded(!isExpanded)}>
-            {selectedMatoran ? MATORAN_DEX[selectedMatoran.id].name : ''}
+            {selectedMatoran ? CHARACTER_DEX[selectedMatoran.id].name : ''}
           </h1>
           <div className="requirement-list">
             <h4 onClick={() => setIsExpanded(!isExpanded)}>Requirements</h4>
             <ul>
               <li className={protodermis >= selectedMatoran.cost ? 'has-enough' : 'not-enough'}>
-                {protodermis >= selectedMatoran.cost ? '✅' : '❌'} {selectedMatoran.cost} protodermis
+                {protodermis >= selectedMatoran.cost ? '✅' : '❌'} {selectedMatoran.cost}{' '}
+                protodermis
               </li>
               {selectedMatoran.requiredItems?.map(({ item, quantity }) => {
                 const owned = inventory[item] || 0;
@@ -122,7 +125,7 @@ export const Recruitment: React.FC = () => {
             <button
               className={`elemental-btn ${
                 canRecruit ? '' : 'disabled'
-              } element-${MATORAN_DEX[selectedMatoran.id].element}`}
+              } element-${CHARACTER_DEX[selectedMatoran.id].element}`}
               onClick={confirmRecruitment}
             >
               Recruit

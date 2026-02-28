@@ -1,5 +1,5 @@
 import { MatoranStage, RecruitedCharacterData } from '../types/Matoran';
-import { MATORAN_DEX } from '../data/matoran';
+import { CHARACTER_DEX } from '../data/dex/index';
 import { getLevelFromExp } from './Levelling';
 
 export const EVOLUTION_LEVEL_REQUIREMENT = 50;
@@ -88,7 +88,7 @@ export function getAvailableEvolution(
 
     const evolvedId = path.evolutions[character.id];
     if (evolvedId) {
-      const evolvedName = MATORAN_DEX[evolvedId]?.name ?? evolvedId;
+      const evolvedName = CHARACTER_DEX[evolvedId]?.name ?? evolvedId;
       return {
         evolvedId,
         label: `Evolve to ${evolvedName}`,
@@ -99,7 +99,7 @@ export function getAvailableEvolution(
 
     const targetStage = path.stageOverrides?.[character.id];
     if (targetStage !== undefined) {
-      const currentStage = character.stage ?? MATORAN_DEX[character.id]?.stage;
+      const currentStage = character.stage ?? CHARACTER_DEX[character.id]?.stage;
       if (currentStage !== targetStage) {
         return {
           stageOverride: targetStage,
