@@ -399,7 +399,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
     },
     chronicleId: CHRONICLE_IDS.AHKMOU,
   },
-  Kivi: {
+  : {
     id: 'Kivi',
     name: 'Kivi',
     mask: Mask.Kaukau,
@@ -414,7 +414,7 @@ export const MATORAN_DEX: Record<string, BaseMatoran> = {
       arms: LegoColor.Tan,
       eyes: LegoColor.TransNeonOrange,
     },
-    chronicleId: CHRONICLE_IDS.AHKMOU,
+    chronicleId: CHRONICLE_IDS.KIVI,
   },
   Taipu: {
     id: 'Taipu',
