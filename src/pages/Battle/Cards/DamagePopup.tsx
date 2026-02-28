@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { MOTION_DURATION, MOTION_EASING, buildTransition } from '../../../motion/transitions';
+import { isTestMode } from '../../../utils/testMode';
 
 export type DamagePopupEvent = {
   id: number;
@@ -17,7 +18,7 @@ export const DamagePopup = ({
   isHealing?: boolean;
   onComplete: (id: number) => void;
 }) => {
-  const shouldReduceMotion = useReducedMotion() ?? false;
+  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
   const travelDistance = direction === 'up' ? -40 : 40;
   const transition = buildTransition(
     {

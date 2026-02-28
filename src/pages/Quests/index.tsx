@@ -11,6 +11,7 @@ import type { VisualNovelCutsceneRef } from '../../types/Cutscenes';
 import './index.scss';
 import { MATORAN_DEX } from '../../data/matoran';
 import { MOTION_DURATION, MOTION_EASING, buildTransition } from '../../motion/transitions';
+import { isTestMode } from '../../utils/testMode';
 
 const DEFAULT_SECTION_LABEL = 'Other Quests';
 
@@ -71,7 +72,7 @@ export const QuestsPage = () => {
   const [activeCutscene, setActiveCutscene] = useState<VisualNovelCutsceneRef | null>(null);
   const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
-  const shouldReduceMotion = useReducedMotion() ?? false;
+  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
   const accordionTransition = buildTransition(
     {
       duration: MOTION_DURATION.base,

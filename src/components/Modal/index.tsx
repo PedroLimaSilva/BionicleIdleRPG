@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { MOTION_DURATION, MOTION_EASING, buildTransition } from '../../motion/transitions';
+import { isTestMode } from '../../utils/testMode';
 import './index.scss';
 
 type ModalProps = {
@@ -9,7 +10,7 @@ type ModalProps = {
 };
 
 export function Modal({ children, onClose, classNames }: ModalProps) {
-  const shouldReduceMotion = useReducedMotion() ?? false;
+  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
   const backdropTransition = buildTransition(
     {
       duration: MOTION_DURATION.base,

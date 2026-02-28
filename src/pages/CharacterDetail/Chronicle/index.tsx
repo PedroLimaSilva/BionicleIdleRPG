@@ -7,6 +7,7 @@ import type { ChronicleEntryWithState } from '../../../types/Chronicle';
 import './index.scss';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../../motion/transitions';
+import { isTestMode } from '../../../utils/testMode';
 
 type CharacterChronicleProps = {
   matoran: BaseMatoran & RecruitedCharacterData;
@@ -20,7 +21,7 @@ type SectionGroup = {
 const DEFAULT_SECTION_LABEL = 'Chronicle';
 
 export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
-  const shouldReduceMotion = useReducedMotion() ?? false;
+  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
   const accordionTransition = buildTransition(
     {
       duration: MOTION_DURATION.base,
