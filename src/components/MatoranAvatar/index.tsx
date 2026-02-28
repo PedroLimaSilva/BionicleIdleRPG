@@ -22,7 +22,7 @@ export function MatoranAvatar({
   const { colors } = matoran;
   const maskColor = useMemo(
     () => getEffectiveMaskColor(matoran, completedQuests),
-    [matoran.colors.mask, completedQuests]
+    [matoran, completedQuests]
   );
 
   const mask = useMemo(() => {

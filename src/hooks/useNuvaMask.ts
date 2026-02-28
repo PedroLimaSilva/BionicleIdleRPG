@@ -107,7 +107,7 @@ export function useNuvaMask(
       masksParent.remove(clone);
       maskRef.current = null;
     };
-  }, [masksNodes, masksParent, maskFileName, maskName]);
+  }, [masksNodes, masksParent, maskFileName, maskName, maskColor]);
 
   // Update color when maskColor changes (mask name unchanged)
   useEffect(() => {

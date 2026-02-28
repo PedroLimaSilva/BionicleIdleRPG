@@ -5,7 +5,7 @@ import { EffectComposer, SSAO, SelectiveBloom } from '@react-three/postprocessin
 import { BlendFunction } from 'postprocessing';
 import { DirectionalLight, Mesh, Object3D } from 'three';
 
-import { useSettings } from '../../context/Settings';
+import { useSettings } from '../../context/useSettings';
 import { shouldEnableSelectiveBloom } from '../../utils/testMode';
 import { CYLINDER_RADIUS } from './BoundsCylinder';
 
