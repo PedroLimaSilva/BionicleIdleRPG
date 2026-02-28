@@ -2,6 +2,18 @@ import { CombatantTemplate, EnemyEncounter, MaskPower } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 
 export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
+  [Mask.Avohkii]: {
+    shortName: Mask.Avohkii,
+    longName: 'Mask of Light',
+    description: 'The legendary Avohkii, Mask of Light. No combat effect.',
+    target: 'self',
+    cooldown: { amount: 999, unit: 'wave' },
+    effect: {
+      duration: { amount: 1, unit: 'turn' },
+      type: 'HEAL',
+      multiplier: 0,
+    },
+  },
   [Mask.Akaku]: {
     shortName: Mask.Akaku,
     longName: 'Mask of X-Ray Vision',
