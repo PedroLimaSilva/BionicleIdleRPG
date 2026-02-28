@@ -29,8 +29,8 @@ type SectionGroup = {
 const COMPLETED_SECTION_OPEN = {
   opacity: 1,
   height: 'auto',
-  paddingTop: 8,
-  paddingBottom: 12,
+  paddingTop: '0.5rem',
+  paddingBottom: '0.75rem',
 };
 
 const COMPLETED_SECTION_CLOSED = {
@@ -214,7 +214,9 @@ export const QuestsPage = () => {
                     <motion.ul
                       key={`${sec.section}-completed-list`}
                       className="quests-page__list quests-page__completed"
-                      initial={shouldReduceMotion ? COMPLETED_SECTION_OPEN : COMPLETED_SECTION_CLOSED}
+                      initial={
+                        shouldReduceMotion ? COMPLETED_SECTION_OPEN : COMPLETED_SECTION_CLOSED
+                      }
                       animate={COMPLETED_SECTION_OPEN}
                       exit={COMPLETED_SECTION_CLOSED}
                       transition={accordionTransition}
