@@ -131,7 +131,6 @@
   &__speaker-name {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #e8c547;
     font-family: var(--font-display);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -150,10 +149,13 @@
   }
 
   &__advance {
-    display: block;
-    margin-left: auto;
-    margin-right: 0;
-    min-height: calc(0.8rem + 1.5em);
+    position: absolute;
+    color: var(--color-text-muted);
+    bottom: 1.5rem;
+    font-size: 0.9rem;
+    left: 50%;
+    opacity: 0.5;
+    translate: -50%;
   }
 
   &__close {
