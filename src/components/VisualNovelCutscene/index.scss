@@ -37,25 +37,15 @@
       gap: 1.25rem;
     }
 
-    &--left {
-      .visual-novel-cutscene__dialogue-box {
-        text-align: left;
-      }
-      .visual-novel-cutscene__speaker-name {
-        text-align: left;
-      }
-    }
-
     &--right {
-      .visual-novel-cutscene__dialogue-box {
+      .visual-novel-cutscene__speaker-name {
         text-align: right;
+      }
+      .visual-novel-cutscene__dialogue-box {
         grid-template-areas:
           'name portrait'
           'content content';
         grid-template-columns: 1fr 70px;
-      }
-      .visual-novel-cutscene__speaker-name {
-        text-align: right;
       }
       .visual-novel-cutscene__speaker-side {
         left: auto;
@@ -128,6 +118,7 @@
     padding: 1.25rem 1.5rem;
     padding-top: 0.5rem;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+    text-align: left;
   }
 
   &__narration-box {
@@ -136,7 +127,6 @@
     grid-template-areas: 'content content';
     grid-template-columns: 1fr;
     grid-template-rows: auto;
-    text-align: left;
   }
 
   &__speaker-name {
@@ -152,11 +142,27 @@
   &__text {
     font-size: 1.05rem;
     line-height: 1.6;
-    color: #e8e8e8;
+    color: var(--color-text-muted);
     grid-area: content;
     p {
       margin-bottom: 0.3rem;
       margin-top: 0.5rem;
+    }
+  }
+
+  &__cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    background: var(--theme-element-accent, --color-text-muted);
+    animation: visual-novel-cursor-blink 0.8s step-end infinite;
+  }
+
+  @keyframes visual-novel-cursor-blink {
+    50% {
+      opacity: 0;
     }
   }
 
