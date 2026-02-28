@@ -116,19 +116,20 @@ function DialogueStepView({
     <div
       className={`visual-novel-cutscene__content visual-novel-cutscene__content--dialogue visual-novel-cutscene__content--${position}`}
     >
-      <div className="visual-novel-cutscene__dialogue-box">
+      <div
+        className="visual-novel-cutscene__dialogue-box"
+        onClick={onAdvance}
+        aria-label={isLast ? 'Close cutscene' : 'Next'}
+      >
         <div className="visual-novel-cutscene__speaker-side">{portrait}</div>
-        <div className="visual-novel-cutscene__speaker-name">{speakerName}</div>
+        <div className={`visual-novel-cutscene__speaker-name element-${speaker?.element}`}>
+          {speakerName}
+        </div>
         <div className="visual-novel-cutscene__text">
           <p>{step.text} </p>
-          <button
-            type="button"
-            className="visual-novel-cutscene__advance"
-            onClick={onAdvance}
-            aria-label={isLast ? 'Close cutscene' : 'Next'}
-          >
-            {isLast ? 'Close' : 'Next ›'}
-          </button>
+          <span className={`visual-novel-cutscene__advance`}>
+            {isLast ? 'Press to close' : 'Press to continue'}
+          </span>
         </div>
       </div>
     </div>

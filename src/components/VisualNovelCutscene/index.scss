@@ -131,8 +131,8 @@
   &__speaker-name {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #e8c547;
     font-family: var(--font-display);
+    color: var(--theme-element-accent);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     grid-area: name;
@@ -150,26 +150,13 @@
   }
 
   &__advance {
-    display: block;
-    margin-left: auto;
-    margin-right: 0;
-    min-height: calc(0.8rem + 1.5em);
-    padding: 0.4rem 1rem;
+    position: absolute;
+    color: var(--color-text-muted);
+    bottom: 1.5rem;
     font-size: 0.9rem;
-    font-weight: 600;
-    color: #fff;
-    background: rgba(232, 197, 71, 0.3);
-    border: 1px solid rgba(232, 197, 71, 0.5);
-    border-radius: 6px;
-    cursor: pointer;
-    transition:
-      background 0.2s,
-      border-color 0.2s;
-
-    &:hover {
-      background: rgba(232, 197, 71, 0.45);
-      border-color: rgba(232, 197, 71, 0.7);
-    }
+    left: 50%;
+    opacity: 0.5;
+    translate: -50%;
   }
 
   &__close {

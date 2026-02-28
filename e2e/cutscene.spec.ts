@@ -29,6 +29,9 @@ async function openVideoCutscene(page: import('@playwright/test').Page) {
   await page
     .locator('.visual-novel-cutscene__video-wrapper iframe')
     .waitFor({ state: 'visible', timeout: 5000 });
+  await page.locator('.visual-novel-cutscene__video-wrapper iframe').evaluate((el) => {
+    (el as HTMLIFrameElement).src = 'about:blank';
+  });
 }
 
 test.describe('Visual Novel Cutscene', () => {
