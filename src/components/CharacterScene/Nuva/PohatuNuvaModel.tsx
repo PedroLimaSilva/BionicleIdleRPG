@@ -5,6 +5,7 @@ import { forwardRef, useRef } from 'react';
 import { Group } from 'three';
 import { useArmor } from '../../../hooks/useArmor';
 import { useNuvaMask } from '../../../hooks/useNuvaMask';
+import { useIdleAnimation } from '../../../hooks/useIdleAnimation';
 
 export const PohatuNuvaModel = forwardRef<
   CombatantModelHandle,
@@ -14,7 +15,8 @@ export const PohatuNuvaModel = forwardRef<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >(({ matoran }, _ref) => {
   const group = useRef<Group>(null);
-  const { nodes } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/pohatu.glb');
+  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/pohatu.glb');
+  useIdleAnimation(animations, group);
 
   useArmor(nodes.ChestPlateHolder, 'Chest');
   useArmor(nodes.PlateHolderL, 'Shoulder');
@@ -24,7 +26,7 @@ export const PohatuNuvaModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Waist} scale={36.5} position={[0, 8.78, -0.8]} />
+      <primitive object={nodes.Pohatu} scale={36.5} position={[0, -0.1, -0.8]} />
     </group>
   );
 });
