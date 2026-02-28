@@ -278,7 +278,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     durationSeconds: 10 * 60, // 10 min
     requirements: {
       matoran: ['Takua', 'Toa_Pohatu'],
-      minLevel: 6,
+      minLevel: 5,
       items: [
         {
           id: GameItemId.StoneBlock,

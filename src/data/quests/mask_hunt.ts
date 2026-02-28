@@ -55,10 +55,10 @@ export const MASK_HUNT: Quest[] = [
   {
     id: 'maskhunt_kopaka_pohatu_icecliff',
     name: 'The Place of Far-Seeing',
-    description: 'Matoro leads Kopaka to Turaga Nuju',
+    description: 'After meeting Turaga Nuju, Kopaka sets out to the Place of Far-Seeing.',
     durationSeconds: 480, // 8 minutes
     requirements: {
-      matoran: ['Toa_Kopaka'],
+      matoran: ['Toa_Kopaka', 'Toa_Pohatu'],
       minLevel: 1,
       items: [],
     },

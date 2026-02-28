@@ -423,7 +423,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'right',
         text: `
-          We have to company, let's go.
+          We have company, let's go.
         `,
       },
     ],
