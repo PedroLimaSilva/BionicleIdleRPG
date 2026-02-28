@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { CHARACTER_DEX } from '../../data/dex/index';
+
 import type {
   VisualNovelCutscene as VisualNovelCutsceneType,
   VisualNovelStep,
@@ -7,6 +8,7 @@ import type {
 import { isDialogueStep } from '../../types/Cutscenes';
 import './index.scss';
 import { MatoranAvatar } from '../MatoranAvatar';
+import { useTypewriter } from './TypewriterText';
 
 type Props = {
   cutscene: VisualNovelCutsceneType;
@@ -17,6 +19,7 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const step = cutscene.steps[currentIndex];
   const isLast = currentIndex >= cutscene.steps.length - 1;
+  const advanceOrSkipRef = useRef<(() => void) | null>(null);
 
   const handleAdvance = useCallback(() => {
     if (isLast) {
@@ -30,14 +33,19 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
     (e: React.KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        handleAdvance();
+        const isDialogueOrNarration = step?.type === 'dialogue' || step?.type === 'narration';
+        if (isDialogueOrNarration && advanceOrSkipRef.current) {
+          advanceOrSkipRef.current();
+        } else {
+          handleAdvance();
+        }
       }
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
       }
     },
-    [handleAdvance, onClose]
+    [step?.type, handleAdvance, onClose]
   );
 
   const backgroundStyle =
@@ -59,10 +67,24 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
       stepView = <VideoStepView videoId={step.videoId} onAdvance={handleAdvance} isLast={isLast} />;
       break;
     case 'dialogue':
-      stepView = <DialogueStepView step={step} onAdvance={handleAdvance} isLast={isLast} />;
+      stepView = (
+        <DialogueStepView
+          step={step}
+          onAdvance={handleAdvance}
+          isLast={isLast}
+          advanceOrSkipRef={advanceOrSkipRef}
+        />
+      );
       break;
     case 'narration':
-      stepView = <NarrationStepView text={step.text} onAdvance={handleAdvance} isLast={isLast} />;
+      stepView = (
+        <NarrationStepView
+          text={step.text}
+          onAdvance={handleAdvance}
+          isLast={isLast}
+          advanceOrSkipRef={advanceOrSkipRef}
+        />
+      );
       break;
     default:
       stepView = null;
@@ -97,20 +119,37 @@ function NarrationStepView({
   text,
   onAdvance,
   isLast,
+  advanceOrSkipRef,
 }: {
   text: string;
   onAdvance: () => void;
   isLast: boolean;
+  advanceOrSkipRef: React.MutableRefObject<(() => void) | null>;
 }) {
+  const { displayedText, isComplete, skip } = useTypewriter(text);
+
+  const handleClick = useCallback(() => {
+    if (isComplete) {
+      onAdvance();
+    } else {
+      skip();
+    }
+  }, [isComplete, onAdvance, skip]);
+
+  advanceOrSkipRef.current = handleClick;
+
   return (
     <div className="visual-novel-cutscene__content visual-novel-cutscene__content--narration">
       <div
         className="visual-novel-cutscene__narration-box"
-        onClick={onAdvance}
+        onClick={handleClick}
         aria-label={isLast ? 'Close cutscene' : 'Next'}
       >
         <div className="visual-novel-cutscene__text">
-          <p>{text}</p>
+          <p>
+            {displayedText}
+            {!isComplete && <span className="visual-novel-cutscene__cursor" />}
+          </p>
           <span className={`visual-novel-cutscene__advance`}>
             {isLast ? 'Press to close' : 'Press to continue'}
           </span>
@@ -124,11 +163,24 @@ function DialogueStepView({
   step,
   onAdvance,
   isLast,
+  advanceOrSkipRef,
 }: {
   step: Extract<VisualNovelStep, { type: 'dialogue' }>;
   onAdvance: () => void;
   isLast: boolean;
+  advanceOrSkipRef: React.MutableRefObject<(() => void) | null>;
 }) {
+  const { displayedText, isComplete, skip } = useTypewriter(step.text);
+  const handleClick = useCallback(() => {
+    if (isComplete) {
+      onAdvance();
+    } else {
+      skip();
+    }
+  }, [isComplete, onAdvance, skip]);
+
+  advanceOrSkipRef.current = handleClick;
+
   if (!isDialogueStep(step)) return null;
   const speaker = CHARACTER_DEX[step.speakerId];
   const speakerName = speaker?.name ?? step.speakerId;
@@ -158,15 +210,18 @@ function DialogueStepView({
     >
       <div
         className="visual-novel-cutscene__dialogue-box"
-        onClick={onAdvance}
+        onClick={handleClick}
         aria-label={isLast ? 'Close cutscene' : 'Next'}
       >
         <div className="visual-novel-cutscene__speaker-side">{portrait}</div>
         <div className={`visual-novel-cutscene__speaker-name element-${speaker?.element}`}>
           {speakerName}
         </div>
-        <div className="visual-novel-cutscene__text">
-          <p>{step.text} </p>
+        <div className={`visual-novel-cutscene__text element-${speaker?.element}`}>
+          <p>
+            {displayedText}
+            {!isComplete && <span className="visual-novel-cutscene__cursor" />}{' '}
+          </p>
           <span className={`visual-novel-cutscene__advance`}>
             {isLast ? 'Press to close' : 'Press to continue'}
           </span>
