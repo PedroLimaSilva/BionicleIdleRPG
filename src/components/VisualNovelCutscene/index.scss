@@ -160,6 +160,22 @@
     }
   }
 
+  &__cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    background: var(--theme-element-accent, #e8e8e8);
+    animation: visual-novel-cursor-blink 0.8s step-end infinite;
+  }
+
+  @keyframes visual-novel-cursor-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
   &__advance {
     position: absolute;
     color: var(--color-text-muted);
