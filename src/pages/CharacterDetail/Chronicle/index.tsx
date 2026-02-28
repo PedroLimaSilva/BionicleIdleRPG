@@ -5,6 +5,8 @@ import type { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran
 import { getCharacterChronicle } from '../../../services/chronicleUtils';
 import type { ChronicleEntryWithState } from '../../../types/Chronicle';
 import './index.scss';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../../motion/transitions';
 
 type CharacterChronicleProps = {
   matoran: BaseMatoran & RecruitedCharacterData;
@@ -18,6 +20,14 @@ type SectionGroup = {
 const DEFAULT_SECTION_LABEL = 'Chronicle';
 
 export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
+  const shouldReduceMotion = useReducedMotion() ?? false;
+  const accordionTransition = buildTransition(
+    {
+      duration: MOTION_DURATION.base,
+      ease: MOTION_EASING.standard,
+    },
+    shouldReduceMotion
+  );
   const { completedQuests } = useGame();
 
   const chronicleEntries = useMemo(
@@ -67,7 +77,9 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
   if (!chronicleEntries.length) {
     return (
       <div className="character-chronicle">
-        <p className="character-chronicle__empty">No chronicle entries are available for this character yet.</p>
+        <p className="character-chronicle__empty">
+          No chronicle entries are available for this character yet.
+        </p>
       </div>
     );
   }
@@ -92,7 +104,8 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
               <div className="chronicle-section__title">{section.section}</div>
               <div className="chronicle-section__meta">
                 <span className="chronicle-section__count">
-                  {section.entries.filter((e) => e.isUnlocked).length}/{section.entries.length} unlocked
+                  {section.entries.filter((e) => e.isUnlocked).length}/{section.entries.length}{' '}
+                  unlocked
                 </span>
                 <span className="chronicle-section__chevron" aria-hidden="true">
                   {isSectionExpanded ? (
@@ -104,48 +117,71 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
               </div>
             </button>
 
-            {isSectionExpanded && (
-              <div className="chronicle-section__body">
-                {section.entries.map((entry) => {
-                  const isExpandedInline = expandedEntryId === entry.id;
+            <AnimatePresence initial={false}>
+              {isSectionExpanded && (
+                <motion.div
+                  className="chronicle-section__body"
+                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={accordionTransition}
+                  style={{ overflow: 'hidden' }}
+                >
+                  {section.entries.map((entry) => {
+                    const isExpandedInline = expandedEntryId === entry.id;
 
-                  return (
-                    <div
-                      key={entry.id}
-                      className={`chronicle-entry ${entry.isUnlocked ? 'chronicle-entry--unlocked' : 'chronicle-entry--locked'}`}
-                    >
-                      <button
-                        type="button"
-                        className="chronicle-entry__header"
-                        onClick={() => handleEntryClick(entry)}
+                    return (
+                      <div
+                        key={entry.id}
+                        className={`chronicle-entry ${entry.isUnlocked ? 'chronicle-entry--unlocked' : 'chronicle-entry--locked'}`}
                       >
-                        <span
-                          className={`chronicle-entry__checkbox ${
-                            entry.isUnlocked ? 'chronicle-entry__checkbox--checked' : ''
-                          }`}
-                          aria-hidden="true"
+                        <button
+                          type="button"
+                          className="chronicle-entry__header"
+                          onClick={() => handleEntryClick(entry)}
                         >
-                          {entry.isUnlocked && (
-                            <Check size={12} strokeWidth={3} className="chronicle-entry__check-icon" />
-                          )}
-                        </span>
-                        <div className="chronicle-entry__title">{entry.title}</div>
-                      </button>
+                          <span
+                            className={`chronicle-entry__checkbox ${
+                              entry.isUnlocked ? 'chronicle-entry__checkbox--checked' : ''
+                            }`}
+                            aria-hidden="true"
+                          >
+                            {entry.isUnlocked && (
+                              <Check
+                                size={12}
+                                strokeWidth={3}
+                                className="chronicle-entry__check-icon"
+                              />
+                            )}
+                          </span>
+                          <div className="chronicle-entry__title">{entry.title}</div>
+                        </button>
 
-                      {isExpandedInline && (
-                        <div className="chronicle-entry__description">
-                          <p>{entry.description}</p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                        <AnimatePresence initial={false}>
+                          {isExpandedInline && (
+                            <motion.div
+                              className="chronicle-entry__description"
+                              initial={
+                                shouldReduceMotion ? { opacity: 1 } : { opacity: 0, height: 0 }
+                              }
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={accordionTransition}
+                              style={{ overflow: 'hidden' }}
+                            >
+                              <p>{entry.description}</p>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         );
       })}
     </div>
   );
 }
-

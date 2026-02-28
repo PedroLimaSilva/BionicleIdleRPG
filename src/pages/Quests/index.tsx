@@ -225,7 +225,9 @@ export const QuestsPage = () => {
                                 <motion.div
                                   key={`${id}-content`}
                                   className="quests-page__accordion-content quests-page__accordion-content--expanded"
-                                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, height: 0 }}
+                                  initial={
+                                    shouldReduceMotion ? { opacity: 1 } : { opacity: 0, height: 0 }
+                                  }
                                   animate={{ opacity: 1, height: 'auto' }}
                                   exit={{ opacity: 0, height: 0 }}
                                   transition={accordionTransition}
