@@ -14,11 +14,20 @@ export interface DialogueStep {
   /** Speaker side: portrait and text alignment. Default 'left'. */
   position?: 'left' | 'right';
   /** Portrait: 'avatar' (colored box + initial) or 'image' (use portraitUrl). Default: 'image' if portraitUrl set, else 'avatar'. */
-  portraitType?: 'avatar' | 'image';
+  portraitType?: 'avatar' | 'image' | 'none';
   /** Custom portrait image URL; used when portraitType is 'image'. */
   portraitUrl?: string;
   /** Optional emotion/variant for portrait (e.g. "happy", "sad") - for future use */
   emotion?: string;
+}
+
+/**
+ * A narration step in a visual novel cutscene.
+ * Used for text-only narration without a speaker.
+ */
+export interface NarrationStep {
+  type: 'narration';
+  text: string;
 }
 
 /**
@@ -30,7 +39,7 @@ export interface VideoStep {
 }
 
 /** A single step in a visual novel cutscene: dialogue or video */
-export type VisualNovelStep = DialogueStep | VideoStep;
+export type VisualNovelStep = DialogueStep | VideoStep | NarrationStep;
 
 /**
  * Visual novel cutscene definition.
@@ -46,6 +55,10 @@ export interface VisualNovelCutscene {
 
 /** @deprecated Use DialogueStep - kept for migration */
 export type DialogueLine = Omit<DialogueStep, 'type'>;
+
+export function isNarrationStep(step: VisualNovelStep): step is NarrationStep {
+  return step.type === 'narration';
+}
 
 export function isDialogueStep(step: VisualNovelStep): step is DialogueStep {
   return step.type === 'dialogue';

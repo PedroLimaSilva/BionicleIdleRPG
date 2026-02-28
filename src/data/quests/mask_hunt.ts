@@ -31,17 +31,17 @@ export const MASK_HUNT: Quest[] = [
     section: 'Arrival of the Toa',
   },
   {
-    id: 'maskhunt_kopaka_pohatu_icecliff',
+    id: 'maskhunt_kopaka_matoro_icecliff',
     name: 'The Cliffside Encounter',
-    description:
-      'As Kopaka explores the frozen drifts of Ko-Wahi, he unexpectedly crosses paths with Pohatu, who arrived chasing a Rahi sighting from the desert’s edge. Though their temperaments clash, the two agree to investigate a nearby crevasse said to conceal a Kanohi Mask. There, they must work together to survive an avalanche and fend off ambushing Rahi to retrieve the Mask of Shielding.',
+    description: 'After Kopaka lands on Ko-Wahi, he discovers his duty.',
     durationSeconds: 480, // 8 minutes
     requirements: {
-      matoran: ['Toa_Kopaka', 'Toa_Pohatu'],
+      matoran: ['Toa_Kopaka'],
       minLevel: 1,
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_kopaka_matoro_icecliff' },
       xpPerMatoran: 450,
       currency: 400,
       loot: {
@@ -53,10 +53,32 @@ export const MASK_HUNT: Quest[] = [
     section: 'Arrival of the Toa',
   },
   {
+    id: 'maskhunt_kopaka_pohatu_icecliff',
+    name: 'The Place of Far-Seeing',
+    description: 'Matoro leads Kopaka to Turaga Nuju',
+    durationSeconds: 480, // 8 minutes
+    requirements: {
+      matoran: ['Toa_Kopaka'],
+      minLevel: 1,
+      items: [],
+    },
+    rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_kopaka_pohatu_icecliff' },
+      xpPerMatoran: 450,
+      currency: 400,
+      loot: {
+        [GameItemId.IceChip]: 100,
+        [GameItemId.StoneBlock]: 100,
+      },
+    },
+    unlockedAfter: ['maskhunt_kopaka_matoro_icecliff'],
+    section: 'Arrival of the Toa',
+  },
+  {
     id: 'story_toa_council',
     name: 'The Toa Council',
     description:
-      'Following a chance encounter between Kopaka and Pohatu, they find the other four Toa gathered near the slopes of Mount Ihu. Though tensions arise between their differing personalities and priorities, they come to a shared understanding: each must search for the scattered Kanohi and grow stronger in preparation for the battle against Makuta. They part ways with a mutual vow to reunite when the time is right.',
+      'Following a chance encounter between Kopaka and Pohatu, they find the other four Toa gathered near the slopes of Mount Ihu.',
     durationSeconds: 30 * 60, // 2 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
@@ -66,6 +88,7 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       xpPerMatoran: 1000,
       currency: 500,
+      cutscene: { type: 'visual_novel', cutsceneId: 'story_toa_council' },
       loot: {},
     },
     unlockedAfter: ['mnog_tahu_unlock_01', 'maskhunt_kopaka_pohatu_icecliff'],

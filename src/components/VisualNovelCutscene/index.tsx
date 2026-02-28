@@ -4,7 +4,7 @@ import type {
   VisualNovelCutscene as VisualNovelCutsceneType,
   VisualNovelStep,
 } from '../../types/Cutscenes';
-import { isDialogueStep, isVideoStep } from '../../types/Cutscenes';
+import { isDialogueStep } from '../../types/Cutscenes';
 import './index.scss';
 import { MatoranAvatar } from '../MatoranAvatar';
 
@@ -53,6 +53,21 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
     return null;
   }
 
+  let stepView;
+  switch (step.type) {
+    case 'video':
+      stepView = <VideoStepView videoId={step.videoId} onAdvance={handleAdvance} isLast={isLast} />;
+      break;
+    case 'dialogue':
+      stepView = <DialogueStepView step={step} onAdvance={handleAdvance} isLast={isLast} />;
+      break;
+    case 'narration':
+      stepView = <NarrationStepView text={step.text} onAdvance={handleAdvance} isLast={isLast} />;
+      break;
+    default:
+      stepView = null;
+  }
+
   return (
     <div
       className="visual-novel-cutscene"
@@ -64,11 +79,7 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
     >
       <div className="visual-novel-cutscene__background" style={backgroundStyle} />
 
-      {isVideoStep(step) ? (
-        <VideoStepView videoId={step.videoId} onAdvance={handleAdvance} isLast={isLast} />
-      ) : (
-        <DialogueStepView step={step} onAdvance={handleAdvance} isLast={isLast} />
-      )}
+      {stepView}
 
       <button
         type="button"
@@ -78,6 +89,33 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
       >
         ✕
       </button>
+    </div>
+  );
+}
+
+function NarrationStepView({
+  text,
+  onAdvance,
+  isLast,
+}: {
+  text: string;
+  onAdvance: () => void;
+  isLast: boolean;
+}) {
+  return (
+    <div className="visual-novel-cutscene__content visual-novel-cutscene__content--narration">
+      <div
+        className="visual-novel-cutscene__narration-box"
+        onClick={onAdvance}
+        aria-label={isLast ? 'Close cutscene' : 'Next'}
+      >
+        <div className="visual-novel-cutscene__text">
+          <p>{text}</p>
+          <span className={`visual-novel-cutscene__advance`}>
+            {isLast ? 'Press to close' : 'Press to continue'}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -99,18 +137,20 @@ function DialogueStepView({
     step.portraitType === 'image' || (step.portraitType !== 'avatar' && step.portraitUrl);
 
   const portrait =
-    useImage && step.portraitUrl ? (
-      <img
-        src={step.portraitUrl}
-        alt={speakerName}
-        className="visual-novel-cutscene__portrait-img"
-      />
-    ) : (
-      <MatoranAvatar
-        matoran={{ ...speaker, exp: 0 }}
-        styles="visual-novel-cutscene__portrait-avatar"
-      />
-    );
+    step.portraitType !== 'none' ? (
+      useImage && step.portraitUrl ? (
+        <img
+          src={step.portraitUrl}
+          alt={speakerName}
+          className="visual-novel-cutscene__portrait-img"
+        />
+      ) : (
+        <MatoranAvatar
+          matoran={{ ...speaker, exp: 0 }}
+          styles="visual-novel-cutscene__portrait-avatar"
+        />
+      )
+    ) : undefined;
 
   return (
     <div

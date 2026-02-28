@@ -41,6 +41,7 @@ export const enum MatoranTag {
 }
 
 export const enum MatoranStage {
+  Turaga = 'Turaga',
   ToaMata = 'Toa Mata',
   ToaNuva = 'Toa Nuva',
   Diminished = 'Diminished',
