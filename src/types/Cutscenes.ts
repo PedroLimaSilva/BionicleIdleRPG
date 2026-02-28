@@ -22,6 +22,15 @@ export interface DialogueStep {
 }
 
 /**
+ * A narration step in a visual novel cutscene.
+ * Used for text-only narration without a speaker.
+ */
+export interface NarrationStep {
+  type: 'narration';
+  text: string;
+}
+
+/**
  * A video step - embeds a YouTube video within the visual novel flow.
  */
 export interface VideoStep {
@@ -30,7 +39,7 @@ export interface VideoStep {
 }
 
 /** A single step in a visual novel cutscene: dialogue or video */
-export type VisualNovelStep = DialogueStep | VideoStep;
+export type VisualNovelStep = DialogueStep | VideoStep | NarrationStep;
 
 /**
  * Visual novel cutscene definition.
@@ -46,6 +55,10 @@ export interface VisualNovelCutscene {
 
 /** @deprecated Use DialogueStep - kept for migration */
 export type DialogueLine = Omit<DialogueStep, 'type'>;
+
+export function isNarrationStep(step: VisualNovelStep): step is NarrationStep {
+  return step.type === 'narration';
+}
 
 export function isDialogueStep(step: VisualNovelStep): step is DialogueStep {
   return step.type === 'dialogue';
