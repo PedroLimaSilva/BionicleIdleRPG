@@ -2,14 +2,14 @@
 
 ## Summary
 
-When recruited characters evolve (e.g., Toa Mata → Toa Nuva), their **ID changes** so a new `MATORAN_DEX` entry defines their evolved attributes (model, stats, name). Chronicles should be **extracted** from the matoran dex and declared once per character lineage, then **reused** by multiple matoran entries that share the same story.
+When recruited characters evolve (e.g., Toa Mata → Toa Nuva), their **ID changes** so a new `CHARACTER_DEX` entry defines their evolved attributes (model, stats, name). Chronicles should be **extracted** from the matoran dex and declared once per character lineage, then **reused** by multiple matoran entries that share the same story.
 
 ---
 
 ## Current State
 
-- **`MATORAN_DEX`**: Each entry (`Toa_Tahu`, `Takua`, etc.) holds static attributes: id, name, element, mask, stage, colors, and **inline chronicle**.
-- **`RecruitedCharacterData`**: Stores `id` (key into MATORAN_DEX), exp, assignment, quest, etc.
+- **`CHARACTER_DEX`**: Each entry (`Toa_Tahu`, `Takua`, etc.) holds static attributes: id, name, element, mask, stage, colors, and **inline chronicle**.
+- **`RecruitedCharacterData`**: Stores `id` (key into CHARACTER_DEX), exp, assignment, quest, etc.
 - **Chronicles**: Defined inline in each matoran entry. When Tahu evolves to Toa Nuva, we would have to duplicate the same chronicle in a new `Toa_Tahu_Nuva` entry.
 
 ## Problem
@@ -75,7 +75,7 @@ export type BaseMatoran = {
 };
 ```
 
-### 3. MATORAN_DEX: Evolved Forms as New Entries, Same Chronicle
+### 3. CHARACTER_DEX: Evolved Forms as New Entries, Same Chronicle
 
 | Evolution           | Matoran Dex ID        | Chronicle ID |
 | ------------------- | --------------------- | ------------ |
@@ -95,7 +95,7 @@ export function getCharacterChronicle(
   characterId: string,
   progress: ChronicleProgressContext
 ): ChronicleEntryWithState[] {
-  const base = MATORAN_DEX[characterId];
+  const base = CHARACTER_DEX[characterId];
   if (!base?.chronicleId) return [];
 
   const entries = CHRONICLES_BY_ID[base.chronicleId];
@@ -125,7 +125,7 @@ When a character evolves (e.g., via quest reward):
 
 ## Data Migration
 
-- **MATORAN_DEX**: Remove inline `chronicle`, add `chronicleId` to each entry that had chronicles.
+- **CHARACTER_DEX**: Remove inline `chronicle`, add `chronicleId` to each entry that had chronicles.
 - **Save migration**: Not required for chronicle refactoring. If we add evolution _after_ this refactor, a future migration would handle `recruitedCharacters` id updates when evolving (e.g., v10 migration).
 
 ---
@@ -146,7 +146,7 @@ Evolutions are **surprise twists**—they should not be exposed in the UI (e.g. 
    - Run tests and fix any breakage.
 
 2. **Phase 2 – Evolution-ready dex entries** ✅ _Completed_
-   - Add `Toa_Tahu_Nuva` (and other Nuva) entries to MATORAN_DEX.
+   - Add `Toa_Tahu_Nuva` (and other Nuva) entries to CHARACTER_DEX.
    - Add `ToaTahuNuvaModel`, `ToaGaliNuvaModel` to `CharacterScene`; others use placeholder; wire stage/id branching.
 
 3. **Phase 3 – Evolution mechanics** ✅ _Completed_
@@ -165,4 +165,4 @@ Chronicles are a **mixture of historical log and to-do list**. The same chronicl
 
 ## Chronicle Identity
 
-`chronicleId` is not stored on `RecruitedCharacterData`. It is derived from `MATORAN_DEX[matoran.id].chronicleId` whenever needed. When a character evolves, `id` updates to the new dex entry; that new entry shares the same `chronicleId`, so the chronicle is stable across forms without duplicating data.
+`chronicleId` is not stored on `RecruitedCharacterData`. It is derived from `CHARACTER_DEX[matoran.id].chronicleId` whenever needed. When a character evolves, `id` updates to the new dex entry; that new entry shares the same `chronicleId`, so the chronicle is stable across forms without duplicating data.

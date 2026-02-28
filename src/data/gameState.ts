@@ -4,7 +4,7 @@ import { MatoranJob } from '../types/Jobs';
 import { ListedCharacterData, BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { BattleRewardParams, GameState } from '../types/GameState';
 import { Quest } from '../types/Quests';
-import { LISTED_MATORAN_DATA, RECRUITED_MATORAN_DATA } from './matoran';
+import { LISTED_MATORAN_DATA, RECRUITED_MATORAN_DATA } from './dex/index';
 import { INITIAL_BATTLE_STATE } from '../hooks/useBattleState';
 import { KranaElement, KranaId } from '../types/Krana';
 

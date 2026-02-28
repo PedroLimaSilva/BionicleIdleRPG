@@ -55,14 +55,14 @@ The game runs entirely in the browser. All game logic must support offline progr
 
 - Static game content lives in `src/data/` as `Record<Enum, T>` or arrays
 - Runtime state stores only IDs, not full objects
-- Full data is retrieved by looking up IDs in dictionaries (e.g., `MATORAN_DEX[id]`)
+- Full data is retrieved by looking up IDs in dictionaries (e.g., `CHARACTER_DEX[id]`)
 - Characters have dual representation: `BaseMatoran` (static) + `RecruitedCharacterData` (runtime)
 
 **NEVER** store full character/job/item objects in runtime state.
 
 **NEVER** duplicate static data into runtime state.
 
-**NEVER** mutate objects in `MATORAN_DEX`, `JOB_DETAILS`, `ITEM_DICTIONARY`, or other data dictionaries.
+**NEVER** mutate objects in `CHARACTER_DEX`, `JOB_DETAILS`, `ITEM_DICTIONARY`, or other data dictionaries.
 
 ---
 
@@ -191,7 +191,7 @@ const [characters, setCharacters] = useState<BaseMatoran[]>([...]);
 
 // CORRECT - Storing IDs, looking up in dictionary
 const [characters, setCharacters] = useState<RecruitedCharacterData[]>([...]);
-const fullData = MATORAN_DEX[character.id];
+const fullData = CHARACTER_DEX[character.id];
 ```
 
 ### Forbidden: Creating New Context Providers for Game State
@@ -326,7 +326,7 @@ The 3D canvas uses React portals to render into `#canvas-mount`.
 
 Characters exist as:
 
-- `BaseMatoran` in `MATORAN_DEX` (static, never changes)
+- `BaseMatoran` in `CHARACTER_DEX` (static, never changes)
 - `RecruitedCharacterData` in state (runtime, minimal data)
 - Combined via `getRecruitedMatoran(id, recruitedCharacters)` when full data is needed
 

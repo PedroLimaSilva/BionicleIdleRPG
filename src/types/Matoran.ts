@@ -4,6 +4,7 @@ import { JobAssignment } from './Jobs';
 import { Quest } from './Quests';
 
 export const enum Mask {
+  Avohkii = 'Avohkii',
   Hau = 'Hau',
   Kaukau = 'Kaukau',
   Kakama = 'Kakama',
@@ -49,6 +50,7 @@ export const enum MatoranStage {
   Metru = 'Metru',
   Bohrok = 'Bohrok',
   BohrokKal = 'BohrokKal',
+  Rahkshi = 'Rahkshi',
 }
 
 // Static data for any Matoran
@@ -84,7 +86,7 @@ export type RecruitedCharacterData = {
   assignment?: JobAssignment;
   quest?: Quest['id'];
   maskOverride?: Mask;
-  /** Overrides stage from MATORAN_DEX when present (e.g. Rebuilt after Naming Day). */
+  /** Overrides stage from CHARACTER_DEX when present (e.g. Rebuilt after Naming Day). */
   stage?: MatoranStage;
 };
 

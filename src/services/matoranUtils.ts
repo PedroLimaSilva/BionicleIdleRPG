@@ -9,7 +9,7 @@ import { MatoranJob } from '../types/Jobs';
 import { GameItemId } from '../data/loot';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
-import { MATORAN_DEX } from '../data/matoran';
+import { CHARACTER_DEX } from '../data/dex/index';
 import { GameState } from '../types/GameState';
 
 export function isMatoran(matoran: BaseMatoran) {
@@ -140,13 +140,13 @@ export function masksCollected(
   return masks;
 }
 
-/** Returns merged base + recruited data. Recruited stage/maskOverride override MATORAN_DEX. */
+/** Returns merged base + recruited data. Recruited stage/maskOverride override CHARACTER_DEX. */
 export function getRecruitedMatoran(
   id: string,
   recruitedMatoran: RecruitedCharacterData[]
 ): BaseMatoran & RecruitedCharacterData {
   return {
-    ...MATORAN_DEX[id],
+    ...CHARACTER_DEX[id],
     ...recruitedMatoran.find((m) => m.id === id)!,
   };
 }
@@ -156,7 +156,7 @@ export function getEffectiveMatoran(
   matoran: RecruitedCharacterData
 ): BaseMatoran & RecruitedCharacterData {
   return {
-    ...MATORAN_DEX[matoran.id],
+    ...CHARACTER_DEX[matoran.id],
     ...matoran,
   };
 }

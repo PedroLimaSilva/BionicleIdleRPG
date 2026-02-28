@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
-import { MATORAN_DEX } from '../../data/matoran';
+import { CHARACTER_DEX } from '../../data/dex/index';
+
 import type {
   VisualNovelCutscene as VisualNovelCutsceneType,
   VisualNovelStep,
@@ -181,8 +182,7 @@ function DialogueStepView({
   advanceOrSkipRef.current = handleClick;
 
   if (!isDialogueStep(step)) return null;
-
-  const speaker = MATORAN_DEX[step.speakerId];
+  const speaker = CHARACTER_DEX[step.speakerId];
   const speakerName = speaker?.name ?? step.speakerId;
   const position = step.position ?? 'left';
   const useImage =

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useGame } from '../../context/Game';
 import { RecruitedCharacterData } from '../../types/Matoran';
-import { MATORAN_DEX } from '../../data/matoran';
+import { CHARACTER_DEX } from '../../data/dex/index';
 import { isToa } from '../../services/matoranUtils';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../components/MaskPowerTooltip';
@@ -50,7 +50,7 @@ export const BattlePrep: React.FC = () => {
   };
 
   const selectable = recruitedCharacters.filter(
-    (c) => MATORAN_DEX[c.id] && isToa(MATORAN_DEX[c.id])
+    (c) => CHARACTER_DEX[c.id] && isToa(CHARACTER_DEX[c.id])
   );
 
   if (!currentEncounter) return null;
@@ -76,11 +76,11 @@ export const BattlePrep: React.FC = () => {
                 </div>
               );
             }
-            const matoran_dex = MATORAN_DEX[member.id];
-            const activeMask = member.maskOverride ?? matoran_dex.mask;
+            const characterDex = CHARACTER_DEX[member.id];
+            const activeMask = member.maskOverride ?? characterDex.mask;
             return (
               <div
-                className={`character-card element-${matoran_dex.element} ${
+                className={`character-card element-${characterDex.element} ${
                   focused ? 'focused' : ''
                 }`}
                 key={`${member.id}+${index}`}
@@ -88,12 +88,12 @@ export const BattlePrep: React.FC = () => {
               >
                 <MaskPowerTooltip mask={activeMask}>
                   <MatoranAvatar
-                    matoran={{ ...matoran_dex, ...member }}
+                    matoran={{ ...characterDex, ...member }}
                     styles="matoran-avatar model-preview"
                   />
                 </MaskPowerTooltip>
                 <div className="card-header">
-                  {matoran_dex.name}
+                  {characterDex.name}
                   <div className="level-label">Level {getLevelFromExp(member.exp)}</div>
                 </div>
               </div>
@@ -107,22 +107,22 @@ export const BattlePrep: React.FC = () => {
           }`}
         >
           {selectable.map((recruited) => {
-            const matoran_dex = MATORAN_DEX[recruited.id];
-            const activeMask = recruited.maskOverride ?? matoran_dex.mask;
+            const characterDex = CHARACTER_DEX[recruited.id];
+            const activeMask = recruited.maskOverride ?? characterDex.mask;
             return (
               <div
-                className={`card character-card element-${matoran_dex.element}`}
+                className={`card character-card element-${characterDex.element}`}
                 key={recruited.id}
                 onClick={() => handleClickRecruitedCharacter(recruited)}
               >
                 <MaskPowerTooltip mask={activeMask}>
                   <MatoranAvatar
-                    matoran={{ ...matoran_dex, ...recruited }}
+                    matoran={{ ...characterDex, ...recruited }}
                     styles="matoran-avatar model-preview"
                   />
                 </MaskPowerTooltip>
                 <div className="card-header">
-                  {matoran_dex.name}
+                  {characterDex.name}
                   <div className="level-label">Level {getLevelFromExp(recruited.exp)}</div>
                 </div>
               </div>

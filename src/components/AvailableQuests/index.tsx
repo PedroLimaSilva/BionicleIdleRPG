@@ -1,5 +1,5 @@
 import { GameItemId, ITEM_DICTIONARY } from '../../data/loot';
-import { MATORAN_DEX } from '../../data/matoran';
+import { CHARACTER_DEX } from '../../data/dex/index';
 import { getLevelFromExp } from '../../game/Levelling';
 import { getAvailableQuests } from '../../game/Quests';
 import { Inventory } from '../../services/inventoryUtils';
@@ -36,9 +36,7 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
     requiredIds.every((id) =>
       recruitedCharacters.some(
         (m) =>
-          m.id === id &&
-          getLevelFromExp(m.exp) >= minLevel &&
-          !m.quest /* not already on a quest */
+          m.id === id && getLevelFromExp(m.exp) >= minLevel && !m.quest /* not already on a quest */
       )
     );
 
@@ -85,7 +83,7 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                     return (
                       <Tooltip key={id} content={busy ? 'On another quest' : undefined}>
                         <span className={`requirement-chip ${status}`}>
-                          {MATORAN_DEX[id].name}
+                          {CHARACTER_DEX[id].name}
                         </span>
                       </Tooltip>
                     );
@@ -142,7 +140,7 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                         <li>
                           <span className="reward-label">Unlocks:</span>{' '}
                           {quest.rewards.unlockCharacters
-                            .map((char) => MATORAN_DEX[char.id].name)
+                            .map((char) => CHARACTER_DEX[char.id].name)
                             .join(', ')}
                         </li>
                       )}

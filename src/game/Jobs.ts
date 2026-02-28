@@ -4,7 +4,7 @@ import { RecruitedCharacterData } from '../types/Matoran';
 import { GameItemId } from '../data/loot';
 import { GameState } from '../types/GameState';
 import { Inventory } from '../services/inventoryUtils';
-import { MATORAN_DEX } from '../data/matoran';
+import { CHARACTER_DEX } from '../data/dex/index';
 
 export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const jobData = JOB_DETAILS[job];
@@ -29,7 +29,7 @@ export function getAvailableJobs(
     .filter((job) => isJobUnlocked(job, gameState));
 
   if (matoran) {
-    const matoranDex = MATORAN_DEX[matoran.id];
+    const matoranDex = CHARACTER_DEX[matoran.id];
     if (!matoranDex) {
       return jobs.filter((job) => !JOB_DETAILS[job].allowedStages);
     }
@@ -46,11 +46,11 @@ export function getAvailableJobs(
 export function getJobStatus(matoran: RecruitedCharacterData): ProductivityEffect {
   if (!matoran.assignment?.job) return ProductivityEffect.Idle;
 
-  const matoran_dex = MATORAN_DEX[matoran.id];
+  const characterDex = CHARACTER_DEX[matoran.id];
 
   const affinity = JOB_DETAILS[matoran.assignment.job].elementAffinity;
-  if (affinity.favored.includes(matoran_dex.element)) return ProductivityEffect.Boosted;
-  if (affinity.opposed.includes(matoran_dex.element)) return ProductivityEffect.Penalized;
+  if (affinity.favored.includes(characterDex.element)) return ProductivityEffect.Boosted;
+  if (affinity.opposed.includes(characterDex.element)) return ProductivityEffect.Penalized;
 
   return ProductivityEffect.Neutral;
 }
@@ -58,11 +58,11 @@ export function getJobStatus(matoran: RecruitedCharacterData): ProductivityEffec
 export function getProductivityModifier(job: MatoranJob, matoran: RecruitedCharacterData): number {
   const { elementAffinity } = JOB_DETAILS[job];
 
-  const matoran_dex = MATORAN_DEX[matoran.id];
+  const characterDex = CHARACTER_DEX[matoran.id];
 
-  if (elementAffinity.favored.includes(matoran_dex.element)) {
+  if (elementAffinity.favored.includes(characterDex.element)) {
     return 1.2; // +20% productivity
-  } else if (elementAffinity.opposed.includes(matoran_dex.element)) {
+  } else if (elementAffinity.opposed.includes(characterDex.element)) {
     return 0.8; // -20% productivity
   } else {
     return 1.0; // neutral
@@ -185,10 +185,9 @@ export function applyJobExp(
   if (!matoran.assignment) return [matoran, 0, {}];
 
   const rawElapsedMs = Math.max(0, now - matoran.assignment.assignedAt);
-  const effectiveElapsedSeconds =
-    applyDiminishingReturns
-      ? getEffectiveElapsedMs(rawElapsedMs) / 1000
-      : undefined;
+  const effectiveElapsedSeconds = applyDiminishingReturns
+    ? getEffectiveElapsedMs(rawElapsedMs) / 1000
+    : undefined;
 
   const earnedExp = computeEarnedExp(matoran.assignment, now, effectiveElapsedSeconds);
   const rewards = rollJobRewards(matoran.assignment, now, effectiveElapsedSeconds);

@@ -10,7 +10,7 @@ import { QUESTS } from '../../data/quests';
 import { getEffectiveMatoran, isBohrokOrKal, isMatoran, isToa } from '../../services/matoranUtils';
 import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
-import { MATORAN_DEX } from '../../data/matoran';
+import { CHARACTER_DEX } from '../../data/dex/index';
 
 const CHARACTERS_TAB_KEY = 'characters-tab';
 
@@ -59,7 +59,7 @@ export const CharacterInventory: React.FC = () => {
 
   const characters = useMemo(() => {
     return recruitedCharacters.filter((matoran) => {
-      if (!MATORAN_DEX[matoran.id]) {
+      if (!CHARACTER_DEX[matoran.id]) {
         return false;
       }
       const effective = getEffectiveMatoran(matoran);

@@ -9,9 +9,9 @@ import { VISUAL_NOVEL_CUTSCENES } from '../../data/cutscenes';
 import { QuestProgress } from '../../types/Quests';
 import type { VisualNovelCutsceneRef } from '../../types/Cutscenes';
 import './index.scss';
-import { MATORAN_DEX } from '../../data/matoran';
 import { MOTION_DURATION, MOTION_EASING, buildTransition } from '../../motion/transitions';
 import { isTestMode } from '../../utils/testMode';
+import { CHARACTER_DEX } from '../../data/dex';
 
 const DEFAULT_SECTION_LABEL = 'Other Quests';
 
@@ -141,7 +141,9 @@ export const QuestsPage = () => {
                 </p>
                 <p className="quests-page__item-meta">
                   Assigned Characters:{' '}
-                  {progress.assignedMatoran.map((m) => MATORAN_DEX[m].name).join(', ')}
+                  {progress.assignedMatoran
+                    .map((m) => CHARACTER_DEX[m as keyof typeof CHARACTER_DEX].name)
+                    .join(', ')}
                 </p>
 
                 <div className="quests-page__button-container">
