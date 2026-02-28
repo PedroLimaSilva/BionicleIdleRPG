@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { isTestMode } from '../../utils/testMode';
 
 const DEFAULT_SPEED_MS = 30;
 
@@ -10,11 +11,16 @@ type UseTypewriterOptions = {
 /**
  * Hook that reveals text character-by-character (typewriter effect).
  * Returns displayed text, completion state, and a skip function to reveal all instantly.
+ * Skips the effect in test mode to avoid flaky E2E screenshots.
  */
 export function useTypewriter(text: string, options: UseTypewriterOptions = {}) {
   const { speed = DEFAULT_SPEED_MS } = options;
-  const [displayedLength, setDisplayedLength] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
+  const [displayedLength, setDisplayedLength] = useState(() =>
+    isTestMode() && text.length > 0 ? text.length : 0
+  );
+  const [isComplete, setIsComplete] = useState(() =>
+    isTestMode() && text.length > 0
+  );
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const skip = useCallback(() => {
@@ -28,6 +34,12 @@ export function useTypewriter(text: string, options: UseTypewriterOptions = {}) 
 
   useEffect(() => {
     if (text.length === 0) {
+      setIsComplete(true);
+      return;
+    }
+
+    if (isTestMode()) {
+      setDisplayedLength(text.length);
       setIsComplete(true);
       return;
     }
