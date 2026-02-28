@@ -38,6 +38,9 @@
     }
 
     &--right {
+      .visual-novel-cutscene__speaker-name {
+        text-align: right;
+      }
       .visual-novel-cutscene__dialogue-box {
         grid-template-areas:
           'name portrait'
