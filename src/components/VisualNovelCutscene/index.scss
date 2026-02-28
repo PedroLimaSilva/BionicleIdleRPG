@@ -1,3 +1,36 @@
+@keyframes portrait-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes portrait-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes dialogue-box-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .visual-novel-cutscene {
   position: fixed;
   inset: 0;
@@ -67,6 +100,13 @@
     align-items: flex-end;
     position: relative;
     left: -50px;
+
+    .visual-novel-cutscene__content--left & {
+      animation: portrait-slide-in-left 0.35s ease-out forwards;
+    }
+    .visual-novel-cutscene__content--right & {
+      animation: portrait-slide-in-right 0.35s ease-out forwards;
+    }
   }
 
   &__video-wrapper {
@@ -119,6 +159,11 @@
     padding-top: 0.5rem;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
     text-align: left;
+    animation: dialogue-box-fade-in 0.3s ease-out forwards;
+  }
+
+  &__dialogue-box {
+    animation-delay: 0.1s;
   }
 
   &__narration-box {
@@ -169,7 +214,7 @@
   &__advance {
     position: absolute;
     color: var(--color-text-muted);
-    bottom: 1.5rem;
+    bottom: 0rem;
     font-size: 0.9rem;
     left: 50%;
     opacity: 0.5;
