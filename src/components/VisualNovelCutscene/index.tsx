@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { CHARACTER_DEX } from '../../data/dex/index';
 
 import type {
@@ -15,8 +15,23 @@ type Props = {
   onClose: () => void;
 };
 
+function resolveBackgroundStyle(
+  bg: string | { type: 'gradient'; from: string; to: string }
+): React.CSSProperties {
+  if (typeof bg === 'string') {
+    return { backgroundImage: `url(${bg})` };
+  }
+  if (bg.type === 'gradient') {
+    return {
+      background: `linear-gradient(180deg, ${bg.from} 0%, ${bg.to} 100%)`,
+    };
+  }
+  return {};
+}
+
 export function VisualNovelCutscene({ cutscene, onClose }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeBackground, setActiveBackground] = useState(cutscene.background);
   const step = cutscene.steps[currentIndex];
   const isLast = currentIndex >= cutscene.steps.length - 1;
   const advanceOrSkipRef = useRef<(() => void) | null>(null);
@@ -28,6 +43,15 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
       setCurrentIndex((i) => i + 1);
     }
   }, [isLast, onClose]);
+
+  useEffect(() => {
+    if (step?.type === 'background') {
+      setActiveBackground(step.background);
+      if (step.autoProceed !== false) {
+        handleAdvance();
+      }
+    }
+  }, [step, handleAdvance]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -48,14 +72,10 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
     [step?.type, handleAdvance, onClose]
   );
 
-  const backgroundStyle =
-    typeof cutscene.background === 'string'
-      ? { backgroundImage: `url(${cutscene.background})` }
-      : cutscene.background.type === 'gradient'
-        ? {
-            background: `linear-gradient(180deg, ${cutscene.background.from} 0%, ${cutscene.background.to} 100%)`,
-          }
-        : {};
+  const backgroundStyle = useMemo(
+    () => resolveBackgroundStyle(activeBackground),
+    [activeBackground]
+  );
 
   if (!step) {
     return null;
@@ -85,6 +105,11 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
           advanceOrSkipRef={advanceOrSkipRef}
         />
       );
+      break;
+    case 'background':
+      if (step.autoProceed === false) {
+        stepView = <BackgroundStepView onAdvance={handleAdvance} isLast={isLast} />;
+      }
       break;
     default:
       stepView = null;
@@ -229,6 +254,20 @@ function DialogueStepView({
           </span>
         </div>
       </div>
+    </div>
+  );
+}
+
+function BackgroundStepView({ onAdvance, isLast }: { onAdvance: () => void; isLast: boolean }) {
+  return (
+    <div
+      className="visual-novel-cutscene__content visual-novel-cutscene__content--background"
+      onClick={onAdvance}
+      aria-label={isLast ? 'Close cutscene' : 'Next'}
+    >
+      <span className="visual-novel-cutscene__advance">
+        {isLast ? 'Press to close' : 'Press to continue'}
+      </span>
     </div>
   );
 }
