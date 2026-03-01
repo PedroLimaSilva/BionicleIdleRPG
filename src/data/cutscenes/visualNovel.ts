@@ -2607,7 +2607,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Toa_Kopaka',
+        speakerId: 'Toa_Kopaka_Nuva',
         portraitType: 'avatar',
         position: 'right',
         text: `What... what has happened to us?`,
