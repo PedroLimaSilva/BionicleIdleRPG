@@ -38,8 +38,20 @@ export interface VideoStep {
   videoId: string;
 }
 
-/** A single step in a visual novel cutscene: dialogue or video */
-export type VisualNovelStep = DialogueStep | VideoStep | NarrationStep;
+/**
+ * A background-change step that swaps the cutscene backdrop.
+ * By default it auto-proceeds to the next step immediately.
+ * Set autoProceed to false to pause and wait for user input.
+ */
+export interface BackgroundStep {
+  type: 'background';
+  background: string | { type: 'gradient'; from: string; to: string };
+  /** When true (the default), advance to the next step immediately. */
+  autoProceed?: boolean;
+}
+
+/** A single step in a visual novel cutscene */
+export type VisualNovelStep = DialogueStep | VideoStep | NarrationStep | BackgroundStep;
 
 /**
  * Visual novel cutscene definition.
@@ -66,6 +78,10 @@ export function isDialogueStep(step: VisualNovelStep): step is DialogueStep {
 
 export function isVideoStep(step: VisualNovelStep): step is VideoStep {
   return step.type === 'video';
+}
+
+export function isBackgroundStep(step: VisualNovelStep): step is BackgroundStep {
+  return step.type === 'background';
 }
 
 /** Quest reward cutscene: reference to a visual novel cutscene by ID */
