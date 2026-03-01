@@ -248,7 +248,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'maskhunt_gali_rescue',
     name: 'Fire in the Ravine',
     description:
-      'Drawn by a column of dust and the cries of battle, Tahu rushes into the Po-Wahi canyon to find Gali trapped and under siege by Rahi. The two fight side by side in the narrow gorge, pushing back the beasts with elemental synergy. In the heart of the clash, Gali is struck by a vision—brief, radiant, and overwhelming—of a form greater than any single Toa: the Toa Kaita.',
+      'Trapped in a narrow Po-Wahi canyon after a landslide, Gali fights off wave after wave of corrupted Rahi. Her elemental power is weakening. Then—a column of fire erupts at the mouth of the gorge.',
     durationSeconds: 480, // 8 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali'],
@@ -293,7 +293,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'story_toa_second_council',
     name: 'Council of Unity',
     description:
-      'After a string of difficult battles and strange visions, the Toa reconvene—this time at Onua’s request. They share what they’ve learned: visions, near-deaths, and the masks they’ve found. For the first time, they speak openly of trust and strategy. Realizing they’ve made little progress alone, the Toa agree: from now on, they will work together to gather the remaining Masks of Power. Unity will be their path forward.',
+      'At Onua’s urging, the six Toa gather once more—battered, wiser, and uncertain. The masks they have found weigh heavily, and so do the visions.',
     durationSeconds: 120, // 2 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
@@ -313,7 +313,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'maskhunt_tahu_miru',
     name: 'Depths of the Shoreline',
     description:
-      'Following a shared plan forged at the Toa Council, the six heroes arrive at the Po-Koro shoreline. There, Gali, Kopaka, and Onua dive beneath the crashing surf—each wearing a Kanohi Kaukau—to retrieve Tahu’s Miru from an underwater shrine. But the shrine is guarded by a territorial Tarakava, and teamwork becomes essential as the Rahi strikes from the depths. By combining their elemental powers and mobility, the Toa secure the mask and reaffirm the strength of unity.',
+      'Following the plan forged at the Council, Gali, Kopaka, and Onua dive beneath the crashing surf off the Po-Koro shoreline, each wearing a Kanohi Kaukau. Below, an underwater shrine holds Tahu’s Miru.',
     durationSeconds: 720, // 12 minutes
     requirements: {
       matoran: ['Toa_Gali', 'Toa_Kopaka', 'Toa_Onua'],
@@ -336,7 +336,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'maskhunt_pohatu_kaukau_bluff',
     name: 'The Bluff Above All',
     description:
-      'Working together after the Toa Council, Kopaka, Pohatu, and Lewa set out to recover Pohatu’s Kanohi Kaukau—unusually located not beneath water, but atop the highest bluff in Po-Wahi. There, harsh winds and cliffs guard the shrine. To reach it, the trio must combine Pohatu’s speed, Lewa’s agility, and Kopaka’s precision to scale the sheer face. The climb tests their limits, but the Mask of Water Breathing awaits at the summit.',
+      'Pohatu’s Kanohi Kaukau is found not beneath water, but atop the highest bluff in Po-Wahi. Harsh winds and sheer cliffs guard the approach.',
     durationSeconds: 660, // 11 minutes
     requirements: {
       matoran: ['Toa_Pohatu', 'Toa_Kopaka', 'Toa_Lewa'],
@@ -358,7 +358,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'maskhunt_forest_tahu_kakama',
     name: 'Fire in the Trees',
     description:
-      'Journeying to Le-Wahi, Tahu, Gali, and Onua seek out the Kanohi Kakama—Tahu’s Mask of Speed—hidden high in the jungle canopy. Impatient, Tahu scorches the tree to force the mask loose, triggering a fast-spreading blaze. Gali, furious at his recklessness, calls on the surrounding waters to extinguish the fire. Though the mask is recovered, tensions rise as Gali storms off, leaving the others in uneasy silence.',
+      'In the canopy of Le-Wahi, Tahu spots his Kakama lodged high in a massive tree. Gali and Onua watch from below.',
     durationSeconds: 600, // 10 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Onua'],
@@ -380,7 +380,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'story_nui_jaga_nest',
     name: 'Nest of Discord',
     description:
-      'Outside a massive Nui-Jaga nest, the Toa assemble to plan their next move. Tahu pushes for a direct assault, but Gali argues for a strategic approach—driving the Rahi into the open where they can be fought safely. Onua sides with Gali, while Pohatu dismisses the risk. When Lewa asks Kopaka’s thoughts, the Toa of Ice coldly rejects Tahu’s aggressive plan. Tensions rise and tempers flare until Tahu hurls a fireball in frustration, accidentally igniting the brush. The smoke flushes the Nui-Jaga out—and the Toa are forced to fight them head-on, together.',
+      'Outside a massive Nui-Jaga nest, the six Toa assemble to plan their attack. The clicking of armored scorpion tails echoes from within.',
     durationSeconds: 720, // 12 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
@@ -403,7 +403,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'maskhunt_final_collection',
     name: 'The Final Hunt',
     description:
-      'With battles behind them and lessons hard-won, the Toa gather one last time. They have seen visions, saved villages, and clashed with one another—but now, united in purpose, they set out to retrieve the final Kanohi needed to complete their sets. Across icy cliffs, jungle treetops, volcanic depths, and desert shrines, they coordinate their search with precision and trust. The last Masks of Power await, and with them, the strength to face what lies beneath the island.',
+      'With lessons hard-won and trust forged in battle, the six Toa embark on their final coordinated mask hunt. Across the island, they move as one.',
     durationSeconds: 900, // 15 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
@@ -422,7 +422,7 @@ export const MASK_HUNT: Quest[] = [
     id: 'story_kini_nui_gathering',
     name: 'The Path Below',
     description:
-      'With every Kanohi collected, the Toa journey to the sacred temple of Kini-Nui. The island is quiet as they arrive, standing together beneath ancient carvings that speak of prophecy and shadow.',
+      'With every Kanohi collected, the six Toa journey to the sacred temple of Kini-Nui. Ancient carvings line the walls, depicting prophecy and shadow. The island is eerily quiet.',
     durationSeconds: 300, // 5 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],

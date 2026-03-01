@@ -691,7 +691,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     id: 'mnog_summon_chroniclers_company',
     name: 'Summon the Chronicler’s Company',
     description:
-      'After speaking with Turaga Nuju, Takua is entrusted with a great responsibility: to visit each of the other Turaga and ask that one brave Matoran from their village be spared to join him on a journey to Kini-Nui. One by one, the Chronicler’s Company begins to take shape.',
+      'After speaking with Turaga Nuju through Matoro’s translation, Takua is entrusted with a sacred duty: to gather one brave Matoran from each village for a journey to Kini-Nui.',
     durationSeconds: 30 * 60, // 30 min
     requirements: {
       matoran: ['Takua', 'Kopeke'],
