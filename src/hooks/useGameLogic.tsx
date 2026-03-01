@@ -6,6 +6,7 @@ import { useJobTickEffect } from './useJobTickEffect';
 import { useGamePersistence } from './useGamePersistence';
 import { GameState } from '../types/GameState';
 import { useQuestState } from './useQuestState';
+import { useQuestNotifications } from './useQuestNotifications';
 import { useBattleState } from './useBattleState';
 import { clamp } from '../utils/math';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
@@ -78,6 +79,8 @@ export const useGameLogic = (): GameState => {
       }
     },
   });
+
+  useQuestNotifications(activeQuests);
 
   const battle = useBattleState(isNuvaSymbolsSequestered(completedQuests));
 
