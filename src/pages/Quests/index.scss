@@ -1,7 +1,16 @@
+.landscape {
+  .quests-page {
+    &__header {
+      flex-direction: row;
+    }
+  }
+}
+
 .quests-page {
   &__header {
     display: flex;
     align-items: center;
+    flex-direction: column-reverse;
     justify-content: space-between;
     gap: 1rem;
     margin-top: 1.5rem;
