@@ -23,6 +23,7 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_reconstruction' },
       xpPerMatoran: 1500,
       currency: 2500,
       loot: {},

@@ -2182,14 +2182,28 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `As the last Kohrak falls, Turaga Vakama emerges from the village. His eyes widen at the sight of the mechanical shells. He has seen this before—in the old legends.`,
+        text: `As the last Kohrak falls, Turaga Vakama emerges from the village. His eyes widen at the sight of the mechanical shells.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `No... the Bohrok. They are real. We prayed the legends were wrong, but the swarms have awakened beneath the island.`,
       },
       {
         type: 'dialogue',
         speakerId: 'Takua',
         portraitType: 'avatar',
         position: 'right',
-        text: `Turaga Vakama recognized the creatures. He called them "Bohrok." He said the legends spoke of swarms that would one day awaken beneath the island.`,
+        text: `You know what these things are?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `I know more than I wish to. Come, Chronicler. We must speak with the Toa—and quickly.`,
       },
     ],
   },
@@ -2321,6 +2335,69 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       {
         type: 'narration',
         text: `The Boxor smashes through the flooded tunnel, its mechanical fists scattering Gahlok like leaves. For the first time, the Matoran can fight back.`,
+      },
+    ],
+  },
+
+  bohrok_legend_of_krana: {
+    id: 'bohrok_legend_of_krana',
+    background: { type: 'gradient', from: '#5b3e0b', to: '#0a0a0a' },
+    steps: [
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `I know the answers you seek, though I wish I did not.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `What are those creatures, Turaga? They're not like any Rahi we've seen.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `They are called Bohrok. We have known the legends for centuries, and we prayed they were only legends. But the Bohrok are real—all too real. And they are swarming over all of Mata Nui.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `What controls them? We pulled a glowing thing from one of their heads.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `That is a Krana—the mind of the swarm. Each Bohrok carries one. There are eight types of Krana, and six breeds of Bohrok. The legends say that only when all forty-eight Krana are collected can the path to the Bohrok nest be unlocked.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `And what's in the nest?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `The Bahrag—twin queens who command every Bohrok on this island. If the Toa can reach them and defeat them, the swarms will stop. But be warned: the Krana are dangerous. If one attaches to a living being's face... it will control them utterly.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I'll make sure the Toa know. Thank you, Turaga.`,
       },
     ],
   },
@@ -2584,6 +2661,87 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
   // BOHROK KAL – multi-character cutscenes
   // ---------------------------------------------------------------------------
 
+  bohrok_kal_reconstruction: {
+    id: 'bohrok_kal_reconstruction',
+    background: { type: 'gradient', from: '#5b3e0b', to: '#0a0a0a' },
+    steps: [
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Tahu. Come with me. There is something I must show you—away from the others.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `What is it, Turaga? You look troubled.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `The Nuva Symbol that appeared on the Suva... it is a sign of your transformation. Your power is now tied to it. Guard it well.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `But that is not why I called you here. I have kept a secret—one that weighs heavily on an old Turaga's conscience. Take this.`,
+      },
+      {
+        type: 'narration',
+        text: `Vakama reaches into his cloak and produces a mask unlike any Tahu has seen. Its surface shimmers, distorting the light around it as if time itself bends in its presence.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `What... what is this mask?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `The Kanohi Vahi. The Great Mask of Time. It is the most dangerous mask ever forged. With it, you can slow or hasten the flow of time itself.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Why give it to me?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Because a day may come when all other options fail. When that day arrives, you—and only you—must decide whether to use it. But know this: if the Vahi is damaged, time itself could unravel. All of reality could cease to exist.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I understand. I will keep it secret. And I will use it only in the direst emergency.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `I pray that day never comes. Now go, Toa Nuva. Your brothers and sisters need you.`,
+      },
+    ],
+  },
+
   bohrok_kal_scattered_aid: {
     id: 'bohrok_kal_scattered_aid',
     background: { type: 'gradient', from: '#1a3a4a', to: '#0d1f2d' },
@@ -2632,10 +2790,35 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     steps: [
       {
         type: 'dialogue',
-        speakerId: 'Toa_Tahu_Nuva',
+        speakerId: 'tahnok_kal',
         portraitType: 'avatar',
         position: 'left',
-        text: `My fire—it's gone! I tried to stop one of the Kal and it buried me under rubble like I was nothing!`,
+        text: `Stand aside, Toa Nuva. You are in our way.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `What are you?! You're not like the other Bohrok—`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'nuhvok_kal',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `We are the Bohrok-Kal. We search for Cahdok and Gahdok, queens of the swarms. Tell us where you have hidden the Bahrag, and then stand aside. We have no wish to harm helpless foes.`,
+      },
+      {
+        type: 'narration',
+        text: `Before Tahu can respond, the six Bohrok-Kal strike simultaneously—each ripping a Nuva Symbol from its Suva shrine. Across the island, the Toa Nuva's elemental powers vanish in an instant.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `My fire—it's gone! I tried to stop one of them and it buried me under rubble like I was nothing!`,
       },
       {
         type: 'dialogue',
@@ -2701,11 +2884,29 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         text: `Good. We split into two groups—three to pursue the Kal, three to investigate the Bahrag's prison. We need to know if the cage still holds.`,
       },
       {
+        type: 'narration',
+        text: `The Toa intercept Pahrak-Kal and Kohrak-Kal in a narrow Po-Wahi canyon. The two Kal halt and turn to face them—not with aggression, but with calm certainty.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'pahrak_kal',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `You are too late, Toa. Already, the Bohrok-Kal have learned where the Bahrag are hidden.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'kohrak_kal',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `We will free Cahdok and Gahdok—and the swarms will be free again. You cannot stop what must be.`,
+      },
+      {
         type: 'dialogue',
         speakerId: 'Toa_Kopaka_Nuva',
         portraitType: 'avatar',
-        position: 'right',
-        text: `When we confronted one of them, it said something disturbing: "We will free the queens. The swarm must cleanse." They believe in their mission as fervently as we do in ours.`,
+        position: 'left',
+        text: `They believe in their mission as fervently as we do in ours. That makes them dangerous.`,
       },
       {
         type: 'dialogue',
@@ -2770,6 +2971,20 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'bohrok_kal_final_confrontation',
     background: { type: 'gradient', from: '#3d0066', to: '#0a0a0a' },
     steps: [
+      {
+        type: 'dialogue',
+        speakerId: 'tahnok_kal',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `You are too late, Toa. The symbols are ours. The queens will be free—and the swarm will cleanse this island as it was always meant to.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'gahlok_kal',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Your Exo-Toa armor is useless against us. Lay down your weapons. This is over.`,
+      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Tahu_Nuva',

@@ -127,6 +127,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_legend_of_krana' },
       xpPerMatoran: 800,
       currency: 1000,
       loot: {},
