@@ -19,7 +19,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_swarm_intro',
     name: 'Beware the Bohrok',
     description:
-      'Having just emerged from the depths after confronting Makuta, the Toa expect peace, but instead find villages under sudden attack from mysterious mechanical swarms. Rushing to Ta-Koro, they clash with the Bohrok for the first time and realize that a new threat has awakened beneath Mata Nui.',
+      'The Toa emerge from the depths after confronting Makuta, expecting peace. Instead, smoke rises from every corner of the island. Strange mechanical creatures swarm across the land, leveling everything in their path.',
     durationSeconds: 10 * 60, // 10 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
@@ -27,6 +27,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_swarm_intro' },
       xpPerMatoran: 1500,
       currency: 2000,
       loot: {},
@@ -58,7 +59,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_ta_koro_defense',
     name: 'Siege of Ta-Koro',
     description:
-      'As the Kohrak siege Ta-Koro, Tahu ambushes them, pushing the swarm into the lava moat. Turaga Vakama, seeing the mechanical swarms firsthand, recognizes them from the old legends—the awakening he had long feared has come.',
+      'The Kohrak—ice Bohrok—swarm the walls of Ta-Koro. Their ice blasts crack the stone ramparts. The lava moat churns with fallen drones.',
     durationSeconds: 15 * 60, // 15 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Takua'],
@@ -66,6 +67,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_ta_koro_defense' },
       xpPerMatoran: 1800,
       currency: 2200,
       loot: {},
@@ -77,7 +79,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_po_koro_defense',
     name: 'Hold the Stone Village',
     description:
-      'The fire Bohrok Tahnok sweep across the desert, scorching everything in their path. As flames threaten Po-Koro, the carver Hafu and Koli champion Huki stand together at the village gates. Hafu is forced to sacrifice his life\'s work—shattering his carvings to block the tunnels and slow the swarm—buying precious time for the villagers to flee.',
+      'The fire Bohrok—Tahnok—sweep across Po-Wahi. Flames consume the desert scrub and scorch the stone. At the village gates, two Matoran stand their ground.',
     durationSeconds: 14 * 60, // 14 minutes
     requirements: {
       matoran: ['Hafu', 'Huki'],
@@ -85,6 +87,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_po_koro_defense' },
       xpPerMatoran: 1700,
       currency: 2300,
       loot: {},
@@ -96,7 +99,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_onu_koro_boxor',
     name: 'The Invention of the Boxor',
     description:
-      'Flooded by the water Bohrok Gahlok, Onu-Koro is cut off and its tunnels fill with corrosive streams. Trapped with Onepu and Taipu, Nuparu refuses to yield—he scavenges Bohrok shells and ancient machinery to create the Boxor, a walking exo-suit that lets the Matoran fight back and reclaim their home.',
+      'The water Bohrok—Gahlok—have flooded Onu-Koro’s tunnels. Cut off from the surface, three Matoran huddle in a dry chamber with salvaged parts from destroyed Bohrok.',
     durationSeconds: 18 * 60, // 18 minutes
     requirements: {
       matoran: ['Onepu', 'Nuparu', 'Taipu'],
@@ -104,6 +107,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_onu_koro_boxor' },
       xpPerMatoran: 2000,
       currency: 2500,
       loot: {},
@@ -123,6 +127,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_legend_of_krana' },
       xpPerMatoran: 800,
       currency: 1000,
       loot: {},
@@ -134,7 +139,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_lewa_krana_rescue',
     name: 'Freed from the Krana',
     description:
-      'During the hunt for Krana, a Bohrok attaches its Krana to Lewa’s face—and the Toa of Air is no longer himself. Compelled by the swarm’s will, he turns against his brothers. Onua, steady and grounded, pursues him into the jungle. Through patience and strength, he pries the Krana free and restores Lewa to his senses, proving that even the fiercest possession can be overcome by Unity.',
+      'Deep in the jungle of Le-Wahi, Onua searches for the missing Lewa. He finds the Toa of Air’s discarded Kanohi mask on the ground—and a chill runs through him.',
     durationSeconds: 15 * 60, // 15 minutes
     requirements: {
       matoran: ['Toa_Lewa', 'Toa_Onua'],
@@ -142,6 +147,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_lewa_krana_rescue' },
       xpPerMatoran: 2100,
       currency: 2400,
       loot: {},
@@ -153,7 +159,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_krana_hunt',
     name: 'Hunt for the Krana',
     description:
-      'Heeding Vakama’s warning, the Toa agree to split up once more. Each returns to their own village and region to battle the Bohrok swarms and tear the Krana from their heads, knowing that only a full set of Krana will unlock the path into the Bohrok nests.',
+      'The Turaga have revealed the truth: only by collecting every type of Krana from every Bohrok breed can the Toa unlock the path into the nests and end this threat.',
     durationSeconds: 30 * 60, // 30 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
@@ -161,6 +167,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_krana_hunt' },
       xpPerMatoran: 2200,
       currency: 2600,
       loot: {},
@@ -172,7 +179,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_into_the_bohrok_nest',
     name: 'Into the Bohrok Nest',
     description:
-      'Following the trail of the Bohrok Va, Kopaka discovers a hidden entrance leading deep beneath the island. Reunited, the Toa prepare to descend into the Bohrok nest itself—a final, perilous journey that can only begin once they have gathered the Krana needed to unlock the way forward.',
+      'Kopaka’s Akaku reveals a hidden entrance beneath the drifts of Ko-Wahi—a tunnel spiraling down into uncharted depths. The six Toa stand at its mouth.',
     durationSeconds: 20 * 60, // 20 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
@@ -182,6 +189,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       requiresAllKrana: true,
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_into_the_bohrok_nest' },
       xpPerMatoran: 2600,
       currency: 3000,
       loot: {},
@@ -193,7 +201,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_evolve_toa_nuva',
     name: 'Dawn of the Toa Nuva',
     description:
-      'Deep within the Bohrok nest, the Toa don the Exo-Toa armor and confront the Bahrag, queens of the swarm. By combining their elemental powers, they imprison the twins in a cage of solid protodermis—only to be plunged into energized protodermis themselves. Transformed into the Toa Nuva, they emerge with newfound strength and a world forever changed.',
+      'Deep in the Bohrok nest, the Toa don salvaged Exo-Toa armor and confront the Bahrag—Cahdok and Gahdok, twin queens of the swarm. The battle is brutal.',
     durationSeconds: 25 * 60, // 25 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
@@ -201,6 +209,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_evolve_toa_nuva' },
       xpPerMatoran: 4000,
       currency: 5000,
       loot: {},
@@ -212,7 +221,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: BOHROK_RECRUITMENT_QUEST_ID,
     name: 'Bohrok Assistants',
     description:
-      'With the Bahrag imprisoned and the swarms dormant, the Matoran discover that the Bohrok can be repurposed. Nuparu, drawing on his experience with the Boxor, leads efforts to retrofit the mechanical shells into useful assistants. The villages begin recruiting the docile Bohrok to aid in reconstruction and everyday tasks across Mata Nui.',
+      'With the Bahrag imprisoned, the Bohrok across Mata Nui have gone dormant—standing motionless wherever the swarm’s signal ceased. Nuparu sees an opportunity.',
     durationSeconds: 15 * 60, // 15 minutes
     requirements: {
       matoran: ['Nuparu', 'Onepu'],
@@ -220,6 +229,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_assistants' },
       xpPerMatoran: 1200,
       currency: 3000,
       loot: {},

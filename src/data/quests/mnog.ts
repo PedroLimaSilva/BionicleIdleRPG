@@ -358,6 +358,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_arrive_onu_koro' },
       xpPerMatoran: 200,
       unlockCharacters: [
         {
@@ -426,7 +427,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     id: 'mnog_meet_taipu',
     name: 'Meet Taipu',
     description:
-      'With the lava redirected, Takua can explore the newly opened tunnels. At the end of the tunnel to Le Koro, Takua meets Taipu who is very eager to explore Le-Wahi and wants to join in your adventure.',
+      'With the lava redirected, Takua can explore the newly opened tunnels. At the end of the tunnel to Le-Koro, Takua meets Taipu—a strong but simple miner who is very eager to see the surface world.',
     durationSeconds: 10 * 60, // 10 minutes
     requirements: {
       matoran: ['Takua'],
@@ -434,6 +435,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_meet_taipu' },
       unlockCharacters: [
         {
           id: 'Taipu',
@@ -592,7 +594,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     id: 'mnog_arrive_ko_koro',
     name: 'Journey to Ko-Koro',
     description:
-      'At Jala’s request, Takua travels to the icy peaks of Ko-Wahi to warn the secluded Ko-Matoran of increased Rahi activity.',
+      'At Jala’s request, Takua travels to the icy peaks of Ko-Wahi to warn the secluded Ko-Matoran of increased Rahi activity. Near an abandoned outpost, he finds a Matoran frozen in ice.',
     durationSeconds: 0.5 * 60 * 60, // 0.5 hours
     requirements: {
       matoran: ['Takua'],
@@ -606,6 +608,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       ],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_arrive_ko_koro' },
       unlockCharacters: [
         {
           id: 'Kopeke',
@@ -691,7 +694,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     id: 'mnog_summon_chroniclers_company',
     name: 'Summon the Chronicler’s Company',
     description:
-      'After speaking with Turaga Nuju, Takua is entrusted with a great responsibility: to visit each of the other Turaga and ask that one brave Matoran from their village be spared to join him on a journey to Kini-Nui. One by one, the Chronicler’s Company begins to take shape.',
+      'After speaking with Turaga Nuju through Matoro’s translation, Takua is entrusted with a sacred duty: to gather one brave Matoran from each village for a journey to Kini-Nui.',
     durationSeconds: 30 * 60, // 30 min
     requirements: {
       matoran: ['Takua', 'Kopeke'],
@@ -699,6 +702,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_summon_chroniclers_company' },
       unlockCharacters: [
         {
           id: 'Hafu',

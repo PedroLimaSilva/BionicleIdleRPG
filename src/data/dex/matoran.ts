@@ -18,6 +18,21 @@ export const MATORAN_DEX = {
       eyes: LegoColor.MediumBlue,
     },
   },
+  Turaga_Vakama: {
+    id: 'Turaga_Vakama',
+    name: 'Turaga Vakama',
+    mask: Mask.Huna,
+    stage: MatoranStage.Turaga,
+    element: ElementTribe.Fire,
+    colors: {
+      face: LegoColor.Red,
+      mask: LegoColor.Orange,
+      body: LegoColor.Red,
+      feet: LegoColor.Red,
+      arms: LegoColor.Orange,
+      eyes: LegoColor.TransNeonPink,
+    },
+  },
   Kapura: {
     id: 'Kapura',
     name: 'Kapura',
