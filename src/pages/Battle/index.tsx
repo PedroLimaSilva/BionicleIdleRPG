@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 import { BattlePhase } from '../../hooks/useBattleState';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
@@ -18,16 +18,16 @@ export const BattlePage: React.FC = () => {
   const { currentEncounter, phase, currentWave, enemies, team } = battle;
   const { setScene } = useSceneCanvas();
 
-  const kranaRewards = useMemo(() => {
-    if (
-      !currentEncounter ||
-      (phase !== BattlePhase.Victory &&
-        phase !== BattlePhase.Defeat &&
-        phase !== BattlePhase.Retreated)
-    ) {
-      return [];
-    }
-    return computeKranaRewardsForBattle(
+  const kranaRewardsRef = useRef<ReturnType<typeof computeKranaRewardsForBattle> | null>(null);
+
+  const isOutcome =
+    currentEncounter &&
+    (phase === BattlePhase.Victory ||
+      phase === BattlePhase.Defeat ||
+      phase === BattlePhase.Retreated);
+
+  if (isOutcome && kranaRewardsRef.current === null) {
+    kranaRewardsRef.current = computeKranaRewardsForBattle(
       currentEncounter,
       phase,
       currentWave,
@@ -35,7 +35,13 @@ export const BattlePage: React.FC = () => {
       completedQuests,
       collectedKrana
     );
-  }, [currentEncounter, phase, currentWave, enemies, completedQuests, collectedKrana]);
+  }
+
+  if (!isOutcome) {
+    kranaRewardsRef.current = null;
+  }
+
+  const kranaRewards = kranaRewardsRef.current ?? [];
 
   useEffect(() => {
     if (!currentEncounter) {
