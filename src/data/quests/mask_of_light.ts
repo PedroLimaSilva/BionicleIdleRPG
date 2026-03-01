@@ -17,7 +17,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'tales_turaga_and_matoro',
     name: 'Secrets Beneath the Ice',
     description:
-      'Turaga Vakama summons Matoro to the Sanctum, away from the other Matoran. He speaks of ancient secrets the Turaga have kept—a city beneath the sea, a life before Mata Nui. He asks Matoro to translate for Nuju at a private Turaga council, where they will decide whether the time has come to reveal the truth.',
+      'Turaga Vakama summons Matoro to the Sanctum, away from the other Matoran. He speaks of ancient secrets the Turaga have kept. He asks Matoro to translate for Nuju at a private Turaga council, where they will decide whether the time has come to reveal the truth.',
     durationSeconds: 8 * 60,
     requirements: {
       matoran: ['Matoro'],
@@ -25,7 +25,6 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'tales_turaga_and_matoro' },
       xpPerMatoran: 2000,
       currency: 3000,
       loot: {},
