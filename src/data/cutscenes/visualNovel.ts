@@ -1638,7 +1638,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Gali',
         portraitType: 'avatar',
         position: 'right',
-        text: `You didn't think, Tahu. You never think. Animals lived in that tree. Plants depended on it. You didn't care about any of that—you just wanted your mask.`,
+        text: `You didn't think, Tahu. You never think. Innocent rahi lived in that tree. Plants depended on it. You didn't care about any of that—you just wanted your mask.`,
       },
       {
         type: 'dialogue',
