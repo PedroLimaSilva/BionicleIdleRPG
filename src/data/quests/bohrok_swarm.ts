@@ -27,6 +27,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_swarm_intro' },
       xpPerMatoran: 1500,
       currency: 2000,
       loot: {},
@@ -66,6 +67,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_ta_koro_defense' },
       xpPerMatoran: 1800,
       currency: 2200,
       loot: {},
@@ -77,7 +79,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_po_koro_defense',
     name: 'Hold the Stone Village',
     description:
-      'The fire Bohrok Tahnok sweep across the desert, scorching everything in their path. As flames threaten Po-Koro, the carver Hafu and Koli champion Huki stand together at the village gates. Hafu is forced to sacrifice his life\'s work—shattering his carvings to block the tunnels and slow the swarm—buying precious time for the villagers to flee.',
+      "The fire Bohrok Tahnok sweep across the desert, scorching everything in their path. As flames threaten Po-Koro, the carver Hafu and Koli champion Huki stand together at the village gates. Hafu is forced to sacrifice his life's work—shattering his carvings to block the tunnels and slow the swarm—buying precious time for the villagers to flee.",
     durationSeconds: 14 * 60, // 14 minutes
     requirements: {
       matoran: ['Hafu', 'Huki'],
@@ -85,6 +87,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_po_koro_defense' },
       xpPerMatoran: 1700,
       currency: 2300,
       loot: {},
@@ -104,6 +107,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_onu_koro_boxor' },
       xpPerMatoran: 2000,
       currency: 2500,
       loot: {},
@@ -142,6 +146,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_lewa_krana_rescue' },
       xpPerMatoran: 2100,
       currency: 2400,
       loot: {},
@@ -161,6 +166,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_krana_hunt' },
       xpPerMatoran: 2200,
       currency: 2600,
       loot: {},
@@ -182,6 +188,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       requiresAllKrana: true,
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_into_the_bohrok_nest' },
       xpPerMatoran: 2600,
       currency: 3000,
       loot: {},
@@ -201,6 +208,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_evolve_toa_nuva' },
       xpPerMatoran: 4000,
       currency: 5000,
       loot: {},
@@ -220,6 +228,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_assistants' },
       xpPerMatoran: 1200,
       currency: 3000,
       loot: {},

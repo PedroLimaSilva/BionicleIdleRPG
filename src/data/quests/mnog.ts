@@ -699,6 +699,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_summon_chroniclers_company' },
       unlockCharacters: [
         {
           id: 'Hafu',

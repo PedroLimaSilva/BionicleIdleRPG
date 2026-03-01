@@ -49,6 +49,7 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_scattered_aid' },
       xpPerMatoran: 1800,
       currency: 3000,
       loot: {},
@@ -75,6 +76,7 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_stolen_symbols' },
       xpPerMatoran: 2000,
       currency: 3500,
       loot: {},
@@ -101,6 +103,7 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_sighting' },
       xpPerMatoran: 2400,
       currency: 4000,
       loot: {},
@@ -127,6 +130,7 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_race_to_nest' },
       xpPerMatoran: 3000,
       currency: 4500,
       loot: {},
@@ -153,6 +157,7 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_final_confrontation' },
       xpPerMatoran: 5000,
       currency: 6000,
       loot: {},
@@ -189,6 +194,7 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_naming_day' },
       xpPerMatoran: 1500,
       currency: 2000,
       loot: {},

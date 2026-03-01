@@ -256,6 +256,7 @@ export const MASK_HUNT: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_gali_rescue' },
       xpPerMatoran: 800,
       currency: 1100,
       loot: {
@@ -300,6 +301,7 @@ export const MASK_HUNT: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'story_toa_second_council' },
       xpPerMatoran: 800,
       currency: 100,
       loot: {},
@@ -319,6 +321,7 @@ export const MASK_HUNT: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_tahu_miru' },
       xpPerMatoran: 700,
       currency: 1200,
       loot: {
@@ -341,6 +344,7 @@ export const MASK_HUNT: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_pohatu_kaukau_bluff' },
       xpPerMatoran: 650,
       currency: 1100,
       loot: {
@@ -362,6 +366,7 @@ export const MASK_HUNT: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_forest_tahu_kakama' },
       xpPerMatoran: 700,
       currency: 1200,
       loot: {
@@ -383,6 +388,7 @@ export const MASK_HUNT: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'story_nui_jaga_nest' },
       xpPerMatoran: 1000,
       currency: 1400,
     },
@@ -405,6 +411,7 @@ export const MASK_HUNT: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_final_collection' },
       xpPerMatoran: 2000,
       currency: 1600,
     },
@@ -423,6 +430,7 @@ export const MASK_HUNT: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'story_kini_nui_gathering' },
       xpPerMatoran: 3000,
       currency: 1000,
       loot: {},
