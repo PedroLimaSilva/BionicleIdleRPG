@@ -358,6 +358,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_arrive_onu_koro' },
       xpPerMatoran: 200,
       unlockCharacters: [
         {
@@ -426,7 +427,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     id: 'mnog_meet_taipu',
     name: 'Meet Taipu',
     description:
-      'With the lava redirected, Takua can explore the newly opened tunnels. At the end of the tunnel to Le Koro, Takua meets Taipu who is very eager to explore Le-Wahi and wants to join in your adventure.',
+      'With the lava redirected, Takua can explore the newly opened tunnels. At the end of the tunnel to Le-Koro, Takua meets Taipu—a strong but simple miner who is very eager to see the surface world.',
     durationSeconds: 10 * 60, // 10 minutes
     requirements: {
       matoran: ['Takua'],
@@ -434,6 +435,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_meet_taipu' },
       unlockCharacters: [
         {
           id: 'Taipu',
@@ -592,7 +594,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     id: 'mnog_arrive_ko_koro',
     name: 'Journey to Ko-Koro',
     description:
-      'At Jala’s request, Takua travels to the icy peaks of Ko-Wahi to warn the secluded Ko-Matoran of increased Rahi activity.',
+      'At Jala’s request, Takua travels to the icy peaks of Ko-Wahi to warn the secluded Ko-Matoran of increased Rahi activity. Near an abandoned outpost, he finds a Matoran frozen in ice.',
     durationSeconds: 0.5 * 60 * 60, // 0.5 hours
     requirements: {
       matoran: ['Takua'],
@@ -606,6 +608,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       ],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mnog_arrive_ko_koro' },
       unlockCharacters: [
         {
           id: 'Kopeke',
