@@ -101,7 +101,9 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
     >
       <div className="visual-novel-cutscene__background" style={backgroundStyle} />
 
-      {stepView}
+      <div key={currentIndex} style={{ display: 'contents' }}>
+        {stepView}
+      </div>
 
       <button
         type="button"
