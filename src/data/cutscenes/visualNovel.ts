@@ -3175,4 +3175,839 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
+
+  // ---------------------------------------------------------------------------
+  // TALES OF THE MASKS – transitional cutscenes
+  // ---------------------------------------------------------------------------
+
+  tales_turaga_and_matoro: {
+    id: 'tales_turaga_and_matoro',
+    background: { type: 'gradient', from: '#a0c4e8', to: '#1a1a2e' },
+    steps: [
+      {
+        type: 'narration',
+        text: `In a quiet chamber beneath the Ko-Koro Sanctum, far from the celebrations of the Naming Day, Turaga Vakama waits. He has asked Matoro to come alone.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Thank you for coming, Matoro. I need your discretion—and your gift for translation. What I am about to say cannot leave this room. Not yet.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Matoro',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Of course, Turaga. What troubles you?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `The Toa Nuva grow stronger every day. They have defeated the Bohrok, the Bohrok-Kal. But there are things they do not know. Things we Turaga have kept hidden since the day we brought the Matoran to this island.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Matoro',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Hidden? What do you mean?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `This island... Mata Nui... it is not our true home. There is a city far below—a place called Metru Nui. We lived there once, all of us. The Turaga. The Matoran. Before Makuta's treachery forced us to the surface.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Matoro',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `A city... beneath the island? Why have you never told anyone?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Because some truths are burdens, Matoro. The Matoran lost their memories when we brought them here. We thought it kinder to let them build new lives rather than mourn the ones they lost. But now... the shadows are deepening. The Toa will need to know the full truth before the end.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Matoro',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `When will you tell them?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `When the time is right. Not a moment before. For now, help me with Turaga Nuju—translate his counsel at our private meeting. The other Turaga and I must decide together.`,
+      },
+      {
+        type: 'narration',
+        text: `Matoro nods solemnly. The weight of the Turaga's secret settles on his shoulders—a truth about the world beneath their feet, waiting to be revealed.`,
+      },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // MASK OF LIGHT – main story cutscenes
+  // ---------------------------------------------------------------------------
+
+  mol_kolhii_tournament: {
+    id: 'mol_kolhii_tournament',
+    background: { type: 'gradient', from: '#8b0000', to: '#ff6a00' },
+    steps: [
+      {
+        type: 'narration',
+        text: `The great Kolhii stadium of Ta-Koro is packed. Matoran from every village have gathered to watch the championship match. The air shimmers with volcanic heat.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Takua! Where have you been? The match is about to start! You're supposed to be on the field with me!`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Sorry, Jaller! I was, uh... exploring.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `You're always exploring! Get your Kolhii stick—we're up against Ga-Koro. Hahli and Macku have been training hard.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Huki',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Don't worry about Ga-Koro. Worry about Po-Koro! Hafu and I have been practicing a new move.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Hahli',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Let your Kolhii sticks do the talking, Hewkii. Ga-Koro plays to win.`,
+      },
+      {
+        type: 'narration',
+        text: `The match is fierce. Ta-Koro's fire, Po-Koro's stone, and Ga-Koro's water clash on the field. In the end, Hahli scores the winning goal for Ga-Koro with a masterful strike that leaves the crowd cheering.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Nice shot, Hahli! I mean... I wasn't paying attention because I was busy—`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Busy losing? You were staring at the lava pit the entire third round, Takua.`,
+      },
+      {
+        type: 'narration',
+        text: `As the crowd celebrates, a sudden tremor shakes the stadium. A crack splits the ground near the Kolhii field, and from the molten rock beneath, something rises—a mask, gleaming with golden light.`,
+      },
+    ],
+  },
+
+  mol_avohkii_discovery: {
+    id: 'mol_avohkii_discovery',
+    background: { type: 'gradient', from: '#ffe28e', to: '#5b3e0b' },
+    steps: [
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `What... what is that? A mask? It's glowing!`,
+      },
+      {
+        type: 'narration',
+        text: `Takua reaches into the crack and pulls out a mask of brilliant gold. The moment he touches it, a beam of light erupts from the mask and shines directly on him, illuminating the entire stadium.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `The Avohkii! The Great Mask of Light! The prophecy... it is real.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `What prophecy, Turaga?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `It is written that when the Mask of Light is found, a seventh Toa will arise—a Toa of Light who will challenge the darkness and awaken the Great Spirit Mata Nui. The mask has chosen its herald. The light shines upon... Takua.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Me?! No, no—I think the light was pointing at Jaller. He was standing right next to me! Right, Jaller?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `...It was pointing at you, Takua.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `You must seek the seventh Toa and deliver the Avohkii to its rightful bearer. Follow where the mask's light leads. The fate of Mata Nui depends on it.`,
+      },
+    ],
+  },
+
+  mol_herald_journey: {
+    id: 'mol_herald_journey',
+    background: { type: 'gradient', from: '#4a6741', to: '#1a3a4a' },
+    steps: [
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `You're not going alone, Takua. The Turaga chose you as herald, but the Captain of the Guard goes where the danger is. That's me.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Jaller, you don't have to—`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `I'm not asking. Besides, someone needs to keep you focused. Left to yourself, you'd wander into every cave and ruin between here and Ko-Wahi.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `That's... probably true.`,
+      },
+      {
+        type: 'narration',
+        text: `Takua lifts the Avohkii. Its light pulses gently, casting a beam southward—toward the jungles of Le-Wahi. With Pewku the Ussal crab carrying their supplies, the two Matoran leave Ta-Koro behind.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Takua... do you think this seventh Toa is out there? Waiting for us?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I hope so. Because if not, we're just two Matoran walking into the wild with a glowing mask and no plan.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Wouldn't be the first time for you.`,
+      },
+    ],
+  },
+
+  mol_rahkshi_attack_ta_koro: {
+    id: 'mol_rahkshi_attack_ta_koro',
+    background: { type: 'gradient', from: '#4a0000', to: '#0a0a0a' },
+    steps: [
+      {
+        type: 'narration',
+        text: `Deep in Mangaia, Makuta senses the discovery of the Avohkii. His rage shakes the caverns. From pools of antidermis and shadow, he creates six sons—the Rahkshi. Three he sends first: Turahk, the fear; Guurahk, the disintegrator; Lerahk, the poison.`,
+      },
+      {
+        type: 'narration',
+        text: `The Rahkshi erupt from the ground beneath Ta-Koro. Their staffs cleave through stone. The lava moat—once the village's greatest defense—becomes its grave as the platforms crack and tilt.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `What are these things?! They cut through Bohrok armor like it was nothing!`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `They came from below—from Makuta's lair. Tahu, they're after the Mask of Light!`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `The village is sinking! We have to evacuate—now!`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Get the Matoran out! I'll hold them off!`,
+      },
+      {
+        type: 'narration',
+        text: `Tahu fights with everything he has, but the Rahkshi are relentless. Guurahk shatters the central platform. Ta-Koro—home of the fire Matoran since the great migration—groans, cracks, and sinks into the molten lake. The village is gone.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Tahu... I'm sorry. We saved the Matoran, but the village...`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `We'll rebuild. But first, we hunt. These creatures will pay for every stone that fell.`,
+      },
+    ],
+  },
+
+  mol_ko_wahi_ambush: {
+    id: 'mol_ko_wahi_ambush',
+    background: { type: 'gradient', from: '#e3e3ff', to: '#1a1a4a' },
+    steps: [
+      {
+        type: 'narration',
+        text: `The Avohkii's light leads Takua and Jaller into the frozen mountains of Ko-Wahi. Snow swirls around them, obscuring the path. Then—a sound. The chatter of Rahkshi staffs cutting through ice.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Takua—behind us! Two of those creatures!`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `The bridge! If we can get across—`,
+      },
+      {
+        type: 'narration',
+        text: `The ice bridge splinters beneath their feet. Jaller slips—and Takua catches his arm, hauling him back just as the bridge collapses into the chasm behind them.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Move. Now.`,
+      },
+      {
+        type: 'narration',
+        text: `Kopaka Nuva appears from nowhere, raising a wall of ice between the Matoran and the Rahkshi. The creatures pound against it, cracks spiderwebbing through the frozen barrier.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `That wall won't hold long. Keep moving east—follow the gorge. I'll slow them down.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Thank you, Toa Kopaka.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Don't thank me. Find the seventh Toa. That's the only way this ends.`,
+      },
+    ],
+  },
+
+  mol_tahu_poisoned: {
+    id: 'mol_tahu_poisoned',
+    background: { type: 'gradient', from: '#1a4a00', to: '#0a0a0a' },
+    steps: [
+      {
+        type: 'narration',
+        text: `In the jungles of Le-Wahi, the Toa Nuva track two Rahkshi. Lerahk's staff cuts Tahu across the arm—a shallow wound, but the poison of shadow seeps in immediately.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `It's nothing. Just a scratch. I can still fight—`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Lewa_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Brother, your eyes... they're going dark. That's not a scratch—it's spreading!`,
+      },
+      {
+        type: 'narration',
+        text: `Dark veins crawl up Tahu's arm and across his mask. His flames turn from orange to sickly green. He turns on his brothers, swinging his magma swords with savage fury.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Stay back! All of you! I don't need your help—I don't need ANYONE!`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `The poison is in his mind—it's turning his anger against us! Kopaka, I need you! If we combine ice and water, we can freeze the venom before it reaches his heartlight!`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Hold him still. This will hurt.`,
+      },
+      {
+        type: 'narration',
+        text: `Lewa pins Tahu with cyclone winds while Gali and Kopaka channel water and ice directly through the wound. The shadow venom crystallizes and shatters. Tahu collapses, gasping.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `I... I could feel it inside me. Rage. Hatred. It felt... right. If you hadn't stopped me...`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `That's Makuta's weapon. He doesn't need to defeat us—just divide us. Remember that, brother.`,
+      },
+    ],
+  },
+
+  mol_takua_destiny: {
+    id: 'mol_takua_destiny',
+    background: { type: 'gradient', from: '#2d5a1e', to: '#0a0a0a' },
+    steps: [
+      {
+        type: 'narration',
+        text: `Night falls on a ruined campsite. The Rahkshi struck again—this time in Onu-Koro, collapsing tunnels and scattering Matoran. Everywhere Takua goes, destruction follows.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I can't do this, Jaller. Everywhere we take this mask, the Rahkshi come. People get hurt. Maybe... maybe if I just got rid of the Avohkii—buried it somewhere—they'd stop.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `And then what? Makuta wins? The seventh Toa never rises? The Great Spirit never wakes up?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Maybe the mask chose wrong! I'm not a hero, Jaller—I'm a wanderer. I find things. I run from things. That's what I do.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `You ran TO Ga-Koro when it was drowning. You ran INTO the Nui-Rama hive. You ran to every village on this island when they needed help. Don't tell me you're a coward—I won't believe it.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `...`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `The mask didn't choose wrong, Takua. You're just scared. And that's fine—I'm scared too. But we don't stop. That's not who we are.`,
+      },
+      {
+        type: 'narration',
+        text: `Takua looks at the Avohkii in his hands. Its light pulses steadily, warm and patient, as though it has been waiting for him all along.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `...All right. We keep going.`,
+      },
+    ],
+  },
+
+  mol_battle_of_kini_nui: {
+    id: 'mol_battle_of_kini_nui',
+    background: { type: 'gradient', from: '#4a0000', to: '#1a0a2e' },
+    steps: [
+      {
+        type: 'narration',
+        text: `All six Rahkshi converge on Kini-Nui. Makuta has sent his full might. The Toa Nuva stand ready, weapons drawn, but they are battered from days of running battles across the island.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `This is it. All six of them. No more running—we end this here.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Onua_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Together. As one.`,
+      },
+      {
+        type: 'narration',
+        text: `The battle is brutal. Pohatu and Onua shatter Panrahk's armor. Lewa and Kopaka bring down Guurahk in a storm of wind and ice. Gali drowns Lerahk in a torrent. Tahu faces Kurahk and Vorahk alone, his flames burning hotter than ever.`,
+      },
+      {
+        type: 'narration',
+        text: `But Turahk—the Rahkshi of Fear—slips past the Toa. It sees Takua clutching the Avohkii and raises its staff, channeling a blast of pure terror.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `TAKUA!`,
+      },
+      {
+        type: 'narration',
+        text: `Jaller throws himself between Takua and the blast. The fear-energy strikes him full in the chest. He staggers... and falls.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `JALLER! No—no, no, no—`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `You know... who the... seventh Toa is... don't you... Takua?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `No... Jaller, stay with me—`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `It was always... you.`,
+      },
+      {
+        type: 'narration',
+        text: `Jaller's eyes dim. The Captain of the Guard, the bravest Matoran on Mata Nui, lies still. The battlefield falls silent.`,
+      },
+    ],
+  },
+
+  mol_takanuva_rises: {
+    id: 'mol_takanuva_rises',
+    background: { type: 'gradient', from: '#ffe28e', to: '#ffffff' },
+    steps: [
+      {
+        type: 'narration',
+        text: `Takua kneels beside Jaller, the Avohkii in his trembling hands. All around him, the Toa Nuva stand in silence. Even Kopaka has no words.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `You were right, Jaller. About everything. I was running. I was afraid. But I'm not afraid anymore.`,
+      },
+      {
+        type: 'narration',
+        text: `Takua lifts the Avohkii. Its light blazes—not a beam, but a radiance that swallows the battlefield. He places the Mask of Light on his face.`,
+      },
+      {
+        type: 'narration',
+        text: `Power surges through him. His body grows, his armor reshapes, his heartlight burns with the brilliance of a star. Where a Matoran stood, a Toa now rises—tall, golden, and burning with inner light.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takanuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I am Takanuva—Toa of Light. And Makuta... you will answer for what you've done.`,
+      },
+      {
+        type: 'narration',
+        text: `Takanuva turns toward the remaining Rahkshi. A single sweep of his staff unleashes a column of pure light that shatters Turahk where it stands. The other Rahkshi scatter.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `The seventh Toa... the prophecy was true.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Takua... you were the herald AND the Toa. The mask wasn't searching—it was waiting for you to accept your destiny.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takanuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `My name is Takanuva now. And I have a score to settle beneath Kini-Nui.`,
+      },
+    ],
+  },
+
+  mol_defeat_of_makuta: {
+    id: 'mol_defeat_of_makuta',
+    background: { type: 'gradient', from: '#0a0a0a', to: '#3d0066' },
+    steps: [
+      {
+        type: 'narration',
+        text: `From the wreckage of the Rahkshi, Takanuva builds a vehicle—the Ussanui—and rides it down through Kini-Nui into the deepest cavern of Mangaia. Hahli follows as the new Chronicler, bearing witness.`,
+      },
+      {
+        type: 'narration',
+        text: `In the heart of darkness, Makuta waits. He is vast. He is shadow given form. His voice echoes from every wall.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `So... the Matoran sends a Toa of Light to challenge me. How quaint. You are too late, little Toa. The darkness is all there is.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takanuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I know you, Makuta. You've hidden in the dark long enough. Face me.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `You would challenge me? Very well... but not with weapons. Let us play a game—Kolhii. After all, isn't that what you Matoran do best? Play games while the world crumbles around you?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takanuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `A game. Light against shadow. If I win, you open the gate to what lies beyond.`,
+      },
+      {
+        type: 'narration',
+        text: `The game begins. Light and shadow clash across a field of protodermis. Takanuva strikes with precision and fury. Makuta is cunning, twisting the shadows themselves. But Takanuva is relentless.`,
+      },
+      {
+        type: 'narration',
+        text: `In the final exchange, Takanuva tackles Makuta—and both plunge into the pool of energized protodermis. Light and darkness merge.`,
+      },
+      {
+        type: 'narration',
+        text: `From the pool rises a single towering figure—Takutanuva. Two beings fused as one, light and shadow in impossible balance.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Hahli',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Takua?! What happened to you?!`,
+      },
+      {
+        type: 'narration',
+        text: `The merged being speaks with two voices.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takanuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Light has revealed the will of Mata Nui. Our brother must be awakened.`,
+      },
+      {
+        type: 'narration',
+        text: `Takutanuva lifts the massive gate—a door sealed since the great migration. Beyond it, a passage leads downward into a vast, silent world. With the last of his merged strength, Takutanuva pours life energy into Jaller's still form. The Captain of the Guard stirs... and breathes.`,
+      },
+      {
+        type: 'narration',
+        text: `The gate's weight becomes too much. It crashes down, and in the impact, Makuta's darkness is expelled. Takanuva reforms alone, weakened but alive. The Toa of Light stands before the open passage, victorious.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Where... where am I? Takua—?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takanuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Welcome back, Jaller. You're safe now. It's over.`,
+      },
+    ],
+  },
+
+  mol_rediscovery_of_metru_nui: {
+    id: 'mol_rediscovery_of_metru_nui',
+    background: { type: 'gradient', from: '#0d1f2d', to: '#ffe28e' },
+    steps: [
+      {
+        type: 'narration',
+        text: `The Toa Nuva, Takanuva, and the Matoran gather at the open gate. Beyond the passage, an underground sea stretches into darkness—and on its far shore, the towers of a great city gleam faintly in the distance.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Hahli',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `What is that place? Those towers... I've never seen anything like them.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `That... is Metru Nui. The city we came from. The city we have kept secret since the day we brought you all to this island.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jala',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Secret? You knew about this place? All this time?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `We were not always Turaga, Jaller. We were once Toa—the Toa Metru—and Metru Nui was our home. When Makuta betrayed the Great Spirit and plunged the city into darkness, we carried the Matoran to safety on the island above. But you lost your memories in the journey. We chose to let you build new lives rather than burden you with the old.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `You were Toa? All six of you?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Yes. We sacrificed our Toa power to save the Matoran—and became Turaga. It was a price we paid willingly.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Hahli',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Then that city... is where we truly belong?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Metru Nui is your birthright. And now, at last, the path home is open. But beware—the city has been empty for a long time. We do not know what waits for us in its shadows.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takanuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Then we go together. Light will lead the way.`,
+      },
+      {
+        type: 'narration',
+        text: `The Matoran of Mata Nui gaze across the underground sea at the towers of Metru Nui—the City of Legends. Their true home, waiting in the darkness below. A new chapter begins.`,
+      },
+    ],
+  },
 };

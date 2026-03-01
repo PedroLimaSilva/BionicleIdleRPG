@@ -332,6 +332,71 @@ XP: 5000"]
 Loot: 
 Currency: 2000
 XP: 1500"]
+  tales_turaga_and_matoro["Secrets Beneath the Ice
+(8m)
+Loot: 
+Currency: 3000
+XP: 2000"]
+  tales_kanohi_nuva_hunt["Quest for the Kanohi Nuva
+(20m)
+Loot: 
+Currency: 3500
+XP: 2500"]
+  mol_kolhii_tournament["The Kolhii Tournament
+(10m)
+Loot: 
+Currency: 3500
+XP: 2500"]
+  mol_avohkii_discovery["The Mask of Light
+(8m)
+Loot: 
+Currency: 3500
+XP: 2500"]
+  mol_herald_journey["The Herald's Journey
+(10m)
+Loot: 
+Currency: 4000
+XP: 2800"]
+  mol_rahkshi_attack_ta_koro["The Fall of Ta-Koro
+(15m)
+Loot: 
+Currency: 4500
+XP: 3000"]
+  mol_ko_wahi_ambush["Ambush in the Drifts
+(12m)
+Loot: 
+Currency: 4500
+XP: 3000"]
+  mol_tahu_poisoned["Tahu's Poison
+(15m)
+Loot: 
+Currency: 5000
+XP: 3500"]
+  mol_takua_destiny["Flight from Destiny
+(10m)
+Loot: 
+Currency: 4000
+XP: 3000"]
+  mol_battle_of_kini_nui["Battle at Kini-Nui
+(25m)
+Loot: 
+Currency: 5500
+XP: 4000"]
+  mol_takanuva_rises["The Seventh Toa
+(8m)
+Loot: 
+Currency: 6000
+XP: 5000"]
+  mol_defeat_of_makuta["Into the Darkness
+(30m)
+Loot: 
+Currency: 7000
+XP: 6000"]
+  mol_rediscovery_of_metru_nui["The City of Legends
+(12m)
+Loot: 
+Currency: 5000
+XP: 4000"]
   story_toa_arrival --> maskhunt_kopaka_matoro_icecliff
   maskhunt_kopaka_matoro_icecliff --> maskhunt_kopaka_pohatu_icecliff
   mnog_tahu_unlock_01 --> story_toa_council
@@ -411,6 +476,19 @@ XP: 1500"]
   bohrok_kal_sighting --> bohrok_kal_race_to_nest
   bohrok_kal_race_to_nest --> bohrok_kal_final_confrontation
   bohrok_kal_final_confrontation --> bohrok_kal_naming_day
+  bohrok_kal_naming_day --> tales_turaga_and_matoro
+  tales_turaga_and_matoro --> tales_kanohi_nuva_hunt
+  tales_kanohi_nuva_hunt --> mol_kolhii_tournament
+  mol_kolhii_tournament --> mol_avohkii_discovery
+  mol_avohkii_discovery --> mol_herald_journey
+  mol_herald_journey --> mol_rahkshi_attack_ta_koro
+  mol_rahkshi_attack_ta_koro --> mol_ko_wahi_ambush
+  mol_ko_wahi_ambush --> mol_tahu_poisoned
+  mol_tahu_poisoned --> mol_takua_destiny
+  mol_takua_destiny --> mol_battle_of_kini_nui
+  mol_battle_of_kini_nui --> mol_takanuva_rises
+  mol_takanuva_rises --> mol_defeat_of_makuta
+  mol_defeat_of_makuta --> mol_rediscovery_of_metru_nui
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff
