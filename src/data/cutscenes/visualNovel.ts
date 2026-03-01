@@ -3037,7 +3037,77 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `The six Toa Nuva reach out with their minds, pouring raw willpower into the Nuva Symbols. The Bohrok-Kal convulse as power spirals beyond their control. One by one, each is destroyed by its own element—crushed, melted, blasted, disintegrated. The symbols clatter to the ground, reclaimed.`,
+        text: `The six Toa Nuva reach out with their minds, pouring raw willpower into the Nuva Symbols. The Bohrok-Kal convulse as power spirals beyond their control.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'lehvak_kal',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `What is happening?! The vacuum—it's pulling outward—I can't contain—`,
+      },
+      {
+        type: 'narration',
+        text: `Lehvak-Kal's vacuum power inverts into a violent thrust. The Kal is launched skyward, rocketing through the cavern ceiling and into the atmosphere—lost to the void above Mata Nui.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'nuhvok_kal',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `The gravity... it's folding inward... everything is collapsing... into me...`,
+      },
+      {
+        type: 'narration',
+        text: `Nuhvok-Kal's gravity field spirals out of control. The Kal crumples into itself, crushed into an impossibly dense point—a black hole that swallows its own shell before winking out of existence.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'pahrak_kal',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Too much heat... the plasma... my shell is... melting...`,
+      },
+      {
+        type: 'narration',
+        text: `Pahrak-Kal's plasma burns white-hot, liquefying its own armor. The molten mass sinks through the stone floor, boring deeper and deeper until the glow fades to nothing.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'tahnok_kal',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `No—the electricity—it won't stop arcing—I am... trapped in my own cage...`,
+      },
+      {
+        type: 'narration',
+        text: `Arcs of lightning encase Tahnok-Kal in a crackling prison of its own making. The electricity fuses its joints solid, locking it in place forever—a monument to its own overloaded power.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'gahlok_kal',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `The magnetism—everything is pulling toward me—the Exo-Toa debris—I can't repel it—`,
+      },
+      {
+        type: 'narration',
+        text: `Every shard of metal in the cavern hurtles toward Gahlok-Kal. Exo-Toa wreckage, discarded tools, and raw ore slam into the Kal from all directions, burying it under tons of magnetically attracted debris.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'kohrak_kal',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `The sonics... the frequency is rising... my own shell is vibrating apart—`,
+      },
+      {
+        type: 'narration',
+        text: `A piercing shriek fills the cavern as Kohrak-Kal's sonic power reaches a frequency beyond endurance. Its armor shatters from within, disintegrating into dust. The silence that follows is absolute.`,
+      },
+      {
+        type: 'narration',
+        text: `The six Nuva Symbols clatter to the ground, unclaimed. The force field dissolves. The Bahrag remain sealed in their protodermis prison.`,
       },
       {
         type: 'dialogue',
