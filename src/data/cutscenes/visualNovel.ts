@@ -2614,7 +2614,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Toa_Gali',
+        speakerId: 'Toa_Gali_Nuva',
         portraitType: 'avatar',
         position: 'right',
         text: `We have changed. I can feel it—our power is greater than before. We are... Toa Nuva.`,
