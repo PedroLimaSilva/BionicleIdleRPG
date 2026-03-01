@@ -1143,10 +1143,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     background: { type: 'gradient', from: '#8b4513', to: '#cd5c5c' },
     steps: [
       {
-        type: 'narration',
-        text: `Trapped in a narrow Po-Wahi canyon after a landslide, Gali fights off wave after wave of corrupted Rahi. Her elemental power is weakening. Then—a column of fire erupts at the mouth of the gorge.`,
-      },
-      {
         type: 'dialogue',
         speakerId: 'Toa_Tahu',
         portraitType: 'avatar',
@@ -1210,10 +1206,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'story_toa_second_council',
     background: { type: 'gradient', from: '#3b2f1a', to: '#0a0a0a' },
     steps: [
-      {
-        type: 'narration',
-        text: `At Onua's urging, the six Toa gather once more—battered, wiser, and uncertain. The masks they have found weigh heavily, and so do the visions.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Onua',
@@ -1282,10 +1274,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     background: { type: 'gradient', from: '#0d2847', to: '#051a2e' },
     steps: [
       {
-        type: 'narration',
-        text: `Following the plan forged at the Council, Gali, Kopaka, and Onua dive beneath the crashing surf off the Po-Koro shoreline, each wearing a Kanohi Kaukau. Below, an underwater shrine holds Tahu's Miru.`,
-      },
-      {
         type: 'dialogue',
         speakerId: 'Toa_Gali',
         portraitType: 'avatar',
@@ -1349,10 +1337,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'maskhunt_pohatu_kaukau_bluff',
     background: { type: 'gradient', from: '#c2a366', to: '#4a3728' },
     steps: [
-      {
-        type: 'narration',
-        text: `Pohatu's Kanohi Kaukau is found not beneath water, but atop the highest bluff in Po-Wahi. Harsh winds and sheer cliffs guard the approach.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Pohatu',
@@ -1420,10 +1404,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'maskhunt_forest_tahu_kakama',
     background: { type: 'gradient', from: '#2d5a1e', to: '#8b2500' },
     steps: [
-      {
-        type: 'narration',
-        text: `In the canopy of Le-Wahi, Tahu spots his Kakama lodged high in a massive tree. Gali and Onua watch from below.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Gali',
@@ -1499,10 +1479,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'story_nui_jaga_nest',
     background: { type: 'gradient', from: '#1a3a1a', to: '#0a0a0a' },
     steps: [
-      {
-        type: 'narration',
-        text: `Outside a massive Nui-Jaga nest, the six Toa assemble to plan their attack. The clicking of armored scorpion tails echoes from within.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Tahu',
@@ -1582,10 +1558,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     background: { type: 'gradient', from: '#2a1f4e', to: '#0d0d1a' },
     steps: [
       {
-        type: 'narration',
-        text: `With lessons hard-won and trust forged in battle, the six Toa embark on their final coordinated mask hunt. Across the island, they move as one.`,
-      },
-      {
         type: 'dialogue',
         speakerId: 'Toa_Onua',
         portraitType: 'avatar',
@@ -1641,10 +1613,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'story_kini_nui_gathering',
     background: { type: 'gradient', from: '#4a6741', to: '#1a1a0a' },
     steps: [
-      {
-        type: 'narration',
-        text: `With every Kanohi collected, the six Toa journey to the sacred temple of Kini-Nui. Ancient carvings line the walls, depicting prophecy and shadow. The island is eerily quiet.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Gali',
@@ -1710,10 +1678,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     background: { type: 'gradient', from: '#a0c4e8', to: '#e3e3ff' },
     steps: [
       {
-        type: 'narration',
-        text: `After speaking with Turaga Nuju through Matoro's translation, Takua is entrusted with a sacred duty: to gather one brave Matoran from each village for a journey to Kini-Nui.`,
-      },
-      {
         type: 'dialogue',
         speakerId: 'Kopeke',
         portraitType: 'avatar',
@@ -1763,10 +1727,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'bohrok_swarm_intro',
     background: { type: 'gradient', from: '#4a0000', to: '#0a0a0a' },
     steps: [
-      {
-        type: 'narration',
-        text: `The Toa emerge from the depths after confronting Makuta, expecting peace. Instead, smoke rises from every corner of the island. Strange mechanical creatures swarm across the land, leveling everything in their path.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Tahu',
@@ -1824,10 +1784,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     background: { type: 'gradient', from: '#8b0000', to: '#1a0a00' },
     steps: [
       {
-        type: 'narration',
-        text: `The Kohrak—ice Bohrok—swarm the walls of Ta-Koro. Their ice blasts crack the stone ramparts. The lava moat churns with fallen drones.`,
-      },
-      {
         type: 'dialogue',
         speakerId: 'Takua',
         portraitType: 'avatar',
@@ -1877,10 +1833,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'bohrok_po_koro_defense',
     background: { type: 'gradient', from: '#c2a366', to: '#4a0000' },
     steps: [
-      {
-        type: 'narration',
-        text: `The fire Bohrok—Tahnok—sweep across Po-Wahi. Flames consume the desert scrub and scorch the stone. At the village gates, two Matoran stand their ground.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Huki',
@@ -1949,10 +1901,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     background: { type: 'gradient', from: '#2a1a00', to: '#0a0a0a' },
     steps: [
       {
-        type: 'narration',
-        text: `The water Bohrok—Gahlok—have flooded Onu-Koro's tunnels. Cut off from the surface, three Matoran huddle in a dry chamber with salvaged parts from destroyed Bohrok.`,
-      },
-      {
         type: 'dialogue',
         speakerId: 'Onepu',
         portraitType: 'avatar',
@@ -2017,10 +1965,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     background: { type: 'gradient', from: '#2d5a1e', to: '#0a0a0a' },
     steps: [
       {
-        type: 'narration',
-        text: `Deep in the jungle of Le-Wahi, Onua searches for the missing Lewa. He finds the Toa of Air's discarded Kanohi mask on the ground—and a chill runs through him.`,
-      },
-      {
         type: 'dialogue',
         speakerId: 'Toa_Onua',
         portraitType: 'avatar',
@@ -2082,10 +2026,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     background: { type: 'gradient', from: '#1a3a4a', to: '#0a0a0a' },
     steps: [
       {
-        type: 'narration',
-        text: `The Turaga have revealed the truth: only by collecting every type of Krana from every Bohrok breed can the Toa unlock the path into the nests and end this threat.`,
-      },
-      {
         type: 'dialogue',
         speakerId: 'Toa_Tahu',
         portraitType: 'avatar',
@@ -2127,10 +2067,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'bohrok_into_the_bohrok_nest',
     background: { type: 'gradient', from: '#1a0a00', to: '#0a0a0a' },
     steps: [
-      {
-        type: 'narration',
-        text: `Kopaka's Akaku reveals a hidden entrance beneath the drifts of Ko-Wahi—a tunnel spiraling down into uncharted depths. The six Toa stand at its mouth.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Kopaka',
@@ -2187,10 +2123,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'bohrok_evolve_toa_nuva',
     background: { type: 'gradient', from: '#3d0066', to: '#0a0a0a' },
     steps: [
-      {
-        type: 'narration',
-        text: `Deep in the Bohrok nest, the Toa don salvaged Exo-Toa armor and confront the Bahrag—Cahdok and Gahdok, twin queens of the swarm. The battle is brutal.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Tahu',
@@ -2253,10 +2185,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     background: { type: 'gradient', from: '#2a1a00', to: '#1a2a00' },
     steps: [
       {
-        type: 'narration',
-        text: `With the Bahrag imprisoned, the Bohrok across Mata Nui have gone dormant—standing motionless wherever the swarm's signal ceased. Nuparu sees an opportunity.`,
-      },
-      {
         type: 'dialogue',
         speakerId: 'Nuparu',
         portraitType: 'avatar',
@@ -2295,10 +2223,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'bohrok_kal_scattered_aid',
     background: { type: 'gradient', from: '#1a3a4a', to: '#0d1f2d' },
     steps: [
-      {
-        type: 'narration',
-        text: `Newly transformed and more powerful than ever, the Toa Nuva agree to split up and return to their villages to help with reconstruction.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Tahu_Nuva',
@@ -2341,10 +2265,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'bohrok_kal_stolen_symbols',
     background: { type: 'gradient', from: '#1a0a2e', to: '#0a0a0a' },
     steps: [
-      {
-        type: 'narration',
-        text: `Without warning, six elite Bohrok—the Bohrok-Kal—strike the Suva shrines across Mata Nui and steal the Nuva Symbols. Instantly, the Toa Nuva's elemental powers vanish.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Tahu_Nuva',
@@ -2444,10 +2364,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     background: { type: 'gradient', from: '#1a0a00', to: '#0d0d1a' },
     steps: [
       {
-        type: 'narration',
-        text: `The Bohrok-Kal are closing in on the Bahrag's prison. The Toa Nuva race to the nest, hoping to reach it first. Their plan: use the abandoned Exo-Toa armor to compensate for their missing elemental powers.`,
-      },
-      {
         type: 'dialogue',
         speakerId: 'Toa_Tahu_Nuva',
         portraitType: 'avatar',
@@ -2489,10 +2405,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'bohrok_kal_final_confrontation',
     background: { type: 'gradient', from: '#3d0066', to: '#0a0a0a' },
     steps: [
-      {
-        type: 'narration',
-        text: `The Toa Nuva arrive at the Nuva Cube—too late. The six Bohrok-Kal stand before it, symbols in hand, ready to free the Bahrag. The Exo-Toa weapons prove useless against the Kal's power.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Toa_Tahu_Nuva',
@@ -2568,10 +2480,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'bohrok_kal_naming_day',
     background: { type: 'gradient', from: '#4a6741', to: '#ffe28e' },
     steps: [
-      {
-        type: 'narration',
-        text: `With the Bohrok-Kal defeated and peace restored, the Turaga gather every Matoran on Mata Nui at Kini-Nui for a great ceremony—a Naming Day, to honor those who stood bravest during the crisis.`,
-      },
       {
         type: 'dialogue',
         speakerId: 'Takua',
