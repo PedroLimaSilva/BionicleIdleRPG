@@ -125,44 +125,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
   mnog_rescue_from_hive: {
     id: 'mnog_rescue_from_hive',
     background: { type: 'gradient', from: '#3a2a00', to: '#0a0a0a' },
-    steps: [
-      {
-        type: 'dialogue',
-        speakerId: 'Kongu',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `The Kahu won't go any further—something in the hive is repelling them! We'll have to continue on foot!`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Tamaru',
-        portraitType: 'avatar',
-        position: 'left',
-        text: `The buzzing... it's everywhere. I can feel it in my mask.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Takua',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `There—deeper in! I can see cells... and Matoran inside them!`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Tamaru',
-        portraitType: 'avatar',
-        position: 'left',
-        text: `Those are our villagers! And look—there's Taipu! He's still alive!`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Takua',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `Let's get them out. Quietly—before the Nui-Rama notice us.`,
-      },
-      { type: 'video', videoId: 'dsSugRBjusI' },
-    ],
+    steps: [{ type: 'video', videoId: 'dsSugRBjusI' }],
   },
   mnog_lewa_v_onua: {
     id: 'mnog_lewa_v_onua',
@@ -194,7 +157,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Kongu',
         portraitType: 'avatar',
         position: 'right',
-        text: `We're trapped. The Kahu are gone and every exit is swarming with Rama. We need a miracle.`,
+        text: `We're trapped. Every exit is swarming with Rama. We need a miracle.`,
       },
       {
         type: 'dialogue',
@@ -202,10 +165,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'left',
         text: `Wait—listen! Something is happening above us... fighting! I can hear it—wind and earth clashing!`,
-      },
-      {
-        type: 'narration',
-        text: `The ceiling of the hive shudders. Chunks of resin crack and fall as two massive figures battle above—Toa Lewa, possessed by an infected mask, and Toa Onua, who has come to free him.`,
       },
       { type: 'video', videoId: 'tggBKXjwPow' },
     ],
