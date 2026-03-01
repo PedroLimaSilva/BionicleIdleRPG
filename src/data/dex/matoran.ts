@@ -25,12 +25,12 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Turaga,
     element: ElementTribe.Fire,
     colors: {
-      face: LegoColor.DarkGray,
-      mask: LegoColor.DarkOrange,
+      face: LegoColor.Red,
+      mask: LegoColor.Orange,
       body: LegoColor.Red,
-      feet: LegoColor.DarkGray,
-      arms: LegoColor.DarkOrange,
-      eyes: LegoColor.TransNeonRed,
+      feet: LegoColor.Red,
+      arms: LegoColor.Orange,
+      eyes: LegoColor.TransNeonPink,
     },
   },
   Kapura: {
