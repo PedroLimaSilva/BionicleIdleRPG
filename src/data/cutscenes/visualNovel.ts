@@ -2758,7 +2758,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Gali_Nuva',
         portraitType: 'avatar',
         position: 'right',
-        text: `Agreed. Ga-Koro's platforms were damaged by the Gahlok. I should return and help the repairs.`,
+        text: `Agreed. Ga-Koro's platforms were damaged by the Pahrak. I should return and help the repairs.`,
       },
       {
         type: 'dialogue',
