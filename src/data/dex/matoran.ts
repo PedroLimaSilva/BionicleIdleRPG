@@ -30,7 +30,7 @@ export const MATORAN_DEX = {
       body: LegoColor.Red,
       feet: LegoColor.Red,
       arms: LegoColor.Orange,
-      eyes: LegoColor.TransNeonPink,
+      eyes: LegoColor.TransNeonRed,
     },
   },
   Kapura: {
