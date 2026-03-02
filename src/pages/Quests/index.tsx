@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Bell, BellOff, ChevronDown, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { AvailableQuests } from '../../components/AvailableQuests';
 import { VisualNovelCutscene } from '../../components/VisualNovelCutscene';
@@ -12,6 +12,14 @@ import './index.scss';
 import { MOTION_DURATION, MOTION_EASING, buildTransition } from '../../motion/transitions';
 import { isTestMode } from '../../utils/testMode';
 import { CHARACTER_DEX } from '../../data/dex';
+import {
+  isNotificationSupported,
+  getNotificationsEnabled,
+  saveNotificationsEnabled,
+  requestNotificationPermission,
+  scheduleQuestNotification,
+  cancelAllQuestNotifications,
+} from '../../services/questNotifications';
 
 const DEFAULT_SECTION_LABEL = 'Other Quests';
 
@@ -69,6 +77,30 @@ export const QuestsPage = () => {
     return false;
   };
 
+  const [notificationsEnabled, setNotificationsEnabled] = useState(getNotificationsEnabled);
+
+  const toggleNotifications = useCallback(async () => {
+    if (notificationsEnabled) {
+      saveNotificationsEnabled(false);
+      setNotificationsEnabled(false);
+      cancelAllQuestNotifications();
+      return;
+    }
+
+    const granted = await requestNotificationPermission();
+    if (!granted) return;
+
+    saveNotificationsEnabled(true);
+    setNotificationsEnabled(true);
+
+    for (const quest of activeQuests) {
+      const questData = QUESTS.find((q) => q.id === quest.questId);
+      if (questData) {
+        scheduleQuestNotification(quest.questId, questData.name, quest.endsAt);
+      }
+    }
+  }, [notificationsEnabled, activeQuests]);
+
   const [activeCutscene, setActiveCutscene] = useState<VisualNovelCutsceneRef | null>(null);
   const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
@@ -123,7 +155,21 @@ export const QuestsPage = () => {
 
   return (
     <div className="page-container quests-page">
-      <h2 className="quests-page__title">Ongoing Quests</h2>
+      <div className="quests-page__header">
+        <h2 className="quests-page__title">Ongoing Quests</h2>
+        {isNotificationSupported() && (
+          <button
+            className={`quests-page__notify-toggle ${notificationsEnabled ? 'quests-page__notify-toggle--active' : ''}`}
+            onClick={toggleNotifications}
+            title={
+              notificationsEnabled ? 'Disable quest notifications' : 'Enable quest notifications'
+            }
+          >
+            {notificationsEnabled ? <Bell size={16} /> : <BellOff size={16} />}
+            <span>{notificationsEnabled ? 'Notifications on' : 'Notify me'}</span>
+          </button>
+        )}
+      </div>
       {activeQuests.length === 0 ? (
         <p className="quests-page__empty">No active quests right now.</p>
       ) : (

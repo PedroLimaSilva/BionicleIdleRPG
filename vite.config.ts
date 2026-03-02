@@ -85,10 +85,11 @@ export default defineConfig({
         >),
       },
 
-      workbox: {
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,glb}'],
-        cleanupOutdatedCaches: true,
-        clientsClaim: true,
         maximumFileSizeToCacheInBytes: 10485760,
       },
 
