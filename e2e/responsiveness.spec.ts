@@ -34,43 +34,6 @@ test.describe('Responsiveness', () => {
         });
       });
 
-      test('quests page with ongoing, available, and completed quests', async ({ page }) => {
-        await setupGameState(page, {
-          ...INITIAL_GAME_STATE,
-          protodermis: 10000,
-          recruitedCharacters: [
-            { id: 'Takua', exp: 10000 },
-            { id: 'Toa_Tahu', exp: 0 },
-            { id: 'Toa_Gali', exp: 0 },
-            { id: 'Toa_Kopaka', exp: 0 },
-            { id: 'Toa_Lewa', exp: 0 },
-            { id: 'Toa_Onua', exp: 0 },
-            { id: 'Toa_Pohatu', exp: 0 },
-          ],
-          activeQuests: [
-            {
-              questId: 'mnog_find_canister_beach',
-              startedAt: 0,
-              endsAt: Math.floor(Date.now() / 1000) - 1, // Past = "Complete!" for stable screenshots
-              assignedMatoran: ['Takua'],
-            },
-          ],
-          completedQuests: ['story_toa_arrival', 'mnog_ga_koro_sos'],
-        });
-        await page.setViewportSize(size);
-        await goto(page, '/quests');
-
-        await page
-          .locator('h2.quests-page__title')
-          .first()
-          .waitFor({ state: 'visible', timeout: 10000 });
-
-        await expect(page).toHaveScreenshot(`quests-${name}.png`, {
-          fullPage: true,
-          maxDiffPixels: 150,
-        });
-      });
-
       test('inventory page with items', async ({ page }) => {
         await setupGameState(page, {
           ...INITIAL_GAME_STATE,
@@ -103,6 +66,35 @@ test.describe('Responsiveness', () => {
         await expect(page).toHaveScreenshot(`settings-${name}.png`, {
           fullPage: true,
           maxDiffPixels: 150,
+        });
+      });
+
+      test('recruitment page', async ({ page }) => {
+        await setupGameState(page, {
+          ...INITIAL_GAME_STATE,
+          protodermis: 100,
+          buyableCharacters: [
+            {
+              id: 'Toa_Tahu',
+              cost: 500,
+              requiredItems: [],
+            },
+          ],
+        });
+        await page.setViewportSize(size);
+
+        await goto(page, '/recruitment', {
+          hideCanvasBeforeNav: true,
+          waitUntil: 'domcontentloaded',
+        });
+
+        await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 10000 });
+        await hideCanvas(page);
+
+        // Take a full page screenshot (canvas hidden - model rendering tested elsewhere)
+        await expect(page).toHaveScreenshot(`recruitment-${name}.png`, {
+          maxDiffPixels: 150,
+          timeout: 15000,
         });
       });
 

@@ -17,7 +17,6 @@ export const Recruitment: React.FC = () => {
   const navigate = useNavigate();
 
   const [selectedMatoran, setSelectedMatoran] = useState<ListedCharacterData | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const canRecruit = useMemo(() => {
     const hasRequiredItems = (matoran: ListedCharacterData): boolean => {
@@ -72,7 +71,7 @@ export const Recruitment: React.FC = () => {
 
   return (
     <div className="recruitment-screen">
-      <div className="recruitment-preview" onClick={() => setIsExpanded(false)}>
+      <div className="recruitment-preview">
         {selectedMatoran && (
           <>
             <button
@@ -95,14 +94,12 @@ export const Recruitment: React.FC = () => {
         )}
       </div>
       {selectedMatoran && (
-        <div
-          className={`requirement-drawer ${isExpanded ? 'expanded' : ''} element-${CHARACTER_DEX[selectedMatoran.id].element}`}
-        >
-          <h1 className="character-name" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className={`requirement-drawer element-${CHARACTER_DEX[selectedMatoran.id].element}`}>
+          <h1 className="character-name">
             {selectedMatoran ? CHARACTER_DEX[selectedMatoran.id].name : ''}
           </h1>
           <div className="requirement-list">
-            <h4 onClick={() => setIsExpanded(!isExpanded)}>Requirements</h4>
+            <h4>Requirements</h4>
             <ul>
               <li className={protodermis >= selectedMatoran.cost ? 'has-enough' : 'not-enough'}>
                 {protodermis >= selectedMatoran.cost ? '✅' : '❌'} {selectedMatoran.cost}{' '}
