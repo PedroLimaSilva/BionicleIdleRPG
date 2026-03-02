@@ -466,7 +466,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     id: 'mnog_enter_le_wahi',
     name: 'Enter Le-Wahi',
     description:
-      'Takua and Taipu travel through the reopened tunnel toward Le-Wahi. As they emerge into the jungle, a Nui-Rama suddenly ambushes them—snatching Taipu and flying off toward the treetops. Takua presses on alone, determined to rescue his friend.',
+      'Takua and Taipu travel through the reopened tunnel toward Le-Wahi. Taipu cannot contain his excitement.',
     durationSeconds: 10 * 60, // 10 min
     requirements: {
       matoran: ['Takua', 'Taipu'],
@@ -487,8 +487,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     section: "The Cronicler's Journey",
     id: 'mnog_flight_to_hive',
     name: 'Flight to the Hive',
-    description:
-      'Arriving at Le-Koro, Takua finds the village nearly deserted—most of its Matoran have been taken by the Nui-Rama. The few who remain, including Tamaru and Kongu, greet him with urgency. With a Kahu prepared for flight, Takua joins them on a daring mission to rescue the missing villagers from the hive.',
+    description: 'Arriving at Le-Koro, Takua finds the village nearly deserted.',
     durationSeconds: 5 * 60, // 5 min
     requirements: {
       matoran: ['Takua'],
@@ -551,8 +550,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
     section: "The Cronicler's Journey",
     id: 'mnog_rescue_from_hive',
     name: 'Rescue from the Hive',
-    description:
-      'Takua, Tamaru, and Kongu fly to the Nui-Rama hive in a daring rescue mission. As they enter, something downs their Kahu birds and they are trapped. Inside, they discover the captive Le-Matoran—and Taipu, still alive but forced to work.',
+    description: 'Takua, Tamaru, and Kongu fly to the Nui-Rama hive in a daring rescue mission.',
     durationSeconds: 0.5 * 60 * 60, // 0.5 hours
     requirements: {
       matoran: ['Takua', 'Tamaru', 'Kongu'],
