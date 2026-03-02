@@ -3186,7 +3186,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     steps: [
       {
         type: 'dialogue',
-        speakerId: 'Jala',
+        speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
         text: `Takua! The kolhii match is about to start! Where are you?`,
@@ -3231,25 +3231,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `As the three teams bow to the Turaga and Toa, the golden mask slips out of Jaller's bag and clatters onto the field. It begins to glow—and its beam of light shines directly on Takua. The crowd gasps.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Takua',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `I... uh...`,
-      },
-      {
-        type: 'narration',
-        text: `Takua quickly scoops the mask onto his kolhii stick and tilts it toward Jaller. The beam shifts.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Takua',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `I think it was pointing at Jaller!`,
+        text: `As the three teams bow to the Turaga and Toa, the golden mask slips out of Jaller's bag and clatters onto the field at Takua's feet. He discreetly shifts the mask and it begins to shine on Jaller.`,
       },
     ],
   },
@@ -3278,7 +3260,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Jala',
+        speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'right',
         text: `I accept. But Takua should come with me—he found the mask. He is the Chronicler. He should record the journey.`,
@@ -3314,7 +3296,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `The three Rahkshi blast through Kini-Nui's floor, immediately engaging Gali. Overpowered, the Toa of Water flees and swims to the Mangai Volcano, arriving just before the Rahkshi reach Ta-Koro.`,
+        text: `The three Rahkshi blast through Kini-Nui's floor and Gali hides, observing. The Toa of Water flees and swims to the Mangai Volcano, arriving just before the Rahkshi reach Ta-Koro.`,
       },
       {
         type: 'dialogue',
@@ -3332,7 +3314,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `The Rahkshi arrive and easily overpower Tahu. They tear through Ta-Koro searching for the Mask of Light—which has already left with Takua and Jaller. The village's supports give way. Ta-Koro sinks into the Lake of Fire.`,
+        text: `The Rahkshi arrive and easily overpower Tahu and Gali. They tear through Ta-Koro searching for the Mask of Light—which has already left with Takua and Jaller. The village's supports give way. Ta-Koro sinks into the Lake of Fire.`,
       },
       {
         type: 'dialogue',
@@ -3380,7 +3362,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Jala',
+        speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
         text: `What?! No—I have to go back!`,
@@ -3450,39 +3432,145 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
     ],
   },
 
-  mol_onu_koro_battle: {
-    id: 'mol_onu_koro_battle',
+  mol_onu_koro_highway: {
+    id: 'mol_onu_koro_highway',
     background: { type: 'gradient', from: '#2a1a00', to: '#0a0a0a' },
     steps: [
       {
         type: 'narration',
-        text: `In the darkness of the Onu-Koro Highway, Takua is separated from Jaller and Pewku. He comes face to face with Makuta's glowing red eyes.`,
+        text: `In the darkness of the Onu-Koro Highway, Takua is separated from Jaller and Pewku.`,
       },
       {
         type: 'dialogue',
         speakerId: 'Makuta',
         portraitType: 'avatar',
         position: 'left',
-        text: `Give me the mask, little one. Or watch your friend die.`,
+        text: `Takua...`,
       },
       {
         type: 'dialogue',
         speakerId: 'Takua',
         portraitType: 'avatar',
         position: 'right',
-        text: `No! I won't betray my friends!`,
+        text: `Jaller?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Takua...`,
       },
       {
         type: 'narration',
-        text: `Takua refuses—but the terror of the encounter breaks him. He flees, leaving Jaller to search alone. In Mangaia, Makuta releases three more Rahkshi: Vorahk, Kurahk, and Turahk.`,
+        text: `In the darkness, Makuta's glowing red eyes peer through the shadows.`,
       },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Shadows are everywhere. And where they are, so am I.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I know who you are. I am not afraid.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Not even my shadows can hide your fear. Or the truth. That you will not find the seventh Toa. And deep down, you know it.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `So I won't, maybe Jaller will.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `And if he doesn't, he will die because of you. Bring *me* the mask, Takua. Bring it to me and you won't lose your friend.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `No! I won't let everyone down.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `You'll fail them more if you refuse. For the mask, your villages and Jaller will be spared. Don't be a fool.`,
+      },
+      {
+        type: 'narration',
+        text: `The glowing red eyes of Makuta fade away. Jaller approaches Takua.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Takua! The mask is pointing this way! Are you coming?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `No... I can't go with you... `,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `What? Why? First you put this duty on me and now you abandon me?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I can't explain. I quit. Take the mask and go.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Fine! But I wont't give up, even if we both know you're the true Herald.`,
+      },
+      {
+        type: 'narration',
+        text: `With his first three Rahkshi trapped in ice, Makuta releases three more: Vorahk, Kurahk, and Turahk.`,
+      },
+    ],
+  },
+
+  mol_onu_koro_battle: {
+    id: 'mol_onu_koro_battle',
+    background: { type: 'gradient', from: '#2a1a00', to: '#0a0a0a' },
+    steps: [
       {
         type: 'narration',
         text: `In Onu-Koro, Pohatu and Onua are spreading word of the Avohkii when the three new Rahkshi burst through the walls. Vorahk drains Onua's power. Turahk strikes Pohatu with fear. Takua attacks Kurahk with his kolhii stick but is beaten aside.`,
       },
       {
         type: 'narration',
-        text: `Tahu arrives. Kurahk strikes him with anger, which aggravates the poison from Lerahk's scar. Tahu turns on Gali. Lewa flies Takua out of the battle. Onua, desperate, brings the ceiling down on everyone—burying Rahkshi and Toa together. Onu-Koro is destroyed.`,
+        text: `Tahu arrives. Kurahk strikes him with anger, which aggravates the poison from Lerahk's scar. Tahu turns on Gali and Kopaka freezes him. Takua flees though a chimney with Rahkshi on his tail. Onua, desperate, brings the ceiling down on his village, burying the Sons of Makuta. Onu-Koro is destroyed.`,
       },
     ],
   },
@@ -3517,11 +3605,22 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         position: 'right',
         text: `Maybe the Turaga were right. We are losing our unity. The Toa have forgotten how much we need each other.`,
       },
+      {
+        type: 'narration',
+        text: `Having spotted something with his Akaku Nuva, Kopaka leaves Gali, in silence.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Kopaka?`,
+      },
     ],
   },
 
-  mol_takua_destiny: {
-    id: 'mol_takua_destiny',
+  mol_takua_jaller_reunion: {
+    id: 'mol_takua_jaller_reunion',
     background: { type: 'gradient', from: '#4a6741', to: '#1a1a0a' },
     steps: [
       {
@@ -3537,14 +3636,60 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Jala',
+        speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
-        text: `You came back. That's what matters.`,
+        text: `You came back. That's what matters. What changed your mind?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `The Rahkshi attacked Onu-Koro. The mask was never there. They are looking for the Herald.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `So they are looking for you?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `...`,
       },
       {
         type: 'narration',
-        text: `Reunited, they follow the mask's light to Kini-Nui. Takua, annoyed that the journey has led them back here, impatiently shakes the mask. The Avohkii fires a beam that partially destroys a statue, revealing another statue behind it.`,
+        text: `Reunited, they continue their journey, following the mask's light.`,
+      },
+    ],
+  },
+
+  mol_battle_of_kini_nui: {
+    id: 'mol_battle_of_kini_nui',
+    background: { type: 'gradient', from: '#4a0000', to: '#1a0a2e' },
+    steps: [
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `No way, we've been all over the island just to end up here?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `No way, we've been all over the island just to end up here? Are you sure the mask is working right?`,
+      },
+      {
+        type: 'narration',
+        text: `Frustrated, Takua takes the mask from Jaller and shakes it. The Avohkii fires a beam that partially destroys a statue, revealing another statue behind it.`,
       },
       {
         type: 'narration',
@@ -3554,13 +3699,6 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'narration',
         text: `Guurahk, Panrahk, and Lerahk are trapped in glass. Vorahk and Kurahk are frozen after being showered with lava. Five Rahkshi fall.`,
       },
-    ],
-  },
-
-  mol_battle_of_kini_nui: {
-    id: 'mol_battle_of_kini_nui',
-    background: { type: 'gradient', from: '#4a0000', to: '#1a0a2e' },
-    steps: [
       {
         type: 'narration',
         text: `Turahk, unnoticed by the Toa, rises from the rubble. It approaches Jaller and Takua.`,
@@ -3586,10 +3724,10 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Jala',
+        speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
-        text: `You know who you are.`,
+        text: `You know who you are. You were always different.`,
       },
       {
         type: 'narration',
@@ -3611,8 +3749,15 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         text: `He places the Mask of Light on his face. Light explodes outward. His body grows. His armor reshapes into gold and white. Where a Matoran knelt, a Toa now stands.`,
       },
       {
+        type: 'dialogue',
+        speakerId: 'Takanuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I am Takanuva, Toa of Light.`,
+      },
+      {
         type: 'narration',
-        text: `Takanuva, Toa of Light, shoots a beam of light that stuns Turahk and destroys it. He fires a laser at the stone statue at Kini-Nui, completely revealing a carving of Takua's mask hidden beneath. He picks up Jaller's body and silently walks away.`,
+        text: `Takanuva, shoots a beam of light that stuns Turahk and destroys it. He fires a laser at the stone statue at Kini-Nui, completely revealing a carving of Takua's mask hidden beneath. He picks up Jaller's body and silently walks away.`,
       },
       {
         type: 'dialogue',
@@ -3644,11 +3789,19 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Takanuva',
         portraitType: 'avatar',
         position: 'right',
-        text: `It is my destiny alone to destroy the Makuta.`,
+        text: `It is my destiny alone to destroy the Makuta. You can catch up later.`,
       },
       {
+        type: 'dialogue',
+        speakerId: 'Hahli',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Someone needs to be your chronicler now, take me with you.`,
+      },
+
+      {
         type: 'narration',
-        text: `Takanuva races through the tunnels to Mangaia. The Ussanui slams into the stone gate, creating a hole. Hahli emerges from a compartment—she stowed away. She becomes his Chronicler and climbs back up to summon everyone to Mangaia.`,
+        text: `Takanuva races through the tunnels to Mangaia. He and Hahli jump from the Ussanui just before it slams into the stone gate, creating a hole.`,
       },
       {
         type: 'narration',
@@ -3681,7 +3834,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Makuta',
         portraitType: 'avatar',
         position: 'left',
-        text: `You must protect Mata Nui from the Toa. Sleep spares him pain.`,
+        text: `I must protect Mata Nui from the Toa. Sleep spares him pain.`,
       },
       {
         type: 'narration',
@@ -3726,7 +3879,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Jala',
+        speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'right',
         text: `Takua?!`,
@@ -3740,7 +3893,7 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Turaga_Vakama',
         portraitType: 'avatar',
         position: 'left',
-        text: `United, we embraced our duty. Light found itself and illuminated our destiny. The City of the Great Spirit, my island home, refound. New legends awake, but old lessons must be remembered. This is the way of the Bionicle.`,
+        text: `United, we embraced our duty. Light found itself and illuminated our destiny. The City of the Great Spirit, my island home, refound. New legends awake, but old lessons must be remembered.`,
       },
     ],
   },

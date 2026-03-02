@@ -372,7 +372,12 @@ XP: 2800"]
 Loot: 
 Currency: 4500
 XP: 3000"]
-  mol_onu_koro_battle["The Shadow in the Tunnels
+  mol_onu_koro_highway["The Shadow in the Tunnels
+(15m)
+Loot: 
+Currency: 5000
+XP: 3500"]
+  mol_onu_koro_battle["The Shadows over Onu Koro
 (15m)
 Loot: 
 Currency: 5000
@@ -382,7 +387,7 @@ XP: 3500"]
 Loot: 
 Currency: 5000
 XP: 3500"]
-  mol_takua_destiny["Reunion
+  mol_takua_jaller_reunion["Reunion
 (20m)
 Loot: 
 Currency: 5500
@@ -494,9 +499,10 @@ XP: 4000"]
   mol_avohkii_prophecy --> mol_fall_of_ta_koro
   mol_fall_of_ta_koro --> mol_le_wahi_ash_bear
   mol_le_wahi_ash_bear --> mol_ko_wahi_pursuit
-  mol_ko_wahi_pursuit --> mol_onu_koro_battle
+  mol_ko_wahi_pursuit --> mol_onu_koro_highway
+  mol_onu_koro_highway --> mol_onu_koro_battle
   mol_onu_koro_battle --> mol_tahu_poisoned
-  mol_tahu_poisoned --> mol_takua_destiny
+  mol_tahu_poisoned --> mol_takua_jaller_reunion
   mol_takua_destiny --> mol_battle_of_kini_nui
   mol_battle_of_kini_nui --> mol_takanuva_rises
   mol_takanuva_rises --> mol_defeat_of_makuta
