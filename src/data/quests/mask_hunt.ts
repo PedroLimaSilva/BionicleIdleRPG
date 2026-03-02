@@ -340,7 +340,7 @@ export const MASK_HUNT: Quest[] = [
     durationSeconds: 660, // 11 minutes
     requirements: {
       matoran: ['Toa_Pohatu', 'Toa_Kopaka', 'Toa_Lewa'],
-      minLevel: 9,
+      minLevel: 8,
       items: [],
     },
     rewards: {
