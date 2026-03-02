@@ -362,12 +362,12 @@ XP: 2800"]
 Loot: 
 Currency: 4500
 XP: 3000"]
-  mol_ko_wahi_ambush["Ambush in the Drifts
+  mol_ko_wahi_ambush["The Frozen Lake
 (12m)
 Loot: 
 Currency: 4500
 XP: 3000"]
-  mol_tahu_poisoned["Tahu's Poison
+  mol_tahu_poisoned["Lerahk's Poison
 (15m)
 Loot: 
 Currency: 5000

@@ -66,7 +66,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'mol_kolhii_tournament',
     name: 'The Kolhii Tournament',
     description:
-      "Peace has returned to Mata Nui. To celebrate, a great Kolhii tournament is held in Ta-Koro, with teams from every village competing. Ga-Koro fields its newest team — Hahli and Macku — against Po-Koro champions Hewkii and Hafu, and Ta-Koro's own Jaller and Takua.",
+      'Jaller searches for Takua, who has gone missing before the big Kolhii championship. He finds him in a lava runoff tunnel beneath the Wall of History, surfing across an active lava flow on a lava board with Pewku. Takua discovers a strange stone totem with an unfamiliar symbol, but an earthquake strikes. The totem falls into the lava—and from beneath the molten rock, a mask of brilliant golden light rises to the surface. Tahu Nuva arrives just in time to shield them from the erupting lava with his Hau Nuva. Together, Jaller and Takua barely escape the tunnels and rush to the Kolhii field, where three teams are waiting.',
     durationSeconds: 10 * 60,
     requirements: {
       matoran: ['Jala', 'Takua', 'Hahli', 'Huki'],
@@ -86,7 +86,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'mol_avohkii_discovery',
     name: 'The Mask of Light',
     description:
-      'After the tournament, Takua discovers a glowing mask buried in a lava flow. Turaga Vakama identifies it as the Avohkii—the legendary Mask of Light. According to prophecy, it will be worn by a seventh Toa who will defeat the darkness. The mask shines its light on Takua, marking him as the herald who must find this Toa.',
+      'The Kolhii match concludes with Hahli scoring the winning goal for Ga-Koro. During the celebrations, the glowing mask tumbles from Takua\'s pack onto the field. Its light shines directly on Takua. Turaga Nokama reads the ancient inscription: "Among those assembled, a great spirit shall be revealed." But Takua, overwhelmed, lifts the mask on his Kolhii stick and tilts it toward Jaller—"I think it was pointing at him." Vakama names Jaller the Herald of the Seventh Toa and commands him to follow the mask\'s light across the island.',
     durationSeconds: 8 * 60,
     requirements: {
       matoran: ['Takua', 'Jala'],
@@ -106,7 +106,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'mol_herald_journey',
     name: "The Herald's Journey",
     description:
-      'Jaller insists on accompanying Takua on his quest to find the seventh Toa. Together with Pewku the Ussal crab, they set out across Mata Nui, following the light of the Avohkii. But Takua is uneasy—he fears the mask has chosen the wrong Matoran.',
+      'Jaller gives his Hau mask to Hahli for safekeeping and departs Ta-Koro with Takua and Pewku. The Avohkii casts a beam of light toward Le-Wahi. In the jungle they encounter a Graalok ash bear—a territorial Rahi that nearly kills them both. Tahu and Lewa arrive separately, each claiming the rescue. Their argument over whether to help or continue the mask hunt almost costs Takua and Jaller their lives. Lewa calms the ash bear while Tahu storms off, dismissing the quest as a waste of time.',
     durationSeconds: 10 * 60,
     requirements: {
       matoran: ['Takua', 'Jala'],
@@ -126,7 +126,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'mol_rahkshi_attack_ta_koro',
     name: 'The Fall of Ta-Koro',
     description:
-      "Makuta senses the discovery of the Avohkii and unleashes three Rahkshi—Turahk, Guurahk, and Lerahk—to seize the mask and destroy its herald. The creatures strike Ta-Koro with devastating force. Despite the Toa Nuva's defense, the Rahkshi tear through the village. The lava walls collapse, and Ta-Koro sinks into the molten lake.",
+      'Deep in Mangaia, Makuta senses the Avohkii. He drops three kraata slugs into vats of energized protodermis, birthing the Rahkshi—Guurahk, Lerahk, and Panrahk. They erupt from beneath Kini-Nui, shattering the Suva dome. Gali Nuva, meditating there, barely escapes their combined attack and flees to warn Ta-Koro. The Rahkshi cross the Lake of Fire and assault the village. Panrahk blasts through the gates. Tahu Nuva fights desperately but the Rahkshi tear through the walls searching for the Avohkii. Guurahk disintegrates the central supports. Ta-Koro groans, splits apart, and sinks into the molten lake. The Matoran escape, but their home is gone.',
     durationSeconds: 15 * 60,
     requirements: {
       matoran: ['Toa_Tahu_Nuva', 'Toa_Gali_Nuva', 'Jala'],
@@ -144,9 +144,9 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   },
   {
     id: 'mol_ko_wahi_ambush',
-    name: 'Ambush in the Drifts',
+    name: 'The Frozen Lake',
     description:
-      "Takua and Jaller follow the Avohkii's light into the frozen wastes of Ko-Wahi. The Rahkshi track them there. In the blinding snow, Rahkshi Turahk and Panrahk corner the two Matoran on a crumbling ice bridge. Kopaka Nuva arrives just in time, shielding them with walls of ice.",
+      'The Avohkii leads Takua and Jaller to Ko-Wahi, where they find Kopaka Nuva at a frozen lake. Three more Rahkshi—Vorahk, Kurahk, and Turahk—join the hunt. They attack at the lake, shattering the ice. Takua falls through into the freezing water. Kopaka shields the Matoran and fights alone against overwhelming odds, badly injured. He manages to freeze the surface, trapping the Rahkshi temporarily, and pulls Takua from the water. But the Toa of Ice is left weakened, and the Rahkshi will not stay frozen long.',
     durationSeconds: 12 * 60,
     requirements: {
       matoran: ['Takua', 'Jala', 'Toa_Kopaka_Nuva'],
@@ -164,9 +164,9 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   },
   {
     id: 'mol_tahu_poisoned',
-    name: "Tahu's Poison",
+    name: "Lerahk's Poison",
     description:
-      "While the Toa Nuva battle the Rahkshi across the island, Lerahk's poison blade strikes Tahu Nuva. The venom of shadow spreads through him, twisting his thoughts and turning him against his brothers. Only Kopaka and Gali, working together, can freeze and purge the corruption before it consumes him entirely.",
+      "Enraged by the fall of Ta-Koro, Tahu Nuva pursues the Rahkshi alone, ignoring the warnings of his brothers. In a confrontation, Lerahk's staff scratches him—a small wound, but the kraata poison seeps in. Shadow corruption spreads through his body, darkening his armor and twisting his mind. He attacks his own brothers in a blind fury. Lewa pins him with wind, and Kopaka and Gali work together—ice to freeze the poison, water to wash it clean. The corruption shatters. Tahu is saved, but shaken by how easily Makuta's shadow turned him against those he loved.",
     durationSeconds: 15 * 60,
     requirements: {
       matoran: ['Toa_Tahu_Nuva', 'Toa_Gali_Nuva', 'Toa_Kopaka_Nuva', 'Toa_Lewa_Nuva'],
@@ -186,7 +186,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'mol_takua_destiny',
     name: 'Flight from Destiny',
     description:
-      "The weight of the quest crushes Takua. Everywhere he goes, the Rahkshi follow, and people suffer. Convinced the mask chose wrong, he tries to abandon the Avohkii. Jaller, furious and afraid, confronts him—reminding him that running from your destiny doesn't make it go away.",
+      'Everywhere Takua carries the Avohkii, the Rahkshi follow, and people suffer. Ta-Koro is destroyed. Onu-Koro tunnels are collapsed. Ko-Wahi is scarred. Takua is convinced the mask chose wrong—he is no hero, just a wanderer who brings trouble. He removes the Avohkii and sets it down, ready to walk away. Jaller confronts him, furious: he reminds Takua of every time he ran toward danger, not away from it. He reminds him that duty is not about being fearless—it is about being afraid and doing what is right anyway.',
     durationSeconds: 10 * 60,
     requirements: {
       matoran: ['Takua', 'Jala'],
@@ -206,7 +206,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'mol_battle_of_kini_nui',
     name: 'Battle at Kini-Nui',
     description:
-      "Makuta sends all six Rahkshi to Kini-Nui for a final assault. The Toa Nuva engage them in a desperate battle. In the chaos, Turahk targets Takua with a blast of pure fear. Jaller throws himself in front of the attack—and falls. His sacrifice shatters Takua's doubt forever.",
+      'All six Rahkshi converge on Kini-Nui. The Toa Nuva make their stand. The battle is savage—Pohatu and Onua shatter Panrahk. Lewa and Kopaka bring down Guurahk. Gali drowns Lerahk. Tahu faces Vorahk and Kurahk, his flames burning hotter than ever before. But Turahk—the Rahkshi of Fear—slips past the Toa and targets Takua with a blast of pure terror. Jaller sees it. He throws himself between Takua and the blast. The fear-energy strikes the Captain of the Guard full in the chest. He falls. In Takua\'s arms, Jaller whispers his last words: "You know who you are. You were always different."',
     durationSeconds: 25 * 60,
     requirements: {
       matoran: [
@@ -235,7 +235,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: MOL_TAKANUVA_RISES_QUEST_ID,
     name: 'The Seventh Toa',
     description:
-      'Holding his fallen friend, Takua finally understands. The Avohkii was never meant for someone else—it was always meant for him. He places the Mask of Light on his face and is transformed by its power into Takanuva, the Toa of Light.',
+      'Grief-stricken, Takua cradles his fallen friend. The Avohkii lies beside them, its light steady and patient, as it has been all along. Takua finally understands what Jaller saw from the beginning: the mask was never searching for someone else. He lifts the Avohkii and places it over his own face. Light explodes outward. His body grows, his armor reshapes into gold and white, his heartlight blazes with the brilliance of a star. Where a Matoran knelt, a Toa now stands. He is Takanuva—the Toa of Light. He turns on Turahk and annihilates it with a single blast of pure radiance.',
     durationSeconds: 8 * 60,
     requirements: {
       matoran: ['Takua'],
@@ -258,7 +258,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: MOL_DEFEAT_OF_MAKUTA_QUEST_ID,
     name: 'Into the Darkness',
     description:
-      "Takanuva builds the Ussanui—a vehicle forged from Rahkshi parts—and descends alone into Mangaia, Makuta's lair. Hahli follows as the new Chronicler. In the heart of darkness, Takanuva challenges Makuta to a game of Kolhii: light against shadow, with the fate of Mata Nui as the prize.",
+      "From the shattered shells of the Rahkshi, Takanuva constructs the Ussanui—a vehicle powered by kraata. He rides it down through Kini-Nui into Mangaia. Hahli follows as the new Chronicler. In the deepest cavern, Makuta waits. Instead of open combat, the Master of Shadows proposes a game of Kolhii—light against shadow—for the right to open the gate. They play on stone pillars above a pool of energized protodermis, hurling balls of light and shadow energy. In the final exchange, Takanuva tackles Makuta and both plunge into the protodermis. From the pool rises Takutanuva—a being of fused light and shadow. With its combined strength, it lifts the ancient gate and pours life-energy into Jaller's mask, reviving the fallen Captain. The gate crashes down, expelling Makuta's darkness. Takanuva reforms alone. The way below is open.",
     durationSeconds: 30 * 60,
     requirements: {
       matoran: ['Takanuva', 'Hahli'],
