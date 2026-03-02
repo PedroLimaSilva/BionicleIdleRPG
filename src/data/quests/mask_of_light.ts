@@ -241,7 +241,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
       currency: 5500,
       loot: {},
     },
-    unlockedAfter: ['mol_takua_destiny'],
+    unlockedAfter: ['mol_takua_jaller_reunion'],
     section: 'Mask of Light',
   },
   {
