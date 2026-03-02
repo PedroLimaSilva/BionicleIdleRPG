@@ -36,7 +36,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'tales_kanohi_nuva_hunt',
     name: 'Quest for the Kanohi Nuva',
     description:
-      'With new powers and new armor, the Toa Nuva set out to find six Kanohi Nuva masks—the most powerful masks on the island. Each Toa faces trials alone: Tahu battles through volcanic caverns, Gali dives into sunken temples, Kopaka scales impossible peaks, Lewa braves the deepwood traps of Le-Wahi, Onua navigates collapsing mine shafts, and Pohatu crosses the scorching wastelands of Po-Wahi. Their newfound strength is tested at every turn, and tensions rise as each Toa pushes ahead on their own.',
+      'With their powers restored and new armor, the Toa Nuva set out to find six Kanohi Nuva masks. Each Toa faces trials alone: Tahu battles through volcanic caverns, Gali dives into sunken temples, Kopaka scales impossible peaks, Lewa braves the deepwood traps of Le-Wahi, Onua navigates collapsing mine shafts, and Pohatu crosses the scorching wastelands of Po-Wahi. Their newfound strength is tested at every turn, and tensions rise as each Toa pushes ahead on their own.',
     durationSeconds: 20 * 60,
     requirements: {
       matoran: [
