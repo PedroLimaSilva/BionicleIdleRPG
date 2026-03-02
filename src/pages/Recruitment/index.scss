@@ -1,15 +1,14 @@
 .recruitment-screen {
-  height: 100vh;
   width: 100vw;
   background: var(--color-surface-low);
   color: var(--color-text);
-  overflow: hidden;
 }
 
 .recruitment-preview {
   anchor-name: --canvas-anchor;
+  position: relative;
   width: 100%;
-  height: calc(100% - 200px);
+  height: calc(100vh - 200px);
 }
 
 .landscape .recruitment-preview {
@@ -56,40 +55,16 @@
   }
 }
 
-.landscape .recruitment-arrow {
-  &--right {
-    right: 200px;
-  }
-}
-
 .requirement-drawer {
-  position: fixed;
   color: var(--theme-element-primary);
+  position: relative;
   height: fit-content;
-  top: calc(100% - 200px);
-  right: 1rem;
-  left: 1rem;
+  margin: 0 2rem;
+  padding-bottom: 150px;
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
   background: var(--color-surface-mid);
   transition: transform var(--transition-base);
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: -1px;
-    right: -1px;
-    height: 200px;
-    border: 1px solid var(--color-border-subtle);
-    border-top: none;
-    background: var(--color-surface-mid);
-  }
-
-  &.expanded,
-  &:hover {
-    transform: translateY(calc(-100% + 50px));
-  }
 
   .character-name {
     align-self: flex-start;
@@ -110,12 +85,31 @@
   }
 }
 
-.landscape .requirement-drawer {
-  top: calc(100% - 75px);
-  right: 200px;
+.landscape {
+  .recruitment-screen {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 100vh;
+  }
+  .recruitment-preview {
+    height: 100%;
+  }
+  .requirement-drawer {
+    width: 50vw;
+    margin-top: 2rem;
+    margin-right: 175px;
+    padding-bottom: 2rem;
 
-  &.expanded,
-  &:hover {
-    transform: translateY(calc(-100% + 75px));
+    .character-name {
+      right: calc(100% + 2rem);
+      bottom: 0px;
+      transform: none;
+      top: auto;
+      left: auto;
+      width: 50vw;
+      text-align: right;
+    }
   }
 }
