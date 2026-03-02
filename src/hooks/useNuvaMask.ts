@@ -44,6 +44,13 @@ function applyNuvaMaskColors(root: Object3D, maskColor: string, maskName: string
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;
     const mat = mesh.material;
+    if (mesh.name.includes('Lens')) {
+      if ((mat as MeshStandardMaterial).emissive) {
+        (mat as MeshStandardMaterial).emissiveIntensity = 5;
+      }
+      return;
+    }
+
     if (!isStandardMat(mat)) return;
 
     if (isVahi) return; // Vahi does not change color
