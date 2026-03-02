@@ -174,7 +174,6 @@
   &:hover {
     background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
     box-shadow: var(--shadow-glow);
-    transform: translateY(-2px);
     border-color: var(--theme-element-glow);
 
     &::before {

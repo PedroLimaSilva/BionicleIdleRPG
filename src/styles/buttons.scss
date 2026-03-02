@@ -26,7 +26,6 @@ button {
     background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
     border-color: var(--color-accent);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
   }
 
   &:active:not(:disabled) {
