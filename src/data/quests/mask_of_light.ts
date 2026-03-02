@@ -66,7 +66,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'mol_kolhii_tournament',
     name: 'The Kolhii Tournament',
     description:
-      "Peace has returned to Mata Nui. To celebrate, a great Kolhii tournament is held in Ta-Koro, with teams from every village competing. Ga-Koro fields its newest team—Hahli and Macku—against Po-Koro champions Hewkii and Hafu, and Ta-Koro's own Jaller and Takua.",
+      "Peace has returned to Mata Nui. To celebrate, a great Kolhii tournament is held in Ta-Koro, with teams from every village competing. Ga-Koro fields its newest team — Hahli and Macku — against Po-Koro champions Hewkii and Hafu, and Ta-Koro's own Jaller and Takua.",
     durationSeconds: 10 * 60,
     requirements: {
       matoran: ['Jala', 'Takua', 'Hahli', 'Huki'],
