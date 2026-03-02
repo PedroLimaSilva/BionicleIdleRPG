@@ -27,7 +27,7 @@ export const TahuNuvaModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Tahu} scale={1} position={[0, 10.15, 0]} />
+      <primitive object={nodes.Tahu} scale={1} position={[0, 0, 0]} />
     </group>
   );
 });
