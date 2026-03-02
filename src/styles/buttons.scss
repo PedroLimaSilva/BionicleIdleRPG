@@ -26,11 +26,9 @@ button {
     background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
     border-color: var(--color-accent);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
   }
 
   &:active:not(:disabled) {
-    transform: translateY(0);
     box-shadow: var(--shadow-sm);
   }
 
@@ -65,11 +63,6 @@ button {
     background: linear-gradient(135deg, var(--color-surface-elevated), var(--color-surface-high));
     border-color: var(--color-text-secondary);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
   }
 
   &:disabled {
@@ -88,11 +81,9 @@ button {
   &:hover:not(:disabled) {
     background: linear-gradient(135deg, var(--theme-element-glow), var(--theme-element-accent));
     box-shadow: 0 0 20px var(--theme-element-glow-strong);
-    transform: translateY(-2px);
   }
 
   &:active:not(:disabled) {
-    transform: translateY(0);
     box-shadow: 0 0 12px var(--theme-element-glow-transparent);
   }
 
@@ -115,12 +106,10 @@ button {
   &:hover:not(:disabled) {
     background: linear-gradient(135deg, #441111, #551111);
     box-shadow: 0 0 16px rgba(255, 100, 100, 0.5);
-    transform: translateY(-2px);
     border-color: #ff8888;
   }
 
   &:active:not(:disabled) {
-    transform: translateY(0);
     box-shadow: 0 0 8px rgba(255, 100, 100, 0.3);
   }
 
