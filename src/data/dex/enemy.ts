@@ -2,6 +2,21 @@ import { LegoColor } from '../../types/Colors';
 import { ElementTribe, Mask, MatoranStage } from '../../types/Matoran';
 
 export const ENEMY_DEX = {
+  Makuta: {
+    id: 'Makuta',
+    name: 'Makuta Teridax',
+    element: ElementTribe.Shadow,
+    mask: Mask.Kraahkan,
+    stage: MatoranStage.Makuta,
+    colors: {
+      face: LegoColor.DarkGray,
+      mask: LegoColor.DarkGray,
+      body: LegoColor.Black,
+      feet: LegoColor.Black,
+      arms: LegoColor.DarkGray,
+      eyes: LegoColor.TransNeonRed,
+    },
+  },
   Turahk: {
     id: 'Turahk',
     name: 'Turahk',
