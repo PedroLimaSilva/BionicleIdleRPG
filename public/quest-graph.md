@@ -342,43 +342,53 @@ XP: 2000"]
 Loot: 
 Currency: 3500
 XP: 2500"]
+  mol_discovery_of_avohkii["The Lava Tunnels
+(8m)
+Loot: 
+Currency: 3500
+XP: 2500"]
   mol_kolhii_tournament["The Kolhii Tournament
 (10m)
 Loot: 
 Currency: 3500
 XP: 2500"]
-  mol_avohkii_discovery["The Mask of Light
+  mol_avohkii_prophecy["The Prophecy of the Seventh Toa
 (8m)
 Loot: 
 Currency: 3500
 XP: 2500"]
-  mol_herald_journey["The Herald's Journey
+  mol_fall_of_ta_koro["The Fall of Ta-Koro
+(15m)
+Loot: 
+Currency: 4500
+XP: 3000"]
+  mol_le_wahi_ash_bear["The Ash Bear
 (10m)
 Loot: 
 Currency: 4000
 XP: 2800"]
-  mol_rahkshi_attack_ta_koro["The Fall of Ta-Koro
-(15m)
-Loot: 
-Currency: 4500
-XP: 3000"]
-  mol_ko_wahi_ambush["The Frozen Lake
+  mol_ko_wahi_pursuit["The Frozen Lake
 (12m)
 Loot: 
 Currency: 4500
 XP: 3000"]
-  mol_tahu_poisoned["Lerahk's Poison
+  mol_onu_koro_battle["The Shadow in the Tunnels
 (15m)
 Loot: 
 Currency: 5000
 XP: 3500"]
-  mol_takua_destiny["Flight from Destiny
-(10m)
+  mol_tahu_poisoned["Healing the Fire
+(12m)
 Loot: 
-Currency: 4000
-XP: 3000"]
-  mol_battle_of_kini_nui["Battle at Kini-Nui
-(25m)
+Currency: 5000
+XP: 3500"]
+  mol_takua_destiny["Reunion
+(20m)
+Loot: 
+Currency: 5500
+XP: 4000"]
+  mol_battle_of_kini_nui["Jaller's Sacrifice
+(10m)
 Loot: 
 Currency: 5500
 XP: 4000"]
@@ -478,12 +488,14 @@ XP: 4000"]
   bohrok_kal_final_confrontation --> bohrok_kal_naming_day
   bohrok_kal_naming_day --> tales_turaga_and_matoro
   tales_turaga_and_matoro --> tales_kanohi_nuva_hunt
-  tales_kanohi_nuva_hunt --> mol_kolhii_tournament
-  mol_kolhii_tournament --> mol_avohkii_discovery
-  mol_avohkii_discovery --> mol_herald_journey
-  mol_herald_journey --> mol_rahkshi_attack_ta_koro
-  mol_rahkshi_attack_ta_koro --> mol_ko_wahi_ambush
-  mol_ko_wahi_ambush --> mol_tahu_poisoned
+  tales_kanohi_nuva_hunt --> mol_discovery_of_avohkii
+  mol_discovery_of_avohkii --> mol_kolhii_tournament
+  mol_kolhii_tournament --> mol_avohkii_prophecy
+  mol_avohkii_prophecy --> mol_fall_of_ta_koro
+  mol_fall_of_ta_koro --> mol_le_wahi_ash_bear
+  mol_le_wahi_ash_bear --> mol_ko_wahi_pursuit
+  mol_ko_wahi_pursuit --> mol_onu_koro_battle
+  mol_onu_koro_battle --> mol_tahu_poisoned
   mol_tahu_poisoned --> mol_takua_destiny
   mol_takua_destiny --> mol_battle_of_kini_nui
   mol_battle_of_kini_nui --> mol_takanuva_rises

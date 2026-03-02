@@ -1,17 +1,11 @@
 import { Quest } from '../../types/Quests';
 
-// Mask of Light arc quest IDs
 export const MOL_TAKANUVA_RISES_QUEST_ID = 'mol_takanuva_rises';
 export const MOL_DEFEAT_OF_MAKUTA_QUEST_ID = 'mol_defeat_of_makuta';
 
-// Tales of the Masks (brief transitional arc) + Mask of Light story line.
-// Covers: Turaga hint at their hidden past, the Toa Nuva collect Kanohi Nuva,
-// the Kolhii tournament, discovery of the Avohkii, the Rahkshi attacks,
-// Jaller's sacrifice, Takua becoming Takanuva, the defeat of Makuta,
-// and the rediscovery of Metru Nui.
 export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   // ---------------------------------------------------------------------------
-  // TALES OF THE MASKS – brief transitional arc
+  // TALES OF THE MASKS
   // ---------------------------------------------------------------------------
   {
     id: 'tales_turaga_and_matoro',
@@ -19,16 +13,8 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     description:
       'Turaga Vakama summons Matoro to the Sanctum, away from the other Matoran. He speaks of ancient secrets the Turaga have kept. He asks Matoro to translate for Nuju at a private Turaga council, where they will decide whether the time has come to reveal the truth.',
     durationSeconds: 8 * 60,
-    requirements: {
-      matoran: ['Matoro'],
-      minLevel: 20,
-      items: [],
-    },
-    rewards: {
-      xpPerMatoran: 2000,
-      currency: 3000,
-      loot: {},
-    },
+    requirements: { matoran: ['Matoro'], minLevel: 20, items: [] },
+    rewards: { xpPerMatoran: 2000, currency: 3000, loot: {} },
     unlockedAfter: ['bohrok_kal_naming_day'],
     section: 'Tales of the Masks',
   },
@@ -50,31 +36,23 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
       minLevel: 21,
       items: [],
     },
-    rewards: {
-      xpPerMatoran: 2500,
-      currency: 3500,
-      loot: {},
-    },
+    rewards: { xpPerMatoran: 2500, currency: 3500, loot: {} },
     unlockedAfter: ['tales_turaga_and_matoro'],
     section: 'Tales of the Masks',
   },
 
   // ---------------------------------------------------------------------------
-  // MASK OF LIGHT – main story arc
+  // MASK OF LIGHT
   // ---------------------------------------------------------------------------
   {
-    id: 'mol_kolhii_tournament',
-    name: 'The Kolhii Tournament',
+    id: 'mol_discovery_of_avohkii',
+    name: 'The Lava Tunnels',
     description:
-      'Jaller searches for Takua, who has gone missing before the big Kolhii championship. He finds him in a lava runoff tunnel beneath the Wall of History, surfing across an active lava flow on a lava board with Pewku. Takua discovers a strange stone totem with an unfamiliar symbol, but an earthquake strikes. The totem falls into the lava—and from beneath the molten rock, a mask of brilliant golden light rises to the surface. Tahu Nuva arrives just in time to shield them from the erupting lava with his Hau Nuva. Together, Jaller and Takua barely escape the tunnels and rush to the Kolhii field, where three teams are waiting.',
-    durationSeconds: 10 * 60,
-    requirements: {
-      matoran: ['Jala', 'Takua', 'Hahli', 'Huki'],
-      minLevel: 21,
-      items: [],
-    },
+      'Jaller searches for Takua in Ta-Wahi before the upcoming kolhii game. He finds him crossing a river of lava to reach a stone totem. Takua removes the totem from its pedestal, triggering a booby trap that causes the ground to shake and the stepping stones to sink into the lava. Takua drops the totem into the lava, revealing a golden Kanohi hidden within. He grabs the mask, but a huge wave of lava rushes toward him. Toa Nuva Tahu surfs across the lava, grabs him, and thrusts his Magma Swords into the cliff to stop their fall. Tahu uses his Hau Nuva to shield them from a falling stream of lava. Tahu studies the golden mask briefly, tells Jaller to show it to Turaga Vakama, and surfs away. Jaller stores the mask in his backpack.',
+    durationSeconds: 8 * 60,
+    requirements: { matoran: ['Takua', 'Jala'], minLevel: 21, items: [] },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'mol_kolhii_tournament' },
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_discovery_of_avohkii' },
       xpPerMatoran: 2500,
       currency: 3500,
       loot: {},
@@ -83,18 +61,30 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     section: 'Mask of Light',
   },
   {
-    id: 'mol_avohkii_discovery',
-    name: 'The Mask of Light',
+    id: 'mol_kolhii_tournament',
+    name: 'The Kolhii Tournament',
     description:
-      'The Kolhii match concludes with Hahli scoring the winning goal for Ga-Koro. During the celebrations, the glowing mask tumbles from Takua\'s pack onto the field. Its light shines directly on Takua. Turaga Nokama reads the ancient inscription: "Among those assembled, a great spirit shall be revealed." But Takua, overwhelmed, lifts the mask on his Kolhii stick and tilts it toward Jaller—"I think it was pointing at him." Vakama names Jaller the Herald of the Seventh Toa and commands him to follow the mask\'s light across the island.',
-    durationSeconds: 8 * 60,
-    requirements: {
-      matoran: ['Takua', 'Jala'],
-      minLevel: 21,
-      items: [],
-    },
+      "The Toa Nuva, Turaga, and villagers from Po-Koro, Ga-Koro, and Ta-Koro watch from the stands of the Ta-Koro kolhii field. The teams—Takua and Jaller, Hewkii and Hafu, and Hahli and Macku—play the match. Takua attempts a difficult move but fails spectacularly as the ball hits Vakama. Ga-Koro emerge victorious. As the three teams bow to the Turaga and Toa, the mask slips out of Jaller's bag and shines on Takua. Takua discreetly shifts the mask to shine on Jaller instead.",
+    durationSeconds: 10 * 60,
+    requirements: { matoran: ['Jala', 'Takua', 'Hahli', 'Huki'], minLevel: 21, items: [] },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'mol_avohkii_discovery' },
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_kolhii_tournament' },
+      xpPerMatoran: 2500,
+      currency: 3500,
+      loot: {},
+    },
+    unlockedAfter: ['mol_discovery_of_avohkii'],
+    section: 'Mask of Light',
+  },
+  {
+    id: 'mol_avohkii_prophecy',
+    name: 'The Prophecy of the Seventh Toa',
+    description:
+      "A special meeting is held at Tahu's suva. Nokama, using her Noble Kanohi Rau, translates the inscription on the mask: it is the legendary Mask of Light, the Kanohi Avohkii, destined to be worn only by the Seventh Toa—the Toa of Light—who will free the island of Makuta's shadow. Because the Avohkii appeared to shine its light on Jaller, the Turaga designate him as the Herald of the Seventh Toa and charge him with searching for this Toa. After some persuasion from Jaller, Takua is sent along as the Chronicler. Tahu stays in Ta-Koro, Pohatu leaves for Onu-Koro to spread word, and Gali travels to Kini-Nui. After a warning from Vakama, Jaller and Takua leave Ta-Koro on Pewku, following the mask's light.",
+    durationSeconds: 8 * 60,
+    requirements: { matoran: ['Takua', 'Jala'], minLevel: 21, items: [] },
+    rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_avohkii_prophecy' },
       xpPerMatoran: 2500,
       currency: 3500,
       loot: {},
@@ -103,71 +93,79 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     section: 'Mask of Light',
   },
   {
-    id: 'mol_herald_journey',
-    name: "The Herald's Journey",
+    id: 'mol_fall_of_ta_koro',
+    name: 'The Fall of Ta-Koro',
     description:
-      'Jaller gives his Hau mask to Hahli for safekeeping and departs Ta-Koro with Takua and Pewku. The Avohkii casts a beam of light toward Le-Wahi. In the jungle they encounter a Graalok ash bear—a territorial Rahi that nearly kills them both. Tahu and Lewa arrive separately, each claiming the rescue. Their argument over whether to help or continue the mask hunt almost costs Takua and Jaller their lives. Lewa calms the ash bear while Tahu storms off, dismissing the quest as a waste of time.',
-    durationSeconds: 10 * 60,
-    requirements: {
-      matoran: ['Takua', 'Jala'],
-      minLevel: 21,
-      items: [],
-    },
+      "While Gali meditates at Kini-Nui, she spots a new Spirit Star representing the Seventh Toa. Meanwhile, Makuta releases the Rahkshi Guurahk, Lerahk, and Panrahk. The three Rahkshi blast through Kini-Nui's floor and immediately engage Gali in battle. Overpowered, Gali flees and swims to the Mangai Volcano, arriving just before the Rahkshi. She warns the village. Tahu prepares for battle, but the Rahkshi easily defeat him and proceed to destroy Ta-Koro in search of Takua and Jaller. The village sinks into the Lake of Fire. The Toa escape safely, though Tahu receives a scar on his mask from Lerahk's staff.",
+    durationSeconds: 15 * 60,
+    requirements: { matoran: ['Toa_Tahu_Nuva', 'Toa_Gali_Nuva'], minLevel: 22, items: [] },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'mol_herald_journey' },
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_fall_of_ta_koro' },
+      xpPerMatoran: 3000,
+      currency: 4500,
+      loot: {},
+    },
+    unlockedAfter: ['mol_avohkii_prophecy'],
+    section: 'Mask of Light',
+  },
+  {
+    id: 'mol_le_wahi_ash_bear',
+    name: 'The Ash Bear',
+    description:
+      "Riding Pewku, Jaller and Takua make their way toward Le-Koro. In the jungles of Le-Wahi, they encounter Graalok the Ash Bear. Jaller jumps on top of the bear. Before anyone gets hurt, Toa Nuva Lewa appears and entangles the Ash Bear in vines. Lewa offers the Matoran a Gukko as a ride and leads them in flight toward Ko-Koro, where the mask's light is shining. They are forced to leave Pewku behind. Landing on a glacier, Lewa hears the Le-Koro drums and tells them that Ta-Koro has been destroyed. Jaller despairs, but Takua and Lewa dissuade him from going back. Lewa departs to rejoin his brothers.",
+    durationSeconds: 10 * 60,
+    requirements: { matoran: ['Takua', 'Jala'], minLevel: 22, items: [] },
+    rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_le_wahi_ash_bear' },
       xpPerMatoran: 2800,
       currency: 4000,
       loot: {},
     },
-    unlockedAfter: ['mol_avohkii_discovery'],
+    unlockedAfter: ['mol_fall_of_ta_koro'],
     section: 'Mask of Light',
   },
   {
-    id: 'mol_rahkshi_attack_ta_koro',
-    name: 'The Fall of Ta-Koro',
-    description:
-      'Deep in Mangaia, Makuta senses the Avohkii. He drops three kraata slugs into vats of energized protodermis, birthing the Rahkshi—Guurahk, Lerahk, and Panrahk. They erupt from beneath Kini-Nui, shattering the Suva dome. Gali Nuva, meditating there, barely escapes their combined attack and flees to warn Ta-Koro. The Rahkshi cross the Lake of Fire and assault the village. Panrahk blasts through the gates. Tahu Nuva fights desperately but the Rahkshi tear through the walls searching for the Avohkii. Guurahk disintegrates the central supports. Ta-Koro groans, splits apart, and sinks into the molten lake. The Matoran escape, but their home is gone.',
-    durationSeconds: 15 * 60,
-    requirements: {
-      matoran: ['Toa_Tahu_Nuva', 'Toa_Gali_Nuva', 'Jala'],
-      minLevel: 22,
-      items: [],
-    },
-    rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'mol_rahkshi_attack_ta_koro' },
-      xpPerMatoran: 3000,
-      currency: 4500,
-      loot: {},
-    },
-    unlockedAfter: ['mol_herald_journey'],
-    section: 'Mask of Light',
-  },
-  {
-    id: 'mol_ko_wahi_ambush',
+    id: 'mol_ko_wahi_pursuit',
     name: 'The Frozen Lake',
     description:
-      'The Avohkii leads Takua and Jaller to Ko-Wahi, where they find Kopaka Nuva at a frozen lake. Three more Rahkshi—Vorahk, Kurahk, and Turahk—join the hunt. They attack at the lake, shattering the ice. Takua falls through into the freezing water. Kopaka shields the Matoran and fights alone against overwhelming odds, badly injured. He manages to freeze the surface, trapping the Rahkshi temporarily, and pulls Takua from the water. But the Toa of Ice is left weakened, and the Rahkshi will not stay frozen long.',
+      'Jaller and Takua meet Toa Nuva Kopaka in a Ko-Koro snowstorm. Using his Akaku Nuva, Kopaka spots the three Rahkshi in the village. He gives Jaller his Ice Shield and pushes them down the mountain slope while he stays to fight. A hard blow knocks Kopaka unconscious. Takua crosses a frozen lake using the shield as a raft and the Mask of Light as a paddle, luring the Rahkshi away from Jaller. Kopaka recovers just in time, plunges his Ice Blades into the ice, and freezes the lake over, trapping the Rahkshi. Pewku arrives, having followed her master, and the Matoran continue their journey.',
     durationSeconds: 12 * 60,
-    requirements: {
-      matoran: ['Takua', 'Jala', 'Toa_Kopaka_Nuva'],
-      minLevel: 22,
-      items: [],
-    },
+    requirements: { matoran: ['Takua', 'Jala', 'Toa_Kopaka_Nuva'], minLevel: 22, items: [] },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'mol_ko_wahi_ambush' },
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_ko_wahi_pursuit' },
       xpPerMatoran: 3000,
       currency: 4500,
       loot: {},
     },
-    unlockedAfter: ['mol_rahkshi_attack_ta_koro'],
+    unlockedAfter: ['mol_le_wahi_ash_bear'],
+    section: 'Mask of Light',
+  },
+  {
+    id: 'mol_onu_koro_battle',
+    name: 'The Shadow in the Tunnels',
+    description:
+      "In the Onu-Koro Highway, Takua is separated from Jaller and comes face to face with Makuta's glowing red eyes. Makuta threatens Jaller's death and demands the mask. Takua refuses but is so frightened he abandons Jaller and the quest. Makuta releases three more Rahkshi: Vorahk, Kurahk, and Turahk. In Onu-Koro, Pohatu and Onua are announcing the discovery of the Avohkii when the new Rahkshi burst through the walls. Vorahk drains Onua's power. Turahk strikes Pohatu with fear. Takua attacks Kurahk with his kolhii stick. Tahu arrives, but Kurahk strikes him with anger, aggravating the poison from Lerahk's scar. Tahu turns on Gali. Lewa flies Takua out, telling him to warn Jaller. Onua brings the ceiling down, burying Rahkshi and Toa alike. Onu-Koro is destroyed.",
+    durationSeconds: 15 * 60,
+    requirements: {
+      matoran: ['Takua', 'Toa_Pohatu_Nuva', 'Toa_Onua_Nuva'],
+      minLevel: 22,
+      items: [],
+    },
+    rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_onu_koro_battle' },
+      xpPerMatoran: 3500,
+      currency: 5000,
+      loot: {},
+    },
+    unlockedAfter: ['mol_ko_wahi_pursuit'],
     section: 'Mask of Light',
   },
   {
     id: 'mol_tahu_poisoned',
-    name: "Lerahk's Poison",
+    name: 'Healing the Fire',
     description:
-      "Enraged by the fall of Ta-Koro, Tahu Nuva pursues the Rahkshi alone, ignoring the warnings of his brothers. In a confrontation, Lerahk's staff scratches him—a small wound, but the kraata poison seeps in. Shadow corruption spreads through his body, darkening his armor and twisting his mind. He attacks his own brothers in a blind fury. Lewa pins him with wind, and Kopaka and Gali work together—ice to freeze the poison, water to wash it clean. The corruption shatters. Tahu is saved, but shaken by how easily Makuta's shadow turned him against those he loved.",
-    durationSeconds: 15 * 60,
+      "Tahu is chained to a stone, writhing. The poison from Lerahk's scar, aggravated by Kurahk's anger, has spread through his body. Gali instructs Lewa and Kopaka to combine their powers. The two Toa lay their weapons across Tahu's chest and activate their powers. Gali creates a sphere of water that surrounds Tahu and sinks beneath his armor, cleansing him of the poison. Exhausted, Gali collapses. Kopaka takes her to a lake to rejuvenate. Gali ponders whether the Turaga were right that the Toa are losing their unity.",
+    durationSeconds: 12 * 60,
     requirements: {
       matoran: ['Toa_Tahu_Nuva', 'Toa_Gali_Nuva', 'Toa_Kopaka_Nuva', 'Toa_Lewa_Nuva'],
       minLevel: 22,
@@ -179,35 +177,15 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
       currency: 5000,
       loot: {},
     },
-    unlockedAfter: ['mol_ko_wahi_ambush'],
+    unlockedAfter: ['mol_onu_koro_battle'],
     section: 'Mask of Light',
   },
   {
     id: 'mol_takua_destiny',
-    name: 'Flight from Destiny',
+    name: 'Reunion',
     description:
-      'Everywhere Takua carries the Avohkii, the Rahkshi follow, and people suffer. Ta-Koro is destroyed. Onu-Koro tunnels are collapsed. Ko-Wahi is scarred. Takua is convinced the mask chose wrong—he is no hero, just a wanderer who brings trouble. He removes the Avohkii and sets it down, ready to walk away. Jaller confronts him, furious: he reminds Takua of every time he ran toward danger, not away from it. He reminds him that duty is not about being fearless—it is about being afraid and doing what is right anyway.',
-    durationSeconds: 10 * 60,
-    requirements: {
-      matoran: ['Takua', 'Jala'],
-      minLevel: 22,
-      items: [],
-    },
-    rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'mol_takua_destiny' },
-      xpPerMatoran: 3000,
-      currency: 4000,
-      loot: {},
-    },
-    unlockedAfter: ['mol_tahu_poisoned'],
-    section: 'Mask of Light',
-  },
-  {
-    id: 'mol_battle_of_kini_nui',
-    name: 'Battle at Kini-Nui',
-    description:
-      'All six Rahkshi converge on Kini-Nui. The Toa Nuva make their stand. The battle is savage—Pohatu and Onua shatter Panrahk. Lewa and Kopaka bring down Guurahk. Gali drowns Lerahk. Tahu faces Vorahk and Kurahk, his flames burning hotter than ever before. But Turahk—the Rahkshi of Fear—slips past the Toa and targets Takua with a blast of pure terror. Jaller sees it. He throws himself between Takua and the blast. The fear-energy strikes the Captain of the Guard full in the chest. He falls. In Takua\'s arms, Jaller whispers his last words: "You know who you are. You were always different."',
-    durationSeconds: 25 * 60,
+      "Jaller, alone, attempts to scale a cliff. Slipping from a ledge, he is rescued by Takua. Reunited, the two follow the mask's light to Kini-Nui. Takua, annoyed at this end to their long journey, impatiently shakes the mask. The Kanohi releases a powerful beam of light that partially destroys a statue, revealing another statue behind it. At that moment, all six Rahkshi ambush them. The Matoran retreat toward the Amaja Circle and are relieved by the arrival of the six Toa Nuva. Tahu shields everyone with his Hau Nuva. Uniting their powers, the Toa engage the Rahkshi and defeat five of them—Guurahk, Panrahk, and Lerahk trapped in glass, Vorahk and Kurahk frozen after being showered with lava.",
+    durationSeconds: 20 * 60,
     requirements: {
       matoran: [
         'Toa_Tahu_Nuva',
@@ -223,6 +201,22 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
       items: [],
     },
     rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_takua_destiny' },
+      xpPerMatoran: 4000,
+      currency: 5500,
+      loot: {},
+    },
+    unlockedAfter: ['mol_tahu_poisoned'],
+    section: 'Mask of Light',
+  },
+  {
+    id: 'mol_battle_of_kini_nui',
+    name: "Jaller's Sacrifice",
+    description:
+      'Turahk, unnoticed by the Toa, rises from the rubble and approaches Jaller and Takua. Striking Takua with fear, Turahk lifts his staff to kill the Matoran. Jaller grabs onto Turahk\'s staff in an attempt to stop the Rahkshi, but is continuously stricken with fear—far too much for him to handle. Turahk swings the weakened Jaller off its staff. The Toa Nuva temporarily subdue the Rahkshi. Takua hurries to his dying best friend. Jaller passes the mask to Takua, and as his heartlight fades, tells him: "You know who you are."',
+    durationSeconds: 10 * 60,
+    requirements: { matoran: ['Takua', 'Jala'], minLevel: 23, items: [] },
+    rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mol_battle_of_kini_nui' },
       xpPerMatoran: 4000,
       currency: 5500,
@@ -235,20 +229,14 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: MOL_TAKANUVA_RISES_QUEST_ID,
     name: 'The Seventh Toa',
     description:
-      'Grief-stricken, Takua cradles his fallen friend. The Avohkii lies beside them, its light steady and patient, as it has been all along. Takua finally understands what Jaller saw from the beginning: the mask was never searching for someone else. He lifts the Avohkii and places it over his own face. Light explodes outward. His body grows, his armor reshapes into gold and white, his heartlight blazes with the brilliance of a star. Where a Matoran knelt, a Toa now stands. He is Takanuva—the Toa of Light. He turns on Turahk and annihilates it with a single blast of pure radiance.',
+      "Takua, determined to avenge his friend, accepts his destiny and dons the Kanohi Avohkii, transforming into Takanuva, the Toa of Light. He shoots a beam of light that stuns Turahk and defeats it. He then fires a laser which completely reveals a carving of Takua's mask under the stone statue at Kini-Nui. He picks up Jaller's body and silently leaves. Later, Turaga Vakama walks up to the grieving Toa and rebukes him, saying that Mata Nui knows best. Takanuva reaffirms that his duty is clear, and vows that Jaller's sacrifice will not be in vain.",
     durationSeconds: 8 * 60,
-    requirements: {
-      matoran: ['Takua'],
-      minLevel: 23,
-      items: [],
-    },
+    requirements: { matoran: ['Takua'], minLevel: 23, items: [] },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mol_takanuva_rises' },
       xpPerMatoran: 5000,
       currency: 6000,
-      evolution: {
-        Takua: 'Takanuva',
-      },
+      evolution: { Takua: 'Takanuva' },
       loot: {},
     },
     unlockedAfter: ['mol_battle_of_kini_nui'],
@@ -258,13 +246,9 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: MOL_DEFEAT_OF_MAKUTA_QUEST_ID,
     name: 'Into the Darkness',
     description:
-      "From the shattered shells of the Rahkshi, Takanuva constructs the Ussanui—a vehicle powered by kraata. He rides it down through Kini-Nui into Mangaia. Hahli follows as the new Chronicler. In the deepest cavern, Makuta waits. Instead of open combat, the Master of Shadows proposes a game of Kolhii—light against shadow—for the right to open the gate. They play on stone pillars above a pool of energized protodermis, hurling balls of light and shadow energy. In the final exchange, Takanuva tackles Makuta and both plunge into the protodermis. From the pool rises Takutanuva—a being of fused light and shadow. With its combined strength, it lifts the ancient gate and pours life-energy into Jaller's mask, reviving the fallen Captain. The gate crashes down, expelling Makuta's darkness. Takanuva reforms alone. The way below is open.",
+      "Takanuva and the Toa Nuva assemble the Ussanui and place a Kraata inside. Hahli places Jaller's Hau on the vehicle for good luck. Pohatu remarks the Ussanui will not carry them all. Takanuva explains it is his destiny alone to destroy Makuta and departs. He races through the tunnels to Mangaia, flipping off the Ussanui just before it slams into the stone gate. Hahli emerges from a compartment where she secretly stowed away and becomes his Chronicler. In Mangaia, Takanuva enters a chamber with three pools of energized protodermis and a Hau-shaped gate. Makuta challenges him to a game of kolhii—the Mask of Light against Takanuva's exit. They hurl spheres of Light and Shadow. Takanuva executes the kolhii move he failed in the tournament, hitting Makuta. Makuta claims sleep spares Mata Nui pain. Takanuva grasps the Kraahkan and both fall into the protodermis. Takutanuva rises, lifts the gate, and revives Jaller. The gate crashes down. Takanuva reforms alone.",
     durationSeconds: 30 * 60,
-    requirements: {
-      matoran: ['Takanuva', 'Hahli'],
-      minLevel: 24,
-      items: [],
-    },
+    requirements: { matoran: ['Takanuva', 'Hahli'], minLevel: 24, items: [] },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mol_defeat_of_makuta' },
       xpPerMatoran: 6000,
@@ -278,13 +262,9 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'mol_rediscovery_of_metru_nui',
     name: 'The City of Legends',
     description:
-      "The gate to the world below stands open. Beyond it lies something none of the Matoran expected—a vast underground city, silent and waiting. Turaga Vakama steps forward and, at last, speaks the name the Turaga have hidden for so long: Metru Nui. The city where they all once lived, before Makuta's betrayal brought them to the island above.",
+      'Vakama picks up the Avohkii and walks toward a Three Virtues symbol on a ledge. He tells Jaller to step on the symbol representing Duty, Hahli to step on the symbol representing Unity, and places the Mask of Light on the symbol representing Destiny. As light shines through, Takanuva is revived. He activates his mask and sends a beam of light off into the Silver Sea, revealing the city of Metru Nui. Vakama narrates: "United, we embraced our duty. Light found itself and illuminated our destiny. The City of the Great Spirit, my island home, refound. New legends awake, but old lessons must be remembered. This is the way of the Bionicle."',
     durationSeconds: 12 * 60,
-    requirements: {
-      matoran: ['Takanuva', 'Hahli', 'Jala'],
-      minLevel: 24,
-      items: [],
-    },
+    requirements: { matoran: ['Takanuva', 'Hahli', 'Jala'], minLevel: 24, items: [] },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mol_rediscovery_of_metru_nui' },
       xpPerMatoran: 4000,
