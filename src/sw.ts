@@ -138,7 +138,9 @@ self.addEventListener('message', (event) => {
   if (!event.data || !event.data.type) return;
   const { type } = event.data;
 
-  if (type === 'SCHEDULE_QUEST_NOTIFICATION') {
+  if (type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  } else if (type === 'SCHEDULE_QUEST_NOTIFICATION') {
     const { questId, questName, endsAtMs } = event.data as {
       questId: string;
       questName: string;
