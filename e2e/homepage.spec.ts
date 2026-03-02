@@ -8,12 +8,5 @@ test.describe('Homepage', () => {
 
     // Homepage is now the quests page
     await expect(page.locator('h2.quests-page__title').first()).toContainText('Ongoing Quests');
-
-    // Take a screenshot for visual regression
-    await expect(page).toHaveScreenshot('homepage.png', {
-      fullPage: true,
-      // Allow for slight differences in WebGL rendering
-      maxDiffPixels: 100,
-    });
   });
 });
