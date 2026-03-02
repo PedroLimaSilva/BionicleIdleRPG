@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'QUEST_NOTIFICATIONS_ENABLED';
 
-const scheduledTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const fallbackTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
 let cachedEnabled: boolean | undefined;
 
@@ -32,61 +32,68 @@ export async function requestNotificationPermission(): Promise<boolean> {
   return result === 'granted';
 }
 
-async function showNotification(questName: string, questId: string) {
-  const title = 'Quest Complete!';
-  const options: NotificationOptions = {
-    body: `${questName} has finished.`,
-    icon: '/BionicleIdleRPG/pwa-192x192.png',
-    tag: `quest-${questId}`,
-  };
-
+async function postToServiceWorker(message: Record<string, unknown>): Promise<boolean> {
   try {
     const reg = await navigator.serviceWorker?.getRegistration();
-    if (reg) {
-      reg.showNotification(title, options);
-      return;
+    if (reg?.active) {
+      reg.active.postMessage(message);
+      return true;
     }
   } catch {
-    // SW unavailable, fall through
+    // SW unavailable
   }
-
-  new Notification(title, options);
+  return false;
 }
 
-export function scheduleQuestNotification(
+export async function scheduleQuestNotification(
   questId: string,
   questName: string,
   endsAtSeconds: number
 ) {
   cancelQuestNotification(questId);
 
-  const now = Math.floor(Date.now() / 1000);
-  const delayMs = (endsAtSeconds - now) * 1000;
+  const endsAtMs = endsAtSeconds * 1000;
+  const delayMs = endsAtMs - Date.now();
 
   if (delayMs <= 0) return;
 
+  const sentToSW = await postToServiceWorker({
+    type: 'SCHEDULE_QUEST_NOTIFICATION',
+    questId,
+    questName,
+    endsAtMs,
+  });
+
+  if (sentToSW) return;
+
   const timer = setTimeout(() => {
-    scheduledTimers.delete(questId);
-
+    fallbackTimers.delete(questId);
     if (Notification.permission !== 'granted') return;
-
-    showNotification(questName, questId);
+    new Notification('Quest Complete!', {
+      body: `${questName} has finished.`,
+      icon: '/BionicleIdleRPG/pwa-192x192.png',
+      tag: `quest-${questId}`,
+    });
   }, delayMs);
 
-  scheduledTimers.set(questId, timer);
+  fallbackTimers.set(questId, timer);
 }
 
 export function cancelQuestNotification(questId: string) {
-  const timer = scheduledTimers.get(questId);
+  const timer = fallbackTimers.get(questId);
   if (timer) {
     clearTimeout(timer);
-    scheduledTimers.delete(questId);
+    fallbackTimers.delete(questId);
   }
+
+  postToServiceWorker({ type: 'CANCEL_QUEST_NOTIFICATION', questId });
 }
 
 export function cancelAllQuestNotifications() {
-  for (const timer of scheduledTimers.values()) {
+  for (const timer of fallbackTimers.values()) {
     clearTimeout(timer);
   }
-  scheduledTimers.clear();
+  fallbackTimers.clear();
+
+  postToServiceWorker({ type: 'CANCEL_ALL_QUEST_NOTIFICATIONS' });
 }
