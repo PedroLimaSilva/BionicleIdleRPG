@@ -114,7 +114,7 @@ export const QuestsPage = () => {
   );
 
   const completedSections = useMemo<SectionGroup[]>(() => {
-    const questOrder = new Map(QUESTS.map((q, i) => [q.id, i]));
+    const completionOrder = new Map(completedQuests.map((id, i) => [id, i]));
     const map = new Map<string, string[]>();
 
     completedQuests.forEach((id) => {
@@ -128,7 +128,9 @@ export const QuestsPage = () => {
     return Array.from(map.entries())
       .map(([section, questIds]) => ({
         section,
-        questIds: questIds.sort((a, b) => (questOrder.get(a) ?? 0) - (questOrder.get(b) ?? 0)),
+        questIds: questIds.sort(
+          (a, b) => (completionOrder.get(b) ?? 0) - (completionOrder.get(a) ?? 0)
+        ),
       }))
       .sort(
         (a, b) =>
