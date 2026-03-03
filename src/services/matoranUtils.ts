@@ -70,11 +70,16 @@ export function masksCollected(
   matoran: BaseMatoran,
   storyProgress: GameState['completedQuests']
 ): Mask[] {
-  // Toa Nuva have a single fixed mask defined in the matoran dex; collected Mata masks no longer apply
   if (isToaNuva(matoran)) {
-    const masks: Mask[] = [matoran.mask];
+    let masks: Mask[] = [matoran.mask];
     if (matoran.id === 'Toa_Tahu_Nuva' && storyProgress.includes('bohrok_kal_reconstruction')) {
       masks.push(Mask.Vahi);
+    }
+    if (storyProgress.includes('tales_kanohi_nuva_hunt')) {
+      masks = [...FULL_NUVA_MASK_SET];
+      if (matoran.id === 'Toa_Tahu_Nuva') {
+        masks.push(Mask.Vahi);
+      }
     }
     return masks;
   }
@@ -82,12 +87,6 @@ export function masksCollected(
   const masks: Mask[] = [];
   if (storyProgress.includes('maskhunt_final_collection')) {
     return FULL_MASK_SET;
-  }
-  if (storyProgress.includes('tales_kanohi_nuva_hunt')) {
-    if (matoran.id === 'Toa_Tahu_Nuva') {
-      return [Mask.Vahi, ...FULL_NUVA_MASK_SET];
-    }
-    return FULL_NUVA_MASK_SET;
   }
   masks.push(matoran.mask);
   switch (matoran.id) {
