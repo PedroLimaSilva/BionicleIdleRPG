@@ -8,6 +8,7 @@ import { CompositedImage } from '../../../components/CompositedImage';
 
 import './index.scss';
 import { Tooltip } from '../../../components/Tooltip';
+import { LegoColor } from '../../../types/Colors';
 
 export function MaskCollection({ matoran }: { matoran: BaseMatoran & { maskOverride?: string } }) {
   const { setMaskOverride, completedQuests } = useGame();
@@ -45,7 +46,7 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & { maskOverr
                   <CompositedImage
                     className="mask-preview"
                     images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.webp`]}
-                    colors={[effectiveMaskColor]}
+                    colors={[mask !== Mask.Vahi ? effectiveMaskColor : LegoColor.White]}
                   />
                   <div className="name">
                     {(MASK_POWERS[mask]?.shortName ?? mask).replace(/_/g, ' ')}
