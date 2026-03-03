@@ -26,7 +26,7 @@ export const PohatuNuvaModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Pohatu} scale={36.5} position={[0, 0.05, -0.8]} />
+      <primitive object={nodes.Pohatu} position={[0, 0.05, -0.8]} />
     </group>
   );
 });
