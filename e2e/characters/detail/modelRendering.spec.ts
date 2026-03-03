@@ -133,7 +133,7 @@ test.describe('Character Model Rendering', () => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
         recruitedCharacters: [{ id: 'Toa_Tahu', exp: 0 }],
-        completedQuests: ['mnog_kini_nui_arrival'],
+        completedQuests: ['maskhunt_final_collection', 'mnog_kini_nui_arrival'],
       });
       await goto(page, '/characters/Toa_Tahu');
       await disableCSSAnimations(page);

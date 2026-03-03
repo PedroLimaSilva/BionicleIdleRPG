@@ -1,9 +1,11 @@
 import { MatoranStage, RecruitedCharacterData } from '../types/Matoran';
 import { CHARACTER_DEX } from '../data/dex/index';
 import { getLevelFromExp } from './Levelling';
+import { MOL_TAKANUVA_RISES_QUEST_ID } from '../data/quests/mask_of_light';
 
 export const EVOLUTION_LEVEL_REQUIREMENT = 50;
 export const BOHROK_KAL_LEVEL_REQUIREMENT = 100;
+export const TAKANUVA_LEVEL_REQUIREMENT = 100;
 
 export interface EvolutionPath {
   unlockedByQuest: string;
@@ -63,6 +65,14 @@ export const EVOLUTION_PATHS: EvolutionPath[] = [
       pahrak: 'pahrak_kal',
       nuhvok: 'nuhvok_kal',
       kohrak: 'kohrak_kal',
+    },
+  },
+  {
+    unlockedByQuest: MOL_TAKANUVA_RISES_QUEST_ID,
+    levelRequired: TAKANUVA_LEVEL_REQUIREMENT,
+    protodermisCost: 3000,
+    evolutions: {
+      Takua: 'Takanuva',
     },
   },
 ];
