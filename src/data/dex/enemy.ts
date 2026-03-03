@@ -4,7 +4,7 @@ import { ElementTribe, Mask, MatoranStage } from '../../types/Matoran';
 export const ENEMY_DEX = {
   Makuta: {
     id: 'Makuta',
-    name: 'Makuta Teridax',
+    name: 'Makuta',
     element: ElementTribe.Shadow,
     mask: Mask.Kraahkan,
     stage: MatoranStage.Makuta,
