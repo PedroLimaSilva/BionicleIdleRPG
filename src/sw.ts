@@ -1,13 +1,20 @@
 /// <reference lib="webworker" />
 
 import { clientsClaim } from 'workbox-core';
-import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
+import { precacheAndRoute, cleanupOutdatedCaches, createHandlerBoundToURL } from 'workbox-precaching';
+import { registerRoute, NavigationRoute } from 'workbox-routing';
 
 declare let self: ServiceWorkerGlobalScope;
+
+const BASE = import.meta.env.BASE_URL;
 
 clientsClaim();
 cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
+
+// Navigation fallback: serve index.html for SPA routes (e.g. /battle/selector).
+// Without this, reloading on non-homepage routes hits GitHub Pages directly and returns 404.
+registerRoute(new NavigationRoute(createHandlerBoundToURL(`${BASE}index.html`)));
 
 // ---------------------------------------------------------------------------
 // IndexedDB helpers for persisting notification schedules across SW restarts
