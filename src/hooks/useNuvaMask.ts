@@ -4,6 +4,11 @@ import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { useGame } from '../context/Game';
 import { getEffectiveNuvaMaskColor } from '../game/maskColor';
+import {
+  createMaskTransitionState,
+  startMaskTransition,
+  useMaskTransitionFrame,
+} from './maskTransition';
 
 const NUVA_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/masks.glb';
 
@@ -76,6 +81,16 @@ export function useNuvaMask(
   const gltf = useGLTF(NUVA_MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
   const masksNodes = useMemo(() => buildNuvaMaskNodes(gltf), [gltf]);
   const maskRef = useRef<Object3D | null>(null);
+  const prevMaskFileNameRef = useRef<string | null>(null);
+  const masksParentRef = useRef<Object3D | undefined>(masksParent);
+  masksParentRef.current = masksParent;
+
+  const maskColorRef = useRef(maskColor);
+  maskColorRef.current = maskColor;
+  const maskNameRef = useRef(maskName);
+  maskNameRef.current = maskName;
+
+  const transitionRef = useRef(createMaskTransitionState());
 
   useEffect(() => {
     if (!masksNodes || !masksParent) return;
@@ -102,21 +117,40 @@ export function useNuvaMask(
       }
     });
 
-    applyNuvaMaskColors(clone, maskColor, maskName);
+    applyNuvaMaskColors(clone, maskColorRef.current, maskNameRef.current);
 
-    if (maskRef.current) {
-      masksParent.remove(maskRef.current);
+    const prevMask = maskRef.current;
+    const isChange =
+      prevMaskFileNameRef.current !== null &&
+      prevMaskFileNameRef.current !== maskFileName &&
+      prevMask !== null;
+
+    if (isChange && prevMask) {
+      startMaskTransition(transitionRef, masksParent, prevMask);
+    } else if (prevMask) {
+      masksParent.remove(prevMask);
     }
+
     masksParent.add(clone);
     maskRef.current = clone;
+    prevMaskFileNameRef.current = maskFileName;
+  }, [masksNodes, masksParent, maskFileName]);
 
+  useEffect(() => {
     return () => {
-      masksParent.remove(clone);
+      const parent = masksParentRef.current;
+      if (parent) {
+        if (maskRef.current) parent.remove(maskRef.current);
+        const tr = transitionRef.current;
+        if (tr.active && tr.oldMask) parent.remove(tr.oldMask);
+      }
       maskRef.current = null;
+      transitionRef.current.active = false;
     };
-  }, [masksNodes, masksParent, maskFileName, maskName, maskColor]);
+  }, []);
 
-  // Update color when maskColor changes (mask name unchanged)
+  useMaskTransitionFrame(transitionRef, masksParentRef);
+
   useEffect(() => {
     const mask = maskRef.current;
     if (!mask) return;
