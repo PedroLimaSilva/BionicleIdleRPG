@@ -1,18 +1,16 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
 import { useGame } from '../context/Game';
 import { getEffectiveMataMaskColor } from '../game/maskColor';
 import { BaseMatoran, MatoranStage } from '../types/Matoran';
+import {
+  createMaskTransitionState,
+  startMaskTransition,
+  useMaskTransitionFrame,
+} from './maskTransition';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
-
-/** Duration of the mask swap transition in seconds */
-const TRANSITION_DURATION = 0.35;
-
-/** How much the old mask scales up during the exit animation (multiplied on top of the original scale) */
-const EXIT_SCALE_AMOUNT = 0.5;
 
 function buildMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
   const nodes: Record<string, Object3D> = {};
@@ -26,43 +24,6 @@ type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
 function isStandardMat(mat: unknown): mat is StandardMat {
   return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
-}
-
-/** Cubic ease-out: fast start, gentle deceleration */
-function easeOutCubic(t: number): number {
-  return 1 - Math.pow(1 - t, 3);
-}
-
-/** Collect material uuid → its resting opacity for every mesh under an Object3D */
-function collectOpacities(root: Object3D): Map<string, number> {
-  const map = new Map<string, number>();
-  root.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mat = (child as Mesh).material;
-      if (isStandardMat(mat)) {
-        map.set(mat.uuid, mat.opacity);
-      }
-    }
-  });
-  return map;
-}
-
-/**
- * Set every standard material's opacity to `baseOpacity * factor`.
- * Also disables depthWrite so the fading-out mask doesn't depth-clip
- * the new mask that sits behind it in the same parent bone.
- */
-function setAnimatedOpacity(root: Object3D, opacities: Map<string, number>, factor: number): void {
-  root.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mat = (child as Mesh).material;
-      if (isStandardMat(mat)) {
-        const base = opacities.get(mat.uuid) ?? 1;
-        mat.opacity = base * factor;
-        mat.depthWrite = false;
-      }
-    }
-  });
 }
 
 /** Apply mask color and optional glow color to every mesh material under `root` */
@@ -85,16 +46,6 @@ function applyMaskColors(root: Object3D, maskColor: string, glowColor?: string):
       }
     }
   });
-}
-
-interface TransitionState {
-  active: boolean;
-  progress: number;
-  oldMask: Object3D | null;
-  /** Resting opacities of the OLD mask's materials (fade from these → 0) */
-  oldOpacities: Map<string, number>;
-  /** Original scale of the OLD mask before the exit animation began */
-  oldScale: Vector3;
 }
 
 /**
@@ -146,13 +97,7 @@ export function useMask(
   const glowColorRef = useRef(glowColor);
   glowColorRef.current = glowColor;
 
-  const transitionRef = useRef<TransitionState>({
-    active: false,
-    progress: 0,
-    oldMask: null,
-    oldOpacities: new Map(),
-    oldScale: new Vector3(1, 1, 1),
-  });
+  const transitionRef = useRef(createMaskTransitionState());
 
   // Clone the mask and attach to parent; animate transitions between masks
   useEffect(() => {
@@ -195,22 +140,7 @@ export function useMask(
       prevMaskNameRef.current !== null && prevMaskNameRef.current !== maskName && prevMask !== null;
 
     if (isChange && prevMask) {
-      // Cancel any already-running transition and clean up its old mask
-      const tr = transitionRef.current;
-      if (tr.active && tr.oldMask) {
-        masksParent.remove(tr.oldMask);
-      }
-
-      const oldOpacities = collectOpacities(prevMask);
-      const oldScale = prevMask.scale.clone();
-
-      transitionRef.current = {
-        active: true,
-        progress: 0,
-        oldMask: prevMask,
-        oldOpacities,
-        oldScale,
-      };
+      startMaskTransition(transitionRef, masksParent, prevMask);
     } else if (prevMask) {
       // Not a mask-name change (e.g. masksNodes just loaded); swap silently
       masksParent.remove(prevMask);
@@ -240,32 +170,7 @@ export function useMask(
     };
   }, []);
 
-  // Per-frame transition animation
-  useFrame((_, delta) => {
-    const tr = transitionRef.current;
-    if (!tr.active) return;
-
-    tr.progress = Math.min(1, tr.progress + delta / TRANSITION_DURATION);
-    const t = easeOutCubic(tr.progress);
-
-    // Old mask: scale up relative to its original scale and fade out
-    if (tr.oldMask) {
-      const factor = 1 + t * EXIT_SCALE_AMOUNT;
-      tr.oldMask.scale.set(tr.oldScale.x * factor, tr.oldScale.y * factor, tr.oldScale.z * factor);
-      setAnimatedOpacity(tr.oldMask, tr.oldOpacities, 1 - t);
-    }
-
-    // Finished — remove the old mask from the scene
-    if (tr.progress >= 1) {
-      const parent = masksParentRef.current;
-      if (parent && tr.oldMask) {
-        parent.remove(tr.oldMask);
-      }
-
-      tr.active = false;
-      tr.oldMask = null;
-    }
-  });
+  useMaskTransitionFrame(transitionRef, masksParentRef);
 
   // Apply color when only the color props change (maskName unchanged)
   useEffect(() => {
