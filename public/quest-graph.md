@@ -503,7 +503,7 @@ XP: 4000"]
   mol_onu_koro_highway --> mol_onu_koro_battle
   mol_onu_koro_battle --> mol_tahu_poisoned
   mol_tahu_poisoned --> mol_takua_jaller_reunion
-  mol_takua_destiny --> mol_battle_of_kini_nui
+  mol_takua_jaller_reunion --> mol_battle_of_kini_nui
   mol_battle_of_kini_nui --> mol_takanuva_rises
   mol_takanuva_rises --> mol_defeat_of_makuta
   mol_defeat_of_makuta --> mol_rediscovery_of_metru_nui
