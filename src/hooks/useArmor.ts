@@ -37,8 +37,7 @@ export function useArmor(
   attachNode: Object3D | undefined,
   armorName: string,
   armorColor?: string,
-  glowColor?: string,
-  scaleCorrection?: number
+  glowColor?: string
 ) {
   const gltf = useGLTF(ARMOR_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
   const armorNodes = useMemo(() => buildArmorNodes(gltf), [gltf]);
@@ -71,7 +70,6 @@ export function useArmor(
     });
 
     clone.position.set(0, 0, 0);
-    clone.scale.set(scaleCorrection ?? 1, scaleCorrection ?? 1, scaleCorrection ?? 1);
     attachNode.add(clone);
     armorRef.current = clone;
 
