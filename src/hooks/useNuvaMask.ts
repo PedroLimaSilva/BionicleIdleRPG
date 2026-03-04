@@ -69,10 +69,10 @@ function applyNuvaMaskColors(
     if (mat.emissive) {
       if (maskPowerActive) {
         mat.emissive = new Color(maskColor);
-        mat.emissiveIntensity = 5;
+        mat.emissiveIntensity = 2.5;
       } else {
         mat.emissive = new Color(0x000000);
-        mat.emissiveIntensity = 1;
+        mat.emissiveIntensity = 0;
       }
     }
   });
