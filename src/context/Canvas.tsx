@@ -1,11 +1,20 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Canvas, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useLocation } from 'react-router-dom';
 import { PCFSoftShadowMap, SRGBColorSpace } from 'three';
 import { SceneCanvasContext } from '../hooks/useSceneCanvas';
 import { Perf } from 'r3f-perf';
 import { useSettings } from './useSettings';
+
+/** Clears the WebGL buffer every frame when there is no scene. Prevents stale content from showing if the canvas is revealed. */
+function ClearCanvas() {
+  const gl = useThree((s) => s.gl);
+  useFrame(() => {
+    gl.clear(true, true, true);
+  });
+  return null;
+}
 
 /** Set sRGB output once for the whole app so postprocessing and materials look correct. */
 function SetSRGBColorSpace() {
@@ -57,7 +66,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
             <SetSRGBColorSpace />
             <ShadowMapConfig />
             {debugMode && <Perf position="top-left" />}
-            {scene}
+            {scene ?? <ClearCanvas />}
           </Canvas>,
           target
         )}
