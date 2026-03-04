@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { useLocation } from 'react-router-dom';
 import { PCFSoftShadowMap, SRGBColorSpace } from 'three';
 import { SceneCanvasContext } from '../hooks/useSceneCanvas';
 import { Perf } from 'r3f-perf';
 import { useSettings } from './useSettings';
 
-/** Clears the WebGL buffer every frame when there is no scene. Prevents stale content from showing if the canvas is revealed. */
+/** Clears the WebGL buffer when there is no scene. Prevents stale content from showing if the canvas is revealed. */
 function ClearCanvas() {
   const gl = useThree((s) => s.gl);
-  useFrame(() => {
+  useEffect(() => {
     gl.clear(true, true, true);
-  });
+  }, [gl]);
   return null;
 }
 
