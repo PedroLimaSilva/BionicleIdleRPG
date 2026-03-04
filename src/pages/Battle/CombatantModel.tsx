@@ -233,6 +233,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
+                  maskPowerActive,
                 }}
               />
             </group>
@@ -247,6 +248,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
+                  maskPowerActive,
                 }}
               />
             </group>
@@ -261,6 +263,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
+                  maskPowerActive,
                 }}
               />
             </group>
@@ -275,6 +278,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
+                  maskPowerActive,
                 }}
               />
             </group>
@@ -289,6 +293,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
+                  maskPowerActive,
                 }}
               />
             </group>
@@ -303,6 +308,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   ...CHARACTER_DEX[combatant.id],
                   ...combatant,
                   exp: 0,
+                  maskPowerActive,
                 }}
               />
             </group>

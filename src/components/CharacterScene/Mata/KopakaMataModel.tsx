@@ -24,7 +24,7 @@ export const KopakaMataModel = forwardRef<
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.maskOverride || matoran.mask;
   const glowColor = matoran.colors.eyes;
-  useMask(nodes.Masks, maskTarget, matoran, glowColor);
+  useMask(nodes.Masks, maskTarget, matoran, glowColor, matoran.maskPowerActive);
 
   return (
     <group ref={group} dispose={null}>

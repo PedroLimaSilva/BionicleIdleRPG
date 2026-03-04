@@ -42,7 +42,12 @@ function getMaskFileName(maskName: string): string {
 }
 
 /** Apply mask color to materials; skip Vahi (keeps original color) */
-function applyNuvaMaskColors(root: Object3D, maskColor: string, maskName: string): void {
+function applyNuvaMaskColors(
+  root: Object3D,
+  maskColor: string,
+  maskName: string,
+  maskPowerActive?: boolean
+): void {
   const isVahi = maskName === 'Vahi' || maskName === Mask.Vahi;
 
   root.traverse((child) => {
@@ -58,9 +63,18 @@ function applyNuvaMaskColors(root: Object3D, maskColor: string, maskName: string
 
     if (!isStandardMat(mat)) return;
 
-    if (isVahi) return; // Vahi does not change color
+    if (isVahi) return;
 
     mat.color.copy(new Color(maskColor));
+    if (mat.emissive) {
+      if (maskPowerActive) {
+        mat.emissive = new Color(maskColor);
+        mat.emissiveIntensity = 2.5;
+      } else {
+        mat.emissive = new Color(0x000000);
+        mat.emissiveIntensity = 0;
+      }
+    }
   });
 }
 
@@ -71,7 +85,8 @@ function applyNuvaMaskColors(root: Object3D, maskColor: string, maskName: string
  */
 export function useNuvaMask(
   masksParent: Object3D | undefined,
-  matoran: BaseMatoran & RecruitedCharacterData
+  matoran: BaseMatoran & RecruitedCharacterData,
+  maskPowerActive?: boolean
 ) {
   const { completedQuests } = useGame();
   const maskName = matoran.maskOverride || matoran.mask;
@@ -89,6 +104,8 @@ export function useNuvaMask(
   maskColorRef.current = maskColor;
   const maskNameRef = useRef(maskName);
   maskNameRef.current = maskName;
+  const maskPowerActiveRef = useRef(maskPowerActive);
+  maskPowerActiveRef.current = maskPowerActive;
 
   const transitionRef = useRef(createMaskTransitionState());
 
@@ -117,7 +134,12 @@ export function useNuvaMask(
       }
     });
 
-    applyNuvaMaskColors(clone, maskColorRef.current, maskNameRef.current);
+    applyNuvaMaskColors(
+      clone,
+      maskColorRef.current,
+      maskNameRef.current,
+      maskPowerActiveRef.current
+    );
 
     const prevMask = maskRef.current;
     const isChange =
@@ -154,8 +176,8 @@ export function useNuvaMask(
   useEffect(() => {
     const mask = maskRef.current;
     if (!mask) return;
-    applyNuvaMaskColors(mask, maskColor, maskName);
-  }, [maskColor, maskName]);
+    applyNuvaMaskColors(mask, maskColor, maskName, maskPowerActive);
+  }, [maskColor, maskName, maskPowerActive]);
 }
 
 useNuvaMask.preload = () => {

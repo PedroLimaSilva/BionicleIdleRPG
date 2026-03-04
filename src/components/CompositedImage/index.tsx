@@ -4,13 +4,19 @@ interface CompositedImageProps {
   images: string[]; // Grayscale image URL
   colors: string[]; // Desired overlay color in hex (e.g., '#ff0000')
   className: string;
+  style?: React.CSSProperties;
 }
 
 function arraysEqual(a: string[], b: string[]) {
   return a.length === b.length && a.every((v, i) => v === b[i]);
 }
 
-export const CompositedImage: React.FC<CompositedImageProps> = ({ images, colors, className }) => {
+export const CompositedImage: React.FC<CompositedImageProps> = ({
+  images,
+  colors,
+  className,
+  style,
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prevImages = useRef<string[]>([]);
 
@@ -67,5 +73,5 @@ export const CompositedImage: React.FC<CompositedImageProps> = ({ images, colors
     });
   }, [images, colors]);
 
-  return <canvas className={className} ref={canvasRef} />;
+  return <canvas className={className} style={style} ref={canvasRef} />;
 };

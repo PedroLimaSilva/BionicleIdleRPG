@@ -10,7 +10,7 @@ import { useNuvaMask } from '../../../hooks/useNuvaMask';
 export const TahuNuvaModel = forwardRef<
   CombatantModelHandle,
   {
-    matoran: RecruitedCharacterData & BaseMatoran;
+    matoran: RecruitedCharacterData & BaseMatoran & { maskPowerActive?: boolean };
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >(({ matoran }, _ref) => {
@@ -23,7 +23,7 @@ export const TahuNuvaModel = forwardRef<
   useArmor(nodes.PlateHolderL, 'Shoulder');
   useArmor(nodes.PlateHolderR, 'Shoulder');
 
-  useNuvaMask(nodes.Masks, matoran);
+  useNuvaMask(nodes.Masks, matoran, matoran.maskPowerActive);
 
   return (
     <group ref={group} dispose={null}>
