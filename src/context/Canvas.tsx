@@ -7,6 +7,15 @@ import { SceneCanvasContext } from '../hooks/useSceneCanvas';
 import { Perf } from 'r3f-perf';
 import { useSettings } from './useSettings';
 
+/** Clears the WebGL buffer when there is no scene. Prevents stale content from showing if the canvas is revealed. */
+function ClearCanvas() {
+  const gl = useThree((s) => s.gl);
+  useEffect(() => {
+    gl.clear(true, true, true);
+  }, [gl]);
+  return null;
+}
+
 /** Set sRGB output once for the whole app so postprocessing and materials look correct. */
 function SetSRGBColorSpace() {
   const gl = useThree((s) => s.gl);
@@ -57,7 +66,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
             <SetSRGBColorSpace />
             <ShadowMapConfig />
             {debugMode && <Perf position="top-left" />}
-            {scene}
+            {scene ?? <ClearCanvas />}
           </Canvas>,
           target
         )}
