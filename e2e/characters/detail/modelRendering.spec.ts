@@ -99,6 +99,7 @@ test.describe('Character Model Rendering', () => {
       'Toa_Onua_Nuva',
       'Toa_Pohatu_Nuva',
       'Toa_Tahu_Nuva',
+      'Takanuva',
     ].forEach((characterId) => {
       test(`should render ${characterId} character detail page`, async ({ page }) => {
         await setupGameState(page, {
