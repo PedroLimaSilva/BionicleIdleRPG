@@ -28,7 +28,7 @@ export const GaliMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Gali} scale={1} position={[0, 9.6, 0]} />
+      <primitive object={nodes.Gali} scale={1} position={[0, 0, 0]} />
     </group>
   );
 });
