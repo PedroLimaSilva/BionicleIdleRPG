@@ -54,7 +54,7 @@ const ENEMY_POSITIONS: [number, number, number][] = [
 ];
 
 /** World-size of the arena box used for orthographic framing. */
-const ARENA_BOX_SIZE = 2;
+const ARENA_BOX_SIZE = 3;
 /** Multiplier > 1 zooms out to add margin around the arena. */
 const ARENA_MARGIN = 1.5;
 /** Arena center (camera looks at this). */
