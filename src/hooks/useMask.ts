@@ -27,7 +27,12 @@ function isStandardMat(mat: unknown): mat is StandardMat {
 }
 
 /** Apply mask color and optional glow color to every mesh material under `root` */
-function applyMaskColors(root: Object3D, maskColor: string, glowColor?: string): void {
+function applyMaskColors(
+  root: Object3D,
+  maskColor: string,
+  glowColor?: string,
+  maskPowerActive?: boolean
+): void {
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
       const mat = (child as Mesh).material;
@@ -42,6 +47,15 @@ function applyMaskColors(root: Object3D, maskColor: string, glowColor?: string):
           }
         } else {
           mat.color = new Color(maskColor);
+          if (mat.emissive) {
+            if (maskPowerActive) {
+              mat.emissive = new Color(maskColor);
+              mat.emissiveIntensity = 5;
+            } else {
+              mat.emissive = new Color(0x000000);
+              mat.emissiveIntensity = 1;
+            }
+          }
         }
       }
     }
@@ -70,12 +84,14 @@ function applyMaskColors(root: Object3D, maskColor: string, glowColor?: string):
  * @param glowColor   - Optional color for emissive "glow" materials (e.g. lens glow matching eye color).
  *                      When provided, materials whose names include "glow" (case-insensitive) will use
  *                      this color for both their base color and emissive color instead of maskColor.
+ * @param maskPowerActive - When true, non-glow materials emit the mask color at intensity 5.
  */
 export function useMask(
   masksParent: Object3D | undefined,
   maskName: string,
   matoran: BaseMatoran & { maskOverride?: string },
-  glowColor?: string
+  glowColor?: string,
+  maskPowerActive?: boolean
 ) {
   const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
   const masksNodes = useMemo(() => buildMaskNodes(gltf), [gltf]);
@@ -96,6 +112,8 @@ export function useMask(
   maskColorRef.current = maskColor;
   const glowColorRef = useRef(glowColor);
   glowColorRef.current = glowColor;
+  const maskPowerActiveRef = useRef(maskPowerActive);
+  maskPowerActiveRef.current = maskPowerActive;
 
   const transitionRef = useRef(createMaskTransitionState());
 
@@ -133,7 +151,7 @@ export function useMask(
     // (useEffect runs asynchronously after paint, and useFrame/rAF can fire
     // before the next useEffect — applying colors here avoids the brief flash
     // of un-tinted GLB-default colors during the fade-in.)
-    applyMaskColors(clone, maskColorRef.current, glowColorRef.current);
+    applyMaskColors(clone, maskColorRef.current, glowColorRef.current, maskPowerActiveRef.current);
 
     const prevMask = maskRef.current;
     const isChange =
@@ -177,8 +195,8 @@ export function useMask(
     const mask = maskRef.current;
     if (!mask) return;
 
-    applyMaskColors(mask, maskColor, glowColor);
-  }, [masksNodes, masksParent, maskName, maskColor, glowColor]);
+    applyMaskColors(mask, maskColor, glowColor, maskPowerActive);
+  }, [masksNodes, masksParent, maskName, maskColor, glowColor, maskPowerActive]);
 
   return maskRef.current;
 }

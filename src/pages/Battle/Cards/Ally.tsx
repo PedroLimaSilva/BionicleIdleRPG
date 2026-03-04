@@ -82,6 +82,7 @@ export function AllyCard({
             exp: 0,
           }}
           styles="matoran-avatar model-preview"
+          maskPowerActive={maskActive}
         />
       </MaskPowerTooltip>
       <div className="card-header">
