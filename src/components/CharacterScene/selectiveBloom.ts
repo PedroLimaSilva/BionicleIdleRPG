@@ -15,7 +15,34 @@ function isEyeMesh(mesh: Mesh): boolean {
   );
 }
 
-/** Collects only eye meshes (by name) that have emissive material, for selective bloom */
+function isInsideMasksNode(obj: Object3D): boolean {
+  let parent = obj.parent;
+  while (parent) {
+    if (parent.name === 'Masks') return true;
+    parent = parent.parent;
+  }
+  return false;
+}
+
+function isBloomMesh(mesh: Mesh): boolean {
+  const mat = mesh.material as MeshStandardMaterial | undefined;
+  if (!mat || (mat.emissiveIntensity ?? 0) <= 0) return false;
+  return isEyeMesh(mesh) || isInsideMasksNode(mesh);
+}
+
+/** Collects emissive meshes (eyes + active mask materials) for selective bloom. */
+function collectBloomMeshes(root: Object3D): Object3D[] {
+  const collected: Object3D[] = [];
+  root.traverse((obj) => {
+    if (!(obj as Mesh).isMesh) return;
+    if (isBloomMesh(obj as Mesh)) {
+      collected.push(obj);
+    }
+  });
+  return collected;
+}
+
+/** Collects eye and mask meshes that have emissive material, for selective bloom in CharacterScene. */
 export function useEyeMeshes(
   characterRootRef: React.RefObject<Object3D | null>,
   matoran: BaseMatoran & RecruitedCharacterData
@@ -28,21 +55,30 @@ export function useEyeMeshes(
       setEyeMeshes([]);
       return;
     }
-    const collect = () => {
-      const collected: Object3D[] = [];
-      root.traverse((obj) => {
-        if (!(obj as Mesh).isMesh) return;
-        const mesh = obj as Mesh;
-        const mat = mesh.material as MeshStandardMaterial | undefined;
-        if (mat && (mat.emissiveIntensity ?? 0) > 0 && isEyeMesh(mesh)) {
-          collected.push(mesh);
-        }
-      });
-      setEyeMeshes(collected);
-    };
-    const id = setTimeout(collect, 0);
+    const id = setTimeout(() => setEyeMeshes(collectBloomMeshes(root)), 0);
     return () => clearTimeout(id);
   }, [matoran, characterRootRef]);
 
   return eyeMeshes;
+}
+
+/** Collects eye and mask meshes that have emissive material, for selective bloom in Arena. */
+export function useArenaBloomMeshes(
+  sceneRootRef: React.RefObject<Object3D | null>,
+  team: unknown[],
+  enemies: unknown[]
+) {
+  const [meshes, setMeshes] = useState<Object3D[]>([]);
+
+  useLayoutEffect(() => {
+    const root = sceneRootRef.current;
+    if (!root) {
+      setMeshes([]);
+      return;
+    }
+    const id = setTimeout(() => setMeshes(collectBloomMeshes(root)), 0);
+    return () => clearTimeout(id);
+  }, [sceneRootRef, team, enemies]);
+
+  return meshes;
 }
