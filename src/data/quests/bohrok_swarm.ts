@@ -172,7 +172,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       currency: 2600,
       loot: {},
     },
-    unlockedAfter: ['bohrok_legend_of_krana'],
+    unlockedAfter: ['bohrok_lewa_krana_rescue'],
     section: 'Bohrok Swarms',
   },
   {
