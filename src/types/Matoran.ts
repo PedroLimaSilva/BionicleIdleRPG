@@ -25,6 +25,7 @@ export const enum Mask {
   Mahiki = 'Mahiki',
   Vahi = 'Vahi',
   Kraahkan = 'Kraahkan',
+  Krana = 'Krana',
 }
 
 export enum ElementTribe {
