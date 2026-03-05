@@ -130,7 +130,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     name: 'The Frozen Lake',
     description: 'Jaller and Takua meet Toa Nuva Kopaka in a Ko-Koro snowstorm.',
     durationSeconds: 12 * 60,
-    requirements: { matoran: ['Takua', 'Jala', 'Toa_Kopaka_Nuva'], minLevel: 22, items: [] },
+    requirements: { matoran: ['Takua', 'Jaller', 'Toa_Kopaka_Nuva'], minLevel: 22, items: [] },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mol_ko_wahi_pursuit' },
       xpPerMatoran: 3000,
@@ -203,7 +203,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     description: 'Jaller, alone, presses on with his search for the Seventh Toa.',
     durationSeconds: 20 * 60,
     requirements: {
-      matoran: ['Takua', 'Jala'],
+      matoran: ['Takua', 'Jaller'],
       minLevel: 23,
       items: [],
     },
@@ -278,9 +278,9 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     id: 'mol_rediscovery_of_metru_nui',
     name: 'The City of Legends',
     description:
-      'Vakama picks up the Avohkii and walks toward a Three Virtues symbol on a ledge. He tells Jaller to step on the symbol representing Duty, Hahli to step on the symbol representing Unity, and places the Mask of Light on the symbol representing Destiny. As light shines through, Takanuva is revived. He activates his mask and sends a beam of light off into the Silver Sea, revealing the city of Metru Nui. Vakama narrates: "United, we embraced our duty. Light found itself and illuminated our destiny. The City of the Great Spirit, my island home, refound. New legends awake, but old lessons must be remembered. This is the way of the Bionicle."',
+      'Turaga Vakama gives a lesson on the Three Virtues.',
     durationSeconds: 12 * 60,
-    requirements: { matoran: ['Takanuva', 'Hahli', 'Jala'], minLevel: 24, items: [] },
+    requirements: { matoran: ['Takanuva', 'Hahli', 'Jaller'], minLevel: 24, items: [] },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mol_rediscovery_of_metru_nui' },
       xpPerMatoran: 4000,
