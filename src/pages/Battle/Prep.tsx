@@ -29,6 +29,10 @@ export const BattlePrep: React.FC = () => {
   const [selectingIndex, setSelectingIndex] = useState<TeamPosition>(TeamPosition.Left);
 
   const handleClickRecruitedCharacter = (recruited: RecruitedCharacterData) => {
+    // Guard: ignore clicks when team is already full (prevents race where hidden
+    // selector is still clickable before re-render, adding a 4th ally)
+    if (selectingIndex >= MAX_TEAM_SIZE) return;
+
     const newSelectedTeam = { ...selectedTeam };
 
     // remove duplicate if clicking again from a different slot
