@@ -1,15 +1,12 @@
 import * as THREE from 'three';
 import { useGLTF, Environment } from '@react-three/drei';
 import { GLTF } from 'three-stdlib';
-import { EffectComposer, SelectiveBloom } from '@react-three/postprocessing';
 import { Combatant } from '../../types/Combat';
 import { hasActiveEffectFromSource } from '../../services/combatUtils';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/useSettings';
-import { useArenaBloomMeshes } from '../../components/CharacterScene/selectiveBloom';
-import { shouldEnableSelectiveBloom } from '../../utils/testMode';
 
 function EnvironmentIntensity({ value }: { value: number }) {
   const scene = useThree((s) => s.scene);
@@ -106,8 +103,6 @@ function ArenaFraming() {
 export function Arena({ team, enemies, currentWave }: ArenaProps) {
   const combatantRefs = useRef<Record<string, CombatantModelHandle>>({});
   const sceneGroupRef = useRef<THREE.Group>(null);
-  const [lightsForBloom, setLightsForBloom] = useState<THREE.Object3D[]>([]);
-  const bloomMeshes = useArenaBloomMeshes(sceneGroupRef, team, enemies);
   const { shadowsEnabled } = useSettings();
 
   const { nodes, materials } = useGLTF(
@@ -155,12 +150,9 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
       <EnvironmentIntensity value={0.4} />
       <directionalLight
         ref={(el) => {
-          if (el) {
-            setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
-            if (el.parent && !el.target.parent) {
-              el.target.position.set(0, -0.25, 0);
-              el.parent.add(el.target);
-            }
+          if (el && el.parent && !el.target.parent) {
+            el.target.position.set(0, -0.25, 0);
+            el.parent.add(el.target);
           }
         }}
         position={[2, 3, 4]}
@@ -175,13 +167,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
         shadow-bias={-0.0005}
         shadow-normalBias={0.005}
       />
-      <directionalLight
-        ref={(el) => {
-          if (el) setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
-        }}
-        position={[-3, 2, -2]}
-        intensity={0.15}
-      />
+      <directionalLight position={[-3, 2, -2]} intensity={0.15} />
       <ambientLight intensity={0.05} />
       <group dispose={null} name="Scene" ref={sceneGroupRef}>
         {/* <mesh
@@ -261,18 +247,6 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
           );
         })}
       </group>
-      {lightsForBloom.length > 0 && shouldEnableSelectiveBloom() && (
-        <EffectComposer multisampling={0} enableNormalPass={false} resolutionScale={0.5}>
-          <SelectiveBloom
-            selection={bloomMeshes}
-            lights={lightsForBloom}
-            luminanceThreshold={0.25}
-            luminanceSmoothing={0.5}
-            intensity={0.28}
-            mipmapBlur
-          />
-        </EffectComposer>
-      )}
     </>
   );
 }

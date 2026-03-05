@@ -62,23 +62,3 @@ export function useEyeMeshes(
   return eyeMeshes;
 }
 
-/** Collects eye and mask meshes that have emissive material, for selective bloom in Arena. */
-export function useArenaBloomMeshes(
-  sceneRootRef: React.RefObject<Object3D | null>,
-  team: unknown[],
-  enemies: unknown[]
-) {
-  const [meshes, setMeshes] = useState<Object3D[]>([]);
-
-  useLayoutEffect(() => {
-    const root = sceneRootRef.current;
-    if (!root) {
-      setMeshes([]);
-      return;
-    }
-    const id = setTimeout(() => setMeshes(collectBloomMeshes(root)), 0);
-    return () => clearTimeout(id);
-  }, [sceneRootRef, team, enemies]);
-
-  return meshes;
-}
