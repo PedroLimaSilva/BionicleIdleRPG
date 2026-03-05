@@ -480,7 +480,7 @@ XP: 4000"]
   bohrok_ta_koro_defense --> bohrok_onu_koro_boxor
   bohrok_ta_koro_defense --> bohrok_legend_of_krana
   bohrok_legend_of_krana --> bohrok_lewa_krana_rescue
-  bohrok_legend_of_krana --> bohrok_krana_hunt
+  bohrok_lewa_krana_rescue --> bohrok_krana_hunt
   bohrok_krana_hunt --> bohrok_into_the_bohrok_nest
   bohrok_into_the_bohrok_nest --> bohrok_evolve_toa_nuva
   bohrok_evolve_toa_nuva --> bohrok_assistants
