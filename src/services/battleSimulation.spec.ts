@@ -11,6 +11,7 @@ import {
   queueCombatRound,
   decrementWaveCounters,
   hasReadyMaskPowers,
+  hasActiveEffectFromSource,
 } from './combatUtils';
 import { getLevelFromExp } from '../game/Levelling';
 import type { RecruitedCharacterData } from '../types/Matoran';
@@ -427,6 +428,33 @@ describe('Battle Simulation', () => {
       const enemy = sim.enemies[0];
       expect(enemy.effects?.some((e) => e.type === 'CONFUSION')).toBe(true);
       expect(enemy.hp).toBeLessThan(enemyHpBefore);
+    });
+
+    test('Komau mask power deactivates when confused enemy dies', async () => {
+      // High-level Tahu kills enemy in one hit; Komau should deactivate when target dies
+      const team = createTeamFromRecruited([
+        { id: 'Toa_Tahu', exp: 50000, maskOverride: Mask.Komau },
+      ]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
+
+      await sim.runRound();
+
+      // Enemy should be dead (high-level Tahu one-shots level 1 tahnok)
+      expect(sim.enemies.every((e) => e.hp <= 0)).toBe(true);
+
+      // Komau mask power should be deactivated when the effect target died
+      const tahu = sim.team.find((t) => t.id === 'Toa_Tahu')!;
+      expect(tahu.maskPower?.active).toBe(false);
+
+      // hasActiveEffectFromSource should not count effects on dead combatants
+      expect(hasActiveEffectFromSource(sim.team, sim.enemies, 'Toa_Tahu')).toBe(false);
     });
 
     test('Komau CONFUSION lasts exactly 3 turns (no re-application)', async () => {

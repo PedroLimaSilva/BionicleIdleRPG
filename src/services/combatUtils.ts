@@ -352,6 +352,45 @@ export function decrementMaskPowerCounter(
   return changed ? { ...combatant, maskPower: updatedMaskPower } : combatant;
 }
 
+/**
+ * Deactivates mask powers whose effects were applied to other combatants (enemy/allEnemies)
+ * when all those effect recipients are dead. Starts cooldown so the mask can be used again.
+ */
+function deactivateMaskPowersWithDeadTargets(
+  team: Combatant[],
+  enemies: Combatant[]
+): { team: Combatant[]; enemies: Combatant[] } {
+  const all = [...team, ...enemies];
+  const targetsEnemyOrAll =
+    (mp: { target?: string } | undefined) =>
+    mp?.target === 'enemy' || mp?.target === 'allEnemies';
+
+  let nextTeam = team;
+  for (const c of team) {
+    if (!c.maskPower?.active || !targetsEnemyOrAll(c.maskPower)) continue;
+
+    const recipientsWithEffect = all.filter((x) =>
+      x.effects?.some((e) => e.sourceId === c.id && e.durationRemaining > 0)
+    );
+    const allRecipientsDead = recipientsWithEffect.length > 0 && recipientsWithEffect.every((r) => r.hp <= 0);
+
+    if (allRecipientsDead) {
+      const power = MASK_POWERS[c.maskPower.shortName];
+      const updated = {
+        ...c,
+        maskPower: {
+          ...c.maskPower,
+          active: false,
+          cooldown: power ? { ...power.cooldown } : c.maskPower.cooldown,
+        },
+      };
+      nextTeam = nextTeam.map((t) => (t.id === c.id ? updated : t));
+    }
+  }
+
+  return { team: nextTeam, enemies };
+}
+
 // exported only for tests
 export function chooseTarget(self: Combatant, targets: Combatant[]): Combatant {
   // Filter out untargetable enemies (AGGRO effect with multiplier 0)
@@ -602,14 +641,20 @@ export function queueCombatRound(
       if (isTeam) {
         currentTeam = nextActorList;
         currentEnemies = nextOpponentList;
-        setTeam(currentTeam);
-        setEnemies(currentEnemies);
       } else {
         currentTeam = nextOpponentList;
         currentEnemies = nextActorList;
-        setTeam(currentTeam);
-        setEnemies(currentEnemies);
       }
+
+      // Deactivate mask powers (e.g. Komau) when all effect targets die
+      const { team: teamAfterDeactivation } = deactivateMaskPowersWithDeadTargets(
+        currentTeam,
+        currentEnemies
+      );
+      currentTeam = teamAfterDeactivation;
+
+      setTeam(currentTeam);
+      setEnemies(currentEnemies);
 
       // Await target reaction so next turn doesn't start before hit/defeat finishes
       if (targetRef?.playAnimation) {
@@ -631,6 +676,13 @@ export function queueCombatRound(
       currentTeam = latest.team;
       currentEnemies = latest.enemies;
     }
+    // Deactivate mask powers (e.g. Komau) when all effect targets died this round
+    const { team: teamAfterDeactivation } = deactivateMaskPowersWithDeadTargets(
+      currentTeam,
+      currentEnemies
+    );
+    currentTeam = teamAfterDeactivation;
+
     const nextTeam = currentTeam.map((c) =>
       decrementEffectDurations(decrementMaskPowerCounter(c, 'round'), 'round')
     );
@@ -645,8 +697,9 @@ export function queueCombatRound(
 }
 
 /**
- * Returns true if any buff or debuff with sourceId exists on team or enemies (durationRemaining > 0).
+ * Returns true if any alive combatant has a buff or debuff with sourceId (durationRemaining > 0).
  * Used as source of truth for mask UI (caster glow while effect is active).
+ * Effects on dead combatants are ignored—e.g. Komau confusion on a dead enemy stops the mask glow.
  */
 export function hasActiveEffectFromSource(
   team: Combatant[],
@@ -654,7 +707,11 @@ export function hasActiveEffectFromSource(
   sourceId: string
 ): boolean {
   const hasFrom = (list: Combatant[]) =>
-    list.some((c) => c.effects?.some((e) => e.sourceId === sourceId && e.durationRemaining > 0));
+    list.some(
+      (c) =>
+        c.hp > 0 &&
+        c.effects?.some((e) => e.sourceId === sourceId && e.durationRemaining > 0)
+    );
   return hasFrom(team) || hasFrom(enemies);
 }
 

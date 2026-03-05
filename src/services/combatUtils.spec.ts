@@ -1,6 +1,11 @@
 import { BattleStrategy, Combatant } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
-import { chooseTarget, generateCombatantStats, hasReadyMaskPowers } from './combatUtils';
+import {
+  chooseTarget,
+  generateCombatantStats,
+  hasActiveEffectFromSource,
+  hasReadyMaskPowers,
+} from './combatUtils';
 
 describe('chooseTarget', () => {
   const targets: Combatant[] = [
@@ -436,6 +441,37 @@ describe('chooseTarget', () => {
 
     test('returns false for empty team', () => {
       expect(hasReadyMaskPowers([])).toBe(false);
+    });
+  });
+
+  describe('hasActiveEffectFromSource', () => {
+    test('returns false when effect is only on dead combatant (e.g. Komau target died)', () => {
+      const deadEnemy = generateCombatantStats('enemy', 'tahnok', 1);
+      deadEnemy.hp = 0;
+      deadEnemy.effects = [
+        {
+          type: 'CONFUSION',
+          durationRemaining: 2,
+          durationUnit: 'turn',
+          sourceId: 'Toa_Tahu',
+        },
+      ];
+      const team = [generateCombatantStats('Toa_Tahu', 'Toa_Tahu', 1)];
+      expect(hasActiveEffectFromSource(team, [deadEnemy], 'Toa_Tahu')).toBe(false);
+    });
+
+    test('returns true when effect is on alive combatant', () => {
+      const aliveEnemy = generateCombatantStats('enemy', 'tahnok', 1);
+      aliveEnemy.effects = [
+        {
+          type: 'CONFUSION',
+          durationRemaining: 2,
+          durationUnit: 'turn',
+          sourceId: 'Toa_Tahu',
+        },
+      ];
+      const team = [generateCombatantStats('Toa_Tahu', 'Toa_Tahu', 1)];
+      expect(hasActiveEffectFromSource(team, [aliveEnemy], 'Toa_Tahu')).toBe(true);
     });
   });
 });
