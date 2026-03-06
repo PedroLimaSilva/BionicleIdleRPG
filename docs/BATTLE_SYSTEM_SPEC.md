@@ -139,10 +139,11 @@ interface CombatDuration {
   amount: number;
 }
 
-// Applied effect on a combatant (created from MaskEffect template)
+// Applied effect on a combatant (created from MaskEffect template).
+// Actual code uses a discriminated union; shown here simplified.
 type TargetEffect = {
   type: 'DMG_MITIGATOR' | 'HEAL' | 'ATK_MULT' | 'AGGRO' | 'SPEED' | 'DEFENSE' | 'CONFUSION';
-  multiplier: number; // Effect strength (can be negative for debuffs)
+  multiplier?: number; // Effect strength (can be negative for debuffs); absent on CONFUSION
   durationRemaining: number; // Decrements each matching unit
   durationUnit: 'attack' | 'hit' | 'turn' | 'round';
   sourceId: string; // ID of the combatant who created this effect

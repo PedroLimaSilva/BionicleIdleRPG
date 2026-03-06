@@ -51,21 +51,21 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 
 ## 🛠️ Tech Stack
 
-- **Frontend Framework**: React 18 with TypeScript
+- **Frontend Framework**: React 19 with TypeScript
 - **Build Tool**: Vite
 - **3D Graphics**: React Three Fiber (@react-three/fiber, @react-three/drei)
 - **Routing**: React Router v7
 - **Styling**: SCSS
 - **PWA Support**: Vite PWA plugin with Workbox
 - **State Management**: React Context API with custom hooks
-- **Testing**: Jest (unit tests), Playwright (E2E visual regression)
+- **Testing**: Jest 30 (unit tests), Playwright (E2E visual regression)
 - **Package Manager**: Yarn
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- **Node.js** (v18 or higher recommended)
+- **Node.js** (v20 required; see `.nvmrc`)
 - **Yarn** (v1.22.22 or higher)
   - The project uses Yarn as specified in `package.json`
   - Install Yarn if you don't have it: `npm install -g yarn`
@@ -104,58 +104,99 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - `yarn test` - Run unit tests in watch mode
 - `yarn test:ci` - Run unit tests in CI mode with coverage
 - `yarn test:e2e` - Run E2E visual regression tests (Playwright)
+- `yarn test:e2e:docker` - Run E2E tests in Docker for deterministic snapshots
+- `yarn format` - Format code with Prettier
+- `yarn format:check` - Check code formatting
 - `yarn deploy` - Build and deploy to GitHub Pages
 
 ## 📁 Project Structure
 
 ```
 src/
-├── components/          # React components
-│   ├── CharacterScene/ # 3D character rendering
-│   ├── MatoranAvatar/  # Character avatar components
-│   ├── JobList/        # Job assignment UI
-│   ├── Modal/          # Modal dialogs
-│   ├── Tabs/           # Tab navigation
-│   └── ...
-├── context/            # React Context providers
-│   ├── Game.tsx        # Game state context
-│   ├── Canvas.tsx      # 3D canvas context
-│   └── Settings.tsx    # Settings (debug mode, shadows)
-├── data/               # Game data definitions
-│   ├── matoran.ts      # Character definitions
-│   ├── jobs.ts         # Job definitions
-│   ├── quests/         # Quest definitions
-│   ├── chronicles.ts   # Character chronicle entries
-│   ├── loot.ts         # Item definitions
-│   └── combat.ts       # Combat data
-├── game/               # Game logic
-│   ├── Jobs.ts         # Job processing logic
-│   ├── Levelling.ts    # XP and leveling calculations
-│   ├── Quests.ts       # Quest processing logic
-│   ├── BattleRewards.ts # Battle EXP and Krana rewards
-│   └── Krana.ts        # Krana collection logic
-├── hooks/              # Custom React hooks
-│   ├── useGameLogic.tsx      # Main game logic hook
+├── components/              # React components
+│   ├── AvailableQuests/     # Quest selection display
+│   ├── CacheManagement/     # PWA cache management
+│   ├── CharacterScene/      # 3D character rendering
+│   ├── CompositedImage/     # Layered image compositing
+│   ├── CurrencyBar/         # Protodermis currency display
+│   ├── ElementTag/          # Element badge rendering
+│   ├── JobList/             # Job assignment UI
+│   ├── JobStatusBadge/      # Job status indicators
+│   ├── MaskPowerTooltip/    # Mask power tooltips in combat
+│   ├── MatoranAvatar/       # Character avatar components
+│   ├── Modal/               # Modal dialogs
+│   ├── NavBar/              # Main navigation bar
+│   ├── Tabs/                # Tab navigation
+│   ├── Tooltip/             # Generic tooltip
+│   └── VisualNovelCutscene/ # Story cutscene rendering
+├── context/                 # React Context providers
+│   ├── Canvas.tsx           # 3D canvas context
+│   ├── Game.tsx             # Game state context (wraps useGameLogic)
+│   ├── Settings.tsx         # Settings provider (debug mode, shadows)
+│   ├── SettingsContext.ts   # Settings context definition
+│   └── useSettings.ts      # Settings consumer hook
+├── data/                    # Game data definitions
+│   ├── dex/                 # Character dictionaries
+│   │   ├── matoran.ts       # Matoran/Turaga definitions
+│   │   ├── toa.ts           # Toa Mata/Nuva definitions
+│   │   ├── enemy.ts         # Enemy definitions
+│   │   └── index.ts         # Merged CHARACTER_DEX export
+│   ├── cutscenes/           # Visual novel cutscene scripts
+│   ├── quests/              # Quest definitions
+│   ├── chronicles.ts        # Character chronicle entries
+│   ├── combat.ts            # Combat data and mask powers
+│   ├── gameState.ts         # Initial game state and version
+│   ├── jobs.ts              # Job definitions
+│   └── loot.ts              # Item definitions
+├── game/                    # Pure game logic (no React dependencies)
+│   ├── BattleRewards.ts     # Battle EXP and Krana rewards
+│   ├── CharacterEvolution.ts # Character evolution paths
+│   ├── encounterVisibility.ts # Battle encounter unlock logic
+│   ├── Jobs.ts              # Job processing and offline progress
+│   ├── Krana.ts             # Krana collection logic
+│   ├── Levelling.ts         # XP and leveling calculations
+│   ├── maskColor.ts         # Effective mask color resolution
+│   ├── nuvaSymbols.ts       # Nuva symbol sequestration state
+│   ├── Progress.ts          # Battle unlock logic
+│   └── Quests.ts            # Quest availability and processing
+├── hooks/                   # Custom React hooks
+│   ├── useGameLogic.tsx     # Main game logic hook (composes state hooks)
 │   ├── useGamePersistence.tsx # Save/load functionality
-│   ├── useBattleState.tsx    # Battle state management
-│   └── ...
-├── pages/              # Page components
-│   ├── Battle/         # Battle page (selector, prep, in-progress)
-│   ├── BattleSelector/ # Battle selection
-│   ├── CharacterDetail/ # Character detail (stats, chronicle, masks, krana)
-│   ├── CharacterInventory/ # Character roster/cards
-│   ├── Inventory/      # Item inventory
-│   ├── Recruitment/    # Character recruitment page
-│   ├── Quests/         # Quest management page
-│   ├── QuestTree/      # Quest dependency graph
-│   ├── Settings/       # About, credits, disclaimers, game reset, debug mode, 3D shadows
-│   ├── TypeEffectiveness/ # Element strengths/weaknesses
-│   └── ...
-├── services/           # Utility services
-│   ├── gamePersistence.ts # LocalStorage management
-│   ├── combatUtils.ts     # Combat calculations
-│   └── ...
-└── types/              # TypeScript type definitions
+│   ├── useBattleState.tsx   # Battle state management
+│   ├── useCharactersState.tsx # Character recruitment and assignment
+│   ├── useInventoryState.tsx  # Inventory state management
+│   ├── useQuestState.tsx    # Quest start/cancel/completion
+│   ├── useJobTickEffect.tsx # Job tick interval and resource gain
+│   ├── useQuestNotifications.ts # Quest completion notifications
+│   ├── useSceneCanvas.tsx   # 3D scene canvas management
+│   ├── useAnimationController.tsx # 3D model animation control
+│   ├── useCombatAnimations.ts # Combat animation orchestration
+│   ├── useIdleAnimation.ts  # Idle animation setup
+│   ├── usePlayAnimation.ts  # Animation playback
+│   ├── useMask.ts           # Mask color/glow for 3D models
+│   ├── useNuvaMask.ts       # Nuva mask rendering
+│   ├── useArmor.ts          # Armor rendering
+│   └── maskTransition.ts    # Mask transition utilities
+├── pages/                   # Page components
+│   ├── Battle/              # Battle page (prep, in-progress, results)
+│   ├── BattleSelector/      # Battle selection
+│   ├── CharacterDetail/     # Character detail (stats, chronicle, masks, krana)
+│   ├── CharacterInventory/  # Character roster/cards
+│   ├── Inventory/           # Item inventory
+│   ├── Quests/              # Quest management page
+│   ├── QuestTree/           # Quest dependency graph
+│   ├── Recruitment/         # Character recruitment page
+│   ├── Settings/            # About, credits, disclaimers, game reset, debug mode, 3D shadows
+│   └── TypeEffectiveness/   # Element strengths/weaknesses
+├── services/                # Utility services
+│   ├── chronicleUtils.ts    # Chronicle unlock logic
+│   ├── combatUtils.ts       # Combat calculations
+│   ├── gamePersistence.ts   # LocalStorage management
+│   ├── inventoryUtils.ts    # Inventory add/merge operations
+│   ├── jobUtils.ts          # Job tick processing
+│   ├── matoranUtils.ts      # Character helpers (recruit, evolve)
+│   └── questNotifications.ts # Browser notifications for quests
+└── types/                   # TypeScript type definitions
 ```
 
 ## 🎯 Game Mechanics
@@ -166,9 +207,9 @@ Characters and items belong to one of eight elements:
 
 - **Fire** (Ta-Koro)
 - **Water** (Ga-Koro)
-- **Air** (Le-Wahi)
+- **Air** (Le-Koro)
 - **Ice** (Ko-Koro)
-- **Stone** (Po-Wahi)
+- **Stone** (Po-Koro)
 - **Earth** (Onu-Koro)
 - **Light**
 - **Shadow**

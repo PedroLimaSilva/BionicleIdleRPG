@@ -306,25 +306,15 @@ if (process.env.NODE_ENV === 'development') {
 
 ## Priority 6: Feature Completeness (High Risk)
 
-### 6.1 Implement Cutscene System
+### 6.1 Implement Cutscene System ✅ Implemented
 
-**Issue:** Quests have `cutscene` field (YouTube video IDs) but no rendering implementation.
-
-**Current:** Field is populated but never displayed.
-
-**Recommendation:** Implement modal or embedded player for quest cutscenes.
-
-**Acceptance Criteria:**
-
-- Cutscenes play when quest is completed
-- Player can skip cutscenes
-- Cutscenes don't block game progression
+**Status:** Cutscenes are implemented as a visual novel–style system. The `VisualNovelCutscene` component renders scripted dialogue sequences. Cutscene data lives in `src/data/cutscenes/` with scripts for MNOG, Bohrok Swarm, Bohrok Kal, Mask Hunt, and Mask of Light arcs.
 
 ---
 
 ### 6.2 Character Stage Transformation ✅ Implemented
 
-**Status:** Evolution is implemented. See [DESIGN_CHARACTER_EVOLUTION_AND_CHRONICLES.md](docs/DESIGN_CHARACTER_EVOLUTION_AND_CHRONICLES.md).
+**Status:** Evolution is implemented.
 
 **Implementation:** Quest rewards can include an `evolution` field that maps participant dex IDs to evolved forms (e.g., Toa Mata → Toa Nuva). The `bohrok_evolve_toa_nuva` quest triggers this. Evolution replaces the character ID, drops mask overrides, and preserves EXP/assignment/quest.
 
