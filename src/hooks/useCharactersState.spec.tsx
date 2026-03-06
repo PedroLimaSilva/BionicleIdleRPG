@@ -5,17 +5,14 @@ import { renderHook, act } from '@testing-library/react';
 import { useCharactersState } from './useCharactersState';
 import { ListedCharacterData, RecruitedCharacterData, Mask } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
-import { GameItemId } from '../data/loot';
 
 describe('useCharactersState', () => {
-  const mockAddItemToInventory = jest.fn();
   let mockProtodermis = 1000;
   const mockSetProtodermis = jest.fn((amount: number) => {
     mockProtodermis = amount;
   });
 
   beforeEach(() => {
-    mockAddItemToInventory.mockClear();
     mockSetProtodermis.mockClear();
     mockProtodermis = 1000;
     global.alert = jest.fn();
@@ -27,13 +24,7 @@ describe('useCharactersState', () => {
       const initialBuyable: ListedCharacterData[] = [{ id: 'Hahli', cost: 50, requiredItems: [] }];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          initialBuyable,
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, initialBuyable, mockProtodermis, mockSetProtodermis)
       );
 
       expect(result.current.recruitedCharacters).toEqual(initialRecruited);
@@ -48,13 +39,7 @@ describe('useCharactersState', () => {
       ];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          initialBuyable,
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, initialBuyable, mockProtodermis, mockSetProtodermis)
       );
 
       expect(result.current.buyableCharacters).toHaveLength(1);
@@ -73,13 +58,7 @@ describe('useCharactersState', () => {
       const initialBuyable: ListedCharacterData[] = [character];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          initialBuyable,
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, initialBuyable, mockProtodermis, mockSetProtodermis)
       );
 
       act(() => {
@@ -102,13 +81,7 @@ describe('useCharactersState', () => {
       const initialBuyable: ListedCharacterData[] = [character];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          initialBuyable,
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, initialBuyable, mockProtodermis, mockSetProtodermis)
       );
 
       act(() => {
@@ -119,34 +92,25 @@ describe('useCharactersState', () => {
       expect(result.current.buyableCharacters).toHaveLength(1);
     });
 
-    test('consumes required items when recruiting', () => {
+    test('recruits character and deducts only protodermis cost', () => {
       const initialRecruited: RecruitedCharacterData[] = [];
       const character: ListedCharacterData = {
         id: 'Jala',
         cost: 100,
-        requiredItems: [
-          { item: GameItemId.Charcoal, quantity: 5 },
-          { item: GameItemId.AquaFilter, quantity: 3 },
-        ],
+        requiredItems: [],
       };
       const initialBuyable: ListedCharacterData[] = [character];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          initialBuyable,
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, initialBuyable, mockProtodermis, mockSetProtodermis)
       );
 
       act(() => {
         result.current.recruitCharacter(character);
       });
 
-      expect(mockAddItemToInventory).toHaveBeenCalledWith(GameItemId.Charcoal, -5);
-      expect(mockAddItemToInventory).toHaveBeenCalledWith(GameItemId.AquaFilter, -3);
+      expect(mockSetProtodermis).toHaveBeenCalledWith(900);
+      expect(result.current.recruitedCharacters).toHaveLength(1);
     });
   });
 
@@ -158,13 +122,7 @@ describe('useCharactersState', () => {
       ];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          [],
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, [], mockProtodermis, mockSetProtodermis)
       );
 
       act(() => {
@@ -180,13 +138,7 @@ describe('useCharactersState', () => {
       const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 0 }];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          [],
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, [], mockProtodermis, mockSetProtodermis)
       );
 
       act(() => {
@@ -213,13 +165,7 @@ describe('useCharactersState', () => {
       ];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          [],
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, [], mockProtodermis, mockSetProtodermis)
       );
 
       act(() => {
@@ -233,13 +179,7 @@ describe('useCharactersState', () => {
       const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          [],
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, [], mockProtodermis, mockSetProtodermis)
       );
 
       act(() => {
@@ -255,13 +195,7 @@ describe('useCharactersState', () => {
       const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 0 }];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          [],
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, [], mockProtodermis, mockSetProtodermis)
       );
 
       act(() => {
@@ -278,13 +212,7 @@ describe('useCharactersState', () => {
       ];
 
       const { result } = renderHook(() =>
-        useCharactersState(
-          initialRecruited,
-          [],
-          mockProtodermis,
-          mockSetProtodermis,
-          mockAddItemToInventory
-        )
+        useCharactersState(initialRecruited, [], mockProtodermis, mockSetProtodermis)
       );
 
       act(() => {

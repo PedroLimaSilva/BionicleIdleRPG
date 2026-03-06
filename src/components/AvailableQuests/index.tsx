@@ -1,10 +1,8 @@
-import { GameItemId, ITEM_DICTIONARY } from '../../data/loot';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { getLevelFromExp } from '../../game/Levelling';
 import { getAvailableQuests } from '../../game/Quests';
-import { Inventory } from '../../services/inventoryUtils';
 import { RecruitedCharacterData } from '../../types/Matoran';
-import { Quest, QuestItemRequirement } from '../../types/Quests';
+import { Quest } from '../../types/Quests';
 import { KranaCollection } from '../../types/Krana';
 import { areAllKranaCollected } from '../../game/Krana';
 import { Tooltip } from '../Tooltip';
@@ -15,7 +13,6 @@ interface AvailableQuestsProps {
   completedQuestIds: string[];
   activeQuestIds: string[];
   recruitedCharacters: RecruitedCharacterData[];
-  inventory: Inventory;
   collectedKrana?: KranaCollection;
   startQuest: (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => void;
 }
@@ -25,7 +22,6 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
   completedQuestIds,
   activeQuestIds,
   recruitedCharacters,
-  inventory,
   collectedKrana,
   startQuest,
 }) => {
@@ -40,9 +36,6 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
       )
     );
 
-  const hasItems = (items: QuestItemRequirement[] = []) =>
-    items.every((req) => (inventory[req.id] || 0) >= req.amount);
-
   const hasAllKrana = (quest: Quest) => {
     if (!quest.requirements.requiresAllKrana) return true;
     if (!collectedKrana) return false;
@@ -50,9 +43,7 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
   };
 
   const isRequirementMet = (quest: Quest) =>
-    hasMatoran(quest.requirements.matoran, quest.requirements.minLevel) &&
-    hasItems(quest.requirements.items) &&
-    hasAllKrana(quest);
+    hasMatoran(quest.requirements.matoran, quest.requirements.minLevel) && hasAllKrana(quest);
 
   return (
     <div className="available-quests">
@@ -95,19 +86,6 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                   )}
                 </div>
 
-                <div className="available-quests__req">
-                  <strong>Items:</strong>
-                  <br />
-                  {quest.requirements.items?.map(({ id, amount }) => {
-                    const has = (inventory[id] || 0) >= amount;
-                    return (
-                      <span key={id} className={`requirement-chip ${has ? 'met' : 'missing'}`}>
-                        {amount} × {id}
-                      </span>
-                    );
-                  })}
-                </div>
-
                 {quest.requirements.requiresAllKrana && !hasAllKrana(quest) && (
                   <p className="available-quests__item-meta">
                     Requires all Krana to be collected before this quest can begin.
@@ -122,13 +100,6 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                         <span className="reward-label">Protodermis:</span> {quest.rewards.currency}
                       </li>
                     )}
-                    {quest.rewards.loot &&
-                      Object.entries(quest.rewards.loot).map(([itemId, amount]) => (
-                        <li key={itemId}>
-                          <span className="reward-label">Item:</span> {amount} ×{' '}
-                          {ITEM_DICTIONARY[itemId as GameItemId].name}
-                        </li>
-                      ))}
                     {quest.rewards.xpPerMatoran && (
                       <li>
                         <span className="reward-label">XP/Matoran:</span>{' '}

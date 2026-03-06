@@ -12,7 +12,6 @@ import { SettingsProvider } from './context/Settings.tsx';
 import './styles/index.scss';
 import { useEffect, useState } from 'react';
 import { preloadAssets } from './preload.ts';
-import { InventoryPage } from './pages/Inventory/index.tsx';
 import SettingsPage from './pages/Settings/index.tsx';
 import { QuestsPage } from './pages/Quests/index.tsx';
 import { QuestTreePage } from './pages/QuestTree/index.tsx';
@@ -78,7 +77,6 @@ export function App() {
                   <Route path="/recruitment" element={<Recruitment />} />
                   <Route path="/quests" element={<QuestsPage />} />
                   <Route path="/quest-tree" element={<QuestTreePage />} />
-                  <Route path="/inventory" element={<InventoryPage />} />
                   <Route path="/type-effectiveness" element={<TypeEffectivenessPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="*" element={<NotFound />} />

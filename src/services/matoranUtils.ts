@@ -6,7 +6,6 @@ import {
   RecruitedCharacterData,
 } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
-import { GameItemId } from '../data/loot';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
 import { CHARACTER_DEX } from '../data/dex/index';
@@ -178,8 +177,7 @@ export function getEffectiveMatoran(
 export function recruitMatoran(
   character: ListedCharacterData,
   protodermis: number,
-  buyableCharacters: ListedCharacterData[],
-  addItem: (item: GameItemId, amount: number) => void
+  buyableCharacters: ListedCharacterData[]
 ): {
   updatedProtodermis: number;
   newRecruit: RecruitedCharacterData | null;
@@ -198,10 +196,6 @@ export function recruitMatoran(
     id: character.id,
     exp: 0,
   };
-
-  character.requiredItems?.forEach((requirement) => {
-    addItem(requirement.item, -requirement.quantity);
-  });
 
   return {
     updatedProtodermis: protodermis - character.cost,

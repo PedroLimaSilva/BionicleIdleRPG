@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from '../types/Matoran';
-import { GameItemId } from '../data/loot';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
 
@@ -8,8 +7,7 @@ export function useCharactersState(
   initialRecruited: RecruitedCharacterData[],
   initialBuyable: ListedCharacterData[],
   protodermis: number,
-  setProtodermis: (amount: number) => void,
-  addItemToInventory: (item: GameItemId, amount: number) => void
+  setProtodermis: (amount: number) => void
 ) {
   const [recruitedCharacters, setRecruitedCharacters] =
     useState<RecruitedCharacterData[]>(initialRecruited);
@@ -22,8 +20,7 @@ export function useCharactersState(
     const { updatedProtodermis, newRecruit, updatedBuyable } = recruitMatoran(
       character,
       protodermis,
-      buyableCharacters,
-      addItemToInventory
+      buyableCharacters
     );
 
     if (!newRecruit) return;

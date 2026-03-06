@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useGame } from '../../context/Game';
-import { UserCircle2, Backpack, Settings, Map, Swords } from 'lucide-react';
+import { UserCircle2, Settings, Map, Swords } from 'lucide-react';
 import { BattlePhase } from '../../hooks/useBattleState';
 import { areBattlesUnlocked } from '../../game/Progress';
 import { getVisibleEncounters } from '../../game/encounterVisibility';
@@ -10,7 +10,7 @@ import { ENCOUNTERS } from '../../data/combat';
 import { CurrencyBar } from '../CurrencyBar';
 
 const shouldShowCurrencyBar = (pathname: string) => {
-  return ['/recruitment', '/inventory'].includes(pathname);
+  return ['/recruitment'].includes(pathname);
 };
 
 export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
@@ -20,13 +20,9 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
     () => getVisibleEncounters(ENCOUNTERS, collectedKrana, completedQuests),
     [collectedKrana, completedQuests]
   );
-  const bohrokKalDefeated = completedQuests.includes(
-    BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID
-  );
+  const bohrokKalDefeated = completedQuests.includes(BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID);
   const showBattleRoute =
-    areBattlesUnlocked(completedQuests) &&
-    visibleEncounters.length > 0 &&
-    !bohrokKalDefeated;
+    areBattlesUnlocked(completedQuests) && visibleEncounters.length > 0 && !bohrokKalDefeated;
 
   return (
     <div
@@ -56,10 +52,6 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
         <NavLink to="/characters" className="nav-item">
           <UserCircle2 />
           <label>Characters</label>
-        </NavLink>
-        <NavLink to="/inventory" className="nav-item">
-          <Backpack />
-          <label>Inventory</label>
         </NavLink>
         <NavLink to="/settings" className="nav-item">
           <Settings />

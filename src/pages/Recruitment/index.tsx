@@ -4,14 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import './index.scss';
 import { ListedCharacterData } from '../../types/Matoran';
 import { useGame } from '../../context/Game';
-import { ITEM_DICTIONARY } from '../../data/loot';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const Recruitment: React.FC = () => {
-  const { protodermis, recruitCharacter, buyableCharacters, inventory } = useGame();
+  const { protodermis, recruitCharacter, buyableCharacters } = useGame();
   const { setScene } = useSceneCanvas();
 
   const navigate = useNavigate();
@@ -19,16 +18,8 @@ export const Recruitment: React.FC = () => {
   const [selectedMatoran, setSelectedMatoran] = useState<ListedCharacterData | null>(null);
 
   const canRecruit = useMemo(() => {
-    const hasRequiredItems = (matoran: ListedCharacterData): boolean => {
-      return (matoran.requiredItems || []).every(({ item, quantity }) => {
-        return (inventory[item] || 0) >= quantity;
-      });
-    };
-
-    return (
-      selectedMatoran && protodermis >= selectedMatoran.cost && hasRequiredItems(selectedMatoran)
-    );
-  }, [selectedMatoran, protodermis, inventory]);
+    return selectedMatoran && protodermis >= selectedMatoran.cost;
+  }, [selectedMatoran, protodermis]);
 
   useEffect(() => {
     setSelectedMatoran(buyableCharacters[0] || null);
@@ -105,18 +96,6 @@ export const Recruitment: React.FC = () => {
                 {protodermis >= selectedMatoran.cost ? '✅' : '❌'} {selectedMatoran.cost}{' '}
                 protodermis
               </li>
-              {selectedMatoran.requiredItems?.map(({ item, quantity }) => {
-                const owned = inventory[item] || 0;
-                const hasEnough = owned >= quantity;
-                return (
-                  <li
-                    key={`${selectedMatoran.id}-${item}`}
-                    className={hasEnough ? 'has-enough' : 'not-enough'}
-                  >
-                    {hasEnough ? '✅' : '❌'} {ITEM_DICTIONARY[item].name} ({owned} / {quantity})
-                  </li>
-                );
-              })}
             </ul>
 
             <button

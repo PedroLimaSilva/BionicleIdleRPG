@@ -16,7 +16,6 @@ import {
   Mask,
 } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
-import { GameItemId } from '../data/loot';
 import { LegoColor } from '../types/Colors';
 
 const MOCK_COLORS = {
@@ -132,11 +131,7 @@ describe('matoranUtils', () => {
   });
 
   describe('recruitMatoran', () => {
-    const mockAddItem = jest.fn();
-
     beforeEach(() => {
-      mockAddItem.mockClear();
-      // Mock alert to prevent console output during tests
       global.alert = jest.fn();
     });
 
@@ -148,7 +143,7 @@ describe('matoranUtils', () => {
       };
       const buyableCharacters: ListedCharacterData[] = [character];
 
-      const result = recruitMatoran(character, 150, buyableCharacters, mockAddItem);
+      const result = recruitMatoran(character, 150, buyableCharacters);
 
       expect(result.updatedProtodermis).toBe(50);
       expect(result.newRecruit).toEqual({ id: 'Jala', exp: 0 });
@@ -163,7 +158,7 @@ describe('matoranUtils', () => {
       };
       const buyableCharacters: ListedCharacterData[] = [character];
 
-      const result = recruitMatoran(character, 50, buyableCharacters, mockAddItem);
+      const result = recruitMatoran(character, 50, buyableCharacters);
 
       expect(result.updatedProtodermis).toBe(50);
       expect(result.newRecruit).toBeNull();
@@ -184,27 +179,10 @@ describe('matoranUtils', () => {
       };
       const buyableCharacters: ListedCharacterData[] = [character1, character2];
 
-      const result = recruitMatoran(character1, 150, buyableCharacters, mockAddItem);
+      const result = recruitMatoran(character1, 150, buyableCharacters);
 
       expect(result.updatedBuyable).toHaveLength(1);
       expect(result.updatedBuyable[0].id).toBe('Hahli');
-    });
-
-    test('consumes required items when recruiting', () => {
-      const character: ListedCharacterData = {
-        id: 'Jala',
-        cost: 100,
-        requiredItems: [
-          { item: GameItemId.LightStone, quantity: 5 },
-          { item: GameItemId.Charcoal, quantity: 3 },
-        ],
-      };
-      const buyableCharacters: ListedCharacterData[] = [character];
-
-      recruitMatoran(character, 150, buyableCharacters, mockAddItem);
-
-      expect(mockAddItem).toHaveBeenCalledWith(GameItemId.LightStone, -5);
-      expect(mockAddItem).toHaveBeenCalledWith(GameItemId.Charcoal, -3);
     });
   });
 
