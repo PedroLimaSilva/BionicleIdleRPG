@@ -181,7 +181,7 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: 'bohrok_evolve_toa_nuva',
     name: 'Dawn of the Toa Nuva',
     description:
-      'Deep in the Bohrok nest, the Toa don salvaged Exo-Toa armor and confront the Bahrag—Cahdok and Gahdok, twin queens of the swarm. The battle is brutal.',
+      'Deep in the Bohrok nest, the Toa shed their Exo-Toa armor and confront the Bahrag—Cahdok and Gahdok, twin queens of the swarm. The battle is brutal.',
     durationSeconds: 25 * 60, // 25 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
