@@ -133,7 +133,7 @@ describe('chooseTarget', () => {
         maxHp: 0,
         speed: 0,
         willUseAbility: false,
-      }, // neutral (1x)
+      }, // effective (1.5x) — tie broken by order (ice checked first)
     ];
 
     const chosen = chooseTarget(self, customTargets);

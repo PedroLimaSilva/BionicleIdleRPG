@@ -11,6 +11,8 @@ const ELEMENT_ORDER: ElementTribe[] = [
   ElementTribe.Stone,
   ElementTribe.Earth,
   ElementTribe.Air,
+  ElementTribe.Shadow,
+  ElementTribe.Light,
 ];
 
 function getMultiplierLabel(multiplier: number): string {
@@ -52,8 +54,7 @@ export default function TypeEffectivenessPage() {
                   <ElementTag element={attacker} showName />
                 </th>
                 {ELEMENT_ORDER.map((defender) => {
-                  const multiplier =
-                    ELEMENT_EFFECTIVENESS[attacker]?.[defender] ?? 1.0;
+                  const multiplier = ELEMENT_EFFECTIVENESS[attacker]?.[defender] ?? 1.0;
                   return (
                     <td
                       key={defender}

@@ -13,26 +13,49 @@ declare global {
 }
 
 /**
+ * Symmetric element effectiveness: if A is strong vs B (1.5×),
+ * then B is weak vs A (0.5×). Each element has exactly 2 strong
+ * matchups, 2 weak matchups, and 4 neutral. All row and column
+ * sums equal 8.0 for perfect balance.
+ *
+ * Lore basis (Bionicle):
+ *   Fire  → Ice    fire melts ice
+ *   Fire  → Shadow fire illuminates, dispels darkness
+ *   Water → Fire   water extinguishes fire
+ *   Water → Stone  water erodes stone
+ *   Ice   → Water  ice freezes water
+ *   Ice   → Light  ice refracts / scatters light
+ *   Stone → Fire   stone smothers fire, fire-resistant
+ *   Stone → Air    stone blocks wind, immovable
+ *   Earth → Stone  seismic power shatters rock
+ *   Earth → Light  underground absorbs light (Onu-Matoran)
+ *   Air   → Earth  wind erosion, open sky vs underground
+ *   Air   → Ice    warm currents melt ice
+ *   Light → Shadow Takanuva defeats Makuta
+ *   Light → Water  light energy penetrates water
+ *   Shadow→ Air    Makuta's darkness engulfs Le-Wahi
+ *   Shadow→ Earth  Makuta's domain lies underground
+ *
  *          D E F E N D E R
  *    |    | 🔥  | 🌊  | ❄️  | 🪨  | 🌍  | 💨  | 🌑  | 🌕  |
- * A  | 🔥 | 1.0 | 1.0 | 1.5 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 |
- * T  | 🌊 | 1.5 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 |
- * T  | ❄️ | 0.5 | 1.5 | 1.0 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 |
- * A  | 🪨 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 | 1.5 | 1.0 | 1.0 |
- * C  | 🌍 | 1.5 | 1.0 | 1.0 | 1.0 | 1.0 | 0.5 | 1.0 | 1.0 |
- * K  | 💨 | 1.5 | 1.0 | 1.0 | 1.0 | 1.5 | 1.0 | 1.0 | 1.0 |
- * E  | 🌑 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 0.5 | 1.5 |
- * R  | 🌕 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.5 | 0.5 |
+ * A  | 🔥 | 1.0 | 0.5 | 1.5 | 0.5 | 1.0 | 1.0 | 1.5 | 1.0 |
+ * T  | 🌊 | 1.5 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 | 1.0 | 0.5 |
+ * T  | ❄️ | 0.5 | 1.5 | 1.0 | 1.0 | 1.0 | 0.5 | 1.0 | 1.5 |
+ * A  | 🪨 | 1.5 | 0.5 | 1.0 | 1.0 | 0.5 | 1.5 | 1.0 | 1.0 |
+ * C  | 🌍 | 1.0 | 1.0 | 1.0 | 1.5 | 1.0 | 0.5 | 0.5 | 1.5 |
+ * K  | 💨 | 1.0 | 1.0 | 1.5 | 0.5 | 1.5 | 1.0 | 0.5 | 1.0 |
+ * E  | 🌑 | 0.5 | 1.0 | 1.0 | 1.0 | 1.5 | 1.5 | 1.0 | 0.5 |
+ * R  | 🌕 | 1.0 | 1.5 | 0.5 | 1.0 | 0.5 | 1.0 | 1.5 | 1.0 |
  */
 export const ELEMENT_EFFECTIVENESS: Record<ElementTribe, Record<ElementTribe, number>> = {
   [ElementTribe.Fire]: {
     [ElementTribe.Fire]: 1.0,
-    [ElementTribe.Water]: 1.0,
+    [ElementTribe.Water]: 0.5,
     [ElementTribe.Ice]: 1.5,
-    [ElementTribe.Stone]: 1.0,
-    [ElementTribe.Earth]: 0.5,
-    [ElementTribe.Air]: 1.5,
-    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Stone]: 0.5,
+    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Shadow]: 1.5,
     [ElementTribe.Light]: 1.0,
   },
   [ElementTribe.Water]: {
@@ -43,67 +66,67 @@ export const ELEMENT_EFFECTIVENESS: Record<ElementTribe, Record<ElementTribe, nu
     [ElementTribe.Earth]: 1.0,
     [ElementTribe.Air]: 1.0,
     [ElementTribe.Shadow]: 1.0,
-    [ElementTribe.Light]: 1.0,
+    [ElementTribe.Light]: 0.5,
   },
   [ElementTribe.Ice]: {
     [ElementTribe.Fire]: 0.5,
     [ElementTribe.Water]: 1.5,
     [ElementTribe.Ice]: 1.0,
-    [ElementTribe.Stone]: 1.5,
-    [ElementTribe.Earth]: 1.0,
-    [ElementTribe.Air]: 1.0,
-    [ElementTribe.Shadow]: 1.0,
-    [ElementTribe.Light]: 1.0,
-  },
-  [ElementTribe.Stone]: {
-    [ElementTribe.Fire]: 1.0,
-    [ElementTribe.Water]: 0.5,
-    [ElementTribe.Ice]: 1.5,
     [ElementTribe.Stone]: 1.0,
     [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Air]: 0.5,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Light]: 1.5,
+  },
+  [ElementTribe.Stone]: {
+    [ElementTribe.Fire]: 1.5,
+    [ElementTribe.Water]: 0.5,
+    [ElementTribe.Ice]: 1.0,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Earth]: 0.5,
     [ElementTribe.Air]: 1.5,
     [ElementTribe.Shadow]: 1.0,
     [ElementTribe.Light]: 1.0,
   },
   [ElementTribe.Earth]: {
-    [ElementTribe.Fire]: 1.5,
+    [ElementTribe.Fire]: 1.0,
     [ElementTribe.Water]: 1.0,
     [ElementTribe.Ice]: 1.0,
-    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Stone]: 1.5,
     [ElementTribe.Earth]: 1.0,
     [ElementTribe.Air]: 0.5,
-    [ElementTribe.Shadow]: 1.0,
-    [ElementTribe.Light]: 1.0,
+    [ElementTribe.Shadow]: 0.5,
+    [ElementTribe.Light]: 1.5,
   },
   [ElementTribe.Air]: {
-    [ElementTribe.Fire]: 1.5,
+    [ElementTribe.Fire]: 1.0,
+    [ElementTribe.Water]: 1.0,
+    [ElementTribe.Ice]: 1.5,
+    [ElementTribe.Stone]: 0.5,
+    [ElementTribe.Earth]: 1.5,
+    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Shadow]: 0.5,
+    [ElementTribe.Light]: 1.0,
+  },
+  [ElementTribe.Shadow]: {
+    [ElementTribe.Fire]: 0.5,
     [ElementTribe.Water]: 1.0,
     [ElementTribe.Ice]: 1.0,
     [ElementTribe.Stone]: 1.0,
     [ElementTribe.Earth]: 1.5,
-    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Air]: 1.5,
     [ElementTribe.Shadow]: 1.0,
-    [ElementTribe.Light]: 1.0,
-  },
-  [ElementTribe.Shadow]: {
-    [ElementTribe.Fire]: 1.0,
-    [ElementTribe.Water]: 1.0,
-    [ElementTribe.Ice]: 1.0,
-    [ElementTribe.Stone]: 1.0,
-    [ElementTribe.Earth]: 1.0,
-    [ElementTribe.Air]: 1.0,
-    [ElementTribe.Shadow]: 0.5,
-    [ElementTribe.Light]: 1.5,
+    [ElementTribe.Light]: 0.5,
   },
   [ElementTribe.Light]: {
     [ElementTribe.Fire]: 1.0,
-    [ElementTribe.Water]: 1.0,
-    [ElementTribe.Ice]: 1.0,
+    [ElementTribe.Water]: 1.5,
+    [ElementTribe.Ice]: 0.5,
     [ElementTribe.Stone]: 1.0,
-    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Earth]: 0.5,
     [ElementTribe.Air]: 1.0,
     [ElementTribe.Shadow]: 1.5,
-    [ElementTribe.Light]: 0.5,
+    [ElementTribe.Light]: 1.0,
   },
 };
 
@@ -361,8 +384,7 @@ function deactivateMaskPowersWithDeadTargets(
   enemies: Combatant[]
 ): { team: Combatant[]; enemies: Combatant[] } {
   const all = [...team, ...enemies];
-  const targetsEnemyOrAll =
-    (mp: { target?: string } | undefined) =>
+  const targetsEnemyOrAll = (mp: { target?: string } | undefined) =>
     mp?.target === 'enemy' || mp?.target === 'allEnemies';
 
   let nextTeam = team;
@@ -372,7 +394,8 @@ function deactivateMaskPowersWithDeadTargets(
     const recipientsWithEffect = all.filter((x) =>
       x.effects?.some((e) => e.sourceId === c.id && e.durationRemaining > 0)
     );
-    const allRecipientsDead = recipientsWithEffect.length > 0 && recipientsWithEffect.every((r) => r.hp <= 0);
+    const allRecipientsDead =
+      recipientsWithEffect.length > 0 && recipientsWithEffect.every((r) => r.hp <= 0);
 
     if (allRecipientsDead) {
       const power = MASK_POWERS[c.maskPower.shortName];
@@ -708,9 +731,7 @@ export function hasActiveEffectFromSource(
 ): boolean {
   const hasFrom = (list: Combatant[]) =>
     list.some(
-      (c) =>
-        c.hp > 0 &&
-        c.effects?.some((e) => e.sourceId === sourceId && e.durationRemaining > 0)
+      (c) => c.hp > 0 && c.effects?.some((e) => e.sourceId === sourceId && e.durationRemaining > 0)
     );
   return hasFrom(team) || hasFrom(enemies);
 }
