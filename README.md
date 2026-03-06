@@ -244,6 +244,7 @@ Turn-based combat system:
 - Mask powers with cooldowns
 - Elemental strengths and weaknesses
 - Team composition matters
+- Krana collection from Bohrok battles
 
 ## 🎨 3D Models
 

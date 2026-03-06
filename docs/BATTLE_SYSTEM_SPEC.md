@@ -14,6 +14,7 @@ The battle system is a turn-based combat system where players select a team of T
   - Difficulty level
   - Number of waves
   - Enemy types (headliner)
+  - Potential Krana drops (when collection is active)
 - User selects a battle to start
 
 ### 2. Team Preparation (Preparing Phase)
@@ -85,9 +86,11 @@ Each round consists of:
 - Display victory screen
 - Show rewards summary:
   - Experience gained per Toa
+  - Krana collected (when Krana collection is active)
 - User collects rewards
 - Rewards are persisted to game state:
   - Toa gain experience
+  - Krana added to collection
 - Return to battle selection
 
 #### Defeat (Defeat Phase)
@@ -221,6 +224,7 @@ When a mask is activated, it creates `TargetEffect` instances on the appropriate
 ### Persistent (Saved to Game State)
 
 - Toa experience (only on victory)
+- Krana collected (only on victory, when collection is active)
 - Completed battles (for unlocking new content)
 
 ## Technical Implementation Notes
