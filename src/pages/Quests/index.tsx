@@ -24,9 +24,9 @@ import {
 const DEFAULT_SECTION_LABEL = 'Other Quests';
 
 const SECTION_ORDER: Record<string, number> = {
-  'Arrival of the Toa': 0,
+  'Bohrok Swarms': 0,
   "The Cronicler's Journey": 1,
-  'Bohrok Swarms': 2,
+  'Arrival of the Toa': 2,
   [DEFAULT_SECTION_LABEL]: 3,
 };
 

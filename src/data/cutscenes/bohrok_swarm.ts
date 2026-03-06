@@ -52,7 +52,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Tahu',
         portraitType: 'avatar',
         position: 'left',
-        text: `To Ta-Koro—now! We face this new threat together!`,
+        text: `Let's each head to our own village and protect the Matoran!`,
       },
     ],
   },
@@ -63,10 +63,10 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
     steps: [
       {
         type: 'dialogue',
-        speakerId: 'Takua',
+        speakerId: 'Jala',
         portraitType: 'avatar',
         position: 'right',
-        text: `Tahu! They're breaching the eastern wall!`,
+        text: `Toa Tahu! These creatures are breaching the eastern wall!`,
       },
       {
         type: 'dialogue',
@@ -81,7 +81,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Takua',
+        speakerId: 'Jala',
         portraitType: 'avatar',
         position: 'right',
         text: `It's working! But there are so many...`,
@@ -91,7 +91,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Tahu',
         portraitType: 'avatar',
         position: 'left',
-        text: `Then we fight until there are none left. This is our village, Chronicler. We don't yield.`,
+        text: `Then we fight until there are none left. This is our village, Captain. We don't yield.`,
       },
       {
         type: 'narration',
@@ -106,7 +106,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Takua',
+        speakerId: 'Toa_Tahu',
         portraitType: 'avatar',
         position: 'right',
         text: `You know what these things are?`,
@@ -116,7 +116,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Turaga_Vakama',
         portraitType: 'avatar',
         position: 'left',
-        text: `I know more than I wish to. Come, Chronicler. We must speak with the Toa—and quickly.`,
+        text: `I know more than I wish to. Come, Toa Tahu. We must speak.`,
       },
     ],
   },
@@ -163,13 +163,6 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
       {
         type: 'narration',
         text: `With a great heave, Hafu shatters the base of his finest carving. The massive stone figure crashes across the tunnel entrance, blocking the Tahnok's advance. The villagers flee to safety behind the rubble wall.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Huki',
-        portraitType: 'avatar',
-        position: 'left',
-        text: `That was the bravest thing I've ever seen, Hafu.`,
       },
       {
         type: 'dialogue',
@@ -258,7 +251,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Takua',
+        speakerId: 'Toa_Tahu',
         portraitType: 'avatar',
         position: 'right',
         text: `What are those creatures, Turaga? They're not like any Rahi we've seen.`,
@@ -272,10 +265,10 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Takua',
+        speakerId: 'Toa_Tahu',
         portraitType: 'avatar',
         position: 'right',
-        text: `What controls them? We pulled a glowing thing from one of their heads.`,
+        text: `What controls them? I pulled a glowing thing from one of their heads.`,
       },
       {
         type: 'dialogue',
@@ -286,7 +279,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Takua',
+        speakerId: 'Toa_Tahu',
         portraitType: 'avatar',
         position: 'right',
         text: `And what's in the nest?`,
@@ -300,10 +293,10 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Takua',
+        speakerId: 'Toa_Tahu',
         portraitType: 'avatar',
         position: 'right',
-        text: `I'll make sure the Toa know. Thank you, Turaga.`,
+        text: `I'll make sure the other Toa know about this. Thank you, Turaga.`,
       },
     ],
   },
@@ -325,7 +318,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Toa_Lewa',
+        speakerId: 'Toa_Lewa_Krana',
         portraitType: 'avatar',
         position: 'right',
         text: `The swarm is everything. The swarm will cleanse the island. You cannot stop what must be.`,

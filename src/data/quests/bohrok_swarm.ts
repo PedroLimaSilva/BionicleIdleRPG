@@ -37,32 +37,12 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     section: 'Bohrok Swarms',
   },
   {
-    id: 'bohrok_jala_ta_koro_defense',
-    name: 'Jala’s Stand at Ta-Koro',
-    description:
-      'As the Bohrok swarms descend on Mata Nui, the ice Bohrok Kohrak strike at Ta-Koro. With the Toa still en route, Captain Jala rallies the village guard to hold the line. Armed with flame and courage, he leads the defense of his home until reinforcements arrive.',
-    durationSeconds: 12 * 60, // 12 minutes
-    requirements: {
-      matoran: ['Jala'],
-      minLevel: 12,
-      items: [],
-    },
-    rewards: {
-      xpPerMatoran: 1600,
-      currency: 2100,
-      loot: {},
-    },
-    unlockedAfter: ['mnog_return_to_shore'],
-    section: 'Bohrok Swarms',
-  },
-  {
     id: 'bohrok_ta_koro_defense',
     name: 'Siege of Ta-Koro',
-    description:
-      'The Kohrak—ice Bohrok—swarm the walls of Ta-Koro. Their ice blasts crack the stone ramparts. The lava moat churns with fallen drones.',
+    description: 'The Kohrak—ice Bohrok—swarm the walls of Ta-Koro.',
     durationSeconds: 15 * 60, // 15 minutes
     requirements: {
-      matoran: ['Toa_Tahu', 'Takua'],
+      matoran: ['Toa_Tahu', 'Jala'],
       minLevel: 12,
       items: [],
     },
@@ -119,10 +99,10 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     id: BOHROK_KRANA_LEGEND_QUEST_ID,
     name: 'Legend of the Krana',
     description:
-      'Having recognized the Bohrok from the old legends, Turaga Vakama gathers the Toa and reveals the ancient tale of the swarms and the Krana that control them. The Toa learn that only by collecting the Krana from each Bohrok type can they hope to reach the heart of the nests and end the threat to Mata Nui.',
+      'Having recognized the Bohrok from the old legends, Turaga Vakama reveals the ancient tale of the swarms and the Krana that control them.',
     durationSeconds: 5 * 60, // 5 minutes
     requirements: {
-      matoran: ['Takua'],
+      matoran: ['Toa_Tahu'],
       minLevel: 12,
       items: [],
     },

@@ -246,11 +246,6 @@ XP: 5000"]
 Loot: 
 Currency: 2000
 XP: 1500"]
-  bohrok_jala_ta_koro_defense["Jala’s Stand at Ta-Koro
-(12m)
-Loot: 
-Currency: 2100
-XP: 1600"]
   bohrok_ta_koro_defense["Siege of Ta-Koro
 (15m)
 Loot: 
@@ -474,7 +469,6 @@ XP: 4000"]
   mnog_gali_call --> mnog_witness_makuta_battle
   mnog_witness_makuta_battle --> mnog_return_to_shore
   mnog_return_to_shore --> bohrok_swarm_intro
-  mnog_return_to_shore --> bohrok_jala_ta_koro_defense
   bohrok_swarm_intro --> bohrok_ta_koro_defense
   bohrok_swarm_intro --> bohrok_po_koro_defense
   bohrok_ta_koro_defense --> bohrok_onu_koro_boxor

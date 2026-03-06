@@ -1,4 +1,4 @@
-import { BaseMatoran, MatoranStage } from '../types/Matoran';
+import { BaseMatoran, Mask, MatoranStage } from '../types/Matoran';
 import { LegoColor } from '../types/Colors';
 import { isNuvaSymbolsSequestered } from './nuvaSymbols';
 
@@ -39,6 +39,9 @@ export function getEffectiveMaskColor(
   matoran: BaseMatoran & { maskOverride?: string },
   completedQuests: string[]
 ): string {
+  if (matoran.mask === Mask.Krana) {
+    return matoran.colors.mask;
+  }
   if (matoran.stage === MatoranStage.ToaNuva) {
     return getEffectiveNuvaMaskColor(matoran, completedQuests);
   } else if (matoran.stage === MatoranStage.ToaMata) {
