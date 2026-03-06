@@ -3,7 +3,7 @@ import { CHARACTER_DEX } from '../data/dex/index';
 import { getLevelFromExp } from './Levelling';
 import { MOL_TAKANUVA_RISES_QUEST_ID } from '../data/quests/mask_of_light';
 
-export const EVOLUTION_LEVEL_REQUIREMENT = 50;
+export const EVOLUTION_LEVEL_REQUIREMENT = 40;
 export const BOHROK_KAL_LEVEL_REQUIREMENT = 100;
 export const TAKANUVA_LEVEL_REQUIREMENT = 100;
 
