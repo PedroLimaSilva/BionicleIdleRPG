@@ -1,5 +1,6 @@
 import { PWABadge } from './components/CacheManagement/PWABadge.tsx';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'motion/react';
 
 import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
 import { Recruitment } from './pages/Recruitment/index.tsx';
@@ -27,6 +28,28 @@ const NotFound: React.FC = () => (
     <p>The page you are looking for does not exist.</p>
   </div>
 );
+
+function AnimatedRoutes() {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="sync">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<QuestsPage />} />
+        <Route path="/battle/selector" element={<BattleSelector />} />
+        <Route path="/battle" element={<BattlePage />} />
+        <Route path="/characters" element={<CharacterInventory />} />
+        <Route path="/characters/:id" element={<CharacterDetail />} />
+        <Route path="/recruitment" element={<Recruitment />} />
+        <Route path="/quests" element={<QuestsPage />} />
+        <Route path="/quest-tree" element={<QuestTreePage />} />
+        <Route path="/inventory" element={<InventoryPage />} />
+        <Route path="/type-effectiveness" element={<TypeEffectivenessPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 export function App() {
   useEffect(() => {
@@ -69,20 +92,7 @@ export function App() {
             <div className="app-container">
               <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
                 <div id="canvas-mount"></div>
-                <Routes>
-                  <Route path="/" element={<QuestsPage />} />
-                  <Route path="/battle/selector" element={<BattleSelector />} />
-                  <Route path="/battle" element={<BattlePage />} />
-                  <Route path="/characters" element={<CharacterInventory />} />
-                  <Route path="/characters/:id" element={<CharacterDetail />} />
-                  <Route path="/recruitment" element={<Recruitment />} />
-                  <Route path="/quests" element={<QuestsPage />} />
-                  <Route path="/quest-tree" element={<QuestTreePage />} />
-                  <Route path="/inventory" element={<InventoryPage />} />
-                  <Route path="/type-effectiveness" element={<TypeEffectivenessPage />} />
-                  <Route path="/settings" element={<SettingsPage />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                <AnimatedRoutes />
               </main>
               <NavBar isPortrait={isPortrait} />
             </div>
