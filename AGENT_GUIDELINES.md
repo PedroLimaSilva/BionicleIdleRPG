@@ -115,16 +115,15 @@ The game runs entirely in the browser. All game logic must support offline progr
 
 ### Inventory and Items
 
+Items and materials have been removed from the active economy. Jobs no longer produce item drops, quests no longer require or reward items, and recruitment costs only protodermis. The inventory infrastructure (types, state hook, persistence) is retained for future quest-item mechanics.
+
 **MUST ENFORCE:**
 
 1. Inventory quantities must never be negative
-2. Item requirements must be checked before allowing recruitment or quest starts
-3. The `Inventory` type is `Partial<Record<GameItemId, number>>`
-4. Inventory merging uses `mergeInventory` or `addToInventory` utilities
+2. The `Inventory` type is `Partial<Record<GameItemId, number>>`
+3. Inventory merging uses `mergeInventory` or `addToInventory` utilities
 
 **NEVER** allow negative inventory values.
-
-**NEVER** bypass item requirement checks.
 
 **NEVER** mutate inventory objects directly. Always create new objects.
 

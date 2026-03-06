@@ -125,7 +125,7 @@ Candidate surfaces:
 
 - Nav visibility transition refinement
 - Tab content transitions
-- Character/inventory list item enter/layout transitions
+- Character list item enter/layout transitions
 
 ### Exit criteria
 
