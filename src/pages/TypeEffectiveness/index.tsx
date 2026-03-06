@@ -37,7 +37,10 @@ export default function TypeEffectivenessPage() {
         <table className="type-effectiveness__table">
           <thead>
             <tr>
-              <th className="type-effectiveness__corner"></th>
+              <th className="type-effectiveness__corner">
+                <span className="type-effectiveness__label-defender">Defender ➜</span>
+                <span className="type-effectiveness__label-attacker">Attacker ↓</span>
+              </th>
               {ELEMENT_ORDER.map((defender) => (
                 <th key={defender} className="type-effectiveness__header">
                   <ElementTag element={defender} showName />
@@ -52,8 +55,7 @@ export default function TypeEffectivenessPage() {
                   <ElementTag element={attacker} showName />
                 </th>
                 {ELEMENT_ORDER.map((defender) => {
-                  const multiplier =
-                    ELEMENT_EFFECTIVENESS[attacker]?.[defender] ?? 1.0;
+                  const multiplier = ELEMENT_EFFECTIVENESS[attacker]?.[defender] ?? 1.0;
                   return (
                     <td
                       key={defender}

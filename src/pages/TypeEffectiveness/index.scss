@@ -34,6 +34,28 @@
   &__corner {
     background: var(--color-surface-mid);
     min-width: 80px;
+    position: relative;
+  }
+
+  &__label-defender {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    text-align: right;
+    padding-bottom: 0.15rem;
+  }
+
+  &__label-attacker {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    text-align: left;
   }
 
   &__header {

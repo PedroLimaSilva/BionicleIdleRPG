@@ -119,7 +119,7 @@ describe('chooseTarget', () => {
         maxHp: 0,
         speed: 0,
         willUseAbility: false,
-      }, // neutral (1x)
+      }, // weak (0.5x)
       {
         id: 'shadow',
         hp: 100,
