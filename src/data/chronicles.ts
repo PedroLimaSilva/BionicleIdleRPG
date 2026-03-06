@@ -898,7 +898,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Mask of Light',
       title: 'The Mask in the Lava',
       description:
-        'While lava surfing in the tunnels beneath Ta-Wahi, Takua stumbles upon a glowing mask unlike any he has ever seen. Jaller finds him just in time, and together they bring the mask to the surface.',
+        'While he should be preparing for the kolhii match, Takua is exploring the lava caves beneath Ta-Koro and stumbles upon a glowing mask unlike any he has ever seen. Jaller finds him just in time, and together they bring the mask to the surface.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mol_discovery_of_avohkii',
@@ -909,7 +909,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Mask of Light',
       title: 'The Kolhii Tournament',
       description:
-        'During the great kolhii match at Ta-Koro, the mysterious mask tumbles from Jaller\'s pack and lands at Takua\'s feet, bathing him in golden light. Turaga Nokama names it the Avohkii—the Mask of Light—and declares that Takua must find the Seventh Toa.',
+        'During the great kolhii match at Ta-Koro, the mysterious mask tumbles from Jaller\'s pack and lands at Takua\'s feet, bathing Jaller in golden light. Turaga Nokama names it the Avohkii—the Mask of Light—and declares that Jaller must find the Seventh Toa.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mol_kolhii_tournament',
@@ -1056,7 +1056,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Mask of Light',
       title: 'The Mask in the Lava',
       description:
-        'Jaller searches for Takua in the lava tunnels beneath Ta-Wahi and finds him clutching a strange glowing mask. Together they bring it to the surface, not knowing it will change both their lives forever.',
+        'Jaller searches for Takua in the lava tunnels beneath Ta-Koro and finds him clutching a strange glowing mask. Together they bring it to the surface, not knowing it will change both their lives forever.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mol_discovery_of_avohkii',
@@ -1067,7 +1067,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Mask of Light',
       title: 'The Kolhii Tournament',
       description:
-        'During the kolhii match at Ta-Koro, the mask tumbles from Jaller\'s pack and shines upon Takua. Determined to see this through, Jaller insists on accompanying Takua on the quest to find the Seventh Toa.',
+        'During the kolhii match at Ta-Koro, the mask tumbles from Jaller\'s pack and shines upon him. Named Herald of the Seventh Toa, Jaller nominates Takua to chronicle his journey.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mol_kolhii_tournament',
@@ -1332,7 +1332,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Tales of the Masks',
       title: 'Secrets Beneath the Ice',
       description:
-        'Turaga Vakama summons Matoro to the Sanctum for a private task. The Turaga have kept ancient secrets for a thousand years, and now they need Matoro to translate for Nuju at a private council—one that will decide whether the time has come to reveal the truth.',
+        'Turaga Vakama summons Matoro to the Sanctum for a private task. The Turaga have kept ancient secrets for a thousand years, and once more they need Matoro to translate for Nuju at a private council—one that will decide whether the time has come to reveal the truth.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'tales_turaga_and_matoro',
