@@ -119,7 +119,7 @@ describe('chooseTarget', () => {
         maxHp: 0,
         speed: 0,
         willUseAbility: false,
-      }, // effective (1.5x) — tie broken by order (ice checked first)
+      }, // weak (0.5x)
       {
         id: 'shadow',
         hp: 100,
