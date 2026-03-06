@@ -9,6 +9,11 @@
   font-display: swap;
 }
 
+/** Utility: apply Bionicle font to element and its text descendants */
+.bionicle-font {
+  font-family: var(--font-chronicle-locked);
+}
+
 :root {
   --color-text: #ffffff;
   --color-text-muted: #b0b0b0;
