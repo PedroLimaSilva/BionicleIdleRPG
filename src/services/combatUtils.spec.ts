@@ -119,7 +119,7 @@ describe('chooseTarget', () => {
         maxHp: 0,
         speed: 0,
         willUseAbility: false,
-      }, // neutral (1x)
+      }, // effective (1.5x) — tie broken by order (ice checked first)
       {
         id: 'shadow',
         hp: 100,
@@ -133,7 +133,7 @@ describe('chooseTarget', () => {
         maxHp: 0,
         speed: 0,
         willUseAbility: false,
-      }, // effective (1.5x) — tie broken by order (ice checked first)
+      }, // neutral (1x)
     ];
 
     const chosen = chooseTarget(self, customTargets);
