@@ -24,7 +24,7 @@ The game runs entirely in the browser. All game logic must support offline progr
 2. **Data (`src/data/`)** → May import types only
 3. **Game Logic (`src/game/`)** → May import types and data only. Must remain pure functions.
 4. **Services (`src/services/`)** → May import types, data, and game logic. Must not import hooks or components.
-5. **Hooks (`src/hooks/`)** → May import anything except other hooks (except composition in `useGameLogic`)
+5. **Hooks (`src/hooks/`)** → May import anything except other hooks, with two exceptions: `useGameLogic` composes state hooks, and animation hooks (e.g. `useCombatAnimations`) may compose other animation hooks (e.g. `useIdleAnimation`, `usePlayAnimation`)
 6. **Context (`src/context/`)** → May import hooks and types only
 7. **Components/Pages** → May import anything
 
@@ -102,12 +102,12 @@ The game runs entirely in the browser. All game logic must support offline progr
 
 **MUST ENFORCE:**
 
-1. All timestamps are stored in milliseconds (via `Date.now()`)
-2. Job assignments store `assignedAt` timestamp
+1. Job timestamps (`assignedAt`) are stored in milliseconds (via `Date.now()`)
+2. Quest timestamps (`startedAt`, `endsAt`) are stored in seconds (via `getCurrentTimestamp()` which returns `Math.floor(Date.now() / 1000)`)
 3. Offline progress is calculated by comparing stored timestamps to current time
 4. The system assumes time flows forward (monotonically increasing timestamps)
 
-**NEVER** use seconds for stored timestamps (quest durations are in seconds but converted at runtime).
+**NEVER** mix timestamp units within a single subsystem without explicit conversion.
 
 **NEVER** reset timestamps without recalculating earned progress first.
 
@@ -144,7 +144,7 @@ The game runs entirely in the browser. All game logic must support offline progr
 
 **MUST ENFORCE:**
 
-1. Only these fields are persisted: `version`, `protodermis`, `protodermisCap`, `inventory`, `recruitedCharacters`, `buyableCharacters`, `activeQuests`, `completedQuests`
+1. Only these fields are persisted: `version`, `protodermis`, `protodermisCap`, `inventory`, `collectedKrana`, `recruitedCharacters`, `buyableCharacters`, `activeQuests`, `completedQuests`
 2. Battle state is NOT persisted (battles reset on page refresh)
 3. Save version must match `CURRENT_GAME_STATE_VERSION` or the save is rejected
 
@@ -259,7 +259,7 @@ The `useJobTickEffect` hook runs on an interval and processes all assigned jobs.
 
 ### Testing Changes
 
-Since there are minimal tests, verify changes by:
+In addition to running existing tests (`yarn test:ci` for unit tests, `yarn test:e2e` for E2E), verify changes by:
 
 1. Checking TypeScript compilation (`yarn build`)
 2. Running the app and testing the affected feature
