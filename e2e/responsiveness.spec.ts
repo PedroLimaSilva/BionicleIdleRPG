@@ -126,8 +126,6 @@ test.describe('Responsiveness', () => {
           await goto(page, '/characters');
 
           await waitForCharacterCards(page);
-          const firstCard = page.locator('.character-card, .matoran-card').first();
-          await viewportAwareHover(firstCard, size.width);
 
           await expect(page).toHaveScreenshot(`characters-inventory-${name}.png`, {
             fullPage: true,

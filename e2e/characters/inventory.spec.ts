@@ -53,8 +53,7 @@ test.describe('Character Inventory Page', () => {
   });
 
   test('should display character inventory without recruit button', async ({ page }) => {
-    CHARACTER_INVENTORY_GAME_STATE.buyableCharacters = [];
-    await setupGameState(page, CHARACTER_INVENTORY_GAME_STATE);
+    await setupGameState(page, { ...CHARACTER_INVENTORY_GAME_STATE, buyableCharacters: [] });
     await goto(page, '/characters');
 
     // Wait for character cards to be visible instead of networkidle
