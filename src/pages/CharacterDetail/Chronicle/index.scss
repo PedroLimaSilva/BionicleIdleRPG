@@ -42,6 +42,10 @@
   text-align: left;
 }
 
+.chronicle-section--all-locked .chronicle-section__title {
+  font-family: var(--font-chronicle-locked);
+}
+
 .chronicle-section__meta {
   display: flex;
   align-items: center;
@@ -114,6 +118,10 @@
   font-size: 0.95rem;
   font-weight: 500;
   text-align: left;
+}
+
+.chronicle-entry--locked .chronicle-entry__title {
+  font-family: var(--font-chronicle-locked);
 }
 
 .chronicle-entry__description {

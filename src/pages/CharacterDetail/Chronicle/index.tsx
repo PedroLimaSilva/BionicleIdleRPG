@@ -90,8 +90,12 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
       {sections.map((section) => {
         const isSectionExpanded = expandedSections[section.section] ?? true;
 
+        const isSectionAllLocked = section.entries.every((e) => !e.isUnlocked);
         return (
-          <div key={section.section} className="chronicle-section">
+          <div
+            key={section.section}
+            className={`chronicle-section ${isSectionAllLocked ? 'chronicle-section--all-locked' : ''}`}
+          >
             <button
               type="button"
               className="chronicle-section__header"
