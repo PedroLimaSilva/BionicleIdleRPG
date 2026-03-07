@@ -71,7 +71,7 @@
       }
       .visual-novel-cutscene__speaker-side {
         left: auto;
-        right: 30px;
+        right: 10px;
       }
     }
 
@@ -92,7 +92,7 @@
     grid-area: portrait;
     align-items: flex-end;
     position: relative;
-    left: -50px;
+    left: -60px;
 
     .visual-novel-cutscene__content--left & {
       animation: portrait-slide-in-left 0.35s ease-out forwards;
@@ -170,6 +170,8 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
     grid-area: name;
+    display: inline-flex;
+    align-items: flex-end;
   }
 
   &__text {
