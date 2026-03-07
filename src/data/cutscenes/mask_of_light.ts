@@ -1,3 +1,4 @@
+import { LegoColor } from '../../types/Colors';
 import type { VisualNovelCutscene } from '../../types/Cutscenes';
 import { Mask } from '../../types/Matoran';
 
@@ -144,6 +145,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Tahu_Nuva',
         portraitType: 'avatar',
         maskOverride: Mask.HauNuvaInfected,
+        maskColorOverride: LegoColor.White,
         position: 'left',
         text: `Ta-Koro... gone. Everything we rebuilt after the Bohrok, gone in minutes.`,
       },
