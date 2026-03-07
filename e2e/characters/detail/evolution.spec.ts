@@ -6,6 +6,7 @@ import {
   INITIAL_GAME_STATE,
   setupGameState,
 } from '../../helpers';
+import { MatoranStage } from '../../../src/types/Matoran';
 
 const TOA_NUVA_QUEST = 'bohrok_evolve_toa_nuva';
 const NAMING_DAY_QUEST = 'bohrok_kal_naming_day';
@@ -15,12 +16,12 @@ function expForLevel(level: number): number {
 }
 
 const LOW_LEVEL_EXP = expForLevel(10);
-const LEVEL_51_EXP = expForLevel(51);
+const LEVEL_41_EXP = expForLevel(41);
 const LEVEL_99_EXP = expForLevel(99);
 const LEVEL_100_EXP = expForLevel(100);
 
 test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
-  test('shows disabled evolve button when quest completed but level < 50', async ({ page }) => {
+  test('shows disabled evolve button when quest completed but level < 40', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       protodermis: 10000,
@@ -37,7 +38,7 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
 
     const requirementItems = evolveSection.locator('.requirement-list li');
     await expect(requirementItems.nth(0)).toHaveClass(/not-enough/);
-    await expect(requirementItems.nth(0)).toContainText('Level 50');
+    await expect(requirementItems.nth(0)).toContainText('Level 40');
     await expect(requirementItems.nth(1)).toHaveClass(/has-enough/);
     await expect(requirementItems.nth(1)).toContainText('5000 protodermis');
 
@@ -55,7 +56,7 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       protodermis: 100,
-      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_51_EXP }],
+      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_41_EXP }],
       completedQuests: [TOA_NUVA_QUEST],
     });
     await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
@@ -82,7 +83,7 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
       ...INITIAL_GAME_STATE,
       protodermis: 5000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_51_EXP }],
+      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_41_EXP }],
       completedQuests: [TOA_NUVA_QUEST],
     });
     await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
@@ -113,7 +114,7 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
       ...INITIAL_GAME_STATE,
       protodermis: 10000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_51_EXP }],
+      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_41_EXP }],
       completedQuests: [],
     });
     await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
@@ -124,7 +125,7 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
 });
 
 test.describe('Character Evolution - Matoran Naming Day (ID change)', () => {
-  test('shows disabled evolve button when quest completed but level < 50', async ({ page }) => {
+  test('shows disabled evolve button when quest completed but level < 40', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       protodermis: 5000,
@@ -151,7 +152,7 @@ test.describe('Character Evolution - Matoran Naming Day (ID change)', () => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       protodermis: 1000,
-      recruitedCharacters: [{ id: 'Jala', exp: LEVEL_51_EXP }],
+      recruitedCharacters: [{ id: 'Jala', exp: LEVEL_41_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
     });
     await goto(page, '/characters/Jala', { hideCanvasBeforeNav: true });
@@ -168,7 +169,7 @@ test.describe('Character Evolution - Matoran Naming Day (ID change)', () => {
 });
 
 test.describe('Character Evolution - Matoran Naming Day (stage override)', () => {
-  test('shows disabled upgrade button when quest completed but level < 50', async ({ page }) => {
+  test('shows disabled upgrade button when quest completed but level < 40', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       protodermis: 5000,
@@ -197,7 +198,7 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       protodermis: 1000,
-      recruitedCharacters: [{ id: 'Kapura', exp: LEVEL_51_EXP }],
+      recruitedCharacters: [{ id: 'Kapura', exp: LEVEL_41_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
     });
     await goto(page, '/characters/Kapura', { hideCanvasBeforeNav: true });
@@ -217,7 +218,7 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
       ...INITIAL_GAME_STATE,
       protodermis: 5000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'Kapura', exp: LEVEL_51_EXP, stage: 'Rebuilt' }],
+      recruitedCharacters: [{ id: 'Kapura', exp: LEVEL_41_EXP, stage: MatoranStage.Rebuilt }],
       completedQuests: [NAMING_DAY_QUEST],
     });
     await goto(page, '/characters/Kapura', { hideCanvasBeforeNav: true });
