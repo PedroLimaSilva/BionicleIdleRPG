@@ -47,7 +47,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   {
     id: 'mol_discovery_of_avohkii',
     name: 'The Lava Tunnels',
-    description: 'Jaller searches for Takua in Ta-Wahi before the upcoming kolhii game.',
+    description: 'Jaller searches for Takua in Ta-Koro before the upcoming kolhii game.',
     durationSeconds: 8 * 60,
     requirements: { matoran: ['Takua', 'Jaller'], minLevel: 21, items: [] },
     rewards: {
@@ -277,8 +277,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   {
     id: 'mol_rediscovery_of_metru_nui',
     name: 'The City of Legends',
-    description:
-      'Turaga Vakama gives a lesson on the Three Virtues.',
+    description: 'Turaga Vakama gives a lesson on the Three Virtues.',
     durationSeconds: 12 * 60,
     requirements: { matoran: ['Takanuva', 'Hahli', 'Jaller'], minLevel: 24, items: [] },
     rewards: {
