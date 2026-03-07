@@ -13,7 +13,7 @@ function expForLevel(level: number): number {
   return Math.floor(100 * Math.pow(level - 1, 1.5));
 }
 
-const expFor50 = expForLevel(50);
+const expFor40 = expForLevel(40);
 const expFor100 = expForLevel(100);
 
 describe('CharacterEvolution', () => {
@@ -33,14 +33,7 @@ describe('CharacterEvolution', () => {
     });
 
     test('returns evolution for all Toa Mata', () => {
-      const toaMata = [
-        'Toa_Tahu',
-        'Toa_Gali',
-        'Toa_Pohatu',
-        'Toa_Onua',
-        'Toa_Kopaka',
-        'Toa_Lewa',
-      ];
+      const toaMata = ['Toa_Tahu', 'Toa_Gali', 'Toa_Pohatu', 'Toa_Onua', 'Toa_Kopaka', 'Toa_Lewa'];
       const expectedNuva = [
         'Toa_Tahu_Nuva',
         'Toa_Gali_Nuva',
@@ -120,7 +113,7 @@ describe('CharacterEvolution', () => {
   });
 
   describe('meetsEvolutionLevel', () => {
-    const evo50: AvailableEvolution = {
+    const evo40: AvailableEvolution = {
       evolvedId: 'test',
       label: 'Test',
       levelRequired: EVOLUTION_LEVEL_REQUIREMENT,
@@ -133,19 +126,19 @@ describe('CharacterEvolution', () => {
       protodermisCost: 5000,
     };
 
-    test('returns false below level 50 for standard evolution', () => {
+    test('returns false below level 40 for standard evolution', () => {
       const char: RecruitedCharacterData = { id: 'Toa_Tahu', exp: 0 };
-      expect(meetsEvolutionLevel(char, evo50)).toBe(false);
+      expect(meetsEvolutionLevel(char, evo40)).toBe(false);
     });
 
-    test('returns true at level 50 for standard evolution', () => {
-      expect(getLevelFromExp(expFor50)).toBe(EVOLUTION_LEVEL_REQUIREMENT);
-      const char: RecruitedCharacterData = { id: 'Toa_Tahu', exp: expFor50 };
-      expect(meetsEvolutionLevel(char, evo50)).toBe(true);
+    test('returns true at level 40 for standard evolution', () => {
+      expect(getLevelFromExp(expFor40)).toBe(EVOLUTION_LEVEL_REQUIREMENT);
+      const char: RecruitedCharacterData = { id: 'Toa_Tahu', exp: expFor40 };
+      expect(meetsEvolutionLevel(char, evo40)).toBe(true);
     });
 
     test('returns false below level 100 for Bohrok Kal evolution', () => {
-      const char: RecruitedCharacterData = { id: 'tahnok', exp: expFor50 };
+      const char: RecruitedCharacterData = { id: 'tahnok', exp: expFor40 };
       expect(meetsEvolutionLevel(char, evo100)).toBe(false);
     });
 
@@ -162,7 +155,7 @@ describe('CharacterEvolution', () => {
       const evolution: AvailableEvolution = {
         evolvedId: 'Toa_Tahu_Nuva',
         label: 'Evolve',
-        levelRequired: 50,
+        levelRequired: 40,
         protodermisCost: 5000,
       };
       const result = applyCharacterEvolution(char, evolution);
@@ -176,7 +169,7 @@ describe('CharacterEvolution', () => {
       const evolution: AvailableEvolution = {
         stageOverride: MatoranStage.Rebuilt,
         label: 'Upgrade',
-        levelRequired: 50,
+        levelRequired: 40,
         protodermisCost: 1000,
       };
       const result = applyCharacterEvolution(char, evolution);
@@ -194,7 +187,7 @@ describe('CharacterEvolution', () => {
       const evolution: AvailableEvolution = {
         evolvedId: 'Toa_Tahu_Nuva',
         label: 'Evolve',
-        levelRequired: 50,
+        levelRequired: 40,
         protodermisCost: 5000,
       };
       const result = applyCharacterEvolution(char, evolution);
@@ -219,7 +212,7 @@ describe('CharacterEvolution', () => {
       const evolution: AvailableEvolution = {
         evolvedId: 'Jaller',
         label: 'Evolve',
-        levelRequired: 50,
+        levelRequired: 40,
         protodermisCost: 1000,
       };
       const result = applyCharacterEvolution(char, evolution);
