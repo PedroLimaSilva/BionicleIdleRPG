@@ -9,7 +9,6 @@ import {
   startMaskTransition,
   useMaskTransitionFrame,
 } from './maskTransition';
-import { isTahuNuvaInfectedMaskPeriod } from '../game/masks';
 import { masksCollected } from '../services/matoranUtils';
 
 const NUVA_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/masks.glb';
@@ -82,13 +81,6 @@ function applyNuvaMaskColors(
   });
 }
 
-function getEffectiveMask(matoran: BaseMatoran, completedQuests: string[]): Mask {
-  if (matoran.id === 'Toa_Tahu_Nuva' && isTahuNuvaInfectedMaskPeriod(completedQuests)) {
-    return Mask.HauNuvaInfected;
-  }
-  return matoran.mask;
-}
-
 /**
  * Loads a mask from Toa_Nuva/masks.glb, attaches it to the parent, and applies color.
  * Mask selection: matoran.maskOverride || matoran.mask (from matoran dex).
@@ -100,10 +92,11 @@ export function useNuvaMask(
   maskPowerActive?: boolean
 ) {
   const { completedQuests } = useGame();
-  const effectiveMask = getEffectiveMask(matoran, completedQuests);
+  const collected = masksCollected(matoran, completedQuests);
+  const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
   const override = matoran.maskOverride;
   const maskName =
-    override && masksCollected(matoran, completedQuests).includes(override)
+    override && collected.includes(override)
       ? override
       : effectiveMask;
   const maskNodeName = getMaskNodeName(maskName);
