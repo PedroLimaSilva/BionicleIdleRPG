@@ -1,6 +1,6 @@
 import { PWABadge } from './components/CacheManagement/PWABadge.tsx';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'motion/react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { LayoutGroup } from 'motion/react';
 
 import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
 import { Recruitment } from './pages/Recruitment/index.tsx';
@@ -30,10 +30,9 @@ const NotFound: React.FC = () => (
 );
 
 function AnimatedRoutes() {
-  const location = useLocation();
   return (
-    <AnimatePresence mode="sync">
-      <Routes location={location} key={location.pathname}>
+    <LayoutGroup>
+      <Routes>
         <Route path="/" element={<QuestsPage />} />
         <Route path="/battle/selector" element={<BattleSelector />} />
         <Route path="/battle" element={<BattlePage />} />
@@ -47,7 +46,7 @@ function AnimatedRoutes() {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </AnimatePresence>
+    </LayoutGroup>
   );
 }
 
