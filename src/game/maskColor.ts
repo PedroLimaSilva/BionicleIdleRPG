@@ -1,4 +1,4 @@
-import { BaseMatoran, Mask, MatoranStage } from '../types/Matoran';
+import { BaseMatoran, MatoranStage } from '../types/Matoran';
 import { LegoColor } from '../types/Colors';
 import { isNuvaSymbolsSequestered } from './nuvaSymbols';
 
