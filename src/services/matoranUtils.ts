@@ -73,11 +73,7 @@ export function masksCollected(
 ): Mask[] {
   if (isToaNuva(matoran)) {
     if (matoran.id === 'Toa_Tahu_Nuva' && isTahuNuvaInfectedMaskPeriod(storyProgress)) {
-      const masks = [Mask.HauNuvaInfected];
-      if (storyProgress.includes('bohrok_kal_reconstruction')) {
-        masks.push(Mask.Vahi);
-      }
-      return masks;
+      return [Mask.HauNuvaInfected];
     }
 
     let masks: Mask[] = [matoran.mask];

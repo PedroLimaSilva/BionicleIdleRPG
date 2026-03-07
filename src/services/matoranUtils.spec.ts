@@ -381,12 +381,12 @@ describe('matoranUtils', () => {
         expect(masks).toEqual([Mask.HauNuvaInfected]);
       });
 
-      test('returns infected mask plus Vahi during the infection period when Vahi is unlocked', () => {
+      test('returns only infected mask during infection even when Vahi is unlocked', () => {
         const masks = masksCollected(mockToaNuva, [
           'bohrok_kal_reconstruction',
           'mol_fall_of_ta_koro',
         ]);
-        expect(masks).toEqual([Mask.HauNuvaInfected, Mask.Vahi]);
+        expect(masks).toEqual([Mask.HauNuvaInfected]);
       });
 
       test('restores normal mask options after Tahu is healed', () => {
