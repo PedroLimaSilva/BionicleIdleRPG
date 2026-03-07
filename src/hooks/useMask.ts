@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
+import { Box3, Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useGame } from '../context/Game';
 import { getEffectiveMataMaskColor } from '../game/maskColor';
@@ -11,6 +11,13 @@ import {
 } from './maskTransition';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
+
+export interface MaskDiscoloration {
+  /** The discoloration tint color (e.g. "#8B7355" for a dusty brown) */
+  color: string;
+  /** Blend intensity from 0 (no effect) to 1 (fully replaced by discoloration color) */
+  intensity: number;
+}
 
 function buildMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
   const nodes: Record<string, Object3D> = {};
@@ -26,12 +33,99 @@ function isStandardMat(mat: unknown): mat is StandardMat {
   return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
 }
 
+interface DiscolorationUniforms {
+  uDiscolorColor: { value: Color };
+  uDiscolorIntensity: { value: number };
+  uDiscolorMinY: { value: number };
+  uDiscolorMaxY: { value: number };
+}
+
+const DISCOLOR_UNIFORMS_KEY = 'discolorationUniforms';
+
+/**
+ * Patch every non-glow StandardMaterial under `root` with a custom shader that
+ * blends the discoloration color on top of the diffuse color based on the
+ * fragment's normalized object-space Y position (0 at bottom → 1 at top).
+ *
+ * Uniforms are stored in `mat.userData` so they can be updated cheaply later
+ * without recompiling the shader.
+ */
+function setupDiscolorationShader(root: Object3D): void {
+  const box = new Box3();
+  root.traverse((child) => {
+    if ((child as Mesh).isMesh) {
+      const geom = (child as Mesh).geometry;
+      if (!geom.boundingBox) geom.computeBoundingBox();
+      if (geom.boundingBox) box.union(geom.boundingBox);
+    }
+  });
+
+  if (box.isEmpty()) return;
+
+  const minY = box.min.y;
+  const maxY = box.max.y;
+
+  root.traverse((child) => {
+    if (!(child as Mesh).isMesh) return;
+    const mat = (child as Mesh).material;
+    if (!isStandardMat(mat)) return;
+    if (mat.name.toLowerCase().includes('glow')) return;
+
+    const uniforms: DiscolorationUniforms = {
+      uDiscolorColor: { value: new Color(0x000000) },
+      uDiscolorIntensity: { value: 0 },
+      uDiscolorMinY: { value: minY },
+      uDiscolorMaxY: { value: maxY },
+    };
+
+    mat.userData[DISCOLOR_UNIFORMS_KEY] = uniforms;
+
+    mat.onBeforeCompile = (shader) => {
+      Object.assign(shader.uniforms, uniforms);
+
+      shader.vertexShader = shader.vertexShader.replace(
+        'void main() {',
+        'varying float vDiscolorY;\nvoid main() {'
+      );
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\nvDiscolorY = position.y;'
+      );
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        'void main() {',
+        [
+          'uniform vec3 uDiscolorColor;',
+          'uniform float uDiscolorIntensity;',
+          'uniform float uDiscolorMinY;',
+          'uniform float uDiscolorMaxY;',
+          'varying float vDiscolorY;',
+          'void main() {',
+        ].join('\n')
+      );
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <color_fragment>',
+        [
+          '#include <color_fragment>',
+          'float discolorRange = uDiscolorMaxY - uDiscolorMinY;',
+          'float discolorT = discolorRange > 0.0 ? clamp((vDiscolorY - uDiscolorMinY) / discolorRange, 0.0, 1.0) : 0.0;',
+          'diffuseColor.rgb = mix(diffuseColor.rgb, uDiscolorColor, discolorT * uDiscolorIntensity);',
+        ].join('\n')
+      );
+    };
+
+    mat.customProgramCacheKey = () => 'mask_discoloration';
+    mat.needsUpdate = true;
+  });
+}
+
 /** Apply mask color and optional glow color to every mesh material under `root` */
 function applyMaskColors(
   root: Object3D,
   maskColor: string,
   glowColor?: string,
-  maskPowerActive?: boolean
+  maskPowerActive?: boolean,
+  discoloration?: MaskDiscoloration
 ): void {
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
@@ -54,6 +148,18 @@ function applyMaskColors(
             } else {
               mat.emissive = new Color(0x000000);
               mat.emissiveIntensity = 0;
+            }
+          }
+
+          const uniforms = mat.userData[DISCOLOR_UNIFORMS_KEY] as
+            | DiscolorationUniforms
+            | undefined;
+          if (uniforms) {
+            if (discoloration && discoloration.intensity > 0) {
+              uniforms.uDiscolorColor.value.set(discoloration.color);
+              uniforms.uDiscolorIntensity.value = discoloration.intensity;
+            } else {
+              uniforms.uDiscolorIntensity.value = 0;
             }
           }
         }
@@ -85,13 +191,17 @@ function applyMaskColors(
  *                      When provided, materials whose names include "glow" (case-insensitive) will use
  *                      this color for both their base color and emissive color instead of maskColor.
  * @param maskPowerActive - When true, non-glow materials emit the mask color at intensity 5.
+ * @param discoloration   - Optional discoloration tint applied as a vertical gradient in object space.
+ *                          Non-glow materials blend toward the discoloration color from bottom (0)
+ *                          to top (1), scaled by intensity (0 = no effect, 1 = full at the top).
  */
 export function useMask(
   masksParent: Object3D | undefined,
   maskName: string,
   matoran: BaseMatoran & { maskOverride?: string },
   glowColor?: string,
-  maskPowerActive?: boolean
+  maskPowerActive?: boolean,
+  discoloration?: MaskDiscoloration
 ) {
   const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
   const masksNodes = useMemo(() => buildMaskNodes(gltf), [gltf]);
@@ -114,6 +224,8 @@ export function useMask(
   glowColorRef.current = glowColor;
   const maskPowerActiveRef = useRef(maskPowerActive);
   maskPowerActiveRef.current = maskPowerActive;
+  const discolorationRef = useRef(discoloration);
+  discolorationRef.current = discoloration;
 
   const transitionRef = useRef(createMaskTransitionState());
 
@@ -147,11 +259,13 @@ export function useMask(
       }
     });
 
+    setupDiscolorationShader(clone);
+
     // Apply colors eagerly so they're correct before the first animation frame.
     // (useEffect runs asynchronously after paint, and useFrame/rAF can fire
     // before the next useEffect — applying colors here avoids the brief flash
     // of un-tinted GLB-default colors during the fade-in.)
-    applyMaskColors(clone, maskColorRef.current, glowColorRef.current, maskPowerActiveRef.current);
+    applyMaskColors(clone, maskColorRef.current, glowColorRef.current, maskPowerActiveRef.current, discolorationRef.current);
 
     const prevMask = maskRef.current;
     const isChange =
@@ -195,8 +309,8 @@ export function useMask(
     const mask = maskRef.current;
     if (!mask) return;
 
-    applyMaskColors(mask, maskColor, glowColor, maskPowerActive);
-  }, [masksNodes, masksParent, maskName, maskColor, glowColor, maskPowerActive]);
+    applyMaskColors(mask, maskColor, glowColor, maskPowerActive, discoloration);
+  }, [masksNodes, masksParent, maskName, maskColor, glowColor, maskPowerActive, discoloration]);
 
   return maskRef.current;
 }
