@@ -1,4 +1,6 @@
+import { LegoColor } from '../../types/Colors';
 import type { VisualNovelCutscene } from '../../types/Cutscenes';
+import { Mask } from '../../types/Matoran';
 
 export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
   bohrok_swarm_intro: {
@@ -318,7 +320,9 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Toa_Lewa_Krana',
+        speakerId: 'Toa_Lewa',
+        maskOverride: Mask.Krana,
+        maskColorOverride: LegoColor.Red,
         portraitType: 'avatar',
         position: 'right',
         text: `The swarm is everything. The swarm will cleanse the island. You cannot stop what must be.`,

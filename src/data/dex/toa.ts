@@ -101,26 +101,6 @@ export const TOA_DEX = {
     },
     chronicleId: CHRONICLE_IDS.LEWA,
   },
-  Toa_Lewa_Krana: {
-    /**
-     * This is a temporary character for the cutscene.
-     * It is not a real character.
-     */
-    id: 'Toa_Lewa',
-    name: 'Toa Lewa',
-    element: ElementTribe.Air,
-    mask: Mask.Krana,
-    stage: MatoranStage.ToaMata,
-    colors: {
-      face: LegoColor.DarkGray,
-      mask: LegoColor.Red,
-      body: LegoColor.Green,
-      feet: LegoColor.Green,
-      arms: LegoColor.Lime,
-      eyes: LegoColor.TransNeonGreen,
-    },
-    chronicleId: CHRONICLE_IDS.LEWA,
-  },
   Toa_Tahu_Nuva: {
     id: 'Toa_Tahu_Nuva',
     name: 'Toa Tahu Nuva',

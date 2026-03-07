@@ -62,16 +62,12 @@
     &--right {
       .visual-novel-cutscene__speaker-name {
         text-align: right;
-      }
-      .visual-novel-cutscene__dialogue-box {
-        grid-template-areas:
-          'name portrait'
-          'content content';
-        grid-template-columns: 1fr 70px;
+        left: auto;
+        right: calc(140px - 1.5rem);
       }
       .visual-novel-cutscene__speaker-side {
         left: auto;
-        right: 30px;
+        right: -1.5rem;
       }
     }
 
@@ -88,11 +84,9 @@
   }
 
   &__speaker-side {
-    display: flex;
-    grid-area: portrait;
-    align-items: flex-end;
-    position: relative;
-    left: -50px;
+    position: absolute;
+    bottom: calc(100% - 1rem);
+    left: -1.5rem;
 
     .visual-novel-cutscene__content--left & {
       animation: portrait-slide-in-left 0.35s ease-out forwards;
@@ -138,11 +132,6 @@
   &__narration-box {
     flex: 1;
     display: grid;
-    grid-template-areas:
-      'portrait name'
-      'content content';
-    grid-template-columns: 70px 1fr;
-    grid-template-rows: 1.5rem auto;
     min-width: 0;
     max-width: 640px;
     background: rgba(0, 0, 0, 0.85);
@@ -152,6 +141,7 @@
     padding-top: 0.5rem;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
     text-align: left;
+    position: relative;
   }
 
   &__narration-box {
@@ -169,14 +159,17 @@
     color: var(--theme-element-accent);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    grid-area: name;
+    display: inline-flex;
+    align-items: flex-end;
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: calc(140px - 1.5rem);
   }
 
   &__text {
     font-size: 1.05rem;
     line-height: 1.6;
     color: var(--color-text-muted);
-    grid-area: content;
     p {
       margin-bottom: 0.3rem;
       margin-top: 0.5rem;

@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
-import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
+import { BaseMatoran, Mask, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { useGame } from '../../context/Game';
 import { getEffectiveMaskColor } from '../../game/maskColor';
 
 import { CompositedImage } from '../CompositedImage';
 
 import './index.scss';
+import { LegoColor } from '../../types/Colors';
 
 function getMask(matoran: BaseMatoran & RecruitedCharacterData) {
   return `${import.meta.env.BASE_URL}/avatar/Kanohi/${matoran.maskOverride || matoran.mask}.webp`;
@@ -16,14 +17,15 @@ export function MatoranAvatar({
   styles,
   maskPowerActive,
 }: {
-  matoran: BaseMatoran & RecruitedCharacterData;
+  matoran: BaseMatoran &
+    RecruitedCharacterData & { maskOverride?: Mask; maskColorOverride?: LegoColor };
   styles: string;
   maskPowerActive?: boolean;
 }) {
   const { completedQuests } = useGame();
   const { colors } = matoran;
   const maskColor = useMemo(
-    () => getEffectiveMaskColor(matoran, completedQuests),
+    () => matoran.maskColorOverride || getEffectiveMaskColor(matoran, completedQuests),
     [matoran, completedQuests]
   );
 
