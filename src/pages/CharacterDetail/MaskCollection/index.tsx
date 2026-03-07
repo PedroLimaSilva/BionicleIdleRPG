@@ -17,10 +17,10 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & { maskOverr
     return masksCollected(matoran, completedQuests);
   }, [matoran, completedQuests]);
 
-  const shouldKeepOriginalColor = masks.includes(Mask.Vahi) || masks.includes(Mask.HauNuvaInfected);
-  const effectiveMaskColor = shouldKeepOriginalColor
-    ? LegoColor.White
-    : getEffectiveMaskColor(matoran, completedQuests);
+  const maskColor = useMemo(
+    () => getEffectiveMaskColor(matoran, completedQuests),
+    [matoran, completedQuests]
+  );
 
   const handeMaskOverride = (matoran: BaseMatoran & { maskOverride?: string }, mask: Mask) => {
     setMaskOverride(matoran.id, mask);
@@ -32,31 +32,35 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & { maskOverr
         <div className="mask-inventory-section">
           <h3 className="mask-inventory-section__title">Masks</h3>
           <div className={`mask-inventory-grid element-${matoran.element}`}>
-            {masks.map((mask) => (
-              <div
-                key={mask}
-                className={`mask-card`}
-                onClick={() => handeMaskOverride(matoran, mask)}
-              >
-                <Tooltip
-                  content={
-                    <div>
-                      <h3>{MASK_POWERS[mask]?.longName ?? 'Unknown Mask'}</h3>
-                      <p>{MASK_POWERS[mask]?.description || 'Unknown Mask Power'}</p>
-                    </div>
-                  }
+            {masks.map((mask) => {
+              const shouldKeepOriginalColor = mask === Mask.Vahi || mask === Mask.HauNuvaInfected;
+              const effectiveMaskColor = shouldKeepOriginalColor ? LegoColor.White : maskColor;
+              return (
+                <div
+                  key={mask}
+                  className={`mask-card`}
+                  onClick={() => handeMaskOverride(matoran, mask)}
                 >
-                  <CompositedImage
-                    className="mask-preview"
-                    images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.webp`]}
-                    colors={[effectiveMaskColor]}
-                  />
-                  <div className="name">
-                    {(MASK_POWERS[mask]?.shortName ?? mask).replace(/_/g, ' ')}
-                  </div>
-                </Tooltip>
-              </div>
-            ))}
+                  <Tooltip
+                    content={
+                      <div>
+                        <h3>{MASK_POWERS[mask]?.longName ?? 'Unknown Mask'}</h3>
+                        <p>{MASK_POWERS[mask]?.description || 'Unknown Mask Power'}</p>
+                      </div>
+                    }
+                  >
+                    <CompositedImage
+                      className="mask-preview"
+                      images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.webp`]}
+                      colors={[effectiveMaskColor]}
+                    />
+                    <div className="name">
+                      {(MASK_POWERS[mask]?.shortName ?? mask).replace(/_/g, ' ')}
+                    </div>
+                  </Tooltip>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
