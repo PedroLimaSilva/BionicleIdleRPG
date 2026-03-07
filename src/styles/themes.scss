@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Orbitron:wght@400;500;700&display=swap');
 
+/* Locked chronicle font: place Bionicle/Matoran glyph font at public/fonts/bionicle.ttf */
+@font-face {
+  font-family: 'BionicleLanguage';
+  src: url('/BionicleIdleRPG/fonts/bionicle.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/** Utility: apply Bionicle font to element and its text descendants */
+.bionicle-font {
+  font-family: var(--font-chronicle-locked);
+}
+
 :root {
   --color-text: #ffffff;
   --color-text-muted: #b0b0b0;
@@ -15,6 +29,7 @@
 
   --font-display: 'Orbitron', sans-serif;
   --font-body: 'Inter', sans-serif;
+  --font-chronicle-locked: 'BionicleLanguage', var(--font-display);
 
   --theme-element-glow: #fff6c0;
   --theme-element-glow-transparent: #fff6c033;

@@ -157,7 +157,7 @@ export const MATORAN_DEX = {
       arms: LegoColor.MediumBlue,
       eyes: LegoColor.TransNeonYellow,
     },
-    chronicleId: CHRONICLE_IDS.Hahli,
+    chronicleId: CHRONICLE_IDS.HAHLI,
   },
   Huki: {
     id: 'Huki',

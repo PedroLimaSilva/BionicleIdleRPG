@@ -1,6 +1,9 @@
 import './index.scss';
+import { motion } from 'motion/react';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { Link } from 'react-router-dom';
+import { useReducedMotion } from 'motion/react';
+import { isTestMode } from '../../utils/testMode';
 import { getLevelFromExp } from '../../game/Levelling';
 import { JobStatusBadge } from '../../components/JobStatusBadge';
 import { getJobStatus } from '../../game/Jobs';
@@ -16,6 +19,7 @@ const CHARACTERS_TAB_KEY = 'characters-tab';
 
 export const CharacterInventory: React.FC = () => {
   const { recruitedCharacters, buyableCharacters } = useGame();
+  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const tabs = useMemo(() => {
     const base = ['matoran'];
@@ -86,7 +90,12 @@ export const CharacterInventory: React.FC = () => {
 
           return (
             <Link key={matoran.id} to={`/characters/${matoran.id}`}>
-              <div className={`character-card element-${effective.element}`}>
+              <motion.div
+                className={`character-card element-${effective.element}`}
+                layoutId={shouldReduceMotion ? undefined : `character-${matoran.id}`}
+                layout
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              >
                 <MatoranAvatar matoran={effective} styles={'matoran-avatar model-preview'} />
                 <div className="card-header">
                   {'  ' + effective.name}
@@ -100,7 +109,7 @@ export const CharacterInventory: React.FC = () => {
                     status={jobStatus}
                   />
                 </div>
-              </div>
+              </motion.div>
             </Link>
           );
         })}

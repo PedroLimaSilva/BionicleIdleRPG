@@ -90,6 +90,7 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
       {sections.map((section) => {
         const isSectionExpanded = expandedSections[section.section] ?? true;
 
+        const isSectionAllLocked = section.entries.every((e) => !e.isUnlocked);
         return (
           <div key={section.section} className="chronicle-section">
             <button
@@ -102,7 +103,11 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
                 }))
               }
             >
-              <div className="chronicle-section__title">{section.section}</div>
+              <div
+                className={`chronicle-section__title ${isSectionAllLocked ? 'bionicle-font' : ''}`}
+              >
+                {section.section}
+              </div>
               <div className="chronicle-section__meta">
                 <span className="chronicle-section__count">
                   {section.entries.filter((e) => e.isUnlocked).length}/{section.entries.length}{' '}
@@ -164,7 +169,11 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
                               />
                             )}
                           </span>
-                          <div className="chronicle-entry__title">{entry.title}</div>
+                          <div
+                              className={`chronicle-entry__title ${!entry.isUnlocked ? 'bionicle-font' : ''}`}
+                            >
+                              {entry.title}
+                            </div>
                         </button>
 
                         <AnimatePresence initial={false}>

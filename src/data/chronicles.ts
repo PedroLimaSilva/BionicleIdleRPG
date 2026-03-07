@@ -11,7 +11,7 @@ export const CHRONICLE_IDS = {
   TAKUA: 'takua',
   KAPURA: 'kapura',
   JALA: 'jala',
-  Hahli: 'Hahli',
+  HAHLI: 'hahli',
   HUKI: 'huki',
   NUPARU: 'nuparu',
   ONEPU: 'onepu',
@@ -35,18 +35,18 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
     {
       id: 'ahkmou_arrival_mata_nui',
       section: 'Mata Nui',
-      title: 'Awakening in the Depths',
+      title: 'Awakening in the Desert',
       description:
-        'Ahkmou awakens in the dark tunnels of Onu-Wahi, his memory erased but his connection to the earth instinctive.',
+        'Ahkmou awakens amid the sun-baked dunes of Po-Wahi, his memory erased but his connection to stone instinctive.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'story_toa_arrival',
       },
     },
     {
-      id: 'ahkmou_arrival_mata_nui',
+      id: 'ahkmou_poisoned_comet',
       section: 'Mata Nui',
-      title: 'The poisoned Comet',
+      title: 'The Poisoned Comet',
       description:
         'A strange illness falls upon the Matoran of Po-Koro. Other Po-Matoran accused Ahkmou of poisoning them with his corrupted Koli balls, but he claims he did nothing wrong.',
       unlockCondition: {
@@ -893,6 +893,61 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         questId: 'bohrok_kal_naming_day',
       },
     },
+    {
+      id: 'takua_discovery_avohkii',
+      section: 'Mask of Light',
+      title: 'The Mask in the Lava',
+      description:
+        'While he should be preparing for the kolhii match, Takua is exploring the lava caves beneath Ta-Koro and stumbles upon a glowing mask unlike any he has ever seen. Jaller finds him just in time, and together they bring the mask to the surface.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_discovery_of_avohkii',
+      },
+    },
+    {
+      id: 'takua_kolhii_tournament',
+      section: 'Mask of Light',
+      title: 'The Kolhii Tournament',
+      description:
+        'During the great kolhii match at Ta-Koro, the mysterious mask tumbles from Jaller\'s pack and lands at Takua\'s feet, bathing Jaller in golden light. Turaga Nokama names it the Avohkii—the Mask of Light—and declares that Jaller must find the Seventh Toa.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_kolhii_tournament',
+      },
+    },
+    {
+      id: 'takua_search_seventh_toa',
+      section: 'Mask of Light',
+      title: 'The Herald\'s Journey',
+      description:
+        'Reluctant but bound by duty, Takua sets out with Jaller across Mata Nui, following the Avohkii\'s light from village to village. Everywhere they go, the shadow of Makuta follows.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_avohkii_prophecy',
+      },
+    },
+    {
+      id: 'takua_becomes_takanuva',
+      section: 'Mask of Light',
+      title: 'The Seventh Toa',
+      description:
+        'When Jaller falls protecting him from the Rahkshi, Takua finally accepts his destiny. He dons the Avohkii and is transformed into Takanuva, Toa of Light—the Seventh Toa the mask was meant for all along.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_takanuva_rises',
+      },
+    },
+    {
+      id: 'takua_defeat_of_makuta',
+      section: 'Mask of Light',
+      title: 'Light Against Shadow',
+      description:
+        'Takanuva descends into Mangaia and challenges Makuta to a final contest. In the clash of light and shadow, both are consumed—and from their fusion emerges a being of twilight who opens the gate to Metru Nui, the city of legends.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_defeat_of_makuta',
+      },
+    },
   ],
   [CHRONICLE_IDS.KAPURA]: [
     {
@@ -971,7 +1026,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         'When the Bohrok Kohrak strike Ta-Koro, Jala rallies the village guard to hold the line. With the Toa still en route, he leads the defense with flame and courage until reinforcements arrive.',
       unlockCondition: {
         type: 'QUEST_COMPLETED',
-        questId: 'bohrok_jala_ta_koro_defense',
+        questId: 'bohrok_swarm_intro',
       },
     },
     {
@@ -996,10 +1051,54 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
         questId: 'bohrok_kal_naming_day',
       },
     },
-  ],
-  [CHRONICLE_IDS.Hahli]: [
     {
-      id: 'Hahli_ga_koro_villager',
+      id: 'jala_discovery_avohkii',
+      section: 'Mask of Light',
+      title: 'The Mask in the Lava',
+      description:
+        'Jaller searches for Takua in the lava tunnels beneath Ta-Koro and finds him clutching a strange glowing mask. Together they bring it to the surface, not knowing it will change both their lives forever.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_discovery_of_avohkii',
+      },
+    },
+    {
+      id: 'jala_kolhii_tournament',
+      section: 'Mask of Light',
+      title: 'The Kolhii Tournament',
+      description:
+        'During the kolhii match at Ta-Koro, the mask tumbles from Jaller\'s pack and shines upon him. Named Herald of the Seventh Toa, Jaller nominates Takua to chronicle his journey.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_kolhii_tournament',
+      },
+    },
+    {
+      id: 'jala_sacrifice',
+      section: 'Mask of Light',
+      title: 'Jaller\'s Sacrifice',
+      description:
+        'At Kini-Nui, the Rahkshi Turahk turns its fear power on Takua. Jaller leaps between them and takes the blow meant for his friend. As his light fades, he whispers to Takua: "You know who you are." His sacrifice awakens the true herald.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_battle_of_kini_nui',
+      },
+    },
+    {
+      id: 'jala_revived',
+      section: 'Mask of Light',
+      title: 'Revived by the Light',
+      description:
+        'After Takanuva defeats Makuta and the gate to Metru Nui is opened, the Toa of Light uses the last of his power to revive Jaller. The Captain of the Guard wakes to a new world—and a new chapter.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_defeat_of_makuta',
+      },
+    },
+  ],
+  [CHRONICLE_IDS.HAHLI]: [
+    {
+      id: 'hahli_ga_koro_villager',
       section: 'Ga-Koro',
       title: 'Villager of the Waters',
       description:
@@ -1010,7 +1109,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       },
     },
     {
-      id: 'Hahli_liberated',
+      id: 'hahli_liberated',
       section: 'Ga-Koro',
       title: 'Freed from the Depths',
       description:
@@ -1018,6 +1117,28 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_restore_ga_koro',
+      },
+    },
+    {
+      id: 'hahli_kolhii_tournament',
+      section: 'Mask of Light',
+      title: 'The Kolhii Tournament',
+      description:
+        'Hahli and Macku represent Ga-Koro in the great kolhii tournament at Ta-Koro. During the match, the Mask of Light tumbles from Jaller\'s pack and lands at Takua\'s feet, shining with a golden glow.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_kolhii_tournament',
+      },
+    },
+    {
+      id: 'hahli_into_the_darkness',
+      section: 'Mask of Light',
+      title: 'Into the Darkness',
+      description:
+        'Chosen by Takanuva as his herald, Hahli rides the Ussanui with him into Mangaia. There she witnesses the final confrontation with Makuta and the revelation of a world below: the lost city of Metru Nui.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_defeat_of_makuta',
       },
     },
   ],
@@ -1075,6 +1196,17 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_kal_naming_day',
+      },
+    },
+    {
+      id: 'huki_kolhii_tournament',
+      section: 'Mask of Light',
+      title: 'The Kolhii Tournament',
+      description:
+        'Hewkii and Hafu represent Po-Koro in the great kolhii tournament at Ta-Koro. Though the match is fierce, the game is overshadowed when a golden mask tumbles onto the field and shines with an ancient light.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_kolhii_tournament',
       },
     },
   ],
@@ -1193,6 +1325,17 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mnog_search_for_matoro',
+      },
+    },
+    {
+      id: 'matoro_secrets_beneath_ice',
+      section: 'Tales of the Masks',
+      title: 'Secrets Beneath the Ice',
+      description:
+        'Turaga Vakama summons Matoro to the Sanctum for a private task. The Turaga have kept ancient secrets for a thousand years, and once more they need Matoro to translate for Nuju at a private council—one that will decide whether the time has come to reveal the truth.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'tales_turaga_and_matoro',
       },
     },
   ],
@@ -1449,6 +1592,17 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'bohrok_po_koro_defense',
+      },
+    },
+    {
+      id: 'hafu_kolhii_tournament',
+      section: 'Mask of Light',
+      title: 'The Kolhii Tournament',
+      description:
+        'Hafu takes the field alongside Hewkii as Po-Koro\'s kolhii team at the great tournament in Ta-Koro. The match ends in shock when a golden mask—the Avohkii—reveals itself, changing the course of Mata Nui\'s history.',
+      unlockCondition: {
+        type: 'QUEST_COMPLETED',
+        questId: 'mol_kolhii_tournament',
       },
     },
   ],
