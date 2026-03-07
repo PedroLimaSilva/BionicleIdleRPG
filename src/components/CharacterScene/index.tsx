@@ -28,6 +28,7 @@ import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
 import { LewaNuvaModel } from './Nuva/LewaNuvaModel';
 import { KopakaNuvaModel } from './Nuva/KopakaNuvaModel';
 import { TakanuvaModel } from './Nuva/TakanuvaModel';
+import { MetruMatoranModel } from './MetruMatoranModel';
 import { RahkshiModel } from './Rahkshi';
 
 /** Vertical center of the character framing volume. */
@@ -86,6 +87,8 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
           <BohrokModel id={matoran.id} />
         </group>
       );
+    case MatoranStage.Metru:
+      return <MetruMatoranModel matoran={matoran} />;
     case MatoranStage.Diminished:
       return <DiminishedMatoranModel matoran={matoran} />;
     case MatoranStage.Rebuilt:
