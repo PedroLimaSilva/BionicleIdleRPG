@@ -1,5 +1,7 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { motion, useReducedMotion } from 'motion/react';
 import { useGame } from '../../context/Game';
+import { isTestMode } from '../../utils/testMode';
 
 import './index.scss';
 import { CharacterScene } from '../../components/CharacterScene';
@@ -29,6 +31,7 @@ export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { recruitedCharacters, completedQuests, protodermis, evolveCharacter } = useGame();
+  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const { setScene } = useSceneCanvas();
 
@@ -80,7 +83,12 @@ export const CharacterDetail: React.FC = () => {
 
   return (
     <div className={`page-container character-detail element-${matoran.element}`}>
-      <div className="character-detail-visualization">
+      <motion.div
+        className="character-detail-visualization"
+        layoutId={shouldReduceMotion ? undefined : `character-${matoran.id}`}
+        layout
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      >
         <div className="character-header">
           <h1 className="character-name">{matoran.name}</h1>
         </div>
@@ -88,7 +96,7 @@ export const CharacterDetail: React.FC = () => {
         <div id="model-frame">
           <div className="divider"></div>
         </div>
-      </div>
+      </motion.div>
       <div className="character-detail-tabs">
         <Tabs tabs={tabs} activeTab={activeTab} onTabChange={(tab: string) => setActiveTab(tab)} />
       </div>
