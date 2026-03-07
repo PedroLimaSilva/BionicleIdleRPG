@@ -138,6 +138,7 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       {
         type: 'dialogue',
         speakerId: 'Toa_Tahu_Nuva',
+        maskColorOverride: LegoColor.Red,
         portraitType: 'avatar',
         position: 'right',
         text: `What are you?! You're not like the other Bohrok—`,
