@@ -12,6 +12,13 @@ import {
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 
+export interface MaskDiscoloration {
+  /** The discoloration tint color (e.g. "#8B7355" for a dusty brown) */
+  color: string;
+  /** Blend intensity from 0 (no effect) to 1 (fully replaced by discoloration color) */
+  intensity: number;
+}
+
 function buildMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
   const nodes: Record<string, Object3D> = {};
   gltf.scene.traverse((child) => {
@@ -26,12 +33,21 @@ function isStandardMat(mat: unknown): mat is StandardMat {
   return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
 }
 
+/** Linearly interpolate `base` toward `target` by `factor` (0–1). Mutates `base`. */
+function lerpColor(base: Color, target: Color, factor: number): Color {
+  base.r += (target.r - base.r) * factor;
+  base.g += (target.g - base.g) * factor;
+  base.b += (target.b - base.b) * factor;
+  return base;
+}
+
 /** Apply mask color and optional glow color to every mesh material under `root` */
 function applyMaskColors(
   root: Object3D,
   maskColor: string,
   glowColor?: string,
-  maskPowerActive?: boolean
+  maskPowerActive?: boolean,
+  discoloration?: MaskDiscoloration
 ): void {
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
@@ -46,10 +62,14 @@ function applyMaskColors(
             mat.emissive = col.clone();
           }
         } else {
-          mat.color = new Color(maskColor);
+          const col = new Color(maskColor);
+          if (discoloration && discoloration.intensity > 0) {
+            lerpColor(col, new Color(discoloration.color), discoloration.intensity);
+          }
+          mat.color = col;
           if (mat.emissive) {
             if (maskPowerActive) {
-              mat.emissive = new Color(maskColor);
+              mat.emissive = col.clone();
               mat.emissiveIntensity = 2.5;
             } else {
               mat.emissive = new Color(0x000000);
@@ -85,13 +105,17 @@ function applyMaskColors(
  *                      When provided, materials whose names include "glow" (case-insensitive) will use
  *                      this color for both their base color and emissive color instead of maskColor.
  * @param maskPowerActive - When true, non-glow materials emit the mask color at intensity 5.
+ * @param discoloration   - Optional discoloration tint applied on top of the computed mask color.
+ *                          When provided, non-glow materials are lerped toward the discoloration
+ *                          color by the given intensity (0 = no effect, 1 = fully discolored).
  */
 export function useMask(
   masksParent: Object3D | undefined,
   maskName: string,
   matoran: BaseMatoran & { maskOverride?: string },
   glowColor?: string,
-  maskPowerActive?: boolean
+  maskPowerActive?: boolean,
+  discoloration?: MaskDiscoloration
 ) {
   const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
   const masksNodes = useMemo(() => buildMaskNodes(gltf), [gltf]);
@@ -114,6 +138,8 @@ export function useMask(
   glowColorRef.current = glowColor;
   const maskPowerActiveRef = useRef(maskPowerActive);
   maskPowerActiveRef.current = maskPowerActive;
+  const discolorationRef = useRef(discoloration);
+  discolorationRef.current = discoloration;
 
   const transitionRef = useRef(createMaskTransitionState());
 
@@ -151,7 +177,7 @@ export function useMask(
     // (useEffect runs asynchronously after paint, and useFrame/rAF can fire
     // before the next useEffect — applying colors here avoids the brief flash
     // of un-tinted GLB-default colors during the fade-in.)
-    applyMaskColors(clone, maskColorRef.current, glowColorRef.current, maskPowerActiveRef.current);
+    applyMaskColors(clone, maskColorRef.current, glowColorRef.current, maskPowerActiveRef.current, discolorationRef.current);
 
     const prevMask = maskRef.current;
     const isChange =
@@ -195,8 +221,8 @@ export function useMask(
     const mask = maskRef.current;
     if (!mask) return;
 
-    applyMaskColors(mask, maskColor, glowColor, maskPowerActive);
-  }, [masksNodes, masksParent, maskName, maskColor, glowColor, maskPowerActive]);
+    applyMaskColors(mask, maskColor, glowColor, maskPowerActive, discoloration);
+  }, [masksNodes, masksParent, maskName, maskColor, glowColor, maskPowerActive, discoloration]);
 
   return maskRef.current;
 }
