@@ -1,4 +1,5 @@
 import type { VisualNovelCutscene } from '../../types/Cutscenes';
+import { Mask } from '../../types/Matoran';
 
 export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
   mol_discovery_of_avohkii: {
@@ -130,6 +131,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'dialogue',
         speakerId: 'Toa_Tahu_Nuva',
         portraitType: 'avatar',
+        maskOverride: Mask.HauNuva,
         position: 'left',
         text: `Then let them come.`,
       },
@@ -141,6 +143,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'dialogue',
         speakerId: 'Toa_Tahu_Nuva',
         portraitType: 'avatar',
+        maskOverride: Mask.HauNuvaInfected,
         position: 'left',
         text: `Ta-Koro... gone. Everything we rebuilt after the Bohrok, gone in minutes.`,
       },

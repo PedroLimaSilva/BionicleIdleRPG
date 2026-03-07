@@ -167,6 +167,25 @@ test.describe('Character Model Rendering', () => {
         threshold: 0.2,
       });
     });
+    test('should render Toa Tahu Nuva with infected mask after fighting poison rahkshi', async ({
+      page,
+    }) => {
+      await setupGameState(page, {
+        ...INITIAL_GAME_STATE,
+        recruitedCharacters: [{ id: 'Toa_Tahu_Nuva', exp: 0 }],
+        completedQuests: ['mol_fall_of_ta_koro'],
+      });
+      await goto(page, '/characters/Toa_Tahu_Nuva');
+      await disableCSSAnimations(page);
+      await waitForCanvas(page);
+
+      await expect(page).toHaveScreenshot({
+        fullPage: true,
+        timeout: 15000,
+        maxDiffPixels: 300,
+        threshold: 0.2,
+      });
+    });
   });
 
   test.describe('Rebuilt Matoran', () => {

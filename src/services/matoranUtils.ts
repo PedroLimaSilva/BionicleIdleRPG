@@ -9,6 +9,7 @@ import { MatoranJob } from '../types/Jobs';
 import { GameItemId } from '../data/loot';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
+import { isTahuNuvaInfectedMaskPeriod } from '../game/masks';
 import { CHARACTER_DEX } from '../data/dex/index';
 import { GameState } from '../types/GameState';
 
@@ -71,6 +72,14 @@ export function masksCollected(
   storyProgress: GameState['completedQuests']
 ): Mask[] {
   if (isToaNuva(matoran)) {
+    if (matoran.id === 'Toa_Tahu_Nuva' && isTahuNuvaInfectedMaskPeriod(storyProgress)) {
+      const masks = [Mask.HauNuvaInfected];
+      if (storyProgress.includes('bohrok_kal_reconstruction')) {
+        masks.push(Mask.Vahi);
+      }
+      return masks;
+    }
+
     let masks: Mask[] = [matoran.mask];
     if (matoran.id === 'Toa_Tahu_Nuva' && storyProgress.includes('bohrok_kal_reconstruction')) {
       masks.push(Mask.Vahi);

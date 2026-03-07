@@ -17,7 +17,10 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & { maskOverr
     return masksCollected(matoran, completedQuests);
   }, [matoran, completedQuests]);
 
-  const effectiveMaskColor = getEffectiveMaskColor(matoran, completedQuests);
+  const shouldKeepOriginalColor = masks.includes(Mask.Vahi) || masks.includes(Mask.HauNuvaInfected);
+  const effectiveMaskColor = shouldKeepOriginalColor
+    ? LegoColor.White
+    : getEffectiveMaskColor(matoran, completedQuests);
 
   const handeMaskOverride = (matoran: BaseMatoran & { maskOverride?: string }, mask: Mask) => {
     setMaskOverride(matoran.id, mask);
@@ -46,7 +49,7 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & { maskOverr
                   <CompositedImage
                     className="mask-preview"
                     images={[`${import.meta.env.BASE_URL}/avatar/Kanohi/${mask}.webp`]}
-                    colors={[mask !== Mask.Vahi ? effectiveMaskColor : LegoColor.White]}
+                    colors={[effectiveMaskColor]}
                   />
                   <div className="name">
                     {(MASK_POWERS[mask]?.shortName ?? mask).replace(/_/g, ' ')}

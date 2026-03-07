@@ -12,6 +12,7 @@ export const enum Mask {
   Pakari = 'Pakari',
   Miru = 'Miru',
   HauNuva = 'Hau_Nuva',
+  HauNuvaInfected = 'Hau_Nuva_Infected',
   KaukauNuva = 'Kaukau_Nuva',
   KakamaNuva = 'Kakama_Nuva',
   AkakuNuva = 'Akaku_Nuva',
