@@ -3,6 +3,9 @@
  * All cutscenes use the visual novel format (dialogue and/or video steps).
  */
 
+import { LegoColor } from './Colors';
+import { Mask } from './Matoran';
+
 /**
  * A dialogue step in a visual novel cutscene.
  * speakerId maps to CHARACTER_DEX for name/portrait; portraitUrl overrides if provided.
@@ -10,6 +13,8 @@
 export interface DialogueStep {
   type: 'dialogue';
   speakerId: string; // Character ID from CHARACTER_DEX
+  maskOverride?: Mask;
+  maskColorOverride?: LegoColor;
   text: string;
   /** Speaker side: portrait and text alignment. Default 'left'. */
   position?: 'left' | 'right';

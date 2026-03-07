@@ -39,9 +39,6 @@ export function getEffectiveMaskColor(
   matoran: BaseMatoran & { maskOverride?: string },
   completedQuests: string[]
 ): string {
-  if (matoran.mask === Mask.Krana) {
-    return matoran.colors.mask;
-  }
   if (matoran.stage === MatoranStage.ToaNuva) {
     return getEffectiveNuvaMaskColor(matoran, completedQuests);
   } else if (matoran.stage === MatoranStage.ToaMata) {
