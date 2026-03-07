@@ -1,4 +1,6 @@
+import { LegoColor } from '../../types/Colors';
 import type { VisualNovelCutscene } from '../../types/Cutscenes';
+import { Mask } from '../../types/Matoran';
 
 export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
   bohrok_kal_reconstruction: {
@@ -10,7 +12,7 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Turaga_Vakama',
         portraitType: 'avatar',
         position: 'left',
-        text: `Tahu. Come with me. There is something I must show you—away from the others.`,
+        text: `Toa Tahu. Come with me. There is something I must show you—away from the others.`,
       },
       {
         type: 'dialogue',
@@ -63,7 +65,7 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Turaga_Vakama',
         portraitType: 'avatar',
         position: 'left',
-        text: `Because a day may come when all other options fail. When that day arrives, you—and only you—must decide whether to use it. But know this: if the Vahi is damaged, time itself could unravel. All of reality could cease to exist.`,
+        text: `Because a day may come when all other options fail. When that day arrives, you—and only you—must decide whether to use it. But know this: if the Vahi is misused, time itself could unravel. All of reality could cease to exist.`,
       },
       {
         type: 'dialogue',
@@ -81,7 +83,6 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
-
   bohrok_kal_scattered_aid: {
     id: 'bohrok_kal_scattered_aid',
     background: { type: 'gradient', from: '#1a3a4a', to: '#0d1f2d' },
@@ -123,7 +124,6 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
-
   bohrok_kal_stolen_symbols: {
     id: 'bohrok_kal_stolen_symbols',
     background: { type: 'gradient', from: '#1a0a2e', to: '#0a0a0a' },
@@ -144,7 +144,7 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'nuhvok_kal',
+        speakerId: 'tahnok_kal',
         portraitType: 'avatar',
         position: 'left',
         text: `We are the Bohrok-Kal. We search for Cahdok and Gahdok, queens of the swarms. Tell us where you have hidden the Bahrag, and then stand aside. We have no wish to harm helpless foes.`,
@@ -204,7 +204,6 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
-
   bohrok_kal_sighting: {
     id: 'bohrok_kal_sighting',
     background: { type: 'gradient', from: '#c2a366', to: '#1a0a2e' },
@@ -264,7 +263,6 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
-
   bohrok_kal_race_to_nest: {
     id: 'bohrok_kal_race_to_nest',
     background: { type: 'gradient', from: '#1a0a00', to: '#0d0d1a' },
@@ -306,7 +304,6 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
-
   bohrok_kal_final_confrontation: {
     id: 'bohrok_kal_final_confrontation',
     background: { type: 'gradient', from: '#3d0066', to: '#0a0a0a' },
@@ -328,6 +325,7 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       {
         type: 'dialogue',
         speakerId: 'Toa_Tahu_Nuva',
+        maskColorOverride: LegoColor.LightGray,
         portraitType: 'avatar',
         position: 'left',
         text: `We have no choice. I must use this.`,
@@ -337,26 +335,14 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         text: `Tahu pulls forth the Vahi—the legendary Mask of Time, entrusted to him in secret by Turaga Vakama.`,
       },
       {
-        type: 'dialogue',
-        speakerId: 'Toa_Gali_Nuva',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `The Vahi! Tahu—do you know what you are doing? If you fail, more than Mata Nui will be lost. This entire reality could unravel!`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Toa_Tahu_Nuva',
-        portraitType: 'avatar',
-        position: 'left',
-        text: `We have no choice. I must use this power... master it... or all is lost.`,
-      },
-      {
         type: 'narration',
         text: `Time slows around the Bohrok-Kal. Their movements crawl to near-stillness. But their Krana-Kal turn silver and project an impenetrable force field. Even frozen in time, they cannot be touched.`,
       },
       {
         type: 'dialogue',
         speakerId: 'Toa_Tahu_Nuva',
+        maskOverride: Mask.Vahi,
+        maskColorOverride: LegoColor.White,
         portraitType: 'avatar',
         position: 'left',
         text: `I cannot... maintain this... much longer...`,
@@ -364,6 +350,7 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       {
         type: 'dialogue',
         speakerId: 'Toa_Gali_Nuva',
+        maskColorOverride: LegoColor.LightGray,
         portraitType: 'avatar',
         position: 'right',
         text: `Wait—the symbols! We're still connected to them. If we push our willpower through the connection—feed the Kal more power than they can handle—`,
@@ -371,6 +358,7 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
       {
         type: 'dialogue',
         speakerId: 'Toa_Onua_Nuva',
+        maskColorOverride: LegoColor.LightGray,
         portraitType: 'avatar',
         position: 'left',
         text: `Overload them with their own stolen energy. It's brilliant—or insane.`,
