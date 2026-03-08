@@ -231,6 +231,17 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
       multiplier: 0,
     },
   },
+  [Mask.HauNuvaInfected]: {
+    shortName: Mask.HauNuvaInfected,
+    longName: 'Infected Great Nuva Mask of Shielding',
+    description: 'The infected Hau Nuva turns its wearer against himself for 3 turns',
+    target: 'self',
+    cooldown: { amount: 4, unit: 'turn' },
+    effect: {
+      duration: { amount: 3, unit: 'turn' },
+      type: 'CONFUSION',
+    },
+  },
   [Mask.KaukauNuva]: {
     shortName: Mask.KaukauNuva,
     longName: 'Great Nuva Mask of Water Breathing',

@@ -375,6 +375,28 @@ describe('matoranUtils', () => {
         ]);
         expect(masks).toEqual([Mask.HauNuva]);
       });
+
+      test('returns only infected mask during the Mask of Light infection period', () => {
+        const masks = masksCollected(mockToaNuva, ['mol_fall_of_ta_koro']);
+        expect(masks).toEqual([Mask.HauNuvaInfected]);
+      });
+
+      test('returns only infected mask during infection even when Vahi is unlocked', () => {
+        const masks = masksCollected(mockToaNuva, [
+          'bohrok_kal_reconstruction',
+          'mol_fall_of_ta_koro',
+        ]);
+        expect(masks).toEqual([Mask.HauNuvaInfected]);
+      });
+
+      test('restores normal mask options after Tahu is healed', () => {
+        const masks = masksCollected(mockToaNuva, [
+          'bohrok_kal_reconstruction',
+          'mol_fall_of_ta_koro',
+          'mol_tahu_poisoned',
+        ]);
+        expect(masks).toEqual([Mask.HauNuva, Mask.Vahi]);
+      });
     });
   });
 });

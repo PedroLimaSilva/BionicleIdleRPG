@@ -9,6 +9,7 @@ import {
   startMaskTransition,
   useMaskTransitionFrame,
 } from './maskTransition';
+import { masksCollected } from '../services/matoranUtils';
 
 const NUVA_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/masks.glb';
 
@@ -27,8 +28,9 @@ function isStandardMat(mat: unknown): mat is StandardMat {
 }
 
 /** Map Mask enum to node name in Toa_Nuva/masks.glb (user said masks are named Hau, Miru, etc) */
-const NUVA_MASK_TO_FILE_NAME: Record<string, string> = {
+const NUVA_MASK_TO_NODE_NAME: Record<string, string> = {
   Hau_Nuva: 'Hau',
+  Hau_Nuva_Infected: 'HauInfected',
   Kaukau_Nuva: 'Kaukau',
   Kakama_Nuva: 'Kakama',
   Akaku_Nuva: 'Akaku',
@@ -37,8 +39,8 @@ const NUVA_MASK_TO_FILE_NAME: Record<string, string> = {
   Vahi: 'Vahi',
 };
 
-function getMaskFileName(maskName: string): string {
-  return NUVA_MASK_TO_FILE_NAME[maskName] ?? maskName;
+function getMaskNodeName(maskName: string): string {
+  return NUVA_MASK_TO_NODE_NAME[maskName] ?? maskName;
 }
 
 /** Apply mask color to materials; skip Vahi (keeps original color) */
@@ -48,7 +50,8 @@ function applyNuvaMaskColors(
   maskName: string,
   maskPowerActive?: boolean
 ): void {
-  const isVahi = maskName === 'Vahi' || maskName === Mask.Vahi;
+  const shouldKeepOriginalColor =
+    maskName === 'Vahi' || maskName === Mask.Vahi || maskName === Mask.HauNuvaInfected;
 
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
@@ -63,7 +66,7 @@ function applyNuvaMaskColors(
 
     if (!isStandardMat(mat)) return;
 
-    if (isVahi) return;
+    if (shouldKeepOriginalColor) return;
 
     mat.color.copy(new Color(maskColor));
     if (mat.emissive) {
@@ -89,8 +92,14 @@ export function useNuvaMask(
   maskPowerActive?: boolean
 ) {
   const { completedQuests } = useGame();
-  const maskName = matoran.maskOverride || matoran.mask;
-  const maskFileName = getMaskFileName(maskName);
+  const collected = masksCollected(matoran, completedQuests);
+  const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
+  const override = matoran.maskOverride;
+  const maskName =
+    override && collected.includes(override)
+      ? override
+      : effectiveMask;
+  const maskNodeName = getMaskNodeName(maskName);
   const maskColor = getEffectiveNuvaMaskColor(matoran, completedQuests);
 
   const gltf = useGLTF(NUVA_MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
@@ -112,9 +121,9 @@ export function useNuvaMask(
   useEffect(() => {
     if (!masksNodes || !masksParent) return;
 
-    const source = masksNodes[maskFileName];
+    const source = masksNodes[maskNodeName];
     if (!source) {
-      console.warn(`[useNuvaMask] Mask '${maskFileName}' not found in Toa_Nuva/masks.glb`);
+      console.warn(`[useNuvaMask] Mask '${maskNodeName}' not found in Toa_Nuva/masks.glb`);
       return;
     }
 
@@ -144,7 +153,7 @@ export function useNuvaMask(
     const prevMask = maskRef.current;
     const isChange =
       prevMaskFileNameRef.current !== null &&
-      prevMaskFileNameRef.current !== maskFileName &&
+      prevMaskFileNameRef.current !== maskNodeName &&
       prevMask !== null;
 
     if (isChange && prevMask) {
@@ -155,8 +164,8 @@ export function useNuvaMask(
 
     masksParent.add(clone);
     maskRef.current = clone;
-    prevMaskFileNameRef.current = maskFileName;
-  }, [masksNodes, masksParent, maskFileName]);
+    prevMaskFileNameRef.current = maskNodeName;
+  }, [masksNodes, masksParent, maskNodeName]);
 
   useEffect(() => {
     return () => {
