@@ -47,9 +47,6 @@ export const CharacterDetail: React.FC = () => {
     if (isToa(matoran)) {
       base.push('inventory');
     }
-    if (isToaMata(matoran) && isKranaCollectionActive(completedQuests)) {
-      base.push('krana');
-    }
     if (matoran.quest || isMatoran(matoran) || isBohrokOrKal(matoran)) {
       base.push('tasks');
     }
@@ -57,7 +54,7 @@ export const CharacterDetail: React.FC = () => {
       base.push('chronicle');
     }
     return base;
-  }, [matoran, completedQuests]);
+  }, [matoran]);
 
   useEffect(() => {
     if (matoran) {
@@ -116,8 +113,14 @@ export const CharacterDetail: React.FC = () => {
               }
             />
           )}
-          {activeTab === 'inventory' && isToa(matoran) && <MaskCollection matoran={matoran} />}
-          {activeTab === 'krana' && isToaMata(matoran) && <KranaCollection matoran={matoran} />}
+          {activeTab === 'inventory' && isToa(matoran) && (
+            <>
+              <MaskCollection matoran={matoran} />
+              {isToaMata(matoran) && isKranaCollectionActive(completedQuests) && (
+                <KranaCollection matoran={matoran} />
+              )}
+            </>
+          )}
 
           {activeTab === 'tasks' && (
             <div>

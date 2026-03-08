@@ -133,7 +133,7 @@ test.describe('Responsiveness', () => {
           });
         });
 
-        test('Toa detail: stats, equipment, krana, chronicle', async ({ page }) => {
+        test('Toa detail: stats, inventory, chronicle', async ({ page }) => {
           await setupGameState(page, CHARACTER_ROUTE_GAME_STATE);
           await page.setViewportSize(size);
           await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
@@ -148,18 +148,11 @@ test.describe('Responsiveness', () => {
             maxDiffPixels: 150,
           });
 
-          // Inventory tab
+          // Inventory tab (masks + krana)
           await page.getByRole('button', { name: 'inventory' }).click();
           await expect(page.locator('.mask-inventory-section').first()).toBeVisible();
-          await expect(page).toHaveScreenshot(`toa-detail-inventory-${name}.png`, {
-            fullPage: true,
-            maxDiffPixels: 150,
-          });
-
-          // Krana tab
-          await page.getByRole('button', { name: 'krana' }).click();
           await expect(page.locator('.krana-collection')).toBeVisible();
-          await expect(page).toHaveScreenshot(`toa-detail-krana-${name}.png`, {
+          await expect(page).toHaveScreenshot(`toa-detail-inventory-${name}.png`, {
             fullPage: true,
             maxDiffPixels: 150,
           });
