@@ -112,8 +112,8 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   },
   {
     id: 'mol_le_wahi_ash_bear',
-    name: 'The Ash Bear',
-    description: 'On their way to Le-Koro, Jaller and Takua encounter Graalok the Ash Bear.',
+    name: 'Flight of the Gukko',
+    description: 'On their way to Le-Koro, Jaller and Takua encounter more than just bugs.',
     durationSeconds: 10 * 60,
     requirements: { matoran: ['Takua', 'Jaller'], minLevel: 22, items: [] },
     rewards: {
@@ -126,9 +126,39 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     section: 'Mask of Light',
   },
   {
+    id: 'mol_ko_wahi_arrival',
+    name: 'The Frozen Wahi',
+    description: 'Jaller and Takua meet Toa Kopaka Nuva in a Ko-Koro snowstorm.',
+    durationSeconds: 12 * 60,
+    requirements: { matoran: ['Takua', 'Jaller'], minLevel: 22, items: [] },
+    rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_ko_wahi_pursuit' },
+      xpPerMatoran: 3000,
+      currency: 4500,
+      loot: {},
+    },
+    unlockedAfter: ['mol_le_wahi_ash_bear'],
+    section: 'Mask of Light',
+  },
+  {
+    id: 'mol_tahu_worsens',
+    name: 'The poison takes hold',
+    description: "Tahu\'s poison from the fight with the Rahkshi threatens the Toa's unity.",
+    durationSeconds: 12 * 60,
+    requirements: { matoran: ['Toa_Tahu_Nuva'], minLevel: 22, items: [] },
+    rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_tahu_worsens' },
+      xpPerMatoran: 3000,
+      currency: 4500,
+      loot: {},
+    },
+    unlockedAfter: ['mol_ko_wahi_arrival'],
+    section: 'Mask of Light',
+  },
+  {
     id: 'mol_ko_wahi_pursuit',
     name: 'The Frozen Lake',
-    description: 'Jaller and Takua meet Toa Nuva Kopaka in a Ko-Koro snowstorm.',
+    description: 'Toa Kopaka Nuva leads Jaller and Takua to Ko-Koro.',
     durationSeconds: 12 * 60,
     requirements: { matoran: ['Takua', 'Jaller', 'Toa_Kopaka_Nuva'], minLevel: 22, items: [] },
     rewards: {
@@ -137,7 +167,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
       currency: 4500,
       loot: {},
     },
-    unlockedAfter: ['mol_le_wahi_ash_bear'],
+    unlockedAfter: ['mol_ko_wahi_arrival'],
     section: 'Mask of Light',
   },
   {
