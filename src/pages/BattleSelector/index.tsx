@@ -54,6 +54,19 @@ export const BattleSelector: React.FC = () => {
     () => getVisibleEncounters(ENCOUNTERS, collectedKrana, completedQuests),
     [collectedKrana, completedQuests]
   );
+
+  if (!visibleEncounters.length) {
+    return (
+      <div className="page-container">
+        <h1 className="title">No encounters available</h1>
+        <p>Complete quests to unlock encounters.</p>
+        <Link to="/type-effectiveness" className="battle-selector__type-chart-link">
+          View type effectiveness chart
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="page-container">
       <h1 className="title">Select an Encounter</h1>
