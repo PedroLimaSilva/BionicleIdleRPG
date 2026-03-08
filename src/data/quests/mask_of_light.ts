@@ -143,9 +143,13 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   {
     id: 'mol_tahu_worsens',
     name: 'The poison takes hold',
-    description: "Tahu\'s poison from the fight with the Rahkshi threatens the Toa's unity.",
+    description: "Tahu's poison from the fight with the Rahkshi threatens the Toa's unity.",
     durationSeconds: 12 * 60,
-    requirements: { matoran: ['Toa_Tahu_Nuva'], minLevel: 22, items: [] },
+    requirements: {
+      matoran: ['Toa_Tahu_Nuva', 'Toa_Gali_Nuva', 'Toa_Lewa_Nuva'],
+      minLevel: 22,
+      items: [],
+    },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mol_tahu_worsens' },
       xpPerMatoran: 3000,
