@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
-import { EffectComposer, SSAO, SelectiveBloom } from '@react-three/postprocessing';
+import { EffectComposer, SSAO } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import { DirectionalLight, Mesh, Object3D } from 'three';
 
@@ -23,6 +23,7 @@ import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { BohrokModel } from './BohrokModel';
 import { useEyeMeshes } from './selectiveBloom';
+import { StableSelectiveBloom } from './StableSelectiveBloom';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
 import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
 import { LewaNuvaModel } from './Nuva/LewaNuvaModel';
@@ -221,7 +222,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
           luminanceInfluence={0.35}
         />
         {lightsForBloom.length > 0 && shouldEnableSelectiveBloom() ? (
-          <SelectiveBloom
+          <StableSelectiveBloom
             selection={eyeMeshes}
             lights={lightsForBloom}
             luminanceThreshold={0.25}
