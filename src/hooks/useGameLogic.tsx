@@ -52,8 +52,7 @@ export const useGameLogic = (): GameState => {
     initialState.recruitedCharacters,
     initialState.buyableCharacters,
     protodermis,
-    setProtodermis,
-    addItemToInventory
+    setProtodermis
   );
 
   useJobTickEffect(

@@ -149,7 +149,7 @@ Different test scenarios have different tolerance levels for pixel differences:
 - `characters/detail/index.spec.ts` - Character detail page
 - `characters/detail/modelRendering.spec.ts` - 3D character model rendering (WebGL)
 - `quests.spec.ts` - Quest page and quest tree
-- `inventory.spec.ts` - Inventory page
+- `inventory.spec.ts` - Inventory page removal verification
 - `battle/selector.spec.ts` - Battle selector
 - `battle/flow.spec.ts` - Battle flow (prep, combat, victory/defeat)
 - `battle/type-effectiveness.spec.ts` - Type effectiveness page

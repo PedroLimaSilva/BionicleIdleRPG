@@ -34,28 +34,6 @@ test.describe('Responsiveness', () => {
         });
       });
 
-      test('inventory page with items', async ({ page }) => {
-        await setupGameState(page, {
-          ...INITIAL_GAME_STATE,
-          inventory: { Charcoal: 10, AquaFilter: 5 },
-        });
-        await page.setViewportSize(size);
-        await goto(page, '/inventory');
-
-        await page
-          .locator('.inventory-grid, .page-container')
-          .first()
-          .waitFor({ state: 'visible', timeout: 10000 });
-
-        const firstItem = page.locator('.inventory-item').first();
-        await viewportAwareHover(firstItem, size.width);
-
-        await expect(page).toHaveScreenshot(`inventory-${name}.png`, {
-          fullPage: true,
-          maxDiffPixels: 150,
-        });
-      });
-
       test('settings page', async ({ page }) => {
         await enableTestMode(page);
         await page.setViewportSize(size);

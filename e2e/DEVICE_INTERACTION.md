@@ -18,14 +18,14 @@ Chooses tap vs hover based on viewport width:
 ```typescript
 import { VIEWPORTS, viewportAwareHover } from './helpers';
 
-test('inventory at mobile viewport', async ({ page }) => {
+test('characters at mobile viewport', async ({ page }) => {
   await page.setViewportSize(VIEWPORTS.mobilePortrait);
-  await goto(page, '/inventory');
+  await goto(page, '/characters');
 
-  const item = page.locator('.inventory-item').first();
-  await viewportAwareHover(item, VIEWPORTS.mobilePortrait.width);
+  const card = page.locator('.character-card').first();
+  await viewportAwareHover(card, VIEWPORTS.mobilePortrait.width);
 
-  await expect(page).toHaveScreenshot('inventory-mobile.png');
+  await expect(page).toHaveScreenshot('characters-mobile.png');
 });
 ```
 

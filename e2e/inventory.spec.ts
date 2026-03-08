@@ -1,48 +1,13 @@
 import { test, expect } from '@playwright/test';
-import { enableTestMode, goto, INITIAL_GAME_STATE, setupGameState } from './helpers';
+import { enableTestMode, goto } from './helpers';
 
-const INVENTORY_GAME_STATE = {
-  ...INITIAL_GAME_STATE,
-  inventory: {
-    Charcoal: 10,
-    AquaFilter: 5,
-    LightStone: 3,
-  },
-};
-
-test.describe('Inventory Page', () => {
-  test('should display empty inventory page', async ({ page }) => {
+test.describe('Inventory Page (removed)', () => {
+  test('navigating to /inventory should show 404', async ({ page }) => {
     await enableTestMode(page);
     await goto(page, '/inventory');
 
-    await page
-      .locator('.inventory-grid, .page-container')
-      .first()
-      .waitFor({ state: 'visible', timeout: 10000 });
+    await page.locator('.page-container').first().waitFor({ state: 'visible', timeout: 10000 });
 
-    // Take a screenshot
-    await expect(page).toHaveScreenshot('inventory-page-empty.png', {
-      fullPage: true,
-      maxDiffPixels: 150,
-    });
-  });
-
-  test('should display inventory page', async ({ page }) => {
-    await setupGameState(page, INVENTORY_GAME_STATE);
-    await goto(page, '/inventory');
-
-    await page
-      .locator('.inventory-grid, .page-container')
-      .first()
-      .waitFor({ state: 'visible', timeout: 10000 });
-
-    const firstItem = page.locator('.inventory-item').first();
-    await firstItem.hover();
-
-    // Take a screenshot
-    await expect(page).toHaveScreenshot('inventory-page.png', {
-      fullPage: true,
-      maxDiffPixels: 150,
-    });
+    await expect(page.locator('h1')).toHaveText('404 - Not Found');
   });
 });
