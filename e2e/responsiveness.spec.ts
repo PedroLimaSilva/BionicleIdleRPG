@@ -5,7 +5,6 @@ import {
   INITIAL_GAME_STATE,
   setupGameState,
   VIEWPORTS,
-  viewportAwareHover,
   waitForCharacterCards,
   disableCSSAnimations,
   hideCanvas,
