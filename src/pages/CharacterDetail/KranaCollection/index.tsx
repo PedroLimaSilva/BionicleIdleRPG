@@ -27,9 +27,7 @@ export function KranaCollection({ matoran }: KranaCollectionProps) {
 
   return (
     <div className="krana-collection">
-      <p className="krana-collection__progress">
-        Krana Recovered: {progress.collected.length} / {progress.total}
-      </p>
+      <h3 className="krana-collection__title">Krana</h3>
       <div className="krana-collection__grid">
         {ALL_KRANA_IDS.map((kranaId) => {
           const collected = progress.collected.includes(kranaId);
@@ -57,6 +55,9 @@ export function KranaCollection({ matoran }: KranaCollectionProps) {
           );
         })}
       </div>
+      <p className="krana-collection__progress">
+        Krana Recovered: {progress.collected.length} / {progress.total}
+      </p>
     </div>
   );
 }

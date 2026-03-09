@@ -225,7 +225,12 @@ function DialogueStepView({
         />
       ) : (
         <MatoranAvatar
-          matoran={{ ...speaker, exp: 0 }}
+          matoran={{
+            ...speaker,
+            exp: 0,
+            maskOverride: step.maskOverride,
+            maskColorOverride: step.maskColorOverride,
+          }}
           styles="visual-novel-cutscene__portrait-avatar"
         />
       )

@@ -325,11 +325,21 @@ XP: 2500"]
 Loot: 
 Currency: 4500
 XP: 3000"]
-  mol_le_wahi_ash_bear["The Ash Bear
+  mol_le_wahi_ash_bear["Flight of the Gukko
 (10m)
 Loot: 
 Currency: 4000
 XP: 2800"]
+  mol_ko_wahi_arrival["The Frozen Wahi
+(12m)
+Loot: 
+Currency: 4500
+XP: 3000"]
+  mol_tahu_worsens["The poison takes hold
+(12m)
+Loot: 
+Currency: 4500
+XP: 3000"]
   mol_ko_wahi_pursuit["The Frozen Lake
 (12m)
 Loot: 
@@ -460,7 +470,9 @@ XP: 4000"]
   mol_kolhii_tournament --> mol_avohkii_prophecy
   mol_avohkii_prophecy --> mol_fall_of_ta_koro
   mol_fall_of_ta_koro --> mol_le_wahi_ash_bear
-  mol_le_wahi_ash_bear --> mol_ko_wahi_pursuit
+  mol_le_wahi_ash_bear --> mol_ko_wahi_arrival
+  mol_ko_wahi_arrival --> mol_tahu_worsens
+  mol_ko_wahi_arrival --> mol_ko_wahi_pursuit
   mol_ko_wahi_pursuit --> mol_onu_koro_highway
   mol_onu_koro_highway --> mol_onu_koro_battle
   mol_onu_koro_battle --> mol_tahu_poisoned

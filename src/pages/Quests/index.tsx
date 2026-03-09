@@ -24,10 +24,13 @@ import {
 const DEFAULT_SECTION_LABEL = 'Other Quests';
 
 const SECTION_ORDER: Record<string, number> = {
-  'Bohrok Swarms': 0,
-  "The Cronicler's Journey": 1,
-  'Arrival of the Toa': 2,
-  [DEFAULT_SECTION_LABEL]: 3,
+  'Mask of Light': 0,
+  'Tales of the Masks': 1,
+  'Bohrok Kal': 2,
+  'Bohrok Swarms': 3,
+  "The Cronicler's Journey": 4,
+  'Arrival of the Toa': 5,
+  [DEFAULT_SECTION_LABEL]: 6,
 };
 
 type SectionGroup = {

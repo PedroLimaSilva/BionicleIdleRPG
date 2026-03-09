@@ -9,13 +9,8 @@ import { ElementTag } from '../../components/ElementTag';
 import { useEffect, useMemo, useState } from 'react';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
-import {
-  getRecruitedMatoran,
-  isMatoran,
-  isToa,
-  isToaMata,
-  isBohrokOrKal,
-} from '../../services/matoranUtils';
+import { getRecruitedMatoran } from '../../services/matoranUtils';
+import { isBohrokOrKal, isMatoran, isToa, isToaMata } from '../../game/matoranStage';
 import { getAvailableEvolution, meetsEvolutionLevel } from '../../game/CharacterEvolution';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
@@ -47,9 +42,6 @@ export const CharacterDetail: React.FC = () => {
     if (isToa(matoran)) {
       base.push('inventory');
     }
-    if (isToaMata(matoran) && isKranaCollectionActive(completedQuests)) {
-      base.push('krana');
-    }
     if (matoran.quest || isMatoran(matoran) || isBohrokOrKal(matoran)) {
       base.push('tasks');
     }
@@ -57,7 +49,7 @@ export const CharacterDetail: React.FC = () => {
       base.push('chronicle');
     }
     return base;
-  }, [matoran, completedQuests]);
+  }, [matoran]);
 
   useEffect(() => {
     if (matoran) {
@@ -116,8 +108,14 @@ export const CharacterDetail: React.FC = () => {
               }
             />
           )}
-          {activeTab === 'inventory' && isToa(matoran) && <MaskCollection matoran={matoran} />}
-          {activeTab === 'krana' && isToaMata(matoran) && <KranaCollection matoran={matoran} />}
+          {activeTab === 'inventory' && isToa(matoran) && (
+            <>
+              <MaskCollection matoran={matoran} />
+              {isToaMata(matoran) && isKranaCollectionActive(completedQuests) && (
+                <KranaCollection matoran={matoran} />
+              )}
+            </>
+          )}
 
           {activeTab === 'tasks' && (
             <div>

@@ -143,7 +143,7 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
     id: BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID,
     name: 'At the Nuva Cube',
     description:
-      'The Toa Nuva arrive at the Nuva Cube—too late. The six Bohrok-Kal stand before it, symbols in hand, ready to free the Bahrag. The Exo-Toa weapons prove useless against the Kal’s power.',
+      'The Toa Nuva arrive at the Nuva Cube too late. The six Bohrok-Kal already disabled the Exo-Toa and stand before the Nuva Cube, symbols in hand, ready to free the Bahrag.',
     durationSeconds: 25 * 60,
     requirements: {
       matoran: [

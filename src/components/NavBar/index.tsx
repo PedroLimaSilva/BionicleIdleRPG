@@ -1,12 +1,7 @@
-import { useMemo } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 import { UserCircle2, Settings, Map, Swords } from 'lucide-react';
 import { BattlePhase } from '../../hooks/useBattleState';
-import { areBattlesUnlocked } from '../../game/Progress';
-import { getVisibleEncounters } from '../../game/encounterVisibility';
-import { BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID } from '../../game/nuvaSymbols';
-import { ENCOUNTERS } from '../../data/combat';
 import { CurrencyBar } from '../CurrencyBar';
 
 const shouldShowCurrencyBar = (pathname: string) => {
@@ -14,15 +9,8 @@ const shouldShowCurrencyBar = (pathname: string) => {
 };
 
 export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
-  const { battle, completedQuests, collectedKrana } = useGame();
+  const { battle } = useGame();
   const { pathname } = useLocation();
-  const visibleEncounters = useMemo(
-    () => getVisibleEncounters(ENCOUNTERS, collectedKrana, completedQuests),
-    [collectedKrana, completedQuests]
-  );
-  const bohrokKalDefeated = completedQuests.includes(BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID);
-  const showBattleRoute =
-    areBattlesUnlocked(completedQuests) && visibleEncounters.length > 0 && !bohrokKalDefeated;
 
   return (
     <div
@@ -39,12 +27,10 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
     >
       {shouldShowCurrencyBar(pathname) && <CurrencyBar isPortrait={isPortrait} />}
       <nav className="nav-bar">
-        {showBattleRoute && (
-          <NavLink to="/battle" className="nav-item">
-            <Swords />
-            <label>Battle</label>
-          </NavLink>
-        )}
+        <NavLink to="/battle/selector" className="nav-item">
+          <Swords />
+          <label>Battle</label>
+        </NavLink>
         <NavLink to="/" className="nav-item">
           <Map />
           <label>Quests</label>

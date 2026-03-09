@@ -176,15 +176,15 @@ export function useMask(
 
   // Unmount-only cleanup: remove any lingering masks from the scene
   useEffect(() => {
+    const transition = transitionRef.current;
     return () => {
       const parent = masksParentRef.current;
       if (parent) {
         if (maskRef.current) parent.remove(maskRef.current);
-        const tr = transitionRef.current;
-        if (tr.active && tr.oldMask) parent.remove(tr.oldMask);
+        if (transition.active && transition.oldMask) parent.remove(transition.oldMask);
       }
       maskRef.current = null;
-      transitionRef.current.active = false;
+      transition.active = false;
     };
   }, []);
 

@@ -495,6 +495,27 @@ describe('Battle Simulation', () => {
       expect(confusedAfterR6).toBeUndefined();
     });
 
+    test('Hau Nuva Infected confuses Tahu Nuva and stops him attacking enemies', async () => {
+      const team = createTeamFromRecruited([
+        { id: 'Toa_Tahu_Nuva', exp: 0, maskOverride: Mask.HauNuvaInfected },
+      ]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Tahu_Nuva'], true);
+
+      const enemyHpBefore = sim.enemies[0].hp;
+      await sim.runRound();
+
+      const tahu = sim.team.find((t) => t.id === 'Toa_Tahu_Nuva')!;
+      expect(tahu.effects?.some((effect) => effect.type === 'CONFUSION')).toBe(true);
+      expect(sim.enemies[0].hp).toBe(enemyHpBefore);
+    });
+
     test('Kakama grants Pohatu two attacks in one round', async () => {
       const team = createTeamFromRecruited([{ id: 'Toa_Pohatu', exp: 0 }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;

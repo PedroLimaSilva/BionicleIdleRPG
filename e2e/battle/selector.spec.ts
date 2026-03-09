@@ -11,7 +11,9 @@ const ALL_KRANA_COLLECTED = {
 };
 
 test.describe('Battle Nav Item', () => {
-  test('should display battle nav item if quest requirements are met', async ({ page }) => {
+  test('should display battle nav item and battle page when encounters are available', async ({
+    page,
+  }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       completedQuests: ['bohrok_legend_of_krana'],
@@ -20,10 +22,13 @@ test.describe('Battle Nav Item', () => {
 
     await page.locator('.page-container').first().waitFor({ state: 'visible', timeout: 10000 });
 
+    await expect(page.locator('nav a[href*="/battle"]')).toBeVisible();
     await expect(page).toHaveScreenshot({});
   });
 
-  test('should hide battle nav item when no encounters have quest loot', async ({ page }) => {
+  test('should display battle nav item and direct player to complete quests when no encounters available', async ({
+    page,
+  }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       completedQuests: ['bohrok_legend_of_krana'],
@@ -32,18 +37,29 @@ test.describe('Battle Nav Item', () => {
     await goto(page, '/');
 
     await page.locator('.nav-bar').waitFor({ state: 'visible', timeout: 10000 });
-    await expect(page.locator('nav a[href*="/battle"]')).not.toBeVisible();
+    await expect(page.locator('nav a[href*="/battle"]')).toBeVisible();
+
+    await page.locator('nav a[href*="/battle"]').click();
+    await page.locator('.page-container').waitFor({ state: 'visible', timeout: 10000 });
+    await expect(page.getByText('Complete quests to unlock encounters.')).toBeVisible();
   });
 
-  test('should hide battle nav item after Bohrok Kal are defeated', async ({ page }) => {
+  test('should display battle nav item and direct player to complete quests after Bohrok Kal are defeated', async ({
+    page,
+  }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       completedQuests: ['bohrok_legend_of_krana', 'bohrok_kal_final_confrontation'],
+      collectedKrana: ALL_KRANA_COLLECTED,
     });
     await goto(page, '/');
 
     await page.locator('.nav-bar').waitFor({ state: 'visible', timeout: 10000 });
-    await expect(page.locator('nav a[href*="/battle"]')).not.toBeVisible();
+    await expect(page.locator('nav a[href*="/battle"]')).toBeVisible();
+
+    await page.locator('nav a[href*="/battle"]').click();
+    await page.locator('.page-container').waitFor({ state: 'visible', timeout: 10000 });
+    await expect(page.getByText('Complete quests to unlock encounters.')).toBeVisible();
   });
 });
 
