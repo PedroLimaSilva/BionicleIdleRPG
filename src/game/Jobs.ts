@@ -1,10 +1,11 @@
 import { JOB_DETAILS } from '../data/jobs';
 import { JobAssignment, MatoranJob, ProductivityEffect } from '../types/Jobs';
-import { MatoranStage, RecruitedCharacterData } from '../types/Matoran';
+import { RecruitedCharacterData } from '../types/Matoran';
 import { GameItemId } from '../data/loot';
 import { GameState } from '../types/GameState';
 import { Inventory } from '../services/inventoryUtils';
 import { CHARACTER_DEX } from '../data/dex/index';
+import { isBohrokOrKal } from './matoranStage';
 
 export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const jobData = JOB_DETAILS[job];
@@ -33,18 +34,19 @@ export function getAvailableJobs(
     if (!matoranDex) {
       return jobs.filter((job) => !JOB_DETAILS[job].allowedStages);
     }
-    const stage = matoran.stage ?? matoranDex.stage;
-    const isBohrok =
-      stage === MatoranStage.Bohrok || stage === MatoranStage.BohrokKal;
+    const effectiveMatoran = {
+      ...matoranDex,
+      stage: matoran.stage ?? matoranDex.stage,
+    };
 
     jobs = jobs.filter((job) => {
       const { allowedStages } = JOB_DETAILS[job];
-      if (isBohrok) {
+      if (isBohrokOrKal(effectiveMatoran)) {
         // Bohrok only have access to reconstruction jobs (jobs with allowedStages for Bohrok)
-        return allowedStages?.includes(stage) ?? false;
+        return allowedStages?.includes(effectiveMatoran.stage) ?? false;
       }
       if (!allowedStages) return true;
-      return allowedStages.includes(stage);
+      return allowedStages.includes(effectiveMatoran.stage);
     });
   }
 

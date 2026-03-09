@@ -2,46 +2,34 @@ import {
   BaseMatoran,
   ListedCharacterData,
   Mask,
-  MatoranStage,
   RecruitedCharacterData,
 } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { GameItemId } from '../data/loot';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
+import {
+  isBohrok,
+  isBohrokKal,
+  isBohrokOrKal,
+  isMatoran,
+  isToa,
+  isToaMata,
+  isToaNuva,
+} from '../game/matoranStage';
 import { isTahuNuvaInfectedMaskPeriod } from '../game/masks';
 import { CHARACTER_DEX } from '../data/dex/index';
 import { GameState } from '../types/GameState';
 
-export function isMatoran(matoran: BaseMatoran) {
-  return [MatoranStage.Diminished, MatoranStage.Rebuilt, MatoranStage.Metru].includes(
-    matoran.stage
-  );
-}
-
-export function isBohrok(matoran: BaseMatoran) {
-  return matoran.stage === MatoranStage.Bohrok;
-}
-
-export function isBohrokKal(matoran: BaseMatoran) {
-  return matoran.stage === MatoranStage.BohrokKal;
-}
-
-export function isBohrokOrKal(matoran: BaseMatoran) {
-  return isBohrok(matoran) || isBohrokKal(matoran);
-}
-
-export function isToaNuva(matoran: BaseMatoran) {
-  return matoran.stage === MatoranStage.ToaNuva;
-}
-
-export function isToa(matoran: BaseMatoran) {
-  return isToaMata(matoran) || isToaNuva(matoran);
-}
-
-export function isToaMata(matoran: BaseMatoran) {
-  return MatoranStage.ToaMata === matoran.stage;
-}
+export {
+  isBohrok,
+  isBohrokKal,
+  isBohrokOrKal,
+  isMatoran,
+  isToa,
+  isToaMata,
+  isToaNuva,
+};
 
 const FULL_MASK_SET = [
   Mask.Akaku,
