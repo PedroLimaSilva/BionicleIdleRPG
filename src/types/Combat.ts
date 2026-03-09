@@ -142,4 +142,6 @@ export interface EnemyEncounter {
   headliner: Combatant['id'];
   waves: Array<{ id: string; lvl: number }[]>;
   loot: BattleDrop[];
+  /** When true, enemy levels are set to the average level of the player's party. */
+  scalesWithParty?: boolean;
 }

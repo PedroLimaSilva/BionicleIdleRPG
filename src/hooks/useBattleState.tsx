@@ -94,6 +94,7 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   const [isRunningRound, setIsRunningRound] = useState(false);
   const teamRef = useRef(team);
   const enemiesRef = useRef(enemies);
+  const scaledLevelRef = useRef<number | null>(null);
   teamRef.current = team;
   enemiesRef.current = enemies;
 
@@ -147,10 +148,10 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
     const updatedTeam = decrementWaveCounters(team);
     setTeam(updatedTeam);
 
-    // Load new enemies for the next wave
+    const scaled = scaledLevelRef.current;
     setEnemies(
       currentEncounter.waves[nextWave].map(({ id, lvl }, index) =>
-        generateCombatantStats(`${id}-${index}`, id, lvl)
+        generateCombatantStats(`${id}-${index}`, id, scaled !== null ? Math.max(lvl, scaled) : lvl)
       )
     );
   };
@@ -170,9 +171,15 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
     setCurrentWave(0);
     setTeam([]);
     setEnemies([]);
+    scaledLevelRef.current = null;
   };
 
   const confirmTeam = (team: RecruitedCharacterData[]) => {
+    const partyLevels = team.map(({ exp }) => getLevelFromExp(exp));
+    const avgPartyLevel = Math.round(
+      partyLevels.reduce((sum, l) => sum + l, 0) / partyLevels.length
+    );
+
     setTeam(
       team.map(({ id, exp, maskOverride }) =>
         generateCombatantStats(id, id, getLevelFromExp(exp), {
@@ -183,11 +190,17 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
       )
     );
     setCurrentWave(0);
+
+    const scaleLevel = currentEncounter!.scalesWithParty
+      ? (waveLvl: number) => Math.max(waveLvl, avgPartyLevel)
+      : (waveLvl: number) => waveLvl;
+
     setEnemies(
       currentEncounter!.waves[0].map(({ id, lvl }, index) =>
-        generateCombatantStats(`${id}-${index}`, id, lvl)
+        generateCombatantStats(`${id}-${index}`, id, scaleLevel(lvl))
       )
     );
+    scaledLevelRef.current = currentEncounter!.scalesWithParty ? avgPartyLevel : null;
     setPhase(BattlePhase.Inprogress);
   };
 

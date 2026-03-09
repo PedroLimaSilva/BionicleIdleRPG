@@ -1,5 +1,6 @@
 import { Combatant } from '../../types/Combat';
 import { BohrokModel } from '../../components/CharacterScene/BohrokModel';
+import { RahkshiModel } from '../../components/CharacterScene/Rahkshi';
 import { KopakaMataModel } from '../../components/CharacterScene/Mata/KopakaMataModel';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { Euler } from '@react-three/fiber';
@@ -131,6 +132,12 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.175} position={[0, 0.215, -0.15]}>
               <BohrokModel ref={childRef} id={combatant.id.split('-')[0]} />
+            </group>
+          );
+        case 'rahkshi':
+          return (
+            <group scale={0.175} position={[0, 0.215, -0.15]}>
+              <RahkshiModel ref={childRef} id={combatant.id.split('-')[0]} />
             </group>
           );
         case 'Toa_Kopaka':

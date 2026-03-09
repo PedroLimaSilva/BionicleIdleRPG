@@ -4,6 +4,8 @@ import { ElementTribe } from '../types/Matoran';
 import { COMBATANT_DEX } from '../data/combat';
 import type { KranaReward } from '../types/GameState';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
+import { GameItemId } from '../data/loot';
+import { isKranaLootId } from './Krana';
 import {
   isKranaCollected,
   isKranaCollectionActive,
@@ -163,6 +165,33 @@ export function computeKranaRewardsForBattle(
       }
     }
     if (awarded) rewards.push(awarded);
+  }
+  return rewards;
+}
+
+export type ItemReward = { id: GameItemId; qty: number };
+
+/**
+ * Rolls for non-Krana item drops (e.g. kraata) from an encounter's loot table.
+ * Each drop is rolled once on victory; one item can drop multiple times.
+ */
+export function computeItemRewardsForBattle(
+  encounter: EnemyEncounter,
+  phase: BattlePhase
+): ItemReward[] {
+  if (phase !== BattlePhase.Victory) return [];
+
+  const rewards: ItemReward[] = [];
+  for (const drop of encounter.loot) {
+    if (isKranaLootId(drop.id)) continue;
+    if (Math.random() < drop.chance) {
+      const existing = rewards.find((r) => r.id === drop.id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        rewards.push({ id: drop.id as GameItemId, qty: 1 });
+      }
+    }
   }
   return rewards;
 }
