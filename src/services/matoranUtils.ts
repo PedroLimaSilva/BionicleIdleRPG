@@ -8,28 +8,10 @@ import { MatoranJob } from '../types/Jobs';
 import { GameItemId } from '../data/loot';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
-import {
-  isBohrok,
-  isBohrokKal,
-  isBohrokOrKal,
-  isMatoran,
-  isToa,
-  isToaMata,
-  isToaNuva,
-} from '../game/matoranStage';
+import { isToaNuva } from '../game/matoranStage';
 import { isTahuNuvaInfectedMaskPeriod } from '../game/masks';
 import { CHARACTER_DEX } from '../data/dex/index';
 import { GameState } from '../types/GameState';
-
-export {
-  isBohrok,
-  isBohrokKal,
-  isBohrokOrKal,
-  isMatoran,
-  isToa,
-  isToaMata,
-  isToaNuva,
-};
 
 const FULL_MASK_SET = [
   Mask.Akaku,
