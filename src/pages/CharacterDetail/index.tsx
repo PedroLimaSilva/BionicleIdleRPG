@@ -9,13 +9,8 @@ import { ElementTag } from '../../components/ElementTag';
 import { useEffect, useMemo, useState } from 'react';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
-import {
-  getRecruitedMatoran,
-  isMatoran,
-  isToa,
-  isToaMata,
-  isBohrokOrKal,
-} from '../../services/matoranUtils';
+import { getRecruitedMatoran } from '../../services/matoranUtils';
+import { isBohrokOrKal, isMatoran, isToa, isToaMata } from '../../game/matoranStage';
 import { getAvailableEvolution, meetsEvolutionLevel } from '../../game/CharacterEvolution';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';

@@ -164,6 +164,21 @@ describe('Jobs', () => {
       expect(bohrokJobs).toContain(MatoranJob.TaKoroRebuilder);
       expect(matoranJobs).not.toContain(MatoranJob.TaKoroRebuilder);
     });
+
+    test('Bohrok only see reconstruction jobs, not other jobs', () => {
+      const mockGameState: GameState = {
+        completedQuests: ['bohrok_assistants'],
+      } as GameState;
+
+      const bohrokMatoran = { id: 'tahnok', exp: 0 } as RecruitedCharacterData;
+      const bohrokJobs = getAvailableJobs(mockGameState, bohrokMatoran);
+
+      expect(bohrokJobs).toContain(MatoranJob.TaKoroRebuilder);
+      expect(bohrokJobs).toContain(MatoranJob.GaKoroRebuilder);
+      expect(bohrokJobs).not.toContain(MatoranJob.CharcoalMaker);
+      expect(bohrokJobs).not.toContain(MatoranJob.AlgaeHarvester);
+      expect(bohrokJobs).not.toContain(MatoranJob.QuarryRunner);
+    });
   });
 
   describe('applyJobExp', () => {

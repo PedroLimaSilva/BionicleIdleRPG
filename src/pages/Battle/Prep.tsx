@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useGame } from '../../context/Game';
 import { RecruitedCharacterData } from '../../types/Matoran';
 import { CHARACTER_DEX } from '../../data/dex/index';
-import { isToa } from '../../services/matoranUtils';
+import { isToa } from '../../game/matoranStage';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../components/MaskPowerTooltip';
 import { getLevelFromExp } from '../../game/Levelling';

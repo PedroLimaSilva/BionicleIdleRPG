@@ -1,7 +1,5 @@
+import { isMatoran, isToa, isToaMata } from '../game/matoranStage';
 import {
-  isMatoran,
-  isToa,
-  isToaMata,
   recruitMatoran,
   assignJob,
   removeJob,
