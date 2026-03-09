@@ -50,6 +50,7 @@ test.describe('Battle Nav Item', () => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
       completedQuests: ['bohrok_legend_of_krana', 'bohrok_kal_final_confrontation'],
+      collectedKrana: ALL_KRANA_COLLECTED,
     });
     await goto(page, '/');
 
