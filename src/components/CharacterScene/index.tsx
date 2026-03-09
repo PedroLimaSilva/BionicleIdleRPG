@@ -84,7 +84,7 @@ function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacter
     case MatoranStage.BohrokKal:
       return (
         <group scale={4.5} position={[0, 5.6, -3.5]}>
-          <BohrokModel id={matoran.id} />
+          <BohrokModel key={matoran.id} id={matoran.id} />
         </group>
       );
     case MatoranStage.Diminished:
