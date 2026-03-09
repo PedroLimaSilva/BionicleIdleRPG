@@ -3,9 +3,10 @@ import { useGame } from '../../context/Game';
 import { UserCircle2, Settings, Map, Swords } from 'lucide-react';
 import { BattlePhase } from '../../hooks/useBattleState';
 import { CurrencyBar } from '../CurrencyBar';
+import { AnimatePresence } from 'motion/react';
 
 const shouldShowCurrencyBar = (pathname: string) => {
-  return ['/recruitment'].includes(pathname);
+  return !['/settings'].includes(pathname);
 };
 
 export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
@@ -25,7 +26,9 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
           : ''
       }`}
     >
-      {shouldShowCurrencyBar(pathname) && <CurrencyBar isPortrait={isPortrait} />}
+      <AnimatePresence initial={false}>
+        {shouldShowCurrencyBar(pathname) && <CurrencyBar isPortrait={isPortrait} />}
+      </AnimatePresence>
       <nav className="nav-bar">
         <NavLink to="/battle/selector" className="nav-item">
           <Swords />
