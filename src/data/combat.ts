@@ -1210,28 +1210,8 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   },
 
   // ── Rahkshi encounters ──────────────────────────────────────────────
-  // First three Rahkshi – unlocked after the Fall of Ta-Koro
+  // First three Rahkshi – unlocked after the Fall of Ta-Koro (Guurahk, Lerahk, Panrahk)
 
-  {
-    id: 'turahk-1',
-    name: 'Turahk',
-    headliner: 'Turahk',
-    difficulty: 7,
-    description:
-      'The Rahkshi of Fear stalks the ruins of Ta-Koro. Its Staff of Fear can freeze even a Toa in terror.',
-    scalesWithParty: true,
-    waves: [[{ id: 'Turahk', lvl: 1 }]],
-    loot: makeKraataLoot([
-      GameItemId.KraataFear,
-      GameItemId.KraataAccuracy,
-      GameItemId.KraataDarkness,
-      GameItemId.KraataIllusion,
-      GameItemId.KraataMindReading,
-      GameItemId.KraataSleep,
-      GameItemId.KraataConfusion,
-    ]),
-    unlockedAfter: ['mol_fall_of_ta_koro'],
-  },
   {
     id: 'guurahk-1',
     name: 'Guurahk',
@@ -1273,37 +1253,12 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     unlockedAfter: ['mol_fall_of_ta_koro'],
   },
   {
-    id: 'rahkshi_trio_ta_koro',
-    name: 'Sons of Makuta',
-    headliner: 'rahkshi_trio_ta_koro',
-    difficulty: 8,
-    description:
-      'All three Rahkshi that destroyed Ta-Koro attack together—Fear, Disintegration, and Poison in concert.',
-    scalesWithParty: true,
-    waves: [
-      [
-        { id: 'Turahk', lvl: 1 },
-        { id: 'Guurahk', lvl: 1 },
-        { id: 'Lerahk', lvl: 1 },
-      ],
-    ],
-    loot: makeKraataLoot([
-      GameItemId.KraataFear,
-      GameItemId.KraataDisintegration,
-      GameItemId.KraataPoison,
-    ]),
-    unlockedAfter: ['mol_fall_of_ta_koro'],
-  },
-
-  // Second three Rahkshi – unlocked after the battle in Onu-Koro
-
-  {
     id: 'panrahk-1',
     name: 'Panrahk',
     headliner: 'Panrahk',
     difficulty: 7,
     description:
-      'The Rahkshi of Fragmentation can shatter anything it touches. Its staff blasts rend stone and metal alike.',
+      'The Rahkshi of Fragmentation stalks the ruins of Ta-Koro. Its staff blasts can shatter stone and metal alike.',
     scalesWithParty: true,
     waves: [[{ id: 'Panrahk', lvl: 1 }]],
     loot: makeKraataLoot([
@@ -1314,6 +1269,51 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       GameItemId.KraataMagnetism,
       GameItemId.KraataShattering,
       GameItemId.KraataShapeshifting,
+    ]),
+    unlockedAfter: ['mol_fall_of_ta_koro'],
+  },
+  {
+    id: 'rahkshi_trio_ta_koro',
+    name: 'Sons of Makuta',
+    headliner: 'rahkshi_trio_ta_koro',
+    difficulty: 8,
+    description:
+      'All three Rahkshi that destroyed Ta-Koro attack together—Fragmentation, Disintegration, and Poison in concert.',
+    scalesWithParty: true,
+    waves: [
+      [
+        { id: 'Panrahk', lvl: 1 },
+        { id: 'Guurahk', lvl: 1 },
+        { id: 'Lerahk', lvl: 1 },
+      ],
+    ],
+    loot: makeKraataLoot([
+      GameItemId.KraataFragmentation,
+      GameItemId.KraataDisintegration,
+      GameItemId.KraataPoison,
+    ]),
+    unlockedAfter: ['mol_fall_of_ta_koro'],
+  },
+
+  // Second three Rahkshi – unlocked after the battle in Onu-Koro (Turahk, Vorahk, Kurahk)
+
+  {
+    id: 'turahk-1',
+    name: 'Turahk',
+    headliner: 'Turahk',
+    difficulty: 7,
+    description:
+      'The Rahkshi of Fear descended upon Onu-Koro. Its Staff of Fear can freeze even a Toa in terror.',
+    scalesWithParty: true,
+    waves: [[{ id: 'Turahk', lvl: 1 }]],
+    loot: makeKraataLoot([
+      GameItemId.KraataFear,
+      GameItemId.KraataAccuracy,
+      GameItemId.KraataDarkness,
+      GameItemId.KraataIllusion,
+      GameItemId.KraataMindReading,
+      GameItemId.KraataSleep,
+      GameItemId.KraataConfusion,
     ]),
     unlockedAfter: ['mol_onu_koro_battle'],
   },
@@ -1363,17 +1363,17 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'rahkshi_trio_onu_koro',
     difficulty: 8,
     description:
-      'Panrahk, Vorahk, and Kurahk—Fragmentation, Hunger, and Anger—descend upon Onu-Koro together.',
+      'Turahk, Vorahk, and Kurahk—Fear, Hunger, and Anger—descend upon Onu-Koro together.',
     scalesWithParty: true,
     waves: [
       [
-        { id: 'Panrahk', lvl: 1 },
+        { id: 'Turahk', lvl: 1 },
         { id: 'Vorahk', lvl: 1 },
         { id: 'Kurahk', lvl: 1 },
       ],
     ],
     loot: makeKraataLoot([
-      GameItemId.KraataFragmentation,
+      GameItemId.KraataFear,
       GameItemId.KraataHunger,
       GameItemId.KraataAnger,
     ]),
@@ -1388,16 +1388,16 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'rahkshi_all',
     difficulty: 9,
     description:
-      'All six sons of Makuta—Fear, Disintegration, Poison, Fragmentation, Hunger, and Anger—converge at Kini-Nui in two relentless waves.',
+      'All six sons of Makuta—Fragmentation, Disintegration, Poison, Fear, Hunger, and Anger—converge at Kini-Nui in two relentless waves.',
     scalesWithParty: true,
     waves: [
       [
-        { id: 'Turahk', lvl: 1 },
+        { id: 'Panrahk', lvl: 1 },
         { id: 'Guurahk', lvl: 1 },
         { id: 'Lerahk', lvl: 1 },
       ],
       [
-        { id: 'Panrahk', lvl: 1 },
+        { id: 'Turahk', lvl: 1 },
         { id: 'Vorahk', lvl: 1 },
         { id: 'Kurahk', lvl: 1 },
       ],
