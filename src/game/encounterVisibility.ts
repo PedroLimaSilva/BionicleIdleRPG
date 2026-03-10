@@ -54,6 +54,8 @@ export function getVisibleEncounters(
   }
 
   return visible.filter(
-    (e) => !e.unlockedAfter || e.unlockedAfter.every((id) => completedQuests.includes(id))
+    (e) =>
+      (!e.unlockedAfter || e.unlockedAfter.every((id) => completedQuests.includes(id))) &&
+      (!e.hiddenAfter || !e.hiddenAfter.every((id) => completedQuests.includes(id)))
   );
 }

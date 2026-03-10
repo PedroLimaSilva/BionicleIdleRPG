@@ -1089,6 +1089,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('tahnok_kal', 60, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
+    hiddenAfter: ['bohrok_kal_final_confrontation'],
   },
   {
     id: 'gahlok_kal-1',
@@ -1099,6 +1100,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('gahlok_kal', 60, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
+    hiddenAfter: ['bohrok_kal_final_confrontation'],
   },
   {
     id: 'lehvak_kal-1',
@@ -1109,6 +1111,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('lehvak_kal', 60, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
+    hiddenAfter: ['bohrok_kal_final_confrontation'],
   },
   {
     id: 'pahrak_kal-1',
@@ -1119,6 +1122,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('pahrak_kal', 60, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
+    hiddenAfter: ['bohrok_kal_final_confrontation'],
   },
   {
     id: 'nuhvok_kal-1',
@@ -1129,6 +1133,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('nuhvok_kal', 60, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
+    hiddenAfter: ['bohrok_kal_final_confrontation'],
   },
   {
     id: 'kohrak_kal-1',
@@ -1139,6 +1144,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('kohrak_kal', 60, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
+    hiddenAfter: ['bohrok_kal_final_confrontation'],
   },
   {
     id: 'bohrok_kal_pair_1',
@@ -1149,6 +1155,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('tahnok_kal', 55, 1), ...makeBohrokWave('gahlok_kal', 55, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
+    hiddenAfter: ['bohrok_kal_final_confrontation'],
   },
   {
     id: 'bohrok_kal_pair_2',
@@ -1159,6 +1166,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('lehvak_kal', 55, 1), ...makeBohrokWave('pahrak_kal', 55, 1)]],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
+    hiddenAfter: ['bohrok_kal_final_confrontation'],
   },
   {
     id: 'bohrok_kal_trio',
@@ -1175,6 +1183,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     ],
     loot: [],
     unlockedAfter: ['bohrok_kal_stolen_symbols'],
+    hiddenAfter: ['bohrok_kal_final_confrontation'],
   },
   {
     id: 'bohrok_kal_final',
@@ -1197,6 +1206,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     ],
     loot: [],
     unlockedAfter: ['bohrok_kal_race_to_nest'],
+    hiddenAfter: ['bohrok_kal_final_confrontation'],
   },
 
   // ── Rahkshi encounters ──────────────────────────────────────────────
