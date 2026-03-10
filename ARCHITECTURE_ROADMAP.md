@@ -89,7 +89,7 @@ function migrateState(state: any, targetVersion: number): any {
 
 **Issue:** No runtime validation prevents negative inventory values.
 
-**Current:** Relies on correct implementation of all inventory mutations.
+**Current:** Items have been removed from the active economy (no job drops, no quest loot, no recruitment material costs). The inventory infrastructure is retained for future quest-item mechanics. Validation remains relevant for when items are reintroduced.
 
 **Recommendation:** Add validation in `addToInventory` utility.
 
@@ -248,14 +248,14 @@ if (process.env.NODE_ENV === 'development') {
 
 **Issue:** Item fields like `rarity`, `value`, `description`, `icon` are mostly unpopulated.
 
-**Current:** Fields exist in type but are undefined in `ITEM_DICTIONARY`.
+**Current:** Items have been removed from the active economy. The `ITEM_DICTIONARY` and `GameItemId` enum still exist for future quest-item mechanics. Fields remain undefined in most entries.
 
-**Recommendation:** Either populate the fields or remove them from the type.
+**Recommendation:** Defer until items are reintroduced as quest items. At that point, either populate the fields or pare down the type.
 
 **Decision needed:**
 
-- Are these fields planned for future features?
-- Should they be removed to reduce confusion?
+- What item types will be needed for quest-item mechanics?
+- Should the existing item definitions be repurposed or replaced?
 
 **Acceptance Criteria:**
 

@@ -1,11 +1,12 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useGame } from '../../context/Game';
-import { UserCircle2, Backpack, Settings, Map, Swords } from 'lucide-react';
+import { UserCircle2, Settings, Map, Swords } from 'lucide-react';
 import { BattlePhase } from '../../hooks/useBattleState';
 import { CurrencyBar } from '../CurrencyBar';
+import { AnimatePresence } from 'motion/react';
 
 const shouldShowCurrencyBar = (pathname: string) => {
-  return ['/recruitment', '/inventory'].includes(pathname);
+  return !['/settings'].includes(pathname);
 };
 
 export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
@@ -25,7 +26,9 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
           : ''
       }`}
     >
-      {shouldShowCurrencyBar(pathname) && <CurrencyBar isPortrait={isPortrait} />}
+      <AnimatePresence initial={false}>
+        {shouldShowCurrencyBar(pathname) && <CurrencyBar isPortrait={isPortrait} />}
+      </AnimatePresence>
       <nav className="nav-bar">
         <NavLink to="/battle/selector" className="nav-item">
           <Swords />
@@ -38,10 +41,6 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
         <NavLink to="/characters" className="nav-item">
           <UserCircle2 />
           <label>Characters</label>
-        </NavLink>
-        <NavLink to="/inventory" className="nav-item">
-          <Backpack />
-          <label>Inventory</label>
         </NavLink>
         <NavLink to="/settings" className="nav-item">
           <Settings />

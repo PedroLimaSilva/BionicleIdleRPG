@@ -1,5 +1,4 @@
 import { Quest } from '../../types/Quests';
-import { GameItemId } from '../loot';
 
 export const MASK_HUNT: Quest[] = [
   {
@@ -16,16 +15,15 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'story_toa_arrival' },
       unlockCharacters: [
-        { id: 'Toa_Tahu', cost: 100, requiredItems: [] },
-        { id: 'Toa_Gali', cost: 100, requiredItems: [] },
-        { id: 'Toa_Kopaka', cost: 100, requiredItems: [] },
-        { id: 'Toa_Lewa', cost: 100, requiredItems: [] },
-        { id: 'Toa_Onua', cost: 100, requiredItems: [] },
-        { id: 'Toa_Pohatu', cost: 100, requiredItems: [] },
+        { id: 'Toa_Tahu', cost: 250, requiredItems: [] },
+        { id: 'Toa_Gali', cost: 250, requiredItems: [] },
+        { id: 'Toa_Kopaka', cost: 250, requiredItems: [] },
+        { id: 'Toa_Lewa', cost: 250, requiredItems: [] },
+        { id: 'Toa_Onua', cost: 250, requiredItems: [] },
+        { id: 'Toa_Pohatu', cost: 250, requiredItems: [] },
       ],
       xpPerMatoran: 100,
       currency: 200,
-      loot: {},
     },
     unlockedAfter: [],
     section: 'Arrival of the Toa',
@@ -44,10 +42,6 @@ export const MASK_HUNT: Quest[] = [
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_kopaka_matoro_icecliff' },
       xpPerMatoran: 450,
       currency: 400,
-      loot: {
-        [GameItemId.IceChip]: 100,
-        [GameItemId.StoneBlock]: 100,
-      },
     },
     unlockedAfter: ['story_toa_arrival'],
     section: 'Arrival of the Toa',
@@ -66,10 +60,6 @@ export const MASK_HUNT: Quest[] = [
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_kopaka_pohatu_icecliff' },
       xpPerMatoran: 450,
       currency: 400,
-      loot: {
-        [GameItemId.IceChip]: 100,
-        [GameItemId.StoneBlock]: 100,
-      },
     },
     unlockedAfter: ['maskhunt_kopaka_matoro_icecliff'],
     section: 'Arrival of the Toa',
@@ -89,7 +79,6 @@ export const MASK_HUNT: Quest[] = [
       xpPerMatoran: 1000,
       currency: 500,
       cutscene: { type: 'visual_novel', cutsceneId: 'story_toa_council' },
-      loot: {},
     },
     unlockedAfter: ['mnog_tahu_unlock_01', 'maskhunt_kopaka_pohatu_icecliff'],
     section: 'Arrival of the Toa',
@@ -108,10 +97,6 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       xpPerMatoran: 400,
       currency: 700,
-      loot: {
-        [GameItemId.LightStone]: 100,
-        [GameItemId.BurnishedAlloy]: 50,
-      },
     },
     unlockedAfter: ['story_toa_council'],
     section: 'Arrival of the Toa',
@@ -130,10 +115,6 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       xpPerMatoran: 500,
       currency: 900,
-      loot: {
-        [GameItemId.LightStone]: 60,
-        [GameItemId.BiolumeThread]: 30,
-      },
     },
     unlockedAfter: ['story_toa_council'],
     section: 'Arrival of the Toa',
@@ -152,10 +133,6 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       xpPerMatoran: 750,
       currency: 1300,
-      loot: {
-        [GameItemId.FrostChisel]: 120,
-        [GameItemId.IceChip]: 240,
-      },
     },
     unlockedAfter: ['story_toa_council'],
     section: 'Arrival of the Toa',
@@ -174,10 +151,6 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       xpPerMatoran: 550,
       currency: 1000,
-      loot: {
-        [GameItemId.FeatherTufts]: 80,
-        [GameItemId.JungleResin]: 40,
-      },
     },
     unlockedAfter: ['maskhunt_lewa_pakari'],
     section: 'Arrival of the Toa',
@@ -196,10 +169,6 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       xpPerMatoran: 500,
       currency: 800,
-      loot: {
-        [GameItemId.FeatherTufts]: 100,
-        [GameItemId.JungleResin]: 50,
-      },
     },
     unlockedAfter: ['story_toa_council'],
     section: 'Arrival of the Toa',
@@ -236,10 +205,6 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       xpPerMatoran: 550,
       currency: 950,
-      loot: {
-        [GameItemId.StoneBlock]: 80,
-        [GameItemId.CarvingTool]: 40,
-      },
     },
     unlockedAfter: ['mnog_restore_ga_koro'],
     section: 'Arrival of the Toa',
@@ -259,10 +224,6 @@ export const MASK_HUNT: Quest[] = [
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_gali_rescue' },
       xpPerMatoran: 800,
       currency: 1100,
-      loot: {
-        [GameItemId.GaPearl]: 60,
-        [GameItemId.BurnishedAlloy]: 60,
-      },
     },
     unlockedAfter: ['maskhunt_gali_miru', 'maskhunt_tahu_cave_akaku'],
     section: 'Arrival of the Toa',
@@ -281,10 +242,6 @@ export const MASK_HUNT: Quest[] = [
     rewards: {
       xpPerMatoran: 600,
       currency: 1100,
-      loot: {
-        [GameItemId.Charcoal]: 200,
-        [GameItemId.BurnishedAlloy]: 100,
-      },
     },
     unlockedAfter: ['mnog_search_for_matoro', 'mnog_lewa_v_onua'],
     section: 'Arrival of the Toa',
@@ -304,7 +261,6 @@ export const MASK_HUNT: Quest[] = [
       cutscene: { type: 'visual_novel', cutsceneId: 'story_toa_second_council' },
       xpPerMatoran: 800,
       currency: 100,
-      loot: {},
     },
     unlockedAfter: ['maskhunt_kopaka_pakari', 'maskhunt_gali_rescue'],
     section: 'Arrival of the Toa',
@@ -324,10 +280,6 @@ export const MASK_HUNT: Quest[] = [
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_tahu_miru' },
       xpPerMatoran: 700,
       currency: 1200,
-      loot: {
-        [GameItemId.GaPearl]: 120,
-        [GameItemId.BurnishedAlloy]: 120,
-      },
     },
     unlockedAfter: ['story_toa_second_council'],
     section: 'Arrival of the Toa',
@@ -347,9 +299,6 @@ export const MASK_HUNT: Quest[] = [
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_pohatu_kaukau_bluff' },
       xpPerMatoran: 650,
       currency: 1100,
-      loot: {
-        [GameItemId.CarvingTool]: 100,
-      },
     },
     unlockedAfter: ['story_toa_second_council'],
     section: 'Arrival of the Toa',
@@ -369,9 +318,6 @@ export const MASK_HUNT: Quest[] = [
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_forest_tahu_kakama' },
       xpPerMatoran: 700,
       currency: 1200,
-      loot: {
-        [GameItemId.Charcoal]: 100,
-      },
     },
     unlockedAfter: ['story_toa_second_council'],
     section: 'Arrival of the Toa',
@@ -433,7 +379,6 @@ export const MASK_HUNT: Quest[] = [
       cutscene: { type: 'visual_novel', cutsceneId: 'story_kini_nui_gathering' },
       xpPerMatoran: 3000,
       currency: 1000,
-      loot: {},
     },
     unlockedAfter: ['maskhunt_final_collection'],
     section: 'Arrival of the Toa',
@@ -453,7 +398,6 @@ export const MASK_HUNT: Quest[] = [
       cutscene: { type: 'visual_novel', cutsceneId: 'story_kini_nui_descent' },
       xpPerMatoran: 1000,
       currency: 100,
-      loot: {},
     },
     unlockedAfter: ['mnog_kini_nui_arrival'],
     section: 'Arrival of the Toa',

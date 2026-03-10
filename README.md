@@ -6,24 +6,24 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 
 ### Character Management
 
-- **Recruitment System**: Recruit Matoran and Toa characters using protodermis (currency) and required items
+- **Recruitment System**: Recruit Matoran and Toa characters using protodermis (currency)
 - **Character Progression**: Characters gain XP from jobs and quests, leveling up to become more powerful
 - **Character Customization**: Override mask colors and appearances
 - **3D Character Rendering**: View your characters in 3D using React Three Fiber
 
 ### Idle Gameplay
 
-- **Job System**: Assign characters to element-based jobs that produce resources over time
+- **Job System**: Assign characters to element-based jobs that generate protodermis and XP over time
   - Jobs have element affinities (Fire, Water, Air, Ice, Stone, Earth, Light, Shadow)
   - Characters with matching elements perform better at jobs
-  - Jobs produce items and protodermis automatically while you're away
-- **Offline Progress**: Game continues to generate resources when you're not playing
+  - Jobs produce protodermis automatically while you're away
+- **Offline Progress**: Game continues to generate protodermis when you're not playing
 
 ### Quest System
 
 - **Story Quests**: Send characters on quests with specific requirements
-- **Quest Requirements**: May require specific characters, items, or minimum levels
-- **Quest Rewards**: Earn XP, loot, currency, and unlock new characters
+- **Quest Requirements**: May require specific characters or minimum levels
+- **Quest Rewards**: Earn XP, currency, and unlock new characters
 - **Quest Progress Tracking**: Monitor active quests and their completion status
 
 ### Combat System
@@ -36,12 +36,6 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
   - And many more!
 - **Elemental Affinities**: Elements have strengths and weaknesses
 - **Wave-Based Encounters**: Face multiple waves of enemies (Bohrok swarms, etc.)
-
-### Inventory & Items
-
-- **Resource Collection**: Gather items from jobs and quests
-- **Item Crafting**: Use items to recruit new characters
-- **Element-Based Items**: Items are associated with different elements
 
 ### Game Persistence
 
@@ -182,7 +176,6 @@ src/
 │   ├── BattleSelector/      # Battle selection
 │   ├── CharacterDetail/     # Character detail (stats, chronicle, masks, krana)
 │   ├── CharacterInventory/  # Character roster/cards
-│   ├── Inventory/           # Item inventory
 │   ├── Quests/              # Quest management page
 │   ├── QuestTree/           # Quest dependency graph
 │   ├── Recruitment/         # Character recruitment page
@@ -203,7 +196,7 @@ src/
 
 ### Elements
 
-Characters and items belong to one of eight elements:
+Characters belong to one of eight elements:
 
 - **Fire** (Ta-Koro)
 - **Water** (Ga-Koro)
@@ -227,20 +220,20 @@ Each character wears a Kanohi mask with unique powers:
 
 ### Jobs
 
-Jobs are element-based activities that generate resources:
+Jobs are element-based activities that generate protodermis and XP:
 
 - Characters with matching elements perform better
 - Jobs have different production rates
 - Some jobs require quest completion to unlock
-- Jobs generate protodermis (currency) and items over time
+- Jobs generate protodermis (currency) over time
 
 ### Quests
 
 Quests are story-driven activities:
 
-- Require specific characters, items, or minimum levels
+- Require specific characters or minimum levels
 - Have time-based durations
-- Reward XP, items, protodermis, and character unlocks
+- Reward XP, protodermis, and character unlocks
 - Unlock new content as you progress
 
 ### Combat
@@ -251,6 +244,7 @@ Turn-based combat system:
 - Mask powers with cooldowns
 - Elemental strengths and weaknesses
 - Team composition matters
+- Krana collection from Bohrok battles
 
 ## 🎨 3D Models
 

@@ -60,7 +60,6 @@ export const QuestsPage = () => {
     cancelQuest,
     completeQuest,
     recruitedCharacters,
-    inventory,
     collectedKrana,
   } = useGame();
 
@@ -227,7 +226,6 @@ export const QuestsPage = () => {
         activeQuestIds={activeQuests.map((aq) => aq.questId)}
         completedQuestIds={completedQuests}
         recruitedCharacters={recruitedCharacters}
-        inventory={inventory}
         collectedKrana={collectedKrana}
         startQuest={startQuest}
       />

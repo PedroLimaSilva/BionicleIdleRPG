@@ -1,9 +1,8 @@
 import { JobDetails, MatoranJob } from '../types/Jobs';
 import { ElementTribe } from '../types/Matoran';
 import { MatoranStage } from '../types/Matoran';
-import { GameItemId } from './loot';
 
-export const PROTODERMIS_RATE = 0.2;
+export const PROTODERMIS_RATE = 0.1;
 
 export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   [MatoranJob.CharcoalMaker]: {
@@ -15,10 +14,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       opposed: [ElementTribe.Ice],
     },
     unlock: {},
-    rewards: [
-      { item: GameItemId.Charcoal, chance: 1.0 },
-      { item: GameItemId.BurnishedAlloy, chance: 0.3 },
-    ],
   },
   [MatoranJob.ProtodermisSmelter]: {
     label: '⚙️ Protodermis Smelter',
@@ -31,10 +26,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {
       requiredProgress: ['settle_metru_nui'],
     },
-    rewards: [
-      { item: GameItemId.RefinedProtodermis, chance: 1.0 },
-      { item: GameItemId.FurnaceCore, chance: 0.05 },
-    ],
   },
   [MatoranJob.AlgaeHarvester]: {
     label: '🌿 Algae Harvester',
@@ -47,10 +38,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {
       requiredProgress: ['mnog_ga_koro_sos'],
     },
-    rewards: [
-      { item: GameItemId.WaterAlgae, chance: 1.0 },
-      { item: GameItemId.GaPearl, chance: 0.3 },
-    ],
   },
   [MatoranJob.HydroTechnician]: {
     label: '💧 Hydro Technician',
@@ -63,10 +50,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {
       requiredProgress: ['settle_metru_nui'],
     },
-    rewards: [
-      { item: GameItemId.FilteredProtodermis, chance: 1.0 },
-      { item: GameItemId.AquaFilter, chance: 0.08 },
-    ],
   },
   [MatoranJob.RahiNestWatcher]: {
     label: '🦜 Rahi Nest Watcher',
@@ -79,10 +62,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {
       requiredProgress: ['mnog_meet_taipu'],
     },
-    rewards: [
-      { item: GameItemId.FeatherTufts, chance: 1.0 },
-      { item: GameItemId.JungleResin, chance: 0.3 },
-    ],
   },
   [MatoranJob.ChuteController]: {
     label: '🚀 Chute Controller',
@@ -95,10 +74,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {
       requiredProgress: ['settle_metru_nui'],
     },
-    rewards: [
-      { item: GameItemId.ChuteGrease, chance: 1.0 },
-      { item: GameItemId.TransportCoreFragment, chance: 0.05 },
-    ],
   },
   [MatoranJob.QuarryRunner]: {
     label: '🪨 Quarry Runner',
@@ -111,10 +86,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {
       requiredProgress: ['mnog_po_koro_sickness'],
     },
-    rewards: [
-      { item: GameItemId.StoneBlock, chance: 1.0 },
-      { item: GameItemId.GemShard, chance: 0.3 },
-    ],
   },
   [MatoranJob.SculptureOperator]: {
     label: '🗿 Sculpture Operator',
@@ -127,10 +98,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {
       requiredProgress: ['settle_metru_nui'],
     },
-    rewards: [
-      { item: GameItemId.StatueParts, chance: 1.0 },
-      { item: GameItemId.CarvingTool, chance: 0.05 },
-    ],
   },
   [MatoranJob.LightStoneFarmer]: {
     label: '💡 Light Stone Farmer',
@@ -141,10 +108,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     rate: 1,
     unlock: { requiredProgress: ['mnog_arrive_onu_koro'] },
-    rewards: [
-      { item: GameItemId.LightStone, chance: 1.0 },
-      { item: GameItemId.BiolumeThread, chance: 0.3 },
-    ],
   },
   [MatoranJob.StasisTechnician]: {
     label: '🔒 Stasis Technician',
@@ -157,10 +120,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {
       requiredProgress: ['unlock_archives'],
     },
-    rewards: [
-      { item: GameItemId.StasisSeal, chance: 1.0 },
-      { item: GameItemId.CryoCore, chance: 0.05 },
-    ],
   },
   [MatoranJob.IceSculptor]: {
     label: '❄️ Ice Sculptor',
@@ -173,10 +132,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {
       requiredProgress: ['mnog_arrive_ko_koro'],
     },
-    rewards: [
-      { item: GameItemId.IceChip, chance: 1.0 },
-      { item: GameItemId.FrostChisel, chance: 0.3 },
-    ],
   },
   [MatoranJob.KnowledgeScribe]: {
     label: '📚 Knowledge Scribe',
@@ -189,10 +144,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {
       requiredProgress: ['activate_knowledge_towers'],
     },
-    rewards: [
-      { item: GameItemId.DataTablet, chance: 1.0 },
-      { item: GameItemId.CipherKey, chance: 0.08 },
-    ],
   },
   // Bohrok Koro rebuild jobs - require recruitment quest, Bohrok only
   [MatoranJob.TaKoroRebuilder]: {
