@@ -36,7 +36,8 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & { maskOverr
           <h3 className="mask-inventory-section__title">Masks</h3>
           <div className={`mask-inventory-grid element-${matoran.element}`}>
             {masks.map((mask) => {
-              const shouldKeepOriginalColor = mask === Mask.Vahi || mask === Mask.HauNuvaInfected;
+              const shouldKeepOriginalColor =
+                mask === Mask.Vahi || mask === Mask.HauNuvaInfected || mask === Mask.Avohkii;
               const effectiveMaskColor = shouldKeepOriginalColor ? LegoColor.White : maskColor;
               return (
                 <div
