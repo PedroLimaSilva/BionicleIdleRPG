@@ -146,6 +146,7 @@ export function applyCharacterEvolution(
     return {
       ...character,
       id: evolution.evolvedId,
+      stage: CHARACTER_DEX[evolution.evolvedId]?.stage,
       maskOverride: undefined,
     };
   }

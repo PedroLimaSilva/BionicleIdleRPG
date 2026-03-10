@@ -163,7 +163,7 @@ function StatsTab({
   const hasLevel = evolution ? meetsEvolutionLevel(matoran, evolution) : false;
   const hasFunds = evolution ? protodermis >= evolution.protodermisCost : false;
   const maskEquipped =
-    evolution && evolution.maskRequired ? matoran.mask === evolution.maskRequired : false;
+    evolution && evolution.maskRequired ? matoran.maskOverride === evolution.maskRequired : true;
   const canEvolve = hasLevel && hasFunds && maskEquipped;
 
   return (

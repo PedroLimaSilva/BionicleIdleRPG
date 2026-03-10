@@ -6,7 +6,8 @@ import {
   INITIAL_GAME_STATE,
   setupGameState,
 } from '../../helpers';
-import { MatoranStage } from '../../../src/types/Matoran';
+import { Mask, MatoranStage } from '../../../src/types/Matoran';
+import { MOL_TAKANUVA_RISES_QUEST_ID } from '../../../src/data/quests/mask_of_light';
 
 const TOA_NUVA_QUEST = 'bohrok_evolve_toa_nuva';
 const NAMING_DAY_QUEST = 'bohrok_kal_naming_day';
@@ -315,6 +316,69 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
     });
     await goto(page, '/characters/tahnok', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
+
+    await expect(page.locator('.evolve-section')).not.toBeVisible();
+  });
+});
+
+test.describe('Character Evolution - Takua to Takanuva', () => {
+  test('shows disabled evolve button when mask not equipped', async ({ page }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      protodermis: 10000,
+      protodermisCap: 10000,
+      recruitedCharacters: [{ id: 'Takua', exp: LEVEL_100_EXP }],
+      completedQuests: [MOL_TAKANUVA_RISES_QUEST_ID],
+    });
+    await goto(page, '/characters/Takua', { hideCanvasBeforeNav: true });
+    await disableCSSAnimations(page);
+    await hideCanvas(page);
+
+    const evolveSection = page.locator('.evolve-section');
+    const evolveButton = evolveSection.locator('button.elemental-btn');
+    await expect(evolveButton).toHaveClass(/disabled/);
+    await expect(evolveButton).toContainText('Evolve to Takanuva');
+  });
+
+  test('evolves on click when requirements met', async ({ page }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      protodermis: 10000,
+      protodermisCap: 10000,
+      recruitedCharacters: [
+        {
+          id: 'Takua',
+          exp: LEVEL_100_EXP,
+          stage: MatoranStage.Rebuilt,
+          maskOverride: Mask.Avohkii,
+        },
+      ],
+      completedQuests: ['mol_battle_of_kini_nui', MOL_TAKANUVA_RISES_QUEST_ID],
+    });
+    await goto(page, '/characters/Takua', { hideCanvasBeforeNav: true });
+    await disableCSSAnimations(page);
+    await hideCanvas(page);
+
+    const evolveButton = page.locator('.evolve-section button.elemental-btn');
+    await expect(evolveButton).not.toHaveClass(/disabled/);
+
+    await evolveButton.click();
+
+    await expect(page).toHaveURL(/\/characters\/Takanuva/);
+    await expect(page.locator('.character-name')).toContainText('Takanuva');
+    await expect(page.locator('.evolve-section')).not.toBeVisible();
+  });
+
+  test('does not show evolve button when quest not completed', async ({ page }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      protodermis: 10000,
+      recruitedCharacters: [{ id: 'Takua', exp: LEVEL_100_EXP, stage: MatoranStage.Rebuilt }],
+      completedQuests: [],
+    });
+    await goto(page, '/characters/Takua', { hideCanvasBeforeNav: true });
+    await disableCSSAnimations(page);
+    await hideCanvas(page);
 
     await expect(page.locator('.evolve-section')).not.toBeVisible();
   });
