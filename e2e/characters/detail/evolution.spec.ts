@@ -357,7 +357,7 @@ test.describe('Character Evolution - Takua to Takanuva', () => {
     });
     await goto(page, '/characters/Takua', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
-    // await hideCanvas(page);
+    await hideCanvas(page);
 
     const evolveButton = page.locator('.evolve-section button.elemental-btn');
     await expect(evolveButton).not.toHaveClass(/disabled/);
