@@ -7,6 +7,7 @@ import { CompositedImage } from '../CompositedImage';
 
 import './index.scss';
 import { LegoColor } from '../../types/Colors';
+import { masksCollected } from '../../services/matoranUtils';
 
 export function MatoranAvatar({
   matoran,
@@ -20,7 +21,8 @@ export function MatoranAvatar({
 }) {
   const { completedQuests } = useGame();
   const { colors } = matoran;
-  const effectiveMask = matoran.maskOverride ?? matoran.mask;
+  const collected = masksCollected(matoran, completedQuests);
+  const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
   const maskColor = useMemo(() => {
     if (matoran.maskColorOverride) return matoran.maskColorOverride;
     if (effectiveMask === Mask.Vahi || effectiveMask === Mask.HauNuvaInfected) {
