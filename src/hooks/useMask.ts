@@ -3,7 +3,7 @@ import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } fro
 import { useGLTF } from '@react-three/drei';
 import { useGame } from '../context/Game';
 import { getEffectiveMataMaskColor } from '../game/maskColor';
-import { BaseMatoran, MatoranStage } from '../types/Matoran';
+import { BaseMatoran, Mask, MatoranStage } from '../types/Matoran';
 import {
   createMaskTransitionState,
   startMaskTransition,
@@ -30,12 +30,18 @@ function isStandardMat(mat: unknown): mat is StandardMat {
 function applyMaskColors(
   root: Object3D,
   maskColor: string,
+  maskName: Mask,
   glowColor?: string,
   maskPowerActive?: boolean
 ): void {
+  const shouldKeepOriginalColor = maskName === Mask.Avohkii;
+
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
       const mat = (child as Mesh).material;
+      if (!isStandardMat(mat)) return;
+      if (shouldKeepOriginalColor) return;
+
       if (isStandardMat(mat)) {
         const isGlow = mat.name.toLowerCase().includes('glow');
 
@@ -151,7 +157,13 @@ export function useMask(
     // (useEffect runs asynchronously after paint, and useFrame/rAF can fire
     // before the next useEffect — applying colors here avoids the brief flash
     // of un-tinted GLB-default colors during the fade-in.)
-    applyMaskColors(clone, maskColorRef.current, glowColorRef.current, maskPowerActiveRef.current);
+    applyMaskColors(
+      clone,
+      maskColorRef.current,
+      maskName as Mask,
+      glowColorRef.current,
+      maskPowerActiveRef.current
+    );
 
     const prevMask = maskRef.current;
     const isChange =
@@ -195,7 +207,7 @@ export function useMask(
     const mask = maskRef.current;
     if (!mask) return;
 
-    applyMaskColors(mask, maskColor, glowColor, maskPowerActive);
+    applyMaskColors(mask, maskColor, maskName as Mask, glowColor, maskPowerActive);
   }, [masksNodes, masksParent, maskName, maskColor, glowColor, maskPowerActive]);
 
   return maskRef.current;

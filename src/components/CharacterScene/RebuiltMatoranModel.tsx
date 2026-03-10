@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { BaseMatoran } from '../../types/Matoran';
+import { BaseMatoran, Mask } from '../../types/Matoran';
 import { Color as ThreeColor, Group } from 'three';
 import { MeshPhysicalMaterial } from 'three';
 import { useGLTF } from '@react-three/drei';
@@ -19,7 +19,11 @@ const MAT_COLOR_MAP = {
   GlowingEyes: 'eyes',
 };
 
-export function RebuiltMatoranModel({ matoran }: { matoran: BaseMatoran }) {
+export function RebuiltMatoranModel({
+  matoran,
+}: {
+  matoran: BaseMatoran & { maskOverride?: Mask };
+}) {
   const group = useRef<Group>(null);
   const { nodes, materials, animations } = useGLTF(import.meta.env.BASE_URL + 'rebuilt.glb');
   const { actions, mixer } = useIdleAnimation(animations, group);
@@ -58,7 +62,7 @@ export function RebuiltMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   }, [nodes, materials, matoran]);
 
   // Inject the active mask from the shared masks.glb
-  const maskTarget = matoran.mask;
+  const maskTarget = matoran.maskOverride || matoran.mask;
   const glowColor = matoran.colors.eyes;
   useMask(nodes.Masks, maskTarget, matoran, glowColor);
 
