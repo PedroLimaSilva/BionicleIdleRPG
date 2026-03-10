@@ -3,47 +3,38 @@ graph TD
   story_toa_arrival["The Arrival of the Toa
 (1m)
 Unlock: Toa_Tahu, Toa_Gali, Toa_Kopaka, Toa_Lewa, Toa_Onua, Toa_Pohatu
-Loot: 
 Currency: 200
 XP: 100"]
   maskhunt_kopaka_matoro_icecliff["The Cliffside Encounter
 (8m)
-Loot: IceChip=100, StoneBlock=100
 Currency: 400
 XP: 450"]
   maskhunt_kopaka_pohatu_icecliff["The Place of Far-Seeing
 (8m)
-Loot: IceChip=100, StoneBlock=100
 Currency: 400
 XP: 450"]
   story_toa_council["The Toa Council
 (30m)
-Loot: 
 Currency: 500
 XP: 1000"]
   maskhunt_tahu_cave_akaku["The Shadows Below
 (30m)
-Loot: LightStone=100, BurnishedAlloy=50
 Currency: 700
 XP: 400"]
   maskhunt_lewa_pakari["Strength Below the Surface
 (9m)
-Loot: LightStone=60, BiolumeThread=30
 Currency: 900
 XP: 500"]
   maskhunt_kopaka_mahiki_huna["Echoes in the Snow
 (13m)
-Loot: FrostChisel=120, IceChip=240
 Currency: 1300
 XP: 750"]
   maskhunt_lewa_kakama_komau["Echoes Beneath the Lake
 (10m)
-Loot: FeatherTufts=80, JungleResin=40
 Currency: 1000
 XP: 550"]
   maskhunt_onua_matatu_hau["Echoes of the Forest
 (9m)
-Loot: FeatherTufts=100, JungleResin=50
 Currency: 800
 XP: 500"]
   maskhunt_onua_jungle_rumor["The Rumor from the Canopy
@@ -52,37 +43,30 @@ Currency: 600
 XP: 800"]
   maskhunt_gali_miru["Windswept Resolve
 (10m)
-Loot: StoneBlock=80, CarvingTool=40
 Currency: 950
 XP: 550"]
   maskhunt_gali_rescue["Fire in the Ravine
 (8m)
-Loot: GaPearl=60, BurnishedAlloy=60
 Currency: 1100
 XP: 800"]
   maskhunt_kopaka_pakari["The Heat of Insight
 (11m)
-Loot: Charcoal=200, BurnishedAlloy=100
 Currency: 1100
 XP: 600"]
   story_toa_second_council["Council of Unity
 (2m)
-Loot: 
 Currency: 100
 XP: 800"]
   maskhunt_tahu_miru["Depths of the Shoreline
 (12m)
-Loot: GaPearl=120, BurnishedAlloy=120
 Currency: 1200
 XP: 700"]
   maskhunt_pohatu_kaukau_bluff["The Bluff Above All
 (11m)
-Loot: CarvingTool=100
 Currency: 1100
 XP: 650"]
   maskhunt_forest_tahu_kakama["Fire in the Trees
 (10m)
-Loot: Charcoal=100
 Currency: 1200
 XP: 700"]
   story_nui_jaga_nest["Nest of Discord
@@ -95,57 +79,47 @@ Currency: 1600
 XP: 2000"]
   story_kini_nui_gathering["The Path Below
 (5m)
-Loot: 
 Currency: 1000
 XP: 3000"]
   story_kini_nui_descent["Descent into Darkness
 (5m)
-Loot: 
 Currency: 100
 XP: 1000"]
   mnog_find_canister_beach["The Canister on the shore
 (1m)
-Loot: Charcoal=100, BurnishedAlloy=50
 Currency: 500
 XP: 150"]
   mnog_takua_meets_kapura["The Art of Moving Slowly
 (5m)
 Unlock: Kapura
-Loot: Charcoal=1000, BurnishedAlloy=500
 Currency: 500
 XP: 150"]
   mnog_tahu_unlock_01["A disturbance in the Forest
 (5m)
 Unlock: Jala
-Loot: Charcoal=1000, BurnishedAlloy=500
 Currency: 500
 XP: 150"]
   mnog_ga_koro_sos["A call for help
 (20m)
-Loot: WaterAlgae=100, GaPearl=50
 Currency: 600
 XP: 200"]
   mnog_restore_ga_koro["Ga-Koro Under Siege
 (10m)
 Unlock: Hahli
-Loot: WaterAlgae=1000, GaPearl=500
 Currency: 600
 XP: 200"]
   mnog_po_wahi_desert["The way to Po-Koro
 (15m)
 Unlock: Hafu
-Loot: StoneBlock=100, GemShard=50
 Currency: 500
 XP: 250"]
   mnog_po_koro_sickness["A Game Gone Wrong
 (15m)
 Unlock: Kivi
-Loot: StoneBlock=100, GemShard=50
 Currency: 500
 XP: 250"]
   mnog_po_koro_cave_investigation["Cave of the Corrupted
 (10m)
-Loot: StoneBlock=1000, GemShard=500
 Currency: 800
 XP: 400"]
   mnog_recruit_hewkii["Koli Champion Recovered
@@ -160,24 +134,20 @@ Currency: 400
 XP: 200"]
   mnog_onu_koro_lava_problem["Redirection
 (20m)
-Loot: LightStone=1000, BiolumeThread=500
 Currency: 700
 XP: 300"]
   mnog_meet_taipu["Meet Taipu
 (10m)
 Unlock: Taipu
-Loot: LightStone=500, BiolumeThread=250
 Currency: 500
 XP: 250"]
   mnog_enter_le_wahi["Enter Le-Wahi
 (10m)
-Loot: JungleResin=100
 Currency: 600
 XP: 300"]
   mnog_flight_to_hive["Flight to the Hive
 (5m)
 Unlock: Tamaru, Kongu
-Loot: FeatherTufts=800, JungleResin=400
 Currency: 700
 XP: 500"]
   mnog_rescue_from_hive["Rescue from the Hive
@@ -191,16 +161,14 @@ XP: 1000"]
   mnog_arrive_ko_koro["Journey to Ko-Koro
 (30m)
 Unlock: Kopeke, Lumi
-Loot: IceChip=75, FrostChisel=25
 Currency: 800
 XP: 350"]
   mnog_search_for_matoro["Search for Matoro
 (30m)
 Unlock: Matoro
-Loot: IceChip=150, FrostChisel=50
 Currency: 850
 XP: 350"]
-  mnog_summon_chroniclers_company["Summon the Chronicler’s Company
+  mnog_summon_chroniclers_company["Summon the Chronicler's Company
 (30m)
 Unlock: Hafu
 Currency: 1500
