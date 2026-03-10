@@ -1,4 +1,4 @@
-import { MatoranStage, RecruitedCharacterData } from '../types/Matoran';
+import { Mask, MatoranStage, RecruitedCharacterData } from '../types/Matoran';
 import { CHARACTER_DEX } from '../data/dex/index';
 import { getLevelFromExp } from './Levelling';
 import { MOL_TAKANUVA_RISES_QUEST_ID } from '../data/quests/mask_of_light';
@@ -10,6 +10,7 @@ export const TAKANUVA_LEVEL_REQUIREMENT = 100;
 export interface EvolutionPath {
   unlockedByQuest: string;
   levelRequired: number;
+  maskRequired?: Mask;
   protodermisCost: number;
   evolutions: Record<string, string>;
   stageOverrides?: Record<string, MatoranStage>;
@@ -70,6 +71,7 @@ export const EVOLUTION_PATHS: EvolutionPath[] = [
   {
     unlockedByQuest: MOL_TAKANUVA_RISES_QUEST_ID,
     levelRequired: TAKANUVA_LEVEL_REQUIREMENT,
+    maskRequired: Mask.Avohkii,
     protodermisCost: 3000,
     evolutions: {
       Takua: 'Takanuva',
@@ -80,6 +82,7 @@ export const EVOLUTION_PATHS: EvolutionPath[] = [
 export interface AvailableEvolution {
   evolvedId?: string;
   stageOverride?: MatoranStage;
+  maskRequired?: Mask;
   label: string;
   levelRequired: number;
   protodermisCost: number;
@@ -104,6 +107,7 @@ export function getAvailableEvolution(
         label: `Evolve to ${evolvedName}`,
         levelRequired: path.levelRequired,
         protodermisCost: path.protodermisCost,
+        maskRequired: path.maskRequired,
       };
     }
 
@@ -116,6 +120,7 @@ export function getAvailableEvolution(
           label: `Upgrade to ${targetStage} form`,
           levelRequired: path.levelRequired,
           protodermisCost: path.protodermisCost,
+          maskRequired: path.maskRequired,
         };
       }
     }

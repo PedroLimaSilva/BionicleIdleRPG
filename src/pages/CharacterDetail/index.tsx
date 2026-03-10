@@ -9,7 +9,7 @@ import { ElementTag } from '../../components/ElementTag';
 import { useEffect, useMemo, useState } from 'react';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
-import { getRecruitedMatoran } from '../../services/matoranUtils';
+import { getRecruitedMatoran, masksCollected } from '../../services/matoranUtils';
 import { isBohrokOrKal, isMatoran, isToa, isToaMata } from '../../game/matoranStage';
 import { getAvailableEvolution, meetsEvolutionLevel } from '../../game/CharacterEvolution';
 import { LevelProgress } from './LevelProgress';
@@ -39,7 +39,7 @@ export const CharacterDetail: React.FC = () => {
 
   const tabs = useMemo(() => {
     const base = ['stats'];
-    if (isToa(matoran)) {
+    if (isToa(matoran) || masksCollected(matoran, completedQuests).length > 1) {
       base.push('inventory');
     }
     if (matoran.quest || isMatoran(matoran) || isBohrokOrKal(matoran)) {
@@ -108,7 +108,7 @@ export const CharacterDetail: React.FC = () => {
               }
             />
           )}
-          {activeTab === 'inventory' && isToa(matoran) && (
+          {activeTab === 'inventory' && (
             <>
               <MaskCollection matoran={matoran} />
               {isToaMata(matoran) && isKranaCollectionActive(completedQuests) && (
@@ -162,7 +162,9 @@ function StatsTab({
   const evolution = getAvailableEvolution(matoran, completedQuests);
   const hasLevel = evolution ? meetsEvolutionLevel(matoran, evolution) : false;
   const hasFunds = evolution ? protodermis >= evolution.protodermisCost : false;
-  const canEvolve = hasLevel && hasFunds;
+  const maskEquipped =
+    evolution && evolution.maskRequired ? matoran.mask === evolution.maskRequired : false;
+  const canEvolve = hasLevel && hasFunds && maskEquipped;
 
   return (
     <>
@@ -179,6 +181,11 @@ function StatsTab({
               <li className={hasFunds ? 'has-enough' : 'not-enough'}>
                 {hasFunds ? '✅' : '❌'} {evolution.protodermisCost} protodermis
               </li>
+              {evolution.maskRequired && (
+                <li className={`bionicle-font ${maskEquipped ? 'has-enough' : 'not-enough'}`}>
+                  {maskEquipped ? '✅' : '❌'} Mask on Face
+                </li>
+              )}
             </ul>
             <button
               type="button"
