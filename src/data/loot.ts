@@ -248,52 +248,6 @@ export const ITEM_DICTIONARY: Record<GameItemId, GameItem> = {
   [GameItemId.KraataWeatherControl]: { name: 'Kraata of Weather Control', rarity: 'rare' },
 };
 
-/** Maps a KraataPower name to its GameItemId. */
-export const KRAATA_POWER_TO_ITEM: Record<KraataPower, GameItemId> = {
-  Accuracy: GameItemId.KraataAccuracy,
-  Adaptation: GameItemId.KraataAdaptation,
-  Anger: GameItemId.KraataAnger,
-  ChainLightning: GameItemId.KraataChainLightning,
-  Chameleon: GameItemId.KraataChameleon,
-  Confusion: GameItemId.KraataConfusion,
-  Cyclone: GameItemId.KraataCyclone,
-  Darkness: GameItemId.KraataDarkness,
-  DensityControl: GameItemId.KraataDensityControl,
-  Disintegration: GameItemId.KraataDisintegration,
-  Dodge: GameItemId.KraataDodge,
-  Elasticity: GameItemId.KraataElasticity,
-  Electricity: GameItemId.KraataElectricity,
-  Fear: GameItemId.KraataFear,
-  FireResistance: GameItemId.KraataFireResistance,
-  Fragmentation: GameItemId.KraataFragmentation,
-  Gravity: GameItemId.KraataGravity,
-  HeatVision: GameItemId.KraataHeatVision,
-  Hunger: GameItemId.KraataHunger,
-  IceResistance: GameItemId.KraataIceResistance,
-  Illusion: GameItemId.KraataIllusion,
-  InsectControl: GameItemId.KraataInsectControl,
-  Invulnerability: GameItemId.KraataInvulnerability,
-  LaserVision: GameItemId.KraataLaserVision,
-  Magnetism: GameItemId.KraataMagnetism,
-  MindReading: GameItemId.KraataMindReading,
-  PlantControl: GameItemId.KraataPlantControl,
-  Plasma: GameItemId.KraataPlasma,
-  Poison: GameItemId.KraataPoison,
-  PowerScream: GameItemId.KraataPowerScream,
-  QuickHealing: GameItemId.KraataQuickHealing,
-  RahiControl: GameItemId.KraataRahiControl,
-  Shapeshifting: GameItemId.KraataShapeshifting,
-  Shattering: GameItemId.KraataShattering,
-  Silence: GameItemId.KraataSilence,
-  Sleep: GameItemId.KraataSleep,
-  Slowness: GameItemId.KraataSlowness,
-  Sonics: GameItemId.KraataSonics,
-  StasisField: GameItemId.KraataStasisField,
-  Teleportation: GameItemId.KraataTeleportation,
-  Vacuum: GameItemId.KraataVacuum,
-  WeatherControl: GameItemId.KraataWeatherControl,
-};
-
 /** Returns true if the given GameItemId is a kraata item. */
 export function isKraataItem(id: string): boolean {
   return id.startsWith('Kraata');
