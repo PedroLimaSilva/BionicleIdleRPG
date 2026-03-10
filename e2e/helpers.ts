@@ -1,4 +1,4 @@
-import { Page, Locator, TestInfo } from '@playwright/test';
+import { Page, TestInfo } from '@playwright/test';
 import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 
