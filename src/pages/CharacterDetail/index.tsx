@@ -162,7 +162,9 @@ function StatsTab({
   const evolution = getAvailableEvolution(matoran, completedQuests);
   const hasLevel = evolution ? meetsEvolutionLevel(matoran, evolution) : false;
   const hasFunds = evolution ? protodermis >= evolution.protodermisCost : false;
-  const canEvolve = hasLevel && hasFunds;
+  const maskEquipped =
+    evolution && evolution.maskRequired ? matoran.mask === evolution.maskRequired : false;
+  const canEvolve = hasLevel && hasFunds && maskEquipped;
 
   return (
     <>
@@ -179,6 +181,11 @@ function StatsTab({
               <li className={hasFunds ? 'has-enough' : 'not-enough'}>
                 {hasFunds ? '✅' : '❌'} {evolution.protodermisCost} protodermis
               </li>
+              {evolution.maskRequired && (
+                <li className={`bionicle-font ${maskEquipped ? 'has-enough' : 'not-enough'}`}>
+                  {maskEquipped ? '✅' : '❌'} Mask on Face
+                </li>
+              )}
             </ul>
             <button
               type="button"
