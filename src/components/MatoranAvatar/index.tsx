@@ -8,10 +8,6 @@ import { CompositedImage } from '../CompositedImage';
 import './index.scss';
 import { LegoColor } from '../../types/Colors';
 
-function getMask(matoran: BaseMatoran & RecruitedCharacterData) {
-  return `${import.meta.env.BASE_URL}/avatar/Kanohi/${matoran.maskOverride || matoran.mask}.webp`;
-}
-
 export function MatoranAvatar({
   matoran,
   styles,
@@ -33,9 +29,10 @@ export function MatoranAvatar({
     return getEffectiveMaskColor(matoran, completedQuests);
   }, [matoran, completedQuests, effectiveMask]);
 
-  const mask = useMemo(() => {
-    return getMask(matoran);
-  }, [matoran]);
+  const mask = useMemo(
+    () => `${import.meta.env.BASE_URL}/avatar/Kanohi/${effectiveMask}.webp`,
+    [effectiveMask]
+  );
 
   const glowStyle = maskPowerActive ? { filter: `drop-shadow(0 0 12px ${maskColor})` } : undefined;
 
