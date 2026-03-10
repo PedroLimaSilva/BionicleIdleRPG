@@ -8,6 +8,7 @@ import { KranaCollection, KranaElement, KranaId } from './Krana';
 import { Combatant, EnemyEncounter } from './Combat';
 
 export type KranaReward = { element: KranaElement; kranaId: KranaId };
+export type ItemReward = { id: GameItemId; qty: number };
 
 export type BattleRewardParams = {
   encounter: EnemyEncounter;
@@ -17,6 +18,8 @@ export type BattleRewardParams = {
   team: Combatant[];
   /** When provided, these Krana are applied instead of rolling (used so UI can show then apply the same list). */
   kranaToApply?: KranaReward[];
+  /** When provided, these items are added to inventory instead of rolling. */
+  itemsToApply?: ItemReward[];
 };
 
 export type GameState = {

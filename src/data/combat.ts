@@ -1,5 +1,7 @@
 import { CombatantTemplate, EnemyEncounter, MaskPower } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
+import { GameItemId } from './loot';
+import { MOL_TAKANUVA_RISES_QUEST_ID } from './quests/mask_of_light';
 
 export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   [Mask.Avohkii]: {
@@ -599,6 +601,99 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseDefense: 30,
     baseSpeed: 22,
   },
+
+  // Rahkshi – Sons of Makuta; tougher than Bohrok, stats scale with party level
+  Turahk: {
+    id: 'Turahk',
+    name: 'Turahk',
+    model: 'rahkshi',
+    element: ElementTribe.Fire,
+    baseHp: 120,
+    baseAttack: 28,
+    baseDefense: 18,
+    baseSpeed: 12,
+  },
+  Guurahk: {
+    id: 'Guurahk',
+    name: 'Guurahk',
+    model: 'rahkshi',
+    element: ElementTribe.Water,
+    baseHp: 110,
+    baseAttack: 32,
+    baseDefense: 16,
+    baseSpeed: 10,
+  },
+  Lerahk: {
+    id: 'Lerahk',
+    name: 'Lerahk',
+    model: 'rahkshi',
+    element: ElementTribe.Air,
+    baseHp: 100,
+    baseAttack: 26,
+    baseDefense: 14,
+    baseSpeed: 14,
+  },
+  Panrahk: {
+    id: 'Panrahk',
+    name: 'Panrahk',
+    model: 'rahkshi',
+    element: ElementTribe.Stone,
+    baseHp: 130,
+    baseAttack: 30,
+    baseDefense: 20,
+    baseSpeed: 8,
+  },
+  Vorahk: {
+    id: 'Vorahk',
+    name: 'Vorahk',
+    model: 'rahkshi',
+    element: ElementTribe.Earth,
+    baseHp: 140,
+    baseAttack: 25,
+    baseDefense: 22,
+    baseSpeed: 9,
+  },
+  Kurahk: {
+    id: 'Kurahk',
+    name: 'Kurahk',
+    model: 'rahkshi',
+    element: ElementTribe.Ice,
+    baseHp: 115,
+    baseAttack: 30,
+    baseDefense: 18,
+    baseSpeed: 11,
+  },
+  // Headliners for multi-Rahkshi encounters
+  rahkshi_trio_ta_koro: {
+    id: 'rahkshi_trio_ta_koro',
+    name: 'Rahkshi',
+    model: 'rahkshi',
+    element: ElementTribe.Fire,
+    baseHp: 120,
+    baseAttack: 28,
+    baseDefense: 18,
+    baseSpeed: 12,
+  },
+  rahkshi_trio_onu_koro: {
+    id: 'rahkshi_trio_onu_koro',
+    name: 'Rahkshi',
+    model: 'rahkshi',
+    element: ElementTribe.Stone,
+    baseHp: 130,
+    baseAttack: 30,
+    baseDefense: 20,
+    baseSpeed: 8,
+  },
+  rahkshi_all: {
+    id: 'rahkshi_all',
+    name: 'Rahkshi',
+    model: 'rahkshi',
+    element: ElementTribe.Shadow,
+    baseHp: 120,
+    baseAttack: 28,
+    baseDefense: 18,
+    baseSpeed: 12,
+  },
 };
 
 /** Krana drop ids by color: blue=Fire, orange=Water, red=Air, green=Stone, lime=Earth, white=Ice */
@@ -679,6 +774,10 @@ function makeBohrokWave(
   count: number
 ): { id: string; lvl: number }[] {
   return Array.from({ length: count }, () => ({ id: bohrokId, lvl }));
+}
+
+function makeKraataLoot(items: GameItemId[]): { id: string; chance: number }[] {
+  return items.map((id) => ({ id, chance: 1 / items.length }));
 }
 
 export const ENCOUNTERS: EnemyEncounter[] = [
@@ -1098,5 +1197,209 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     ],
     loot: [],
     unlockedAfter: ['bohrok_kal_race_to_nest'],
+  },
+
+  // ── Rahkshi encounters ──────────────────────────────────────────────
+  // First three Rahkshi – unlocked after the Fall of Ta-Koro
+
+  {
+    id: 'turahk-1',
+    name: 'Turahk',
+    headliner: 'Turahk',
+    difficulty: 7,
+    description:
+      'The Rahkshi of Fear stalks the ruins of Ta-Koro. Its Staff of Fear can freeze even a Toa in terror.',
+    scalesWithParty: true,
+    waves: [[{ id: 'Turahk', lvl: 1 }]],
+    loot: makeKraataLoot([
+      GameItemId.KraataFear,
+      GameItemId.KraataAccuracy,
+      GameItemId.KraataDarkness,
+      GameItemId.KraataIllusion,
+      GameItemId.KraataMindReading,
+      GameItemId.KraataSleep,
+      GameItemId.KraataConfusion,
+    ]),
+    unlockedAfter: ['mol_fall_of_ta_koro'],
+  },
+  {
+    id: 'guurahk-1',
+    name: 'Guurahk',
+    headliner: 'Guurahk',
+    difficulty: 7,
+    description:
+      'The Rahkshi of Disintegration can reduce any substance to dust with a blast from its staff.',
+    scalesWithParty: true,
+    waves: [[{ id: 'Guurahk', lvl: 1 }]],
+    loot: makeKraataLoot([
+      GameItemId.KraataDisintegration,
+      GameItemId.KraataChainLightning,
+      GameItemId.KraataElectricity,
+      GameItemId.KraataHeatVision,
+      GameItemId.KraataLaserVision,
+      GameItemId.KraataPlasma,
+      GameItemId.KraataPowerScream,
+    ]),
+    unlockedAfter: ['mol_fall_of_ta_koro'],
+  },
+  {
+    id: 'lerahk-1',
+    name: 'Lerahk',
+    headliner: 'Lerahk',
+    difficulty: 7,
+    description:
+      'The Rahkshi of Poison spreads its toxic venom wherever its staff strikes. Even a Toa Nuva can fall to its corruption.',
+    scalesWithParty: true,
+    waves: [[{ id: 'Lerahk', lvl: 1 }]],
+    loot: makeKraataLoot([
+      GameItemId.KraataPoison,
+      GameItemId.KraataAdaptation,
+      GameItemId.KraataChameleon,
+      GameItemId.KraataPlantControl,
+      GameItemId.KraataRahiControl,
+      GameItemId.KraataInsectControl,
+      GameItemId.KraataSlowness,
+    ]),
+    unlockedAfter: ['mol_fall_of_ta_koro'],
+  },
+  {
+    id: 'rahkshi_trio_ta_koro',
+    name: 'Sons of Makuta',
+    headliner: 'rahkshi_trio_ta_koro',
+    difficulty: 8,
+    description:
+      'All three Rahkshi that destroyed Ta-Koro attack together—Fear, Disintegration, and Poison in concert.',
+    scalesWithParty: true,
+    waves: [
+      [
+        { id: 'Turahk', lvl: 1 },
+        { id: 'Guurahk', lvl: 1 },
+        { id: 'Lerahk', lvl: 1 },
+      ],
+    ],
+    loot: makeKraataLoot([
+      GameItemId.KraataFear,
+      GameItemId.KraataDisintegration,
+      GameItemId.KraataPoison,
+    ]),
+    unlockedAfter: ['mol_fall_of_ta_koro'],
+  },
+
+  // Second three Rahkshi – unlocked after the battle in Onu-Koro
+
+  {
+    id: 'panrahk-1',
+    name: 'Panrahk',
+    headliner: 'Panrahk',
+    difficulty: 7,
+    description:
+      'The Rahkshi of Fragmentation can shatter anything it touches. Its staff blasts rend stone and metal alike.',
+    scalesWithParty: true,
+    waves: [[{ id: 'Panrahk', lvl: 1 }]],
+    loot: makeKraataLoot([
+      GameItemId.KraataFragmentation,
+      GameItemId.KraataDensityControl,
+      GameItemId.KraataElasticity,
+      GameItemId.KraataGravity,
+      GameItemId.KraataMagnetism,
+      GameItemId.KraataShattering,
+      GameItemId.KraataShapeshifting,
+    ]),
+    unlockedAfter: ['mol_onu_koro_battle'],
+  },
+  {
+    id: 'vorahk-1',
+    name: 'Vorahk',
+    headliner: 'Vorahk',
+    difficulty: 7,
+    description:
+      'The Rahkshi of Hunger drains the energy and strength of its opponents. Its very presence saps life.',
+    scalesWithParty: true,
+    waves: [[{ id: 'Vorahk', lvl: 1 }]],
+    loot: makeKraataLoot([
+      GameItemId.KraataHunger,
+      GameItemId.KraataDodge,
+      GameItemId.KraataFireResistance,
+      GameItemId.KraataIceResistance,
+      GameItemId.KraataInvulnerability,
+      GameItemId.KraataQuickHealing,
+      GameItemId.KraataStasisField,
+    ]),
+    unlockedAfter: ['mol_onu_koro_battle'],
+  },
+  {
+    id: 'kurahk-1',
+    name: 'Kurahk',
+    headliner: 'Kurahk',
+    difficulty: 7,
+    description:
+      'The Rahkshi of Anger can turn allies against each other with a single blast from its staff.',
+    scalesWithParty: true,
+    waves: [[{ id: 'Kurahk', lvl: 1 }]],
+    loot: makeKraataLoot([
+      GameItemId.KraataAnger,
+      GameItemId.KraataCyclone,
+      GameItemId.KraataSilence,
+      GameItemId.KraataSonics,
+      GameItemId.KraataTeleportation,
+      GameItemId.KraataVacuum,
+      GameItemId.KraataWeatherControl,
+    ]),
+    unlockedAfter: ['mol_onu_koro_battle'],
+  },
+  {
+    id: 'rahkshi_trio_onu_koro',
+    name: 'Shadows over Onu-Koro',
+    headliner: 'rahkshi_trio_onu_koro',
+    difficulty: 8,
+    description:
+      'Panrahk, Vorahk, and Kurahk—Fragmentation, Hunger, and Anger—descend upon Onu-Koro together.',
+    scalesWithParty: true,
+    waves: [
+      [
+        { id: 'Panrahk', lvl: 1 },
+        { id: 'Vorahk', lvl: 1 },
+        { id: 'Kurahk', lvl: 1 },
+      ],
+    ],
+    loot: makeKraataLoot([
+      GameItemId.KraataFragmentation,
+      GameItemId.KraataHunger,
+      GameItemId.KraataAnger,
+    ]),
+    unlockedAfter: ['mol_onu_koro_battle'],
+  },
+
+  // All six Rahkshi – unlocked when Takanuva rises
+
+  {
+    id: 'rahkshi_all',
+    name: 'All Six Rahkshi',
+    headliner: 'rahkshi_all',
+    difficulty: 9,
+    description:
+      'All six sons of Makuta—Fear, Disintegration, Poison, Fragmentation, Hunger, and Anger—converge at Kini-Nui in two relentless waves.',
+    scalesWithParty: true,
+    waves: [
+      [
+        { id: 'Turahk', lvl: 1 },
+        { id: 'Guurahk', lvl: 1 },
+        { id: 'Lerahk', lvl: 1 },
+      ],
+      [
+        { id: 'Panrahk', lvl: 1 },
+        { id: 'Vorahk', lvl: 1 },
+        { id: 'Kurahk', lvl: 1 },
+      ],
+    ],
+    loot: makeKraataLoot([
+      GameItemId.KraataFear,
+      GameItemId.KraataDisintegration,
+      GameItemId.KraataPoison,
+      GameItemId.KraataFragmentation,
+      GameItemId.KraataHunger,
+      GameItemId.KraataAnger,
+    ]),
+    unlockedAfter: [MOL_TAKANUVA_RISES_QUEST_ID],
   },
 ];

@@ -10,11 +10,12 @@ import { useQuestNotifications } from './useQuestNotifications';
 import { useBattleState } from './useBattleState';
 import { clamp } from '../utils/math';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
-import { BattleRewardParams, KranaReward } from '../types/GameState';
+import { BattleRewardParams, ItemReward, KranaReward } from '../types/GameState';
 import { RecruitedCharacterData } from '../types/Matoran';
 import {
   computeBattleExpTotal,
   computeKranaRewardsForBattle,
+  computeItemRewardsForBattle,
   getParticipantIds,
 } from '../game/BattleRewards';
 import { isKranaCollectionActive } from '../game/Krana';
@@ -192,6 +193,21 @@ export const useGameLogic = (): GameState => {
             [element]: [...existing, kranaId],
           };
         });
+      }
+
+      // Apply item drops (e.g. kraata)
+      const itemsExplicitlyProvided = params.itemsToApply !== undefined;
+      let itemsToApply: ItemReward[] = params.itemsToApply ?? [];
+      if (!itemsExplicitlyProvided && itemsToApply.length === 0) {
+        itemsToApply = computeItemRewardsForBattle(
+          params.encounter,
+          params.phase,
+          params.currentWave,
+          params.enemies
+        );
+      }
+      for (const { id, qty } of itemsToApply) {
+        addItemToInventory(id, qty);
       }
     },
   };

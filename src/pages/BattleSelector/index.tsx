@@ -2,12 +2,13 @@ import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ElementTag } from '../../components/ElementTag';
 import { Tooltip } from '../../components/Tooltip';
-import { ITEM_DICTIONARY } from '../../data/loot';
+import { ITEM_DICTIONARY, isKraataItem } from '../../data/loot';
 import { useGame } from '../../context/Game';
 import { COMBATANT_DEX, ENCOUNTERS } from '../../data/combat';
 import { getVisibleEncounters } from '../../game/encounterVisibility';
 import { ELEMENT_TO_KRANA_COLOR, isKranaCollected, parseKranaDropId } from '../../game/Krana';
 import type { KranaCollection } from '../../types/Krana';
+import type { EnemyEncounter } from '../../types/Combat';
 
 /** Returns loot items to display, excluding already-collected krana. */
 function getDisplayableLoot(
@@ -44,7 +45,26 @@ function LootTag({ drop }: { drop: { id: string } }) {
   }
   const item = ITEM_DICTIONARY[drop.id as keyof typeof ITEM_DICTIONARY];
   const label = item?.name ?? drop.id;
-  return <span className="loot-tag">{label}</span>;
+  const isKraata = isKraataItem(drop.id);
+  return (
+    <Tooltip content={label}>
+      <span className={`loot-tag${isKraata ? ' loot-tag--kraata' : ''}`}>{label}</span>
+    </Tooltip>
+  );
+}
+
+/** Resolves avatar image src for a given encounter headliner. */
+function getEncounterAvatarSrc(encounter: EnemyEncounter): string | null {
+  const template = COMBATANT_DEX[encounter.headliner];
+  if (!template) return null;
+
+  if (template.model === 'rahkshi') return null;
+
+  const name = ['bohrok_kal_pair', 'bohrok_kal_trio'].includes(encounter.headliner)
+    ? 'Tahnok'
+    : template.name;
+
+  return `${import.meta.env.BASE_URL}/avatar/Bohrok/${name}.webp`;
 }
 
 export const BattleSelector: React.FC = () => {
@@ -76,6 +96,7 @@ export const BattleSelector: React.FC = () => {
       <div className="encounter-list">
         {visibleEncounters.map((encounter) => {
           const displayableLoot = getDisplayableLoot(encounter.loot, collectedKrana);
+          const avatarSrc = getEncounterAvatarSrc(encounter);
           return (
             <div key={encounter.id} className="encounter">
               <div className="encounter-header">
@@ -85,15 +106,7 @@ export const BattleSelector: React.FC = () => {
                 <h2>{encounter.name}</h2>
                 <span className="difficulty">Difficulty: {encounter.difficulty}</span>
               </div>
-              <img
-                className="enemy-avatar"
-                src={`${import.meta.env.BASE_URL}/avatar/Bohrok/${
-                  ['bohrok_kal_pair', 'bohrok_kal_trio'].includes(encounter.headliner)
-                    ? 'Tahnok'
-                    : COMBATANT_DEX[encounter.headliner].name
-                }.webp`}
-                alt=""
-              />
+              {avatarSrc && <img className="enemy-avatar" src={avatarSrc} alt="" />}
               <p className="description">{encounter.description}</p>
               {displayableLoot.length > 0 && (
                 <div className="loot-section">
