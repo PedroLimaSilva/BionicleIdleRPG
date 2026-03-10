@@ -200,7 +200,12 @@ export const useGameLogic = (): GameState => {
       const itemsExplicitlyProvided = params.itemsToApply !== undefined;
       let itemsToApply: ItemReward[] = params.itemsToApply ?? [];
       if (!itemsExplicitlyProvided && itemsToApply.length === 0) {
-        itemsToApply = computeItemRewardsForBattle(params.encounter, params.phase);
+        itemsToApply = computeItemRewardsForBattle(
+          params.encounter,
+          params.phase,
+          params.currentWave,
+          params.enemies
+        );
       }
       for (const { id, qty } of itemsToApply) {
         addItemToInventory(id, qty);

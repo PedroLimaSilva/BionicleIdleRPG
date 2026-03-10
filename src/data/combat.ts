@@ -776,8 +776,8 @@ function makeBohrokWave(
   return Array.from({ length: count }, () => ({ id: bohrokId, lvl }));
 }
 
-function makeKraataLoot(items: GameItemId[], chance = 0.2): { id: string; chance: number }[] {
-  return items.map((id) => ({ id, chance }));
+function makeKraataLoot(items: GameItemId[]): { id: string; chance: number }[] {
+  return items.map((id) => ({ id, chance: 1 / items.length }));
 }
 
 export const ENCOUNTERS: EnemyEncounter[] = [

@@ -172,13 +172,45 @@ export function computeKranaRewardsForBattle(
 export type ItemReward = { id: GameItemId; qty: number };
 
 /**
+ * Non-Krana loot entries (e.g. kraata) from an encounter. Used for "one per kill, equal chance" resolution.
+ */
+function getKraataLootTable(encounter: EnemyEncounter): { id: string }[] {
+  return encounter.loot.filter((d) => !isKranaLootId(d.id)).map((d) => ({ id: d.id }));
+}
+
+/**
  * Rolls for non-Krana item drops (e.g. kraata) from an encounter's loot table.
- * Each drop is rolled once on victory; one item can drop multiple times.
+ *
+ * Kraata (Rahkshi): one roll per defeated enemy (Victory, Defeat, or Retreat). Each kill guarantees
+ * exactly one kraata; which one is chosen with equal probability (roll in [0,1) → index = floor(roll * table.length)).
+ *
+ * Other item drops: only on Victory, one roll per loot entry (unchanged).
  */
 export function computeItemRewardsForBattle(
   encounter: EnemyEncounter,
-  phase: BattlePhase
+  phase: BattlePhase,
+  currentWave: number,
+  currentEnemies: Combatant[]
 ): ItemReward[] {
+  const kraataTable = getKraataLootTable(encounter);
+
+  if (kraataTable.length > 0) {
+    const defeatedCount = getEnemiesDefeatedCount(encounter, phase, currentWave, currentEnemies);
+    const rewards: ItemReward[] = [];
+    for (let i = 0; i < defeatedCount; i++) {
+      const roll = Math.random();
+      const index = Math.floor(roll * kraataTable.length);
+      const id = kraataTable[index].id as GameItemId;
+      const existing = rewards.find((r) => r.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        rewards.push({ id, qty: 1 });
+      }
+    }
+    return rewards;
+  }
+
   if (phase !== BattlePhase.Victory) return [];
 
   const rewards: ItemReward[] = [];

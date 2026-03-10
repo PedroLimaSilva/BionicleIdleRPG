@@ -42,7 +42,12 @@ export const BattlePage: React.FC = () => {
   }
 
   if (isOutcome && itemRewardsRef.current === null) {
-    itemRewardsRef.current = computeItemRewardsForBattle(currentEncounter!, phase);
+    itemRewardsRef.current = computeItemRewardsForBattle(
+      currentEncounter!,
+      phase,
+      currentWave,
+      enemies
+    );
   }
 
   if (!isOutcome) {
