@@ -1,6 +1,5 @@
 import { MatoranJob } from '../types/Jobs';
 import { ElementTribe } from '../types/Matoran';
-import type { KraataPower } from '../types/Kraata';
 
 export enum GameItemId {
   Charcoal = 'Charcoal',
