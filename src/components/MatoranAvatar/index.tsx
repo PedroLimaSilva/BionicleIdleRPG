@@ -24,10 +24,14 @@ export function MatoranAvatar({
 }) {
   const { completedQuests } = useGame();
   const { colors } = matoran;
-  const maskColor = useMemo(
-    () => matoran.maskColorOverride || getEffectiveMaskColor(matoran, completedQuests),
-    [matoran, completedQuests]
-  );
+  const effectiveMask = matoran.maskOverride ?? matoran.mask;
+  const maskColor = useMemo(() => {
+    if (matoran.maskColorOverride) return matoran.maskColorOverride;
+    if (effectiveMask === Mask.Vahi || effectiveMask === Mask.HauNuvaInfected) {
+      return LegoColor.White;
+    }
+    return getEffectiveMaskColor(matoran, completedQuests);
+  }, [matoran, completedQuests, effectiveMask]);
 
   const mask = useMemo(() => {
     return getMask(matoran);
