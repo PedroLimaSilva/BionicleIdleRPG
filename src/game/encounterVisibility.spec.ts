@@ -8,7 +8,8 @@ const mockEncounter = (
   headliner: string,
   difficulty: number,
   loot: { id: string; chance: number }[],
-  unlockedAfter?: string[]
+  unlockedAfter?: string[],
+  hiddenAfter?: string[]
 ): EnemyEncounter => ({
   id,
   name: `Encounter ${id}`,
@@ -18,6 +19,7 @@ const mockEncounter = (
   waves: [[{ id: headliner, lvl: 20 }]],
   loot,
   ...(unlockedAfter && { unlockedAfter }),
+  ...(hiddenAfter && { hiddenAfter }),
 });
 
 describe('encounterVisibility', () => {
@@ -160,6 +162,24 @@ describe('encounterVisibility', () => {
       const visible = getVisibleEncounters(encounters, collected, completed);
       expect(visible).toHaveLength(1);
       expect(visible[0].id).toBe('tahnok_kal-1');
+    });
+
+    test('hides encounters when hiddenAfter quest is completed (e.g. Bohrok Kal after At the Nuva Cube)', () => {
+      const encounters: EnemyEncounter[] = [
+        mockEncounter(
+          'tahnok_kal-1',
+          'tahnok_kal',
+          5,
+          [],
+          ['bohrok_kal_stolen_symbols'],
+          ['bohrok_kal_final_confrontation']
+        ),
+      ];
+      const collected = {};
+      const completed = ['bohrok_kal_stolen_symbols', 'bohrok_kal_final_confrontation'];
+
+      const visible = getVisibleEncounters(encounters, collected, completed);
+      expect(visible).toHaveLength(0);
     });
   });
 });

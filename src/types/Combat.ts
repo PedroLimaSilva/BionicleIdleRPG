@@ -138,6 +138,8 @@ export interface EnemyEncounter {
   name: string;
   description: string;
   unlockedAfter?: GameState['completedQuests'];
+  /** When all quests in this array are completed, the encounter is hidden from the battle selector. */
+  hiddenAfter?: string[];
   difficulty: number;
   headliner: Combatant['id'];
   waves: Array<{ id: string; lvl: number }[]>;
