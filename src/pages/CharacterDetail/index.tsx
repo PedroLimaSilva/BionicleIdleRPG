@@ -9,7 +9,7 @@ import { ElementTag } from '../../components/ElementTag';
 import { useEffect, useMemo, useState } from 'react';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
-import { getRecruitedMatoran } from '../../services/matoranUtils';
+import { getRecruitedMatoran, masksCollected } from '../../services/matoranUtils';
 import { isBohrokOrKal, isMatoran, isToa, isToaMata } from '../../game/matoranStage';
 import { getAvailableEvolution, meetsEvolutionLevel } from '../../game/CharacterEvolution';
 import { LevelProgress } from './LevelProgress';
@@ -39,7 +39,7 @@ export const CharacterDetail: React.FC = () => {
 
   const tabs = useMemo(() => {
     const base = ['stats'];
-    if (isToa(matoran)) {
+    if (isToa(matoran) || masksCollected(matoran, completedQuests).length > 1) {
       base.push('inventory');
     }
     if (matoran.quest || isMatoran(matoran) || isBohrokOrKal(matoran)) {
@@ -108,7 +108,7 @@ export const CharacterDetail: React.FC = () => {
               }
             />
           )}
-          {activeTab === 'inventory' && isToa(matoran) && (
+          {activeTab === 'inventory' && (
             <>
               <MaskCollection matoran={matoran} />
               {isToaMata(matoran) && isKranaCollectionActive(completedQuests) && (

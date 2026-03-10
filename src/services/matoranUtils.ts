@@ -1,13 +1,8 @@
-import {
-  BaseMatoran,
-  ListedCharacterData,
-  Mask,
-  RecruitedCharacterData,
-} from '../types/Matoran';
+import { BaseMatoran, ListedCharacterData, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
-import { isToaNuva } from '../game/matoranStage';
+import { isToaMata, isToaNuva } from '../game/matoranStage';
 import { isTahuNuvaInfectedMaskPeriod } from '../game/masks';
 import { CHARACTER_DEX } from '../data/dex/index';
 import { GameState } from '../types/GameState';
@@ -56,76 +51,88 @@ export function masksCollected(
       }
     }
     return masks;
+  } else if (isToaMata(matoran)) {
+    const masks: Mask[] = [];
+    if (storyProgress.includes('maskhunt_final_collection')) {
+      return FULL_MASK_SET;
+    }
+    masks.push(matoran.mask);
+    switch (matoran.id) {
+      case 'Toa_Tahu': {
+        if (storyProgress.includes('maskhunt_tahu_cave_akaku')) {
+          masks.push(Mask.Akaku);
+        }
+        if (storyProgress.includes('maskhunt_tahu_miru')) {
+          masks.push(Mask.Miru);
+        }
+        if (storyProgress.includes('maskhunt_forest_tahu_kakama')) {
+          masks.push(Mask.Kakama);
+        }
+        break;
+      }
+      case 'Toa_Kopaka': {
+        if (storyProgress.includes('maskhunt_kopaka_pohatu_icecliff')) {
+          masks.push(Mask.Hau);
+        }
+        if (storyProgress.includes('maskhunt_kopaka_mahiki_huna')) {
+          masks.push(Mask.Mahiki, Mask.Huna);
+        }
+        if (storyProgress.includes('maskhunt_kopaka_pakari')) {
+          masks.push(Mask.Pakari);
+        }
+        if (storyProgress.includes('story_toa_second_council')) {
+          masks.push(Mask.Kaukau);
+        }
+        break;
+      }
+      case 'Toa_Pohatu': {
+        if (storyProgress.includes('maskhunt_pohatu_kaukau_bluff')) {
+          masks.push(Mask.Kaukau);
+        }
+        break;
+      }
+      case 'Toa_Onua': {
+        if (storyProgress.includes('maskhunt_onua_matatu_hau')) {
+          masks.push(Mask.Matatu, Mask.Hau);
+        }
+        if (storyProgress.includes('story_toa_second_council')) {
+          masks.push(Mask.Kaukau);
+        }
+        break;
+      }
+      case 'Toa_Lewa': {
+        if (storyProgress.includes('maskhunt_lewa_pakari')) {
+          masks.push(Mask.Pakari);
+        }
+        if (storyProgress.includes('maskhunt_lewa_kakama_komau')) {
+          masks.push(Mask.Kakama, Mask.Komau);
+        }
+        break;
+      }
+      case 'Toa_Gali': {
+        if (storyProgress.includes('maskhunt_gali_miru')) {
+          masks.push(Mask.Miru);
+        }
+        break;
+      }
+      default: {
+        // Do nothing
+      }
+    }
+    return masks;
+  } else {
+    if (matoran.id === 'Takua' && storyProgress.includes('mol_battle_of_kini_nui')) {
+      return [matoran.mask, Mask.Avohkii];
+    }
+    if (
+      matoran.id === 'Jaller' &&
+      storyProgress.includes('mol_discovery_of_avohkii') &&
+      !storyProgress.includes('mol_battle_of_kini_nui')
+    ) {
+      return [matoran.mask, Mask.Avohkii];
+    }
+    return [matoran.mask];
   }
-
-  const masks: Mask[] = [];
-  if (storyProgress.includes('maskhunt_final_collection')) {
-    return FULL_MASK_SET;
-  }
-  masks.push(matoran.mask);
-  switch (matoran.id) {
-    case 'Toa_Tahu': {
-      if (storyProgress.includes('maskhunt_tahu_cave_akaku')) {
-        masks.push(Mask.Akaku);
-      }
-      if (storyProgress.includes('maskhunt_tahu_miru')) {
-        masks.push(Mask.Miru);
-      }
-      if (storyProgress.includes('maskhunt_forest_tahu_kakama')) {
-        masks.push(Mask.Kakama);
-      }
-      break;
-    }
-    case 'Toa_Kopaka': {
-      if (storyProgress.includes('maskhunt_kopaka_pohatu_icecliff')) {
-        masks.push(Mask.Hau);
-      }
-      if (storyProgress.includes('maskhunt_kopaka_mahiki_huna')) {
-        masks.push(Mask.Mahiki, Mask.Huna);
-      }
-      if (storyProgress.includes('maskhunt_kopaka_pakari')) {
-        masks.push(Mask.Pakari);
-      }
-      if (storyProgress.includes('story_toa_second_council')) {
-        masks.push(Mask.Kaukau);
-      }
-      break;
-    }
-    case 'Toa_Pohatu': {
-      if (storyProgress.includes('maskhunt_pohatu_kaukau_bluff')) {
-        masks.push(Mask.Kaukau);
-      }
-      break;
-    }
-    case 'Toa_Onua': {
-      if (storyProgress.includes('maskhunt_onua_matatu_hau')) {
-        masks.push(Mask.Matatu, Mask.Hau);
-      }
-      if (storyProgress.includes('story_toa_second_council')) {
-        masks.push(Mask.Kaukau);
-      }
-      break;
-    }
-    case 'Toa_Lewa': {
-      if (storyProgress.includes('maskhunt_lewa_pakari')) {
-        masks.push(Mask.Pakari);
-      }
-      if (storyProgress.includes('maskhunt_lewa_kakama_komau')) {
-        masks.push(Mask.Kakama, Mask.Komau);
-      }
-      break;
-    }
-    case 'Toa_Gali': {
-      if (storyProgress.includes('maskhunt_gali_miru')) {
-        masks.push(Mask.Miru);
-      }
-      break;
-    }
-    default: {
-      // Do nothing
-    }
-  }
-  return masks;
 }
 
 /** Returns merged base + recruited data. Recruited stage/maskOverride override CHARACTER_DEX. */

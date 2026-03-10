@@ -23,6 +23,9 @@ export function MaskCollection({ matoran }: { matoran: BaseMatoran & { maskOverr
   );
 
   const handeMaskOverride = (matoran: BaseMatoran & { maskOverride?: string }, mask: Mask) => {
+    if (mask === Mask.Avohkii && !completedQuests.includes('mol_battle_of_kini_nui')) {
+      return;
+    }
     setMaskOverride(matoran.id, mask);
   };
 
