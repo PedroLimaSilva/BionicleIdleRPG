@@ -16,15 +16,16 @@ import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
-import { getKraataCompositedColors } from '../../data/kraataColors';
+import { getKraataCompositedColors, KRAATA_SPECIES_COLORS } from '../../data/kraataColors';
 import { CompositedImage } from '../../components/CompositedImage';
+import { RahkshiArmor } from '../../types/Rahkshi';
 
 const CHARACTERS_TAB_KEY = 'characters-tab';
 
 type TabId = 'matoran' | 'toa' | 'other' | 'rahkshi';
 
 export const CharacterInventory: React.FC = () => {
-  const { recruitedCharacters, buyableCharacters, kraataCollection } = useGame();
+  const { recruitedCharacters, buyableCharacters, kraataCollection, rahkshi } = useGame();
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const hasCollectedKraata = useMemo(() => {
@@ -41,11 +42,11 @@ export const CharacterInventory: React.FC = () => {
     if (recruitedCharacters.some((m) => isBohrokOrKal(getEffectiveMatoran(m)))) {
       base.push('other');
     }
-    if (hasCollectedKraata) {
+    if (hasCollectedKraata || rahkshi.length > 0) {
       base.push('rahkshi');
     }
     return base;
-  }, [recruitedCharacters, hasCollectedKraata]);
+  }, [recruitedCharacters, hasCollectedKraata, rahkshi.length]);
 
   const [activeTab, setActiveTab] = useState<TabId>(() => {
     try {
@@ -116,26 +117,35 @@ export const CharacterInventory: React.FC = () => {
         <Tabs tabs={tabs} activeTab={effectiveTab} onTabChange={handleTabChange} />
       </div>
       {effectiveTab === 'rahkshi' ? (
-        <div className="kraata-grid">
-          {collectedKraata.map(({ power, stage, name, count }) => (
-            <Link key={`${power}-${stage}`} to={`/kraata/${power}/${stage}`}>
-              <div className="kraata-card">
-                <CompositedImage
-                  images={[
-                    `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Base.webp`,
-                    `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Head.webp`,
-                    `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Tail.webp`,
-                  ]}
-                  colors={getKraataCompositedColors(power)}
-                  className="kraata-card__image"
-                />
-                <div className="kraata-card__name">{name}</div>
-                <div className="kraata-card__stage bionicle-font">{stage}</div>
-                <div className="kraata-card__count">×{count}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <>
+          {rahkshi.length > 0 && (
+            <div className="rahkshi-grid">
+              {rahkshi.map((armor) => (
+                <RahkshiArmorCard key={armor.id} armor={armor} />
+              ))}
+            </div>
+          )}
+          <div className="kraata-grid">
+            {collectedKraata.map(({ power, stage, name, count }) => (
+              <Link key={`${power}-${stage}`} to={`/kraata/${power}/${stage}`}>
+                <div className="kraata-card">
+                  <CompositedImage
+                    images={[
+                      `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Base.webp`,
+                      `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Head.webp`,
+                      `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Tail.webp`,
+                    ]}
+                    colors={getKraataCompositedColors(power)}
+                    className="kraata-card__image"
+                  />
+                  <div className="kraata-card__name">{name}</div>
+                  <div className="kraata-card__stage bionicle-font">{stage}</div>
+                  <div className="kraata-card__count">×{count}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </>
       ) : (
         <div className="character-grid">
           {characters.map((matoran) => {
@@ -181,3 +191,40 @@ export const CharacterInventory: React.FC = () => {
     </div>
   );
 };
+
+function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
+  const colors = KRAATA_SPECIES_COLORS[armor.power] ?? { head: '#C2A375', tail: '#D4AF37' };
+  const powerName = KRAATA_POWER_NAMES[armor.power] ?? armor.power;
+  const isPreparing = armor.armorStage === 'preparing';
+  const hasKraata = !!armor.kraata;
+
+  const statusLabel = isPreparing ? 'Forging…' : hasKraata ? 'Active' : 'Empty';
+
+  return (
+    <Link to={`/rahkshi/${armor.id}`}>
+      <div
+        className={`rahkshi-card rahkshi-card--${armor.armorStage}`}
+        style={
+          {
+            '--rahkshi-head-color': colors.head,
+            '--rahkshi-tail-color': colors.tail,
+          } as React.CSSProperties
+        }
+      >
+        <CompositedImage
+          images={[
+            `${import.meta.env.BASE_URL}/avatar/Kraata/1_Base.webp`,
+            `${import.meta.env.BASE_URL}/avatar/Kraata/1_Head.webp`,
+            `${import.meta.env.BASE_URL}/avatar/Kraata/1_Tail.webp`,
+          ]}
+          colors={getKraataCompositedColors(armor.power)}
+          className="rahkshi-card__image"
+        />
+        <div className="rahkshi-card__name">{powerName} Armor</div>
+        <div className={`rahkshi-card__status rahkshi-card__status--${armor.armorStage}${hasKraata ? ' rahkshi-card__status--active' : ''}`}>
+          {statusLabel}
+        </div>
+      </div>
+    </Link>
+  );
+}
