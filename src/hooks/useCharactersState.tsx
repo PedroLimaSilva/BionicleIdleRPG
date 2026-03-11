@@ -1,23 +1,29 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
+import { getBuyableCharacters } from '../game/Recruitment';
 
+/**
+ * @param completedQuests - Used to derive buyable characters (with recruitedCharacters).
+ *                          Passed from parent so buyable list is resilient to inconsistent saves.
+ */
 export function useCharactersState(
   initialRecruited: RecruitedCharacterData[],
-  initialBuyable: ListedCharacterData[],
+  completedQuests: string[],
   protodermis: number,
   setProtodermis: (amount: number) => void
 ) {
   const [recruitedCharacters, setRecruitedCharacters] =
     useState<RecruitedCharacterData[]>(initialRecruited);
 
-  const [buyableCharacters, setBuyableCharacters] = useState<ListedCharacterData[]>(
-    initialBuyable.filter((m) => !initialRecruited.find((r) => r.id === m.id))
+  const buyableCharacters = useMemo(
+    () => getBuyableCharacters(completedQuests, recruitedCharacters),
+    [completedQuests, recruitedCharacters]
   );
 
   const recruitCharacter = (character: ListedCharacterData) => {
-    const { updatedProtodermis, newRecruit, updatedBuyable } = recruitMatoran(
+    const { updatedProtodermis, newRecruit } = recruitMatoran(
       character,
       protodermis,
       buyableCharacters
@@ -27,7 +33,6 @@ export function useCharactersState(
 
     setProtodermis(updatedProtodermis);
     setRecruitedCharacters((prev) => [...prev, newRecruit]);
-    setBuyableCharacters(updatedBuyable);
   };
 
   const assignJobToMatoran = (id: RecruitedCharacterData['id'], job: MatoranJob) => {
@@ -52,7 +57,6 @@ export function useCharactersState(
   return {
     recruitedCharacters,
     setRecruitedCharacters,
-    setBuyableCharacters,
     buyableCharacters,
     recruitCharacter,
     assignJobToMatoran,

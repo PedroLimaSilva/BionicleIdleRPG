@@ -10,7 +10,6 @@ export function useGamePersistence({
   kraataCollection,
   rahkshi,
   recruitedCharacters,
-  buyableCharacters,
   activeQuests,
   completedQuests,
 }: PartialGameState) {
@@ -23,7 +22,6 @@ export function useGamePersistence({
       kraataCollection,
       rahkshi,
       recruitedCharacters,
-      buyableCharacters: buyableCharacters,
       activeQuests,
       completedQuests,
     };
@@ -36,7 +34,6 @@ export function useGamePersistence({
     collectedKrana,
     kraataCollection,
     rahkshi,
-    buyableCharacters,
     recruitedCharacters,
     activeQuests,
     completedQuests,

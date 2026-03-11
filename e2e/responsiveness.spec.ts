@@ -50,13 +50,7 @@ test.describe('Responsiveness', () => {
         await setupGameState(page, {
           ...INITIAL_GAME_STATE,
           protodermis: 100,
-          buyableCharacters: [
-            {
-              id: 'Toa_Tahu',
-              cost: 500,
-              requiredItems: [],
-            },
-          ],
+          completedQuests: ['story_toa_arrival'], // unlocks Toa (e.g. Toa_Tahu) for recruitment
         });
         await page.setViewportSize(size);
 

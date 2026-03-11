@@ -62,7 +62,6 @@ export type PartialGameState = Pick<
   | 'collectedKrana'
   | 'kraataCollection'
   | 'rahkshi'
-  | 'buyableCharacters'
   | 'recruitedCharacters'
   | 'activeQuests'
   | 'completedQuests'
@@ -72,7 +71,6 @@ export type PartialGameState = Pick<
 export type GameStateEditorApi = {
   setCompletedQuests: (ids: string[]) => void;
   setRecruitedCharacters: Dispatch<SetStateAction<RecruitedCharacterData[]>>;
-  setBuyableCharacters: Dispatch<SetStateAction<ListedCharacterData[]>>;
   setCollectedKrana: Dispatch<SetStateAction<KranaCollection>>;
   setKraataCollection: Dispatch<SetStateAction<KraataCollection>>;
   setProtodermis: Dispatch<SetStateAction<number>>;
