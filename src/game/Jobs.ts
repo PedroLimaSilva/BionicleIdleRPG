@@ -1,9 +1,7 @@
 import { JOB_DETAILS } from '../data/jobs';
 import { JobAssignment, MatoranJob, ProductivityEffect } from '../types/Jobs';
 import { RecruitedCharacterData } from '../types/Matoran';
-import { GameItemId } from '../data/loot';
 import { GameState } from '../types/GameState';
-import { Inventory } from '../services/inventoryUtils';
 import { CHARACTER_DEX } from '../data/dex/index';
 import { isBohrokOrKal } from './matoranStage';
 
@@ -117,65 +115,14 @@ function computeEarnedExp(
   return Math.floor(elapsedSeconds * assignment.expRatePerSecond);
 }
 
-function approximateBinomial(trials: number, probability: number): number {
-  // Very low chance or high trials — use Poisson
-  if (trials * probability < 30) {
-    const lambda = trials * probability;
-    const L = Math.exp(-lambda);
-    let k = 0;
-    let p = 1;
-    while (p > L) {
-      k++;
-      p *= Math.random();
-    }
-    return k - 1;
-  }
-
-  // Otherwise: use Normal approximation
-  const mean = trials * probability;
-  const stddev = Math.sqrt(trials * probability * (1 - probability));
-  const gaussian = Math.round(mean + stddev * (Math.random() * 2 - 1));
-  return Math.max(0, gaussian);
-}
-
-function rollJobRewards(
-  assignment: JobAssignment,
-  now = Date.now(),
-  effectiveElapsedSeconds?: number
-): Inventory {
-  const elapsedSeconds =
-    effectiveElapsedSeconds !== undefined
-      ? effectiveElapsedSeconds
-      : Math.max(0, (now - assignment.assignedAt) / 1000);
-  const job = JOB_DETAILS[assignment.job];
-  const drops: Inventory = {};
-
-  if (!job.rewards) return drops;
-
-  for (const reward of job.rewards) {
-    const count = approximateBinomial(Math.floor(elapsedSeconds), reward.chance);
-    if (count > 0) {
-      drops[reward.item] = count;
-    }
-  }
-
-  return drops;
-}
-
 export function applyOfflineJobExp(
   characters: RecruitedCharacterData[],
   now = Date.now()
-): [RecruitedCharacterData[], number, Inventory] {
+): [RecruitedCharacterData[], number] {
   let currencyGain = 0;
-  const loot: Inventory = {};
 
   const updated = characters.map((m) => {
-    const [updatedMatoran, earned, rewards] = applyJobExp(m, now, true);
-
-    Object.entries(rewards).forEach(([item, amount]) => {
-      const itemId = item as unknown as GameItemId;
-      loot[itemId] = (loot[itemId] ?? 0) + (amount ?? 0);
-    });
+    const [updatedMatoran, earned] = applyJobExp(m, now, true);
 
     if (earned > 0) {
       currencyGain += earned;
@@ -184,15 +131,15 @@ export function applyOfflineJobExp(
     return updatedMatoran;
   });
 
-  return [updated, currencyGain, loot];
+  return [updated, currencyGain];
 }
 
 export function applyJobExp(
   matoran: RecruitedCharacterData,
   now = Date.now(),
   applyDiminishingReturns = false
-): [RecruitedCharacterData, number, Inventory] {
-  if (!matoran.assignment) return [matoran, 0, {}];
+): [RecruitedCharacterData, number] {
+  if (!matoran.assignment) return [matoran, 0];
 
   const rawElapsedMs = Math.max(0, now - matoran.assignment.assignedAt);
   const effectiveElapsedSeconds = applyDiminishingReturns
@@ -200,7 +147,6 @@ export function applyJobExp(
     : undefined;
 
   const earnedExp = computeEarnedExp(matoran.assignment, now, effectiveElapsedSeconds);
-  const rewards = rollJobRewards(matoran.assignment, now, effectiveElapsedSeconds);
 
   return [
     {
@@ -212,6 +158,5 @@ export function applyJobExp(
       },
     },
     earnedExp,
-    rewards,
   ];
 }

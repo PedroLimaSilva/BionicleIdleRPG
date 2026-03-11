@@ -24,13 +24,11 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 12,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_swarm_intro' },
       xpPerMatoran: 1500,
       currency: 2000,
-      loot: {},
     },
     // Begins after the original Mangaia / Kini-Nui arc concludes.
     unlockedAfter: ['mnog_return_to_shore'],
@@ -44,13 +42,11 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Jala'],
       minLevel: 12,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_ta_koro_defense' },
       xpPerMatoran: 1800,
       currency: 2200,
-      loot: {},
     },
     unlockedAfter: ['bohrok_swarm_intro'],
     section: 'Bohrok Swarms',
@@ -64,13 +60,11 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Hafu', 'Huki'],
       minLevel: 12,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_po_koro_defense' },
       xpPerMatoran: 1700,
       currency: 2300,
-      loot: {},
     },
     unlockedAfter: ['bohrok_swarm_intro'],
     section: 'Bohrok Swarms',
@@ -84,13 +78,11 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Onepu', 'Nuparu', 'Taipu'],
       minLevel: 12,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_onu_koro_boxor' },
       xpPerMatoran: 2000,
       currency: 2500,
-      loot: {},
     },
     unlockedAfter: ['bohrok_ta_koro_defense'],
     section: 'Bohrok Swarms',
@@ -104,13 +96,11 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu'],
       minLevel: 12,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_legend_of_krana' },
       xpPerMatoran: 800,
       currency: 1000,
-      loot: {},
     },
     unlockedAfter: ['bohrok_ta_koro_defense'],
     section: 'Bohrok Swarms',
@@ -124,13 +114,11 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Toa_Lewa', 'Toa_Onua'],
       minLevel: 13,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_lewa_krana_rescue' },
       xpPerMatoran: 2100,
       currency: 2400,
-      loot: {},
     },
     unlockedAfter: ['bohrok_legend_of_krana'],
     section: 'Bohrok Swarms',
@@ -144,13 +132,11 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 13,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_krana_hunt' },
       xpPerMatoran: 2200,
       currency: 2600,
-      loot: {},
     },
     unlockedAfter: ['bohrok_lewa_krana_rescue'],
     section: 'Bohrok Swarms',
@@ -164,7 +150,6 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 14,
-      items: [],
       // Hard gate: all 48 Krana must be collected before this quest can start.
       requiresAllKrana: true,
     },
@@ -172,7 +157,6 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
       cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_into_the_bohrok_nest' },
       xpPerMatoran: 2600,
       currency: 3000,
-      loot: {},
     },
     unlockedAfter: ['bohrok_krana_hunt'],
     section: 'Bohrok Swarms',
@@ -186,13 +170,11 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 16,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_evolve_toa_nuva' },
       xpPerMatoran: 4000,
       currency: 5000,
-      loot: {},
     },
     unlockedAfter: ['bohrok_into_the_bohrok_nest'],
     section: 'Bohrok Swarms',
@@ -206,20 +188,19 @@ export const BOHROK_SWARM_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Nuparu', 'Onepu'],
       minLevel: 14,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_assistants' },
       xpPerMatoran: 1200,
       currency: 3000,
-      loot: {},
+
       unlockCharacters: [
-        { id: 'tahnok', cost: 500, requiredItems: [] },
-        { id: 'gahlok', cost: 500, requiredItems: [] },
-        { id: 'lehvak', cost: 500, requiredItems: [] },
-        { id: 'pahrak', cost: 500, requiredItems: [] },
-        { id: 'nuhvok', cost: 500, requiredItems: [] },
-        { id: 'kohrak', cost: 500, requiredItems: [] },
+        { id: 'tahnok', cost: 500 },
+        { id: 'gahlok', cost: 500 },
+        { id: 'lehvak', cost: 500 },
+        { id: 'pahrak', cost: 500 },
+        { id: 'nuhvok', cost: 500 },
+        { id: 'kohrak', cost: 500 },
       ],
     },
     unlockedAfter: ['bohrok_evolve_toa_nuva'],

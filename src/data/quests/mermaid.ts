@@ -15,13 +15,6 @@ function formatRewards(rewards: Quest['rewards']) {
   if (rewards.unlockCharacters) {
     parts.push(`Unlock: ${rewards.unlockCharacters.map((c) => c.id).join(', ')}`);
   }
-  if (rewards.loot) {
-    parts.push(
-      `Loot: ${Object.entries(rewards.loot)
-        .map(([k, v]) => `${k}=${v}`)
-        .join(', ')}`
-    );
-  }
   if (rewards.currency) parts.push(`Currency: ${rewards.currency}`);
   if (rewards.xpPerMatoran) parts.push(`XP: ${rewards.xpPerMatoran}`);
   return parts.length ? `\n${parts.join('\n')}` : '';

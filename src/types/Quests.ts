@@ -1,16 +1,8 @@
-import { GameItemId } from '../data/loot';
-import { Inventory } from '../services/inventoryUtils';
 import { ListedCharacterData, MatoranStage, RecruitedCharacterData } from './Matoran';
 import type { VisualNovelCutsceneRef } from './Cutscenes';
 
-export interface QuestItemRequirement {
-  id: GameItemId; // Item ID
-  amount: number;
-  consumed: boolean; // If true, item will be removed from inventory
-}
 export interface QuestRequirement {
   matoran?: RecruitedCharacterData['id'][]; // Required Matoran by ID
-  items?: QuestItemRequirement[];
   minLevel?: number; // Minimum level required for all assigned Matoran
   // Optional: requires all Krana to be collected (Bohrok Swarm arc).
   // This is derived at runtime from global Krana state and not persisted separately.
@@ -28,7 +20,6 @@ export interface EvolutionMap {
 
 export interface QuestReward {
   unlockCharacters?: ListedCharacterData[]; // IDs of unlocked characters (e.g., Toa, Matoran)
-  loot?: Inventory;
   xpPerMatoran?: number; // XP awarded to each participating Matoran
   currency?: number; // Generic currency reward
   /** Visual novel cutscene ID. All cutscenes (including video-only) use the visual novel system. */

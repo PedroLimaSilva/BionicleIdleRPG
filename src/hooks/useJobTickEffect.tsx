@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { RecruitedCharacterData } from '../types/Matoran';
-import { GameItemId } from '../data/loot';
 import { tickMatoranJobExp } from '../services/jobUtils';
 
 export function useJobTickEffect(
@@ -9,7 +8,6 @@ export function useJobTickEffect(
     fn: (prev: RecruitedCharacterData[]) => RecruitedCharacterData[]
   ) => void,
   addProtodermis: (amount: number) => void,
-  addItemToInventory: (item: GameItemId, amount: number) => void,
   intervalMs: number = 5000
 ) {
   useEffect(() => {
@@ -18,12 +16,9 @@ export function useJobTickEffect(
 
       setRecruitedCharacters((prev) =>
         prev.map((matoran) => {
-          const { updatedMatoran, earnedProtodermis, earnedLoot } = tickMatoranJobExp(matoran, now);
+          const { updatedMatoran, earnedProtodermis } = tickMatoranJobExp(matoran, now);
 
           if (earnedProtodermis > 0) addProtodermis(earnedProtodermis);
-          Object.entries(earnedLoot).forEach(([item, amount]) => {
-            addItemToInventory(item as unknown as GameItemId, amount ?? 0);
-          });
 
           return updatedMatoran;
         })
@@ -31,5 +26,5 @@ export function useJobTickEffect(
     }, intervalMs);
 
     return () => clearInterval(interval);
-  }, [recruitedCharacters, setRecruitedCharacters, addProtodermis, addItemToInventory, intervalMs]);
+  }, [recruitedCharacters, setRecruitedCharacters, addProtodermis, intervalMs]);
 }

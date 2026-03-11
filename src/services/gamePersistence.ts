@@ -1,5 +1,4 @@
 import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameState';
-import { GameItemId } from '../data/loot';
 import { applyOfflineJobExp } from '../game/Jobs';
 import { GameState } from '../types/GameState';
 import { isKraataPower, addKraataToCollection, KraataCollection } from '../types/Kraata';
@@ -13,8 +12,9 @@ export function resetGameData() {
 }
 
 /**
- * Migrates any kraata items found in the legacy `inventory` into
- * `kraataCollection` at stage 1, then empties the inventory.
+ * Retrocompatibility: migrates any kraata from the legacy `inventory` (old saves)
+ * into `kraataCollection` at stage 1, then clears the legacy key.
+ * Inventory is no longer used elsewhere; this is the only remaining migration.
  */
 function migrateKraataFromInventory(parsed: Record<string, unknown>): void {
   const inventory = parsed.inventory as Record<string, number> | undefined;
@@ -59,14 +59,7 @@ export function loadGameState() {
       migrateKraataFromInventory(parsed);
 
       if (isValidGameState(parsed)) {
-        const [recruitedCharacters, currency, loot] = applyOfflineJobExp(
-          parsed.recruitedCharacters
-        );
-
-        Object.entries(loot).forEach(([item, amount]) => {
-          const itemId = item as unknown as GameItemId;
-          parsed.inventory[itemId] = (parsed.inventory[itemId] || 0) + (amount as number);
-        });
+        const [recruitedCharacters, currency] = applyOfflineJobExp(parsed.recruitedCharacters);
 
         return {
           ...parsed,
@@ -129,7 +122,6 @@ function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
     typeof data === 'object' &&
     data.version === CURRENT_GAME_STATE_VERSION &&
     typeof data.protodermis === 'number' &&
-    typeof data.inventory === 'object' &&
     Array.isArray(data.recruitedCharacters)
   );
 }

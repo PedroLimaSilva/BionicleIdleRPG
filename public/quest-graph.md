@@ -211,178 +211,143 @@ Currency: 2000
 XP: 5000"]
   bohrok_swarm_intro["Beware the Bohrok
 (10m)
-Loot: 
 Currency: 2000
 XP: 1500"]
   bohrok_ta_koro_defense["Siege of Ta-Koro
 (15m)
-Loot: 
 Currency: 2200
 XP: 1800"]
   bohrok_po_koro_defense["Hold the Stone Village
 (14m)
-Loot: 
 Currency: 2300
 XP: 1700"]
   bohrok_onu_koro_boxor["The Invention of the Boxor
 (18m)
-Loot: 
 Currency: 2500
 XP: 2000"]
   bohrok_legend_of_krana["Legend of the Krana
 (5m)
-Loot: 
 Currency: 1000
 XP: 800"]
   bohrok_lewa_krana_rescue["Freed from the Krana
 (15m)
-Loot: 
 Currency: 2400
 XP: 2100"]
   bohrok_krana_hunt["Hunt for the Krana
 (30m)
-Loot: 
 Currency: 2600
 XP: 2200"]
   bohrok_into_the_bohrok_nest["Into the Bohrok Nest
 (20m)
-Loot: 
 Currency: 3000
 XP: 2600"]
   bohrok_evolve_toa_nuva["Dawn of the Toa Nuva
 (25m)
-Loot: 
 Currency: 5000
 XP: 4000"]
   bohrok_assistants["Bohrok Assistants
 (15m)
 Unlock: tahnok, gahlok, lehvak, pahrak, nuhvok, kohrak
-Loot: 
 Currency: 3000
 XP: 1200"]
   bohrok_kal_reconstruction["Reconstruction
 (8m)
-Loot: 
 Currency: 2500
 XP: 1500"]
   bohrok_kal_scattered_aid["Scattered to the Villages
 (10m)
-Loot: 
 Currency: 3000
 XP: 1800"]
   bohrok_kal_stolen_symbols["The Stolen Symbols
 (15m)
-Loot: 
 Currency: 3500
 XP: 2000"]
   bohrok_kal_sighting["Sighting in Po-Wahi
 (12m)
-Loot: 
 Currency: 4000
 XP: 2400"]
   bohrok_kal_race_to_nest["Race to the Nest
 (18m)
-Loot: 
 Currency: 4500
 XP: 3000"]
   bohrok_kal_final_confrontation["At the Nuva Cube
 (25m)
-Loot: 
 Currency: 6000
 XP: 5000"]
   bohrok_kal_naming_day["The Naming Day
 (12m)
-Loot: 
 Currency: 2000
 XP: 1500"]
   tales_turaga_and_matoro["Secrets Beneath the Ice
 (8m)
-Loot: 
 Currency: 3000
 XP: 2000"]
   tales_kanohi_nuva_hunt["Quest for the Kanohi Nuva
 (20m)
-Loot: 
 Currency: 3500
 XP: 2500"]
   mol_discovery_of_avohkii["The Lava Tunnels
 (8m)
-Loot: 
 Currency: 3500
 XP: 2500"]
   mol_kolhii_tournament["The Kolhii Tournament
 (10m)
-Loot: 
 Currency: 3500
 XP: 2500"]
   mol_avohkii_prophecy["The Prophecy of the Seventh Toa
 (8m)
-Loot: 
 Currency: 3500
 XP: 2500"]
   mol_fall_of_ta_koro["The Fall of Ta-Koro
 (15m)
-Loot: 
 Currency: 4500
 XP: 3000"]
   mol_le_wahi_ash_bear["Flight of the Gukko
 (10m)
-Loot: 
 Currency: 4000
 XP: 2800"]
   mol_ko_wahi_arrival["The Frozen Wahi
 (12m)
-Loot: 
 Currency: 4500
 XP: 3000"]
   mol_tahu_worsens["The poison takes hold
 (12m)
-Loot: 
 Currency: 4500
 XP: 3000"]
   mol_ko_wahi_pursuit["The Frozen Lake
 (12m)
-Loot: 
 Currency: 4500
 XP: 3000"]
   mol_onu_koro_highway["The Shadow in the Tunnels
 (15m)
-Loot: 
 Currency: 5000
 XP: 3500"]
   mol_onu_koro_battle["The Shadows over Onu Koro
 (15m)
-Loot: 
 Currency: 5000
 XP: 3500"]
   mol_tahu_poisoned["Healing the Fire
 (12m)
-Loot: 
 Currency: 5000
 XP: 3500"]
   mol_takua_jaller_reunion["Reunion
 (20m)
-Loot: 
 Currency: 5500
 XP: 4000"]
   mol_battle_of_kini_nui["Jaller's Sacrifice
 (10m)
-Loot: 
 Currency: 5500
 XP: 4000"]
   mol_takanuva_rises["The Seventh Toa
 (8m)
-Loot: 
 Currency: 6000
 XP: 5000"]
   mol_defeat_of_makuta["Into the Darkness
 (30m)
-Loot: 
 Currency: 7000
 XP: 6000"]
   mol_rediscovery_of_metru_nui["The City of Legends
 (12m)
-Loot: 
 Currency: 5000
 XP: 4000"]
   story_toa_arrival --> maskhunt_kopaka_matoro_icecliff

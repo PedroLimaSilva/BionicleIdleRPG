@@ -1,4 +1,3 @@
-import { GameItemId } from '../data/loot';
 import { ElementTribe } from './Matoran';
 import { MatoranStage } from './Matoran';
 import { Quest } from './Quests';
@@ -24,11 +23,6 @@ export enum MatoranJob {
   KoKoroRebuilder = 'KoKoroRebuilder',
 }
 
-type JobReward = {
-  item: GameItemId;
-  chance: number;
-};
-
 export interface JobDetails {
   label: string;
   description: string;
@@ -42,7 +36,6 @@ export interface JobDetails {
   };
   /** If set, only characters with these stages can be assigned this job. */
   allowedStages?: MatoranStage[];
-  rewards?: JobReward[];
 }
 
 export type JobAssignment = {

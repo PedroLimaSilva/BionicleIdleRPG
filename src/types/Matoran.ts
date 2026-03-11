@@ -1,4 +1,3 @@
-import { GameItemId } from '../data/loot';
 import { LegoColor } from './Colors';
 import { JobAssignment } from './Jobs';
 import { Quest } from './Quests';
@@ -81,7 +80,6 @@ export type BaseMatoran = {
 export type ListedCharacterData = {
   id: string;
   cost: number;
-  requiredItems: ItemRequirement[];
 };
 
 export type RecruitedCharacterData = {
@@ -92,9 +90,4 @@ export type RecruitedCharacterData = {
   maskOverride?: Mask;
   /** Overrides stage from CHARACTER_DEX when present (e.g. Rebuilt after Naming Day). */
   stage?: MatoranStage;
-};
-
-export type ItemRequirement = {
-  item: GameItemId;
-  quantity: number;
 };

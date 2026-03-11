@@ -10,17 +10,16 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 5,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'story_toa_arrival' },
       unlockCharacters: [
-        { id: 'Toa_Tahu', cost: 250, requiredItems: [] },
-        { id: 'Toa_Gali', cost: 250, requiredItems: [] },
-        { id: 'Toa_Kopaka', cost: 250, requiredItems: [] },
-        { id: 'Toa_Lewa', cost: 250, requiredItems: [] },
-        { id: 'Toa_Onua', cost: 250, requiredItems: [] },
-        { id: 'Toa_Pohatu', cost: 250, requiredItems: [] },
+        { id: 'Toa_Tahu', cost: 250 },
+        { id: 'Toa_Gali', cost: 250 },
+        { id: 'Toa_Kopaka', cost: 250 },
+        { id: 'Toa_Lewa', cost: 250 },
+        { id: 'Toa_Onua', cost: 250 },
+        { id: 'Toa_Pohatu', cost: 250 },
       ],
       xpPerMatoran: 100,
       currency: 200,
@@ -36,7 +35,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Kopaka'],
       minLevel: 1,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_kopaka_matoro_icecliff' },
@@ -54,7 +52,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Kopaka', 'Toa_Pohatu'],
       minLevel: 1,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_kopaka_pohatu_icecliff' },
@@ -73,7 +70,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 1,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 1000,
@@ -92,7 +88,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu'],
       minLevel: 5,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 400,
@@ -110,7 +105,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Lewa'],
       minLevel: 5,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 500,
@@ -128,7 +122,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Kopaka'],
       minLevel: 6,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 750,
@@ -146,7 +139,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Lewa'],
       minLevel: 7,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 550,
@@ -164,7 +156,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Onua'],
       minLevel: 5,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 500,
@@ -182,7 +173,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Onua'],
       minLevel: 6,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 800,
@@ -200,7 +190,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Gali'],
       minLevel: 6,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 550,
@@ -218,7 +207,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali'],
       minLevel: 6,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_gali_rescue' },
@@ -237,7 +225,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Kopaka'],
       minLevel: 6,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 600,
@@ -255,7 +242,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 6,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'story_toa_second_council' },
@@ -274,7 +260,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Gali', 'Toa_Kopaka', 'Toa_Onua'],
       minLevel: 10,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_tahu_miru' },
@@ -293,7 +278,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Pohatu', 'Toa_Kopaka', 'Toa_Lewa'],
       minLevel: 8,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_pohatu_kaukau_bluff' },
@@ -312,7 +296,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Onua'],
       minLevel: 10,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_forest_tahu_kakama' },
@@ -331,7 +314,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 10,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'story_nui_jaga_nest' },
@@ -354,7 +336,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 11,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'maskhunt_final_collection' },
@@ -373,7 +354,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 12,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'story_kini_nui_gathering' },
@@ -392,7 +372,6 @@ export const MASK_HUNT: Quest[] = [
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 12,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'story_kini_nui_descent' },
