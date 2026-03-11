@@ -1,0 +1,17 @@
+.game-state-editor-page {
+  .game-state-editor-page-header {
+    margin-bottom: 1rem;
+  }
+
+  .game-state-editor-back {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--color-accent);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

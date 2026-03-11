@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react';
 import { BattleState, BattlePhase } from '../hooks/useBattleState';
 import { MatoranJob } from './Jobs';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
@@ -59,3 +60,14 @@ export type PartialGameState = Pick<
   | 'activeQuests'
   | 'completedQuests'
 >;
+
+/** Raw setters for the game state editor (Settings). Use only while editor is open. */
+export type GameStateEditorApi = {
+  setCompletedQuests: (ids: string[]) => void;
+  setRecruitedCharacters: Dispatch<SetStateAction<RecruitedCharacterData[]>>;
+  setBuyableCharacters: Dispatch<SetStateAction<ListedCharacterData[]>>;
+  setCollectedKrana: Dispatch<SetStateAction<KranaCollection>>;
+  setKraataCollection: Dispatch<SetStateAction<KraataCollection>>;
+  setProtodermis: Dispatch<SetStateAction<number>>;
+  setProtodermisCap: Dispatch<SetStateAction<number>>;
+};

@@ -1,8 +1,10 @@
 import { createContext, useContext } from 'react';
-import { GameState } from '../types/GameState';
+import { GameState, GameStateEditorApi } from '../types/GameState';
 import { useGameLogic } from '../hooks/useGameLogic';
 
-const GameContext = createContext<GameState | null>(null);
+export type GameContextValue = GameState & GameStateEditorApi;
+
+const GameContext = createContext<GameContextValue | null>(null);
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useGame = () => {
@@ -13,6 +15,5 @@ export const useGame = () => {
 
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const game = useGameLogic();
-
   return <GameContext.Provider value={game}>{children}</GameContext.Provider>;
 };

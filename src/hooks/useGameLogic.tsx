@@ -3,7 +3,7 @@ import { loadGameState } from '../services/gamePersistence';
 import { useCharactersState } from './useCharactersState';
 import { useJobTickEffect } from './useJobTickEffect';
 import { useGamePersistence } from './useGamePersistence';
-import { GameState } from '../types/GameState';
+import { GameState, GameStateEditorApi } from '../types/GameState';
 import { useQuestState } from './useQuestState';
 import { useQuestNotifications } from './useQuestNotifications';
 import { useBattleState } from './useBattleState';
@@ -31,7 +31,7 @@ import {
   addKraataToCollection,
 } from '../types/Kraata';
 
-export const useGameLogic = (): GameState => {
+export const useGameLogic = (): GameState & GameStateEditorApi => {
   const [initialState] = useState(() => loadGameState());
 
   const [version] = useState(initialState.version);
@@ -67,7 +67,7 @@ export const useGameLogic = (): GameState => {
     setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap))
   );
 
-  const { activeQuests, completedQuests, startQuest, cancelQuest, completeQuest } = useQuestState({
+  const { activeQuests, completedQuests, setCompletedQuests, startQuest, cancelQuest, completeQuest } = useQuestState({
     initialActive: initialState.activeQuests,
     initialCompleted: initialState.completedQuests,
     characters: recruitedCharacters,
@@ -110,6 +110,14 @@ export const useGameLogic = (): GameState => {
     kraataCollection,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
+    // State editor API (raw setters; only use while editor is open to avoid conflicts)
+    setCompletedQuests,
+    setRecruitedCharacters,
+    setBuyableCharacters,
+    setCollectedKrana,
+    setKraataCollection,
+    setProtodermis,
+    setProtodermisCap,
     addKraata: (power: KraataPower, stage: number, count: number) => {
       setKraataCollection((prev) => addKraataToCollection(prev, power, stage, count));
     },
