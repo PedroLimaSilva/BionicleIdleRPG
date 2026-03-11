@@ -11,7 +11,7 @@ export enum MatoranJob {
   ChuteController = 'ChuteController',
   QuarryRunner = 'QuarryRunner',
   SculptureOperator = 'SculptureOperator',
-  LightStoneFarmer = 'LightStoneFarmer',
+  LightStoneMiner = 'LightStoneMiner',
   StasisTechnician = 'StasisTechnician',
   IceSculptor = 'IceSculptor',
   KnowledgeScribe = 'KnowledgeScribe',

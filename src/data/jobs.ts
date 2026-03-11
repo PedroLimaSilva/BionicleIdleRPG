@@ -99,9 +99,9 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: ['settle_metru_nui'],
     },
   },
-  [MatoranJob.LightStoneFarmer]: {
-    label: '💡 Light Stone Farmer',
-    description: 'Farm Light Stone crystals for illumination in Onu-Koro caves.',
+  [MatoranJob.LightStoneMiner]: {
+    label: '💡 Light Stone Miner',
+    description: 'Mines Light Stone crystals for illumination in Onu-Koro caves.',
     elementAffinity: {
       favored: [ElementTribe.Earth],
       opposed: [],
@@ -114,7 +114,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     description: 'Maintains Rahi stasis chambers in Metru Nui Archives.',
     rate: 2,
     elementAffinity: {
-      favored: [ElementTribe.Stone],
+      favored: [ElementTribe.Earth],
       opposed: [],
     },
     unlock: {

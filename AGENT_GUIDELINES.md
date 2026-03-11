@@ -289,7 +289,7 @@ In addition to running existing tests (`yarn test:ci` for unit tests, `yarn test
 3. You encounter inconsistencies in code patterns and want to fix them
 4. You need to break an invariant for a new feature
 5. You're unsure if a field is intentionally unused or incomplete
-6. You find data that seems incorrect (like `StasisTechnician` favoring Stone instead of Earth)
+6. You find data that seems incorrect
 
 ### Provide Context When Asking:
 

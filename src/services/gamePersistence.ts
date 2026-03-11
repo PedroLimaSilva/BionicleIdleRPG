@@ -1,7 +1,9 @@
 import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameState';
 import { applyOfflineJobExp } from '../game/Jobs';
 import { GameState } from '../types/GameState';
+import { MatoranJob } from '../types/Jobs';
 import { isKraataPower, addKraataToCollection, KraataCollection } from '../types/Kraata';
+import { RecruitedCharacterData } from '../types/Matoran';
 import { clamp } from '../utils/math';
 
 export const STORAGE_KEY = `GAME_STATE`;
@@ -36,6 +38,24 @@ function migrateKraataFromInventory(parsed: Record<string, unknown>): void {
   }
 }
 
+const VALID_JOBS = new Set<string>(Object.values(MatoranJob));
+
+/**
+ * Retrocompatibility: clears any job assignment whose `job` value is not a
+ * recognised MatoranJob (e.g. after a rename). The matoran becomes idle.
+ */
+function sanitizeUnrecognizedJobs(parsed: Record<string, unknown>): void {
+  const characters = parsed.recruitedCharacters as RecruitedCharacterData[] | undefined;
+  if (!Array.isArray(characters)) return;
+
+  parsed.recruitedCharacters = characters.map((m) => {
+    if (m.assignment && !VALID_JOBS.has(m.assignment.job)) {
+      return { ...m, assignment: undefined };
+    }
+    return m;
+  });
+}
+
 export function loadGameState() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
@@ -57,6 +77,7 @@ export function loadGameState() {
       }
 
       migrateKraataFromInventory(parsed);
+      sanitizeUnrecognizedJobs(parsed);
 
       if (isValidGameState(parsed)) {
         const [recruitedCharacters, currency] = applyOfflineJobExp(parsed.recruitedCharacters);
