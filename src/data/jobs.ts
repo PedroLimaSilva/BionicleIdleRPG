@@ -121,9 +121,9 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: ['unlock_archives'],
     },
   },
-  [MatoranJob.IceSculptor]: {
-    label: '❄️ Ice Sculptor',
-    description: 'Carves artistic ice structures in Ko-Koro.',
+  [MatoranJob.SanctumGuard]: {
+    label: '🛡️ Sanctum Guard',
+    description: 'Patrols the drifts and guards the Sanctum of Ko-Koro.',
     elementAffinity: {
       favored: [ElementTribe.Ice],
       opposed: [ElementTribe.Fire],

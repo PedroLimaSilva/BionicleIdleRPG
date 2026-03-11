@@ -13,7 +13,7 @@ export enum MatoranJob {
   SculptureOperator = 'SculptureOperator',
   LightStoneMiner = 'LightStoneMiner',
   StasisTechnician = 'StasisTechnician',
-  IceSculptor = 'IceSculptor',
+  SanctumGuard = 'SanctumGuard',
   KnowledgeScribe = 'KnowledgeScribe',
   TaKoroRebuilder = 'TaKoroRebuilder',
   GaKoroRebuilder = 'GaKoroRebuilder',

@@ -47,13 +47,13 @@ describe('Jobs', () => {
       expect(modifier).toBe(1.2);
     });
 
-    test('returns 1.2 for Ice matoran on IceSculptor', () => {
-      const modifier = getProductivityModifier(MatoranJob.IceSculptor, mockIceMatoran);
+    test('returns 1.2 for Ice matoran on SanctumGuard', () => {
+      const modifier = getProductivityModifier(MatoranJob.SanctumGuard, mockIceMatoran);
       expect(modifier).toBe(1.2);
     });
 
-    test('returns 0.8 for Fire matoran on IceSculptor (opposed)', () => {
-      const modifier = getProductivityModifier(MatoranJob.IceSculptor, mockFireMatoran);
+    test('returns 0.8 for Fire matoran on SanctumGuard (opposed)', () => {
+      const modifier = getProductivityModifier(MatoranJob.SanctumGuard, mockFireMatoran);
       expect(modifier).toBe(0.8);
     });
   });
