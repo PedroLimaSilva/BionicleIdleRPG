@@ -136,7 +136,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'rahkshi':
           return (
-            <group scale={0.175} position={[0, 0.215, -0.15]}>
+            <group scale={0.04} position={[0, 0, 0]}>
               <RahkshiModel ref={childRef} id={combatant.id.split('-')[0]} />
             </group>
           );
