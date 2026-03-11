@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goto, INITIAL_GAME_STATE, setupGameState, waitForCharacterCards } from '../helpers';
+import { goto, INITIAL_GAME_STATE, setupGameState } from '../helpers';
 
 const RAHKSHI_INVENTORY_GAME_STATE = {
   ...INITIAL_GAME_STATE,
