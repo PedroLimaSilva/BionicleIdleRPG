@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import { loadGameState } from '../services/gamePersistence';
 import { useCharactersState } from './useCharactersState';
 import { useJobTickEffect } from './useJobTickEffect';
@@ -47,32 +48,16 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
   const [protodermis, setProtodermis] = useState(initialState.protodermis);
   const [protodermisCap, setProtodermisCap] = useState(initialState.protodermisCap);
 
-  const {
-    recruitedCharacters,
-    setRecruitedCharacters,
-    setBuyableCharacters,
-    buyableCharacters,
-    recruitCharacter,
-    assignJobToMatoran,
-    removeJobFromMatoran,
-    setMaskOverride,
-  } = useCharactersState(
-    initialState.recruitedCharacters,
-    initialState.buyableCharacters,
-    protodermis,
-    setProtodermis
-  );
-
-  useJobTickEffect(recruitedCharacters, setRecruitedCharacters, (amount) =>
-    setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap))
-  );
+  const recruitedCharactersRef = useRef(initialState.recruitedCharacters);
+  const setRecruitedCharactersRef = useRef<
+    Dispatch<SetStateAction<RecruitedCharacterData[]>>
+  >(() => {});
 
   const { activeQuests, completedQuests, setCompletedQuests, startQuest, cancelQuest, completeQuest } = useQuestState({
     initialActive: initialState.activeQuests,
     initialCompleted: initialState.completedQuests,
-    characters: recruitedCharacters,
-    setRecruitedCharacters,
-    setBuyableCharacters,
+    getCharacters: () => recruitedCharactersRef.current,
+    setRecruitedCharacters: (action) => setRecruitedCharactersRef.current(action),
     addProtodermis: (amount: number) => {
       if (amount > protodermisCap) {
         setProtodermisCap(amount);
@@ -83,11 +68,33 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     },
   });
 
+  const {
+    recruitedCharacters,
+    setRecruitedCharacters,
+    buyableCharacters,
+    recruitCharacter,
+    assignJobToMatoran,
+    removeJobFromMatoran,
+    setMaskOverride,
+  } = useCharactersState(
+    initialState.recruitedCharacters,
+    completedQuests,
+    protodermis,
+    setProtodermis
+  );
+
+  recruitedCharactersRef.current = recruitedCharacters;
+  setRecruitedCharactersRef.current = setRecruitedCharacters;
+
+  useJobTickEffect(recruitedCharacters, setRecruitedCharacters, (amount) =>
+    setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap))
+  );
+
   useQuestNotifications(activeQuests);
 
   const battle = useBattleState(isNuvaSymbolsSequestered(completedQuests));
 
-  // Auto-save when critical state changes
+  // Auto-save when critical state changes (buyableCharacters is derived, not persisted)
   useGamePersistence({
     version,
     protodermis,
@@ -95,7 +102,6 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     collectedKrana,
     kraataCollection,
     recruitedCharacters,
-    buyableCharacters: buyableCharacters,
     activeQuests,
     completedQuests,
   });

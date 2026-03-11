@@ -1,6 +1,7 @@
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { getLevelFromExp } from '../../game/Levelling';
 import { getAvailableQuests } from '../../game/Quests';
+import { getCharactersUnlockedByQuest } from '../../game/Recruitment';
 import { RecruitedCharacterData } from '../../types/Matoran';
 import { Quest } from '../../types/Quests';
 import { KranaCollection } from '../../types/Krana';
@@ -106,15 +107,15 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                         {quest.rewards.xpPerMatoran}
                       </li>
                     )}
-                    {quest.rewards.unlockCharacters &&
-                      quest.rewards.unlockCharacters.length > 0 && (
+                    {(() => {
+                      const unlocked = getCharactersUnlockedByQuest(quest.id);
+                      return unlocked.length > 0 ? (
                         <li>
                           <span className="reward-label">Unlocks:</span>{' '}
-                          {quest.rewards.unlockCharacters
-                            .map((char) => CHARACTER_DEX[char.id].name)
-                            .join(', ')}
+                          {unlocked.map((char) => CHARACTER_DEX[char.id]?.name ?? char.id).join(', ')}
                         </li>
-                      )}
+                      ) : null;
+                    })()}
                   </ul>
                 </div>
 

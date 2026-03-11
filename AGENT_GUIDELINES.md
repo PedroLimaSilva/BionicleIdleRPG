@@ -90,7 +90,7 @@ The game runs entirely in the browser. All game logic must support offline progr
 2. Items marked `consumed: true` are deducted when starting a quest
 3. Consumed items are restored when canceling a quest
 4. Quest completion must remove the quest from `activeQuests` and add its ID to `completedQuests`
-5. Quest rewards that unlock characters must add them to `buyableCharacters`, not `recruitedCharacters`
+5. Quest rewards do not mutate `buyableCharacters`; who is buyable is derived from `completedQuests` and `recruitedCharacters` (see `getBuyableCharacters` and the recruitment registry). New recruits still go to `buyableCharacters` conceptually (they appear in the recruitment list) once the unlock quest is completed.
 
 **NEVER** add characters directly to `recruitedCharacters` as quest rewards. They must go to `buyableCharacters` first.
 
@@ -144,7 +144,7 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 
 **MUST ENFORCE:**
 
-1. Only these fields are persisted: `version`, `protodermis`, `protodermisCap`, `inventory`, `collectedKrana`, `kraataCollection`, `recruitedCharacters`, `buyableCharacters`, `activeQuests`, `completedQuests`
+1. Only these fields are persisted: `version`, `protodermis`, `protodermisCap`, `inventory`, `collectedKrana`, `kraataCollection`, `recruitedCharacters`, `activeQuests`, `completedQuests`. (`buyableCharacters` is derived at runtime from `completedQuests` and `recruitedCharacters` via the recruitment registry.)
 2. Battle state is NOT persisted (battles reset on page refresh)
 3. Save version must match `CURRENT_GAME_STATE_VERSION` or the save is rejected
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Quest, QuestProgress } from '../types/Quests';
-import { ListedCharacterData, RecruitedCharacterData } from '../types/Matoran';
+import { RecruitedCharacterData } from '../types/Matoran';
 import { getDebugMode } from '../services/gamePersistence';
 
 export function getCurrentTimestamp(): number {
@@ -12,24 +12,23 @@ export function getCurrentTimestamp(): number {
 interface UseQuestStateOptions {
   initialActive: QuestProgress[];
   initialCompleted: string[];
-  characters: RecruitedCharacterData[];
+  getCharacters: () => RecruitedCharacterData[];
   setRecruitedCharacters: React.Dispatch<React.SetStateAction<RecruitedCharacterData[]>>;
-  setBuyableCharacters: React.Dispatch<React.SetStateAction<ListedCharacterData[]>>;
   addProtodermis: (amount: number) => void;
 }
 
 export const useQuestState = ({
   initialActive,
   initialCompleted,
-  characters,
+  getCharacters,
   setRecruitedCharacters,
-  setBuyableCharacters,
   addProtodermis,
 }: UseQuestStateOptions) => {
   const [activeQuests, setActiveQuests] = useState<QuestProgress[]>(initialActive);
   const [completedQuests, setCompletedQuestIds] = useState<string[]>(initialCompleted);
 
   const startQuest = (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => {
+    const characters = getCharacters();
     // Guard: do not assign quest to characters who already have an ongoing quest
     const busy = assignedMatoran.filter((id) => {
       const char = characters.find((c) => c.id === id);
@@ -62,15 +61,8 @@ export const useQuestState = ({
     const active = activeQuests.find((q) => q.questId === quest.id);
     if (!active) return;
 
-    let unlockedCharacters: ListedCharacterData[] = [];
-    if (quest.rewards.unlockCharacters) {
-      unlockedCharacters = quest.rewards.unlockCharacters;
-    }
-
-    setBuyableCharacters((prev) => [
-      ...unlockedCharacters.filter((u) => !prev.some((p) => p.id === u.id)),
-      ...prev,
-    ]);
+    // Buyable characters are derived from completedQuests + recruitedCharacters (see getBuyableCharacters).
+    // No need to update any list here.
 
     setRecruitedCharacters((prev) =>
       prev.map((char) => {
@@ -95,6 +87,7 @@ export const useQuestState = ({
     const quest = activeQuests.find((q) => q.questId === questId);
     if (!quest) return;
 
+    const characters = getCharacters();
     const updatedCharacters = characters.map((char) =>
       quest.assignedMatoran.includes(char.id) ? { ...char, quest: undefined } : char
     );

@@ -55,7 +55,6 @@ export type PartialGameState = Pick<
   | 'protodermisCap'
   | 'collectedKrana'
   | 'kraataCollection'
-  | 'buyableCharacters'
   | 'recruitedCharacters'
   | 'activeQuests'
   | 'completedQuests'
