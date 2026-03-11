@@ -119,7 +119,6 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     // State editor API (raw setters; only use while editor is open to avoid conflicts)
     setCompletedQuests,
     setRecruitedCharacters,
-    setBuyableCharacters,
     setCollectedKrana,
     setKraataCollection,
     setProtodermis,
