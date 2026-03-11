@@ -55,6 +55,9 @@ export function loadGameState() {
       if (!parsed.kraataCollection) {
         parsed.kraataCollection = {};
       }
+      if (!Array.isArray(parsed.kraataTransformations)) {
+        parsed.kraataTransformations = [];
+      }
 
       migrateKraataFromInventory(parsed);
 

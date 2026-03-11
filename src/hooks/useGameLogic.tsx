@@ -28,8 +28,17 @@ import {
   KraataCollection,
   KraataPower,
   KraataReward,
+  KraataTransformation,
   addKraataToCollection,
+  removeKraataFromCollection,
 } from '../types/Kraata';
+import {
+  canMergeKraata,
+  applyKraataMerge,
+  canStartKraataArmor,
+  KRAATA_ARMOR_DURATION_MS,
+} from '../game/KraataActions';
+import { getDebugMode } from '../services/gamePersistence';
 
 export const useGameLogic = (): GameState & GameStateEditorApi => {
   const [initialState] = useState(() => loadGameState());
@@ -42,6 +51,10 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
 
   const [kraataCollection, setKraataCollection] = useState<KraataCollection>(
     initialState.kraataCollection ?? {}
+  );
+
+  const [kraataTransformations, setKraataTransformations] = useState<KraataTransformation[]>(
+    initialState.kraataTransformations ?? []
   );
 
   const [protodermis, setProtodermis] = useState(initialState.protodermis);
@@ -94,6 +107,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     protodermisCap,
     collectedKrana,
     kraataCollection,
+    kraataTransformations,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     activeQuests,
@@ -108,6 +122,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     protodermisCap,
     collectedKrana,
     kraataCollection,
+    kraataTransformations,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     // State editor API (raw setters; only use while editor is open to avoid conflicts)
@@ -120,6 +135,29 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     setProtodermisCap,
     addKraata: (power: KraataPower, stage: number, count: number) => {
       setKraataCollection((prev) => addKraataToCollection(prev, power, stage, count));
+    },
+    mergeKraata: (power: KraataPower, stage: number) => {
+      setKraataCollection((prev) => {
+        if (!canMergeKraata(prev, power, stage)) return prev;
+        return applyKraataMerge(prev, power, stage);
+      });
+    },
+    startKraataArmor: (power: KraataPower, stage: number) => {
+      setKraataCollection((prev) => {
+        if (!canStartKraataArmor(prev, power, stage)) return prev;
+        const now = Date.now();
+        const duration = getDebugMode() ? 1000 : KRAATA_ARMOR_DURATION_MS;
+        setKraataTransformations((prevT) => [
+          ...prevT,
+          { power, stage, startedAt: now, endsAt: now + duration },
+        ]);
+        return removeKraataFromCollection(prev, power, stage, 1);
+      });
+    },
+    completeKraataArmor: (power: KraataPower, stage: number) => {
+      setKraataTransformations((prev) =>
+        prev.filter((t) => !(t.power === power && t.stage === stage))
+      );
     },
     recruitCharacter,
     setMaskOverride,

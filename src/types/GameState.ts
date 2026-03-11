@@ -4,7 +4,7 @@ import { MatoranJob } from './Jobs';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
 import { Quest, QuestProgress } from './Quests';
 import { KranaCollection, KranaElement, KranaId } from './Krana';
-import { KraataCollection, KraataPower, KraataReward } from './Kraata';
+import { KraataCollection, KraataPower, KraataReward, KraataTransformation } from './Kraata';
 import { Combatant, EnemyEncounter } from './Combat';
 
 export type KranaReward = { element: KranaElement; kranaId: KranaId };
@@ -27,6 +27,7 @@ export type GameState = {
   protodermisCap: number;
   collectedKrana: KranaCollection;
   kraataCollection: KraataCollection;
+  kraataTransformations: KraataTransformation[];
   buyableCharacters: ListedCharacterData[];
   recruitedCharacters: RecruitedCharacterData[];
   activeQuests: QuestProgress[];
@@ -36,6 +37,9 @@ export type GameState = {
   setMaskOverride: (id: RecruitedCharacterData['id'], mask: Mask) => void;
   collectKrana: (element: KranaElement, id: KranaId) => void;
   addKraata: (power: KraataPower, stage: number, count: number) => void;
+  mergeKraata: (power: KraataPower, stage: number) => void;
+  startKraataArmor: (power: KraataPower, stage: number) => void;
+  completeKraataArmor: (power: KraataPower, stage: number) => void;
   assignJobToMatoran: (matoranId: RecruitedCharacterData['id'], job: MatoranJob) => void;
   removeJobFromMatoran: (matoranId: RecruitedCharacterData['id']) => void;
   startQuest: (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => void;
@@ -55,6 +59,7 @@ export type PartialGameState = Pick<
   | 'protodermisCap'
   | 'collectedKrana'
   | 'kraataCollection'
+  | 'kraataTransformations'
   | 'buyableCharacters'
   | 'recruitedCharacters'
   | 'activeQuests'

@@ -118,20 +118,22 @@ export const CharacterInventory: React.FC = () => {
       {effectiveTab === 'rahkshi' ? (
         <div className="kraata-grid">
           {collectedKraata.map(({ power, stage, name, count }) => (
-            <div key={`${power}-${stage}`} className="kraata-card">
-              <CompositedImage
-                images={[
-                  `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Base.webp`,
-                  `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Head.webp`,
-                  `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Tail.webp`,
-                ]}
-                colors={getKraataCompositedColors(power)}
-                className="kraata-card__image"
-              />
-              <div className="kraata-card__name">{name}</div>
-              <div className="kraata-card__stage bionicle-font">{stage}</div>
-              <div className="kraata-card__count">×{count}</div>
-            </div>
+            <Link key={`${power}-${stage}`} to={`/kraata/${power}/${stage}`}>
+              <div className="kraata-card">
+                <CompositedImage
+                  images={[
+                    `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Base.webp`,
+                    `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Head.webp`,
+                    `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Tail.webp`,
+                  ]}
+                  colors={getKraataCompositedColors(power)}
+                  className="kraata-card__image"
+                />
+                <div className="kraata-card__name">{name}</div>
+                <div className="kraata-card__stage bionicle-font">{stage}</div>
+                <div className="kraata-card__count">×{count}</div>
+              </div>
+            </Link>
           ))}
         </div>
       ) : (

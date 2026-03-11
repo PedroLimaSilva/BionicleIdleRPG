@@ -156,6 +156,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  cursor: pointer;
+  transition: all var(--transition-base);
+
+  &:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-glow);
+    border-color: var(--color-accent);
+  }
 
   &__image {
     width: 100%;

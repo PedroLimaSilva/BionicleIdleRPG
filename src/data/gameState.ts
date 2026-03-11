@@ -21,11 +21,21 @@ export const INITIAL_GAME_STATE: GameState = {
   buyableCharacters: LISTED_MATORAN_DATA,
   collectedKrana: {},
   kraataCollection: {},
+  kraataTransformations: [],
   battle: INITIAL_BATTLE_STATE,
   recruitCharacter: function (_character: ListedCharacterData): void {
     throw new Error('Function not implemented.');
   },
   addKraata: function (_power: KraataPower, _stage: number, _count: number): void {
+    throw new Error('Function not implemented.');
+  },
+  mergeKraata: function (_power: KraataPower, _stage: number): void {
+    throw new Error('Function not implemented.');
+  },
+  startKraataArmor: function (_power: KraataPower, _stage: number): void {
+    throw new Error('Function not implemented.');
+  },
+  completeKraataArmor: function (_power: KraataPower, _stage: number): void {
     throw new Error('Function not implemented.');
   },
   assignJobToMatoran: function (_id: BaseMatoran['id'], _job: MatoranJob): void {
