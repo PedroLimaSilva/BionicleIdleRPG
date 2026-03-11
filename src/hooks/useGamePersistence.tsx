@@ -9,7 +9,6 @@ export function useGamePersistence({
   collectedKrana,
   kraataCollection,
   recruitedCharacters,
-  buyableCharacters,
   activeQuests,
   completedQuests,
 }: PartialGameState) {
@@ -21,7 +20,6 @@ export function useGamePersistence({
       collectedKrana,
       kraataCollection,
       recruitedCharacters,
-      buyableCharacters: buyableCharacters,
       activeQuests,
       completedQuests,
     };
@@ -33,7 +31,6 @@ export function useGamePersistence({
     protodermisCap,
     collectedKrana,
     kraataCollection,
-    buyableCharacters,
     recruitedCharacters,
     activeQuests,
     completedQuests,
