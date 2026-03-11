@@ -1,4 +1,5 @@
-button {
+button,
+a.button {
   border-radius: var(--border-radius-md);
   border: 2px solid var(--color-border-muted);
   padding: 0.75rem 1.5rem;
@@ -37,85 +38,85 @@ button {
     cursor: not-allowed;
     transform: none;
   }
-}
 
-.cancel-button,
-.confirm-button,
-.remove-button {
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  border-radius: var(--border-radius-md);
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all var(--transition-base);
-  font-size: 0.95rem;
-  box-shadow: var(--shadow-sm);
-  position: relative;
-  overflow: hidden;
-}
-
-.cancel-button {
-  background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-mid));
-  color: var(--color-text);
-  border-color: var(--color-border-muted);
-
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--color-surface-elevated), var(--color-surface-high));
-    border-color: var(--color-text-secondary);
-    box-shadow: var(--shadow-md);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-}
-
-.confirm-button {
-  background: linear-gradient(135deg, var(--theme-element-accent), var(--theme-element-glow));
-  color: #111;
-  border-color: var(--theme-element-primary);
-  box-shadow: 0 0 12px var(--theme-element-glow-transparent);
-
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--theme-element-glow), var(--theme-element-accent));
-    box-shadow: 0 0 20px var(--theme-element-glow-strong);
-  }
-
-  &:active:not(:disabled) {
-    box-shadow: 0 0 12px var(--theme-element-glow-transparent);
-  }
-
-  &:disabled {
-    background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-mid));
-    color: var(--color-text-muted);
-    border-color: var(--color-border-muted);
+  &.cancel-button,
+  &.confirm-button,
+  &.remove-button {
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all var(--transition-base);
+    font-size: 0.95rem;
     box-shadow: var(--shadow-sm);
-    cursor: not-allowed;
-    transform: none;
-  }
-}
-
-.remove-button {
-  background: linear-gradient(135deg, #331111, #441111);
-  color: #ff6464;
-  border: 2px solid #ff6464;
-  box-shadow: 0 0 8px rgba(255, 100, 100, 0.3);
-
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, #441111, #551111);
-    box-shadow: 0 0 16px rgba(255, 100, 100, 0.5);
-    border-color: #ff8888;
+    position: relative;
+    overflow: hidden;
   }
 
-  &:active:not(:disabled) {
+  &.cancel-button {
+    background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-mid));
+    color: var(--color-text);
+    border-color: var(--color-border-muted);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--color-surface-elevated), var(--color-surface-high));
+      border-color: var(--color-text-secondary);
+      box-shadow: var(--shadow-md);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  &.confirm-button {
+    background: linear-gradient(135deg, var(--theme-element-accent), var(--theme-element-glow));
+    color: #111;
+    border-color: var(--theme-element-primary);
+    box-shadow: 0 0 12px var(--theme-element-glow-transparent);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--theme-element-glow), var(--theme-element-accent));
+      box-shadow: 0 0 20px var(--theme-element-glow-strong);
+    }
+
+    &:active:not(:disabled) {
+      box-shadow: 0 0 12px var(--theme-element-glow-transparent);
+    }
+
+    &:disabled {
+      background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-mid));
+      color: var(--color-text-muted);
+      border-color: var(--color-border-muted);
+      box-shadow: var(--shadow-sm);
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  &.remove-button {
+    background: linear-gradient(135deg, #331111, #441111);
+    color: #ff6464;
+    border: 2px solid #ff6464;
     box-shadow: 0 0 8px rgba(255, 100, 100, 0.3);
-  }
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #441111, #551111);
+      box-shadow: 0 0 16px rgba(255, 100, 100, 0.5);
+      border-color: #ff8888;
+    }
+
+    &:active:not(:disabled) {
+      box-shadow: 0 0 8px rgba(255, 100, 100, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
   }
 }

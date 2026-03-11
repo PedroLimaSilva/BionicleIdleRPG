@@ -14,6 +14,7 @@ import './styles/index.scss';
 import { useEffect, useState } from 'react';
 import { preloadAssets } from './preload.ts';
 import SettingsPage from './pages/Settings/index.tsx';
+import GameStateEditorPage from './pages/GameStateEditor/index.tsx';
 import { QuestsPage } from './pages/Quests/index.tsx';
 import { QuestTreePage } from './pages/QuestTree/index.tsx';
 import { BattleSelector } from './pages/BattleSelector/index.tsx';
@@ -42,6 +43,7 @@ function AnimatedRoutes() {
         <Route path="/quest-tree" element={<QuestTreePage />} />
         <Route path="/type-effectiveness" element={<TypeEffectivenessPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/settings/game-state" element={<GameStateEditorPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </LayoutGroup>

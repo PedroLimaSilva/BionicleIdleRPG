@@ -103,9 +103,14 @@ export const useQuestState = ({
     setActiveQuests((prev) => prev.filter((q) => q.questId !== questId));
   };
 
+  const setCompletedQuests = (ids: string[]) => {
+    setCompletedQuestIds(ids);
+  };
+
   return {
     activeQuests,
     completedQuests,
+    setCompletedQuests,
     startQuest,
     cancelQuest,
     completeQuest,

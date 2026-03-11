@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { resetGameData } from '../../services/gamePersistence';
 import { useSettings } from '../../context/useSettings';
 import './index.scss';
@@ -186,6 +187,14 @@ export default function SettingsPage() {
         <h1 className="title" style={{ margin: 0 }}>
           SETTINGS
         </h1>
+        <label className="settings-option">
+          <p>
+            Edit completed quests, recruited characters, Krana, and Kraata. Apply to save changes.
+          </p>
+          <Link to="/settings/game-state" className="button cancel-button">
+            Edit Game State
+          </Link>
+        </label>
         <label className="settings-option">
           <p>Want a fresh start? You'll lose all your progress</p>
           <button

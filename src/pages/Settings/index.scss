@@ -5,7 +5,6 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    max-width: 500px;
     margin: 2rem auto;
 
     .settings-option {
@@ -17,9 +16,16 @@
       font-size: 1rem;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
 
       span {
         font-weight: 500;
+      }
+
+      .button,
+      button {
+        min-width: fit-content;
       }
 
       .toggle-placeholder {
