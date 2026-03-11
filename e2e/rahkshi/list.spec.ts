@@ -8,6 +8,7 @@ const RAHKSHI_INVENTORY_GAME_STATE = {
     KraataDisintegration: 5,
     KraataChainLightning: 1,
     KraataElectricity: 1,
+    KraataAccuracy: 20,
   },
   recruitedCharacters: [
     {

@@ -16,8 +16,8 @@ import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { GameItemId, ITEM_DICTIONARY, isKraataItem } from '../../data/loot';
+import { getKraataCompositedColors } from '../../data/kraataColors';
 import { CompositedImage } from '../../components/CompositedImage';
-import { LegoColor } from '../../types/Colors';
 
 const CHARACTERS_TAB_KEY = 'characters-tab';
 
@@ -121,10 +121,10 @@ export const CharacterInventory: React.FC = () => {
               <CompositedImage
                 images={[
                   `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Base.webp`,
-                  `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Tail.webp`,
                   `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Head.webp`,
+                  `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Tail.webp`,
                 ]}
-                colors={[LegoColor.Green, LegoColor.Green, LegoColor.PearlGold]}
+                colors={getKraataCompositedColors(id)}
                 className="kraata-card__image"
               />
               <div className="kraata-card__name">{name}</div>
