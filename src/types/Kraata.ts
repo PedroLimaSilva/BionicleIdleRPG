@@ -72,13 +72,6 @@ export function addKraataToCollection(
 
 export const MAX_KRAATA_STAGE = 6;
 
-export interface KraataTransformation {
-  power: KraataPower;
-  stage: number;
-  startedAt: number;
-  endsAt: number;
-}
-
 export function removeKraataFromCollection(
   collection: KraataCollection,
   power: KraataPower,

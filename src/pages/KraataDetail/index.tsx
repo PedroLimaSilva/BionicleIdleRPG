@@ -6,9 +6,10 @@ import { CompositedImage } from '../../components/CompositedImage';
 import {
   getKraataCount,
   canMergeKraata,
-  canStartKraataArmor,
-  getActiveTransformation,
-  isTransformationComplete,
+  canStartRahkshiForge,
+  getPreparingRahkshi,
+  getReadyRahkshiWithoutKraata,
+  isForgeComplete,
 } from '../../game/KraataActions';
 import { useMemo, useState, useEffect } from 'react';
 
@@ -30,10 +31,11 @@ export const KraataDetail: React.FC = () => {
   const navigate = useNavigate();
   const {
     kraataCollection,
-    kraataTransformations,
+    rahkshi,
     mergeKraata,
-    startKraataArmor,
-    completeKraataArmor,
+    startRahkshiForge,
+    completeRahkshiForge,
+    insertKraataIntoRahkshi,
   } = useGame();
 
   const power = powerParam as KraataPower;
@@ -56,27 +58,24 @@ export const KraataDetail: React.FC = () => {
     [kraataCollection, power, stage]
   );
 
-  const canArmor = useMemo(
-    () => canStartKraataArmor(kraataCollection, power, stage),
+  const canForge = useMemo(
+    () => canStartRahkshiForge(kraataCollection, power, stage),
     [kraataCollection, power, stage]
   );
 
-  const activeTransformation = useMemo(
-    () => getActiveTransformation(kraataTransformations, power, stage),
-    [kraataTransformations, power, stage]
+  const preparingArmors = useMemo(
+    () => getPreparingRahkshi(rahkshi, power, stage),
+    [rahkshi, power, stage]
   );
+
+  const emptyReadyArmors = useMemo(() => getReadyRahkshiWithoutKraata(rahkshi), [rahkshi]);
 
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
-    if (!activeTransformation) return;
+    if (preparingArmors.length === 0) return;
     const interval = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(interval);
-  }, [activeTransformation]);
-
-  const transformationComplete = activeTransformation
-    ? isTransformationComplete(activeTransformation)
-    : false;
-  const timeRemaining = activeTransformation ? activeTransformation.endsAt - now : 0;
+  }, [preparingArmors.length]);
 
   const name = KRAATA_POWER_NAMES[power] ?? power;
 
@@ -86,14 +85,18 @@ export const KraataDetail: React.FC = () => {
     navigate(`/kraata/${power}/${stage + 1}`, { replace: true });
   };
 
-  const handleStartArmor = () => {
-    if (!canArmor || activeTransformation) return;
-    startKraataArmor(power, stage);
+  const handleStartForge = () => {
+    if (!canForge) return;
+    startRahkshiForge(power, stage);
   };
 
-  const handleCompleteArmor = () => {
-    if (!transformationComplete) return;
-    completeKraataArmor(power, stage);
+  const handleCompleteForge = (rahkshiId: string) => {
+    completeRahkshiForge(rahkshiId);
+  };
+
+  const handleInsertKraata = (rahkshiId: string) => {
+    if (count < 1) return;
+    insertKraataIntoRahkshi(rahkshiId, power, stage);
   };
 
   if (!KRAATA_POWER_NAMES[power]) {
@@ -140,35 +143,42 @@ export const KraataDetail: React.FC = () => {
           <p className="kraata-option__desc">
             Submerge this kraata in energized protodermis to forge Rahkshi armor.
           </p>
-          {activeTransformation ? (
-            transformationComplete ? (
-              <button type="button" className="confirm-button" onClick={handleCompleteArmor}>
-                Collect Armor
-              </button>
-            ) : (
-              <div className="kraata-option__timer">
-                <div className="kraata-option__progress-bar">
-                  <div
-                    className="kraata-option__progress-fill"
-                    style={{
-                      width: `${Math.min(100, ((now - activeTransformation.startedAt) / (activeTransformation.endsAt - activeTransformation.startedAt)) * 100)}%`,
-                    }}
-                  />
-                </div>
-                <span className="kraata-option__time-remaining">
-                  {formatTimeRemaining(timeRemaining)}
-                </span>
+          <button type="button" disabled={!canForge} onClick={handleStartForge}>
+            {canForge ? 'Start Forging (24h)' : 'No kraata available'}
+          </button>
+          {preparingArmors.map((armor) => {
+            const complete = isForgeComplete(armor);
+            const remaining = (armor.endsAt ?? 0) - now;
+            const elapsed = now - (armor.startedAt ?? 0);
+            const total = (armor.endsAt ?? 0) - (armor.startedAt ?? 0);
+            const progress = total > 0 ? Math.min(100, (elapsed / total) * 100) : 0;
+
+            return (
+              <div key={armor.id} className="kraata-option__forge-item">
+                {complete ? (
+                  <button
+                    type="button"
+                    className="confirm-button"
+                    onClick={() => handleCompleteForge(armor.id)}
+                  >
+                    Collect Armor
+                  </button>
+                ) : (
+                  <div className="kraata-option__timer">
+                    <div className="kraata-option__progress-bar">
+                      <div
+                        className="kraata-option__progress-fill"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                    <span className="kraata-option__time-remaining">
+                      {formatTimeRemaining(remaining)}
+                    </span>
+                  </div>
+                )}
               </div>
-            )
-          ) : (
-            <button
-              type="button"
-              disabled={!canArmor}
-              onClick={handleStartArmor}
-            >
-              {canArmor ? 'Start (24h)' : 'No kraata available'}
-            </button>
-          )}
+            );
+          })}
         </div>
 
         <div className="kraata-option">
@@ -181,17 +191,29 @@ export const KraataDetail: React.FC = () => {
               Maximum stage
             </button>
           ) : (
-            <button
-              type="button"
-              disabled={!mergeable}
-              onClick={handleMerge}
-            >
-              {mergeable
-                ? `Merge → Stage ${stage + 1}`
-                : `Need 2× (have ${count})`}
+            <button type="button" disabled={!mergeable} onClick={handleMerge}>
+              {mergeable ? `Merge → Stage ${stage + 1}` : `Need 2× (have ${count})`}
             </button>
           )}
         </div>
+
+        {count > 0 && emptyReadyArmors.length > 0 && (
+          <div className="kraata-option">
+            <h3>Insert into Armor</h3>
+            <p className="kraata-option__desc">
+              Place this kraata inside a ready Rahkshi armor to awaken it.
+            </p>
+            {emptyReadyArmors.map((armor) => (
+              <button
+                key={armor.id}
+                type="button"
+                onClick={() => handleInsertKraata(armor.id)}
+              >
+                Insert into {KRAATA_POWER_NAMES[armor.power]} Armor
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

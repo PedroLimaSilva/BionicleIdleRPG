@@ -1,11 +1,11 @@
 import {
   KraataCollection,
   KraataPower,
-  KraataTransformation,
   MAX_KRAATA_STAGE,
   addKraataToCollection,
   removeKraataFromCollection,
 } from '../types/Kraata';
+import { RahkshiArmor } from '../types/Rahkshi';
 
 export const KRAATA_ARMOR_DURATION_MS = 24 * 60 * 60 * 1000;
 
@@ -38,7 +38,7 @@ export function applyKraataMerge(
   return addKraataToCollection(afterRemoval, power, stage + 1, 1);
 }
 
-export function canStartKraataArmor(
+export function canStartRahkshiForge(
   collection: KraataCollection,
   power: KraataPower,
   stage: number
@@ -46,14 +46,25 @@ export function canStartKraataArmor(
   return getKraataCount(collection, power, stage) >= 1;
 }
 
-export function getActiveTransformation(
-  transformations: KraataTransformation[],
+export function getPreparingRahkshi(
+  rahkshi: RahkshiArmor[],
   power: KraataPower,
-  stage: number
-): KraataTransformation | undefined {
-  return transformations.find((t) => t.power === power && t.stage === stage);
+  sourceStage: number
+): RahkshiArmor[] {
+  return rahkshi.filter(
+    (r) => r.armorStage === 'preparing' && r.power === power && r.sourceStage === sourceStage
+  );
 }
 
-export function isTransformationComplete(transformation: KraataTransformation): boolean {
-  return Date.now() >= transformation.endsAt;
+export function getReadyRahkshi(rahkshi: RahkshiArmor[]): RahkshiArmor[] {
+  return rahkshi.filter((r) => r.armorStage === 'ready');
+}
+
+export function getReadyRahkshiWithoutKraata(rahkshi: RahkshiArmor[]): RahkshiArmor[] {
+  return rahkshi.filter((r) => r.armorStage === 'ready' && !r.kraata);
+}
+
+export function isForgeComplete(armor: RahkshiArmor): boolean {
+  if (armor.armorStage !== 'preparing' || !armor.endsAt) return false;
+  return Date.now() >= armor.endsAt;
 }

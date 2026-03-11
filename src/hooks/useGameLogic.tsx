@@ -28,14 +28,14 @@ import {
   KraataCollection,
   KraataPower,
   KraataReward,
-  KraataTransformation,
   addKraataToCollection,
   removeKraataFromCollection,
 } from '../types/Kraata';
+import { RahkshiArmor, generateRahkshiId } from '../types/Rahkshi';
 import {
   canMergeKraata,
   applyKraataMerge,
-  canStartKraataArmor,
+  canStartRahkshiForge,
   KRAATA_ARMOR_DURATION_MS,
 } from '../game/KraataActions';
 import { getDebugMode } from '../services/gamePersistence';
@@ -53,9 +53,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     initialState.kraataCollection ?? {}
   );
 
-  const [kraataTransformations, setKraataTransformations] = useState<KraataTransformation[]>(
-    initialState.kraataTransformations ?? []
-  );
+  const [rahkshi, setRahkshi] = useState<RahkshiArmor[]>(initialState.rahkshi ?? []);
 
   const [protodermis, setProtodermis] = useState(initialState.protodermis);
   const [protodermisCap, setProtodermisCap] = useState(initialState.protodermisCap);
@@ -107,7 +105,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     protodermisCap,
     collectedKrana,
     kraataCollection,
-    kraataTransformations,
+    rahkshi,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     activeQuests,
@@ -122,7 +120,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     protodermisCap,
     collectedKrana,
     kraataCollection,
-    kraataTransformations,
+    rahkshi,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     // State editor API (raw setters; only use while editor is open to avoid conflicts)
@@ -142,22 +140,45 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
         return applyKraataMerge(prev, power, stage);
       });
     },
-    startKraataArmor: (power: KraataPower, stage: number) => {
+    startRahkshiForge: (power: KraataPower, stage: number) => {
       setKraataCollection((prev) => {
-        if (!canStartKraataArmor(prev, power, stage)) return prev;
+        if (!canStartRahkshiForge(prev, power, stage)) return prev;
         const now = Date.now();
         const duration = getDebugMode() ? 1000 : KRAATA_ARMOR_DURATION_MS;
-        setKraataTransformations((prevT) => [
-          ...prevT,
-          { power, stage, startedAt: now, endsAt: now + duration },
-        ]);
+        const newArmor: RahkshiArmor = {
+          id: generateRahkshiId(),
+          power,
+          sourceStage: stage,
+          armorStage: 'preparing',
+          startedAt: now,
+          endsAt: now + duration,
+        };
+        setRahkshi((prevR) => [...prevR, newArmor]);
         return removeKraataFromCollection(prev, power, stage, 1);
       });
     },
-    completeKraataArmor: (power: KraataPower, stage: number) => {
-      setKraataTransformations((prev) =>
-        prev.filter((t) => !(t.power === power && t.stage === stage))
+    completeRahkshiForge: (rahkshiId: string) => {
+      setRahkshi((prev) =>
+        prev.map((r) =>
+          r.id === rahkshiId
+            ? { ...r, armorStage: 'ready' as const, startedAt: undefined, endsAt: undefined }
+            : r
+        )
       );
+    },
+    insertKraataIntoRahkshi: (rahkshiId: string, power: KraataPower, stage: number) => {
+      setKraataCollection((prev) => {
+        const count = prev[power]?.[stage] ?? 0;
+        if (count < 1) return prev;
+        setRahkshi((prevR) =>
+          prevR.map((r) =>
+            r.id === rahkshiId && r.armorStage === 'ready' && !r.kraata
+              ? { ...r, kraata: { power, stage } }
+              : r
+          )
+        );
+        return removeKraataFromCollection(prev, power, stage, 1);
+      });
     },
     recruitCharacter,
     setMaskOverride,
