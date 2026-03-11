@@ -1,5 +1,5 @@
 import './index.scss';
-import { GameItemId, ITEM_DICTIONARY } from '../../data/loot';
+import { GameItemId } from '../../data/loot';
 import { useGame } from '../../context/Game';
 
 export function InventoryPage() {
@@ -13,18 +13,12 @@ export function InventoryPage() {
       )}
       <div className="inventory-grid">
         {Object.entries(inventory).map(([item, quantity]) => {
-          const itemId = item as GameItemId;
-          const itemDetails = ITEM_DICTIONARY[itemId];
+          const itemId = item as unknown as GameItemId;
 
           return (
-            <div
-              key={item}
-              className={`inventory-item ${
-                itemDetails.element ? `element-${itemDetails.element}` : ''
-              }`.trim()}
-            >
-              <div className="item-name">{itemDetails.name}</div>
-              <div className="item-qty">x{quantity.toLocaleString()}</div>
+            <div key={item} className="inventory-item">
+              <div className="item-name">{itemId}</div>
+              <div className="item-qty">x{(quantity ?? 0).toLocaleString()}</div>
             </div>
           );
         })}

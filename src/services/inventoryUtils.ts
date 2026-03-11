@@ -12,8 +12,8 @@ export function addToInventory(inventory: Inventory, item: GameItemId, amount: n
 export function mergeInventory(inventory: Inventory, loot: Inventory): Inventory {
   const changedItems: Inventory = {};
   Object.entries(loot).forEach(([item, amount]) => {
-    const itemId = item as GameItemId;
-    changedItems[itemId] = (inventory[itemId] ?? 0) + amount;
+    const itemId = item as unknown as GameItemId;
+    changedItems[itemId] = (inventory[itemId] ?? 0) + (amount ?? 0);
   });
   return { ...inventory, ...changedItems };
 }

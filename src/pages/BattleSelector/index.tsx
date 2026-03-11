@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ElementTag } from '../../components/ElementTag';
 import { Tooltip } from '../../components/Tooltip';
-import { ITEM_DICTIONARY, isKraataItem } from '../../data/loot';
 import { useGame } from '../../context/Game';
 import { COMBATANT_DEX, ENCOUNTERS } from '../../data/combat';
 import { getVisibleEncounters } from '../../game/encounterVisibility';
 import { ELEMENT_TO_KRANA_COLOR, isKranaCollected, parseKranaDropId } from '../../game/Krana';
 import type { KranaCollection } from '../../types/Krana';
 import type { EnemyEncounter } from '../../types/Combat';
+import { isKraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 
 /** Returns loot items to display, excluding already-collected krana. */
 function getDisplayableLoot(
@@ -43,9 +43,10 @@ function LootTag({ drop }: { drop: { id: string } }) {
       </Tooltip>
     );
   }
-  const item = ITEM_DICTIONARY[drop.id as keyof typeof ITEM_DICTIONARY];
-  const label = item?.name ?? drop.id;
-  const isKraata = isKraataItem(drop.id);
+  const isKraata = isKraataPower(drop.id);
+  const label = isKraata
+    ? `Kraata of ${KRAATA_POWER_NAMES[drop.id as keyof typeof KRAATA_POWER_NAMES] ?? drop.id}`
+    : drop.id;
   return (
     <Tooltip content={label}>
       <span className={`loot-tag${isKraata ? ' loot-tag--kraata' : ''}`}>{label}</span>

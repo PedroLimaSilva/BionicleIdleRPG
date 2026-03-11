@@ -2,6 +2,7 @@ import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameStat
 import { GameItemId } from '../data/loot';
 import { applyOfflineJobExp } from '../game/Jobs';
 import { GameState } from '../types/GameState';
+import { isKraataPower, addKraataToCollection, KraataCollection } from '../types/Kraata';
 import { clamp } from '../utils/math';
 
 export const STORAGE_KEY = `GAME_STATE`;
@@ -9,6 +10,30 @@ export const STORAGE_KEY = `GAME_STATE`;
 export function resetGameData() {
   localStorage.setItem(STORAGE_KEY, '');
   window.location.reload();
+}
+
+/**
+ * Migrates any kraata items found in the legacy `inventory` into
+ * `kraataCollection` at stage 1, then empties the inventory.
+ */
+function migrateKraataFromInventory(parsed: Record<string, unknown>): void {
+  const inventory = parsed.inventory as Record<string, number> | undefined;
+  if (!inventory || typeof inventory !== 'object') return;
+
+  let kraataCollection = (parsed.kraataCollection ?? {}) as KraataCollection;
+  let migrated = false;
+
+  for (const [id, qty] of Object.entries(inventory)) {
+    if (isKraataPower(id) && typeof qty === 'number' && qty > 0) {
+      kraataCollection = addKraataToCollection(kraataCollection, id, 1, qty);
+      migrated = true;
+    }
+  }
+
+  if (migrated) {
+    parsed.kraataCollection = kraataCollection;
+    parsed.inventory = {};
+  }
 }
 
 export function loadGameState() {
@@ -27,13 +52,19 @@ export function loadGameState() {
       if (!parsed.collectedKrana) {
         parsed.collectedKrana = {};
       }
+      if (!parsed.kraataCollection) {
+        parsed.kraataCollection = {};
+      }
+
+      migrateKraataFromInventory(parsed);
+
       if (isValidGameState(parsed)) {
         const [recruitedCharacters, currency, loot] = applyOfflineJobExp(
           parsed.recruitedCharacters
         );
 
         Object.entries(loot).forEach(([item, amount]) => {
-          const itemId = item as GameItemId;
+          const itemId = item as unknown as GameItemId;
           parsed.inventory[itemId] = (parsed.inventory[itemId] || 0) + (amount as number);
         });
 

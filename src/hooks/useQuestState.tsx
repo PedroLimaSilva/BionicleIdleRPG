@@ -56,7 +56,7 @@ export const useQuestState = ({
     // Remove required Items
     if (quest.requirements.items) {
       quest.requirements.items.forEach((req) => {
-        addItemToInventory(req.id as GameItemId, req.consumed ? -req.amount : 0);
+        addItemToInventory(req.id as unknown as GameItemId, req.consumed ? -req.amount : 0);
       });
     }
 
@@ -76,7 +76,7 @@ export const useQuestState = ({
     // Apply rewards
     if (quest.rewards.loot) {
       Object.entries(quest.rewards.loot).forEach(([item, amount]) => {
-        addItemToInventory(item as GameItemId, amount);
+        addItemToInventory(item as unknown as GameItemId, amount ?? 0);
       });
     }
 
@@ -121,7 +121,7 @@ export const useQuestState = ({
     const requirements = QUESTS.find((q) => q.id === quest.questId)?.requirements;
     if (requirements && requirements.items) {
       requirements.items.forEach((req) => {
-        addItemToInventory(req.id as GameItemId, req.consumed ? req.amount : 0);
+        addItemToInventory(req.id as unknown as GameItemId, req.consumed ? req.amount : 0);
       });
     }
 

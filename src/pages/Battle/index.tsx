@@ -6,14 +6,13 @@ import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { Arena } from './Arena';
-import { ITEM_DICTIONARY } from '../../data/loot';
 import {
   getEnemiesDefeatedCount,
   computeBattleExpTotal,
   computeKranaRewardsForBattle,
-  computeItemRewardsForBattle,
+  computeKraataRewardsForBattle,
 } from '../../game/BattleRewards';
-import type { ItemReward } from '../../types/GameState';
+import { KRAATA_POWER_NAMES, KraataReward } from '../../types/Kraata';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,7 +21,7 @@ export const BattlePage: React.FC = () => {
   const { setScene } = useSceneCanvas();
 
   const kranaRewardsRef = useRef<ReturnType<typeof computeKranaRewardsForBattle> | null>(null);
-  const itemRewardsRef = useRef<ItemReward[] | null>(null);
+  const kraataRewardsRef = useRef<KraataReward[] | null>(null);
 
   const isOutcome =
     currentEncounter &&
@@ -41,8 +40,8 @@ export const BattlePage: React.FC = () => {
     );
   }
 
-  if (isOutcome && itemRewardsRef.current === null) {
-    itemRewardsRef.current = computeItemRewardsForBattle(
+  if (isOutcome && kraataRewardsRef.current === null) {
+    kraataRewardsRef.current = computeKraataRewardsForBattle(
       currentEncounter!,
       phase,
       currentWave,
@@ -52,11 +51,11 @@ export const BattlePage: React.FC = () => {
 
   if (!isOutcome) {
     kranaRewardsRef.current = null;
-    itemRewardsRef.current = null;
+    kraataRewardsRef.current = null;
   }
 
   const kranaRewards = kranaRewardsRef.current ?? [];
-  const itemRewards = itemRewardsRef.current ?? [];
+  const kraataRewards = kraataRewardsRef.current ?? [];
 
   useEffect(() => {
     if (!currentEncounter) {
@@ -104,7 +103,7 @@ export const BattlePage: React.FC = () => {
           enemies,
           team,
           kranaToApply: kranaRewards,
-          itemsToApply: itemRewards,
+          kraataToCollect: kraataRewards,
         });
       }
       battle.endBattle();
@@ -135,13 +134,12 @@ export const BattlePage: React.FC = () => {
               <span className="battle-rewards-panel__empty">None</span>
             )}
           </p>
-          {itemRewards.length > 0 && (
+          {kraataRewards.length > 0 && (
             <p className="battle-rewards-panel__row battle-rewards-panel__items">
-              Items found:{' '}
-              {itemRewards
+              Kraata found:{' '}
+              {kraataRewards
                 .map((r) => {
-                  const item = ITEM_DICTIONARY[r.id as keyof typeof ITEM_DICTIONARY];
-                  const label = item?.name ?? r.id;
+                  const label = `Kraata of ${KRAATA_POWER_NAMES[r.power] ?? r.power}`;
                   return r.qty > 1 ? `${label} x${r.qty}` : label;
                 })
                 .join(', ')}
