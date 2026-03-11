@@ -16,6 +16,8 @@ import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { GameItemId, ITEM_DICTIONARY, isKraataItem } from '../../data/loot';
+import { CompositedImage } from '../../components/CompositedImage';
+import { LegoColor } from '../../types/Colors';
 
 const CHARACTERS_TAB_KEY = 'characters-tab';
 
@@ -116,8 +118,17 @@ export const CharacterInventory: React.FC = () => {
         <div className="kraata-grid">
           {collectedKraata.map(({ id, stage, name, count }) => (
             <div key={`${id}-${stage}`} className="kraata-card">
+              <CompositedImage
+                images={[
+                  `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Base.webp`,
+                  `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Tail.webp`,
+                  `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Head.webp`,
+                ]}
+                colors={[LegoColor.Green, LegoColor.Green, LegoColor.PearlGold]}
+                className="kraata-card__image"
+              />
               <div className="kraata-card__name">{name}</div>
-              <div className="kraata-card__stage bionicle-font">Stage {stage}</div>
+              <div className="kraata-card__stage bionicle-font">{stage}</div>
               <div className="kraata-card__count">×{count}</div>
             </div>
           ))}

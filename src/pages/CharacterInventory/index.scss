@@ -138,7 +138,7 @@
 
 .kraata-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 2fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1rem;
   margin: 1rem 0;
 }
@@ -150,11 +150,16 @@
   text-align: center;
   background: linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-mid) 100%);
   box-shadow: var(--shadow-md);
+  min-height: 150px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 0.25rem;
+  justify-content: flex-end;
+
+  &__image {
+    width: 100%;
+  }
 
   &__name {
     font-weight: 700;
@@ -167,12 +172,19 @@
   &__stage {
     font-size: 0.85rem;
     color: var(--color-text-muted);
+    position: absolute;
+    top: 0.75rem;
+    left: 1.25rem;
+    font-size: 2rem;
   }
 
   &__count {
     font-size: 1rem;
     font-weight: 600;
     color: var(--color-accent);
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
   }
 }
 
