@@ -17,12 +17,7 @@ export function InventoryPage() {
           const itemDetails = ITEM_DICTIONARY[itemId];
 
           return (
-            <div
-              key={item}
-              className={`inventory-item ${
-                itemDetails.element ? `element-${itemDetails.element}` : ''
-              }`.trim()}
-            >
+            <div key={item} className="inventory-item">
               <div className="item-name">{itemDetails.name}</div>
               <div className="item-qty">x{quantity.toLocaleString()}</div>
             </div>
