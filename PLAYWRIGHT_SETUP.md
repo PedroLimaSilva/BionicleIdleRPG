@@ -137,7 +137,6 @@ yarn test:e2e:report
 - `e2e/characters/inventory.spec.ts` - Character inventory tests
 - `e2e/characters/detail.spec.ts` - Character detail tests
 - `e2e/quests.spec.ts` - Quest page tests
-- `e2e/inventory.spec.ts` - Inventory page removal verification
 - `e2e/battle/selector.spec.ts` - Battle selector tests
 - `e2e/helpers.ts` - Test helper utilities (includes `enableTestMode()`, `setupGameState()`, `goto()`)
 - `e2e/README.md` - E2E testing documentation

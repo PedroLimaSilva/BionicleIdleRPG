@@ -113,20 +113,6 @@ The game runs entirely in the browser. All game logic must support offline progr
 
 **NEVER** assume the tick interval affects offline progress calculations.
 
-### Inventory and Items
-
-Items and materials have been removed from the active economy. Jobs no longer produce item drops, quests no longer require or reward items, and recruitment costs only protodermis. The inventory infrastructure (types, state hook, persistence) is retained for future quest-item mechanics. The `GameItemId` enum is currently empty.
-
-**MUST ENFORCE:**
-
-1. Inventory quantities must never be negative
-2. The `Inventory` type is `Partial<Record<GameItemId, number>>`
-3. Inventory merging uses `mergeInventory` or `addToInventory` utilities
-
-**NEVER** allow negative inventory values.
-
-**NEVER** mutate inventory objects directly. Always create new objects.
-
 ### Kraata Collection
 
 Kraata are tracked separately from the generic inventory via `kraataCollection` in `GameState`. The type is `KraataCollection = Partial<Record<KraataPower, Partial<Record<number, number>>>>` (power → stage → count). Stage 1 kraata are collected from Rahkshi battles. Use `addKraataToCollection` from `src/types/Kraata.ts` for immutable updates.

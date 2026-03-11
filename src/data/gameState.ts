@@ -8,7 +8,6 @@ import { LISTED_MATORAN_DATA, RECRUITED_MATORAN_DATA } from './dex/index';
 import { INITIAL_BATTLE_STATE } from '../hooks/useBattleState';
 import { KranaElement, KranaId } from '../types/Krana';
 import { KraataPower } from '../types/Kraata';
-import { GameItemId } from './loot';
 
 export const CURRENT_GAME_STATE_VERSION = 9; // ONLY UPDATE IF BREAKING CHANGES WHERE MADE
 
@@ -20,14 +19,10 @@ export const INITIAL_GAME_STATE: GameState = {
   activeQuests: [],
   recruitedCharacters: RECRUITED_MATORAN_DATA,
   buyableCharacters: LISTED_MATORAN_DATA,
-  inventory: {},
   collectedKrana: {},
   kraataCollection: {},
   battle: INITIAL_BATTLE_STATE,
   recruitCharacter: function (_character: ListedCharacterData): void {
-    throw new Error('Function not implemented.');
-  },
-  addItemToInventory: function (_item: GameItemId, _amount: number): void {
     throw new Error('Function not implemented.');
   },
   addKraata: function (_power: KraataPower, _stage: number, _count: number): void {

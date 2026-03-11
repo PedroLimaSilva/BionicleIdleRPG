@@ -10,7 +10,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 5,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_canister_beach' },
@@ -29,7 +28,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 5,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_takua_meets_kapura' },
@@ -37,7 +35,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Kapura',
           cost: 1500,
-          requiredItems: [],
         },
       ],
       xpPerMatoran: 150,
@@ -54,7 +51,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 5,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_tahu_unlock_01' },
@@ -63,7 +59,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Jala',
           cost: 2000,
-          requiredItems: [],
         },
       ],
       xpPerMatoran: 150,
@@ -81,7 +76,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 6,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_ga_koro_sos' },
@@ -99,7 +93,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua', 'Toa_Gali'],
       minLevel: 5,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_restore_ga_koro' },
@@ -107,7 +100,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Hahli',
           cost: 5000,
-          requiredItems: [],
         },
       ],
       xpPerMatoran: 200,
@@ -126,7 +118,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 7,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_po_wahi_desert' },
@@ -136,7 +127,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Hafu',
           cost: 2500,
-          requiredItems: [],
         },
       ],
     },
@@ -153,7 +143,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 7,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 250,
@@ -163,7 +152,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Kivi',
           cost: 1500,
-          requiredItems: [],
         },
       ],
     },
@@ -179,7 +167,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua', 'Toa_Pohatu'],
       minLevel: 5,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_po_koro_cave_investigation' },
@@ -197,7 +184,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 7,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_recruit_hewkii' },
@@ -205,12 +191,10 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Huki',
           cost: 5000,
-          requiredItems: [],
         },
         {
           id: 'Maku',
           cost: 3000,
-          requiredItems: [],
         },
       ],
       xpPerMatoran: 200,
@@ -227,7 +211,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 8,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_arrive_onu_koro' },
@@ -236,12 +219,10 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Nuparu',
           cost: 5000,
-          requiredItems: [],
         },
         {
           id: 'Onepu',
           cost: 3000,
-          requiredItems: [],
         },
       ],
       currency: 400,
@@ -258,7 +239,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 8,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 300,
@@ -276,7 +256,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 9,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_meet_taipu' },
@@ -284,7 +263,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Taipu',
           cost: 3000,
-          requiredItems: [],
         },
       ],
       xpPerMatoran: 250,
@@ -302,7 +280,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua', 'Taipu'],
       minLevel: 9,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_enter_le_wahi' },
@@ -320,19 +297,16 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 10,
-      items: [],
     },
     rewards: {
       unlockCharacters: [
         {
           id: 'Tamaru',
           cost: 3000,
-          requiredItems: [],
         },
         {
           id: 'Kongu',
           cost: 5000,
-          requiredItems: [],
         },
       ],
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_flight_to_hive' },
@@ -350,7 +324,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua', 'Tamaru', 'Kongu'],
       minLevel: 10,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_rescue_from_hive' },
@@ -369,7 +342,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua', 'Taipu', 'Tamaru', 'Kongu'],
       minLevel: 10,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_lewa_v_onua' },
@@ -392,7 +364,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 11,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_arrive_ko_koro' },
@@ -400,12 +371,10 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Kopeke',
           cost: 3000,
-          requiredItems: [],
         },
         {
           id: 'Lumi',
           cost: 1500,
-          requiredItems: [],
         },
       ],
       xpPerMatoran: 350,
@@ -423,7 +392,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua', 'Toa_Kopaka'],
       minLevel: 8,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_search_for_matoro' },
@@ -431,7 +399,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Matoro',
           cost: 5000,
-          requiredItems: [],
         },
       ],
       xpPerMatoran: 350,
@@ -449,7 +416,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua', 'Kopeke'],
       minLevel: 12,
-      items: [],
     },
     rewards: {
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_summon_chroniclers_company' },
@@ -457,7 +423,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
         {
           id: 'Hafu',
           cost: 3000,
-          requiredItems: [],
         },
       ],
       xpPerMatoran: 600,
@@ -511,7 +476,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua', 'Hafu', 'Maku', 'Tamaru', 'Kopeke', 'Taipu', 'Kapura'],
       minLevel: 12,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 1000,
@@ -530,7 +494,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua', 'Hafu', 'Maku', 'Tamaru', 'Kopeke', 'Taipu', 'Kapura'],
       minLevel: 20,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 1000,
@@ -585,7 +548,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 13,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 300,
@@ -622,7 +584,6 @@ export const MNOG_QUEST_LINE: Quest[] = [
     requirements: {
       matoran: ['Takua'],
       minLevel: 30,
-      items: [],
     },
     rewards: {
       xpPerMatoran: 5000,

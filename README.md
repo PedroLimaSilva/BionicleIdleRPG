@@ -158,7 +158,6 @@ src/
 │   ├── useGamePersistence.tsx # Save/load functionality
 │   ├── useBattleState.tsx   # Battle state management
 │   ├── useCharactersState.tsx # Character recruitment and assignment
-│   ├── useInventoryState.tsx  # Inventory state management
 │   ├── useQuestState.tsx    # Quest start/cancel/completion
 │   ├── useJobTickEffect.tsx # Job tick interval and resource gain
 │   ├── useQuestNotifications.ts # Quest completion notifications
@@ -185,7 +184,6 @@ src/
 │   ├── chronicleUtils.ts    # Chronicle unlock logic
 │   ├── combatUtils.ts       # Combat calculations
 │   ├── gamePersistence.ts   # LocalStorage management
-│   ├── inventoryUtils.ts    # Inventory add/merge operations
 │   ├── jobUtils.ts          # Job tick processing
 │   ├── matoranUtils.ts      # Character helpers (recruit, evolve)
 │   └── questNotifications.ts # Browser notifications for quests

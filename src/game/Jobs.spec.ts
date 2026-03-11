@@ -188,11 +188,10 @@ describe('Jobs', () => {
         exp: 100,
       };
 
-      const [updated, earned, rewards] = applyJobExp(matoran);
+      const [updated, earned] = applyJobExp(matoran);
 
       expect(updated).toEqual(matoran);
       expect(earned).toBe(0);
-      expect(rewards).toEqual({});
     });
 
     test('calculates exp earned based on time elapsed', () => {
@@ -272,33 +271,14 @@ describe('Jobs', () => {
       expect(earned).toBe(0);
       expect(updated.exp).toBe(100);
     });
-
-    test('returns job rewards when matoran has assignment', () => {
-      const now = Date.now();
-      const matoran: RecruitedCharacterData = {
-        id: 'Jala',
-        exp: 0,
-        assignment: {
-          job: MatoranJob.CharcoalMaker,
-          expRatePerSecond: 1.0,
-          assignedAt: now - 5000,
-        },
-      };
-
-      const [, , rewards] = applyJobExp(matoran, now);
-
-      // Rewards should be an object (may be empty or have items based on RNG)
-      expect(typeof rewards).toBe('object');
-    });
   });
 
   describe('applyOfflineJobExp', () => {
     test('returns empty arrays when no characters', () => {
-      const [updated, currencyGain, loot] = applyOfflineJobExp([]);
+      const [updated, currencyGain] = applyOfflineJobExp([]);
 
       expect(updated).toEqual([]);
       expect(currencyGain).toBe(0);
-      expect(loot).toEqual({});
     });
 
     test('processes multiple matoran with jobs', () => {
@@ -332,38 +312,17 @@ describe('Jobs', () => {
       expect(currencyGain).toBeGreaterThan(0);
     });
 
-    test('aggregates loot from multiple matoran', () => {
-      const now = Date.now();
-      const characters: RecruitedCharacterData[] = [
-        {
-          id: 'Jala',
-          exp: 0,
-          assignment: {
-            job: MatoranJob.CharcoalMaker,
-            expRatePerSecond: 1.0,
-            assignedAt: now - 10000,
-          },
-        },
-      ];
-
-      const [, , loot] = applyOfflineJobExp(characters);
-
-      // Loot should be an object (may have items based on RNG)
-      expect(typeof loot).toBe('object');
-    });
-
     test('does not process matoran without jobs', () => {
       const characters: RecruitedCharacterData[] = [
         { id: 'Jala', exp: 100 },
         { id: 'Hahli', exp: 50 },
       ];
 
-      const [updated, currencyGain, loot] = applyOfflineJobExp(characters);
+      const [updated, currencyGain] = applyOfflineJobExp(characters);
 
       expect(updated[0].exp).toBe(100);
       expect(updated[1].exp).toBe(50);
       expect(currencyGain).toBe(0);
-      expect(loot).toEqual({});
     });
 
     describe('diminishing returns for offline rewards', () => {

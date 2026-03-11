@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { Quest, QuestProgress } from '../types/Quests';
 import { ListedCharacterData, RecruitedCharacterData } from '../types/Matoran';
-import { QUESTS } from '../data/quests';
-import { GameItemId } from '../data/loot';
 import { getDebugMode } from '../services/gamePersistence';
 
 export function getCurrentTimestamp(): number {
@@ -15,7 +13,6 @@ interface UseQuestStateOptions {
   initialActive: QuestProgress[];
   initialCompleted: string[];
   characters: RecruitedCharacterData[];
-  addItemToInventory: (item: GameItemId, amount: number) => void;
   setRecruitedCharacters: React.Dispatch<React.SetStateAction<RecruitedCharacterData[]>>;
   setBuyableCharacters: React.Dispatch<React.SetStateAction<ListedCharacterData[]>>;
   addProtodermis: (amount: number) => void;
@@ -25,7 +22,6 @@ export const useQuestState = ({
   initialActive,
   initialCompleted,
   characters,
-  addItemToInventory,
   setRecruitedCharacters,
   setBuyableCharacters,
   addProtodermis,
@@ -53,13 +49,6 @@ export const useQuestState = ({
 
     setActiveQuests((prev) => [...prev, activeQuest]);
 
-    // Remove required Items
-    if (quest.requirements.items) {
-      quest.requirements.items.forEach((req) => {
-        addItemToInventory(req.id as unknown as GameItemId, req.consumed ? -req.amount : 0);
-      });
-    }
-
     const updatedCharacters = characters.map((char) =>
       assignedMatoran.includes(char.id)
         ? { ...char, quest: activeQuest.questId, assignment: undefined }
@@ -72,13 +61,6 @@ export const useQuestState = ({
   const completeQuest = (quest: Quest) => {
     const active = activeQuests.find((q) => q.questId === quest.id);
     if (!active) return;
-
-    // Apply rewards
-    if (quest.rewards.loot) {
-      Object.entries(quest.rewards.loot).forEach(([item, amount]) => {
-        addItemToInventory(item as unknown as GameItemId, amount ?? 0);
-      });
-    }
 
     let unlockedCharacters: ListedCharacterData[] = [];
     if (quest.rewards.unlockCharacters) {
@@ -116,14 +98,6 @@ export const useQuestState = ({
     const updatedCharacters = characters.map((char) =>
       quest.assignedMatoran.includes(char.id) ? { ...char, quest: undefined } : char
     );
-
-    // restore required Items
-    const requirements = QUESTS.find((q) => q.id === quest.questId)?.requirements;
-    if (requirements && requirements.items) {
-      requirements.items.forEach((req) => {
-        addItemToInventory(req.id as unknown as GameItemId, req.consumed ? req.amount : 0);
-      });
-    }
 
     setRecruitedCharacters(updatedCharacters);
     setActiveQuests((prev) => prev.filter((q) => q.questId !== questId));

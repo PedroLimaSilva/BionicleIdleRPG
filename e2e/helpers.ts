@@ -6,7 +6,6 @@ export const INITIAL_GAME_STATE: PartialGameState = {
   version: CURRENT_GAME_STATE_VERSION,
   protodermis: 0,
   protodermisCap: 2000,
-  inventory: {},
   collectedKrana: {},
   kraataCollection: {},
   recruitedCharacters: [],

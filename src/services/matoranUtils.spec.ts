@@ -1,10 +1,5 @@
 import { isMatoran, isToa, isToaMata } from '../game/matoranStage';
-import {
-  recruitMatoran,
-  assignJob,
-  removeJob,
-  masksCollected,
-} from './matoranUtils';
+import { recruitMatoran, assignJob, removeJob, masksCollected } from './matoranUtils';
 import {
   BaseMatoran,
   ListedCharacterData,
@@ -137,7 +132,6 @@ describe('matoranUtils', () => {
       const character: ListedCharacterData = {
         id: 'Jala',
         cost: 100,
-        requiredItems: [],
       };
       const buyableCharacters: ListedCharacterData[] = [character];
 
@@ -152,7 +146,6 @@ describe('matoranUtils', () => {
       const character: ListedCharacterData = {
         id: 'Jala',
         cost: 100,
-        requiredItems: [],
       };
       const buyableCharacters: ListedCharacterData[] = [character];
 
@@ -168,12 +161,10 @@ describe('matoranUtils', () => {
       const character1: ListedCharacterData = {
         id: 'Jala',
         cost: 100,
-        requiredItems: [],
       };
       const character2: ListedCharacterData = {
         id: 'Hahli',
         cost: 100,
-        requiredItems: [],
       };
       const buyableCharacters: ListedCharacterData[] = [character1, character2];
 

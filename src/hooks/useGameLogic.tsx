@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { loadGameState } from '../services/gamePersistence';
-import { useInventoryState } from './useInventoryState';
 import { useCharactersState } from './useCharactersState';
 import { useJobTickEffect } from './useJobTickEffect';
 import { useGamePersistence } from './useGamePersistence';
@@ -37,8 +36,6 @@ export const useGameLogic = (): GameState => {
 
   const [version] = useState(initialState.version);
 
-  const { inventory, addItemToInventory } = useInventoryState(initialState.inventory);
-
   const [collectedKrana, setCollectedKrana] = useState<KranaCollection>(
     initialState.collectedKrana ?? {}
   );
@@ -66,18 +63,14 @@ export const useGameLogic = (): GameState => {
     setProtodermis
   );
 
-  useJobTickEffect(
-    recruitedCharacters,
-    setRecruitedCharacters,
-    (amount) => setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap)),
-    addItemToInventory
+  useJobTickEffect(recruitedCharacters, setRecruitedCharacters, (amount) =>
+    setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap))
   );
 
   const { activeQuests, completedQuests, startQuest, cancelQuest, completeQuest } = useQuestState({
     initialActive: initialState.activeQuests,
     initialCompleted: initialState.completedQuests,
     characters: recruitedCharacters,
-    addItemToInventory,
     setRecruitedCharacters,
     setBuyableCharacters,
     addProtodermis: (amount: number) => {
@@ -99,7 +92,6 @@ export const useGameLogic = (): GameState => {
     version,
     protodermis,
     protodermisCap,
-    inventory,
     collectedKrana,
     kraataCollection,
     recruitedCharacters,
@@ -114,12 +106,10 @@ export const useGameLogic = (): GameState => {
     completedQuests,
     protodermis,
     protodermisCap,
-    inventory,
     collectedKrana,
     kraataCollection,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
-    addItemToInventory,
     addKraata: (power: KraataPower, stage: number, count: number) => {
       setKraataCollection((prev) => addKraataToCollection(prev, power, stage, count));
     },

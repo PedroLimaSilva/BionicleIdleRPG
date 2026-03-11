@@ -21,7 +21,7 @@ describe('useCharactersState', () => {
   describe('initialization', () => {
     test('initializes with provided recruited and buyable characters', () => {
       const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
-      const initialBuyable: ListedCharacterData[] = [{ id: 'Hahli', cost: 50, requiredItems: [] }];
+      const initialBuyable: ListedCharacterData[] = [{ id: 'Hahli', cost: 50 }];
 
       const { result } = renderHook(() =>
         useCharactersState(initialRecruited, initialBuyable, mockProtodermis, mockSetProtodermis)
@@ -34,8 +34,8 @@ describe('useCharactersState', () => {
     test('filters out already recruited characters from buyable list', () => {
       const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
       const initialBuyable: ListedCharacterData[] = [
-        { id: 'Jala', cost: 50, requiredItems: [] },
-        { id: 'Hahli', cost: 50, requiredItems: [] },
+        { id: 'Jala', cost: 50 },
+        { id: 'Hahli', cost: 50 },
       ];
 
       const { result } = renderHook(() =>
@@ -53,7 +53,6 @@ describe('useCharactersState', () => {
       const character: ListedCharacterData = {
         id: 'Jala',
         cost: 100,
-        requiredItems: [],
       };
       const initialBuyable: ListedCharacterData[] = [character];
 
@@ -76,7 +75,6 @@ describe('useCharactersState', () => {
       const character: ListedCharacterData = {
         id: 'Jala',
         cost: 2000,
-        requiredItems: [],
       };
       const initialBuyable: ListedCharacterData[] = [character];
 
@@ -97,7 +95,6 @@ describe('useCharactersState', () => {
       const character: ListedCharacterData = {
         id: 'Jala',
         cost: 100,
-        requiredItems: [],
       };
       const initialBuyable: ListedCharacterData[] = [character];
 
