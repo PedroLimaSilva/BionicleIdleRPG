@@ -3,13 +3,7 @@ import { goto, INITIAL_GAME_STATE, setupGameState, waitForCharacterCards } from 
 
 const CHARACTER_INVENTORY_GAME_STATE = {
   ...INITIAL_GAME_STATE,
-  buyableCharacters: [
-    {
-      id: 'Toa_Lewa',
-      cost: 100,
-      requiredItems: [],
-    },
-  ],
+  completedQuests: ['story_toa_arrival'], // unlocks Toa (including Toa_Lewa) for recruitment
   recruitedCharacters: [
     {
       id: 'Takua',
@@ -47,7 +41,7 @@ test.describe('Character Inventory Page', () => {
   });
 
   test('should display character inventory without recruit button', async ({ page }) => {
-    await setupGameState(page, { ...CHARACTER_INVENTORY_GAME_STATE, buyableCharacters: [] });
+    await setupGameState(page, { ...CHARACTER_INVENTORY_GAME_STATE, completedQuests: [] });
     await goto(page, '/characters');
 
     // Wait for character cards to be visible instead of networkidle

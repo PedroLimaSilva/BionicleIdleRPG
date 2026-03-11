@@ -9,7 +9,6 @@ export const INITIAL_GAME_STATE: PartialGameState = {
   collectedKrana: {},
   kraataCollection: {},
   recruitedCharacters: [],
-  buyableCharacters: [],
   activeQuests: [],
   completedQuests: [],
 };
