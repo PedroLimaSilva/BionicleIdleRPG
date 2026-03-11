@@ -6,6 +6,11 @@ import { useInventoryState } from './useInventoryState';
 import { GameItemId } from '../data/loot';
 import { Inventory } from '../services/inventoryUtils';
 
+// Synthetic item IDs — GameItemId is empty (kraata use KraataCollection).
+const ItemA = 'TestItemA' as unknown as GameItemId;
+const ItemB = 'TestItemB' as unknown as GameItemId;
+const ItemC = 'TestItemC' as unknown as GameItemId;
+
 describe('useInventoryState', () => {
   describe('initialization', () => {
     test('initializes with empty inventory', () => {
@@ -15,10 +20,7 @@ describe('useInventoryState', () => {
     });
 
     test('initializes with provided inventory', () => {
-      const initialInventory: Inventory = {
-        [GameItemId.KraataFear]: 10,
-        [GameItemId.KraataAnger]: 5,
-      };
+      const initialInventory: Inventory = { [ItemA]: 10, [ItemB]: 5 } as Inventory;
 
       const { result } = renderHook(() => useInventoryState(initialInventory));
 
@@ -31,85 +33,72 @@ describe('useInventoryState', () => {
       const { result } = renderHook(() => useInventoryState({}));
 
       act(() => {
-        result.current.addItemToInventory(GameItemId.KraataFear, 5);
+        result.current.addItemToInventory(ItemA, 5);
       });
 
-      expect(result.current.inventory[GameItemId.KraataFear]).toBe(5);
+      expect(result.current.inventory[ItemA]).toBe(5);
     });
 
     test('stacks items when adding to existing item', () => {
-      const initialInventory: Inventory = {
-        [GameItemId.KraataFear]: 10,
-      };
+      const initialInventory: Inventory = { [ItemA]: 10 } as Inventory;
 
       const { result } = renderHook(() => useInventoryState(initialInventory));
 
       act(() => {
-        result.current.addItemToInventory(GameItemId.KraataFear, 5);
+        result.current.addItemToInventory(ItemA, 5);
       });
 
-      expect(result.current.inventory[GameItemId.KraataFear]).toBe(15);
+      expect(result.current.inventory[ItemA]).toBe(15);
     });
 
     test('removes items when adding negative amount', () => {
-      const initialInventory: Inventory = {
-        [GameItemId.KraataFear]: 10,
-      };
+      const initialInventory: Inventory = { [ItemA]: 10 } as Inventory;
 
       const { result } = renderHook(() => useInventoryState(initialInventory));
 
       act(() => {
-        result.current.addItemToInventory(GameItemId.KraataFear, -3);
+        result.current.addItemToInventory(ItemA, -3);
       });
 
-      expect(result.current.inventory[GameItemId.KraataFear]).toBe(7);
+      expect(result.current.inventory[ItemA]).toBe(7);
     });
 
     test('adds multiple different items', () => {
       const { result } = renderHook(() => useInventoryState({}));
 
       act(() => {
-        result.current.addItemToInventory(GameItemId.KraataFear, 5);
-        result.current.addItemToInventory(GameItemId.KraataAnger, 3);
-        result.current.addItemToInventory(GameItemId.KraataPoison, 10);
+        result.current.addItemToInventory(ItemA, 5);
+        result.current.addItemToInventory(ItemB, 3);
+        result.current.addItemToInventory(ItemC, 10);
       });
 
       expect(result.current.inventory).toEqual({
-        [GameItemId.KraataFear]: 5,
-        [GameItemId.KraataAnger]: 3,
-        [GameItemId.KraataPoison]: 10,
+        [ItemA]: 5,
+        [ItemB]: 3,
+        [ItemC]: 10,
       });
     });
 
     test('does not mutate original inventory', () => {
-      const initialInventory: Inventory = {
-        [GameItemId.KraataFear]: 10,
-      };
+      const initialInventory: Inventory = { [ItemA]: 10 } as Inventory;
 
       const { result } = renderHook(() => useInventoryState(initialInventory));
 
       act(() => {
-        result.current.addItemToInventory(GameItemId.KraataAnger, 5);
+        result.current.addItemToInventory(ItemB, 5);
       });
 
-      expect(initialInventory).toEqual({
-        [GameItemId.KraataFear]: 10,
-      });
+      expect(initialInventory).toEqual({ [ItemA]: 10 });
     });
   });
 
   describe('setInventory', () => {
     test('replaces entire inventory', () => {
-      const initialInventory: Inventory = {
-        [GameItemId.KraataFear]: 10,
-      };
+      const initialInventory: Inventory = { [ItemA]: 10 } as Inventory;
 
       const { result } = renderHook(() => useInventoryState(initialInventory));
 
-      const newInventory: Inventory = {
-        [GameItemId.KraataAnger]: 20,
-        [GameItemId.KraataPoison]: 15,
-      };
+      const newInventory: Inventory = { [ItemB]: 20, [ItemC]: 15 } as Inventory;
 
       act(() => {
         result.current.setInventory(newInventory);
@@ -119,10 +108,7 @@ describe('useInventoryState', () => {
     });
 
     test('can clear inventory by setting to empty object', () => {
-      const initialInventory: Inventory = {
-        [GameItemId.KraataFear]: 10,
-        [GameItemId.KraataAnger]: 5,
-      };
+      const initialInventory: Inventory = { [ItemA]: 10, [ItemB]: 5 } as Inventory;
 
       const { result } = renderHook(() => useInventoryState(initialInventory));
 

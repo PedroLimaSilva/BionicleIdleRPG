@@ -3,12 +3,11 @@ import { goto, INITIAL_GAME_STATE, setupGameState } from '../helpers';
 
 const RAHKSHI_INVENTORY_GAME_STATE = {
   ...INITIAL_GAME_STATE,
-  inventory: {
-    ...INITIAL_GAME_STATE.inventory,
-    KraataDisintegration: 5,
-    KraataChainLightning: 1,
-    KraataElectricity: 1,
-    KraataAccuracy: 20,
+  kraataCollection: {
+    KraataDisintegration: { 1: 5 },
+    KraataChainLightning: { 1: 1 },
+    KraataElectricity: { 1: 1 },
+    KraataAccuracy: { 1: 20 },
   },
   recruitedCharacters: [
     {

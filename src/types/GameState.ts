@@ -5,10 +5,10 @@ import { MatoranJob } from './Jobs';
 import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
 import { Quest, QuestProgress } from './Quests';
 import { KranaCollection, KranaElement, KranaId } from './Krana';
+import { KraataCollection, KraataPower, KraataReward } from './Kraata';
 import { Combatant, EnemyEncounter } from './Combat';
 
 export type KranaReward = { element: KranaElement; kranaId: KranaId };
-export type ItemReward = { id: GameItemId; qty: number };
 
 export type BattleRewardParams = {
   encounter: EnemyEncounter;
@@ -18,8 +18,8 @@ export type BattleRewardParams = {
   team: Combatant[];
   /** When provided, these Krana are applied instead of rolling (used so UI can show then apply the same list). */
   kranaToApply?: KranaReward[];
-  /** When provided, these items are added to inventory instead of rolling. */
-  itemsToApply?: ItemReward[];
+  /** When provided, these kraata are added to the collection instead of rolling. */
+  kraataToCollect?: KraataReward[];
 };
 
 export type GameState = {
@@ -28,6 +28,7 @@ export type GameState = {
   protodermisCap: number;
   inventory: Inventory;
   collectedKrana: KranaCollection;
+  kraataCollection: KraataCollection;
   buyableCharacters: ListedCharacterData[];
   recruitedCharacters: RecruitedCharacterData[];
   activeQuests: QuestProgress[];
@@ -37,6 +38,7 @@ export type GameState = {
   setMaskOverride: (id: RecruitedCharacterData['id'], mask: Mask) => void;
   collectKrana: (element: KranaElement, id: KranaId) => void;
   addItemToInventory: (item: GameItemId, amount: number) => void;
+  addKraata: (power: KraataPower, stage: number, count: number) => void;
   assignJobToMatoran: (matoranId: RecruitedCharacterData['id'], job: MatoranJob) => void;
   removeJobFromMatoran: (matoranId: RecruitedCharacterData['id']) => void;
   startQuest: (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => void;
@@ -56,6 +58,7 @@ export type PartialGameState = Pick<
   | 'protodermisCap'
   | 'inventory'
   | 'collectedKrana'
+  | 'kraataCollection'
   | 'buyableCharacters'
   | 'recruitedCharacters'
   | 'activeQuests'

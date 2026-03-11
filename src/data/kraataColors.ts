@@ -4,7 +4,7 @@
  * CompositedImage uses [tail, tail, head] for [Base, Tail, Head] layers.
  */
 
-import { GameItemId } from './loot';
+import { KraataPower } from '../types/Kraata';
 
 /** LEGO color names (as on wiki) to hex. Uses existing LEGO palette and close equivalents. */
 const LEGO_COLOR_HEX: Record<string, string> = {
@@ -58,131 +58,131 @@ export interface KraataColors {
  * Colors for CompositedImage: [Base, Tail, Head] → first two layers use tail, third uses head.
  * So pass [tail, tail, head].
  */
-export function getKraataCompositedColors(id: GameItemId): [string, string, string] {
-  const c = KRAATA_SPECIES_COLORS[id];
+export function getKraataCompositedColors(power: KraataPower): [string, string, string] {
+  const c = KRAATA_SPECIES_COLORS[power];
   if (!c) return [hex('Sand Yellow Metallic'), hex('Sand Yellow Metallic'), hex('Lemon Metallic')];
   return [c.head, c.head, c.tail];
 }
 
 /** Kraata species → head/tail colors (wiki: first = head, second = tail). */
-export const KRAATA_SPECIES_COLORS: Partial<Record<GameItemId, KraataColors>> = {
-  [GameItemId.KraataAccuracy]: { head: hex('Bright Red'), tail: hex('Bright Blue') },
-  [GameItemId.KraataAdaptation]: { head: hex('Bright Yellow'), tail: hex('Reddish Gold') },
-  [GameItemId.KraataAnger]: { head: hex('Light Grey Metallic'), tail: hex('White') },
-  [GameItemId.KraataChainLightning]: {
+export const KRAATA_SPECIES_COLORS: Partial<Record<KraataPower, KraataColors>> = {
+  [KraataPower.Accuracy]: { head: hex('Bright Red'), tail: hex('Bright Blue') },
+  [KraataPower.Adaptation]: { head: hex('Bright Yellow'), tail: hex('Reddish Gold') },
+  [KraataPower.Anger]: { head: hex('Light Grey Metallic'), tail: hex('White') },
+  [KraataPower.ChainLightning]: {
     head: hex('Sand Blue Metallic'),
     tail: hex('Lemon Metallic'),
   },
-  [GameItemId.KraataChameleon]: {
+  [KraataPower.Chameleon]: {
     head: hex('Sand Yellow Metallic'),
     tail: hex('Bright Yellow'),
   },
-  [GameItemId.KraataConfusion]: { head: hex('Black'), tail: hex('Reddish Gold') },
-  [GameItemId.KraataCyclone]: {
+  [KraataPower.Confusion]: { head: hex('Black'), tail: hex('Reddish Gold') },
+  [KraataPower.Cyclone]: {
     head: hex('Sand Blue Metallic'),
     tail: hex('Light Grey Metallic'),
   },
-  [GameItemId.KraataDarkness]: { head: hex('Reddish Gold'), tail: hex('Bright Yellow') },
-  [GameItemId.KraataDensityControl]: {
+  [KraataPower.Darkness]: { head: hex('Reddish Gold'), tail: hex('Bright Yellow') },
+  [KraataPower.DensityControl]: {
     head: hex('Dark Green'),
     tail: hex('Lemon Metallic'),
   },
-  [GameItemId.KraataDisintegration]: {
+  [KraataPower.Disintegration]: {
     head: hex('Sand Blue Metallic'),
     tail: hex('Medium Blue'),
   },
-  [GameItemId.KraataDodge]: {
+  [KraataPower.Dodge]: {
     head: hex('Bright Yellow'),
     tail: hex('Sand Yellow Metallic'),
   },
-  [GameItemId.KraataElasticity]: {
+  [KraataPower.Elasticity]: {
     head: hex('Bright Yellowish Green'),
     tail: hex('Bright Yellow'),
   },
-  [GameItemId.KraataElectricity]: { head: hex('Bright Blue'), tail: hex('Bright Red') },
-  [GameItemId.KraataFear]: { head: hex('Reddish Gold'), tail: hex('Bright Red') },
-  [GameItemId.KraataFireResistance]: { head: hex('Black'), tail: hex('Bright Red') },
-  [GameItemId.KraataFragmentation]: {
+  [KraataPower.Electricity]: { head: hex('Bright Blue'), tail: hex('Bright Red') },
+  [KraataPower.Fear]: { head: hex('Reddish Gold'), tail: hex('Bright Red') },
+  [KraataPower.FireResistance]: { head: hex('Black'), tail: hex('Bright Red') },
+  [KraataPower.Fragmentation]: {
     head: hex('Sand Yellow Metallic'),
     tail: hex('Brick Yellow'),
   },
-  [GameItemId.KraataGravity]: {
+  [KraataPower.Gravity]: {
     head: hex('Dark Grey Metallic'),
     tail: hex('Lemon Metallic'),
   },
-  [GameItemId.KraataHeatVision]: { head: hex('Black'), tail: hex('Bright Orange') },
-  [GameItemId.KraataHunger]: { head: hex('Dark Grey Metallic'), tail: hex('Grey') },
-  [GameItemId.KraataIceResistance]: {
+  [KraataPower.HeatVision]: { head: hex('Black'), tail: hex('Bright Orange') },
+  [KraataPower.Hunger]: { head: hex('Dark Grey Metallic'), tail: hex('Grey') },
+  [KraataPower.IceResistance]: {
     head: hex('Brick Yellow'),
     tail: hex('Dark Green'),
   },
-  [GameItemId.KraataIllusion]: { head: hex('Dark Green'), tail: hex('Brick Yellow') },
-  [GameItemId.KraataInsectControl]: { head: hex('Bright Yellow'), tail: hex('Black') },
-  [GameItemId.KraataInvulnerability]: {
+  [KraataPower.Illusion]: { head: hex('Dark Green'), tail: hex('Brick Yellow') },
+  [KraataPower.InsectControl]: { head: hex('Bright Yellow'), tail: hex('Black') },
+  [KraataPower.Invulnerability]: {
     head: hex('Black'),
     tail: hex('Sand Yellow Metallic'),
   },
-  [GameItemId.KraataLaserVision]: {
+  [KraataPower.LaserVision]: {
     head: hex('Lemon Metallic'),
     tail: hex('Dark Green'),
   },
-  [GameItemId.KraataMagnetism]: { head: hex('Bright Orange'), tail: hex('Black') },
-  [GameItemId.KraataMindReading]: {
+  [KraataPower.Magnetism]: { head: hex('Bright Orange'), tail: hex('Black') },
+  [KraataPower.MindReading]: {
     head: hex('Bright Red'),
     tail: hex('Lemon Metallic'),
   },
-  [GameItemId.KraataPlantControl]: { head: hex('Reddish Gold'), tail: hex('Black') },
-  [GameItemId.KraataPlasma]: {
+  [KraataPower.PlantControl]: { head: hex('Reddish Gold'), tail: hex('Black') },
+  [KraataPower.Plasma]: {
     head: hex('Dark Grey Metallic'),
     tail: hex('Sand Blue Metallic'),
   },
-  [GameItemId.KraataPoison]: {
+  [KraataPower.Poison]: {
     head: hex('Lemon Metallic'),
     tail: hex('Bright Yellowish Green'),
   },
-  [GameItemId.KraataPowerScream]: { head: hex('Bright Red'), tail: hex('Black') },
-  [GameItemId.KraataQuickHealing]: {
+  [KraataPower.PowerScream]: { head: hex('Bright Red'), tail: hex('Black') },
+  [KraataPower.QuickHealing]: {
     head: hex('Lemon Metallic'),
     tail: hex('Sand Blue Metallic'),
   },
-  [GameItemId.KraataRahiControl]: {
+  [KraataPower.RahiControl]: {
     head: hex('Sand Yellow Metallic'),
     tail: hex('Black'),
   },
-  [GameItemId.KraataShapeshifting]: {
+  [KraataPower.Shapeshifting]: {
     head: hex('Dark Grey Metallic'),
     tail: hex('Bright Yellowish Green'),
   },
-  [GameItemId.KraataShattering]: {
+  [KraataPower.Shattering]: {
     head: hex('Sand Yellow Metallic'),
     tail: hex('Brick Yellow'),
   },
-  [GameItemId.KraataSilence]: {
+  [KraataPower.Silence]: {
     head: hex('Bright Yellowish Green'),
     tail: hex('Dark Grey Metallic'),
   },
-  [GameItemId.KraataSleep]: {
+  [KraataPower.Sleep]: {
     head: hex('Reddish Gold'),
     tail: hex('Sand Yellow Metallic'),
   },
-  [GameItemId.KraataSlowness]: {
+  [KraataPower.Slowness]: {
     head: hex('Light Grey Metallic'),
     tail: hex('Sand Blue Metallic'),
   },
-  [GameItemId.KraataSonics]: { head: hex('Black'), tail: hex('Bright Yellow') },
-  [GameItemId.KraataStasisField]: {
+  [KraataPower.Sonics]: { head: hex('Black'), tail: hex('Bright Yellow') },
+  [KraataPower.StasisField]: {
     head: hex('Sand Blue Metallic'),
     tail: hex('Dark Grey Metallic'),
   },
-  [GameItemId.KraataTeleportation]: {
+  [KraataPower.Teleportation]: {
     head: hex('Lemon Metallic'),
     tail: hex('Bright Red'),
   },
-  [GameItemId.KraataVacuum]: {
+  [KraataPower.Vacuum]: {
     head: hex('Bright Yellow'),
     tail: hex('Bright Yellowish Green'),
   },
-  [GameItemId.KraataWeatherControl]: {
+  [KraataPower.WeatherControl]: {
     head: hex('Lemon Metallic'),
     tail: hex('Dark Grey Metallic'),
   },

@@ -22,7 +22,7 @@ export function useJobTickEffect(
 
           if (earnedProtodermis > 0) addProtodermis(earnedProtodermis);
           Object.entries(earnedLoot).forEach(([item, amount]) => {
-            addItemToInventory(item as GameItemId, amount);
+            addItemToInventory(item as unknown as GameItemId, amount ?? 0);
           });
 
           return updatedMatoran;

@@ -10,12 +10,12 @@ import { useQuestNotifications } from './useQuestNotifications';
 import { useBattleState } from './useBattleState';
 import { clamp } from '../utils/math';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
-import { BattleRewardParams, ItemReward, KranaReward } from '../types/GameState';
+import { BattleRewardParams, KranaReward } from '../types/GameState';
 import { RecruitedCharacterData } from '../types/Matoran';
 import {
   computeBattleExpTotal,
   computeKranaRewardsForBattle,
-  computeItemRewardsForBattle,
+  computeKraataRewardsForBattle,
   getParticipantIds,
 } from '../game/BattleRewards';
 import { isKranaCollectionActive } from '../game/Krana';
@@ -25,6 +25,12 @@ import {
   applyCharacterEvolution,
 } from '../game/CharacterEvolution';
 import { isNuvaSymbolsSequestered } from '../game/nuvaSymbols';
+import {
+  KraataCollection,
+  KraataPower,
+  KraataReward,
+  addKraataToCollection,
+} from '../types/Kraata';
 
 export const useGameLogic = (): GameState => {
   const [initialState] = useState(() => loadGameState());
@@ -35,6 +41,10 @@ export const useGameLogic = (): GameState => {
 
   const [collectedKrana, setCollectedKrana] = useState<KranaCollection>(
     initialState.collectedKrana ?? {}
+  );
+
+  const [kraataCollection, setKraataCollection] = useState<KraataCollection>(
+    initialState.kraataCollection ?? {}
   );
 
   const [protodermis, setProtodermis] = useState(initialState.protodermis);
@@ -91,6 +101,7 @@ export const useGameLogic = (): GameState => {
     protodermisCap,
     inventory,
     collectedKrana,
+    kraataCollection,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     activeQuests,
@@ -105,9 +116,13 @@ export const useGameLogic = (): GameState => {
     protodermisCap,
     inventory,
     collectedKrana,
+    kraataCollection,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     addItemToInventory,
+    addKraata: (power: KraataPower, stage: number, count: number) => {
+      setKraataCollection((prev) => addKraataToCollection(prev, power, stage, count));
+    },
     recruitCharacter,
     setMaskOverride,
     assignJobToMatoran,
@@ -195,19 +210,19 @@ export const useGameLogic = (): GameState => {
         });
       }
 
-      // Apply item drops (e.g. kraata)
-      const itemsExplicitlyProvided = params.itemsToApply !== undefined;
-      let itemsToApply: ItemReward[] = params.itemsToApply ?? [];
-      if (!itemsExplicitlyProvided && itemsToApply.length === 0) {
-        itemsToApply = computeItemRewardsForBattle(
+      // Apply kraata drops
+      const kraataExplicitlyProvided = params.kraataToCollect !== undefined;
+      let kraataToCollect: KraataReward[] = params.kraataToCollect ?? [];
+      if (!kraataExplicitlyProvided && kraataToCollect.length === 0) {
+        kraataToCollect = computeKraataRewardsForBattle(
           params.encounter,
           params.phase,
           params.currentWave,
           params.enemies
         );
       }
-      for (const { id, qty } of itemsToApply) {
-        addItemToInventory(id, qty);
+      for (const { power, stage, qty } of kraataToCollect) {
+        setKraataCollection((prev) => addKraataToCollection(prev, power, stage, qty));
       }
     },
   };

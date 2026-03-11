@@ -173,8 +173,8 @@ export function applyOfflineJobExp(
     const [updatedMatoran, earned, rewards] = applyJobExp(m, now, true);
 
     Object.entries(rewards).forEach(([item, amount]) => {
-      const itemId = item as GameItemId;
-      loot[itemId] = (loot[itemId] ?? 0) + amount;
+      const itemId = item as unknown as GameItemId;
+      loot[itemId] = (loot[itemId] ?? 0) + (amount ?? 0);
     });
 
     if (earned > 0) {

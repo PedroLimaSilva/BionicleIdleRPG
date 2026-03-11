@@ -115,7 +115,7 @@ The game runs entirely in the browser. All game logic must support offline progr
 
 ### Inventory and Items
 
-Items and materials have been removed from the active economy. Jobs no longer produce item drops, quests no longer require or reward items, and recruitment costs only protodermis. The inventory infrastructure (types, state hook, persistence) is retained for future quest-item mechanics.
+Items and materials have been removed from the active economy. Jobs no longer produce item drops, quests no longer require or reward items, and recruitment costs only protodermis. The inventory infrastructure (types, state hook, persistence) is retained for future quest-item mechanics. The `GameItemId` enum is currently empty.
 
 **MUST ENFORCE:**
 
@@ -126,6 +126,21 @@ Items and materials have been removed from the active economy. Jobs no longer pr
 **NEVER** allow negative inventory values.
 
 **NEVER** mutate inventory objects directly. Always create new objects.
+
+### Kraata Collection
+
+Kraata are tracked separately from the generic inventory via `kraataCollection` in `GameState`. The type is `KraataCollection = Partial<Record<KraataPower, Partial<Record<number, number>>>>` (power → stage → count). Stage 1 kraata are collected from Rahkshi battles. Use `addKraataToCollection` from `src/types/Kraata.ts` for immutable updates.
+
+**MUST ENFORCE:**
+
+1. `KraataPower` is the authoritative enum for all 42 kraata powers
+2. Kraata colors are looked up via `getKraataCompositedColors(power)` from `src/data/kraataColors.ts`
+3. Battle kraata drops always use stage 1
+4. A migration in `loadGameState` moves any legacy kraata from `inventory` into `kraataCollection`
+
+**NEVER** store kraata in the generic `inventory`. Always use `kraataCollection`.
+
+**NEVER** mutate `kraataCollection` directly. Use `addKraataToCollection` or the `addKraata` mutation from `GameState`.
 
 ### Experience and Leveling
 
@@ -143,7 +158,7 @@ Items and materials have been removed from the active economy. Jobs no longer pr
 
 **MUST ENFORCE:**
 
-1. Only these fields are persisted: `version`, `protodermis`, `protodermisCap`, `inventory`, `collectedKrana`, `recruitedCharacters`, `buyableCharacters`, `activeQuests`, `completedQuests`
+1. Only these fields are persisted: `version`, `protodermis`, `protodermisCap`, `inventory`, `collectedKrana`, `kraataCollection`, `recruitedCharacters`, `buyableCharacters`, `activeQuests`, `completedQuests`
 2. Battle state is NOT persisted (battles reset on page refresh)
 3. Save version must match `CURRENT_GAME_STATE_VERSION` or the save is rejected
 

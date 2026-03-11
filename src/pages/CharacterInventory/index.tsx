@@ -15,7 +15,7 @@ import { isBohrokOrKal, isMatoran, isToa } from '../../game/matoranStage';
 import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 import { CHARACTER_DEX } from '../../data/dex/index';
-import { GameItemId, ITEM_DICTIONARY, isKraataItem } from '../../data/loot';
+import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { getKraataCompositedColors } from '../../data/kraataColors';
 import { CompositedImage } from '../../components/CompositedImage';
 
@@ -24,14 +24,14 @@ const CHARACTERS_TAB_KEY = 'characters-tab';
 type TabId = 'matoran' | 'toa' | 'other' | 'rahkshi';
 
 export const CharacterInventory: React.FC = () => {
-  const { recruitedCharacters, buyableCharacters, inventory } = useGame();
+  const { recruitedCharacters, buyableCharacters, kraataCollection } = useGame();
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const hasCollectedKraata = useMemo(() => {
-    return Object.entries(inventory).some(
-      ([id, qty]) => isKraataItem(id) && typeof qty === 'number' && qty > 0
+    return Object.values(kraataCollection).some(
+      (stages) => stages && Object.values(stages).some((count) => count && count > 0)
     );
-  }, [inventory]);
+  }, [kraataCollection]);
 
   const tabs = useMemo(() => {
     const base = ['matoran'];
@@ -92,22 +92,23 @@ export const CharacterInventory: React.FC = () => {
   }, [recruitedCharacters, effectiveTab]);
 
   const collectedKraata = useMemo(() => {
-    const groups: { id: GameItemId; stage: number; name: string; count: number }[] = [];
-    for (const [id, qty] of Object.entries(inventory)) {
-      if (!isKraataItem(id) || typeof qty !== 'number' || qty <= 0) continue;
-      const item = ITEM_DICTIONARY[id as GameItemId];
-      if (!item) continue;
-      const stage = item.stage ?? 1;
-      groups.push({
-        id: id as GameItemId,
-        stage,
-        name: item.name,
-        count: qty,
-      });
+    const groups: { power: KraataPower; stage: number; name: string; count: number }[] = [];
+    for (const [power, stages] of Object.entries(kraataCollection)) {
+      if (!stages) continue;
+      for (const [stageStr, count] of Object.entries(stages)) {
+        if (typeof count !== 'number' || count <= 0) continue;
+        const stage = Number(stageStr);
+        groups.push({
+          power: power as KraataPower,
+          stage,
+          name: `Kraata of ${KRAATA_POWER_NAMES[power as KraataPower] ?? power}`,
+          count,
+        });
+      }
     }
-    groups.sort((a, b) => a.name.localeCompare(b.name));
+    groups.sort((a, b) => a.name.localeCompare(b.name) || a.stage - b.stage);
     return groups;
-  }, [inventory]);
+  }, [kraataCollection]);
 
   return (
     <div className="page-container">
@@ -116,15 +117,15 @@ export const CharacterInventory: React.FC = () => {
       </div>
       {effectiveTab === 'rahkshi' ? (
         <div className="kraata-grid">
-          {collectedKraata.map(({ id, stage, name, count }) => (
-            <div key={`${id}-${stage}`} className="kraata-card">
+          {collectedKraata.map(({ power, stage, name, count }) => (
+            <div key={`${power}-${stage}`} className="kraata-card">
               <CompositedImage
                 images={[
                   `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Base.webp`,
                   `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Head.webp`,
                   `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Tail.webp`,
                 ]}
-                colors={getKraataCompositedColors(id)}
+                colors={getKraataCompositedColors(power)}
                 className="kraata-card__image"
               />
               <div className="kraata-card__name">{name}</div>
