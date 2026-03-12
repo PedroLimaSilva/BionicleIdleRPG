@@ -36,6 +36,9 @@ export function masksCollected(
   storyProgress: GameState['completedQuests']
 ): Mask[] {
   if (isToaNuva(matoran)) {
+    if (matoran.id === 'Takanuva') {
+      return [Mask.Avohkii];
+    }
     if (matoran.id === 'Toa_Tahu_Nuva' && isTahuNuvaInfectedMaskPeriod(storyProgress)) {
       return [Mask.HauNuvaInfected];
     }

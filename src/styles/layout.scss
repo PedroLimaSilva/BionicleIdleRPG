@@ -27,6 +27,13 @@
       left: calc(anchor(left) - 4rem);
       right: calc(anchor(right) - 4rem);
     }
+    &[class*='route--rahkshi'] {
+      display: block;
+      z-index: 1;
+      top: 2rem;
+      left: calc(anchor(left) - 4rem);
+      right: calc(anchor(right) - 4rem);
+    }
     &.route--battle {
       display: block;
       z-index: -1;

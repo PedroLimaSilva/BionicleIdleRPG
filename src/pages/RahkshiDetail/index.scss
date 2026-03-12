@@ -9,6 +9,7 @@ $rahkshi-visualization-radius: 12px;
 $rahkshi-visualization-border: 2px;
 
 .rahkshi-detail-visualization {
+  anchor-name: --canvas-anchor;
   position: relative;
   width: 100%;
   max-width: min(max(640px, 100%), 100vw - 4rem);
@@ -26,7 +27,7 @@ $rahkshi-visualization-border: 2px;
       no-repeat;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   overflow: hidden;
 
@@ -93,11 +94,12 @@ $rahkshi-visualization-border: 2px;
   }
 }
 
-.rahkshi-detail__image {
-  width: 100%;
-  max-width: 280px;
+.rahkshi-detail__model-frame {
   position: relative;
-  z-index: 1;
+  width: 100%;
+  height: min(420px, calc(100vh - 14rem));
+  min-height: 280px;
+  z-index: 0;
 }
 
 .page-container h1.rahkshi-detail__name {
@@ -160,6 +162,7 @@ $rahkshi-visualization-border: 2px;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  text-align: left;
 
   h3 {
     margin: 0;

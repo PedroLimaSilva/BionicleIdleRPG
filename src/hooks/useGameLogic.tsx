@@ -65,6 +65,8 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
   const setRecruitedCharactersRef = useRef<Dispatch<SetStateAction<RecruitedCharacterData[]>>>(
     () => {}
   );
+  /** Guards startRahkshiForge so only one armor is added when updaters run twice (e.g. Strict Mode). */
+  const startForgeRequestIdRef = useRef<symbol | null>(null);
 
   const {
     activeQuests,
@@ -158,16 +160,20 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
       setKraataCollection((prev) => applyAllKraataMerges(prev));
     },
     startRahkshiForge: (power: KraataPower, stage: number) => {
+      const requestId = Symbol('startRahkshiForge');
+      startForgeRequestIdRef.current = requestId;
       setProtodermis((prevProto) => {
         if (prevProto < RAHKSHI_FORGE_COST) return prevProto;
         setKraataCollection((prev) => {
           if (!canStartRahkshiForge(prev, power, stage, prevProto)) return prev;
+          const isFirstRun = startForgeRequestIdRef.current === requestId;
+          if (!isFirstRun) return prev;
+          startForgeRequestIdRef.current = null;
           const now = Date.now();
           const duration = getDebugMode() ? 1000 : KRAATA_ARMOR_DURATION_MS;
           const newArmor: RahkshiArmor = {
             id: generateRahkshiId(),
             power,
-            sourceStage: stage,
             status: 'preparing',
             startedAt: now,
             endsAt: now + duration,
