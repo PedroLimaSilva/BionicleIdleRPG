@@ -7,6 +7,7 @@ import {
   waitForCanvas,
   waitForCharacterCards,
 } from '../../helpers';
+import { KraataPower } from '../../../src/types/Kraata';
 
 test.describe('Character Model Rendering', () => {
   test.describe('Matoran Character switching', () => {
@@ -263,13 +264,27 @@ test.describe('Character Model Rendering', () => {
   });
 
   test.describe('Rahkshi Characters', () => {
-    ['Guurahk', 'Lerahk', 'Turahk', 'Kurahk', 'Panrahk', 'Vorahk'].forEach((characterId) => {
+    [
+      KraataPower.Disintegration,
+      KraataPower.Poison,
+      KraataPower.Fragmentation,
+      KraataPower.Fear,
+      KraataPower.Hunger,
+      KraataPower.Anger,
+    ].forEach((characterId) => {
       test(`should render ${characterId} character detail page`, async ({ page }) => {
         await setupGameState(page, {
           ...INITIAL_GAME_STATE,
-          recruitedCharacters: [{ id: characterId, exp: 0 }],
+          rahkshi: [
+            {
+              power: characterId,
+              id: characterId,
+              status: 'ready',
+              kraata: { power: characterId, stage: 6 },
+            },
+          ],
         });
-        await goto(page, `/characters/${characterId}`);
+        await goto(page, `/rahkshi/${characterId}`);
         await disableCSSAnimations(page);
         await waitForCanvas(page);
 

@@ -246,7 +246,7 @@ function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
           colors={[armorColor, LegoColor.White]}
           className="rahkshi-card__image"
         />
-        <div className="rahkshi-card__name">{powerName} Armor</div>
+        <div className="rahkshi-card__name">{powerName}</div>
         <div
           className={`rahkshi-card__status rahkshi-card__status--${armor.status}${hasKraata ? ' rahkshi-card__status--active' : ''}`}
         >

@@ -170,7 +170,6 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
           const newArmor: RahkshiArmor = {
             id: generateRahkshiId(),
             power,
-            sourceStage: stage,
             status: 'preparing',
             startedAt: now,
             endsAt: now + duration,
