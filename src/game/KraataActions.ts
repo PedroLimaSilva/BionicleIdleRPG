@@ -45,17 +45,15 @@ export function canStartRahkshiForge(
   stage: number,
   protodermis: number
 ): boolean {
-  return stage === 1 && getKraataCount(collection, power, stage) >= 1 && protodermis >= RAHKSHI_FORGE_COST;
+  return (
+    stage === 1 &&
+    getKraataCount(collection, power, stage) >= 1 &&
+    protodermis >= RAHKSHI_FORGE_COST
+  );
 }
 
-export function getPreparingRahkshi(
-  rahkshi: RahkshiArmor[],
-  power: KraataPower,
-  sourceStage: number
-): RahkshiArmor[] {
-  return rahkshi.filter(
-    (r) => r.status === 'preparing' && r.power === power && r.sourceStage === sourceStage
-  );
+export function getPreparingRahkshi(rahkshi: RahkshiArmor[], power: KraataPower): RahkshiArmor[] {
+  return rahkshi.filter((r) => r.status === 'preparing' && r.power === power);
 }
 
 export function getReadyRahkshi(rahkshi: RahkshiArmor[]): RahkshiArmor[] {

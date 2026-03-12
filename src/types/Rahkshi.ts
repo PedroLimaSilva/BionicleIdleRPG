@@ -6,8 +6,6 @@ export interface RahkshiArmor {
   id: string;
   /** Power of the kraata used to forge this armor (determines appearance). */
   power: KraataPower;
-  /** Stage of the source kraata. */
-  sourceStage: number;
   status: RahkshiArmorStatus;
   /** Timestamp (ms) when forging started. Present while preparing. */
   startedAt?: number;
