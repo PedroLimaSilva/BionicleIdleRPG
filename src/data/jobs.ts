@@ -75,9 +75,9 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: ['settle_metru_nui'],
     },
   },
-  [MatoranJob.QuarryRunner]: {
-    label: '🪨 Quarry Runner',
-    description: 'Extracts and transports quarried stone from Po-Wahi.',
+  [MatoranJob.StoneMason]: {
+    label: '🪨 Stone Mason',
+    description: 'Builds stone structures and sculputres in Po-Wahi.',
     elementAffinity: {
       favored: [ElementTribe.Stone],
       opposed: [],
@@ -99,9 +99,9 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: ['settle_metru_nui'],
     },
   },
-  [MatoranJob.LightStoneFarmer]: {
-    label: '💡 Light Stone Farmer',
-    description: 'Farm Light Stone crystals for illumination in Onu-Koro caves.',
+  [MatoranJob.LightStoneMiner]: {
+    label: '💡 Light Stone Miner',
+    description: 'Mines Light Stone crystals for illumination in Onu-Koro caves.',
     elementAffinity: {
       favored: [ElementTribe.Earth],
       opposed: [],
@@ -114,16 +114,16 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     description: 'Maintains Rahi stasis chambers in Metru Nui Archives.',
     rate: 2,
     elementAffinity: {
-      favored: [ElementTribe.Stone],
+      favored: [ElementTribe.Earth],
       opposed: [],
     },
     unlock: {
       requiredProgress: ['unlock_archives'],
     },
   },
-  [MatoranJob.IceSculptor]: {
-    label: '❄️ Ice Sculptor',
-    description: 'Carves artistic ice structures in Ko-Koro.',
+  [MatoranJob.SanctumGuard]: {
+    label: '🛡️ Sanctum Guard',
+    description: 'Patrols the drifts and guards the Sanctum of Ko-Koro.',
     elementAffinity: {
       favored: [ElementTribe.Ice],
       opposed: [ElementTribe.Fire],
