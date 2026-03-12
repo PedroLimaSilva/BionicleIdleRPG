@@ -11,6 +11,7 @@ import {
   getPreparingRahkshi,
   getReadyRahkshiWithoutKraata,
   isForgeComplete,
+  RAHKSHI_FORGE_COST,
 } from '../../game/KraataActions';
 import { useMemo, useState, useEffect } from 'react';
 
@@ -33,6 +34,7 @@ export const KraataDetail: React.FC = () => {
   const {
     kraataCollection,
     rahkshi,
+    protodermis,
     mergeKraata,
     startRahkshiForge,
     completeRahkshiForge,
@@ -60,8 +62,8 @@ export const KraataDetail: React.FC = () => {
   );
 
   const canForge = useMemo(
-    () => canStartRahkshiForge(kraataCollection, power, stage),
-    [kraataCollection, power, stage]
+    () => canStartRahkshiForge(kraataCollection, power, stage, protodermis),
+    [kraataCollection, power, stage, protodermis]
   );
 
   const preparingArmors = useMemo(
@@ -164,11 +166,13 @@ export const KraataDetail: React.FC = () => {
             Submerge this kraata in energized protodermis to forge Rahkshi armor.
           </p>
           <button type="button" disabled={!canForge} onClick={handleStartForge}>
-            {canForge
-              ? 'Start Forging (24h)'
-              : stage !== 1
-                ? 'Only stage 1 kraata can be forged into armor'
-                : 'No kraata available'}
+            {stage !== 1
+              ? 'Only stage 1 kraata can be forged'
+              : count < 1
+                ? 'No kraata available'
+                : canForge
+                  ? `Start Forging — ${RAHKSHI_FORGE_COST} protodermis (24h)`
+                  : `Need ${RAHKSHI_FORGE_COST} protodermis (have ${protodermis})`}
           </button>
           {preparingArmors.map((armor) => {
             const complete = isForgeComplete(armor);

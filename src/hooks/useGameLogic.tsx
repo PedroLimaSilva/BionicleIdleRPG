@@ -38,6 +38,7 @@ import {
   applyKraataMerge,
   canStartRahkshiForge,
   KRAATA_ARMOR_DURATION_MS,
+  RAHKSHI_FORGE_COST,
 } from '../game/KraataActions';
 import { getDebugMode } from '../services/gamePersistence';
 
@@ -153,19 +154,25 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
       });
     },
     startRahkshiForge: (power: KraataPower, stage: number) => {
-      if (!canStartRahkshiForge(kraataCollection, power, stage)) return;
-      const now = Date.now();
-      const duration = getDebugMode() ? 1000 : KRAATA_ARMOR_DURATION_MS;
-      const newArmor: RahkshiArmor = {
-        id: generateRahkshiId(),
-        power,
-        sourceStage: stage,
-        status: 'preparing',
-        startedAt: now,
-        endsAt: now + duration,
-      };
-      setKraataCollection((prev) => removeKraataFromCollection(prev, power, stage, 1));
-      setRahkshi((prevR) => [...prevR, newArmor]);
+      setProtodermis((prevProto) => {
+        if (prevProto < RAHKSHI_FORGE_COST) return prevProto;
+        setKraataCollection((prev) => {
+          if (!canStartRahkshiForge(prev, power, stage, prevProto)) return prev;
+          const now = Date.now();
+          const duration = getDebugMode() ? 1000 : KRAATA_ARMOR_DURATION_MS;
+          const newArmor: RahkshiArmor = {
+            id: generateRahkshiId(),
+            power,
+            sourceStage: stage,
+            status: 'preparing',
+            startedAt: now,
+            endsAt: now + duration,
+          };
+          setRahkshi((prevR) => [...prevR, newArmor]);
+          return removeKraataFromCollection(prev, power, stage, 1);
+        });
+        return prevProto - RAHKSHI_FORGE_COST;
+      });
     },
     completeRahkshiForge: (rahkshiId: string) => {
       setRahkshi((prev) =>

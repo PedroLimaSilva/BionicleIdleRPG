@@ -8,6 +8,7 @@ import {
 import { RahkshiArmor } from '../types/Rahkshi';
 
 export const KRAATA_ARMOR_DURATION_MS = 24 * 60 * 60 * 1000;
+export const RAHKSHI_FORGE_COST = 5000;
 
 export function getKraataCount(
   collection: KraataCollection,
@@ -41,9 +42,10 @@ export function applyKraataMerge(
 export function canStartRahkshiForge(
   collection: KraataCollection,
   power: KraataPower,
-  stage: number
+  stage: number,
+  protodermis: number
 ): boolean {
-  return stage === 1 && getKraataCount(collection, power, stage) >= 1;
+  return stage === 1 && getKraataCount(collection, power, stage) >= 1 && protodermis >= RAHKSHI_FORGE_COST;
 }
 
 export function getPreparingRahkshi(

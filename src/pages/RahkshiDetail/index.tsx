@@ -32,17 +32,19 @@ export const RahkshiDetail: React.FC = () => {
 
   const armor = useMemo(() => rahkshi.find((r) => r.id === id), [rahkshi, id]);
 
+  const armorPower = armor?.power;
+
   const colors = useMemo(() => {
-    if (!armor) return { head: '#C2A375', tail: '#D4AF37' };
-    return KRAATA_SPECIES_COLORS[armor.power] ?? { head: '#C2A375', tail: '#D4AF37' };
-  }, [armor]);
+    if (!armorPower) return { head: '#C2A375', tail: '#D4AF37' };
+    return KRAATA_SPECIES_COLORS[armorPower] ?? { head: '#C2A375', tail: '#D4AF37' };
+  }, [armorPower]);
 
   const compositedColors = useMemo(
     () =>
-      armor
-        ? getKraataCompositedColors(armor.power)
+      armorPower
+        ? getKraataCompositedColors(armorPower)
         : (['#C2A375', '#C2A375', '#D4AF37'] as [string, string, string]),
-    [armor]
+    [armorPower]
   );
 
   const isPreparing = armor?.status === 'preparing';
@@ -64,14 +66,14 @@ export const RahkshiDetail: React.FC = () => {
     for (const [power, stages] of Object.entries(kraataCollection)) {
       if (!stages) continue;
       for (const [stageStr, count] of Object.entries(stages)) {
-        if (power !== armor?.power || typeof count !== 'number' || count <= 0) continue;
+        if (power !== armorPower || typeof count !== 'number' || count <= 0) continue;
 
         entries.push({ power: power as KraataPower, stage: Number(stageStr), count });
       }
     }
 
     return entries;
-  }, [kraataCollection, isReady, hasKraata]);
+  }, [kraataCollection, isReady, hasKraata, armorPower]);
 
   if (!armor) {
     return (
