@@ -19,6 +19,7 @@ import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { getKraataCompositedColors, KRAATA_SPECIES_COLORS } from '../../data/kraataColors';
 import { CompositedImage } from '../../components/CompositedImage';
 import { RahkshiArmor } from '../../types/Rahkshi';
+import { LegoColor } from '../../types/Colors';
 
 const CHARACTERS_TAB_KEY = 'characters-tab';
 
@@ -179,9 +180,11 @@ function RahkshiTabContent({
         <>
           <h3 className="rahkshi-section__title">Rahkshi</h3>
           <div className="rahkshi-grid">
-            {rahkshi.map((armor) => (
-              <RahkshiArmorCard key={armor.id} armor={armor} />
-            ))}
+            {rahkshi
+              .sort((a, b) => a.power.localeCompare(b.power))
+              .map((armor) => (
+                <RahkshiArmorCard key={armor.id} armor={armor} />
+              ))}
           </div>
         </>
       )}
@@ -234,11 +237,12 @@ function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
       >
         <CompositedImage
           images={[
-            `${import.meta.env.BASE_URL}/avatar/Kraata/1_Base.webp`,
-            `${import.meta.env.BASE_URL}/avatar/Kraata/1_Head.webp`,
-            `${import.meta.env.BASE_URL}/avatar/Kraata/1_Tail.webp`,
+            `${import.meta.env.BASE_URL}/avatar/Kraata/Armor_Empty.webp`,
+            hasKraata
+              ? `${import.meta.env.BASE_URL}/avatar/Kraata/Armor_Glow.webp`
+              : `${import.meta.env.BASE_URL}/avatar/Kraata/Armor_Edge.webp`,
           ]}
-          colors={getKraataCompositedColors(armor.power)}
+          colors={[getKraataCompositedColors(armor.power)[0], LegoColor.White]}
           className="rahkshi-card__image"
         />
         <div className="rahkshi-card__name">{powerName} Armor</div>
