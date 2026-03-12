@@ -40,11 +40,11 @@ export const CharacterInventory: React.FC = () => {
     if (recruitedCharacters.some((m) => isToa(getEffectiveMatoran(m)))) {
       base.push('toa');
     }
-    if (recruitedCharacters.some((m) => isBohrokOrKal(getEffectiveMatoran(m)))) {
-      base.push('other');
-    }
     if (hasCollectedKraata || rahkshi.length > 0) {
       base.push('rahkshi');
+    }
+    if (recruitedCharacters.some((m) => isBohrokOrKal(getEffectiveMatoran(m)))) {
+      base.push('other');
     }
     return base;
   }, [recruitedCharacters, hasCollectedKraata, rahkshi.length]);
