@@ -574,7 +574,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Kopaka',
+        speakerId: 'Toa_Kopaka_Nuva',
         portraitType: 'avatar',
         position: 'right',
         text: `It was you who were following me.`,
@@ -639,7 +639,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Kopaka',
+        speakerId: 'Toa_Kopaka_Nuva',
         portraitType: 'avatar',
         position: 'right',
         text: `You are the Chronicler.`,
@@ -661,7 +661,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Kopaka',
+        speakerId: 'Toa_Kopaka_Nuva',
         portraitType: 'avatar',
         position: 'right',
         text: `Your stories have aided the Toa in the past. I will take you to my village of Ko-Koro. State your purpose to the Turaga.`,

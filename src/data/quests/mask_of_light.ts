@@ -125,7 +125,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     durationSeconds: 12 * 60,
     requirements: { matoran: ['Takua', 'Jaller'], minLevel: 22 },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'mol_ko_wahi_pursuit' },
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_ko_wahi_arrival' },
       xpPerMatoran: 3000,
       currency: 4500,
     },
