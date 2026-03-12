@@ -15,7 +15,8 @@ import { isBohrokOrKal, isMatoran, isToa } from '../../game/matoranStage';
 import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 import { CHARACTER_DEX } from '../../data/dex/index';
-import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
+import { KraataCollection, KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
+import { canMergeAnyKraata } from '../../game/KraataActions';
 import { getKraataCompositedColors, KRAATA_SPECIES_COLORS } from '../../data/kraataColors';
 import { CompositedImage } from '../../components/CompositedImage';
 import { RahkshiArmor } from '../../types/Rahkshi';
@@ -26,7 +27,8 @@ const CHARACTERS_TAB_KEY = 'characters-tab';
 type TabId = 'matoran' | 'toa' | 'other' | 'rahkshi';
 
 export const CharacterInventory: React.FC = () => {
-  const { recruitedCharacters, buyableCharacters, kraataCollection, rahkshi } = useGame();
+  const { recruitedCharacters, buyableCharacters, kraataCollection, rahkshi, mergeAllKraata } =
+    useGame();
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const hasCollectedKraata = useMemo(() => {
@@ -118,7 +120,12 @@ export const CharacterInventory: React.FC = () => {
         <Tabs tabs={tabs} activeTab={effectiveTab} onTabChange={handleTabChange} />
       </div>
       {effectiveTab === 'rahkshi' ? (
-        <RahkshiTabContent rahkshi={rahkshi} collectedKraata={collectedKraata} />
+        <RahkshiTabContent
+          rahkshi={rahkshi}
+          collectedKraata={collectedKraata}
+          kraataCollection={kraataCollection}
+          mergeAllKraata={mergeAllKraata}
+        />
       ) : (
         <div className="character-grid">
           {characters.map((matoran) => {
@@ -170,10 +177,19 @@ type CollectedKraataItem = { power: KraataPower; stage: number; name: string; co
 function RahkshiTabContent({
   rahkshi,
   collectedKraata,
+  kraataCollection,
+  mergeAllKraata,
 }: {
   rahkshi: RahkshiArmor[];
   collectedKraata: CollectedKraataItem[];
+  kraataCollection: KraataCollection;
+  mergeAllKraata: () => void;
 }) {
+  const canMergeAny = useMemo(
+    () => canMergeAnyKraata(kraataCollection),
+    [kraataCollection]
+  );
+
   return (
     <>
       {rahkshi.length > 0 && (
@@ -188,7 +204,19 @@ function RahkshiTabContent({
           </div>
         </>
       )}
-      <h3 className="rahkshi-section__title">Kraata</h3>
+      <div className="rahkshi-section__kraata-header">
+        <h3 className="rahkshi-section__title">Kraata</h3>
+        {collectedKraata.length > 0 && (
+          <button
+            type="button"
+            className="merge-all-button"
+            disabled={!canMergeAny}
+            onClick={mergeAllKraata}
+          >
+            Merge All
+          </button>
+        )}
+      </div>
       {collectedKraata.length === 0 && (
         <p className="rahkshi-section__empty">No Kraata collected</p>
       )}
