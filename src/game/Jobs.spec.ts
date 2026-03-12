@@ -177,7 +177,7 @@ describe('Jobs', () => {
       expect(bohrokJobs).toContain(MatoranJob.GaKoroRebuilder);
       expect(bohrokJobs).not.toContain(MatoranJob.CharcoalMaker);
       expect(bohrokJobs).not.toContain(MatoranJob.AlgaeHarvester);
-      expect(bohrokJobs).not.toContain(MatoranJob.QuarryRunner);
+      expect(bohrokJobs).not.toContain(MatoranJob.StoneMason);
     });
   });
 

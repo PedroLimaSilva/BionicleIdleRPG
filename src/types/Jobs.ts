@@ -9,7 +9,7 @@ export enum MatoranJob {
   HydroTechnician = 'HydroTechnician',
   RahiNestWatcher = 'RahiNestWatcher',
   ChuteController = 'ChuteController',
-  QuarryRunner = 'QuarryRunner',
+  StoneMason = 'StoneMason',
   SculptureOperator = 'SculptureOperator',
   LightStoneMiner = 'LightStoneMiner',
   StasisTechnician = 'StasisTechnician',

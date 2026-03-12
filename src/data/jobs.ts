@@ -75,9 +75,9 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
       requiredProgress: ['settle_metru_nui'],
     },
   },
-  [MatoranJob.QuarryRunner]: {
-    label: '🪨 Quarry Runner',
-    description: 'Extracts and transports quarried stone from Po-Wahi.',
+  [MatoranJob.StoneMason]: {
+    label: '🪨 Stone Mason',
+    description: 'Builds stone structures and sculputres in Po-Wahi.',
     elementAffinity: {
       favored: [ElementTribe.Stone],
       opposed: [],
