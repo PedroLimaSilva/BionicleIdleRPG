@@ -18,6 +18,7 @@ import { PohatuNuvaModel } from '../../components/CharacterScene/Nuva/PohatuNuva
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Group } from 'three';
+import { KraataPower } from '../../types/Kraata';
 
 const ROTATION_RESTORE_DURATION = 0.25;
 
@@ -137,7 +138,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
         case 'rahkshi':
           return (
             <group scale={0.04} position={[0, 0, 0]}>
-              <RahkshiModel ref={childRef} id={combatant.id.split('-')[0]} />
+              <RahkshiModel ref={childRef} kraata={combatant.id.split('-')[0] as KraataPower} />
             </group>
           );
         case 'Toa_Kopaka':

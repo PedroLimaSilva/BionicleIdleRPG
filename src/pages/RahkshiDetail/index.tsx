@@ -6,9 +6,67 @@ import { getKraataCompositedColors } from '../../data/kraataColors';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { CompositedImage } from '../../components/CompositedImage';
 import { isForgeComplete } from '../../game/KraataActions';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, Suspense } from 'react';
+import { useThree } from '@react-three/fiber';
+import { Environment, PresentationControls } from '@react-three/drei';
+import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { RahkshiModel } from '../../components/CharacterScene/Rahkshi';
+import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from '../../components/CharacterScene/BoundsCylinder';
 
 import './index.scss';
+
+const CENTER_Y = CYLINDER_HEIGHT / 2;
+
+function RahkshiFraming() {
+  const camera = useThree((s) => s.camera);
+  const size = useThree((s) => s.size);
+  useEffect(() => {
+    if (camera.type !== 'OrthographicCamera') return;
+    if (size.width <= 0 || size.height <= 0) return;
+    camera.position.set(0, CENTER_Y, 100);
+    camera.lookAt(0, CENTER_Y, 0);
+    camera.near = 0.1;
+    camera.far = 1000;
+    camera.zoom = Math.min(size.width / (CYLINDER_RADIUS * 2), size.height / CYLINDER_HEIGHT);
+    camera.updateProjectionMatrix();
+  }, [camera, size]);
+  return null;
+}
+
+function RahkshiDetailScene({ kraata }: { kraata: KraataPower }) {
+  return (
+    <>
+      <RahkshiFraming />
+      <Environment preset="city" />
+      <ambientLight intensity={0.05} />
+      <directionalLight
+        position={[3, CENTER_Y + 8, 10]}
+        intensity={1.2}
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-camera-near={0.5}
+        shadow-camera-far={50}
+        shadow-camera-left={-CYLINDER_RADIUS * 2}
+        shadow-camera-right={CYLINDER_RADIUS * 2}
+        shadow-camera-top={CYLINDER_HEIGHT * 0.75}
+        shadow-camera-bottom={-CYLINDER_HEIGHT * 0.75}
+      />
+      <directionalLight position={[-3, CENTER_Y + 2, -2]} intensity={0.15} />
+      <PresentationControls
+        global
+        snap={false}
+        speed={2}
+        zoom={1}
+        polar={[0, 0]}
+        config={{ mass: 0.5, tension: 170, friction: 26 }}
+      >
+        <Suspense fallback={null}>
+          <RahkshiModel kraata={kraata} />
+        </Suspense>
+      </PresentationControls>
+    </>
+  );
+}
 
 function formatTimeRemaining(ms: number): string {
   if (ms <= 0) return 'Ready!';
@@ -23,6 +81,7 @@ function formatTimeRemaining(ms: number): string {
 
 export const RahkshiDetail: React.FC = () => {
   const { id } = useParams();
+  const { setScene } = useSceneCanvas();
   const {
     rahkshi,
     kraataCollection,
@@ -32,8 +91,14 @@ export const RahkshiDetail: React.FC = () => {
   } = useGame();
 
   const armor = useMemo(() => rahkshi.find((r) => r.id === id), [rahkshi, id]);
-
   const armorPower = armor?.power;
+
+  useEffect(() => {
+    if (armor && armorPower) {
+      setScene(<RahkshiDetailScene kraata={armorPower} />);
+    }
+    return () => setScene(null);
+  }, [armor, armorPower, setScene]);
 
   const armorColors = useMemo(
     () => (armorPower ? getRahkshiArmorColors(armorPower) : { armor: '#C2A375', joint: '#D4AF37' }),
@@ -41,15 +106,6 @@ export const RahkshiDetail: React.FC = () => {
   );
 
   const hasKraata = !!armor?.kraata;
-
-  const compositedColors = useMemo(() => {
-    if (!armorPower) return ['#C2A375', '#C2A375', '#D4AF37'] as [string, string, string];
-    if (hasKraata && armor?.kraata) {
-      return getKraataCompositedColors(armor.kraata.power);
-    }
-    const { armor: a, joint: j } = getRahkshiArmorColors(armorPower);
-    return [a, j, a] as [string, string, string];
-  }, [armorPower, hasKraata, armor?.kraata]);
 
   const isPreparing = armor?.status === 'preparing';
   const isReady = armor?.status === 'ready';
@@ -105,15 +161,7 @@ export const RahkshiDetail: React.FC = () => {
         <Link to="/characters" className="rahkshi-detail__back">
           <ArrowLeft size={18} aria-hidden /> Back
         </Link>
-        <CompositedImage
-          images={[
-            `${import.meta.env.BASE_URL}/avatar/Kraata/1_Base.webp`,
-            `${import.meta.env.BASE_URL}/avatar/Kraata/1_Head.webp`,
-            `${import.meta.env.BASE_URL}/avatar/Kraata/1_Tail.webp`,
-          ]}
-          colors={compositedColors}
-          className="rahkshi-detail__image"
-        />
+        <div id="rahkshi-model-frame" className="rahkshi-detail__model-frame" />
         <h1 className="rahkshi-detail__name">{powerName} Armor</h1>
         <div className="rahkshi-detail__meta">
           <span

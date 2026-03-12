@@ -243,7 +243,7 @@ function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
               ? `${import.meta.env.BASE_URL}/avatar/Kraata/Armor_Glow.webp`
               : `${import.meta.env.BASE_URL}/avatar/Kraata/Armor_Edge.webp`,
           ]}
-          colors={[armorColor, hasKraata ? jointColor : LegoColor.White]}
+          colors={[armorColor, LegoColor.White]}
           className="rahkshi-card__image"
         />
         <div className="rahkshi-card__name">{powerName} Armor</div>

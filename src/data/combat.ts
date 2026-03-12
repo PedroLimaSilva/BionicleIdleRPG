@@ -603,8 +603,8 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   },
 
   // Rahkshi – Sons of Makuta; tougher than Bohrok, stats scale with party level
-  Turahk: {
-    id: 'Turahk',
+  [KraataPower.Fear]: {
+    id: KraataPower.Fear,
     name: 'Turahk',
     model: 'rahkshi',
     element: ElementTribe.Fire,
@@ -613,8 +613,8 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseDefense: 18,
     baseSpeed: 12,
   },
-  Guurahk: {
-    id: 'Guurahk',
+  [KraataPower.Disintegration]: {
+    id: KraataPower.Disintegration,
     name: 'Guurahk',
     model: 'rahkshi',
     element: ElementTribe.Water,
@@ -623,8 +623,8 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseDefense: 16,
     baseSpeed: 10,
   },
-  Lerahk: {
-    id: 'Lerahk',
+  [KraataPower.Poison]: {
+    id: KraataPower.Poison,
     name: 'Lerahk',
     model: 'rahkshi',
     element: ElementTribe.Air,
@@ -633,8 +633,8 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseDefense: 14,
     baseSpeed: 14,
   },
-  Panrahk: {
-    id: 'Panrahk',
+  [KraataPower.Fragmentation]: {
+    id: KraataPower.Fragmentation,
     name: 'Panrahk',
     model: 'rahkshi',
     element: ElementTribe.Stone,
@@ -643,8 +643,8 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseDefense: 20,
     baseSpeed: 8,
   },
-  Vorahk: {
-    id: 'Vorahk',
+  [KraataPower.Hunger]: {
+    id: KraataPower.Hunger,
     name: 'Vorahk',
     model: 'rahkshi',
     element: ElementTribe.Earth,
@@ -653,8 +653,8 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseDefense: 22,
     baseSpeed: 9,
   },
-  Kurahk: {
-    id: 'Kurahk',
+  [KraataPower.Anger]: {
+    id: KraataPower.Anger,
     name: 'Kurahk',
     model: 'rahkshi',
     element: ElementTribe.Ice,
@@ -1215,12 +1215,12 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   {
     id: 'guurahk-1',
     name: 'Guurahk',
-    headliner: 'Guurahk',
+    headliner: KraataPower.Disintegration,
     difficulty: 7,
     description:
       'The Rahkshi of Disintegration can reduce any substance to dust with a blast from its staff.',
     scalesWithParty: true,
-    waves: [[{ id: 'Guurahk', lvl: 1 }]],
+    waves: [[{ id: KraataPower.Disintegration, lvl: 1 }]],
     loot: makeKraataLoot([
       KraataPower.Disintegration,
       KraataPower.ChainLightning,
@@ -1235,12 +1235,12 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   {
     id: 'lerahk-1',
     name: 'Lerahk',
-    headliner: 'Lerahk',
+    headliner: KraataPower.Poison,
     difficulty: 7,
     description:
       'The Rahkshi of Poison spreads its toxic venom wherever its staff strikes. Even a Toa Nuva can fall to its corruption.',
     scalesWithParty: true,
-    waves: [[{ id: 'Lerahk', lvl: 1 }]],
+    waves: [[{ id: KraataPower.Poison, lvl: 1 }]],
     loot: makeKraataLoot([
       KraataPower.Poison,
       KraataPower.Adaptation,
@@ -1255,12 +1255,12 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   {
     id: 'panrahk-1',
     name: 'Panrahk',
-    headliner: 'Panrahk',
+    headliner: KraataPower.Fragmentation,
     difficulty: 7,
     description:
       'The Rahkshi of Fragmentation stalks the ruins of Ta-Koro. Its staff blasts can shatter stone and metal alike.',
     scalesWithParty: true,
-    waves: [[{ id: 'Panrahk', lvl: 1 }]],
+    waves: [[{ id: KraataPower.Fragmentation, lvl: 1 }]],
     loot: makeKraataLoot([
       KraataPower.Fragmentation,
       KraataPower.DensityControl,
@@ -1282,9 +1282,9 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     scalesWithParty: true,
     waves: [
       [
-        { id: 'Panrahk', lvl: 1 },
-        { id: 'Guurahk', lvl: 1 },
-        { id: 'Lerahk', lvl: 1 },
+        { id: KraataPower.Fragmentation, lvl: 1 },
+        { id: KraataPower.Disintegration, lvl: 1 },
+        { id: KraataPower.Poison, lvl: 1 },
       ],
     ],
     loot: makeKraataLoot([
@@ -1300,12 +1300,12 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   {
     id: 'turahk-1',
     name: 'Turahk',
-    headliner: 'Turahk',
+    headliner: KraataPower.Fear,
     difficulty: 7,
     description:
       'The Rahkshi of Fear descended upon Onu-Koro. Its Staff of Fear can freeze even a Toa in terror.',
     scalesWithParty: true,
-    waves: [[{ id: 'Turahk', lvl: 1 }]],
+    waves: [[{ id: KraataPower.Fear, lvl: 1 }]],
     loot: makeKraataLoot([
       KraataPower.Fear,
       KraataPower.Accuracy,
@@ -1320,12 +1320,12 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   {
     id: 'vorahk-1',
     name: 'Vorahk',
-    headliner: 'Vorahk',
+    headliner: KraataPower.Hunger,
     difficulty: 7,
     description:
       'The Rahkshi of Hunger drains the energy and strength of its opponents. Its very presence saps life.',
     scalesWithParty: true,
-    waves: [[{ id: 'Vorahk', lvl: 1 }]],
+    waves: [[{ id: KraataPower.Hunger, lvl: 1 }]],
     loot: makeKraataLoot([
       KraataPower.Hunger,
       KraataPower.Dodge,
@@ -1340,12 +1340,12 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   {
     id: 'kurahk-1',
     name: 'Kurahk',
-    headliner: 'Kurahk',
+    headliner: KraataPower.Anger,
     difficulty: 7,
     description:
       'The Rahkshi of Anger can turn allies against each other with a single blast from its staff.',
     scalesWithParty: true,
-    waves: [[{ id: 'Kurahk', lvl: 1 }]],
+    waves: [[{ id: KraataPower.Anger, lvl: 1 }]],
     loot: makeKraataLoot([
       KraataPower.Anger,
       KraataPower.Cyclone,
@@ -1367,16 +1367,12 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     scalesWithParty: true,
     waves: [
       [
-        { id: 'Turahk', lvl: 1 },
-        { id: 'Vorahk', lvl: 1 },
-        { id: 'Kurahk', lvl: 1 },
+        { id: KraataPower.Fear, lvl: 1 },
+        { id: KraataPower.Hunger, lvl: 1 },
+        { id: KraataPower.Anger, lvl: 1 },
       ],
     ],
-    loot: makeKraataLoot([
-      KraataPower.Fear,
-      KraataPower.Hunger,
-      KraataPower.Anger,
-    ]),
+    loot: makeKraataLoot([KraataPower.Fear, KraataPower.Hunger, KraataPower.Anger]),
     unlockedAfter: ['mol_onu_koro_battle'],
   },
 
@@ -1392,14 +1388,14 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     scalesWithParty: true,
     waves: [
       [
-        { id: 'Panrahk', lvl: 1 },
-        { id: 'Guurahk', lvl: 1 },
-        { id: 'Lerahk', lvl: 1 },
+        { id: KraataPower.Fragmentation, lvl: 1 },
+        { id: KraataPower.Disintegration, lvl: 1 },
+        { id: KraataPower.Poison, lvl: 1 },
       ],
       [
-        { id: 'Turahk', lvl: 1 },
-        { id: 'Vorahk', lvl: 1 },
-        { id: 'Kurahk', lvl: 1 },
+        { id: KraataPower.Fear, lvl: 1 },
+        { id: KraataPower.Hunger, lvl: 1 },
+        { id: KraataPower.Anger, lvl: 1 },
       ],
     ],
     loot: makeKraataLoot([
