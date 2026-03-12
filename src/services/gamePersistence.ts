@@ -75,6 +75,9 @@ export function loadGameState() {
       if (!parsed.kraataCollection) {
         parsed.kraataCollection = {};
       }
+      if (!Array.isArray(parsed.rahkshi)) {
+        parsed.rahkshi = [];
+      }
 
       migrateKraataFromInventory(parsed);
       sanitizeUnrecognizedJobs(parsed);

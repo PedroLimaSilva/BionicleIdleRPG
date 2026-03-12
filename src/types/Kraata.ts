@@ -70,6 +70,26 @@ export function addKraataToCollection(
   };
 }
 
+export const MAX_KRAATA_STAGE = 6;
+
+export function removeKraataFromCollection(
+  collection: KraataCollection,
+  power: KraataPower,
+  stage: number,
+  count: number
+): KraataCollection {
+  const existing = collection[power] ?? {};
+  const current = existing[stage] ?? 0;
+  const next = Math.max(0, current - count);
+  return {
+    ...collection,
+    [power]: {
+      ...existing,
+      [stage]: next,
+    },
+  };
+}
+
 export const KRAATA_POWER_NAMES: Record<KraataPower, string> = {
   [KraataPower.Accuracy]: 'Accuracy',
   [KraataPower.Adaptation]: 'Adaptation',

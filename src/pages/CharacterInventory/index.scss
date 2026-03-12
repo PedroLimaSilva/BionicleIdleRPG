@@ -144,6 +144,7 @@
 }
 
 .kraata-card {
+  height: 100%;
   border: 2px solid var(--color-border-muted);
   border-radius: var(--border-radius-md);
   padding: 1.25rem;
@@ -156,6 +157,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  cursor: pointer;
+  transition: all var(--transition-base);
+
+  &:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-glow);
+    border-color: var(--color-accent);
+  }
 
   &__image {
     width: 100%;
@@ -185,6 +194,120 @@
     position: absolute;
     top: 1.25rem;
     right: 1.25rem;
+  }
+}
+
+.rahkshi-section__title {
+  text-align: left;
+  color: var(--color-text-muted);
+  margin-bottom: 0;
+}
+
+.rahkshi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+$rahkshi-card-radius: 8px;
+$rahkshi-card-border: 2px;
+
+.rahkshi-card {
+  height: 100%;
+  border-radius: $rahkshi-card-radius;
+  padding: 1.25rem;
+  text-align: center;
+  background:
+    linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-mid) 100%),
+    linear-gradient(to top, var(--rahkshi-head-color), var(--rahkshi-tail-color)) bottom / 100% 3px
+      no-repeat;
+  box-shadow: var(--shadow-md);
+  min-height: 150px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  overflow: hidden;
+
+  /* Gradient border with radius: mask technique (https://dev.to/afif/border-with-gradient-and-radius-387f) */
+  &::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: $rahkshi-card-radius;
+    padding: $rahkshi-card-border;
+    background: linear-gradient(
+      135deg,
+      var(--rahkshi-head-color) 0%,
+      var(--rahkshi-tail-color) 100%
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+  }
+
+  &::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--rahkshi-head-color), var(--rahkshi-tail-color));
+    opacity: 0.5;
+  }
+
+  &:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-glow);
+  }
+
+  &--preparing {
+    opacity: 0.75;
+  }
+
+  &__image {
+    width: 100%;
+  }
+
+  &__name {
+    font-weight: 700;
+    font-size: 1rem;
+    font-family: var(--font-display);
+    color: var(--color-text);
+    line-height: 1.2;
+  }
+
+  &__status {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.25rem;
+
+    &--preparing {
+      color: var(--color-text-muted);
+      background: var(--color-surface-low);
+    }
+
+    &--ready {
+      color: var(--color-accent);
+      background: rgba(252, 239, 110, 0.1);
+    }
+
+    &--active {
+      color: #a8f4a4;
+      background: rgba(168, 244, 164, 0.1);
+    }
   }
 }
 

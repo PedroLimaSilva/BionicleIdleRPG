@@ -1,0 +1,202 @@
+.kraata-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+$kraata-visualization-radius: 12px;
+$kraata-visualization-border: 2px;
+
+.kraata-detail-visualization {
+  position: relative;
+  width: 100%;
+  max-width: min(max(640px, 100%), 100vw - 4rem);
+  margin: 0 auto;
+  padding: 2rem 1.5rem 1.5rem;
+  border-radius: $kraata-visualization-radius;
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-surface-high) 0%,
+      var(--color-surface-mid) 50%,
+      var(--color-surface-low) 100%
+    ),
+    linear-gradient(to top, var(--kraata-head-color), var(--kraata-tail-color)) bottom / 100% 3px
+      no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--kraata-head-color) 20%, transparent) 0%,
+      transparent 70%
+    );
+    opacity: 0.15;
+    animation: kraata-pulse 4s ease-in-out infinite;
+  }
+
+  /* Gradient border with radius: mask technique (https://dev.to/afif/border-with-gradient-and-radius-387f) */
+  &::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: $kraata-visualization-radius;
+    padding: $kraata-visualization-border;
+    background: linear-gradient(135deg, var(--kraata-head-color) 0%, var(--kraata-tail-color) 100%);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+  }
+}
+
+@keyframes kraata-pulse {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(1.05);
+  }
+}
+
+.kraata-detail__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  position: absolute;
+  top: 0.75rem;
+  left: 1rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  z-index: 1;
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+.kraata-detail__image {
+  width: 100%;
+  max-width: 280px;
+  position: relative;
+  z-index: 1;
+}
+
+.page-container h1.kraata-detail__name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, var(--kraata-head-color), var(--kraata-tail-color));
+  text-shadow:
+    0 0 10px var(--kraata-head-color),
+    0 0 20px var(--kraata-tail-color);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
+}
+
+.kraata-detail__meta {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.kraata-detail__stage {
+  font-size: 2rem;
+  color: var(--color-text-muted);
+}
+
+.kraata-detail__count {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.kraata-detail-options {
+  width: 100%;
+  max-width: min(max(640px, 100%), 100vw - 4rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.kraata-option {
+  border: 1px solid var(--color-border-muted);
+  border-radius: var(--border-radius-md);
+  padding: 1.25rem;
+  background: var(--color-surface-mid);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: var(--font-display);
+    color: var(--color-text);
+  }
+
+  &__desc {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  button {
+    width: 100%;
+    text-align: center;
+  }
+
+  &__timer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--color-surface-low);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  &__progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover));
+    border-radius: 4px;
+    transition: width 1s linear;
+  }
+
+  &__time-remaining {
+    font-size: 0.9rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    text-align: center;
+    font-family: var(--font-display);
+  }
+}

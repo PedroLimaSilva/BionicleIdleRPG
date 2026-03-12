@@ -21,11 +21,31 @@ export const INITIAL_GAME_STATE: GameState = {
   buyableCharacters: LISTED_MATORAN_DATA,
   collectedKrana: {},
   kraataCollection: {},
+  rahkshi: [],
   battle: INITIAL_BATTLE_STATE,
   recruitCharacter: function (_character: ListedCharacterData): void {
     throw new Error('Function not implemented.');
   },
   addKraata: function (_power: KraataPower, _stage: number, _count: number): void {
+    throw new Error('Function not implemented.');
+  },
+  mergeKraata: function (_power: KraataPower, _stage: number): void {
+    throw new Error('Function not implemented.');
+  },
+  startRahkshiForge: function (_power: KraataPower, _stage: number): void {
+    throw new Error('Function not implemented.');
+  },
+  completeRahkshiForge: function (_rahkshiId: string): void {
+    throw new Error('Function not implemented.');
+  },
+  insertKraataIntoRahkshi: function (
+    _rahkshiId: string,
+    _power: KraataPower,
+    _stage: number
+  ): void {
+    throw new Error('Function not implemented.');
+  },
+  removeKraataFromRahkshi: function (_rahkshiId: string): void {
     throw new Error('Function not implemented.');
   },
   assignJobToMatoran: function (_id: BaseMatoran['id'], _job: MatoranJob): void {

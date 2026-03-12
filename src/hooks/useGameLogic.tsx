@@ -30,7 +30,17 @@ import {
   KraataPower,
   KraataReward,
   addKraataToCollection,
+  removeKraataFromCollection,
 } from '../types/Kraata';
+import { RahkshiArmor, generateRahkshiId } from '../types/Rahkshi';
+import {
+  canMergeKraata,
+  applyKraataMerge,
+  canStartRahkshiForge,
+  KRAATA_ARMOR_DURATION_MS,
+  RAHKSHI_FORGE_COST,
+} from '../game/KraataActions';
+import { getDebugMode } from '../services/gamePersistence';
 
 export const useGameLogic = (): GameState & GameStateEditorApi => {
   const [initialState] = useState(() => loadGameState());
@@ -45,15 +55,24 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     initialState.kraataCollection ?? {}
   );
 
+  const [rahkshi, setRahkshi] = useState<RahkshiArmor[]>(initialState.rahkshi ?? []);
+
   const [protodermis, setProtodermis] = useState(initialState.protodermis);
   const [protodermisCap, setProtodermisCap] = useState(initialState.protodermisCap);
 
   const recruitedCharactersRef = useRef(initialState.recruitedCharacters);
-  const setRecruitedCharactersRef = useRef<
-    Dispatch<SetStateAction<RecruitedCharacterData[]>>
-  >(() => {});
+  const setRecruitedCharactersRef = useRef<Dispatch<SetStateAction<RecruitedCharacterData[]>>>(
+    () => {}
+  );
 
-  const { activeQuests, completedQuests, setCompletedQuests, startQuest, cancelQuest, completeQuest } = useQuestState({
+  const {
+    activeQuests,
+    completedQuests,
+    setCompletedQuests,
+    startQuest,
+    cancelQuest,
+    completeQuest,
+  } = useQuestState({
     initialActive: initialState.activeQuests,
     initialCompleted: initialState.completedQuests,
     getCharacters: () => recruitedCharactersRef.current,
@@ -101,6 +120,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     protodermisCap,
     collectedKrana,
     kraataCollection,
+    rahkshi,
     recruitedCharacters,
     activeQuests,
     completedQuests,
@@ -114,6 +134,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     protodermisCap,
     collectedKrana,
     kraataCollection,
+    rahkshi,
     recruitedCharacters,
     buyableCharacters: buyableCharacters,
     // State editor API (raw setters; only use while editor is open to avoid conflicts)
@@ -125,6 +146,65 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     setProtodermisCap,
     addKraata: (power: KraataPower, stage: number, count: number) => {
       setKraataCollection((prev) => addKraataToCollection(prev, power, stage, count));
+    },
+    mergeKraata: (power: KraataPower, stage: number) => {
+      setKraataCollection((prev) => {
+        if (!canMergeKraata(prev, power, stage)) return prev;
+        return applyKraataMerge(prev, power, stage);
+      });
+    },
+    startRahkshiForge: (power: KraataPower, stage: number) => {
+      setProtodermis((prevProto) => {
+        if (prevProto < RAHKSHI_FORGE_COST) return prevProto;
+        setKraataCollection((prev) => {
+          if (!canStartRahkshiForge(prev, power, stage, prevProto)) return prev;
+          const now = Date.now();
+          const duration = getDebugMode() ? 1000 : KRAATA_ARMOR_DURATION_MS;
+          const newArmor: RahkshiArmor = {
+            id: generateRahkshiId(),
+            power,
+            sourceStage: stage,
+            status: 'preparing',
+            startedAt: now,
+            endsAt: now + duration,
+          };
+          setRahkshi((prevR) => [...prevR, newArmor]);
+          return removeKraataFromCollection(prev, power, stage, 1);
+        });
+        return prevProto - RAHKSHI_FORGE_COST;
+      });
+    },
+    completeRahkshiForge: (rahkshiId: string) => {
+      setRahkshi((prev) =>
+        prev.map((r) =>
+          r.id === rahkshiId
+            ? { ...r, status: 'ready' as const, startedAt: undefined, endsAt: undefined }
+            : r
+        )
+      );
+    },
+    insertKraataIntoRahkshi: (rahkshiId: string, power: KraataPower, stage: number) => {
+      const count = kraataCollection[power]?.[stage] ?? 0;
+      if (count < 1) return;
+      const armor = rahkshi.find((r) => r.id === rahkshiId);
+      if (!armor || armor.status !== 'ready' || armor.kraata || armor.power !== power) return;
+      setKraataCollection((prev) => removeKraataFromCollection(prev, power, stage, 1));
+      setRahkshi((prevR) =>
+        prevR.map((r) =>
+          r.id === rahkshiId && r.status === 'ready' && !r.kraata && r.power === power
+            ? { ...r, kraata: { power, stage } }
+            : r
+        )
+      );
+    },
+    removeKraataFromRahkshi: (rahkshiId: string) => {
+      const armor = rahkshi.find((r) => r.id === rahkshiId);
+      if (!armor?.kraata) return;
+      const { power, stage } = armor.kraata;
+      setRahkshi((prevR) =>
+        prevR.map((r) => (r.id === rahkshiId ? { ...r, kraata: undefined } : r))
+      );
+      setKraataCollection((prev) => addKraataToCollection(prev, power, stage, 1));
     },
     recruitCharacter,
     setMaskOverride,

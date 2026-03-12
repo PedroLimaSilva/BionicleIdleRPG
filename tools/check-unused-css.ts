@@ -120,6 +120,9 @@ async function main(): Promise<void> {
         /#canvas-mount/,
         /main-content/,
         /visual-novel-cutscene__content--/,
+        /rahkshi-card--/,
+        /rahkshi-card__status--/,
+        /rahkshi-detail__status--/,
       ],
       // Preserve element selectors and pseudo-classes
       deep: [/^h[1-6]$/, /:hover/, /:focus/, /:active/, /:disabled/, /::before/, /::after/],

@@ -61,7 +61,7 @@ export interface KraataColors {
 export function getKraataCompositedColors(power: KraataPower): [string, string, string] {
   const c = KRAATA_SPECIES_COLORS[power];
   if (!c) return [hex('Sand Yellow Metallic'), hex('Sand Yellow Metallic'), hex('Lemon Metallic')];
-  return [c.head, c.head, c.tail];
+  return [c.tail, c.head, c.tail];
 }
 
 /** Kraata species → head/tail colors (wiki: first = head, second = tail). */

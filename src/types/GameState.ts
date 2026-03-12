@@ -6,6 +6,7 @@ import { Quest, QuestProgress } from './Quests';
 import { KranaCollection, KranaElement, KranaId } from './Krana';
 import { KraataCollection, KraataPower, KraataReward } from './Kraata';
 import { Combatant, EnemyEncounter } from './Combat';
+import { RahkshiArmor } from './Rahkshi';
 
 export type KranaReward = { element: KranaElement; kranaId: KranaId };
 
@@ -27,6 +28,7 @@ export type GameState = {
   protodermisCap: number;
   collectedKrana: KranaCollection;
   kraataCollection: KraataCollection;
+  rahkshi: RahkshiArmor[];
   buyableCharacters: ListedCharacterData[];
   recruitedCharacters: RecruitedCharacterData[];
   activeQuests: QuestProgress[];
@@ -36,6 +38,11 @@ export type GameState = {
   setMaskOverride: (id: RecruitedCharacterData['id'], mask: Mask) => void;
   collectKrana: (element: KranaElement, id: KranaId) => void;
   addKraata: (power: KraataPower, stage: number, count: number) => void;
+  mergeKraata: (power: KraataPower, stage: number) => void;
+  startRahkshiForge: (power: KraataPower, stage: number) => void;
+  completeRahkshiForge: (rahkshiId: string) => void;
+  insertKraataIntoRahkshi: (rahkshiId: string, power: KraataPower, stage: number) => void;
+  removeKraataFromRahkshi: (rahkshiId: string) => void;
   assignJobToMatoran: (matoranId: RecruitedCharacterData['id'], job: MatoranJob) => void;
   removeJobFromMatoran: (matoranId: RecruitedCharacterData['id']) => void;
   startQuest: (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => void;
@@ -55,6 +62,7 @@ export type PartialGameState = Pick<
   | 'protodermisCap'
   | 'collectedKrana'
   | 'kraataCollection'
+  | 'rahkshi'
   | 'recruitedCharacters'
   | 'activeQuests'
   | 'completedQuests'
