@@ -4,8 +4,8 @@
  *
  * Each section states "Rahkshi of (power) are (armor color)/(joint color)".
  * For single-color Rahkshi, only one color is listed (armor and joints match).
- * For multi-colored: first = armor (head, spine, shoulders, knees),
- * second = joints (hands, feet, hip).
+ * For multi-colored: first = armor (head, spine armor, shoulders),
+ * second = joints (hands, knees, feet).
  */
 
 import { KraataPower } from '../types/Kraata';
@@ -47,9 +47,9 @@ function hex(name: string): string {
 }
 
 export interface RahkshiArmorColors {
-  /** Armor color (head, spine, shoulders, knees). */
+  /** Armor color (head, spine armor, shoulders). */
   armor: string;
-  /** Joint color (hands, feet, hip). Same as armor when Rahkshi is single-colored. */
+  /** Joint color (hands, knees, feet). Same as armor when Rahkshi is single-colored. */
   joint: string;
 }
 
