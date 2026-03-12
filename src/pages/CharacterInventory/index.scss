@@ -161,7 +161,7 @@
   transition: all var(--transition-base);
 
   &:hover {
-    transform: translateY(-4px) scale(1.02);
+    transform: scale(1.02);
     box-shadow: var(--shadow-glow);
     border-color: var(--color-accent);
   }
@@ -265,7 +265,7 @@ $rahkshi-card-border: 2px;
   }
 
   &:hover {
-    transform: translateY(-4px) scale(1.02);
+    transform: scale(1.02);
     box-shadow: var(--shadow-glow);
   }
 
