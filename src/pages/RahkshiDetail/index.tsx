@@ -2,7 +2,8 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useGame } from '../../context/Game';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
-import { KRAATA_SPECIES_COLORS, getKraataCompositedColors } from '../../data/kraataColors';
+import { getKraataCompositedColors } from '../../data/kraataColors';
+import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { CompositedImage } from '../../components/CompositedImage';
 import { isForgeComplete } from '../../game/KraataActions';
 import { useMemo, useState, useEffect } from 'react';
@@ -34,22 +35,24 @@ export const RahkshiDetail: React.FC = () => {
 
   const armorPower = armor?.power;
 
-  const colors = useMemo(() => {
-    if (!armorPower) return { head: '#C2A375', tail: '#D4AF37' };
-    return KRAATA_SPECIES_COLORS[armorPower] ?? { head: '#C2A375', tail: '#D4AF37' };
-  }, [armorPower]);
-
-  const compositedColors = useMemo(
-    () =>
-      armorPower
-        ? getKraataCompositedColors(armorPower)
-        : (['#C2A375', '#C2A375', '#D4AF37'] as [string, string, string]),
+  const armorColors = useMemo(
+    () => (armorPower ? getRahkshiArmorColors(armorPower) : { armor: '#C2A375', joint: '#D4AF37' }),
     [armorPower]
   );
 
+  const hasKraata = !!armor?.kraata;
+
+  const compositedColors = useMemo(() => {
+    if (!armorPower) return ['#C2A375', '#C2A375', '#D4AF37'] as [string, string, string];
+    if (hasKraata && armor?.kraata) {
+      return getKraataCompositedColors(armor.kraata.power);
+    }
+    const { armor: a, joint: j } = getRahkshiArmorColors(armorPower);
+    return [a, j, a] as [string, string, string];
+  }, [armorPower, hasKraata, armor?.kraata]);
+
   const isPreparing = armor?.status === 'preparing';
   const isReady = armor?.status === 'ready';
-  const hasKraata = !!armor?.kraata;
 
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -94,8 +97,8 @@ export const RahkshiDetail: React.FC = () => {
         className="rahkshi-detail-visualization"
         style={
           {
-            '--kraata-head-color': colors.head,
-            '--kraata-tail-color': colors.tail,
+            '--kraata-head-color': armorColors.armor,
+            '--kraata-tail-color': armorColors.joint,
           } as React.CSSProperties
         }
       >

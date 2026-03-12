@@ -16,7 +16,8 @@ import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
-import { getKraataCompositedColors, KRAATA_SPECIES_COLORS } from '../../data/kraataColors';
+import { getKraataCompositedColors } from '../../data/kraataColors';
+import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { CompositedImage } from '../../components/CompositedImage';
 import { RahkshiArmor } from '../../types/Rahkshi';
 import { LegoColor } from '../../types/Colors';
@@ -217,7 +218,7 @@ function RahkshiTabContent({
 }
 
 function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
-  const colors = KRAATA_SPECIES_COLORS[armor.power] ?? { head: '#C2A375', tail: '#D4AF37' };
+  const { armor: armorColor, joint: jointColor } = getRahkshiArmorColors(armor.power);
   const powerName = KRAATA_POWER_NAMES[armor.power] ?? armor.power;
   const isPreparing = armor.status === 'preparing';
   const hasKraata = !!armor.kraata;
@@ -230,8 +231,8 @@ function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
         className={`rahkshi-card rahkshi-card--${armor.status}`}
         style={
           {
-            '--rahkshi-head-color': colors.head,
-            '--rahkshi-tail-color': colors.tail,
+            '--rahkshi-head-color': armorColor,
+            '--rahkshi-tail-color': jointColor,
           } as React.CSSProperties
         }
       >
@@ -242,7 +243,7 @@ function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
               ? `${import.meta.env.BASE_URL}/avatar/Kraata/Armor_Glow.webp`
               : `${import.meta.env.BASE_URL}/avatar/Kraata/Armor_Edge.webp`,
           ]}
-          colors={[getKraataCompositedColors(armor.power)[0], LegoColor.White]}
+          colors={[armorColor, hasKraata ? jointColor : LegoColor.White]}
           className="rahkshi-card__image"
         />
         <div className="rahkshi-card__name">{powerName} Armor</div>

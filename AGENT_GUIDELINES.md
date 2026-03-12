@@ -121,8 +121,9 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 
 1. `KraataPower` is the authoritative enum for all 42 kraata powers
 2. Kraata colors are looked up via `getKraataCompositedColors(power)` from `src/data/kraataColors.ts`
-3. Battle kraata drops always use stage 1
-4. A migration in `loadGameState` moves any legacy kraata from `inventory` into `kraataCollection`
+3. Rahkshi armor and joint colors (distinct from kraata colors) are looked up via `getRahkshiArmorColors(power)` from `src/data/rahkshiArmorColors.ts`
+4. Battle kraata drops always use stage 1
+5. A migration in `loadGameState` moves any legacy kraata from `inventory` into `kraataCollection`
 
 **NEVER** store kraata in the generic `inventory`. Always use `kraataCollection`.
 
