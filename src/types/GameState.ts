@@ -42,6 +42,7 @@ export type GameState = {
   startRahkshiForge: (power: KraataPower, stage: number) => void;
   completeRahkshiForge: (rahkshiId: string) => void;
   insertKraataIntoRahkshi: (rahkshiId: string, power: KraataPower, stage: number) => void;
+  removeKraataFromRahkshi: (rahkshiId: string) => void;
   assignJobToMatoran: (matoranId: RecruitedCharacterData['id'], job: MatoranJob) => void;
   removeJobFromMatoran: (matoranId: RecruitedCharacterData['id']) => void;
   startQuest: (quest: Quest, assignedMatoran: RecruitedCharacterData['id'][]) => void;

@@ -60,11 +60,18 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
   const [protodermisCap, setProtodermisCap] = useState(initialState.protodermisCap);
 
   const recruitedCharactersRef = useRef(initialState.recruitedCharacters);
-  const setRecruitedCharactersRef = useRef<
-    Dispatch<SetStateAction<RecruitedCharacterData[]>>
-  >(() => {});
+  const setRecruitedCharactersRef = useRef<Dispatch<SetStateAction<RecruitedCharacterData[]>>>(
+    () => {}
+  );
 
-  const { activeQuests, completedQuests, setCompletedQuests, startQuest, cancelQuest, completeQuest } = useQuestState({
+  const {
+    activeQuests,
+    completedQuests,
+    setCompletedQuests,
+    startQuest,
+    cancelQuest,
+    completeQuest,
+  } = useQuestState({
     initialActive: initialState.activeQuests,
     initialCompleted: initialState.completedQuests,
     getCharacters: () => recruitedCharactersRef.current,
@@ -146,44 +153,51 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
       });
     },
     startRahkshiForge: (power: KraataPower, stage: number) => {
-      setKraataCollection((prev) => {
-        if (!canStartRahkshiForge(prev, power, stage)) return prev;
-        const now = Date.now();
-        const duration = getDebugMode() ? 1000 : KRAATA_ARMOR_DURATION_MS;
-        const newArmor: RahkshiArmor = {
-          id: generateRahkshiId(),
-          power,
-          sourceStage: stage,
-          armorStage: 'preparing',
-          startedAt: now,
-          endsAt: now + duration,
-        };
-        setRahkshi((prevR) => [...prevR, newArmor]);
-        return removeKraataFromCollection(prev, power, stage, 1);
-      });
+      if (!canStartRahkshiForge(kraataCollection, power, stage)) return;
+      const now = Date.now();
+      const duration = getDebugMode() ? 1000 : KRAATA_ARMOR_DURATION_MS;
+      const newArmor: RahkshiArmor = {
+        id: generateRahkshiId(),
+        power,
+        sourceStage: stage,
+        status: 'preparing',
+        startedAt: now,
+        endsAt: now + duration,
+      };
+      setKraataCollection((prev) => removeKraataFromCollection(prev, power, stage, 1));
+      setRahkshi((prevR) => [...prevR, newArmor]);
     },
     completeRahkshiForge: (rahkshiId: string) => {
       setRahkshi((prev) =>
         prev.map((r) =>
           r.id === rahkshiId
-            ? { ...r, armorStage: 'ready' as const, startedAt: undefined, endsAt: undefined }
+            ? { ...r, status: 'ready' as const, startedAt: undefined, endsAt: undefined }
             : r
         )
       );
     },
     insertKraataIntoRahkshi: (rahkshiId: string, power: KraataPower, stage: number) => {
-      setKraataCollection((prev) => {
-        const count = prev[power]?.[stage] ?? 0;
-        if (count < 1) return prev;
-        setRahkshi((prevR) =>
-          prevR.map((r) =>
-            r.id === rahkshiId && r.armorStage === 'ready' && !r.kraata
-              ? { ...r, kraata: { power, stage } }
-              : r
-          )
-        );
-        return removeKraataFromCollection(prev, power, stage, 1);
-      });
+      const count = kraataCollection[power]?.[stage] ?? 0;
+      if (count < 1) return;
+      const armor = rahkshi.find((r) => r.id === rahkshiId);
+      if (!armor || armor.status !== 'ready' || armor.kraata || armor.power !== power) return;
+      setKraataCollection((prev) => removeKraataFromCollection(prev, power, stage, 1));
+      setRahkshi((prevR) =>
+        prevR.map((r) =>
+          r.id === rahkshiId && r.status === 'ready' && !r.kraata && r.power === power
+            ? { ...r, kraata: { power, stage } }
+            : r
+        )
+      );
+    },
+    removeKraataFromRahkshi: (rahkshiId: string) => {
+      const armor = rahkshi.find((r) => r.id === rahkshiId);
+      if (!armor?.kraata) return;
+      const { power, stage } = armor.kraata;
+      setRahkshi((prevR) =>
+        prevR.map((r) => (r.id === rahkshiId ? { ...r, kraata: undefined } : r))
+      );
+      setKraataCollection((prev) => addKraataToCollection(prev, power, stage, 1));
     },
     recruitCharacter,
     setMaskOverride,

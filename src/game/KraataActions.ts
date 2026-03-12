@@ -43,7 +43,7 @@ export function canStartRahkshiForge(
   power: KraataPower,
   stage: number
 ): boolean {
-  return getKraataCount(collection, power, stage) >= 1;
+  return stage === 1 && getKraataCount(collection, power, stage) >= 1;
 }
 
 export function getPreparingRahkshi(
@@ -52,19 +52,19 @@ export function getPreparingRahkshi(
   sourceStage: number
 ): RahkshiArmor[] {
   return rahkshi.filter(
-    (r) => r.armorStage === 'preparing' && r.power === power && r.sourceStage === sourceStage
+    (r) => r.status === 'preparing' && r.power === power && r.sourceStage === sourceStage
   );
 }
 
 export function getReadyRahkshi(rahkshi: RahkshiArmor[]): RahkshiArmor[] {
-  return rahkshi.filter((r) => r.armorStage === 'ready');
+  return rahkshi.filter((r) => r.status === 'ready');
 }
 
 export function getReadyRahkshiWithoutKraata(rahkshi: RahkshiArmor[]): RahkshiArmor[] {
-  return rahkshi.filter((r) => r.armorStage === 'ready' && !r.kraata);
+  return rahkshi.filter((r) => r.status === 'ready' && !r.kraata);
 }
 
 export function isForgeComplete(armor: RahkshiArmor): boolean {
-  if (armor.armorStage !== 'preparing' || !armor.endsAt) return false;
+  if (armor.status !== 'preparing' || !armor.endsAt) return false;
   return Date.now() >= armor.endsAt;
 }

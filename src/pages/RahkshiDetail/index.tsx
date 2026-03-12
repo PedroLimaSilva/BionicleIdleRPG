@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { useGame } from '../../context/Game';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { KRAATA_SPECIES_COLORS, getKraataCompositedColors } from '../../data/kraataColors';
@@ -26,6 +27,7 @@ export const RahkshiDetail: React.FC = () => {
     kraataCollection,
     completeRahkshiForge,
     insertKraataIntoRahkshi,
+    removeKraataFromRahkshi,
   } = useGame();
 
   const armor = useMemo(() => rahkshi.find((r) => r.id === id), [rahkshi, id]);
@@ -36,12 +38,15 @@ export const RahkshiDetail: React.FC = () => {
   }, [armor]);
 
   const compositedColors = useMemo(
-    () => (armor ? getKraataCompositedColors(armor.power) : (['#C2A375', '#C2A375', '#D4AF37'] as [string, string, string])),
+    () =>
+      armor
+        ? getKraataCompositedColors(armor.power)
+        : (['#C2A375', '#C2A375', '#D4AF37'] as [string, string, string]),
     [armor]
   );
 
-  const isPreparing = armor?.armorStage === 'preparing';
-  const isReady = armor?.armorStage === 'ready';
+  const isPreparing = armor?.status === 'preparing';
+  const isReady = armor?.status === 'ready';
   const hasKraata = !!armor?.kraata;
 
   const [now, setNow] = useState(Date.now());
@@ -59,15 +64,12 @@ export const RahkshiDetail: React.FC = () => {
     for (const [power, stages] of Object.entries(kraataCollection)) {
       if (!stages) continue;
       for (const [stageStr, count] of Object.entries(stages)) {
-        if (typeof count !== 'number' || count <= 0) continue;
+        if (power !== armor?.power || typeof count !== 'number' || count <= 0) continue;
+
         entries.push({ power: power as KraataPower, stage: Number(stageStr), count });
       }
     }
-    entries.sort((a, b) => {
-      const nameA = KRAATA_POWER_NAMES[a.power] ?? a.power;
-      const nameB = KRAATA_POWER_NAMES[b.power] ?? b.power;
-      return nameA.localeCompare(nameB) || a.stage - b.stage;
-    });
+
     return entries;
   }, [kraataCollection, isReady, hasKraata]);
 
@@ -75,7 +77,9 @@ export const RahkshiDetail: React.FC = () => {
     return (
       <div className="page-container">
         <p>Rahkshi armor not found.</p>
-        <Link to="/characters">&larr; Back to Characters</Link>
+        <Link to="/characters">
+          <ArrowLeft size={18} aria-hidden /> Back to Characters
+        </Link>
       </div>
     );
   }
@@ -94,7 +98,7 @@ export const RahkshiDetail: React.FC = () => {
         }
       >
         <Link to="/characters" className="rahkshi-detail__back">
-          &larr; Back
+          <ArrowLeft size={18} aria-hidden /> Back
         </Link>
         <CompositedImage
           images={[
@@ -107,7 +111,9 @@ export const RahkshiDetail: React.FC = () => {
         />
         <h1 className="rahkshi-detail__name">{powerName} Armor</h1>
         <div className="rahkshi-detail__meta">
-          <span className={`rahkshi-detail__status rahkshi-detail__status--${armor.armorStage}${hasKraata ? ' rahkshi-detail__status--active' : ''}`}>
+          <span
+            className={`rahkshi-detail__status rahkshi-detail__status--${armor.status}${hasKraata ? ' rahkshi-detail__status--active' : ''}`}
+          >
             {isPreparing ? 'Forging' : hasKraata ? 'Active' : 'Ready'}
           </span>
         </div>
@@ -157,7 +163,7 @@ export const RahkshiDetail: React.FC = () => {
                     type="button"
                     onClick={() => insertKraataIntoRahkshi(armor.id, power, stage)}
                   >
-                    {KRAATA_POWER_NAMES[power]} (Stage {stage}) ×{count}
+                    Stage {stage} (1/{count})
                   </button>
                 ))}
               </div>
@@ -173,9 +179,9 @@ export const RahkshiDetail: React.FC = () => {
             <div className="rahkshi-section__installed">
               <CompositedImage
                 images={[
-                  `${import.meta.env.BASE_URL}/avatar/Kraata/1_Base.webp`,
-                  `${import.meta.env.BASE_URL}/avatar/Kraata/1_Head.webp`,
-                  `${import.meta.env.BASE_URL}/avatar/Kraata/1_Tail.webp`,
+                  `${import.meta.env.BASE_URL}/avatar/Kraata/${armor.kraata.stage}_Base.webp`,
+                  `${import.meta.env.BASE_URL}/avatar/Kraata/${armor.kraata.stage}_Head.webp`,
+                  `${import.meta.env.BASE_URL}/avatar/Kraata/${armor.kraata.stage}_Tail.webp`,
                 ]}
                 colors={getKraataCompositedColors(armor.kraata.power)}
                 className="rahkshi-section__kraata-image"
@@ -188,6 +194,13 @@ export const RahkshiDetail: React.FC = () => {
                   {armor.kraata.stage}
                 </span>
               </div>
+              <button
+                type="button"
+                className="rahkshi-section__remove-kraata"
+                onClick={() => removeKraataFromRahkshi(armor.id)}
+              >
+                Remove Kraata
+              </button>
             </div>
           </div>
         )}

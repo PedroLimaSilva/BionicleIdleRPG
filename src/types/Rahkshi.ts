@@ -1,6 +1,6 @@
 import { KraataPower } from './Kraata';
 
-export type RahkshiArmorStage = 'preparing' | 'ready';
+export type RahkshiArmorStatus = 'preparing' | 'ready';
 
 export interface RahkshiArmor {
   id: string;
@@ -8,7 +8,7 @@ export interface RahkshiArmor {
   power: KraataPower;
   /** Stage of the source kraata. */
   sourceStage: number;
-  armorStage: RahkshiArmorStage;
+  status: RahkshiArmorStatus;
   /** Timestamp (ms) when forging started. Present while preparing. */
   startedAt?: number;
   /** Timestamp (ms) when forging completes. Present while preparing. */

@@ -45,6 +45,9 @@ export const INITIAL_GAME_STATE: GameState = {
   ): void {
     throw new Error('Function not implemented.');
   },
+  removeKraataFromRahkshi: function (_rahkshiId: string): void {
+    throw new Error('Function not implemented.');
+  },
   assignJobToMatoran: function (_id: BaseMatoran['id'], _job: MatoranJob): void {
     throw new Error('Function not implemented.');
   },

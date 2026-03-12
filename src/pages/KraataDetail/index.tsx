@@ -1,4 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { useGame } from '../../context/Game';
 import { KraataPower, KRAATA_POWER_NAMES, MAX_KRAATA_STAGE } from '../../types/Kraata';
 import { KRAATA_SPECIES_COLORS, getKraataCompositedColors } from '../../data/kraataColors';
@@ -68,7 +69,10 @@ export const KraataDetail: React.FC = () => {
     [rahkshi, power, stage]
   );
 
-  const emptyReadyArmors = useMemo(() => getReadyRahkshiWithoutKraata(rahkshi), [rahkshi]);
+  const emptyReadyArmors = useMemo(
+    () => getReadyRahkshiWithoutKraata(rahkshi).filter((a) => a.power === power),
+    [rahkshi, power]
+  );
 
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -119,7 +123,7 @@ export const KraataDetail: React.FC = () => {
         }
       >
         <Link to="/characters" className="kraata-detail__back">
-          &larr; Back
+          <ArrowLeft size={18} aria-hidden /> Back
         </Link>
         <CompositedImage
           images={[
@@ -139,12 +143,32 @@ export const KraataDetail: React.FC = () => {
 
       <div className="kraata-detail-options">
         <div className="kraata-option">
+          <h3>Merge</h3>
+          <p className="kraata-option__desc">
+            Combine two kraata of the same power and stage to create a stronger one.
+          </p>
+          {stage >= MAX_KRAATA_STAGE ? (
+            <button type="button" disabled>
+              Maximum stage
+            </button>
+          ) : (
+            <button type="button" disabled={!mergeable} onClick={handleMerge}>
+              {mergeable ? `Merge → Stage ${stage + 1}` : `Need 2× (have ${count})`}
+            </button>
+          )}
+        </div>
+
+        <div className="kraata-option">
           <h3>Turn into Armor</h3>
           <p className="kraata-option__desc">
             Submerge this kraata in energized protodermis to forge Rahkshi armor.
           </p>
           <button type="button" disabled={!canForge} onClick={handleStartForge}>
-            {canForge ? 'Start Forging (24h)' : 'No kraata available'}
+            {canForge
+              ? 'Start Forging (24h)'
+              : stage !== 1
+                ? 'Only stage 1 kraata can be forged into armor'
+                : 'No kraata available'}
           </button>
           {preparingArmors.map((armor) => {
             const complete = isForgeComplete(armor);
@@ -181,37 +205,15 @@ export const KraataDetail: React.FC = () => {
           })}
         </div>
 
-        <div className="kraata-option">
-          <h3>Merge</h3>
-          <p className="kraata-option__desc">
-            Combine two kraata of the same power and stage to create a stronger one.
-          </p>
-          {stage >= MAX_KRAATA_STAGE ? (
-            <button type="button" disabled>
-              Maximum stage
-            </button>
-          ) : (
-            <button type="button" disabled={!mergeable} onClick={handleMerge}>
-              {mergeable ? `Merge → Stage ${stage + 1}` : `Need 2× (have ${count})`}
-            </button>
-          )}
-        </div>
-
         {count > 0 && emptyReadyArmors.length > 0 && (
           <div className="kraata-option">
             <h3>Insert into Armor</h3>
             <p className="kraata-option__desc">
               Place this kraata inside a ready Rahkshi armor to awaken it.
             </p>
-            {emptyReadyArmors.map((armor) => (
-              <button
-                key={armor.id}
-                type="button"
-                onClick={() => handleInsertKraata(armor.id)}
-              >
-                Insert into {KRAATA_POWER_NAMES[armor.power]} Armor
-              </button>
-            ))}
+            <button type="button" onClick={() => handleInsertKraata(emptyReadyArmors[0].id)}>
+              Insert into {KRAATA_POWER_NAMES[power]} Armor
+            </button>
           </div>
         )}
       </div>

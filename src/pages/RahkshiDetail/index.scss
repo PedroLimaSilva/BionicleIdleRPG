@@ -5,26 +5,25 @@
   align-items: center;
 }
 
+$rahkshi-visualization-radius: 12px;
+$rahkshi-visualization-border: 2px;
+
 .rahkshi-detail-visualization {
   position: relative;
   width: 100%;
   max-width: min(max(640px, 100%), 100vw - 4rem);
   margin: 0 auto;
   padding: 2rem 1.5rem 1.5rem;
-  border: 2px solid;
-  border-image: linear-gradient(
+  border-radius: $rahkshi-visualization-radius;
+  background:
+    linear-gradient(
       135deg,
-      var(--kraata-head-color) 0%,
-      var(--kraata-tail-color) 100%
-    )
-    1;
-  border-radius: 0;
-  background: linear-gradient(
-    135deg,
-    var(--color-surface-high) 0%,
-    var(--color-surface-mid) 50%,
-    var(--color-surface-low) 100%
-  );
+      var(--color-surface-high) 0%,
+      var(--color-surface-mid) 50%,
+      var(--color-surface-low) 100%
+    ),
+    linear-gradient(to top, var(--kraata-head-color), var(--kraata-tail-color)) bottom / 100% 3px
+      no-repeat;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,20 +47,20 @@
     animation: rahkshi-pulse 4s ease-in-out infinite;
   }
 
+  /* Gradient border with radius: mask technique (https://dev.to/afif/border-with-gradient-and-radius-387f) */
   &::after {
     content: '';
     pointer-events: none;
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(
-      90deg,
-      var(--kraata-head-color),
-      var(--kraata-tail-color)
-    );
-    opacity: 0.6;
+    inset: 0;
+    border-radius: $rahkshi-visualization-radius;
+    padding: $rahkshi-visualization-border;
+    background: linear-gradient(135deg, var(--kraata-head-color) 0%, var(--kraata-tail-color) 100%);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
   }
 }
 
@@ -78,6 +77,9 @@
 }
 
 .rahkshi-detail__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   position: absolute;
   top: 0.75rem;
   left: 1rem;
@@ -98,15 +100,14 @@
   z-index: 1;
 }
 
-.rahkshi-detail__name {
+.page-container h1.rahkshi-detail__name {
   font-size: 1.6rem;
   font-weight: 700;
   margin: 0;
-  background: linear-gradient(
-    135deg,
-    var(--kraata-head-color),
-    var(--kraata-tail-color)
-  );
+  background: linear-gradient(135deg, var(--kraata-head-color), var(--kraata-tail-color));
+  text-shadow:
+    0 0 10px var(--kraata-head-color),
+    0 0 20px var(--kraata-tail-color);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -184,6 +185,7 @@
 
   button {
     width: 100%;
+    flex: 1;
     text-align: center;
   }
 
@@ -230,6 +232,12 @@
     border: 1px solid var(--color-border-subtle);
     border-radius: var(--border-radius-sm);
     background: var(--color-surface-low);
+  }
+
+  &__remove-kraata {
+    margin-left: auto;
+    width: auto;
+    flex-shrink: 0;
   }
 
   &__kraata-image {
