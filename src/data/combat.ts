@@ -454,6 +454,17 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseDefense: 12,
     baseSpeed: 14,
   },
+  Takanuva: {
+    id: 'Takanuva',
+    name: 'Takanuva',
+    model: 'Takanuva',
+    mask: Mask.Avohkii,
+    element: ElementTribe.Light,
+    baseHp: 100,
+    baseAttack: 25,
+    baseDefense: 20,
+    baseSpeed: 20,
+  },
 
   // Bohrok - Differentiated by swarm behavior
   tahnok: {

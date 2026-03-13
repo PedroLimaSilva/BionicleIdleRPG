@@ -25,7 +25,11 @@ export function MatoranAvatar({
   const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
   const maskColor = useMemo(() => {
     if (matoran.maskColorOverride) return matoran.maskColorOverride;
-    if (effectiveMask === Mask.Vahi || effectiveMask === Mask.HauNuvaInfected) {
+    if (
+      effectiveMask === Mask.Avohkii ||
+      effectiveMask === Mask.Vahi ||
+      effectiveMask === Mask.HauNuvaInfected
+    ) {
       return LegoColor.White;
     }
     return getEffectiveMaskColor(matoran, completedQuests);
@@ -56,11 +60,11 @@ export function MatoranAvatar({
       className={`composited-avatar ${styles}`}
       style={glowStyle}
       images={[
-        `${import.meta.env.BASE_URL}/avatar/Brain.png`,
-        `${import.meta.env.BASE_URL}/avatar/Face.png`,
+        `${import.meta.env.BASE_URL}/avatar/Brain.webp`,
+        `${import.meta.env.BASE_URL}/avatar/Face.webp`,
         mask,
       ]}
-      colors={[colors.eyes, '#fff', maskColor]}
+      colors={[colors.eyes, colors.face, maskColor]}
     />
   );
 }

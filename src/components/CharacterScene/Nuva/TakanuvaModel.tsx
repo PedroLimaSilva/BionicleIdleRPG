@@ -9,7 +9,7 @@ import { useIdleAnimation } from '../../../hooks/useIdleAnimation';
 export const TakanuvaModel = forwardRef<
   CombatantModelHandle,
   {
-    matoran: RecruitedCharacterData & BaseMatoran;
+    matoran: RecruitedCharacterData & BaseMatoran & { maskPowerActive?: boolean };
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >(({ matoran }, _ref) => {
