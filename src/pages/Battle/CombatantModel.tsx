@@ -19,6 +19,7 @@ import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Group } from 'three';
 import { KraataPower } from '../../types/Kraata';
+import { TakanuvaModel } from '../../components/CharacterScene/Nuva/TakanuvaModel';
 
 const ROTATION_RESTORE_DURATION = 0.25;
 
@@ -310,6 +311,21 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.04} position={[0, 0.375, 0]}>
               <LewaNuvaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Takanuva':
+          return (
+            <group scale={0.04} position={[0, 0.375, 0]}>
+              <TakanuvaModel
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
