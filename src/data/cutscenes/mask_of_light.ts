@@ -384,7 +384,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
-        text: `My village, in trouble? I should have been there! I must return!”`,
+        text: `My village, in trouble? I should have been there! I must return!`,
       },
       {
         type: 'dialogue',
@@ -744,7 +744,164 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
     steps: [
       {
         type: 'narration',
-        text: `Jaller and Takua follow Kopaka to Ko-Koro.`,
+        text: `Takua, Jaller, and Kopaka rounded a hill of ice. Before them spread a snowy valley. Steep cliffs rose on the far side. Set into one of the cliffs was a village, accessible only by a bridge of ice.`,
+      },
+
+      {
+        type: 'narration',
+        text: `But something was wrong. The village wall had fallen. Huts were in shambles, and smoke rose from the ruins. There was no one in sight.`,
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Stop! Something is wrong.`,
+      },
+
+      {
+        type: 'narration',
+        text: `Jaller and Takua blinked, confused, as the Toa tossed his shield facedown onto the snow beside them. Suddenly realizing what Kopaka meant for them to do, Jaller shook his head.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `The Captain of the Guard never runs away!`,
+      },
+      {
+        type: 'narration',
+        text: `His last word was lost in a cry of terror as Takua pushed him onto the shield and jumped aboard himself. The momentum carried the shield skidding toward the cliff. It toppled on the edge, then tipped down, sliding faster and faster along the impossibly steep incline.`,
+      },
+
+      {
+        type: 'narration',
+        text: `Kopaka hardly heard their fading screams. He faced the Rahkshi as they closed in on him.`,
+      },
+      {
+        type: 'narration',
+        text: `The Fragmenter-Rahkshi sent yet another bolt of energy arcing toward him. Kopaka somersaulted away, dodging the bolt. As he came down, he tossed his twin blades onto the snow. He landed on them, turning them into power ice skates, on which he glided down the cliff face.`,
+      },
+      {
+        type: 'narration',
+        text: `Kopaka caught up to the shield-sled just as it reached the bottom of the cliff. He grabbed the edge and pulled it behind him as he veered into a ravine.`,
+      },
+      {
+        type: 'narration',
+        text: `An arc of dark energy smashed into the snow right in Kopaka’s path. The shock waves knocked him off his feet, sending him rolling into the snow.`,
+      },
+      {
+        type: 'narration',
+        text: `The shield flipped over, dumping Takua and Jaller as well. They tumbled head over heels, landing on the very edge of the lake.`,
+      },
+
+      {
+        type: 'narration',
+        text: `The Fragmenter-Rahkshi hissed triumphantly as it hovered down toward him. The other two Rahkshi were right behind the first. The creatures hovered right past Kopaka, who appeared to be unconscious, heading straight for the two Matoran.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Why us? What did we do?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `The mask!`,
+      },
+      {
+        type: 'narration',
+        text: `He grabbed the mask, which started glowing brighter than ever. Pushing Kopaka’s shield onto the cold water of the lake, he jumped on, using the mask as a paddle.`,
+      },
+
+      {
+        type: 'narration',
+        text: `Left behind, Jaller watched nervously as the Rahkshi approached. He dove out of the way as they hovered toward him. But they didn’t even glance his way. Their glowing eyes were focused on Takua. They hovered out over the water, following him.`,
+      },
+
+      {
+        type: 'narration',
+        text: `Takua paddled as hard as he could. But with every glance back, he saw the Rahkshi gaining on him. Finally they were close enough to reach out for him with their clawed arms.`,
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I guess this is the end`,
+      },
+
+      {
+        type: 'narration',
+        text: `Just then his gaze caught motion back on the lakeshore. Kopaka was awake – he was swinging his ice blade overhead. A second later a blast of elemental ice spun through the air, heading straight for the Rahkshi!`,
+      },
+
+      {
+        type: 'narration',
+        text: `The icy blast hit the Fragmenter-Rahkshi and knocked it off balance. It crashed into the other two creatures, and all three of them toppled and landed in the lake with a splash.`,
+      },
+
+      {
+        type: 'narration',
+        text: `Kopaka twirled his blade, then stabbed the point into the edge of the lake. The water crystallized instantly into ice, the deep freeze spreading rapidly until the entire lake was frozen solid. The Rahkshi, who were just reaching the surface, were trapped in place.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Good moves.`,
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Even I get lucky sometimes.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Not luck, it's what you do that makes a hero. I need to tend to my village.`,
+      },
+      {
+        type: 'narration',
+        text: `Kopaka left, leaving Takua and Jaller alone on the ice. Takua offerd the mask to Jaller. `,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Here.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `You were looking pretty Herald-like back there. Sure you don't want to hang on to it?`,
+      },
+      {
+        type: 'narration',
+        text: `Takua slapped the mask against Jaller’s chest. As Jaller held it, the mask's glow slowly faded.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Tempting, but no.`,
       },
     ],
   },
