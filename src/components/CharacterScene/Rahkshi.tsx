@@ -43,6 +43,7 @@ export const RahkshiModel = forwardRef<
   { kraata: KraataPower; hasKraata?: boolean }
 >(({ kraata, hasKraata = true }, ref) => {
   const group = useRef<Group>(null);
+  const glowOriginals = useRef(new Map<string, MeshStandardMaterial>());
 
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'rahkshi.glb');
 
@@ -93,10 +94,27 @@ export const RahkshiModel = forwardRef<
         return;
       }
 
-      const originalMaterial = child.material as MeshStandardMaterial;
-      child.material = getRahkshiMaterial(originalMaterial, dex);
+      const mat = child.material as MeshStandardMaterial;
+      if (mat.name === 'Eyes') {
+        if (!glowOriginals.current.has(child.uuid)) {
+          glowOriginals.current.set(child.uuid, mat);
+        }
+        const orig = glowOriginals.current.get(child.uuid)!;
+        if (hasKraata) {
+          child.material = orig;
+        } else {
+          const off = orig.clone();
+          off.color.set('#000000');
+          off.emissive.set('#000000');
+          off.emissiveIntensity = 0;
+          child.material = off;
+        }
+        return;
+      }
+
+      child.material = getRahkshiMaterial(mat, dex);
     });
-  }, [bodyInstance, kraata]);
+  }, [bodyInstance, kraata, hasKraata]);
 
   return (
     <group ref={group} dispose={null}>
