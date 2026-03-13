@@ -39,6 +39,7 @@ export type GameState = {
   collectKrana: (element: KranaElement, id: KranaId) => void;
   addKraata: (power: KraataPower, stage: number, count: number) => void;
   mergeKraata: (power: KraataPower, stage: number) => void;
+  mergeAllKraata: () => void;
   startRahkshiForge: (power: KraataPower, stage: number) => void;
   completeRahkshiForge: (rahkshiId: string) => void;
   insertKraataIntoRahkshi: (rahkshiId: string, power: KraataPower, stage: number) => void;

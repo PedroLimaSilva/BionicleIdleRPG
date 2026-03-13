@@ -36,6 +36,7 @@ import { RahkshiArmor, generateRahkshiId } from '../types/Rahkshi';
 import {
   canMergeKraata,
   applyKraataMerge,
+  applyAllKraataMerges,
   canStartRahkshiForge,
   KRAATA_ARMOR_DURATION_MS,
   RAHKSHI_FORGE_COST,
@@ -154,6 +155,9 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
         if (!canMergeKraata(prev, power, stage)) return prev;
         return applyKraataMerge(prev, power, stage);
       });
+    },
+    mergeAllKraata: () => {
+      setKraataCollection((prev) => applyAllKraataMerges(prev));
     },
     startRahkshiForge: (power: KraataPower, stage: number) => {
       const requestId = Symbol('startRahkshiForge');

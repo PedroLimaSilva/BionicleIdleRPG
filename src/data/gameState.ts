@@ -32,6 +32,9 @@ export const INITIAL_GAME_STATE: GameState = {
   mergeKraata: function (_power: KraataPower, _stage: number): void {
     throw new Error('Function not implemented.');
   },
+  mergeAllKraata: function (): void {
+    throw new Error('Function not implemented.');
+  },
   startRahkshiForge: function (_power: KraataPower, _stage: number): void {
     throw new Error('Function not implemented.');
   },

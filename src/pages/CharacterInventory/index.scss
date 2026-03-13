@@ -203,6 +203,37 @@
   margin-bottom: 0;
 }
 
+.rahkshi-section__kraata-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.merge-all-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+  color: var(--color-accent);
+  background: linear-gradient(135deg, var(--color-surface-mid), var(--color-surface-high));
+  border: 2px solid var(--color-accent);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
+    border-color: var(--color-accent-hover);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 .rahkshi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
