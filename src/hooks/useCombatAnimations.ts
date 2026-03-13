@@ -14,7 +14,9 @@ export function useCombatAnimations(
   groupRef: RefObject<Group | null>,
   options: UseCombatAnimationsOptions = {}
 ) {
-  const { actions, mixer } = useIdleAnimation(animations, groupRef);
+  const { actions, mixer } = useIdleAnimation(animations, groupRef, {
+    idleActionName: options.idleActionName,
+  });
   const playAnimation = usePlayAnimation(actions, mixer, options);
 
   return { playAnimation };

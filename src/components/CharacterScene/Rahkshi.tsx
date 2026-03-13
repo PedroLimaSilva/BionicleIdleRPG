@@ -38,67 +38,69 @@ function getRahkshiMaterial(
   return mat;
 }
 
-export const RahkshiModel = forwardRef<CombatantModelHandle, { kraata: KraataPower }>(
-  ({ kraata }, ref) => {
-    const group = useRef<Group>(null);
+export const RahkshiModel = forwardRef<
+  CombatantModelHandle,
+  { kraata: KraataPower; hasKraata?: boolean }
+>(({ kraata, hasKraata = true }, ref) => {
+  const group = useRef<Group>(null);
 
-    const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'rahkshi.glb');
+  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'rahkshi.glb');
 
-    const bodyInstance = useMemo(() => nodes.Rahkshi.clone(true), [nodes]);
+  const bodyInstance = useMemo(() => nodes.Rahkshi.clone(true), [nodes]);
 
-    const { playAnimation } = useCombatAnimations(animations, group, {
-      modelId: kraata,
-      actionTimeScale: 1,
-      transitionMode: 'stopAll',
-      attackResolveAtFraction: 0.1,
-    });
+  const { playAnimation } = useCombatAnimations(animations, group, {
+    modelId: kraata,
+    actionTimeScale: 1,
+    transitionMode: 'stopAll',
+    attackResolveAtFraction: 0.1,
+    idleActionName: hasKraata ? 'Idle' : 'Empty',
+  });
 
-    useImperativeHandle(ref, () => ({ playAnimation }));
+  useImperativeHandle(ref, () => ({ playAnimation }));
 
-    useEffect(() => {
-      const dex = getRahkshiArmorColors(kraata);
+  useEffect(() => {
+    const dex = getRahkshiArmorColors(kraata);
 
-      const hiddenMeshes: string[] = [];
-      hiddenMeshes.push(
-        ...[
-          'GuurahkL',
-          'GuurahkR',
-          'GuurahkS',
-          'TurahkL',
-          'TurahkR',
-          'TurahkS',
-          'KurahkL',
-          'KurahkR',
-          'KurahkS',
-          'LerahkL',
-          'LerahkR',
-          'LerahkS',
-          'PanrahkL',
-          'PanrahkR',
-          'PanrahkS',
-          'VorahkL',
-          'VorahkR',
-          'VorahkS',
-        ].filter((e) => !e.includes(dex.staff))
-      );
-
-      bodyInstance.traverse((child) => {
-        if (!(child instanceof Mesh)) return;
-
-        if (hiddenMeshes.includes(child.name)) {
-          child.visible = false;
-          return;
-        }
-
-        const originalMaterial = child.material as MeshStandardMaterial;
-        child.material = getRahkshiMaterial(originalMaterial, dex);
-      });
-    }, [bodyInstance, kraata]);
-
-    return (
-      <group ref={group} dispose={null}>
-        <primitive object={bodyInstance} scale={1} position={[0, 0, 0]} />
-      </group>
+    const hiddenMeshes: string[] = [];
+    hiddenMeshes.push(
+      ...[
+        'GuurahkL',
+        'GuurahkR',
+        'GuurahkS',
+        'TurahkL',
+        'TurahkR',
+        'TurahkS',
+        'KurahkL',
+        'KurahkR',
+        'KurahkS',
+        'LerahkL',
+        'LerahkR',
+        'LerahkS',
+        'PanrahkL',
+        'PanrahkR',
+        'PanrahkS',
+        'VorahkL',
+        'VorahkR',
+        'VorahkS',
+      ].filter((e) => !e.includes(dex.staff))
     );
-  }
-);
+
+    bodyInstance.traverse((child) => {
+      if (!(child instanceof Mesh)) return;
+
+      if (hiddenMeshes.includes(child.name)) {
+        child.visible = false;
+        return;
+      }
+
+      const originalMaterial = child.material as MeshStandardMaterial;
+      child.material = getRahkshiMaterial(originalMaterial, dex);
+    });
+  }, [bodyInstance, kraata]);
+
+  return (
+    <group ref={group} dispose={null}>
+      <primitive object={bodyInstance} scale={1} position={[0, 0, 0]} />
+    </group>
+  );
+});
