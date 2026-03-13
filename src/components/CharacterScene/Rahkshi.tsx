@@ -1,11 +1,22 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Color as ThreeColor, Group, MathUtils, Mesh, MeshStandardMaterial } from 'three';
+import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { Color } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
 import { getRahkshiArmorColors, RahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { KraataPower } from '../../types/Kraata';
+
+const BLACK = new ThreeColor('#000000');
+const GLOW_LERP_SPEED = 5;
+
+interface GlowEntry {
+  material: MeshStandardMaterial;
+  onColor: ThreeColor;
+  onEmissive: ThreeColor;
+  onEmissiveIntensity: number;
+}
 
 /** Cache key: materialName + color. Shared across all Bohrok instances with same scheme. */
 const rahkshiMaterialCache = new Map<string, MeshStandardMaterial>();
@@ -43,6 +54,8 @@ export const RahkshiModel = forwardRef<
   { kraata: KraataPower; hasKraata?: boolean }
 >(({ kraata, hasKraata = true }, ref) => {
   const group = useRef<Group>(null);
+  const glowEntries = useRef<GlowEntry[]>([]);
+  const glowTarget = useRef(hasKraata);
 
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'rahkshi.glb');
 
@@ -58,8 +71,11 @@ export const RahkshiModel = forwardRef<
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 
+  glowTarget.current = hasKraata;
+
   useEffect(() => {
     const dex = getRahkshiArmorColors(kraata);
+    const entries: GlowEntry[] = [];
 
     const hiddenMeshes: string[] = [];
     hiddenMeshes.push(
@@ -93,10 +109,46 @@ export const RahkshiModel = forwardRef<
         return;
       }
 
-      const originalMaterial = child.material as MeshStandardMaterial;
-      child.material = getRahkshiMaterial(originalMaterial, dex);
+      const mat = child.material as MeshStandardMaterial;
+
+      if (mat.name === 'Eyes') {
+        const clone = mat.clone();
+        if (!glowTarget.current) {
+          clone.color.set('#000000');
+          clone.emissive.set('#000000');
+          clone.emissiveIntensity = 0;
+        }
+        child.material = clone;
+        entries.push({
+          material: clone,
+          onColor: mat.color.clone(),
+          onEmissive: mat.emissive.clone(),
+          onEmissiveIntensity: mat.emissiveIntensity,
+        });
+        return;
+      }
+
+      child.material = getRahkshiMaterial(mat, dex);
     });
+
+    glowEntries.current = entries;
   }, [bodyInstance, kraata]);
+
+  useFrame((_, delta) => {
+    const entries = glowEntries.current;
+    if (entries.length === 0) return;
+    const active = glowTarget.current;
+    const alpha = 1 - Math.exp(-GLOW_LERP_SPEED * delta);
+    for (const { material, onColor, onEmissive, onEmissiveIntensity } of entries) {
+      material.color.lerp(active ? onColor : BLACK, alpha);
+      material.emissive.lerp(active ? onEmissive : BLACK, alpha);
+      material.emissiveIntensity = MathUtils.lerp(
+        material.emissiveIntensity,
+        active ? onEmissiveIntensity : 0,
+        alpha
+      );
+    }
+  });
 
   return (
     <group ref={group} dispose={null}>
