@@ -1,8 +1,7 @@
-import { MeshStandardMaterial, Object3D } from 'three';
-
-import { Mesh } from 'three';
-import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
 import { useLayoutEffect, useState } from 'react';
+import { Mesh, MeshStandardMaterial, Object3D } from 'three';
+
+import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
 
 /** Names that identify eye/glowing-eye/lens meshes in Matoran and Toa GLTFs (mesh or material). */
 export const EYE_MESH_NAMES = ['Brain', 'Eye', 'glow', 'lens'];
@@ -62,3 +61,33 @@ export function useEyeMeshes(
   return eyeMeshes;
 }
 
+/** Collects all meshes with emissive material (emissiveIntensity > 0) for selective bloom. */
+export function useEmissiveMeshes(
+  rootRef: React.RefObject<Object3D | null>,
+  deps: React.DependencyList
+) {
+  const [meshes, setMeshes] = useState<Object3D[]>([]);
+
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root) {
+      setMeshes([]);
+      return;
+    }
+    const id = setTimeout(() => {
+      const collected: Object3D[] = [];
+      root.traverse((obj) => {
+        if (!(obj as Mesh).isMesh) return;
+        const mesh = obj as Mesh;
+        const mat = mesh.material as MeshStandardMaterial | undefined;
+        if (mat && ['Eyes', 'Glow', 'Lens'].includes(mat.name)) {
+          collected.push(obj);
+        }
+      });
+      setMeshes(collected);
+    }, 0);
+    return () => clearTimeout(id);
+  }, deps);
+
+  return meshes;
+}

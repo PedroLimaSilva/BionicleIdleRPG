@@ -12,6 +12,8 @@ export type UsePlayAnimationOptions = {
   transitionMode?: 'fadeIdle' | 'stopAll';
   /** For Attack: resolve promise at this fraction through (0-1). Default: 0.5. Hit/Defeat always resolve at end. */
   attackResolveAtFraction?: number;
+  /** Name of the clip to use as idle (e.g. 'Idle', 'Empty'). Passed to useIdleAnimation for crossfade when changed. */
+  idleActionName?: string;
 };
 
 export type PlayAnimationCallOptions = {
@@ -33,6 +35,7 @@ export function usePlayAnimation(
     actionTimeScale = 1,
     transitionMode = 'fadeIdle',
     attackResolveAtFraction = 0.5,
+    idleActionName = 'Idle',
   } = options;
 
   const pendingAttackResolve = useRef<{
@@ -65,7 +68,7 @@ export function usePlayAnimation(
         if (transitionMode === 'stopAll') {
           mixer.stopAllAction();
         } else {
-          actions['Idle']?.fadeOut(0.2);
+          actions[idleActionName]?.fadeOut(0.2);
         }
 
         // Stop fully deactivates before reset+play - required for clean replay
@@ -99,7 +102,7 @@ export function usePlayAnimation(
             // Must fade out the finished action - otherwise it stays active (clampWhenFinished)
             // and keeps blending its end pose with Idle, causing much less movement on 2nd play
             action.fadeOut(0.2);
-            const idle = actions['Idle'];
+            const idle = actions[idleActionName];
             if (idle) {
               idle.reset().fadeIn(0.2).play();
             }
@@ -115,7 +118,7 @@ export function usePlayAnimation(
             // Must fade out the finished action - otherwise it stays active (clampWhenFinished)
             // and keeps blending its end pose with Idle, causing much less movement on 2nd play
             action.fadeOut(0.2);
-            const idle = actions['Idle'];
+            const idle = actions[idleActionName];
             if (idle) {
               idle.reset().fadeIn(0.2).play();
             }
@@ -125,7 +128,7 @@ export function usePlayAnimation(
         }
       });
     },
-    [actions, mixer, modelId, actionTimeScale, transitionMode, attackResolveAtFraction]
+    [actions, mixer, modelId, actionTimeScale, transitionMode, attackResolveAtFraction, idleActionName]
   );
 
   return playAnimation;
