@@ -1204,7 +1204,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         position: 'left',
         text: 'My strength. My power…',
       },
-      
+
       {
         type: 'narration',
         text: 'His eyes dimmed and he fell over backward, landing with a mighty crash. He couldn’t move – his energy was completely gone, replaced by a gnawing, devastating hunger.',
@@ -1213,7 +1213,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'narration',
         text: 'Still imprisoned by a wall of fear, Pohatu was unable to help. And the more he struggled against it, the more the terror overwhelmed him – until, with a final moan of helplessness, he collapsed to the ground.',
       },
-      
+
       {
         type: 'narration',
         text: 'Takua tried to avoid the fleeing villagers as he and Pewku searched for escape as well. The three Rahkshi turned and spotted him in the crowds. Knocking other Matoran out of the way, they stalked after him with a hiss.',
@@ -1245,12 +1245,12 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'narration',
         text: 'Pewku tried to do as he said. But so many villagers were fleeing, flowing around them in their race for the tunnel, that they could hardly move forward. Finally Takua gave up. Slumping to the ground, he closed his eyes and waited for the Rahkshi to reach him.',
       },
-      
+
       {
         type: 'narration',
         text: 'Pewku whined frantically, trying to get him to move. But he pushed her claw aside.',
       },
-      
+
       {
         type: 'dialogue',
         speakerId: 'Takua',
@@ -1285,13 +1285,13 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'narration',
         text: 'The Fire Toa landed with a grunt on the hard ground. Gali and Lewa leaped out of the tunnel and raced toward the action. Lewa spotted a small figure huddled on the ground near the Rahkshi.',
       },
-      
+
       {
         type: 'dialogue',
         speakerId: 'Toa_Lewa_Nuva',
         portraitType: 'avatar',
         position: 'left',
-        text:'The Chronicler! And his crab friend, Pewku. Looks like they’re in badneed of a rescue.'
+        text: 'The Chronicler! And his crab friend, Pewku. Looks like they’re in badneed of a rescue.',
       },
       {
         type: 'narration',
@@ -1331,7 +1331,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'narration',
         text: 'Tahu looked at her, but there was no recognition in his eyes – only anger. He slammed his swords down again, sending another fissure of lava right at Gali. She somersaulted away just in time as the ground exploded into flame.',
       },
-      
+
       {
         type: 'narration',
         text: 'Across the cavern, Lewa glided down and deposited Takua and Pewku beside Onua and Pohatu.',
@@ -1358,7 +1358,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'narration',
         text: 'He followed her. A moment later, the Rahkshi disappeared through the foundry door as well.',
       },
-      
+
       {
         type: 'narration',
         text: 'At that moment back in the cavern, Pohatu finally came to and sat up. He glanced at Onua, who was pushing himself upright nearby.',
@@ -1370,27 +1370,27 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         position: 'left',
         text: 'Rise and shine, brother.',
       },
-      
+
       {
         type: 'narration',
         text: 'The heat rolled over Takua in waves as he followed Pewku into the depths of the foundry. Several fires blazed beneath narrow exhaust chimneys cut into the rock ceiling. Mine-cars loaded with lightstones sat on their tracks, waiting to move out.',
       },
-      
+
       {
         type: 'narration',
         text: 'Dead end, Takua realized as he stared around the chamber. There’s no way out except the way we came… and we can’t go that way.',
       },
-      
+
       {
         type: 'narration',
         text: 'The trio of Rahkshi emerged from the entry tunnel into the foundry chamber with a loud hiss. Pewku raced toward one of the chimneys. She grunted urgently at Takua and leaped up, scrambling for a hold on the rough rock sides.',
       },
-      
+
       {
         type: 'narration',
         text: 'Takua took a deep breath. What choice did he have? He leaped up, following the Ussal into the soot-blackened chimney.',
       },
-      
+
       {
         type: 'narration',
         text: 'As he struggled to climb up the chimney, he heard the Rahkshi hissing directly beneath him. He tried to climb faster, but it was no use – the Fear-Rahkshi was right behind him. It lunged up, grabbing for his foot.',
@@ -1405,12 +1405,11 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'narration',
         text: 'The other two Rahkshi charged toward the Toa. Onua slammed his fists outward into the cavern walls. The section of ceiling directly over the Rahkshi collapsed, piling rocks and stone dust over them.',
       },
-      
+
       {
         type: 'narration',
         text: 'Breathing a sigh of relief, Takua pulled himself up to safety.',
       },
-      
     ],
   },
 
@@ -1445,42 +1444,42 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         position: 'left',
         text: 'I HAVE NO DESTINY! I – agh?',
       },
-      
+
       {
         type: 'narration',
         text: 'He jumped in surprise as a shape plummeted to the ground behind him. Kopaka! The Ice Toa touched his blade to the ground. A layer of frost washed over the ground, trapping Tahu in a thick coating of ice.',
       },
-      
+
       {
         type: 'narration',
         text: 'Lewa stepped forward. He and Kopaka each took one of the frozen Tahu’s arms, carrying him toward an exit tunnel.',
       },
-      
+
       {
         type: 'narration',
         text: 'Gali looked around for the others as she raced after them. She saw Onua’s quake-breakers smash through the stone of a collapsed foundry entrance and breathed out with relief as he and Pohatu emerged into the courtyard chamber.',
       },
-      
+
       {
         type: 'narration',
         text: 'Lewa and Kopaka carried the unconscious Tahu into a tunnel. Gali followed. Once inside the tunnel, she turned back to check on the others’ progress. Pohatu and Onua raced across the chamber toward her. They were steps from safety when there was an ominous rumble. A split second later, the entire cavern collapsed on top of them.',
       },
-      
+
       {
         type: 'narration',
         text: 'Gali gasped in horror as rocks and earth rained down, burying everything in a deep layer of debris.',
       },
-      
+
       {
         type: 'narration',
         text: 'She tried to leap out, to go help. But Kopaka stopped her.',
       },
-      
+
       {
         type: 'narration',
         text: 'He gave her a somber look. Gali returned the look for a long moment, then glanced out at the caved-in courtyard area. There was no sound, no movement except the settling dust.',
       },
-      
+
       {
         type: 'narration',
         text: `Outside the caverns of Onu-Koro, Tahu is chained upon a stone, writhing. The poison from Lerahk's scar, aggravated by Kurahk's anger, has spread through his body.`,
@@ -1820,9 +1819,8 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Tahu_Nuva',
         portraitType: 'avatar',
         position: 'left',
-        text: 'Now! As one!', 
+        text: 'Now! As one!',
       },
-
 
       {
         type: 'narration',
@@ -1854,7 +1852,8 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         position: 'left',
         text: 'They’ve been trapped before and were still able to escape.',
       },
-      {type: 'narration',
+      {
+        type: 'narration',
         text: 'Kopaka leaned in, yanking the kraata out of the Rahkshi’s armored bodies.',
       },
       {
@@ -1915,7 +1914,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
-        text: 'No. The duty was mine. You know… who you are. You were always different.'
+        text: 'No. The duty was mine. You know… who you are. You were always different.',
       },
       {
         type: 'narration',
@@ -1928,7 +1927,6 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'mol_takanuva_rises',
     background: { type: 'gradient', from: '#ffe28e', to: '#ffffff' },
     steps: [
-      
       {
         type: 'narration',
         text: 'Takua turned the mask over in his hands again. His eyes narrowed purposefully. As he lifted it to his face, the mask’s glow brightened again. As it made contact with his own mask, it burst forth with brilliant beams of white light.',
@@ -2093,7 +2091,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       {
         type: 'narration',
         text: 'The Matoran gasped in amazement as they saw a strange new world stretching out below them. The chamber at the bottom of the cliff was indescribably huge – it stretched farther than the eye could see. Strange structures dotted the landscape, and flashes of energy danced here and there.',
-      }
+      },
       {
         type: 'dialogue',
         speakerId: 'Takanuva',
