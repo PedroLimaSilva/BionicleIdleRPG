@@ -68,7 +68,7 @@ export const KraataDetail: React.FC = () => {
 
   const preparingArmors = useMemo(
     () => getPreparingRahkshi(rahkshi, power),
-    [rahkshi, power, stage]
+    [rahkshi, power]
   );
 
   const emptyReadyArmors = useMemo(
