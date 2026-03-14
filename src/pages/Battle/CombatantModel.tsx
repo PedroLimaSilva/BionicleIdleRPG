@@ -144,7 +144,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Kopaka':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <KopakaMataModel
                 ref={childRef}
                 matoran={{
@@ -159,7 +159,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Tahu':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <TahuMataModel
                 ref={childRef}
                 matoran={{
@@ -174,7 +174,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Pohatu':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04} position={[0, 0, 0]}>
               <PohatuMataModel
                 ref={childRef}
                 matoran={{
@@ -189,7 +189,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Onua':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <OnuaMataModel
                 ref={childRef}
                 matoran={{
@@ -204,7 +204,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Lewa':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <LewaMataModel
                 ref={childRef}
                 matoran={{
@@ -219,7 +219,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Gali':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <GaliMataModel
                 ref={childRef}
                 matoran={{
@@ -234,7 +234,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Tahu_Nuva':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <TahuNuvaModel
                 ref={childRef}
                 matoran={{
@@ -249,7 +249,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Gali_Nuva':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <GaliNuvaModel
                 ref={childRef}
                 matoran={{
@@ -264,7 +264,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Pohatu_Nuva':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <PohatuNuvaModel
                 ref={childRef}
                 matoran={{
@@ -279,7 +279,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Onua_Nuva':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <OnuaNuvaModel
                 ref={childRef}
                 matoran={{
@@ -294,7 +294,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Kopaka_Nuva':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <KopakaNuvaModel
                 ref={childRef}
                 matoran={{
@@ -309,7 +309,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Toa_Lewa_Nuva':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <LewaNuvaModel
                 ref={childRef}
                 matoran={{
@@ -324,7 +324,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           );
         case 'Takanuva':
           return (
-            <group scale={0.04} position={[0, 0.375, 0]}>
+            <group scale={0.04}>
               <TakanuvaModel
                 ref={childRef}
                 matoran={{
