@@ -198,6 +198,31 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
     section: 'Mask of Light',
   },
   {
+    id: 'mol_onu_koro_part2',
+    name: 'The Shadows over Onu Koro - Part 2',
+    description: 'The Rahkshi have taken over Onu-Koro.',
+    durationSeconds: 15 * 60,
+    requirements: {
+      matoran: [
+        'Takua',
+        'Toa_Tahu_Nuva',
+        'Toa_Gali_Nuva',
+        'Toa_Kopaka_Nuva',
+        'Toa_Lewa_Nuva',
+        'Toa_Onua_Nuva',
+        'Toa_Pohatu_Nuva',
+      ],
+      minLevel: 22,
+    },
+    rewards: {
+      cutscene: { type: 'visual_novel', cutsceneId: 'mol_onu_koro_part2' },
+      xpPerMatoran: 3500,
+      currency: 5000,
+    },
+    unlockedAfter: ['mol_onu_koro_battle'],
+    section: 'Mask of Light',
+  },
+  {
     id: 'mol_tahu_poisoned',
     name: 'Healing the Fire',
     description: 'Having restrained Tahu, the Toa Nuva attempt to heal his poison.',
@@ -211,7 +236,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
       xpPerMatoran: 3500,
       currency: 5000,
     },
-    unlockedAfter: ['mol_onu_koro_battle'],
+    unlockedAfter: ['mol_onu_koro_part2'],
     section: 'Mask of Light',
   },
   {
