@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { Color as ThreeColor, Group, MathUtils, Mesh, MeshStandardMaterial } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
@@ -10,6 +10,8 @@ import { KraataPower } from '../../types/Kraata';
 
 const BLACK = new ThreeColor('#000000');
 const GLOW_LERP_SPEED = 5;
+/** Threshold for considering glow "complete" (0–1). Eyes light up first, then idle plays. */
+const GLOW_COMPLETE_THRESHOLD = 0.98;
 
 interface GlowEntry {
   material: MeshStandardMaterial;
@@ -56,18 +58,43 @@ export const RahkshiModel = forwardRef<
   const group = useRef<Group>(null);
   const glowEntries = useRef<GlowEntry[]>([]);
   const glowTarget = useRef(hasKraata);
+  /** Original eye material values from the GLTF, captured once before any modifications. */
+  const originalEyeValuesRef = useRef<{
+    onColor: ThreeColor;
+    onEmissive: ThreeColor;
+    onEmissiveIntensity: number;
+  } | null>(null);
+  /** When hasKraata becomes true, stay on Empty until eyes finish lighting up, then switch to Idle. */
+  const [glowCompleteForIdle, setGlowCompleteForIdle] = useState(hasKraata);
+  const prevHasKraataRef = useRef(hasKraata);
 
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'rahkshi.glb');
 
   const bodyInstance = useMemo(() => nodes.Rahkshi.clone(true), [nodes]);
+
+  const effectiveIdleAction = hasKraata
+    ? glowCompleteForIdle && prevHasKraataRef.current
+      ? 'Idle'
+      : 'Empty'
+    : 'Empty';
 
   const { playAnimation } = useCombatAnimations(animations, group, {
     modelId: kraata,
     actionTimeScale: 1,
     transitionMode: 'stopAll',
     attackResolveAtFraction: 0.1,
-    idleActionName: hasKraata ? 'Idle' : 'Empty',
+    idleActionName: effectiveIdleAction,
   });
+
+  const lerpCompleteRef = useRef(false);
+
+  useEffect(() => {
+    if (hasKraata && !prevHasKraataRef.current) {
+      setGlowCompleteForIdle(false);
+    }
+    prevHasKraataRef.current = hasKraata;
+    lerpCompleteRef.current = false;
+  }, [hasKraata]);
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 
@@ -112,19 +139,41 @@ export const RahkshiModel = forwardRef<
       const mat = child.material as MeshStandardMaterial;
 
       if (mat.name === 'Eyes') {
-        const clone = mat.clone();
-        if (!glowTarget.current) {
-          clone.color.set('#000000');
-          clone.emissive.set('#000000');
-          clone.emissiveIntensity = 0;
+        // Use stored original values if we've already replaced child.material (mat is our previous clone)
+        let onColor: ThreeColor;
+        let onEmissive: ThreeColor;
+        let onEmissiveIntensity: number;
+        const stored = originalEyeValuesRef.current;
+        if (stored) {
+          onColor = stored.onColor;
+          onEmissive = stored.onEmissive;
+          onEmissiveIntensity = stored.onEmissiveIntensity;
+          // Reuse existing material; let useFrame lerp to target (no snap)
+          entries.push({
+            material: mat,
+            onColor,
+            onEmissive,
+            onEmissiveIntensity,
+          });
+        } else {
+          const clone = mat.clone();
+          onColor = mat.color.clone();
+          onEmissive = mat.emissive.clone();
+          onEmissiveIntensity = mat.emissiveIntensity;
+          originalEyeValuesRef.current = { onColor, onEmissive, onEmissiveIntensity };
+          if (!glowTarget.current) {
+            clone.color.set('#000000');
+            clone.emissive.set('#000000');
+            clone.emissiveIntensity = 0;
+          }
+          child.material = clone;
+          entries.push({
+            material: clone,
+            onColor,
+            onEmissive,
+            onEmissiveIntensity,
+          });
         }
-        child.material = clone;
-        entries.push({
-          material: clone,
-          onColor: mat.color.clone(),
-          onEmissive: mat.emissive.clone(),
-          onEmissiveIntensity: mat.emissiveIntensity,
-        });
         return;
       }
 
@@ -132,13 +181,15 @@ export const RahkshiModel = forwardRef<
     });
 
     glowEntries.current = entries;
-  }, [bodyInstance, kraata]);
+  }, [bodyInstance, kraata, hasKraata]);
 
   useFrame((_, delta) => {
     const entries = glowEntries.current;
-    if (entries.length === 0) return;
+    if (entries.length === 0 || lerpCompleteRef.current) return;
     const active = glowTarget.current;
+
     const alpha = 1 - Math.exp(-GLOW_LERP_SPEED * delta);
+    let allGlowComplete = active;
     for (const { material, onColor, onEmissive, onEmissiveIntensity } of entries) {
       material.color.lerp(active ? onColor : BLACK, alpha);
       material.emissive.lerp(active ? onEmissive : BLACK, alpha);
@@ -147,6 +198,14 @@ export const RahkshiModel = forwardRef<
         active ? onEmissiveIntensity : 0,
         alpha
       );
+      if (active && onEmissiveIntensity > 0) {
+        const ratio = material.emissiveIntensity / onEmissiveIntensity;
+        if (ratio < GLOW_COMPLETE_THRESHOLD) allGlowComplete = false;
+      }
+    }
+    if (active && allGlowComplete) setGlowCompleteForIdle(true);
+    if (allGlowComplete || (!active && entries.every((e) => e.material.emissiveIntensity < 0.01))) {
+      lerpCompleteRef.current = true;
     }
   });
 
