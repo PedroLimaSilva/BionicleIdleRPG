@@ -23,6 +23,7 @@ import { BattleSelector } from './pages/BattleSelector/index.tsx';
 import { BattlePage } from './pages/Battle/index.tsx';
 import TypeEffectivenessPage from './pages/TypeEffectiveness/index.tsx';
 import { NavBar } from './components/NavBar/index.tsx';
+import { TelemetryConsentPrompt } from './components/TelemetryConsentPrompt/index.tsx';
 
 const NotFound: React.FC = () => (
   <div className="page-container">
@@ -102,6 +103,7 @@ export function App() {
             <PWABadge />
           </SceneCanvasProvider>
         </Router>
+        <TelemetryConsentPrompt />
       </SettingsProvider>
     </GameProvider>
   );

@@ -142,6 +142,11 @@ export function saveShadowsEnabled(value: boolean) {
 
 let telemetryEnabled: boolean | undefined;
 
+/** Returns true only if the user has explicitly chosen a telemetry preference. */
+export function hasTelemetryConsent(): boolean {
+  return localStorage.getItem('TELEMETRY_ENABLED') !== null;
+}
+
 export function getTelemetryEnabled() {
   if (telemetryEnabled !== undefined) {
     return telemetryEnabled;
@@ -152,8 +157,8 @@ export function getTelemetryEnabled() {
     telemetryEnabled = parsed;
     return parsed;
   }
-  telemetryEnabled = true;
-  return true;
+  telemetryEnabled = false;
+  return false;
 }
 
 export function saveTelemetryEnabled(value: boolean) {

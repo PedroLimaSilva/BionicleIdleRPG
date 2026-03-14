@@ -23,9 +23,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     saveShadowsEnabled(shadowsEnabled);
   }, [shadowsEnabled]);
 
-  useEffect(() => {
-    saveTelemetryEnabled(telemetryEnabled);
-  }, [telemetryEnabled]);
+  const setTelemetryEnabled = (value: boolean) => {
+    setTelemetryEnabledState(value);
+    saveTelemetryEnabled(value);
+  };
 
   return (
     <SettingsContext.Provider
@@ -35,7 +36,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         shadowsEnabled,
         setShadowsEnabled: setShadowsEnabledState,
         telemetryEnabled,
-        setTelemetryEnabled: setTelemetryEnabledState,
+        setTelemetryEnabled,
       }}
     >
       {children}
