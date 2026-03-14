@@ -72,7 +72,11 @@ export const RahkshiModel = forwardRef<
 
   const bodyInstance = useMemo(() => nodes.Rahkshi.clone(true), [nodes]);
 
-  const effectiveIdleAction = hasKraata ? (glowCompleteForIdle ? 'Idle' : 'Empty') : 'Empty';
+  const effectiveIdleAction = hasKraata
+    ? glowCompleteForIdle && prevHasKraataRef.current
+      ? 'Idle'
+      : 'Empty'
+    : 'Empty';
 
   const { playAnimation } = useCombatAnimations(animations, group, {
     modelId: kraata,
