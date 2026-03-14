@@ -126,6 +126,7 @@ export const CharacterInventory: React.FC = () => {
           collectedKraata={collectedKraata}
           kraataCollection={kraataCollection}
           mergeAllKraata={mergeAllKraata}
+          shouldReduceMotion={shouldReduceMotion}
         />
       ) : (
         <div className="character-grid">
@@ -180,11 +181,13 @@ function RahkshiTabContent({
   collectedKraata,
   kraataCollection,
   mergeAllKraata,
+  shouldReduceMotion,
 }: {
   rahkshi: RahkshiArmor[];
   collectedKraata: CollectedKraataItem[];
   kraataCollection: KraataCollection;
   mergeAllKraata: () => void;
+  shouldReduceMotion: boolean;
 }) {
   const canMergeAny = useMemo(() => canMergeAnyKraata(kraataCollection), [kraataCollection]);
 
@@ -197,7 +200,7 @@ function RahkshiTabContent({
             {rahkshi
               .sort((a, b) => a.power.localeCompare(b.power))
               .map((armor) => (
-                <RahkshiArmorCard key={armor.id} armor={armor} />
+                <RahkshiArmorCard key={armor.id} armor={armor} shouldReduceMotion={shouldReduceMotion} />
               ))}
           </div>
         </>
@@ -221,7 +224,12 @@ function RahkshiTabContent({
       <div className="kraata-grid">
         {collectedKraata.map(({ power, stage, name, count }) => (
           <Link key={`${power}-${stage}`} to={`/kraata/${power}/${stage}`}>
-            <div className="kraata-card">
+            <motion.div
+              className="kraata-card"
+              layoutId={shouldReduceMotion ? undefined : `kraata-${power}-${stage}`}
+              layout
+              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            >
               <CompositedImage
                 images={[
                   `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Base.webp`,
@@ -234,7 +242,7 @@ function RahkshiTabContent({
               <div className="kraata-card__name">{name}</div>
               <div className="kraata-card__stage bionicle-font">{stage}</div>
               <div className="kraata-card__count">×{count}</div>
-            </div>
+            </motion.div>
           </Link>
         ))}
       </div>
@@ -242,7 +250,7 @@ function RahkshiTabContent({
   );
 }
 
-function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
+function RahkshiArmorCard({ armor, shouldReduceMotion }: { armor: RahkshiArmor; shouldReduceMotion: boolean }) {
   const { armor: armorColor, joint: jointColor } = getRahkshiArmorColors(armor.power);
   const powerName = KRAATA_POWER_NAMES[armor.power] ?? armor.power;
   const isPreparing = armor.status === 'preparing';
@@ -252,8 +260,11 @@ function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
 
   return (
     <Link to={`/rahkshi/${armor.id}`}>
-      <div
+      <motion.div
         className={`rahkshi-card rahkshi-card--${armor.status}`}
+        layoutId={shouldReduceMotion ? undefined : `rahkshi-${armor.id}`}
+        layout
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
         style={
           {
             '--rahkshi-head-color': armorColor,
@@ -277,7 +288,7 @@ function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
         >
           {statusLabel}
         </div>
-      </div>
+      </motion.div>
     </Link>
   );
 }
