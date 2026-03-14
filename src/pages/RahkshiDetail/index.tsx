@@ -269,7 +269,7 @@ export const RahkshiDetail: React.FC = () => {
           <AnimatePresence initial={false}>
             {isPreparing && (
               <span
-                className={`rahkshi-detail-header__status rahkshi-detail-header__status--${armor.status}${hasKraata ? ' rahkshi-detail-header__status--active' : ''}`}
+                className={`rahkshi-detail-header__status rahkshi-detail-header__status--preparing`}
               >
                 Forging
               </span>
