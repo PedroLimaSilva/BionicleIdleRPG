@@ -118,7 +118,6 @@ export const RahkshiModel = forwardRef<
       const mat = child.material as MeshStandardMaterial;
 
       if (mat.name === 'Eyes') {
-        const clone = mat.clone();
         // Use stored original values if we've already replaced child.material (mat is our previous clone)
         let onColor: ThreeColor;
         let onEmissive: ThreeColor;
@@ -128,29 +127,32 @@ export const RahkshiModel = forwardRef<
           onColor = stored.onColor;
           onEmissive = stored.onEmissive;
           onEmissiveIntensity = stored.onEmissiveIntensity;
+          // Reuse existing material; let useFrame lerp to target (no snap)
+          entries.push({
+            material: mat,
+            onColor,
+            onEmissive,
+            onEmissiveIntensity,
+          });
         } else {
+          const clone = mat.clone();
           onColor = mat.color.clone();
           onEmissive = mat.emissive.clone();
           onEmissiveIntensity = mat.emissiveIntensity;
           originalEyeValuesRef.current = { onColor, onEmissive, onEmissiveIntensity };
+          if (!glowTarget.current) {
+            clone.color.set('#000000');
+            clone.emissive.set('#000000');
+            clone.emissiveIntensity = 0;
+          }
+          child.material = clone;
+          entries.push({
+            material: clone,
+            onColor,
+            onEmissive,
+            onEmissiveIntensity,
+          });
         }
-
-        if (!glowTarget.current) {
-          clone.color.set('#000000');
-          clone.emissive.set('#000000');
-          clone.emissiveIntensity = 0;
-        } else {
-          clone.color.copy(onColor);
-          clone.emissive.copy(onEmissive);
-          clone.emissiveIntensity = onEmissiveIntensity;
-        }
-        child.material = clone;
-        entries.push({
-          material: clone,
-          onColor,
-          onEmissive,
-          onEmissiveIntensity,
-        });
         return;
       }
 
