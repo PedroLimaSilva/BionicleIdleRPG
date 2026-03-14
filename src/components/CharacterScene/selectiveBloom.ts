@@ -87,7 +87,8 @@ export function useEmissiveMeshes(
       setMeshes(collected);
     }, 0);
     return () => clearTimeout(id);
-  }, deps);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- deps are passed by caller; rootRef is stable
+  }, [rootRef, ...deps]);
 
   return meshes;
 }
