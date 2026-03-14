@@ -1,6 +1,8 @@
 import { useParams, Link } from 'react-router-dom';
+import { motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { useGame } from '../../context/Game';
+import { isTestMode } from '../../utils/testMode';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { getKraataCompositedColors } from '../../data/kraataColors';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
@@ -222,6 +224,8 @@ export const RahkshiDetail: React.FC = () => {
     return entries;
   }, [kraataCollection, isReady, hasKraata, armorPower]);
 
+  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
+
   if (!armor) {
     return (
       <div className="page-container">
@@ -237,8 +241,11 @@ export const RahkshiDetail: React.FC = () => {
 
   return (
     <div className="page-container rahkshi-detail">
-      <div
+      <motion.div
         className="rahkshi-detail-visualization"
+        layoutId={shouldReduceMotion ? undefined : `rahkshi-${armor.id}`}
+        layout
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
         style={
           {
             '--kraata-head-color': armorColors.armor,
@@ -258,7 +265,7 @@ export const RahkshiDetail: React.FC = () => {
             {isPreparing ? 'Forging' : hasKraata ? 'Active' : 'Ready'}
           </span>
         </div>
-      </div>
+      </motion.div>
 
       <div className="rahkshi-detail-content">
         {isPreparing && armor.startedAt != null && armor.endsAt != null && (

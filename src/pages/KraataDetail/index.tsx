@@ -1,6 +1,8 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { useGame } from '../../context/Game';
+import { isTestMode } from '../../utils/testMode';
 import { KraataPower, KRAATA_POWER_NAMES, MAX_KRAATA_STAGE } from '../../types/Kraata';
 import { KRAATA_SPECIES_COLORS, getKraataCompositedColors } from '../../data/kraataColors';
 import { CompositedImage } from '../../components/CompositedImage';
@@ -84,6 +86,7 @@ export const KraataDetail: React.FC = () => {
   }, [preparingArmors.length]);
 
   const name = KRAATA_POWER_NAMES[power] ?? power;
+  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const handleMerge = () => {
     if (!mergeable) return;
@@ -115,8 +118,11 @@ export const KraataDetail: React.FC = () => {
 
   return (
     <div className="page-container kraata-detail">
-      <div
+      <motion.div
         className="kraata-detail-visualization"
+        layoutId={shouldReduceMotion ? undefined : `kraata-${power}-${stage}`}
+        layout
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
         style={
           {
             '--kraata-head-color': colors.head,
@@ -141,7 +147,7 @@ export const KraataDetail: React.FC = () => {
           <span className="kraata-detail__stage bionicle-font">{stage}</span>
           <span className="kraata-detail__count">×{count}</span>
         </div>
-      </div>
+      </motion.div>
 
       <div className="kraata-detail-options">
         <div className="kraata-option">
