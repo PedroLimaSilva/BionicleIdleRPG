@@ -70,6 +70,13 @@
       }
     }
   }
+  .version-label {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--color-text-muted, #888);
+    margin: 0;
+  }
+
   .about-section {
     padding: 1rem 1.5rem;
     margin-top: 1rem;

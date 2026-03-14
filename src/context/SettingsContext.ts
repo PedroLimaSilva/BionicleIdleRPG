@@ -5,6 +5,8 @@ export interface SettingsState {
   setDebugMode: (value: boolean) => void;
   shadowsEnabled: boolean;
   setShadowsEnabled: (value: boolean) => void;
+  telemetryEnabled: boolean;
+  setTelemetryEnabled: (value: boolean) => void;
 }
 
 export const SettingsContext = createContext<SettingsState | null>(null);

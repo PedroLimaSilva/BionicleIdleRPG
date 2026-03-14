@@ -140,6 +140,27 @@ export function saveShadowsEnabled(value: boolean) {
   localStorage.setItem('SHADOWS_ENABLED', JSON.stringify(shadowsEnabled));
 }
 
+let telemetryEnabled: boolean | undefined;
+
+export function getTelemetryEnabled() {
+  if (telemetryEnabled !== undefined) {
+    return telemetryEnabled;
+  }
+  const stored = localStorage.getItem('TELEMETRY_ENABLED');
+  if (stored !== null) {
+    const parsed = JSON.parse(stored) as boolean;
+    telemetryEnabled = parsed;
+    return parsed;
+  }
+  telemetryEnabled = true;
+  return true;
+}
+
+export function saveTelemetryEnabled(value: boolean) {
+  telemetryEnabled = value;
+  localStorage.setItem('TELEMETRY_ENABLED', JSON.stringify(telemetryEnabled));
+}
+
 function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
   return (
     data &&
