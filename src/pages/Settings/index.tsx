@@ -188,14 +188,6 @@ export default function SettingsPage() {
           SETTINGS
         </h1>
         <label className="settings-option">
-          <p>
-            Edit completed quests, recruited characters, Krana, and Kraata. Apply to save changes.
-          </p>
-          <Link to="/settings/game-state" className="button cancel-button">
-            Edit Game State
-          </Link>
-        </label>
-        <label className="settings-option">
           <p>Found a bug or have a suggestion? Open an issue on GitHub.</p>
           <a
             href="https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/new"
@@ -206,6 +198,15 @@ export default function SettingsPage() {
             Report Issue
           </a>
         </label>
+        <label className="settings-option">
+          <p>
+            Edit completed quests, recruited characters, Krana, and Kraata. Apply to save changes.
+          </p>
+          <Link to="/settings/game-state" className="button cancel-button">
+            Edit Game State
+          </Link>
+        </label>
+
         <label className="settings-option">
           <p>Want a fresh start? You'll lose all your progress</p>
           <button
