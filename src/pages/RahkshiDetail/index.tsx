@@ -224,6 +224,8 @@ export const RahkshiDetail: React.FC = () => {
     return entries;
   }, [kraataCollection, isReady, hasKraata, armorPower]);
 
+  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
+
   if (!armor) {
     return (
       <div className="page-container">
@@ -236,7 +238,6 @@ export const RahkshiDetail: React.FC = () => {
   }
 
   const powerName = KRAATA_POWER_NAMES[armor.power] ?? armor.power;
-  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   return (
     <div className="page-container rahkshi-detail">
