@@ -1,7 +1,5 @@
 import * as THREE from 'three';
-import { DoubleSide } from 'three';
 import { useGLTF, Environment, PresentationControls } from '@react-three/drei';
-import { GLTF } from 'three-stdlib';
 import { Combatant } from '../../types/Combat';
 import { hasActiveEffectFromSource } from '../../services/combatUtils';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
@@ -17,22 +15,6 @@ function EnvironmentIntensity({ value }: { value: number }) {
   }, [scene, value]);
   return null;
 }
-
-type GLTFResult = GLTF & {
-  nodes: {
-    Ground: THREE.Mesh;
-    PlaneEM: THREE.Mesh;
-    PlaneTM: THREE.Mesh;
-    PlaneEL: THREE.Mesh;
-    PlaneER: THREE.Mesh;
-    PlaneTL: THREE.Mesh;
-    PlaneTR: THREE.Mesh;
-  };
-  materials: {
-    Ground: THREE.MeshStandardMaterial;
-    Places: THREE.MeshStandardMaterial;
-  };
-};
 
 interface ArenaProps {
   team: Combatant[];
@@ -185,48 +167,6 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
             <circleGeometry args={[ARENA_BOX_SIZE / 2, 64]} />
             <meshStandardMaterial color="#151518" transparent={true} opacity={1} />
           </mesh>
-          {/* <mesh
-            name="PlaneEM"
-            geometry={nodes.PlaneEM.geometry}
-            material={materials.Places}
-            position={[0, 0.05, -0.5]}
-            receiveShadow={shadowsEnabled}
-          />
-          <mesh
-            name="PlaneEL"
-            geometry={nodes.PlaneEL.geometry}
-            material={materials.Places}
-            position={[-0.5, 0.05, -0.75]}
-            receiveShadow={shadowsEnabled}
-          />
-          <mesh
-            name="PlaneER"
-            geometry={nodes.PlaneER.geometry}
-            material={materials.Places}
-            position={[0.5, 0.05, -0.75]}
-            receiveShadow={shadowsEnabled}
-          />
-          <mesh
-            name="PlaneTL"
-            geometry={nodes.PlaneTL.geometry}
-            material={materials.Places}
-            position={[-0.5, 0.05, 0.75]}
-            receiveShadow={shadowsEnabled}
-          />
-          <mesh
-            name="PlaneTR"
-            geometry={nodes.PlaneTR.geometry}
-            material={materials.Places}
-            position={[0.5, 0.05, 0.75]}
-            receiveShadow={shadowsEnabled}
-          />
-          <mesh
-            name="PlaneTM"
-            geometry={nodes.PlaneTM.geometry}
-            material={materials.Places}
-            position={[0, 0.05, 0.5]}
-            receiveShadow={shadowsEnabled}
-          /> */}
 
           {team.map((c, i) => (
             <CombatantModel
