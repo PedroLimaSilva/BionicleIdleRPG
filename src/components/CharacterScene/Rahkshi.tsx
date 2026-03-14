@@ -185,19 +185,8 @@ export const RahkshiModel = forwardRef<
 
   useFrame((_, delta) => {
     const entries = glowEntries.current;
-    if (entries.length === 0) return;
+    if (entries.length === 0 || lerpCompleteRef.current) return;
     const active = glowTarget.current;
-
-    if (lerpCompleteRef.current) {
-      const stillAtTarget = entries.every(({ material, onEmissiveIntensity }) =>
-        active
-          ? onEmissiveIntensity <= 0 ||
-            material.emissiveIntensity / onEmissiveIntensity >= GLOW_COMPLETE_THRESHOLD
-          : material.emissiveIntensity < 0.01
-      );
-      if (stillAtTarget) return;
-      lerpCompleteRef.current = false;
-    }
 
     const alpha = 1 - Math.exp(-GLOW_LERP_SPEED * delta);
     let allGlowComplete = active;
