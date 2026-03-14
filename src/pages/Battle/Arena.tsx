@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { useGLTF, Environment } from '@react-three/drei';
-import { GLTF } from 'three-stdlib';
+import { useGLTF, Environment, PresentationControls } from '@react-three/drei';
 import { Combatant } from '../../types/Combat';
 import { hasActiveEffectFromSource } from '../../services/combatUtils';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
@@ -17,22 +16,6 @@ function EnvironmentIntensity({ value }: { value: number }) {
   return null;
 }
 
-type GLTFResult = GLTF & {
-  nodes: {
-    Ground: THREE.Mesh;
-    PlaneEM: THREE.Mesh;
-    PlaneTM: THREE.Mesh;
-    PlaneEL: THREE.Mesh;
-    PlaneER: THREE.Mesh;
-    PlaneTL: THREE.Mesh;
-    PlaneTR: THREE.Mesh;
-  };
-  materials: {
-    Ground: THREE.MeshStandardMaterial;
-    Places: THREE.MeshStandardMaterial;
-  };
-};
-
 interface ArenaProps {
   team: Combatant[];
   enemies: Combatant[];
@@ -40,9 +23,9 @@ interface ArenaProps {
 }
 
 const TEAM_POSITIONS: [number, number, number][] = [
-  [-0.5, -0.5, 0.75],
-  [0, -0.5, 0.5],
-  [0.5, -0.5, 0.75],
+  [-0.5, 0, 0.75],
+  [0, 0, 0.5],
+  [0.5, 0, 0.75],
 ];
 const ENEMY_POSITIONS: [number, number, number][] = [
   [0, 0, -0.5],
@@ -55,7 +38,7 @@ const ARENA_BOX_SIZE = 3;
 /** Multiplier > 1 zooms out to add margin around the arena. */
 const ARENA_MARGIN = 1.5;
 /** Arena center (camera looks at this). */
-const ARENA_CENTER: [number, number, number] = [0, -0.25, 0];
+const ARENA_CENTER: [number, number, number] = [0, 0, 0];
 
 /**
  * Camera above the arena looking down. In portrait (width < height) uses a
@@ -105,10 +88,6 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
   const sceneGroupRef = useRef<THREE.Group>(null);
   const { shadowsEnabled } = useSettings();
 
-  const { nodes, materials } = useGLTF(
-    import.meta.env.BASE_URL + '/arena.glb'
-  ) as unknown as GLTFResult;
-
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).combatantRefs = combatantRefs.current;
@@ -151,7 +130,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
       <directionalLight
         ref={(el) => {
           if (el && el.parent && !el.target.parent) {
-            el.target.position.set(0, -0.25, 0);
+            el.target.position.set(0, 0.25, 0);
             el.parent.add(el.target);
           }
         }}
@@ -167,86 +146,58 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
         shadow-bias={-0.0005}
         shadow-normalBias={0.005}
       />
-      <directionalLight position={[-3, 2, -2]} intensity={0.15} />
-      <ambientLight intensity={0.05} />
-      <group dispose={null} name="Scene" ref={sceneGroupRef}>
-        {/* <mesh
-            name='Ground'
-            geometry={nodes.Ground.geometry}
-            material={materials.Ground}
-          /> */}
-        <mesh
-          name="PlaneEM"
-          geometry={nodes.PlaneEM.geometry}
-          material={materials.Places}
-          position={[0, 0.025, -0.5]}
-          receiveShadow={shadowsEnabled}
-        />
-        <mesh
-          name="PlaneTM"
-          geometry={nodes.PlaneTM.geometry}
-          material={materials.Places}
-          position={[0, -0.075, 0.5]}
-          receiveShadow={shadowsEnabled}
-        />
-        <mesh
-          name="PlaneEL"
-          geometry={nodes.PlaneEL.geometry}
-          material={materials.Places}
-          position={[-0.5, 0.025, -0.75]}
-          receiveShadow={shadowsEnabled}
-        />
-        <mesh
-          name="PlaneER"
-          geometry={nodes.PlaneER.geometry}
-          material={materials.Places}
-          position={[0.5, 0.025, -0.75]}
-          receiveShadow={shadowsEnabled}
-        />
-        <mesh
-          name="PlaneTL"
-          geometry={nodes.PlaneTL.geometry}
-          material={materials.Places}
-          position={[-0.5, -0.075, 0.75]}
-          receiveShadow={shadowsEnabled}
-        />
-        <mesh
-          name="PlaneTR"
-          geometry={nodes.PlaneTR.geometry}
-          material={materials.Places}
-          position={[0.5, -0.075, 0.75]}
-          receiveShadow={shadowsEnabled}
-        />
 
-        {team.map((c, i) => (
-          <CombatantModel
-            key={c.id}
-            combatant={c}
-            side="team"
-            position={TEAM_POSITIONS[i]}
-            maskPowerActive={
-              !!c.maskPower?.active || hasActiveEffectFromSource(team, enemies, c.id)
-            }
-            ref={(ref) => {
-              if (ref) combatantRefs.current[c.id] = ref;
-            }}
-          />
-        ))}
+      <directionalLight position={[-3, 2, -2]} intensity={0.015} />
+      <PresentationControls
+        enabled={false}
+        global={true}
+        snap={false}
+        speed={2}
+        zoom={1}
+        polar={[-Math.PI / 2, 0]}
+        config={{ mass: 0.5, tension: 170, friction: 26 }}
+      >
+        <group dispose={null} name="Scene" ref={sceneGroupRef}>
+          <mesh
+            name="Ground"
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[0, 0, 0]}
+            receiveShadow={shadowsEnabled}
+          >
+            <circleGeometry args={[ARENA_BOX_SIZE / 2, 64]} />
+            <meshStandardMaterial color="#151518" transparent={true} opacity={1} />
+          </mesh>
 
-        {enemies.map((c, i) => {
-          return (
+          {team.map((c, i) => (
             <CombatantModel
-              key={`${c.id}-w${currentWave}`}
+              key={c.id}
               combatant={c}
-              side="enemy"
-              position={ENEMY_POSITIONS[i]}
+              side="team"
+              position={TEAM_POSITIONS[i]}
+              maskPowerActive={
+                !!c.maskPower?.active || hasActiveEffectFromSource(team, enemies, c.id)
+              }
               ref={(ref) => {
                 if (ref) combatantRefs.current[c.id] = ref;
               }}
             />
-          );
-        })}
-      </group>
+          ))}
+
+          {enemies.map((c, i) => {
+            return (
+              <CombatantModel
+                key={`${c.id}-w${currentWave}`}
+                combatant={c}
+                side="enemy"
+                position={ENEMY_POSITIONS[i]}
+                ref={(ref) => {
+                  if (ref) combatantRefs.current[c.id] = ref;
+                }}
+              />
+            );
+          })}
+        </group>
+      </PresentationControls>
     </>
   );
 }
