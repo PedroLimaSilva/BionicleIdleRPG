@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useGame } from '../../context/Game';
 import { isTestMode } from '../../utils/testMode';
 import { KraataPower, KRAATA_POWER_NAMES, MAX_KRAATA_STAGE } from '../../types/Kraata';
+import { getKraataPowerDescription } from '../../data/kraataPowerDescriptions';
 import { KRAATA_SPECIES_COLORS, getKraataCompositedColors } from '../../data/kraataColors';
 import { CompositedImage } from '../../components/CompositedImage';
 import {
@@ -147,6 +148,11 @@ export const KraataDetail: React.FC = () => {
           <span className="kraata-detail__stage bionicle-font">{stage}</span>
           <span className="kraata-detail__count">×{count}</span>
         </div>
+        {getKraataPowerDescription(power, stage) && (
+          <p className="kraata-detail__power-desc">
+            {getKraataPowerDescription(power, stage)}
+          </p>
+        )}
       </motion.div>
 
       <div className="kraata-detail-options">

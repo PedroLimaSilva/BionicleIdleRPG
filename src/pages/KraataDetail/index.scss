@@ -134,6 +134,17 @@ $kraata-visualization-border: 2px;
   color: var(--color-accent);
 }
 
+.kraata-detail__power-desc {
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  max-width: 36ch;
+  text-align: left;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
 .kraata-detail-options {
   width: 100%;
   max-width: min(max(640px, 100%), 100vw - 4rem);

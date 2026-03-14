@@ -1,9 +1,10 @@
 import { useParams, Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { useGame } from '../../context/Game';
 import { isTestMode } from '../../utils/testMode';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
+import { getKraataPowerDescription } from '../../data/kraataPowerDescriptions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { CompositedImage } from '../../components/CompositedImage';
@@ -21,6 +22,7 @@ import { useEmissiveMeshes } from '../../components/CharacterScene/selectiveBloo
 import { StableSelectiveBloom } from '../../components/CharacterScene/StableSelectiveBloom';
 import { useSettings } from '../../context/useSettings';
 import { shouldEnableSelectiveBloom } from '../../utils/testMode';
+import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
 
 import './index.scss';
 
@@ -257,17 +259,39 @@ export const RahkshiDetail: React.FC = () => {
           <ArrowLeft size={18} aria-hidden /> Back
         </Link>
         <div id="rahkshi-model-frame" className="rahkshi-detail__model-frame" />
-        <h1 className="rahkshi-detail__name">
-          {hasKraata ? 'Rahkshi of ' : ''}
-          {powerName}
-          {hasKraata ? '' : ' Armor'}
-        </h1>
-        <div className="rahkshi-detail__meta">
-          <span
-            className={`rahkshi-detail__status rahkshi-detail__status--${armor.status}${hasKraata ? ' rahkshi-detail__status--active' : ''}`}
-          >
-            {isPreparing ? 'Forging' : hasKraata ? 'Active' : 'Ready'}
-          </span>
+        <div className="rahkshi-detail-header">
+          <h1 className="rahkshi-detail-header__name">
+            {hasKraata ? 'Rahkshi of ' : ''}
+            {powerName}
+            {hasKraata ? '' : ' Armor'}
+          </h1>
+
+          <AnimatePresence initial={false}>
+            {isPreparing && (
+              <span
+                className={`rahkshi-detail-header__status rahkshi-detail-header__status--${armor.status}${hasKraata ? ' rahkshi-detail-header__status--active' : ''}`}
+              >
+                Forging
+              </span>
+            )}
+            {hasKraata &&
+              armor.kraata &&
+              getKraataPowerDescription(armor.kraata.power, armor.kraata.stage) && (
+                <motion.p
+                  key="power-desc"
+                  className="rahkshi-detail-header__power-desc"
+                  initial={{ opacity: 0, y: -8, height: 0, margin: 0 }}
+                  animate={{ opacity: 1, y: 0, height: 'auto', margin: 0 }}
+                  exit={{ opacity: 0, y: -8, height: 0, margin: 0 }}
+                  transition={buildTransition(
+                    { duration: MOTION_DURATION.base, ease: MOTION_EASING.standard },
+                    shouldReduceMotion ?? false
+                  )}
+                >
+                  {getKraataPowerDescription(armor.kraata.power, armor.kraata.stage)}
+                </motion.p>
+              )}
+          </AnimatePresence>
         </div>
       </motion.div>
 
