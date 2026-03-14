@@ -384,7 +384,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
-        text: `My village, in trouble? I should have been there! I must return!”`,
+        text: `My village, in trouble? I should have been there! I must return!`,
       },
       {
         type: 'dialogue',
@@ -744,151 +744,673 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
     steps: [
       {
         type: 'narration',
-        text: `Jaller and Takua follow Kopaka to Ko-Koro.`,
+        text: `Takua, Jaller, and Kopaka rounded a hill of ice. Before them spread a snowy valley. Steep cliffs rose on the far side. Set into one of the cliffs was a village, accessible only by a bridge of ice.`,
+      },
+
+      {
+        type: 'narration',
+        text: `But something was wrong. The village wall had fallen. Huts were in shambles, and smoke rose from the ruins. There was no one in sight.`,
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Stop! Something is wrong.`,
+      },
+
+      {
+        type: 'narration',
+        text: `Jaller and Takua blinked, confused, as the Toa tossed his shield facedown onto the snow beside them. Suddenly realizing what Kopaka meant for them to do, Jaller shook his head.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `The Captain of the Guard never runs away!`,
+      },
+      {
+        type: 'narration',
+        text: `His last word was lost in a cry of terror as Takua pushed him onto the shield and jumped aboard himself. The momentum carried the shield skidding toward the cliff. It toppled on the edge, then tipped down, sliding faster and faster along the impossibly steep incline.`,
+      },
+
+      {
+        type: 'narration',
+        text: `Kopaka hardly heard their fading screams. He faced the Rahkshi as they closed in on him.`,
+      },
+      {
+        type: 'narration',
+        text: `The Fragmenter-Rahkshi sent yet another bolt of energy arcing toward him. Kopaka somersaulted away, dodging the bolt. As he came down, he tossed his twin blades onto the snow. He landed on them, turning them into power ice skates, on which he glided down the cliff face.`,
+      },
+      {
+        type: 'narration',
+        text: `Kopaka caught up to the shield-sled just as it reached the bottom of the cliff. He grabbed the edge and pulled it behind him as he veered into a ravine.`,
+      },
+      {
+        type: 'narration',
+        text: `An arc of dark energy smashed into the snow right in Kopaka’s path. The shock waves knocked him off his feet, sending him rolling into the snow.`,
+      },
+      {
+        type: 'narration',
+        text: `The shield flipped over, dumping Takua and Jaller as well. They tumbled head over heels, landing on the very edge of the lake.`,
+      },
+
+      {
+        type: 'narration',
+        text: `The Fragmenter-Rahkshi hissed triumphantly as it hovered down toward him. The other two Rahkshi were right behind the first. The creatures hovered right past Kopaka, who appeared to be unconscious, heading straight for the two Matoran.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Why us? What did we do?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `The mask!`,
+      },
+      {
+        type: 'narration',
+        text: `He grabbed the mask, which started glowing brighter than ever. Pushing Kopaka’s shield onto the cold water of the lake, he jumped on, using the mask as a paddle.`,
+      },
+
+      {
+        type: 'narration',
+        text: `Left behind, Jaller watched nervously as the Rahkshi approached. He dove out of the way as they hovered toward him. But they didn’t even glance his way. Their glowing eyes were focused on Takua. They hovered out over the water, following him.`,
+      },
+
+      {
+        type: 'narration',
+        text: `Takua paddled as hard as he could. But with every glance back, he saw the Rahkshi gaining on him. Finally they were close enough to reach out for him with their clawed arms.`,
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `I guess this is the end`,
+      },
+
+      {
+        type: 'narration',
+        text: `Just then his gaze caught motion back on the lakeshore. Kopaka was awake – he was swinging his ice blade overhead. A second later a blast of elemental ice spun through the air, heading straight for the Rahkshi!`,
+      },
+
+      {
+        type: 'narration',
+        text: `The icy blast hit the Fragmenter-Rahkshi and knocked it off balance. It crashed into the other two creatures, and all three of them toppled and landed in the lake with a splash.`,
+      },
+
+      {
+        type: 'narration',
+        text: `Kopaka twirled his blade, then stabbed the point into the edge of the lake. The water crystallized instantly into ice, the deep freeze spreading rapidly until the entire lake was frozen solid. The Rahkshi, who were just reaching the surface, were trapped in place.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Good moves.`,
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Even I get lucky sometimes.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `Not luck, it's what you do that makes a hero. I need to tend to my village.`,
+      },
+      {
+        type: 'narration',
+        text: `Kopaka left, leaving Takua and Jaller alone on the ice. Takua offerd the mask to Jaller. `,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Here.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: `You were looking pretty Herald-like back there. Sure you don't want to hang on to it?`,
+      },
+      {
+        type: 'narration',
+        text: `Takua slapped the mask against Jaller’s chest. As Jaller held it, the mask's glow slowly faded.`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: `Tempting, but no.`,
       },
     ],
   },
-
   mol_onu_koro_highway: {
     id: 'mol_onu_koro_highway',
     background: { type: 'gradient', from: '#2a1a00', to: '#0a0a0a' },
     steps: [
       {
         type: 'narration',
-        text: `In the darkness of the Onu-Koro Highway, Takua is separated from Jaller and Pewku.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Makuta',
-        portraitType: 'avatar',
-        position: 'left',
-        text: `Takua...`,
+        text: `Takua, Jaller, and Pewku stopped beside a small tunnel entrance dug out of an icy mountainside. Takua leaned closer to read the writing on a battered old totem that marked the entrance.`,
       },
       {
         type: 'dialogue',
         speakerId: 'Takua',
         portraitType: 'avatar',
         position: 'right',
-        text: `Jaller?`,
+        text: `Onu-Koro. It doesn’t look like it’s been used in a while. And we don’t have a lightstone.`,
       },
       {
         type: 'dialogue',
-        speakerId: 'Makuta',
+        speakerId: 'Jaller',
         portraitType: 'avatar',
-        position: 'left',
-        text: `Takua...`,
+        position: 'right',
+        text: 'Who needs lightstones? We have a Mask. of. Light.',
       },
       {
         type: 'narration',
-        text: `In the darkness, Makuta's glowing red eyes peer through the shadows.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Makuta',
-        portraitType: 'avatar',
-        position: 'left',
-        text: `Shadows are everywhere. And where they are, so am I.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Takua',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `I know who you are. I am not afraid.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Makuta',
-        portraitType: 'avatar',
-        position: 'left',
-        text: `Not even my shadows can hide your fear. Or the truth. That you will not find the seventh Toa. And deep down, you know it.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Takua',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `So I won't, maybe Jaller will.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Makuta',
-        portraitType: 'avatar',
-        position: 'left',
-        text: `And if he doesn't, he will die because of you. Bring *me* the mask, Takua. Bring it to me and you won't lose your friend.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Takua',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `No! I won't let everyone down.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Makuta',
-        portraitType: 'avatar',
-        position: 'left',
-        text: `You'll fail them more if you refuse. For the mask, your villages and Jaller will be spared. Don't be a fool.`,
+        text: 'Jaller led the way into the tunnel. Pewku followed. Takua hesitated, then climbed down into the darkness after them',
       },
       {
         type: 'narration',
-        text: `The glowing red eyes of Makuta fade away. Jaller approaches Takua.`,
+        text: 'Takua…',
+      },
+      {
+        type: 'narration',
+        text: 'Takua stopped short. Was he hearing things? He peered into the darkness behind him. But there was no sign of life or movement.',
+      },
+      {
+        type: 'narration',
+        text: 'By the time he turned around, Jaller and Pewku had disappeared.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Uh, guys? Where’d you go?',
+      },
+      { text: 'Takua…', type: 'narration' },
+      {
+        text: 'Takua gulped. That time he’d definitely heard it. But who? Where? Why?',
+        type: 'narration',
+      },
+      {
+        text: 'In the blinding dark, he crashed into a wall and fell. Suddenly an eerie red glow lit up the tunnel. A pair of red eyes appeared in the dimness.',
+        type: 'narration',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Shadows are everywhere. And where they are, so am I.',
+      },
+      {
+        text: 'Takua backed away from the eyes. His heart was pounding. The Makuta. It had to be.',
+        type: 'narration',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'I know who you are. I-I’m not afraid.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Even my shadows cannot hide your fear, or the truth.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'What truth?',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'That you will not find the Seventh Toa. And deep down, you know it.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'So I won’t. Maybe Jaller will.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'And if he doesn’t? He will die, because of you. Bring me the mask, Takua. Bring it to me and you won’t lose your friend.',
+      },
+      {
+        text: 'Takua was horrified. Was this his choice? Betray all of Mata Nui – or allow Jaller to die?',
+        type: 'narration',
+      },
+      {
+        text: '(Makuta is said to be the master of lies. Maybe this choice is a lie, too…)',
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'N-no! I won’t let everyone down.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Makuta',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'You fail them more if you refuse, For the mask, your villages and Jaller will be spared. Don’t be a fool.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'N-no, I can’t…',
+      },
+      {
+        type: 'narration',
+        text: 'Suddenly a flash of light flooded the tunnel. Jaller’s voice called from somewhere ahead. A second later he and Pewku appeared.',
       },
       {
         type: 'dialogue',
         speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
-        text: `Takua! The mask is pointing this way! Are you coming?`,
+        text: 'Keep up, kolhii-head, I found some better tunnels!',
       },
       {
-        type: 'dialogue',
-        speakerId: 'Takua',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `No... I can't go with you... `,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Jaller',
-        portraitType: 'avatar',
-        position: 'left',
-        text: `What? Why? First you put this duty on me and now you abandon me?`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Takua',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `I can't explain. I quit. Take the mask and go.`,
+        text: 'Takua stared around wildly. But there was no sign of Makuta. Unable to speak, he merely followed as Jaller and Pewku turned and headed down the tunnel again.',
+        type: 'narration',
       },
       {
         type: 'dialogue',
         speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
-        text: `Fine! But I wont't give up, even if we both know you're the true Herald.`,
+        text: 'So where’d you wander off to?',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Jaller, Um, about the mask…',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'What about it? You ready to take it? Finally?',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'I can’t… go with you. I… can’t explain.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Oh, that’s just great, First you stick me with your duty and then you ditch me?',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'My duty is to myself. I quit. Just take the mask and go.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Fine, But I won’t give up. I will find the Seventh Toa, whether you’re the true Herald or not.',
       },
       {
         type: 'narration',
-        text: `With his first three Rahkshi trapped in ice, Makuta releases three more: Vorahk, Kurahk, and Turahk.`,
+        text: 'Pewku stood still, staring first after Takua and then Jaller. She turned and followed Takua.',
       },
     ],
   },
-
   mol_onu_koro_battle: {
     id: 'mol_onu_koro_battle',
     background: { type: 'gradient', from: '#2a1a00', to: '#0a0a0a' },
     steps: [
       {
         type: 'narration',
-        text: `In Onu-Koro, Pohatu and Onua are spreading word of the Avohkii when the three new Rahkshi burst through the walls. Vorahk drains Onua's power. Turahk strikes Pohatu with fear. Takua attacks Kurahk with his kolhii stick but is beaten aside.`,
+        text: 'Onua and Pohatu were conferring in the center courtyard of Onu-Koro when they heard steps approaching from one of the tunnels.',
+      },
+
+      {
+        type: 'narration',
+        text: 'Pohatu saw an exhausted-looking Ussal crab trotting toward him. His eyes widened in surprise as he recognized the figure riding atop the Ussal’s back.',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Pohatu',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Chronicler! Pohatu exclaimed as Takua and Pewku made their way toward the Toa. “Where is the Herald?”',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Uh, we got… separated. After we met the Rahkshi.',
       },
       {
         type: 'narration',
-        text: `Tahu arrives. Kurahk strikes him with anger, which aggravates the poison from Lerahk's scar. Tahu turns on Gali and Kopaka freezes him. Takua flees though a chimney with Rahkshi on his tail. Onua, desperate, brings the ceiling down on his village, burying the Sons of Makuta. Onu-Koro is destroyed.`,
+        text: 'Before Takua could continue, the ground shuddered. The villagers around them cried out in alarm. Suddenly the cavern wall burst open – and three tall, horrifying figures leaped into view, hissing angrily.',
       },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Those! “Except… different ones.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Onua',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Clear the cave! And close the tunnel behind you!',
+      },
+      {
+        type: 'narration',
+        text: 'The Onu-Matoran scattered, racing for the tunnels leading away from the cavern. Meanwhile Onua and Pohatu faced the three Rahkshi.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Onua',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Let me show you a real Onu-Koro welcome. *slams his  onto the ground, creating an elemental tidal wave of earth and stone. The wave rippled toward the Rahkshi and swallowed them*',
+      },
+      {
+        type: 'narration',
+        text: 'But when the wave had passed, the Rahkshi rose up again, unharmed.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Onua',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Onua grunted in surprise. The Hunger-Rahkshi leaped toward him, wielding its staff. Onua grabbed at the staff, trying to pull it away.',
+      },
+      {
+        type: 'narration',
+        text: 'Meanwhile Pohatu raced toward the Fear-Rahkshi. The creature raised its staff, sending dark energy waves rippling out from it. As soon as Pohatu hit the circle of energy, he stopped in midstride, his eyes filled with fear.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Pohatu',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'No… Water, sinking, drowning…!',
+      },
+      {
+        type: 'narration',
+        text: 'The Hunger-Rahkshi hissed at Onua as they struggled over the staff. The creature activated the staff. Hunger flooded into Onua, instantly draining him of power, channeling it instead back into the Rahkshi’s staff.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Onua',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'My strength. My power…',
+      },
+      
+      {
+        type: 'narration',
+        text: 'His eyes dimmed and he fell over backward, landing with a mighty crash. He couldn’t move – his energy was completely gone, replaced by a gnawing, devastating hunger.',
+      },
+      {
+        type: 'narration',
+        text: 'Still imprisoned by a wall of fear, Pohatu was unable to help. And the more he struggled against it, the more the terror overwhelmed him – until, with a final moan of helplessness, he collapsed to the ground.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'Takua tried to avoid the fleeing villagers as he and Pewku searched for escape as well. The three Rahkshi turned and spotted him in the crowds. Knocking other Matoran out of the way, they stalked after him with a hiss.',
+      },
+      {
+        type: 'narration',
+        text: 'Pewku found her way to a tunnel while the Rahkshi were still halfway back across the large cavern. Takua breathed out in relief. They were going to make it!',
+      },
+      {
+        type: 'narration',
+        text: 'Then he turned and saw the scene behind him. The Rahkshi were stomping on huts and shoving aside terrified Onu-Matoran. Onua and Pohatu were still sprawled motionless on the cavern floor.',
+      },
+      {
+        type: 'narration',
+        text: 'This is my fault, Takua realized. They’re destroying everything in their path – to get to me.',
+      },
+      {
+        type: 'narration',
+        text: 'His eyes hardened with resolve. Grabbing a kolhii stick that was leaning against a hut nearby, he turned Pewku to face the approaching Rahkshi.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Yah, Pewku! Yah!',
+      },
+      {
+        type: 'narration',
+        text: 'Pewku tried to do as he said. But so many villagers were fleeing, flowing around them in their race for the tunnel, that they could hardly move forward. Finally Takua gave up. Slumping to the ground, he closed his eyes and waited for the Rahkshi to reach him.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'Pewku whined frantically, trying to get him to move. But he pushed her claw aside.',
+      },
+      
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Go find a real hero, he mumbled miserably. What can I do?',
+      },
+    ],
+  },
+
+  mol_onu_koro_part2: {
+    id: 'mol_onu_koro_part2',
+    background: { type: 'gradient', from: '#2a1a00', to: '#0a0a0a' },
+    steps: [
+      {
+        type: 'narration',
+        text: 'Tahu, Lewa, and Gali raced through a tunnel, heading toward the main cavern of Onu-Koro. They skidded to a stop as they reached the end of the tunnel and saw the mayhem in the cavern.',
+      },
+      {
+        type: 'narration',
+        text: 'Tahu’s eyes flashed with anger as he took it in. The poison taint, which had spread to cover half of his face, glowed angrily as well.',
+      },
+      {
+        type: 'narration',
+        text: 'He leaped into the cavern without a word. Racing toward the creatures, he charged at the Anger-Rahkshi first.',
+      },
+      {
+        type: 'narration',
+        text: 'The Anger-Rahkshi banged its staff on the ground. A ring of dark energy rippled across the cavern floor, hitting Tahu and knocking him off of his feet.',
+      },
+      {
+        type: 'narration',
+        text: 'The Fire Toa landed with a grunt on the hard ground. Gali and Lewa leaped out of the tunnel and raced toward the action. Lewa spotted a small figure huddled on the ground near the Rahkshi.',
+      },
+      
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Lewa_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text:'The Chronicler! And his crab friend, Pewku. Looks like they’re in badneed of a rescue.'
+      },
+      {
+        type: 'narration',
+        text: 'He glided toward them, grabbing Takua in one arm and Pewku in the other.',
+      },
+      {
+        type: 'narration',
+        text: 'The Rahkshi hissed in frustration as they saw their quarry fly away across the cavern. They turned and stalked after him.',
+      },
+      {
+        type: 'narration',
+        text: 'Tahu’s eyes glowed dark, anger-energy flashing across them. The poison taint had spread once again and now covered his entire mask.',
+      },
+      {
+        type: 'narration',
+        text: 'He leaped to his feet. Gali gasped as she saw that it wasn’t just Tahu’s mask that was poisoned now. The taint had spread across his entire body!',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: '(The Rahkshi’s anger-energy must have caused it to spread more rapidly) Brother!',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'FIRE HAS NO BROTHERS! FIRE CONSUMES ALL!',
+      },
+      {
+        type: 'narration',
+        text: 'He slammed his swords into the ground. Jagged fissures of lava burst into life and tore across the ground in all directions. Gali balanced on a pillar of earth as fire consumed the ground on either side.',
+      },
+      {
+        type: 'narration',
+        text: 'Tahu looked at her, but there was no recognition in his eyes – only anger. He slammed his swords down again, sending another fissure of lava right at Gali. She somersaulted away just in time as the ground exploded into flame.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'Across the cavern, Lewa glided down and deposited Takua and Pewku beside Onua and Pohatu.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Lewa_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'No thought-thinking. Quickspeed to Jaller. Warn him!',
+      },
+      {
+        type: 'narration',
+        text: 'Takua and Pewku raced toward an escape tunnel. But a few strides away, the Ussal veered suddenly, heading through a narrow foundry doorway instead.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Pewku! Where are you going?',
+      },
+      {
+        type: 'narration',
+        text: 'He followed her. A moment later, the Rahkshi disappeared through the foundry door as well.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'At that moment back in the cavern, Pohatu finally came to and sat up. He glanced at Onua, who was pushing himself upright nearby.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Pohatu',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Rise and shine, brother.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'The heat rolled over Takua in waves as he followed Pewku into the depths of the foundry. Several fires blazed beneath narrow exhaust chimneys cut into the rock ceiling. Mine-cars loaded with lightstones sat on their tracks, waiting to move out.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'Dead end, Takua realized as he stared around the chamber. There’s no way out except the way we came… and we can’t go that way.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'The trio of Rahkshi emerged from the entry tunnel into the foundry chamber with a loud hiss. Pewku raced toward one of the chimneys. She grunted urgently at Takua and leaped up, scrambling for a hold on the rough rock sides.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'Takua took a deep breath. What choice did he have? He leaped up, following the Ussal into the soot-blackened chimney.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'As he struggled to climb up the chimney, he heard the Rahkshi hissing directly beneath him. He tried to climb faster, but it was no use – the Fear-Rahkshi was right behind him. It lunged up, grabbing for his foot.',
+      },
+
+      {
+        type: 'narration',
+        text: 'Suddenly a claw spun into view, pinning the Fear-Rahkshi’s arm to the wall just before its clawed hand closed around Takua’s leg. It was one of Toa Pohatu’s mighty climbing claws!',
+      },
+
+      {
+        type: 'narration',
+        text: 'The other two Rahkshi charged toward the Toa. Onua slammed his fists outward into the cavern walls. The section of ceiling directly over the Rahkshi collapsed, piling rocks and stone dust over them.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'Breathing a sigh of relief, Takua pulled himself up to safety.',
+      },
+      
     ],
   },
 
@@ -898,7 +1420,70 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
     steps: [
       {
         type: 'narration',
-        text: `Tahu is chained upon a stone, writhing. The poison from Lerahk's scar, aggravated by Kurahk's anger, has spread through his body.`,
+        text: 'In the courtyard cavern, Tahu swiped his swords at Lewa, who dodged them easily. Tahu lunged at Lewa again.',
+      },
+      {
+        type: 'narration',
+        text: 'Rocks rained down on him from the ceiling, mixed with snow. Suddenly a stream of water struck Tahu from behind.',
+      },
+      {
+        type: 'narration',
+        text: 'Howling with anger, he turned to find Gali behind him.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Tahu, she called. Remember who you are! Remember your destiny. She unleashed another stream of water. Tahu’s armor steamed as the cool water hit it.',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'I HAVE NO DESTINY! I – agh?',
+      },
+      
+      {
+        type: 'narration',
+        text: 'He jumped in surprise as a shape plummeted to the ground behind him. Kopaka! The Ice Toa touched his blade to the ground. A layer of frost washed over the ground, trapping Tahu in a thick coating of ice.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'Lewa stepped forward. He and Kopaka each took one of the frozen Tahu’s arms, carrying him toward an exit tunnel.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'Gali looked around for the others as she raced after them. She saw Onua’s quake-breakers smash through the stone of a collapsed foundry entrance and breathed out with relief as he and Pohatu emerged into the courtyard chamber.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'Lewa and Kopaka carried the unconscious Tahu into a tunnel. Gali followed. Once inside the tunnel, she turned back to check on the others’ progress. Pohatu and Onua raced across the chamber toward her. They were steps from safety when there was an ominous rumble. A split second later, the entire cavern collapsed on top of them.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'Gali gasped in horror as rocks and earth rained down, burying everything in a deep layer of debris.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'She tried to leap out, to go help. But Kopaka stopped her.',
+      },
+      
+      {
+        type: 'narration',
+        text: 'He gave her a somber look. Gali returned the look for a long moment, then glanced out at the caved-in courtyard area. There was no sound, no movement except the settling dust.',
+      },
+      
+      {
+        type: 'narration',
+        text: `Outside the caverns of Onu-Koro, Tahu is chained upon a stone, writhing. The poison from Lerahk's scar, aggravated by Kurahk's anger, has spread through his body.`,
       },
       {
         type: 'dialogue',
@@ -932,6 +1517,35 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'right',
         text: `Kopaka?`,
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Lewa_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Sister, he is openeyed!',
+      },
+      {
+        type: 'narration',
+        text: 'Gali hurried back to the clearing. Tahu was sitting up, unwrapping the vines from his wrists.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Brother! Are you well?',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'No, I am not well. But I am alive and in your debt… my sister.',
+      },
+      {
+        type: 'narration',
+        text: 'He tentatively lifted his fist toward her. Gali smiled and gently clanked it with her own.',
       },
     ],
   },
@@ -995,60 +1609,317 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Takua',
         portraitType: 'avatar',
         position: 'right',
-        text: `No way, we've been all over the island just to end up here?`,
+        text: 'No way! We’ve been all over the island, just to wind up here?',
       },
+
       {
         type: 'dialogue',
         speakerId: 'Jaller',
         portraitType: 'avatar',
-        position: 'right',
-        text: `No way, we've been all over the island just to end up here? Are you sure the mask is working right?`,
+        position: 'left',
+        text: 'Why not? It’s a sacred place,',
       },
       {
         type: 'narration',
-        text: `Frustrated, Takua takes the mask from Jaller and shakes it. The Avohkii fires a beam that partially destroys a statue, revealing another statue behind it.`,
-      },
-      {
-        type: 'narration',
-        text: `At that moment, all six Rahkshi ambush them. The Matoran retreat toward the Amaja Circle—and the six Toa Nuva arrive. Tahu shields everyone with his Hau Nuva. Uniting their powers at last, the Toa engage the Rahkshi.`,
-      },
-      {
-        type: 'narration',
-        text: `Guurahk, Panrahk, and Lerahk are trapped in glass. Vorahk and Kurahk are frozen after being showered with lava. Five Rahkshi fall.`,
-      },
-      {
-        type: 'narration',
-        text: `Turahk, unnoticed by the Toa, rises from the rubble. It approaches Jaller and Takua.`,
-      },
-      {
-        type: 'narration',
-        text: `Striking Takua with fear, Turahk lifts its staff to kill the Matoran. Jaller sees it. He grabs onto Turahk's staff, trying to stop it. The Rahkshi floods Jaller with more fear than any being can endure, then swings him off.`,
-      },
-      {
-        type: 'narration',
-        text: `The Toa Nuva subdue Turahk. But the damage is done.`,
+        text: 'Takua grabbed the mask, which immediately glowed brightly again.',
       },
       {
         type: 'dialogue',
         speakerId: 'Takua',
         portraitType: 'avatar',
         position: 'right',
-        text: `Jaller! No—hold on—`,
+        text: 'You sure you’re working this right?',
       },
       {
         type: 'narration',
-        text: `Jaller passes the mask to Takua.`,
+        text: 'At that moment a beam of brilliant light shot out of the mask. It landed on the giant stone head. The ground quaked, shaking loose countless years’ worth of dirt and grime from the carving. As the outlines of a mask began to be visible underneath, the sun dipped beneath the horizon, plunging the temple into dusky dimness.',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Wow, this is it! The Seventh Toa must be here.',
+      },
+
+      {
+        type: 'narration',
+        text: 'An ominous hiss rose nearby. Takua and Jaller turned toward the sound in fear. Three Rahkshi stepped out from behind a rock – Fragmenter, Disintegrator, and Poison.',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Give me the mask, Takua!',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Jaller, no! We both know the mask chose me. I am the true Herald.',
       },
       {
         type: 'dialogue',
         speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
-        text: `You know who you are. You were always different.`,
+        text: 'Are you sure, even now?',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Yes! I’m the Herald. And I say… run!',
       },
       {
         type: 'narration',
-        text: `Jaller's heartlight fades.`,
+        text: 'Takua, Jaller, and Pewku raced down toward the lower plateau. The ground quaked again at the base of the steps. A fissure erupted in a shower of rocks and earth, and three more Rahkshi burst out of the ground!',
+      },
+      {
+        type: 'narration',
+        text: 'Takua and Jaller turned to race back up the steps. But the first trio of Rahkshi were already descending from the top. They were trapped!',
+      },
+      {
+        type: 'narration',
+        text: 'Suddenly a flare of brilliant fire rocketed overhead, illuminating the entire temple.',
+      },
+      {
+        type: 'narration',
+        text: 'The Rahkshi shielded their faces against the glare. An urn atop the enormous stone head ignited, illuminating Lewa and Gali, who stood on either side. Tahu stepped in from the shadows, the fire reflecting off of his bright red armor.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Great! You can get us out of here!',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'We are done running.',
+      },
+      {
+        type: 'narration',
+        text: 'The Fragmenter-Rahkshi hissed, unleashing an arc of dark energy from its staff. Tahu lifted his shield, enveloping all of the Toa and Matoran in a protective force field. He staggered backward as the Rahkshi’s bolt hit, but recovered quickly.',
+      },
+
+      {
+        type: 'narration',
+        text: '“We will not be broken!” the Fire Toa shouted defiantly.',
+      },
+
+      {
+        type: 'narration',
+        text: 'He and Lewa stood side by side as the Fragmenter-, Poison-, and Disintegrator-Rahkshi approached. Behind them, Gali led Takua and Jaller down the steps toward the lower temple.',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'This way!',
+      },
+
+      {
+        type: 'narration',
+        text: 'Lewa summoned a whirlwind, sending it spinning down to grab the sand from the Amaja Circle. The sand cycloned feverishly, enveloping the advancing Rahkshi. Tahu crossed his swords, sending a blast of fire into the swirling sandstorm. The sand particles glowed red, then white-hot. When Tahu and Lewa both lowered their arms, their creation remained – the Rahkshi were trapped from the neck down in a prison of glass!',
+      },
+      {
+        type: 'narration',
+        text: 'In the lower temple, the other three Rahkshi moved toward Gali and her charges, cutting off their escape. The ground between them suddenly rumbled and exploded. Three figures erupted out of the quake, landing beside Gali and the others.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Brothers! We thought we lost you!',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Onua_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'You might have, but for our frosty friend,',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'It was… on the way.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Kopaka had to dig out the chief miner?',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Onua_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Well, he needs to get his hands dirty from time to time.',
+      },
+      {
+        type: 'narration',
+        text: 'The Hunger-, Anger-, and Fear-Rahkshi had recovered from the surprise of the Toa’s arrival. They advanced again, hissing menacingly.',
+      },
+      {
+        type: 'narration',
+        text: 'The Anger-Rahkshi banged its staff on the ground, sending a ring of dark anger energy toward the Toa. But the energy passed right through them, leaving them untouched. The Rahkshi hissed in surprise.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Our anger is no more, Rahkshi. We are united!',
+      },
+
+      {
+        type: 'narration',
+        text: 'Lewa and Pohatu leaped into action, somersaulting around the three Rahkshi faster than the eye could follow. The creatures swung their staffs wildly at their tumbling foes – but wound up striking one another instead!',
+      },
+
+      {
+        type: 'narration',
+        text: 'The Fear-Rahkshi squealed in dismay as the Hunger-Rahkshi’s staff hit it. Its fear energy drained from its body, sending it tumbling helplessly to the ground.',
+      },
+
+      {
+        type: 'narration',
+        text: 'The Hunger-Rahkshi hissed. Turning away from the circling Toa, it leaped toward Takua and Jaller. In the blink of an eye, Tahu and Gali joined together and summoned their elemental powers. A blast of steam burst from their tools, catching the Hunger-Rahkshi in its mighty stream and lifting it into the air.',
+      },
+
+      {
+        type: 'narration',
+        text: 'The Toa moved in on the Anger-Rahkshi. The creature backed away, hissing in frustration.',
+      },
+
+      {
+        type: 'narration',
+        text: 'Behind the Toa, the Fear-Rahkshi stirred. Its eyes began to glow as energy flowed back into its body. The creature climbed to its feet and started up the steps toward Takua and Jaller. The Toa didn’t notice. All of their attention was focused on the Anger-Rahkshi in front of them. ',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Now! As one!', 
+      },
+
+
+      {
+        type: 'narration',
+        text: 'Onua slammed the ground, sending a wave of earth toward the Anger-Rahkshi.',
+      },
+      {
+        type: 'narration',
+        text: 'Pohatu transformed the rolling wave of earth into a wave of boulders.',
+      },
+
+      {
+        type: 'narration',
+        text: 'Tahu transformed the boulders into a wave of lava, which broke over the Rahkshi, enveloping it.',
+      },
+
+      {
+        type: 'narration',
+        text: 'The Anger-Rahkshi tried to escape the lava. But suddenly the jet of steam dissipated, sending the Hunger-Rahkshi plunging back to earth – right on top of the Anger-Rahkshi!',
+      },
+
+      {
+        type: 'narration',
+        text: 'Kopaka jumped forward, striking the lava with his sword and instantly freezing it solid. Both the Hunger- and Anger-Rahkshi were frozen along with it.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Tahu_Nuva',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'They’ve been trapped before and were still able to escape.',
+      },
+      {type: 'narration',
+        text: 'Kopaka leaned in, yanking the kraata out of the Rahkshi’s armored bodies.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Kopaka_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Not this time.',
+      },
+
+      {
+        type: 'narration',
+        text: 'A frightened squeal erupted from somewhere above. Glancing up, the Toa were just in time to see Pewku tumble down the steps, tossed aside by the Fear-Rahkshi. The creature turned with a hiss, backing Takua and Jaller up the steps.',
+      },
+      {
+        type: 'dialogue',
+        speakerId: 'Toa_Gali_Nuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'Hang on!',
+      },
+
+      {
+        type: 'narration',
+        text: 'Takua looked down, trying to see the Toa. Instead, his gaze caught the beam of dark fear energy emanating from the Rahkshi’s staff. He fell to his knees, instantly transfixed.',
+      },
+
+      {
+        type: 'narration',
+        text: 'The Fear-Rahkshi rose up on its long legs, towering over Takua. It swung its staff toward the helpless Matoran.',
+      },
+
+      {
+        type: 'narration',
+        text: 'But Jaller had seen what was happening. He leaped forward, swinging the kolhii stick he was holding.',
+      },
+
+      {
+        type: 'narration',
+        text: 'Takua snapped out of his fear trance as Jaller intercepted the Rahkshi’s blow. He screamed as dark energy sizzled through his friend’s body.',
+      },
+
+      {
+        type: 'narration',
+        text: 'The Fear-Rahkshi turned toward him, its eyes glittering wickedly. But before it could strike again, Gali and Pohatu leaped in and grabbed it by the arms.',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'What have you done? I’m supposed to make the sacrifice! I’m the Herald!',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Jaller',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'No. The duty was mine. You know… who you are. You were always different.'
+      },
+      {
+        type: 'narration',
+        text: 'Jaller’s hand dropped limply onto the stone. Gently lowering his friend’s head to the ground, Takua stood, lifting the mask. It glowed more brightly than ever.',
       },
     ],
   },
@@ -1057,38 +1928,52 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
     id: 'mol_takanuva_rises',
     background: { type: 'gradient', from: '#ffe28e', to: '#ffffff' },
     steps: [
+      
       {
         type: 'narration',
-        text: `Takua holds the Avohkii. He looks down at his fallen friend. Then he accepts his destiny.`,
-      },
-      {
-        type: 'narration',
-        text: `He places the Mask of Light on his face. Light explodes outward. His body grows. His armor reshapes into gold and white. Where a Matoran knelt, a Toa now stands.`,
+        text: 'Takua turned the mask over in his hands again. His eyes narrowed purposefully. As he lifted it to his face, the mask’s glow brightened again. As it made contact with his own mask, it burst forth with brilliant beams of white light.',
       },
       {
         type: 'dialogue',
         speakerId: 'Takanuva',
         portraitType: 'avatar',
         position: 'right',
-        text: `I am Takanuva, Toa of Light.`,
+        text: 'I am Takanuva, Toa of Light!',
       },
       {
         type: 'narration',
-        text: `Takanuva, shoots a beam of light that stuns Turahk and destroys it. He fires a laser at the stone statue at Kini-Nui, completely revealing a carving of Takua's mask hidden beneath. He picks up Jaller's body and silently walks away.`,
+        text: 'A burst of white light shot from his staff and into the Fear-Rahkshi, disabling it.',
+      },
+      {
+        type: 'narration',
+        text: 'As the white light bursting from him illuminated the entire temple, he bent and picked up Jaller’s body. He carried it down the steps past the other Toa. Each of them raised his or her weapon in salute, then followed the Toa of Light with their heads solemnly bowed.',
+      },
+      {
+        type: 'narration',
+        text: 'The next morning, Takanuva stood gazing down at the suva-style grave dome that had been raised in a quiet spot overlooking the Kini-Nui temple. A memorial pillar rose from the top of the dome, and Jaller’s mask rested upon it.',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'You have finally found your own story, and still you seek answers.',
+      },
+
+      {
+        type: 'dialogue',
+        speakerId: 'Takanuva',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'All this, just to discover who I am?',
       },
       {
         type: 'dialogue',
         speakerId: 'Turaga_Vakama',
         portraitType: 'avatar',
         position: 'left',
-        text: `Do not grieve, Toa of Light. Mata Nui knows best.`,
-      },
-      {
-        type: 'dialogue',
-        speakerId: 'Takanuva',
-        portraitType: 'avatar',
-        position: 'right',
-        text: `My duty is clear. Jaller's sacrifice will not be in vain.`,
+        text: 'Mata Nui is wiser than all. The path you walked was not to be in this place… but to discover your own duty and unlock our destiny.',
       },
     ],
   },
@@ -1155,7 +2040,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `Takanuva sheathes his Staff of Light, jumps on Makuta, and grasps the Kraahkan, trying to tear it off. They grapple—and both fall into the pool of energized protodermis.`,
+        text: `Takanuva sheathes his Staff of Light, jumps on Makuta, and grasps the Mask of Shadow, trying to tear it off. They grapple—and both fall into the pool of energized protodermis.`,
       },
       {
         type: 'narration',
@@ -1170,7 +2055,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `Takutanuva grasps the bottom of the gate and lifts it. The Matoran pass through. Hahli runs in with Jaller's mask. Takutanuva revives Jaller with part of his own life force. But the gate is too heavy. It crashes down. The Avohkii slides out from under it. Takanuva appears to be gone.`,
+        text: `Takutanuva grasps the bottom of the gate and lifts it. The Matoran pass through. Hahli runs in with Jaller's mask. Takutanuva revives Jaller with part of his own life force. But the gate is too heavy. It crashes down lifting a huge cloud of dust.`,
       },
     ],
   },
@@ -1181,36 +2066,47 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
     steps: [
       {
         type: 'narration',
-        text: `Vakama picks up the Avohkii and walks toward a Three Virtues symbol on a ledge nearby.`,
+        text: `As the dust clears, Takanuva stands, the Mask of Light glowing brightly over his face.`,
       },
       {
         type: 'dialogue',
         speakerId: 'Turaga_Vakama',
         portraitType: 'avatar',
         position: 'left',
-        text: `Jaller—step onto the symbol representing Duty. Hahli—step on the symbol representing Unity.`,
+        text: 'Let us awaken the Great Spirit.',
       },
       {
         type: 'narration',
-        text: `Vakama places the Mask of Light on the symbol representing Destiny. Light shines through the symbols. Takanuva is revived.`,
+        text: 'Hahli, Jaller, and Takanuva followed the Turaga to the far end of the new chamber. There, a ledge plunged away into dark nothingness.',
       },
       {
         type: 'dialogue',
-        speakerId: 'Jaller',
+        speakerId: 'Turaga_Vakama',
+        portraitType: 'avatar',
+        position: 'left',
+        text: 'Unity! Duty! Destiny!',
+      },
+      {
+        type: 'narration',
+        text: 'As he spoke, Takanuva’s power illuminated his companions and himself. Their light shone down into the abyss, revealing what lay below.',
+      },
+      {
+        type: 'narration',
+        text: 'The Matoran gasped in amazement as they saw a strange new world stretching out below them. The chamber at the bottom of the cliff was indescribably huge – it stretched farther than the eye could see. Strange structures dotted the landscape, and flashes of energy danced here and there.',
+      }
+      {
+        type: 'dialogue',
+        speakerId: 'Takanuva',
         portraitType: 'avatar',
         position: 'right',
-        text: `Takua?!`,
-      },
-      {
-        type: 'narration',
-        text: `Takanuva activates his mask and sends a beam of light off into the Silver Sea, revealing a great city in the distance: Metru Nui.`,
+        text: 'This is it. Soon we will understand everything. Who we are. Where we come from. Who sent us.',
       },
       {
         type: 'dialogue',
-        speakerId: 'Turaga_Vakama',
+        speakerId: 'Takanuva',
         portraitType: 'avatar',
-        position: 'left',
-        text: `United, we embraced our duty. Light found itself and illuminated our destiny. The City of the Great Spirit, my island home, refound. New legends awake, but old lessons must be remembered.`,
+        position: 'right',
+        text: 'Our destiny.',
       },
     ],
   },

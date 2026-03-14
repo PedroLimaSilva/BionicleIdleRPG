@@ -326,6 +326,10 @@ XP: 3500"]
 (15m)
 Currency: 5000
 XP: 3500"]
+  mol_onu_koro_part2["The Shadows over Onu Koro - Part 2
+(15m)
+Currency: 5000
+XP: 3500"]
   mol_tahu_poisoned["Healing the Fire
 (12m)
 Currency: 5000
@@ -440,7 +444,8 @@ XP: 4000"]
   mol_ko_wahi_arrival --> mol_ko_wahi_pursuit
   mol_ko_wahi_pursuit --> mol_onu_koro_highway
   mol_onu_koro_highway --> mol_onu_koro_battle
-  mol_onu_koro_battle --> mol_tahu_poisoned
+  mol_onu_koro_battle --> mol_onu_koro_part2
+  mol_onu_koro_part2 --> mol_tahu_poisoned
   mol_tahu_poisoned --> mol_takua_jaller_reunion
   mol_takua_jaller_reunion --> mol_battle_of_kini_nui
   mol_battle_of_kini_nui --> mol_takanuva_rises
