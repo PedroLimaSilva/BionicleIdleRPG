@@ -115,6 +115,7 @@ $rahkshi-visualization-border: 2px;
   background-clip: text;
   position: relative;
   z-index: 1;
+  text-align: left;
 }
 
 .rahkshi-detail__meta {
@@ -235,12 +236,14 @@ $rahkshi-visualization-border: 2px;
     border: 1px solid var(--color-border-subtle);
     border-radius: var(--border-radius-sm);
     background: var(--color-surface-low);
+    flex-wrap: wrap;
   }
 
   &__remove-kraata {
     margin-left: auto;
     width: auto;
     flex-shrink: 0;
+    min-width: fit-content;
   }
 
   &__kraata-image {
