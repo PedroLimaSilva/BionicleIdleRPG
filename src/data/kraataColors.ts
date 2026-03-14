@@ -131,6 +131,10 @@ export const KRAATA_SPECIES_COLORS: Partial<Record<KraataPower, KraataColors>> =
     head: hex('Bright Red'),
     tail: hex('Lemon Metallic'),
   },
+  [KraataPower.MolecularDisruption]: {
+    head: hex('Sand Yellow Metallic'),
+    tail: hex('Reddish Gold'),
+  },
   [KraataPower.PlantControl]: { head: hex('Reddish Gold'), tail: hex('Black') },
   [KraataPower.Plasma]: {
     head: hex('Dark Grey Metallic'),
@@ -153,10 +157,6 @@ export const KRAATA_SPECIES_COLORS: Partial<Record<KraataPower, KraataColors>> =
     head: hex('Dark Grey Metallic'),
     tail: hex('Bright Yellowish Green'),
   },
-  [KraataPower.Shattering]: {
-    head: hex('Sand Yellow Metallic'),
-    tail: hex('Brick Yellow'),
-  },
   [KraataPower.Silence]: {
     head: hex('Bright Yellowish Green'),
     tail: hex('Dark Grey Metallic'),
@@ -165,7 +165,7 @@ export const KRAATA_SPECIES_COLORS: Partial<Record<KraataPower, KraataColors>> =
     head: hex('Reddish Gold'),
     tail: hex('Sand Yellow Metallic'),
   },
-  [KraataPower.Slowness]: {
+  [KraataPower.Slow]: {
     head: hex('Light Grey Metallic'),
     tail: hex('Sand Blue Metallic'),
   },
