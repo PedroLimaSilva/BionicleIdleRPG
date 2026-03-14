@@ -3,8 +3,12 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { watch } from 'vite-plugin-watch';
 import { readFileSync } from 'fs';
+import { execSync } from 'child_process';
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
+
+const commitHash = execSync('git rev-parse --short HEAD').toString().trim();
+const appVersion = `${pkg.version}+${commitHash}`;
 
 // Extended icon type supporting newer manifest spec fields (color_scheme, design)
 // not yet in vite-plugin-pwa's types
@@ -109,7 +113,7 @@ export default defineConfig({
     }),
   ],
   define: {
-    __APP_VERSION__: JSON.stringify(pkg.version),
+    __APP_VERSION__: JSON.stringify(appVersion),
     __TELEMETRY_URL__: JSON.stringify(process.env.VITE_TELEMETRY_URL ?? ''),
   },
   build: {
