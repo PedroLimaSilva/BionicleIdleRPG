@@ -56,6 +56,12 @@ export const RahkshiModel = forwardRef<
   const group = useRef<Group>(null);
   const glowEntries = useRef<GlowEntry[]>([]);
   const glowTarget = useRef(hasKraata);
+  /** Original eye material values from the GLTF, captured once before any modifications. */
+  const originalEyeValuesRef = useRef<{
+    onColor: ThreeColor;
+    onEmissive: ThreeColor;
+    onEmissiveIntensity: number;
+  } | null>(null);
 
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'rahkshi.glb');
 
@@ -113,17 +119,37 @@ export const RahkshiModel = forwardRef<
 
       if (mat.name === 'Eyes') {
         const clone = mat.clone();
+        // Use stored original values if we've already replaced child.material (mat is our previous clone)
+        let onColor: ThreeColor;
+        let onEmissive: ThreeColor;
+        let onEmissiveIntensity: number;
+        const stored = originalEyeValuesRef.current;
+        if (stored) {
+          onColor = stored.onColor;
+          onEmissive = stored.onEmissive;
+          onEmissiveIntensity = stored.onEmissiveIntensity;
+        } else {
+          onColor = mat.color.clone();
+          onEmissive = mat.emissive.clone();
+          onEmissiveIntensity = mat.emissiveIntensity;
+          originalEyeValuesRef.current = { onColor, onEmissive, onEmissiveIntensity };
+        }
+
         if (!glowTarget.current) {
           clone.color.set('#000000');
           clone.emissive.set('#000000');
           clone.emissiveIntensity = 0;
+        } else {
+          clone.color.copy(onColor);
+          clone.emissive.copy(onEmissive);
+          clone.emissiveIntensity = onEmissiveIntensity;
         }
         child.material = clone;
         entries.push({
           material: clone,
-          onColor: mat.color.clone(),
-          onEmissive: mat.emissive.clone(),
-          onEmissiveIntensity: mat.emissiveIntensity,
+          onColor,
+          onEmissive,
+          onEmissiveIntensity,
         });
         return;
       }
@@ -132,7 +158,7 @@ export const RahkshiModel = forwardRef<
     });
 
     glowEntries.current = entries;
-  }, [bodyInstance, kraata]);
+  }, [bodyInstance, kraata, hasKraata]);
 
   useFrame((_, delta) => {
     const entries = glowEntries.current;
