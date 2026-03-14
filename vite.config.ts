@@ -2,6 +2,9 @@ import { VitePWA, type IconResource } from 'vite-plugin-pwa';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { watch } from 'vite-plugin-watch';
+import { readFileSync } from 'fs';
+
+const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
 // Extended icon type supporting newer manifest spec fields (color_scheme, design)
 // not yet in vite-plugin-pwa's types
@@ -105,6 +108,10 @@ export default defineConfig({
       command: 'tsx tools/generate-quest-graph.ts',
     }),
   ],
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+    __TELEMETRY_URL__: JSON.stringify(process.env.VITE_TELEMETRY_URL ?? ''),
+  },
   build: {
     rollupOptions: {
       external: ['tools'],

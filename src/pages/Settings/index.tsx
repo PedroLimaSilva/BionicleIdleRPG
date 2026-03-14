@@ -4,7 +4,14 @@ import { useSettings } from '../../context/useSettings';
 import './index.scss';
 
 export default function SettingsPage() {
-  const { debugMode, setDebugMode, shadowsEnabled, setShadowsEnabled } = useSettings();
+  const {
+    debugMode,
+    setDebugMode,
+    shadowsEnabled,
+    setShadowsEnabled,
+    telemetryEnabled,
+    setTelemetryEnabled,
+  } = useSettings();
 
   return (
     <div className="page-container">
@@ -225,16 +232,15 @@ export default function SettingsPage() {
             onClick={() => setShadowsEnabled(!shadowsEnabled)}
           />
         </label>
-
-        {/* <label className='settings-option'>
-          <span>Dark Mode</span>
-          <div className='toggle-placeholder' />
+        <label className="settings-option">
+          <span>Send anonymous usage data</span>
+          <div
+            className={`toggle-placeholder ${telemetryEnabled ? 'on' : ''}`}
+            onClick={() => setTelemetryEnabled(!telemetryEnabled)}
+          />
         </label>
 
-        <label className='settings-option'>
-          <span>Theme</span>
-          <div className='dropdown-placeholder'>Default</div>
-        </label> */}
+        <p className="version-label">v{__APP_VERSION__}</p>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { loadGameState } from '../services/gamePersistence';
+import { sendSessionTelemetry } from '../services/telemetry';
 import { useCharactersState } from './useCharactersState';
 import { useJobTickEffect } from './useJobTickEffect';
 import { useGamePersistence } from './useGamePersistence';
@@ -128,6 +129,22 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     activeQuests,
     completedQuests,
   });
+
+  useEffect(() => {
+    sendSessionTelemetry({
+      version,
+      protodermis,
+      protodermisCap,
+      collectedKrana,
+      kraataCollection,
+      rahkshi,
+      recruitedCharacters,
+      activeQuests,
+      completedQuests,
+    });
+    // Only send once on mount; subsequent state changes are intentionally ignored.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     version,
