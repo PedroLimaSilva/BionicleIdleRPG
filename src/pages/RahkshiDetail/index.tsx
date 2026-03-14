@@ -257,7 +257,11 @@ export const RahkshiDetail: React.FC = () => {
           <ArrowLeft size={18} aria-hidden /> Back
         </Link>
         <div id="rahkshi-model-frame" className="rahkshi-detail__model-frame" />
-        <h1 className="rahkshi-detail__name">{powerName} Armor</h1>
+        <h1 className="rahkshi-detail__name">
+          {hasKraata ? 'Rahkshi of ' : ''}
+          {powerName}
+          {hasKraata ? '' : ' Armor'}
+        </h1>
         <div className="rahkshi-detail__meta">
           <span
             className={`rahkshi-detail__status rahkshi-detail__status--${armor.status}${hasKraata ? ' rahkshi-detail__status--active' : ''}`}
