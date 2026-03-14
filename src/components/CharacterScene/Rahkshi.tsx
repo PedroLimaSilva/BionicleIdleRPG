@@ -86,11 +86,14 @@ export const RahkshiModel = forwardRef<
     idleActionName: effectiveIdleAction,
   });
 
+  const lerpCompleteRef = useRef(false);
+
   useEffect(() => {
     if (hasKraata && !prevHasKraataRef.current) {
       setGlowCompleteForIdle(false);
     }
     prevHasKraataRef.current = hasKraata;
+    lerpCompleteRef.current = false;
   }, [hasKraata]);
 
   useImperativeHandle(ref, () => ({ playAnimation }));
@@ -184,6 +187,18 @@ export const RahkshiModel = forwardRef<
     const entries = glowEntries.current;
     if (entries.length === 0) return;
     const active = glowTarget.current;
+
+    if (lerpCompleteRef.current) {
+      const stillAtTarget = entries.every(({ material, onEmissiveIntensity }) =>
+        active
+          ? onEmissiveIntensity <= 0 ||
+            material.emissiveIntensity / onEmissiveIntensity >= GLOW_COMPLETE_THRESHOLD
+          : material.emissiveIntensity < 0.01
+      );
+      if (stillAtTarget) return;
+      lerpCompleteRef.current = false;
+    }
+
     const alpha = 1 - Math.exp(-GLOW_LERP_SPEED * delta);
     let allGlowComplete = active;
     for (const { material, onColor, onEmissive, onEmissiveIntensity } of entries) {
@@ -200,6 +215,9 @@ export const RahkshiModel = forwardRef<
       }
     }
     if (active && allGlowComplete) setGlowCompleteForIdle(true);
+    if (allGlowComplete || (!active && entries.every((e) => e.material.emissiveIntensity < 0.01))) {
+      lerpCompleteRef.current = true;
+    }
   });
 
   return (
