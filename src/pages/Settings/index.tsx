@@ -196,6 +196,17 @@ export default function SettingsPage() {
           </Link>
         </label>
         <label className="settings-option">
+          <p>Found a bug or have a suggestion? Open an issue on GitHub.</p>
+          <a
+            href="https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/new"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="button cancel-button"
+          >
+            Report Issue
+          </a>
+        </label>
+        <label className="settings-option">
           <p>Want a fresh start? You'll lose all your progress</p>
           <button
             className="remove-button"
