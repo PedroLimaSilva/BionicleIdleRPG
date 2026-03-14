@@ -49,7 +49,7 @@ export const CharacterDetail: React.FC = () => {
       base.push('chronicle');
     }
     return base;
-  }, [matoran]);
+  }, [matoran, completedQuests]);
 
   useEffect(() => {
     if (matoran) {
