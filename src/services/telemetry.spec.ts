@@ -20,6 +20,7 @@ let mockTelemetryEnabled: boolean;
 
 jest.mock('./gamePersistence', () => ({
   getTelemetryEnabled: () => mockTelemetryEnabled,
+  getTelemetryId: () => 'test-uuid-1234',
 }));
 
 function loadModule() {
@@ -56,10 +57,11 @@ afterEach(() => {
 });
 
 describe('buildPayload', () => {
-  it('includes app version, game state version, timestamp, and state', () => {
+  it('includes client ID, app version, game state version, timestamp, and state', () => {
     const { buildPayload } = loadModule();
     const payload = buildPayload(MOCK_STATE);
 
+    expect(payload.clientId).toBe('test-uuid-1234');
     expect(payload.appVersion).toBe('1.2.3');
     expect(payload.gameStateVersion).toBe(CURRENT_GAME_STATE_VERSION);
     expect(payload.timestamp).toBeTruthy();

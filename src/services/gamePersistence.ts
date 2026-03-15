@@ -164,6 +164,15 @@ export function getTelemetryEnabled() {
 export function saveTelemetryEnabled(value: boolean) {
   telemetryEnabled = value;
   localStorage.setItem('TELEMETRY_ENABLED', JSON.stringify(telemetryEnabled));
+
+  if (value && !localStorage.getItem('TELEMETRY_ID')) {
+    localStorage.setItem('TELEMETRY_ID', crypto.randomUUID());
+  }
+}
+
+/** Returns the random telemetry ID, or undefined if consent was not given. */
+export function getTelemetryId(): string | undefined {
+  return localStorage.getItem('TELEMETRY_ID') ?? undefined;
 }
 
 function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
