@@ -14,12 +14,14 @@ export const INITIAL_GAME_STATE: PartialGameState = {
 };
 
 /**
- * Enable test mode by setting localStorage flag
- * This should be called before navigation to ensure test mode is active
+ * Enable test mode by setting localStorage flags.
+ * This should be called before navigation to ensure test mode is active.
+ * Also dismisses the telemetry consent prompt so it doesn't block tests.
  */
 export async function enableTestMode(page: Page) {
   await page.addInitScript(() => {
     localStorage.setItem('TEST_MODE', 'true');
+    localStorage.setItem('TELEMETRY_ENABLED', 'false');
   });
 }
 
@@ -41,13 +43,14 @@ export async function addCanvasHidingInitScript(page: Page) {
 }
 
 /**
- * Creates a game state and stores it in localStorage to be loaded by the game
- * Also enables test mode automatically
+ * Creates a game state and stores it in localStorage to be loaded by the game.
+ * Also enables test mode and dismisses the telemetry consent prompt.
  */
 export async function setupGameState(page: Page, gameState: PartialGameState) {
   await page.addInitScript((state) => {
     localStorage.setItem('GAME_STATE', JSON.stringify(state));
     localStorage.setItem('TEST_MODE', 'true');
+    localStorage.setItem('TELEMETRY_ENABLED', 'false');
   }, gameState);
 }
 
