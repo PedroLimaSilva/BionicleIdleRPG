@@ -91,11 +91,26 @@ Replace `supabase/functions/telemetry-ingest/index.ts` with:
 ```typescript
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
+// Restrict to your production origin. Browsers will block requests from
+// any other site. Non-browser clients (curl, Postman) bypass CORS but
+// have no incentive to spam a fan game's telemetry.
+const ALLOWED_ORIGIN = 'https://pedrolimasilva.github.io';
+
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };
+
+function isValidPayload(body: Record<string, unknown>): boolean {
+  return (
+    typeof body.appVersion === 'string' &&
+    typeof body.gameStateVersion === 'number' &&
+    typeof body.timestamp === 'string' &&
+    typeof body.gameState === 'object' &&
+    body.gameState !== null
+  );
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -108,6 +123,10 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
+
+    if (!isValidPayload(body)) {
+      return new Response('Bad request', { status: 400, headers: corsHeaders });
+    }
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
@@ -142,6 +161,20 @@ supabase functions deploy telemetry-ingest --no-verify-jwt
 ```
 
 `--no-verify-jwt` is required because `sendBeacon` cannot set auth headers. The function authenticates server-side with the service role key.
+
+### Security notes
+
+The edge function is hardened with two layers:
+
+1. **CORS origin restriction** — `Access-Control-Allow-Origin` is set to the production domain (`https://pedrolimasilva.github.io`). Browsers will block requests from any other origin. This prevents other websites from submitting data to the endpoint.
+
+2. **Payload validation** — `isValidPayload()` rejects requests with missing or incorrectly typed fields before they reach the database.
+
+CORS is a browser-only mechanism — non-browser clients (curl, scripts) can bypass it. For a fan game with no monetary value in the telemetry data, this is an acceptable trade-off. If stronger protection is needed later, options include:
+
+- Adding a shared secret via a build-time env var (visible in the JS bundle but stops casual automation)
+- Using Supabase's anon key with RLS insert-only policies
+- Rate limiting in the edge function (e.g. by IP via `req.headers.get('x-forwarded-for')`)
 
 ### 3. Build with the URL
 
