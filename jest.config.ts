@@ -4,12 +4,13 @@ module.exports = {
     '^.+\\.tsx?$': [
       'ts-jest',
       {
-        tsconfig: {
-          jsx: 'react',
-          esModuleInterop: true,
-        },
+        tsconfig: 'tsconfig.test.json',
       },
     ],
+  },
+  globals: {
+    __APP_VERSION__: 'test',
+    __TELEMETRY_URL__: '',
   },
   testMatch: ['**/*.spec.ts', '**/*.spec.tsx'],
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],

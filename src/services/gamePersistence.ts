@@ -140,6 +140,41 @@ export function saveShadowsEnabled(value: boolean) {
   localStorage.setItem('SHADOWS_ENABLED', JSON.stringify(shadowsEnabled));
 }
 
+let telemetryEnabled: boolean | undefined;
+
+/** Returns true only if the user has explicitly chosen a telemetry preference. */
+export function hasTelemetryConsent(): boolean {
+  return localStorage.getItem('TELEMETRY_ENABLED') !== null;
+}
+
+export function getTelemetryEnabled() {
+  if (telemetryEnabled !== undefined) {
+    return telemetryEnabled;
+  }
+  const stored = localStorage.getItem('TELEMETRY_ENABLED');
+  if (stored !== null) {
+    const parsed = JSON.parse(stored) as boolean;
+    telemetryEnabled = parsed;
+    return parsed;
+  }
+  telemetryEnabled = false;
+  return false;
+}
+
+export function saveTelemetryEnabled(value: boolean) {
+  telemetryEnabled = value;
+  localStorage.setItem('TELEMETRY_ENABLED', JSON.stringify(telemetryEnabled));
+
+  if (value && !localStorage.getItem('TELEMETRY_ID')) {
+    localStorage.setItem('TELEMETRY_ID', crypto.randomUUID());
+  }
+}
+
+/** Returns the random telemetry ID, or undefined if consent was not given. */
+export function getTelemetryId(): string | undefined {
+  return localStorage.getItem('TELEMETRY_ID') ?? undefined;
+}
+
 function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
   return (
     data &&

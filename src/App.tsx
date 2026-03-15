@@ -23,6 +23,8 @@ import { BattleSelector } from './pages/BattleSelector/index.tsx';
 import { BattlePage } from './pages/Battle/index.tsx';
 import TypeEffectivenessPage from './pages/TypeEffectiveness/index.tsx';
 import { NavBar } from './components/NavBar/index.tsx';
+import { TelemetryConsentPrompt } from './components/TelemetryConsentPrompt/index.tsx';
+import PrivacyPolicyPage from './pages/PrivacyPolicy/index.tsx';
 
 const NotFound: React.FC = () => (
   <div className="page-container">
@@ -48,6 +50,7 @@ function AnimatedRoutes() {
         <Route path="/type-effectiveness" element={<TypeEffectivenessPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/settings/game-state" element={<GameStateEditorPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </LayoutGroup>
@@ -100,6 +103,7 @@ export function App() {
               <NavBar isPortrait={isPortrait} />
             </div>
             <PWABadge />
+            <TelemetryConsentPrompt />
           </SceneCanvasProvider>
         </Router>
       </SettingsProvider>

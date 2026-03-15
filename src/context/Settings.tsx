@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import {
   getDebugMode,
   getShadowsEnabled,
+  getTelemetryEnabled,
   saveDebugMode,
   saveShadowsEnabled,
+  saveTelemetryEnabled,
 } from '../services/gamePersistence';
 
 import { SettingsContext } from './SettingsContext';
@@ -11,6 +13,7 @@ import { SettingsContext } from './SettingsContext';
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [debugMode, setDebugModeState] = useState(getDebugMode);
   const [shadowsEnabled, setShadowsEnabledState] = useState(getShadowsEnabled);
+  const [telemetryEnabled, setTelemetryEnabledState] = useState(getTelemetryEnabled);
 
   useEffect(() => {
     saveDebugMode(debugMode);
@@ -20,6 +23,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     saveShadowsEnabled(shadowsEnabled);
   }, [shadowsEnabled]);
 
+  const setTelemetryEnabled = (value: boolean) => {
+    setTelemetryEnabledState(value);
+    saveTelemetryEnabled(value);
+  };
+
   return (
     <SettingsContext.Provider
       value={{
@@ -27,6 +35,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         setDebugMode: setDebugModeState,
         shadowsEnabled,
         setShadowsEnabled: setShadowsEnabledState,
+        telemetryEnabled,
+        setTelemetryEnabled,
       }}
     >
       {children}
