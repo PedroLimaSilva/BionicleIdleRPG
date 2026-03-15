@@ -101,9 +101,9 @@ export function App() {
               <NavBar isPortrait={isPortrait} />
             </div>
             <PWABadge />
+            <TelemetryConsentPrompt />
           </SceneCanvasProvider>
         </Router>
-        <TelemetryConsentPrompt />
       </SettingsProvider>
     </GameProvider>
   );

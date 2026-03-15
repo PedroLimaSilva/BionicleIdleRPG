@@ -1,13 +1,16 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { hasTelemetryConsent } from '../../services/gamePersistence';
+import { getTelemetryUrl } from '../../services/telemetry';
 import { useSettings } from '../../context/useSettings';
 import './index.scss';
 
 export function TelemetryConsentPrompt() {
-  const [visible, setVisible] = useState(() => !hasTelemetryConsent());
+  const [visible, setVisible] = useState(() => !hasTelemetryConsent() && !!getTelemetryUrl());
   const { setTelemetryEnabled } = useSettings();
+  const { pathname } = useLocation();
 
-  if (!visible) return null;
+  if (!visible || pathname === '/privacy-policy') return null;
 
   const handleChoice = (allowed: boolean) => {
     setTelemetryEnabled(allowed);
