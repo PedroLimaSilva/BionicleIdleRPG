@@ -47,12 +47,14 @@ export function sendSessionTelemetry(state: PartialGameState): void {
     const payload = buildPayload(state);
     const body = JSON.stringify(payload);
 
+    // Use text/plain to avoid CORS preflight (application/json triggers OPTIONS).
+    // The server parses the body as JSON regardless of Content-Type.
     if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
-      navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
+      navigator.sendBeacon(url, new Blob([body], { type: 'text/plain' }));
     } else {
       fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body,
         keepalive: true,
       }).catch(() => {});
