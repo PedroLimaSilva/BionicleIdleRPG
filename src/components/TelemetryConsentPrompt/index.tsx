@@ -28,10 +28,10 @@ export function TelemetryConsentPrompt() {
           You can change your choice anytime in Settings.
         </p>
         <div className="consent-actions">
-          <button className="consent-btn consent-btn--allow" onClick={() => handleChoice(true)}>
+          <button className="button confirm-button" onClick={() => handleChoice(true)}>
             Allow
           </button>
-          <button className="consent-btn consent-btn--deny" onClick={() => handleChoice(false)}>
+          <button className="button cancel-button" onClick={() => handleChoice(false)}>
             No thanks
           </button>
         </div>

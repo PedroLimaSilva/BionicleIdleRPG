@@ -9,7 +9,8 @@
 }
 
 .consent-panel {
-  background: #1c1d26;
+  background: var(--color-surface-high);
+  border: 1px solid var(--color-border-muted);
   border-radius: 16px;
   padding: 2rem 1.5rem;
   max-width: 400px;
@@ -36,34 +37,4 @@
   display: flex;
   gap: 0.75rem;
   justify-content: center;
-}
-
-.consent-btn {
-  padding: 0.6rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all 0.2s ease;
-
-  &--allow {
-    background: rgb(0, 192, 0);
-    color: #111;
-
-    &:hover {
-      background: rgb(0, 220, 0);
-    }
-  }
-
-  &--deny {
-    background: transparent;
-    border-color: #555;
-    color: #aaa;
-
-    &:hover {
-      border-color: #888;
-      color: #ddd;
-    }
-  }
 }
