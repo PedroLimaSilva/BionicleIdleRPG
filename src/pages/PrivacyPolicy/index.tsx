@@ -23,6 +23,12 @@ export default function PrivacyPolicyPage() {
         </p>
         <ul>
           <li>
+            <strong>Client ID</strong> — a random identifier generated when you opt in, stored only
+            in your browser's localStorage. It is used to correlate reports from the same browser
+            over time. It is not linked to any account, name, or personal information. Clearing your
+            browser data or resetting the game removes it permanently.
+          </li>
+          <li>
             <strong>App version</strong> — the version number and build identifier (e.g.{' '}
             <code>0.1.0+a1b2c3d</code>)
           </li>
@@ -44,9 +50,13 @@ export default function PrivacyPolicyPage() {
         <ul>
           <li>Names, email addresses, or any personally identifiable information</li>
           <li>IP addresses (not stored by our telemetry endpoint)</li>
-          <li>Browser fingerprints, cookies, or tracking identifiers</li>
+          <li>Browser fingerprints or cookies</li>
           <li>Browsing history or activity outside this app</li>
         </ul>
+        <p>
+          The client ID is a random value (UUID) that cannot be used to identify you as a person. It
+          exists solely to distinguish one anonymous browser from another for statistical purposes.
+        </p>
       </div>
 
       <h1 className="title">How we use it</h1>
@@ -56,6 +66,7 @@ export default function PrivacyPolicyPage() {
           <li>Understand which app versions are in use so we can prioritize updates</li>
           <li>See how players progress through the game to improve balance and content</li>
           <li>Identify common issues or stuck points in quest progression</li>
+          <li>Track progression over time for the same anonymous browser</li>
         </ul>
         <p>
           We do not sell, share, or monetize this data in any way. It is only used to improve the
@@ -81,8 +92,8 @@ export default function PrivacyPolicyPage() {
         <p>Telemetry is entirely opt-in:</p>
         <ul>
           <li>
-            On your first visit, you are asked whether to allow anonymous usage data. If you decline,
-            nothing is ever sent.
+            On your first visit, you are asked whether to allow anonymous usage data. If you
+            decline, no client ID is generated and nothing is ever sent.
           </li>
           <li>
             You can change your choice at any time from the{' '}
@@ -92,8 +103,12 @@ export default function PrivacyPolicyPage() {
             page using the "Send anonymous usage data" toggle.
           </li>
           <li>
-            If telemetry is not configured for the build you are using, the option does not appear at
-            all and no data is collected.
+            If telemetry is not configured for the build you are using, the option does not appear
+            at all and no data is collected.
+          </li>
+          <li>
+            Clearing your browser's site data removes the client ID and all stored preferences. A
+            new random ID is generated only if you opt in again.
           </li>
         </ul>
       </div>
@@ -101,9 +116,9 @@ export default function PrivacyPolicyPage() {
       <h1 className="title">Data retention</h1>
       <div className="about-section">
         <p>
-          Collected data is retained indefinitely for historical analysis of game progression trends.
-          Since no personally identifiable information is collected, the data cannot be linked back to
-          any individual.
+          Collected data is retained indefinitely for historical analysis of game progression
+          trends. No personally identifiable information is collected — the client ID is a random
+          value that cannot be traced back to any individual.
         </p>
       </div>
 

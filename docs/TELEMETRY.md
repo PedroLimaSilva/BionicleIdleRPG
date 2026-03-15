@@ -25,12 +25,15 @@ The version displayed in Settings and sent in telemetry follows the format `<sem
 
 ```typescript
 {
+  clientId?: string; // random UUID, generated on consent, stored in localStorage
   appVersion: string; // e.g. "0.1.0+a1b2c3d" (semver + commit hash)
   gameStateVersion: number; // CURRENT_GAME_STATE_VERSION (schema version)
   timestamp: string; // ISO 8601
   gameState: PartialGameState; // same shape persisted to localStorage
 }
 ```
+
+`clientId` is a random UUID generated via `crypto.randomUUID()` when the user opts in. It is stored in localStorage under `TELEMETRY_ID` and included in every report to correlate sessions from the same browser. It is not linked to any personal information. Clearing site data removes it; a new one is generated only if the user opts in again.
 
 `PartialGameState` includes: `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `activeQuests`, `completedQuests`.
 
@@ -65,6 +68,7 @@ Run in the Supabase SQL Editor:
 create table telemetry_sessions (
   id          bigint generated always as identity primary key,
   received_at timestamptz not null default now(),
+  client_id   text,
   app_version text        not null,
   game_state_version int  not null,
   client_timestamp   timestamptz not null,
@@ -73,6 +77,7 @@ create table telemetry_sessions (
 
 create index idx_telemetry_app_version on telemetry_sessions (app_version);
 create index idx_telemetry_received_at on telemetry_sessions (received_at);
+create index idx_telemetry_client_id on telemetry_sessions (client_id);
 ```
 
 ### 2. Create an Edge Function
@@ -110,6 +115,7 @@ Deno.serve(async (req) => {
     );
 
     const { error } = await supabase.from('telemetry_sessions').insert({
+      client_id: body.clientId ?? null,
       app_version: body.appVersion,
       game_state_version: body.gameStateVersion,
       client_timestamp: body.timestamp,

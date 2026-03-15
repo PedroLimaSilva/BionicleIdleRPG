@@ -1,9 +1,10 @@
 import { PartialGameState } from '../types/GameState';
-import { getTelemetryEnabled } from './gamePersistence';
+import { getTelemetryEnabled, getTelemetryId } from './gamePersistence';
 
 const SESSION_KEY = 'TELEMETRY_SENT';
 
 export interface TelemetryPayload {
+  clientId?: string;
   appVersion: string;
   gameStateVersion: number;
   timestamp: string;
@@ -16,6 +17,7 @@ export function getTelemetryUrl(): string {
 
 export function buildPayload(state: PartialGameState): TelemetryPayload {
   return {
+    clientId: getTelemetryId(),
     appVersion: typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'unknown',
     gameStateVersion: state.version,
     timestamp: new Date().toISOString(),
