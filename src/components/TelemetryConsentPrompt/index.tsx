@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { hasTelemetryConsent } from '../../services/gamePersistence';
 import { getTelemetryUrl } from '../../services/telemetry';
 import { useSettings } from '../../context/useSettings';
@@ -24,7 +24,7 @@ export function TelemetryConsentPrompt() {
         <p className="consent-body">
           We'd like to receive anonymous usage data (app version and game progress snapshot) once
           per session. No personal information is collected. You can learn more about how we use
-          this data in our <a href={`${import.meta.env.BASE_URL}privacy-policy`}>privacy policy</a>.
+          this data in our <Link to="/privacy-policy">privacy policy</Link>.
           You can change your choice anytime in Settings.
         </p>
         <div className="consent-actions">
