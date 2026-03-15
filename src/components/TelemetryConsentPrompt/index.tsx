@@ -19,8 +19,10 @@ export function TelemetryConsentPrompt() {
       <div className="consent-panel" role="dialog" aria-modal="true">
         <h2 className="consent-title">Help improve this game?</h2>
         <p className="consent-body">
-          We'd like to send anonymous usage data (app version and game progress snapshot) once per
-          session. No personal information is collected. You can change this anytime in Settings.
+          We'd like to receive anonymous usage data (app version and game progress snapshot) once
+          per session. No personal information is collected. You can learn more about how we use
+          this data in our <a href={`${import.meta.env.BASE_URL}privacy-policy`}>privacy policy</a>.
+          You can change your choice anytime in Settings.
         </p>
         <div className="consent-actions">
           <button className="consent-btn consent-btn--allow" onClick={() => handleChoice(true)}>
