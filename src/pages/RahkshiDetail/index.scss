@@ -97,15 +97,50 @@ $rahkshi-visualization-border: 2px;
 .rahkshi-detail__model-frame {
   position: relative;
   width: 100%;
-  height: min(420px, calc(100vh - 14rem));
+  height: min(520px, calc(100vh - 200px));
   min-height: 280px;
   z-index: 0;
 }
 
-.page-container h1.rahkshi-detail__name {
+.rahkshi-detail-header {
+  position: absolute;
+  z-index: 1;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+
+  &__status {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+
+    &--preparing {
+      color: var(--color-text-muted);
+      background: var(--color-surface-low);
+    }
+  }
+
+  &__power-desc {
+    max-width: 36ch;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    text-align: left;
+  }
+}
+
+.page-container h1.rahkshi-detail-header__name {
   font-size: 1.6rem;
   font-weight: 700;
   margin: 0;
+  margin-bottom: 0.5rem;
   background: linear-gradient(135deg, var(--kraata-head-color), var(--kraata-tail-color));
   text-shadow:
     0 0 10px var(--kraata-head-color),
@@ -116,35 +151,6 @@ $rahkshi-visualization-border: 2px;
   position: relative;
   z-index: 1;
   text-align: left;
-}
-
-.rahkshi-detail__meta {
-  position: relative;
-  z-index: 1;
-}
-
-.rahkshi-detail__status {
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
-
-  &--preparing {
-    color: var(--color-text-muted);
-    background: var(--color-surface-low);
-  }
-
-  &--ready {
-    color: var(--color-accent);
-    background: rgba(252, 239, 110, 0.1);
-  }
-
-  &--active {
-    color: #a8f4a4;
-    background: rgba(168, 244, 164, 0.1);
-  }
 }
 
 .rahkshi-detail-content {
