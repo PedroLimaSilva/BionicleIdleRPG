@@ -5,16 +5,21 @@ The app includes a lightweight, zero-dependency telemetry system that sends a si
 1. Which app version each user is running
 2. A snapshot of their game state (progress, characters, quests, etc.)
 
-Telemetry is **completely inert** until `VITE_TELEMETRY_URL` is set at build time, and requires **explicit user consent** on first visit.
+Telemetry is **completely inert** until `VITE_TELEMETRY_URL` is set at build time, and requires **explicit user consent** on first visit. When no URL is configured, the consent prompt, Settings toggle, and privacy policy link are all hidden.
 
 ## Client-side behaviour
 
 - On first visit (no `TELEMETRY_ENABLED` in localStorage) a consent prompt asks for permission
+- The prompt links to `/privacy-policy` and is suppressed on that page so users can read it before deciding
 - The user's choice is stored in localStorage and the prompt never reappears
-- The Settings page has a "Send anonymous usage data" toggle that reads/writes the same key
+- The Settings page has a "Send anonymous usage data" toggle (with privacy policy link) that reads/writes the same key
 - When enabled, one beacon is sent per browser session (tracked via `sessionStorage`)
 - Uses `navigator.sendBeacon` with a `fetch` fallback (`keepalive: true`)
 - Failures are silently swallowed — telemetry never affects gameplay
+
+## Version string
+
+The version displayed in Settings and sent in telemetry follows the format `<semver>+<commit hash>` (e.g. `0.1.0+a1b2c3d`). The semver comes from `package.json` and the commit hash is resolved at build time. Bump `package.json` version when cutting releases.
 
 ## Payload shape
 
@@ -28,6 +33,25 @@ Telemetry is **completely inert** until `VITE_TELEMETRY_URL` is set at build tim
 ```
 
 `PartialGameState` includes: `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `activeQuests`, `completedQuests`.
+
+## Configuring the telemetry URL
+
+Vite reads `VITE_TELEMETRY_URL` from `.env` files or the shell environment at build time using `loadEnv()` in `vite.config.ts`.
+
+| File / method                       | Scope                                      |
+| ----------------------------------- | ------------------------------------------ |
+| `.env.production`                   | Production builds only (`yarn build`)      |
+| `.env.local`                        | Local overrides (gitignored via `*.local`) |
+| `.env`                              | All modes                                  |
+| `VITE_TELEMETRY_URL=... yarn build` | One-off / CI builds                        |
+
+Example `.env.production`:
+
+```
+VITE_TELEMETRY_URL=https://<project-ref>.supabase.co/functions/v1/telemetry-ingest
+```
+
+For local development, a `.env.local` with a dummy URL makes the consent prompt and Settings toggle visible without sending real data.
 
 ## Backend setup: Supabase (recommended)
 
@@ -119,6 +143,8 @@ supabase functions deploy telemetry-ingest --no-verify-jwt
 VITE_TELEMETRY_URL=https://<project-ref>.supabase.co/functions/v1/telemetry-ingest yarn build
 ```
 
+Or add it to `.env.production` for persistent configuration.
+
 ## Alternative backends
 
 The client simply POSTs JSON to a URL, so any backend that accepts a POST works:
@@ -175,3 +201,44 @@ Since the volume is low (one row per user per session), direct table queries wor
 
 - **Metabase** or **Grafana**: connect to Supabase's direct Postgres connection string and build dashboards with zero code
 - **Supabase SQL Editor**: ad-hoc queries whenever needed
+
+## Testing
+
+### Unit tests
+
+8 tests in `src/services/telemetry.spec.ts` cover the telemetry service:
+
+- Payload construction (version, timestamp, state)
+- Fallback when `__APP_VERSION__` is undefined
+- No-op when URL is empty
+- No-op when opted out
+- Exactly-once-per-session guarantee
+- Correct beacon URL
+- `fetch` fallback when `sendBeacon` is unavailable
+- Silent failure on network errors
+
+Run with `yarn test:ci`.
+
+### E2E tests (Playwright)
+
+The E2E helpers (`e2e/helpers.ts`) automatically dismiss the telemetry consent prompt by setting `TELEMETRY_ENABLED=false` in localStorage. Both `enableTestMode()` and `setupGameState()` do this, so no existing test is blocked by the consent modal.
+
+To write a test that **explicitly verifies the consent flow**, skip the helpers and navigate directly:
+
+```typescript
+test('should show consent prompt on fresh state', async ({ page }) => {
+  // Don't call enableTestMode() — leave TELEMETRY_ENABLED absent
+  await page.goto('/BionicleIdleRPG/');
+  await expect(page.locator('.consent-panel')).toBeVisible();
+});
+```
+
+### Local development
+
+Create a `.env.local` file in the project root (gitignored via `*.local`) with a dummy URL so the consent prompt and Settings toggle are visible during development:
+
+```
+VITE_TELEMETRY_URL=http://localhost:3001/telemetry
+```
+
+Without this file (or any `VITE_TELEMETRY_URL`), the consent prompt and Settings toggle are completely hidden.
