@@ -22,7 +22,9 @@ export function MatoranAvatar({
   const { completedQuests } = useGame();
   const { colors } = matoran;
   const collected = masksCollected(matoran, completedQuests);
-  const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
+  const effectiveMask = collected.includes(matoran.maskOverride || matoran.mask)
+    ? matoran.maskOverride || matoran.mask
+    : collected[0];
   const maskColor = useMemo(() => {
     if (matoran.maskColorOverride) return matoran.maskColorOverride;
     if (
