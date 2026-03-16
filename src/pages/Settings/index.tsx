@@ -1,10 +1,20 @@
 import { Link } from 'react-router-dom';
 import { resetGameData } from '../../services/gamePersistence';
+import { getTelemetryUrl } from '../../services/telemetry';
 import { useSettings } from '../../context/useSettings';
 import './index.scss';
 
+const showTelemetryOption = !!getTelemetryUrl();
+
 export default function SettingsPage() {
-  const { debugMode, setDebugMode, shadowsEnabled, setShadowsEnabled } = useSettings();
+  const {
+    debugMode,
+    setDebugMode,
+    shadowsEnabled,
+    setShadowsEnabled,
+    telemetryEnabled,
+    setTelemetryEnabled,
+  } = useSettings();
 
   return (
     <div className="page-container">
@@ -237,16 +247,22 @@ export default function SettingsPage() {
             onClick={() => setShadowsEnabled(!shadowsEnabled)}
           />
         </label>
+        {showTelemetryOption && (
+          <label className="settings-option">
+            <span>
+              Send anonymous usage data ·{' '}
+              <Link to="/privacy-policy" className="about-link">
+                Privacy Policy
+              </Link>
+            </span>
+            <div
+              className={`toggle-placeholder ${telemetryEnabled ? 'on' : ''}`}
+              onClick={() => setTelemetryEnabled(!telemetryEnabled)}
+            />
+          </label>
+        )}
 
-        {/* <label className='settings-option'>
-          <span>Dark Mode</span>
-          <div className='toggle-placeholder' />
-        </label>
-
-        <label className='settings-option'>
-          <span>Theme</span>
-          <div className='dropdown-placeholder'>Default</div>
-        </label> */}
+        <p className="version-label">v{__APP_VERSION__}</p>
       </div>
     </div>
   );
