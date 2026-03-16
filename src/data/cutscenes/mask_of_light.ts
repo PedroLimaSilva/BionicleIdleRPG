@@ -1130,7 +1130,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
 
       {
         type: 'dialogue',
-        speakerId: 'Pohatu',
+        speakerId: 'Toa_Pohatu_Nuva',
         portraitType: 'avatar',
         position: 'left',
         text: 'Chronicler! Pohatu exclaimed as Takua and Pewku made their way toward the Toa. “Where is the Herald?”',
@@ -1155,7 +1155,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Onua',
+        speakerId: 'Toa_Onua_Nuva',
         portraitType: 'avatar',
         position: 'left',
         text: 'Clear the cave! And close the tunnel behind you!',
@@ -1166,7 +1166,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Onua',
+        speakerId: 'Toa_Onua_Nuva',
         portraitType: 'avatar',
         position: 'left',
         text: 'Let me show you a real Onu-Koro welcome. *slams his  onto the ground, creating an elemental tidal wave of earth and stone. The wave rippled toward the Rahkshi and swallowed them*',
@@ -1176,10 +1176,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         text: 'But when the wave had passed, the Rahkshi rose up again, unharmed.',
       },
       {
-        type: 'dialogue',
-        speakerId: 'Onua',
-        portraitType: 'avatar',
-        position: 'left',
+        type: 'narration',
         text: 'Onua grunted in surprise. The Hunger-Rahkshi leaped toward him, wielding its staff. Onua grabbed at the staff, trying to pull it away.',
       },
       {
@@ -1188,7 +1185,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Pohatu',
+        speakerId: 'Toa_Pohatu_Nuva',
         portraitType: 'avatar',
         position: 'left',
         text: 'No… Water, sinking, drowning…!',
@@ -1199,7 +1196,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Onua',
+        speakerId: 'Toa_Onua_Nuva',
         portraitType: 'avatar',
         position: 'left',
         text: 'My strength. My power…',
@@ -1227,8 +1224,11 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         text: 'Then he turned and saw the scene behind him. The Rahkshi were stomping on huts and shoving aside terrified Onu-Matoran. Onua and Pohatu were still sprawled motionless on the cavern floor.',
       },
       {
-        type: 'narration',
-        text: 'This is my fault, Takua realized. They’re destroying everything in their path – to get to me.',
+        type: 'dialogue',
+        speakerId: 'Takua',
+        portraitType: 'avatar',
+        position: 'right',
+        text: 'This is my fault. They’re destroying everything in their path – to get to me.',
       },
       {
         type: 'narration',
@@ -1256,7 +1256,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Takua',
         portraitType: 'avatar',
         position: 'right',
-        text: 'Go find a real hero, he mumbled miserably. What can I do?',
+        text: 'Go find a real hero... What can I do?',
       },
     ],
   },
@@ -1365,7 +1365,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'dialogue',
-        speakerId: 'Pohatu',
+        speakerId: 'Toa_Pohatu_Nuva',
         portraitType: 'avatar',
         position: 'left',
         text: 'Rise and shine, brother.',
