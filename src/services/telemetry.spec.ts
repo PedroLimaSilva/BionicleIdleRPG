@@ -151,3 +151,45 @@ describe('sendSessionTelemetry', () => {
     expect(() => sendSessionTelemetry(MOCK_STATE)).not.toThrow();
   });
 });
+
+describe('sendErrorReport', () => {
+  it('sends immediately with error details', () => {
+    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
+    const { sendErrorReport } = loadModule();
+
+    sendErrorReport({ message: 'Something broke', stack: 'Error: Something broke\n    at foo' });
+
+    expect(mockSendBeacon).toHaveBeenCalledTimes(1);
+    const blob = mockSendBeacon.mock.calls[0][1] as Blob;
+    expect(blob).toBeInstanceOf(Blob);
+  });
+
+  it('does not deduplicate — sends on every call', () => {
+    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
+    const { sendErrorReport } = loadModule();
+
+    sendErrorReport({ message: 'error 1' });
+    sendErrorReport({ message: 'error 2' });
+    sendErrorReport({ message: 'error 3' });
+
+    expect(mockSendBeacon).toHaveBeenCalledTimes(3);
+  });
+
+  it('does nothing when telemetry is opted out', () => {
+    mockTelemetryEnabled = false;
+    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
+    const { sendErrorReport } = loadModule();
+
+    sendErrorReport({ message: 'crash' });
+
+    expect(mockSendBeacon).not.toHaveBeenCalled();
+  });
+
+  it('does nothing when URL is empty', () => {
+    const { sendErrorReport } = loadModule();
+
+    sendErrorReport({ message: 'crash' });
+
+    expect(mockSendBeacon).not.toHaveBeenCalled();
+  });
+});

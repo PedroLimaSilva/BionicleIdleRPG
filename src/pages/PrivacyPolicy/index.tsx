@@ -45,6 +45,13 @@ export default function PrivacyPolicyPage() {
           </li>
         </ul>
         <p>
+          <strong>Error reports:</strong> if the app encounters an uncaught error, a report is sent
+          immediately (even if the app crashes) containing the error message and stack trace,
+          alongside the same fields listed above. Error reports are not limited to once per session
+          — each error is reported individually to help diagnose issues. No user input, form data,
+          or personal information is included in error reports.
+        </p>
+        <p>
           We do <strong>not</strong> collect:
         </p>
         <ul>
@@ -67,6 +74,7 @@ export default function PrivacyPolicyPage() {
           <li>See how players progress through the game to improve balance and content</li>
           <li>Identify common issues or stuck points in quest progression</li>
           <li>Track progression over time for the same anonymous browser</li>
+          <li>Diagnose and fix crashes and errors using the error reports</li>
         </ul>
         <p>
           We do not sell, share, or monetize this data in any way. It is only used to improve the

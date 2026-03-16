@@ -13,7 +13,8 @@ Telemetry is **completely inert** until `VITE_TELEMETRY_URL` is set at build tim
 - The prompt links to `/privacy-policy` and is suppressed on that page so users can read it before deciding
 - The user's choice is stored in localStorage and the prompt never reappears
 - The Settings page has a "Send anonymous usage data" toggle (with privacy policy link) that reads/writes the same key
-- When enabled, one beacon is sent per browser session (tracked via `sessionStorage`)
+- When enabled, one session beacon is sent per browser session (tracked via `sessionStorage`)
+- Uncaught errors are reported immediately (not limited to once per session) with the error message, stack trace, and game state snapshot
 - Uses `navigator.sendBeacon` with a `fetch` fallback (`keepalive: true`)
 - Failures are silently swallowed — telemetry never affects gameplay
 
@@ -25,17 +26,32 @@ The version displayed in Settings and sent in telemetry follows the format `<sem
 
 ```typescript
 {
-  clientId?: string; // random UUID, generated on consent, stored in localStorage
-  appVersion: string; // e.g. "0.1.0+a1b2c3d" (semver + commit hash)
-  gameStateVersion: number; // CURRENT_GAME_STATE_VERSION (schema version)
-  timestamp: string; // ISO 8601
+  clientId?: string;          // random UUID, generated on consent, stored in localStorage
+  appVersion: string;         // e.g. "0.1.0+a1b2c3d" (semver + commit hash)
+  gameStateVersion: number;   // CURRENT_GAME_STATE_VERSION (schema version)
+  timestamp: string;          // ISO 8601
   gameState: PartialGameState; // same shape persisted to localStorage
+  error?: {                   // present only in error reports
+    message: string;
+    stack?: string;
+  };
 }
 ```
 
 `clientId` is a random UUID generated via `crypto.randomUUID()` when the user opts in. It is stored in localStorage under `TELEMETRY_ID` and included in every report to correlate sessions from the same browser. It is not linked to any personal information. Clearing site data removes it; a new one is generated only if the user opts in again.
 
 `PartialGameState` includes: `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `activeQuests`, `completedQuests`.
+
+## Error reporting
+
+Global `error` and `unhandledrejection` handlers are installed at startup (in `main.tsx` via `setupErrorReporting()`). When an uncaught error occurs:
+
+1. The error message and stack trace are captured
+2. The game state is read directly from localStorage (React may have crashed)
+3. A report is sent immediately via `sendBeacon` — no once-per-session restriction
+4. The report includes the same fields as a session report, plus the `error` object
+
+Error reports respect the same guards as session reports: they are only sent when `VITE_TELEMETRY_URL` is configured and the user has opted in.
 
 ## Configuring the telemetry URL
 
@@ -72,7 +88,9 @@ create table telemetry_sessions (
   app_version text        not null,
   game_state_version int  not null,
   client_timestamp   timestamptz not null,
-  game_state  jsonb       not null
+  game_state  jsonb       not null,
+  error_message text,
+  error_stack   text
 );
 
 create index idx_telemetry_app_version on telemetry_sessions (app_version);
@@ -139,6 +157,8 @@ Deno.serve(async (req) => {
       game_state_version: body.gameStateVersion,
       client_timestamp: body.timestamp,
       game_state: body.gameState,
+      error_message: body.error?.message ?? null,
+      error_stack: body.error?.stack ?? null,
     });
 
     if (error) {
