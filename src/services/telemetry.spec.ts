@@ -21,6 +21,7 @@ let mockTelemetryEnabled: boolean;
 jest.mock('./gamePersistence', () => ({
   getTelemetryEnabled: () => mockTelemetryEnabled,
   getTelemetryId: () => 'test-uuid-1234',
+  loadRawGameState: () => null,
 }));
 
 function loadModule() {

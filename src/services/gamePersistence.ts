@@ -8,6 +8,19 @@ import { clamp } from '../utils/math';
 
 export const STORAGE_KEY = `GAME_STATE`;
 
+/** Reads and parses the raw game state from localStorage without migrations or side effects. */
+export function loadRawGameState(): Record<string, unknown> | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (typeof parsed === 'object' && parsed !== null) return parsed;
+  } catch {
+    // Corrupt or missing
+  }
+  return null;
+}
+
 export function resetGameData() {
   localStorage.setItem(STORAGE_KEY, '');
   window.location.reload();
@@ -57,10 +70,9 @@ function sanitizeUnrecognizedJobs(parsed: Record<string, unknown>): void {
 }
 
 export function loadGameState() {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored) {
+  const parsed = loadRawGameState();
+  if (parsed) {
     try {
-      const parsed = JSON.parse(stored);
       // Migrate old save keys (widgets/widgetCap) to protodermis/protodermisCap
       if (parsed.protodermis === undefined && typeof parsed.widgets === 'number') {
         parsed.protodermis = parsed.widgets;
@@ -82,13 +94,14 @@ export function loadGameState() {
       migrateKraataFromInventory(parsed);
       sanitizeUnrecognizedJobs(parsed);
 
-      if (isValidGameState(parsed)) {
-        const [recruitedCharacters, currency] = applyOfflineJobExp(parsed.recruitedCharacters);
+      if (isValidGameState(parsed as unknown as GameState)) {
+        const typed = parsed as unknown as GameState;
+        const [recruitedCharacters, currency] = applyOfflineJobExp(typed.recruitedCharacters);
 
         return {
-          ...parsed,
+          ...typed,
           recruitedCharacters,
-          protodermis: clamp(parsed.protodermis + currency, 0, parsed.protodermisCap),
+          protodermis: clamp(typed.protodermis + currency, 0, typed.protodermisCap),
         };
       }
     } catch (e) {

@@ -1,5 +1,5 @@
 import { PartialGameState } from '../types/GameState';
-import { getTelemetryEnabled, getTelemetryId, STORAGE_KEY } from './gamePersistence';
+import { getTelemetryEnabled, getTelemetryId, loadRawGameState } from './gamePersistence';
 
 const SESSION_KEY = 'TELEMETRY_SENT';
 
@@ -72,21 +72,9 @@ export function sendSessionTelemetry(state: PartialGameState): void {
   }
 }
 
-/**
- * Reads the persisted game state directly from localStorage.
- * Used by error reporting when React state is unavailable.
- */
 function loadGameStateFromStorage(): PartialGameState | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (typeof parsed === 'object' && parsed !== null && typeof parsed.version === 'number') {
-      return parsed as PartialGameState;
-    }
-  } catch {
-    // Corrupt or missing — that's fine
-  }
+  const raw = loadRawGameState();
+  if (raw && typeof raw.version === 'number') return raw as unknown as PartialGameState;
   return null;
 }
 
