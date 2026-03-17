@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/supabase.ts","./src/types.ts","./src/utils.ts","./src/vite-env.d.ts","./src/hooks/useTelemetryData.ts","./src/pages/Errors.tsx","./src/pages/Overview.tsx","./src/pages/Sessions.tsx"],"version":"5.9.3"}
