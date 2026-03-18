@@ -264,7 +264,8 @@ The Settings page (`/settings`) includes:
 - **Disclaimers** – Intellectual property notice (LEGO / Bionicle)
 - **Game Options**:
   - **Reset Game Data** – Clear all progress and start fresh (with confirmation)
-  - **Quest Debug mode** – Shorten quest durations to 1 second and show FPS/render metrics in the 3D canvas
+  - **Quest Debug mode** – Shorten quest durations to 1 second (for testing)
+  - **3D Performance Monitor** – Show FPS and render metrics overlay in the 3D canvas
   - **3D Scene Shadows** – Toggle shadow rendering in character and battle scenes
 
 ## 💾 Game Persistence
@@ -276,12 +277,10 @@ The game automatically saves to localStorage:
 - Save data includes versioning for compatibility
 - You can reset your game data from the Settings page
 
-## 🐛 Debug Mode
+## 🐛 Debug & Performance
 
-Enable **Quest Debug mode** (in Settings) to:
-
-- Shorten quest durations to 1 second (for testing)
-- Display performance metrics (FPS, render times) in the 3D canvas
+- **Quest Debug mode** (Settings): Shortens quest durations to 1 second for testing
+- **3D Performance Monitor** (Settings): Displays FPS and render metrics overlay in the 3D canvas
 
 ## 📝 Development Notes
 

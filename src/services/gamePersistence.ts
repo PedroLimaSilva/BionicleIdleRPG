@@ -153,6 +153,27 @@ export function saveShadowsEnabled(value: boolean) {
   localStorage.setItem('SHADOWS_ENABLED', JSON.stringify(shadowsEnabled));
 }
 
+let performanceMonitorEnabled: boolean | undefined;
+
+export function getPerformanceMonitorEnabled() {
+  if (performanceMonitorEnabled !== undefined) {
+    return performanceMonitorEnabled;
+  }
+  const stored = localStorage.getItem('PERFORMANCE_MONITOR_ENABLED');
+  if (stored !== null) {
+    const parsed = JSON.parse(stored) as boolean;
+    performanceMonitorEnabled = parsed;
+    return parsed;
+  }
+  performanceMonitorEnabled = false;
+  return false;
+}
+
+export function savePerformanceMonitorEnabled(value: boolean) {
+  performanceMonitorEnabled = value;
+  localStorage.setItem('PERFORMANCE_MONITOR_ENABLED', JSON.stringify(performanceMonitorEnabled));
+}
+
 let telemetryEnabled: boolean | undefined;
 
 /** Returns true only if the user has explicitly chosen a telemetry preference. */

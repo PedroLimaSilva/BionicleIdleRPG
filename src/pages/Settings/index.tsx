@@ -10,6 +10,8 @@ export default function SettingsPage() {
   const {
     debugMode,
     setDebugMode,
+    performanceMonitorEnabled,
+    setPerformanceMonitorEnabled,
     shadowsEnabled,
     setShadowsEnabled,
     telemetryEnabled,
@@ -238,6 +240,13 @@ export default function SettingsPage() {
           <div
             className={`toggle-placeholder ${debugMode ? 'on' : ''}`}
             onClick={() => setDebugMode(!debugMode)}
+          />
+        </label>
+        <label className="settings-option">
+          <span>3D Performance Monitor</span>
+          <div
+            className={`toggle-placeholder ${performanceMonitorEnabled ? 'on' : ''}`}
+            onClick={() => setPerformanceMonitorEnabled(!performanceMonitorEnabled)}
           />
         </label>
         <label className="settings-option">
