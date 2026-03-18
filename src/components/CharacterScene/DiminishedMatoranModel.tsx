@@ -7,6 +7,10 @@ import { useAnimationController } from '../../hooks/useAnimationController';
 import { useIdleAnimation } from '../../hooks/useIdleAnimation';
 import { useMask } from '../../hooks/useMask';
 import { Color } from '../../types/Colors';
+import { applyLegoPBRToObject } from './LegoPBRShaderMaterial';
+
+/** Set to true to use object-space Lego PBR shader instead of baked materials. */
+const USE_LEGO_PBR = false;
 
 const MAT_COLOR_MAP = {
   Face: 'face',
@@ -68,6 +72,20 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
         }
       }
     });
+
+    if (USE_LEGO_PBR) {
+      applyLegoPBRToObject(root, {
+        objectScale: 8,
+        dentsBumpStrength: 0.12,
+        dentsRoughnessStrength: 0.15,
+        corrosionStrength: 0.4,
+        fingerprintStrength: 0.08,
+        // Pass tileable textures when available, e.g.:
+        // dentsTexture: useTexture(BASE_URL + 'textures/dents.png'),
+        // corrosionTexture: useTexture(BASE_URL + 'textures/corrosion.png'),
+        // fingerprintTexture: useTexture(BASE_URL + 'textures/fingerprints.png'),
+      });
+    }
   }, [nodes, materials, matoran]);
 
   // Inject the active mask from the shared masks.glb
