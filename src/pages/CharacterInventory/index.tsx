@@ -200,7 +200,11 @@ function RahkshiTabContent({
             {rahkshi
               .sort((a, b) => a.power.localeCompare(b.power))
               .map((armor) => (
-                <RahkshiArmorCard key={armor.id} armor={armor} shouldReduceMotion={shouldReduceMotion} />
+                <RahkshiArmorCard
+                  key={armor.id}
+                  armor={armor}
+                  shouldReduceMotion={shouldReduceMotion}
+                />
               ))}
           </div>
         </>
@@ -250,7 +254,13 @@ function RahkshiTabContent({
   );
 }
 
-function RahkshiArmorCard({ armor, shouldReduceMotion }: { armor: RahkshiArmor; shouldReduceMotion: boolean }) {
+function RahkshiArmorCard({
+  armor,
+  shouldReduceMotion,
+}: {
+  armor: RahkshiArmor;
+  shouldReduceMotion: boolean;
+}) {
   const { armor: armorColor, joint: jointColor } = getRahkshiArmorColors(armor.power);
   const powerName = KRAATA_POWER_NAMES[armor.power] ?? armor.power;
   const isPreparing = armor.status === 'preparing';

@@ -18,9 +18,7 @@ export function useTypewriter(text: string, options: UseTypewriterOptions = {}) 
   const [displayedLength, setDisplayedLength] = useState(() =>
     isTestMode() && text.length > 0 ? text.length : 0
   );
-  const [isComplete, setIsComplete] = useState(() =>
-    isTestMode() && text.length > 0
-  );
+  const [isComplete, setIsComplete] = useState(() => isTestMode() && text.length > 0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const skip = useCallback(() => {

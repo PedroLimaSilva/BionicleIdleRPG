@@ -44,9 +44,7 @@ export function getVisibleEncounters(
     const sorted = [...list].sort((a, b) => a.difficulty - b.difficulty);
     // Show lowest-difficulty encounter that has uncollected krana, or has no krana (e.g. Bohrok Kal)
     const firstToShow = sorted.find(
-      (e) =>
-        !hasKranaLoot(e) ||
-        !areAllEncounterKranaCollected(e, collectedKrana)
+      (e) => !hasKranaLoot(e) || !areAllEncounterKranaCollected(e, collectedKrana)
     );
     if (firstToShow) {
       visible.push(firstToShow);

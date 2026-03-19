@@ -69,10 +69,7 @@ export const KraataDetail: React.FC = () => {
     [kraataCollection, power, stage, protodermis]
   );
 
-  const preparingArmors = useMemo(
-    () => getPreparingRahkshi(rahkshi, power),
-    [rahkshi, power]
-  );
+  const preparingArmors = useMemo(() => getPreparingRahkshi(rahkshi, power), [rahkshi, power]);
 
   const emptyReadyArmors = useMemo(
     () => getReadyRahkshiWithoutKraata(rahkshi).filter((a) => a.power === power),
@@ -149,9 +146,7 @@ export const KraataDetail: React.FC = () => {
           <span className="kraata-detail__count">×{count}</span>
         </div>
         {getKraataPowerDescription(power, stage) && (
-          <p className="kraata-detail__power-desc">
-            {getKraataPowerDescription(power, stage)}
-          </p>
+          <p className="kraata-detail__power-desc">{getKraataPowerDescription(power, stage)}</p>
         )}
       </motion.div>
 

@@ -128,7 +128,15 @@ export function usePlayAnimation(
         }
       });
     },
-    [actions, mixer, modelId, actionTimeScale, transitionMode, attackResolveAtFraction, idleActionName]
+    [
+      actions,
+      mixer,
+      modelId,
+      actionTimeScale,
+      transitionMode,
+      attackResolveAtFraction,
+      idleActionName,
+    ]
   );
 
   return playAnimation;

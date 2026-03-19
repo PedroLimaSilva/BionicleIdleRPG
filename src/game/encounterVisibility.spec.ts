@@ -72,9 +72,7 @@ describe('encounterVisibility', () => {
           { id: 'krana-su-blue', chance: 0.15 },
           { id: 'krana-za-blue', chance: 0.1 },
         ]),
-        mockEncounter('gahlok-1', 'gahlok', 1, [
-          { id: 'krana-xa-orange', chance: 0.15 },
-        ]),
+        mockEncounter('gahlok-1', 'gahlok', 1, [{ id: 'krana-xa-orange', chance: 0.15 }]),
       ];
       const collected = {};
       const completed = ['bohrok_legend_of_krana'];
@@ -127,9 +125,13 @@ describe('encounterVisibility', () => {
 
     test('respects unlockedAfter quest requirement', () => {
       const encounters: EnemyEncounter[] = [
-        mockEncounter('locked', 'tahnok', 1, [{ id: 'krana-xa-blue', chance: 0.15 }], [
-          'some_other_quest',
-        ]),
+        mockEncounter(
+          'locked',
+          'tahnok',
+          1,
+          [{ id: 'krana-xa-blue', chance: 0.15 }],
+          ['some_other_quest']
+        ),
       ];
       const collected = {};
       const completed = ['bohrok_legend_of_krana'];
@@ -140,9 +142,13 @@ describe('encounterVisibility', () => {
 
     test('includes encounter when unlockedAfter quests are completed', () => {
       const encounters: EnemyEncounter[] = [
-        mockEncounter('unlocked', 'tahnok', 1, [{ id: 'krana-xa-blue', chance: 0.15 }], [
-          'bohrok_legend_of_krana',
-        ]),
+        mockEncounter(
+          'unlocked',
+          'tahnok',
+          1,
+          [{ id: 'krana-xa-blue', chance: 0.15 }],
+          ['bohrok_legend_of_krana']
+        ),
       ];
       const collected = {};
       const completed = ['bohrok_legend_of_krana'];

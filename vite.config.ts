@@ -7,7 +7,12 @@ import { execSync } from 'child_process';
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
-const commitHash = execSync('git rev-parse --short HEAD').toString().trim();
+let commitHash = 'unknown';
+try {
+  commitHash = execSync('git rev-parse --short HEAD').toString().trim();
+} catch {
+  console.warn('Failed to get git commit hash, using "unknown"');
+}
 const appVersion = `${pkg.version}+${commitHash}`;
 
 // Extended icon type supporting newer manifest spec fields (color_scheme, design)

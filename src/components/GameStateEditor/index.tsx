@@ -151,154 +151,158 @@ export function GameStateEditor({ onApplied }: GameStateEditorProps) {
         </p>
       </div>
 
-        <div className="game-state-editor-body">
-          <section className="game-state-section">
-            <h3>Protodermis</h3>
-            <div className="game-state-protodermis">
-              <label className="game-state-field">
-                <span>Current</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={draftProtodermis}
-                  onChange={(e) =>
-                    setDraftProtodermis(Math.max(0, parseInt(e.target.value, 10) || 0))
-                  }
-                />
-              </label>
-              <label className="game-state-field">
-                <span>Cap</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={draftProtodermisCap}
-                  onChange={(e) =>
-                    setDraftProtodermisCap(Math.max(0, parseInt(e.target.value, 10) || 0))
-                  }
-                />
-              </label>
-            </div>
-          </section>
+      <div className="game-state-editor-body">
+        <section className="game-state-section">
+          <h3>Protodermis</h3>
+          <div className="game-state-protodermis">
+            <label className="game-state-field">
+              <span>Current</span>
+              <input
+                type="number"
+                min={0}
+                value={draftProtodermis}
+                onChange={(e) =>
+                  setDraftProtodermis(Math.max(0, parseInt(e.target.value, 10) || 0))
+                }
+              />
+            </label>
+            <label className="game-state-field">
+              <span>Cap</span>
+              <input
+                type="number"
+                min={0}
+                value={draftProtodermisCap}
+                onChange={(e) =>
+                  setDraftProtodermisCap(Math.max(0, parseInt(e.target.value, 10) || 0))
+                }
+              />
+            </label>
+          </div>
+        </section>
 
-          <section className="game-state-section">
-            <h3>Completed Quests</h3>
-            <div className="game-state-checklist">
-              {QUESTS.map((q) => (
-                <label key={q.id} className="game-state-check">
-                  <input
-                    type="checkbox"
-                    checked={draftCompleted.includes(q.id)}
-                    onChange={() => toggleQuest(q.id)}
-                  />
-                  <span>{q.name}</span>
-                </label>
-              ))}
-            </div>
-          </section>
+        <section className="game-state-section">
+          <h3>Completed Quests</h3>
+          <div className="game-state-checklist">
+            {QUESTS.map((q) => (
+              <label key={q.id} className="game-state-check">
+                <input
+                  type="checkbox"
+                  checked={draftCompleted.includes(q.id)}
+                  onChange={() => toggleQuest(q.id)}
+                />
+                <span>{q.name}</span>
+              </label>
+            ))}
+          </div>
+        </section>
 
-          <section className="game-state-section">
-            <h3>Recruited Characters</h3>
-            <p className="game-state-section-hint">Check to recruit; set Exp to change level.</p>
-            <div className="game-state-checklist game-state-recruited-list">
-              {RECRUITABLE_IDS.map((id) => {
-                const base = CHARACTER_DEX[id];
-                const name = base?.name ?? id;
-                const recruited = draftRecruited.find((c) => c.id === id);
-                const exp = recruited?.exp ?? 0;
-                const level = getLevelFromExp(exp);
-                return (
-                  <div key={id} className="game-state-recruited-row">
-                    <label className="game-state-check">
+        <section className="game-state-section">
+          <h3>Recruited Characters</h3>
+          <p className="game-state-section-hint">Check to recruit; set Exp to change level.</p>
+          <div className="game-state-checklist game-state-recruited-list">
+            {RECRUITABLE_IDS.map((id) => {
+              const base = CHARACTER_DEX[id];
+              const name = base?.name ?? id;
+              const recruited = draftRecruited.find((c) => c.id === id);
+              const exp = recruited?.exp ?? 0;
+              const level = getLevelFromExp(exp);
+              return (
+                <div key={id} className="game-state-recruited-row">
+                  <label className="game-state-check">
+                    <input
+                      type="checkbox"
+                      checked={!!recruited}
+                      onChange={() => toggleRecruited(id)}
+                    />
+                    <span>{name}</span>
+                  </label>
+                  {recruited && (
+                    <label className="game-state-exp-input">
+                      <span>Exp</span>
+                      <input
+                        type="number"
+                        min={0}
+                        value={exp}
+                        onChange={(e) =>
+                          setRecruitedExp(id, Math.max(0, parseInt(e.target.value, 10) || 0))
+                        }
+                      />
+                      <span className="game-state-level-badge">Lv.{level}</span>
+                    </label>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="game-state-section">
+          <h3>Collected Krana</h3>
+          <p className="game-state-section-hint">By element (Bohrok Krana)</p>
+          {KranaElementValues.map((element) => {
+            const ids = draftKrana[element] ?? [];
+            return (
+              <div key={element} className="game-state-krana-row">
+                <strong>{element}:</strong>
+                <div className="game-state-krana-ids">
+                  {KranaIds.map((kranaId) => (
+                    <label key={kranaId} className="game-state-check game-state-check-inline">
                       <input
                         type="checkbox"
-                        checked={!!recruited}
-                        onChange={() => toggleRecruited(id)}
+                        checked={ids.includes(kranaId)}
+                        onChange={() => toggleKrana(element, kranaId)}
                       />
-                      <span>{name}</span>
+                      <span>{kranaId}</span>
                     </label>
-                    {recruited && (
-                      <label className="game-state-exp-input">
-                        <span>Exp</span>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </section>
+
+        <section className="game-state-section">
+          <h3>Kraata Collection</h3>
+          <p className="game-state-section-hint">Power → stage (1–6) → count</p>
+          <div className="game-state-kraata-grid">
+            {(Object.values(KraataPower) as KraataPower[]).map((power) => {
+              const stages = draftKraata[power] ?? {};
+              return (
+                <div key={power} className="game-state-kraata-power">
+                  <div className="game-state-kraata-power-name">
+                    {KRAATA_POWER_NAMES[power] ?? power}
+                  </div>
+                  <div className="game-state-kraata-stages">
+                    {KRAATA_STAGES.map((stage) => (
+                      <label key={stage} className="game-state-kraata-stage">
+                        <span>{stage}</span>
                         <input
                           type="number"
                           min={0}
-                          value={exp}
+                          value={stages[stage] ?? 0}
                           onChange={(e) =>
-                            setRecruitedExp(id, Math.max(0, parseInt(e.target.value, 10) || 0))
+                            setKraataCount(
+                              power,
+                              stage,
+                              Math.max(0, parseInt(e.target.value, 10) || 0)
+                            )
                           }
                         />
-                        <span className="game-state-level-badge">Lv.{level}</span>
-                      </label>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          <section className="game-state-section">
-            <h3>Collected Krana</h3>
-            <p className="game-state-section-hint">By element (Bohrok Krana)</p>
-            {KranaElementValues.map((element) => {
-              const ids = draftKrana[element] ?? [];
-              return (
-                <div key={element} className="game-state-krana-row">
-                  <strong>{element}:</strong>
-                  <div className="game-state-krana-ids">
-                    {KranaIds.map((kranaId) => (
-                      <label key={kranaId} className="game-state-check game-state-check-inline">
-                        <input
-                          type="checkbox"
-                          checked={ids.includes(kranaId)}
-                          onChange={() => toggleKrana(element, kranaId)}
-                        />
-                        <span>{kranaId}</span>
                       </label>
                     ))}
                   </div>
                 </div>
               );
             })}
-          </section>
-
-          <section className="game-state-section">
-            <h3>Kraata Collection</h3>
-            <p className="game-state-section-hint">Power → stage (1–6) → count</p>
-            <div className="game-state-kraata-grid">
-              {(Object.values(KraataPower) as KraataPower[]).map((power) => {
-                const stages = draftKraata[power] ?? {};
-                return (
-                  <div key={power} className="game-state-kraata-power">
-                    <div className="game-state-kraata-power-name">
-                      {KRAATA_POWER_NAMES[power] ?? power}
-                    </div>
-                    <div className="game-state-kraata-stages">
-                      {KRAATA_STAGES.map((stage) => (
-                        <label key={stage} className="game-state-kraata-stage">
-                          <span>{stage}</span>
-                          <input
-                            type="number"
-                            min={0}
-                            value={stages[stage] ?? 0}
-                            onChange={(e) =>
-                              setKraataCount(power, stage, Math.max(0, parseInt(e.target.value, 10) || 0))
-                            }
-                          />
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        </div>
-
-        <div className="game-state-editor-footer">
-          <button type="button" className="confirm-button" onClick={handleApply}>
-            Apply
-          </button>
-        </div>
+          </div>
+        </section>
       </div>
+
+      <div className="game-state-editor-footer">
+        <button type="button" className="confirm-button" onClick={handleApply}>
+          Apply
+        </button>
+      </div>
+    </div>
   );
 }

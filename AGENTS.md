@@ -6,14 +6,14 @@ This is a single-service, client-side-only React + TypeScript idle RPG. No backe
 
 See `README.md` for the full list. The most common ones:
 
-| Task | Command |
-|---|---|
-| Dev server | `yarn dev` (serves at `http://localhost:5173/BionicleIdleRPG/`) |
-| Lint | `yarn lint` |
-| Unit tests | `yarn test:ci` |
-| Build | `yarn build` |
-| E2E tests | `yarn test:e2e` (requires Playwright browsers installed) |
-| Format check | `yarn format:check` |
+| Task         | Command                                                         |
+| ------------ | --------------------------------------------------------------- |
+| Dev server   | `yarn dev` (serves at `http://localhost:5173/BionicleIdleRPG/`) |
+| Lint         | `yarn lint`                                                     |
+| Unit tests   | `yarn test:ci`                                                  |
+| Build        | `yarn build`                                                    |
+| E2E tests    | `yarn test:e2e` (requires Playwright browsers installed)        |
+| Format check | `yarn format:check`                                             |
 
 ### Non-obvious caveats
 

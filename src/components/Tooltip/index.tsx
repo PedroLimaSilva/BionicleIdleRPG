@@ -121,9 +121,15 @@ export function Tooltip({ content, children }: TooltipProps) {
 
     if (placement === 'top' || placement === 'bottom') {
       left = triggerRect.left + triggerRect.width / 2 - tooltipWidth / 2;
-      left = Math.max(VIEWPORT_PADDING, Math.min(viewportWidth - tooltipWidth - VIEWPORT_PADDING, left));
+      left = Math.max(
+        VIEWPORT_PADDING,
+        Math.min(viewportWidth - tooltipWidth - VIEWPORT_PADDING, left)
+      );
     } else {
-      top = Math.max(VIEWPORT_PADDING, Math.min(viewportHeight - tooltipHeight - VIEWPORT_PADDING, top));
+      top = Math.max(
+        VIEWPORT_PADDING,
+        Math.min(viewportHeight - tooltipHeight - VIEWPORT_PADDING, top)
+      );
     }
 
     setPosition({ top, left });
