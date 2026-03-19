@@ -36,11 +36,17 @@ export type LegoPBROptions = {
   metalness?: number;
   /** Environment map intensity. Match scene (e.g. 0.35–0.4). */
   envMapIntensity?: number;
+  /** Procedural noise strength (0–1). Adds object-space FBM variation to roughness. 0 = off. */
+  noiseStrength?: number;
+  /** Object-space scale for noise. Higher = finer grain. */
+  noiseScale?: number;
 };
 
 const DEFAULT_ROUGHNESS = 0.55;
 const DEFAULT_METALNESS = 0.05;
 const DEFAULT_ENV_MAP_INTENSITY = 0.4;
+const DEFAULT_NOISE_STRENGTH = 0.2;
+const DEFAULT_NOISE_SCALE = 12.0;
 
 const MATERIAL_NAME = 'LegoPBR';
 
@@ -52,7 +58,66 @@ function cacheKey(color: ColorRepresentation, opts: LegoPBROptions): string {
   const hasR = opts.roughnessMap ? 'r' : '';
   const hasM = opts.metalnessMap ? 'm' : '';
   const hasN = opts.normalMap ? 'n' : '';
-  return `${c}_${hasD}${hasR}${hasM}${hasN}`;
+  const ns = opts.noiseStrength !== undefined ? opts.noiseStrength : DEFAULT_NOISE_STRENGTH;
+  const nsc = opts.noiseScale ?? DEFAULT_NOISE_SCALE;
+  return `${c}_${hasD}${hasR}${hasM}${hasN}_ns${ns}_nsc${nsc}`;
+}
+
+/** Injects object-space FBM noise into the fragment shader for visible grain. */
+function applyProceduralNoise(
+  material: MeshStandardMaterial,
+  strength: number,
+  scale: number
+): void {
+  if (strength <= 0) return;
+  material.onBeforeCompile = (shader) => {
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <beginnormal_vertex>',
+      `varying vec3 vObjectPosition;
+      #include <beginnormal_vertex>`
+    );
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <begin_vertex>',
+      `vObjectPosition = position;
+      #include <begin_vertex>`
+    );
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <common>',
+      `varying vec3 vObjectPosition;
+      #include <common>`
+    );
+    const noiseCode = `
+      float hash(vec3 p) {
+        return fract(sin(dot(p, vec3(12.9898, 78.233, 45.164))) * 43758.5453);
+      }
+      float noise3(vec3 p) {
+        vec3 i = floor(p);
+        vec3 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        return mix(
+          mix(mix(hash(i), hash(i + vec3(1,0,0)), f.x),
+              mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), f.x), f.y),
+          mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), f.x),
+              mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), f.x), f.y), f.z);
+      }
+      float fbm(vec3 p) {
+        float v = 0.0, a = 0.5, f = 1.0;
+        for (int i = 0; i < 3; i++) {
+          v += a * noise3(p * f);
+          a *= 0.5;
+          f *= 2.0;
+        }
+        return v;
+      }
+      float n = fbm(vObjectPosition * ${scale.toFixed(2)} + 50.0);
+      gl_FragColor.rgb *= 1.0 + (n - 0.5) * ${strength.toFixed(3)};
+    `;
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <dithering_fragment>',
+      `#include <dithering_fragment>
+      ${noiseCode}`
+    );
+  };
 }
 
 /**
@@ -61,6 +126,10 @@ function cacheKey(color: ColorRepresentation, opts: LegoPBROptions): string {
  */
 export function createLegoPBRMaterial(opts: LegoPBROptions = {}): MeshStandardMaterial {
   const color = opts.color ?? '#ffffff';
+  const noiseStrength =
+    opts.noiseStrength !== undefined ? opts.noiseStrength : DEFAULT_NOISE_STRENGTH;
+  const noiseScale = opts.noiseScale ?? DEFAULT_NOISE_SCALE;
+
   const mat = new MeshStandardMaterial({
     color: new Color(color),
     roughness: opts.roughness ?? DEFAULT_ROUGHNESS,
@@ -73,6 +142,11 @@ export function createLegoPBRMaterial(opts: LegoPBROptions = {}): MeshStandardMa
     normalMap: opts.normalMap ?? null,
   });
   mat.name = MATERIAL_NAME;
+
+  if (noiseStrength > 0) {
+    applyProceduralNoise(mat, noiseStrength, noiseScale);
+  }
+
   return mat;
 }
 

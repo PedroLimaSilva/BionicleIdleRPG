@@ -88,6 +88,8 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
     if (USE_LEGO_PBR) {
       applyLegoPBRToObject(root, {
         envMapIntensity: 0.4,
+        noiseStrength: 0.2,
+        noiseScale: 12,
         // Pass UV-based maps when available:
         // diffuseMap, roughnessMap, metalnessMap, normalMap
       });
