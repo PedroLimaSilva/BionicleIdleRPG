@@ -3,6 +3,8 @@ import { createContext } from 'react';
 export interface SettingsState {
   debugMode: boolean;
   setDebugMode: (value: boolean) => void;
+  performanceMonitorEnabled: boolean;
+  setPerformanceMonitorEnabled: (value: boolean) => void;
   shadowsEnabled: boolean;
   setShadowsEnabled: (value: boolean) => void;
   telemetryEnabled: boolean;

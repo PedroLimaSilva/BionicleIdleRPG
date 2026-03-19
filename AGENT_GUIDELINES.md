@@ -335,18 +335,15 @@ Characters exist as:
 
 **NEVER** store `BaseMatoran` fields in `RecruitedCharacterData`.
 
-### Debug Mode
+### Debug Mode and Performance Monitor
 
-Debug mode is stored separately from game state in localStorage under `DEBUG_MODE` key.
+**Quest Debug mode** is stored in localStorage under `DEBUG_MODE` key. It affects quest duration only (1 second instead of actual duration, for testing).
 
-It affects:
-
-- Quest duration (1 second instead of actual duration, for testing)
-- 3D canvas: displays Perf overlay (FPS, render times) when enabled
+**Performance Monitor** is stored in localStorage under `PERFORMANCE_MONITOR_ENABLED` key. It controls the 3D canvas Perf overlay (FPS, render times).
 
 **DO NOT** add debug mode checks that affect game balance or progression in production.
 
-**DO NOT** persist debug mode in the main game state.
+**DO NOT** persist debug mode or performance monitor in the main game state.
 
 ---
 

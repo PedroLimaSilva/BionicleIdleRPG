@@ -41,7 +41,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [scene, setScene] = useState<React.ReactNode>(null);
   const [target, setTarget] = useState<HTMLElement | null>(null);
 
-  const { debugMode } = useSettings();
+  const { performanceMonitorEnabled } = useSettings();
 
   const location = useLocation();
 
@@ -65,7 +65,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
           <Canvas className="shared-canvas" orthographic shadows gl={{ antialias: true }}>
             <SetSRGBColorSpace />
             <ShadowMapConfig />
-            {debugMode && <Perf position="top-left" />}
+            {performanceMonitorEnabled && <Perf position="top-left" />}
             {scene ?? <ClearCanvas />}
           </Canvas>,
           target
