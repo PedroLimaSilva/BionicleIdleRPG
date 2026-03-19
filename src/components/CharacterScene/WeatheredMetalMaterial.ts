@@ -220,13 +220,22 @@ function isExcludedMaterial(mat: unknown, excludeNames: string[]): boolean {
  * - Meshes under a node named "Masks" (useMask-injected meshes)
  * - Meshes whose material already has a normalMap
  * - Meshes whose material name is in excludeMaterialNames (e.g. Brain, GlowingEyes)
+ *
+ * When materialColorMap is provided (material name -> hex color), uses it for colors
+ * and replaces even existing weathered metal so character switch updates body colors.
  */
 export function applyWeatheredMetalToObject(
   object: Object3D | null | undefined,
-  opts: WeatheredMetalOptions & { excludeMaterialNames?: string[] } = {}
+  opts: WeatheredMetalOptions & {
+    excludeMaterialNames?: string[];
+    materialColorMap?: Record<string, string>;
+  } = {}
 ): void {
   if (!object) return;
   const excludeNames = opts.excludeMaterialNames ?? [];
+  const materialColorMap = opts.materialColorMap ?? {};
+  const hasColorMap = Object.keys(materialColorMap).length > 0;
+
   object.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;
@@ -235,13 +244,18 @@ export function applyWeatheredMetalToObject(
     const raw = mesh.material;
     if (!raw) return;
     if (hasNormalMap(raw)) return;
-    if (isWeatheredMetalMaterial(raw)) return;
     if (excludeNames.length > 0 && isExcludedMaterial(raw, excludeNames)) return;
 
+    const matName = (raw as { name?: string }).name ?? '';
     const color =
-      raw instanceof MeshStandardMaterial && raw.color
-        ? raw.color.getStyle()
-        : '#ffffff';
+      hasColorMap && matName in materialColorMap
+        ? materialColorMap[matName]
+        : raw instanceof MeshStandardMaterial && raw.color
+          ? raw.color.getStyle()
+          : '#ffffff';
+
+    if (!hasColorMap && isWeatheredMetalMaterial(raw)) return;
+
     mesh.material = getWeatheredMetalMaterial(color as ColorRepresentation, opts);
   });
 }

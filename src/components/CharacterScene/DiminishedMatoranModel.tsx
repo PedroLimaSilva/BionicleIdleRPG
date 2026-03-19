@@ -76,6 +76,14 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
     });
 
     if (USE_WEATHERED_METAL) {
+      const materialColorMap: Record<string, string> = {};
+      Object.entries(MAT_COLOR_MAP).forEach(([materialName, colorName]) => {
+        if (materialName !== 'Brain' && materialName !== 'GlowingEyes') {
+          materialColorMap[materialName] = colorMap[
+            colorName as keyof BaseMatoran['colors']
+          ] as string;
+        }
+      });
       applyWeatheredMetalToObject(root, {
         roughness: 0.55,
         metalness: 0.05,
@@ -89,6 +97,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
         edgeStrength: 0.35,
         edgeCurvatureScale: 12,
         excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        materialColorMap,
       });
       if (debugMode) {
         let count = 0;
