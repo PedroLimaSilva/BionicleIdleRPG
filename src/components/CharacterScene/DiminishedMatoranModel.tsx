@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { BaseMatoran } from '../../types/Matoran';
-import { Color as ThreeColor, Group, Mesh, Vector3 } from 'three';
+import { Color as ThreeColor, Group, Mesh } from 'three';
 import { MeshPhysicalMaterial } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
@@ -92,10 +92,10 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
         grimeMetalnessReduce: 0.5,
         largeScale: 3.5,
         fineScale: 18.0,
-        cavityStrength: 0.35,
-        edgeColor: '#8a7a6a',
-        edgeStrength: 0.35,
-        edgeCurvatureScale: 12,
+        cavityStrength: 1,
+        edgeColor: '#ffffff',
+        edgeStrength: 0.15,
+        edgeCurvatureScale: 2,
         excludeMaterialNames: ['Brain', 'GlowingEyes'],
         materialColorMap,
       });
@@ -116,7 +116,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
   return (
     <group ref={group} dispose={null}>
-      <primitive scale={1} object={nodes.Body} position={new Vector3(0, 2.55, 0)} />
+      <primitive object={nodes.Matoran} position={[0, 0, -1.4]} />
     </group>
   );
 }
