@@ -87,6 +87,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
         cavityStrength: 0.35,
         edgeColor: '#8a7a6a',
         edgeStrength: 0.35,
+        edgeCurvatureScale: 12,
       });
       if (debugMode) {
         let count = 0;

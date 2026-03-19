@@ -37,10 +37,12 @@ export type WeatheredMetalOptions = {
   fineScale?: number;
   /** Bias grime toward recessed areas (surfaces facing away from up). 0 = uniform. */
   cavityStrength?: number;
-  /** Edge discoloration at convex/grazing edges. Color to blend toward. */
+  /** Edge wear discoloration at convex edges (screen-space curvature). Color to blend toward. */
   edgeColor?: ColorRepresentation;
-  /** Strength of edge discoloration (0–1). */
+  /** Strength of edge wear (0–1). */
   edgeStrength?: number;
+  /** Curvature threshold for edge detection. Lower = more edges detected. */
+  edgeCurvatureScale?: number;
   /** Environment map intensity. */
   envMapIntensity?: number;
   /** Enable transparency (for mask fade-out animations). */
@@ -57,6 +59,7 @@ const DEFAULT_FINE_SCALE = 18.0;
 const DEFAULT_CAVITY_STRENGTH = 0.4;
 const DEFAULT_EDGE_COLOR = '#8a7a6a';
 const DEFAULT_EDGE_STRENGTH = 0.35;
+const DEFAULT_EDGE_CURVATURE_SCALE = 12.0;
 const DEFAULT_ENV_MAP_INTENSITY = 0.4;
 
 const MATERIAL_NAME = 'WeatheredMetal';
@@ -68,7 +71,8 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
   const t = opts.transparent ? 't' : '';
   const ec = opts.edgeColor ? new Color(opts.edgeColor).getStyle() : '';
   const es = opts.edgeStrength ?? 0;
-  return `${c}_${opts.roughness ?? DEFAULT_ROUGHNESS}_${opts.largeScale ?? DEFAULT_LARGE_SCALE}_${t}_ec${ec}_es${es}`;
+  const ecs = opts.edgeCurvatureScale ?? DEFAULT_EDGE_CURVATURE_SCALE;
+  return `${c}_${opts.roughness ?? DEFAULT_ROUGHNESS}_${opts.largeScale ?? DEFAULT_LARGE_SCALE}_${t}_ec${ec}_es${es}_ecs${ecs}`;
 }
 
 /** Injects multi-scale procedural grime and edge discoloration into MeshStandardMaterial. */
@@ -81,6 +85,7 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
   const cavityStrength = opts.cavityStrength ?? DEFAULT_CAVITY_STRENGTH;
   const edgeColor = new Color(opts.edgeColor ?? DEFAULT_EDGE_COLOR);
   const edgeStrength = opts.edgeStrength ?? DEFAULT_EDGE_STRENGTH;
+  const edgeCurvatureScale = opts.edgeCurvatureScale ?? DEFAULT_EDGE_CURVATURE_SCALE;
 
   mat.onBeforeCompile = (shader) => {
     shader.vertexShader = shader.vertexShader.replace(
@@ -134,10 +139,10 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
       material.metalness *= 1.0 - grime * ${grimeMetalnessReduce.toFixed(3)};
       material.roughness = clamp(material.roughness, 0.04, 1.0);
       material.metalness = clamp(material.metalness, 0.0, 1.0);
-      float NdotV = max(dot(normal, -normalize(vViewPosition)), 0.0);
-      float fresnel = pow(1.0 - NdotV, 2.5);
+      float curvature = length(dFdx(normal)) + length(dFdy(normal));
+      float edgeMask = smoothstep(0.0, 1.0, curvature * ${edgeCurvatureScale.toFixed(2)});
       vec3 edgeTint = vec3(${edgeColor.r.toFixed(3)}, ${edgeColor.g.toFixed(3)}, ${edgeColor.b.toFixed(3)});
-      diffuseColor.rgb = mix(diffuseColor.rgb, edgeTint, fresnel * ${edgeStrength.toFixed(3)});
+      diffuseColor.rgb = mix(diffuseColor.rgb, edgeTint, edgeMask * ${edgeStrength.toFixed(3)});
     `;
 
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -165,6 +170,9 @@ export function createWeatheredMetalMaterial(
     transparent: opts.transparent ?? false,
   });
   mat.name = MATERIAL_NAME;
+  (mat as MeshStandardMaterial & { extensions?: { derivatives?: boolean } }).extensions = {
+    derivatives: true,
+  };
   applyWeatheredMetalModifier(mat, opts);
   return mat;
 }
