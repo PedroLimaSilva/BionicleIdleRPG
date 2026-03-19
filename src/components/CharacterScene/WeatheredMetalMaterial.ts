@@ -247,15 +247,29 @@ export function applyWeatheredMetalToObject(
     if (excludeNames.length > 0 && isExcludedMaterial(raw, excludeNames)) return;
 
     const matName = (raw as { name?: string }).name ?? '';
+    const meshName = mesh.name ?? '';
+    const meshWithUserData = mesh as Mesh & { userData?: { originalMaterialName?: string } };
+    const lookupName =
+      meshWithUserData.userData?.originalMaterialName ??
+      (matName && matName !== MATERIAL_NAME ? matName : meshName);
+
+    if (matName && matName !== MATERIAL_NAME) {
+      meshWithUserData.userData ??= {};
+      meshWithUserData.userData.originalMaterialName = matName;
+    }
+
     const color =
-      hasColorMap && matName in materialColorMap
-        ? materialColorMap[matName]
-        : raw instanceof MeshStandardMaterial && raw.color
-          ? raw.color.getStyle()
-          : '#ffffff';
+      hasColorMap && lookupName in materialColorMap
+        ? materialColorMap[lookupName]
+        : hasColorMap
+          ? undefined
+          : raw instanceof MeshStandardMaterial && raw.color
+            ? raw.color.getStyle()
+            : '#ffffff';
 
     if (!hasColorMap && isWeatheredMetalMaterial(raw)) return;
+    if (hasColorMap && color === undefined) return;
 
-    mesh.material = getWeatheredMetalMaterial(color as ColorRepresentation, opts);
+    mesh.material = getWeatheredMetalMaterial((color ?? '#ffffff') as ColorRepresentation, opts);
   });
 }
