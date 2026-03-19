@@ -10,7 +10,7 @@ const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 let commitHash = 'unknown';
 try {
   commitHash = execSync('git rev-parse --short HEAD').toString().trim();
-} catch (e) {
+} catch {
   console.warn('Failed to get git commit hash, using "unknown"');
 }
 const appVersion = `${pkg.version}+${commitHash}`;
