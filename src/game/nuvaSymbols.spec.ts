@@ -13,9 +13,9 @@ describe('isNuvaSymbolsSequestered', () => {
 
   test('returns true when stolen symbols completed but final confrontation not', () => {
     expect(isNuvaSymbolsSequestered([BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID])).toBe(true);
-    expect(
-      isNuvaSymbolsSequestered([BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID, 'other_quest'])
-    ).toBe(true);
+    expect(isNuvaSymbolsSequestered([BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID, 'other_quest'])).toBe(
+      true
+    );
   });
 
   test('returns false when both stolen symbols and final confrontation completed', () => {

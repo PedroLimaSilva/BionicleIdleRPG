@@ -99,9 +99,7 @@ describe('Krana', () => {
 
   describe('isKranaCollectionActive', () => {
     test('returns true when unlocked but arc not completed', () => {
-      expect(
-        isKranaCollectionActive([BOHROK_KRANA_LEGEND_QUEST_ID])
-      ).toBe(true);
+      expect(isKranaCollectionActive([BOHROK_KRANA_LEGEND_QUEST_ID])).toBe(true);
     });
 
     test('returns false when not unlocked', () => {

@@ -24,8 +24,8 @@ export function TelemetryConsentPrompt() {
         <p className="consent-body">
           We'd like to receive anonymous usage data (app version and game progress snapshot) once
           per session. No personal information is collected. You can learn more about how we use
-          this data in our <Link to="/privacy-policy">privacy policy</Link>.
-          You can change your choice anytime in Settings.
+          this data in our <Link to="/privacy-policy">privacy policy</Link>. You can change your
+          choice anytime in Settings.
         </p>
         <div className="consent-actions">
           <button className="button confirm-button" onClick={() => handleChoice(true)}>

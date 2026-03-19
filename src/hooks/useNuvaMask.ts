@@ -95,10 +95,7 @@ export function useNuvaMask(
   const collected = masksCollected(matoran, completedQuests);
   const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
   const override = matoran.maskOverride;
-  const maskName =
-    override && collected.includes(override)
-      ? override
-      : effectiveMask;
+  const maskName = override && collected.includes(override) ? override : effectiveMask;
   const maskNodeName = getMaskNodeName(maskName);
   const maskColor = getEffectiveNuvaMaskColor(matoran, completedQuests);
 

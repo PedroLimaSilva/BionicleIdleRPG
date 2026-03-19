@@ -30,13 +30,13 @@ We invest in a **story battle system** for key quest moments:
 
 ## Quest Arc Structure
 
-| Quest                  | Story battle? | Notes                                                |
-|------------------------|---------------|------------------------------------------------------|
-| The Stolen Symbols     | No            | Ambush/theft. Narrative only.                        |
-| First Strikes          | Optional      | First confrontation; scripted loss if used.           |
-| Scattered              | No            | Toa split, each loses. Narrative only.                |
-| Gathering Strength     | No            | Planning, regrouping. No combat.                     |
-| The Final Confrontation| **Yes**       | Climax. Winnable story battle.                        |
+| Quest                   | Story battle? | Notes                                       |
+| ----------------------- | ------------- | ------------------------------------------- |
+| The Stolen Symbols      | No            | Ambush/theft. Narrative only.               |
+| First Strikes           | Optional      | First confrontation; scripted loss if used. |
+| Scattered               | No            | Toa split, each loses. Narrative only.      |
+| Gathering Strength      | No            | Planning, regrouping. No combat.            |
+| The Final Confrontation | **Yes**       | Climax. Winnable story battle.              |
 
 **Decided**: Minimal story battles—only the Final Confrontation has a required story battle. First Strikes may add an optional scripted-loss battle later.
 

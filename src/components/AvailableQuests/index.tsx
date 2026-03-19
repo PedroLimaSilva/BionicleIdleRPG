@@ -112,7 +112,9 @@ export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
                       return unlocked.length > 0 ? (
                         <li>
                           <span className="reward-label">Unlocks:</span>{' '}
-                          {unlocked.map((char) => CHARACTER_DEX[char.id]?.name ?? char.id).join(', ')}
+                          {unlocked
+                            .map((char) => CHARACTER_DEX[char.id]?.name ?? char.id)
+                            .join(', ')}
                         </li>
                       ) : null;
                     })()}

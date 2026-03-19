@@ -9,15 +9,15 @@ Combat logic does not branch on "buff vs debuff"—it simply applies the effect 
 
 ## Effect Types and Trigger Points
 
-| Type | Trigger | Value semantics | Example |
-|------|---------|-----------------|---------|
-| **HEAL** | End/start of turn | `hp += maxHp * multiplier`; positive = heal, negative = poison | 0.1 = heal 10%, -0.1 = lose 10% HP |
-| **DEFENSE** | Damage calculation (defender) | Multiplies defense stat: `effectiveDefense = defense * multiplier`; >1 = fortify, <1 = weaken | 1.5 = 50% more defense, 0.5 = half defense |
-| **DMG_MITIGATOR** | Damage calculation (defender) | Multiplies final damage; 0 = immunity | 0 = no damage, 0.5 = half damage |
-| **ATK_MULT** | Damage calculation (attacker) | `damage *= multiplier` | 2 = deal double, 0.5 = deal half |
-| **SPEED** | Turn order determination | Adds/removes turns | 2 = extra turn, -1 = skip turn |
-| **AGGRO** | Target choice | multiplier 0 = untargetable | Affects who can be selected |
-| **CONFUSION** | Target choice | Flips valid targets to allies | Modifies target selection |
+| Type              | Trigger                       | Value semantics                                                                               | Example                                    |
+| ----------------- | ----------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| **HEAL**          | End/start of turn             | `hp += maxHp * multiplier`; positive = heal, negative = poison                                | 0.1 = heal 10%, -0.1 = lose 10% HP         |
+| **DEFENSE**       | Damage calculation (defender) | Multiplies defense stat: `effectiveDefense = defense * multiplier`; >1 = fortify, <1 = weaken | 1.5 = 50% more defense, 0.5 = half defense |
+| **DMG_MITIGATOR** | Damage calculation (defender) | Multiplies final damage; 0 = immunity                                                         | 0 = no damage, 0.5 = half damage           |
+| **ATK_MULT**      | Damage calculation (attacker) | `damage *= multiplier`                                                                        | 2 = deal double, 0.5 = deal half           |
+| **SPEED**         | Turn order determination      | Adds/removes turns                                                                            | 2 = extra turn, -1 = skip turn             |
+| **AGGRO**         | Target choice                 | multiplier 0 = untargetable                                                                   | Affects who can be selected                |
+| **CONFUSION**     | Target choice                 | Flips valid targets to allies                                                                 | Modifies target selection                  |
 
 ## Unified Application
 

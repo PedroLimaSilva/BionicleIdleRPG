@@ -170,10 +170,10 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
                             )}
                           </span>
                           <div
-                              className={`chronicle-entry__title ${!entry.isUnlocked ? 'bionicle-font' : ''}`}
-                            >
-                              {entry.title}
-                            </div>
+                            className={`chronicle-entry__title ${!entry.isUnlocked ? 'bionicle-font' : ''}`}
+                          >
+                            {entry.title}
+                          </div>
                         </button>
 
                         <AnimatePresence initial={false}>

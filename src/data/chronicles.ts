@@ -909,7 +909,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Mask of Light',
       title: 'The Kolhii Tournament',
       description:
-        'During the great kolhii match at Ta-Koro, the mysterious mask tumbles from Jaller\'s pack and lands at Takua\'s feet, bathing Jaller in golden light. Turaga Nokama names it the Avohkii—the Mask of Light—and declares that Jaller must find the Seventh Toa.',
+        "During the great kolhii match at Ta-Koro, the mysterious mask tumbles from Jaller's pack and lands at Takua's feet, bathing Jaller in golden light. Turaga Nokama names it the Avohkii—the Mask of Light—and declares that Jaller must find the Seventh Toa.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mol_kolhii_tournament',
@@ -918,9 +918,9 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
     {
       id: 'takua_search_seventh_toa',
       section: 'Mask of Light',
-      title: 'The Herald\'s Journey',
+      title: "The Herald's Journey",
       description:
-        'Reluctant but bound by duty, Takua sets out with Jaller across Mata Nui, following the Avohkii\'s light from village to village. Everywhere they go, the shadow of Makuta follows.',
+        "Reluctant but bound by duty, Takua sets out with Jaller across Mata Nui, following the Avohkii's light from village to village. Everywhere they go, the shadow of Makuta follows.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mol_avohkii_prophecy',
@@ -1067,7 +1067,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Mask of Light',
       title: 'The Kolhii Tournament',
       description:
-        'During the kolhii match at Ta-Koro, the mask tumbles from Jaller\'s pack and shines upon him. Named Herald of the Seventh Toa, Jaller nominates Takua to chronicle his journey.',
+        "During the kolhii match at Ta-Koro, the mask tumbles from Jaller's pack and shines upon him. Named Herald of the Seventh Toa, Jaller nominates Takua to chronicle his journey.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mol_kolhii_tournament',
@@ -1076,7 +1076,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
     {
       id: 'jala_sacrifice',
       section: 'Mask of Light',
-      title: 'Jaller\'s Sacrifice',
+      title: "Jaller's Sacrifice",
       description:
         'At Kini-Nui, the Rahkshi Turahk turns its fear power on Takua. Jaller leaps between them and takes the blow meant for his friend. As his light fades, he whispers to Takua: "You know who you are." His sacrifice awakens the true herald.',
       unlockCondition: {
@@ -1124,7 +1124,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Mask of Light',
       title: 'The Kolhii Tournament',
       description:
-        'Hahli and Macku represent Ga-Koro in the great kolhii tournament at Ta-Koro. During the match, the Mask of Light tumbles from Jaller\'s pack and lands at Takua\'s feet, shining with a golden glow.',
+        "Hahli and Macku represent Ga-Koro in the great kolhii tournament at Ta-Koro. During the match, the Mask of Light tumbles from Jaller's pack and lands at Takua's feet, shining with a golden glow.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mol_kolhii_tournament',
@@ -1599,7 +1599,7 @@ export const CHRONICLES_BY_ID: Record<ChronicleId, ChronicleEntry[]> = {
       section: 'Mask of Light',
       title: 'The Kolhii Tournament',
       description:
-        'Hafu takes the field alongside Hewkii as Po-Koro\'s kolhii team at the great tournament in Ta-Koro. The match ends in shock when a golden mask—the Avohkii—reveals itself, changing the course of Mata Nui\'s history.',
+        "Hafu takes the field alongside Hewkii as Po-Koro's kolhii team at the great tournament in Ta-Koro. The match ends in shock when a golden mask—the Avohkii—reveals itself, changing the course of Mata Nui's history.",
       unlockCondition: {
         type: 'QUEST_COMPLETED',
         questId: 'mol_kolhii_tournament',

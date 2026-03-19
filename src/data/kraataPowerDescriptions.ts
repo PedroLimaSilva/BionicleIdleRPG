@@ -351,10 +351,7 @@ export const KRAATA_POWER_DESCRIPTIONS: Record<KraataPower, KraataPowerDescripti
  * Returns the canonical power description for a kraata (or Rahkshi) of the given power and stage.
  * Stages are 1–6. Returns undefined if power or stage is missing.
  */
-export function getKraataPowerDescription(
-  power: KraataPower,
-  stage: number
-): string | undefined {
+export function getKraataPowerDescription(power: KraataPower, stage: number): string | undefined {
   const byStage = KRAATA_POWER_DESCRIPTIONS[power];
   if (!byStage) return undefined;
   return byStage[stage];
