@@ -89,9 +89,9 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
 
   mat.onBeforeCompile = (shader) => {
     shader.vertexShader = shader.vertexShader.replace(
-      '#include <beginnormal_vertex>',
+      '#include <common>',
       `varying vec3 vObjectPosition;
-      #include <beginnormal_vertex>`
+      #include <common>`
     );
     shader.vertexShader = shader.vertexShader.replace(
       '#include <begin_vertex>',
@@ -99,16 +99,7 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
       #include <begin_vertex>`
     );
 
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <common>',
-      `varying vec3 vObjectPosition;
-      #include <common>`
-    );
-
-    const modifierCode = `
-      vec3 worldNormal = inverseTransformDirection( normal, viewMatrix );
-      float cavity = 1.0 - max( worldNormal.y, 0.0 );
-      float cavityBias = 1.0 + cavity * ${cavityStrength.toFixed(2)};
+    const noiseFunctions = `
       float hash(vec3 p) {
         return fract(sin(dot(p, vec3(12.9898, 78.233, 45.164))) * 43758.5453);
       }
@@ -131,6 +122,18 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
         }
         return v;
       }
+    `;
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <common>',
+      `varying vec3 vObjectPosition;
+      ${noiseFunctions}
+      #include <common>`
+    );
+
+    const modifierCode = `
+      vec3 worldNormal = inverseTransformDirection( normal, viewMatrix );
+      float cavity = 1.0 - max( worldNormal.y, 0.0 );
+      float cavityBias = 1.0 + cavity * ${cavityStrength.toFixed(2)};
       float largeCloud = fbm(vObjectPosition + 50.0, ${largeScale.toFixed(2)}, 3);
       float fineGrain = fbm(vObjectPosition + 80.0, ${fineScale.toFixed(2)}, 3);
       float grime = clamp((largeCloud - 0.35) * 2.0 * cavityBias, 0.0, 1.0);
