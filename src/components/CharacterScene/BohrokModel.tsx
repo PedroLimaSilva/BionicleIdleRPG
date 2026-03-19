@@ -6,6 +6,9 @@ import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { BaseMatoran } from '../../types/Matoran';
+import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
+
+const USE_WEATHERED_METAL = true;
 
 /** Cache key: materialName + color. Shared across all Bohrok instances with same scheme. */
 const bohrokMaterialCache = new Map<string, MeshStandardMaterial>();
@@ -103,6 +106,31 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
       const originalMaterial = child.material as MeshStandardMaterial;
       child.material = getBohrokMaterial(originalMaterial, colorScheme);
     });
+
+    if (USE_WEATHERED_METAL) {
+      const materialColorMap: Record<string, string> = {
+        Bohrok_Main: colorScheme.body,
+        Bohrok_Secondary: colorScheme.arms,
+        Bohrok_Feet: colorScheme.feet,
+        'Bohrok_Joints': colorScheme.face,
+        'Bohrok Kal Shield': colorScheme.face,
+      };
+      applyWeatheredMetalToObject(bodyInstance, {
+        roughness: 0.55,
+        metalness: 0.05,
+        grimeDarken: 0.4,
+        grimeRoughness: 0.2,
+        grimeMetalnessReduce: 0.5,
+        largeScale: 3.5,
+        fineScale: 18.0,
+        cavityStrength: 1,
+        edgeColor: '#ffffff',
+        edgeStrength: 0.15,
+        edgeCurvatureScale: 2,
+        excludeMaterialNames: ['Bohrok_Eye', 'Bohrok_Iris', 'Krana'],
+        materialColorMap,
+      });
+    }
 
     const shieldTarget = uppercaseName.concat(isKal ? 'Kal' : '');
     ['L', 'R'].forEach((suffix) => {
