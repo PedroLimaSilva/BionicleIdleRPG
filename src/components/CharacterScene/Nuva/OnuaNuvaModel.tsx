@@ -37,7 +37,13 @@ export const OnuaNuvaModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        excludeMaterialNames: [
+          'Glowing Eyes',
+          'Trans Dark Pink',
+          'SOLID-SILVER',
+          'Nuva Armour',
+          'Holder',
+        ],
       });
     }
   }, [nodes]);

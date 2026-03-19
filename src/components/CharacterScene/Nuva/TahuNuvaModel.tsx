@@ -42,7 +42,14 @@ export const TahuNuvaModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        excludeMaterialNames: [
+          'Glowing Eyes',
+          'SOLID-SILVER',
+          'Lava Blade Glow',
+          'Trans Dark Pink',
+          'Holder',
+          'Nuva Armour',
+        ],
       });
     }
   }, [nodes]);
