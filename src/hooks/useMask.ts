@@ -9,6 +9,7 @@ import {
   startMaskTransition,
   useMaskTransitionFrame,
 } from './maskTransition';
+import { applyWeatheredMetalToMask } from '../components/CharacterScene/WeatheredMetalMaterial';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 
@@ -164,6 +165,20 @@ export function useMask(
       glowColorRef.current,
       maskPowerActiveRef.current
     );
+
+    if (maskName === Mask.Avohkii) {
+      applyWeatheredMetalToMask(clone, '#d4a84b', {
+        roughness: 0.4,
+        metalness: 0.9,
+        grimeDarken: 0.5,
+        grimeRoughness: 0.35,
+        grimeMetalnessReduce: 0.7,
+        largeScale: 3.5,
+        fineScale: 18.0,
+        cavityStrength: 0.4,
+        transparent: true,
+      });
+    }
 
     const prevMask = maskRef.current;
     const isChange =
