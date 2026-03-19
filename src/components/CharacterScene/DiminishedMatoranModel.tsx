@@ -88,6 +88,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
         edgeColor: '#8a7a6a',
         edgeStrength: 0.35,
         edgeCurvatureScale: 12,
+        excludeMaterialNames: ['Brain', 'GlowingEyes'],
       });
       if (debugMode) {
         let count = 0;
@@ -97,7 +98,7 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
         console.log('[DiminishedMatoranModel] Weathered metal applied to', count, 'meshes');
       }
     }
-  }, [nodes, materials, matoran, debugMode]);
+  }, [nodes, materials, matoran.id, matoran.colors, debugMode]);
 
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.mask;

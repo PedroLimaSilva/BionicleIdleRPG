@@ -210,16 +210,23 @@ function hasNormalMap(mat: unknown): boolean {
   return !!(mat as { normalMap?: unknown }).normalMap;
 }
 
+function isExcludedMaterial(mat: unknown, excludeNames: string[]): boolean {
+  const name = (mat as { name?: string }).name ?? '';
+  return excludeNames.some((n) => name === n);
+}
+
 /**
  * Replaces mesh materials with weathered metal. Skips:
  * - Meshes under a node named "Masks" (useMask-injected meshes)
  * - Meshes whose material already has a normalMap
+ * - Meshes whose material name is in excludeMaterialNames (e.g. Brain, GlowingEyes)
  */
 export function applyWeatheredMetalToObject(
   object: Object3D | null | undefined,
-  opts: WeatheredMetalOptions = {}
+  opts: WeatheredMetalOptions & { excludeMaterialNames?: string[] } = {}
 ): void {
   if (!object) return;
+  const excludeNames = opts.excludeMaterialNames ?? [];
   object.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;
@@ -229,6 +236,7 @@ export function applyWeatheredMetalToObject(
     if (!raw) return;
     if (hasNormalMap(raw)) return;
     if (isWeatheredMetalMaterial(raw)) return;
+    if (excludeNames.length > 0 && isExcludedMaterial(raw, excludeNames)) return;
 
     const color =
       raw instanceof MeshStandardMaterial && raw.color
