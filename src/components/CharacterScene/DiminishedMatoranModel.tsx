@@ -1,16 +1,27 @@
 import { useEffect, useRef } from 'react';
 import { BaseMatoran } from '../../types/Matoran';
-import { Color as ThreeColor, Group, Vector3 } from 'three';
+import { Color as ThreeColor, Group, Mesh, Vector3 } from 'three';
 import { MeshPhysicalMaterial } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { useIdleAnimation } from '../../hooks/useIdleAnimation';
 import { useMask } from '../../hooks/useMask';
+import { useSettings } from '../../context/useSettings';
 import { Color } from '../../types/Colors';
-import { applyLegoPBRToObject } from './LegoPBRShaderMaterial';
+import { applyLegoPBRToObject, isLegoPBRMaterial } from './LegoPBRShaderMaterial';
 
-/** Set to true to use object-space Lego PBR shader instead of baked materials. */
+/** Set to true to use Lego PBR material (MeshStandardMaterial + UV maps) instead of baked. */
 const USE_LEGO_PBR = false;
+
+/**
+ * When you have diffuse, roughness, metalness, normal maps, load them and pass to applyLegoPBRToObject:
+ *
+ *   const base = import.meta.env.BASE_URL;
+ *   const [diffuse, roughness, metalness, normal] = useTexture(
+ *     [base + 'textures/diffuse.png', base + 'textures/roughness.png', ...]
+ *   );
+ *   applyLegoPBRToObject(root, { diffuseMap: diffuse, roughnessMap: roughness, ... });
+ */
 
 const MAT_COLOR_MAP = {
   Face: 'face',
@@ -38,6 +49,7 @@ const MAT_COLOR_MAP = {
 
 export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
   const group = useRef<Group>(null);
+  const { debugMode } = useSettings();
   const { nodes, materials, animations } = useGLTF(import.meta.env.BASE_URL + 'matoran_master.glb');
   const { actions, mixer } = useIdleAnimation(animations, group);
 
@@ -75,18 +87,19 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
 
     if (USE_LEGO_PBR) {
       applyLegoPBRToObject(root, {
-        objectScale: 8,
-        dentsBumpStrength: 0.12,
-        dentsRoughnessStrength: 0.15,
-        corrosionStrength: 0.4,
-        fingerprintStrength: 0.08,
-        // Pass tileable textures when available, e.g.:
-        // dentsTexture: useTexture(BASE_URL + 'textures/dents.png'),
-        // corrosionTexture: useTexture(BASE_URL + 'textures/corrosion.png'),
-        // fingerprintTexture: useTexture(BASE_URL + 'textures/fingerprints.png'),
+        envMapIntensity: 0.4,
+        // Pass UV-based maps when available:
+        // diffuseMap, roughnessMap, metalnessMap, normalMap
       });
+      if (debugMode) {
+        let count = 0;
+        root.traverse((c) => {
+          if ((c as Mesh).isMesh && isLegoPBRMaterial((c as Mesh).material)) count++;
+        });
+        console.log('[DiminishedMatoranModel] Lego PBR applied to', count, 'meshes');
+      }
     }
-  }, [nodes, materials, matoran]);
+  }, [nodes, materials, matoran, debugMode]);
 
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.mask;
