@@ -7,6 +7,9 @@ import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
 import { getRahkshiArmorColors, RahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { KraataPower } from '../../types/Kraata';
+import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
+
+const USE_WEATHERED_METAL = true;
 
 const BLACK = new ThreeColor('#000000');
 const GLOW_LERP_SPEED = 5;
@@ -179,6 +182,30 @@ export const RahkshiModel = forwardRef<
 
       child.material = getRahkshiMaterial(mat, dex);
     });
+
+    if (USE_WEATHERED_METAL) {
+      const materialColorMap: Record<string, string> = {
+        Primary: dex.armor,
+        Back_baked: dex.armor,
+        Face_baked: dex.armor,
+        Secondary: dex.joint,
+      };
+      applyWeatheredMetalToObject(bodyInstance, {
+        roughness: 0.55,
+        metalness: 0.05,
+        grimeDarken: 0.4,
+        grimeRoughness: 0.2,
+        grimeMetalnessReduce: 0.5,
+        largeScale: 3.5,
+        fineScale: 18.0,
+        cavityStrength: 1,
+        edgeColor: '#ffffff',
+        edgeStrength: 0.15,
+        edgeCurvatureScale: 2,
+        excludeMaterialNames: ['Eyes'],
+        materialColorMap,
+      });
+    }
 
     glowEntries.current = entries;
   }, [bodyInstance, kraata, hasKraata]);
