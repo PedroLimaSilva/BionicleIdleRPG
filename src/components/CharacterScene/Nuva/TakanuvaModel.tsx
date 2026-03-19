@@ -36,7 +36,13 @@ export const TakanuvaModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        excludeMaterialNames: [
+          'Holder.001',
+          'SOLID-SILVER',
+          'GlowingEyes',
+          'Trans Dark Pink',
+          'Gali Eyes',
+        ],
       });
     }
   }, [nodes]);
