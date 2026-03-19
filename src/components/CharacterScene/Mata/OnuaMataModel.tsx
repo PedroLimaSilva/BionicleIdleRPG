@@ -39,7 +39,7 @@ export const OnuaMataModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        excludeMaterialNames: ['TRANS-GREEN', 'Onua Eyes'],
       });
     }
   }, [nodes]);

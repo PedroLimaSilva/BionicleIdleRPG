@@ -40,7 +40,7 @@ export const GaliMataModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        excludeMaterialNames: ['Gali Glow', 'Trans Neon Yellow', 'Gali Eyes'],
       });
     }
   }, [nodes]);

@@ -40,7 +40,7 @@ export const LewaMataModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        excludeMaterialNames: ['Lewa Eyes', 'Lewa Glow', 'Trans Neon Green'],
       });
     }
   }, [nodes]);

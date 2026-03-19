@@ -40,7 +40,7 @@ export const KopakaMataModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        excludeMaterialNames: ['Kopaka Eyes', 'TRANS-MEDIUM_BLUE', 'Kopaka Glow'],
       });
     }
   }, [nodes]);

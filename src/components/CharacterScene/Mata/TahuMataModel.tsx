@@ -40,7 +40,7 @@ export const TahuMataModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        excludeMaterialNames: ['Tahu Eyes', 'Tahu Sword Glow', 'TRANS-DARK_PINK'],
       });
     }
   }, [nodes]);
