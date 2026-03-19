@@ -138,10 +138,10 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
       float fineGrain = fbm(vObjectPosition + 80.0, ${fineScale.toFixed(2)}, 3);
       float grime = clamp((largeCloud - 0.35) * 2.0 * cavityBias, 0.0, 1.0);
       diffuseColor.rgb *= 1.0 - grime * ${grimeDarken.toFixed(3)};
-      material.roughness += grime * ${grimeRoughness.toFixed(3)} + (fineGrain - 0.5) * 0.08;
-      material.metalness *= 1.0 - grime * ${grimeMetalnessReduce.toFixed(3)};
-      material.roughness = clamp(material.roughness, 0.04, 1.0);
-      material.metalness = clamp(material.metalness, 0.0, 1.0);
+      roughnessFactor += grime * ${grimeRoughness.toFixed(3)} + (fineGrain - 0.5) * 0.08;
+      metalnessFactor *= 1.0 - grime * ${grimeMetalnessReduce.toFixed(3)};
+      roughnessFactor = clamp(roughnessFactor, 0.04, 1.0);
+      metalnessFactor = clamp(metalnessFactor, 0.0, 1.0);
       float curvature = length(dFdx(normal)) + length(dFdy(normal));
       float edgeMask = smoothstep(0.0, 1.0, curvature * ${edgeCurvatureScale.toFixed(2)});
       vec3 edgeTint = vec3(${edgeColor.r.toFixed(3)}, ${edgeColor.g.toFixed(3)}, ${edgeColor.b.toFixed(3)});
