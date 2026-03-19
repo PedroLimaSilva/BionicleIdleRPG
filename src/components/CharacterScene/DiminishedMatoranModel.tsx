@@ -8,20 +8,10 @@ import { useIdleAnimation } from '../../hooks/useIdleAnimation';
 import { useMask } from '../../hooks/useMask';
 import { useSettings } from '../../context/useSettings';
 import { Color } from '../../types/Colors';
-import { applyLegoPBRToObject, isLegoPBRMaterial } from './LegoPBRShaderMaterial';
+import { applyWeatheredMetalToObject, isWeatheredMetalMaterial } from './WeatheredMetalMaterial';
 
-/** Set to true to use Lego PBR material (MeshStandardMaterial + UV maps) instead of baked. */
-const USE_LEGO_PBR = false;
-
-/**
- * When you have diffuse, roughness, metalness, normal maps, load them and pass to applyLegoPBRToObject:
- *
- *   const base = import.meta.env.BASE_URL;
- *   const [diffuse, roughness, metalness, normal] = useTexture(
- *     [base + 'textures/diffuse.png', base + 'textures/roughness.png', ...]
- *   );
- *   applyLegoPBRToObject(root, { diffuseMap: diffuse, roughnessMap: roughness, ... });
- */
+/** Set to true to apply weathered metal (procedural grime) to meshes without normalMap. Masks exempt. */
+const USE_WEATHERED_METAL = true;
 
 const MAT_COLOR_MAP = {
   Face: 'face',
@@ -85,20 +75,23 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
       }
     });
 
-    if (USE_LEGO_PBR) {
-      applyLegoPBRToObject(root, {
-        envMapIntensity: 0.4,
-        noiseStrength: 0.2,
-        noiseScale: 12,
-        // Pass UV-based maps when available:
-        // diffuseMap, roughnessMap, metalnessMap, normalMap
+    if (USE_WEATHERED_METAL) {
+      applyWeatheredMetalToObject(root, {
+        roughness: 0.55,
+        metalness: 0.05,
+        grimeDarken: 0.4,
+        grimeRoughness: 0.2,
+        grimeMetalnessReduce: 0.5,
+        largeScale: 3.5,
+        fineScale: 18.0,
+        cavityStrength: 0.35,
       });
       if (debugMode) {
         let count = 0;
         root.traverse((c) => {
-          if ((c as Mesh).isMesh && isLegoPBRMaterial((c as Mesh).material)) count++;
+          if ((c as Mesh).isMesh && isWeatheredMetalMaterial((c as Mesh).material)) count++;
         });
-        console.log('[DiminishedMatoranModel] Lego PBR applied to', count, 'meshes');
+        console.log('[DiminishedMatoranModel] Weathered metal applied to', count, 'meshes');
       }
     }
   }, [nodes, materials, matoran, debugMode]);

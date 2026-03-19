@@ -1,10 +1,12 @@
 /**
- * Weathered metal material for masks (e.g. Avohkii / Mask of Light).
+ * Weathered metal material using object-space procedural noise only.
  *
- * Uses object-space procedural noise only—no UVs or textures. Multi-scale FBM
- * creates large grime splotches and fine micro-roughness, emulating a Blender
- * baked look. Grime = darker, less metallic, rougher. Works globally across
- * all meshes since it samples from object position.
+ * Multi-scale FBM creates large grime splotches and fine micro-roughness,
+ * emulating a Blender baked look. Grime = darker, less metallic, rougher.
+ * No UVs or textures—works globally across all meshes.
+ *
+ * applyWeatheredMetalToObject skips: meshes with normalMap, meshes under
+ * a node named "Masks" (useMask-injected meshes).
  */
 
 import {
@@ -133,8 +135,8 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
 }
 
 /**
- * Creates a weathered metal material for masks. Object-space procedural noise
- * only—no UVs. Grime splotches darken, roughen, and reduce metalness.
+ * Creates a weathered metal material. Object-space procedural noise only—no UVs.
+ * Grime splotches darken, roughen, and reduce metalness.
  */
 export function createWeatheredMetalMaterial(
   opts: WeatheredMetalOptions = {}
@@ -172,29 +174,41 @@ export function isWeatheredMetalMaterial(m: unknown): m is MeshStandardMaterial 
   return m instanceof MeshStandardMaterial && m.name === MATERIAL_NAME;
 }
 
+function isUnderMasks(obj: Object3D): boolean {
+  for (let p: Object3D | null = obj.parent; p; p = p.parent) {
+    if (p.name === 'Masks') return true;
+  }
+  return false;
+}
+
+function hasNormalMap(mat: unknown): boolean {
+  return !!(mat as { normalMap?: unknown }).normalMap;
+}
+
 /**
- * Replaces non-glow mask mesh materials with weathered metal. Skips materials
- * whose names include "glow" (case-insensitive). Call on the cloned mask root.
+ * Replaces mesh materials with weathered metal. Skips:
+ * - Meshes under a node named "Masks" (useMask-injected meshes)
+ * - Meshes whose material already has a normalMap
  */
-export function applyWeatheredMetalToMask(
-  maskRoot: Object3D | null | undefined,
-  baseColor: ColorRepresentation,
+export function applyWeatheredMetalToObject(
+  object: Object3D | null | undefined,
   opts: WeatheredMetalOptions = {}
 ): void {
-  if (!maskRoot) return;
-  maskRoot.traverse((child) => {
+  if (!object) return;
+  object.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;
+    if (isUnderMasks(mesh)) return;
+
     const raw = mesh.material;
     if (!raw) return;
-    const mat = raw as { name?: string };
-    if (mat.name?.toLowerCase().includes('glow')) return;
+    if (hasNormalMap(raw)) return;
     if (isWeatheredMetalMaterial(raw)) return;
 
     const color =
       raw instanceof MeshStandardMaterial && raw.color
         ? raw.color.getStyle()
-        : baseColor;
+        : '#ffffff';
     mesh.material = getWeatheredMetalMaterial(color as ColorRepresentation, opts);
   });
 }
