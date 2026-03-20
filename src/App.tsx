@@ -5,7 +5,6 @@ import { LayoutGroup } from 'motion/react';
 import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
 import { Recruitment } from './pages/Recruitment/index.tsx';
 import { CharacterDetail } from './pages/CharacterDetail/index.tsx';
-import { KraataDetail } from './pages/KraataDetail/index.tsx';
 import { RahkshiDetail } from './pages/RahkshiDetail/index.tsx';
 
 import { GameProvider } from './context/Game.tsx';
@@ -42,7 +41,6 @@ function AnimatedRoutes() {
         <Route path="/battle" element={<BattlePage />} />
         <Route path="/characters" element={<CharacterInventory />} />
         <Route path="/characters/:id" element={<CharacterDetail />} />
-        <Route path="/kraata/:power/:stage" element={<KraataDetail />} />
         <Route path="/rahkshi/:id" element={<RahkshiDetail />} />
         <Route path="/recruitment" element={<Recruitment />} />
         <Route path="/quests" element={<QuestsPage />} />

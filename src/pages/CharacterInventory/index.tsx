@@ -2,6 +2,8 @@ import './index.scss';
 import { motion } from 'motion/react';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { Link } from 'react-router-dom';
+import { AnimatePresence } from 'motion/react';
+import { Modal } from '../../components/Modal';
 import { useReducedMotion } from 'motion/react';
 import { isTestMode } from '../../utils/testMode';
 import { getLevelFromExp } from '../../game/Levelling';
@@ -15,7 +17,11 @@ import { isBohrokOrKal, isMatoran, isToa } from '../../game/matoranStage';
 import { useMemo, useState, useCallback } from 'react';
 import { Tabs } from '../../components/Tabs';
 import { CHARACTER_DEX } from '../../data/dex/index';
-import { canMergeAnyKraata } from '../../game/KraataActions';
+import {
+  canMergeAnyKraata,
+  canStartRahkshiForge,
+  RAHKSHI_FORGE_COST,
+} from '../../game/KraataActions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
 import { KraataPower, KRAATA_POWER_NAMES, KraataCollection } from '../../types/Kraata';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
@@ -28,8 +34,15 @@ const CHARACTERS_TAB_KEY = 'characters-tab';
 type TabId = 'matoran' | 'toa' | 'other' | 'rahkshi';
 
 export const CharacterInventory: React.FC = () => {
-  const { recruitedCharacters, buyableCharacters, kraataCollection, rahkshi, mergeAllKraata } =
-    useGame();
+  const {
+    recruitedCharacters,
+    buyableCharacters,
+    kraataCollection,
+    rahkshi,
+    mergeAllKraata,
+    protodermis,
+    startRahkshiForge,
+  } = useGame();
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const hasCollectedKraata = useMemo(() => {
@@ -126,6 +139,8 @@ export const CharacterInventory: React.FC = () => {
           collectedKraata={collectedKraata}
           kraataCollection={kraataCollection}
           mergeAllKraata={mergeAllKraata}
+          protodermis={protodermis}
+          startRahkshiForge={startRahkshiForge}
           shouldReduceMotion={shouldReduceMotion}
         />
       ) : (
@@ -181,15 +196,31 @@ function RahkshiTabContent({
   collectedKraata,
   kraataCollection,
   mergeAllKraata,
+  protodermis,
+  startRahkshiForge,
   shouldReduceMotion,
 }: {
   rahkshi: RahkshiArmor[];
   collectedKraata: CollectedKraataItem[];
   kraataCollection: KraataCollection;
   mergeAllKraata: () => void;
+  protodermis: number;
+  startRahkshiForge: (power: KraataPower, stage: number) => void;
   shouldReduceMotion: boolean;
 }) {
   const canMergeAny = useMemo(() => canMergeAnyKraata(kraataCollection), [kraataCollection]);
+  const [forgeModalPower, setForgeModalPower] = useState<KraataPower | null>(null);
+
+  const canForgeSelected = useMemo(() => {
+    if (forgeModalPower === null) return false;
+    return canStartRahkshiForge(kraataCollection, forgeModalPower, 1, protodermis);
+  }, [forgeModalPower, kraataCollection, protodermis]);
+
+  const handleConfirmForge = () => {
+    if (forgeModalPower === null || !canForgeSelected) return;
+    startRahkshiForge(forgeModalPower, 1);
+    setForgeModalPower(null);
+  };
 
   return (
     <>
@@ -226,14 +257,9 @@ function RahkshiTabContent({
         <p className="rahkshi-section__empty">No Kraata collected</p>
       )}
       <div className="kraata-grid">
-        {collectedKraata.map(({ power, stage, name, count }) => (
-          <Link key={`${power}-${stage}`} to={`/kraata/${power}/${stage}`}>
-            <motion.div
-              className="kraata-card"
-              layoutId={shouldReduceMotion ? undefined : `kraata-${power}-${stage}`}
-              layout
-              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            >
+        {collectedKraata.map(({ power, stage, name, count }) => {
+          const cardInner = (
+            <>
               <CompositedImage
                 images={[
                   `${import.meta.env.BASE_URL}/avatar/Kraata/${stage}_Base.webp`,
@@ -246,10 +272,80 @@ function RahkshiTabContent({
               <div className="kraata-card__name">{name}</div>
               <div className="kraata-card__stage bionicle-font">{stage}</div>
               <div className="kraata-card__count">×{count}</div>
+            </>
+          );
+
+          if (stage === 1) {
+            return (
+              <motion.button
+                key={`${power}-${stage}`}
+                type="button"
+                className="kraata-card kraata-card--forgeable"
+                layoutId={shouldReduceMotion ? undefined : `kraata-${power}-${stage}`}
+                layout
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                onClick={() => setForgeModalPower(power)}
+                aria-label={`Forge Rahkshi armor from ${name}`}
+              >
+                {cardInner}
+              </motion.button>
+            );
+          }
+
+          return (
+            <motion.div
+              key={`${power}-${stage}`}
+              className="kraata-card kraata-card--display"
+              layoutId={shouldReduceMotion ? undefined : `kraata-${power}-${stage}`}
+              layout
+              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            >
+              {cardInner}
             </motion.div>
-          </Link>
-        ))}
+          );
+        })}
       </div>
+
+      <AnimatePresence>
+        {forgeModalPower !== null && (
+          <Modal onClose={() => setForgeModalPower(null)} classNames="kraata-forge-modal">
+            <div className="kraata-forge-modal__inner">
+              <h2 className="kraata-forge-modal__title">
+                Forge armor — Kraata of {KRAATA_POWER_NAMES[forgeModalPower] ?? forgeModalPower}?
+              </h2>
+              <p className="kraata-forge-modal__body">
+                Submerge this stage 1 kraata in energized protodermis to forge empty Rahkshi armor
+                matching its power. This costs {RAHKSHI_FORGE_COST.toLocaleString()} protodermis and
+                takes 24 hours. Track forging and collect the armor from that Rahkshi’s detail page.
+              </p>
+              {!canForgeSelected && (
+                <p className="kraata-forge-modal__hint" role="status">
+                  {protodermis < RAHKSHI_FORGE_COST
+                    ? `Need ${RAHKSHI_FORGE_COST.toLocaleString()} protodermis (have ${protodermis.toLocaleString()}).`
+                    : 'No stage 1 kraata available for this power.'}
+                </p>
+              )}
+              <div className="kraata-forge-modal__actions">
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={() => setForgeModalPower(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="confirm-button"
+                  disabled={!canForgeSelected}
+                  onClick={handleConfirmForge}
+                >
+                  Start forging
+                </button>
+              </div>
+            </div>
+          </Modal>
+        )}
+      </AnimatePresence>
     </>
   );
 }
