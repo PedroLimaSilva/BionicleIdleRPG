@@ -23,4 +23,4 @@ See `README.md` for the full list. The most common ones:
 - **Architecture rules**: Read `AGENT_GUIDELINES.md` before making code changes — it documents strict layer separation, state management patterns, and domain invariants.
 - **3D models**: GLB files in `public/` are loaded asynchronously via React Three Fiber. The 3D canvas uses a portal pattern (`#canvas-mount`).
 - **E2E snapshots**: Playwright visual regression tests produce platform-dependent screenshots. For deterministic results, use `yarn test:e2e:docker` (requires Docker). Running `yarn test:e2e` natively will likely produce snapshot mismatches.
-- **No env vars needed**: The app has zero environment variable or secret requirements.
+- **Environment variables**: No secrets or runtime env vars are required. Normal development and production builds work without any `.env` file. The only optional knob is **`VITE_TELEMETRY_URL`** at build time, which enables the optional anonymous telemetry pipeline (user consent still required); see `docs/TELEMETRY.md`.
