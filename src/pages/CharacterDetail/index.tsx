@@ -18,6 +18,7 @@ import { KranaCollection } from './KranaCollection';
 import { JobAssignment } from './JobAssignment';
 import { Tabs } from '../../components/Tabs';
 import { CharacterChronicle } from './Chronicle';
+import { ProtodermisTraining } from './ProtodermisTraining';
 import { isKranaCollectionActive } from '../../game/Krana';
 import { MASK_POWERS } from '../../data/combat';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
@@ -25,7 +26,8 @@ import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recruitedCharacters, completedQuests, protodermis, evolveCharacter } = useGame();
+  const { recruitedCharacters, completedQuests, protodermis, evolveCharacter, convertProtodermisToExp } =
+    useGame();
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const { setScene } = useSceneCanvas();
@@ -99,6 +101,7 @@ export const CharacterDetail: React.FC = () => {
               matoran={matoran}
               completedQuests={completedQuests}
               protodermis={protodermis}
+              convertProtodermisToExp={convertProtodermisToExp}
               activeMask={activeMask}
               maskDescription={maskDescription}
               onEvolveCharacter={(id) =>
@@ -148,6 +151,7 @@ function StatsTab({
   matoran,
   completedQuests,
   protodermis,
+  convertProtodermisToExp,
   activeMask,
   maskDescription,
   onEvolveCharacter,
@@ -155,6 +159,7 @@ function StatsTab({
   matoran: BaseMatoran & RecruitedCharacterData;
   completedQuests: string[];
   protodermis: number;
+  convertProtodermisToExp: (matoranId: string, protodermisSpent: number) => boolean;
   activeMask: Mask | undefined;
   maskDescription: string;
   onEvolveCharacter: (id: string) => void;
@@ -169,6 +174,14 @@ function StatsTab({
   return (
     <>
       <LevelProgress exp={matoran.exp} />
+      {isToa(matoran) && (
+        <ProtodermisTraining
+          characterId={matoran.id}
+          element={matoran.element}
+          protodermis={protodermis}
+          convertProtodermisToExp={convertProtodermisToExp}
+        />
+      )}
       <ElementTag element={matoran.element} showName={true} />
       {evolution && (
         <div className="evolve-section">

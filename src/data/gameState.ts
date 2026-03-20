@@ -81,4 +81,10 @@ export const INITIAL_GAME_STATE: GameState = {
   ): boolean {
     throw new Error('Function not implemented.');
   },
+  convertProtodermisToExp: function (
+    _matoranId: RecruitedCharacterData['id'],
+    _protodermisSpent: number
+  ): boolean {
+    throw new Error('Function not implemented.');
+  },
 };
