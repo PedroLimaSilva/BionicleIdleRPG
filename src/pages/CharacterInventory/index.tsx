@@ -257,7 +257,7 @@ function RahkshiTabContent({
                   className="kraata-card__armor-badge"
                   title="You already have Rahkshi armor of this power"
                 >
-                  Armor
+                  Armor Created
                 </div>
               )}
               <div className="kraata-card__stage bionicle-font">{stage}</div>

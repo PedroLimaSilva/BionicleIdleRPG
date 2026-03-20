@@ -151,9 +151,6 @@ export const KraataDetail: React.FC = () => {
           <span className="kraata-detail__stage bionicle-font">{stage}</span>
           <span className="kraata-detail__count">×{count}</span>
         </div>
-        {hasArmorOfThisPower && (
-          <p className="kraata-detail__armor-note">You already have Rahkshi armor of this power.</p>
-        )}
         {getKraataPowerDescription(power, stage) && (
           <p className="kraata-detail__power-desc">{getKraataPowerDescription(power, stage)}</p>
         )}
@@ -181,6 +178,11 @@ export const KraataDetail: React.FC = () => {
           <p className="kraata-option__desc">
             Submerge this kraata in energized protodermis to forge Rahkshi armor.
           </p>
+          {hasArmorOfThisPower && (
+            <p className="kraata-detail__armor-note">
+              You already have Rahkshi armor of this power.
+            </p>
+          )}
           <button type="button" disabled={!canForge} onClick={handleStartForge}>
             {stage !== 1
               ? 'Only stage 1 kraata can be forged'
