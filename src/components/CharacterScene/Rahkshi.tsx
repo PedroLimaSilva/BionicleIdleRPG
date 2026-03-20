@@ -1,15 +1,12 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Color as ThreeColor, Group, MathUtils, Mesh, MeshStandardMaterial } from 'three';
+import { Color as ThreeColor, Group, MathUtils, Mesh, MeshStandardMaterial, Color } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
-import { Color } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
-import { getRahkshiArmorColors, RahkshiArmorColors } from '../../data/rahkshiArmorColors';
+import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { KraataPower } from '../../types/Kraata';
-import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
-
-const USE_WEATHERED_METAL = true;
+import { applyWeatheredMetalToObject, WeatheredMetalOptions } from './WeatheredMetalMaterial';
 
 const BLACK = new ThreeColor('#000000');
 const GLOW_LERP_SPEED = 5;
@@ -23,36 +20,20 @@ interface GlowEntry {
   onEmissiveIntensity: number;
 }
 
-/** Cache key: materialName + color. Shared across all Bohrok instances with same scheme. */
-const rahkshiMaterialCache = new Map<string, MeshStandardMaterial>();
-
-function getRahkshiMaterial(
-  original: MeshStandardMaterial,
-  colorScheme: RahkshiArmorColors
-): MeshStandardMaterial {
-  const name = original.name;
-  let color: string;
-  let cacheKey: string;
-
-  if (name === 'Primary' || name === 'Back_baked' || name === 'Face_baked') {
-    color = colorScheme.armor;
-    cacheKey = `${name}_${color}`;
-  } else if (name === 'Secondary') {
-    color = colorScheme.joint;
-    cacheKey = `${name}_${color}`;
-  } else {
-    // Unknown material: leave as-is, came from GLTF as needed
-    return original;
-  }
-
-  let mat = rahkshiMaterialCache.get(cacheKey);
-  if (!mat) {
-    mat = original.clone();
-    mat.color.set(color as Color);
-    rahkshiMaterialCache.set(cacheKey, mat);
-  }
-  return mat;
-}
+const WEATHERED_METAL_OPTIONS: WeatheredMetalOptions = {
+  roughness: 0.55,
+  metalness: 0.05,
+  grimeDarken: 0.4,
+  grimeRoughness: 0.2,
+  grimeMetalnessReduce: 0.5,
+  largeScale: 3.5,
+  fineScale: 18.0,
+  cavityStrength: 1,
+  edgeColor: '#ffffff',
+  edgeStrength: 0.15,
+  edgeCurvatureScale: 2,
+  debugGrimeAsColor: false,
+};
 
 export const RahkshiModel = forwardRef<
   CombatantModelHandle,
@@ -133,6 +114,7 @@ export const RahkshiModel = forwardRef<
 
     bodyInstance.traverse((child) => {
       if (!(child instanceof Mesh)) return;
+      const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
 
       if (hiddenMeshes.includes(child.name)) {
         child.visible = false;
@@ -140,6 +122,10 @@ export const RahkshiModel = forwardRef<
       }
 
       const mat = child.material as MeshStandardMaterial;
+      if (mat?.name && mat.name !== 'WeatheredMetal') {
+        mesh.userData ??= {};
+        mesh.userData.originalMaterialName = mat.name;
+      }
 
       if (mat.name === 'Eyes') {
         // Use stored original values if we've already replaced child.material (mat is our previous clone)
@@ -180,32 +166,40 @@ export const RahkshiModel = forwardRef<
         return;
       }
 
-      child.material = getRahkshiMaterial(mat, dex);
+      // Non-eye body materials are handled in a two-step pipeline below:
+      // 1) applyWeatheredMetalToObject
+      // 2) color pass by original material name
     });
 
-    if (USE_WEATHERED_METAL) {
-      const materialColorMap: Record<string, string> = {
-        Primary: dex.armor,
-        Back_baked: dex.armor,
-        Face_baked: dex.armor,
-        Secondary: dex.joint,
-      };
-      applyWeatheredMetalToObject(bodyInstance, {
-        roughness: 0.55,
-        metalness: 0.05,
-        grimeDarken: 0.4,
-        grimeRoughness: 0.2,
-        grimeMetalnessReduce: 0.5,
-        largeScale: 3.5,
-        fineScale: 18.0,
-        cavityStrength: 1,
-        edgeColor: '#ffffff',
-        edgeStrength: 0.15,
-        edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Eyes'],
-        materialColorMap,
-      });
-    }
+    const materialColorMap: Record<string, string> = {
+      Primary: dex.armor,
+      Back_baked: dex.armor,
+      Face_baked: dex.armor,
+      Secondary: dex.joint,
+    };
+
+    // Always apply weathering first.
+    applyWeatheredMetalToObject(bodyInstance, {
+      ...WEATHERED_METAL_OPTIONS,
+      excludeMaterialNames: ['Eyes', 'Head', 'SOLID-SILVER', 'SOLID-SILVER.001'],
+      includeNormalMappedMaterials: true,
+      preserveExistingMaps: true,
+    });
+
+    // Then apply Rahkshi color scheme while preserving weathered material/shader.
+    bodyInstance.traverse((child) => {
+      if (!(child instanceof Mesh)) return;
+      const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
+      const current = mesh.material;
+      if (!(current instanceof MeshStandardMaterial)) return;
+
+      const sourceMaterialName = mesh.userData?.originalMaterialName;
+      if (!sourceMaterialName) return;
+      const color = materialColorMap[sourceMaterialName];
+      if (!color) return;
+
+      current.color = new Color(color);
+    });
 
     glowEntries.current = entries;
   }, [bodyInstance, kraata, hasKraata]);
