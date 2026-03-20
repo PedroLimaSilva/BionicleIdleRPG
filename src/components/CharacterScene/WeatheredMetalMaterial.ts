@@ -47,6 +47,8 @@ export type WeatheredMetalOptions = {
   envMapIntensity?: number;
   /** Enable transparency (for mask fade-out animations). */
   transparent?: boolean;
+  /** Debug mode: render grime mask directly as grayscale color. */
+  debugGrimeAsColor?: boolean;
 };
 
 const DEFAULT_ROUGHNESS = 0.4;
@@ -86,6 +88,7 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
   const edgeColor = new Color(opts.edgeColor ?? DEFAULT_EDGE_COLOR);
   const edgeStrength = opts.edgeStrength ?? DEFAULT_EDGE_STRENGTH;
   const edgeCurvatureScale = opts.edgeCurvatureScale ?? DEFAULT_EDGE_CURVATURE_SCALE;
+  const debugGrimeAsColor = opts.debugGrimeAsColor ?? false;
 
   mat.onBeforeCompile = (shader) => {
     shader.vertexShader = shader.vertexShader.replace(
@@ -146,6 +149,7 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
       float edgeMask = smoothstep(0.0, 1.0, curvature * ${edgeCurvatureScale.toFixed(2)});
       vec3 edgeTint = vec3(${edgeColor.r.toFixed(3)}, ${edgeColor.g.toFixed(3)}, ${edgeColor.b.toFixed(3)});
       diffuseColor.rgb = mix(diffuseColor.rgb, edgeTint, edgeMask * ${edgeStrength.toFixed(3)});
+      ${debugGrimeAsColor ? 'diffuseColor.rgb = vec3(grime);' : ''}
     `;
 
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -229,47 +233,76 @@ export function applyWeatheredMetalToObject(
   opts: WeatheredMetalOptions & {
     excludeMaterialNames?: string[];
     materialColorMap?: Record<string, string>;
+    includeNormalMappedMaterials?: boolean;
+    preserveExistingMaps?: boolean;
   } = {}
 ): void {
   if (!object) return;
   const excludeNames = opts.excludeMaterialNames ?? [];
   const materialColorMap = opts.materialColorMap ?? {};
+  const includeNormalMappedMaterials = opts.includeNormalMappedMaterials ?? false;
+  const preserveExistingMaps = opts.preserveExistingMaps ?? false;
   const hasColorMap = Object.keys(materialColorMap).length > 0;
 
   object.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;
     if (isUnderMasks(mesh)) return;
-
-    const raw = mesh.material;
-    if (!raw) return;
-    if (hasNormalMap(raw)) return;
-    if (excludeNames.length > 0 && isExcludedMaterial(raw, excludeNames)) return;
-
-    const matName = (raw as { name?: string }).name ?? '';
+    const rawMaterial = mesh.material;
+    const rawMaterials = Array.isArray(rawMaterial) ? rawMaterial : [rawMaterial];
     const meshName = mesh.name ?? '';
     const meshWithUserData = mesh as Mesh & { userData?: { originalMaterialName?: string } };
-    const lookupName =
-      meshWithUserData.userData?.originalMaterialName ??
-      (matName && matName !== MATERIAL_NAME ? matName : meshName);
+    let changed = false;
 
-    if (matName && matName !== MATERIAL_NAME) {
-      meshWithUserData.userData ??= {};
-      meshWithUserData.userData.originalMaterialName = matName;
-    }
+    const nextMaterials = rawMaterials.map((raw) => {
+      if (!raw) return raw;
+      if (!includeNormalMappedMaterials && hasNormalMap(raw)) return raw;
+      if (excludeNames.length > 0 && isExcludedMaterial(raw, excludeNames)) return raw;
 
-    const color =
-      hasColorMap && lookupName in materialColorMap
-        ? materialColorMap[lookupName]
-        : hasColorMap
-          ? undefined
-          : raw instanceof MeshStandardMaterial && raw.color
-            ? raw.color.getStyle()
-            : '#ffffff';
+      const matName = (raw as { name?: string }).name ?? '';
+      const lookupName =
+        meshWithUserData.userData?.originalMaterialName ??
+        (matName && matName !== MATERIAL_NAME ? matName : meshName);
 
-    if (!hasColorMap && isWeatheredMetalMaterial(raw)) return;
-    if (hasColorMap && color === undefined) return;
+      if (matName && matName !== MATERIAL_NAME) {
+        meshWithUserData.userData ??= {};
+        meshWithUserData.userData.originalMaterialName = matName;
+      }
 
-    mesh.material = getWeatheredMetalMaterial((color ?? '#ffffff') as ColorRepresentation, opts);
+      const color =
+        hasColorMap && lookupName in materialColorMap
+          ? materialColorMap[lookupName]
+          : hasColorMap
+            ? undefined
+            : raw instanceof MeshStandardMaterial && raw.color
+              ? raw.color.getStyle()
+              : '#ffffff';
+
+      if (!hasColorMap && isWeatheredMetalMaterial(raw)) return raw;
+      if (hasColorMap && color === undefined) return raw;
+
+      if (preserveExistingMaps && raw instanceof MeshStandardMaterial) {
+        const clone = raw.clone();
+        clone.name = MATERIAL_NAME;
+        clone.roughness = opts.roughness ?? DEFAULT_ROUGHNESS;
+        clone.metalness = opts.metalness ?? DEFAULT_METALNESS;
+        clone.envMapIntensity = opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY;
+        clone.side = DoubleSide;
+        clone.transparent = opts.transparent ?? false;
+        clone.color = new Color((color ?? '#ffffff') as ColorRepresentation);
+        (clone as MeshStandardMaterial & { extensions?: { derivatives?: boolean } }).extensions = {
+          derivatives: true,
+        };
+        applyWeatheredMetalModifier(clone, opts);
+        changed = true;
+        return clone;
+      }
+
+      changed = true;
+      return getWeatheredMetalMaterial((color ?? '#ffffff') as ColorRepresentation, opts);
+    });
+
+    if (!changed) return;
+    mesh.material = Array.isArray(rawMaterial) ? nextMaterials : nextMaterials[0];
   });
 }
