@@ -13,6 +13,7 @@ import {
   canStartRahkshiForge,
   getPreparingRahkshi,
   getReadyRahkshiWithoutKraata,
+  hasRahkshiArmorForPower,
   isForgeComplete,
   RAHKSHI_FORGE_COST,
 } from '../../game/KraataActions';
@@ -73,6 +74,11 @@ export const KraataDetail: React.FC = () => {
 
   const emptyReadyArmors = useMemo(
     () => getReadyRahkshiWithoutKraata(rahkshi).filter((a) => a.power === power),
+    [rahkshi, power]
+  );
+
+  const hasArmorOfThisPower = useMemo(
+    () => hasRahkshiArmorForPower(rahkshi, power),
     [rahkshi, power]
   );
 
@@ -172,6 +178,11 @@ export const KraataDetail: React.FC = () => {
           <p className="kraata-option__desc">
             Submerge this kraata in energized protodermis to forge Rahkshi armor.
           </p>
+          {hasArmorOfThisPower && (
+            <p className="kraata-detail__armor-note">
+              You already have Rahkshi armor of this power.
+            </p>
+          )}
           <button type="button" disabled={!canForge} onClick={handleStartForge}>
             {stage !== 1
               ? 'Only stage 1 kraata can be forged'

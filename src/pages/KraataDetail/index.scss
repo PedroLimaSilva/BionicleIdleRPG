@@ -134,6 +134,18 @@ $kraata-visualization-border: 2px;
   color: var(--color-accent);
 }
 
+.kraata-detail__armor-note {
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  max-width: 36ch;
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
 .kraata-detail__power-desc {
   margin: 0;
   position: relative;

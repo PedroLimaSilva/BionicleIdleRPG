@@ -191,6 +191,14 @@ function RahkshiTabContent({
 }) {
   const canMergeAny = useMemo(() => canMergeAnyKraata(kraataCollection), [kraataCollection]);
 
+  const powersWithRahkshiArmor = useMemo(() => {
+    const set = new Set<KraataPower>();
+    for (const r of rahkshi) {
+      set.add(r.power);
+    }
+    return set;
+  }, [rahkshi]);
+
   return (
     <>
       {rahkshi.length > 0 && (
@@ -244,6 +252,14 @@ function RahkshiTabContent({
                 className="kraata-card__image"
               />
               <div className="kraata-card__name">{name}</div>
+              {powersWithRahkshiArmor.has(power) && (
+                <div
+                  className="kraata-card__armor-badge"
+                  title="You already have Rahkshi armor of this power"
+                >
+                  Armor Created
+                </div>
+              )}
               <div className="kraata-card__stage bionicle-font">{stage}</div>
               <div className="kraata-card__count">×{count}</div>
             </motion.div>
