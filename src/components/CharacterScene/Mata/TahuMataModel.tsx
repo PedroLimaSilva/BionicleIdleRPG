@@ -40,7 +40,7 @@ export const TahuMataModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Tahu Eyes', 'Tahu Sword Glow', 'TRANS-DARK_PINK'],
+        excludeMaterialNames: ['Glowing Eyes', 'Tahu Sword Glow', 'Brain'],
       });
     }
   }, [nodes]);
@@ -52,7 +52,7 @@ export const TahuMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Tahu} scale={1} position={[0, 9.5, -0.4]} />
+      <primitive object={nodes.Tahu} scale={1} position={[0, 0, -0.4]} />
     </group>
   );
 });
