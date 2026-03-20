@@ -1,10 +1,12 @@
-import { BattleStrategy, Combatant } from '../types/Combat';
+import { BattleStrategy, Combatant, type EnemyEncounter } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 import {
   chooseTarget,
   generateCombatantStats,
+  getScaledEnemyLevelForEncounter,
   hasActiveEffectFromSource,
   hasReadyMaskPowers,
+  RAHKSHI_SOLO_PARTY_LEVEL_BONUS,
 } from './combatUtils';
 
 describe('chooseTarget', () => {
@@ -232,6 +234,46 @@ describe('chooseTarget', () => {
       });
       expect(withFlag.maxHp).toBe(normal.maxHp);
       expect(withFlag.attack).toBe(normal.attack);
+    });
+  });
+
+  describe('getScaledEnemyLevelForEncounter', () => {
+    const baseEncounter = (scales: boolean): EnemyEncounter => ({
+      id: 'test',
+      name: 'Test',
+      description: '',
+      headliner: 'tahnok',
+      difficulty: 1,
+      waves: [[]],
+      loot: [],
+      scalesWithParty: scales,
+    });
+
+    test('returns wave base level when encounter does not scale with party', () => {
+      const e = baseEncounter(false);
+      expect(getScaledEnemyLevelForEncounter(e, [{ id: 'x', lvl: 1 }], 5, 20)).toBe(5);
+    });
+
+    test('adds solo bonus vs average party for one-enemy waves', () => {
+      const e = baseEncounter(true);
+      expect(getScaledEnemyLevelForEncounter(e, [{ id: 'x', lvl: 1 }], 1, 10)).toBe(
+        10 + RAHKSHI_SOLO_PARTY_LEVEL_BONUS
+      );
+    });
+
+    test('does not add solo bonus for multi-enemy waves', () => {
+      const e = baseEncounter(true);
+      expect(
+        getScaledEnemyLevelForEncounter(
+          e,
+          [
+            { id: 'a', lvl: 1 },
+            { id: 'b', lvl: 1 },
+          ],
+          1,
+          10
+        )
+      ).toBe(10);
     });
   });
 

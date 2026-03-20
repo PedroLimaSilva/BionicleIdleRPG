@@ -4,6 +4,7 @@ import { RecruitedCharacterData } from '../types/Matoran';
 import { getLevelFromExp } from '../game/Levelling';
 import {
   generateCombatantStats,
+  getScaledEnemyLevelForEncounter,
   queueCombatRound,
   decrementWaveCounters,
   hasReadyMaskPowers,
@@ -94,7 +95,8 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   const [isRunningRound, setIsRunningRound] = useState(false);
   const teamRef = useRef(team);
   const enemiesRef = useRef(enemies);
-  const scaledLevelRef = useRef<number | null>(null);
+  /** Average party level when the current encounter uses `scalesWithParty`. */
+  const partyAvgLevelRef = useRef<number | null>(null);
   teamRef.current = team;
   enemiesRef.current = enemies;
 
@@ -148,10 +150,15 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
     const updatedTeam = decrementWaveCounters(team);
     setTeam(updatedTeam);
 
-    const scaled = scaledLevelRef.current;
+    const avg = partyAvgLevelRef.current;
+    const wave = currentEncounter.waves[nextWave];
     setEnemies(
-      currentEncounter.waves[nextWave].map(({ id, lvl }, index) =>
-        generateCombatantStats(`${id}-${index}`, id, scaled !== null ? Math.max(lvl, scaled) : lvl)
+      wave.map(({ id, lvl }, index) =>
+        generateCombatantStats(
+          `${id}-${index}`,
+          id,
+          avg !== null ? getScaledEnemyLevelForEncounter(currentEncounter, wave, lvl, avg) : lvl
+        )
       )
     );
   };
@@ -160,6 +167,7 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
     if (phase === BattlePhase.Preparing) {
       setPhase(BattlePhase.Idle);
       setCurrentEncounter(undefined);
+      partyAvgLevelRef.current = null;
     } else {
       setPhase(BattlePhase.Retreated);
     }
@@ -171,7 +179,7 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
     setCurrentWave(0);
     setTeam([]);
     setEnemies([]);
-    scaledLevelRef.current = null;
+    partyAvgLevelRef.current = null;
   };
 
   const confirmTeam = (team: RecruitedCharacterData[]) => {
@@ -191,16 +199,22 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
     );
     setCurrentWave(0);
 
-    const scaleLevel = currentEncounter!.scalesWithParty
-      ? (waveLvl: number) => Math.max(waveLvl, avgPartyLevel)
-      : (waveLvl: number) => waveLvl;
+    partyAvgLevelRef.current = currentEncounter!.scalesWithParty ? avgPartyLevel : null;
 
     setEnemies(
       currentEncounter!.waves[0].map(({ id, lvl }, index) =>
-        generateCombatantStats(`${id}-${index}`, id, scaleLevel(lvl))
+        generateCombatantStats(
+          `${id}-${index}`,
+          id,
+          getScaledEnemyLevelForEncounter(
+            currentEncounter!,
+            currentEncounter!.waves[0],
+            lvl,
+            avgPartyLevel
+          )
+        )
       )
     );
-    scaledLevelRef.current = currentEncounter!.scalesWithParty ? avgPartyLevel : null;
     setPhase(BattlePhase.Inprogress);
   };
 
