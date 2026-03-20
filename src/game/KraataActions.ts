@@ -86,6 +86,11 @@ export function canStartRahkshiForge(
   );
 }
 
+/** True if the player owns any Rahkshi armor shell of this power (forging, ready, empty, or with kraata). */
+export function hasRahkshiArmorForPower(rahkshi: RahkshiArmor[], power: KraataPower): boolean {
+  return rahkshi.some((r) => r.power === power);
+}
+
 export function getPreparingRahkshi(rahkshi: RahkshiArmor[], power: KraataPower): RahkshiArmor[] {
   return rahkshi.filter((r) => r.status === 'preparing' && r.power === power);
 }

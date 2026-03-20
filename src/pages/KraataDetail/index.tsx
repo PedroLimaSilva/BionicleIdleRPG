@@ -13,6 +13,7 @@ import {
   canStartRahkshiForge,
   getPreparingRahkshi,
   getReadyRahkshiWithoutKraata,
+  hasRahkshiArmorForPower,
   isForgeComplete,
   RAHKSHI_FORGE_COST,
 } from '../../game/KraataActions';
@@ -73,6 +74,11 @@ export const KraataDetail: React.FC = () => {
 
   const emptyReadyArmors = useMemo(
     () => getReadyRahkshiWithoutKraata(rahkshi).filter((a) => a.power === power),
+    [rahkshi, power]
+  );
+
+  const hasArmorOfThisPower = useMemo(
+    () => hasRahkshiArmorForPower(rahkshi, power),
     [rahkshi, power]
   );
 
@@ -145,6 +151,9 @@ export const KraataDetail: React.FC = () => {
           <span className="kraata-detail__stage bionicle-font">{stage}</span>
           <span className="kraata-detail__count">×{count}</span>
         </div>
+        {hasArmorOfThisPower && (
+          <p className="kraata-detail__armor-note">You already have Rahkshi armor of this power.</p>
+        )}
         {getKraataPowerDescription(power, stage) && (
           <p className="kraata-detail__power-desc">{getKraataPowerDescription(power, stage)}</p>
         )}

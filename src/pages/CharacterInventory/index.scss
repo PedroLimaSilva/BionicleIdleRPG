@@ -178,6 +178,19 @@
     line-height: 1.2;
   }
 
+  &__armor-badge {
+    margin-top: 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+    border-radius: 999px;
+    padding: 0.15rem 0.45rem;
+    line-height: 1;
+  }
+
   &__stage {
     font-size: 0.85rem;
     color: var(--color-text-muted);
