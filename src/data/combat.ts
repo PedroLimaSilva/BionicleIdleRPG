@@ -1,7 +1,7 @@
 import { CombatantTemplate, EnemyEncounter, MaskPower } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 import { KraataPower } from '../types/Kraata';
-import { MOL_TAKANUVA_RISES_QUEST_ID } from './quests/mask_of_light';
+import { MOL_DEFEAT_OF_MAKUTA_QUEST_ID, MOL_TAKANUVA_RISES_QUEST_ID } from './quests/mask_of_light';
 
 export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   [Mask.Avohkii]: {
@@ -705,6 +705,16 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseDefense: 18,
     baseSpeed: 12,
   },
+  rahkshi_kraata_gauntlet: {
+    id: 'rahkshi_kraata_gauntlet',
+    name: 'Rahkshi',
+    model: 'rahkshi',
+    element: ElementTribe.Shadow,
+    baseHp: 120,
+    baseAttack: 28,
+    baseDefense: 18,
+    baseSpeed: 12,
+  },
 };
 
 /** Krana drop ids by color: blue=Fire, orange=Water, red=Air, green=Stone, lime=Earth, white=Ice */
@@ -789,6 +799,26 @@ function makeBohrokWave(
 
 function makeKraataLoot(powers: KraataPower[]): { id: string; chance: number }[] {
   return powers.map((id) => ({ id, chance: 1 / powers.length }));
+}
+
+const ALL_KRAATA_POWERS_LOOT = Object.values(KraataPower);
+
+/** Six Rahkshi powers, cycling for the post–Mask of Light gauntlet. */
+const RAHKSHI_GAUNTLET_ROTATION: KraataPower[] = [
+  KraataPower.Fragmentation,
+  KraataPower.Disintegration,
+  KraataPower.Poison,
+  KraataPower.Fear,
+  KraataPower.Hunger,
+  KraataPower.Anger,
+];
+
+function makeRahkshiKraataGauntletWaves(): Array<{ id: string; lvl: number }[]> {
+  const waves: Array<{ id: string; lvl: number }[]> = [];
+  for (let i = 0; i < 100; i++) {
+    waves.push([{ id: RAHKSHI_GAUNTLET_ROTATION[i % RAHKSHI_GAUNTLET_ROTATION.length], lvl: 1 }]);
+  }
+  return waves;
 }
 
 export const ENCOUNTERS: EnemyEncounter[] = [
@@ -1242,6 +1272,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       KraataPower.PowerScream,
     ]),
     unlockedAfter: ['mol_fall_of_ta_koro'],
+    hiddenAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
   },
   {
     id: 'lerahk-1',
@@ -1262,6 +1293,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       KraataPower.Slow,
     ]),
     unlockedAfter: ['mol_fall_of_ta_koro'],
+    hiddenAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
   },
   {
     id: 'panrahk-1',
@@ -1282,6 +1314,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       KraataPower.Shapeshifting,
     ]),
     unlockedAfter: ['mol_fall_of_ta_koro'],
+    hiddenAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
   },
   {
     id: 'rahkshi_trio_ta_koro',
@@ -1304,6 +1337,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       KraataPower.Poison,
     ]),
     unlockedAfter: ['mol_fall_of_ta_koro'],
+    hiddenAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
   },
 
   // Second three Rahkshi – unlocked after the battle in Onu-Koro (Turahk, Vorahk, Kurahk)
@@ -1327,6 +1361,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       KraataPower.Confusion,
     ]),
     unlockedAfter: ['mol_onu_koro_battle'],
+    hiddenAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
   },
   {
     id: 'vorahk-1',
@@ -1347,6 +1382,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       KraataPower.StasisField,
     ]),
     unlockedAfter: ['mol_onu_koro_battle'],
+    hiddenAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
   },
   {
     id: 'kurahk-1',
@@ -1367,6 +1403,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       KraataPower.WeatherControl,
     ]),
     unlockedAfter: ['mol_onu_koro_battle'],
+    hiddenAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
   },
   {
     id: 'rahkshi_trio_onu_koro',
@@ -1385,6 +1422,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     ],
     loot: makeKraataLoot([KraataPower.Fear, KraataPower.Hunger, KraataPower.Anger]),
     unlockedAfter: ['mol_onu_koro_battle'],
+    hiddenAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
   },
 
   // All six Rahkshi – unlocked when Takanuva rises
@@ -1418,5 +1456,21 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       KraataPower.Anger,
     ]),
     unlockedAfter: [MOL_TAKANUVA_RISES_QUEST_ID],
+    hiddenAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
+  },
+
+  // After the Mask of Light finale — one long Rahkshi run; prior Rahkshi battles are replaced by this.
+
+  {
+    id: 'rahkshi_kraata_gauntlet',
+    name: 'Kraata Gauntlet',
+    headliner: 'rahkshi_kraata_gauntlet',
+    difficulty: 10,
+    description:
+      'One hundred waves—the six Rahkshi cycle endlessly, and every kraata breed may appear in the spoils.',
+    scalesWithParty: true,
+    waves: makeRahkshiKraataGauntletWaves(),
+    loot: makeKraataLoot(ALL_KRAATA_POWERS_LOOT),
+    unlockedAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
   },
 ];
