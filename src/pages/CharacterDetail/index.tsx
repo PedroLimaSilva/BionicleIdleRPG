@@ -18,7 +18,7 @@ import { KranaCollection } from './KranaCollection';
 import { JobAssignment } from './JobAssignment';
 import { Tabs } from '../../components/Tabs';
 import { CharacterChronicle } from './Chronicle';
-import { ProtodermisTraining } from './ProtodermisTraining';
+import { ProtodermisTraining } from '../../components/ProtodermisTraining';
 import { isKranaCollectionActive } from '../../game/Krana';
 import { MASK_POWERS } from '../../data/combat';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
@@ -26,8 +26,13 @@ import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { recruitedCharacters, completedQuests, protodermis, evolveCharacter, convertProtodermisToExp } =
-    useGame();
+  const {
+    recruitedCharacters,
+    completedQuests,
+    protodermis,
+    evolveCharacter,
+    convertProtodermisToExp,
+  } = useGame();
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const { setScene } = useSceneCanvas();
@@ -174,6 +179,7 @@ function StatsTab({
   return (
     <>
       <LevelProgress exp={matoran.exp} />
+      <ElementTag element={matoran.element} showName={true} />
       {isToa(matoran) && (
         <ProtodermisTraining
           characterId={matoran.id}
@@ -182,7 +188,6 @@ function StatsTab({
           convertProtodermisToExp={convertProtodermisToExp}
         />
       )}
-      <ElementTag element={matoran.element} showName={true} />
       {evolution && (
         <div className="evolve-section">
           <div className="requirement-list">

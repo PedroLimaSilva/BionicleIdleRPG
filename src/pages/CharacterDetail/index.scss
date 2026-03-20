@@ -35,7 +35,7 @@
   margin: 0 auto;
   padding: 1.5rem;
   border: 2px solid var(--theme-element-primary);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius-xl);
   width: 100%;
   max-width: min(max(var(--container-max-w), 100%), 100vw - 4rem);
   color: var(--theme-element-primary);
@@ -146,8 +146,8 @@
 
 .evolve-section {
   margin-top: 1rem;
-  border: 1px solid var(--theme-element-primary);
-  border-radius: var(--border-radius-md);
+  border: 2px solid var(--theme-element-primary);
+  border-radius: calc(var(--border-radius-sm) + 1rem);
   background: var(--color-surface-mid);
 
   button {

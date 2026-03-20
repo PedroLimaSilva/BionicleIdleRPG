@@ -4,7 +4,7 @@ import {
   PROTODERMIS_TO_EXP_RATIO,
   expGainedFromProtodermisSpend,
 } from '../../game/ProtodermisConversion';
-import './ProtodermisTraining.scss';
+import './index.scss';
 
 type ProtodermisTrainingProps = {
   characterId: string;
@@ -26,7 +26,6 @@ export const ProtodermisTraining: React.FC<ProtodermisTrainingProps> = ({
   }, [protodermis]);
 
   const spendClamped = Math.min(Math.max(1, spend), Math.max(protodermis, 1));
-  const expPreview = expGainedFromProtodermisSpend(spendClamped);
   const canConvert = protodermis >= 1 && spendClamped >= 1 && spendClamped <= protodermis;
 
   return (
@@ -65,9 +64,6 @@ export const ProtodermisTraining: React.FC<ProtodermisTrainingProps> = ({
           Max
         </button>
       </div>
-      <p className="protodermis-training__preview">
-        −{spendClamped} protodermis → +{expPreview} XP
-      </p>
       <button
         type="button"
         className={`elemental-btn element-${element}${canConvert ? '' : ' disabled'}`}
