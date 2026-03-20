@@ -70,8 +70,10 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 
    ```bash
    git clone <repository-url>
-   cd BionicleIdleRpg
+   cd bionicle-idle-rpg
    ```
+
+   (Use your actual clone directory name if it differs.)
 
 2. **Install dependencies**
 
@@ -101,94 +103,30 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - `yarn test:e2e:docker` - Run E2E tests in Docker for deterministic snapshots
 - `yarn format` - Format code with Prettier
 - `yarn format:check` - Check code formatting
+- `yarn check:unused-css` - Report unused CSS class selectors (dev hygiene)
 - `yarn deploy` - Build and deploy to GitHub Pages
 
 ## 📁 Project Structure
 
+High-level layout of `src/` (not exhaustive):
+
 ```
 src/
-├── components/              # React components
-│   ├── AvailableQuests/     # Quest selection display
-│   ├── CacheManagement/     # PWA cache management
-│   ├── CharacterScene/      # 3D character rendering
-│   ├── CompositedImage/     # Layered image compositing
-│   ├── CurrencyBar/         # Protodermis currency display
-│   ├── ElementTag/          # Element badge rendering
-│   ├── JobList/             # Job assignment UI
-│   ├── JobStatusBadge/      # Job status indicators
-│   ├── MaskPowerTooltip/    # Mask power tooltips in combat
-│   ├── MatoranAvatar/       # Character avatar components
-│   ├── Modal/               # Modal dialogs
-│   ├── NavBar/              # Main navigation bar
-│   ├── Tabs/                # Tab navigation
-│   ├── Tooltip/             # Generic tooltip
-│   └── VisualNovelCutscene/ # Story cutscene rendering
-├── context/                 # React Context providers
-│   ├── Canvas.tsx           # 3D canvas context
-│   ├── Game.tsx             # Game state context (wraps useGameLogic)
-│   ├── Settings.tsx         # Settings provider (debug mode, shadows)
-│   ├── SettingsContext.ts   # Settings context definition
-│   └── useSettings.ts      # Settings consumer hook
-├── data/                    # Game data definitions
-│   ├── dex/                 # Character dictionaries
-│   │   ├── matoran.ts       # Matoran/Turaga definitions
-│   │   ├── toa.ts           # Toa Mata/Nuva definitions
-│   │   ├── enemy.ts         # Enemy definitions
-│   │   └── index.ts         # Merged CHARACTER_DEX export
-│   ├── cutscenes/           # Visual novel cutscene scripts
-│   ├── quests/              # Quest definitions
-│   ├── chronicles.ts        # Character chronicle entries
-│   ├── combat.ts            # Combat data and mask powers
-│   ├── gameState.ts         # Initial game state and version
-│   ├── jobs.ts              # Job definitions
-│   └── loot.ts              # Item definitions
-├── game/                    # Pure game logic (no React dependencies)
-│   ├── BattleRewards.ts     # Battle EXP and Krana rewards
-│   ├── CharacterEvolution.ts # Character evolution paths
-│   ├── encounterVisibility.ts # Battle encounter unlock logic
-│   ├── Jobs.ts              # Job processing and offline progress
-│   ├── Krana.ts             # Krana collection logic
-│   ├── Levelling.ts         # XP and leveling calculations
-│   ├── maskColor.ts         # Effective mask color resolution
-│   ├── nuvaSymbols.ts       # Nuva symbol sequestration state
-│   ├── Progress.ts          # Battle unlock logic
-│   └── Quests.ts            # Quest availability and processing
-├── hooks/                   # Custom React hooks
-│   ├── useGameLogic.tsx     # Main game logic hook (composes state hooks)
-│   ├── useGamePersistence.tsx # Save/load functionality
-│   ├── useBattleState.tsx   # Battle state management
-│   ├── useCharactersState.tsx # Character recruitment and assignment
-│   ├── useQuestState.tsx    # Quest start/cancel/completion
-│   ├── useJobTickEffect.tsx # Job tick interval and resource gain
-│   ├── useQuestNotifications.ts # Quest completion notifications
-│   ├── useSceneCanvas.tsx   # 3D scene canvas management
-│   ├── useAnimationController.tsx # 3D model animation control
-│   ├── useCombatAnimations.ts # Combat animation orchestration
-│   ├── useIdleAnimation.ts  # Idle animation setup
-│   ├── usePlayAnimation.ts  # Animation playback
-│   ├── useMask.ts           # Mask color/glow for 3D models
-│   ├── useNuvaMask.ts       # Nuva mask rendering
-│   ├── useArmor.ts          # Armor rendering
-│   └── maskTransition.ts    # Mask transition utilities
-├── pages/                   # Page components
-│   ├── Battle/              # Battle page (prep, in-progress, results)
-│   ├── BattleSelector/      # Battle selection
-│   ├── CharacterDetail/     # Character detail (stats, chronicle, masks, krana)
-│   ├── CharacterInventory/  # Character roster/cards
-│   ├── Quests/              # Quest management page
-│   ├── QuestTree/           # Quest dependency graph
-│   ├── Recruitment/         # Character recruitment page
-│   ├── Settings/            # About, credits, disclaimers, game reset, debug mode, 3D shadows
-│   └── TypeEffectiveness/   # Element strengths/weaknesses
-├── services/                # Utility services
-│   ├── chronicleUtils.ts    # Chronicle unlock logic
-│   ├── combatUtils.ts       # Combat calculations
-│   ├── gamePersistence.ts   # LocalStorage management
-│   ├── jobUtils.ts          # Job tick processing
-│   ├── matoranUtils.ts      # Character helpers (recruit, evolve)
-│   └── questNotifications.ts # Browser notifications for quests
-└── types/                   # TypeScript type definitions
+├── components/          # UI (quests, jobs, 3D CharacterScene, modals, TelemetryConsentPrompt, …)
+├── context/             # GameProvider, Canvas, Settings (see AGENT_GUIDELINES.md for layer rules)
+├── data/                # Static content: dex/, quests/, cutscenes/, combat, jobs, gameState, recruitment, …
+├── game/                # Pure domain logic (jobs, quests, combat rewards, krana/kraata, levelling, …)
+├── hooks/               # React hooks; useGameLogic composes feature hooks (battle, characters, quests, …)
+├── pages/               # Route-level screens (Battle, Recruitment, Settings, QuestTree, …)
+├── services/            # Bridges: persistence, combat helpers, matoranUtils, optional telemetry, …
+├── types/               # Shared TypeScript types
+├── utils/               # Small shared helpers (e.g. math)
+├── App.tsx              # Routes and shell (includes #canvas-mount for 3D)
+├── main.tsx             # Entry (error reporting, React root)
+└── styles/              # Global SCSS
 ```
+
+See **`AGENT_GUIDELINES.md`** for architectural rules (layer separation, state patterns). Design and combat specs live under **`docs/`**. E2E setup is described in **`e2e/README.md`** and **`PLAYWRIGHT_SETUP.md`**.
 
 ## 🎯 Game Mechanics
 
@@ -267,6 +205,7 @@ The Settings page (`/settings`) includes:
   - **Quest Debug mode** – Shorten quest durations to 1 second (for testing)
   - **3D Performance Monitor** – Show FPS and render metrics overlay in the 3D canvas
   - **3D Scene Shadows** – Toggle shadow rendering in character and battle scenes
+  - **Anonymous usage data** (optional) – Shown only when the app is built with a telemetry endpoint configured; see `docs/TELEMETRY.md`
 
 ## 💾 Game Persistence
 
@@ -288,6 +227,16 @@ The game automatically saves to localStorage:
 - Quest graph is automatically generated from quest definitions
 - 3D models are loaded asynchronously
 - Game state versioning ensures save compatibility across updates
+
+## 📚 Additional documentation
+
+| Document                                           | Purpose                                                                    |
+| -------------------------------------------------- | -------------------------------------------------------------------------- |
+| [AGENT_GUIDELINES.md](AGENT_GUIDELINES.md)         | Architecture, layers, and invariants for contributors and automation       |
+| [AGENTS.md](AGENTS.md)                             | Cursor Cloud / agent quick reference (commands and caveats)                |
+| [docs/TELEMETRY.md](docs/TELEMETRY.md)             | Optional build-time telemetry (`VITE_TELEMETRY_URL`) and privacy behaviour |
+| [e2e/README.md](e2e/README.md)                     | Playwright E2E tests and snapshot workflow                                 |
+| [ARCHITECTURE_ROADMAP.md](ARCHITECTURE_ROADMAP.md) | Backlog of possible technical improvements (not a commitment)              |
 
 ## 🤝 Contributing
 
