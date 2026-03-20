@@ -216,7 +216,6 @@ function hasNormalMap(mat: unknown): boolean {
 
 function isExcludedMaterial(mat: unknown, excludeNames: string[]): boolean {
   const name = (mat as { name?: string }).name ?? '';
-  console.log('name', name);
   return excludeNames.some((n) => name === n);
 }
 
