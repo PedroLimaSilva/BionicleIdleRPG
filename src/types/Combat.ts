@@ -144,6 +144,9 @@ export interface EnemyEncounter {
   headliner: Combatant['id'];
   waves: Array<{ id: string; lvl: number }[]>;
   loot: BattleDrop[];
-  /** When true, enemy levels are set to the average level of the player's party. */
+  /**
+   * When true, enemy levels are set from the average level of the player's party (per wave).
+   * Solo Rahkshi waves add a small level bonus so one enemy is not overwhelmed by the full team.
+   */
   scalesWithParty?: boolean;
 }

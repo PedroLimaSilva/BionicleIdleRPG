@@ -178,6 +178,19 @@
     line-height: 1.2;
   }
 
+  &__armor-badge {
+    margin-top: 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+    border-radius: 999px;
+    padding: 0.15rem 0.45rem;
+    line-height: 1;
+  }
+
   &__stage {
     font-size: 0.85rem;
     color: var(--color-text-muted);
@@ -242,6 +255,15 @@ button.kraata-card.kraata-card--forgeable {
   line-height: 1.45;
   color: var(--color-text-muted);
   font-size: 0.95rem;
+}
+
+.kraata-forge-modal__armor-note {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--color-accent);
+  font-weight: 600;
+  text-align: center;
 }
 
 .kraata-forge-modal__hint {

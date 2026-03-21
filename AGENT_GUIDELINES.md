@@ -145,7 +145,7 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 
 **MUST ENFORCE:**
 
-1. Only these fields are persisted: `version`, `protodermis`, `protodermisCap`, `inventory`, `collectedKrana`, `kraataCollection`, `recruitedCharacters`, `activeQuests`, `completedQuests`. (`buyableCharacters` is derived at runtime from `completedQuests` and `recruitedCharacters` via the recruitment registry.)
+1. Only these fields are persisted (see `PartialGameState` / `useGamePersistence`): `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `activeQuests`, `completedQuests`. (`buyableCharacters` is derived at runtime from `completedQuests` and `recruitedCharacters` via the recruitment registry.) Legacy saves may still contain an `inventory` key until migration runs; it is not part of the current save shape.
 2. Battle state is NOT persisted (battles reset on page refresh)
 3. Save version must match `CURRENT_GAME_STATE_VERSION` or the save is rejected
 
@@ -178,9 +178,9 @@ if (id === m.id) {
 
 ### Forbidden: Mixing Timestamp Units
 
-**NEVER** store timestamps in seconds. Always use milliseconds from `Date.now()`.
+**NEVER** mix units within a subsystem without explicit conversion. Job assignment times use **milliseconds** (`Date.now()`). Quest `startedAt` / `endsAt` use **seconds** (`getCurrentTimestamp()`). Quest durations in data are in seconds—convert consistently when computing deadlines or comparing to job timestamps.
 
-Quest durations are defined in seconds but must be converted to milliseconds when calculating `endsAt`.
+**NEVER** store the same field in both seconds and milliseconds across saves or APIs without documenting the convention.
 
 ### Forbidden: Bypassing the Dictionary Pattern
 

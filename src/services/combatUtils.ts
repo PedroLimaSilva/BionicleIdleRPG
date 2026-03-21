@@ -1,5 +1,5 @@
 import { COMBATANT_DEX, MASK_POWERS } from '../data/combat';
-import { BattleStrategy, Combatant, TargetEffect } from '../types/Combat';
+import { BattleStrategy, Combatant, EnemyEncounter, TargetEffect } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 
 declare global {
@@ -832,4 +832,22 @@ export function generateCombatantStats(
     strategy: template.strategy || BattleStrategy.Random,
     willUseAbility: false,
   };
+}
+
+/**
+ * Extra enemy levels for party-scaled solo Rahkshi (one enemy vs full party) — offsets
+ * the action-economy gap so the lone Rahkshi is not effectively several levels behind.
+ */
+export const RAHKSHI_SOLO_PARTY_LEVEL_BONUS = 3;
+
+/** Resolves enemy level for a wave when `scalesWithParty` is used (Rahkshi). */
+export function getScaledEnemyLevelForEncounter(
+  encounter: EnemyEncounter,
+  waveUnits: { id: string; lvl: number }[],
+  waveBaseLevel: number,
+  avgPartyLevel: number
+): number {
+  if (!encounter.scalesWithParty) return waveBaseLevel;
+  const soloBonus = waveUnits.length === 1 ? RAHKSHI_SOLO_PARTY_LEVEL_BONUS : 0;
+  return Math.max(waveBaseLevel, avgPartyLevel + soloBonus);
 }

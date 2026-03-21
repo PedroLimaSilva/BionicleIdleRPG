@@ -20,6 +20,7 @@ import { CHARACTER_DEX } from '../../data/dex/index';
 import {
   canMergeAnyKraata,
   canStartRahkshiForge,
+  hasRahkshiArmorForPower,
   RAHKSHI_FORGE_COST,
 } from '../../game/KraataActions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
@@ -270,6 +271,14 @@ function RahkshiTabContent({
                 className="kraata-card__image"
               />
               <div className="kraata-card__name">{name}</div>
+              {hasRahkshiArmorForPower(rahkshi, power) && (
+                <div
+                  className="kraata-card__armor-badge"
+                  title="You already have Rahkshi armor of this power"
+                >
+                  Armor Created
+                </div>
+              )}
               <div className="kraata-card__stage bionicle-font">{stage}</div>
               <div className="kraata-card__count">×{count}</div>
             </>
@@ -318,6 +327,11 @@ function RahkshiTabContent({
                 matching its power. This costs {RAHKSHI_FORGE_COST.toLocaleString()} protodermis and
                 takes 24 hours. Track forging and collect the armor from that Rahkshi’s detail page.
               </p>
+              {hasRahkshiArmorForPower(rahkshi, forgeModalPower) && (
+                <p className="kraata-forge-modal__armor-note">
+                  You already have Rahkshi armor of this power.
+                </p>
+              )}
               {!canForgeSelected && (
                 <p className="kraata-forge-modal__hint" role="status">
                   {protodermis < RAHKSHI_FORGE_COST
