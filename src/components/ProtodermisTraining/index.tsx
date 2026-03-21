@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ElementTribe } from '../../types/Matoran';
-import {
-  PROTODERMIS_TO_EXP_RATIO,
-  expGainedFromProtodermisSpend,
-} from '../../game/ProtodermisConversion';
+import { PROTODERMIS_TO_EXP_RATIO } from '../../game/ProtodermisConversion';
 import './index.scss';
 
 type ProtodermisTrainingProps = {
