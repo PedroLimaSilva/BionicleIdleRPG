@@ -40,7 +40,7 @@ export const GaliMataModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Gali Glow', 'Trans Neon Yellow', 'Gali Eyes'],
+        excludeMaterialNames: ['Gali Glow', 'Brain', 'Glowing Eyes'],
       });
     }
   }, [nodes]);
@@ -52,7 +52,7 @@ export const GaliMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Gali} scale={1} position={[0, 0, 0]} />
+      <primitive object={nodes.Gali} position={[0, 0, -0.4]} />
     </group>
   );
 });
