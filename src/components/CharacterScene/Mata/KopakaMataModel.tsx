@@ -40,7 +40,7 @@ export const KopakaMataModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Kopaka Eyes', 'TRANS-MEDIUM_BLUE', 'Kopaka Glow'],
+        excludeMaterialNames: ['Glowing Eyes', 'Brain', 'Kopaka Glow'],
       });
     }
   }, [nodes]);
@@ -52,7 +52,7 @@ export const KopakaMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Kopaka} scale={1} position={[0, 9.4, -0.4]} />
+      <primitive object={nodes.Kopaka} scale={1} position={[0, 0, -0.4]} />
     </group>
   );
 });
