@@ -179,6 +179,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
               }
               ref={(ref) => {
                 if (ref) combatantRefs.current[c.id] = ref;
+                else delete combatantRefs.current[c.id];
               }}
             />
           ))}
@@ -192,6 +193,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
                 position={ENEMY_POSITIONS[i]}
                 ref={(ref) => {
                   if (ref) combatantRefs.current[c.id] = ref;
+                  else delete combatantRefs.current[c.id];
                 }}
               />
             );

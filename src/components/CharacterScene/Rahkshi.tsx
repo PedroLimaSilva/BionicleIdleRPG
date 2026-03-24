@@ -66,8 +66,7 @@ export const RahkshiModel = forwardRef<
     modelId: kraata,
     actionTimeScale: 1,
     transitionMode: 'stopAll',
-    /** Attack clip is ~2s; strike is late—low fractions resolve before the swing reads as a hit. */
-    attackResolveAtFraction: 0.4,
+    attackResolveAtFraction: 0.1,
     idleActionName: effectiveIdleAction,
   });
 
