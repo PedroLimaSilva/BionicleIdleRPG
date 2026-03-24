@@ -139,7 +139,11 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
         case 'rahkshi':
           return (
             <group scale={0.04} position={[0, 0, 0]}>
-              <RahkshiModel ref={childRef} kraata={combatant.id.split('-')[0] as KraataPower} />
+              <RahkshiModel
+                ref={childRef}
+                kraata={combatant.id.split('-')[0] as KraataPower}
+                useIdleImmediately
+              />
             </group>
           );
         case 'Toa_Kopaka':

@@ -37,8 +37,16 @@ const WEATHERED_METAL_OPTIONS: WeatheredMetalOptions = {
 
 export const RahkshiModel = forwardRef<
   CombatantModelHandle,
-  { kraata: KraataPower; hasKraata?: boolean }
->(({ kraata, hasKraata = true }, ref) => {
+  {
+    kraata: KraataPower;
+    hasKraata?: boolean;
+    /**
+     * Battle arena: skip Empty→Idle eye gate and use Idle immediately so the first Attack
+     * does not blend against Empty or a mid-crossfade idle swap (could read as Hit).
+     */
+    useIdleImmediately?: boolean;
+  }
+>(({ kraata, hasKraata = true, useIdleImmediately = false }, ref) => {
   const group = useRef<Group>(null);
   const glowEntries = useRef<GlowEntry[]>([]);
   const glowTarget = useRef(hasKraata);
@@ -56,11 +64,13 @@ export const RahkshiModel = forwardRef<
 
   const bodyInstance = useMemo(() => nodes.Rahkshi.clone(true), [nodes]);
 
-  const effectiveIdleAction = hasKraata
-    ? glowCompleteForIdle && prevHasKraataRef.current
-      ? 'Idle'
-      : 'Empty'
-    : 'Empty';
+  const effectiveIdleAction = useIdleImmediately
+    ? 'Idle'
+    : hasKraata
+      ? glowCompleteForIdle && prevHasKraataRef.current
+        ? 'Idle'
+        : 'Empty'
+      : 'Empty';
 
   const { playAnimation } = useCombatAnimations(animations, group, {
     modelId: kraata,
