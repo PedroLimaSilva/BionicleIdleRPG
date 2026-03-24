@@ -683,7 +683,13 @@ export function queueCombatRound(
       // Await target reaction so next turn doesn't start before hit/defeat finishes.
       // Skip when attacker === target (e.g. confused with no other valid targets): same 3D ref
       // and Hit/Defeat runs stopAllAction(), which would cancel the in-progress Attack clip.
-      if (target.id !== self.id && targetRef?.playAnimation) {
+      // Skip when targetRef === actorRef with different ids (stale combatantRefs map): Hit would
+      // run on the attacker's mixer and cancel Attack.
+      if (
+        target.id !== self.id &&
+        targetRef?.playAnimation &&
+        targetRef !== actorRef
+      ) {
         if (willBeDefeated) {
           await targetRef.playAnimation('Defeat', { faceTargetId: self.id });
         } else {
