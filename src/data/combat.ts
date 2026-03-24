@@ -816,7 +816,12 @@ const RAHKSHI_GAUNTLET_ROTATION: KraataPower[] = [
 function makeRahkshiKraataGauntletWaves(): Array<{ id: string; lvl: number }[]> {
   const waves: Array<{ id: string; lvl: number }[]> = [];
   for (let i = 0; i < 100; i++) {
-    waves.push([{ id: RAHKSHI_GAUNTLET_ROTATION[i % RAHKSHI_GAUNTLET_ROTATION.length], lvl: 1 }]);
+    const power = RAHKSHI_GAUNTLET_ROTATION[i % RAHKSHI_GAUNTLET_ROTATION.length];
+    waves.push([
+      { id: power, lvl: 1 },
+      { id: power, lvl: 1 },
+      { id: power, lvl: 1 },
+    ]);
   }
   return waves;
 }
@@ -1467,7 +1472,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     headliner: 'rahkshi_kraata_gauntlet',
     difficulty: 10,
     description:
-      'One hundred waves—the six Rahkshi cycle endlessly, and every kraata breed may appear in the spoils.',
+      'One hundred waves—three Rahkshi each wave, the six powers cycle endlessly, and every kraata breed may appear in the spoils.',
     scalesWithParty: true,
     waves: makeRahkshiKraataGauntletWaves(),
     loot: makeKraataLoot(ALL_KRAATA_POWERS_LOOT),
