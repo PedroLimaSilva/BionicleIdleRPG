@@ -93,6 +93,16 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
     (window as any).combatantRefs = combatantRefs.current;
   }, [team, enemies]);
 
+  // Drop refs for ids no longer in this battle (e.g. prior wave). Otherwise window.combatantRefs
+  // can still point at a living model under a dead key—Hit would run on the wrong mixer and
+  // stopAllAction() cancels the real attacker's Attack clip.
+  useEffect(() => {
+    const currentIds = new Set([...team.map((c) => c.id), ...enemies.map((c) => c.id)]);
+    for (const id of Object.keys(combatantRefs.current)) {
+      if (!currentIds.has(id)) delete combatantRefs.current[id];
+    }
+  }, [team, enemies]);
+
   useEffect(() => {
     const positions: Record<string, [number, number, number]> = {};
     team.forEach((c, i) => {
@@ -179,6 +189,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
               }
               ref={(ref) => {
                 if (ref) combatantRefs.current[c.id] = ref;
+                else delete combatantRefs.current[c.id];
               }}
             />
           ))}
@@ -192,6 +203,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
                 position={ENEMY_POSITIONS[i]}
                 ref={(ref) => {
                   if (ref) combatantRefs.current[c.id] = ref;
+                  else delete combatantRefs.current[c.id];
                 }}
               />
             );
