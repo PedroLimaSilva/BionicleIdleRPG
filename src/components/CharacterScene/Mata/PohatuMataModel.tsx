@@ -37,7 +37,7 @@ export const PohatuMataModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Pohatu Eyes', 'Trans Neon Orange'],
+        excludeMaterialNames: ['Glowing Eyes', 'Brain'],
       });
     }
   }, [nodes]);
@@ -49,7 +49,7 @@ export const PohatuMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Pohatu} position={[0, 9, 0]} scale={37} />
+      <primitive object={nodes.Pohatu} position={[0, 0, -0.4]} />
     </group>
   );
 });
