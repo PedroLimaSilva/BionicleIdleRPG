@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Combatant } from '../../../types/Combat';
 import { hasActiveEffectFromSource } from '../../../services/combatUtils';
 import { DamagePopup, DamagePopupEvent } from './DamagePopup';
+import { CombatHpBar } from './CombatHpBar';
 import { CHARACTER_DEX } from '../../../data/dex/index';
 import { MatoranAvatar } from '../../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../../components/MaskPowerTooltip';
@@ -98,7 +99,11 @@ export function AllyCard({
         ></div>
       )}
       <div className="hp-bar">
-        HP: {combatant.hp}/{combatant.maxHp}
+        <CombatHpBar
+          hp={combatant.hp}
+          maxHp={combatant.maxHp}
+          defeated={combatant.hp <= 0}
+        />
         {damage && (
           <DamagePopup
             popup={damage}
