@@ -52,7 +52,7 @@ export const LewaMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Lewa} scale={1} position={[0, 9.6, 0]} />
+      <primitive object={nodes.Lewa} scale={1} position={[0, 0, -0.4]} />
     </group>
   );
 });
