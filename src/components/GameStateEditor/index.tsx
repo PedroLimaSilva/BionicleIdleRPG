@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { useGame } from '../../context/Game';
 import { QUESTS } from '../../data/quests';
 import { TOA_DEX } from '../../data/dex/toa';
@@ -263,7 +264,11 @@ export function GameStateEditor({ onApplied }: GameStateEditorProps) {
 
         <section className="game-state-section">
           <h3>Kraata Collection</h3>
-          <p className="game-state-section-hint">Power → stage (1–6) → count</p>
+          <p className="game-state-section-hint game-state-section-hint--with-icons">
+            Power{' '}
+            <ArrowRight className="game-state-section-hint-icon" size={12} aria-hidden /> stage (1–6){' '}
+            <ArrowRight className="game-state-section-hint-icon" size={12} aria-hidden /> count
+          </p>
           <div className="game-state-kraata-grid">
             {(Object.values(KraataPower) as KraataPower[]).map((power) => {
               const stages = draftKraata[power] ?? {};

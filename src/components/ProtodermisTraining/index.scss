@@ -16,6 +16,12 @@
     opacity: 0.9;
   }
 
+  &__hint-arrow {
+    display: inline-block;
+    vertical-align: -0.2em;
+    color: var(--color-text-muted);
+  }
+
   &__row {
     display: flex;
     flex-wrap: wrap;

@@ -38,24 +38,33 @@
   }
 
   &__label-defender {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.15rem;
     font-size: 0.65rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--color-text-muted);
-    text-align: right;
     padding-bottom: 0.15rem;
   }
 
   &__label-attacker {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.15rem;
     font-size: 0.65rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--color-text-muted);
-    text-align: left;
+  }
+
+  &__corner-icon {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
   }
 
   &__header {
