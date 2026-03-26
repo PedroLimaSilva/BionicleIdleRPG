@@ -39,7 +39,7 @@ export const OnuaMataModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['TRANS-GREEN', 'Onua Eyes'],
+        excludeMaterialNames: ['Brain', 'Glowing Eyes'],
       });
     }
   }, [nodes]);
@@ -51,7 +51,7 @@ export const OnuaMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Onua} scale={1} position={[0, 9.6, 0]} />
+      <primitive object={nodes.Onua} scale={1} position={[0, 0, -0.4]} />
     </group>
   );
 });
