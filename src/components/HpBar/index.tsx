@@ -1,4 +1,6 @@
-type CombatHpBarProps = {
+import './index.scss';
+
+type HpBarProps = {
   hp: number;
   maxHp: number;
   defeated?: boolean;
@@ -20,21 +22,17 @@ function healthDescription(defeated: boolean, ratio: number): string {
   return 'No health';
 }
 
-export function CombatHpBar({ hp, maxHp, defeated = false }: CombatHpBarProps) {
+export function HpBar({ hp, maxHp, defeated = false }: HpBarProps) {
   const safeMax = maxHp > 0 ? maxHp : 0;
   const ratio = safeMax > 0 ? Math.min(1, Math.max(0, hp / safeMax)) : 0;
   const pct = Math.round(ratio * 100);
   const tier = defeated ? 'defeated' : fillTier(ratio);
 
   return (
-    <div
-      className="combat-hp-bar"
-      role="img"
-      aria-label={healthDescription(defeated, ratio)}
-    >
-      <div className="combat-hp-bar__track">
+    <div className="hp-bar" role="img" aria-label={healthDescription(defeated, ratio)}>
+      <div className="hp-bar__track">
         <div
-          className={`combat-hp-bar__fill combat-hp-bar__fill--${tier}`}
+          className={`hp-bar__fill hp-bar__fill--${tier}`}
           style={{ width: `${pct}%` }}
         />
       </div>

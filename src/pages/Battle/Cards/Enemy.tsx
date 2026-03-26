@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Combatant } from '../../../types/Combat';
 import { DamagePopup, DamagePopupEvent } from './DamagePopup';
-import { CombatHpBar } from './CombatHpBar';
+import { HpBar } from '../../../components/HpBar';
 
 export function EnemyCard({ enemy }: { enemy: Combatant }) {
   const prevHpRef = useRef(enemy.hp);
@@ -35,8 +35,8 @@ export function EnemyCard({ enemy }: { enemy: Combatant }) {
       className={`enemy-card element-${enemy.element}`}
     >
       <div className="name">{enemy.name}</div>
-      <div className="hp-bar">
-        <CombatHpBar hp={enemy.hp} maxHp={enemy.maxHp} defeated={enemy.hp <= 0} />
+      <div className="hp-bar-host">
+        <HpBar hp={enemy.hp} maxHp={enemy.maxHp} defeated={enemy.hp <= 0} />
         {damage && (
           <DamagePopup
             popup={damage}
