@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { PCFSoftShadowMap, SRGBColorSpace } from 'three';
 import { SceneCanvasContext } from '../hooks/useSceneCanvas';
 import { Perf } from 'r3f-perf';
+import { shouldEnableShadows } from '../utils/testMode';
 import { useSettings } from './useSettings';
 
 /** Clears the WebGL buffer when there is no scene. Prevents stale content from showing if the canvas is revealed. */
@@ -29,11 +30,12 @@ function SetSRGBColorSpace() {
 function ShadowMapConfig() {
   const gl = useThree((s) => s.gl);
   const { shadowsEnabled } = useSettings();
+  const shadowMapsOn = shadowsEnabled && shouldEnableShadows();
   useEffect(() => {
-    gl.shadowMap.enabled = shadowsEnabled;
+    gl.shadowMap.enabled = shadowMapsOn;
     gl.shadowMap.type = PCFSoftShadowMap;
     gl.shadowMap.needsUpdate = true;
-  }, [gl, shadowsEnabled]);
+  }, [gl, shadowMapsOn]);
   return null;
 }
 

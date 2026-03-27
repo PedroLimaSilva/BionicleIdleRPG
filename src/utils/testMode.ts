@@ -39,6 +39,14 @@ export function shouldEnableSelectiveBloom(): boolean {
 }
 
 /**
+ * Check if real-time shadow maps should be enabled
+ * Disabled in test mode to avoid flaky screenshots from shadow rendering
+ */
+export function shouldEnableShadows(): boolean {
+  return !isTestMode();
+}
+
+/**
  * Setup an animation action for test mode
  * In test mode, the action is paused at time 0
  * In normal mode, the action plays normally

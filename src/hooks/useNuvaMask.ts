@@ -3,6 +3,8 @@ import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } fro
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { useGame } from '../context/Game';
+import { useSettings } from '../context/useSettings';
+import { shouldEnableShadows } from '../utils/testMode';
 import { getEffectiveNuvaMaskColor } from '../game/maskColor';
 import {
   createMaskTransitionState,
@@ -92,6 +94,8 @@ export function useNuvaMask(
   maskPowerActive?: boolean
 ) {
   const { completedQuests } = useGame();
+  const { shadowsEnabled } = useSettings();
+  const effectiveShadows = shadowsEnabled && shouldEnableShadows();
   const collected = masksCollected(matoran, completedQuests);
   const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
   const override = matoran.maskOverride;
@@ -129,8 +133,8 @@ export function useNuvaMask(
     clone.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+        mesh.castShadow = effectiveShadows;
+        mesh.receiveShadow = effectiveShadows;
         const originalMat = mesh.material;
         if (isStandardMat(originalMat)) {
           const mat = originalMat.clone();
@@ -162,7 +166,7 @@ export function useNuvaMask(
     masksParent.add(clone);
     maskRef.current = clone;
     prevMaskFileNameRef.current = maskNodeName;
-  }, [masksNodes, masksParent, maskNodeName]);
+  }, [masksNodes, masksParent, maskNodeName, effectiveShadows]);
 
   useEffect(() => {
     const transition = transitionRef.current;
