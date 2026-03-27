@@ -1,3 +1,4 @@
+import { ArrowDown, ArrowRight } from 'lucide-react';
 import { ELEMENT_EFFECTIVENESS } from '../../services/combatUtils';
 import { ElementTribe } from '../../types/Matoran';
 import { ElementTag } from '../../components/ElementTag';
@@ -38,8 +39,15 @@ export default function TypeEffectivenessPage() {
           <thead>
             <tr>
               <th className="type-effectiveness__corner">
-                <span className="type-effectiveness__label-defender">Defender ➜</span>
-                <span className="type-effectiveness__label-attacker">Attacker ↓</span>
+                <span className="type-effectiveness__label-defender">
+                  Defender{' '}
+                  <ArrowRight className="type-effectiveness__corner-icon" size={12} aria-hidden />
+                </span>
+                <span className="type-effectiveness__label-attacker">
+                  <ArrowDown className="type-effectiveness__corner-icon" size={12} aria-hidden />
+                  {' '}
+                  Attacker
+                </span>
               </th>
               {ELEMENT_ORDER.map((defender) => (
                 <th key={defender} className="type-effectiveness__header">
@@ -60,7 +68,7 @@ export default function TypeEffectivenessPage() {
                     <td
                       key={defender}
                       className={`type-effectiveness__cell ${getCellClassName(multiplier)}`}
-                      title={`${attacker} → ${defender}: ${multiplier}×`}
+                      title={`${attacker} to ${defender}: ${multiplier}x`}
                     >
                       {getMultiplierLabel(multiplier)}
                     </td>
