@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useGame } from '../context/Game';
+import { useSettings } from '../context/useSettings';
+import { shouldEnableShadows } from '../utils/testMode';
 import { getEffectiveMataMaskColor } from '../game/maskColor';
 import { BaseMatoran, Mask, MatoranStage } from '../types/Matoran';
 import {
@@ -102,6 +104,8 @@ export function useMask(
   const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
   const masksNodes = useMemo(() => buildMaskNodes(gltf), [gltf]);
   const { completedQuests } = useGame();
+  const { shadowsEnabled } = useSettings();
+  const effectiveShadows = shadowsEnabled && shouldEnableShadows();
 
   const maskColor =
     matoran.stage === MatoranStage.ToaMata
@@ -142,8 +146,8 @@ export function useMask(
     clone.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+        mesh.castShadow = effectiveShadows;
+        mesh.receiveShadow = effectiveShadows;
         const originalMat = mesh.material;
         if (isStandardMat(originalMat)) {
           const mat = originalMat.clone();
@@ -184,7 +188,7 @@ export function useMask(
     // Mask lifecycle is managed imperatively at the top of each effect run and
     // in the unmount-only effect below, so the old mask can remain in the scene
     // during the exit animation.
-  }, [masksNodes, masksParent, maskName]);
+  }, [masksNodes, masksParent, maskName, effectiveShadows]);
 
   // Unmount-only cleanup: remove any lingering masks from the scene
   useEffect(() => {
