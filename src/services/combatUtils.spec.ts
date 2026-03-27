@@ -1,11 +1,13 @@
 import { BattleStrategy, Combatant, type EnemyEncounter } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
+import { KraataPower } from '../types/Kraata';
 import {
   chooseTarget,
   generateCombatantStats,
   getScaledEnemyLevelForEncounter,
   hasActiveEffectFromSource,
   hasReadyMaskPowers,
+  queueCombatRound,
   RAHKSHI_SOLO_PARTY_LEVEL_BONUS,
 } from './combatUtils';
 
@@ -515,5 +517,74 @@ describe('chooseTarget', () => {
       const team = [generateCombatantStats('Toa_Tahu', 'Toa_Tahu', 1)];
       expect(hasActiveEffectFromSource(team, [aliveEnemy], 'Toa_Tahu')).toBe(true);
     });
+  });
+});
+
+describe('queueCombatRound (self-target / 3D refs)', () => {
+  beforeEach(() => {
+    (globalThis as unknown as { window: { combatantRefs: Record<string, unknown> } }).window = {
+      combatantRefs: {},
+    };
+  });
+
+  test('does not call defender Hit when attacker targets self (same ref would cancel Attack)', async () => {
+    const confusedRahkshi = generateCombatantStats(`${KraataPower.Fear}-0`, KraataPower.Fear, 1);
+    confusedRahkshi.effects = [
+      {
+        type: 'CONFUSION',
+        durationRemaining: 1,
+        durationUnit: 'turn',
+        sourceId: 'ally',
+      },
+    ];
+    // No allies: confused attacker has no one else to hit, so target becomes self
+    const team: Combatant[] = [];
+    const enemies = [confusedRahkshi];
+
+    const hitSpy = jest.fn().mockResolvedValue(undefined);
+    const attackSpy = jest.fn().mockResolvedValue(undefined);
+    const selfHandle = {
+      playAnimation: jest.fn(async (name: string) => {
+        if (name === 'Attack') await attackSpy();
+        if (name === 'Hit') await hitSpy();
+      }),
+    };
+    window.combatantRefs[confusedRahkshi.id] = selfHandle;
+
+    const queue: (() => Promise<void>)[] = [];
+    queueCombatRound(team, enemies, jest.fn(), jest.fn(), (fn) => queue.push(fn));
+
+    for (const step of queue) {
+      await step();
+    }
+
+    expect(attackSpy).toHaveBeenCalled();
+    expect(hitSpy).not.toHaveBeenCalled();
+  });
+
+  test('does not call defender Hit when targetRef is same object as actorRef (stale id map)', async () => {
+    const attacker = generateCombatantStats('Toa_Tahu', 'Toa_Tahu', 1);
+    const enemy = generateCombatantStats(`${KraataPower.Fear}-0`, KraataPower.Fear, 1);
+
+    const hitSpy = jest.fn().mockResolvedValue(undefined);
+    const attackSpy = jest.fn().mockResolvedValue(undefined);
+    const shared = {
+      playAnimation: jest.fn(async (name: string) => {
+        if (name === 'Attack') await attackSpy();
+        if (name === 'Hit') await hitSpy();
+      }),
+    };
+    window.combatantRefs[attacker.id] = shared;
+    window.combatantRefs[enemy.id] = shared;
+
+    const queue: (() => Promise<void>)[] = [];
+    queueCombatRound([attacker], [enemy], jest.fn(), jest.fn(), (fn) => queue.push(fn));
+
+    for (const step of queue) {
+      await step();
+    }
+
+    expect(attackSpy).toHaveBeenCalled();
+    expect(hitSpy).not.toHaveBeenCalled();
   });
 });

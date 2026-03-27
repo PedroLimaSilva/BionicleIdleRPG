@@ -122,6 +122,8 @@ async function main(): Promise<void> {
         /visual-novel-cutscene__content--/,
         /rahkshi-card--/,
         /rahkshi-card__status--/,
+        // HpBar: tier modifiers from template literal (hp-bar__fill--${tier})
+        /hp-bar__fill--/,
       ],
       // Preserve element selectors and pseudo-classes
       deep: [/^h[1-6]$/, /:hover/, /:focus/, /:active/, /:disabled/, /::before/, /::after/],

@@ -8,6 +8,22 @@ import {
 } from '../../helpers';
 
 test.describe('Character Detail Page', () => {
+  test('converts protodermis to XP for Toa on stats tab', async ({ page }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      protodermis: 100,
+      recruitedCharacters: [{ id: 'Toa_Tahu', exp: 0 }],
+      completedQuests: ['story_toa_arrival'],
+    });
+    await goto(page, '/characters/Toa_Tahu');
+    await disableCSSAnimations(page);
+    await hideCanvas(page);
+
+    await expect(page.locator('.character-progress .xp-label')).toContainText('0 /');
+    await page.getByRole('button', { name: 'Convert to XP' }).click();
+    await expect(page.locator('.character-progress .xp-label')).toContainText('1 /');
+  });
+
   test('should render tasks tab', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,

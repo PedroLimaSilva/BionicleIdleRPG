@@ -43,6 +43,9 @@ import {
   RAHKSHI_FORGE_COST,
 } from '../game/KraataActions';
 import { getDebugMode } from '../services/gamePersistence';
+import { getEffectiveMatoran } from '../services/matoranUtils';
+import { isToa } from '../game/matoranStage';
+import { expGainedFromProtodermisSpend } from '../game/ProtodermisConversion';
 
 export const useGameLogic = (): GameState & GameStateEditorApi => {
   const [initialState] = useState(() => loadGameState());
@@ -272,6 +275,26 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
         onSuccess?.(evolved.id);
         return prev - evolution.protodermisCost;
       });
+      return true;
+    },
+    convertProtodermisToExp: (
+      matoranId: RecruitedCharacterData['id'],
+      protodermisSpent: number
+    ) => {
+      const recruited = recruitedCharacters.find((m) => m.id === matoranId);
+      if (!recruited) return false;
+      const matoran = getEffectiveMatoran(recruited);
+      if (!isToa(matoran)) return false;
+      if (!Number.isInteger(protodermisSpent) || protodermisSpent < 1) return false;
+      if (protodermisSpent > protodermis) return false;
+
+      const expGain = expGainedFromProtodermisSpend(protodermisSpent);
+      // Apply exp outside setProtodermis: in dev, Strict Mode may invoke the protodermis
+      // updater twice; nesting setRecruitedCharacters inside it would double-apply XP.
+      setProtodermis((prev) => (prev < protodermisSpent ? prev : prev - protodermisSpent));
+      setRecruitedCharacters((chars) =>
+        chars.map((m) => (m.id === matoranId ? { ...m, exp: m.exp + expGain } : m))
+      );
       return true;
     },
     applyBattleRewards: (params: BattleRewardParams) => {

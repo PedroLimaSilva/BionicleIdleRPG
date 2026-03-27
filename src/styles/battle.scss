@@ -314,8 +314,14 @@
     }
   }
 
-  .hp-bar {
-    font-size: 0.8rem;
+  .hp-bar-host {
+    position: relative;
+    width: 100%;
+    min-height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.25rem;
   }
 }
 

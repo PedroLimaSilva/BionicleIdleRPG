@@ -2,7 +2,6 @@ import { useParams, Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { useGame } from '../../context/Game';
-import { isTestMode } from '../../utils/testMode';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { getKraataPowerDescription } from '../../data/kraataPowerDescriptions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
@@ -21,7 +20,11 @@ import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from '../../components/CharacterScen
 import { useEmissiveMeshes } from '../../components/CharacterScene/selectiveBloom';
 import { StableSelectiveBloom } from '../../components/CharacterScene/StableSelectiveBloom';
 import { useSettings } from '../../context/useSettings';
-import { shouldEnableSelectiveBloom } from '../../utils/testMode';
+import {
+  isTestMode,
+  shouldEnableSelectiveBloom,
+  shouldEnableShadows,
+} from '../../utils/testMode';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
 
 import './index.scss';
@@ -59,9 +62,10 @@ function RahkshiDetailScene({ kraata, hasKraata }: { kraata: KraataPower; hasKra
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
   const bloomMeshes = useEmissiveMeshes(sceneRootRef, [kraata, hasKraata]);
   const { shadowsEnabled } = useSettings();
+  const effectiveShadows = shadowsEnabled && shouldEnableShadows();
 
   useEffect(() => {
-    if (!shadowsEnabled || !sceneRootRef.current) return;
+    if (!effectiveShadows || !sceneRootRef.current) return;
     const applyShadowProps = () => {
       sceneRootRef.current?.traverse((child) => {
         if ((child as Mesh).isMesh) {
@@ -74,7 +78,7 @@ function RahkshiDetailScene({ kraata, hasKraata }: { kraata: KraataPower; hasKra
     applyShadowProps();
     const t = setTimeout(applyShadowProps, 500);
     return () => clearTimeout(t);
-  }, [shadowsEnabled, kraata, hasKraata]);
+  }, [effectiveShadows, kraata, hasKraata]);
 
   const setMainLightRef = (el: DirectionalLight | null) => {
     if (el) {
@@ -96,7 +100,7 @@ function RahkshiDetailScene({ kraata, hasKraata }: { kraata: KraataPower; hasKra
         ref={setMainLightRef}
         position={[3, CENTER_Y + 8, 10]}
         intensity={1.2}
-        castShadow={shadowsEnabled}
+        castShadow={effectiveShadows}
         shadow-mapSize={[2048, 2048]}
         shadow-camera-near={0.5}
         shadow-camera-far={50}
@@ -114,7 +118,7 @@ function RahkshiDetailScene({ kraata, hasKraata }: { kraata: KraataPower; hasKra
         position={[-3, CENTER_Y + 2, -2]}
         intensity={0.015}
       />
-      {shadowsEnabled && (
+      {effectiveShadows && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
           <planeGeometry args={[CYLINDER_RADIUS * 3, CYLINDER_RADIUS * 3]} />
           <meshStandardMaterial color="#1a1a1a" />

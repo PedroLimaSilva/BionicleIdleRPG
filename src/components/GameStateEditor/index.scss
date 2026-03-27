@@ -37,6 +37,18 @@
   margin: 0 0 0.5rem 0;
   font-size: 0.8rem;
   color: var(--color-text-muted);
+
+  &--with-icons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}
+
+.game-state-section-hint-icon {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
 }
 
 .game-state-protodermis {

@@ -1,0 +1,66 @@
+.protodermis-training {
+  margin-top: 1rem;
+  border: 2px solid var(--theme-element-primary);
+  border-radius: calc(var(--border-radius-sm) + 1rem);
+  background: var(--color-surface-mid);
+  padding: 0.75rem 1rem 1rem;
+
+  &__title {
+    margin: 0 0 0.35rem;
+    font-size: 1rem;
+  }
+
+  &__hint {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    opacity: 0.9;
+  }
+
+  &__hint-arrow {
+    display: inline-block;
+    vertical-align: -0.1em;
+    color: var(--color-text-muted);
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__label {
+    font-size: 0.9rem;
+  }
+
+  &__input {
+    width: 5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--color-border-subtle);
+    background: var(--color-surface-high);
+    color: inherit;
+  }
+
+  &__max {
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--theme-element-primary);
+    background: transparent;
+    color: var(--theme-element-primary);
+    cursor: pointer;
+    font-size: 0.85rem;
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  .elemental-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
