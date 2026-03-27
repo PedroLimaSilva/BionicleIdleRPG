@@ -6,6 +6,7 @@ import { CombatantModel, CombatantModelHandle } from './CombatantModel';
 import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/useSettings';
+import { shouldEnableShadows } from '../../utils/testMode';
 
 function EnvironmentIntensity({ value }: { value: number }) {
   const scene = useThree((s) => s.scene);
@@ -87,6 +88,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
   const combatantRefs = useRef<Record<string, CombatantModelHandle>>({});
   const sceneGroupRef = useRef<THREE.Group>(null);
   const { shadowsEnabled } = useSettings();
+  const effectiveShadows = shadowsEnabled && shouldEnableShadows();
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -116,7 +118,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
   }, [team, enemies]);
 
   useEffect(() => {
-    if (!shadowsEnabled || !sceneGroupRef.current) return;
+    if (!effectiveShadows || !sceneGroupRef.current) return;
     const applyShadowProps = () => {
       sceneGroupRef.current?.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
@@ -130,7 +132,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
     applyShadowProps();
     const t = setTimeout(applyShadowProps, 500);
     return () => clearTimeout(t);
-  }, [shadowsEnabled, team, enemies]);
+  }, [effectiveShadows, team, enemies]);
 
   return (
     <>
@@ -146,7 +148,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
         }}
         position={[2, 3, 4]}
         intensity={1.2}
-        castShadow={shadowsEnabled}
+        castShadow={effectiveShadows}
         shadow-mapSize={[2048, 2048]}
         shadow-camera-far={15}
         shadow-camera-left={-3}
@@ -172,7 +174,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
             name="Ground"
             rotation={[-Math.PI / 2, 0, 0]}
             position={[0, 0, 0]}
-            receiveShadow={shadowsEnabled}
+            receiveShadow={effectiveShadows}
           >
             <circleGeometry args={[ARENA_BOX_SIZE / 2, 64]} />
             <meshStandardMaterial color="#151518" transparent={true} opacity={1} />
