@@ -6,7 +6,7 @@ import { BlendFunction } from 'postprocessing';
 import { DirectionalLight, Mesh, Object3D } from 'three';
 
 import { useSettings } from '../../context/useSettings';
-import { shouldEnableSelectiveBloom } from '../../utils/testMode';
+import { shouldEnableSelectiveBloom, shouldEnableShadows } from '../../utils/testMode';
 import { CYLINDER_RADIUS } from './BoundsCylinder';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
@@ -134,8 +134,9 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
   const eyeMeshes = useEyeMeshes(characterRootRef, matoran);
   const { shadowsEnabled } = useSettings();
+  const effectiveShadows = shadowsEnabled && shouldEnableShadows();
   useEffect(() => {
-    if (!shadowsEnabled || !characterRootRef.current) return;
+    if (!effectiveShadows || !characterRootRef.current) return;
     const applyShadowProps = () => {
       characterRootRef.current?.traverse((child) => {
         if ((child as Mesh).isMesh) {
@@ -148,7 +149,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
     applyShadowProps();
     const t = setTimeout(applyShadowProps, 500);
     return () => clearTimeout(t);
-  }, [shadowsEnabled, matoran]);
+  }, [effectiveShadows, matoran]);
 
   const setMainLightRef = (el: DirectionalLight | null) => {
     if (el) {
@@ -169,7 +170,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
         ref={setMainLightRef}
         position={[3, CHARACTER_CENTER_Y + 8, 10]}
         intensity={1.2}
-        castShadow={shadowsEnabled}
+        castShadow={effectiveShadows}
         shadow-mapSize={[2048, 2048]}
         shadow-camera-near={0.5}
         shadow-camera-far={50}
@@ -188,7 +189,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
         intensity={0.15}
       />
       <ambientLight intensity={0.05} />
-      {shadowsEnabled && (
+      {effectiveShadows && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
           <planeGeometry args={[CYLINDER_RADIUS * 3, CYLINDER_RADIUS * 3]} />
           <meshStandardMaterial color="#1a1a1a" />
