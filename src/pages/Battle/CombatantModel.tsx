@@ -132,7 +132,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
       switch (combatant.model) {
         case 'bohrok':
           return (
-            <group scale={0.175} position={[0, 0.215, -0.15]}>
+            <group scale={0.175}>
               <BohrokModel ref={childRef} id={combatant.id.split('-')[0]} />
             </group>
           );

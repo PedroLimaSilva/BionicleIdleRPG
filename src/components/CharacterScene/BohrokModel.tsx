@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { useGLTF } from '@react-three/drei';
-import { Color } from '../../types/Colors';
+import { Color, LegoColor } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
 import { CHARACTER_DEX } from '../../data/dex/index';
@@ -61,7 +61,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
 
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'bohrok_master.glb');
 
-  const bodyInstance = useMemo(() => nodes.Body.clone(true), [nodes]);
+  const bohrokInstance = useMemo(() => nodes.Bohrok.clone(true), [nodes]);
 
   const { playAnimation } = useCombatAnimations(animations, group, {
     modelId: id,
@@ -95,7 +95,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
       hiddenMeshes.push('FacePlateSilver');
     }
 
-    bodyInstance.traverse((child) => {
+    bohrokInstance.traverse((child) => {
       if (!(child instanceof Mesh)) return;
 
       if (hiddenMeshes.includes(child.name)) {
@@ -112,29 +112,31 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
         Bohrok_Main: colorScheme.body,
         Bohrok_Secondary: colorScheme.arms,
         Bohrok_Feet: colorScheme.feet,
-        'Bohrok_Joints': colorScheme.face,
+        Bohrok_Joints: colorScheme.face,
         'Bohrok Kal Shield': colorScheme.face,
+        Solid_Black: LegoColor.Black,
+        Solid_Light_Grey: LegoColor.LightGray,
+        'Bohrok Teeth': LegoColor.White,
       };
-      applyWeatheredMetalToObject(bodyInstance, {
+      applyWeatheredMetalToObject(bohrokInstance, {
         roughness: 0.55,
         metalness: 0.05,
         grimeDarken: 0.4,
         grimeRoughness: 0.2,
         grimeMetalnessReduce: 0.5,
-        largeScale: 3.5,
-        fineScale: 18.0,
+        largeScale: 5,
+        fineScale: 18,
         cavityStrength: 1,
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Bohrok_Eye', 'Bohrok_Iris', 'Krana'],
         materialColorMap,
       });
     }
 
     const shieldTarget = uppercaseName.concat(isKal ? 'Kal' : '');
     ['L', 'R'].forEach((suffix) => {
-      bodyInstance.traverse((child) => {
+      bohrokInstance.traverse((child) => {
         if (child.name === `Hand${suffix}`) {
           child.children.forEach((shield) => {
             const isTarget = shield.name === `${shieldTarget}${suffix}`;
@@ -143,11 +145,11 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
         }
       });
     });
-  }, [bodyInstance, id]);
+  }, [bohrokInstance, id]);
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={bodyInstance} scale={1} position={[0, 0, 0]} />
+      <primitive object={bohrokInstance} scale={1} position={[0, 0, 0]} />
     </group>
   );
 });
