@@ -1,10 +1,13 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { Group } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { useMask } from '../../../hooks/useMask';
+import { applyWeatheredMetalToObject } from '../WeatheredMetalMaterial';
+
+const USE_WEATHERED_METAL = true;
 
 export const KopakaMataModel = forwardRef<
   CombatantModelHandle,
@@ -21,6 +24,27 @@ export const KopakaMataModel = forwardRef<
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 
+  useEffect(() => {
+    const root = group.current;
+    if (!root || !nodes) return;
+    if (USE_WEATHERED_METAL) {
+      applyWeatheredMetalToObject(root, {
+        roughness: 0.55,
+        metalness: 0.05,
+        grimeDarken: 0.4,
+        grimeRoughness: 0.2,
+        grimeMetalnessReduce: 0.5,
+        largeScale: 3.5,
+        fineScale: 18.0,
+        cavityStrength: 1,
+        edgeColor: '#ffffff',
+        edgeStrength: 0.15,
+        edgeCurvatureScale: 2,
+        excludeMaterialNames: ['Glowing Eyes', 'Brain', 'Kopaka Glow'],
+      });
+    }
+  }, [nodes]);
+
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.maskOverride || matoran.mask;
   const glowColor = matoran.colors.eyes;
@@ -28,7 +52,7 @@ export const KopakaMataModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Kopaka} scale={1} position={[0, 9.4, -0.4]} />
+      <primitive object={nodes.Kopaka} scale={1} position={[0, 0, -0.4]} />
     </group>
   );
 });
