@@ -21,6 +21,9 @@ const SR = 0x8a;
 const SG = 0x90;
 const SB = 0x99;
 
+/** Scale of the glyph within the square canvas (padding for home screen / maskable). */
+const INNER_SCALE = 0.88;
+
 function resizePng(src: PNG, dstW: number, dstH: number): PNG {
   const sw = src.width;
   const sh = src.height;
@@ -69,6 +72,31 @@ function silverSilhouette(src: PNG, size: number): PNG {
   return r;
 }
 
+function compositeCenteredOntoTransparent(inner: PNG, canvasSize: number): PNG {
+  const out = new PNG({ width: canvasSize, height: canvasSize });
+  out.data.fill(0);
+  const ox = Math.floor((canvasSize - inner.width) / 2);
+  const oy = Math.floor((canvasSize - inner.height) / 2);
+  for (let y = 0; y < inner.height; y++) {
+    for (let x = 0; x < inner.width; x++) {
+      const si = (inner.width * y + x) << 2;
+      const di = (canvasSize * (oy + y) + (ox + x)) << 2;
+      out.data[di] = inner.data[si];
+      out.data[di + 1] = inner.data[si + 1];
+      out.data[di + 2] = inner.data[si + 2];
+      out.data[di + 3] = inner.data[si + 3];
+    }
+  }
+  return out;
+}
+
+/** Full-size output with inner safe-area padding (transparent margin). */
+function silverSilhouettePadded(src: PNG, canvasSize: number): PNG {
+  const innerDim = Math.max(1, Math.round(canvasSize * INNER_SCALE));
+  const inner = silverSilhouette(src, innerDim);
+  return compositeCenteredOntoTransparent(inner, canvasSize);
+}
+
 function writePng(path: string, png: PNG): void {
   writeFileSync(path, PNG.sync.write(png));
 }
@@ -81,16 +109,16 @@ if (source.width !== source.height) {
   console.warn('make-pwa-icons: source raster is not square; maskable slots may look stretched.');
 }
 
-writePng(join(publicDir, 'pwa-192.png'), silverSilhouette(source, 192));
-writePng(join(publicDir, 'pwa-512.png'), silverSilhouette(source, 512));
-writePng(join(publicDir, 'apple-touch-icon.png'), silverSilhouette(source, 180));
+writePng(join(publicDir, 'pwa-192.png'), silverSilhouettePadded(source, 192));
+writePng(join(publicDir, 'pwa-512.png'), silverSilhouettePadded(source, 512));
+writePng(join(publicDir, 'apple-touch-icon.png'), silverSilhouettePadded(source, 180));
 
-const fav32 = silverSilhouette(source, 32);
+const fav32 = silverSilhouettePadded(source, 32);
 const fav32Bytes = PNG.sync.write(fav32);
 writeFileSync(join(publicDir, 'favicon-32-light.png'), fav32Bytes);
 writeFileSync(join(publicDir, 'favicon-32-dark.png'), fav32Bytes);
 
-const png48 = silverSilhouette(source, 48);
+const png48 = silverSilhouettePadded(source, 48);
 const icoOptions: IcoOptions = {
   sizes: [48],
   resizeOptions: {},
