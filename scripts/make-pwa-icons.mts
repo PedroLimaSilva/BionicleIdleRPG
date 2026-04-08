@@ -1,12 +1,12 @@
 /**
  * Raster PWA / favicon assets from the virtues SVG (GymOverload-style pipeline:
- * rasterize once, bilinear resize, recolor RGB while preserving source alpha only).
+ * high-res raster + Lanczos3 downscale for anti-aliasing; recolor RGB while
+ * preserving source alpha only).
  */
 import { createRequire } from 'node:module';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PNG } from 'pngjs';
 import sharp from 'sharp';
 import type { IcoOptions } from 'sharp-ico';
 
@@ -21,110 +21,78 @@ const SR = 0x8a;
 const SG = 0x90;
 const SB = 0x99;
 
+/** SVG rasterized at this size before downscale (supersampling / AA). */
+const RASTER_SIZE = 4096;
+
 /** Scale of the glyph within the square canvas (padding for home screen / maskable). */
 const INNER_SCALE = 0.88;
 
-function resizePng(src: PNG, dstW: number, dstH: number): PNG {
-  const sw = src.width;
-  const sh = src.height;
-  const srcData = src.data;
-  const dst = new PNG({ width: dstW, height: dstH });
-
-  for (let y = 0; y < dstH; y++) {
-    for (let x = 0; x < dstW; x++) {
-      const sx = ((x + 0.5) * sw) / dstW - 0.5;
-      const sy = ((y + 0.5) * sh) / dstH - 0.5;
-      const x0 = Math.max(0, Math.min(sw - 1, Math.floor(sx)));
-      const y0 = Math.max(0, Math.min(sh - 1, Math.floor(sy)));
-      const x1 = Math.max(0, Math.min(sw - 1, x0 + 1));
-      const y1 = Math.max(0, Math.min(sh - 1, y0 + 1));
-      const fx = sx - x0;
-      const fy = sy - y0;
-      const di = (dstW * y + x) << 2;
-
-      for (let c = 0; c < 4; c++) {
-        const i00 = ((sh * y0 + x0) << 2) + c;
-        const i10 = ((sh * y0 + x1) << 2) + c;
-        const i01 = ((sh * y1 + x0) << 2) + c;
-        const i11 = ((sh * y1 + x1) << 2) + c;
-        const v00 = srcData[i00];
-        const v10 = srcData[i10];
-        const v01 = srcData[i01];
-        const v11 = srcData[i11];
-        const top = v00 * (1 - fx) + v10 * fx;
-        const bot = v01 * (1 - fx) + v11 * fx;
-        dst.data[di + c] = Math.round(top * (1 - fy) + bot * fy);
-      }
-    }
+function applySilverToRawRgba(data: Buffer): void {
+  for (let i = 0; i < data.length; i += 4) {
+    data[i] = SR;
+    data[i + 1] = SG;
+    data[i + 2] = SB;
   }
-  return dst;
 }
 
-function silverSilhouette(src: PNG, size: number): PNG {
-  const r = resizePng(src, size, size);
-  for (let i = 0; i < r.data.length; i += 4) {
-    const sa = r.data[i + 3];
-    r.data[i] = SR;
-    r.data[i + 1] = SG;
-    r.data[i + 2] = SB;
-    r.data[i + 3] = sa;
-  }
-  return r;
-}
-
-function compositeCenteredOntoTransparent(inner: PNG, canvasSize: number): PNG {
-  const out = new PNG({ width: canvasSize, height: canvasSize });
-  out.data.fill(0);
-  const ox = Math.floor((canvasSize - inner.width) / 2);
-  const oy = Math.floor((canvasSize - inner.height) / 2);
-  for (let y = 0; y < inner.height; y++) {
-    for (let x = 0; x < inner.width; x++) {
-      const si = (inner.width * y + x) << 2;
-      const di = (canvasSize * (oy + y) + (ox + x)) << 2;
-      out.data[di] = inner.data[si];
-      out.data[di + 1] = inner.data[si + 1];
-      out.data[di + 2] = inner.data[si + 2];
-      out.data[di + 3] = inner.data[si + 3];
-    }
-  }
-  return out;
-}
-
-/** Full-size output with inner safe-area padding (transparent margin). */
-function silverSilhouettePadded(src: PNG, canvasSize: number): PNG {
+async function silverSilhouettePaddedPng(
+  canvasSize: number,
+  coloredRaster: Buffer
+): Promise<Buffer> {
   const innerDim = Math.max(1, Math.round(canvasSize * INNER_SCALE));
-  const inner = silverSilhouette(src, innerDim);
-  return compositeCenteredOntoTransparent(inner, canvasSize);
-}
+  const innerPng = await sharp(coloredRaster, {
+    raw: { width: RASTER_SIZE, height: RASTER_SIZE, channels: 4 },
+  })
+    .resize(innerDim, innerDim, {
+      kernel: sharp.kernel.lanczos3,
+      fit: 'fill',
+    })
+    .png()
+    .toBuffer();
 
-function writePng(path: string, png: PNG): void {
-  writeFileSync(path, PNG.sync.write(png));
+  const ox = Math.floor((canvasSize - innerDim) / 2);
+  const oy = Math.floor((canvasSize - innerDim) / 2);
+
+  return sharp({
+    create: {
+      width: canvasSize,
+      height: canvasSize,
+      channels: 4,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    },
+  })
+    .composite([{ input: innerPng, left: ox, top: oy }])
+    .png()
+    .toBuffer();
 }
 
 const svgBytes = readFileSync(sourceSvgPath);
-const raster1024 = await sharp(svgBytes).resize(1024, 1024).ensureAlpha().png().toBuffer();
-const source = PNG.sync.read(raster1024);
+const { data: rasterData } = await sharp(svgBytes)
+  .resize(RASTER_SIZE, RASTER_SIZE)
+  .ensureAlpha()
+  .raw()
+  .toBuffer({ resolveWithObject: true });
 
-if (source.width !== source.height) {
-  console.warn('make-pwa-icons: source raster is not square; maskable slots may look stretched.');
-}
+applySilverToRawRgba(rasterData);
 
-writePng(join(publicDir, 'pwa-192.png'), silverSilhouettePadded(source, 192));
-writePng(join(publicDir, 'pwa-512.png'), silverSilhouettePadded(source, 512));
-writePng(join(publicDir, 'apple-touch-icon.png'), silverSilhouettePadded(source, 180));
+const pwa192 = await silverSilhouettePaddedPng(192, rasterData);
+const pwa512 = await silverSilhouettePaddedPng(512, rasterData);
+const apple180 = await silverSilhouettePaddedPng(180, rasterData);
+const fav32 = await silverSilhouettePaddedPng(32, rasterData);
+const png48 = await silverSilhouettePaddedPng(48, rasterData);
 
-const fav32 = silverSilhouettePadded(source, 32);
-const fav32Bytes = PNG.sync.write(fav32);
-writeFileSync(join(publicDir, 'favicon-32-light.png'), fav32Bytes);
-writeFileSync(join(publicDir, 'favicon-32-dark.png'), fav32Bytes);
+writeFileSync(join(publicDir, 'pwa-192.png'), pwa192);
+writeFileSync(join(publicDir, 'pwa-512.png'), pwa512);
+writeFileSync(join(publicDir, 'apple-touch-icon.png'), apple180);
+writeFileSync(join(publicDir, 'favicon-32-light.png'), fav32);
+writeFileSync(join(publicDir, 'favicon-32-dark.png'), fav32);
 
-const png48 = silverSilhouettePadded(source, 48);
 const icoOptions: IcoOptions = {
   sizes: [48],
   resizeOptions: {},
 };
-await sharpsToIco([sharp(PNG.sync.write(png48))], join(publicDir, 'favicon.ico'), icoOptions);
+await sharpsToIco([sharp(png48)], join(publicDir, 'favicon.ico'), icoOptions);
 
 console.log(
-  'make-pwa-icons: wrote pwa-192.png, pwa-512.png, apple-touch-icon.png, favicon-32-*.png, favicon.ico'
+  'make-pwa-icons: wrote pwa-192.png, pwa-512.png, apple-touch-icon.png, favicon-32-*.png, favicon.ico',
 );
