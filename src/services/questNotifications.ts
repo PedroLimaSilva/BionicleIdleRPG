@@ -71,7 +71,7 @@ export async function scheduleQuestNotification(
     if (Notification.permission !== 'granted') return;
     new Notification('Quest Complete!', {
       body: `${questName} has finished.`,
-      icon: '/BionicleIdleRPG/pwa-192x192.png',
+      icon: '/BionicleIdleRPG/pwa-192.png',
       tag: `quest-${questId}`,
     });
   }, delayMs);
