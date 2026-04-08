@@ -103,7 +103,7 @@ const activeTimers = new Map<string, ReturnType<typeof setTimeout>>();
 function showQuestNotification(quest: ScheduledQuest) {
   self.registration.showNotification('Quest Complete!', {
     body: `${quest.questName} has finished.`,
-    icon: '/BionicleIdleRPG/pwa-192x192.png',
+    icon: '/BionicleIdleRPG/pwa-192.png',
     tag: `quest-${quest.questId}`,
   });
 }
