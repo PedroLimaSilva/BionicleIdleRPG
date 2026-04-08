@@ -94,5 +94,5 @@ const icoOptions: IcoOptions = {
 await sharpsToIco([sharp(png48)], join(publicDir, 'favicon.ico'), icoOptions);
 
 console.log(
-  'make-pwa-icons: wrote pwa-192.png, pwa-512.png, apple-touch-icon.png, favicon-32-*.png, favicon.ico'
+  'make-pwa-icons: wrote pwa-192.png, pwa-512.png, apple-touch-icon.png, favicon-32-*.png, favicon.ico',
 );
