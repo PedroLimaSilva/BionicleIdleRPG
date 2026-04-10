@@ -1,33 +1,50 @@
-# Design: Battle UI Directions
+# Design: Immersive UI Directions
 
 ## Summary
 
-This document captures two possible future directions for the battle experience:
+This document captures two possible future directions for making the game feel more immersive across
+the whole UI, not just in battle:
 
-1. **Immersive hybrid UI**: keep a DOM-based HUD and navigation, but make the Three.js battle scene
-   much more cinematic and stateful.
-2. **Full 3D-first battle presentation**: push much more of the battle experience into the 3D scene,
-   with the HUD minimized to essential overlays.
+1. **Immersive hybrid world UI**: keep DOM-based navigation, sheets, and controls, but use the
+   shared Three.js canvas to show characters visibly engaged in jobs, travel, quests, and other
+   world activity.
+2. **Full 3D-first world presentation**: push much more of the game shell into Three.js so the
+   world scene becomes the primary interface and the DOM HUD becomes secondary.
 
-Both approaches aim to make battles feel more immersive and engaging on the web, especially in
-portrait mode. This is a reference document, not a commitment to implementation.
+This document is a reference for future design work, not a commitment to implementation.
 
 ---
 
 ## Problem statement
 
-The current battle feature works mechanically, but the presentation feels closer to a functional
-overlay on top of a 3D scene than to a cohesive battle experience.
+The game already has strong lore, strong character identity, and a working 3D rendering foundation.
+What it lacks is a sense that the world is alive while the player manages it.
 
 Current pain points:
 
-- battle UI hierarchy is weak in portrait mode
-- encounter selection requires too much vertical scanning before the main action
-- battle prep is functional but not especially clear or dramatic
-- the 3D scene shows characters and an arena, but it does not yet carry enough mood, feedback, or
-  encounter identity
-- combat actions resolve correctly, but the player gets limited authored feedback about what just
-  happened and why it mattered
+- battle is only one part of the immersion gap
+- character inventory mostly feels like a grid of collectible cards with status labels
+- character task management is functional, but it does not show what characters are actually doing
+- quests have narrative text, timers, requirements, and rewards, but they feel more like dispatch
+  forms than lived events
+- the app has good 3D moments on detail pages, but most progression screens still read like list UI
+- there is little visual continuity between a character, their assignment, and the place where that
+  assignment happens
+
+---
+
+## Clarified design goal
+
+The most important immersive upgrade is not "make battles more cinematic."
+
+It is:
+
+- let players see characters inhabiting the world
+- show jobs as places and activities, not only labels
+- show quests as destinations, journeys, or missions in progress
+- make inventory, assignment, and quest management feel like world stewardship instead of menu work
+
+In short, the app should move toward a **living world UI**.
 
 ---
 
@@ -37,152 +54,208 @@ Any future direction should respect these constraints:
 
 - **Web app first**: this is a browser game, not a native mobile app
 - **Portrait-first usage**: most sessions are expected to be narrow and vertical
-- **Single shared canvas**: the current canvas portal pattern is valuable and should be preserved
+- **Single shared canvas**: the existing canvas portal pattern is valuable and should be preserved
 - **Performance-sensitive**: low-end mobile devices and laptop browsers must remain viable
-- **Incremental scope preferred**: battle improvements should not require rewriting unrelated systems
+- **Incremental scope preferred**: UI improvements should not require rewriting game systems
 - **3D asset cost matters**: new environments, animations, and effects carry real production cost
+- **Readable controls still matter**: buttons, timers, requirements, and rewards must remain clear
+
+---
+
+## Current-state interpretation
+
+### Where the app already feels immersive
+
+- character detail pages already use the shared 3D canvas well for hero presentation
+- recruitment and Rahkshi detail already benefit from scene-backed presentation
+- quest writing and cutscenes already provide narrative flavor
+- battle already proves the app can combine DOM UI with scene-backed presentation
+
+### Where the app still feels menu-driven
+
+- character inventory is primarily a responsive card grid
+- task state is mostly expressed as text labels or badges
+- quests are largely represented as stacked cards with metadata
+- world presence is implied, not shown
 
 ---
 
 ## Shared design goals
 
-Regardless of approach, the battle experience should aim for:
+Regardless of approach, the UI should aim for:
 
-1. **Clear hierarchy**
-   - the player should always know what wave they are on, who is winning, and what action is ready
-2. **Better authored feedback**
-   - attacks, mask powers, defeats, and wave transitions should feel intentional and readable
-3. **Stronger encounter identity**
-   - different encounters should feel like different places and threats, not only different stats
-4. **Portrait-friendly interaction**
+1. **Visible world state**
+   - the player should be able to tell where characters are and what they are doing
+2. **Stronger continuity**
+   - characters, assignments, quests, and locations should feel connected
+3. **Portrait-friendly interaction**
    - large touch targets, low thumb travel, and limited simultaneous decisions
+4. **Meaningful spectacle**
+   - 3D should add atmosphere, clarity, and attachment, not just decoration
 5. **Performance resilience**
    - features should degrade gracefully on weaker devices
 
 ---
 
-## Approach A: Immersive hybrid UI
+## What "characters moving around" should mean
+
+The safest and most useful interpretation is **not** full navigation or open-world movement.
+
+Instead, it should mean:
+
+- idle ambient loops in a living hub or village
+- job-specific work cycles
+- simple travel staging for quests
+- location-based vignettes and small scene changes
+- a clear visual difference between idle, working, traveling, and questing
+
+This kind of movement reads well in portrait mode and is much cheaper than pathfinding-heavy scene
+simulation.
+
+---
+
+## Approach A: Immersive hybrid world UI
 
 ### One-line description
 
-Keep the current React + DOM HUD model, but let the 3D scene do much more of the emotional and
-visual work.
+Keep the app shell, sheets, and controls in DOM, but make the shared 3D scene represent the living
+state of the roster and world.
 
 ### What changes
 
-- redesign the battle HUD for portrait mode
-- preserve DOM controls for actions, stats, rewards, and navigation
-- give encounters themed arenas, lighting, camera framing, and ambient motion
-- add more expressive combat staging:
-  - attack anticipation
-  - hit reactions
-  - ability callouts
-  - wave intro transitions
-  - victory and defeat framing
-- move from large persistent cards toward lighter overlays and context panels
+- preserve DOM controls for navigation, buttons, requirements, rewards, and filters
+- use the shared canvas on more route-level screens, especially inventory and quests
+- introduce route-specific dioramas, hubs, or map scenes behind the UI
+- show characters in world contexts:
+  - training
+  - gathering resources
+  - preparing gear
+  - traveling to quests
+  - standing at quest destinations
+- move from purely card-driven status reporting toward scene-backed state reporting
 
 ### Target player experience
 
-The player still uses a familiar mobile-friendly HUD, but battles feel more like watching an
-animated scene with responsive controls rather than pressing buttons on a list of cards.
+The player still manages the game through clear web UI, but the surrounding scene constantly answers
+"what is everyone doing right now?"
+
+The game feels less like browsing a database of units and more like overseeing a small world in
+motion.
 
 ### Why this fits the project well
 
 - works with the current architecture
 - keeps accessibility and readability strong
 - minimizes risk for portrait mode
-- allows incremental rollout
-- gets large UX gains without requiring a full rendering/UI paradigm shift
+- allows incremental rollout per route
+- supports the clarified goal of seeing characters engaged in tasks and quests
 
-### Candidate UX shape
+### Candidate UX shape by area
 
-- **Top rail**
-  - wave number
-  - encounter name
-  - enemy threat or intent summary
-- **Center stage**
-  - mostly unobstructed 3D battle scene
-  - camera beats and VFX carry emotion
-- **Bottom battle sheet**
-  - party portraits
-  - HP and ability readiness
-  - primary round button
-  - contextual detail on tap
+#### Character inventory
+
+- **Top scene area**
+  - a village, workshop, encampment, or roster hall
+  - visible characters occupying scene "slots" based on status
+- **Bottom sheet**
+  - filters and tabs
+  - roster list
+  - tap a character to focus them in the scene and open details
+
+#### Character detail / tasks
+
+- show the character in a job or quest vignette instead of only a neutral viewer
+- if idle, show a home-base idle stance
+- if assigned, switch to a scene state that matches the assignment
+- use the DOM task panel for actual actions and requirements
+
+#### Quests page
+
+- turn quests into a scene-backed dispatch board or world map
+- show active parties at destinations or in transit
+- represent progress with world changes:
+  - party has departed
+  - party is at location
+  - completion ready
+- keep quest requirements and rewards in DOM cards or drawers
+
+#### Jobs and task management
+
+- represent jobs as places or stations, not just text labels
+- e.g. forge, archive, training circle, resource field, dock, tunnel
+- assigning a character means placing them into that world activity visually
 
 ### Production scope
 
-Moderate. This direction needs design work, scene tuning, animation polish, and targeted UI
-refactors, but it does not require replacing the app shell or inventing a new interface model.
+Moderate. This direction needs new environment vignettes, route-level scene composition, and UI
+refactors, but it does not require replacing the app shell or inventing a new control model.
 
 ### Biggest risks
 
-- could become visually richer without fully solving clarity problems
-- may still feel partly card-driven if the HUD is not substantially rethought
-- scene polish can consume time without a clear UX rubric
+- could add visual flavor without enough clarity if scene-state rules are vague
+- could become too decorative if assignments are not reflected clearly
+- roster growth could make scenes visually noisy
 
 ### Mitigations
 
-- redesign hierarchy before adding more visual effects
-- define a portrait battle wireframe first
-- measure FPS during every new environment or VFX pass
+- define a small number of readable state buckets: idle, job, travel, quest, recovery
+- only spotlight a subset of characters at once and use lists for the full roster
+- design portrait wireframes before building scene assets
 
 ---
 
-## Approach B: Full 3D-first battle presentation
+## Approach B: Full 3D-first world presentation
 
 ### One-line description
 
-Push the battle experience much further into Three.js, using full environments and more scene-led
-interaction to create a diorama-like or world-like battle mode.
+Push much more of the game shell into Three.js so the world scene becomes the primary interface and
+the DOM HUD becomes a lightweight overlay.
 
 ### What changes
 
-- build richer environment sets per battle or encounter family
-- make character motion more spatial:
-  - movement into attacks
-  - stronger repositioning
-  - more cinematic entrances and exits
-- reduce the visual weight of the DOM HUD
-- explore 3D-backed interaction surfaces, overlays, or world-space callouts
-- potentially introduce more camera choreography and scene-led storytelling
+- build a more complete hub or regional world scene
+- treat inventory and quest management as scene-led interactions
+- reduce the visual weight of cards and panels
+- explore scene-based selection, map interactions, and world-space callouts
+- potentially use the world as the main place where players inspect assignments and quest progress
 
 ### Target player experience
 
-The player feels more like they are looking into a living battle space than reading a layered game
-UI. The scene becomes the main attraction and the HUD becomes secondary.
+The player feels less like they are using menus and more like they are looking into a diorama or
+world simulation where their roster is visibly active.
 
 ### Why this is attractive
 
-- highest immersion potential
-- strongest visual differentiation from a standard idle RPG
-- best path if the long-term vision is a highly cinematic battle presentation
+- highest immersion potential across the whole app
+- best match for the fantasy of "seeing characters in their tasks or quests"
+- strongest visual differentiation from a conventional idle RPG interface
 
 ### Why this is risky
 
 - highest performance cost on the web
 - most demanding in art, animation, and optimization work
-- greatest chance of losing readability on portrait screens
-- likely to increase implementation complexity across input, layout, and encounter authoring
+- greatest chance of reducing readability on portrait screens
+- much harder to keep fast, obvious management interactions
 
 ### Production scope
 
-High. This direction needs more environment art, more animation coverage, tighter performance
-budgets, and stronger scene tooling. It is feasible, but it should be treated as a deliberate
-product bet rather than a cosmetic upgrade.
+High. This direction needs more environment art, more animation coverage, more scene interaction
+design, and stronger performance tooling. It should be treated as a deliberate product bet rather
+than a styling pass.
 
 ### Biggest risks
 
 - performance regressions on mobile browsers
-- tap target and readability regressions in portrait mode
-- expensive content pipeline for environments and animation variants
-- temptation to replace clear UI with less readable world-space interactions
+- task and quest management becoming slower or less clear
+- expensive content pipeline for scene variants
+- world-space interactions replacing simple UI that is currently easy to use
 
 ### Mitigations
 
-- keep critical controls in screen-space DOM even in a 3D-first direction
+- keep critical management actions in screen-space DOM even in a 3D-first direction
 - use fixed or semi-fixed camera framing instead of free camera control
-- favor small, authored combat spaces over explorable worlds
-- ship one encounter family as a vertical slice before broad rollout
+- favor a small number of authored hubs and quest dioramas over a sprawling world
+- ship one slice first before expanding the pattern everywhere
 
 ---
 
@@ -190,26 +263,94 @@ product bet rather than a cosmetic upgrade.
 
 If the project explores a more ambitious direction, the safest interpretation is:
 
-- **Do** build richer battle dioramas with themed scenery, ambient life, camera motion, and more
-  expressive actor animation
-- **Do not** rush into replacing all HUD interactions with world-space UI
-- **Do not** assume free movement or explorable spaces are required for immersion
+- **Do** build richer hubs, quest dioramas, job stations, and travel scenes
+- **Do** let characters appear occupied and situated in those spaces
+- **Do not** assume free exploration is required
+- **Do not** replace every piece of management UI with world-space interaction
 
-For this project, a **living diorama** is a much better target than a **fully 3D UI**.
+For this project, a **living diorama** is a better target than a **fully 3D UI**.
 
 ---
 
 ## Comparison
 
-| Topic                         | Approach A: Immersive hybrid UI | Approach B: Full 3D-first              |
-| ----------------------------- | ------------------------------- | -------------------------------------- |
-| Immersion upside              | High                            | Very high                              |
-| Portrait readability          | Strong                          | Medium to risky                        |
-| Performance risk              | Moderate                        | High                                   |
-| Asset and animation cost      | Moderate                        | High                                   |
-| Fit with current architecture | Strong                          | Medium                                 |
-| Ease of incremental rollout   | Strong                          | Weak to medium                         |
-| Recommended as next step      | Yes                             | Only after a successful vertical slice |
+| Topic                         | Approach A: Immersive hybrid world UI | Approach B: Full 3D-first world UI |
+| ----------------------------- | ------------------------------------- | ---------------------------------- |
+| Immersion upside              | High                                  | Very high                          |
+| Portrait readability          | Strong                                | Medium to risky                    |
+| Performance risk              | Moderate                              | High                               |
+| Asset and animation cost      | Moderate                              | High                               |
+| Fit with current architecture | Strong                                | Medium                             |
+| Ease of incremental rollout   | Strong                                | Weak to medium                     |
+| Best next step                | Yes                                   | Only after a vertical slice        |
+
+---
+
+## Screen-by-screen opportunities
+
+### Character inventory
+
+Current role:
+
+- roster browsing
+- filtering by type
+- quick status glance
+
+Future opportunity:
+
+- turn it into a **living roster scene**
+- show idle characters in a camp, village, archive, or staging area
+- visually separate idle characters from busy ones
+- make tap-to-focus drive both the roster card and the scene camera
+
+### Character detail
+
+Current role:
+
+- hero presentation
+- stats, inventory, tasks, chronicle
+
+Future opportunity:
+
+- keep hero presentation for the Stats tab
+- switch the scene per tab:
+  - Stats: neutral showcase
+  - Tasks: assignment vignette
+  - Inventory: mask or gear showcase
+  - Chronicle: story-backed scene or backdrop
+
+### Quests page
+
+Current role:
+
+- dispatch list
+- active quest timers
+- available quest cards
+- completed quest archive
+
+Future opportunity:
+
+- show active quests as places on a map or in travel lanes
+- show assigned characters in those destinations
+- make "available quests" feel like locations opening up, not only cards unlocking
+- keep completed quests textual, but visually grouped as remembered chapters
+
+### Jobs / assignments
+
+Current role:
+
+- task selection and status badge
+
+Future opportunity:
+
+- show each job as a recognizable station or environment
+- place assigned characters into those stations
+- use simple looping motion to show the job is alive
+
+### Battle
+
+Battle should still improve, but it becomes one part of a broader immersive world strategy rather
+than the main expression of it.
 
 ---
 
@@ -217,57 +358,64 @@ For this project, a **living diorama** is a much better target than a **fully 3D
 
 These rules should hold for either approach:
 
-1. Keep the main decision controls near the bottom of the screen.
+1. Keep the main management controls near the bottom of the screen.
 2. Minimize persistent top-of-screen chrome.
 3. Avoid showing too many equally weighted cards at once.
 4. Let the 3D scene occupy the emotional center of the screen.
 5. Use tap-to-expand for details instead of showing every stat all the time.
-6. Treat the battle flow as a sequence of focused decisions, not a dense dashboard.
+6. Treat the game as a sequence of focused decisions, not a dense dashboard.
 
 ---
 
 ## Performance guardrails
 
-If battle presentation becomes more 3D-heavy, maintain these guardrails:
+If the UI becomes more scene-heavy, maintain these guardrails:
 
 - preserve the single shared canvas architecture
-- keep battle scenes capped to small actor counts
+- animate only the currently relevant subset of characters
+- use lightweight looping motion instead of full navigation systems
 - prefer fake or simplified shadows over expensive fully dynamic lighting
 - avoid heavy postprocessing by default
 - favor stylized, readable environments over geometry-heavy realism
 - lazy-load environment assets where possible
-- treat performance monitor checks as part of routine battle UI iteration
+- treat performance monitor checks as part of routine UI iteration
 
 ---
 
 ## Proposed roadmap
 
-### Phase 1: Battle UX foundation
+### Phase 1: Living-state UX foundation
 
-- redesign portrait battle HUD
-- improve encounter selection hierarchy and CTA placement
-- make team selection clearer and more tactile
-- add combat event readability improvements:
-  - action callouts
-  - turn summaries
-  - clearer ability readiness
+- define the core visible states:
+  - idle
+  - assigned to job
+  - traveling
+  - on quest
+  - ready to collect
+- redesign the relevant portrait layouts around scene + bottom sheet patterns
 
-### Phase 2: Environment identity
+### Phase 2: Character detail and task vignettes
 
-- create encounter-themed arena variants
-- add wave intro transitions and stronger camera framing
-- add ambient environment motion and lightweight scene FX
+- make task and assignment views scene-backed
+- show assignment-specific presentation for characters
+- establish reusable state-driven animation loops
 
-### Phase 3: Expressive combat staging
+### Phase 3: Immersive inventory
 
-- improve attack and hit animations
-- add spotlight moments for mask powers
-- tighten defeat and victory presentation
+- turn the character inventory route into a living roster hub
+- add focus behavior between roster list and visible scene actors
+- visually separate idle and busy characters
 
-### Phase 4: Vertical slice for a 3D-first mode
+### Phase 4: Immersive quests
 
-- pick one encounter family
-- build a more ambitious battle diorama
+- build a scene-backed quest board or map
+- show active parties in-world
+- represent dispatch and completion more visually
+
+### Phase 5: Vertical slice for 3D-first world UI
+
+- pick one route, likely inventory or quests
+- build a more ambitious 3D-first version
 - test portrait readability and FPS on constrained hardware
 - decide whether the gains justify broader rollout
 
@@ -275,15 +423,15 @@ If battle presentation becomes more 3D-heavy, maintain these guardrails:
 
 ## Recommendation
 
-The best near-term direction is **Approach A: Immersive hybrid UI**.
+The best near-term direction is **Approach A: Immersive hybrid world UI**.
 
 Reasoning:
 
-- it addresses the actual current weakness, which is presentation hierarchy and battle feedback
+- it directly addresses the clarified goal of seeing characters engaged in jobs and quests
 - it fits portrait web constraints much better
-- it preserves readable, accessible controls
+- it preserves readable, accessible management controls
 - it uses the existing Three.js foundation rather than replacing it
-- it leaves the door open for a later 3D-first vertical slice if the hybrid direction succeeds
+- it allows one screen at a time to become more immersive
 
 Approach B should remain a valid future option, but it should be explored as a contained prototype,
 not as the default next step.
@@ -292,8 +440,9 @@ not as the default next step.
 
 ## Open questions for future planning
 
-- Which encounter families deserve unique environments first?
-- What is the minimum animation set that makes combat feel alive without exploding scope?
-- How much battle information must remain permanently visible in portrait mode?
-- Should battle pacing stay round-based with a single primary action, or add more pacing controls?
+- Which locations should become the first visible job or quest spaces?
+- What is the minimum animation set that makes the world feel alive without exploding scope?
+- How many characters should be visible in a scene at once on portrait screens?
+- Which screen should be the first "living world" proof point: inventory, quests, or character
+  detail tasks?
 - What FPS floor should be considered acceptable on mobile browsers before expanding scene scope?
