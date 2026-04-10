@@ -230,14 +230,14 @@ The game automatically saves to localStorage:
 
 ## 📚 Additional documentation
 
-| Document                                           | Purpose                                                                    |
-| -------------------------------------------------- | -------------------------------------------------------------------------- |
-| [AGENT_GUIDELINES.md](AGENT_GUIDELINES.md)         | Architecture, layers, and invariants for contributors and automation       |
-| [AGENTS.md](AGENTS.md)                             | Cursor Cloud / agent quick reference (commands and caveats)                |
+| Document                                                                   | Purpose                                                                     |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [AGENT_GUIDELINES.md](AGENT_GUIDELINES.md)                                 | Architecture, layers, and invariants for contributors and automation        |
+| [AGENTS.md](AGENTS.md)                                                     | Cursor Cloud / agent quick reference (commands and caveats)                 |
 | [docs/DESIGN_BATTLE_UI_DIRECTIONS.md](docs/DESIGN_BATTLE_UI_DIRECTIONS.md) | Future battle UI direction reference covering hybrid and full-3D approaches |
-| [docs/TELEMETRY.md](docs/TELEMETRY.md)             | Optional build-time telemetry (`VITE_TELEMETRY_URL`) and privacy behaviour |
-| [e2e/README.md](e2e/README.md)                     | Playwright E2E tests and snapshot workflow                                 |
-| [ARCHITECTURE_ROADMAP.md](ARCHITECTURE_ROADMAP.md) | Backlog of possible technical improvements (not a commitment)              |
+| [docs/TELEMETRY.md](docs/TELEMETRY.md)                                     | Optional build-time telemetry (`VITE_TELEMETRY_URL`) and privacy behaviour  |
+| [e2e/README.md](e2e/README.md)                                             | Playwright E2E tests and snapshot workflow                                  |
+| [ARCHITECTURE_ROADMAP.md](ARCHITECTURE_ROADMAP.md)                         | Backlog of possible technical improvements (not a commitment)               |
 
 ## 🤝 Contributing
 

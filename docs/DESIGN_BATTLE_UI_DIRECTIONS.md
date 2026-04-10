@@ -201,15 +201,15 @@ For this project, a **living diorama** is a much better target than a **fully 3D
 
 ## Comparison
 
-| Topic | Approach A: Immersive hybrid UI | Approach B: Full 3D-first |
-| --- | --- | --- |
-| Immersion upside | High | Very high |
-| Portrait readability | Strong | Medium to risky |
-| Performance risk | Moderate | High |
-| Asset and animation cost | Moderate | High |
-| Fit with current architecture | Strong | Medium |
-| Ease of incremental rollout | Strong | Weak to medium |
-| Recommended as next step | Yes | Only after a successful vertical slice |
+| Topic                         | Approach A: Immersive hybrid UI | Approach B: Full 3D-first              |
+| ----------------------------- | ------------------------------- | -------------------------------------- |
+| Immersion upside              | High                            | Very high                              |
+| Portrait readability          | Strong                          | Medium to risky                        |
+| Performance risk              | Moderate                        | High                                   |
+| Asset and animation cost      | Moderate                        | High                                   |
+| Fit with current architecture | Strong                          | Medium                                 |
+| Ease of incremental rollout   | Strong                          | Weak to medium                         |
+| Recommended as next step      | Yes                             | Only after a successful vertical slice |
 
 ---
 
