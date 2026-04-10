@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Bell, BellOff, ChevronDown, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { AvailableQuests } from '../../components/AvailableQuests';
@@ -141,18 +141,6 @@ export const QuestsPage = () => {
       );
   }, [completedQuests]);
 
-  useEffect(() => {
-    if (!completedSections.length) return;
-    setExpandedSections((prev) => {
-      if (Object.keys(prev).length) return prev;
-      const initial: Record<string, boolean> = {};
-      completedSections.forEach((s) => {
-        initial[s.section] = true;
-      });
-      return initial;
-    });
-  }, [completedSections]);
-
   const handleCutscene = (ref: VisualNovelCutsceneRef) => {
     setActiveCutscene(ref);
   };
@@ -236,7 +224,7 @@ export const QuestsPage = () => {
       ) : (
         <div className="quests-page__sections">
           {completedSections.map((sec) => {
-            const isSectionExpanded = expandedSections[sec.section] ?? true;
+            const isSectionExpanded = expandedSections[sec.section] ?? false;
             return (
               <div key={sec.section} className="quests-page__section">
                 <button
