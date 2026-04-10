@@ -3,7 +3,7 @@
 ## Summary
 
 This document captures two possible future directions for making the game feel more immersive across
-the whole UI, not just in battle:
+the whole UI, including battle:
 
 1. **Immersive hybrid world UI**: keep DOM-based navigation, sheets, and controls, but use the
    shared Three.js canvas to show characters visibly engaged in jobs, travel, quests, and other
@@ -35,16 +35,42 @@ Current pain points:
 
 ## Clarified design goal
 
-The most important immersive upgrade is not "make battles more cinematic."
+The most important immersive upgrade is not "make battles more cinematic" **instead of** improving
+the rest of the UI.
 
 It is:
 
+- keep battle immersion as an explicit design priority
 - let players see characters inhabiting the world
 - show jobs as places and activities, not only labels
 - show quests as destinations, journeys, or missions in progress
 - make inventory, assignment, and quest management feel like world stewardship instead of menu work
 
-In short, the app should move toward a **living world UI**.
+In short, the app should move toward a **living world UI** while also making battle feel more
+immersive through better hierarchy, clearer feedback, and stronger scene direction.
+
+---
+
+## Battle remains a first-class immersive surface
+
+The clarified goal broadens the document beyond battle, but it does **not** remove battle from the
+vision.
+
+Battle still matters in two ways:
+
+1. **UI hierarchy**
+   - battle should become easier to read in portrait mode
+   - actions, readiness, threat, and results should feel more deliberate
+2. **Scene immersion**
+   - the arena should feel more authored and encounter-specific
+   - combat should deliver more visual payoff through camera, animation, VFX, and transitions
+
+So the intended future direction is:
+
+- make the world screens feel alive when characters are idle, working, traveling, or questing
+- make battle feel more immersive when the player enters combat
+
+These are complementary tracks, not competing ones.
 
 ---
 
@@ -349,8 +375,21 @@ Future opportunity:
 
 ### Battle
 
-Battle should still improve, but it becomes one part of a broader immersive world strategy rather
-than the main expression of it.
+Current role:
+
+- tactical encounter resolution
+- strongest current example of DOM + 3D composition
+
+Future opportunity:
+
+- redesign battle hierarchy for portrait mode
+- reduce card clutter and improve the primary-action flow
+- add clearer event feedback:
+  - turn callouts
+  - mask-power moments
+  - defeat and victory presentation
+- make arenas feel more encounter-specific through lighting, framing, environment dressing, and FX
+- preserve battle as a flagship immersive surface within the broader living-world strategy
 
 ---
 
@@ -412,7 +451,14 @@ If the UI becomes more scene-heavy, maintain these guardrails:
 - show active parties in-world
 - represent dispatch and completion more visually
 
-### Phase 5: Vertical slice for 3D-first world UI
+### Phase 5: Battle immersion pass
+
+- redesign the portrait battle HUD and action hierarchy
+- improve combat event readability and pacing feedback
+- add more encounter-specific arena identity
+- strengthen combat animation, camera moments, and outcome presentation
+
+### Phase 6: Vertical slice for 3D-first world UI
 
 - pick one route, likely inventory or quests
 - build a more ambitious 3D-first version
@@ -428,10 +474,11 @@ The best near-term direction is **Approach A: Immersive hybrid world UI**.
 Reasoning:
 
 - it directly addresses the clarified goal of seeing characters engaged in jobs and quests
+- it still leaves room for battle to improve as a parallel immersive track
 - it fits portrait web constraints much better
 - it preserves readable, accessible management controls
 - it uses the existing Three.js foundation rather than replacing it
-- it allows one screen at a time to become more immersive
+- it allows one screen at a time to become more immersive, including battle
 
 Approach B should remain a valid future option, but it should be explored as a contained prototype,
 not as the default next step.
