@@ -138,11 +138,11 @@ Keep the current flat UI, invest in motion design, illustration, and polish. Bet
 - [x] Replace `alert()` in recruitment with an animated modal + 3D reveal
 - [x] Move battle action buttons ("Run Round", "Retreat") into a fixed bottom bar within thumb reach
 - [x] Add screen shake (CSS transform on `.main-content`) on critical hits
-- [ ] Add elemental particle burst on mask power activation (CSS or canvas 2D overlay)
+- [x] Add elemental particle burst on mask power activation (CSS or canvas 2D overlay)
 - [x] Improve damage popup with size scaling by damage magnitude, crit styling
 - [x] Add a brief "wave transition" animation between waves (fade or wipe)
 - [x] Add haptic feedback (`navigator.vibrate`) on hits and rewards
-- [ ] Style the battle outcome screen — animated loot cards, exp bar fill
+- [x] Style the battle outcome screen — animated loot cards, exp bar fill
 
 ### Phase 1: Persistent Canvas & Battle Enhancement
 
