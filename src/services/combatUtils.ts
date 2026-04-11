@@ -1,13 +1,17 @@
 import { COMBATANT_DEX, MASK_POWERS } from '../data/combat';
 import { BattleStrategy, Combatant, EnemyEncounter, TargetEffect } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
+import { emitBattleCameraEmphasis } from '../utils/battleCameraEmphasis';
 import { emitBattleHitFeedback } from '../utils/battleHitFeedback';
 
 declare global {
   interface Window {
     combatantRefs: Record<
       string,
-      { playAnimation?: (name: string, options?: { faceTargetId?: string }) => Promise<void> }
+      {
+        playAnimation?: (name: string, options?: { faceTargetId?: string }) => Promise<void>;
+        waitForAttackComplete?: () => Promise<void>;
+      }
     >;
     combatantPositions?: Record<string, [number, number, number]>;
   }
@@ -158,14 +162,9 @@ export function calculateAtkDmg(attacker: Combatant, defender: Combatant): AtkDa
   }
 
   const multiplier = ELEMENT_EFFECTIVENESS[attacker.element]?.[defender.element] ?? 1.0;
-  const preCrit = Math.max(
-    1,
-    Math.floor((rawDamage + Math.floor(Math.random() * 5)) * multiplier)
-  );
+  const preCrit = Math.max(1, Math.floor((rawDamage + Math.floor(Math.random() * 5)) * multiplier));
   const isCritical = Math.random() >= 1 - CRIT_CHANCE;
-  const damage = isCritical
-    ? Math.max(1, Math.floor(preCrit * CRIT_DAMAGE_MULT))
-    : preCrit;
+  const damage = isCritical ? Math.max(1, Math.floor(preCrit * CRIT_DAMAGE_MULT)) : preCrit;
   return { damage, isCritical };
 }
 
@@ -645,80 +644,112 @@ export function queueCombatRound(
       const actorRef = window.combatantRefs?.[self.id];
       const targetRef = window.combatantRefs?.[target.id];
 
-      // Await Attack - resolves at contact frame (attackResolveAtFraction)
-      if (actorRef?.playAnimation) {
-        await actorRef.playAnimation('Attack', { faceTargetId: target.id });
-      }
-
-      // Apply damage and update state when contact occurs (HP bar drops at impact)
-      let updatedTarget = applyDamage(target, damage);
-      const damageDealt = target.hp - updatedTarget.hp;
-      if (damageDealt > 0) {
-        emitBattleHitFeedback({
-          isCritical,
-          damageDealt,
-          targetMaxHp: target.maxHp,
-          reactionAnimation: willBeDefeated ? 'Defeat' : 'Hit',
+      const cameraEmphasisStarted = !!actorRef?.playAnimation;
+      if (cameraEmphasisStarted) {
+        await emitBattleCameraEmphasis({
+          phase: 'start',
+          attackerId: self.id,
           targetId: target.id,
-          targetModel: target.model,
-          attackerElement: self.element,
+          attackerSide: isTeam ? 'team' : 'enemy',
         });
       }
 
-      // Decrement 'attack' unit counters for attacker (mask + buffs)
-      self = decrementMaskPowerCounter(self, 'attack');
-      self = decrementEffectDurations(self, 'attack');
+      try {
+        // Await Attack - resolves at contact frame (attackResolveAtFraction)
+        if (actorRef?.playAnimation) {
+          await actorRef.playAnimation('Attack', { faceTargetId: target.id });
+        }
 
-      // Decrement 'hit' unit counters for defender (mask + buffs)
-      updatedTarget = decrementMaskPowerCounter(updatedTarget, 'hit');
-      updatedTarget = decrementEffectDurations(updatedTarget, 'hit');
+        // Apply damage and update state when contact occurs (HP bar drops at impact)
+        let updatedTarget = applyDamage(target, damage);
+        const damageDealt = target.hp - updatedTarget.hp;
+        if (damageDealt > 0) {
+          emitBattleHitFeedback({
+            isCritical,
+            damageDealt,
+            targetMaxHp: target.maxHp,
+            reactionAnimation: willBeDefeated ? 'Defeat' : 'Hit',
+            targetId: target.id,
+            targetModel: target.model,
+            attackerElement: self.element,
+          });
+        }
 
-      // Decrement 'turn' unit counters ONLY for the combatant whose turn it is
-      self = decrementMaskPowerCounter(self, 'turn');
-      self = decrementEffectDurations(self, 'turn');
+        // Decrement 'attack' unit counters for attacker (mask + buffs)
+        self = decrementMaskPowerCounter(self, 'attack');
+        self = decrementEffectDurations(self, 'attack');
 
-      // Update both attacker and defender in their respective lists
-      // When confused, target is in actorList (attacking allies), so update both in actorList
-      // self already has turn-based effects decremented above
-      const nextActorList = actorList.map((c) =>
-        c.id === self.id ? self : c.id === updatedTarget.id ? updatedTarget : c
-      );
-      const nextOpponentList = opponentList.map((t) =>
-        t.id === updatedTarget.id ? updatedTarget : t
-      );
+        // Decrement 'hit' unit counters for defender (mask + buffs)
+        updatedTarget = decrementMaskPowerCounter(updatedTarget, 'hit');
+        updatedTarget = decrementEffectDurations(updatedTarget, 'hit');
 
-      if (isTeam) {
-        currentTeam = nextActorList;
-        currentEnemies = nextOpponentList;
-      } else {
-        currentTeam = nextOpponentList;
-        currentEnemies = nextActorList;
-      }
+        // Decrement 'turn' unit counters ONLY for the combatant whose turn it is
+        self = decrementMaskPowerCounter(self, 'turn');
+        self = decrementEffectDurations(self, 'turn');
 
-      // Deactivate mask powers (e.g. Komau) when all effect targets die
-      const { team: teamAfterDeactivation } = deactivateMaskPowersWithDeadTargets(
-        currentTeam,
-        currentEnemies
-      );
-      currentTeam = teamAfterDeactivation;
+        // Update both attacker and defender in their respective lists
+        // When confused, target is in actorList (attacking allies), so update both in actorList
+        // self already has turn-based effects decremented above
+        const nextActorList = actorList.map((c) =>
+          c.id === self.id ? self : c.id === updatedTarget.id ? updatedTarget : c
+        );
+        const nextOpponentList = opponentList.map((t) =>
+          t.id === updatedTarget.id ? updatedTarget : t
+        );
 
-      setTeam(currentTeam);
-      setEnemies(currentEnemies);
-
-      // Await target reaction so next turn doesn't start before hit/defeat finishes.
-      // Skip when attacker === target (e.g. confused with no other valid targets): same 3D ref
-      // and Hit/Defeat runs stopAllAction(), which would cancel the in-progress Attack clip.
-      // Skip when targetRef === actorRef with different ids (stale combatantRefs map): Hit would
-      // run on the attacker's mixer and cancel Attack.
-      if (
-        target.id !== self.id &&
-        targetRef?.playAnimation &&
-        targetRef !== actorRef
-      ) {
-        if (willBeDefeated) {
-          await targetRef.playAnimation('Defeat', { faceTargetId: self.id });
+        if (isTeam) {
+          currentTeam = nextActorList;
+          currentEnemies = nextOpponentList;
         } else {
-          await targetRef.playAnimation('Hit', { faceTargetId: self.id });
+          currentTeam = nextOpponentList;
+          currentEnemies = nextActorList;
+        }
+
+        // Deactivate mask powers (e.g. Komau) when all effect targets die
+        const { team: teamAfterDeactivation } = deactivateMaskPowersWithDeadTargets(
+          currentTeam,
+          currentEnemies
+        );
+        currentTeam = teamAfterDeactivation;
+
+        setTeam(currentTeam);
+        setEnemies(currentEnemies);
+
+        // Wait for both the full Attack clip and the target reaction to finish before
+        // proceeding. The Attack promise resolved at contact frame, but the clip keeps
+        // playing; waitForAttackComplete resolves when the clip actually ends.
+        const pendingAnimations: Promise<void>[] = [];
+
+        if (actorRef?.waitForAttackComplete) {
+          pendingAnimations.push(actorRef.waitForAttackComplete());
+        }
+
+        // Await target reaction so next turn doesn't start before hit/defeat finishes.
+        // Skip when attacker === target (e.g. confused with no other valid targets): same 3D ref
+        // and Hit/Defeat runs stopAllAction(), which would cancel the in-progress Attack clip.
+        // Skip when targetRef === actorRef with different ids (stale combatantRefs map): Hit would
+        // run on the attacker's mixer and cancel Attack.
+        if (target.id !== self.id && targetRef?.playAnimation && targetRef !== actorRef) {
+          if (willBeDefeated) {
+            pendingAnimations.push(
+              targetRef.playAnimation('Defeat', { faceTargetId: self.id })
+            );
+          } else {
+            pendingAnimations.push(
+              targetRef.playAnimation('Hit', { faceTargetId: self.id })
+            );
+          }
+        }
+
+        await Promise.all(pendingAnimations);
+      } finally {
+        if (cameraEmphasisStarted) {
+          // Fire-and-forget: the zoom-out starts immediately, but we don't block
+          // the next turn. If another combatant acts next, its 'start' event will
+          // interrupt the zoom-out mid-transition and smoothly retarget to the new
+          // shoulder position (snapshot-based). After the final turn of the round,
+          // no 'start' arrives so the zoom-out completes naturally back to base.
+          void emitBattleCameraEmphasis({ phase: 'end' });
         }
       }
     });

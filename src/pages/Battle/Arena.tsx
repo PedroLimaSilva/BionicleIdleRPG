@@ -3,11 +3,12 @@ import { useGLTF, Environment, PresentationControls } from '@react-three/drei';
 import { Combatant } from '../../types/Combat';
 import { hasActiveEffectFromSource } from '../../services/combatUtils';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
-import { useEffect, useRef } from 'react';
-import { useThree } from '@react-three/fiber';
+import { useCallback, useEffect, useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/useSettings';
 import { shouldEnableShadows } from '../../utils/testMode';
 import { HitImpactParticles } from './HitImpactParticles';
+import { subscribeBattleCameraEmphasis } from '../../utils/battleCameraEmphasis';
 
 function EnvironmentIntensity({ value }: { value: number }) {
   const scene = useThree((s) => s.scene);
@@ -25,9 +26,9 @@ interface ArenaProps {
 }
 
 const TEAM_POSITIONS: [number, number, number][] = [
-  [-0.5, 0, 0.75],
-  [0, 0, 0.5],
-  [0.5, 0, 0.75],
+  [-0.7, 0, 0.78],
+  [0, 0, 0.46],
+  [0.7, 0, 0.78],
 ];
 const ENEMY_POSITIONS: [number, number, number][] = [
   [0, 0, -0.5],
@@ -41,19 +42,101 @@ const ARENA_BOX_SIZE = 3;
 const ARENA_MARGIN = 1.5;
 /** Arena center (camera looks at this). */
 const ARENA_CENTER: [number, number, number] = [0, 0, 0];
+const CAMERA_EMPHASIS_IN_MS = 320;
+const CAMERA_EMPHASIS_OUT_MS = 380;
+const CAMERA_EMPHASIS_HOLD_MS = 150;
+const CAMERA_EMPHASIS_RETARGET_MS = 240;
+const CAMERA_EMPHASIS_ZOOM_MULT = 1.35;
+/** Shoulder offset — camera sits slightly to the right of the Toa, behind them. */
+const SHOULDER_RIGHT = 0.35;
+const SHOULDER_UP = 0.55;
+const SHOULDER_BACK = 0.5;
 
 /**
  * Camera above the arena looking down. In portrait (width < height) uses a
  * front view so team/enemies stack vertically (team bottom, enemies top).
  * In landscape uses an angled view (team bottom-left, enemies top-right).
+ *
+ * Camera emphasis uses a snapshot-based transition: every event captures the
+ * current animated camera state as "from" and smoothly lerps to the computed
+ * "to", so back-to-back attacks never cause a positional jump.
  */
 function ArenaFraming() {
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
 
+  const basePositionRef = useRef(new THREE.Vector3());
+  const baseLookAtRef = useRef(new THREE.Vector3(...ARENA_CENTER));
+  const baseZoomRef = useRef(1);
+
+  const curPositionRef = useRef(new THREE.Vector3());
+  const curLookAtRef = useRef(new THREE.Vector3(...ARENA_CENTER));
+  const curZoomRef = useRef(1);
+
+  const fromPositionRef = useRef(new THREE.Vector3());
+  const fromLookAtRef = useRef(new THREE.Vector3());
+  const fromZoomRef = useRef(1);
+  const toPositionRef = useRef(new THREE.Vector3());
+  const toLookAtRef = useRef(new THREE.Vector3());
+  const toZoomRef = useRef(1);
+
+  const transitionRef = useRef<{ startMs: number; durationMs: number } | null>(null);
+  const emphasisActiveRef = useRef(false);
+  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingZoomOutRef = useRef(false);
+  const pendingZoomOutResolveRef = useRef<(() => void) | null>(null);
+  const transitionResolveRef = useRef<(() => void) | null>(null);
+
+  const tmpA = useRef(new THREE.Vector3());
+  const tmpB = useRef(new THREE.Vector3());
+  const tmpC = useRef(new THREE.Vector3());
+  const tmpD = useRef(new THREE.Vector3());
+
+  const computeEmphasisTarget = (
+    attackerArr: [number, number, number],
+    targetArr: [number, number, number],
+    attackerSide: 'team' | 'enemy'
+  ) => {
+    const attackerPos = tmpA.current.set(attackerArr[0], attackerArr[1], attackerArr[2]);
+    const targetPos = tmpB.current.set(targetArr[0], targetArr[1], targetArr[2]);
+
+    const toaPos = attackerSide === 'team' ? attackerPos : targetPos;
+    const enemyPos = attackerSide === 'team' ? targetPos : attackerPos;
+
+    const forward = tmpC.current.copy(enemyPos).sub(toaPos);
+    forward.y = 0;
+    if (forward.lengthSq() < 0.0001) forward.set(0, 0, -1);
+    forward.normalize();
+
+    const right = tmpD.current.set(forward.z, 0, -forward.x);
+
+    toPositionRef.current
+      .copy(toaPos)
+      .addScaledVector(forward, -SHOULDER_BACK)
+      .addScaledVector(right, SHOULDER_RIGHT);
+    toPositionRef.current.y = toaPos.y + SHOULDER_UP;
+
+    toLookAtRef.current.copy(enemyPos).setY(enemyPos.y + 0.25);
+    toZoomRef.current = baseZoomRef.current * CAMERA_EMPHASIS_ZOOM_MULT;
+  };
+
+  const startZoomOut = useCallback(() => {
+    const now = performance.now();
+    snapshotFrom();
+    toPositionRef.current.copy(basePositionRef.current);
+    toLookAtRef.current.copy(baseLookAtRef.current);
+    toZoomRef.current = baseZoomRef.current;
+    transitionRef.current = { startMs: now, durationMs: CAMERA_EMPHASIS_OUT_MS };
+  }, []);
+
+  const snapshotFrom = () => {
+    fromPositionRef.current.copy(curPositionRef.current);
+    fromLookAtRef.current.copy(curLookAtRef.current);
+    fromZoomRef.current = curZoomRef.current;
+  };
+
   useEffect(() => {
     if (camera.type !== 'OrthographicCamera') return;
-
     if (size.width <= 0 || size.height <= 0) return;
 
     const [cx, cy, cz] = ARENA_CENTER;
@@ -61,26 +144,145 @@ function ArenaFraming() {
     const isPortrait = size.width < size.height;
 
     if (isPortrait) {
-      // Angled from the front: small x-offset so not head-on. Team (pos z) → bottom, enemies (neg z) → top.
-      camera.position.set(cx + d * 0.35, cy + d * 0.8, cz + d * 1.2);
+      basePositionRef.current.set(cx + d * 0.35, cy + d * 0.8, cz + d * 1.2);
     } else {
-      // Angled view: team bottom-left, enemies top-right
-      camera.position.set(cx + d * 0.75, cy + d * 0.5, cz + d * 0.75);
+      basePositionRef.current.set(cx + d * 0.75, cy + d * 0.5, cz + d * 0.75);
     }
-    camera.lookAt(cx, cy, cz);
-    camera.near = 0.1;
+    baseLookAtRef.current.set(cx, cy, cz);
+    camera.near = -2;
     camera.far = 1000;
 
-    // Portrait: fit height so vertical extent is primary; landscape: fit the tighter dimension
     const zoom = isPortrait
       ? size.height / (ARENA_BOX_SIZE * ARENA_MARGIN)
       : Math.min(
           size.width / (ARENA_BOX_SIZE * ARENA_MARGIN),
           size.height / (ARENA_BOX_SIZE * ARENA_MARGIN)
         );
-    camera.zoom = zoom;
-    camera.updateProjectionMatrix();
+    baseZoomRef.current = zoom;
+
+    if (!transitionRef.current && !emphasisActiveRef.current) {
+      camera.position.copy(basePositionRef.current);
+      camera.lookAt(baseLookAtRef.current);
+      camera.zoom = zoom;
+      camera.updateProjectionMatrix();
+      curPositionRef.current.copy(basePositionRef.current);
+      curLookAtRef.current.copy(baseLookAtRef.current);
+      curZoomRef.current = zoom;
+    }
   }, [camera, size]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeBattleCameraEmphasis(({
+      phase, attackerId, targetId, attackerSide, resolve,
+    }) => {
+      if (phase === 'start') {
+        pendingZoomOutRef.current = false;
+        emphasisActiveRef.current = true;
+
+        if (holdTimerRef.current !== null) {
+          clearTimeout(holdTimerRef.current);
+          holdTimerRef.current = null;
+        }
+
+        const positions = (
+          window as { combatantPositions?: Record<string, [number, number, number]> }
+        ).combatantPositions;
+        const attacker = attackerId ? positions?.[attackerId] : undefined;
+        const target = targetId ? positions?.[targetId] : undefined;
+        if (!attacker || !target) {
+          resolve?.();
+          return;
+        }
+
+        transitionResolveRef.current?.();
+        transitionResolveRef.current = resolve ?? null;
+
+        snapshotFrom();
+        computeEmphasisTarget(attacker, target, attackerSide ?? 'team');
+
+        const isRetarget = transitionRef.current !== null;
+        transitionRef.current = {
+          startMs: performance.now(),
+          durationMs: isRetarget ? CAMERA_EMPHASIS_RETARGET_MS : CAMERA_EMPHASIS_IN_MS,
+        };
+        return;
+      }
+
+      // phase === 'end': schedule the zoom-out after a short hold
+      const beginZoomOut = () => {
+        holdTimerRef.current = null;
+        if (transitionRef.current) {
+          pendingZoomOutRef.current = true;
+          pendingZoomOutResolveRef.current = resolve ?? null;
+        } else {
+          transitionResolveRef.current?.();
+          transitionResolveRef.current = resolve ?? null;
+          startZoomOut();
+        }
+      };
+
+      if (holdTimerRef.current !== null) {
+        clearTimeout(holdTimerRef.current);
+      }
+      holdTimerRef.current = setTimeout(beginZoomOut, CAMERA_EMPHASIS_HOLD_MS);
+    });
+    return unsubscribe;
+  }, [startZoomOut]);
+
+  useFrame(() => {
+    if (camera.type !== 'OrthographicCamera') return;
+
+    const transition = transitionRef.current;
+
+    if (!transition) {
+      if (emphasisActiveRef.current) {
+        camera.position.copy(curPositionRef.current);
+        camera.lookAt(curLookAtRef.current);
+        camera.zoom = curZoomRef.current;
+        camera.updateProjectionMatrix();
+      }
+      return;
+    }
+
+    const rawT = Math.min(
+      1,
+      (performance.now() - transition.startMs) / Math.max(1, transition.durationMs)
+    );
+    const t = THREE.MathUtils.smoothstep(rawT, 0, 1);
+
+    curPositionRef.current.lerpVectors(fromPositionRef.current, toPositionRef.current, t);
+    curLookAtRef.current.lerpVectors(fromLookAtRef.current, toLookAtRef.current, t);
+    curZoomRef.current = THREE.MathUtils.lerp(fromZoomRef.current, toZoomRef.current, t);
+
+    camera.position.copy(curPositionRef.current);
+    camera.lookAt(curLookAtRef.current);
+    camera.zoom = curZoomRef.current;
+    camera.updateProjectionMatrix();
+
+    if (rawT >= 1) {
+      transitionRef.current = null;
+
+      if (pendingZoomOutRef.current) {
+        pendingZoomOutRef.current = false;
+        const prevResolve = transitionResolveRef.current;
+        transitionResolveRef.current = pendingZoomOutResolveRef.current;
+        pendingZoomOutResolveRef.current = null;
+        prevResolve?.();
+        startZoomOut();
+      } else {
+        const isZoomOutDone =
+          curPositionRef.current.distanceToSquared(basePositionRef.current) < 0.001 &&
+          Math.abs(curZoomRef.current - baseZoomRef.current) < 0.1;
+        if (isZoomOutDone) {
+          emphasisActiveRef.current = false;
+        }
+
+        const prevResolve = transitionResolveRef.current;
+        transitionResolveRef.current = null;
+        prevResolve?.();
+      }
+    }
+  });
 
   return null;
 }
