@@ -1,11 +1,20 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { useMemo } from 'react';
 import { BattlePhase } from '../../hooks/useBattleState';
+import { useGame } from '../../context/Game';
 import { KRAATA_POWER_NAMES, KraataReward } from '../../types/Kraata';
 import { KranaReward } from '../../types/GameState';
-import { ELEMENT_TO_KRANA_COLOR } from '../../game/Krana';
+import type { Combatant } from '../../types/Combat';
+import type { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
+import { ELEMENT_TO_KRANA_COLOR, ELEMENT_TO_KRANA_COLOR_HEX } from '../../game/Krana';
+import { computeBattleExpPerParticipant } from '../../game/BattleRewards';
+import { getKraataCompositedColors } from '../../data/kraataColors';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
 import { isTestMode } from '../../utils/testMode';
+import { CompositedImage } from '../../components/CompositedImage';
+import { CHARACTER_DEX } from '../../data/dex/index';
+import { MatoranAvatar } from '../../components/MatoranAvatar';
+import { getLevelFromExp } from '../../game/Levelling';
 
 import './BattleOutcome.scss';
 
@@ -13,7 +22,7 @@ interface BattleOutcomeProps {
   phase: BattlePhase;
   enemiesDefeated: number;
   expTotal: number;
-  participantCount: number;
+  team: Combatant[];
   kranaRewards: KranaReward[];
   kraataRewards: KraataReward[];
   onCollect: () => void;
@@ -37,46 +46,106 @@ function OutcomeTitle({ phase }: { phase: BattlePhase }) {
   return <h1 className={className}>{label}</h1>;
 }
 
-function ExpBar({
+function ToaExpCard({
+  dex,
+  recruited,
+  expEach,
   expTotal,
-  participantCount,
+  index,
   reduceMotion,
 }: {
+  dex: BaseMatoran;
+  recruited: RecruitedCharacterData;
+  expEach: number;
   expTotal: number;
-  participantCount: number;
+  index: number;
   reduceMotion: boolean;
 }) {
-  const perToa = participantCount > 0 ? Math.floor(expTotal / participantCount) : 0;
-  const transition = buildTransition(
-    { duration: MOTION_DURATION.verySlow, ease: MOTION_EASING.standard },
+  const barTransition = buildTransition(
+    {
+      duration: MOTION_DURATION.verySlow,
+      ease: MOTION_EASING.standard,
+      delay: 0.12 + index * 0.08,
+    },
     reduceMotion
   );
+  const cardTransition = buildTransition(
+    { duration: MOTION_DURATION.slow, ease: MOTION_EASING.emphasized, delay: 0.05 + index * 0.06 },
+    reduceMotion
+  );
+
+  return (
+    <motion.div
+      className={`character-card battle-outcome__exp-toa-card element-${dex.element}`}
+      initial={reduceMotion ? undefined : { opacity: 0, y: 12, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={cardTransition}
+    >
+      <MatoranAvatar
+        matoran={{ ...dex, ...recruited }}
+        styles="matoran-avatar model-preview battle-outcome__exp-toa-avatar"
+      />
+      <div className="card-header battle-outcome__exp-toa-header">
+        {dex.name}
+        <div className="level-label">Level {getLevelFromExp(recruited.exp)}</div>
+      </div>
+      <div className="battle-outcome__exp-toa-footer">
+        <span className="battle-outcome__exp-toa-amount">
+          {expEach > 0 ? `+${expEach}` : expTotal > 0 ? '+0' : '—'}
+        </span>
+        {expEach > 0 && (
+          <div className="battle-outcome__exp-toa-track">
+            <motion.div
+              className="battle-outcome__exp-toa-fill"
+              initial={{ width: '0%' }}
+              animate={{ width: '100%' }}
+              transition={barTransition}
+            />
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+function ToaExpSection({
+  team,
+  expTotal,
+  reduceMotion,
+}: {
+  team: Combatant[];
+  expTotal: number;
+  reduceMotion: boolean;
+}) {
+  const { recruitedCharacters } = useGame();
+  const expEach = useMemo(() => computeBattleExpPerParticipant(team, expTotal), [team, expTotal]);
 
   return (
     <div className="battle-outcome__exp-section">
       <div className="battle-outcome__exp-header">
         <span className="battle-outcome__exp-label">EXP earned</span>
         <span className="battle-outcome__exp-value">
-          {expTotal > 0 ? (
-            <>
-              +{expTotal}{' '}
-              {participantCount > 0 && (
-                <span className="battle-outcome__exp-per-toa">({perToa} per Toa)</span>
-              )}
-            </>
-          ) : (
-            <span className="battle-outcome__empty">0</span>
-          )}
+          {expTotal > 0 ? <>+{expTotal}</> : <span className="battle-outcome__empty">0</span>}
         </span>
       </div>
-      {expTotal > 0 && (
-        <div className="battle-outcome__exp-track">
-          <motion.div
-            className="battle-outcome__exp-fill"
-            initial={{ width: '0%' }}
-            animate={{ width: '100%' }}
-            transition={transition}
-          />
+      {team.length > 0 && (
+        <div className="battle-outcome__exp-team">
+          {team.map((combatant, index) => {
+            const recruited = recruitedCharacters.find((r) => r.id === combatant.id);
+            const dex = CHARACTER_DEX[combatant.id];
+            if (!dex || !recruited) return null;
+            return (
+              <ToaExpCard
+                key={`${combatant.id}-${index}`}
+                dex={dex}
+                recruited={recruited}
+                expEach={expEach}
+                expTotal={expTotal}
+                index={index}
+                reduceMotion={reduceMotion}
+              />
+            );
+          })}
         </div>
       )}
     </div>
@@ -109,11 +178,13 @@ function KranaRewardCard({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={transition}
     >
-      <img
-        src={`${import.meta.env.BASE_URL}/avatar/Krana/${reward.kranaId}.webp`}
-        alt={`Krana ${reward.kranaId}`}
-        className="battle-outcome__loot-img"
-      />
+      <div className="battle-outcome__loot-krana-img-wrap">
+        <CompositedImage
+          images={[`${import.meta.env.BASE_URL}/avatar/Krana/${reward.kranaId}.webp`]}
+          colors={[ELEMENT_TO_KRANA_COLOR_HEX[reward.element]]}
+          className="battle-outcome__loot-img"
+        />
+      </div>
       <span className="battle-outcome__loot-label">
         Krana {reward.kranaId}
         <span className="battle-outcome__loot-element">{reward.element}</span>
@@ -150,10 +221,21 @@ function KraataRewardCard({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={transition}
     >
-      <span className="battle-outcome__loot-icon">🐛</span>
+      <CompositedImage
+        images={[
+          `${import.meta.env.BASE_URL}/avatar/Kraata/${reward.stage}_Base.webp`,
+          `${import.meta.env.BASE_URL}/avatar/Kraata/${reward.stage}_Head.webp`,
+          `${import.meta.env.BASE_URL}/avatar/Kraata/${reward.stage}_Tail.webp`,
+        ]}
+        colors={getKraataCompositedColors(reward.power)}
+        className="battle-outcome__loot-kraata"
+      />
       <span className="battle-outcome__loot-label">
-        Kraata of {label}
-        {reward.qty > 1 && <span className="battle-outcome__loot-qty">x{reward.qty}</span>}
+        <span className="battle-outcome__loot-kraata-title">{label}</span>
+        <span className="battle-outcome__loot-kraata-meta">
+          <span className="battle-outcome__loot-kraata-stage bionicle-font">{reward.stage}</span>
+          {reward.qty > 1 && <span className="battle-outcome__loot-qty">×{reward.qty}</span>}
+        </span>
       </span>
     </motion.div>
   );
@@ -163,7 +245,7 @@ export function BattleOutcome({
   phase,
   enemiesDefeated,
   expTotal,
-  participantCount,
+  team,
   kranaRewards,
   kraataRewards,
   onCollect,
@@ -223,33 +305,31 @@ export function BattleOutcome({
           </p>
         </motion.div>
 
-        <ExpBar
-          expTotal={expTotal}
-          participantCount={participantCount}
-          reduceMotion={shouldReduceMotion}
-        />
+        <ToaExpSection team={team} expTotal={expTotal} reduceMotion={shouldReduceMotion} />
 
         {hasLoot && (
           <div className="battle-outcome__loot-section">
             <p className="battle-outcome__loot-heading">Loot</p>
-            <div className="battle-outcome__loot-grid">
-              {kranaRewards.map((r, i) => (
-                <KranaRewardCard
-                  key={`krana-${r.kranaId}-${r.element}`}
-                  reward={r}
-                  index={i}
-                  reduceMotion={shouldReduceMotion}
-                />
-              ))}
-              {kraataRewards.map((r, i) => (
-                <KraataRewardCard
-                  key={`kraata-${r.power}`}
-                  reward={r}
-                  index={i}
-                  startOffset={kranaRewards.length}
-                  reduceMotion={shouldReduceMotion}
-                />
-              ))}
+            <div className="battle-outcome__loot-scroll">
+              <div className="battle-outcome__loot-grid">
+                {kranaRewards.map((r, i) => (
+                  <KranaRewardCard
+                    key={`krana-${r.kranaId}-${r.element}`}
+                    reward={r}
+                    index={i}
+                    reduceMotion={shouldReduceMotion}
+                  />
+                ))}
+                {kraataRewards.map((r, i) => (
+                  <KraataRewardCard
+                    key={`kraata-${r.power}-${r.stage}-${i}`}
+                    reward={r}
+                    index={i}
+                    startOffset={kranaRewards.length}
+                    reduceMotion={shouldReduceMotion}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         )}

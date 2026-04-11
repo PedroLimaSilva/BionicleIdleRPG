@@ -103,8 +103,6 @@ export const BattlePage: React.FC = () => {
       currentEncounter && getEnemiesDefeatedCount(currentEncounter, phase, currentWave, enemies);
     const expTotal =
       currentEncounter && computeBattleExpTotal(currentEncounter, phase, currentWave, enemies);
-    const participantCount = team.length;
-
     const handleCollectRewards = () => {
       if (currentEncounter) {
         applyBattleRewards({
@@ -127,7 +125,7 @@ export const BattlePage: React.FC = () => {
           phase={phase}
           enemiesDefeated={enemiesDefeated ?? 0}
           expTotal={expTotal ?? 0}
-          participantCount={participantCount}
+          team={team}
           kranaRewards={kranaRewards}
           kraataRewards={kraataRewards}
           onCollect={handleCollectRewards}

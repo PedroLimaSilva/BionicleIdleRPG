@@ -340,7 +340,7 @@ These changes are self-contained, low-risk, and immediately improve feel:
 
 4. **Wave transition** — ✅ On wave clear, brief 400ms CSS fade-to-black-and-back on `.battle-arena` before next wave spawns.
 
-5. **Outcome screen polish** — Animate reward items appearing one by one (staggered `motion.div` with spring physics). Show exp gain as an animated bar fill.
+5. **Outcome screen polish** ✅ — Animate reward items appearing one by one (staggered `motion.div` with spring physics). Show exp gain as an animated bar fill.
 
 ### First 3D expansion (Phase 1)
 

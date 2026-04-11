@@ -14,6 +14,7 @@ import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
 import { BattleRewardParams, KranaReward } from '../types/GameState';
 import { RecruitedCharacterData } from '../types/Matoran';
 import {
+  computeBattleExpPerParticipant,
   computeBattleExpTotal,
   computeKranaRewardsForBattle,
   computeKraataRewardsForBattle,
@@ -306,7 +307,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
       );
       const participantIds = getParticipantIds(params.team);
       if (participantIds.length > 0 && totalExp > 0) {
-        const expPerParticipant = Math.floor(totalExp / participantIds.length);
+        const expPerParticipant = computeBattleExpPerParticipant(params.team, totalExp);
         setRecruitedCharacters((prev) =>
           prev.map((m) =>
             participantIds.includes(m.id) ? { ...m, exp: m.exp + expPerParticipant } : m
