@@ -61,12 +61,6 @@
   max-width: 600px;
 
   .nav-item {
-    &--layout-placeholder {
-      visibility: hidden;
-      pointer-events: none;
-      touch-action: none;
-    }
-
     color: var(--color-text-muted);
     font-size: 0.75rem;
     display: flex;

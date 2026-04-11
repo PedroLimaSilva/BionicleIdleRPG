@@ -37,16 +37,11 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
         {shouldShowCurrencyBar(pathname) && <CurrencyBar isPortrait={isPortrait} />}
       </AnimatePresence>
       <nav className="nav-bar">
-        {hasVisibleEncounters ? (
+        {hasVisibleEncounters && (
           <NavLink to="/battle/selector" className="nav-item">
             <Swords />
             <label>Battle</label>
           </NavLink>
-        ) : (
-          <div className="nav-item nav-item--layout-placeholder" aria-hidden="true">
-            <Swords />
-            <label>Battle</label>
-          </div>
         )}
         <NavLink to="/" className="nav-item">
           <Map />
