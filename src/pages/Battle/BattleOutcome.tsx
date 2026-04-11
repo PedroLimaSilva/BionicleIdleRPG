@@ -172,9 +172,9 @@ function ToaExpCard({
             className="battle-outcome__exp-toa-level-up"
             role="status"
             aria-live="polite"
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.35, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9 }}
+            initial={reduceMotion ? { x: '-50%' } : { opacity: 0, scale: 0.35, y: 8, x: '-50%' }}
+            animate={{ opacity: 1, scale: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, scale: 0.9, x: '-50%' }}
             transition={levelUpTransition}
           >
             LEVEL UP
