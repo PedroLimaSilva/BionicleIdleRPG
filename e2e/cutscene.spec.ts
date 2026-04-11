@@ -10,6 +10,7 @@ async function openDialogueCutscene(page: import('@playwright/test').Page) {
   await setupGameState(page, COMPLETED_QUEST_WITH_CUTSCENE);
   await goto(page, '/quests', { hideCanvasBeforeNav: true });
   await page.locator('h2.quests-page__title').first().waitFor({ state: 'visible', timeout: 10000 });
+  await page.locator('.quests-page__section-title:has-text("The Cronicler\'s Journey")').click();
   await page.locator('.quests-page__item-title:has-text("A call for help")').click();
   await page.locator('button:has-text("Replay Cutscene")').click();
   await page
