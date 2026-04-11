@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Combatant } from '../../../types/Combat';
 import { hasActiveEffectFromSource } from '../../../services/combatUtils';
-import { DamagePopup, DamagePopupEvent } from './DamagePopup';
-import { HpBar } from '../../../components/HpBar';
 import { CHARACTER_DEX } from '../../../data/dex/index';
 import { MatoranAvatar } from '../../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../../components/MaskPowerTooltip';
@@ -19,10 +17,6 @@ export function AllyCard({
   team?: Combatant[];
   enemies?: Combatant[];
 }) {
-  const prevHpRef = useRef(combatant.hp);
-  const popupSequenceRef = useRef(0);
-  const [damage, setDamage] = useState<DamagePopupEvent | null>(null);
-  const [healing, setHealing] = useState<DamagePopupEvent | null>(null);
   const [selected, setSelected] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(false);
   const [maxCooldown, setMaxCooldown] = useState<number>(0);
@@ -45,27 +39,6 @@ export function AllyCard({
       setMaxCooldown(combatant.maskPower?.cooldown?.amount);
     }
   }, [combatant.maskPower, combatant.maskPower?.cooldown?.amount, maxCooldown]);
-
-  useEffect(() => {
-    if (combatant.hp < prevHpRef.current) {
-      // HP decreased - damage taken
-      setDamage({
-        id: ++popupSequenceRef.current,
-        value: prevHpRef.current - combatant.hp,
-        maxHp: combatant.maxHp,
-      });
-      setHealing(null); // Clear any healing popup
-    } else if (combatant.hp > prevHpRef.current) {
-      // HP increased - healing received
-      setHealing({
-        id: ++popupSequenceRef.current,
-        value: combatant.hp - prevHpRef.current,
-        maxHp: combatant.maxHp,
-      });
-      setDamage(null); // Clear any damage popup
-    }
-    prevHpRef.current = combatant.hp;
-  }, [combatant.hp, combatant.maxHp]);
 
   const dex = CHARACTER_DEX[combatant.id as keyof typeof CHARACTER_DEX];
   return (
@@ -102,29 +75,6 @@ export function AllyCard({
           }}
         ></div>
       )}
-      <div className="hp-bar-host">
-        <HpBar hp={combatant.hp} maxHp={combatant.maxHp} defeated={combatant.hp <= 0} />
-        {damage && (
-          <DamagePopup
-            popup={damage}
-            direction="up"
-            isHealing={false}
-            onComplete={(id) => {
-              setDamage((current) => (current?.id === id ? null : current));
-            }}
-          />
-        )}
-        {healing && (
-          <DamagePopup
-            popup={healing}
-            direction="up"
-            isHealing={true}
-            onComplete={(id) => {
-              setHealing((current) => (current?.id === id ? null : current));
-            }}
-          />
-        )}
-      </div>
     </div>
   );
 }

@@ -20,8 +20,21 @@ import { useFrame } from '@react-three/fiber';
 import { Group } from 'three';
 import { KraataPower } from '../../types/Kraata';
 import { TakanuvaModel } from '../../components/CharacterScene/Nuva/TakanuvaModel';
+import { WorldSpaceHpBar } from './WorldSpaceHpBar';
 
 const ROTATION_RESTORE_DURATION = 0.25;
+
+/** World-space Y offset for the floating HP bar, tuned per model family. */
+function hpBarYOffset(model: string): number {
+  switch (model) {
+    case 'bohrok':
+      return 0.6;
+    case 'rahkshi':
+      return 0.2;
+    default:
+      return -0.1;
+  }
+}
 
 /** Linear interpolation between two angles, taking the shortest path. */
 function lerpAngle(from: number, to: number, t: number): number {
@@ -342,8 +355,17 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
       }
     })();
     return (
-      <group ref={modelGroup} position={position} rotation={rotation}>
-        {model}
+      <group position={position}>
+        <WorldSpaceHpBar
+          name={combatant.name}
+          hp={combatant.hp}
+          maxHp={combatant.maxHp}
+          yOffset={hpBarYOffset(combatant.model)}
+          popupDirection={side === 'team' ? 'down' : 'up'}
+        />
+        <group ref={modelGroup} rotation={rotation}>
+          {model}
+        </group>
       </group>
     );
   }

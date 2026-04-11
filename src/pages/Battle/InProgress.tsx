@@ -2,7 +2,6 @@ import { useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../../context/Game';
 import { isTestMode } from '../../utils/testMode';
-import { EnemyCard } from './Cards/Enemy';
 import { AllyCard } from './Cards/Ally';
 
 /** Total fade in + fade out; keep in sync with `battle-arena-wave-clear` duration in `battle.scss`. */
@@ -44,7 +43,7 @@ export const BattleInProgress = () => {
       setTimeout(() => {
         setWaveClearPlaying(false);
         waveClearTimersRef.current = [];
-      }, WAVE_CLEAR_TOTAL_MS),
+      }, WAVE_CLEAR_TOTAL_MS)
     );
   };
 
@@ -54,24 +53,9 @@ export const BattleInProgress = () => {
     <div className="page-container battle">
       <h1 className="title">Wave {currentWave + 1}</h1>
 
-      <div
-        className={`battle-arena${waveClearPlaying ? ' battle-arena--wave-clear' : ''}`}
-      >
+      <div className={`battle-arena${waveClearPlaying ? ' battle-arena--wave-clear' : ''}`}>
         {/* Enemy Side */}
-        <div className="enemy-side">
-          <div className="enemy-list">
-            {enemies
-              .toSorted((a, b) => {
-                const iA = parseInt(a.id.split('-').pop() ?? '0', 10);
-                const iB = parseInt(b.id.split('-').pop() ?? '0', 10);
-                const order = [1, 0, 2]; // left, middle, right
-                return order.indexOf(iA) - order.indexOf(iB);
-              })
-              .map((enemy, i) => (
-                <EnemyCard key={i} enemy={enemy} />
-              ))}
-          </div>
-        </div>
+        <div className="enemy-side"></div>
 
         {/* Ally Side */}
         <div className="ally-side">
@@ -90,11 +74,7 @@ export const BattleInProgress = () => {
       </div>
 
       <div className="battle-buttons">
-        <button
-          className="cancel-button"
-          disabled={buttonsLocked}
-          onClick={() => retreat()}
-        >
+        <button className="cancel-button" disabled={buttonsLocked} onClick={() => retreat()}>
           Retreat
         </button>
 
@@ -109,11 +89,7 @@ export const BattleInProgress = () => {
             Run Round
           </button>
         ) : (
-          <button
-            className="confirm-button"
-            disabled={buttonsLocked}
-            onClick={runAfterWaveClear}
-          >
+          <button className="confirm-button" disabled={buttonsLocked} onClick={runAfterWaveClear}>
             Next Wave
           </button>
         )}
