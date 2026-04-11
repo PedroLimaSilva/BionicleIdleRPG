@@ -37,13 +37,7 @@ export const PohatuNuvaModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: [
-          'Trans Dark Pink',
-          'Glowing Eyes',
-          'Nuva Armour',
-          'Holder',
-          'SOLID-SILVER',
-        ],
+        excludeMaterialNames: ['Brain', 'Glowing Eyes', 'Nuva Armour', 'Holder', 'SOLID-SILVER'],
       });
     }
   }, [nodes]);
