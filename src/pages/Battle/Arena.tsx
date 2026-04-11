@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { useGLTF, Environment, PresentationControls } from '@react-three/drei';
+import { useGLTF, Environment, PresentationControls, PerspectiveCamera } from '@react-three/drei';
 import { Combatant } from '../../types/Combat';
 import { hasActiveEffectFromSource } from '../../services/combatUtils';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
@@ -36,26 +36,26 @@ const ENEMY_POSITIONS: [number, number, number][] = [
   [0.5, 0, -0.75],
 ];
 
-/** World-size of the arena box used for orthographic framing. */
+/** World-size of the arena used for framing calculations. */
 const ARENA_BOX_SIZE = 3;
-/** Multiplier > 1 zooms out to add margin around the arena. */
-const ARENA_MARGIN = 1.5;
+/** Multiplier > 1 adds margin around the arena so combatants aren't at the screen edge. */
+const ARENA_MARGIN = 1;
 /** Arena center (camera looks at this). */
 const ARENA_CENTER: [number, number, number] = [0, 0, 0];
 const CAMERA_EMPHASIS_IN_MS = 320;
 const CAMERA_EMPHASIS_OUT_MS = 380;
 const CAMERA_EMPHASIS_HOLD_MS = 150;
 const CAMERA_EMPHASIS_RETARGET_MS = 240;
-const CAMERA_EMPHASIS_ZOOM_MULT = 1.35;
-/** Shoulder offset — camera sits slightly to the right of the Toa, behind them. */
-const SHOULDER_RIGHT = 0.35;
-const SHOULDER_UP = 0.55;
-const SHOULDER_BACK = 0.5;
+const CAMERA_EMPHASIS_ZOOM_MULT = 1.05;
+/** Shoulder offset — camera sits behind and above the Toa, looking past them at the enemy. */
+const SHOULDER_RIGHT = 0.3;
+const SHOULDER_UP = 0.8;
+const SHOULDER_BACK = 1.2;
 
 /**
- * Camera above the arena looking down. In portrait (width < height) uses a
- * front view so team/enemies stack vertically (team bottom, enemies top).
- * In landscape uses an angled view (team bottom-left, enemies top-right).
+ * Perspective camera framing for the battle arena. In portrait uses a front
+ * view; in landscape an angled view. FOV is computed dynamically so the arena
+ * always fits the viewport.
  *
  * Camera emphasis uses a snapshot-based transition: every event captures the
  * current animated camera state as "from" and smoothly lerps to the computed
@@ -136,7 +136,6 @@ function ArenaFraming() {
   };
 
   useEffect(() => {
-    if (camera.type !== 'OrthographicCamera') return;
     if (size.width <= 0 || size.height <= 0) return;
 
     const [cx, cy, cz] = ARENA_CENTER;
@@ -149,25 +148,29 @@ function ArenaFraming() {
       basePositionRef.current.set(cx + d * 0.75, cy + d * 0.5, cz + d * 0.75);
     }
     baseLookAtRef.current.set(cx, cy, cz);
-    camera.near = -2;
-    camera.far = 1000;
+    camera.near = 0.01;
+    camera.far = 100;
 
-    const zoom = isPortrait
-      ? size.height / (ARENA_BOX_SIZE * ARENA_MARGIN)
-      : Math.min(
-          size.width / (ARENA_BOX_SIZE * ARENA_MARGIN),
-          size.height / (ARENA_BOX_SIZE * ARENA_MARGIN)
-        );
-    baseZoomRef.current = zoom;
+    const distance = basePositionRef.current.distanceTo(baseLookAtRef.current);
+    const halfArena = (ARENA_BOX_SIZE * ARENA_MARGIN) / 2;
+    const aspect = size.width / size.height;
+
+    const vFovForHeight = 2 * Math.atan(halfArena / distance) * THREE.MathUtils.RAD2DEG;
+    const vFovForWidth =
+      2 * Math.atan(halfArena / (distance * aspect)) * THREE.MathUtils.RAD2DEG;
+    const fov = Math.max(vFovForHeight, vFovForWidth);
+
+    (camera as THREE.PerspectiveCamera).fov = fov;
+    baseZoomRef.current = 1;
 
     if (!transitionRef.current && !emphasisActiveRef.current) {
       camera.position.copy(basePositionRef.current);
       camera.lookAt(baseLookAtRef.current);
-      camera.zoom = zoom;
+      camera.zoom = 1;
       camera.updateProjectionMatrix();
       curPositionRef.current.copy(basePositionRef.current);
       curLookAtRef.current.copy(baseLookAtRef.current);
-      curZoomRef.current = zoom;
+      curZoomRef.current = 1;
     }
   }, [camera, size]);
 
@@ -230,8 +233,6 @@ function ArenaFraming() {
   }, [startZoomOut]);
 
   useFrame(() => {
-    if (camera.type !== 'OrthographicCamera') return;
-
     const transition = transitionRef.current;
 
     if (!transition) {
@@ -339,6 +340,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
 
   return (
     <>
+      <PerspectiveCamera makeDefault />
       <ArenaFraming />
       <Environment preset="city" />
       <EnvironmentIntensity value={0.4} />
