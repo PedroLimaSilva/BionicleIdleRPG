@@ -690,10 +690,11 @@ export function queueCombatRound(
         // Update both attacker and defender in their respective lists
         // When confused, target is in actorList (attacking allies), so update both in actorList
         // self already has turn-based effects decremented above
-        const nextActorList = actorList.map((c) =>
-          c.id === self.id ? self : c.id === updatedTarget.id ? updatedTarget : c
+        const currentSelf = self!;
+        const nextActorList: Combatant[] = actorList.map((c) =>
+          c.id === currentSelf.id ? currentSelf : c.id === updatedTarget.id ? updatedTarget : c
         );
-        const nextOpponentList = opponentList.map((t) =>
+        const nextOpponentList: Combatant[] = opponentList.map((t) =>
           t.id === updatedTarget.id ? updatedTarget : t
         );
 
