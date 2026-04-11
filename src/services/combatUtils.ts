@@ -1,6 +1,7 @@
 import { COMBATANT_DEX, MASK_POWERS } from '../data/combat';
 import { BattleStrategy, Combatant, EnemyEncounter, TargetEffect } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
+import { emitBattleHitFeedback } from '../utils/battleHitFeedback';
 
 declare global {
   interface Window {
@@ -131,7 +132,12 @@ export const ELEMENT_EFFECTIVENESS: Record<ElementTribe, Record<ElementTribe, nu
   },
 };
 
-export function calculateAtkDmg(attacker: Combatant, defender: Combatant): number {
+const CRIT_CHANCE = 0.125;
+const CRIT_DAMAGE_MULT = 1.5;
+
+export type AtkDamageResult = { damage: number; isCritical: boolean };
+
+export function calculateAtkDmg(attacker: Combatant, defender: Combatant): AtkDamageResult {
   // DEFENSE multiplies the defense stat: >1 = fortify, <1 = weaken
   let defenseMult = 1;
   for (const e of defender.effects ?? []) {
@@ -152,8 +158,15 @@ export function calculateAtkDmg(attacker: Combatant, defender: Combatant): numbe
   }
 
   const multiplier = ELEMENT_EFFECTIVENESS[attacker.element]?.[defender.element] ?? 1.0;
-  const final = Math.floor((rawDamage + Math.floor(Math.random() * 5)) * multiplier);
-  return Math.max(1, final);
+  const preCrit = Math.max(
+    1,
+    Math.floor((rawDamage + Math.floor(Math.random() * 5)) * multiplier)
+  );
+  const isCritical = Math.random() >= 1 - CRIT_CHANCE;
+  const damage = isCritical
+    ? Math.max(1, Math.floor(preCrit * CRIT_DAMAGE_MULT))
+    : preCrit;
+  return { damage, isCritical };
 }
 
 export function applyDamage(target: Combatant, damage: number): Combatant {
@@ -444,7 +457,7 @@ export function chooseTarget(self: Combatant, targets: Combatant[]): Combatant {
       let bestDmg = 0;
       for (let i = 0; i < validTargets.length; i++) {
         const target = validTargets[i];
-        const targetDmg = calculateAtkDmg(self, target);
+        const targetDmg = calculateAtkDmg(self, target).damage;
         if (targetDmg > bestDmg) {
           bestDmg = targetDmg;
           bestDmgIndex = i;
@@ -625,7 +638,7 @@ export function queueCombatRound(
         else currentTeam = newOpponentListForMark;
       }
 
-      const damage = calculateAtkDmg(self, target);
+      const { damage, isCritical } = calculateAtkDmg(self, target);
       const willBeDefeated = target.hp - damage <= 0;
 
       // Expect 3D combatant refs to be globally accessible for now
@@ -639,6 +652,14 @@ export function queueCombatRound(
 
       // Apply damage and update state when contact occurs (HP bar drops at impact)
       let updatedTarget = applyDamage(target, damage);
+      const damageDealt = target.hp - updatedTarget.hp;
+      if (damageDealt > 0) {
+        emitBattleHitFeedback({
+          isCritical,
+          damageDealt,
+          targetMaxHp: target.maxHp,
+        });
+      }
 
       // Decrement 'attack' unit counters for attacker (mask + buffs)
       self = decrementMaskPowerCounter(self, 'attack');

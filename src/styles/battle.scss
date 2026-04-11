@@ -1,3 +1,40 @@
+@keyframes battle-page-hit-shake {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  12% {
+    transform: translate3d(-5px, 3px, 0);
+  }
+  25% {
+    transform: translate3d(5px, -2px, 0);
+  }
+  37% {
+    transform: translate3d(-4px, 2px, 0);
+  }
+  50% {
+    transform: translate3d(4px, -3px, 0);
+  }
+  62% {
+    transform: translate3d(-3px, 1px, 0);
+  }
+  75% {
+    transform: translate3d(3px, -1px, 0);
+  }
+  87% {
+    transform: translate3d(-2px, 0, 0);
+  }
+}
+
+.battle-page-root {
+  width: 100%;
+  min-height: 100%;
+
+  &.battle-page-root--hit-shake {
+    animation: battle-page-hit-shake 0.38s ease-in-out;
+  }
+}
+
 .battle-selector__type-chart-link {
   display: block;
   text-align: center;
@@ -334,6 +371,7 @@
   transform: translateX(-50%);
   color: red;
   font-weight: bold;
+  font-size: 1rem;
 
   &.healing {
     color: #00ff00; // Bright green for healing

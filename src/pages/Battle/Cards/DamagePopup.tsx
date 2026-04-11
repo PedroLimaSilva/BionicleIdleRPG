@@ -5,6 +5,8 @@ import { isTestMode } from '../../../utils/testMode';
 export type DamagePopupEvent = {
   id: number;
   value: number;
+  /** Used to scale number size: min(1 + value/maxHp, 2) for damage popups */
+  maxHp: number;
 };
 
 export const DamagePopup = ({
@@ -19,6 +21,8 @@ export const DamagePopup = ({
   onComplete: (id: number) => void;
 }) => {
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
+  const maxHpSafe = Math.max(1, popup.maxHp);
+  const fontScale = isHealing ? 1 : Math.min(1 + popup.value / maxHpSafe, 2);
   const travelDistance = direction === 'up' ? -40 : 40;
   const transition = buildTransition(
     {
@@ -32,6 +36,7 @@ export const DamagePopup = ({
     <motion.div
       key={popup.id}
       className={`damage-popup ${direction} ${isHealing ? 'healing' : ''}`}
+      style={{ fontSize: `${fontScale}rem` }}
       initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
       animate={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: travelDistance, scale: 2 }}
       transition={transition}

@@ -15,6 +15,7 @@ export function EnemyCard({ enemy }: { enemy: Combatant }) {
       setDamage({
         id: ++popupSequenceRef.current,
         value: prevHpRef.current - enemy.hp,
+        maxHp: enemy.maxHp,
       });
       setHealing(null); // Clear any healing popup
     } else if (enemy.hp > prevHpRef.current) {
@@ -22,11 +23,12 @@ export function EnemyCard({ enemy }: { enemy: Combatant }) {
       setHealing({
         id: ++popupSequenceRef.current,
         value: enemy.hp - prevHpRef.current,
+        maxHp: enemy.maxHp,
       });
       setDamage(null); // Clear any damage popup
     }
     prevHpRef.current = enemy.hp;
-  }, [enemy.hp]);
+  }, [enemy.hp, enemy.maxHp]);
 
   return (
     <div

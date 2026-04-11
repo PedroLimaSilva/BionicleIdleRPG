@@ -51,6 +51,7 @@ export function AllyCard({
       setDamage({
         id: ++popupSequenceRef.current,
         value: prevHpRef.current - combatant.hp,
+        maxHp: combatant.maxHp,
       });
       setHealing(null); // Clear any healing popup
     } else if (combatant.hp > prevHpRef.current) {
@@ -58,11 +59,12 @@ export function AllyCard({
       setHealing({
         id: ++popupSequenceRef.current,
         value: combatant.hp - prevHpRef.current,
+        maxHp: combatant.maxHp,
       });
       setDamage(null); // Clear any damage popup
     }
     prevHpRef.current = combatant.hp;
-  }, [combatant.hp]);
+  }, [combatant.hp, combatant.maxHp]);
 
   const dex = CHARACTER_DEX[combatant.id as keyof typeof CHARACTER_DEX];
   return (
