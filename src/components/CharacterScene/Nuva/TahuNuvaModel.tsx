@@ -46,7 +46,7 @@ export const TahuNuvaModel = forwardRef<
           'Glowing Eyes',
           'SOLID-SILVER',
           'Lava Blade Glow',
-          'Trans Dark Pink',
+          'Brain',
           'Holder',
           'Nuva Armour',
         ],
