@@ -153,7 +153,7 @@ Keep the current flat UI, invest in motion design, illustration, and polish. Bet
 - [ ] **Battle camera work**: On attack, camera briefly tightens on the attacker/target pair (orthographic zoom shift + position lerp over ~300ms, then restore). This connects the 3D animation to the damage popup.
 - [ ] **Hit impact effects**: Simple instanced particle burst at the target's position on Hit animation. Particle color = attacker's element.
 - [ ] **Defeat effect**: Target model plays Defeat clip + fades to silhouette + dissolves (opacity tween on the mesh material).
-- [ ] Battle HP bars move from 2D cards to **floating world-space HP bars** above each combatant (drei `<Html>` or `<Billboard>` with a DOM HP bar). Cards become a compact sidebar/bottom strip.
+- [x] Battle HP bars move from 2D cards to **floating world-space HP bars** above each combatant (drei `<Html>` or `<Billboard>` with a DOM HP bar). Cards become a compact sidebar/bottom strip.
 
 ### Phase 2: Environmental Backdrops
 
@@ -332,15 +332,15 @@ This puts all interactive elements in the bottom thumb zone while maximizing the
 
 These changes are self-contained, low-risk, and immediately improve feel:
 
-1. **Recruitment celebration** — ✅ Replace `alert()` with an animated modal showing the character's 3D model with a burst of element-colored particles and a "Welcome, Tahu!" message.
+1. ✅ **Recruitment celebration** — Replace `alert()` with an animated modal showing the character's 3D model with a burst of element-colored particles and a "Welcome, Tahu!" message.
 
-2. **Battle button repositioning** — ✅ Move "Run Round" / "Next Wave" / "Retreat" into a fixed bottom bar (`position: fixed; bottom: calc(24px + 64px + env(safe-area-inset-bottom))`), above the nav. Ensure buttons are ≥ 44px tall.
+2. ✅ **Battle button repositioning** — Move "Run Round" / "Next Wave" / "Retreat" into a fixed bottom bar (`position: fixed; bottom: calc(24px + 64px + env(safe-area-inset-bottom))`), above the nav. Ensure buttons are ≥ 44px tall.
 
-3. **Hit feedback juice** — ✅ Add CSS `@keyframes shake` on `.main-content` triggered via a class toggle on critical hits. Add a brief `navigator.vibrate(50)` on damage dealt. Scale damage popup font size by `min(1 + damage/maxHp, 2)` for proportional feedback.
+3. ✅ **Hit feedback juice** — Add CSS `@keyframes shake` on `.main-content` triggered via a class toggle on critical hits. Add a brief `navigator.vibrate(50)` on damage dealt. Scale damage popup font size by `min(1 + damage/maxHp, 2)` for proportional feedback.
 
-4. **Wave transition** — ✅ On wave clear, brief 400ms CSS fade-to-black-and-back on `.battle-arena` before next wave spawns.
+4. ✅ **Wave transition** — On wave clear, brief 400ms CSS fade-to-black-and-back on `.battle-arena` before next wave spawns.
 
-5. **Outcome screen polish** ✅ — Animate reward items appearing one by one (staggered `motion.div` with spring physics). Show exp gain as an animated bar fill.
+5. ✅ **Outcome screen polish** — Animate reward items appearing one by one (staggered `motion.div` with spring physics). Show exp gain as an animated bar fill.
 
 ### First 3D expansion (Phase 1)
 
@@ -348,7 +348,7 @@ These changes are self-contained, low-risk, and immediately improve feel:
 
 7. **Battle camera emphasis** — In `ArenaFraming`, add a transient zoom-in on the attacker/target during `playAnimation('Attack')`. Use a `useSpring` (drei) or manual lerp in `useFrame` to smoothly shift camera position toward the action, then restore. ~300ms in, ~200ms out.
 
-8. **World-space HP** — Add `<Html>` from drei above each `CombatantModel` position with a mini HP bar component. Keep the 2D card HP bars for detailed info, but now the player can read combat from the 3D view alone.
+8. ✅ **World-space HP** — Add `<Html>` from drei above each `CombatantModel` position with a mini HP bar component. Keep the 2D card HP bars for detailed info, but now the player can read combat from the 3D view alone.
 
 9. **Hit particles** — On `playAnimation('Hit')`, spawn a burst of 8–12 instanced quads at the target's world position, colored by the attacker's element. Quads expand outward + fade over 400ms, then dispose. Use a shared `InstancedMesh` pool (max 64 particles) to avoid allocation.
 

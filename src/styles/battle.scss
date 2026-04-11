@@ -282,7 +282,6 @@
     }
   }
 
-  .enemy-list,
   .toa-team {
     display: flex;
     gap: 1rem;
@@ -296,7 +295,6 @@
     }
   }
 
-  .enemy-card,
   .character-card {
     background: #222;
     border-radius: 8px;
@@ -332,16 +330,6 @@
       height: unset;
       width: 100%;
     }
-  }
-
-  .hp-bar-host {
-    position: relative;
-    width: 100%;
-    min-height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 0.25rem;
   }
 }
 
