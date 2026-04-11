@@ -1,0 +1,119 @@
+.recruitment-celebration-backdrop {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.85) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.celebration-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.celebration-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--theme-element-glow);
+  box-shadow: 0 0 6px var(--theme-element-glow);
+}
+
+.celebration-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2.5rem 2rem 2rem;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--theme-element-glow-strong);
+  background: linear-gradient(160deg, rgba(21, 21, 24, 0.97) 0%, rgba(30, 30, 35, 0.95) 100%);
+  box-shadow:
+    0 0 40px var(--theme-element-glow-transparent),
+    0 0 80px var(--theme-element-glow-transparent),
+    0 8px 32px rgba(0, 0, 0, 0.6);
+  width: 90vw;
+  max-width: 380px;
+  overflow: hidden;
+}
+
+.celebration-flare {
+  position: absolute;
+  top: -60%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200%;
+  height: 120%;
+  background: radial-gradient(
+    ellipse at center,
+    var(--theme-element-glow-transparent) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+  animation: celebration-flare-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes celebration-flare-pulse {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 0.7;
+  }
+}
+
+.celebration-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 1;
+}
+
+.celebration-subtitle {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--theme-element-primary);
+  opacity: 0.8;
+}
+
+.celebration-name {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-shadow:
+    0 0 16px var(--theme-element-glow),
+    0 0 32px var(--theme-element-glow-transparent);
+  margin: 0;
+  text-align: center;
+}
+
+.celebration-element-badge {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--theme-element-primary);
+  padding: 0.25rem 1rem;
+  border: 1px solid var(--theme-element-glow-strong);
+  border-radius: var(--border-radius-xl);
+  background: var(--theme-element-glow-transparent);
+}
+
+.celebration-dismiss {
+  z-index: 1;
+  min-width: 160px;
+  text-align: center;
+  margin-top: 0.5rem;
+}
