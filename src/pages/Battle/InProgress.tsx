@@ -1,12 +1,19 @@
-import { useEffect } from 'react';
+import { useReducedMotion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../../context/Game';
+import { isTestMode } from '../../utils/testMode';
 import { EnemyCard } from './Cards/Enemy';
 import { AllyCard } from './Cards/Ally';
+
+const WAVE_CLEAR_TRANSITION_MS = 400;
 
 export const BattleInProgress = () => {
   const { battle } = useGame();
   const { currentWave, enemies, team, actionQueue, playActionQueue, isRunningRound, retreat } =
     battle;
+  const [waveClearPlaying, setWaveClearPlaying] = useState(false);
+  const waveClearTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   useEffect(() => {
     if (actionQueue && actionQueue.length > 0 && isRunningRound === false) {
@@ -14,11 +21,38 @@ export const BattleInProgress = () => {
     }
   }, [playActionQueue, actionQueue, isRunningRound]);
 
+  useEffect(() => {
+    return () => {
+      if (waveClearTimerRef.current) {
+        clearTimeout(waveClearTimerRef.current);
+        waveClearTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  const runAfterWaveClear = () => {
+    if (shouldReduceMotion) {
+      battle.advanceWave();
+      return;
+    }
+    if (waveClearTimerRef.current) clearTimeout(waveClearTimerRef.current);
+    setWaveClearPlaying(true);
+    waveClearTimerRef.current = setTimeout(() => {
+      battle.advanceWave();
+      setWaveClearPlaying(false);
+      waveClearTimerRef.current = null;
+    }, WAVE_CLEAR_TRANSITION_MS);
+  };
+
+  const buttonsLocked = isRunningRound || waveClearPlaying;
+
   return (
     <div className="page-container battle">
       <h1 className="title">Wave {currentWave + 1}</h1>
 
-      <div className="battle-arena">
+      <div
+        className={`battle-arena${waveClearPlaying ? ' battle-arena--wave-clear' : ''}`}
+      >
         {/* Enemy Side */}
         <div className="enemy-side">
           <div className="enemy-list">
@@ -54,7 +88,7 @@ export const BattleInProgress = () => {
       <div className="battle-buttons">
         <button
           className="cancel-button"
-          disabled={battle.isRunningRound}
+          disabled={buttonsLocked}
           onClick={() => retreat()}
         >
           Retreat
@@ -63,7 +97,7 @@ export const BattleInProgress = () => {
         {battle.enemies.length && battle.enemies.some((e) => e.hp > 0) ? (
           <button
             className="confirm-button"
-            disabled={battle.isRunningRound}
+            disabled={buttonsLocked}
             onClick={() => {
               battle.runRound();
             }}
@@ -73,10 +107,8 @@ export const BattleInProgress = () => {
         ) : (
           <button
             className="confirm-button"
-            disabled={battle.isRunningRound}
-            onClick={() => {
-              battle.advanceWave();
-            }}
+            disabled={buttonsLocked}
+            onClick={runAfterWaveClear}
           >
             Next Wave
           </button>

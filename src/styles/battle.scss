@@ -198,6 +198,18 @@
   }
 }
 
+@keyframes battle-arena-wave-clear {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .main-content.landscape {
   .battle {
     padding-right: 2rem;
@@ -297,6 +309,17 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    &--wave-clear::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      touch-action: none;
+      background: #000;
+      animation: battle-arena-wave-clear 0.4s ease-in-out forwards;
+    }
   }
 
   .enemy-list,
