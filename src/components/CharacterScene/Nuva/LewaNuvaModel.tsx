@@ -39,10 +39,9 @@ export const LewaNuvaModel = forwardRef<
         edgeCurvatureScale: 2,
         excludeMaterialNames: [
           'Glowing Eyes',
-          'Trans Dark Pink',
+          'Brain',
           'SOLID-SILVER',
           'Nuva Armour',
-          'Lewa Glow',
           'Holder.002',
         ],
       });
