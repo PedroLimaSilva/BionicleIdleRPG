@@ -10,7 +10,7 @@ export const ENEMY_DEX = {
     stage: MatoranStage.Makuta,
     colors: {
       face: LegoColor.DarkGray,
-      mask: LegoColor.DarkGray,
+      mask: LegoColor.White,
       body: LegoColor.Black,
       feet: LegoColor.Black,
       arms: LegoColor.DarkGray,
