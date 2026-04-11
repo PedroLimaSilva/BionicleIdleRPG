@@ -2,6 +2,7 @@ import { CombatantTemplate, EnemyEncounter, MaskPower } from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 import { KraataPower } from '../types/Kraata';
 import { MOL_DEFEAT_OF_MAKUTA_QUEST_ID, MOL_TAKANUVA_RISES_QUEST_ID } from './quests/mask_of_light';
+import { BOHROK_KRANA_LEGEND_QUEST_ID } from './quests/bohrok_swarm';
 
 export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   [Mask.Avohkii]: {
@@ -839,6 +840,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'An aggressive swarm of fire-spewing Bohrok.',
     waves: [[...makeBohrokWave('tahnok', 20, 3)], [...makeBohrokWave('tahnok', 20, 2)]],
     loot: makeLoot('blue', [0, 1]),
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'tahnok-2',
@@ -851,6 +853,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('nuhvok', 25, 1), ...makeBohrokWave('tahnok', 25, 2)],
     ],
     loot: [...makeLoot('blue', [2, 3]), ...makeLoot('lime', [2, 3])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'tahnok-3',
@@ -864,6 +867,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('tahnok', 30, 1)],
     ],
     loot: [...makeLoot('blue', [4, 5]), ...makeLoot('red', [4, 5])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'tahnok-4',
@@ -878,6 +882,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('tahnok', 35, 1)],
     ],
     loot: [...makeLoot('blue', [6, 7]), ...makeLoot('lime', [6, 7])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   // Gahlok (Water / orange) - 4 tiers
   {
@@ -888,6 +893,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Swift and evasive water attackers.',
     waves: [[...makeBohrokWave('gahlok', 20, 2)], [...makeBohrokWave('gahlok', 20, 3)]],
     loot: makeLoot('orange', [0, 1]),
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'gahlok-2',
@@ -901,6 +907,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('gahlok', 25, 1)],
     ],
     loot: [...makeLoot('orange', [2, 3]), ...makeLoot('red', [2, 3])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'gahlok-3',
@@ -915,6 +922,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('gahlok', 30, 1)],
     ],
     loot: [...makeLoot('orange', [4, 5]), ...makeLoot('white', [4, 5])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'gahlok-4',
@@ -929,6 +937,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('gahlok', 35, 2)],
     ],
     loot: [...makeLoot('orange', [6, 7]), ...makeLoot('white', [6, 7]), ...makeLoot('red', [6, 7])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   // Lehvak (Air / red) - 4 tiers
   {
@@ -939,6 +948,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Swift and evasive air attackers.',
     waves: [[...makeBohrokWave('lehvak', 20, 2)], [...makeBohrokWave('lehvak', 20, 2)]],
     loot: makeLoot('red', [0, 1]),
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'lehvak-2',
@@ -951,6 +961,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('pahrak', 25, 1), ...makeBohrokWave('lehvak', 25, 2)],
     ],
     loot: [...makeLoot('red', [2, 3]), ...makeLoot('green', [2, 3])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'lehvak-3',
@@ -964,6 +975,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('lehvak', 30, 1)],
     ],
     loot: [...makeLoot('red', [4, 5]), ...makeLoot('orange', [4, 5])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'lehvak-4',
@@ -978,6 +990,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('lehvak', 35, 1)],
     ],
     loot: [...makeLoot('red', [6, 7]), ...makeLoot('blue', [6, 7])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   // Pahrak (Stone / green) - 4 tiers
   {
@@ -988,6 +1001,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Stone Bohrok that absorb and reflect damage.',
     waves: [[...makeBohrokWave('pahrak', 20, 2)], [...makeBohrokWave('pahrak', 20, 2)]],
     loot: makeLoot('green', [0, 1]),
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'pahrak-2',
@@ -1000,6 +1014,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('nuhvok', 25, 1), ...makeBohrokWave('pahrak', 25, 2)],
     ],
     loot: [...makeLoot('green', [2, 3]), ...makeLoot('lime', [2, 3])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'pahrak-3',
@@ -1013,6 +1028,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('pahrak', 30, 1)],
     ],
     loot: [...makeLoot('green', [4, 5]), ...makeLoot('white', [4, 5])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'pahrak-4',
@@ -1027,6 +1043,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('pahrak', 35, 1)],
     ],
     loot: [...makeLoot('green', [6, 7]), ...makeLoot('red', [6, 7])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   // Nuhvok (Earth / lime) - 4 tiers
   {
@@ -1037,6 +1054,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Earth Bohrok that strike from below.',
     waves: [[...makeBohrokWave('nuhvok', 20, 2)], [...makeBohrokWave('nuhvok', 20, 2)]],
     loot: makeLoot('lime', [0, 1]),
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'nuhvok-2',
@@ -1049,6 +1067,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('tahnok', 25, 1), ...makeBohrokWave('nuhvok', 25, 2)],
     ],
     loot: [...makeLoot('lime', [2, 3]), ...makeLoot('blue', [2, 3])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'nuhvok-3',
@@ -1062,6 +1081,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('nuhvok', 30, 1)],
     ],
     loot: [...makeLoot('lime', [4, 5]), ...makeLoot('green', [4, 5])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'nuhvok-4',
@@ -1076,6 +1096,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('nuhvok', 35, 1)],
     ],
     loot: [...makeLoot('lime', [6, 7]), ...makeLoot('white', [6, 7])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   // Kohrak (Ice / white) - 4 tiers
   {
@@ -1086,6 +1107,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     description: 'Ice Bohrok that freeze and slow.',
     waves: [[...makeBohrokWave('kohrak', 20, 2)], [...makeBohrokWave('kohrak', 20, 2)]],
     loot: makeLoot('white', [0, 1]),
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'kohrak-2',
@@ -1098,6 +1120,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('gahlok', 25, 1), ...makeBohrokWave('kohrak', 25, 2)],
     ],
     loot: [...makeLoot('white', [2, 3]), ...makeLoot('orange', [2, 3])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'kohrak-3',
@@ -1111,6 +1134,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('kohrak', 30, 1)],
     ],
     loot: [...makeLoot('white', [4, 5]), ...makeLoot('red', [4, 5])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
   {
     id: 'kohrak-4',
@@ -1125,6 +1149,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
       [...makeBohrokWave('kohrak', 35, 1)],
     ],
     loot: [...makeLoot('white', [6, 7]), ...makeLoot('blue', [6, 7])],
+    unlockedAfter: [BOHROK_KRANA_LEGEND_QUEST_ID],
   },
 
   // Bohrok Kal - Elite encounters; each Kal is unique. Unwinnable until final.

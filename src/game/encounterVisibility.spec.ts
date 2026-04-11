@@ -140,6 +140,20 @@ describe('encounterVisibility', () => {
       expect(visible).toHaveLength(0);
     });
 
+    test('hides Bohrok krana encounters until bohrok_legend_of_krana is complete', () => {
+      const encounters: EnemyEncounter[] = [
+        mockEncounter(
+          'tahnok-1',
+          'tahnok',
+          1,
+          [{ id: 'krana-xa-blue', chance: 0.15 }],
+          ['bohrok_legend_of_krana']
+        ),
+      ];
+      const visible = getVisibleEncounters(encounters, {}, []);
+      expect(visible).toHaveLength(0);
+    });
+
     test('includes encounter when unlockedAfter quests are completed', () => {
       const encounters: EnemyEncounter[] = [
         mockEncounter(

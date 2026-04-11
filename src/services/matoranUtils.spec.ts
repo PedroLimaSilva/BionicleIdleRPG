@@ -124,10 +124,6 @@ describe('matoranUtils', () => {
   });
 
   describe('recruitMatoran', () => {
-    beforeEach(() => {
-      global.alert = jest.fn();
-    });
-
     test('recruits character when enough protodermis', () => {
       const character: ListedCharacterData = {
         id: 'Jala',
@@ -154,7 +150,6 @@ describe('matoranUtils', () => {
       expect(result.updatedProtodermis).toBe(50);
       expect(result.newRecruit).toBeNull();
       expect(result.updatedBuyable).toEqual(buyableCharacters);
-      expect(global.alert).toHaveBeenCalledWith('Not enough protodermis!');
     });
 
     test('removes recruited character from buyable list', () => {

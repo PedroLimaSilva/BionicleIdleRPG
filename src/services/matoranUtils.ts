@@ -169,7 +169,6 @@ export function recruitMatoran(
   updatedBuyable: ListedCharacterData[];
 } {
   if (protodermis < character.cost) {
-    alert('Not enough protodermis!');
     return {
       updatedProtodermis: protodermis,
       newRecruit: null,

@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import './index.scss';
-import { ListedCharacterData } from '../../types/Matoran';
+import { BaseMatoran, ListedCharacterData } from '../../types/Matoran';
 import { useGame } from '../../context/Game';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { RecruitmentCelebration } from '../../components/RecruitmentCelebration';
 
 export const Recruitment: React.FC = () => {
   const { protodermis, recruitCharacter, buyableCharacters } = useGame();
@@ -16,23 +17,29 @@ export const Recruitment: React.FC = () => {
   const navigate = useNavigate();
 
   const [selectedMatoran, setSelectedMatoran] = useState<ListedCharacterData | null>(null);
+  const [celebratedCharacter, setCelebratedCharacter] = useState<BaseMatoran | null>(null);
+  const pendingNextRef = useRef<ListedCharacterData | null>(null);
+  const pendingNavigateRef = useRef(false);
 
   const canRecruit = useMemo(() => {
     return selectedMatoran && protodermis >= selectedMatoran.cost;
   }, [selectedMatoran, protodermis]);
 
   useEffect(() => {
-    setSelectedMatoran(buyableCharacters[0] || null);
-  }, [buyableCharacters]);
+    if (!celebratedCharacter) {
+      setSelectedMatoran(buyableCharacters[0] || null);
+    }
+  }, [buyableCharacters, celebratedCharacter]);
 
   useEffect(() => {
+    if (celebratedCharacter) return;
     if (selectedMatoran) {
       setScene(<CharacterScene matoran={{ ...CHARACTER_DEX[selectedMatoran.id], exp: 0 }} />);
     }
     return () => {
       setScene(null);
     };
-  }, [selectedMatoran, setScene]);
+  }, [selectedMatoran, setScene, celebratedCharacter]);
 
   const selectPrev = useCallback(() => {
     if (!selectedMatoran) return;
@@ -50,15 +57,26 @@ export const Recruitment: React.FC = () => {
 
   const confirmRecruitment = () => {
     if (selectedMatoran && canRecruit) {
-      alert(`${CHARACTER_DEX[selectedMatoran.id].name} has been recruited!`);
+      const recruited = CHARACTER_DEX[selectedMatoran.id];
+      const nextFocusedCharacter =
+        buyableCharacters.filter((c) => c.id !== selectedMatoran.id)[0] ?? null;
+      pendingNextRef.current = nextFocusedCharacter;
+      pendingNavigateRef.current = !nextFocusedCharacter;
       recruitCharacter(selectedMatoran);
-      const nextFocusedCharacter = buyableCharacters[0] || null;
-      if (!nextFocusedCharacter || buyableCharacters.length === 1) {
-        navigate('/characters');
-      }
-      setSelectedMatoran(nextFocusedCharacter);
+      setCelebratedCharacter(recruited);
     }
   };
+
+  const dismissCelebration = useCallback(() => {
+    setCelebratedCharacter(null);
+    if (pendingNavigateRef.current) {
+      pendingNavigateRef.current = false;
+      navigate('/characters');
+    } else if (pendingNextRef.current) {
+      setSelectedMatoran(pendingNextRef.current);
+      pendingNextRef.current = null;
+    }
+  }, [navigate]);
 
   return (
     <div className="recruitment-screen">
@@ -109,6 +127,8 @@ export const Recruitment: React.FC = () => {
           </div>
         </div>
       )}
+
+      <RecruitmentCelebration matoran={celebratedCharacter} onDismiss={dismissCelebration} />
     </div>
   );
 };
