@@ -1,5 +1,13 @@
-import { motion, useReducedMotion } from 'motion/react';
-import { useMemo } from 'react';
+import {
+  animate,
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useReducedMotion,
+  useTransform,
+} from 'motion/react';
+import { useEffect, useMemo, useState } from 'react';
 import { BattlePhase } from '../../hooks/useBattleState';
 import { useGame } from '../../context/Game';
 import { KRAATA_POWER_NAMES, KraataReward } from '../../types/Kraata';
@@ -14,7 +22,7 @@ import { isTestMode } from '../../utils/testMode';
 import { CompositedImage } from '../../components/CompositedImage';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { MatoranAvatar } from '../../components/MatoranAvatar';
-import { getLevelFromExp } from '../../game/Levelling';
+import { getExpProgress, getLevelFromExp } from '../../game/Levelling';
 
 import './BattleOutcome.scss';
 
@@ -61,16 +69,92 @@ function ToaExpCard({
   index: number;
   reduceMotion: boolean;
 }) {
-  const barTransition = buildTransition(
-    {
-      duration: MOTION_DURATION.verySlow,
-      ease: MOTION_EASING.standard,
-      delay: 0.12 + index * 0.08,
-    },
-    reduceMotion
+  const expAfter = recruited.exp;
+  const expBefore = expAfter - expEach;
+  const levelBeforeBattle = getLevelFromExp(expBefore);
+  const levelAfterBattle = getLevelFromExp(expAfter);
+  const leveledUp = expEach > 0 && levelAfterBattle > levelBeforeBattle;
+
+  const displayedExp = useMotionValue(reduceMotion || expEach <= 0 ? expAfter : expBefore);
+  const barWidth = useTransform(displayedExp, (v) => {
+    const { progress } = getExpProgress(Math.max(0, Math.floor(v)));
+    const clamped = Math.max(0, Math.min(1, progress));
+    return `${clamped * 100}%`;
+  });
+
+  const [displayedFloored, setDisplayedFloored] = useState(
+    reduceMotion || expEach <= 0 ? expAfter : expBefore
   );
+  const [levelShown, setLevelShown] = useState(
+    reduceMotion || expEach <= 0 ? levelAfterBattle : levelBeforeBattle
+  );
+  const [showLevelUpBanner, setShowLevelUpBanner] = useState(false);
+
+  useMotionValueEvent(displayedExp, 'change', (v) => {
+    const floored = Math.max(0, Math.floor(v));
+    setDisplayedFloored(floored);
+    setLevelShown(getLevelFromExp(floored));
+  });
+
+  const barDelay = 0.12 + index * 0.08;
+  const expCountDuration = MOTION_DURATION.verySlow;
+
+  useEffect(() => {
+    if (reduceMotion) {
+      displayedExp.set(expAfter);
+      setDisplayedFloored(expAfter);
+      setLevelShown(levelAfterBattle);
+      setShowLevelUpBanner(leveledUp);
+      return;
+    }
+
+    displayedExp.set(expBefore);
+    setDisplayedFloored(expBefore);
+    setLevelShown(levelBeforeBattle);
+    setShowLevelUpBanner(false);
+
+    if (expEach <= 0) {
+      return;
+    }
+
+    const controls = animate(displayedExp, expAfter, {
+      duration: expCountDuration,
+      ease: MOTION_EASING.standard,
+      delay: barDelay,
+      onComplete: () => {
+        setDisplayedFloored(expAfter);
+        setLevelShown(levelAfterBattle);
+        if (leveledUp) {
+          setShowLevelUpBanner(true);
+        }
+      },
+    });
+
+    return () => controls.stop();
+  }, [
+    barDelay,
+    displayedExp,
+    expAfter,
+    expBefore,
+    expEach,
+    expCountDuration,
+    leveledUp,
+    levelAfterBattle,
+    levelBeforeBattle,
+    reduceMotion,
+  ]);
+
   const cardTransition = buildTransition(
     { duration: MOTION_DURATION.slow, ease: MOTION_EASING.emphasized, delay: 0.05 + index * 0.06 },
+    reduceMotion
+  );
+
+  const levelUpTransition = buildTransition(
+    {
+      duration: MOTION_DURATION.slow,
+      ease: MOTION_EASING.emphasized,
+      delay: barDelay + expCountDuration * 0.15,
+    },
     reduceMotion
   );
 
@@ -81,26 +165,52 @@ function ToaExpCard({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={cardTransition}
     >
+      <AnimatePresence>
+        {showLevelUpBanner && (
+          <motion.div
+            key="level-up"
+            className="battle-outcome__exp-toa-level-up"
+            role="status"
+            aria-live="polite"
+            initial={reduceMotion ? { x: '-50%' } : { opacity: 0, scale: 0.35, y: 8, x: '-50%' }}
+            animate={{ opacity: 1, scale: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, scale: 0.9, x: '-50%' }}
+            transition={levelUpTransition}
+          >
+            LEVEL UP
+          </motion.div>
+        )}
+      </AnimatePresence>
       <MatoranAvatar
         matoran={{ ...dex, ...recruited }}
         styles="matoran-avatar model-preview battle-outcome__exp-toa-avatar"
       />
       <div className="card-header battle-outcome__exp-toa-header">
         {dex.name}
-        <div className="level-label">Level {getLevelFromExp(recruited.exp)}</div>
+        <div className="level-label">Level {levelShown}</div>
       </div>
       <div className="battle-outcome__exp-toa-footer">
         <span className="battle-outcome__exp-toa-amount">
-          {expEach > 0 ? `+${expEach}` : expTotal > 0 ? '+0' : '—'}
+          {expTotal <= 0 ? (
+            <span className="battle-outcome__exp-toa-none">—</span>
+          ) : (
+            <>
+              <span className="battle-outcome__exp-toa-total">
+                {displayedFloored.toLocaleString()} EXP
+              </span>
+              {expEach > 0 ? (
+                <span className="battle-outcome__exp-toa-gain">+{expEach.toLocaleString()}</span>
+              ) : (
+                <span className="battle-outcome__exp-toa-gain battle-outcome__exp-toa-gain--zero">
+                  +0
+                </span>
+              )}
+            </>
+          )}
         </span>
         {expEach > 0 && (
           <div className="battle-outcome__exp-toa-track">
-            <motion.div
-              className="battle-outcome__exp-toa-fill"
-              initial={{ width: '0%' }}
-              animate={{ width: '100%' }}
-              transition={barTransition}
-            />
+            <motion.div className="battle-outcome__exp-toa-fill" style={{ width: barWidth }} />
           </div>
         )}
       </div>
