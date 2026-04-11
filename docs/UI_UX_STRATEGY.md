@@ -151,7 +151,7 @@ Keep the current flat UI, invest in motion design, illustration, and polish. Bet
 - [ ] `#canvas-mount` becomes always-on at `z-index: -1` with a simple default backdrop (dark gradient with subtle floating particles — "void of Mata Nui")
 - [ ] Per-route backdrop: simple colored lighting shifts + particle density changes (no new geometry yet)
 - [ ] **Battle camera work**: On attack, camera briefly tightens on the attacker/target pair (orthographic zoom shift + position lerp over ~300ms, then restore). This connects the 3D animation to the damage popup.
-- [ ] **Hit impact effects**: Simple instanced particle burst at the target's position on Hit animation. Particle color = attacker's element.
+- [x] **Hit impact effects**: Simple instanced particle burst at the target's position on Hit animation. Particle color = attacker's element.
 - [ ] **Defeat effect**: Target model plays Defeat clip + fades to silhouette + dissolves (opacity tween on the mesh material).
 - [x] Battle HP bars move from 2D cards to **floating world-space HP bars** above each combatant (drei `<Html>` or `<Billboard>` with a DOM HP bar). Cards become a compact sidebar/bottom strip.
 
@@ -350,7 +350,7 @@ These changes are self-contained, low-risk, and immediately improve feel:
 
 8. ✅ **World-space HP** — Add `<Html>` from drei above each `CombatantModel` position with a mini HP bar component. Keep the 2D card HP bars for detailed info, but now the player can read combat from the 3D view alone.
 
-9. **Hit particles** — On `playAnimation('Hit')`, spawn a burst of 8–12 instanced quads at the target's world position, colored by the attacker's element. Quads expand outward + fade over 400ms, then dispose. Use a shared `InstancedMesh` pool (max 64 particles) to avoid allocation.
+9. ✅ **Hit particles** — On `playAnimation('Hit')`, spawn a burst of 8–12 instanced quads at the target's world position, colored by the attacker's element. Quads expand outward + fade over 400ms, then dispose. Use a shared `InstancedMesh` pool (max 64 particles) to avoid allocation.
 
 ### Metrics to track
 

@@ -658,6 +658,10 @@ export function queueCombatRound(
           isCritical,
           damageDealt,
           targetMaxHp: target.maxHp,
+          reactionAnimation: willBeDefeated ? 'Defeat' : 'Hit',
+          targetId: target.id,
+          targetModel: target.model,
+          attackerElement: self.element,
         });
       }
 

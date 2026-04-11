@@ -1,8 +1,18 @@
+import { ElementTribe } from '../types/Matoran';
+
 export type BattleHitFeedbackDetail = {
   isCritical: boolean;
   /** HP actually lost after mitigation */
   damageDealt: number;
   targetMaxHp: number;
+  /** Which reaction animation is expected to play on the target. */
+  reactionAnimation?: 'Hit' | 'Defeat';
+  /** Combatant id used for world-space hit VFX placement. */
+  targetId?: string;
+  /** Model family of the target, used for per-model Y offset. */
+  targetModel?: string;
+  /** Element of the attacker, used for hit particle color. */
+  attackerElement?: ElementTribe;
 };
 
 const EVENT_NAME = 'battleHitFeedback';

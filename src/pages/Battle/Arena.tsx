@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/useSettings';
 import { shouldEnableShadows } from '../../utils/testMode';
+import { HitImpactParticles } from './HitImpactParticles';
 
 function EnvironmentIntensity({ value }: { value: number }) {
   const scene = useThree((s) => s.scene);
@@ -123,7 +124,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
       sceneGroupRef.current?.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           const mesh = child as THREE.Mesh;
-          if (mesh.name.startsWith('Plane')) return;
+          if (mesh.name.startsWith('Plane') || mesh.name === 'HitImpactParticles') return;
           mesh.castShadow = true;
           mesh.receiveShadow = true;
         }
@@ -179,6 +180,8 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
             <circleGeometry args={[ARENA_BOX_SIZE / 2, 64]} />
             <meshStandardMaterial color="#151518" transparent={true} opacity={1} />
           </mesh>
+
+          <HitImpactParticles />
 
           {team.map((c, i) => (
             <CombatantModel
