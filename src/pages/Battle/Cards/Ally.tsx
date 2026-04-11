@@ -6,6 +6,7 @@ import { HpBar } from '../../../components/HpBar';
 import { CHARACTER_DEX } from '../../../data/dex/index';
 import { MatoranAvatar } from '../../../components/MatoranAvatar';
 import { MaskPowerTooltip } from '../../../components/MaskPowerTooltip';
+import { MaskActivationBurst } from './MaskActivationBurst';
 
 export function AllyCard({
   combatant,
@@ -88,6 +89,7 @@ export function AllyCard({
           maskPowerActive={maskActive}
         />
       </MaskPowerTooltip>
+      <MaskActivationBurst active={maskActive} elementClass={`element-${dex.element}`} />
       <div className="card-header">
         {dex.name}
         <div className="level-label">Level {combatant.lvl}</div>
@@ -101,11 +103,7 @@ export function AllyCard({
         ></div>
       )}
       <div className="hp-bar-host">
-        <HpBar
-          hp={combatant.hp}
-          maxHp={combatant.maxHp}
-          defeated={combatant.hp <= 0}
-        />
+        <HpBar hp={combatant.hp} maxHp={combatant.maxHp} defeated={combatant.hp <= 0} />
         {damage && (
           <DamagePopup
             popup={damage}
