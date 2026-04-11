@@ -23,6 +23,7 @@
       flex-direction: column;
       padding: 0.5rem 0.5rem;
       height: fit-content;
+      min-height: 320px;
     }
     .nav-item {
       &:hover,
