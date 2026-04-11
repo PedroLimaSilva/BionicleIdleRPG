@@ -37,7 +37,7 @@ export const GaliNuvaModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Trans Neon Yellow.002', 'Gali Eyes.005', 'Nuva Armour', 'Holder'],
+        excludeMaterialNames: ['Brain', 'Glowing Eyes', 'Nuva Armour', 'Holder'],
       });
     }
   }, [nodes]);
