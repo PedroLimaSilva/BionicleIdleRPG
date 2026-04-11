@@ -37,7 +37,7 @@ export const KopakaNuvaModel = forwardRef<
         edgeColor: '#ffffff',
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        excludeMaterialNames: ['Brain', 'Glowing Eyes', 'SOLID-SILVER', 'Nuva Armour', 'Holder'],
       });
     }
   }, [nodes]);
