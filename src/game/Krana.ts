@@ -77,6 +77,16 @@ export const ELEMENT_TO_KRANA_COLOR: Record<KranaElement, string> = {
   [ElementTribe.Stone]: 'green',
 };
 
+/** Hex color per Krana element, used for UI tinting (e.g. Battle outcome screen). */
+export const ELEMENT_TO_KRANA_COLOR_HEX: Record<KranaElement, string> = {
+  [ElementTribe.Fire]: '#036be3',
+  [ElementTribe.Water]: '#ff7300',
+  [ElementTribe.Air]: '#d60202',
+  [ElementTribe.Earth]: '#84ff00',
+  [ElementTribe.Ice]: '#00e1ff',
+  [ElementTribe.Stone]: '#006e06',
+};
+
 function isKranaDropId(id: string): boolean {
   return id.startsWith('krana-');
 }

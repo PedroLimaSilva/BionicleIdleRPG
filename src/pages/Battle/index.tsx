@@ -4,6 +4,7 @@ import { BattlePhase } from '../../hooks/useBattleState';
 import { useEffect, useRef } from 'react';
 import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
+import { BattleOutcome } from './BattleOutcome';
 import { useBattlePageHitFeedback } from './useBattlePageHitFeedback';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { Arena } from './Arena';
@@ -13,7 +14,7 @@ import {
   computeKranaRewardsForBattle,
   computeKraataRewardsForBattle,
 } from '../../game/BattleRewards';
-import { KRAATA_POWER_NAMES, KraataReward } from '../../types/Kraata';
+import { KraataReward } from '../../types/Kraata';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
@@ -102,8 +103,6 @@ export const BattlePage: React.FC = () => {
       currentEncounter && getEnemiesDefeatedCount(currentEncounter, phase, currentWave, enemies);
     const expTotal =
       currentEncounter && computeBattleExpTotal(currentEncounter, phase, currentWave, enemies);
-    const participantCount = team.length;
-
     const handleCollectRewards = () => {
       if (currentEncounter) {
         applyBattleRewards({
@@ -122,51 +121,18 @@ export const BattlePage: React.FC = () => {
 
     return (
       <div className={`${battlePageRootClass} page-container battle battle--outcome`}>
-        <h1 className="battle-outcome__title">{phase}</h1>
-        <div className="battle-arena"></div>
-        <div className="battle-rewards-panel">
-          <p className="battle-rewards-panel__row">Enemies defeated: {enemiesDefeated ?? 0}</p>
-          <p className="battle-rewards-panel__row battle-rewards-panel__exp">
-            {expTotal !== undefined && expTotal > 0 ? (
-              <>
-                EXP earned: {expTotal} total
-                {participantCount > 0 && <> ({Math.floor(expTotal / participantCount)} per Toa)</>}
-              </>
-            ) : (
-              <span className="battle-rewards-panel__empty">EXP earned: 0</span>
-            )}
-          </p>
-          <p className="battle-rewards-panel__row battle-rewards-panel__krana">
-            Krana recovered:{' '}
-            {kranaRewards.length > 0 ? (
-              kranaRewards.map((r) => `${r.kranaId} (${r.element})`).join(', ')
-            ) : (
-              <span className="battle-rewards-panel__empty">None</span>
-            )}
-          </p>
-          {kraataRewards.length > 0 && (
-            <p className="battle-rewards-panel__row battle-rewards-panel__items">
-              Kraata found:{' '}
-              {kraataRewards
-                .map((r) => {
-                  const label = `Kraata of ${KRAATA_POWER_NAMES[r.power] ?? r.power}`;
-                  return r.qty > 1 ? `${label} x${r.qty}` : label;
-                })
-                .join(', ')}
-            </p>
-          )}
-          <button
-            className="confirm-button battle-rewards-panel__collect"
-            onClick={handleCollectRewards}
-          >
-            Collect Rewards
-          </button>
-        </div>
+        <BattleOutcome
+          phase={phase}
+          enemiesDefeated={enemiesDefeated ?? 0}
+          expTotal={expTotal ?? 0}
+          team={team}
+          kranaRewards={kranaRewards}
+          kraataRewards={kraataRewards}
+          onCollect={handleCollectRewards}
+        />
       </div>
     );
   }
 
-  return (
-    <div className={`${battlePageRootClass} page-container`}>Battle status: {phase}</div>
-  );
+  return <div className={`${battlePageRootClass} page-container`}>Battle status: {phase}</div>;
 };

@@ -3,6 +3,7 @@ import { ElementTribe } from '../types/Matoran';
 import { BattleStrategy, type Combatant, type EnemyEncounter } from '../types/Combat';
 import type { KranaCollection } from '../types/Krana';
 import {
+  computeBattleExpPerParticipant,
   computeBattleExpTotal,
   computeKranaRewardsForBattle,
   getDefeatedEnemyElements,
@@ -116,6 +117,28 @@ describe('BattleRewards', () => {
       ];
       const total = computeBattleExpTotal(encounter, BattlePhase.Defeat, 1, currentEnemies);
       expect(total).toBe(20 * 5 + 25 * 5);
+    });
+  });
+
+  describe('computeBattleExpPerParticipant', () => {
+    test('matches floor(total / unique participant count)', () => {
+      const team = [
+        baseCombatant({ id: 'Toa_Tahu' }),
+        baseCombatant({ id: 'Toa_Gali' }),
+        baseCombatant({ id: 'Toa_Onua' }),
+      ];
+      expect(computeBattleExpPerParticipant(team, 100)).toBe(33);
+      expect(computeBattleExpPerParticipant(team, 0)).toBe(0);
+      expect(computeBattleExpPerParticipant([], 50)).toBe(0);
+    });
+
+    test('uses unique ids only when splitting', () => {
+      const team = [
+        baseCombatant({ id: 'Toa_Tahu' }),
+        baseCombatant({ id: 'Toa_Gali' }),
+        baseCombatant({ id: 'Toa_Tahu' }),
+      ];
+      expect(computeBattleExpPerParticipant(team, 10)).toBe(5);
     });
   });
 

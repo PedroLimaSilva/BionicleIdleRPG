@@ -81,6 +81,15 @@ export function getParticipantIds(team: Combatant[]): string[] {
 }
 
 /**
+ * EXP each unique participant receives when rewards are applied (`floor(total / unique ids)`).
+ */
+export function computeBattleExpPerParticipant(team: Combatant[], expTotal: number): number {
+  const n = getParticipantIds(team).length;
+  if (n === 0 || expTotal <= 0) return 0;
+  return Math.floor(expTotal / n);
+}
+
+/**
  * Element of each defeated enemy (one per enemy), in order, for Krana rolls.
  * Uses Bohrok element from COMBATANT_DEX for wave slots; current wave uses combatant.element.
  */
