@@ -25,6 +25,7 @@ async function openVideoCutscene(page: import('@playwright/test').Page) {
   });
   await goto(page, '/quests', { hideCanvasBeforeNav: true });
   await page.locator('h2.quests-page__title').first().waitFor({ state: 'visible', timeout: 10000 });
+  await page.locator('.quests-page__section-title:has-text("Arrival of the Toa")').click();
   await page.locator('.quests-page__item-title:has-text("The Arrival of the Toa")').click();
   await page.locator('button:has-text("Replay Cutscene")').click();
   await page
