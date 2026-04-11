@@ -119,6 +119,7 @@ async function main(): Promise<void> {
         /route--/,
         /#canvas-mount/,
         /main-content/,
+        /battle-page-root/,
         /visual-novel-cutscene__content--/,
         /rahkshi-card--/,
         /rahkshi-card__status--/,

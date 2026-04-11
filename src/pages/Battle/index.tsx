@@ -4,6 +4,7 @@ import { BattlePhase } from '../../hooks/useBattleState';
 import { useEffect, useRef } from 'react';
 import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
+import { useBattlePageHitFeedback } from './useBattlePageHitFeedback';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { Arena } from './Arena';
 import {
@@ -19,6 +20,7 @@ export const BattlePage: React.FC = () => {
   const { battle, applyBattleRewards, completedQuests, collectedKrana } = useGame();
   const { currentEncounter, phase, currentWave, enemies, team } = battle;
   const { setScene } = useSceneCanvas();
+  const battlePageRootClass = useBattlePageHitFeedback();
 
   const kranaRewardsRef = useRef<ReturnType<typeof computeKranaRewardsForBattle> | null>(null);
   const kraataRewardsRef = useRef<KraataReward[] | null>(null);
@@ -76,11 +78,19 @@ export const BattlePage: React.FC = () => {
   }
 
   if (phase === BattlePhase.Preparing) {
-    return <BattlePrep />;
+    return (
+      <div className={battlePageRootClass}>
+        <BattlePrep />
+      </div>
+    );
   }
 
   if (phase === BattlePhase.Inprogress) {
-    return <BattleInProgress />;
+    return (
+      <div className={battlePageRootClass}>
+        <BattleInProgress />
+      </div>
+    );
   }
 
   if (
@@ -111,7 +121,7 @@ export const BattlePage: React.FC = () => {
     };
 
     return (
-      <div className="page-container battle battle--outcome">
+      <div className={`${battlePageRootClass} page-container battle battle--outcome`}>
         <h1 className="battle-outcome__title">{phase}</h1>
         <div className="battle-arena"></div>
         <div className="battle-rewards-panel">
@@ -156,5 +166,7 @@ export const BattlePage: React.FC = () => {
     );
   }
 
-  return <div className="page-container">Battle status: {phase}</div>;
+  return (
+    <div className={`${battlePageRootClass} page-container`}>Battle status: {phase}</div>
+  );
 };

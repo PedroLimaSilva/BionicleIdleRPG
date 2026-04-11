@@ -43,7 +43,7 @@ describe('Mask Powers - Combat Mechanics', () => {
         const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Pakari);
 
         // Calculate damage without mask power
-        const normalDamage = calculateAtkDmg(attacker, defender);
+        const normalDamage = calculateAtkDmg(attacker, defender).damage;
 
         // Add ATK_MULT effect (as mask activation would)
         attacker.effects = [
@@ -57,7 +57,7 @@ describe('Mask Powers - Combat Mechanics', () => {
         ];
 
         // Calculate damage with effect active
-        const boostedDamage = calculateAtkDmg(attacker, defender);
+        const boostedDamage = calculateAtkDmg(attacker, defender).damage;
 
         // Pakari should triple the raw damage before element effectiveness
         // The ratio should be 3:1
@@ -71,8 +71,8 @@ describe('Mask Powers - Combat Mechanics', () => {
         // No ATK_MULT effect
         attacker.effects = [];
 
-        const damage1 = calculateAtkDmg(attacker, defender);
-        const damage2 = calculateAtkDmg(attacker, defender);
+        const damage1 = calculateAtkDmg(attacker, defender).damage;
+        const damage2 = calculateAtkDmg(attacker, defender).damage;
 
         // Should be consistent damage without mask
         expect(damage1).toBe(damage2);
@@ -96,8 +96,8 @@ describe('Mask Powers - Combat Mechanics', () => {
           ],
         };
 
-        const normalDamage = calculateAtkDmg(attacker, defender);
-        const weakenedDamage = calculateAtkDmg(attacker, weakenedDefender);
+        const normalDamage = calculateAtkDmg(attacker, defender).damage;
+        const weakenedDamage = calculateAtkDmg(attacker, weakenedDefender).damage;
 
         expect(weakenedDamage).toBeGreaterThan(normalDamage);
       });
@@ -256,7 +256,7 @@ describe('Mask Powers - Combat Mechanics', () => {
     test('multiplies attack damage by 1.5x when effect active', () => {
       const attacker = generateCombatantStats('kopaka', 'Toa_Kopaka', 1, Mask.Rau);
 
-      const normalDamage = calculateAtkDmg(attacker, defender);
+      const normalDamage = calculateAtkDmg(attacker, defender).damage;
 
       attacker.effects = [
         {
@@ -268,7 +268,7 @@ describe('Mask Powers - Combat Mechanics', () => {
         },
       ];
 
-      const boostedDamage = calculateAtkDmg(attacker, defender);
+      const boostedDamage = calculateAtkDmg(attacker, defender).damage;
 
       expect(boostedDamage).toBe(Math.floor(normalDamage * 1.5));
     });
