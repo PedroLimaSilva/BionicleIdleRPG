@@ -277,7 +277,8 @@
       pointer-events: none;
       touch-action: none;
       background: #000;
-      animation: battle-arena-wave-clear 0.4s ease-in-out forwards;
+      /* Duration must match WAVE_CLEAR_TOTAL_MS in InProgress.tsx */
+      animation: battle-arena-wave-clear 1s ease-in-out forwards;
     }
   }
 

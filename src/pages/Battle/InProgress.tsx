@@ -5,14 +5,15 @@ import { isTestMode } from '../../utils/testMode';
 import { EnemyCard } from './Cards/Enemy';
 import { AllyCard } from './Cards/Ally';
 
-const WAVE_CLEAR_TRANSITION_MS = 400;
+/** Total fade in + fade out; keep in sync with `battle-arena-wave-clear` duration in `battle.scss`. */
+const WAVE_CLEAR_TOTAL_MS = 1000;
 
 export const BattleInProgress = () => {
   const { battle } = useGame();
   const { currentWave, enemies, team, actionQueue, playActionQueue, isRunningRound, retreat } =
     battle;
   const [waveClearPlaying, setWaveClearPlaying] = useState(false);
-  const waveClearTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const waveClearTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   useEffect(() => {
@@ -23,10 +24,8 @@ export const BattleInProgress = () => {
 
   useEffect(() => {
     return () => {
-      if (waveClearTimerRef.current) {
-        clearTimeout(waveClearTimerRef.current);
-        waveClearTimerRef.current = null;
-      }
+      waveClearTimersRef.current.forEach(clearTimeout);
+      waveClearTimersRef.current = [];
     };
   }, []);
 
@@ -35,13 +34,18 @@ export const BattleInProgress = () => {
       battle.advanceWave();
       return;
     }
-    if (waveClearTimerRef.current) clearTimeout(waveClearTimerRef.current);
+    waveClearTimersRef.current.forEach(clearTimeout);
+    waveClearTimersRef.current = [];
     setWaveClearPlaying(true);
-    waveClearTimerRef.current = setTimeout(() => {
-      battle.advanceWave();
-      setWaveClearPlaying(false);
-      waveClearTimerRef.current = null;
-    }, WAVE_CLEAR_TRANSITION_MS);
+    waveClearTimersRef.current.push(
+      setTimeout(() => {
+        battle.advanceWave();
+      }, WAVE_CLEAR_TOTAL_MS / 2),
+      setTimeout(() => {
+        setWaveClearPlaying(false);
+        waveClearTimersRef.current = [];
+      }, WAVE_CLEAR_TOTAL_MS),
+    );
   };
 
   const buttonsLocked = isRunningRound || waveClearPlaying;
