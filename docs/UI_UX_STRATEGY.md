@@ -140,7 +140,7 @@ Keep the current flat UI, invest in motion design, illustration, and polish. Bet
 - [x] Add screen shake (CSS transform on `.main-content`) on critical hits
 - [ ] Add elemental particle burst on mask power activation (CSS or canvas 2D overlay)
 - [x] Improve damage popup with size scaling by damage magnitude, crit styling
-- [ ] Add a brief "wave transition" animation between waves (fade or wipe)
+- [x] Add a brief "wave transition" animation between waves (fade or wipe)
 - [x] Add haptic feedback (`navigator.vibrate`) on hits and rewards
 - [ ] Style the battle outcome screen — animated loot cards, exp bar fill
 
@@ -338,7 +338,7 @@ These changes are self-contained, low-risk, and immediately improve feel:
 
 3. **Hit feedback juice** — ✅ Add CSS `@keyframes shake` on `.main-content` triggered via a class toggle on critical hits. Add a brief `navigator.vibrate(50)` on damage dealt. Scale damage popup font size by `min(1 + damage/maxHp, 2)` for proportional feedback.
 
-4. **Wave transition** — On wave clear, brief 400ms CSS fade-to-black-and-back on `.battle-arena` before next wave spawns.
+4. **Wave transition** — ✅ On wave clear, brief 400ms CSS fade-to-black-and-back on `.battle-arena` before next wave spawns.
 
 5. **Outcome screen polish** — Animate reward items appearing one by one (staggered `motion.div` with spring physics). Show exp gain as an animated bar fill.
 
