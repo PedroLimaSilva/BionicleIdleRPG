@@ -20,6 +20,8 @@ import { useFrame } from '@react-three/fiber';
 import { Group } from 'three';
 import { KraataPower } from '../../types/Kraata';
 import { TakanuvaModel } from '../../components/CharacterScene/Nuva/TakanuvaModel';
+import { RahiPlaceholderModel } from '../../components/CharacterScene/RahiPlaceholderModel';
+import { NuiRamaModel } from '../../components/CharacterScene/NuiRamaModel';
 import { WorldSpaceHpBar } from './WorldSpaceHpBar';
 
 const ROTATION_RESTORE_DURATION = 0.25;
@@ -31,6 +33,10 @@ function hpBarYOffset(model: string): number {
       return 0.6;
     case 'rahkshi':
       return 0.2;
+    case 'rahi_placeholder':
+      return 0.35;
+    case 'nui_rama':
+      return 0.38;
     default:
       return -0.1;
   }
@@ -162,6 +168,18 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.175}>
               <BohrokModel ref={childRef} id={combatant.id.split('-')[0]} />
+            </group>
+          );
+        case 'nui_rama':
+          return (
+            <group scale={0.04}>
+              <NuiRamaModel ref={childRef} variant={combatant.nuiRamaVariant ?? 'orange'} />
+            </group>
+          );
+        case 'rahi_placeholder':
+          return (
+            <group scale={1}>
+              <RahiPlaceholderModel ref={childRef} element={combatant.element} />
             </group>
           );
         case 'rahkshi':

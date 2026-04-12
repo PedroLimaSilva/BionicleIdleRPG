@@ -201,5 +201,32 @@ describe('encounterVisibility', () => {
       const visible = getVisibleEncounters(encounters, collected, completed);
       expect(visible).toHaveLength(0);
     });
+
+    test('early Rahi: visible after cliffside until Confronting Chaos is completed', () => {
+      const encounters: EnemyEncounter[] = [
+        mockEncounter(
+          'early_rahi',
+          'nui_rama',
+          1,
+          [],
+          ['maskhunt_kopaka_matoro_icecliff'],
+          ['mnog_witness_makuta_battle']
+        ),
+      ];
+      const collected = {};
+
+      expect(getVisibleEncounters(encounters, collected, [])).toHaveLength(0);
+
+      expect(
+        getVisibleEncounters(encounters, collected, ['maskhunt_kopaka_matoro_icecliff'])
+      ).toHaveLength(1);
+
+      expect(
+        getVisibleEncounters(encounters, collected, [
+          'maskhunt_kopaka_matoro_icecliff',
+          'mnog_witness_makuta_battle',
+        ])
+      ).toHaveLength(0);
+    });
   });
 });

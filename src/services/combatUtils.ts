@@ -1,5 +1,11 @@
 import { COMBATANT_DEX, MASK_POWERS } from '../data/combat';
-import { BattleStrategy, Combatant, EnemyEncounter, TargetEffect } from '../types/Combat';
+import {
+  BattleStrategy,
+  Combatant,
+  EnemyEncounter,
+  NuiRamaVariant,
+  TargetEffect,
+} from '../types/Combat';
 import { ElementTribe, Mask } from '../types/Matoran';
 import { emitBattleCameraEmphasis } from '../utils/battleCameraEmphasis';
 import { emitBattleHitFeedback } from '../utils/battleHitFeedback';
@@ -840,6 +846,15 @@ export interface GenerateCombatantStatsOptions {
   nuvaSymbolsSequestered?: boolean;
 }
 
+/** Stable pseudo-random jaw variant per spawn id (prep + battle use the same id → same look). */
+function nuiRamaVariantFromInstanceId(instanceId: string): NuiRamaVariant {
+  let h = 0;
+  for (let i = 0; i < instanceId.length; i++) {
+    h = Math.imul(31, h) + instanceId.charCodeAt(i);
+  }
+  return (h >>> 0) % 2 === 0 ? 'orange' : 'lime';
+}
+
 export function generateCombatantStats(
   id: string,
   templateId: string,
@@ -882,10 +897,14 @@ export function generateCombatantStats(
     maskPower.cooldown.amount = 0;
   }
 
+  const nuiRamaVariant: NuiRamaVariant | undefined =
+    templateId === 'nui_rama' ? nuiRamaVariantFromInstanceId(id) : undefined;
+
   return {
     id,
     name: template.name,
     model: template.model,
+    ...(nuiRamaVariant && { nuiRamaVariant }),
     lvl,
     maskPower,
     element: template.element,
