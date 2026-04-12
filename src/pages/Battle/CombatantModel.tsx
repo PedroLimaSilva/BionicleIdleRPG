@@ -64,6 +64,8 @@ export interface CombatantModelHandle {
     name: 'Attack' | 'Hit' | 'Defeat' | 'Idle',
     options?: PlayAnimationOptions
   ) => Promise<void>;
+  /** Resolves when the most recent Attack clip fully finishes (after contact frame). Only present on the outer CombatantModel wrapper, not inner model components. */
+  waitForAttackComplete?: () => Promise<void>;
 }
 
 /** Compute Y rotation (radians) to face target from self position. Model +Z axis rotates to point at target. */
@@ -98,6 +100,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     });
 
     const rotationY = overrideRotationY ?? baseRotationY;
+    const attackCompleteRef = useRef<Promise<void>>(Promise.resolve());
 
     useImperativeHandle(ref, () => ({
       playAnimation: async (name, options) => {
@@ -125,18 +128,30 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           }
         };
 
-        try {
-          const callOptions =
-            name === 'Attack' && faceTargetId && facingY !== null
-              ? { onAnimationComplete: startRestore }
-              : undefined;
+        if (name === 'Attack') {
+          let resolveComplete: () => void;
+          attackCompleteRef.current = new Promise<void>((r) => {
+            resolveComplete = r;
+          });
+          const callOptions: PlayAnimationOptions = {
+            onAnimationComplete: () => {
+              startRestore();
+              resolveComplete();
+            },
+          };
           await (childRef.current?.playAnimation(name, callOptions) ?? Promise.resolve());
+          return;
+        }
+
+        try {
+          await (childRef.current?.playAnimation(name) ?? Promise.resolve());
         } finally {
           if (faceTargetId && name === 'Hit' && facingY !== null) {
             startRestore();
           }
         }
       },
+      waitForAttackComplete: () => attackCompleteRef.current,
     }));
 
     const rotation: Euler = [0, rotationY, 0];

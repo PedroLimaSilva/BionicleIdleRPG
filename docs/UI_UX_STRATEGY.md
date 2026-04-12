@@ -150,7 +150,7 @@ Keep the current flat UI, invest in motion design, illustration, and polish. Bet
 
 - [ ] `#canvas-mount` becomes always-on at `z-index: -1` with a simple default backdrop (dark gradient with subtle floating particles — "void of Mata Nui")
 - [ ] Per-route backdrop: simple colored lighting shifts + particle density changes (no new geometry yet)
-- [ ] **Battle camera work**: On attack, camera briefly tightens on the attacker/target pair (orthographic zoom shift + position lerp over ~300ms, then restore). This connects the 3D animation to the damage popup.
+- [x] **Battle camera work**: On attack, camera briefly tightens on the attacker/target pair (orthographic zoom shift + position lerp over ~300ms, then restore). This connects the 3D animation to the damage popup.
 - [x] **Hit impact effects**: Simple instanced particle burst at the target's position on Hit animation. Particle color = attacker's element.
 - [ ] **Defeat effect**: Target model plays Defeat clip + fades to silhouette + dissolves (opacity tween on the mesh material).
 - [x] Battle HP bars move from 2D cards to **floating world-space HP bars** above each combatant (drei `<Html>` or `<Billboard>` with a DOM HP bar). Cards become a compact sidebar/bottom strip.
@@ -346,7 +346,7 @@ These changes are self-contained, low-risk, and immediately improve feel:
 
 6. **Always-on canvas** — Change `#canvas-mount` CSS to `display: block` always, `z-index: -1`, full viewport. Create a `<DefaultBackdrop>` component: dark void + 20 instanced floating particles (small glowing cubes, slow random drift). Set as fallback when no route-specific scene is active.
 
-7. **Battle camera emphasis** — In `ArenaFraming`, add a transient zoom-in on the attacker/target during `playAnimation('Attack')`. Use a `useSpring` (drei) or manual lerp in `useFrame` to smoothly shift camera position toward the action, then restore. ~300ms in, ~200ms out.
+7. ✅ **Battle camera emphasis** — In `ArenaFraming`, add a transient zoom-in on the attacker/target during `playAnimation('Attack')`. Use a `useSpring` (drei) or manual lerp in `useFrame` to smoothly shift camera position toward the action, then restore. ~300ms in, ~200ms out.
 
 8. ✅ **World-space HP** — Add `<Html>` from drei above each `CombatantModel` position with a mini HP bar component. Keep the 2D card HP bars for detailed info, but now the player can read combat from the 3D view alone.
 
