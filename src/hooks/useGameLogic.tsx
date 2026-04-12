@@ -113,7 +113,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
   recruitedCharactersRef.current = recruitedCharacters;
   setRecruitedCharactersRef.current = setRecruitedCharacters;
 
-  useJobTickEffect(recruitedCharacters, setRecruitedCharacters, (amount) =>
+  useJobTickEffect(setRecruitedCharacters, (amount) =>
     setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap))
   );
 

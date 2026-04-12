@@ -3,7 +3,6 @@ import { RecruitedCharacterData } from '../types/Matoran';
 import { tickMatoranJobExp } from '../services/jobUtils';
 
 export function useJobTickEffect(
-  recruitedCharacters: RecruitedCharacterData[],
   setRecruitedCharacters: (
     fn: (prev: RecruitedCharacterData[]) => RecruitedCharacterData[]
   ) => void,
@@ -26,5 +25,5 @@ export function useJobTickEffect(
     }, intervalMs);
 
     return () => clearInterval(interval);
-  }, [recruitedCharacters, setRecruitedCharacters, addProtodermis, intervalMs]);
+  }, [setRecruitedCharacters, addProtodermis, intervalMs]);
 }

@@ -26,9 +26,14 @@ export const Recruitment: React.FC = () => {
   }, [selectedMatoran, protodermis]);
 
   useEffect(() => {
-    if (!celebratedCharacter) {
-      setSelectedMatoran(buyableCharacters[0] || null);
-    }
+    if (celebratedCharacter) return;
+
+    setSelectedMatoran((prev) => {
+      const list = buyableCharacters;
+      if (list.length === 0) return null;
+      if (prev && list.some((c) => c.id === prev.id)) return prev;
+      return list[0];
+    });
   }, [buyableCharacters, celebratedCharacter]);
 
   useEffect(() => {
