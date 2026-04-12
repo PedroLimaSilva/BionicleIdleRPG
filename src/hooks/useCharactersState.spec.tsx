@@ -28,7 +28,7 @@ describe('useCharactersState', () => {
       );
 
       expect(result.current.recruitedCharacters).toEqual(initialRecruited);
-      expect(result.current.buyableCharacters).toContainEqual({ id: 'Hahli', cost: 5000 });
+      expect(result.current.buyableCharacters).toContainEqual({ id: 'Hahli', cost: 1000 });
     });
 
     test('filters out already recruited characters from buyable list (incl. evolution line)', () => {

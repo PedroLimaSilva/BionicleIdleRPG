@@ -34,7 +34,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Kapura',
-          cost: 1500,
+          cost: 750,
         },
       ],
       xpPerMatoran: 150,
@@ -99,7 +99,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Hahli',
-          cost: 5000,
+          cost: 1000,
         },
       ],
       xpPerMatoran: 200,
@@ -126,7 +126,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Hafu',
-          cost: 2500,
+          cost: 500,
         },
       ],
     },
@@ -151,7 +151,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Kivi',
-          cost: 1500,
+          cost: 750,
         },
       ],
     },
@@ -190,11 +190,11 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Huki',
-          cost: 5000,
+          cost: 1000,
         },
         {
           id: 'Maku',
-          cost: 3000,
+          cost: 600,
         },
       ],
       xpPerMatoran: 200,
@@ -218,11 +218,11 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Nuparu',
-          cost: 5000,
+          cost: 1000,
         },
         {
           id: 'Onepu',
-          cost: 3000,
+          cost: 600,
         },
       ],
       currency: 400,
@@ -262,7 +262,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Taipu',
-          cost: 3000,
+          cost: 600,
         },
       ],
       xpPerMatoran: 250,
@@ -302,11 +302,11 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Tamaru',
-          cost: 3000,
+          cost: 600,
         },
         {
           id: 'Kongu',
-          cost: 5000,
+          cost: 1000,
         },
       ],
       cutscene: { type: 'visual_novel', cutsceneId: 'mnog_flight_to_hive' },
@@ -370,11 +370,11 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Kopeke',
-          cost: 3000,
+          cost: 600,
         },
         {
           id: 'Lumi',
-          cost: 1500,
+          cost: 750,
         },
       ],
       xpPerMatoran: 350,
@@ -398,7 +398,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Matoro',
-          cost: 5000,
+          cost: 1000,
         },
       ],
       xpPerMatoran: 350,
@@ -422,7 +422,7 @@ export const MNOG_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         {
           id: 'Hafu',
-          cost: 3000,
+          cost: 600,
         },
       ],
       xpPerMatoran: 600,
