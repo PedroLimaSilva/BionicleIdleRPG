@@ -17,6 +17,8 @@ function hitYOffset(model?: string): number {
       return 0.3;
     case 'rahkshi':
       return 0.2;
+    case 'rahi_placeholder':
+      return 0.32;
     default:
       return 0.2;
   }

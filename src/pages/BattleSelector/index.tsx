@@ -59,7 +59,7 @@ function getEncounterAvatarSrc(encounter: EnemyEncounter): string | null {
   const template = COMBATANT_DEX[encounter.headliner];
   if (!template) return null;
 
-  if (template.model === 'rahkshi') return null;
+  if (template.model === 'rahkshi' || template.model === 'rahi_placeholder') return null;
 
   const name = ['bohrok_kal_pair', 'bohrok_kal_trio'].includes(encounter.headliner)
     ? 'Tahnok'

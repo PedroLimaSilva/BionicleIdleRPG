@@ -388,6 +388,38 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     baseSpeed: 11,
   },
 
+  /** Early-game Rahi (placeholder mesh until dedicated models exist). */
+  nui_rama: {
+    id: 'nui_rama',
+    name: 'Nui-Rama',
+    model: 'rahi_placeholder',
+    element: ElementTribe.Air,
+    baseHp: 42,
+    baseAttack: 10,
+    baseDefense: 7,
+    baseSpeed: 12,
+  },
+  nui_jaga: {
+    id: 'nui_jaga',
+    name: 'Nui-Jaga',
+    model: 'rahi_placeholder',
+    element: ElementTribe.Stone,
+    baseHp: 52,
+    baseAttack: 12,
+    baseDefense: 9,
+    baseSpeed: 9,
+  },
+  muaka: {
+    id: 'muaka',
+    name: 'Muaka',
+    model: 'rahi_placeholder',
+    element: ElementTribe.Ice,
+    baseHp: 68,
+    baseAttack: 14,
+    baseDefense: 11,
+    baseSpeed: 8,
+  },
+
   // Toa Nuva - Upgraded forms; stats diminished when nuvaSymbolsSequestered
   Toa_Tahu_Nuva: {
     id: 'Toa_Tahu_Nuva',
@@ -830,7 +862,55 @@ function makeRahkshiKraataGauntletWaves(): Array<{ id: string; lvl: number }[]> 
   return waves;
 }
 
+const CLIFFSIDE_ENCOUNTER_QUEST_ID = 'maskhunt_kopaka_matoro_icecliff';
+const CONFRONTING_CHAOS_QUEST_ID = 'mnog_witness_makuta_battle';
+
 export const ENCOUNTERS: EnemyEncounter[] = [
+  // Early Rahi training (XP only) — after Kopaka’s cliffside quest, until Takua witnesses Mangaia.
+  {
+    id: 'early_rahi_nui_rama',
+    name: 'Nui-Rama Hunt',
+    headliner: 'nui_rama',
+    difficulty: 1,
+    description:
+      'Infected insect Rahi burst from the treeline—fast, erratic, and hungry. A good place to sharpen the Toa’s edge between quests.',
+    waves: [
+      [
+        { id: 'nui_rama', lvl: 3 },
+        { id: 'nui_rama', lvl: 3 },
+      ],
+    ],
+    loot: [],
+    scalesWithParty: true,
+    unlockedAfter: [CLIFFSIDE_ENCOUNTER_QUEST_ID],
+    hiddenAfter: [CONFRONTING_CHAOS_QUEST_ID],
+  },
+  {
+    id: 'early_rahi_nui_jaga',
+    name: 'Nui-Jaga Lair',
+    headliner: 'nui_jaga',
+    difficulty: 2,
+    description:
+      'A scorpion-like Rahi blocks the path, tail raised and stinger gleaming. Stone-hard hide and a venomous temper await.',
+    waves: [[{ id: 'nui_jaga', lvl: 5 }]],
+    loot: [],
+    scalesWithParty: true,
+    unlockedAfter: [CLIFFSIDE_ENCOUNTER_QUEST_ID],
+    hiddenAfter: [CONFRONTING_CHAOS_QUEST_ID],
+  },
+  {
+    id: 'early_rahi_muaka',
+    name: 'Muaka on the Ice',
+    headliner: 'muaka',
+    difficulty: 3,
+    description:
+      'A Muaka stalks the drifts—powerful jaws, ice-element fury, and no patience for trespassers. The heaviest of the early Rahi brawls.',
+    waves: [[{ id: 'muaka', lvl: 6 }]],
+    loot: [],
+    scalesWithParty: true,
+    unlockedAfter: [CLIFFSIDE_ENCOUNTER_QUEST_ID],
+    hiddenAfter: [CONFRONTING_CHAOS_QUEST_ID],
+  },
   // Tahnok (Fire / blue) - 4 tiers
   {
     id: 'tahnok-1',
