@@ -205,6 +205,13 @@ describe('chooseTarget', () => {
       expect(combatant.hp).toBe(combatant.maxHp);
     });
 
+    test('assigns stable nui_rama jaw variant from instance id', () => {
+      const first = generateCombatantStats('nui_rama-0', 'nui_rama', 5);
+      const again = generateCombatantStats('nui_rama-0', 'nui_rama', 1);
+      expect(first.nuiRamaVariant).toMatch(/^(orange|lime)$/);
+      expect(first.nuiRamaVariant).toBe(again.nuiRamaVariant);
+    });
+
     test('applies mask override when provided', () => {
       const combatant = generateCombatantStats('test-id', 'Toa_Tahu', 1, Mask.Kaukau);
 

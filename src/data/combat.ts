@@ -392,7 +392,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
   nui_rama: {
     id: 'nui_rama',
     name: 'Nui-Rama',
-    model: 'rahi_placeholder',
+    model: 'nui_rama',
     element: ElementTribe.Air,
     baseHp: 42,
     baseAttack: 10,

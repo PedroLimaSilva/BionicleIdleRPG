@@ -67,10 +67,14 @@ export type TargetEffect =
       sourceId: string;
     };
 
+export type NuiRamaVariant = 'orange' | 'lime';
+
 export interface Combatant {
   id: string;
   name: string;
   model: string;
+  /** Set for `nui_rama` template: jaw hook (orange) vs teeth (lime). */
+  nuiRamaVariant?: NuiRamaVariant;
   lvl: number;
   maskPower?: MaskPower;
   effects?: TargetEffect[];
