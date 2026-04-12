@@ -30,7 +30,7 @@ export const ProtodermisTraining: React.FC<ProtodermisTrainingProps> = ({
     <div className="protodermis-training">
       <h4 className="protodermis-training__title">Train with protodermis</h4>
       <p className="protodermis-training__hint">
-        Spend protodermis to grant this Toa experience ({PROTODERMIS_TO_EXP_RATIO} protodermis{' '}
+        Spend protodermis to grant this character experience ({PROTODERMIS_TO_EXP_RATIO} protodermis{' '}
         <ArrowRight className="protodermis-training__hint-arrow" size={14} aria-hidden />
         {' '}
         {PROTODERMIS_TO_EXP_RATIO} XP).

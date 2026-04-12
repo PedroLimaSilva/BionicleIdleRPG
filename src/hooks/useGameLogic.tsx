@@ -44,8 +44,6 @@ import {
   RAHKSHI_FORGE_COST,
 } from '../game/KraataActions';
 import { getDebugMode } from '../services/gamePersistence';
-import { getEffectiveMatoran } from '../services/matoranUtils';
-import { isToa } from '../game/matoranStage';
 import { expGainedFromProtodermisSpend } from '../game/ProtodermisConversion';
 
 export const useGameLogic = (): GameState & GameStateEditorApi => {
@@ -284,8 +282,6 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     ) => {
       const recruited = recruitedCharacters.find((m) => m.id === matoranId);
       if (!recruited) return false;
-      const matoran = getEffectiveMatoran(recruited);
-      if (!isToa(matoran)) return false;
       if (!Number.isInteger(protodermisSpent) || protodermisSpent < 1) return false;
       if (protodermisSpent > protodermis) return false;
 

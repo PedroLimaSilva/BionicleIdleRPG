@@ -180,14 +180,6 @@ function StatsTab({
     <>
       <LevelProgress exp={matoran.exp} />
       <ElementTag element={matoran.element} showName={true} />
-      {isToa(matoran) && (
-        <ProtodermisTraining
-          characterId={matoran.id}
-          element={matoran.element}
-          protodermis={protodermis}
-          convertProtodermisToExp={convertProtodermisToExp}
-        />
-      )}
       {evolution && (
         <div className="evolve-section">
           <div className="requirement-list">
@@ -215,6 +207,12 @@ function StatsTab({
           </div>
         </div>
       )}
+      <ProtodermisTraining
+        characterId={matoran.id}
+        element={matoran.element}
+        protodermis={protodermis}
+        convertProtodermisToExp={convertProtodermisToExp}
+      />
       {isToa(matoran) && activeMask && (
         <div>
           <h3>{MASK_POWERS[activeMask]?.longName ?? 'Unknown Mask'}</h3>

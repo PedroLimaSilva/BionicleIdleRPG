@@ -24,6 +24,22 @@ test.describe('Character Detail Page', () => {
     await expect(page.locator('.character-progress .xp-label')).toContainText('1 /');
   });
 
+  test('converts protodermis to XP for Matoran on stats tab', async ({ page }) => {
+    await setupGameState(page, {
+      ...INITIAL_GAME_STATE,
+      protodermis: 100,
+      recruitedCharacters: [{ id: 'Jala', exp: 0 }],
+      completedQuests: [],
+    });
+    await goto(page, '/characters/Jala');
+    await disableCSSAnimations(page);
+    await hideCanvas(page);
+
+    await expect(page.locator('.character-progress .xp-label')).toContainText('0 /');
+    await page.getByRole('button', { name: 'Convert to XP' }).click();
+    await expect(page.locator('.character-progress .xp-label')).toContainText('1 /');
+  });
+
   test('should render tasks tab', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,

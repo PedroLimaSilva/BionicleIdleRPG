@@ -54,7 +54,7 @@ export type GameState = {
     matoranId: RecruitedCharacterData['id'],
     onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
   ) => boolean;
-  /** Spend protodermis to add XP to a recruited Toa (detail page). Returns false if invalid. */
+  /** Spend protodermis to add XP to a recruited character (detail page). Returns false if invalid. */
   convertProtodermisToExp: (
     matoranId: RecruitedCharacterData['id'],
     protodermisSpent: number
