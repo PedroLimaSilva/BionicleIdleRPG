@@ -64,8 +64,8 @@ export interface CombatantModelHandle {
     name: 'Attack' | 'Hit' | 'Defeat' | 'Idle',
     options?: PlayAnimationOptions
   ) => Promise<void>;
-  /** Resolves when the most recent Attack clip fully finishes (after contact frame). */
-  waitForAttackComplete: () => Promise<void>;
+  /** Resolves when the most recent Attack clip fully finishes (after contact frame). Only present on the outer CombatantModel wrapper, not inner model components. */
+  waitForAttackComplete?: () => Promise<void>;
 }
 
 /** Compute Y rotation (radians) to face target from self position. Model +Z axis rotates to point at target. */
