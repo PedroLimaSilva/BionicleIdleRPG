@@ -1,10 +1,11 @@
-function expForLevel(level: number): number {
-  return Math.floor(100 * Math.pow(level - 1, 1.5)); // level 1 = 0 exp
+/** Minimum total experience needed to be at least this level (level 1 is 0). */
+export function getTotalExpThresholdForLevel(level: number): number {
+  return Math.floor(100 * Math.pow(level - 1, 1.5));
 }
 
 export function getLevelFromExp(totalExp: number): number {
   let level = 1;
-  while (totalExp >= expForLevel(level + 1)) {
+  while (totalExp >= getTotalExpThresholdForLevel(level + 1)) {
     level++;
   }
   return level;
@@ -17,8 +18,8 @@ export function getExpProgress(totalExp: number): {
   progress: number; // between 0 and 1
 } {
   const level = getLevelFromExp(totalExp);
-  const expCurrent = expForLevel(level);
-  const expForNextLevel = expForLevel(level + 1) - expCurrent;
+  const expCurrent = getTotalExpThresholdForLevel(level);
+  const expForNextLevel = getTotalExpThresholdForLevel(level + 1) - expCurrent;
   const progress = (totalExp - expCurrent) / expForNextLevel;
   return {
     level,

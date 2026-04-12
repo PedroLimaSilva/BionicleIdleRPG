@@ -1,17 +1,24 @@
+import { useMemo } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 import { UserCircle2, Settings, Map, Swords } from 'lucide-react';
 import { BattlePhase } from '../../hooks/useBattleState';
 import { CurrencyBar } from '../CurrencyBar';
 import { AnimatePresence } from 'motion/react';
+import { ENCOUNTERS } from '../../data/combat';
+import { getVisibleEncounters } from '../../game/encounterVisibility';
 
 const shouldShowCurrencyBar = (pathname: string) => {
   return !['/settings'].includes(pathname);
 };
 
 export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
-  const { battle } = useGame();
+  const { battle, completedQuests, collectedKrana } = useGame();
   const { pathname } = useLocation();
+  const hasVisibleEncounters = useMemo(
+    () => getVisibleEncounters(ENCOUNTERS, collectedKrana, completedQuests).length > 0,
+    [collectedKrana, completedQuests]
+  );
 
   return (
     <div
@@ -30,10 +37,12 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
         {shouldShowCurrencyBar(pathname) && <CurrencyBar isPortrait={isPortrait} />}
       </AnimatePresence>
       <nav className="nav-bar">
-        <NavLink to="/battle/selector" className="nav-item">
-          <Swords />
-          <label>Battle</label>
-        </NavLink>
+        {hasVisibleEncounters && (
+          <NavLink to="/battle/selector" className="nav-item">
+            <Swords />
+            <label>Battle</label>
+          </NavLink>
+        )}
         <NavLink to="/" className="nav-item">
           <Map />
           <label>Quests</label>
