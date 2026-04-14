@@ -62,8 +62,9 @@ export function usePlayAnimation(
           if (modelId) {
             console.warn(`Animation '${name}' not found for ${modelId}`);
           }
-          // Outer CombatantModel waits for onAnimationComplete to resolve waitForAttackComplete;
-          // fire it when there is no clip so combat does not hang.
+          // Outer CombatantModel uses onAnimationComplete for waitForAttackComplete; fire it when
+          // there is no clip (and when useCombatAnimations uses procedural motion only) so combat
+          // does not hang.
           callOptions?.onAnimationComplete?.();
           resolve();
           return;
