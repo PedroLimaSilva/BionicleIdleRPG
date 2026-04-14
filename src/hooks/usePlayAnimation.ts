@@ -62,7 +62,9 @@ export function usePlayAnimation(
           if (modelId) {
             console.warn(`Animation '${name}' not found for ${modelId}`);
           }
-          // useCombatAnimations may run procedural motion; still notify outer wrapper.
+          // Outer CombatantModel uses onAnimationComplete for waitForAttackComplete; fire it when
+          // there is no clip (and when useCombatAnimations uses procedural motion only) so combat
+          // does not hang.
           callOptions?.onAnimationComplete?.();
           resolve();
           return;
