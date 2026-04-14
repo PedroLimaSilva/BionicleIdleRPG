@@ -1,10 +1,10 @@
 import { useGLTF } from '@react-three/drei';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
-import { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { Group } from 'three';
 import { useArmor } from '../../../hooks/useArmor';
-import { useIdleAnimation } from '../../../hooks/useIdleAnimation';
+import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { applyWeatheredMetalToObject } from '../WeatheredMetalMaterial';
 
 const USE_WEATHERED_METAL = true;
@@ -14,11 +14,16 @@ export const TakanuvaModel = forwardRef<
   {
     matoran: RecruitedCharacterData & BaseMatoran & { maskPowerActive?: boolean };
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
->(({ matoran }, _ref) => {
+>(({ matoran }, ref) => {
   const group = useRef<Group>(null);
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/takanuva.glb');
-  useIdleAnimation(animations, group);
+
+  const { playAnimation } = useCombatAnimations(animations, group, {
+    modelId: matoran.id,
+    attackResolveAtFraction: 0.5,
+  });
+
+  useImperativeHandle(ref, () => ({ playAnimation }));
 
   useEffect(() => {
     const root = group.current;

@@ -146,6 +146,10 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
             },
           };
           await (childRef.current?.playAnimation(name, callOptions) ?? Promise.resolve());
+          if (!childRef.current) {
+            startRestore();
+            resolveComplete();
+          }
           return;
         }
 

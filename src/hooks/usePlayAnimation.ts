@@ -62,7 +62,10 @@ export function usePlayAnimation(
           if (modelId) {
             console.warn(`Animation '${name}' not found for ${modelId}`);
           }
-          return resolve();
+          // useCombatAnimations may run procedural motion; still notify outer wrapper.
+          callOptions?.onAnimationComplete?.();
+          resolve();
+          return;
         }
 
         if (transitionMode === 'stopAll') {
