@@ -135,7 +135,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
         };
 
         if (name === 'Attack') {
-          let resolveComplete: () => void;
+          let resolveComplete!: () => void;
           attackCompleteRef.current = new Promise<void>((r) => {
             resolveComplete = r;
           });
