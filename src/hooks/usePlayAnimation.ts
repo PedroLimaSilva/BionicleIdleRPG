@@ -62,7 +62,11 @@ export function usePlayAnimation(
           if (modelId) {
             console.warn(`Animation '${name}' not found for ${modelId}`);
           }
-          return resolve();
+          // Outer CombatantModel waits for onAnimationComplete to resolve waitForAttackComplete;
+          // fire it when there is no clip so combat does not hang.
+          callOptions?.onAnimationComplete?.();
+          resolve();
+          return;
         }
 
         if (transitionMode === 'stopAll') {
