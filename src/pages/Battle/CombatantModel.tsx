@@ -146,6 +146,11 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
             },
           };
           await (childRef.current?.playAnimation(name, callOptions) ?? Promise.resolve());
+          // No inner model (unknown combatant.model): nothing runs onAnimationComplete.
+          if (!childRef.current) {
+            startRestore();
+            resolveComplete();
+          }
           return;
         }
 
