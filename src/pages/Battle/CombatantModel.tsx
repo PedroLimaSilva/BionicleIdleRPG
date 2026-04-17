@@ -248,7 +248,8 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
               startRestore();
             }
           }
-          await runDefeatSinkAndDispose();
+          // Sink/fade runs on the render loop; do not block combat awaiting it.
+          void runDefeatSinkAndDispose();
           return;
         }
 
