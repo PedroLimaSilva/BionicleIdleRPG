@@ -83,7 +83,7 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
     id: 'bohrok_kal_sighting',
     name: 'Sighting in Po-Wahi',
     description:
-      'Gali reveals that two Bohrok Kal were seen in Po-Wahi. The Toa give chase. Tahu orders them to split into two groups: one to pursue the Kal, the other to investigate what has happened to the Bahrag. In their confrontations, the Kal speak of finding the Bahrag and freeing them from their prison.',
+      'Gali reveals that two Bohrok-Kal were seen in Po-Wahi. The Toa give chase. Tahu orders them to split into two groups: one to pursue the Kal, the other to investigate what has happened to the Bahrag. In their confrontations, the Kal speak of finding the Bahrag and freeing them from their prison.',
     durationSeconds: 12 * 60,
     requirements: {
       matoran: [

@@ -40,7 +40,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Lewa',
         portraitType: 'avatar',
         position: 'right',
-        text: `Le-Koro! My home—the trees are being uptalked—uprooted!`,
+        text: `Le-Koro! My home—the trees are being uprooted!`,
       },
       {
         type: 'dialogue',
@@ -354,7 +354,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Lewa',
         portraitType: 'avatar',
         position: 'right',
-        text: `Onua... I could hear myself screaming inside my own head, but my body wouldn't listenheed. Thank you, brother.`,
+        text: `Onua... I could hear myself screaming inside my own head, but my body wouldn't listen. Thank you, brother.`,
       },
       {
         type: 'dialogue',
@@ -428,18 +428,18 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Pohatu',
         portraitType: 'avatar',
         position: 'right',
-        text: `Have you noticed? This tunnel wall – it’s smooth. No Matoran dug this. Or any Bohrok, for that matter.`,
+        text: `Have you noticed? This tunnel wall—it's smooth. No Matoran dug this. Or any Bohrok, for that matter.`,
       },
       {
         type: 'narration',
-        text: `The toa arrive at a chamber where six doors lead to different parts of the nest. Six suits of Exo-Toa armor are waiting at the end of each corridor.`,
+        text: `The Toa arrive at a chamber where six doors lead to different parts of the nest. Six suits of Exo-Toa armor are waiting at the end of each corridor.`,
       },
       {
         type: 'dialogue',
         speakerId: 'Toa_Lewa',
         portraitType: 'avatar',
         position: 'right',
-        text: `I suppose I’d better put it on`,
+        text: `I suppose I'd better put it on.`,
       },
       {
         type: 'dialogue',
@@ -450,7 +450,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `Lewa hesitated. Had that thought come from his mind? Was it the remains of the Bohrok’s infection?`,
+        text: `Lewa hesitated. Had that thought come from his mind? Was it the remains of the Bohrok's infection?`,
       },
       {
         type: 'dialogue',
@@ -473,7 +473,7 @@ export const BOHROK_SWARM_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'image',
         portraitUrl: `${import.meta.env.BASE_URL}/avatar/Gahdok.webp`,
         position: 'left',
-        text: 'You know who I am, Toa of the Bohrok. You know me – I am your queen. My sister, Cahdok, and I rule your thoughts, your actions.',
+        text: 'You know who I am, Toa of the Bohrok. You know me—I am your queen. My sister, Cahdok, and I rule your thoughts, your actions.',
       },
       {
         type: 'narration',

@@ -74,7 +74,7 @@ export const MNOG_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Tamaru',
         portraitType: 'avatar',
         position: 'left',
-        text: `The Nui-Rama have been swarming for weeks. They took Turaga Matau and most of Le-Koro. In last rainfall, Kongu on patrol saw the Rama-hive growing topleaf-high, far in the dark forest.`,
+        text: `The Nui-Rama have been swarming for weeks. They took Turaga Matau and most of Le-Koro. In the last rainfall, Kongu on patrol saw the Rama-hive growing topleaf-high, far in the dark forest.`,
       },
       {
         type: 'dialogue',
@@ -249,7 +249,7 @@ export const MNOG_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         text: `
           *Notices that Kapura is walking really slowly,
-          so slowly that, from a distance, he looked like we
+          so slowly that, from a distance, he looked like he
           was standing still*
         `,
         position: 'right',
@@ -404,7 +404,7 @@ export const MNOG_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         text: `
           In the meantime, I've received a distress call from Ga-Koro,
-          but I cannot send anyone to help, as we are dealing with rahi
+          but I cannot send anyone to help, as we are dealing with Rahi
           attacks in Ta-Wahi too.
         `,
         position: 'left',
@@ -667,7 +667,7 @@ export const MNOG_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         text: `
           I will soon be fit enough to return to Koli, and to Maku.
-          If you see her in your travels, tell her I am well!”
+          If you see her in your travels, tell her I am well!
         `,
         position: 'left',
       },
