@@ -30,6 +30,16 @@ const ROTATION_RESTORE_DURATION = 0.25;
 const DEFEAT_SINK_DURATION_SEC = 1.35;
 const DEFEAT_SINK_DEPTH = 0.55;
 
+/** `useGLTF` template meshes (Toa, etc.) must not dispose shared geometry; clones (enemies) may. */
+function canDisposeBattleModelGeometry(model: string): boolean {
+  return (
+    model === 'bohrok' ||
+    model === 'rahkshi' ||
+    model === 'rahi_placeholder' ||
+    model === 'nui_rama'
+  );
+}
+
 /** World-space Y offset for the floating HP bar, tuned per model family. */
 function hpBarYOffset(model: string): number {
   switch (model) {
@@ -142,7 +152,9 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
         mat.dispose();
       }
       defeatFadeMaterialsRef.current = [];
-      disposeObject3DResources(g);
+      if (canDisposeBattleModelGeometry(combatant.model)) {
+        disposeObject3DResources(g);
+      }
       setModelDisposed(true);
       const done = sink.onDone;
       sink.onDone = null;
