@@ -1133,7 +1133,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Pohatu_Nuva',
         portraitType: 'avatar',
         position: 'left',
-        text: '"Chronicler!" Pohatu exclaimed as Takua and Pewku made their way toward the Toa. "Where is the Herald?"',
+        text: 'Chronicler! Where is the Herald?',
       },
       {
         type: 'dialogue',
@@ -1169,7 +1169,11 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Onua_Nuva',
         portraitType: 'avatar',
         position: 'left',
-        text: 'Let me show you a real Onu-Koro welcome. *slams his fists onto the ground, creating an elemental tidal wave of earth and stone. The wave ripples toward the Rahkshi and swallows them*',
+        text: 'Let me show you a real Onu-Koro welcome.',
+      },
+      {
+        type: 'narration',
+        text: 'Onua slams his fists onto the ground, creating an elemental tidal wave of earth and stone. The wave ripples toward the Rahkshi and swallows them.',
       },
       {
         type: 'narration',
