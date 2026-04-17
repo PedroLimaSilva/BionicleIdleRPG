@@ -119,7 +119,12 @@ export function usePlayAnimation(
           const onComplete = () => {
             mixer.removeEventListener('finished', onComplete);
             resolve();
-            if (name === 'Defeat') return;
+            if (name === 'Defeat') {
+              // Hold the final defeat pose; do not blend back to idle. Stop the mixer so
+              // skeletal updates do not fight the post-defeat sink on the parent group.
+              mixer.stopAllAction();
+              return;
+            }
             // Must fade out the finished action - otherwise it stays active (clampWhenFinished)
             // and keeps blending its end pose with Idle, causing much less movement on 2nd play
             action.fadeOut(0.2);
