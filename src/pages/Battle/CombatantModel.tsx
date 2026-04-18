@@ -17,7 +17,8 @@ import { OnuaNuvaModel } from '../../components/CharacterScene/Nuva/OnuaNuvaMode
 import { PohatuNuvaModel } from '../../components/CharacterScene/Nuva/PohatuNuvaModel';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Group } from 'three';
+import { Group, Material, Mesh } from 'three';
+import { disposeObject3DResources } from '../../utils/disposeThreeObject';
 import { KraataPower } from '../../types/Kraata';
 import { TakanuvaModel } from '../../components/CharacterScene/Nuva/TakanuvaModel';
 import { RahiPlaceholderModel } from '../../components/CharacterScene/RahiPlaceholderModel';
@@ -25,6 +26,19 @@ import { NuiRamaModel } from '../../components/CharacterScene/NuiRamaModel';
 import { WorldSpaceHpBar } from './WorldSpaceHpBar';
 
 const ROTATION_RESTORE_DURATION = 0.25;
+/** After Defeat clip / procedural knockdown, sink into ground and fade out. */
+const DEFEAT_SINK_DURATION_SEC = 1.35;
+const DEFEAT_SINK_DEPTH = 0.55;
+
+/** `useGLTF` template meshes (Toa, etc.) must not dispose shared geometry; clones (enemies) may. */
+function canDisposeBattleModelGeometry(model: string): boolean {
+  return (
+    model === 'bohrok' ||
+    model === 'rahkshi' ||
+    model === 'rahi_placeholder' ||
+    model === 'nui_rama'
+  );
+}
 
 /** World-space Y offset for the floating HP bar, tuned per model family. */
 function hpBarYOffset(model: string): number {
@@ -92,17 +106,59 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     const baseRotationY = side === 'team' ? Math.PI : 0;
     const [overrideRotationY, setOverrideRotationY] = useState<number | null>(null);
     const restoreRef = useRef<{ from: number; startTimeMs: number } | null>(null);
+    const [modelDisposed, setModelDisposed] = useState(false);
+
+    const defeatSinkRef = useRef<{
+      active: boolean;
+      startMs: number;
+      onDone: (() => void) | null;
+    }>({ active: false, startMs: 0, onDone: null });
+    const defeatFadeMaterialsRef = useRef<Material[]>([]);
 
     useFrame(() => {
       const restore = restoreRef.current;
-      if (!restore) return;
-      const elapsedSec = (performance.now() - restore.startTimeMs) / 1000;
-      const t = Math.min(1, elapsedSec / ROTATION_RESTORE_DURATION);
-      setOverrideRotationY(lerpAngle(restore.from, baseRotationY, t));
-      if (t >= 1) {
-        restoreRef.current = null;
-        setOverrideRotationY(null);
+      if (restore) {
+        const elapsedSec = (performance.now() - restore.startTimeMs) / 1000;
+        const t = Math.min(1, elapsedSec / ROTATION_RESTORE_DURATION);
+        setOverrideRotationY(lerpAngle(restore.from, baseRotationY, t));
+        if (t >= 1) {
+          restoreRef.current = null;
+          setOverrideRotationY(null);
+        }
       }
+
+      const sink = defeatSinkRef.current;
+      if (!sink.active) return;
+      const g = modelGroup.current;
+      if (!g) {
+        sink.active = false;
+        sink.onDone?.();
+        sink.onDone = null;
+        return;
+      }
+
+      const elapsedSec = (performance.now() - sink.startMs) / 1000;
+      const t = Math.min(1, elapsedSec / DEFEAT_SINK_DURATION_SEC);
+      g.position.y = -t * DEFEAT_SINK_DEPTH;
+      const fade = 1 - t;
+      for (const mat of defeatFadeMaterialsRef.current) {
+        const base = (mat.userData.defeatBaseOpacity as number | undefined) ?? 1;
+        mat.opacity = base * fade;
+      }
+      if (t < 1) return;
+
+      sink.active = false;
+      for (const mat of defeatFadeMaterialsRef.current) {
+        mat.dispose();
+      }
+      defeatFadeMaterialsRef.current = [];
+      if (canDisposeBattleModelGeometry(combatant.model)) {
+        disposeObject3DResources(g);
+      }
+      setModelDisposed(true);
+      const done = sink.onDone;
+      sink.onDone = null;
+      done?.();
     });
 
     const rotationY = overrideRotationY ?? baseRotationY;
@@ -134,6 +190,36 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           }
         };
 
+        const runDefeatSinkAndDispose = () =>
+          new Promise<void>((resolve) => {
+            const g = modelGroup.current;
+            if (!g || !childRef.current) {
+              resolve();
+              return;
+            }
+            g.position.set(0, 0, 0);
+            defeatFadeMaterialsRef.current = [];
+            g.traverse((obj) => {
+              if (!(obj instanceof Mesh)) return;
+              const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+              const clones = mats.map((mat) => {
+                const c = mat.clone();
+                c.transparent = true;
+                c.opacity = mat.opacity;
+                c.needsUpdate = true;
+                c.userData.defeatBaseOpacity = mat.opacity;
+                defeatFadeMaterialsRef.current.push(c);
+                return c;
+              });
+              obj.material = Array.isArray(obj.material) ? clones : clones[0]!;
+            });
+            defeatSinkRef.current = {
+              active: true,
+              startMs: performance.now(),
+              onDone: resolve,
+            };
+          });
+
         if (name === 'Attack') {
           let resolveComplete!: () => void;
           attackCompleteRef.current = new Promise<void>((r) => {
@@ -151,6 +237,19 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
             startRestore();
             resolveComplete();
           }
+          return;
+        }
+
+        if (name === 'Defeat') {
+          try {
+            await (childRef.current?.playAnimation(name, options) ?? Promise.resolve());
+          } finally {
+            if (faceTargetId && facingY !== null) {
+              startRestore();
+            }
+          }
+          // Sink/fade runs on the render loop; do not block combat awaiting it.
+          void runDefeatSinkAndDispose();
           return;
         }
 
@@ -394,15 +493,15 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     })();
     return (
       <group position={position}>
-        <WorldSpaceHpBar
-          name={combatant.name}
-          hp={combatant.hp}
-          maxHp={combatant.maxHp}
-          yOffset={hpBarYOffset(combatant.model)}
-          popupDirection={side === 'team' ? 'down' : 'up'}
-        />
         <group ref={modelGroup} rotation={rotation}>
-          {model}
+          <WorldSpaceHpBar
+            name={combatant.name}
+            hp={combatant.hp}
+            maxHp={combatant.maxHp}
+            yOffset={hpBarYOffset(combatant.model)}
+            popupDirection={side === 'team' ? 'down' : 'up'}
+          />
+          {!modelDisposed && model}
         </group>
       </group>
     );

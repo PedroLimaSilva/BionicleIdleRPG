@@ -143,6 +143,7 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
           await new Promise<void>((resolve) => {
             window.setTimeout(resolve, DEFEAT_MS);
           });
+          options?.onAnimationComplete?.();
         }
       },
     }));

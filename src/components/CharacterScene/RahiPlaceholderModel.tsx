@@ -90,6 +90,7 @@ export const RahiPlaceholderModel = forwardRef<
         await new Promise<void>((resolve) => {
           window.setTimeout(resolve, DEFEAT_MS);
         });
+        options?.onAnimationComplete?.();
       }
     },
   }));
