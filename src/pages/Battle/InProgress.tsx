@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../../context/Game';
+import { BattlePhase } from '../../hooks/useBattleState';
 import { isTestMode } from '../../utils/testMode';
 import { AllyCard } from './Cards/Ally';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
@@ -18,17 +19,26 @@ export interface BattleInProgressProps {
 
 export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressProps) => {
   const { battle } = useGame();
-  const { currentWave, enemies, team, actionQueue, playActionQueue, isRunningRound, retreat } =
-    battle;
+  const {
+    currentWave,
+    enemies,
+    team,
+    actionQueue,
+    playActionQueue,
+    isRunningRound,
+    retreat,
+    phase,
+  } = battle;
   const [waveClearPlaying, setWaveClearPlaying] = useState(false);
   const waveClearTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   useEffect(() => {
+    if (phase !== BattlePhase.Inprogress) return;
     if (actionQueue && actionQueue.length > 0 && isRunningRound === false) {
       playActionQueue();
     }
-  }, [playActionQueue, actionQueue, isRunningRound]);
+  }, [playActionQueue, actionQueue, isRunningRound, phase]);
 
   useEffect(() => {
     return () => {

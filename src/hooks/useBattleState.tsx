@@ -109,6 +109,16 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   /** Average party level when the current encounter uses `scalesWithParty`. */
   const partyAvgLevelRef = useRef<number | null>(null);
   const pendingPresentationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /**
+   * Incremented when combat playback must stop (Victory/Defeat, new round, battle reset).
+   * `playActionQueue` bails if its captured token no longer matches, avoiding overlapping
+   * rounds and duplicate `playActionQueue` calls when `isRunningRound` flips before the queue drains.
+   */
+  const combatPlaybackTokenRef = useRef(0);
+
+  const bumpCombatPlaybackToken = () => {
+    combatPlaybackTokenRef.current += 1;
+  };
 
   const clearPendingPresentation = () => {
     if (pendingPresentationTimerRef.current !== null) {
@@ -133,6 +143,8 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
     // Team wipe takes precedence (same ordering as separate effects would race).
     if (allTeamDefeated) {
       console.log('Defeat!');
+      bumpCombatPlaybackToken();
+      setActionQueue([]);
       setIsRunningRound(false);
       setPhase(BattlePhase.Defeat);
       return;
@@ -140,6 +152,8 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
 
     if (allEnemiesDefeated) {
       console.log('Victory!');
+      bumpCombatPlaybackToken();
+      setActionQueue([]);
       setIsRunningRound(false);
       setPhase(BattlePhase.Victory);
     }
@@ -166,6 +180,8 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
 
   const startBattle = (encounter: EnemyEncounter) => {
     clearPendingPresentation();
+    bumpCombatPlaybackToken();
+    setActionQueue([]);
     setCurrentEncounter(encounter);
     setTeam([]);
     setEnemies(
@@ -186,6 +202,8 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
 
   const advanceWave = () => {
     if (!currentEncounter) return;
+    bumpCombatPlaybackToken();
+    setActionQueue([]);
     const nextWave = currentWave + 1;
     setCurrentWave(nextWave);
 
@@ -208,6 +226,8 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
 
   const retreat = () => {
     clearPendingPresentation();
+    bumpCombatPlaybackToken();
+    setActionQueue([]);
     if (phase === BattlePhase.Preparing) {
       setPhase(BattlePhase.Idle);
       setCurrentEncounter(undefined);
@@ -219,6 +239,8 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
 
   const endBattle = () => {
     clearPendingPresentation();
+    bumpCombatPlaybackToken();
+    setActionQueue([]);
     setPhase(BattlePhase.Idle);
     setCurrentEncounter(undefined);
     setCurrentWave(0);
@@ -260,10 +282,13 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
         )
       )
     );
+    bumpCombatPlaybackToken();
+    setActionQueue([]);
     setPhase(BattlePhase.Inprogress);
   };
 
   const runRound = () => {
+    bumpCombatPlaybackToken();
     const queue: (() => void)[] = [];
     const setTeamWithRef = (t: Combatant[]) => {
       teamRef.current = t;
@@ -289,13 +314,26 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   };
 
   const playActionQueue = async () => {
+    const playbackToken = combatPlaybackTokenRef.current;
     setIsRunningRound(true);
 
     let queue = [...actionQueue];
 
+    const isAborted = () => combatPlaybackTokenRef.current !== playbackToken;
+
     while (queue.length > 0) {
+      if (isAborted()) {
+        // Do not clear actionQueue here — a newer runRound may have set it.
+        setIsRunningRound(false);
+        return;
+      }
+
       for (const step of queue) {
         await step();
+        if (isAborted()) {
+          setIsRunningRound(false);
+          return;
+        }
       }
 
       const latestTeam = teamRef.current;
@@ -322,6 +360,11 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
         (fn) => queue.push(fn),
         () => ({ team: teamRef.current, enemies: enemiesRef.current })
       );
+    }
+
+    if (isAborted()) {
+      setIsRunningRound(false);
+      return;
     }
 
     setActionQueue([]);
