@@ -255,6 +255,12 @@
     }
   }
 
+  &-in-progress__chrome {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
   &-buttons {
     display: flex;
     justify-content: space-between;
