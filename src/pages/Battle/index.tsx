@@ -100,11 +100,16 @@ export const BattlePage: React.FC = () => {
     phase === BattlePhase.Defeat ||
     phase === BattlePhase.Victory
   ) {
-    if (
+    const waitingOnOutcomePresentation =
       (phase === BattlePhase.Victory || phase === BattlePhase.Defeat) &&
-      !outcomePresentationReady
-    ) {
-      return <div className={battlePageRootClass} />;
+      !outcomePresentationReady;
+
+    if (waitingOnOutcomePresentation) {
+      return (
+        <div className={battlePageRootClass}>
+          <BattleInProgress exitPresentation />
+        </div>
+      );
     }
 
     const enemiesDefeated =
