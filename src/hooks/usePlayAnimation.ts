@@ -120,9 +120,10 @@ export function usePlayAnimation(
             mixer.removeEventListener('finished', onComplete);
             resolve();
             if (name === 'Defeat') {
-              // Hold the final defeat pose; do not blend back to idle. Stop the mixer so
-              // skeletal updates do not fight the post-defeat sink on the parent group.
-              mixer.stopAllAction();
+              // Hold the final frame: fade out idle only. Do not stopAllAction — that zeros
+              // weights and snaps the skeleton to bind pose before the sink phase.
+              actions[idleActionName]?.fadeOut(0);
+              actions[idleActionName]?.stop();
               return;
             }
             // Must fade out the finished action - otherwise it stays active (clampWhenFinished)
