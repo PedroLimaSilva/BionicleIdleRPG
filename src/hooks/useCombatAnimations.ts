@@ -68,9 +68,6 @@ export function useCombatAnimations(
 
       if (hasClip) {
         await basePlay(name, callOptions);
-        if (name === 'Defeat') {
-          mixer.stopAllAction();
-        }
       } else {
         fadeOutIdleForProcedural();
         await playProceduralCombatAnimation(name as 'Hit' | 'Defeat', callOptions);
@@ -79,8 +76,6 @@ export function useCombatAnimations(
           if (idle) {
             idle.reset().fadeIn(0.2).play();
           }
-        } else if (name === 'Defeat') {
-          mixer.stopAllAction();
         }
       }
     },
