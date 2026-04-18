@@ -134,7 +134,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   },
   {
     id: 'mol_tahu_worsens',
-    name: 'The poison takes hold',
+    name: 'The Poison Takes Hold',
     description: "Tahu's poison from the fight with the Rahkshi threatens the Toa's unity.",
     durationSeconds: 12 * 60,
     requirements: {
@@ -182,7 +182,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   },
   {
     id: 'mol_onu_koro_battle',
-    name: 'The Shadows over Onu Koro',
+    name: 'The Shadows over Onu-Koro',
     description: 'Takua reaches Onu-Koro without Jaller. He is met by Toa Nuva Pohatu and Onua.',
     durationSeconds: 15 * 60,
     requirements: {
@@ -199,7 +199,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   },
   {
     id: 'mol_onu_koro_part2',
-    name: 'The Shadows over Onu Koro - Part 2',
+    name: 'The Shadows over Onu-Koro — Part 2',
     description: 'The Rahkshi have taken over Onu-Koro.',
     durationSeconds: 15 * 60,
     requirements: {

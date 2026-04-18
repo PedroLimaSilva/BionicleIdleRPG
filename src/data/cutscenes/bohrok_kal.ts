@@ -280,7 +280,7 @@ export const BOHROK_KAL_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Lewa_Nuva',
         portraitType: 'avatar',
         position: 'right',
-        text: `I remember those clunkysuits—they held back our powers last time. But without powers to hold back...`,
+        text: `I remember those clunky suits—they held back our powers last time. But without powers to hold back...`,
       },
       {
         type: 'dialogue',

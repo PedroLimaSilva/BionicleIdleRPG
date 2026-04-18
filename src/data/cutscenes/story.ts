@@ -84,7 +84,7 @@ export const STORY_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'right',
         text: `
-          (Lewa, the Toa of Air. So much energy. But it blows out of him uncontrolled, in all directions, like the wind. Not exactly someone I'd want to trust my life to in a tough spot)
+          (Lewa, the Toa of Air. So much energy. But it blows out of him uncontrolled, in all directions, like the wind. Not exactly someone I'd want to trust my life to in a tough spot.)
         `,
       },
       {
@@ -102,7 +102,7 @@ export const STORY_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'right',
         text: `
-          (Gali, the Toa of Water. That one I cant read. She's looking at me like she sees right through me. But that's not possible, right?)
+          (Gali, the Toa of Water. That one I can't read. She's looking at me like she sees right through me. But that's not possible, right?)
         `,
       },
       {

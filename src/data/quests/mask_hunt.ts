@@ -66,7 +66,7 @@ export const MASK_HUNT: Quest[] = [
     name: 'The Toa Council',
     description:
       'Following a chance encounter between Kopaka and Pohatu, they find the other four Toa gathered near the slopes of Mount Ihu.',
-    durationSeconds: 30 * 60, // 2 minutes
+    durationSeconds: 30 * 60, // 30 minutes
     requirements: {
       matoran: ['Toa_Tahu', 'Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu'],
       minLevel: 1,

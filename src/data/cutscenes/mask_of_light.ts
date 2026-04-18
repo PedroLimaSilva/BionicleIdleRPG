@@ -81,7 +81,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `Toa Tahu Tahu surfs across the lava and grabs Takua just in time. He drops Takua next to Jaller.`,
+        text: `Toa Tahu surfs across the lava and grabs Takua just in time. He drops Takua next to Jaller.`,
       },
       {
         type: 'dialogue',
@@ -106,14 +106,14 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `Takua attempts a difficult move but fails spectacularly—the ball ricochets off his stick and hits Turaga Vakama square in the mask. The crowd winces. Ga-Koro, led by Hahli, emerge victorious.`,
+        text: `Takua attempts a difficult move but fails spectacularly—the ball ricochets off his stick and hits Turaga Vakama square in the mask. The crowd winces. Ga-Koro, led by Hahli, emerges victorious.`,
       },
       {
         type: 'dialogue',
         speakerId: 'Takua',
         portraitType: 'avatar',
         position: 'right',
-        text: `(What an embarrasment! I couldn't even score one goal!)`,
+        text: `(What an embarrassment! I couldn't even score one goal!)`,
       },
       {
         type: 'narration',
@@ -835,7 +835,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Takua',
         portraitType: 'avatar',
         position: 'right',
-        text: `I guess this is the end`,
+        text: `I guess this is the end.`,
       },
 
       {
@@ -876,7 +876,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: `Kopaka left, leaving Takua and Jaller alone on the ice. Takua offerd the mask to Jaller. `,
+        text: `Kopaka left, leaving Takua and Jaller alone on the ice. Takua offered the mask to Jaller.`,
       },
       {
         type: 'dialogue',
@@ -929,7 +929,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         type: 'narration',
-        text: 'Jaller led the way into the tunnel. Pewku followed. Takua hesitated, then climbed down into the darkness after them',
+        text: 'Jaller led the way into the tunnel. Pewku followed. Takua hesitated, then climbed down into the darkness after them.',
       },
       {
         type: 'narration',
@@ -1035,7 +1035,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Makuta',
         portraitType: 'avatar',
         position: 'left',
-        text: 'You fail them more if you refuse, For the mask, your villages and Jaller will be spared. Don’t be a fool.',
+        text: 'You fail them more if you refuse. For the mask, your villages and Jaller will be spared. Don’t be a fool.',
       },
       {
         type: 'dialogue',
@@ -1071,7 +1071,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Takua',
         portraitType: 'avatar',
         position: 'right',
-        text: 'Jaller, Um, about the mask…',
+        text: 'Jaller, um, about the mask…',
       },
       {
         type: 'dialogue',
@@ -1092,7 +1092,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
-        text: 'Oh, that’s just great, First you stick me with your duty and then you ditch me?',
+        text: 'Oh, that’s just great. First you stick me with your duty and then you ditch me?',
       },
       {
         type: 'dialogue',
@@ -1106,7 +1106,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Jaller',
         portraitType: 'avatar',
         position: 'left',
-        text: 'Fine, But I won’t give up. I will find the Seventh Toa, whether you’re the true Herald or not.',
+        text: 'Fine. But I won’t give up. I will find the Seventh Toa, whether you’re the true Herald or not.',
       },
       {
         type: 'narration',
@@ -1133,7 +1133,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Pohatu_Nuva',
         portraitType: 'avatar',
         position: 'left',
-        text: 'Chronicler! Pohatu exclaimed as Takua and Pewku made their way toward the Toa. “Where is the Herald?”',
+        text: 'Chronicler! Where is the Herald?',
       },
       {
         type: 'dialogue',
@@ -1151,7 +1151,7 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Takua',
         portraitType: 'avatar',
         position: 'right',
-        text: 'Those! “Except… different ones.',
+        text: 'Those—except… different ones.',
       },
       {
         type: 'dialogue',
@@ -1169,7 +1169,11 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Onua_Nuva',
         portraitType: 'avatar',
         position: 'left',
-        text: 'Let me show you a real Onu-Koro welcome. *slams his  onto the ground, creating an elemental tidal wave of earth and stone. The wave rippled toward the Rahkshi and swallowed them*',
+        text: 'Let me show you a real Onu-Koro welcome.',
+      },
+      {
+        type: 'narration',
+        text: 'Onua slams his fists onto the ground, creating an elemental tidal wave of earth and stone. The wave ripples toward the Rahkshi and swallows them.',
       },
       {
         type: 'narration',
@@ -1434,7 +1438,11 @@ export const MASK_OF_LIGHT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Gali_Nuva',
         portraitType: 'avatar',
         position: 'right',
-        text: 'Tahu, she called. Remember who you are! Remember your destiny. She unleashed another stream of water. Tahu’s armor steamed as the cool water hit it.',
+        text: 'Tahu! Remember who you are! Remember your destiny!',
+      },
+      {
+        type: 'narration',
+        text: 'She unleashed another stream of water. Tahu’s armor steamed as the cool water hit it.',
       },
 
       {

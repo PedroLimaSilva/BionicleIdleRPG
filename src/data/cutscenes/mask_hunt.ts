@@ -15,7 +15,7 @@ export const MASK_HUNT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'right',
         text: `
-          I have slept for so long, I can only rememeber my name.
+          I have slept for so long, I can only remember my name.
         `,
       },
       {
@@ -33,7 +33,7 @@ export const MASK_HUNT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'right',
         text: `
-          My mask let's me see through the ice. And I see I am not alone.
+          My mask lets me see through the ice. And I see I am not alone.
         `,
       },
       {
@@ -60,7 +60,7 @@ export const MASK_HUNT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'left',
         text: `
-          I... I am Matoro, a matoran. I saw you come ashore and assemble yourself. We've been waiting for you.
+          I... I am Matoro, a Matoran. I saw you come ashore and assemble yourself. We've been waiting for you.
         `,
       },
       {
@@ -231,7 +231,7 @@ export const MASK_HUNT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'left',
         text: `
-          *RUMBLE* WHATCH OUT!!! *CRASH*
+          *RUMBLE* WATCH OUT!!! *CRASH*
         `,
       },
       {
@@ -354,7 +354,7 @@ export const MASK_HUNT_CUTSCENES: Record<string, VisualNovelCutscene> = {
       {
         type: 'narration',
         text: `
-          Kopaka picked up the mask and placed it over his own. Immediately, he felt the Power of the mask of Shielding flow through him, like a cushion protecting him.
+          Kopaka picked up the mask and placed it over his own. Immediately, he felt the power of the Mask of Shielding flow through him, like a cushion protecting him.
         `,
       },
       {
@@ -363,7 +363,7 @@ export const MASK_HUNT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'right',
         text: `
-          I can feel the power of the mask of shielding, but the powers of the Mask of Vision are still mine to use..
+          I can feel the power of the Mask of Shielding, but the powers of the Mask of Vision are still mine to use.
         `,
       },
       {
@@ -625,7 +625,7 @@ export const MASK_HUNT_CUTSCENES: Record<string, VisualNovelCutscene> = {
         speakerId: 'Toa_Gali',
         portraitType: 'avatar',
         position: 'right',
-        text: `You didn't think, Tahu. You never think. Innocent rahi lived in that tree. Plants depended on it. You didn't care about any of that—you just wanted your mask.`,
+        text: `You didn't think, Tahu. You never think. Innocent Rahi lived in that tree. Plants depended on it. You didn't care about any of that—you just wanted your mask.`,
       },
       {
         type: 'dialogue',
