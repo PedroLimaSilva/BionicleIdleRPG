@@ -24,10 +24,9 @@ import { TakanuvaModel } from '../../components/CharacterScene/Nuva/TakanuvaMode
 import { RahiPlaceholderModel } from '../../components/CharacterScene/RahiPlaceholderModel';
 import { NuiRamaModel } from '../../components/CharacterScene/NuiRamaModel';
 import { WorldSpaceHpBar } from './WorldSpaceHpBar';
+import { DEFEAT_SINK_DURATION_SEC } from '../../game/battleOutcomeVisualDelay';
 
 const ROTATION_RESTORE_DURATION = 0.25;
-/** After Defeat clip / procedural knockdown, sink into ground and fade out. */
-const DEFEAT_SINK_DURATION_SEC = 1.35;
 const DEFEAT_SINK_DEPTH = 0.55;
 
 /** `useGLTF` template meshes (Toa, etc.) must not dispose shared geometry; clones (enemies) may. */

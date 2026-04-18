@@ -9,6 +9,10 @@ import { useSettings } from '../../context/useSettings';
 import { shouldEnableShadows } from '../../utils/testMode';
 import { HitImpactParticles } from './HitImpactParticles';
 import { subscribeBattleCameraEmphasis } from '../../utils/battleCameraEmphasis';
+import {
+  CAMERA_EMPHASIS_HOLD_MS,
+  CAMERA_EMPHASIS_OUT_MS,
+} from '../../game/battleOutcomeVisualDelay';
 
 function EnvironmentIntensity({ value }: { value: number }) {
   const scene = useThree((s) => s.scene);
@@ -43,8 +47,6 @@ const ARENA_MARGIN = 1;
 /** Arena center (camera looks at this). */
 const ARENA_CENTER: [number, number, number] = [0, 0, 0];
 const CAMERA_EMPHASIS_IN_MS = 320;
-const CAMERA_EMPHASIS_OUT_MS = 380;
-const CAMERA_EMPHASIS_HOLD_MS = 150;
 const CAMERA_EMPHASIS_RETARGET_MS = 240;
 const CAMERA_EMPHASIS_ZOOM_MULT = 1.05;
 /** Shoulder offset — camera sits behind and above the Toa, looking past them at the enemy. */

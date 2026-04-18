@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useReducedMotion } from 'motion/react';
 import { Combatant, EnemyEncounter } from '../types/Combat';
 import { RecruitedCharacterData } from '../types/Matoran';
 import { getLevelFromExp } from '../game/Levelling';
@@ -9,6 +10,7 @@ import {
   decrementWaveCounters,
   hasReadyMaskPowers,
 } from '../services/combatUtils';
+import { getBattleOutcomePhaseDelayMs } from '../game/battleOutcomeVisualDelay';
 
 export const enum BattlePhase {
   Idle = 'idle',
@@ -21,6 +23,12 @@ export const enum BattlePhase {
 
 export interface BattleState {
   phase: BattlePhase;
+  /**
+   * After functional Victory/Defeat, stays false until defeat sink + camera framing
+   * have had time to finish; then true so nav and outcome UI appear together.
+   * Always true when not in Victory/Defeat.
+   */
+  outcomePresentationReady: boolean;
   currentEncounter: EnemyEncounter | undefined;
   currentWave: number;
   enemies: Combatant[];
@@ -39,6 +47,7 @@ export interface BattleState {
 
 export const INITIAL_BATTLE_STATE: BattleState = {
   phase: BattlePhase.Idle,
+  outcomePresentationReady: true,
   currentWave: 0,
   currentEncounter: undefined,
   enemies: [],
@@ -84,6 +93,7 @@ const TOA_NUVA_IDS = [
 ] as const;
 
 export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
+  const reduceMotion = useReducedMotion() ?? false;
   const [phase, setPhase] = useState<BattlePhase>(INITIAL_BATTLE_STATE.phase);
   const [currentEncounter, setCurrentEncounter] = useState<EnemyEncounter | undefined>(
     INITIAL_BATTLE_STATE.currentEncounter
@@ -93,36 +103,85 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   const [team, setTeam] = useState<Combatant[]>(INITIAL_BATTLE_STATE.team);
   const [actionQueue, setActionQueue] = useState<(() => void)[]>([]);
   const [isRunningRound, setIsRunningRound] = useState(false);
+  const [outcomePresentationReady, setOutcomePresentationReady] = useState(true);
   const teamRef = useRef(team);
   const enemiesRef = useRef(enemies);
   /** Average party level when the current encounter uses `scalesWithParty`. */
   const partyAvgLevelRef = useRef<number | null>(null);
+  const pendingPresentationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /**
+   * Incremented when combat playback must stop (Victory/Defeat, new round, battle reset).
+   * `playActionQueue` bails if its captured token no longer matches, avoiding overlapping
+   * rounds and duplicate `playActionQueue` calls when `isRunningRound` flips before the queue drains.
+   */
+  const combatPlaybackTokenRef = useRef(0);
+
+  const bumpCombatPlaybackToken = () => {
+    combatPlaybackTokenRef.current += 1;
+  };
+
+  const clearPendingPresentation = () => {
+    if (pendingPresentationTimerRef.current !== null) {
+      clearTimeout(pendingPresentationTimerRef.current);
+      pendingPresentationTimerRef.current = null;
+    }
+  };
+
   teamRef.current = team;
   enemiesRef.current = enemies;
 
   useEffect(() => {
-    const allTeamDefeated = team.length && team.every((t) => t.hp <= 0);
+    if (phase !== BattlePhase.Inprogress) return;
+
+    const allTeamDefeated = team.length > 0 && team.every((t) => t.hp <= 0);
+    const allEnemiesDefeated =
+      !!currentEncounter &&
+      currentWave === currentEncounter.waves.length - 1 &&
+      enemies.length > 0 &&
+      enemies.every((e) => e.hp <= 0);
+
+    // Team wipe takes precedence (same ordering as separate effects would race).
     if (allTeamDefeated) {
       console.log('Defeat!');
+      bumpCombatPlaybackToken();
+      setActionQueue([]);
       setIsRunningRound(false);
       setPhase(BattlePhase.Defeat);
+      return;
     }
-  }, [team]);
 
-  useEffect(() => {
-    const allEnemiesDefeated =
-      currentEncounter &&
-      currentWave === currentEncounter.waves.length - 1 &&
-      enemies.length &&
-      enemies.every((e) => e.hp <= 0);
     if (allEnemiesDefeated) {
       console.log('Victory!');
+      bumpCombatPlaybackToken();
+      setActionQueue([]);
       setIsRunningRound(false);
       setPhase(BattlePhase.Victory);
     }
-  }, [currentEncounter, currentWave, enemies]);
+  }, [currentEncounter, currentWave, enemies, team, phase]);
+
+  useEffect(() => {
+    clearPendingPresentation();
+    if (phase !== BattlePhase.Victory && phase !== BattlePhase.Defeat) {
+      setOutcomePresentationReady(true);
+      return;
+    }
+    const delayMs = getBattleOutcomePhaseDelayMs(reduceMotion);
+    if (delayMs === 0) {
+      setOutcomePresentationReady(true);
+      return;
+    }
+    setOutcomePresentationReady(false);
+    pendingPresentationTimerRef.current = setTimeout(() => {
+      pendingPresentationTimerRef.current = null;
+      setOutcomePresentationReady(true);
+    }, delayMs);
+    return clearPendingPresentation;
+  }, [phase, reduceMotion]);
 
   const startBattle = (encounter: EnemyEncounter) => {
+    clearPendingPresentation();
+    bumpCombatPlaybackToken();
+    setActionQueue([]);
     setCurrentEncounter(encounter);
     setTeam([]);
     setEnemies(
@@ -143,6 +202,8 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
 
   const advanceWave = () => {
     if (!currentEncounter) return;
+    bumpCombatPlaybackToken();
+    setActionQueue([]);
     const nextWave = currentWave + 1;
     setCurrentWave(nextWave);
 
@@ -164,6 +225,9 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   };
 
   const retreat = () => {
+    clearPendingPresentation();
+    bumpCombatPlaybackToken();
+    setActionQueue([]);
     if (phase === BattlePhase.Preparing) {
       setPhase(BattlePhase.Idle);
       setCurrentEncounter(undefined);
@@ -174,6 +238,9 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   };
 
   const endBattle = () => {
+    clearPendingPresentation();
+    bumpCombatPlaybackToken();
+    setActionQueue([]);
     setPhase(BattlePhase.Idle);
     setCurrentEncounter(undefined);
     setCurrentWave(0);
@@ -215,10 +282,13 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
         )
       )
     );
+    bumpCombatPlaybackToken();
+    setActionQueue([]);
     setPhase(BattlePhase.Inprogress);
   };
 
   const runRound = () => {
+    bumpCombatPlaybackToken();
     const queue: (() => void)[] = [];
     const setTeamWithRef = (t: Combatant[]) => {
       teamRef.current = t;
@@ -244,13 +314,26 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   };
 
   const playActionQueue = async () => {
+    const playbackToken = combatPlaybackTokenRef.current;
     setIsRunningRound(true);
 
     let queue = [...actionQueue];
 
+    const isAborted = () => combatPlaybackTokenRef.current !== playbackToken;
+
     while (queue.length > 0) {
+      if (isAborted()) {
+        // Do not clear actionQueue here — a newer runRound may have set it.
+        setIsRunningRound(false);
+        return;
+      }
+
       for (const step of queue) {
         await step();
+        if (isAborted()) {
+          setIsRunningRound(false);
+          return;
+        }
       }
 
       const latestTeam = teamRef.current;
@@ -279,12 +362,18 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
       );
     }
 
+    if (isAborted()) {
+      setIsRunningRound(false);
+      return;
+    }
+
     setActionQueue([]);
     setIsRunningRound(false);
   };
 
   return {
     phase,
+    outcomePresentationReady,
     currentEncounter,
     currentWave,
     enemies,

@@ -14,6 +14,7 @@ const shouldShowCurrencyBar = (pathname: string) => {
 
 export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
   const { battle, completedQuests, collectedKrana } = useGame();
+  const { outcomePresentationReady } = battle;
   const { pathname } = useLocation();
   const hasVisibleEncounters = useMemo(
     () => getVisibleEncounters(ENCOUNTERS, collectedKrana, completedQuests).length > 0,
@@ -26,8 +27,8 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
         battle.currentEncounter &&
         !(
           battle.phase === BattlePhase.Retreated ||
-          battle.phase === BattlePhase.Defeat ||
-          battle.phase === BattlePhase.Victory
+          (battle.phase === BattlePhase.Defeat && outcomePresentationReady) ||
+          (battle.phase === BattlePhase.Victory && outcomePresentationReady)
         )
           ? 'hidden'
           : ''
