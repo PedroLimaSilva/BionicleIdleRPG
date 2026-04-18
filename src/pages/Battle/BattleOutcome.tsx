@@ -34,8 +34,6 @@ interface BattleOutcomeProps {
   kranaRewards: KranaReward[];
   kraataRewards: KraataReward[];
   onCollect: () => void;
-  /** When false (Victory/Defeat only), hide UI until arena defeat/camera animations finish. */
-  showContent?: boolean;
 }
 
 function OutcomeTitle({ phase }: { phase: BattlePhase }) {
@@ -361,7 +359,6 @@ export function BattleOutcome({
   kranaRewards,
   kraataRewards,
   onCollect,
-  showContent = true,
 }: BattleOutcomeProps) {
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
@@ -389,10 +386,6 @@ export function BattleOutcome({
       ),
     [shouldReduceMotion, hasLoot, lootDelay]
   );
-
-  if (!showContent) {
-    return null;
-  }
 
   return (
     <>
