@@ -1,13 +1,19 @@
 import { useNavigate } from 'react-router-dom';
+import { useReducedMotion } from 'motion/react';
 import { useGame } from '../../context/Game';
 import { BattlePhase } from '../../hooks/useBattleState';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
 import { BattleOutcome } from './BattleOutcome';
 import { useBattlePageHitFeedback } from './useBattlePageHitFeedback';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
-import { Arena } from './Arena';
+import {
+  Arena,
+  CAMERA_EMPHASIS_HOLD_MS,
+  CAMERA_EMPHASIS_OUT_MS,
+} from './Arena';
+import { DEFEAT_SINK_DURATION_SEC } from './CombatantModel';
 import {
   getEnemiesDefeatedCount,
   computeBattleExpTotal,
@@ -16,12 +22,16 @@ import {
 } from '../../game/BattleRewards';
 import { KraataReward } from '../../types/Kraata';
 
+/** After Victory/Defeat phase, wait for defeat sink/fade + camera zoom-out before showing rewards UI. */
+const OUTCOME_VISUAL_CUSHION_SEC = 0.12;
+
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
   const { battle, applyBattleRewards, completedQuests, collectedKrana } = useGame();
   const { currentEncounter, phase, currentWave, enemies, team } = battle;
   const { setScene } = useSceneCanvas();
   const battlePageRootClass = useBattlePageHitFeedback();
+  const reduceMotion = useReducedMotion() ?? false;
 
   const kranaRewardsRef = useRef<ReturnType<typeof computeKranaRewardsForBattle> | null>(null);
   const kraataRewardsRef = useRef<KraataReward[] | null>(null);
@@ -59,6 +69,36 @@ export const BattlePage: React.FC = () => {
 
   const kranaRewards = kranaRewardsRef.current ?? [];
   const kraataRewards = kraataRewardsRef.current ?? [];
+
+  const outcomeVisualDelaySec = reduceMotion
+    ? 0
+    : DEFEAT_SINK_DURATION_SEC +
+      (CAMERA_EMPHASIS_HOLD_MS + CAMERA_EMPHASIS_OUT_MS) / 1000 +
+      OUTCOME_VISUAL_CUSHION_SEC;
+
+  const [showOutcomeContent, setShowOutcomeContent] = useState(
+    () =>
+      phase === BattlePhase.Retreated ||
+      reduceMotion ||
+      (phase !== BattlePhase.Victory && phase !== BattlePhase.Defeat)
+  );
+
+  useEffect(() => {
+    if (phase === BattlePhase.Retreated) {
+      setShowOutcomeContent(true);
+      return;
+    }
+    if (phase === BattlePhase.Victory || phase === BattlePhase.Defeat) {
+      if (reduceMotion) {
+        setShowOutcomeContent(true);
+        return;
+      }
+      setShowOutcomeContent(false);
+      const delayMs = Math.round(outcomeVisualDelaySec * 1000);
+      const id = window.setTimeout(() => setShowOutcomeContent(true), delayMs);
+      return () => window.clearTimeout(id);
+    }
+  }, [phase, reduceMotion, outcomeVisualDelaySec]);
 
   useEffect(() => {
     if (!currentEncounter) {
@@ -129,6 +169,7 @@ export const BattlePage: React.FC = () => {
           kranaRewards={kranaRewards}
           kraataRewards={kraataRewards}
           onCollect={handleCollectRewards}
+          showContent={showOutcomeContent}
         />
       </div>
     );

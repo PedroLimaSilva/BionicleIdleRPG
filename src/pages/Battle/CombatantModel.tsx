@@ -27,7 +27,7 @@ import { WorldSpaceHpBar } from './WorldSpaceHpBar';
 
 const ROTATION_RESTORE_DURATION = 0.25;
 /** After Defeat clip / procedural knockdown, sink into ground and fade out. */
-const DEFEAT_SINK_DURATION_SEC = 1.35;
+export const DEFEAT_SINK_DURATION_SEC = 1.35;
 const DEFEAT_SINK_DEPTH = 0.55;
 
 /** `useGLTF` template meshes (Toa, etc.) must not dispose shared geometry; clones (enemies) may. */

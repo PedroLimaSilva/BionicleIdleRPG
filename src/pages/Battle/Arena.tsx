@@ -43,8 +43,10 @@ const ARENA_MARGIN = 1;
 /** Arena center (camera looks at this). */
 const ARENA_CENTER: [number, number, number] = [0, 0, 0];
 const CAMERA_EMPHASIS_IN_MS = 320;
-const CAMERA_EMPHASIS_OUT_MS = 380;
-const CAMERA_EMPHASIS_HOLD_MS = 150;
+/** Exported for battle outcome UI timing (zoom-out after final action). */
+export const CAMERA_EMPHASIS_OUT_MS = 380;
+/** Exported for battle outcome UI timing (hold before zoom-out). */
+export const CAMERA_EMPHASIS_HOLD_MS = 150;
 const CAMERA_EMPHASIS_RETARGET_MS = 240;
 const CAMERA_EMPHASIS_ZOOM_MULT = 1.05;
 /** Shoulder offset — camera sits behind and above the Toa, looking past them at the enemy. */
