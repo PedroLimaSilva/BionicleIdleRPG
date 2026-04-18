@@ -310,7 +310,7 @@ XP: 2800"]
 (12m)
 Currency: 4500
 XP: 3000"]
-  mol_tahu_worsens["The poison takes hold
+  mol_tahu_worsens["The Poison Takes Hold
 (12m)
 Currency: 4500
 XP: 3000"]
@@ -322,11 +322,11 @@ XP: 3000"]
 (15m)
 Currency: 5000
 XP: 3500"]
-  mol_onu_koro_battle["The Shadows over Onu Koro
+  mol_onu_koro_battle["The Shadows over Onu-Koro
 (15m)
 Currency: 5000
 XP: 3500"]
-  mol_onu_koro_part2["The Shadows over Onu Koro - Part 2
+  mol_onu_koro_part2["The Shadows over Onu-Koro — Part 2
 (15m)
 Currency: 5000
 XP: 3500"]
