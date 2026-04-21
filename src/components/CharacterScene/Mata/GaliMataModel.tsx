@@ -6,10 +6,41 @@ import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { useMask } from '../../../hooks/useMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
-import { GALI_MATA_KIT_2001_ATTACHMENTS, KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
+import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
+import { LegoColor } from '../../../types/Colors';
+import type { KitSocketAttachment } from '../../../types/KitParts';
 import { applyWeatheredMetalToObject } from '../WeatheredMetalMaterial';
 
 const USE_WEATHERED_METAL = true;
+
+const GALI_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment> = {
+  'MataFoot.L': {
+    kitNodeName: 'MataFoot',
+    materialColors: {
+      Main: { kind: 'lego', value: LegoColor.Blue },
+      Metal: { kind: 'lego', value: LegoColor.LightGray },
+    },
+  },
+  MataChest: {
+    kitNodeName: 'MataChest',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
+  MataAbdomen: {
+    kitNodeName: 'MataAbdomen',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
+  MataHip: {
+    kitNodeName: 'MataHip',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
+  'GearM.L': { kitNodeName: 'GearM' },
+  'GearM.M': { kitNodeName: 'GearM' },
+  'GearM.R': { kitNodeName: 'GearM' },
+  Socket: {
+    kitNodeName: 'Socket',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
+};
 
 export const GaliMataModel = forwardRef<
   CombatantModelHandle,
@@ -30,7 +61,7 @@ export const GaliMataModel = forwardRef<
   useKitAttachments({
     characterNodes: nodes as Record<string, Object3D | undefined>,
     kitUrl: KIT_2001_GLB_PATH,
-    attachments: GALI_MATA_KIT_2001_ATTACHMENTS,
+    attachments: GALI_KIT_2001_ATTACHMENTS,
     colors: matoran.colors,
     onAttached: () => setKitAttachGeneration((g) => g + 1),
   });
