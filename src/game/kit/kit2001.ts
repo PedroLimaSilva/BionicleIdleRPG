@@ -1,39 +1,34 @@
 import { LegoColor } from '../../types/Colors';
-import type { KitAttachmentSpec } from '../../types/KitParts';
+import type { KitSocketAttachment } from '../../types/KitParts';
 
 export const KIT_2001_GLB_PATH = import.meta.env.BASE_URL + 'kit_2001.glb';
 
-/** Gali Mata — sockets and kit node names match the Blender export */
-export const GALI_MATA_KIT_2001_ATTACHMENTS: readonly KitAttachmentSpec[] = [
-  {
-    socketName: 'MataFoot.L',
+/** Gali Mata — keys are socket names on the rig; values describe the kit asset */
+export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment> = {
+  'MataFoot.L': {
     kitNodeName: 'MataFoot',
     materialColors: {
       Main: { kind: 'lego', value: LegoColor.Blue },
       Metal: { kind: 'lego', value: LegoColor.LightGray },
     },
   },
-  {
-    socketName: 'MataChest',
+  MataChest: {
     kitNodeName: 'MataChest',
     materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
   },
-  {
-    socketName: 'MataAbdomen',
+  MataAbdomen: {
     kitNodeName: 'MataAbdomen',
     materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
   },
-  {
-    socketName: 'MataHip',
+  MataHip: {
     kitNodeName: 'MataHip',
     materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
   },
-  { socketName: 'GearM.L', kitNodeName: 'GearM' },
-  { socketName: 'GearM.M', kitNodeName: 'GearM' },
-  { socketName: 'GearM.R', kitNodeName: 'GearM' },
-  {
-    socketName: 'Socket',
+  'GearM.L': { kitNodeName: 'GearM' },
+  'GearM.M': { kitNodeName: 'GearM' },
+  'GearM.R': { kitNodeName: 'GearM' },
+  Socket: {
     kitNodeName: 'Socket',
     materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
   },
-];
+};

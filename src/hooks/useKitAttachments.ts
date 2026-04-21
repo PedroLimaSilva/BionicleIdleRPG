@@ -8,7 +8,7 @@ import {
 } from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../types/Matoran';
-import type { KitAttachmentSpec, KitMaterialColorSource } from '../types/KitParts';
+import type { KitMaterialColorSource, KitSocketAttachment } from '../types/KitParts';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -35,7 +35,11 @@ function buildKitNodeIndex(scene: Object3D): Record<string, Object3D> {
   return map;
 }
 
-function applyMaterialColors(root: Object3D, materialColors: KitAttachmentSpec['materialColors'], palette: BaseMatoran['colors']): void {
+function applyMaterialColors(
+  root: Object3D,
+  materialColors: KitSocketAttachment['materialColors'],
+  palette: BaseMatoran['colors']
+): void {
   if (!materialColors || Object.keys(materialColors).length === 0) return;
 
   const lookup = new Map<string, string>();
@@ -66,7 +70,8 @@ export type UseKitAttachmentsParams = {
   /** `nodes` from `useGLTF` on the character (must include socket names as keys when flat) */
   characterNodes: Record<string, Object3D | undefined> | undefined;
   kitUrl: string;
-  attachments: readonly KitAttachmentSpec[];
+  /** Key = socket name on character; O(1) lookup when matching nodes to kit pieces */
+  attachments: Record<string, KitSocketAttachment>;
   colors: BaseMatoran['colors'];
   /** Bump when kit meshes change so callers can re-run effects (e.g. weathered metal) */
   onAttached?: () => void;
@@ -93,12 +98,12 @@ export function useKitAttachments({
 
     const clones: Object3D[] = [];
 
-    for (const row of attachments) {
-      const socket = characterNodes[row.socketName];
+    for (const [socketName, row] of Object.entries(attachments)) {
+      const socket = characterNodes[socketName];
       const template = kitNodes[row.kitNodeName];
 
       if (!socket) {
-        console.warn(`[useKitAttachments] Socket '${row.socketName}' not found on character`);
+        console.warn(`[useKitAttachments] Socket '${socketName}' not found on character`);
         continue;
       }
       if (!template) {

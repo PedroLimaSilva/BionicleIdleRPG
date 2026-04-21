@@ -9,12 +9,11 @@ export type KitMaterialColorSource =
   | { kind: 'palette'; key: MatoranPaletteKey };
 
 /**
- * One kit piece placed on a socket (empty) in the character GLB.
- * `socketName` must match the exported empty/object name on the rig.
+ * Kit piece for one socket. Use as `Record<socketName, KitSocketAttachment>` so
+ * `attachments[socketName]` is O(1) when walking character nodes.
  * `kitNodeName` must match the object name in the kit GLB.
  */
-export type KitAttachmentSpec = {
-  socketName: string;
+export type KitSocketAttachment = {
   kitNodeName: string;
   /**
    * Map from kit **material** name (e.g. Main, Metal) to a color source.
