@@ -1,0 +1,131 @@
+import { useEffect, useMemo, useRef } from 'react';
+import {
+  Color,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Object3D,
+} from 'three';
+import { useGLTF } from '@react-three/drei';
+import type { BaseMatoran } from '../types/Matoran';
+import type { KitAttachmentSpec, KitMaterialColorSource } from '../types/KitParts';
+
+type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
+
+function isStandardMat(mat: unknown): mat is StandardMat {
+  return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
+}
+
+function resolveColorSource(
+  source: KitMaterialColorSource,
+  palette: BaseMatoran['colors']
+): string {
+  return source.kind === 'lego' ? source.value : palette[source.key];
+}
+
+function normalizeSlotName(name: string): string {
+  return name.trim().toLowerCase();
+}
+
+function buildKitNodeIndex(scene: Object3D): Record<string, Object3D> {
+  const map: Record<string, Object3D> = {};
+  scene.traverse((child) => {
+    if (child.name) map[child.name] = child;
+  });
+  return map;
+}
+
+function applyMaterialColors(root: Object3D, materialColors: KitAttachmentSpec['materialColors'], palette: BaseMatoran['colors']): void {
+  if (!materialColors || Object.keys(materialColors).length === 0) return;
+
+  const lookup = new Map<string, string>();
+  for (const [slotName, source] of Object.entries(materialColors)) {
+    if (!source) continue;
+    lookup.set(normalizeSlotName(slotName), resolveColorSource(source, palette));
+  }
+
+  root.traverse((child) => {
+    if (!(child as Mesh).isMesh) return;
+    const mesh = child as Mesh;
+    const raw = mesh.material;
+    const mats = Array.isArray(raw) ? raw : [raw];
+    const next = mats.map((mat) => {
+      if (!isStandardMat(mat)) return mat;
+      const key = normalizeSlotName(mat.name);
+      const hex = lookup.get(key);
+      if (!hex) return mat;
+      const cloned = mat.clone();
+      cloned.color = new Color(hex);
+      return cloned;
+    });
+    mesh.material = Array.isArray(raw) ? next : next[0];
+  });
+}
+
+export type UseKitAttachmentsParams = {
+  /** `nodes` from `useGLTF` on the character (must include socket names as keys when flat) */
+  characterNodes: Record<string, Object3D | undefined> | undefined;
+  kitUrl: string;
+  attachments: readonly KitAttachmentSpec[];
+  colors: BaseMatoran['colors'];
+  /** Bump when kit meshes change so callers can re-run effects (e.g. weathered metal) */
+  onAttached?: () => void;
+};
+
+/**
+ * Clones kit meshes from a shared GLB and parents them to named sockets on the character.
+ * Clones materials when tinting so instances do not share edited materials.
+ */
+export function useKitAttachments({
+  characterNodes,
+  kitUrl,
+  attachments,
+  colors,
+  onAttached,
+}: UseKitAttachmentsParams): void {
+  const gltf = useGLTF(kitUrl);
+  const kitNodes = useMemo(() => buildKitNodeIndex(gltf.scene), [gltf]);
+  const onAttachedRef = useRef(onAttached);
+  onAttachedRef.current = onAttached;
+
+  useEffect(() => {
+    if (!characterNodes) return;
+
+    const clones: Object3D[] = [];
+
+    for (const row of attachments) {
+      const socket = characterNodes[row.socketName];
+      const template = kitNodes[row.kitNodeName];
+
+      if (!socket) {
+        console.warn(`[useKitAttachments] Socket '${row.socketName}' not found on character`);
+        continue;
+      }
+      if (!template) {
+        console.warn(`[useKitAttachments] Kit node '${row.kitNodeName}' not found in ${kitUrl}`);
+        continue;
+      }
+
+      const clone = template.clone(true);
+      clone.position.set(0, 0, 0);
+      clone.rotation.set(0, 0, 0);
+      clone.scale.set(1, 1, 1);
+      applyMaterialColors(clone, row.materialColors, colors);
+      socket.add(clone);
+      clones.push(clone);
+    }
+
+    onAttachedRef.current?.();
+
+    return () => {
+      for (const clone of clones) {
+        const p = clone.parent;
+        if (p) p.remove(clone);
+      }
+    };
+  }, [characterNodes, kitUrl, attachments, colors, kitNodes]);
+}
+
+useKitAttachments.preload = (kitUrl: string) => {
+  useGLTF.preload(kitUrl);
+};
