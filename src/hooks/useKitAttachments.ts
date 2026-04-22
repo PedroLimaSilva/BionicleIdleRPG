@@ -1,11 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import {
-  Color,
-  Mesh,
-  MeshPhysicalMaterial,
-  MeshStandardMaterial,
-  Object3D,
-} from 'three';
+import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../types/Matoran';
 import type {
@@ -116,6 +110,7 @@ export function useKitAttachments({
     if (!characterNodes) return;
 
     const clones: Object3D[] = [];
+    console.log('characterNodes', characterNodes);
 
     for (const [socketName, row] of Object.entries(attachments)) {
       const socket = characterNodes[socketName];
