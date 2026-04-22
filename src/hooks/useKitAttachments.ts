@@ -37,8 +37,7 @@ function buildKitNodeIndex(scene: Object3D): Record<string, Object3D> {
 function applyKitMaterialSlots(
   root: Object3D,
   materialColors: KitSocketAttachment['materialColors'],
-  palette: BaseMatoran['colors'],
-  eyesHex: string
+  palette: BaseMatoran['colors']
 ): void {
   if (!materialColors || Object.keys(materialColors).length === 0) return;
 
@@ -64,10 +63,21 @@ function applyKitMaterialSlots(
       }
       if (spec.roughness !== undefined) cloned.roughness = spec.roughness;
       if (spec.metalness !== undefined) cloned.metalness = spec.metalness;
-      if (spec.emissiveFromEyes) {
-        cloned.emissive = new Color(eyesHex);
-        cloned.emissiveIntensity = spec.emissiveIntensity ?? mat.emissiveIntensity ?? 1;
-      } else if (spec.emissiveIntensity !== undefined && cloned.emissive) {
+
+      const emissiveSource: KitMaterialColorSource | undefined = spec.emissive
+        ? spec.emissive
+        : spec.emissiveFromEyes
+          ? { kind: 'palette', key: 'eyes' }
+          : undefined;
+      if (emissiveSource) {
+        cloned.emissive = new Color(resolveColorSource(emissiveSource, palette));
+        if (spec.emissiveIntensity !== undefined) {
+          cloned.emissiveIntensity = spec.emissiveIntensity;
+        } else {
+          const prev = mat.emissiveIntensity ?? 0;
+          cloned.emissiveIntensity = prev > 0 ? prev : 1;
+        }
+      } else if (spec.emissiveIntensity !== undefined) {
         cloned.emissiveIntensity = spec.emissiveIntensity;
       }
       return cloned;
@@ -83,9 +93,7 @@ export type UseKitAttachmentsParams = {
   /** Key = socket name on character; O(1) lookup when matching nodes to kit pieces */
   attachments: Record<string, KitSocketAttachment>;
   colors: BaseMatoran['colors'];
-  /** Used for kit slots with `emissiveFromEyes` (bloom / hooks). */
-  eyesColorHex: string;
-  /** Bump when kit meshes change so callers can re-run effects (e.g. weathered metal) */
+  /** After kit clones attach (e.g. refresh selective bloom). */
   onAttached?: () => void;
 };
 
@@ -98,7 +106,6 @@ export function useKitAttachments({
   kitUrl,
   attachments,
   colors,
-  eyesColorHex,
   onAttached,
 }: UseKitAttachmentsParams): void {
   const gltf = useGLTF(kitUrl);
@@ -129,7 +136,7 @@ export function useKitAttachments({
       clone.position.set(0, 0, 0);
       clone.rotation.set(0, 0, 0);
       clone.scale.set(1, 1, 1);
-      applyKitMaterialSlots(clone, row.materialColors, colors, eyesColorHex);
+      applyKitMaterialSlots(clone, row.materialColors, colors);
       socket.add(clone);
       clones.push(clone);
     }
@@ -142,7 +149,7 @@ export function useKitAttachments({
         if (p) p.remove(clone);
       }
     };
-  }, [characterNodes, kitUrl, attachments, colors, eyesColorHex, kitNodes]);
+  }, [characterNodes, kitUrl, attachments, colors, kitNodes]);
 }
 
 useKitAttachments.preload = (kitUrl: string) => {

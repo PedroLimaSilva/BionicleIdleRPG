@@ -16,11 +16,15 @@ export type KitMaterialSlotOverride = {
   color?: KitMaterialColorSource;
   roughness?: number;
   metalness?: number;
-  /** Do not replace with weathered metal (use with glow / emissive parts). */
-  skipWeatheredMetal?: boolean;
-  /** Drive emissive from eye color for selective bloom (e.g. hook lenses). */
-  emissiveFromEyes?: boolean;
+  /** Emissive color from config (Lego or palette); pair with `emissiveIntensity` for bloom. */
+  emissive?: KitMaterialColorSource;
+  /** Emissive strength; when unset but `emissive` is set, keeps the cloned GLB intensity if > 0, else 1. */
   emissiveIntensity?: number;
+  /**
+   * @deprecated Use `emissive: { kind: 'palette', key: 'eyes' }` instead.
+   * When true, same as `emissive` from the `eyes` palette slot.
+   */
+  emissiveFromEyes?: boolean;
 };
 
 export type KitMaterialSlotEntry = KitMaterialColorSource | KitMaterialSlotOverride;
