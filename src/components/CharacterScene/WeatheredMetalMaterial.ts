@@ -219,6 +219,12 @@ function isExcludedMaterial(mat: unknown, excludeNames: string[]): boolean {
   return excludeNames.some((n) => name === n);
 }
 
+function isExcludedMaterialBySubstring(mat: unknown, substrings: string[]): boolean {
+  if (substrings.length === 0) return false;
+  const name = ((mat as { name?: string }).name ?? '').toLowerCase();
+  return substrings.some((s) => name.includes(s.toLowerCase()));
+}
+
 /**
  * Replaces mesh materials with weathered metal. Skips:
  * - Meshes under a node named "Masks" (useMask-injected meshes)
@@ -232,6 +238,10 @@ export function applyWeatheredMetalToObject(
   object: Object3D | null | undefined,
   opts: WeatheredMetalOptions & {
     excludeMaterialNames?: string[];
+    /** Material names containing any of these substrings (case-insensitive) are skipped */
+    excludeMaterialNameSubstrings?: string[];
+    /** Exact material names (case-insensitive) to skip, e.g. from kit slot config */
+    excludeMaterialNamesNormalized?: Set<string>;
     materialColorMap?: Record<string, string>;
     includeNormalMappedMaterials?: boolean;
     preserveExistingMaps?: boolean;
@@ -239,10 +249,18 @@ export function applyWeatheredMetalToObject(
 ): void {
   if (!object) return;
   const excludeNames = opts.excludeMaterialNames ?? [];
+  const excludeSubstrings = opts.excludeMaterialNameSubstrings ?? [];
+  const excludeNormalized = opts.excludeMaterialNamesNormalized ?? new Set<string>();
   const materialColorMap = opts.materialColorMap ?? {};
   const includeNormalMappedMaterials = opts.includeNormalMappedMaterials ?? false;
   const preserveExistingMaps = opts.preserveExistingMaps ?? false;
   const hasColorMap = Object.keys(materialColorMap).length > 0;
+
+  const isNormalizedExcluded = (mat: unknown): boolean => {
+    const rawName = (mat as { name?: string }).name ?? '';
+    if (!rawName) return false;
+    return excludeNormalized.has(rawName.trim().toLowerCase());
+  };
 
   object.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
@@ -258,6 +276,8 @@ export function applyWeatheredMetalToObject(
       if (!raw) return raw;
       if (!includeNormalMappedMaterials && hasNormalMap(raw)) return raw;
       if (excludeNames.length > 0 && isExcludedMaterial(raw, excludeNames)) return raw;
+      if (excludeSubstrings.length > 0 && isExcludedMaterialBySubstring(raw, excludeSubstrings)) return raw;
+      if (excludeNormalized.size > 0 && isNormalizedExcluded(raw)) return raw;
 
       const matName = (raw as { name?: string }).name ?? '';
       const lookupName =

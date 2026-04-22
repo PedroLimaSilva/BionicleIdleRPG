@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { EffectComposer, SSAO } from '@react-three/postprocessing';
@@ -22,7 +22,7 @@ import { TahuMataModel } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { BohrokModel } from './BohrokModel';
-import { useEyeMeshes } from './selectiveBloom';
+import { BumpCharacterBloomRecollectionProvider, useEyeMeshes } from './selectiveBloom';
 import { StableSelectiveBloom } from './StableSelectiveBloom';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
 import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
@@ -132,7 +132,9 @@ function CharacterFraming() {
 export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const characterRootRef = useRef<Object3D>(null);
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
-  const eyeMeshes = useEyeMeshes(characterRootRef, matoran);
+  const [bloomRecollectionRevision, setBloomRecollectionRevision] = useState(0);
+  const bumpBloomRecollection = useCallback(() => setBloomRecollectionRevision((n) => n + 1), []);
+  const eyeMeshes = useEyeMeshes(characterRootRef, matoran, bloomRecollectionRevision);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
   useEffect(() => {
@@ -195,20 +197,22 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
           <meshStandardMaterial color="#1a1a1a" />
         </mesh>
       )}
-      <group ref={characterRootRef}>
-        <PresentationControls
-          global={true}
-          snap={false}
-          speed={2}
-          zoom={1}
-          polar={[0, 0]}
-          config={{ mass: 0.5, tension: 170, friction: 26 }}
-        >
-          <Suspense fallback={null}>
-            <CharacterModel matoran={matoran} />
-          </Suspense>
-        </PresentationControls>
-      </group>
+      <BumpCharacterBloomRecollectionProvider bump={bumpBloomRecollection}>
+        <group ref={characterRootRef}>
+          <PresentationControls
+            global={true}
+            snap={false}
+            speed={2}
+            zoom={1}
+            polar={[0, 0]}
+            config={{ mass: 0.5, tension: 170, friction: 26 }}
+          >
+            <Suspense fallback={null}>
+              <CharacterModel matoran={matoran} />
+            </Suspense>
+          </PresentationControls>
+        </group>
+      </BumpCharacterBloomRecollectionProvider>
       <EffectComposer multisampling={0} enableNormalPass resolutionScale={0.5}>
         <SSAO
           blendFunction={BlendFunction.MULTIPLY}

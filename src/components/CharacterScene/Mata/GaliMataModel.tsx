@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { Group, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
@@ -7,12 +7,20 @@ import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { useMask } from '../../../hooks/useMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
+import { collectSkipWeatheredMetalMaterialKeys } from '../../../game/kit/kitMaterialUtils';
 import { LegoColor } from '../../../types/Colors';
 import type { KitSocketAttachment } from '../../../types/KitParts';
+import { useBumpCharacterBloomRecollection } from '../selectiveBloom';
 import { applyWeatheredMetalToObject } from '../WeatheredMetalMaterial';
 
 const USE_WEATHERED_METAL = true;
 
+/**
+ * Per-material slot (kit material `.name`, case-insensitive):
+ * - Shorthand: `{ kind: 'lego', value: LegoColor.Blue }` → color only
+ * - Full: `{ color: …, roughness: 0.4, metalness: 0.9, skipWeatheredMetal: true,
+ *   emissiveFromEyes: true, emissiveIntensity: 2 }` for hook lenses / bloom
+ */
 const GALI_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment> = {
   'MataFoot.L': {
     kitNodeName: 'MataFoot',
@@ -50,6 +58,11 @@ export const GaliMataModel = forwardRef<
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);
   const [kitAttachGeneration, setKitAttachGeneration] = useState(0);
+  const skipWeatheredMetalMaterialKeys = useMemo(
+    () => collectSkipWeatheredMetalMaterialKeys(GALI_KIT_2001_ATTACHMENTS),
+    []
+  );
+  const bumpBloomRecollection = useBumpCharacterBloomRecollection();
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/gali.glb');
   const { playAnimation } = useCombatAnimations(animations, group, {
     modelId: matoran.id,
@@ -63,7 +76,11 @@ export const GaliMataModel = forwardRef<
     kitUrl: KIT_2001_GLB_PATH,
     attachments: GALI_KIT_2001_ATTACHMENTS,
     colors: matoran.colors,
-    onAttached: () => setKitAttachGeneration((g) => g + 1),
+    eyesColorHex: matoran.colors.eyes,
+    onAttached: () => {
+      setKitAttachGeneration((g) => g + 1);
+      bumpBloomRecollection?.();
+    },
   });
 
   useEffect(() => {
@@ -83,9 +100,11 @@ export const GaliMataModel = forwardRef<
         edgeStrength: 0.15,
         edgeCurvatureScale: 2,
         excludeMaterialNames: ['Gali Glow', 'Brain', 'Glowing Eyes'],
+        excludeMaterialNameSubstrings: ['glow'],
+        excludeMaterialNamesNormalized: skipWeatheredMetalMaterialKeys,
       });
     }
-  }, [nodes, kitAttachGeneration]);
+  }, [nodes, kitAttachGeneration, skipWeatheredMetalMaterialKeys]);
 
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.maskOverride || matoran.mask;

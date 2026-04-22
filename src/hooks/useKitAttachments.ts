@@ -8,7 +8,12 @@ import {
 } from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../types/Matoran';
-import type { KitMaterialColorSource, KitSocketAttachment } from '../types/KitParts';
+import type {
+  KitMaterialColorSource,
+  KitMaterialSlotOverride,
+  KitSocketAttachment,
+} from '../types/KitParts';
+import { normalizeKitMaterialSlotEntry } from '../game/kit/kitMaterialUtils';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -35,17 +40,18 @@ function buildKitNodeIndex(scene: Object3D): Record<string, Object3D> {
   return map;
 }
 
-function applyMaterialColors(
+function applyKitMaterialSlots(
   root: Object3D,
   materialColors: KitSocketAttachment['materialColors'],
-  palette: BaseMatoran['colors']
+  palette: BaseMatoran['colors'],
+  eyesHex: string
 ): void {
   if (!materialColors || Object.keys(materialColors).length === 0) return;
 
-  const lookup = new Map<string, string>();
-  for (const [slotName, source] of Object.entries(materialColors)) {
-    if (!source) continue;
-    lookup.set(normalizeSlotName(slotName), resolveColorSource(source, palette));
+  const lookup = new Map<string, KitMaterialSlotOverride>();
+  for (const [slotName, entry] of Object.entries(materialColors)) {
+    if (!entry) continue;
+    lookup.set(normalizeSlotName(slotName), normalizeKitMaterialSlotEntry(entry));
   }
 
   root.traverse((child) => {
@@ -56,10 +62,20 @@ function applyMaterialColors(
     const next = mats.map((mat) => {
       if (!isStandardMat(mat)) return mat;
       const key = normalizeSlotName(mat.name);
-      const hex = lookup.get(key);
-      if (!hex) return mat;
+      const spec = lookup.get(key);
+      if (!spec) return mat;
       const cloned = mat.clone();
-      cloned.color = new Color(hex);
+      if (spec.color) {
+        cloned.color = new Color(resolveColorSource(spec.color, palette));
+      }
+      if (spec.roughness !== undefined) cloned.roughness = spec.roughness;
+      if (spec.metalness !== undefined) cloned.metalness = spec.metalness;
+      if (spec.emissiveFromEyes) {
+        cloned.emissive = new Color(eyesHex);
+        cloned.emissiveIntensity = spec.emissiveIntensity ?? mat.emissiveIntensity ?? 1;
+      } else if (spec.emissiveIntensity !== undefined && cloned.emissive) {
+        cloned.emissiveIntensity = spec.emissiveIntensity;
+      }
       return cloned;
     });
     mesh.material = Array.isArray(raw) ? next : next[0];
@@ -73,6 +89,8 @@ export type UseKitAttachmentsParams = {
   /** Key = socket name on character; O(1) lookup when matching nodes to kit pieces */
   attachments: Record<string, KitSocketAttachment>;
   colors: BaseMatoran['colors'];
+  /** Used for kit slots with `emissiveFromEyes` (bloom / hooks). */
+  eyesColorHex: string;
   /** Bump when kit meshes change so callers can re-run effects (e.g. weathered metal) */
   onAttached?: () => void;
 };
@@ -86,6 +104,7 @@ export function useKitAttachments({
   kitUrl,
   attachments,
   colors,
+  eyesColorHex,
   onAttached,
 }: UseKitAttachmentsParams): void {
   const gltf = useGLTF(kitUrl);
@@ -115,7 +134,7 @@ export function useKitAttachments({
       clone.position.set(0, 0, 0);
       clone.rotation.set(0, 0, 0);
       clone.scale.set(1, 1, 1);
-      applyMaterialColors(clone, row.materialColors, colors);
+      applyKitMaterialSlots(clone, row.materialColors, colors, eyesColorHex);
       socket.add(clone);
       clones.push(clone);
     }
@@ -128,7 +147,7 @@ export function useKitAttachments({
         if (p) p.remove(clone);
       }
     };
-  }, [characterNodes, kitUrl, attachments, colors, kitNodes]);
+  }, [characterNodes, kitUrl, attachments, colors, eyesColorHex, kitNodes]);
 }
 
 useKitAttachments.preload = (kitUrl: string) => {
