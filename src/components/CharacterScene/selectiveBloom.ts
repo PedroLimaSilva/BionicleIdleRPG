@@ -3,9 +3,6 @@ import { Mesh, MeshStandardMaterial, Object3D } from 'three';
 
 import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
 
-/** Names that identify eye/glowing-eye/lens meshes in Matoran and Toa GLTFs (mesh or material). */
-export const EYE_MESH_NAMES = ['Brain', 'Eye', 'glow', 'lens'];
-
 function isInsideMasksNode(obj: Object3D): boolean {
   let parent = obj.parent;
   while (parent) {
@@ -18,20 +15,18 @@ function isInsideMasksNode(obj: Object3D): boolean {
 function isBloomMesh(mesh: Mesh): boolean {
   const raw = mesh.material;
   const mats = Array.isArray(raw) ? raw : raw ? [raw] : [];
-  const meshName = (mesh.name || '').toLowerCase();
 
   for (const m of mats) {
     const mat = m as MeshStandardMaterial | undefined;
     if (!mat || (mat.emissiveIntensity ?? 0) <= 0) continue;
 
     const matName = (mat.name || '').toLowerCase();
-    const eyeLike = EYE_MESH_NAMES.some((eye) => meshName.includes(eye) || matName.includes(eye));
-    if (eyeLike || matName.includes('glow') || isInsideMasksNode(mesh)) return true;
+    if (matName.includes('glow') || isInsideMasksNode(mesh)) return true;
   }
   return false;
 }
 
-/** Collects emissive meshes (eyes + active mask materials) for selective bloom. */
+/** Collects emissive meshes (material name contains "glow", or under Masks) for selective bloom. */
 function collectBloomMeshes(root: Object3D): Object3D[] {
   const collected: Object3D[] = [];
   root.traverse((obj) => {
@@ -44,8 +39,8 @@ function collectBloomMeshes(root: Object3D): Object3D[] {
 }
 
 /**
- * Meshes under the character root that should receive selective bloom (eyes,
- * mask emissive, glow-named materials, etc.).
+ * Meshes under the character root that should receive selective bloom (emissive
+ * materials whose name includes "glow", or any emissive under the Masks node).
  *
  * `sceneRevision`: increment to re-scan after the scene graph changes (e.g. kit
  * GLB clones attach). If negative, skips collection until the revision is 0 or
