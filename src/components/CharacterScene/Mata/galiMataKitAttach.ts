@@ -150,24 +150,30 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
   HookR: { kitNodeName: 'Hook', materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } } },
   LegAnkleL: {
     kitNodeName: 'MataLegModShin',
-    materialColors: { Secondary: { kind: 'lego', value: LegoColor.MediumBlue } },
+    materialColors: {
+      Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
+      Main: { kind: 'lego', value: LegoColor.Blue },
+    },
   },
   LegAnkleR: {
     kitNodeName: 'MataLegModShin',
-    materialColors: { Secondary: { kind: 'lego', value: LegoColor.MediumBlue } },
+    materialColors: {
+      Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
+      Main: { kind: 'lego', value: LegoColor.Blue },
+    },
   },
   Leg_Upper_L_1: {
     kitNodeName: 'MataLegModThigh',
     materialColors: {
-      Main: { kind: 'lego', value: LegoColor.MediumBlue },
-      Secondary: { kind: 'lego', value: LegoColor.Blue },
+      Main: { kind: 'lego', value: LegoColor.Blue },
+      Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
     },
   },
   Leg_Upper_R_1: {
     kitNodeName: 'MataLegModThigh',
     materialColors: {
-      Main: { kind: 'lego', value: LegoColor.MediumBlue },
-      Secondary: { kind: 'lego', value: LegoColor.Blue },
+      Main: { kind: 'lego', value: LegoColor.Blue },
+      Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
     },
   },
   ObliqueNL: { kitNodeName: 'MataObliqueN' },
