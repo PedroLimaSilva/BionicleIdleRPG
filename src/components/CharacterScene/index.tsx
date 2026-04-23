@@ -22,7 +22,7 @@ import { TahuMataModel } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { BohrokModel } from './BohrokModel';
-import { useEyeMeshes } from './selectiveBloom';
+import { useCharacterBloomMeshes } from './selectiveBloom';
 import { StableSelectiveBloom } from './StableSelectiveBloom';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
 import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
@@ -132,7 +132,7 @@ function CharacterFraming() {
 export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const characterRootRef = useRef<Object3D>(null);
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
-  const eyeMeshes = useEyeMeshes(characterRootRef, matoran);
+  const bloomMeshes = useCharacterBloomMeshes(characterRootRef, matoran);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
   useEffect(() => {
@@ -221,7 +221,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
         />
         {lightsForBloom.length > 0 && shouldEnableSelectiveBloom() ? (
           <StableSelectiveBloom
-            selection={eyeMeshes}
+            selection={bloomMeshes}
             lights={lightsForBloom}
             luminanceThreshold={0.25}
             luminanceSmoothing={0.5}
