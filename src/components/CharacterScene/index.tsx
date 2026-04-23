@@ -22,7 +22,7 @@ import { TahuMataModel } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { BohrokModel } from './BohrokModel';
-import { BumpCharacterBloomRecollectionProvider, useEyeMeshes } from './selectiveBloom';
+import { useCharacterBloomMeshes } from './selectiveBloom';
 import { StableSelectiveBloom } from './StableSelectiveBloom';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
 import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
@@ -43,12 +43,19 @@ function EnvironmentIntensity({ value }: { value: number }) {
   return null;
 }
 
-function CharacterModel({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
+function CharacterModel({
+  matoran,
+  onKitMeshesAttached,
+}: {
+  matoran: BaseMatoran & RecruitedCharacterData;
+  /** e.g. Gali kit GLB — bump bloom mesh list after async kit clones parent under the rig */
+  onKitMeshesAttached?: () => void;
+}) {
   switch (matoran.stage) {
     case MatoranStage.ToaMata:
       switch (matoran.id) {
         case 'Toa_Gali':
-          return <GaliMataModel matoran={matoran} />;
+          return <GaliMataModel matoran={matoran} onKitMeshesAttached={onKitMeshesAttached} />;
         case 'Toa_Pohatu':
           return <PohatuMataModel matoran={matoran} />;
         case 'Toa_Kopaka':
@@ -134,7 +141,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
   const [bloomRecollectionRevision, setBloomRecollectionRevision] = useState(0);
   const bumpBloomRecollection = useCallback(() => setBloomRecollectionRevision((n) => n + 1), []);
-  const eyeMeshes = useEyeMeshes(characterRootRef, matoran, bloomRecollectionRevision);
+  const bloomMeshes = useCharacterBloomMeshes(characterRootRef, matoran, bloomRecollectionRevision);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
   useEffect(() => {
@@ -197,22 +204,20 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
           <meshStandardMaterial color="#1a1a1a" />
         </mesh>
       )}
-      <BumpCharacterBloomRecollectionProvider bump={bumpBloomRecollection}>
-        <group ref={characterRootRef}>
-          <PresentationControls
-            global={true}
-            snap={false}
-            speed={2}
-            zoom={1}
-            polar={[0, 0]}
-            config={{ mass: 0.5, tension: 170, friction: 26 }}
-          >
-            <Suspense fallback={null}>
-              <CharacterModel matoran={matoran} />
-            </Suspense>
-          </PresentationControls>
-        </group>
-      </BumpCharacterBloomRecollectionProvider>
+      <group ref={characterRootRef}>
+        <PresentationControls
+          global={true}
+          snap={false}
+          speed={2}
+          zoom={1}
+          polar={[0, 0]}
+          config={{ mass: 0.5, tension: 170, friction: 26 }}
+        >
+          <Suspense fallback={null}>
+            <CharacterModel matoran={matoran} onKitMeshesAttached={bumpBloomRecollection} />
+          </Suspense>
+        </PresentationControls>
+      </group>
       <EffectComposer multisampling={0} enableNormalPass resolutionScale={0.5}>
         <SSAO
           blendFunction={BlendFunction.MULTIPLY}
@@ -225,7 +230,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
         />
         {lightsForBloom.length > 0 && shouldEnableSelectiveBloom() ? (
           <StableSelectiveBloom
-            selection={eyeMeshes}
+            selection={bloomMeshes}
             lights={lightsForBloom}
             luminanceThreshold={0.25}
             luminanceSmoothing={0.5}

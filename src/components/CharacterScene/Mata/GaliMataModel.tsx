@@ -8,16 +8,16 @@ import { useMask } from '../../../hooks/useMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
 import { GALI_MATA_KIT_2001_ATTACHMENTS } from './galiMataKitAttach';
-import { useBumpCharacterBloomRecollection } from '../selectiveBloom';
 
 export const GaliMataModel = forwardRef<
   CombatantModelHandle,
   {
     matoran: RecruitedCharacterData & BaseMatoran & { maskPowerActive?: boolean };
+    /** CharacterScene passes this to re-scan selective bloom after kit GLB attaches */
+    onKitMeshesAttached?: () => void;
   }
->(({ matoran }, ref) => {
+>(({ matoran, onKitMeshesAttached }, ref) => {
   const group = useRef<Group>(null);
-  const bumpBloomRecollection = useBumpCharacterBloomRecollection();
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/gali.glb');
   const { playAnimation } = useCombatAnimations(animations, group, {
     modelId: matoran.id,
@@ -31,7 +31,7 @@ export const GaliMataModel = forwardRef<
     kitUrl: KIT_2001_GLB_PATH,
     attachments: GALI_MATA_KIT_2001_ATTACHMENTS,
     colors: matoran.colors,
-    onAttached: () => bumpBloomRecollection?.(),
+    onAttached: () => onKitMeshesAttached?.(),
   });
 
   // Inject the active mask from the shared masks.glb

@@ -1,13 +1,4 @@
-import {
-  createContext,
-  createElement,
-  useContext,
-  useLayoutEffect,
-  useState,
-  type DependencyList,
-  type ReactNode,
-  type RefObject,
-} from 'react';
+import { useLayoutEffect, useState, type DependencyList, type RefObject } from 'react';
 import { Mesh, MeshStandardMaterial, Object3D } from 'three';
 
 import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
@@ -52,47 +43,31 @@ function collectBloomMeshes(root: Object3D): Object3D[] {
   return collected;
 }
 
-/** Collects eye and mask meshes that have emissive material, for selective bloom in CharacterScene. */
-export function useEyeMeshes(
+/**
+ * Meshes under the character root that should receive selective bloom (eyes,
+ * mask emissive, glow-named materials, etc.). Masks work on first pass because
+ * they are injected in the same Suspense commit as the character GLB; kit
+ * parts from a second GLB may attach later — bump `sceneRevision` from the
+ * parent when kit meshes are ready so this hook re-scans.
+ */
+export function useCharacterBloomMeshes(
   characterRootRef: RefObject<Object3D | null>,
   matoran: BaseMatoran & RecruitedCharacterData,
-  /** Bump when async parts (e.g. kit GLB) attach so bloom selection refreshes */
   sceneRevision = 0
 ) {
-  const [eyeMeshes, setEyeMeshes] = useState<Object3D[]>([]);
+  const [bloomMeshes, setBloomMeshes] = useState<Object3D[]>([]);
 
   useLayoutEffect(() => {
     const root = characterRootRef.current;
     if (!root) {
-      setEyeMeshes([]);
+      setBloomMeshes([]);
       return;
     }
-    const id = setTimeout(() => setEyeMeshes(collectBloomMeshes(root)), 0);
+    const id = setTimeout(() => setBloomMeshes(collectBloomMeshes(root)), 0);
     return () => clearTimeout(id);
   }, [matoran, characterRootRef, sceneRevision]);
 
-  return eyeMeshes;
-}
-
-/** Notifies CharacterScene to re-scan meshes for selective bloom (e.g. after kit GLB attaches). */
-export const BumpCharacterBloomRecollectionContext = createContext<(() => void) | null>(null);
-
-export function BumpCharacterBloomRecollectionProvider({
-  bump,
-  children,
-}: {
-  bump: () => void;
-  children: ReactNode;
-}) {
-  return createElement(
-    BumpCharacterBloomRecollectionContext.Provider,
-    { value: bump },
-    children
-  );
-}
-
-export function useBumpCharacterBloomRecollection(): (() => void) | null {
-  return useContext(BumpCharacterBloomRecollectionContext);
+  return bloomMeshes;
 }
 
 /** Collects all meshes with emissive material (emissiveIntensity > 0) for selective bloom. */
