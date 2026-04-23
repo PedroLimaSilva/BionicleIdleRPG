@@ -64,11 +64,7 @@ function applyKitMaterialSlots(
       if (spec.roughness !== undefined) cloned.roughness = spec.roughness;
       if (spec.metalness !== undefined) cloned.metalness = spec.metalness;
 
-      const emissiveSource: KitMaterialColorSource | undefined = spec.emissive
-        ? spec.emissive
-        : spec.emissiveFromEyes
-          ? { kind: 'palette', key: 'eyes' }
-          : undefined;
+      const emissiveSource: KitMaterialColorSource | undefined = spec.emissive;
       if (emissiveSource) {
         cloned.emissive = new Color(resolveColorSource(emissiveSource, palette));
         if (spec.emissiveIntensity !== undefined) {
@@ -117,7 +113,6 @@ export function useKitAttachments({
     if (!characterNodes) return;
 
     const clones: Object3D[] = [];
-    console.log('characterNodes', characterNodes);
 
     for (const [socketName, row] of Object.entries(attachments)) {
       const socket = characterNodes[socketName];

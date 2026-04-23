@@ -1,5 +1,5 @@
-import { LegoColor } from '../../types/Colors';
-import type { KitSocketAttachment } from '../../types/KitParts';
+import { LegoColor } from '../../../types/Colors';
+import type { KitSocketAttachment } from '../../../types/KitParts';
 
 /**
  * Gali Mata (2001 kit): socket name on rig → kit node + per-material overrides.
