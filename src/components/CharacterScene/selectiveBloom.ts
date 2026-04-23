@@ -45,10 +45,11 @@ function collectBloomMeshes(root: Object3D): Object3D[] {
 
 /**
  * Meshes under the character root that should receive selective bloom (eyes,
- * mask emissive, glow-named materials, etc.). Masks work on first pass because
- * they are injected in the same Suspense commit as the character GLB; kit
- * parts from a second GLB may attach later — bump `sceneRevision` from the
- * parent when kit meshes are ready so this hook re-scans.
+ * mask emissive, glow-named materials, etc.).
+ *
+ * `sceneRevision`: increment to re-scan after the scene graph changes (e.g. kit
+ * GLB clones attach). If negative, skips collection until the revision is 0 or
+ * greater (rigs with no bloom meshes until kit attach).
  */
 export function useCharacterBloomMeshes(
   characterRootRef: RefObject<Object3D | null>,
@@ -60,6 +61,10 @@ export function useCharacterBloomMeshes(
   useLayoutEffect(() => {
     const root = characterRootRef.current;
     if (!root) {
+      setBloomMeshes([]);
+      return;
+    }
+    if (sceneRevision < 0) {
       setBloomMeshes([]);
       return;
     }

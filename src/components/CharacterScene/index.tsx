@@ -136,11 +136,22 @@ function CharacterFraming() {
   return null;
 }
 
+function isGaliMataMatoran(matoran: BaseMatoran & RecruitedCharacterData): boolean {
+  return matoran.stage === MatoranStage.ToaMata && matoran.id === 'Toa_Gali';
+}
+
 export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const characterRootRef = useRef<Object3D>(null);
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
-  const [bloomRecollectionRevision, setBloomRecollectionRevision] = useState(0);
+  /** Gali: start at -1 so bloom skips until kit attaches; others start at 0 */
+  const [bloomRecollectionRevision, setBloomRecollectionRevision] = useState(() =>
+    isGaliMataMatoran(matoran) ? -1 : 0
+  );
   const bumpBloomRecollection = useCallback(() => setBloomRecollectionRevision((n) => n + 1), []);
+
+  useEffect(() => {
+    setBloomRecollectionRevision(isGaliMataMatoran(matoran) ? -1 : 0);
+  }, [matoran]);
   const bloomMeshes = useCharacterBloomMeshes(characterRootRef, matoran, bloomRecollectionRevision);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
