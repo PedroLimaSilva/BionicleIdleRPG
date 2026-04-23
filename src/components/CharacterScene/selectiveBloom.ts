@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState, type RefObject } from 'react';
 import { Mesh, MeshStandardMaterial, Object3D } from 'three';
 
 import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
@@ -41,29 +41,32 @@ function collectBloomMeshes(root: Object3D): Object3D[] {
   return collected;
 }
 
-/** Collects eye and mask meshes that have emissive material, for selective bloom in CharacterScene. */
-export function useEyeMeshes(
-  characterRootRef: React.RefObject<Object3D | null>,
+/**
+ * Meshes under the character root that receive selective bloom (eyes, mask
+ * emissive, etc.).
+ */
+export function useCharacterBloomMeshes(
+  characterRootRef: RefObject<Object3D | null>,
   matoran: BaseMatoran & RecruitedCharacterData
 ) {
-  const [eyeMeshes, setEyeMeshes] = useState<Object3D[]>([]);
+  const [bloomMeshes, setBloomMeshes] = useState<Object3D[]>([]);
 
   useLayoutEffect(() => {
     const root = characterRootRef.current;
     if (!root) {
-      setEyeMeshes([]);
+      setBloomMeshes([]);
       return;
     }
-    const id = setTimeout(() => setEyeMeshes(collectBloomMeshes(root)), 0);
+    const id = setTimeout(() => setBloomMeshes(collectBloomMeshes(root)), 0);
     return () => clearTimeout(id);
   }, [matoran, characterRootRef]);
 
-  return eyeMeshes;
+  return bloomMeshes;
 }
 
 /** Collects all meshes with emissive material (emissiveIntensity > 0) for selective bloom. */
 export function useEmissiveMeshes(
-  rootRef: React.RefObject<Object3D | null>,
+  rootRef: RefObject<Object3D | null>,
   deps: React.DependencyList
 ) {
   const [meshes, setMeshes] = useState<Object3D[]>([]);
