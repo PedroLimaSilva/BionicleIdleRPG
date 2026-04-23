@@ -56,12 +56,17 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
   HipPinBackR: { kitNodeName: 'Pin2L' },
   HipPinFrontL: { kitNodeName: 'Pin2L' },
   HipPinFrontR: { kitNodeName: 'Pin2L' },
-  Head: { kitNodeName: 'AxleSocket1L' },
+  AxleSocket1L: { kitNodeName: 'AxleSocket1L' },
   Face: { kitNodeName: 'MataFace' },
   Glowing_Eyes: { kitNodeName: 'MataGlowingEyes' },
   Brain: {
     kitNodeName: 'MataBrain',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.TransNeonYellow } },
+    materialColors: {
+      Brain: {
+        color: { kind: 'lego', value: LegoColor.TransNeonYellow },
+        weathered: false,
+      },
+    },
   },
   MataAbdomen: {
     kitNodeName: 'MataAbdomen',

@@ -45,17 +45,30 @@ function EnvironmentIntensity({ value }: { value: number }) {
 
 function CharacterModel({
   matoran,
-  onKitMeshesAttached,
+  onModelReady,
 }: {
   matoran: BaseMatoran & RecruitedCharacterData;
-  /** e.g. Gali kit GLB — bump bloom mesh list after async kit clones parent under the rig */
-  onKitMeshesAttached?: () => void;
+  /**
+   * Fires once after the concrete model has mounted (and again when the
+   * character identity changes in place). CharacterModel lives inside the
+   * `<Suspense>` boundary, so this `useEffect` only runs after the model's
+   * GLB has resolved and its own children's effects (e.g. weathered-metal
+   * material application) have fired — children-first ordering guarantees
+   * materials are up to date before we ask for a bloom rescan. Gali also
+   * fires this from `useKitAttachments`'s `onAttached` so the post-kit
+   * glow meshes are picked up.
+   */
+  onModelReady?: () => void;
 }) {
+  useEffect(() => {
+    onModelReady?.();
+  }, [matoran.id, matoran.stage, onModelReady]);
+
   switch (matoran.stage) {
     case MatoranStage.ToaMata:
       switch (matoran.id) {
         case 'Toa_Gali':
-          return <GaliMataModel matoran={matoran} onKitMeshesAttached={onKitMeshesAttached} />;
+          return <GaliMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Pohatu':
           return <PohatuMataModel matoran={matoran} />;
         case 'Toa_Kopaka':
@@ -136,22 +149,16 @@ function CharacterFraming() {
   return null;
 }
 
-function isGaliMataMatoran(matoran: BaseMatoran & RecruitedCharacterData): boolean {
-  return matoran.stage === MatoranStage.ToaMata && matoran.id === 'Toa_Gali';
-}
-
 export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
   const characterRootRef = useRef<Object3D>(null);
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
-  /** Gali: start at -1 so bloom skips until kit attaches; others start at 0 */
-  const [bloomRecollectionRevision, setBloomRecollectionRevision] = useState(() =>
-    isGaliMataMatoran(matoran) ? -1 : 0
-  );
+  // Bumped by CharacterModel's post-mount effect (all models) and by
+  // useKitAttachments.onAttached (Gali specifically). Each bump triggers a
+  // fresh bloom-mesh collection; the initial collection on mount may see an
+  // empty tree while Suspense resolves, so a deterministic post-mount bump is
+  // required for non-kit models.
+  const [bloomRecollectionRevision, setBloomRecollectionRevision] = useState(0);
   const bumpBloomRecollection = useCallback(() => setBloomRecollectionRevision((n) => n + 1), []);
-
-  useEffect(() => {
-    setBloomRecollectionRevision(isGaliMataMatoran(matoran) ? -1 : 0);
-  }, [matoran]);
   const bloomMeshes = useCharacterBloomMeshes(characterRootRef, matoran, bloomRecollectionRevision);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
@@ -225,7 +232,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
           config={{ mass: 0.5, tension: 170, friction: 26 }}
         >
           <Suspense fallback={null}>
-            <CharacterModel matoran={matoran} onKitMeshesAttached={bumpBloomRecollection} />
+            <CharacterModel matoran={matoran} onModelReady={bumpBloomRecollection} />
           </Suspense>
         </PresentationControls>
       </group>

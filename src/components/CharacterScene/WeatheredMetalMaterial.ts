@@ -70,11 +70,25 @@ const materialCache = new Map<string, MeshStandardMaterial>();
 
 function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): string {
   const c = new Color(color).getStyle();
-  const t = opts.transparent ? 't' : '';
   const ec = opts.edgeColor ? new Color(opts.edgeColor).getStyle() : '';
-  const es = opts.edgeStrength ?? 0;
-  const ecs = opts.edgeCurvatureScale ?? DEFAULT_EDGE_CURVATURE_SCALE;
-  return `${c}_${opts.roughness ?? DEFAULT_ROUGHNESS}_${opts.largeScale ?? DEFAULT_LARGE_SCALE}_${t}_ec${ec}_es${es}_ecs${ecs}`;
+  const parts: Array<string | number | boolean> = [
+    c,
+    opts.roughness ?? DEFAULT_ROUGHNESS,
+    opts.metalness ?? DEFAULT_METALNESS,
+    opts.grimeDarken ?? DEFAULT_GRIME_DARKEN,
+    opts.grimeRoughness ?? DEFAULT_GRIME_ROUGHNESS,
+    opts.grimeMetalnessReduce ?? DEFAULT_GRIME_METALNESS_REDUCE,
+    opts.largeScale ?? DEFAULT_LARGE_SCALE,
+    opts.fineScale ?? DEFAULT_FINE_SCALE,
+    opts.cavityStrength ?? DEFAULT_CAVITY_STRENGTH,
+    ec,
+    opts.edgeStrength ?? DEFAULT_EDGE_STRENGTH,
+    opts.edgeCurvatureScale ?? DEFAULT_EDGE_CURVATURE_SCALE,
+    opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
+    opts.transparent ? 't' : '',
+    opts.debugGrimeAsColor ? 'd' : '',
+  ];
+  return parts.join('|');
 }
 
 /** Injects multi-scale procedural grime and edge discoloration into MeshStandardMaterial. */

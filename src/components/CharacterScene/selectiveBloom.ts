@@ -42,9 +42,12 @@ function collectBloomMeshes(root: Object3D): Object3D[] {
  * Meshes under the character root that should receive selective bloom (emissive
  * materials whose name includes "glow", or any emissive under the Masks node).
  *
- * `sceneRevision`: increment to re-scan after the scene graph changes (e.g. kit
- * GLB clones attach). If negative, skips collection until the revision is 0 or
- * greater (rigs with no bloom meshes until kit attach).
+ * `sceneRevision`: increment to re-scan after the scene graph changes, e.g.
+ * once the concrete model has mounted (post-Suspense) or once Gali's kit GLB
+ * clones have attached. `matoran.id`/`matoran.stage` drive re-scans on
+ * in-place character switches; the full `matoran` object is intentionally
+ * *not* a dep, because callers like `CharacterDetail` rebuild it on every
+ * idle tick and that would thrash the selection unnecessarily.
  */
 export function useCharacterBloomMeshes(
   characterRootRef: RefObject<Object3D | null>,
@@ -52,6 +55,8 @@ export function useCharacterBloomMeshes(
   sceneRevision = 0
 ) {
   const [bloomMeshes, setBloomMeshes] = useState<Object3D[]>([]);
+  const matoranId = matoran.id;
+  const matoranStage = matoran.stage;
 
   useLayoutEffect(() => {
     const root = characterRootRef.current;
@@ -59,13 +64,9 @@ export function useCharacterBloomMeshes(
       setBloomMeshes([]);
       return;
     }
-    if (sceneRevision < 0) {
-      setBloomMeshes([]);
-      return;
-    }
     const id = setTimeout(() => setBloomMeshes(collectBloomMeshes(root)), 0);
     return () => clearTimeout(id);
-  }, [matoran, characterRootRef, sceneRevision]);
+  }, [matoranId, matoranStage, characterRootRef, sceneRevision]);
 
   return bloomMeshes;
 }

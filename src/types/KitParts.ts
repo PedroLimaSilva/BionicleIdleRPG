@@ -20,6 +20,13 @@ export type KitMaterialSlotOverride = {
   emissive?: KitMaterialColorSource;
   /** Emissive strength; when unset but `emissive` is set, keeps the cloned GLB intensity if > 0, else 1. */
   emissiveIntensity?: number;
+  /**
+   * Opt this slot in/out of the character's weathered-metal pass.
+   * Defaults: `false` when `emissive` is set or the material name contains `glow`
+   * (case-insensitive); otherwise `true`. Set explicitly for non-glow slots that
+   * shouldn't be weathered (e.g. translucent brain plastic).
+   */
+  weathered?: boolean;
 };
 
 export type KitMaterialSlotEntry = KitMaterialColorSource | KitMaterialSlotOverride;

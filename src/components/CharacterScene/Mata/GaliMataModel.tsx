@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
 import { Group, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
@@ -8,9 +8,21 @@ import { useMask } from '../../../hooks/useMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
 import { GALI_MATA_KIT_2001_ATTACHMENTS } from './galiMataKitAttach';
-import { applyWeatheredMetalToObject } from '../WeatheredMetalMaterial';
+import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
-const USE_WEATHERED_METAL = true;
+const GALI_WEATHERED: WeatheredMetalOptions = {
+  roughness: 0.55,
+  metalness: 0.05,
+  grimeDarken: 0.4,
+  grimeRoughness: 0.2,
+  grimeMetalnessReduce: 0.5,
+  largeScale: 3.5,
+  fineScale: 18.0,
+  cavityStrength: 1,
+  edgeColor: '#ffffff',
+  edgeStrength: 0.15,
+  edgeCurvatureScale: 2,
+};
 
 export const GaliMataModel = forwardRef<
   CombatantModelHandle,
@@ -21,7 +33,6 @@ export const GaliMataModel = forwardRef<
   }
 >(({ matoran, onKitMeshesAttached }, ref) => {
   const group = useRef<Group>(null);
-  const [kitWeatheredGeneration, setKitWeatheredGeneration] = useState(0);
   const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/gali.glb');
   const { playAnimation } = useCombatAnimations(animations, group, {
     modelId: matoran.id,
@@ -30,40 +41,20 @@ export const GaliMataModel = forwardRef<
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 
+  const onAttached = useMemo(
+    () => (onKitMeshesAttached ? () => onKitMeshesAttached() : undefined),
+    [onKitMeshesAttached]
+  );
+
   useKitAttachments({
     characterNodes: nodes as Record<string, Object3D | undefined>,
     kitUrl: KIT_2001_GLB_PATH,
     attachments: GALI_MATA_KIT_2001_ATTACHMENTS,
     colors: matoran.colors,
-    onAttached: () => {
-      onKitMeshesAttached?.();
-      setKitWeatheredGeneration((g) => g + 1);
-    },
+    weathered: GALI_WEATHERED,
+    onAttached,
   });
 
-  useEffect(() => {
-    const root = group.current;
-    if (!root || !nodes) return;
-    if (USE_WEATHERED_METAL) {
-      applyWeatheredMetalToObject(root, {
-        roughness: 0.55,
-        metalness: 0.05,
-        grimeDarken: 0.4,
-        grimeRoughness: 0.2,
-        grimeMetalnessReduce: 0.5,
-        largeScale: 3.5,
-        fineScale: 18.0,
-        cavityStrength: 1,
-        edgeColor: '#ffffff',
-        edgeStrength: 0.15,
-        edgeCurvatureScale: 2,
-        excludeMaterialNames: ['Gali Glow', 'Brain', 'Glowing Eyes'],
-        excludeMaterialNameSubstrings: ['glow'],
-      });
-    }
-  }, [nodes, kitWeatheredGeneration]);
-
-  // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.maskOverride || matoran.mask;
   const glowColor = matoran.colors.eyes;
   useMask(nodes.Masks, maskTarget, matoran, glowColor, matoran.maskPowerActive);
