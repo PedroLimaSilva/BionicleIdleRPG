@@ -18,11 +18,11 @@ interface UseQuestStateOptions {
 }
 
 export const useQuestState = ({
+  addProtodermis,
+  getCharacters,
   initialActive,
   initialCompleted,
-  getCharacters,
   setRecruitedCharacters,
-  addProtodermis,
 }: UseQuestStateOptions) => {
   const [activeQuests, setActiveQuests] = useState<QuestProgress[]>(initialActive);
   const [completedQuests, setCompletedQuestIds] = useState<string[]>(initialCompleted);
@@ -40,17 +40,17 @@ export const useQuestState = ({
     const endsAt = now + (getDebugMode() ? 1 : quest.durationSeconds);
 
     const activeQuest = {
+      assignedMatoran,
+      endsAt,
       questId: quest.id,
       startedAt: now,
-      endsAt,
-      assignedMatoran,
     };
 
     setActiveQuests((prev) => [...prev, activeQuest]);
 
     const updatedCharacters = characters.map((char) =>
       assignedMatoran.includes(char.id)
-        ? { ...char, quest: activeQuest.questId, assignment: undefined }
+        ? { ...char, assignment: undefined, quest: activeQuest.questId }
         : char
     );
 
@@ -69,8 +69,8 @@ export const useQuestState = ({
         if (active.assignedMatoran.includes(char.id)) {
           return {
             ...char,
-            quest: undefined,
             exp: char.exp + (quest.rewards.xpPerMatoran ?? 0),
+            quest: undefined,
           };
         }
         return char;
@@ -102,10 +102,10 @@ export const useQuestState = ({
 
   return {
     activeQuests,
+    cancelQuest,
     completedQuests,
+    completeQuest,
     setCompletedQuests,
     startQuest,
-    cancelQuest,
-    completeQuest,
   };
 };

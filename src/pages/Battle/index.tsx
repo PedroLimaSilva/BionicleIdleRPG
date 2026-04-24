@@ -18,9 +18,8 @@ import { KraataReward } from '../../types/Kraata';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
-  const { battle, applyBattleRewards, completedQuests, collectedKrana } = useGame();
-  const { currentEncounter, phase, currentWave, enemies, team, outcomePresentationReady } =
-    battle;
+  const { applyBattleRewards, battle, collectedKrana, completedQuests } = useGame();
+  const { currentEncounter, currentWave, enemies, outcomePresentationReady, phase, team } = battle;
   const { setScene } = useSceneCanvas();
   const battlePageRootClass = useBattlePageHitFeedback();
 
@@ -101,8 +100,7 @@ export const BattlePage: React.FC = () => {
     phase === BattlePhase.Victory
   ) {
     const waitingOnOutcomePresentation =
-      (phase === BattlePhase.Victory || phase === BattlePhase.Defeat) &&
-      !outcomePresentationReady;
+      (phase === BattlePhase.Victory || phase === BattlePhase.Defeat) && !outcomePresentationReady;
 
     if (waitingOnOutcomePresentation) {
       return (
@@ -119,13 +117,13 @@ export const BattlePage: React.FC = () => {
     const handleCollectRewards = () => {
       if (currentEncounter) {
         applyBattleRewards({
-          encounter: currentEncounter,
-          phase,
           currentWave,
+          encounter: currentEncounter,
           enemies,
-          team,
-          kranaToApply: kranaRewards,
           kraataToCollect: kraataRewards,
+          kranaToApply: kranaRewards,
+          phase,
+          team,
         });
       }
       battle.endBattle();

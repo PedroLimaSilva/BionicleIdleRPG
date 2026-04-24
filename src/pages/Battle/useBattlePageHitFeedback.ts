@@ -10,7 +10,7 @@ export function useBattlePageHitFeedback(): string {
   const shakeClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const unsub = subscribeBattleHitFeedback(({ isCritical, damageDealt }) => {
+    const unsub = subscribeBattleHitFeedback(({ damageDealt, isCritical }) => {
       const reduceMotion =
         typeof window !== 'undefined' &&
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;

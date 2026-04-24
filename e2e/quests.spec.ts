@@ -5,10 +5,10 @@ const QUESTS_GAME_STATE = {
   ...INITIAL_GAME_STATE,
   activeQuests: [
     {
+      assignedMatoran: ['Takua'],
+      endsAt: 1000000,
       questId: 'mnog_find_canister_beach',
       startedAt: 0,
-      endsAt: 1000000,
-      assignedMatoran: ['Takua'],
     },
   ],
   completedQuests: ['mnog_ga_koro_sos'],

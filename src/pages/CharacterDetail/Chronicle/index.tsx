@@ -47,8 +47,8 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
     });
 
     return Array.from(map.entries()).map(([section, entries]) => ({
-      section,
       entries,
+      section,
     }));
   }, [chronicleEntries]);
 
@@ -130,15 +130,15 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
                   initial={
                     shouldReduceMotion
                       ? { opacity: 1 }
-                      : { opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }
+                      : { height: 0, opacity: 0, paddingBottom: 0, paddingTop: 0 }
                   }
                   animate={{
-                    opacity: 1,
                     height: 'auto',
-                    paddingTop: '0.5rem',
+                    opacity: 1,
                     paddingBottom: '0.75rem',
+                    paddingTop: '0.5rem',
                   }}
-                  exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
+                  exit={{ height: 0, opacity: 0, paddingBottom: 0, paddingTop: 0 }}
                   transition={accordionTransition}
                   style={{ overflow: 'hidden' }}
                 >
@@ -183,15 +183,15 @@ export function CharacterChronicle({ matoran }: CharacterChronicleProps) {
                               initial={
                                 shouldReduceMotion
                                   ? { opacity: 1 }
-                                  : { opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }
+                                  : { height: 0, opacity: 0, paddingBottom: 0, paddingTop: 0 }
                               }
                               animate={{
-                                opacity: 1,
                                 height: 'auto',
-                                paddingTop: '1em',
+                                opacity: 1,
                                 paddingBottom: '1em',
+                                paddingTop: '1em',
                               }}
-                              exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
+                              exit={{ height: 0, opacity: 0, paddingBottom: 0, paddingTop: 0 }}
                               transition={accordionTransition}
                               style={{ overflow: 'hidden' }}
                             >

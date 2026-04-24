@@ -9,7 +9,7 @@ interface MaskPowerTooltipProps {
   children: React.ReactNode;
 }
 
-export function MaskPowerTooltip({ mask, children }: MaskPowerTooltipProps) {
+export function MaskPowerTooltip({ children, mask }: MaskPowerTooltipProps) {
   const maskPower = mask ? MASK_POWERS[mask as Mask] : undefined;
   const description = maskPower?.description;
   const longName = maskPower?.longName;

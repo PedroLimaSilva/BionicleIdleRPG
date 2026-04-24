@@ -19,11 +19,11 @@ interface AvailableQuestsProps {
 }
 
 export const AvailableQuests: React.FC<AvailableQuestsProps> = ({
-  allQuests,
-  completedQuestIds,
   activeQuestIds,
-  recruitedCharacters,
+  allQuests,
   collectedKrana,
+  completedQuestIds,
+  recruitedCharacters,
   startQuest,
 }) => {
   const available = getAvailableQuests(allQuests, completedQuestIds, activeQuestIds);

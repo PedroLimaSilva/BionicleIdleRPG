@@ -14,8 +14,8 @@ export const CHARACTER_DEX: Record<string, BaseMatoran> = dex;
 
 export const RECRUITED_MATORAN_DATA: RecruitedCharacterData[] = [
   {
-    id: 'Takua',
     exp: 1000,
+    id: 'Takua',
   },
 ];
 

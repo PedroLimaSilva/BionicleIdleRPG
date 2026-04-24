@@ -6,27 +6,6 @@ import type { KitSocketAttachment } from '../../../types/KitParts';
  * Emissive / glow: set `emissive` + `emissiveIntensity` on a material slot (LegoColor or palette keys).
  */
 export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment> = {
-  AxleConPin2: {
-    kitNodeName: 'AxleConPin2',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  MataFootL: {
-    kitNodeName: 'MataFoot',
-    materialColors: {
-      Main: { kind: 'lego', value: LegoColor.Blue },
-    },
-  },
-  MataFootR: {
-    kitNodeName: 'MataFoot',
-    materialColors: {
-      Main: { kind: 'lego', value: LegoColor.Blue },
-      Metal: { kind: 'lego', value: LegoColor.LightGray },
-    },
-  },
-  MataChest: {
-    kitNodeName: 'MataChest',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
-  },
   Arm_L_Piston_Lower_L_1: {
     kitNodeName: 'MataSingleArmPistonLowerL',
     materialColors: {
@@ -42,52 +21,6 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
   },
   Arm_L_Piston_Upper_L_1: { kitNodeName: 'MataSingleArmPistonUpperL' },
   Arm_L_Piston_Upper_R_1: { kitNodeName: 'MataSingleArmPistonUpperL' },
-  Arm_R_Piston_Lower_L_1: {
-    kitNodeName: 'MataSingleArmPistonLowerL',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
-  },
-  Arm_R_Piston_Lower_R_1: {
-    kitNodeName: 'MataSingleArmPistonLowerL',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
-  },
-  Arm_R_Piston_Upper_L_1: { kitNodeName: 'MataSingleArmPistonUpperL' },
-  Arm_R_Piston_Upper_R_1: { kitNodeName: 'MataSingleArmPistonUpperL' },
-  HipPinBackL: { kitNodeName: 'Pin2L' },
-  HipPinBackR: { kitNodeName: 'Pin2L' },
-  HipPinFrontL: { kitNodeName: 'Pin2L' },
-  HipPinFrontR: { kitNodeName: 'Pin2L' },
-  AxleSocket1L: { kitNodeName: 'AxleSocket1L' },
-  Face: { kitNodeName: 'MataFace' },
-  Glowing_Eyes: { kitNodeName: 'MataGlowingEyes' },
-  Brain: {
-    kitNodeName: 'MataBrain',
-    materialColors: {
-      Brain: {
-        color: { kind: 'lego', value: LegoColor.TransNeonYellow },
-        weathered: false,
-      },
-    },
-  },
-  MataAbdomen: {
-    kitNodeName: 'MataAbdomen',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
-  },
-  MataHip: {
-    kitNodeName: 'MataHip',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
-  },
-  Arm_Upper_L_1: {
-    kitNodeName: 'MataSingleArmUpper',
-    materialColors: {
-      Main: { kind: 'lego', value: LegoColor.MediumBlue },
-    },
-  },
-  Arm_Upper_R_1: {
-    kitNodeName: 'MataSingleArmUpper',
-    materialColors: {
-      Main: { kind: 'lego', value: LegoColor.MediumBlue },
-    },
-  },
   Arm_Lower_L_1: {
     kitNodeName: 'MataSingleArmLower',
     materialColors: {
@@ -100,36 +33,56 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
       Main: { kind: 'lego', value: LegoColor.MediumBlue },
     },
   },
+  Arm_R_Piston_Lower_L_1: {
+    kitNodeName: 'MataSingleArmPistonLowerL',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
+  Arm_R_Piston_Lower_R_1: {
+    kitNodeName: 'MataSingleArmPistonLowerL',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
+  Arm_R_Piston_Upper_L_1: { kitNodeName: 'MataSingleArmPistonUpperL' },
+  Arm_R_Piston_Upper_R_1: { kitNodeName: 'MataSingleArmPistonUpperL' },
+  Arm_Upper_L_1: {
+    kitNodeName: 'MataSingleArmUpper',
+    materialColors: {
+      Main: { kind: 'lego', value: LegoColor.MediumBlue },
+    },
+  },
+  Arm_Upper_R_1: {
+    kitNodeName: 'MataSingleArmUpper',
+    materialColors: {
+      Main: { kind: 'lego', value: LegoColor.MediumBlue },
+    },
+  },
+  Axle2L: { kitNodeName: 'Axle2L' },
+  Axle6L: { kitNodeName: 'Axle6L' },
+  AxleConPin2: {
+    kitNodeName: 'AxleConPin2',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
+  },
   AxleMod2L: { kitNodeName: 'AxleMod2L' },
-  AxleSpacer1L001: { kitNodeName: 'AxleSpacer1L' },
-  AxleSpacer1L: { kitNodeName: 'AxleSpacer1L' },
   AxleModHips: { kitNodeName: 'AxleModHips' },
   AxleShoulderL: { kitNodeName: 'AxleMod3L' },
   AxleShoulderR: { kitNodeName: 'AxleMod3L' },
+  AxleSocket1L: { kitNodeName: 'AxleSocket1L' },
+  AxleSpacer1L: { kitNodeName: 'AxleSpacer1L' },
+  AxleSpacer1L001: { kitNodeName: 'AxleSpacer1L' },
+  Brain: {
+    kitNodeName: 'MataBrain',
+    materialColors: {
+      Brain: {
+        color: { kind: 'lego', value: LegoColor.TransNeonYellow },
+        weathered: false,
+      },
+    },
+  },
+  Face: { kitNodeName: 'MataFace' },
   Gear_Big: { kitNodeName: 'GearB' },
-  Shoulder_Joint_R_1: {
-    kitNodeName: 'SocketModSide',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  Shoulder_Joint_L_1: {
-    kitNodeName: 'SocketModSide',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  Leg_Upper_Piston_L_1: {
-    kitNodeName: 'MataLegModPistonT',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
-  },
-  Leg_Upper_Piston_R_1: {
-    kitNodeName: 'MataLegModPistonT',
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
-  },
-  Leg_Lower_Piston_L_1: { kitNodeName: 'MataLegModPistonN' },
-  Leg_Lower_Piston_R_1: { kitNodeName: 'MataLegModPistonN' },
-  Axle2L: { kitNodeName: 'Axle2L' },
-  Axle6L: { kitNodeName: 'Axle6L' },
   GearML: { kitNodeName: 'GearM' },
   GearMM: { kitNodeName: 'GearM' },
   GearMR: { kitNodeName: 'GearM' },
+  Glowing_Eyes: { kitNodeName: 'MataGlowingEyes' },
   Hand_L_1: {
     kitNodeName: 'MataSingleArmHand',
     materialColors: { Main: { kind: 'lego', value: LegoColor.MediumBlue } },
@@ -146,22 +99,14 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     kitNodeName: 'SocketModTop',
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
+  HipPinBackL: { kitNodeName: 'Pin2L' },
+  HipPinBackR: { kitNodeName: 'Pin2L' },
+  HipPinFrontL: { kitNodeName: 'Pin2L' },
+  HipPinFrontR: { kitNodeName: 'Pin2L' },
   HookL: { kitNodeName: 'Hook', materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } } },
   HookR: { kitNodeName: 'Hook', materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } } },
-  LegAnkleL: {
-    kitNodeName: 'MataLegModShin',
-    materialColors: {
-      Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
-      Main: { kind: 'lego', value: LegoColor.Blue },
-    },
-  },
-  LegAnkleR: {
-    kitNodeName: 'MataLegModShin',
-    materialColors: {
-      Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
-      Main: { kind: 'lego', value: LegoColor.Blue },
-    },
-  },
+  Leg_Lower_Piston_L_1: { kitNodeName: 'MataLegModPistonN' },
+  Leg_Lower_Piston_R_1: { kitNodeName: 'MataLegModPistonN' },
   Leg_Upper_L_1: {
     kitNodeName: 'MataLegModThigh',
     materialColors: {
@@ -169,12 +114,59 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
       Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
     },
   },
+  Leg_Upper_Piston_L_1: {
+    kitNodeName: 'MataLegModPistonT',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
+  Leg_Upper_Piston_R_1: {
+    kitNodeName: 'MataLegModPistonT',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
   Leg_Upper_R_1: {
     kitNodeName: 'MataLegModThigh',
     materialColors: {
       Main: { kind: 'lego', value: LegoColor.Blue },
       Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
     },
+  },
+  LegAnkleL: {
+    kitNodeName: 'MataLegModShin',
+    materialColors: {
+      Main: { kind: 'lego', value: LegoColor.Blue },
+      Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
+    },
+  },
+  LegAnkleR: {
+    kitNodeName: 'MataLegModShin',
+    materialColors: {
+      Main: { kind: 'lego', value: LegoColor.Blue },
+      Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
+    },
+  },
+  MataAbdomen: {
+    kitNodeName: 'MataAbdomen',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
+  MataChest: {
+    kitNodeName: 'MataChest',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
+  MataFootL: {
+    kitNodeName: 'MataFoot',
+    materialColors: {
+      Main: { kind: 'lego', value: LegoColor.Blue },
+    },
+  },
+  MataFootR: {
+    kitNodeName: 'MataFoot',
+    materialColors: {
+      Main: { kind: 'lego', value: LegoColor.Blue },
+      Metal: { kind: 'lego', value: LegoColor.LightGray },
+    },
+  },
+  MataHip: {
+    kitNodeName: 'MataHip',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
   },
   ObliqueNL: { kitNodeName: 'MataObliqueN' },
   ObliqueNR: { kitNodeName: 'MataObliqueN' },
@@ -185,6 +177,14 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
   ObliqueTR: {
     kitNodeName: 'MataObliqueW',
     materialColors: { Main: { kind: 'lego', value: LegoColor.Blue } },
+  },
+  Shoulder_Joint_L_1: {
+    kitNodeName: 'SocketModSide',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
+  },
+  Shoulder_Joint_R_1: {
+    kitNodeName: 'SocketModSide',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
   Socket: {
     kitNodeName: 'Socket',

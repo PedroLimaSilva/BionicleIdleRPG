@@ -44,8 +44,7 @@ export default function TypeEffectivenessPage() {
                   <ArrowRight className="type-effectiveness__corner-icon" size={12} aria-hidden />
                 </span>
                 <span className="type-effectiveness__label-attacker">
-                  <ArrowDown className="type-effectiveness__corner-icon" size={12} aria-hidden />
-                  {' '}
+                  <ArrowDown className="type-effectiveness__corner-icon" size={12} aria-hidden />{' '}
                   Attacker
                 </span>
               </th>

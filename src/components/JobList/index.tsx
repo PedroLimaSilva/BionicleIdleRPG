@@ -38,7 +38,7 @@ export function JobList({ matoran, onCancel }: JobListProps) {
 
       <div className="job-grid">
         {jobs.map((job) => {
-          const { label, description, rate } = JOB_DETAILS[job];
+          const { description, label, rate } = JOB_DETAILS[job];
           const modifier = getProductivityModifier(job, matoran);
           return (
             <div onClick={() => setSelectedJob(job)}>

@@ -18,64 +18,64 @@ export interface EvolutionPath {
 
 export const EVOLUTION_PATHS: EvolutionPath[] = [
   {
-    unlockedByQuest: 'bohrok_evolve_toa_nuva',
-    levelRequired: EVOLUTION_LEVEL_REQUIREMENT,
-    protodermisCost: 5000,
     evolutions: {
-      Toa_Tahu: 'Toa_Tahu_Nuva',
       Toa_Gali: 'Toa_Gali_Nuva',
-      Toa_Pohatu: 'Toa_Pohatu_Nuva',
-      Toa_Onua: 'Toa_Onua_Nuva',
       Toa_Kopaka: 'Toa_Kopaka_Nuva',
       Toa_Lewa: 'Toa_Lewa_Nuva',
+      Toa_Onua: 'Toa_Onua_Nuva',
+      Toa_Pohatu: 'Toa_Pohatu_Nuva',
+      Toa_Tahu: 'Toa_Tahu_Nuva',
     },
+    levelRequired: EVOLUTION_LEVEL_REQUIREMENT,
+    protodermisCost: 5000,
+    unlockedByQuest: 'bohrok_evolve_toa_nuva',
   },
   {
-    unlockedByQuest: 'bohrok_kal_naming_day',
-    levelRequired: EVOLUTION_LEVEL_REQUIREMENT,
-    protodermisCost: 1000,
     evolutions: {
+      Huki: 'Hewkii',
       Jala: 'Jaller',
       Maku: 'Macku',
-      Huki: 'Hewkii',
     },
+    levelRequired: EVOLUTION_LEVEL_REQUIREMENT,
+    protodermisCost: 1000,
     stageOverrides: {
-      Kapura: MatoranStage.Rebuilt,
-      Takua: MatoranStage.Rebuilt,
+      Hafu: MatoranStage.Rebuilt,
       Hahli: MatoranStage.Rebuilt,
+      Kapura: MatoranStage.Rebuilt,
+      Kivi: MatoranStage.Rebuilt,
+      Kongu: MatoranStage.Rebuilt,
+      Kopeke: MatoranStage.Rebuilt,
+      Lumi: MatoranStage.Rebuilt,
+      Matoro: MatoranStage.Rebuilt,
       Nuparu: MatoranStage.Rebuilt,
       Onepu: MatoranStage.Rebuilt,
-      Kongu: MatoranStage.Rebuilt,
-      Matoro: MatoranStage.Rebuilt,
-      Lumi: MatoranStage.Rebuilt,
-      Kivi: MatoranStage.Rebuilt,
       Taipu: MatoranStage.Rebuilt,
+      Takua: MatoranStage.Rebuilt,
       Tamaru: MatoranStage.Rebuilt,
-      Kopeke: MatoranStage.Rebuilt,
-      Hafu: MatoranStage.Rebuilt,
     },
+    unlockedByQuest: 'bohrok_kal_naming_day',
   },
   {
-    unlockedByQuest: 'bohrok_kal_naming_day',
+    evolutions: {
+      gahlok: 'gahlok_kal',
+      kohrak: 'kohrak_kal',
+      lehvak: 'lehvak_kal',
+      nuhvok: 'nuhvok_kal',
+      pahrak: 'pahrak_kal',
+      tahnok: 'tahnok_kal',
+    },
     levelRequired: BOHROK_KAL_LEVEL_REQUIREMENT,
     protodermisCost: 5000,
-    evolutions: {
-      tahnok: 'tahnok_kal',
-      gahlok: 'gahlok_kal',
-      lehvak: 'lehvak_kal',
-      pahrak: 'pahrak_kal',
-      nuhvok: 'nuhvok_kal',
-      kohrak: 'kohrak_kal',
-    },
+    unlockedByQuest: 'bohrok_kal_naming_day',
   },
   {
-    unlockedByQuest: MOL_TAKANUVA_RISES_QUEST_ID,
-    levelRequired: TAKANUVA_LEVEL_REQUIREMENT,
-    maskRequired: Mask.Avohkii,
-    protodermisCost: 3000,
     evolutions: {
       Takua: 'Takanuva',
     },
+    levelRequired: TAKANUVA_LEVEL_REQUIREMENT,
+    maskRequired: Mask.Avohkii,
+    protodermisCost: 3000,
+    unlockedByQuest: MOL_TAKANUVA_RISES_QUEST_ID,
   },
 ];
 
@@ -106,8 +106,8 @@ export function getAvailableEvolution(
         evolvedId,
         label: `Evolve to ${evolvedName}`,
         levelRequired: path.levelRequired,
-        protodermisCost: path.protodermisCost,
         maskRequired: path.maskRequired,
+        protodermisCost: path.protodermisCost,
       };
     }
 
@@ -116,11 +116,11 @@ export function getAvailableEvolution(
       const currentStage = character.stage ?? CHARACTER_DEX[character.id]?.stage;
       if (currentStage !== targetStage) {
         return {
-          stageOverride: targetStage,
           label: `Upgrade to ${targetStage} form`,
           levelRequired: path.levelRequired,
-          protodermisCost: path.protodermisCost,
           maskRequired: path.maskRequired,
+          protodermisCost: path.protodermisCost,
+          stageOverride: targetStage,
         };
       }
     }
@@ -146,8 +146,8 @@ export function applyCharacterEvolution(
     return {
       ...character,
       id: evolution.evolvedId,
-      stage: CHARACTER_DEX[evolution.evolvedId]?.stage,
       maskOverride: undefined,
+      stage: CHARACTER_DEX[evolution.evolvedId]?.stage,
     };
   }
   if (evolution.stageOverride !== undefined) {

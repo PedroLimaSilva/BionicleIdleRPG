@@ -132,7 +132,7 @@ function getKranaLootForElement(
   for (const drop of encounter.loot) {
     const parsed = parseKranaDropId(drop.id);
     if (parsed && parsed.element === element) {
-      result.push({ element: parsed.element, kranaId: parsed.kranaId, chance: drop.chance });
+      result.push({ chance: drop.chance, element: parsed.element, kranaId: parsed.kranaId });
     }
   }
   return result;
@@ -160,7 +160,7 @@ export function computeKranaRewardsForBattle(
     const kranaLoot = getKranaLootForElement(encounter, element);
     let awarded: KranaReward | null = null;
     if (kranaLoot.length > 0) {
-      for (const { element: el, kranaId, chance } of kranaLoot) {
+      for (const { chance, element: el, kranaId } of kranaLoot) {
         const key = `${el}:${kranaId}`;
         if (
           !isKranaCollected(collectedKrana, el, kranaId) &&
@@ -210,7 +210,7 @@ export function computeKraataRewardsForBattle(
     if (existing) {
       existing.qty += 1;
     } else {
-      rewards.push({ power: id, stage: 1, qty: 1 });
+      rewards.push({ power: id, qty: 1, stage: 1 });
     }
   }
   return rewards;

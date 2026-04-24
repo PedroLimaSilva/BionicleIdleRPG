@@ -24,13 +24,13 @@ import {
 const DEFAULT_SECTION_LABEL = 'Other Quests';
 
 const SECTION_ORDER: Record<string, number> = {
-  'Mask of Light': 0,
-  'Tales of the Masks': 1,
+  'Arrival of the Toa': 5,
   'Bohrok Kal': 2,
   'Bohrok Swarms': 3,
-  "The Chronicler's Journey": 4,
-  'Arrival of the Toa': 5,
   [DEFAULT_SECTION_LABEL]: 6,
+  'Mask of Light': 0,
+  'Tales of the Masks': 1,
+  "The Chronicler's Journey": 4,
 };
 
 type SectionGroup = {
@@ -39,28 +39,28 @@ type SectionGroup = {
 };
 
 const COMPLETED_SECTION_OPEN = {
-  opacity: 1,
   height: 'auto',
-  paddingTop: '0.5rem',
+  opacity: 1,
   paddingBottom: '0.75rem',
+  paddingTop: '0.5rem',
 };
 
 const COMPLETED_SECTION_CLOSED = {
-  opacity: 0,
   height: 0,
-  paddingTop: 0,
+  opacity: 0,
   paddingBottom: 0,
+  paddingTop: 0,
 };
 
 export const QuestsPage = () => {
   const {
     activeQuests,
-    completedQuests,
-    startQuest,
     cancelQuest,
+    collectedKrana,
+    completedQuests,
     completeQuest,
     recruitedCharacters,
-    collectedKrana,
+    startQuest,
   } = useGame();
 
   const getQuestById = (id: string) => QUESTS.find((q) => q.id === id);
@@ -129,10 +129,10 @@ export const QuestsPage = () => {
 
     return Array.from(map.entries())
       .map(([section, questIds]) => ({
-        section,
         questIds: questIds.sort(
           (a, b) => (completionOrder.get(b) ?? 0) - (completionOrder.get(a) ?? 0)
         ),
+        section,
       }))
       .sort(
         (a, b) =>
@@ -282,10 +282,10 @@ export const QuestsPage = () => {
                                   key={`${id}-content`}
                                   className="quests-page__accordion-content quests-page__accordion-content--expanded"
                                   initial={
-                                    shouldReduceMotion ? { opacity: 1 } : { opacity: 0, height: 0 }
+                                    shouldReduceMotion ? { opacity: 1 } : { height: 0, opacity: 0 }
                                   }
-                                  animate={{ opacity: 1, height: 'auto' }}
-                                  exit={{ opacity: 0, height: 0 }}
+                                  animate={{ height: 'auto', opacity: 1 }}
+                                  exit={{ height: 0, opacity: 0 }}
                                   transition={accordionTransition}
                                   style={{ overflow: 'hidden' }}
                                 >

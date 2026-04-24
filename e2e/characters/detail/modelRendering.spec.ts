@@ -16,8 +16,8 @@ test.describe('Character Model Rendering', () => {
         ...INITIAL_GAME_STATE,
         recruitedCharacters: [
           ...INITIAL_GAME_STATE.recruitedCharacters,
-          { id: 'Takua', exp: 0 },
-          { id: 'Hahli', exp: 0 },
+          { exp: 0, id: 'Takua' },
+          { exp: 0, id: 'Hahli' },
         ],
       });
 
@@ -72,8 +72,8 @@ test.describe('Character Model Rendering', () => {
             ...INITIAL_GAME_STATE,
             recruitedCharacters: [
               {
-                id: characterId,
                 exp: 0,
+                id: characterId,
               },
             ],
           });
@@ -84,10 +84,10 @@ test.describe('Character Model Rendering', () => {
           // Take screenshot of the entire page including 3D scene
           await expect(page).toHaveScreenshot({
             fullPage: true,
-            timeout: 15000,
             // Moderate tolerance for WebGL rendering differences
             maxDiffPixels: 300,
             threshold: 0.2,
+            timeout: 15000,
           });
         });
       }
@@ -107,8 +107,8 @@ test.describe('Character Model Rendering', () => {
           ...INITIAL_GAME_STATE,
           recruitedCharacters: [
             {
-              id: characterId,
               exp: 0,
+              id: characterId,
             },
           ],
         });
@@ -119,10 +119,10 @@ test.describe('Character Model Rendering', () => {
         // Take screenshot of the entire page including 3D scene
         await expect(page).toHaveScreenshot({
           fullPage: true,
-          timeout: 15000,
           // Moderate tolerance for WebGL rendering differences
           maxDiffPixels: 300,
           threshold: 0.2,
+          timeout: 15000,
         });
       });
     });
@@ -134,8 +134,8 @@ test.describe('Character Model Rendering', () => {
     }) => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
-        recruitedCharacters: [{ id: 'Toa_Tahu', exp: 0 }],
         completedQuests: ['maskhunt_final_collection', 'mnog_kini_nui_arrival'],
+        recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu' }],
       });
       await goto(page, '/characters/Toa_Tahu');
       await disableCSSAnimations(page);
@@ -143,9 +143,9 @@ test.describe('Character Model Rendering', () => {
 
       await expect(page).toHaveScreenshot({
         fullPage: true,
-        timeout: 15000,
         maxDiffPixels: 300,
         threshold: 0.2,
+        timeout: 15000,
       });
     });
 
@@ -154,8 +154,8 @@ test.describe('Character Model Rendering', () => {
     }) => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
-        recruitedCharacters: [{ id: 'Toa_Tahu_Nuva', exp: 0 }],
         completedQuests: ['bohrok_kal_reconstruction', 'bohrok_kal_stolen_symbols'],
+        recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu_Nuva' }],
       });
       await goto(page, '/characters/Toa_Tahu_Nuva');
       await disableCSSAnimations(page);
@@ -163,9 +163,9 @@ test.describe('Character Model Rendering', () => {
 
       await expect(page).toHaveScreenshot({
         fullPage: true,
-        timeout: 15000,
         maxDiffPixels: 300,
         threshold: 0.2,
+        timeout: 15000,
       });
     });
     test('should render Toa Tahu Nuva with infected mask after fighting poison rahkshi', async ({
@@ -173,8 +173,8 @@ test.describe('Character Model Rendering', () => {
     }) => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
-        recruitedCharacters: [{ id: 'Toa_Tahu_Nuva', exp: 0 }],
         completedQuests: ['mol_fall_of_ta_koro'],
+        recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu_Nuva' }],
       });
       await goto(page, '/characters/Toa_Tahu_Nuva');
       await disableCSSAnimations(page);
@@ -182,9 +182,9 @@ test.describe('Character Model Rendering', () => {
 
       await expect(page).toHaveScreenshot({
         fullPage: true,
-        timeout: 15000,
         maxDiffPixels: 300,
         threshold: 0.2,
+        timeout: 15000,
       });
     });
   });
@@ -193,7 +193,7 @@ test.describe('Character Model Rendering', () => {
     test('should render rebuilt matoran character detail page', async ({ page }) => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
-        recruitedCharacters: [{ id: 'Jaller', exp: 0 }],
+        recruitedCharacters: [{ exp: 0, id: 'Jaller' }],
       });
       await goto(page, '/characters/Jaller');
       await disableCSSAnimations(page);
@@ -201,9 +201,9 @@ test.describe('Character Model Rendering', () => {
 
       await expect(page).toHaveScreenshot({
         fullPage: true,
-        timeout: 15000,
         maxDiffPixels: 300,
         threshold: 0.2,
+        timeout: 15000,
       });
     });
   });
@@ -215,8 +215,8 @@ test.describe('Character Model Rendering', () => {
           ...INITIAL_GAME_STATE,
           recruitedCharacters: [
             {
-              id: characterId,
               exp: 0,
+              id: characterId,
             },
           ],
         });
@@ -227,10 +227,10 @@ test.describe('Character Model Rendering', () => {
         // Take screenshot of the entire page including 3D scene
         await expect(page).toHaveScreenshot({
           fullPage: true,
-          timeout: 15000,
           // Moderate tolerance for WebGL rendering differences
           maxDiffPixels: 300,
           threshold: 0.2,
+          timeout: 15000,
         });
       });
     });
@@ -241,8 +241,8 @@ test.describe('Character Model Rendering', () => {
             ...INITIAL_GAME_STATE,
             recruitedCharacters: [
               {
-                id: characterId,
                 exp: 0,
+                id: characterId,
               },
             ],
           });
@@ -253,10 +253,10 @@ test.describe('Character Model Rendering', () => {
           // Take screenshot of the entire page including 3D scene
           await expect(page).toHaveScreenshot({
             fullPage: true,
-            timeout: 15000,
             // Moderate tolerance for WebGL rendering differences
             maxDiffPixels: 300,
             threshold: 0.2,
+            timeout: 15000,
           });
         });
       }
@@ -277,10 +277,10 @@ test.describe('Character Model Rendering', () => {
           ...INITIAL_GAME_STATE,
           rahkshi: [
             {
-              power: characterId,
               id: characterId,
-              status: 'ready',
               kraata: { power: characterId, stage: 6 },
+              power: characterId,
+              status: 'ready',
             },
           ],
         });
@@ -291,10 +291,10 @@ test.describe('Character Model Rendering', () => {
         // Take screenshot of the entire page including 3D scene
         await expect(page).toHaveScreenshot({
           fullPage: true,
-          timeout: 15000,
           // Moderate tolerance for WebGL rendering differences
           maxDiffPixels: 300,
           threshold: 0.2,
+          timeout: 15000,
         });
       });
     });

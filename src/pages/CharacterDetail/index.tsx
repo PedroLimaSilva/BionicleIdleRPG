@@ -27,11 +27,11 @@ export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const {
-    recruitedCharacters,
     completedQuests,
-    protodermis,
-    evolveCharacter,
     convertProtodermisToExp,
+    evolveCharacter,
+    protodermis,
+    recruitedCharacters,
   } = useGame();
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
@@ -86,7 +86,7 @@ export const CharacterDetail: React.FC = () => {
         className="character-detail-visualization"
         layoutId={shouldReduceMotion ? undefined : `character-${matoran.id}`}
         layout
-        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
       >
         <div className="character-header">
           <h1 className="character-name">{matoran.name}</h1>
@@ -153,13 +153,13 @@ export const CharacterDetail: React.FC = () => {
 };
 
 function StatsTab({
-  matoran,
-  completedQuests,
-  protodermis,
-  convertProtodermisToExp,
   activeMask,
+  completedQuests,
+  convertProtodermisToExp,
   maskDescription,
+  matoran,
   onEvolveCharacter,
+  protodermis,
 }: {
   matoran: BaseMatoran & RecruitedCharacterData;
   completedQuests: string[];

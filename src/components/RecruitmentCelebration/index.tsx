@@ -20,14 +20,14 @@ type Particle = {
 
 function generateParticles(): Particle[] {
   return Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
+    angle: (i / PARTICLE_COUNT) * 360 + Math.random() * 30,
+    delay: Math.random() * 0.3,
+    distance: 80 + Math.random() * 120,
+    duration: 0.6 + Math.random() * 0.4,
     id: i,
+    size: 3 + Math.random() * 5,
     x: 50 + (Math.random() - 0.5) * 20,
     y: 50 + (Math.random() - 0.5) * 20,
-    size: 3 + Math.random() * 5,
-    angle: (i / PARTICLE_COUNT) * 360 + Math.random() * 30,
-    distance: 80 + Math.random() * 120,
-    delay: Math.random() * 0.3,
-    duration: 0.6 + Math.random() * 0.4,
   }));
 }
 
@@ -77,10 +77,10 @@ export function RecruitmentCelebration({ matoran, onDismiss }: RecruitmentCelebr
                   key={p.id}
                   className="celebration-particle"
                   style={{
+                    height: p.size,
                     left: `${p.x}%`,
                     top: `${p.y}%`,
                     width: p.size,
-                    height: p.size,
                   }}
                   initial={{ opacity: 1, scale: 0 }}
                   animate={{
@@ -90,8 +90,8 @@ export function RecruitmentCelebration({ matoran, onDismiss }: RecruitmentCelebr
                     y: Math.sin((p.angle * Math.PI) / 180) * p.distance,
                   }}
                   transition={{
-                    duration: p.duration,
                     delay: p.delay,
+                    duration: p.duration,
                     ease: 'easeOut',
                   }}
                 />
@@ -119,7 +119,7 @@ export function RecruitmentCelebration({ matoran, onDismiss }: RecruitmentCelebr
                   initial={shouldReduceMotion ? {} : { opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={buildTransition(
-                    { duration: MOTION_DURATION.base, delay: 0.15 },
+                    { delay: 0.15, duration: MOTION_DURATION.base },
                     shouldReduceMotion
                   )}
                 >
@@ -135,7 +135,7 @@ export function RecruitmentCelebration({ matoran, onDismiss }: RecruitmentCelebr
                   initial={shouldReduceMotion ? {} : { opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={buildTransition(
-                    { duration: MOTION_DURATION.base, delay: 0.3 },
+                    { delay: 0.3, duration: MOTION_DURATION.base },
                     shouldReduceMotion
                   )}
                 >

@@ -34,9 +34,9 @@ export interface QuestStates {
 export function generateMermaidFlowchart(quests: Quest[], questStates?: QuestStates) {
   // Determine quest states if not provided
   const states: QuestStates = questStates || {
-    completed: [],
     active: [],
     available: [],
+    completed: [],
     locked: [],
   };
 

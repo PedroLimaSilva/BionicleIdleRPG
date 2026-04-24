@@ -56,10 +56,10 @@ function OutcomeTitle({ phase }: { phase: BattlePhase }) {
 
 function ToaExpCard({
   dex,
-  recruited,
   expEach,
   expTotal,
   index,
+  recruited,
   reduceMotion,
 }: {
   dex: BaseMatoran;
@@ -118,9 +118,9 @@ function ToaExpCard({
     }
 
     const controls = animate(displayedExp, expAfter, {
+      delay: barDelay,
       duration: expCountDuration,
       ease: MOTION_EASING.standard,
-      delay: barDelay,
       onComplete: () => {
         setDisplayedFloored(expAfter);
         setLevelShown(levelAfterBattle);
@@ -145,15 +145,15 @@ function ToaExpCard({
   ]);
 
   const cardTransition = buildTransition(
-    { duration: MOTION_DURATION.slow, ease: MOTION_EASING.emphasized, delay: 0.05 + index * 0.06 },
+    { delay: 0.05 + index * 0.06, duration: MOTION_DURATION.slow, ease: MOTION_EASING.emphasized },
     reduceMotion
   );
 
   const levelUpTransition = buildTransition(
     {
+      delay: barDelay + expCountDuration * 0.15,
       duration: MOTION_DURATION.slow,
       ease: MOTION_EASING.emphasized,
-      delay: barDelay + expCountDuration * 0.15,
     },
     reduceMotion
   );
@@ -161,8 +161,8 @@ function ToaExpCard({
   return (
     <motion.div
       className={`character-card battle-outcome__exp-toa-card element-${dex.element}`}
-      initial={reduceMotion ? undefined : { opacity: 0, y: 12, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={reduceMotion ? undefined : { opacity: 0, scale: 0.96, y: 12 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={cardTransition}
     >
       <AnimatePresence>
@@ -172,8 +172,8 @@ function ToaExpCard({
             className="battle-outcome__exp-toa-level-up"
             role="status"
             aria-live="polite"
-            initial={reduceMotion ? { x: '-50%' } : { opacity: 0, scale: 0.35, y: 8, x: '-50%' }}
-            animate={{ opacity: 1, scale: 1, y: 0, x: '-50%' }}
+            initial={reduceMotion ? { x: '-50%' } : { opacity: 0, scale: 0.35, x: '-50%', y: 8 }}
+            animate={{ opacity: 1, scale: 1, x: '-50%', y: 0 }}
             exit={{ opacity: 0, scale: 0.9, x: '-50%' }}
             transition={levelUpTransition}
           >
@@ -219,9 +219,9 @@ function ToaExpCard({
 }
 
 function ToaExpSection({
-  team,
   expTotal,
   reduceMotion,
+  team,
 }: {
   team: Combatant[];
   expTotal: number;
@@ -263,9 +263,9 @@ function ToaExpSection({
 }
 
 function KranaRewardCard({
-  reward,
   index,
   reduceMotion,
+  reward,
 }: {
   reward: KranaReward;
   index: number;
@@ -274,9 +274,9 @@ function KranaRewardCard({
   const color = ELEMENT_TO_KRANA_COLOR[reward.element];
   const transition = buildTransition(
     {
+      delay: 0.3 + index * 0.12,
       duration: MOTION_DURATION.slow,
       ease: MOTION_EASING.emphasized,
-      delay: 0.3 + index * 0.12,
     },
     reduceMotion
   );
@@ -284,8 +284,8 @@ function KranaRewardCard({
   return (
     <motion.div
       className={`battle-outcome__loot-card krana-color--${color}`}
-      initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 20, scale: 0.85 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={reduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.85, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={transition}
     >
       <div className="battle-outcome__loot-krana-img-wrap">
@@ -304,10 +304,10 @@ function KranaRewardCard({
 }
 
 function KraataRewardCard({
-  reward,
   index,
-  startOffset,
   reduceMotion,
+  reward,
+  startOffset,
 }: {
   reward: KraataReward;
   index: number;
@@ -317,9 +317,9 @@ function KraataRewardCard({
   const label = KRAATA_POWER_NAMES[reward.power] ?? reward.power;
   const transition = buildTransition(
     {
+      delay: 0.3 + (startOffset + index) * 0.12,
       duration: MOTION_DURATION.slow,
       ease: MOTION_EASING.emphasized,
-      delay: 0.3 + (startOffset + index) * 0.12,
     },
     reduceMotion
   );
@@ -327,8 +327,8 @@ function KraataRewardCard({
   return (
     <motion.div
       className="battle-outcome__loot-card battle-outcome__loot-card--kraata"
-      initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 20, scale: 0.85 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={reduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.85, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={transition}
     >
       <CompositedImage
@@ -352,13 +352,13 @@ function KraataRewardCard({
 }
 
 export function BattleOutcome({
-  phase,
   enemiesDefeated,
   expTotal,
-  team,
-  kranaRewards,
   kraataRewards,
+  kranaRewards,
   onCollect,
+  phase,
+  team,
 }: BattleOutcomeProps) {
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
@@ -378,9 +378,9 @@ export function BattleOutcome({
     () =>
       buildTransition(
         {
+          delay: hasLoot ? lootDelay + 0.15 : 0.6,
           duration: MOTION_DURATION.base,
           ease: MOTION_EASING.standard,
-          delay: hasLoot ? lootDelay + 0.15 : 0.6,
         },
         shouldReduceMotion
       ),
@@ -405,7 +405,7 @@ export function BattleOutcome({
           initial={shouldReduceMotion ? undefined : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={buildTransition(
-            { duration: MOTION_DURATION.base, ease: MOTION_EASING.standard, delay: 0.15 },
+            { delay: 0.15, duration: MOTION_DURATION.base, ease: MOTION_EASING.standard },
             shouldReduceMotion
           )}
         >
@@ -450,7 +450,7 @@ export function BattleOutcome({
             initial={shouldReduceMotion ? undefined : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={buildTransition(
-              { duration: MOTION_DURATION.base, ease: MOTION_EASING.standard, delay: 0.35 },
+              { delay: 0.35, duration: MOTION_DURATION.base, ease: MOTION_EASING.standard },
               shouldReduceMotion
             )}
           >

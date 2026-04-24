@@ -151,11 +151,11 @@ export function applyJobExp(
   return [
     {
       ...matoran,
-      exp: matoran.exp + earnedExp,
       assignment: {
         ...matoran.assignment,
         assignedAt: now, // reset timer
       },
+      exp: matoran.exp + earnedExp,
     },
     earnedExp,
   ];

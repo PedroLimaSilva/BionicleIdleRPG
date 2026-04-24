@@ -68,10 +68,10 @@ export interface MaskTransitionState {
 export function createMaskTransitionState(): MaskTransitionState {
   return {
     active: false,
-    progress: 0,
     oldMask: null,
     oldOpacities: new Map(),
     oldScale: new Vector3(1, 1, 1),
+    progress: 0,
   };
 }
 
@@ -94,10 +94,10 @@ export function startMaskTransition(
 
   transitionRef.current = {
     active: true,
-    progress: 0,
     oldMask: prevMask,
     oldOpacities,
     oldScale,
+    progress: 0,
   };
 }
 

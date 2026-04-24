@@ -14,62 +14,62 @@ import {
 describe('chooseTarget', () => {
   const targets: Combatant[] = [
     {
-      id: 'a',
+      attack: 5,
+      defense: 1,
+      element: ElementTribe.Stone,
       hp: 100,
-      attack: 5,
-      defense: 1,
-      element: ElementTribe.Stone,
-      strategy: BattleStrategy.LowestHp,
-      name: '',
-      model: '',
+      id: 'a',
       lvl: 0,
       maxHp: 0,
+      model: '',
+      name: '',
       speed: 0,
+      strategy: BattleStrategy.LowestHp,
       willUseAbility: false,
     },
     {
-      id: 'b',
+      attack: 5,
+      defense: 1,
+      element: ElementTribe.Stone,
       hp: 20,
-      attack: 5,
-      defense: 1,
-      element: ElementTribe.Stone,
-      strategy: BattleStrategy.LowestHp,
-      name: '',
-      model: '',
+      id: 'b',
       lvl: 0,
       maxHp: 0,
+      model: '',
+      name: '',
       speed: 0,
+      strategy: BattleStrategy.LowestHp,
       willUseAbility: false,
     },
     {
-      id: 'c',
-      hp: 80,
       attack: 5,
       defense: 1,
       element: ElementTribe.Stone,
-      strategy: BattleStrategy.LowestHp,
-      name: '',
-      model: '',
+      hp: 80,
+      id: 'c',
       lvl: 0,
       maxHp: 0,
+      model: '',
+      name: '',
       speed: 0,
+      strategy: BattleStrategy.LowestHp,
       willUseAbility: false,
     },
   ];
 
   test('chooses target with lowest HP', () => {
     const self: Combatant = {
-      id: 'self',
-      hp: 100,
       attack: 10,
       defense: 5,
       element: ElementTribe.Stone,
-      strategy: BattleStrategy.LowestHp,
-      name: '',
-      model: '',
+      hp: 100,
+      id: 'self',
       lvl: 0,
       maxHp: 0,
+      model: '',
+      name: '',
       speed: 0,
+      strategy: BattleStrategy.LowestHp,
       willUseAbility: false,
     };
     const chosen = chooseTarget(self, targets);
@@ -81,61 +81,61 @@ describe('chooseTarget', () => {
     jest.spyOn(Math, 'random').mockReturnValue(0); // i.e. adds 0
 
     const self: Combatant = {
-      id: 'fire',
-      hp: 100,
       attack: 15,
       defense: 5,
       element: ElementTribe.Fire,
-      strategy: BattleStrategy.MostEffective,
-      name: '',
-      model: '',
+      hp: 100,
+      id: 'fire',
       lvl: 0,
       maxHp: 0,
+      model: '',
+      name: '',
       speed: 0,
+      strategy: BattleStrategy.MostEffective,
       willUseAbility: false,
     };
 
     const customTargets: Combatant[] = [
       {
-        id: 'ice',
-        hp: 100,
         attack: 5,
         defense: 10,
         element: ElementTribe.Ice,
-        strategy: BattleStrategy.LowestHp,
-        name: 'ice',
-        model: '',
+        hp: 100,
+        id: 'ice',
         lvl: 0,
         maxHp: 0,
+        model: '',
+        name: 'ice',
         speed: 0,
+        strategy: BattleStrategy.LowestHp,
         willUseAbility: false,
       }, // effective (1.5x)
       {
-        id: 'earth',
-        hp: 100,
         attack: 5,
         defense: 10,
         element: ElementTribe.Earth,
-        strategy: BattleStrategy.LowestHp,
-        name: 'earth',
-        model: '',
+        hp: 100,
+        id: 'earth',
         lvl: 0,
         maxHp: 0,
+        model: '',
+        name: 'earth',
         speed: 0,
+        strategy: BattleStrategy.LowestHp,
         willUseAbility: false,
       }, // weak (0.5x)
       {
-        id: 'shadow',
-        hp: 100,
         attack: 5,
         defense: 10,
         element: ElementTribe.Shadow,
-        strategy: BattleStrategy.LowestHp,
-        name: 'shadow',
-        model: '',
+        hp: 100,
+        id: 'shadow',
         lvl: 0,
         maxHp: 0,
+        model: '',
+        name: 'shadow',
         speed: 0,
+        strategy: BattleStrategy.LowestHp,
         willUseAbility: false,
       }, // neutral (1x)
     ];
@@ -152,17 +152,17 @@ describe('chooseTarget', () => {
     jest.spyOn(Math, 'random').mockReturnValue(0.51); // 0.51 * 3 = index 1
 
     const self: Combatant = {
-      id: 'self',
-      hp: 100,
       attack: 10,
       defense: 5,
       element: ElementTribe.Stone,
-      strategy: BattleStrategy.Random,
-      name: '',
-      model: '',
+      hp: 100,
+      id: 'self',
       lvl: 0,
       maxHp: 0,
+      model: '',
+      name: '',
       speed: 0,
+      strategy: BattleStrategy.Random,
       willUseAbility: false,
     };
 
@@ -248,14 +248,14 @@ describe('chooseTarget', () => {
 
   describe('getScaledEnemyLevelForEncounter', () => {
     const baseEncounter = (scales: boolean): EnemyEncounter => ({
-      id: 'test',
-      name: 'Test',
       description: '',
-      headliner: 'tahnok',
       difficulty: 1,
-      waves: [[]],
+      headliner: 'tahnok',
+      id: 'test',
       loot: [],
+      name: 'Test',
       scalesWithParty: scales,
+      waves: [[]],
     });
 
     test('returns wave base level when encounter does not scale with party', () => {
@@ -293,32 +293,32 @@ describe('chooseTarget', () => {
       jest.spyOn(Math, 'random').mockReturnValue(0);
 
       const fire: Combatant = {
-        id: 'fire',
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 0,
         element: ElementTribe.Fire,
-        strategy: BattleStrategy.LowestHp,
-        name: 'Fire',
-        model: '',
+        hp: 100,
+        id: 'fire',
         lvl: 1,
+        maxHp: 100,
+        model: '',
+        name: 'Fire',
         speed: 5,
+        strategy: BattleStrategy.LowestHp,
         willUseAbility: false,
       };
 
       const ice: Combatant = {
-        id: 'ice',
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 0,
         element: ElementTribe.Ice,
-        strategy: BattleStrategy.LowestHp,
-        name: 'Ice',
-        model: '',
+        hp: 100,
+        id: 'ice',
         lvl: 1,
+        maxHp: 100,
+        model: '',
+        name: 'Ice',
         speed: 5,
+        strategy: BattleStrategy.LowestHp,
         willUseAbility: false,
       };
 
@@ -333,17 +333,17 @@ describe('chooseTarget', () => {
 
     test('Water is effective against Fire (1.5x)', () => {
       const water: Combatant = {
-        id: 'water',
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 0,
         element: ElementTribe.Water,
-        strategy: BattleStrategy.LowestHp,
-        name: 'Water',
-        model: '',
+        hp: 100,
+        id: 'water',
         lvl: 1,
+        maxHp: 100,
+        model: '',
+        name: 'Water',
         speed: 5,
+        strategy: BattleStrategy.LowestHp,
         willUseAbility: false,
       };
 
@@ -352,17 +352,17 @@ describe('chooseTarget', () => {
 
     test('Shadow is effective against Light (1.5x)', () => {
       const shadow: Combatant = {
-        id: 'shadow',
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 0,
         element: ElementTribe.Shadow,
-        strategy: BattleStrategy.LowestHp,
-        name: 'Shadow',
-        model: '',
+        hp: 100,
+        id: 'shadow',
         lvl: 1,
+        maxHp: 100,
+        model: '',
+        name: 'Shadow',
         speed: 5,
+        strategy: BattleStrategy.LowestHp,
         willUseAbility: false,
       };
 
@@ -434,15 +434,15 @@ describe('chooseTarget', () => {
 
   describe('hasReadyMaskPowers', () => {
     const baseCombatant: Combatant = {
-      id: 'test',
-      name: 'Test',
-      model: 'test',
-      lvl: 1,
-      element: ElementTribe.Fire,
-      maxHp: 100,
-      hp: 100,
       attack: 10,
       defense: 5,
+      element: ElementTribe.Fire,
+      hp: 100,
+      id: 'test',
+      lvl: 1,
+      maxHp: 100,
+      model: 'test',
+      name: 'Test',
       speed: 5,
       strategy: BattleStrategy.Random,
       willUseAbility: false,
@@ -501,10 +501,10 @@ describe('chooseTarget', () => {
       deadEnemy.hp = 0;
       deadEnemy.effects = [
         {
-          type: 'CONFUSION',
           durationRemaining: 2,
           durationUnit: 'turn',
           sourceId: 'Toa_Tahu',
+          type: 'CONFUSION',
         },
       ];
       const team = [generateCombatantStats('Toa_Tahu', 'Toa_Tahu', 1)];
@@ -515,10 +515,10 @@ describe('chooseTarget', () => {
       const aliveEnemy = generateCombatantStats('enemy', 'tahnok', 1);
       aliveEnemy.effects = [
         {
-          type: 'CONFUSION',
           durationRemaining: 2,
           durationUnit: 'turn',
           sourceId: 'Toa_Tahu',
+          type: 'CONFUSION',
         },
       ];
       const team = [generateCombatantStats('Toa_Tahu', 'Toa_Tahu', 1)];
@@ -538,10 +538,10 @@ describe('queueCombatRound (self-target / 3D refs)', () => {
     const confusedRahkshi = generateCombatantStats(`${KraataPower.Fear}-0`, KraataPower.Fear, 1);
     confusedRahkshi.effects = [
       {
-        type: 'CONFUSION',
         durationRemaining: 1,
         durationUnit: 'turn',
         sourceId: 'ally',
+        type: 'CONFUSION',
       },
     ];
     // No allies: confused attacker has no one else to hit, so target becomes self

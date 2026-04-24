@@ -4,17 +4,17 @@ import { goto, setupGameState, INITIAL_GAME_STATE } from '../helpers';
 /** Fast nav to avoid WebGL/3D load blocking - battle pages don't need canvas for these tests */
 const gotoBattleSelector = (page: Parameters<typeof goto>[0]) =>
   goto(page, '/battle/selector', {
-    waitUntil: 'domcontentloaded',
     hideCanvasBeforeNav: true,
+    waitUntil: 'domcontentloaded',
   });
 
 const TOA_WITH_EXP = [
-  { id: 'Toa_Tahu', exp: 50000 },
-  { id: 'Toa_Gali', exp: 50000 },
-  { id: 'Toa_Kopaka', exp: 50000 },
-  { id: 'Toa_Lewa', exp: 50000 },
-  { id: 'Toa_Onua', exp: 50000 },
-  { id: 'Toa_Pohatu', exp: 50000 },
+  { exp: 50000, id: 'Toa_Tahu' },
+  { exp: 50000, id: 'Toa_Gali' },
+  { exp: 50000, id: 'Toa_Kopaka' },
+  { exp: 50000, id: 'Toa_Lewa' },
+  { exp: 50000, id: 'Toa_Onua' },
+  { exp: 50000, id: 'Toa_Pohatu' },
 ];
 
 test.describe('Battle Flow', () => {
@@ -97,9 +97,9 @@ test.describe('Battle Flow', () => {
   test('visible encounters filter: shows encounters when krana not collected', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      collectedKrana: {},
       completedQuests: ['bohrok_legend_of_krana'],
       recruitedCharacters: TOA_WITH_EXP,
-      collectedKrana: {},
     });
     await gotoBattleSelector(page);
 
@@ -114,16 +114,16 @@ test.describe('Battle Flow', () => {
   }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      completedQuests: ['bohrok_legend_of_krana'],
-      recruitedCharacters: TOA_WITH_EXP,
       collectedKrana: {
-        Fire: ['Xa', 'Bo', 'Su', 'Za', 'Yo', 'Ca'],
-        Water: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
         Air: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
         Earth: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
+        Fire: ['Xa', 'Bo', 'Su', 'Za', 'Yo', 'Ca'],
         Ice: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
         Stone: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
+        Water: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
       },
+      completedQuests: ['bohrok_legend_of_krana'],
+      recruitedCharacters: TOA_WITH_EXP,
     });
     await gotoBattleSelector(page);
 
@@ -137,16 +137,16 @@ test.describe('Battle Flow', () => {
   }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      completedQuests: ['bohrok_legend_of_krana'],
-      recruitedCharacters: TOA_WITH_EXP,
       collectedKrana: {
-        Fire: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
-        Water: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
         Air: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
         Earth: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
+        Fire: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
         Ice: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
         Stone: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
+        Water: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
       },
+      completedQuests: ['bohrok_legend_of_krana'],
+      recruitedCharacters: TOA_WITH_EXP,
     });
     await gotoBattleSelector(page);
 

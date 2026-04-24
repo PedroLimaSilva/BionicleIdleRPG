@@ -60,7 +60,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, [location.pathname]);
 
   return (
-    <SceneCanvasContext.Provider value={{ setScene, scene }}>
+    <SceneCanvasContext.Provider value={{ scene, setScene }}>
       {children}
       {target &&
         createPortal(

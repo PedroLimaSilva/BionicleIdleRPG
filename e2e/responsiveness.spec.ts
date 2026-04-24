@@ -49,8 +49,8 @@ test.describe('Responsiveness', () => {
       test('recruitment page', async ({ page }) => {
         await setupGameState(page, {
           ...INITIAL_GAME_STATE,
-          protodermis: 100,
           completedQuests: ['story_toa_arrival'], // unlocks Toa (e.g. Toa_Tahu) for recruitment
+          protodermis: 100,
         });
         await page.setViewportSize(size);
 
@@ -72,23 +72,23 @@ test.describe('Responsiveness', () => {
       test.describe('character route', () => {
         const CHARACTER_ROUTE_GAME_STATE = {
           ...INITIAL_GAME_STATE,
-          protodermis: 500,
-          recruitedCharacters: [
-            { id: 'Takua', exp: 0 },
-            { id: 'Jala', exp: 5000 },
-            { id: 'Toa_Tahu', exp: 0 },
-            { id: 'Toa_Gali', exp: 0 },
-            { id: 'Toa_Kopaka', exp: 0 },
-          ],
-          completedQuests: ['story_toa_arrival', 'bohrok_legend_of_krana'],
           collectedKrana: {
-            Fire: ['Xa' as KranaId, 'Bo' as KranaId],
-            Water: [],
             Air: [],
             Earth: [],
+            Fire: ['Xa' as KranaId, 'Bo' as KranaId],
             Ice: [],
             Stone: [],
+            Water: [],
           },
+          completedQuests: ['story_toa_arrival', 'bohrok_legend_of_krana'],
+          protodermis: 500,
+          recruitedCharacters: [
+            { exp: 0, id: 'Takua' },
+            { exp: 5000, id: 'Jala' },
+            { exp: 0, id: 'Toa_Tahu' },
+            { exp: 0, id: 'Toa_Gali' },
+            { exp: 0, id: 'Toa_Kopaka' },
+          ],
         };
 
         test('character inventory with Matoran and Toa', async ({ page }) => {

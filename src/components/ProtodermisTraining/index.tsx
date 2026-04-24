@@ -13,9 +13,9 @@ type ProtodermisTrainingProps = {
 
 export const ProtodermisTraining: React.FC<ProtodermisTrainingProps> = ({
   characterId,
+  convertProtodermisToExp,
   element,
   protodermis,
-  convertProtodermisToExp,
 }) => {
   const [spend, setSpend] = useState(1);
 
@@ -31,8 +31,7 @@ export const ProtodermisTraining: React.FC<ProtodermisTrainingProps> = ({
       <h4 className="protodermis-training__title">Train with protodermis</h4>
       <p className="protodermis-training__hint">
         Spend protodermis to grant this character experience ({PROTODERMIS_TO_EXP_RATIO} protodermis{' '}
-        <ArrowRight className="protodermis-training__hint-arrow" size={14} aria-hidden />
-        {' '}
+        <ArrowRight className="protodermis-training__hint-arrow" size={14} aria-hidden />{' '}
         {PROTODERMIS_TO_EXP_RATIO} XP).
       </p>
       <div className="protodermis-training__row">

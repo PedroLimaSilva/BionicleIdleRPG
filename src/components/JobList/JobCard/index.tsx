@@ -14,8 +14,8 @@ interface ProductivityBadgeProps {
 const ProductivityBadge: React.FC<ProductivityBadgeProps> = ({ modifier }) => {
   const labels = {
     [ProductivityEffect.Boosted]: `+${Math.round((modifier - 1) * 100)}% productivity`,
-    [ProductivityEffect.Penalized]: `-${Math.round((1 - modifier) * 100)}% productivity`,
     [ProductivityEffect.Neutral]: `No productivity effect`,
+    [ProductivityEffect.Penalized]: `-${Math.round((1 - modifier) * 100)}% productivity`,
   };
 
   // TODO: conside using getJobStatus
@@ -39,11 +39,11 @@ interface JobCardProps {
 }
 
 export const JobCard: React.FC<JobCardProps> = ({
-  title,
+  baseRate,
   classNames,
   description,
-  baseRate,
   modifier,
+  title,
 }) => {
   return (
     <div className={`job-card ${classNames}`}>

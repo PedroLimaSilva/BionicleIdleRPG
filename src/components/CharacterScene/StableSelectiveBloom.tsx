@@ -23,26 +23,26 @@ interface StableSelectiveBloomProps {
  */
 export const StableSelectiveBloom = forwardRef(function StableSelectiveBloom(
   {
-    selection = [],
-    lights = [],
-    selectionLayer = 10,
-    luminanceThreshold,
-    luminanceSmoothing,
     intensity,
+    lights = [],
+    luminanceSmoothing,
+    luminanceThreshold,
     mipmapBlur,
+    selection = [],
+    selectionLayer = 10,
   }: StableSelectiveBloomProps,
   ref: Ref<SelectiveBloomEffect>
 ) {
   const invalidate = useThree((s) => s.invalidate);
-  const { scene, camera } = useContext(EffectComposerContext);
+  const { camera, scene } = useContext(EffectComposerContext);
 
   const effect = useMemo(
     () =>
       new SelectiveBloomEffect(scene, camera, {
         blendFunction: BlendFunction.ADD,
-        luminanceThreshold,
-        luminanceSmoothing,
         intensity,
+        luminanceSmoothing,
+        luminanceThreshold,
         mipmapBlur,
       }),
     [scene, camera, luminanceThreshold, luminanceSmoothing, intensity, mipmapBlur]

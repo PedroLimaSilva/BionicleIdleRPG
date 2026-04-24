@@ -36,12 +36,12 @@ type TabId = 'matoran' | 'toa' | 'other' | 'rahkshi';
 
 export const CharacterInventory: React.FC = () => {
   const {
-    recruitedCharacters,
     buyableCharacters,
     kraataCollection,
-    rahkshi,
     mergeAllKraata,
     protodermis,
+    rahkshi,
+    recruitedCharacters,
     startRahkshiForge,
   } = useGame();
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
@@ -118,10 +118,10 @@ export const CharacterInventory: React.FC = () => {
         if (typeof count !== 'number' || count <= 0) continue;
         const stage = Number(stageStr);
         groups.push({
+          count,
+          name: `Kraata of ${KRAATA_POWER_NAMES[power as KraataPower] ?? power}`,
           power: power as KraataPower,
           stage,
-          name: `Kraata of ${KRAATA_POWER_NAMES[power as KraataPower] ?? power}`,
-          count,
         });
       }
     }
@@ -156,7 +156,7 @@ export const CharacterInventory: React.FC = () => {
                   className={`character-card element-${effective.element}`}
                   layoutId={shouldReduceMotion ? undefined : `character-${matoran.id}`}
                   layout
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  transition={{ damping: 30, stiffness: 400, type: 'spring' }}
                 >
                   <MatoranAvatar matoran={effective} styles={'matoran-avatar model-preview'} />
                   <div className="card-header">
@@ -193,13 +193,13 @@ export const CharacterInventory: React.FC = () => {
 type CollectedKraataItem = { power: KraataPower; stage: number; name: string; count: number };
 
 function RahkshiTabContent({
-  rahkshi,
   collectedKraata,
   kraataCollection,
   mergeAllKraata,
   protodermis,
-  startRahkshiForge,
+  rahkshi,
   shouldReduceMotion,
+  startRahkshiForge,
 }: {
   rahkshi: RahkshiArmor[];
   collectedKraata: CollectedKraataItem[];
@@ -258,7 +258,7 @@ function RahkshiTabContent({
         <p className="rahkshi-section__empty">No Kraata collected</p>
       )}
       <div className="kraata-grid">
-        {collectedKraata.map(({ power, stage, name, count }) => {
+        {collectedKraata.map(({ count, name, power, stage }) => {
           const cardInner = (
             <>
               <CompositedImage
@@ -292,7 +292,7 @@ function RahkshiTabContent({
                 className="kraata-card kraata-card--forgeable"
                 layoutId={shouldReduceMotion ? undefined : `kraata-${power}-${stage}`}
                 layout
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                transition={{ damping: 30, stiffness: 400, type: 'spring' }}
                 onClick={() => setForgeModalPower(power)}
                 aria-label={`Forge Rahkshi armor from ${name}`}
               >
@@ -307,7 +307,7 @@ function RahkshiTabContent({
               className="kraata-card kraata-card--display"
               layoutId={shouldReduceMotion ? undefined : `kraata-${power}-${stage}`}
               layout
-              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              transition={{ damping: 30, stiffness: 400, type: 'spring' }}
             >
               {cardInner}
             </motion.div>
@@ -384,7 +384,7 @@ function RahkshiArmorCard({
         className={`rahkshi-card rahkshi-card--${armor.status}`}
         layoutId={shouldReduceMotion ? undefined : `rahkshi-${armor.id}`}
         layout
-        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
         style={
           {
             '--rahkshi-head-color': armorColor,

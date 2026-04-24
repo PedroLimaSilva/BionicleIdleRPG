@@ -20,11 +20,7 @@ import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from '../../components/CharacterScen
 import { useEmissiveMeshes } from '../../components/CharacterScene/selectiveBloom';
 import { StableSelectiveBloom } from '../../components/CharacterScene/StableSelectiveBloom';
 import { useSettings } from '../../context/useSettings';
-import {
-  isTestMode,
-  shouldEnableSelectiveBloom,
-  shouldEnableShadows,
-} from '../../utils/testMode';
+import { isTestMode, shouldEnableSelectiveBloom, shouldEnableShadows } from '../../utils/testMode';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
 
 import './index.scss';
@@ -57,7 +53,7 @@ function RahkshiFraming() {
   return null;
 }
 
-function RahkshiDetailScene({ kraata, hasKraata }: { kraata: KraataPower; hasKraata: boolean }) {
+function RahkshiDetailScene({ hasKraata, kraata }: { kraata: KraataPower; hasKraata: boolean }) {
   const sceneRootRef = useRef<Object3D>(null);
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
   const bloomMeshes = useEmissiveMeshes(sceneRootRef, [kraata, hasKraata]);
@@ -131,7 +127,7 @@ function RahkshiDetailScene({ kraata, hasKraata }: { kraata: KraataPower; hasKra
           speed={2}
           zoom={1}
           polar={[0, 0]}
-          config={{ mass: 0.5, tension: 170, friction: 26 }}
+          config={{ friction: 26, mass: 0.5, tension: 170 }}
         >
           <Suspense fallback={null}>
             <RahkshiModel kraata={kraata} hasKraata={hasKraata} />
@@ -180,10 +176,10 @@ export const RahkshiDetail: React.FC = () => {
   const { id } = useParams();
   const { setScene } = useSceneCanvas();
   const {
-    rahkshi,
-    kraataCollection,
     completeRahkshiForge,
     insertKraataIntoRahkshi,
+    kraataCollection,
+    rahkshi,
     removeKraataFromRahkshi,
   } = useGame();
 
@@ -223,7 +219,7 @@ export const RahkshiDetail: React.FC = () => {
       for (const [stageStr, count] of Object.entries(stages)) {
         if (power !== armorPower || typeof count !== 'number' || count <= 0) continue;
 
-        entries.push({ power: power as KraataPower, stage: Number(stageStr), count });
+        entries.push({ count, power: power as KraataPower, stage: Number(stageStr) });
       }
     }
 
@@ -251,7 +247,7 @@ export const RahkshiDetail: React.FC = () => {
         className="rahkshi-detail-visualization"
         layoutId={shouldReduceMotion ? undefined : `rahkshi-${armor.id}`}
         layout
-        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
         style={
           {
             '--kraata-head-color': armorColors.armor,
@@ -284,9 +280,9 @@ export const RahkshiDetail: React.FC = () => {
                 <motion.p
                   key="power-desc"
                   className="rahkshi-detail-header__power-desc"
-                  initial={{ opacity: 0, y: -8, height: 0, margin: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto', margin: 0 }}
-                  exit={{ opacity: 0, y: -8, height: 0, margin: 0 }}
+                  initial={{ height: 0, margin: 0, opacity: 0, y: -8 }}
+                  animate={{ height: 'auto', margin: 0, opacity: 1, y: 0 }}
+                  exit={{ height: 0, margin: 0, opacity: 0, y: -8 }}
                   transition={buildTransition(
                     { duration: MOTION_DURATION.base, ease: MOTION_EASING.standard },
                     shouldReduceMotion ?? false
@@ -337,7 +333,7 @@ export const RahkshiDetail: React.FC = () => {
             </p>
             {availableKraata.length > 0 ? (
               <div className="rahkshi-section__kraata-list">
-                {availableKraata.map(({ power, stage, count }) => (
+                {availableKraata.map(({ count, power, stage }) => (
                   <button
                     key={`${power}-${stage}`}
                     type="button"

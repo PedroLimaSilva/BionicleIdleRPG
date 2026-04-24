@@ -14,10 +14,10 @@ type AnimationControllerOptions = {
  * Requires useIdleAnimation to be called first for mixer timeScale and idle setup.
  */
 export function useAnimationController({
-  mixer,
-  idle,
   flavors = [],
+  idle,
   interval = 3000,
+  mixer,
 }: AnimationControllerOptions) {
   const isPlayingFlavor = useRef(false);
   const timeout = useRef<number | null>(null);

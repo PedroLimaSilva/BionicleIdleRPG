@@ -18,16 +18,16 @@ describe('Mask Powers - Combat Mechanics', () => {
     // Create a standard defender for all tests
     // Using same element to avoid element effectiveness complications
     defender = {
-      id: 'enemy',
-      name: 'Enemy',
-      model: '',
-      lvl: 1,
-      hp: 100,
-      maxHp: 100,
       attack: 10,
       defense: 5,
-      speed: 5,
       element: ElementTribe.Earth, // Same as Onua to get 1.0x effectiveness
+      hp: 100,
+      id: 'enemy',
+      lvl: 1,
+      maxHp: 100,
+      model: '',
+      name: 'Enemy',
+      speed: 5,
       strategy: BattleStrategy.Random,
       willUseAbility: false,
     };
@@ -48,11 +48,11 @@ describe('Mask Powers - Combat Mechanics', () => {
         // Add ATK_MULT effect (as mask activation would)
         attacker.effects = [
           {
-            type: 'ATK_MULT',
-            multiplier: 3,
             durationRemaining: 1,
             durationUnit: 'attack',
+            multiplier: 3,
             sourceId: attacker.id,
+            type: 'ATK_MULT',
           },
         ];
 
@@ -87,11 +87,11 @@ describe('Mask Powers - Combat Mechanics', () => {
           ...defender,
           effects: [
             {
-              type: 'DEFENSE',
-              multiplier: 0.5,
               durationRemaining: 2,
               durationUnit: 'round',
+              multiplier: 0.5,
               sourceId: 'caster',
+              type: 'DEFENSE',
             },
           ],
         };
@@ -117,11 +117,11 @@ describe('Mask Powers - Combat Mechanics', () => {
         // Add DMG_MITIGATOR effect (as mask activation would)
         target.effects = [
           {
-            type: 'DMG_MITIGATOR',
-            multiplier: 0,
             durationRemaining: 1,
             durationUnit: 'round',
+            multiplier: 0,
             sourceId: target.id,
+            type: 'DMG_MITIGATOR',
           },
         ];
         const damagedWithMask = applyDamage(target, incomingDamage);
@@ -150,11 +150,11 @@ describe('Mask Powers - Combat Mechanics', () => {
 
         target.effects = [
           {
-            type: 'DMG_MITIGATOR',
-            multiplier: 0,
             durationRemaining: 1,
             durationUnit: 'hit',
+            multiplier: 0,
             sourceId: target.id,
+            type: 'DMG_MITIGATOR',
           },
         ];
 
@@ -183,11 +183,11 @@ describe('Mask Powers - Combat Mechanics', () => {
 
         target.effects = [
           {
-            type: 'DMG_MITIGATOR',
-            multiplier: 0,
             durationRemaining: 1,
             durationUnit: 'hit',
+            multiplier: 0,
             sourceId: target.id,
+            type: 'DMG_MITIGATOR',
           },
         ];
 
@@ -220,11 +220,11 @@ describe('Mask Powers - Combat Mechanics', () => {
 
       targetWithHuna.effects = [
         {
-          type: 'AGGRO',
-          multiplier: 0,
           durationRemaining: 1,
           durationUnit: 'turn',
+          multiplier: 0,
           sourceId: targetWithHuna.id,
+          type: 'AGGRO',
         },
       ];
 
@@ -260,11 +260,11 @@ describe('Mask Powers - Combat Mechanics', () => {
 
       attacker.effects = [
         {
-          type: 'ATK_MULT',
-          multiplier: 1.5,
           durationRemaining: 1,
           durationUnit: 'round',
+          multiplier: 1.5,
           sourceId: attacker.id,
+          type: 'ATK_MULT',
         },
       ];
 
@@ -285,11 +285,11 @@ describe('Mask Powers - Combat Mechanics', () => {
 
         combatant.effects = [
           {
-            type: 'HEAL',
-            multiplier: 0.2,
             durationRemaining: 1,
             durationUnit: 'turn',
+            multiplier: 0.2,
             sourceId: combatant.id,
+            type: 'HEAL',
           },
         ];
 
@@ -323,11 +323,11 @@ describe('Mask Powers - Combat Mechanics', () => {
 
         combatant.effects = [
           {
-            type: 'HEAL',
-            multiplier: 0.2,
             durationRemaining: 1,
             durationUnit: 'turn',
+            multiplier: 0.2,
             sourceId: combatant.id,
+            type: 'HEAL',
           },
         ];
 

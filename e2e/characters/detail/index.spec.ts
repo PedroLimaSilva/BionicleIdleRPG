@@ -11,9 +11,9 @@ test.describe('Character Detail Page', () => {
   test('converts protodermis to XP for Toa on stats tab', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      protodermis: 100,
-      recruitedCharacters: [{ id: 'Toa_Tahu', exp: 0 }],
       completedQuests: ['story_toa_arrival'],
+      protodermis: 100,
+      recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu' }],
     });
     await goto(page, '/characters/Toa_Tahu');
     await disableCSSAnimations(page);
@@ -27,9 +27,9 @@ test.describe('Character Detail Page', () => {
   test('converts protodermis to XP for Matoran on stats tab', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      protodermis: 100,
-      recruitedCharacters: [{ id: 'Jala', exp: 0 }],
       completedQuests: [],
+      protodermis: 100,
+      recruitedCharacters: [{ exp: 0, id: 'Jala' }],
     });
     await goto(page, '/characters/Jala');
     await disableCSSAnimations(page);
@@ -43,8 +43,8 @@ test.describe('Character Detail Page', () => {
   test('should render tasks tab', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      recruitedCharacters: [{ id: 'Jala', exp: 0 }],
       completedQuests: [],
+      recruitedCharacters: [{ exp: 0, id: 'Jala' }],
     });
     await goto(page, '/characters/Jala');
     await disableCSSAnimations(page);
@@ -63,8 +63,8 @@ test.describe('Character Detail Page', () => {
     test('should show Chronicle tab for Matoran with chronicles', async ({ page }) => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
-        recruitedCharacters: [{ id: 'Jala', exp: 0 }],
         completedQuests: [],
+        recruitedCharacters: [{ exp: 0, id: 'Jala' }],
       });
       await goto(page, '/characters/Jala');
       await disableCSSAnimations(page);
@@ -80,8 +80,8 @@ test.describe('Character Detail Page', () => {
     test('should show all entries locked when no quests completed', async ({ page }) => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
-        recruitedCharacters: [{ id: 'Takua', exp: 0 }],
         completedQuests: [],
+        recruitedCharacters: [{ exp: 0, id: 'Takua' }],
       });
       await goto(page, '/characters/Takua');
       await disableCSSAnimations(page);
@@ -102,8 +102,8 @@ test.describe('Character Detail Page', () => {
     test('should show unlocked entries based on completedQuests', async ({ page }) => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
-        recruitedCharacters: [{ id: 'Takua', exp: 0 }],
         completedQuests: ['mnog_find_canister_beach'],
+        recruitedCharacters: [{ exp: 0, id: 'Takua' }],
       });
       await goto(page, '/characters/Takua');
       await disableCSSAnimations(page);
@@ -121,8 +121,8 @@ test.describe('Character Detail Page', () => {
     test('should expand entry description when clicking unlocked entry', async ({ page }) => {
       await setupGameState(page, {
         ...INITIAL_GAME_STATE,
-        recruitedCharacters: [{ id: 'Toa_Tahu', exp: 0 }],
         completedQuests: ['story_toa_arrival'],
+        recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu' }],
       });
       await goto(page, '/characters/Toa_Tahu');
       await disableCSSAnimations(page);

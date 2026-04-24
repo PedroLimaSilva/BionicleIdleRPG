@@ -13,8 +13,8 @@ export function tickMatoranJobExp(matoran: RecruitedCharacterData, now: number):
   const earnedProtodermis = Math.floor(exp * PROTODERMIS_RATE);
 
   return {
-    updatedMatoran: updated,
     earnedProtodermis,
     expGained: exp,
+    updatedMatoran: updated,
   };
 }

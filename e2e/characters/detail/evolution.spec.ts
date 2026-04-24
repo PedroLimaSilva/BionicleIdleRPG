@@ -25,10 +25,10 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
   test('shows disabled evolve button when quest completed but level < 40', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: [TOA_NUVA_QUEST],
       protodermis: 10000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LOW_LEVEL_EXP }],
-      completedQuests: [TOA_NUVA_QUEST],
+      recruitedCharacters: [{ exp: LOW_LEVEL_EXP, id: 'Toa_Tahu' }],
     });
     await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -56,9 +56,9 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
   test('shows disabled button when level met but not enough protodermis', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      protodermis: 100,
-      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_41_EXP }],
       completedQuests: [TOA_NUVA_QUEST],
+      protodermis: 100,
+      recruitedCharacters: [{ exp: LEVEL_41_EXP, id: 'Toa_Tahu' }],
     });
     await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -82,10 +82,10 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
   test('evolves when all requirements met', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: [TOA_NUVA_QUEST],
       protodermis: 5000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_41_EXP }],
-      completedQuests: [TOA_NUVA_QUEST],
+      recruitedCharacters: [{ exp: LEVEL_41_EXP, id: 'Toa_Tahu' }],
     });
     await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -113,10 +113,10 @@ test.describe('Character Evolution - Toa Mata to Toa Nuva', () => {
   test('does not show evolve button when quest not completed', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: [],
       protodermis: 10000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'Toa_Tahu', exp: LEVEL_41_EXP }],
-      completedQuests: [],
+      recruitedCharacters: [{ exp: LEVEL_41_EXP, id: 'Toa_Tahu' }],
     });
     await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -129,10 +129,10 @@ test.describe('Character Evolution - Matoran Naming Day (ID change)', () => {
   test('shows disabled evolve button when quest completed but level < 40', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: [NAMING_DAY_QUEST],
       protodermis: 5000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'Jala', exp: LOW_LEVEL_EXP }],
-      completedQuests: [NAMING_DAY_QUEST],
+      recruitedCharacters: [{ exp: LOW_LEVEL_EXP, id: 'Jala' }],
     });
     await goto(page, '/characters/Jala', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -152,9 +152,9 @@ test.describe('Character Evolution - Matoran Naming Day (ID change)', () => {
   test('evolves on click when requirements met', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      protodermis: 1000,
-      recruitedCharacters: [{ id: 'Jala', exp: LEVEL_41_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
+      protodermis: 1000,
+      recruitedCharacters: [{ exp: LEVEL_41_EXP, id: 'Jala' }],
     });
     await goto(page, '/characters/Jala', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -173,10 +173,10 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
   test('shows disabled upgrade button when quest completed but level < 40', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: [NAMING_DAY_QUEST],
       protodermis: 5000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'Kapura', exp: LOW_LEVEL_EXP }],
-      completedQuests: [NAMING_DAY_QUEST],
+      recruitedCharacters: [{ exp: LOW_LEVEL_EXP, id: 'Kapura' }],
     });
     await goto(page, '/characters/Kapura', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -198,9 +198,9 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
   test('upgrades on click when requirements met', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      protodermis: 1000,
-      recruitedCharacters: [{ id: 'Kapura', exp: LEVEL_41_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
+      protodermis: 1000,
+      recruitedCharacters: [{ exp: LEVEL_41_EXP, id: 'Kapura' }],
     });
     await goto(page, '/characters/Kapura', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -217,10 +217,10 @@ test.describe('Character Evolution - Matoran Naming Day (stage override)', () =>
   test('does not show upgrade button when stage already applied', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: [NAMING_DAY_QUEST],
       protodermis: 5000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'Kapura', exp: LEVEL_41_EXP, stage: MatoranStage.Rebuilt }],
-      completedQuests: [NAMING_DAY_QUEST],
+      recruitedCharacters: [{ exp: LEVEL_41_EXP, id: 'Kapura', stage: MatoranStage.Rebuilt }],
     });
     await goto(page, '/characters/Kapura', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -233,10 +233,10 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
   test('shows disabled evolve button when quest completed but level < 100', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: [NAMING_DAY_QUEST],
       protodermis: 10000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_99_EXP }],
-      completedQuests: [NAMING_DAY_QUEST],
+      recruitedCharacters: [{ exp: LEVEL_99_EXP, id: 'tahnok' }],
     });
     await goto(page, '/characters/tahnok', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -262,9 +262,9 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
   test('shows disabled button when level met but not enough protodermis', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      protodermis: 100,
-      recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_100_EXP }],
       completedQuests: [NAMING_DAY_QUEST],
+      protodermis: 100,
+      recruitedCharacters: [{ exp: LEVEL_100_EXP, id: 'tahnok' }],
     });
     await goto(page, '/characters/tahnok', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -287,10 +287,10 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
   test('evolves when all requirements met', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: [NAMING_DAY_QUEST],
       protodermis: 5000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_100_EXP }],
-      completedQuests: [NAMING_DAY_QUEST],
+      recruitedCharacters: [{ exp: LEVEL_100_EXP, id: 'tahnok' }],
     });
     await goto(page, '/characters/tahnok', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -309,10 +309,10 @@ test.describe('Character Evolution - Bohrok to Bohrok Kal', () => {
   test('does not show evolve button when naming day quest not completed', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: [],
       protodermis: 10000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'tahnok', exp: LEVEL_100_EXP }],
-      completedQuests: [],
+      recruitedCharacters: [{ exp: LEVEL_100_EXP, id: 'tahnok' }],
     });
     await goto(page, '/characters/tahnok', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -325,10 +325,10 @@ test.describe('Character Evolution - Takua to Takanuva', () => {
   test('shows disabled evolve button when mask not equipped', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: [MOL_TAKANUVA_RISES_QUEST_ID],
       protodermis: 10000,
       protodermisCap: 10000,
-      recruitedCharacters: [{ id: 'Takua', exp: LEVEL_100_EXP }],
-      completedQuests: [MOL_TAKANUVA_RISES_QUEST_ID],
+      recruitedCharacters: [{ exp: LEVEL_100_EXP, id: 'Takua' }],
     });
     await goto(page, '/characters/Takua', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -343,17 +343,17 @@ test.describe('Character Evolution - Takua to Takanuva', () => {
   test('evolves on click when requirements met', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
+      completedQuests: ['mol_battle_of_kini_nui', MOL_TAKANUVA_RISES_QUEST_ID],
       protodermis: 10000,
       protodermisCap: 10000,
       recruitedCharacters: [
         {
-          id: 'Takua',
           exp: LEVEL_100_EXP,
-          stage: MatoranStage.Rebuilt,
+          id: 'Takua',
           maskOverride: Mask.Avohkii,
+          stage: MatoranStage.Rebuilt,
         },
       ],
-      completedQuests: ['mol_battle_of_kini_nui', MOL_TAKANUVA_RISES_QUEST_ID],
     });
     await goto(page, '/characters/Takua', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);
@@ -372,9 +372,9 @@ test.describe('Character Evolution - Takua to Takanuva', () => {
   test('does not show evolve button when quest not completed', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      protodermis: 10000,
-      recruitedCharacters: [{ id: 'Takua', exp: LEVEL_100_EXP, stage: MatoranStage.Rebuilt }],
       completedQuests: [],
+      protodermis: 10000,
+      recruitedCharacters: [{ exp: LEVEL_100_EXP, id: 'Takua', stage: MatoranStage.Rebuilt }],
     });
     await goto(page, '/characters/Takua', { hideCanvasBeforeNav: true });
     await disableCSSAnimations(page);

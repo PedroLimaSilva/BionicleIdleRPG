@@ -15,7 +15,7 @@ export function useJobTickEffect(
 
       setRecruitedCharacters((prev) =>
         prev.map((matoran) => {
-          const { updatedMatoran, earnedProtodermis } = tickMatoranJobExp(matoran, now);
+          const { earnedProtodermis, updatedMatoran } = tickMatoranJobExp(matoran, now);
 
           if (earnedProtodermis > 0) addProtodermis(earnedProtodermis);
 

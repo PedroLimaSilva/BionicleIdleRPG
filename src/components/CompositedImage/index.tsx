@@ -12,9 +12,9 @@ function arraysEqual(a: string[], b: string[]) {
 }
 
 export const CompositedImage: React.FC<CompositedImageProps> = ({
-  images,
-  colors,
   className,
+  colors,
+  images,
   style,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);

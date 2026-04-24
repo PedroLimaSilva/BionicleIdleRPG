@@ -14,14 +14,14 @@ import { applyWeatheredMetalToObject, isWeatheredMetalMaterial } from './Weather
 const USE_WEATHERED_METAL = true;
 
 const MAT_COLOR_MAP = {
+  Arm: 'arms',
+  Arms: 'arms',
+  Brain: 'eyes',
   Face: 'face',
   Feet: 'feet',
-  Arms: 'arms',
-  Arm: 'arms',
+  GlowingEyes: 'eyes',
   Hands: 'feet',
   Torso: 'body',
-  Brain: 'eyes',
-  GlowingEyes: 'eyes',
 };
 
 export function RebuiltMatoranModel({
@@ -31,13 +31,13 @@ export function RebuiltMatoranModel({
 }) {
   const group = useRef<Group>(null);
   const { debugMode } = useSettings();
-  const { nodes, materials, animations } = useGLTF(import.meta.env.BASE_URL + 'rebuilt.glb');
+  const { animations, materials, nodes } = useGLTF(import.meta.env.BASE_URL + 'rebuilt.glb');
   const { actions, mixer } = useIdleAnimation(animations, group);
 
   useAnimationController({
-    mixer,
-    idle: actions['Idle'],
     flavors: [actions['Tilt Head']].filter(Boolean),
+    idle: actions['Idle'],
+    mixer,
   });
 
   useEffect(() => {
@@ -76,19 +76,19 @@ export function RebuiltMatoranModel({
         }
       });
       applyWeatheredMetalToObject(root, {
-        roughness: 0.55,
-        metalness: 0.05,
-        grimeDarken: 0.4,
-        grimeRoughness: 0.2,
-        grimeMetalnessReduce: 0.5,
-        largeScale: 3.5,
-        fineScale: 18.0,
         cavityStrength: 1,
         edgeColor: '#ffffff',
-        edgeStrength: 0.15,
         edgeCurvatureScale: 2,
+        edgeStrength: 0.15,
         excludeMaterialNames: ['Brain', 'GlowingEyes'],
+        fineScale: 18.0,
+        grimeDarken: 0.4,
+        grimeMetalnessReduce: 0.5,
+        grimeRoughness: 0.2,
+        largeScale: 3.5,
         materialColorMap,
+        metalness: 0.05,
+        roughness: 0.55,
       });
       if (debugMode) {
         let count = 0;

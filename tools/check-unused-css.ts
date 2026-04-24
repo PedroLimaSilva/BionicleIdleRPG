@@ -62,14 +62,36 @@ async function main(): Promise<void> {
 
   const purgeCSSResult = await new PurgeCSS().purge({
     content: contentFiles.map((file) => ({
-      raw: readFileSync(file, 'utf-8'),
       extension: file.endsWith('.html') ? 'html' : 'tsx',
+      raw: readFileSync(file, 'utf-8'),
     })),
     css: cssFiles.map((file) => ({ raw: readFileSync(file, 'utf-8') })),
     rejected: true,
     // Safelist: classes used dynamically (template literals) that PurgeCSS
     // cannot detect through static analysis
     safelist: {
+      // Preserve element selectors and pseudo-classes
+      deep: [/^h[1-6]$/, /:hover/, /:focus/, /:active/, /:disabled/, /::before/, /::after/],
+      // Safelist selectors matching these patterns (e.g. parent/child, dynamic)
+      greedy: [
+        /krana-color--/,
+        /krana-collection__slot/,
+        /model-display/,
+        /job-label/,
+        /job-rate/,
+        /item-icon/,
+        /available-quests__title/,
+        /route--/,
+        /#canvas-mount/,
+        /main-content/,
+        /battle-page-root/,
+        /battle-arena--/,
+        /visual-novel-cutscene__content--/,
+        /rahkshi-card--/,
+        /rahkshi-card__status--/,
+        // HpBar: tier modifiers from template literal (world-hp__fill--${tier})
+        /world-hp__fill--/,
+      ],
       standard: [
         // Element themes (element-${matoran.element})
         /^element-(Light|Stone|Water|Fire|Ice|Earth|Air|Shadow)$/,
@@ -107,28 +129,6 @@ async function main(): Promise<void> {
         // Job card
         'code-style',
       ],
-      // Safelist selectors matching these patterns (e.g. parent/child, dynamic)
-      greedy: [
-        /krana-color--/,
-        /krana-collection__slot/,
-        /model-display/,
-        /job-label/,
-        /job-rate/,
-        /item-icon/,
-        /available-quests__title/,
-        /route--/,
-        /#canvas-mount/,
-        /main-content/,
-        /battle-page-root/,
-        /battle-arena--/,
-        /visual-novel-cutscene__content--/,
-        /rahkshi-card--/,
-        /rahkshi-card__status--/,
-        // HpBar: tier modifiers from template literal (world-hp__fill--${tier})
-        /world-hp__fill--/,
-      ],
-      // Preserve element selectors and pseudo-classes
-      deep: [/^h[1-6]$/, /:hover/, /:focus/, /:active/, /:disabled/, /::before/, /::after/],
     },
   });
 
