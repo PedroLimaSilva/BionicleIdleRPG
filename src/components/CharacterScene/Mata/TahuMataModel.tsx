@@ -1,19 +1,34 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import { Group } from 'three';
+import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
+import { Group, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { useMask } from '../../../hooks/useMask';
-import { applyWeatheredMetalToObject } from '../WeatheredMetalMaterial';
+import { useKitAttachments } from '../../../hooks/useKitAttachments';
+import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
+import { TAHU_MATA_KIT_2001_ATTACHMENTS } from './tahuMataKitAttach';
+import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
-const USE_WEATHERED_METAL = true;
+const TAHU_WEATHERED: WeatheredMetalOptions = {
+  cavityStrength: 1,
+  edgeColor: '#ffffff',
+  edgeCurvatureScale: 2,
+  edgeStrength: 0.15,
+  fineScale: 18.0,
+  grimeDarken: 0.4,
+  grimeMetalnessReduce: 0.5,
+  grimeRoughness: 0.2,
+  largeScale: 3.5,
+  metalness: 0.05,
+  roughness: 0.55,
+};
 
 export const TahuMataModel = forwardRef<
   CombatantModelHandle,
   {
     matoran: RecruitedCharacterData & BaseMatoran & { maskPowerActive?: boolean };
-    /** CharacterScene passes this to re-scan selective bloom after materials settle */
+    /** CharacterScene passes this to re-scan selective bloom after kit GLB attaches */
     onKitMeshesAttached?: () => void;
   }
 >(({ matoran, onKitMeshesAttached }, ref) => {
@@ -26,29 +41,20 @@ export const TahuMataModel = forwardRef<
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 
-  useEffect(() => {
-    const root = group.current;
-    if (!root || !nodes) return;
-    if (USE_WEATHERED_METAL) {
-      applyWeatheredMetalToObject(root, {
-        cavityStrength: 1,
-        edgeColor: '#ffffff',
-        edgeCurvatureScale: 2,
-        edgeStrength: 0.15,
-        excludeMaterialNames: ['Glowing Eyes', 'Tahu Sword Glow', 'Brain'],
-        fineScale: 18.0,
-        grimeDarken: 0.4,
-        grimeMetalnessReduce: 0.5,
-        grimeRoughness: 0.2,
-        largeScale: 3.5,
-        metalness: 0.05,
-        roughness: 0.55,
-      });
-    }
-    onKitMeshesAttached?.();
-  }, [nodes, onKitMeshesAttached]);
+  const onAttached = useMemo(
+    () => (onKitMeshesAttached ? () => onKitMeshesAttached() : undefined),
+    [onKitMeshesAttached]
+  );
 
-  // Inject the active mask from the shared masks.glb
+  useKitAttachments({
+    attachments: TAHU_MATA_KIT_2001_ATTACHMENTS,
+    characterNodes: nodes as Record<string, Object3D | undefined>,
+    colors: matoran.colors,
+    kitUrl: KIT_2001_GLB_PATH,
+    onAttached,
+    weathered: TAHU_WEATHERED,
+  });
+
   const maskTarget = matoran.maskOverride || matoran.mask;
   const glowColor = matoran.colors.eyes;
   useMask(nodes.Masks, maskTarget, matoran, glowColor, matoran.maskPowerActive);

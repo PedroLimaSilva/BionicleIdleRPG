@@ -2,13 +2,13 @@ import { LegoColor } from '../../../types/Colors';
 import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../types/KitParts';
 
 const GALI_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Main: { kind: 'lego', value: LegoColor.Blue },
-  Metal: { kind: 'lego', value: LegoColor.LightGray },
-  Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
   Brain: {
     color: { kind: 'lego', value: LegoColor.TransNeonYellow },
     weathered: false,
   },
+  Main: { kind: 'lego', value: LegoColor.Blue },
+  Metal: { kind: 'lego', value: LegoColor.LightGray },
+  Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
 };
 
 /**
