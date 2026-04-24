@@ -1,18 +1,7 @@
-import { useLayoutEffect, useState, type RefObject } from 'react';
+import { useLayoutEffect, useState, type DependencyList, type RefObject } from 'react';
 import { Mesh, MeshStandardMaterial, Object3D } from 'three';
 
 import { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
-
-/** Names that identify eye/glowing-eye/lens meshes in Matoran and Toa GLTFs (mesh or material). */
-export const EYE_MESH_NAMES = ['Brain', 'Eye', 'glow', 'lens'];
-
-function isEyeMesh(mesh: Mesh): boolean {
-  const name = (mesh.name || '').toLowerCase();
-  const matName = ((mesh.material as { name?: string })?.name ?? '').toLowerCase();
-  return EYE_MESH_NAMES.some(
-    (eye) => name.includes(eye.toLowerCase()) || matName.includes(eye.toLowerCase())
-  );
-}
 
 function isInsideMasksNode(obj: Object3D): boolean {
   let parent = obj.parent;
@@ -24,12 +13,20 @@ function isInsideMasksNode(obj: Object3D): boolean {
 }
 
 function isBloomMesh(mesh: Mesh): boolean {
-  const mat = mesh.material as MeshStandardMaterial | undefined;
-  if (!mat || (mat.emissiveIntensity ?? 0) <= 0) return false;
-  return isEyeMesh(mesh) || isInsideMasksNode(mesh);
+  const raw = mesh.material;
+  const mats = Array.isArray(raw) ? raw : raw ? [raw] : [];
+
+  for (const m of mats) {
+    const mat = m as MeshStandardMaterial | undefined;
+    if (!mat || (mat.emissiveIntensity ?? 0) <= 0) continue;
+
+    const matName = (mat.name || '').toLowerCase();
+    if (matName.includes('glow') || isInsideMasksNode(mesh)) return true;
+  }
+  return false;
 }
 
-/** Collects emissive meshes (eyes + active mask materials) for selective bloom. */
+/** Collects emissive meshes (material name contains "glow", or under Masks) for selective bloom. */
 function collectBloomMeshes(root: Object3D): Object3D[] {
   const collected: Object3D[] = [];
   root.traverse((obj) => {
@@ -42,14 +39,24 @@ function collectBloomMeshes(root: Object3D): Object3D[] {
 }
 
 /**
- * Meshes under the character root that receive selective bloom (eyes, mask
- * emissive, etc.).
+ * Meshes under the character root that should receive selective bloom (emissive
+ * materials whose name includes "glow", or any emissive under the Masks node).
+ *
+ * `sceneRevision`: increment to re-scan after the scene graph changes, e.g.
+ * once the concrete model has mounted (post-Suspense) or once Gali's kit GLB
+ * clones have attached. `matoran.id`/`matoran.stage` drive re-scans on
+ * in-place character switches; the full `matoran` object is intentionally
+ * *not* a dep, because callers like `CharacterDetail` rebuild it on every
+ * idle tick and that would thrash the selection unnecessarily.
  */
 export function useCharacterBloomMeshes(
   characterRootRef: RefObject<Object3D | null>,
-  matoran: BaseMatoran & RecruitedCharacterData
+  matoran: BaseMatoran & RecruitedCharacterData,
+  sceneRevision = 0
 ) {
   const [bloomMeshes, setBloomMeshes] = useState<Object3D[]>([]);
+  const matoranId = matoran.id;
+  const matoranStage = matoran.stage;
 
   useLayoutEffect(() => {
     const root = characterRootRef.current;
@@ -59,7 +66,7 @@ export function useCharacterBloomMeshes(
     }
     const id = setTimeout(() => setBloomMeshes(collectBloomMeshes(root)), 0);
     return () => clearTimeout(id);
-  }, [matoran, characterRootRef]);
+  }, [matoranId, matoranStage, characterRootRef, sceneRevision]);
 
   return bloomMeshes;
 }
@@ -67,7 +74,7 @@ export function useCharacterBloomMeshes(
 /** Collects all meshes with emissive material (emissiveIntensity > 0) for selective bloom. */
 export function useEmissiveMeshes(
   rootRef: RefObject<Object3D | null>,
-  deps: React.DependencyList
+  deps: DependencyList
 ) {
   const [meshes, setMeshes] = useState<Object3D[]>([]);
 
