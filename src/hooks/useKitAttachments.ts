@@ -179,8 +179,6 @@ export function useKitAttachments({
   useEffect(() => {
     if (!characterNodes) return;
 
-    console.log('characterNodes', characterNodes);
-
     const clones: Object3D[] = [];
 
     for (const [socketName, row] of Object.entries(attachments)) {
