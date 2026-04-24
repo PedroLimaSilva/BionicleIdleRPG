@@ -1,48 +1,58 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import { Group } from 'three';
+import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
+import { Group, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { useMask } from '../../../hooks/useMask';
-import { applyWeatheredMetalToObject } from '../WeatheredMetalMaterial';
+import { useKitAttachments } from '../../../hooks/useKitAttachments';
+import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
+import { POHATU_MATA_KIT_2001_ATTACHMENTS } from './pohatuMataKitAttach';
+import { POHATU_MATA_KIT_SOCKET_ALIASES } from './pohatuMataKitSocketAliases';
+import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
-const USE_WEATHERED_METAL = true;
+const POHATU_WEATHERED: WeatheredMetalOptions = {
+  cavityStrength: 1,
+  edgeColor: '#ffffff',
+  edgeCurvatureScale: 2,
+  edgeStrength: 0.15,
+  fineScale: 18.0,
+  grimeDarken: 0.4,
+  grimeMetalnessReduce: 0.5,
+  grimeRoughness: 0.2,
+  largeScale: 3.5,
+  metalness: 0.05,
+  roughness: 0.55,
+};
 
 export const PohatuMataModel = forwardRef<
   CombatantModelHandle,
   {
     matoran: RecruitedCharacterData & BaseMatoran & { maskPowerActive?: boolean };
+    onKitMeshesAttached?: () => void;
   }
->(({ matoran }, ref) => {
+>(({ matoran, onKitMeshesAttached }, ref) => {
   const group = useRef<Group>(null);
   const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/pohatu.glb');
   const { playAnimation } = useCombatAnimations(animations, group, { modelId: matoran.id });
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 
-  useEffect(() => {
-    const root = group.current;
-    if (!root || !nodes) return;
-    if (USE_WEATHERED_METAL) {
-      applyWeatheredMetalToObject(root, {
-        cavityStrength: 1,
-        edgeColor: '#ffffff',
-        edgeCurvatureScale: 2,
-        edgeStrength: 0.15,
-        excludeMaterialNames: ['Glowing Eyes', 'Brain'],
-        fineScale: 18.0,
-        grimeDarken: 0.4,
-        grimeMetalnessReduce: 0.5,
-        grimeRoughness: 0.2,
-        largeScale: 3.5,
-        metalness: 0.05,
-        roughness: 0.55,
-      });
-    }
-  }, [nodes]);
+  const onAttached = useMemo(
+    () => (onKitMeshesAttached ? () => onKitMeshesAttached() : undefined),
+    [onKitMeshesAttached]
+  );
 
-  // Inject the active mask from the shared masks.glb
+  useKitAttachments({
+    attachments: POHATU_MATA_KIT_2001_ATTACHMENTS,
+    socketAliases: POHATU_MATA_KIT_SOCKET_ALIASES,
+    characterNodes: nodes as Record<string, Object3D | undefined>,
+    colors: matoran.colors,
+    kitUrl: KIT_2001_GLB_PATH,
+    onAttached,
+    weathered: POHATU_WEATHERED,
+  });
+
   const maskTarget = matoran.maskOverride || matoran.mask;
   const glowColor = matoran.colors.eyes;
   useMask(nodes.Masks, maskTarget, matoran, glowColor, matoran.maskPowerActive);
