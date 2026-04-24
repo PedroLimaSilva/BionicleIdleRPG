@@ -18,7 +18,7 @@ function getScrollParents(element: HTMLElement): HTMLElement[] {
   const parents: HTMLElement[] = [];
   let current: HTMLElement | null = element;
   while (current) {
-    const { overflow, overflowY, overflowX } = getComputedStyle(current);
+    const { overflow, overflowX, overflowY } = getComputedStyle(current);
     const isScrollable =
       overflow === 'auto' ||
       overflow === 'scroll' ||
@@ -39,7 +39,7 @@ function getScrollParents(element: HTMLElement): HTMLElement[] {
  * Renders via portal to escape overflow/transform ancestors. Uses JS positioning with
  * automatic flip when there's insufficient viewport space.
  */
-export function Tooltip({ content, children }: TooltipProps) {
+export function Tooltip({ children, content }: TooltipProps) {
   const hasContent = content !== undefined && content !== null && content !== '';
 
   const triggerRef = useRef<HTMLSpanElement>(null);
@@ -70,10 +70,10 @@ export function Tooltip({ content, children }: TooltipProps) {
 
     const placements: Placement[] = ['top', 'bottom', 'left', 'right'];
     const requiredSpace: Record<Placement, { block: number; inline: number }> = {
-      top: { block: tooltipHeight + GAP, inline: tooltipWidth },
       bottom: { block: tooltipHeight + GAP, inline: tooltipWidth },
       left: { block: tooltipHeight, inline: tooltipWidth + GAP },
       right: { block: tooltipHeight, inline: tooltipWidth + GAP },
+      top: { block: tooltipHeight + GAP, inline: tooltipWidth },
     };
 
     let placement: Placement = 'top';
@@ -132,7 +132,7 @@ export function Tooltip({ content, children }: TooltipProps) {
       );
     }
 
-    setPosition({ top, left });
+    setPosition({ left, top });
   }, [visible]);
 
   useLayoutEffect(() => {
@@ -196,18 +196,18 @@ export function Tooltip({ content, children }: TooltipProps) {
             style={
               position
                 ? {
-                    position: 'fixed',
-                    top: position.top,
                     left: position.left,
                     maxWidth: MAX_WIDTH,
                     opacity: 1,
+                    position: 'fixed',
+                    top: position.top,
                     visibility: 'visible',
                   }
                 : {
-                    position: 'fixed',
                     left: -9999,
-                    top: 0,
                     opacity: 0,
+                    position: 'fixed',
+                    top: 0,
                     visibility: 'hidden' as const,
                   }
             }

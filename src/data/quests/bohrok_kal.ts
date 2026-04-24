@@ -12,29 +12,29 @@ export { BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID, BOHROK_KAL_FINAL_CONFRONTATION_QUES
 // Kal destroyed by their own powers; symbols reclaimed.
 export const BOHROK_KAL_QUEST_LINE: Quest[] = [
   {
-    id: 'bohrok_kal_reconstruction',
-    name: 'Reconstruction',
     description:
       'While the Ta-Matoran repair the damage to Ta-Koro, a strange symbol appears on the Toa Suva shrine. Turaga Vakama recognizes it and requests a private conversation with Tahu.',
     durationSeconds: 8 * 60,
+    id: 'bohrok_kal_reconstruction',
+    name: 'Reconstruction',
     requirements: {
       matoran: ['Toa_Tahu_Nuva'],
       minLevel: 18,
     },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_reconstruction' },
-      xpPerMatoran: 1500,
       currency: 2500,
+      cutscene: { cutsceneId: 'bohrok_kal_reconstruction', type: 'visual_novel' },
+      xpPerMatoran: 1500,
     },
-    unlockedAfter: ['bohrok_assistants'],
     section: 'Bohrok Kal',
+    unlockedAfter: ['bohrok_assistants'],
   },
   {
-    id: 'bohrok_kal_scattered_aid',
-    name: 'Scattered to the Villages',
     description:
       'Newly transformed and more powerful than ever, the Toa Nuva agree to split up and return to their villages to help with reconstruction.',
     durationSeconds: 10 * 60,
+    id: 'bohrok_kal_scattered_aid',
+    name: 'Scattered to the Villages',
     requirements: {
       matoran: [
         'Toa_Tahu_Nuva',
@@ -47,19 +47,19 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       minLevel: 18,
     },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_scattered_aid' },
-      xpPerMatoran: 1800,
       currency: 3000,
+      cutscene: { cutsceneId: 'bohrok_kal_scattered_aid', type: 'visual_novel' },
+      xpPerMatoran: 1800,
     },
-    unlockedAfter: ['bohrok_kal_reconstruction'],
     section: 'Bohrok Kal',
+    unlockedAfter: ['bohrok_kal_reconstruction'],
   },
   {
-    id: BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID,
-    name: 'The Stolen Symbols',
     description:
       'Without warning, six elite Bohrok—the Bohrok-Kal—strike the Suva shrines across Mata Nui and steal the Nuva Symbols. Instantly, the Toa Nuva’s elemental powers vanish.',
     durationSeconds: 15 * 60,
+    id: BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID,
+    name: 'The Stolen Symbols',
     requirements: {
       matoran: [
         'Toa_Tahu_Nuva',
@@ -72,19 +72,19 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       minLevel: 18,
     },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_stolen_symbols' },
-      xpPerMatoran: 2000,
       currency: 3500,
+      cutscene: { cutsceneId: 'bohrok_kal_stolen_symbols', type: 'visual_novel' },
+      xpPerMatoran: 2000,
     },
-    unlockedAfter: ['bohrok_kal_scattered_aid'],
     section: 'Bohrok Kal',
+    unlockedAfter: ['bohrok_kal_scattered_aid'],
   },
   {
-    id: 'bohrok_kal_sighting',
-    name: 'Sighting in Po-Wahi',
     description:
       'Gali reveals that two Bohrok-Kal were seen in Po-Wahi. The Toa give chase. Tahu orders them to split into two groups: one to pursue the Kal, the other to investigate what has happened to the Bahrag. In their confrontations, the Kal speak of finding the Bahrag and freeing them from their prison.',
     durationSeconds: 12 * 60,
+    id: 'bohrok_kal_sighting',
+    name: 'Sighting in Po-Wahi',
     requirements: {
       matoran: [
         'Toa_Tahu_Nuva',
@@ -97,19 +97,19 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       minLevel: 19,
     },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_sighting' },
-      xpPerMatoran: 2400,
       currency: 4000,
+      cutscene: { cutsceneId: 'bohrok_kal_sighting', type: 'visual_novel' },
+      xpPerMatoran: 2400,
     },
-    unlockedAfter: [BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID],
     section: 'Bohrok Kal',
+    unlockedAfter: [BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID],
   },
   {
-    id: 'bohrok_kal_race_to_nest',
-    name: 'Race to the Nest',
     description:
       'The Bohrok-Kal are closing in on the Bahrag’s prison. The Toa Nuva race to the nest, hoping to reach it first. Their plan: use the abandoned Exo-Toa armor to compensate for their missing elemental powers.',
     durationSeconds: 18 * 60,
+    id: 'bohrok_kal_race_to_nest',
+    name: 'Race to the Nest',
     requirements: {
       matoran: [
         'Toa_Tahu_Nuva',
@@ -122,19 +122,19 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       minLevel: 19,
     },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_race_to_nest' },
-      xpPerMatoran: 3000,
       currency: 4500,
+      cutscene: { cutsceneId: 'bohrok_kal_race_to_nest', type: 'visual_novel' },
+      xpPerMatoran: 3000,
     },
-    unlockedAfter: ['bohrok_kal_sighting'],
     section: 'Bohrok Kal',
+    unlockedAfter: ['bohrok_kal_sighting'],
   },
   {
-    id: BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID,
-    name: 'At the Nuva Cube',
     description:
       'The Toa Nuva arrive at the Nuva Cube too late. The six Bohrok-Kal already disabled the Exo-Toa and stand before the Nuva Cube, symbols in hand, ready to free the Bahrag.',
     durationSeconds: 25 * 60,
+    id: BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID,
+    name: 'At the Nuva Cube',
     requirements: {
       matoran: [
         'Toa_Tahu_Nuva',
@@ -147,19 +147,19 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       minLevel: 20,
     },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_final_confrontation' },
-      xpPerMatoran: 5000,
       currency: 6000,
+      cutscene: { cutsceneId: 'bohrok_kal_final_confrontation', type: 'visual_novel' },
+      xpPerMatoran: 5000,
     },
-    unlockedAfter: ['bohrok_kal_race_to_nest'],
     section: 'Bohrok Kal',
+    unlockedAfter: ['bohrok_kal_race_to_nest'],
   },
   {
-    id: 'bohrok_kal_naming_day',
-    name: 'The Naming Day',
     description:
       'With the Bohrok-Kal defeated and peace restored, the Turaga gather every Matoran on Mata Nui at Kini-Nui for a great ceremony—a Naming Day, to honor those who stood bravest during the crisis.',
     durationSeconds: 12 * 60,
+    id: 'bohrok_kal_naming_day',
+    name: 'The Naming Day',
     requirements: {
       matoran: [
         'Kapura',
@@ -182,11 +182,11 @@ export const BOHROK_KAL_QUEST_LINE: Quest[] = [
       minLevel: 1,
     },
     rewards: {
-      cutscene: { type: 'visual_novel', cutsceneId: 'bohrok_kal_naming_day' },
-      xpPerMatoran: 1500,
       currency: 2000,
+      cutscene: { cutsceneId: 'bohrok_kal_naming_day', type: 'visual_novel' },
+      xpPerMatoran: 1500,
     },
-    unlockedAfter: [BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID],
     section: 'Bohrok Kal',
+    unlockedAfter: [BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID],
   },
 ];

@@ -73,16 +73,12 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
 
   const {
     activeQuests,
+    cancelQuest,
     completedQuests,
+    completeQuest,
     setCompletedQuests,
     startQuest,
-    cancelQuest,
-    completeQuest,
   } = useQuestState({
-    initialActive: initialState.activeQuests,
-    initialCompleted: initialState.completedQuests,
-    getCharacters: () => recruitedCharactersRef.current,
-    setRecruitedCharacters: (action) => setRecruitedCharactersRef.current(action),
     addProtodermis: (amount: number) => {
       if (amount > protodermisCap) {
         setProtodermisCap(amount);
@@ -91,16 +87,20 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
         setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap));
       }
     },
+    getCharacters: () => recruitedCharactersRef.current,
+    initialActive: initialState.activeQuests,
+    initialCompleted: initialState.completedQuests,
+    setRecruitedCharacters: (action) => setRecruitedCharactersRef.current(action),
   });
 
   const {
-    recruitedCharacters,
-    setRecruitedCharacters,
+    assignJobToMatoran,
     buyableCharacters,
     recruitCharacter,
-    assignJobToMatoran,
+    recruitedCharacters,
     removeJobFromMatoran,
     setMaskOverride,
+    setRecruitedCharacters,
   } = useCharactersState(
     initialState.recruitedCharacters,
     completedQuests,
@@ -121,178 +121,37 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
 
   // Auto-save when critical state changes (buyableCharacters is derived, not persisted)
   useGamePersistence({
-    version,
+    activeQuests,
+    collectedKrana,
+    completedQuests,
+    kraataCollection,
     protodermis,
     protodermisCap,
-    collectedKrana,
-    kraataCollection,
     rahkshi,
     recruitedCharacters,
-    activeQuests,
-    completedQuests,
+    version,
   });
 
   useEffect(() => {
     sendSessionTelemetry({
-      version,
+      activeQuests,
+      collectedKrana,
+      completedQuests,
+      kraataCollection,
       protodermis,
       protodermisCap,
-      collectedKrana,
-      kraataCollection,
       rahkshi,
       recruitedCharacters,
-      activeQuests,
-      completedQuests,
+      version,
     });
     // Only send once on mount; subsequent state changes are intentionally ignored.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
-    version,
     activeQuests,
-    completedQuests,
-    protodermis,
-    protodermisCap,
-    collectedKrana,
-    kraataCollection,
-    rahkshi,
-    recruitedCharacters,
-    buyableCharacters: buyableCharacters,
-    // State editor API (raw setters; only use while editor is open to avoid conflicts)
-    setCompletedQuests,
-    setRecruitedCharacters,
-    setCollectedKrana,
-    setKraataCollection,
-    setProtodermis,
-    setProtodermisCap,
     addKraata: (power: KraataPower, stage: number, count: number) => {
       setKraataCollection((prev) => addKraataToCollection(prev, power, stage, count));
-    },
-    mergeKraata: (power: KraataPower, stage: number) => {
-      setKraataCollection((prev) => {
-        if (!canMergeKraata(prev, power, stage)) return prev;
-        return applyKraataMerge(prev, power, stage);
-      });
-    },
-    mergeAllKraata: () => {
-      setKraataCollection((prev) => applyAllKraataMerges(prev));
-    },
-    startRahkshiForge: (power: KraataPower, stage: number) => {
-      const requestId = Symbol('startRahkshiForge');
-      startForgeRequestIdRef.current = requestId;
-      setProtodermis((prevProto) => {
-        if (prevProto < RAHKSHI_FORGE_COST) return prevProto;
-        setKraataCollection((prev) => {
-          if (!canStartRahkshiForge(prev, power, stage, prevProto)) return prev;
-          const isFirstRun = startForgeRequestIdRef.current === requestId;
-          if (!isFirstRun) return prev;
-          startForgeRequestIdRef.current = null;
-          const now = Date.now();
-          const duration = getDebugMode() ? 1000 : KRAATA_ARMOR_DURATION_MS;
-          const newArmor: RahkshiArmor = {
-            id: generateRahkshiId(),
-            power,
-            status: 'preparing',
-            startedAt: now,
-            endsAt: now + duration,
-          };
-          setRahkshi((prevR) => [...prevR, newArmor]);
-          return removeKraataFromCollection(prev, power, stage, 1);
-        });
-        return prevProto - RAHKSHI_FORGE_COST;
-      });
-    },
-    completeRahkshiForge: (rahkshiId: string) => {
-      setRahkshi((prev) =>
-        prev.map((r) =>
-          r.id === rahkshiId
-            ? { ...r, status: 'ready' as const, startedAt: undefined, endsAt: undefined }
-            : r
-        )
-      );
-    },
-    insertKraataIntoRahkshi: (rahkshiId: string, power: KraataPower, stage: number) => {
-      const count = kraataCollection[power]?.[stage] ?? 0;
-      if (count < 1) return;
-      const armor = rahkshi.find((r) => r.id === rahkshiId);
-      if (!armor || armor.status !== 'ready' || armor.kraata || armor.power !== power) return;
-      setKraataCollection((prev) => removeKraataFromCollection(prev, power, stage, 1));
-      setRahkshi((prevR) =>
-        prevR.map((r) =>
-          r.id === rahkshiId && r.status === 'ready' && !r.kraata && r.power === power
-            ? { ...r, kraata: { power, stage } }
-            : r
-        )
-      );
-    },
-    removeKraataFromRahkshi: (rahkshiId: string) => {
-      const armor = rahkshi.find((r) => r.id === rahkshiId);
-      if (!armor?.kraata) return;
-      const { power, stage } = armor.kraata;
-      setRahkshi((prevR) =>
-        prevR.map((r) => (r.id === rahkshiId ? { ...r, kraata: undefined } : r))
-      );
-      setKraataCollection((prev) => addKraataToCollection(prev, power, stage, 1));
-    },
-    recruitCharacter,
-    setMaskOverride,
-    assignJobToMatoran,
-    removeJobFromMatoran,
-    startQuest,
-    cancelQuest,
-    completeQuest,
-    battle,
-    collectKrana: (element: KranaElement, id: KranaId) => {
-      setCollectedKrana((prev) => {
-        const existingForElement = prev[element] ?? [];
-        if (existingForElement.includes(id)) {
-          return prev;
-        }
-        return {
-          ...prev,
-          [element]: [...existingForElement, id],
-        };
-      });
-    },
-    evolveCharacter: (
-      matoranId: RecruitedCharacterData['id'],
-      onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
-    ) => {
-      const matoran = recruitedCharacters.find((m) => m.id === matoranId);
-      if (!matoran) return false;
-
-      const evolution = getAvailableEvolution(matoran, completedQuests);
-      if (!evolution || !meetsEvolutionLevel(matoran, evolution)) return false;
-
-      setProtodermis((prev) => {
-        if (prev < evolution.protodermisCost) return prev;
-        const evolved = applyCharacterEvolution(matoran, evolution);
-        setRecruitedCharacters((prevChars) =>
-          prevChars.map((m) => (m.id === matoranId ? evolved : m))
-        );
-        onSuccess?.(evolved.id);
-        return prev - evolution.protodermisCost;
-      });
-      return true;
-    },
-    convertProtodermisToExp: (
-      matoranId: RecruitedCharacterData['id'],
-      protodermisSpent: number
-    ) => {
-      const recruited = recruitedCharacters.find((m) => m.id === matoranId);
-      if (!recruited) return false;
-      if (!Number.isInteger(protodermisSpent) || protodermisSpent < 1) return false;
-      if (protodermisSpent > protodermis) return false;
-
-      const expGain = expGainedFromProtodermisSpend(protodermisSpent);
-      // Apply exp outside setProtodermis: in dev, Strict Mode may invoke the protodermis
-      // updater twice; nesting setRecruitedCharacters inside it would double-apply XP.
-      setProtodermis((prev) => (prev < protodermisSpent ? prev : prev - protodermisSpent));
-      setRecruitedCharacters((chars) =>
-        chars.map((m) => (m.id === matoranId ? { ...m, exp: m.exp + expGain } : m))
-      );
-      return true;
     },
     applyBattleRewards: (params: BattleRewardParams) => {
       const totalExp = computeBattleExpTotal(
@@ -351,9 +210,150 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
           params.enemies
         );
       }
-      for (const { power, stage, qty } of kraataToCollect) {
+      for (const { power, qty, stage } of kraataToCollect) {
         setKraataCollection((prev) => addKraataToCollection(prev, power, stage, qty));
       }
     },
+    assignJobToMatoran,
+    battle,
+    buyableCharacters: buyableCharacters,
+    cancelQuest,
+    collectedKrana,
+    collectKrana: (element: KranaElement, id: KranaId) => {
+      setCollectedKrana((prev) => {
+        const existingForElement = prev[element] ?? [];
+        if (existingForElement.includes(id)) {
+          return prev;
+        }
+        return {
+          ...prev,
+          [element]: [...existingForElement, id],
+        };
+      });
+    },
+    completedQuests,
+    completeQuest,
+    completeRahkshiForge: (rahkshiId: string) => {
+      setRahkshi((prev) =>
+        prev.map((r) =>
+          r.id === rahkshiId
+            ? { ...r, endsAt: undefined, startedAt: undefined, status: 'ready' as const }
+            : r
+        )
+      );
+    },
+    convertProtodermisToExp: (
+      matoranId: RecruitedCharacterData['id'],
+      protodermisSpent: number
+    ) => {
+      const recruited = recruitedCharacters.find((m) => m.id === matoranId);
+      if (!recruited) return false;
+      if (!Number.isInteger(protodermisSpent) || protodermisSpent < 1) return false;
+      if (protodermisSpent > protodermis) return false;
+
+      const expGain = expGainedFromProtodermisSpend(protodermisSpent);
+      // Apply exp outside setProtodermis: in dev, Strict Mode may invoke the protodermis
+      // updater twice; nesting setRecruitedCharacters inside it would double-apply XP.
+      setProtodermis((prev) => (prev < protodermisSpent ? prev : prev - protodermisSpent));
+      setRecruitedCharacters((chars) =>
+        chars.map((m) => (m.id === matoranId ? { ...m, exp: m.exp + expGain } : m))
+      );
+      return true;
+    },
+    evolveCharacter: (
+      matoranId: RecruitedCharacterData['id'],
+      onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
+    ) => {
+      const matoran = recruitedCharacters.find((m) => m.id === matoranId);
+      if (!matoran) return false;
+
+      const evolution = getAvailableEvolution(matoran, completedQuests);
+      if (!evolution || !meetsEvolutionLevel(matoran, evolution)) return false;
+
+      setProtodermis((prev) => {
+        if (prev < evolution.protodermisCost) return prev;
+        const evolved = applyCharacterEvolution(matoran, evolution);
+        setRecruitedCharacters((prevChars) =>
+          prevChars.map((m) => (m.id === matoranId ? evolved : m))
+        );
+        onSuccess?.(evolved.id);
+        return prev - evolution.protodermisCost;
+      });
+      return true;
+    },
+    insertKraataIntoRahkshi: (rahkshiId: string, power: KraataPower, stage: number) => {
+      const count = kraataCollection[power]?.[stage] ?? 0;
+      if (count < 1) return;
+      const armor = rahkshi.find((r) => r.id === rahkshiId);
+      if (!armor || armor.status !== 'ready' || armor.kraata || armor.power !== power) return;
+      setKraataCollection((prev) => removeKraataFromCollection(prev, power, stage, 1));
+      setRahkshi((prevR) =>
+        prevR.map((r) =>
+          r.id === rahkshiId && r.status === 'ready' && !r.kraata && r.power === power
+            ? { ...r, kraata: { power, stage } }
+            : r
+        )
+      );
+    },
+    kraataCollection,
+    mergeAllKraata: () => {
+      setKraataCollection((prev) => applyAllKraataMerges(prev));
+    },
+    mergeKraata: (power: KraataPower, stage: number) => {
+      setKraataCollection((prev) => {
+        if (!canMergeKraata(prev, power, stage)) return prev;
+        return applyKraataMerge(prev, power, stage);
+      });
+    },
+    protodermis,
+    protodermisCap,
+    rahkshi,
+    recruitCharacter,
+    recruitedCharacters,
+    removeJobFromMatoran,
+    removeKraataFromRahkshi: (rahkshiId: string) => {
+      const armor = rahkshi.find((r) => r.id === rahkshiId);
+      if (!armor?.kraata) return;
+      const { power, stage } = armor.kraata;
+      setRahkshi((prevR) =>
+        prevR.map((r) => (r.id === rahkshiId ? { ...r, kraata: undefined } : r))
+      );
+      setKraataCollection((prev) => addKraataToCollection(prev, power, stage, 1));
+    },
+    setCollectedKrana,
+    // State editor API (raw setters; only use while editor is open to avoid conflicts)
+    setCompletedQuests,
+    setKraataCollection,
+    setMaskOverride,
+    setProtodermis,
+    setProtodermisCap,
+    setRecruitedCharacters,
+    startQuest,
+    startRahkshiForge: (power: KraataPower, stage: number) => {
+      const requestId = Symbol('startRahkshiForge');
+      startForgeRequestIdRef.current = requestId;
+      setProtodermis((prevProto) => {
+        if (prevProto < RAHKSHI_FORGE_COST) return prevProto;
+        setKraataCollection((prev) => {
+          if (!canStartRahkshiForge(prev, power, stage, prevProto)) return prev;
+          const isFirstRun = startForgeRequestIdRef.current === requestId;
+          if (!isFirstRun) return prev;
+          startForgeRequestIdRef.current = null;
+          const now = Date.now();
+          const duration = getDebugMode() ? 1000 : KRAATA_ARMOR_DURATION_MS;
+          const newArmor: RahkshiArmor = {
+            endsAt: now + duration,
+            id: generateRahkshiId(),
+            power,
+            startedAt: now,
+            status: 'preparing',
+          };
+          setRahkshi((prevR) => [...prevR, newArmor]);
+          return removeKraataFromCollection(prev, power, stage, 1);
+        });
+        return prevProto - RAHKSHI_FORGE_COST;
+      });
+    },
+    version,
   };
 };

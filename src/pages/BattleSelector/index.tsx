@@ -76,7 +76,7 @@ function getEncounterAvatarSrc(encounter: EnemyEncounter): string | null {
 
 export const BattleSelector: React.FC = () => {
   const navigate = useNavigate();
-  const { battle, completedQuests, collectedKrana } = useGame();
+  const { battle, collectedKrana, completedQuests } = useGame();
   const visibleEncounters = useMemo(
     () => getVisibleEncounters(ENCOUNTERS, collectedKrana, completedQuests),
     [collectedKrana, completedQuests]

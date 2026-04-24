@@ -184,9 +184,9 @@ export function createWeatheredMetalMaterial(
   const color = opts.color ?? '#d4a84b';
   const mat = new MeshStandardMaterial({
     color: new Color(color),
-    roughness: opts.roughness ?? DEFAULT_ROUGHNESS,
-    metalness: opts.metalness ?? DEFAULT_METALNESS,
     envMapIntensity: opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
+    metalness: opts.metalness ?? DEFAULT_METALNESS,
+    roughness: opts.roughness ?? DEFAULT_ROUGHNESS,
     side: DoubleSide,
     transparent: opts.transparent ?? false,
   });
@@ -290,7 +290,8 @@ export function applyWeatheredMetalToObject(
       if (!raw) return raw;
       if (!includeNormalMappedMaterials && hasNormalMap(raw)) return raw;
       if (excludeNames.length > 0 && isExcludedMaterial(raw, excludeNames)) return raw;
-      if (excludeSubstrings.length > 0 && isExcludedMaterialBySubstring(raw, excludeSubstrings)) return raw;
+      if (excludeSubstrings.length > 0 && isExcludedMaterialBySubstring(raw, excludeSubstrings))
+        return raw;
       if (excludeNormalized.size > 0 && isNormalizedExcluded(raw)) return raw;
 
       const matName = (raw as { name?: string }).name ?? '';

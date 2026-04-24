@@ -31,13 +31,13 @@ function isStandardMat(mat: unknown): mat is StandardMat {
 
 /** Map Mask enum to node name in Toa_Nuva/masks.glb (user said masks are named Hau, Miru, etc) */
 const NUVA_MASK_TO_NODE_NAME: Record<string, string> = {
+  Akaku_Nuva: 'Akaku',
   Hau_Nuva: 'Hau',
   Hau_Nuva_Infected: 'HauInfected',
-  Kaukau_Nuva: 'Kaukau',
   Kakama_Nuva: 'Kakama',
-  Akaku_Nuva: 'Akaku',
-  Pakari_Nuva: 'Pakari',
+  Kaukau_Nuva: 'Kaukau',
   Miru_Nuva: 'Miru',
+  Pakari_Nuva: 'Pakari',
   Vahi: 'Vahi',
 };
 

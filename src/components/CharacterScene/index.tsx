@@ -78,7 +78,7 @@ function CharacterModel({
         case 'Toa_Lewa':
           return <LewaMataModel matoran={matoran} />;
         default:
-          return <TahuMataModel matoran={matoran} />;
+          return <TahuMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
     case MatoranStage.ToaNuva:
       switch (matoran.id) {
@@ -229,7 +229,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
           speed={2}
           zoom={1}
           polar={[0, 0]}
-          config={{ mass: 0.5, tension: 170, friction: 26 }}
+          config={{ friction: 26, mass: 0.5, tension: 170 }}
         >
           <Suspense fallback={null}>
             <CharacterModel matoran={matoran} onModelReady={bumpBloomRecollection} />

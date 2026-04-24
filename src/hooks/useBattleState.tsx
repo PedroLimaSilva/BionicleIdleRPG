@@ -46,21 +46,24 @@ export interface BattleState {
 }
 
 export const INITIAL_BATTLE_STATE: BattleState = {
-  phase: BattlePhase.Idle,
-  outcomePresentationReady: true,
-  currentWave: 0,
-  currentEncounter: undefined,
-  enemies: [],
-  team: [],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  startBattle: function (_encounter: EnemyEncounter): void {
+  actionQueue: [],
+  advanceWave: function (): void {
     throw new Error('Function not implemented.');
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   confirmTeam: function (_team: RecruitedCharacterData[]): void {
     throw new Error('Function not implemented.');
   },
-  advanceWave: function (): void {
+  currentEncounter: undefined,
+  currentWave: 0,
+  endBattle: function (): void {
+    throw new Error('Function not implemented.');
+  },
+  enemies: [],
+  isRunningRound: false,
+  outcomePresentationReady: true,
+  phase: BattlePhase.Idle,
+  playActionQueue: function (): Promise<void> {
     throw new Error('Function not implemented.');
   },
   retreat: function (): void {
@@ -69,16 +72,13 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   runRound: function (): void {
     throw new Error('Function not implemented.');
   },
-  playActionQueue: function (): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  startBattle: function (_encounter: EnemyEncounter): void {
     throw new Error('Function not implemented.');
   },
+  team: [],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   toggleAbility: function (_toa: Combatant): boolean {
-    throw new Error('Function not implemented.');
-  },
-  actionQueue: [],
-  isRunningRound: false,
-  endBattle: function (): void {
     throw new Error('Function not implemented.');
   },
 };
@@ -256,7 +256,7 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
     );
 
     setTeam(
-      team.map(({ id, exp, maskOverride }) =>
+      team.map(({ exp, id, maskOverride }) =>
         generateCombatantStats(id, id, getLevelFromExp(exp), {
           maskOverride,
           nuvaSymbolsSequestered:
@@ -299,8 +299,8 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
       setEnemies(e);
     };
     const getLatestState = () => ({
-      team: teamRef.current,
       enemies: enemiesRef.current,
+      team: teamRef.current,
     });
     queueCombatRound(
       team,
@@ -358,7 +358,7 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
           setEnemies(e);
         },
         (fn) => queue.push(fn),
-        () => ({ team: teamRef.current, enemies: enemiesRef.current })
+        () => ({ enemies: enemiesRef.current, team: teamRef.current })
       );
     }
 
@@ -372,21 +372,21 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
   };
 
   return {
-    phase,
-    outcomePresentationReady,
+    actionQueue,
+    advanceWave,
+    confirmTeam,
     currentEncounter,
     currentWave,
+    endBattle,
     enemies,
-    team,
-    confirmTeam,
-    startBattle,
-    toggleAbility: toggleAbility,
-    advanceWave,
+    isRunningRound,
+    outcomePresentationReady,
+    phase,
+    playActionQueue,
     retreat,
     runRound,
-    playActionQueue,
-    isRunningRound,
-    actionQueue,
-    endBattle,
+    startBattle,
+    team,
+    toggleAbility: toggleAbility,
   };
 };

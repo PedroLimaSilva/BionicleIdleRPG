@@ -1,5 +1,13 @@
 module.exports = {
+  globals: {
+    __APP_VERSION__: 'test',
+    __TELEMETRY_URL__: '',
+  },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  roots: ['<rootDir>/src'],
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   testEnvironment: 'node',
+  testMatch: ['**/*.spec.ts', '**/*.spec.tsx'],
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',
@@ -8,12 +16,4 @@ module.exports = {
       },
     ],
   },
-  globals: {
-    __APP_VERSION__: 'test',
-    __TELEMETRY_URL__: '',
-  },
-  testMatch: ['**/*.spec.ts', '**/*.spec.tsx'],
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  roots: ['<rootDir>/src'],
 };

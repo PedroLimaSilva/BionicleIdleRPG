@@ -2,12 +2,12 @@ import { test, expect } from '@playwright/test';
 import { enableTestMode, goto, INITIAL_GAME_STATE, setupGameState } from '../helpers';
 
 const ALL_KRANA_COLLECTED = {
-  Fire: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
-  Water: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
   Air: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
   Earth: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
+  Fire: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
   Ice: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
   Stone: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
+  Water: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
 };
 
 test.describe('Battle Nav Item', () => {
@@ -31,8 +31,8 @@ test.describe('Battle Nav Item', () => {
   }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      completedQuests: ['bohrok_legend_of_krana'],
       collectedKrana: ALL_KRANA_COLLECTED,
+      completedQuests: ['bohrok_legend_of_krana'],
     });
     await goto(page, '/battle/selector');
 
@@ -47,8 +47,8 @@ test.describe('Battle Nav Item', () => {
   }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      completedQuests: ['bohrok_legend_of_krana', 'bohrok_kal_final_confrontation'],
       collectedKrana: ALL_KRANA_COLLECTED,
+      completedQuests: ['bohrok_legend_of_krana', 'bohrok_kal_final_confrontation'],
     });
     await goto(page, '/battle/selector');
 

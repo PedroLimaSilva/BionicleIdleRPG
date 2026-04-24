@@ -23,7 +23,7 @@ export function useCharactersState(
   );
 
   const recruitCharacter = (character: ListedCharacterData) => {
-    const { updatedProtodermis, newRecruit } = recruitMatoran(
+    const { newRecruit, updatedProtodermis } = recruitMatoran(
       character,
       protodermis,
       buyableCharacters
@@ -55,12 +55,12 @@ export function useCharactersState(
   };
 
   return {
-    recruitedCharacters,
-    setRecruitedCharacters,
+    assignJobToMatoran,
     buyableCharacters,
     recruitCharacter,
-    assignJobToMatoran,
+    recruitedCharacters,
     removeJobFromMatoran,
     setMaskOverride,
+    setRecruitedCharacters,
   };
 }

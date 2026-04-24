@@ -170,21 +170,21 @@ export function recruitMatoran(
 } {
   if (protodermis < character.cost) {
     return {
-      updatedProtodermis: protodermis,
       newRecruit: null,
       updatedBuyable: buyableCharacters,
+      updatedProtodermis: protodermis,
     };
   }
 
   const recruitedCharacter: RecruitedCharacterData = {
-    id: character.id,
     exp: 0,
+    id: character.id,
   };
 
   return {
-    updatedProtodermis: protodermis - character.cost,
     newRecruit: recruitedCharacter,
     updatedBuyable: buyableCharacters.filter((m) => m.id !== character.id),
+    updatedProtodermis: protodermis - character.cost,
   };
 }
 
@@ -201,9 +201,9 @@ export function assignJob(
       ? {
           ...m,
           assignment: {
-            job,
-            expRatePerSecond: baseRate * getProductivityModifier(job, m),
             assignedAt: now,
+            expRatePerSecond: baseRate * getProductivityModifier(job, m),
+            job,
           },
         }
       : m

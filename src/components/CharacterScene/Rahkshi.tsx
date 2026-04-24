@@ -21,24 +21,24 @@ interface GlowEntry {
 }
 
 const WEATHERED_METAL_OPTIONS: WeatheredMetalOptions = {
-  roughness: 0.55,
-  metalness: 0.05,
-  grimeDarken: 0.4,
-  grimeRoughness: 0.2,
-  grimeMetalnessReduce: 0.5,
-  largeScale: 3.5,
-  fineScale: 18.0,
   cavityStrength: 1,
-  edgeColor: '#ffffff',
-  edgeStrength: 0.15,
-  edgeCurvatureScale: 2,
   debugGrimeAsColor: false,
+  edgeColor: '#ffffff',
+  edgeCurvatureScale: 2,
+  edgeStrength: 0.15,
+  fineScale: 18.0,
+  grimeDarken: 0.4,
+  grimeMetalnessReduce: 0.5,
+  grimeRoughness: 0.2,
+  largeScale: 3.5,
+  metalness: 0.05,
+  roughness: 0.55,
 };
 
 export const RahkshiModel = forwardRef<
   CombatantModelHandle,
   { kraata: KraataPower; hasKraata?: boolean }
->(({ kraata, hasKraata = true }, ref) => {
+>(({ hasKraata = true, kraata }, ref) => {
   const group = useRef<Group>(null);
   const glowEntries = useRef<GlowEntry[]>([]);
   const glowTarget = useRef(hasKraata);
@@ -52,7 +52,7 @@ export const RahkshiModel = forwardRef<
   const [glowCompleteForIdle, setGlowCompleteForIdle] = useState(hasKraata);
   const prevHasKraataRef = useRef(hasKraata);
 
-  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'rahkshi.glb');
+  const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + 'rahkshi.glb');
 
   const bodyInstance = useMemo(() => nodes.Rahkshi.clone(true), [nodes]);
 
@@ -63,11 +63,11 @@ export const RahkshiModel = forwardRef<
     : 'Empty';
 
   const { playAnimation } = useCombatAnimations(animations, group, {
-    modelId: kraata,
     actionTimeScale: 1,
-    transitionMode: 'stopAll',
     attackResolveAtFraction: 0.1,
     idleActionName: effectiveIdleAction,
+    modelId: kraata,
+    transitionMode: 'stopAll',
   });
 
   const lerpCompleteRef = useRef(false);
@@ -172,9 +172,9 @@ export const RahkshiModel = forwardRef<
     });
 
     const materialColorMap: Record<string, string> = {
-      Primary: dex.armor,
       Back_baked: dex.armor,
       Face_baked: dex.armor,
+      Primary: dex.armor,
       Secondary: dex.joint,
     };
 

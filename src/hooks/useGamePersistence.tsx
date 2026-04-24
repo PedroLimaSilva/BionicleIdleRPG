@@ -3,27 +3,27 @@ import { STORAGE_KEY } from '../services/gamePersistence';
 import { PartialGameState } from '../types/GameState';
 
 export function useGamePersistence({
-  version,
+  activeQuests,
+  collectedKrana,
+  completedQuests,
+  kraataCollection,
   protodermis,
   protodermisCap,
-  collectedKrana,
-  kraataCollection,
   rahkshi,
   recruitedCharacters,
-  activeQuests,
-  completedQuests,
+  version,
 }: PartialGameState) {
   useEffect(() => {
     const stateToSave: PartialGameState = {
-      version,
+      activeQuests,
+      collectedKrana,
+      completedQuests,
+      kraataCollection,
       protodermis,
       protodermisCap,
-      collectedKrana,
-      kraataCollection,
       rahkshi,
       recruitedCharacters,
-      activeQuests,
-      completedQuests,
+      version,
     };
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));

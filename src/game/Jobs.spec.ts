@@ -13,18 +13,18 @@ import { GameState } from '../types/GameState';
 describe('Jobs', () => {
   describe('getProductivityModifier', () => {
     const mockFireMatoran: RecruitedCharacterData = {
-      id: 'Jala',
       exp: 0,
+      id: 'Jala',
     };
 
     const mockIceMatoran: RecruitedCharacterData = {
-      id: 'Matoro',
       exp: 0,
+      id: 'Matoro',
     };
 
     const mockWaterMatoran: RecruitedCharacterData = {
-      id: 'Hahli',
       exp: 0,
+      id: 'Hahli',
     };
 
     test('returns 1.2 for favored element (Fire matoran on CharcoalMaker)', () => {
@@ -61,47 +61,47 @@ describe('Jobs', () => {
   describe('getJobStatus', () => {
     test('returns Idle when matoran has no assignment', () => {
       const matoran: RecruitedCharacterData = {
-        id: 'Jala',
         exp: 0,
+        id: 'Jala',
       };
       expect(getJobStatus(matoran)).toBe(ProductivityEffect.Idle);
     });
 
     test('returns Boosted for favored element', () => {
       const matoran: RecruitedCharacterData = {
-        id: 'Jala',
-        exp: 0,
         assignment: {
-          job: MatoranJob.CharcoalMaker,
-          expRatePerSecond: 1.2,
           assignedAt: Date.now(),
+          expRatePerSecond: 1.2,
+          job: MatoranJob.CharcoalMaker,
         },
+        exp: 0,
+        id: 'Jala',
       };
       expect(getJobStatus(matoran)).toBe(ProductivityEffect.Boosted);
     });
 
     test('returns Penalized for opposed element', () => {
       const matoran: RecruitedCharacterData = {
-        id: 'Matoro',
-        exp: 0,
         assignment: {
-          job: MatoranJob.CharcoalMaker,
-          expRatePerSecond: 0.8,
           assignedAt: Date.now(),
+          expRatePerSecond: 0.8,
+          job: MatoranJob.CharcoalMaker,
         },
+        exp: 0,
+        id: 'Matoro',
       };
       expect(getJobStatus(matoran)).toBe(ProductivityEffect.Penalized);
     });
 
     test('returns Neutral for neutral element', () => {
       const matoran: RecruitedCharacterData = {
-        id: 'Hahli',
-        exp: 0,
         assignment: {
-          job: MatoranJob.CharcoalMaker,
-          expRatePerSecond: 1.0,
           assignedAt: Date.now(),
+          expRatePerSecond: 1.0,
+          job: MatoranJob.CharcoalMaker,
         },
+        exp: 0,
+        id: 'Hahli',
       };
       expect(getJobStatus(matoran)).toBe(ProductivityEffect.Neutral);
     });
@@ -155,8 +155,8 @@ describe('Jobs', () => {
         completedQuests: ['bohrok_assistants'],
       } as GameState;
 
-      const bohrokMatoran = { id: 'tahnok', exp: 0 } as RecruitedCharacterData;
-      const matoranMatoran = { id: 'Jala', exp: 0 } as RecruitedCharacterData;
+      const bohrokMatoran = { exp: 0, id: 'tahnok' } as RecruitedCharacterData;
+      const matoranMatoran = { exp: 0, id: 'Jala' } as RecruitedCharacterData;
 
       const bohrokJobs = getAvailableJobs(mockGameState, bohrokMatoran);
       const matoranJobs = getAvailableJobs(mockGameState, matoranMatoran);
@@ -170,7 +170,7 @@ describe('Jobs', () => {
         completedQuests: ['bohrok_assistants'],
       } as GameState;
 
-      const bohrokMatoran = { id: 'tahnok', exp: 0 } as RecruitedCharacterData;
+      const bohrokMatoran = { exp: 0, id: 'tahnok' } as RecruitedCharacterData;
       const bohrokJobs = getAvailableJobs(mockGameState, bohrokMatoran);
 
       expect(bohrokJobs).toContain(MatoranJob.TaKoroRebuilder);
@@ -184,8 +184,8 @@ describe('Jobs', () => {
   describe('applyJobExp', () => {
     test('returns matoran unchanged when no assignment', () => {
       const matoran: RecruitedCharacterData = {
-        id: 'Jala',
         exp: 100,
+        id: 'Jala',
       };
 
       const [updated, earned] = applyJobExp(matoran);
@@ -199,13 +199,13 @@ describe('Jobs', () => {
       const tenSecondsAgo = now - 10000; // 10 seconds ago
 
       const matoran: RecruitedCharacterData = {
-        id: 'Jala',
-        exp: 100,
         assignment: {
-          job: MatoranJob.CharcoalMaker,
-          expRatePerSecond: 1.0,
           assignedAt: tenSecondsAgo,
+          expRatePerSecond: 1.0,
+          job: MatoranJob.CharcoalMaker,
         },
+        exp: 100,
+        id: 'Jala',
       };
 
       const [updated, earned] = applyJobExp(matoran, now);
@@ -219,13 +219,13 @@ describe('Jobs', () => {
       const tenSecondsAgo = now - 10000;
 
       const matoran: RecruitedCharacterData = {
-        id: 'Jala',
-        exp: 100,
         assignment: {
-          job: MatoranJob.CharcoalMaker,
-          expRatePerSecond: 1.0,
           assignedAt: tenSecondsAgo,
+          expRatePerSecond: 1.0,
+          job: MatoranJob.CharcoalMaker,
         },
+        exp: 100,
+        id: 'Jala',
       };
 
       const [updated] = applyJobExp(matoran, now);
@@ -238,13 +238,13 @@ describe('Jobs', () => {
       const fiveSecondsAgo = now - 5000;
 
       const matoran: RecruitedCharacterData = {
-        id: 'Jala',
-        exp: 0,
         assignment: {
-          job: MatoranJob.CharcoalMaker,
-          expRatePerSecond: 1.5,
           assignedAt: fiveSecondsAgo,
+          expRatePerSecond: 1.5,
+          job: MatoranJob.CharcoalMaker,
         },
+        exp: 0,
+        id: 'Jala',
       };
 
       const [updated, earned] = applyJobExp(matoran, now);
@@ -257,13 +257,13 @@ describe('Jobs', () => {
       const now = Date.now();
 
       const matoran: RecruitedCharacterData = {
-        id: 'Jala',
-        exp: 100,
         assignment: {
-          job: MatoranJob.CharcoalMaker,
-          expRatePerSecond: 1.0,
           assignedAt: now,
+          expRatePerSecond: 1.0,
+          job: MatoranJob.CharcoalMaker,
         },
+        exp: 100,
+        id: 'Jala',
       };
 
       const [updated, earned] = applyJobExp(matoran, now);
@@ -285,22 +285,22 @@ describe('Jobs', () => {
       const now = Date.now();
       const characters: RecruitedCharacterData[] = [
         {
-          id: 'Jala',
-          exp: 0,
           assignment: {
-            job: MatoranJob.CharcoalMaker,
-            expRatePerSecond: 1.0,
             assignedAt: now - 10000, // 10 seconds ago
+            expRatePerSecond: 1.0,
+            job: MatoranJob.CharcoalMaker,
           },
+          exp: 0,
+          id: 'Jala',
         },
         {
-          id: 'Hahli',
-          exp: 0,
           assignment: {
-            job: MatoranJob.AlgaeHarvester,
-            expRatePerSecond: 1.0,
             assignedAt: now - 5000, // 5 seconds ago
+            expRatePerSecond: 1.0,
+            job: MatoranJob.AlgaeHarvester,
           },
+          exp: 0,
+          id: 'Hahli',
         },
       ];
 
@@ -314,8 +314,8 @@ describe('Jobs', () => {
 
     test('does not process matoran without jobs', () => {
       const characters: RecruitedCharacterData[] = [
-        { id: 'Jala', exp: 100 },
-        { id: 'Hahli', exp: 50 },
+        { exp: 100, id: 'Jala' },
+        { exp: 50, id: 'Hahli' },
       ];
 
       const [updated, currencyGain] = applyOfflineJobExp(characters);
@@ -334,13 +334,13 @@ describe('Jobs', () => {
         const tenHoursAgo = now - 10 * msPerHour;
         const characters: RecruitedCharacterData[] = [
           {
-            id: 'Jala',
-            exp: 0,
             assignment: {
-              job: MatoranJob.CharcoalMaker,
-              expRatePerSecond: ratePerSecond,
               assignedAt: tenHoursAgo,
+              expRatePerSecond: ratePerSecond,
+              job: MatoranJob.CharcoalMaker,
             },
+            exp: 0,
+            id: 'Jala',
           },
         ];
 
@@ -355,13 +355,13 @@ describe('Jobs', () => {
         const fifteenHoursAgo = now - 15 * msPerHour;
         const characters: RecruitedCharacterData[] = [
           {
-            id: 'Jala',
-            exp: 0,
             assignment: {
-              job: MatoranJob.CharcoalMaker,
-              expRatePerSecond: ratePerSecond,
               assignedAt: fifteenHoursAgo,
+              expRatePerSecond: ratePerSecond,
+              job: MatoranJob.CharcoalMaker,
             },
+            exp: 0,
+            id: 'Jala',
           },
         ];
 
@@ -376,13 +376,13 @@ describe('Jobs', () => {
         const twentyOneHoursAgo = now - 21 * msPerHour;
         const characters: RecruitedCharacterData[] = [
           {
-            id: 'Jala',
-            exp: 0,
             assignment: {
-              job: MatoranJob.CharcoalMaker,
-              expRatePerSecond: ratePerSecond,
               assignedAt: twentyOneHoursAgo,
+              expRatePerSecond: ratePerSecond,
+              job: MatoranJob.CharcoalMaker,
             },
+            exp: 0,
+            id: 'Jala',
           },
         ];
 
@@ -397,13 +397,13 @@ describe('Jobs', () => {
         const thirtyHoursAgo = now - 30 * msPerHour;
         const characters: RecruitedCharacterData[] = [
           {
-            id: 'Jala',
-            exp: 0,
             assignment: {
-              job: MatoranJob.CharcoalMaker,
-              expRatePerSecond: ratePerSecond,
               assignedAt: thirtyHoursAgo,
+              expRatePerSecond: ratePerSecond,
+              job: MatoranJob.CharcoalMaker,
             },
+            exp: 0,
+            id: 'Jala',
           },
         ];
 
@@ -417,13 +417,13 @@ describe('Jobs', () => {
         const now = 1000000000000;
         const fifteenHoursAgo = now - 15 * msPerHour;
         const matoran: RecruitedCharacterData = {
-          id: 'Jala',
-          exp: 0,
           assignment: {
-            job: MatoranJob.CharcoalMaker,
-            expRatePerSecond: ratePerSecond,
             assignedAt: fifteenHoursAgo,
+            expRatePerSecond: ratePerSecond,
+            job: MatoranJob.CharcoalMaker,
           },
+          exp: 0,
+          id: 'Jala',
         };
 
         // Online tick - no diminishing returns

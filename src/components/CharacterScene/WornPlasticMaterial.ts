@@ -214,27 +214,27 @@ function makeWornUniforms(
 ): Record<string, { value: unknown }> {
   const c = new Color(color);
   return {
-    uColor: { value: c },
-    uRoughness: { value: opts.roughness ?? 0.55 },
-    uMetalness: { value: opts.metalness ?? 0.05 },
-    uRoughnessNoise: { value: opts.roughnessNoise ?? 0.14 },
-    uEdgeWear: { value: opts.edgeWear ?? 0.5 },
+    uAmbient: { value: opts.ambient ?? 0.6 },
     uBumpStrength: { value: opts.bumpStrength ?? 0.1 },
-    uNoiseScale: { value: opts.noiseScale ?? 14.0 },
-    uNoiseScaleUV: { value: opts.noiseScaleUV ?? 0.1 },
-    uNoiseMap: { value: getNoiseMap() },
-    uLightDirection: {
-      value: (opts.lightDirection ?? DEFAULT_LIGHT_DIR).clone(),
-    },
+    uColor: { value: c },
+    uEdgeWear: { value: opts.edgeWear ?? 0.5 },
+    uEmissive: { value: new Color(0, 0, 0) },
+    uEmissiveIntensity: { value: 0 },
     uLightColor: {
       value: new Color(opts.lightColor ?? '#ffffff').multiplyScalar(1.5),
     },
-    uLightDirection2: { value: DEFAULT_LIGHT_DIR2.clone() },
     uLightColor2: { value: new Color('#ffffff').multiplyScalar(0.6) },
-    uAmbient: { value: opts.ambient ?? 0.6 },
-    uEmissive: { value: new Color(0, 0, 0) },
-    uEmissiveIntensity: { value: 0 },
+    uLightDirection: {
+      value: (opts.lightDirection ?? DEFAULT_LIGHT_DIR).clone(),
+    },
+    uLightDirection2: { value: DEFAULT_LIGHT_DIR2.clone() },
+    uMetalness: { value: opts.metalness ?? 0.05 },
+    uNoiseMap: { value: getNoiseMap() },
+    uNoiseScale: { value: opts.noiseScale ?? 14.0 },
+    uNoiseScaleUV: { value: opts.noiseScaleUV ?? 0.1 },
     uOpacity: { value: 1 },
+    uRoughness: { value: opts.roughness ?? 0.55 },
+    uRoughnessNoise: { value: opts.roughnessNoise ?? 0.14 },
   };
 }
 
@@ -245,11 +245,11 @@ export type WornPlasticShaderMaterial = ShaderMaterial & {
 export function createWornPlasticMaterial(opts: WornPlasticOptions = {}) {
   const color = opts.color ?? '#ffffff';
   const material = new ShaderMaterial({
-    vertexShader: WORN_VERTEX,
     fragmentShader: WORN_FRAGMENT,
-    uniforms: makeWornUniforms(color, opts),
-    side: DoubleSide,
     lights: false,
+    side: DoubleSide,
+    uniforms: makeWornUniforms(color, opts),
+    vertexShader: WORN_VERTEX,
   }) as WornPlasticShaderMaterial;
   material.extensions.derivatives = true;
   return material;

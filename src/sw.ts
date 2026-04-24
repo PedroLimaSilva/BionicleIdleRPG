@@ -152,12 +152,12 @@ self.addEventListener('message', (event) => {
   if (type === 'SKIP_WAITING') {
     self.skipWaiting();
   } else if (type === 'SCHEDULE_QUEST_NOTIFICATION') {
-    const { questId, questName, endsAtMs } = event.data as {
+    const { endsAtMs, questId, questName } = event.data as {
       questId: string;
       questName: string;
       endsAtMs: number;
     };
-    const quest: ScheduledQuest = { questId, questName, endsAtMs };
+    const quest: ScheduledQuest = { endsAtMs, questId, questName };
     event.waitUntil(idbPut(quest).then(() => scheduleTimer(quest)));
   } else if (type === 'CANCEL_QUEST_NOTIFICATION') {
     const { questId } = event.data as { questId: string };
@@ -190,7 +190,7 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+    self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then((windowClients) => {
       for (const client of windowClients) {
         if ('focus' in client) return client.focus();
       }

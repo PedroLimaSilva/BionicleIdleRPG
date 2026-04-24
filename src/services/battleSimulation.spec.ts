@@ -32,11 +32,11 @@ function setAbilities(team: Combatant[], ids: string[], use: boolean): Combatant
 /** Add full immunity (DMG_MITIGATOR multiplier 0) for given rounds. Ensures no combatants die. */
 function addImmunityBuff(team: Combatant[], rounds: number): Combatant[] {
   const eff = {
-    type: 'DMG_MITIGATOR' as const,
-    multiplier: 0,
     durationRemaining: rounds,
     durationUnit: 'round' as const,
+    multiplier: 0,
     sourceId: 'test-immunity',
+    type: 'DMG_MITIGATOR' as const,
   };
   return team.map((t) => ({
     ...t,
@@ -68,7 +68,7 @@ class BattleSimulator {
     let team = cloneCombatants(this.team);
     let enemies = cloneCombatants(this.enemies);
 
-    const stateRef = { team, enemies };
+    const stateRef = { enemies, team };
     const setTeamWithRef = (t: Combatant[]) => {
       team = t;
       stateRef.team = t;
@@ -78,8 +78,8 @@ class BattleSimulator {
       stateRef.enemies = e;
     };
     const getLatestState = () => ({
-      team: stateRef.team,
       enemies: stateRef.enemies,
+      team: stateRef.team,
     });
 
     const queue: (() => Promise<void>)[] = [];
@@ -142,7 +142,7 @@ class BattleSimulator {
 
 /** Create team from recruited character data (like confirmTeam) */
 function createTeamFromRecruited(data: RecruitedCharacterData[]): Combatant[] {
-  return data.map(({ id, exp, maskOverride }) =>
+  return data.map(({ exp, id, maskOverride }) =>
     generateCombatantStats(id, id, getLevelFromExp(exp), maskOverride)
   );
 }
@@ -174,9 +174,9 @@ describe('Battle Simulation', () => {
         waves: [[{ id: 'tahnok', lvl: 1 }]],
       };
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 2000 },
-        { id: 'Toa_Gali', exp: 2000 },
-        { id: 'Toa_Onua', exp: 2000 },
+        { exp: 2000, id: 'Toa_Tahu' },
+        { exp: 2000, id: 'Toa_Gali' },
+        { exp: 2000, id: 'Toa_Onua' },
       ]);
 
       const sim = new BattleSimulator(team, customEncounter);
@@ -199,7 +199,7 @@ describe('Battle Simulation', () => {
   describe('mask power lifecycle between rounds', () => {
     test('Hau (1 round duration) is inactive after round ends', async () => {
       // Tahu has Hau - full immunity for 1 round
-      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0 }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       // Single weak enemy
       const customEncounter: EnemyEncounter = {
@@ -232,7 +232,7 @@ describe('Battle Simulation', () => {
 
     test('Kakama (1 round duration) is inactive after round ends', async () => {
       // Pohatu has Kakama - attacks twice for 1 round
-      const team = createTeamFromRecruited([{ id: 'Toa_Pohatu', exp: 0 }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Pohatu' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -251,7 +251,7 @@ describe('Battle Simulation', () => {
 
     test('Pakari (1 attack duration) is inactive after first attack', async () => {
       // Onua has Pakari - 3x damage for 1 attack
-      const team = createTeamFromRecruited([{ id: 'Toa_Onua', exp: 0 }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Onua' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -269,7 +269,7 @@ describe('Battle Simulation', () => {
     });
 
     test('Kaukau (3 turn duration) heals for 3 turns then expires', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Gali', exp: 0 }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Gali' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -289,7 +289,7 @@ describe('Battle Simulation', () => {
     });
 
     test('Akaku marks target; allies deal +50% damage for 2 turns', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Kopaka', exp: 0 }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Kopaka' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -313,7 +313,7 @@ describe('Battle Simulation', () => {
     });
 
     test('Miru (2 hit duration) provides mitigation for first 2 hits', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Lewa', exp: 0 }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Lewa' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -334,7 +334,7 @@ describe('Battle Simulation', () => {
     });
 
     test('Mahiki (1 hit duration) provides mitigation for 1 hit then expires', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Lewa', exp: 0, maskOverride: Mask.Mahiki }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Lewa', maskOverride: Mask.Mahiki }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -359,8 +359,8 @@ describe('Battle Simulation', () => {
       // With 1 Toa vs 1 enemy, if Toa has Huna active, enemy has no valid target (fallback to all).
       // Simpler: team of 2 (Tahu, Lewa). Give Lewa Huna. Enemy will prefer to hit Tahu when Lewa untargetable.
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 0 },
-        { id: 'Toa_Lewa', exp: 0, maskOverride: Mask.Huna },
+        { exp: 0, id: 'Toa_Tahu' },
+        { exp: 0, id: 'Toa_Lewa', maskOverride: Mask.Huna },
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -380,7 +380,7 @@ describe('Battle Simulation', () => {
     });
 
     test('Komau CONFUSION makes enemy attack their own team', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0, maskOverride: Mask.Komau }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu', maskOverride: Mask.Komau }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -412,7 +412,7 @@ describe('Battle Simulation', () => {
     });
 
     test('Komau CONFUSION: confused enemy attacks itself when alone', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0, maskOverride: Mask.Komau }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu', maskOverride: Mask.Komau }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -433,7 +433,7 @@ describe('Battle Simulation', () => {
     test('Komau mask power deactivates when confused enemy dies', async () => {
       // High-level Tahu kills enemy in one hit; Komau should deactivate when target dies
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 50000, maskOverride: Mask.Komau },
+        { exp: 50000, id: 'Toa_Tahu', maskOverride: Mask.Komau },
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -458,7 +458,7 @@ describe('Battle Simulation', () => {
     });
 
     test('Komau CONFUSION lasts exactly 3 turns (no re-application)', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0, maskOverride: Mask.Komau }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu', maskOverride: Mask.Komau }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -497,7 +497,7 @@ describe('Battle Simulation', () => {
 
     test('Hau Nuva Infected confuses Tahu Nuva and stops him attacking enemies', async () => {
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu_Nuva', exp: 0, maskOverride: Mask.HauNuvaInfected },
+        { exp: 0, id: 'Toa_Tahu_Nuva', maskOverride: Mask.HauNuvaInfected },
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -517,7 +517,7 @@ describe('Battle Simulation', () => {
     });
 
     test('Kakama grants Pohatu two attacks in one round', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Pohatu', exp: 0 }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Pohatu' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -537,7 +537,7 @@ describe('Battle Simulation', () => {
     });
 
     test('wave advance decrements wave-based mask power counters', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 2000 }]);
+      const team = createTeamFromRecruited([{ exp: 2000, id: 'Toa_Tahu' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -568,8 +568,8 @@ describe('Battle Simulation', () => {
 
     test('multi-round: 1 round wave 1 then wave 2 - Hau only (no Kakama)', async () => {
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 2000 },
-        { id: 'Toa_Pohatu', exp: 2000 },
+        { exp: 2000, id: 'Toa_Tahu' },
+        { exp: 2000, id: 'Toa_Pohatu' },
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -589,8 +589,8 @@ describe('Battle Simulation', () => {
 
     test('multi-round: 1 round wave 1 then wave 2 - both Hau and Kakama', async () => {
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 2000 },
-        { id: 'Toa_Pohatu', exp: 2000 },
+        { exp: 2000, id: 'Toa_Tahu' },
+        { exp: 2000, id: 'Toa_Pohatu' },
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -611,17 +611,17 @@ describe('Battle Simulation', () => {
     test('multi-round battle with mask power toggling (empty wave 1)', async () => {
       // Empty wave 1: advance immediately, then wave 2 round with 2 Toa + Hau
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 2000 },
-        { id: 'Toa_Pohatu', exp: 2000 },
+        { exp: 2000, id: 'Toa_Tahu' },
+        { exp: 2000, id: 'Toa_Pohatu' },
       ]);
       const customEncounter: EnemyEncounter = {
-        id: 'test',
-        name: 'Test',
-        headliner: 'tahnok',
-        difficulty: 1,
         description: 'Test',
-        waves: [[], [{ id: 'tahnok', lvl: 1 }]],
+        difficulty: 1,
+        headliner: 'tahnok',
+        id: 'test',
         loot: [],
+        name: 'Test',
+        waves: [[], [{ id: 'tahnok', lvl: 1 }]],
       };
       const sim = new BattleSimulator(team, customEncounter);
       expect(sim.enemies.length).toBe(0);
@@ -635,8 +635,8 @@ describe('Battle Simulation', () => {
 
     test('multi-round battle with mask power toggling between rounds', async () => {
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 2000 },
-        { id: 'Toa_Pohatu', exp: 2000 },
+        { exp: 2000, id: 'Toa_Tahu' },
+        { exp: 2000, id: 'Toa_Pohatu' },
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -672,8 +672,8 @@ describe('Battle Simulation', () => {
 
     test('Hau expires correctly in wave 2 with 2 Toa (starts directly in wave 2)', async () => {
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 2000 },
-        { id: 'Toa_Pohatu', exp: 2000 },
+        { exp: 2000, id: 'Toa_Tahu' },
+        { exp: 2000, id: 'Toa_Pohatu' },
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -688,7 +688,7 @@ describe('Battle Simulation', () => {
     });
 
     test('Hau expires correctly in wave 2 with single Toa (isolated repro)', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 2000 }]);
+      const team = createTeamFromRecruited([{ exp: 2000, id: 'Toa_Tahu' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -709,8 +709,8 @@ describe('Battle Simulation', () => {
 
     test('auto-progression runs multiple rounds when no mask powers are ready', async () => {
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 0 },
-        { id: 'Toa_Onua', exp: 0 },
+        { exp: 0, id: 'Toa_Tahu' },
+        { exp: 0, id: 'Toa_Onua' },
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -741,7 +741,7 @@ describe('Battle Simulation', () => {
     test('auto-progression stops when a mask power becomes ready', async () => {
       // High-level Onua so he can survive several rounds against a level 10 enemy
       const team = createTeamFromRecruited([
-        { id: 'Toa_Onua', exp: 5000 }, // Pakari: 2 turn cooldown
+        { exp: 5000, id: 'Toa_Onua' }, // Pakari: 2 turn cooldown
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       // Moderate enemy: survives a few rounds but doesn't one-shot Onua
@@ -770,7 +770,7 @@ describe('Battle Simulation', () => {
     });
 
     test('auto-progression stops immediately when mask powers are already ready', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0 }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
         ...encounter,
@@ -791,7 +791,7 @@ describe('Battle Simulation', () => {
     });
 
     test('auto-progression stops on team defeat', async () => {
-      const team = createTeamFromRecruited([{ id: 'Toa_Tahu', exp: 0 }]);
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu' }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       // Overwhelmingly strong enemy
       const customEncounter: EnemyEncounter = {
@@ -813,8 +813,8 @@ describe('Battle Simulation', () => {
 
     test('auto-progression stops on enemy defeat', async () => {
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 5000 },
-        { id: 'Toa_Onua', exp: 5000 },
+        { exp: 5000, id: 'Toa_Tahu' },
+        { exp: 5000, id: 'Toa_Onua' },
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -834,8 +834,8 @@ describe('Battle Simulation', () => {
 
     test('no mask power bleeds from round N to round N+1 when duration expired', async () => {
       const team = createTeamFromRecruited([
-        { id: 'Toa_Tahu', exp: 0 },
-        { id: 'Toa_Pohatu', exp: 0 },
+        { exp: 0, id: 'Toa_Tahu' },
+        { exp: 0, id: 'Toa_Pohatu' },
       ]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
       const customEncounter: EnemyEncounter = {
@@ -850,9 +850,9 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       const afterRound1 = sim.team.map((t) => ({
-        id: t.id,
         active: t.maskPower?.active,
         duration: t.maskPower?.effect.duration,
+        id: t.id,
       }));
       expect(afterRound1.every((a) => a.active === false)).toBe(true);
 
@@ -861,8 +861,8 @@ describe('Battle Simulation', () => {
       await sim.runRound();
 
       const afterRound2 = sim.team.map((t) => ({
-        id: t.id,
         active: t.maskPower?.active,
+        id: t.id,
       }));
       expect(afterRound2.every((a) => a.active === false)).toBe(true);
     });
@@ -871,9 +871,9 @@ describe('Battle Simulation', () => {
       // Kaukau Nuva: 2-turn HEAL buff on team. Immunity buff ensures no combatants die.
       const team = addImmunityBuff(
         createTeamFromRecruited([
-          { id: 'Toa_Gali', exp: 0, maskOverride: Mask.KaukauNuva },
-          { id: 'Toa_Tahu', exp: 0 },
-          { id: 'Toa_Onua', exp: 0 },
+          { exp: 0, id: 'Toa_Gali', maskOverride: Mask.KaukauNuva },
+          { exp: 0, id: 'Toa_Tahu' },
+          { exp: 0, id: 'Toa_Onua' },
         ]),
         2
       );

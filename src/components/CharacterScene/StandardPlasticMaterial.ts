@@ -67,7 +67,7 @@ export function getStandardPlasticMaterial(
     saturation !== 1
       ? (() => {
           const c = baseColor.clone();
-          const hsl = { h: 0, s: 0, l: 0 };
+          const hsl = { h: 0, l: 0, s: 0 };
           c.getHSL(hsl);
           hsl.s = Math.min(1, hsl.s * saturation);
           c.setHSL(hsl.h, hsl.s, hsl.l);
@@ -77,18 +77,18 @@ export function getStandardPlasticMaterial(
 
   const key = matColor.getStyle();
   const opts = {
-    roughness: options.roughness ?? DEFAULT_ROUGHNESS,
-    metalness: options.metalness ?? DEFAULT_METALNESS,
-    envMapIntensity: options.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
     ambientOcclusionStrength: options.ambientOcclusionStrength ?? DEFAULT_AO_STRENGTH,
+    envMapIntensity: options.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
+    metalness: options.metalness ?? DEFAULT_METALNESS,
+    roughness: options.roughness ?? DEFAULT_ROUGHNESS,
   };
   const cacheKey = `${key}_${opts.roughness}_${opts.metalness}_${opts.envMapIntensity}_${opts.ambientOcclusionStrength}`;
   if (!materialCache.has(cacheKey)) {
     const mat = new MeshStandardMaterial({
       color: matColor,
-      roughness: opts.roughness,
-      metalness: opts.metalness,
       envMapIntensity: opts.envMapIntensity,
+      metalness: opts.metalness,
+      roughness: opts.roughness,
       side: DoubleSide,
     });
     applyFakeAO(mat, opts.ambientOcclusionStrength);

@@ -1,12 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import {
-  Color,
-  Material,
-  Mesh,
-  MeshPhysicalMaterial,
-  MeshStandardMaterial,
-  Object3D,
-} from 'three';
+import { Color, Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../types/Matoran';
 import type {
@@ -171,12 +164,12 @@ export type UseKitAttachmentsParams = {
  * weathered shared cache is reused across instances with the same spec.
  */
 export function useKitAttachments({
-  characterNodes,
-  kitUrl,
   attachments,
+  characterNodes,
   colors,
-  weathered,
+  kitUrl,
   onAttached,
+  weathered,
 }: UseKitAttachmentsParams): void {
   const gltf = useGLTF(kitUrl);
   const kitNodes = useMemo(() => buildKitNodeIndex(gltf.scene), [gltf]);
@@ -185,6 +178,8 @@ export function useKitAttachments({
 
   useEffect(() => {
     if (!characterNodes) return;
+
+    console.log('characterNodes', characterNodes);
 
     const clones: Object3D[] = [];
 

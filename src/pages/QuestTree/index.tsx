@@ -9,7 +9,7 @@ export const QuestTreePage = () => {
   const mermaidRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { completedQuests, activeQuests } = useGame();
+  const { activeQuests, completedQuests } = useGame();
   const initializedRef = useRef(false);
 
   // Calculate quest states
@@ -42,7 +42,7 @@ export const QuestTreePage = () => {
       }
     });
 
-    return { completed, active, available, locked };
+    return { active, available, completed, locked };
   }, [completedQuests, activeQuests]);
 
   useEffect(() => {
@@ -51,24 +51,24 @@ export const QuestTreePage = () => {
     // Initialize mermaid only once
     if (!initializedRef.current) {
       mermaid.initialize({
+        flowchart: {
+          curve: 'basis',
+          htmlLabels: true,
+          useMaxWidth: true,
+        },
         startOnLoad: false,
         theme: 'dark',
         themeVariables: {
+          background: '#1a202c',
+          lineColor: '#cbd5e0',
+          mainBkgColor: '#2d3748',
+          primaryBorderColor: '#718096',
           primaryColor: '#4a5568',
           primaryTextColor: '#e2e8f0',
-          primaryBorderColor: '#718096',
-          lineColor: '#cbd5e0',
           secondaryColor: '#2d3748',
-          tertiaryColor: '#1a202c',
-          background: '#1a202c',
-          mainBkgColor: '#2d3748',
           secondBkgColor: '#4a5568',
+          tertiaryColor: '#1a202c',
           textColor: '#e2e8f0',
-        },
-        flowchart: {
-          useMaxWidth: true,
-          htmlLabels: true,
-          curve: 'basis',
         },
       });
       initializedRef.current = true;

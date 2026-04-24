@@ -1,10 +1,10 @@
 import './index.scss';
 
 export const Tabs = ({
-  tabs,
-  classNames,
   activeTab,
+  classNames,
   onTabChange,
+  tabs,
 }: {
   tabs: string[];
   classNames?: string;

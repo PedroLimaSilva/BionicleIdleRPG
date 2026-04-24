@@ -41,13 +41,13 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     <SettingsContext.Provider
       value={{
         debugMode,
-        setDebugMode: setDebugModeState,
         performanceMonitorEnabled,
+        setDebugMode: setDebugModeState,
         setPerformanceMonitorEnabled: setPerformanceMonitorEnabledState,
-        shadowsEnabled,
         setShadowsEnabled: setShadowsEnabledState,
-        telemetryEnabled,
         setTelemetryEnabled,
+        shadowsEnabled,
+        telemetryEnabled,
       }}
     >
       {children}

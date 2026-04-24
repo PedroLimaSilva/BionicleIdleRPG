@@ -11,17 +11,17 @@ import { GALI_MATA_KIT_2001_ATTACHMENTS } from './galiMataKitAttach';
 import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
 const GALI_WEATHERED: WeatheredMetalOptions = {
-  roughness: 0.55,
-  metalness: 0.05,
-  grimeDarken: 0.4,
-  grimeRoughness: 0.2,
-  grimeMetalnessReduce: 0.5,
-  largeScale: 3.5,
-  fineScale: 18.0,
   cavityStrength: 1,
   edgeColor: '#ffffff',
-  edgeStrength: 0.15,
   edgeCurvatureScale: 2,
+  edgeStrength: 0.15,
+  fineScale: 18.0,
+  grimeDarken: 0.4,
+  grimeMetalnessReduce: 0.5,
+  grimeRoughness: 0.2,
+  largeScale: 3.5,
+  metalness: 0.05,
+  roughness: 0.55,
 };
 
 export const GaliMataModel = forwardRef<
@@ -33,10 +33,10 @@ export const GaliMataModel = forwardRef<
   }
 >(({ matoran, onKitMeshesAttached }, ref) => {
   const group = useRef<Group>(null);
-  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/gali.glb');
+  const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/gali.glb');
   const { playAnimation } = useCombatAnimations(animations, group, {
-    modelId: matoran.id,
     attackResolveAtFraction: 0.6,
+    modelId: matoran.id,
   });
 
   useImperativeHandle(ref, () => ({ playAnimation }));
@@ -47,12 +47,12 @@ export const GaliMataModel = forwardRef<
   );
 
   useKitAttachments({
-    characterNodes: nodes as Record<string, Object3D | undefined>,
-    kitUrl: KIT_2001_GLB_PATH,
     attachments: GALI_MATA_KIT_2001_ATTACHMENTS,
+    characterNodes: nodes as Record<string, Object3D | undefined>,
     colors: matoran.colors,
-    weathered: GALI_WEATHERED,
+    kitUrl: KIT_2001_GLB_PATH,
     onAttached,
+    weathered: GALI_WEATHERED,
   });
 
   const maskTarget = matoran.maskOverride || matoran.mask;

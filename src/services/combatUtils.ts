@@ -60,85 +60,85 @@ declare global {
  * R  | 🌕 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.5 | 1.0 |
  */
 export const ELEMENT_EFFECTIVENESS: Record<ElementTribe, Record<ElementTribe, number>> = {
-  [ElementTribe.Fire]: {
-    [ElementTribe.Fire]: 1.0,
-    [ElementTribe.Water]: 0.5,
-    [ElementTribe.Ice]: 1.5,
-    [ElementTribe.Stone]: 1.0,
-    [ElementTribe.Earth]: 0.5,
-    [ElementTribe.Air]: 1.5,
-    [ElementTribe.Shadow]: 1.0,
-    [ElementTribe.Light]: 1.0,
-  },
-  [ElementTribe.Water]: {
-    [ElementTribe.Fire]: 1.5,
-    [ElementTribe.Water]: 1.0,
-    [ElementTribe.Ice]: 0.5,
-    [ElementTribe.Stone]: 1.5,
-    [ElementTribe.Earth]: 0.5,
+  [ElementTribe.Air]: {
     [ElementTribe.Air]: 1.0,
-    [ElementTribe.Shadow]: 1.0,
-    [ElementTribe.Light]: 1.0,
-  },
-  [ElementTribe.Ice]: {
-    [ElementTribe.Fire]: 0.5,
-    [ElementTribe.Water]: 1.5,
-    [ElementTribe.Ice]: 1.0,
-    [ElementTribe.Stone]: 1.5,
-    [ElementTribe.Earth]: 1.0,
-    [ElementTribe.Air]: 0.5,
-    [ElementTribe.Shadow]: 1.0,
-    [ElementTribe.Light]: 1.0,
-  },
-  [ElementTribe.Stone]: {
-    [ElementTribe.Fire]: 1.0,
-    [ElementTribe.Water]: 0.5,
-    [ElementTribe.Ice]: 0.5,
-    [ElementTribe.Stone]: 1.0,
     [ElementTribe.Earth]: 1.5,
-    [ElementTribe.Air]: 1.5,
-    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Fire]: 0.5,
+    [ElementTribe.Ice]: 1.5,
     [ElementTribe.Light]: 1.0,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Stone]: 0.5,
+    [ElementTribe.Water]: 1.0,
   },
   [ElementTribe.Earth]: {
-    [ElementTribe.Fire]: 1.5,
-    [ElementTribe.Water]: 1.5,
-    [ElementTribe.Ice]: 1.0,
-    [ElementTribe.Stone]: 0.5,
-    [ElementTribe.Earth]: 1.0,
     [ElementTribe.Air]: 0.5,
-    [ElementTribe.Shadow]: 1.0,
-    [ElementTribe.Light]: 1.0,
-  },
-  [ElementTribe.Air]: {
-    [ElementTribe.Fire]: 0.5,
-    [ElementTribe.Water]: 1.0,
-    [ElementTribe.Ice]: 1.5,
-    [ElementTribe.Stone]: 0.5,
-    [ElementTribe.Earth]: 1.5,
-    [ElementTribe.Air]: 1.0,
-    [ElementTribe.Shadow]: 1.0,
-    [ElementTribe.Light]: 1.0,
-  },
-  [ElementTribe.Shadow]: {
-    [ElementTribe.Fire]: 1.0,
-    [ElementTribe.Water]: 1.0,
-    [ElementTribe.Ice]: 1.0,
-    [ElementTribe.Stone]: 1.0,
     [ElementTribe.Earth]: 1.0,
-    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Fire]: 1.5,
+    [ElementTribe.Ice]: 1.0,
+    [ElementTribe.Light]: 1.0,
     [ElementTribe.Shadow]: 1.0,
-    [ElementTribe.Light]: 1.5,
+    [ElementTribe.Stone]: 0.5,
+    [ElementTribe.Water]: 1.5,
+  },
+  [ElementTribe.Fire]: {
+    [ElementTribe.Air]: 1.5,
+    [ElementTribe.Earth]: 0.5,
+    [ElementTribe.Fire]: 1.0,
+    [ElementTribe.Ice]: 1.5,
+    [ElementTribe.Light]: 1.0,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Water]: 0.5,
+  },
+  [ElementTribe.Ice]: {
+    [ElementTribe.Air]: 0.5,
+    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Fire]: 0.5,
+    [ElementTribe.Ice]: 1.0,
+    [ElementTribe.Light]: 1.0,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Stone]: 1.5,
+    [ElementTribe.Water]: 1.5,
   },
   [ElementTribe.Light]: {
-    [ElementTribe.Fire]: 1.0,
-    [ElementTribe.Water]: 1.0,
-    [ElementTribe.Ice]: 1.0,
-    [ElementTribe.Stone]: 1.0,
-    [ElementTribe.Earth]: 1.0,
     [ElementTribe.Air]: 1.0,
-    [ElementTribe.Shadow]: 1.5,
+    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Fire]: 1.0,
+    [ElementTribe.Ice]: 1.0,
     [ElementTribe.Light]: 1.0,
+    [ElementTribe.Shadow]: 1.5,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Water]: 1.0,
+  },
+  [ElementTribe.Shadow]: {
+    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Earth]: 1.0,
+    [ElementTribe.Fire]: 1.0,
+    [ElementTribe.Ice]: 1.0,
+    [ElementTribe.Light]: 1.5,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Water]: 1.0,
+  },
+  [ElementTribe.Stone]: {
+    [ElementTribe.Air]: 1.5,
+    [ElementTribe.Earth]: 1.5,
+    [ElementTribe.Fire]: 1.0,
+    [ElementTribe.Ice]: 0.5,
+    [ElementTribe.Light]: 1.0,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Stone]: 1.0,
+    [ElementTribe.Water]: 0.5,
+  },
+  [ElementTribe.Water]: {
+    [ElementTribe.Air]: 1.0,
+    [ElementTribe.Earth]: 0.5,
+    [ElementTribe.Fire]: 1.5,
+    [ElementTribe.Ice]: 0.5,
+    [ElementTribe.Light]: 1.0,
+    [ElementTribe.Shadow]: 1.0,
+    [ElementTribe.Stone]: 1.5,
+    [ElementTribe.Water]: 1.0,
   },
 };
 
@@ -202,68 +202,68 @@ function createEffectFromMaskEffect(
       const unit =
         dur.unit === 'turn' || dur.unit === 'round' || dur.unit === 'hit' ? dur.unit : 'round';
       return {
-        type: 'DMG_MITIGATOR',
-        multiplier: effect.multiplier ?? 1,
         durationRemaining: amount,
         durationUnit: unit,
+        multiplier: effect.multiplier ?? 1,
         sourceId,
+        type: 'DMG_MITIGATOR',
       };
     }
     case 'HEAL': {
       const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'turn';
       return {
-        type: 'HEAL',
-        multiplier: effect.multiplier ?? 0,
         durationRemaining: amount,
         durationUnit: unit,
+        multiplier: effect.multiplier ?? 0,
         sourceId,
+        type: 'HEAL',
       };
     }
     case 'ATK_MULT': {
       const unit = dur.unit === 'attack' || dur.unit === 'round' ? dur.unit : 'round';
       return {
-        type: 'ATK_MULT',
-        multiplier: effect.multiplier ?? 1,
         durationRemaining: amount,
         durationUnit: unit,
+        multiplier: effect.multiplier ?? 1,
         sourceId,
+        type: 'ATK_MULT',
       };
     }
     case 'AGGRO': {
       const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'turn';
       return {
-        type: 'AGGRO',
-        multiplier: effect.multiplier ?? 0,
         durationRemaining: amount,
         durationUnit: unit,
+        multiplier: effect.multiplier ?? 0,
         sourceId,
+        type: 'AGGRO',
       };
     }
     case 'SPEED':
       return {
-        type: 'SPEED',
-        multiplier: effect.multiplier ?? 2,
         durationRemaining: amount,
         durationUnit: 'round',
+        multiplier: effect.multiplier ?? 2,
         sourceId,
+        type: 'SPEED',
       };
     case 'DEFENSE': {
       const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'round';
       return {
-        type: 'DEFENSE',
-        multiplier: effect.multiplier ?? 1,
         durationRemaining: amount,
         durationUnit: unit,
+        multiplier: effect.multiplier ?? 1,
         sourceId,
+        type: 'DEFENSE',
       };
     }
     case 'CONFUSION': {
       const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'turn';
       return {
-        type: 'CONFUSION',
         durationRemaining: amount,
         durationUnit: unit,
         sourceId,
+        type: 'CONFUSION',
       };
     }
     default:
@@ -285,21 +285,21 @@ function applyOnAttackEffectToTarget(
 ): { target: Combatant; attacker: Combatant } {
   const effect = attacker.maskPower?.effect;
   if (!attacker.maskPower?.active || attacker.maskPower.target !== 'enemy' || !effect) {
-    return { target, attacker };
+    return { attacker, target };
   }
 
   // Only DEFENSE and CONFUSION are applied on attack to enemy targets
   if (effect.type !== 'DEFENSE' && effect.type !== 'CONFUSION') {
-    return { target, attacker };
+    return { attacker, target };
   }
 
   const eff = createEffectFromMaskEffect(effect, attacker.id);
   if (!eff) {
-    return { target, attacker };
+    return { attacker, target };
   }
 
   const effects = [...(target.effects ?? []), eff];
-  return { target: { ...target, effects }, attacker };
+  return { attacker, target: { ...target, effects } };
 }
 
 /** Decrements effect durations for a combatant. Handles all effect types (buffs and debuffs). */
@@ -430,7 +430,7 @@ function deactivateMaskPowersWithDeadTargets(
     }
   }
 
-  return { team: nextTeam, enemies };
+  return { enemies, team: nextTeam };
 }
 
 // exported only for tests
@@ -555,7 +555,7 @@ function triggerMaskPowers(
     setEnemies(currentEnemies);
     setTeam(currentTeam);
   });
-  return { currentTeam, currentEnemies, turnOrder: newTurnOrder };
+  return { currentEnemies, currentTeam, turnOrder: newTurnOrder };
 }
 
 export function queueCombatRound(
@@ -653,10 +653,10 @@ export function queueCombatRound(
       const cameraEmphasisStarted = !!actorRef?.playAnimation;
       if (cameraEmphasisStarted) {
         await emitBattleCameraEmphasis({
-          phase: 'start',
           attackerId: self.id,
-          targetId: target.id,
           attackerSide: isTeam ? 'team' : 'enemy',
+          phase: 'start',
+          targetId: target.id,
         });
       }
 
@@ -671,13 +671,13 @@ export function queueCombatRound(
         const damageDealt = target.hp - updatedTarget.hp;
         if (damageDealt > 0) {
           emitBattleHitFeedback({
-            isCritical,
+            attackerElement: self.element,
             damageDealt,
-            targetMaxHp: target.maxHp,
+            isCritical,
             reactionAnimation: willBeDefeated ? 'Defeat' : 'Hit',
             targetId: target.id,
+            targetMaxHp: target.maxHp,
             targetModel: target.model,
-            attackerElement: self.element,
           });
         }
 
@@ -738,13 +738,9 @@ export function queueCombatRound(
         // run on the attacker's mixer and cancel Attack.
         if (target.id !== self.id && targetRef?.playAnimation && targetRef !== actorRef) {
           if (willBeDefeated) {
-            pendingAnimations.push(
-              targetRef.playAnimation('Defeat', { faceTargetId: self.id })
-            );
+            pendingAnimations.push(targetRef.playAnimation('Defeat', { faceTargetId: self.id }));
           } else {
-            pendingAnimations.push(
-              targetRef.playAnimation('Hit', { faceTargetId: self.id })
-            );
+            pendingAnimations.push(targetRef.playAnimation('Hit', { faceTargetId: self.id }));
           }
         }
 
@@ -902,16 +898,16 @@ export function generateCombatantStats(
 
   return {
     id,
-    name: template.name,
     model: template.model,
+    name: template.name,
     ...(nuiRamaVariant && { nuiRamaVariant }),
-    lvl,
-    maskPower,
-    element: template.element,
-    maxHp,
-    hp: maxHp,
     attack,
     defense,
+    element: template.element,
+    hp: maxHp,
+    lvl,
+    maskPower,
+    maxHp,
     speed,
     strategy: template.strategy || BattleStrategy.Random,
     willUseAbility: false,

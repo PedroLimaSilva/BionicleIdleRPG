@@ -98,7 +98,7 @@ function getFacingRotation(
 }
 
 export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelProps>(
-  ({ combatant, position, side, maskPowerActive = false }, ref) => {
+  ({ combatant, maskPowerActive = false, position, side }, ref) => {
     const modelGroup = useRef<Group>(null);
     const childRef = useRef<CombatantModelHandle | null>(null);
 
@@ -111,7 +111,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
       active: boolean;
       startMs: number;
       onDone: (() => void) | null;
-    }>({ active: false, startMs: 0, onDone: null });
+    }>({ active: false, onDone: null, startMs: 0 });
     const defeatFadeMaterialsRef = useRef<Material[]>([]);
 
     useFrame(() => {
@@ -214,8 +214,8 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
             });
             defeatSinkRef.current = {
               active: true,
-              startMs: performance.now(),
               onDone: resolve,
+              startMs: performance.now(),
             };
           });
 

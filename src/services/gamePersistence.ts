@@ -100,8 +100,8 @@ export function loadGameState() {
 
         return {
           ...typed,
-          recruitedCharacters,
           protodermis: clamp(typed.protodermis + currency, 0, typed.protodermisCap),
+          recruitedCharacters,
         };
       }
     } catch (e) {

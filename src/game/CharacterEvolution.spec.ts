@@ -19,12 +19,12 @@ const expFor100 = expForLevel(100);
 describe('CharacterEvolution', () => {
   describe('getAvailableEvolution - Toa Nuva', () => {
     test('returns null when quest is not completed', () => {
-      const char: RecruitedCharacterData = { id: 'Toa_Tahu', exp: 100000 };
+      const char: RecruitedCharacterData = { exp: 100000, id: 'Toa_Tahu' };
       expect(getAvailableEvolution(char, [])).toBeNull();
     });
 
     test('returns evolution with correct cost for Toa Mata', () => {
-      const char: RecruitedCharacterData = { id: 'Toa_Tahu', exp: 100000 };
+      const char: RecruitedCharacterData = { exp: 100000, id: 'Toa_Tahu' };
       const result = getAvailableEvolution(char, ['bohrok_evolve_toa_nuva']);
       expect(result).not.toBeNull();
       expect(result!.evolvedId).toBe('Toa_Tahu_Nuva');
@@ -44,7 +44,7 @@ describe('CharacterEvolution', () => {
       ];
 
       toaMata.forEach((id, i) => {
-        const char: RecruitedCharacterData = { id, exp: 100000 };
+        const char: RecruitedCharacterData = { exp: 100000, id };
         const result = getAvailableEvolution(char, ['bohrok_evolve_toa_nuva']);
         expect(result?.evolvedId).toBe(expectedNuva[i]);
       });
@@ -53,7 +53,7 @@ describe('CharacterEvolution', () => {
 
   describe('getAvailableEvolution - Naming Day', () => {
     test('returns evolution with correct cost for Matoran ID change', () => {
-      const char: RecruitedCharacterData = { id: 'Jala', exp: 100000 };
+      const char: RecruitedCharacterData = { exp: 100000, id: 'Jala' };
       const result = getAvailableEvolution(char, ['bohrok_kal_naming_day']);
       expect(result).not.toBeNull();
       expect(result!.evolvedId).toBe('Jaller');
@@ -62,7 +62,7 @@ describe('CharacterEvolution', () => {
     });
 
     test('returns stage override with correct cost for Matoran', () => {
-      const char: RecruitedCharacterData = { id: 'Kapura', exp: 100000 };
+      const char: RecruitedCharacterData = { exp: 100000, id: 'Kapura' };
       const result = getAvailableEvolution(char, ['bohrok_kal_naming_day']);
       expect(result).not.toBeNull();
       expect(result!.stageOverride).toBe(MatoranStage.Rebuilt);
@@ -72,27 +72,27 @@ describe('CharacterEvolution', () => {
 
     test('returns null for stage override when already applied', () => {
       const char: RecruitedCharacterData = {
-        id: 'Kapura',
         exp: 100000,
+        id: 'Kapura',
         stage: MatoranStage.Rebuilt,
       };
       expect(getAvailableEvolution(char, ['bohrok_kal_naming_day'])).toBeNull();
     });
 
     test('returns null for characters not in any evolution map', () => {
-      const char: RecruitedCharacterData = { id: 'Nuparu', exp: 100000 };
+      const char: RecruitedCharacterData = { exp: 100000, id: 'Nuparu' };
       expect(getAvailableEvolution(char, ['bohrok_evolve_toa_nuva'])).toBeNull();
     });
   });
 
   describe('getAvailableEvolution - Bohrok Kal', () => {
     test('returns null when naming day quest is not completed', () => {
-      const char: RecruitedCharacterData = { id: 'tahnok', exp: 100000 };
+      const char: RecruitedCharacterData = { exp: 100000, id: 'tahnok' };
       expect(getAvailableEvolution(char, [])).toBeNull();
     });
 
     test('returns evolution with correct cost and level for Bohrok', () => {
-      const char: RecruitedCharacterData = { id: 'tahnok', exp: 100000 };
+      const char: RecruitedCharacterData = { exp: 100000, id: 'tahnok' };
       const result = getAvailableEvolution(char, ['bohrok_kal_naming_day']);
       expect(result).not.toBeNull();
       expect(result!.evolvedId).toBe('tahnok_kal');
@@ -103,7 +103,7 @@ describe('CharacterEvolution', () => {
     test('returns evolution for all Bohrok types', () => {
       const types = ['tahnok', 'gahlok', 'lehvak', 'pahrak', 'nuhvok', 'kohrak'];
       types.forEach((id) => {
-        const char: RecruitedCharacterData = { id, exp: 100000 };
+        const char: RecruitedCharacterData = { exp: 100000, id };
         const result = getAvailableEvolution(char, ['bohrok_kal_naming_day']);
         expect(result?.evolvedId).toBe(`${id}_kal`);
         expect(result?.levelRequired).toBe(BOHROK_KAL_LEVEL_REQUIREMENT);
@@ -127,31 +127,31 @@ describe('CharacterEvolution', () => {
     };
 
     test('returns false below level 40 for standard evolution', () => {
-      const char: RecruitedCharacterData = { id: 'Toa_Tahu', exp: 0 };
+      const char: RecruitedCharacterData = { exp: 0, id: 'Toa_Tahu' };
       expect(meetsEvolutionLevel(char, evo40)).toBe(false);
     });
 
     test('returns true at level 40 for standard evolution', () => {
       expect(getLevelFromExp(expFor40)).toBe(EVOLUTION_LEVEL_REQUIREMENT);
-      const char: RecruitedCharacterData = { id: 'Toa_Tahu', exp: expFor40 };
+      const char: RecruitedCharacterData = { exp: expFor40, id: 'Toa_Tahu' };
       expect(meetsEvolutionLevel(char, evo40)).toBe(true);
     });
 
     test('returns false below level 100 for Bohrok Kal evolution', () => {
-      const char: RecruitedCharacterData = { id: 'tahnok', exp: expFor40 };
+      const char: RecruitedCharacterData = { exp: expFor40, id: 'tahnok' };
       expect(meetsEvolutionLevel(char, evo100)).toBe(false);
     });
 
     test('returns true at level 100 for Bohrok Kal evolution', () => {
       expect(getLevelFromExp(expFor100)).toBe(BOHROK_KAL_LEVEL_REQUIREMENT);
-      const char: RecruitedCharacterData = { id: 'tahnok', exp: expFor100 };
+      const char: RecruitedCharacterData = { exp: expFor100, id: 'tahnok' };
       expect(meetsEvolutionLevel(char, evo100)).toBe(true);
     });
   });
 
   describe('applyCharacterEvolution', () => {
     test('applies ID evolution', () => {
-      const char: RecruitedCharacterData = { id: 'Toa_Tahu', exp: 100000 };
+      const char: RecruitedCharacterData = { exp: 100000, id: 'Toa_Tahu' };
       const evolution: AvailableEvolution = {
         evolvedId: 'Toa_Tahu_Nuva',
         label: 'Evolve',
@@ -165,12 +165,12 @@ describe('CharacterEvolution', () => {
     });
 
     test('applies stage override', () => {
-      const char: RecruitedCharacterData = { id: 'Kapura', exp: 100000 };
+      const char: RecruitedCharacterData = { exp: 100000, id: 'Kapura' };
       const evolution: AvailableEvolution = {
-        stageOverride: MatoranStage.Rebuilt,
         label: 'Upgrade',
         levelRequired: 40,
         protodermisCost: 1000,
+        stageOverride: MatoranStage.Rebuilt,
       };
       const result = applyCharacterEvolution(char, evolution);
       expect(result.id).toBe('Kapura');
@@ -180,8 +180,8 @@ describe('CharacterEvolution', () => {
 
     test('clears maskOverride on ID evolution', () => {
       const char: RecruitedCharacterData = {
-        id: 'Toa_Tahu',
         exp: 100000,
+        id: 'Toa_Tahu',
         maskOverride: Mask.Akaku,
       };
       const evolution: AvailableEvolution = {
@@ -195,7 +195,7 @@ describe('CharacterEvolution', () => {
     });
 
     test('applies Bohrok Kal evolution', () => {
-      const char: RecruitedCharacterData = { id: 'tahnok', exp: expFor100 };
+      const char: RecruitedCharacterData = { exp: expFor100, id: 'tahnok' };
       const evolution: AvailableEvolution = {
         evolvedId: 'tahnok_kal',
         label: 'Evolve to Tahnok Kal',
@@ -208,7 +208,7 @@ describe('CharacterEvolution', () => {
     });
 
     test('preserves exp on evolution', () => {
-      const char: RecruitedCharacterData = { id: 'Jala', exp: 50000 };
+      const char: RecruitedCharacterData = { exp: 50000, id: 'Jala' };
       const evolution: AvailableEvolution = {
         evolvedId: 'Jaller',
         label: 'Evolve',

@@ -143,10 +143,10 @@ export function VisualNovelCutscene({ cutscene, onClose }: Props) {
 }
 
 function NarrationStepView({
-  text,
-  onAdvance,
-  isLast,
   advanceOrSkipRef,
+  isLast,
+  onAdvance,
+  text,
 }: {
   text: string;
   onAdvance: () => void;
@@ -187,10 +187,10 @@ function NarrationStepView({
 }
 
 function DialogueStepView({
-  step,
-  onAdvance,
-  isLast,
   advanceOrSkipRef,
+  isLast,
+  onAdvance,
+  step,
 }: {
   step: Extract<VisualNovelStep, { type: 'dialogue' }>;
   onAdvance: () => void;
@@ -228,8 +228,8 @@ function DialogueStepView({
           matoran={{
             ...speaker,
             exp: 0,
-            maskOverride: step.maskOverride,
             maskColorOverride: step.maskColorOverride,
+            maskOverride: step.maskOverride,
           }}
           styles="visual-novel-cutscene__portrait-avatar"
         />
@@ -263,7 +263,7 @@ function DialogueStepView({
   );
 }
 
-function BackgroundStepView({ onAdvance, isLast }: { onAdvance: () => void; isLast: boolean }) {
+function BackgroundStepView({ isLast, onAdvance }: { onAdvance: () => void; isLast: boolean }) {
   return (
     <div
       className="visual-novel-cutscene__content visual-novel-cutscene__content--background"
@@ -278,9 +278,9 @@ function BackgroundStepView({ onAdvance, isLast }: { onAdvance: () => void; isLa
 }
 
 function VideoStepView({
-  videoId,
-  onAdvance,
   isLast,
+  onAdvance,
+  videoId,
 }: {
   videoId: string;
   onAdvance: () => void;

@@ -9,13 +9,13 @@ const showTelemetryOption = !!getTelemetryUrl();
 export default function SettingsPage() {
   const {
     debugMode,
-    setDebugMode,
     performanceMonitorEnabled,
+    setDebugMode,
     setPerformanceMonitorEnabled,
-    shadowsEnabled,
     setShadowsEnabled,
-    telemetryEnabled,
     setTelemetryEnabled,
+    shadowsEnabled,
+    telemetryEnabled,
   } = useSettings();
 
   return (

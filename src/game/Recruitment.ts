@@ -85,7 +85,7 @@ export function getBuyableCharacters(
   for (const entry of RECRUITMENT_REGISTRY) {
     if (!completedSet.has(entry.unlockedByQuest)) continue;
     if (isCharacterRecruited(entry.id, recruitedCharacters)) continue;
-    result.push({ id: entry.id, cost: entry.cost });
+    result.push({ cost: entry.cost, id: entry.id });
   }
 
   return result;
@@ -96,7 +96,7 @@ export function getBuyableCharacters(
  */
 export function getCharactersUnlockedByQuest(questId: string): ListedCharacterData[] {
   return RECRUITMENT_REGISTRY.filter((e) => e.unlockedByQuest === questId).map((e) => ({
-    id: e.id,
     cost: e.cost,
+    id: e.id,
   }));
 }

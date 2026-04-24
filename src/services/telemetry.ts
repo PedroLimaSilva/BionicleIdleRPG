@@ -27,11 +27,11 @@ function getAppVersion(): string {
 
 export function buildPayload(state: PartialGameState): TelemetryPayload {
   return {
-    clientId: getTelemetryId(),
     appVersion: getAppVersion(),
+    clientId: getTelemetryId(),
+    gameState: state,
     gameStateVersion: state.version,
     timestamp: new Date().toISOString(),
-    gameState: state,
   };
 }
 
@@ -40,10 +40,10 @@ function sendBeacon(url: string, body: string): void {
     navigator.sendBeacon(url, new Blob([body], { type: 'text/plain' }));
   } else {
     fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
       body,
+      headers: { 'Content-Type': 'text/plain' },
       keepalive: true,
+      method: 'POST',
     }).catch(() => {});
   }
 }
@@ -90,12 +90,12 @@ export function sendErrorReport(error: TelemetryError): void {
 
     const gameState = loadGameStateFromStorage();
     const payload: TelemetryPayload = {
-      clientId: getTelemetryId(),
       appVersion: getAppVersion(),
+      clientId: getTelemetryId(),
+      error,
+      gameState: gameState ?? ({} as PartialGameState),
       gameStateVersion: gameState?.version ?? 0,
       timestamp: new Date().toISOString(),
-      gameState: gameState ?? ({} as PartialGameState),
-      error,
     };
 
     sendBeacon(url, JSON.stringify(payload));

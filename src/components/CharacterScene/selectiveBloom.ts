@@ -72,10 +72,7 @@ export function useCharacterBloomMeshes(
 }
 
 /** Collects all meshes with emissive material (emissiveIntensity > 0) for selective bloom. */
-export function useEmissiveMeshes(
-  rootRef: RefObject<Object3D | null>,
-  deps: DependencyList
-) {
+export function useEmissiveMeshes(rootRef: RefObject<Object3D | null>, deps: DependencyList) {
   const [meshes, setMeshes] = useState<Object3D[]>([]);
 
   useLayoutEffect(() => {

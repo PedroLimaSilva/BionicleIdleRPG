@@ -58,10 +58,10 @@ export async function scheduleQuestNotification(
   if (delayMs <= 0) return;
 
   const sentToSW = await postToServiceWorker({
-    type: 'SCHEDULE_QUEST_NOTIFICATION',
+    endsAtMs,
     questId,
     questName,
-    endsAtMs,
+    type: 'SCHEDULE_QUEST_NOTIFICATION',
   });
 
   if (sentToSW) return;
@@ -86,7 +86,7 @@ export function cancelQuestNotification(questId: string) {
     fallbackTimers.delete(questId);
   }
 
-  postToServiceWorker({ type: 'CANCEL_QUEST_NOTIFICATION', questId });
+  postToServiceWorker({ questId, type: 'CANCEL_QUEST_NOTIFICATION' });
 }
 
 export function cancelAllQuestNotifications() {

@@ -17,7 +17,7 @@ const enum TeamPosition {
 
 export const BattlePrep: React.FC = () => {
   const { battle, recruitedCharacters } = useGame();
-  const { currentEncounter, confirmTeam, retreat } = battle;
+  const { confirmTeam, currentEncounter, retreat } = battle;
 
   const [selectedTeam, setSelectedTeam] = useState<
     Record<TeamPosition, RecruitedCharacterData | undefined>

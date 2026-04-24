@@ -41,11 +41,11 @@ async function silverSilhouettePaddedPng(
 ): Promise<Buffer> {
   const innerDim = Math.max(1, Math.round(canvasSize * INNER_SCALE));
   const innerPng = await sharp(coloredRaster, {
-    raw: { width: RASTER_SIZE, height: RASTER_SIZE, channels: 4 },
+    raw: { channels: 4, height: RASTER_SIZE, width: RASTER_SIZE },
   })
     .resize(innerDim, innerDim, {
-      kernel: sharp.kernel.lanczos3,
       fit: 'fill',
+      kernel: sharp.kernel.lanczos3,
     })
     .png()
     .toBuffer();
@@ -55,10 +55,10 @@ async function silverSilhouettePaddedPng(
 
   return sharp({
     create: {
-      width: canvasSize,
-      height: canvasSize,
+      background: { alpha: 0, b: 0, g: 0, r: 0 },
       channels: 4,
-      background: { r: 0, g: 0, b: 0, alpha: 0 },
+      height: canvasSize,
+      width: canvasSize,
     },
   })
     .composite([{ input: innerPng, left: ox, top: oy }])
@@ -88,11 +88,11 @@ writeFileSync(join(publicDir, 'favicon-32-light.png'), fav32);
 writeFileSync(join(publicDir, 'favicon-32-dark.png'), fav32);
 
 const icoOptions: IcoOptions = {
-  sizes: [48],
   resizeOptions: {},
+  sizes: [48],
 };
 await sharpsToIco([sharp(png48)], join(publicDir, 'favicon.ico'), icoOptions);
 
 console.log(
-  'make-pwa-icons: wrote pwa-192.png, pwa-512.png, apple-touch-icon.png, favicon-32-*.png, favicon.ico',
+  'make-pwa-icons: wrote pwa-192.png, pwa-512.png, apple-touch-icon.png, favicon-32-*.png, favicon.ico'
 );

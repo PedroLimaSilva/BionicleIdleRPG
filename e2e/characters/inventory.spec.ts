@@ -6,21 +6,21 @@ const CHARACTER_INVENTORY_GAME_STATE = {
   completedQuests: ['story_toa_arrival'], // unlocks Toa (including Toa_Lewa) for recruitment
   recruitedCharacters: [
     {
-      id: 'Takua',
       exp: 0,
+      id: 'Takua',
       quest: 'mnog_find_canister_beach',
     },
     {
+      exp: 0,
       id: 'Toa_Tahu',
-      exp: 0,
     },
     {
-      id: 'Jala',
       exp: 20000, // High exp so job gains during E2E tests don't cause level-up
+      id: 'Jala',
     },
     {
-      id: 'Toa_Gali',
       exp: 0,
+      id: 'Toa_Gali',
     },
   ],
 };

@@ -13,7 +13,7 @@ const shouldShowCurrencyBar = (pathname: string) => {
 };
 
 export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
-  const { battle, completedQuests, collectedKrana } = useGame();
+  const { battle, collectedKrana, completedQuests } = useGame();
   const { outcomePresentationReady } = battle;
   const { pathname } = useLocation();
   const hasVisibleEncounters = useMemo(

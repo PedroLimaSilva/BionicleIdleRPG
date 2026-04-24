@@ -59,32 +59,32 @@ export function isKranaCollectionActive(completedQuests: string[]): boolean {
 // --- Battle loot helpers ---
 
 const COLOR_TO_ELEMENT: Record<string, KranaElement | undefined> = {
-  red: ElementTribe.Air,
   blue: ElementTribe.Fire,
-  lime: ElementTribe.Earth,
-  white: ElementTribe.Ice,
   green: ElementTribe.Stone,
+  lime: ElementTribe.Earth,
   orange: ElementTribe.Water,
+  red: ElementTribe.Air,
+  white: ElementTribe.Ice,
 };
 
 /** Color name per Krana element, used for UI tinting (e.g. Krana collection tab). */
 export const ELEMENT_TO_KRANA_COLOR: Record<KranaElement, string> = {
-  [ElementTribe.Fire]: 'blue',
-  [ElementTribe.Water]: 'orange',
   [ElementTribe.Air]: 'red',
   [ElementTribe.Earth]: 'lime',
+  [ElementTribe.Fire]: 'blue',
   [ElementTribe.Ice]: 'white',
   [ElementTribe.Stone]: 'green',
+  [ElementTribe.Water]: 'orange',
 };
 
 /** Hex color per Krana element, used for UI tinting (e.g. Battle outcome screen). */
 export const ELEMENT_TO_KRANA_COLOR_HEX: Record<KranaElement, string> = {
-  [ElementTribe.Fire]: '#036be3',
-  [ElementTribe.Water]: '#ff7300',
   [ElementTribe.Air]: '#d60202',
   [ElementTribe.Earth]: '#84ff00',
+  [ElementTribe.Fire]: '#036be3',
   [ElementTribe.Ice]: '#00e1ff',
   [ElementTribe.Stone]: '#006e06',
+  [ElementTribe.Water]: '#ff7300',
 };
 
 function isKranaDropId(id: string): boolean {

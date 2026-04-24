@@ -11,7 +11,7 @@ import { Tooltip } from '../../../components/Tooltip';
 import { LegoColor } from '../../../types/Colors';
 
 export function MaskCollection({ matoran }: { matoran: BaseMatoran & { maskOverride?: string } }) {
-  const { setMaskOverride, completedQuests } = useGame();
+  const { completedQuests, setMaskOverride } = useGame();
 
   const masks = useMemo(() => {
     return masksCollected(matoran, completedQuests);

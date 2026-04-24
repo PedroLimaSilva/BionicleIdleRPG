@@ -128,7 +128,7 @@ function ArenaFraming() {
     toPositionRef.current.copy(basePositionRef.current);
     toLookAtRef.current.copy(baseLookAtRef.current);
     toZoomRef.current = baseZoomRef.current;
-    transitionRef.current = { startMs: now, durationMs: CAMERA_EMPHASIS_OUT_MS };
+    transitionRef.current = { durationMs: CAMERA_EMPHASIS_OUT_MS, startMs: now };
   }, []);
 
   const snapshotFrom = () => {
@@ -158,8 +158,7 @@ function ArenaFraming() {
     const aspect = size.width / size.height;
 
     const vFovForHeight = 2 * Math.atan(halfArena / distance) * THREE.MathUtils.RAD2DEG;
-    const vFovForWidth =
-      2 * Math.atan(halfArena / (distance * aspect)) * THREE.MathUtils.RAD2DEG;
+    const vFovForWidth = 2 * Math.atan(halfArena / (distance * aspect)) * THREE.MathUtils.RAD2DEG;
     const fov = Math.max(vFovForHeight, vFovForWidth);
 
     (camera as THREE.PerspectiveCamera).fov = fov;
@@ -177,60 +176,60 @@ function ArenaFraming() {
   }, [camera, size]);
 
   useEffect(() => {
-    const unsubscribe = subscribeBattleCameraEmphasis(({
-      phase, attackerId, targetId, attackerSide, resolve,
-    }) => {
-      if (phase === 'start') {
-        pendingZoomOutRef.current = false;
-        emphasisActiveRef.current = true;
+    const unsubscribe = subscribeBattleCameraEmphasis(
+      ({ attackerId, attackerSide, phase, resolve, targetId }) => {
+        if (phase === 'start') {
+          pendingZoomOutRef.current = false;
+          emphasisActiveRef.current = true;
 
-        if (holdTimerRef.current !== null) {
-          clearTimeout(holdTimerRef.current);
-          holdTimerRef.current = null;
-        }
+          if (holdTimerRef.current !== null) {
+            clearTimeout(holdTimerRef.current);
+            holdTimerRef.current = null;
+          }
 
-        const positions = (
-          window as { combatantPositions?: Record<string, [number, number, number]> }
-        ).combatantPositions;
-        const attacker = attackerId ? positions?.[attackerId] : undefined;
-        const target = targetId ? positions?.[targetId] : undefined;
-        if (!attacker || !target) {
-          resolve?.();
+          const positions = (
+            window as { combatantPositions?: Record<string, [number, number, number]> }
+          ).combatantPositions;
+          const attacker = attackerId ? positions?.[attackerId] : undefined;
+          const target = targetId ? positions?.[targetId] : undefined;
+          if (!attacker || !target) {
+            resolve?.();
+            return;
+          }
+
+          transitionResolveRef.current?.();
+          transitionResolveRef.current = resolve ?? null;
+
+          snapshotFrom();
+          computeEmphasisTarget(attacker, target, attackerSide ?? 'team');
+
+          const isRetarget = transitionRef.current !== null;
+          transitionRef.current = {
+            durationMs: isRetarget ? CAMERA_EMPHASIS_RETARGET_MS : CAMERA_EMPHASIS_IN_MS,
+            startMs: performance.now(),
+          };
           return;
         }
 
-        transitionResolveRef.current?.();
-        transitionResolveRef.current = resolve ?? null;
-
-        snapshotFrom();
-        computeEmphasisTarget(attacker, target, attackerSide ?? 'team');
-
-        const isRetarget = transitionRef.current !== null;
-        transitionRef.current = {
-          startMs: performance.now(),
-          durationMs: isRetarget ? CAMERA_EMPHASIS_RETARGET_MS : CAMERA_EMPHASIS_IN_MS,
+        // phase === 'end': schedule the zoom-out after a short hold
+        const beginZoomOut = () => {
+          holdTimerRef.current = null;
+          if (transitionRef.current) {
+            pendingZoomOutRef.current = true;
+            pendingZoomOutResolveRef.current = resolve ?? null;
+          } else {
+            transitionResolveRef.current?.();
+            transitionResolveRef.current = resolve ?? null;
+            startZoomOut();
+          }
         };
-        return;
-      }
 
-      // phase === 'end': schedule the zoom-out after a short hold
-      const beginZoomOut = () => {
-        holdTimerRef.current = null;
-        if (transitionRef.current) {
-          pendingZoomOutRef.current = true;
-          pendingZoomOutResolveRef.current = resolve ?? null;
-        } else {
-          transitionResolveRef.current?.();
-          transitionResolveRef.current = resolve ?? null;
-          startZoomOut();
+        if (holdTimerRef.current !== null) {
+          clearTimeout(holdTimerRef.current);
         }
-      };
-
-      if (holdTimerRef.current !== null) {
-        clearTimeout(holdTimerRef.current);
+        holdTimerRef.current = setTimeout(beginZoomOut, CAMERA_EMPHASIS_HOLD_MS);
       }
-      holdTimerRef.current = setTimeout(beginZoomOut, CAMERA_EMPHASIS_HOLD_MS);
-    });
+    );
     return unsubscribe;
   }, [startZoomOut]);
 
@@ -290,7 +289,7 @@ function ArenaFraming() {
   return null;
 }
 
-export function Arena({ team, enemies, currentWave }: ArenaProps) {
+export function Arena({ currentWave, enemies, team }: ArenaProps) {
   const combatantRefs = useRef<Record<string, CombatantModelHandle>>({});
   const sceneGroupRef = useRef<THREE.Group>(null);
   const { shadowsEnabled } = useSettings();
@@ -374,7 +373,7 @@ export function Arena({ team, enemies, currentWave }: ArenaProps) {
         speed={2}
         zoom={1}
         polar={[-Math.PI / 2, 0]}
-        config={{ mass: 0.5, tension: 170, friction: 26 }}
+        config={{ friction: 26, mass: 0.5, tension: 170 }}
       >
         <group dispose={null} name="Scene" ref={sceneGroupRef}>
           <mesh

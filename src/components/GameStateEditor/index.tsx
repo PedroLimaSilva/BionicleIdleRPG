@@ -34,18 +34,18 @@ interface GameStateEditorProps {
 export function GameStateEditor({ onApplied }: GameStateEditorProps) {
   const game = useGame();
   const {
-    completedQuests,
-    recruitedCharacters,
     collectedKrana,
+    completedQuests,
     kraataCollection,
     protodermis,
     protodermisCap,
-    setCompletedQuests,
-    setRecruitedCharacters,
+    recruitedCharacters,
     setCollectedKrana,
+    setCompletedQuests,
     setKraataCollection,
     setProtodermis,
     setProtodermisCap,
+    setRecruitedCharacters,
   } = game;
 
   const [draftCompleted, setDraftCompleted] = useState<string[]>([]);
@@ -114,7 +114,7 @@ export function GameStateEditor({ onApplied }: GameStateEditorProps) {
     if (inList) {
       setDraftRecruited((prev) => prev.filter((c) => c.id !== characterId));
     } else {
-      setDraftRecruited((prev) => [...prev, { id: characterId, exp: 0 }]);
+      setDraftRecruited((prev) => [...prev, { exp: 0, id: characterId }]);
     }
   };
 
@@ -265,8 +265,8 @@ export function GameStateEditor({ onApplied }: GameStateEditorProps) {
         <section className="game-state-section">
           <h3>Kraata Collection</h3>
           <p className="game-state-section-hint game-state-section-hint--with-icons">
-            Power{' '}
-            <ArrowRight className="game-state-section-hint-icon" size={12} aria-hidden /> stage (1–6){' '}
+            Power <ArrowRight className="game-state-section-hint-icon" size={12} aria-hidden />{' '}
+            stage (1–6){' '}
             <ArrowRight className="game-state-section-hint-icon" size={12} aria-hidden /> count
           </p>
           <div className="game-state-kraata-grid">

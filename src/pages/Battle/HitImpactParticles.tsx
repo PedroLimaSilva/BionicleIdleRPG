@@ -27,14 +27,14 @@ function hitYOffset(model?: string): number {
 }
 
 const ELEMENT_HIT_COLORS: Record<ElementTribe, string> = {
-  [ElementTribe.Fire]: '#ff3b00',
-  [ElementTribe.Water]: '#57c4e5',
   [ElementTribe.Air]: '#a8f4a4',
-  [ElementTribe.Ice]: '#80d4ff',
-  [ElementTribe.Stone]: '#d9a066',
   [ElementTribe.Earth]: '#8b5d30',
+  [ElementTribe.Fire]: '#ff3b00',
+  [ElementTribe.Ice]: '#80d4ff',
   [ElementTribe.Light]: '#fdf6d8',
   [ElementTribe.Shadow]: '#aaaaaa',
+  [ElementTribe.Stone]: '#d9a066',
+  [ElementTribe.Water]: '#57c4e5',
 };
 
 type ParticleState = {
@@ -54,12 +54,12 @@ function randomInRange(min: number, max: number): number {
 function createParticleState(): ParticleState {
   return {
     active: false,
-    startMs: 0,
-    durationMs: BURST_DURATION_MS,
-    origin: new THREE.Vector3(),
-    velocity: new THREE.Vector3(),
     baseScale: 0.06,
     color: new THREE.Color('#ffffff'),
+    durationMs: BURST_DURATION_MS,
+    origin: new THREE.Vector3(),
+    startMs: 0,
+    velocity: new THREE.Vector3(),
   };
 }
 
@@ -180,7 +180,7 @@ export function HitImpactParticles() {
 
   useEffect(() => {
     const unsubscribe = subscribeBattleHitFeedback(
-      ({ damageDealt, targetMaxHp, targetId, targetModel, attackerElement, reactionAnimation }) => {
+      ({ attackerElement, damageDealt, reactionAnimation, targetId, targetMaxHp, targetModel }) => {
         if (damageDealt <= 0 || reactionAnimation !== 'Hit' || !targetId || !attackerElement) {
           return;
         }

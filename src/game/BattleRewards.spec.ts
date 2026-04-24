@@ -15,18 +15,18 @@ const BOHROK_KRANA_LEGEND_QUEST_ID = 'bohrok_legend_of_krana';
 
 const baseCombatant = (overrides: Partial<Combatant> = {}): Combatant =>
   ({
-    id: 'test',
-    name: 'Test',
-    model: '',
-    lvl: 1,
-    maxHp: 100,
-    hp: 100,
     attack: 10,
     defense: 5,
-    speed: 5,
     element: ElementTribe.Fire,
-    willUseAbility: false,
+    hp: 100,
+    id: 'test',
+    lvl: 1,
+    maxHp: 100,
+    model: '',
+    name: 'Test',
+    speed: 5,
     strategy: BattleStrategy.LowestHp,
+    willUseAbility: false,
     ...overrides,
   }) as Combatant;
 
@@ -34,13 +34,13 @@ const mockEncounter = (
   waves: Array<{ id: string; lvl: number }[]>,
   loot: { id: string; chance: number }[] = []
 ): EnemyEncounter => ({
-  id: 'test',
-  name: 'Test',
   description: 'Test',
-  headliner: 'tahnok',
   difficulty: 1,
-  waves,
+  headliner: 'tahnok',
+  id: 'test',
   loot,
+  name: 'Test',
+  waves,
 });
 
 describe('BattleRewards', () => {
@@ -68,15 +68,15 @@ describe('BattleRewards', () => {
         ],
       ]);
       const currentEnemies = [
-        baseCombatant({ id: 'e1', hp: 0 }),
-        baseCombatant({ id: 'e2', hp: 50 }),
+        baseCombatant({ hp: 0, id: 'e1' }),
+        baseCombatant({ hp: 50, id: 'e2' }),
       ];
       expect(getEnemiesDefeatedCount(encounter, BattlePhase.Defeat, 1, currentEnemies)).toBe(2 + 1);
     });
 
     test('returns defeated count on Retreated', () => {
       const encounter = mockEncounter([[{ id: 'tahnok', lvl: 20 }], [{ id: 'tahnok', lvl: 20 }]]);
-      const currentEnemies = [baseCombatant({ id: 'e1', hp: 0 })];
+      const currentEnemies = [baseCombatant({ hp: 0, id: 'e1' })];
       expect(getEnemiesDefeatedCount(encounter, BattlePhase.Retreated, 1, currentEnemies)).toBe(
         1 + 1
       );
@@ -112,8 +112,8 @@ describe('BattleRewards', () => {
         ],
       ]);
       const currentEnemies = [
-        baseCombatant({ id: 'e1', hp: 0, lvl: 25 }),
-        baseCombatant({ id: 'e2', hp: 50, lvl: 25 }),
+        baseCombatant({ hp: 0, id: 'e1', lvl: 25 }),
+        baseCombatant({ hp: 50, id: 'e2', lvl: 25 }),
       ];
       const total = computeBattleExpTotal(encounter, BattlePhase.Defeat, 1, currentEnemies);
       expect(total).toBe(20 * 5 + 25 * 5);
@@ -173,8 +173,8 @@ describe('BattleRewards', () => {
         ],
       ]);
       const currentEnemies = [
-        baseCombatant({ id: 'e1', hp: 0, element: ElementTribe.Water }),
-        baseCombatant({ id: 'e2', hp: 50, element: ElementTribe.Air }),
+        baseCombatant({ element: ElementTribe.Water, hp: 0, id: 'e1' }),
+        baseCombatant({ element: ElementTribe.Air, hp: 50, id: 'e2' }),
       ];
       const elements = getDefeatedEnemyElements(encounter, BattlePhase.Defeat, 1, currentEnemies);
       expect(elements).toEqual([ElementTribe.Fire, ElementTribe.Water]);
@@ -187,7 +187,7 @@ describe('BattleRewards', () => {
     test('returns empty array when Krana collection not active', () => {
       const encounter = mockEncounter(
         [[{ id: 'tahnok', lvl: 20 }]],
-        [{ id: 'krana-ja-blue', chance: 1 }]
+        [{ chance: 1, id: 'krana-ja-blue' }]
       );
       const rewards = computeKranaRewardsForBattle(encounter, BattlePhase.Victory, 0, [], [], {});
       expect(rewards).toEqual([]);
@@ -196,7 +196,7 @@ describe('BattleRewards', () => {
     test('returns empty array when no enemies defeated', () => {
       const encounter = mockEncounter(
         [[{ id: 'tahnok', lvl: 20 }]],
-        [{ id: 'krana-ja-blue', chance: 1 }]
+        [{ chance: 1, id: 'krana-ja-blue' }]
       );
       const rewards = computeKranaRewardsForBattle(
         encounter,
@@ -214,7 +214,7 @@ describe('BattleRewards', () => {
 
       const encounter = mockEncounter(
         [[{ id: 'tahnok', lvl: 20 }]],
-        [{ id: 'krana-ja-blue', chance: 1 }]
+        [{ chance: 1, id: 'krana-ja-blue' }]
       );
       const rewards = computeKranaRewardsForBattle(
         encounter,
@@ -239,7 +239,7 @@ describe('BattleRewards', () => {
 
       const encounter = mockEncounter(
         [[{ id: 'tahnok', lvl: 20 }]],
-        [{ id: 'krana-ja-blue', chance: 1 }]
+        [{ chance: 1, id: 'krana-ja-blue' }]
       );
       const collected: KranaCollection = {
         [ElementTribe.Fire]: ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'],
@@ -268,8 +268,8 @@ describe('BattleRewards', () => {
       const encounter = mockEncounter(
         [[{ id: 'tahnok', lvl: 20 }]],
         [
-          { id: 'krana-ja-blue', chance: 0 },
-          { id: 'krana-vu-blue', chance: 1 },
+          { chance: 0, id: 'krana-ja-blue' },
+          { chance: 1, id: 'krana-vu-blue' },
         ]
       );
       const rewards = computeKranaRewardsForBattle(
@@ -298,7 +298,7 @@ describe('BattleRewards', () => {
             { id: 'tahnok', lvl: 20 },
           ],
         ],
-        [{ id: 'krana-ja-blue', chance: 1 }]
+        [{ chance: 1, id: 'krana-ja-blue' }]
       );
       const rewards = computeKranaRewardsForBattle(
         encounter,

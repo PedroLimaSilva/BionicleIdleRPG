@@ -10,9 +10,9 @@ import { LegoColor } from '../../types/Colors';
 import { masksCollected } from '../../services/matoranUtils';
 
 export function MatoranAvatar({
+  maskPowerActive,
   matoran,
   styles,
-  maskPowerActive,
 }: {
   matoran: BaseMatoran &
     RecruitedCharacterData & { maskOverride?: Mask; maskColorOverride?: LegoColor };

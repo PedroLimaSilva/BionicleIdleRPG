@@ -8,9 +8,9 @@ import { MaskActivationBurst } from './MaskActivationBurst';
 
 export function AllyCard({
   combatant,
+  enemies = [],
   onClick,
   team = [],
-  enemies = [],
 }: {
   combatant: Combatant;
   onClick: () => void;
@@ -55,8 +55,8 @@ export function AllyCard({
           matoran={{
             ...dex,
             ...combatant,
-            maskOverride: combatant.maskPower?.shortName,
             exp: 0,
+            maskOverride: combatant.maskPower?.shortName,
           }}
           styles="matoran-avatar model-preview"
           maskPowerActive={maskActive}

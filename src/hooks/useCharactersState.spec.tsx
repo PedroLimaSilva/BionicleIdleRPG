@@ -20,7 +20,7 @@ describe('useCharactersState', () => {
 
   describe('initialization', () => {
     test('initializes with provided recruited; buyable derived from completedQuests', () => {
-      const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
+      const initialRecruited: RecruitedCharacterData[] = [{ exp: 100, id: 'Jala' }];
       const completedQuests = ['mnog_restore_ga_koro']; // unlocks Hahli
 
       const { result } = renderHook(() =>
@@ -28,11 +28,11 @@ describe('useCharactersState', () => {
       );
 
       expect(result.current.recruitedCharacters).toEqual(initialRecruited);
-      expect(result.current.buyableCharacters).toContainEqual({ id: 'Hahli', cost: 1000 });
+      expect(result.current.buyableCharacters).toContainEqual({ cost: 1000, id: 'Hahli' });
     });
 
     test('filters out already recruited characters from buyable list (incl. evolution line)', () => {
-      const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
+      const initialRecruited: RecruitedCharacterData[] = [{ exp: 100, id: 'Jala' }];
       const completedQuests = ['mnog_tahu_unlock_01', 'mnog_restore_ga_koro']; // Jala + Hahli
 
       const { result } = renderHook(() =>
@@ -47,7 +47,7 @@ describe('useCharactersState', () => {
   describe('recruitCharacter', () => {
     test('recruits character when enough protodermis', () => {
       const initialRecruited: RecruitedCharacterData[] = [];
-      const character: ListedCharacterData = { id: 'Jala', cost: 2000 };
+      const character: ListedCharacterData = { cost: 2000, id: 'Jala' };
       const completedQuests = ['mnog_tahu_unlock_01']; // unlocks Jala (cost 2000 in registry)
       const protodermis = 3000;
 
@@ -61,13 +61,13 @@ describe('useCharactersState', () => {
 
       expect(mockSetProtodermis).toHaveBeenCalledWith(1000);
       expect(result.current.recruitedCharacters).toHaveLength(1);
-      expect(result.current.recruitedCharacters[0]).toEqual({ id: 'Jala', exp: 0 });
+      expect(result.current.recruitedCharacters[0]).toEqual({ exp: 0, id: 'Jala' });
       expect(result.current.buyableCharacters.some((c) => c.id === 'Jala')).toBe(false);
     });
 
     test('does not recruit when insufficient protodermis', () => {
       const initialRecruited: RecruitedCharacterData[] = [];
-      const character: ListedCharacterData = { id: 'Jala', cost: 2000 };
+      const character: ListedCharacterData = { cost: 2000, id: 'Jala' };
       const completedQuests = ['mnog_tahu_unlock_01'];
 
       const { result } = renderHook(() =>
@@ -84,7 +84,7 @@ describe('useCharactersState', () => {
 
     test('recruits character and deducts only protodermis cost', () => {
       const initialRecruited: RecruitedCharacterData[] = [];
-      const character: ListedCharacterData = { id: 'Jala', cost: 2000 };
+      const character: ListedCharacterData = { cost: 2000, id: 'Jala' };
       const completedQuests = ['mnog_tahu_unlock_01'];
       const protodermis = 3000;
 
@@ -104,8 +104,8 @@ describe('useCharactersState', () => {
   describe('assignJobToMatoran', () => {
     test('assigns job to specific matoran', () => {
       const initialRecruited: RecruitedCharacterData[] = [
-        { id: 'Jala', exp: 0 },
-        { id: 'Hahli', exp: 0 },
+        { exp: 0, id: 'Jala' },
+        { exp: 0, id: 'Hahli' },
       ];
       const completedQuests: string[] = [];
 
@@ -123,7 +123,7 @@ describe('useCharactersState', () => {
     });
 
     test('sets correct exp rate based on productivity modifier', () => {
-      const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 0 }];
+      const initialRecruited: RecruitedCharacterData[] = [{ exp: 0, id: 'Jala' }];
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
@@ -143,13 +143,13 @@ describe('useCharactersState', () => {
     test('removes job from matoran', () => {
       const initialRecruited: RecruitedCharacterData[] = [
         {
-          id: 'Jala',
-          exp: 0,
           assignment: {
-            job: MatoranJob.CharcoalMaker,
-            expRatePerSecond: 1.2,
             assignedAt: Date.now(),
+            expRatePerSecond: 1.2,
+            job: MatoranJob.CharcoalMaker,
           },
+          exp: 0,
+          id: 'Jala',
         },
       ];
       const completedQuests: string[] = [];
@@ -166,7 +166,7 @@ describe('useCharactersState', () => {
     });
 
     test('does not affect matoran without job', () => {
-      const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 100 }];
+      const initialRecruited: RecruitedCharacterData[] = [{ exp: 100, id: 'Jala' }];
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
@@ -177,13 +177,13 @@ describe('useCharactersState', () => {
         result.current.removeJobFromMatoran('Jala');
       });
 
-      expect(result.current.recruitedCharacters[0]).toEqual({ id: 'Jala', exp: 100 });
+      expect(result.current.recruitedCharacters[0]).toEqual({ exp: 100, id: 'Jala' });
     });
   });
 
   describe('setMaskOverride', () => {
     test('sets mask override for specific matoran', () => {
-      const initialRecruited: RecruitedCharacterData[] = [{ id: 'Jala', exp: 0 }];
+      const initialRecruited: RecruitedCharacterData[] = [{ exp: 0, id: 'Jala' }];
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
@@ -199,8 +199,8 @@ describe('useCharactersState', () => {
 
     test('does not affect other matoran', () => {
       const initialRecruited: RecruitedCharacterData[] = [
-        { id: 'Jala', exp: 0 },
-        { id: 'Hahli', exp: 0 },
+        { exp: 0, id: 'Jala' },
+        { exp: 0, id: 'Hahli' },
       ];
       const completedQuests: string[] = [];
 

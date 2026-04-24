@@ -11,13 +11,13 @@ const mockEncounter = (
   unlockedAfter?: string[],
   hiddenAfter?: string[]
 ): EnemyEncounter => ({
-  id,
-  name: `Encounter ${id}`,
   description: 'Test',
-  headliner: headliner as EnemyEncounter['headliner'],
   difficulty,
-  waves: [[{ id: headliner, lvl: 20 }]],
+  headliner: headliner as EnemyEncounter['headliner'],
+  id,
   loot,
+  name: `Encounter ${id}`,
+  waves: [[{ id: headliner, lvl: 20 }]],
   ...(unlockedAfter && { unlockedAfter }),
   ...(hiddenAfter && { hiddenAfter }),
 });
@@ -26,8 +26,8 @@ describe('encounterVisibility', () => {
   describe('areAllEncounterKranaCollected', () => {
     test('returns true when all loot krana are collected', () => {
       const encounter = mockEncounter('tahnok-1', 'tahnok', 1, [
-        { id: 'krana-xa-blue', chance: 0.15 },
-        { id: 'krana-bo-blue', chance: 0.1 },
+        { chance: 0.15, id: 'krana-xa-blue' },
+        { chance: 0.1, id: 'krana-bo-blue' },
       ]);
       const collected: KranaCollection = {
         [ElementTribe.Fire]: ['Xa', 'Bo'],
@@ -37,8 +37,8 @@ describe('encounterVisibility', () => {
 
     test('returns false when any loot krana is not collected', () => {
       const encounter = mockEncounter('tahnok-1', 'tahnok', 1, [
-        { id: 'krana-xa-blue', chance: 0.15 },
-        { id: 'krana-bo-blue', chance: 0.1 },
+        { chance: 0.15, id: 'krana-xa-blue' },
+        { chance: 0.1, id: 'krana-bo-blue' },
       ]);
       const collected: KranaCollection = {
         [ElementTribe.Fire]: ['Xa'],
@@ -53,8 +53,8 @@ describe('encounterVisibility', () => {
 
     test('returns true when loot has non-krana items (parseKranaDropId returns null)', () => {
       const encounter = mockEncounter('mixed', 'tahnok', 1, [
-        { id: 'krana-ja-blue', chance: 0.15 },
-        { id: 'charcoal', chance: 0.5 },
+        { chance: 0.15, id: 'krana-ja-blue' },
+        { chance: 0.5, id: 'charcoal' },
       ]);
       const collected: KranaCollection = { [ElementTribe.Fire]: ['Ja'] };
       expect(areAllEncounterKranaCollected(encounter, collected)).toBe(true);
@@ -65,14 +65,14 @@ describe('encounterVisibility', () => {
     test('returns lowest-difficulty encounter per headliner with uncollected krana', () => {
       const encounters: EnemyEncounter[] = [
         mockEncounter('tahnok-1', 'tahnok', 1, [
-          { id: 'krana-xa-blue', chance: 0.15 },
-          { id: 'krana-bo-blue', chance: 0.1 },
+          { chance: 0.15, id: 'krana-xa-blue' },
+          { chance: 0.1, id: 'krana-bo-blue' },
         ]),
         mockEncounter('tahnok-2', 'tahnok', 2, [
-          { id: 'krana-su-blue', chance: 0.15 },
-          { id: 'krana-za-blue', chance: 0.1 },
+          { chance: 0.15, id: 'krana-su-blue' },
+          { chance: 0.1, id: 'krana-za-blue' },
         ]),
-        mockEncounter('gahlok-1', 'gahlok', 1, [{ id: 'krana-xa-orange', chance: 0.15 }]),
+        mockEncounter('gahlok-1', 'gahlok', 1, [{ chance: 0.15, id: 'krana-xa-orange' }]),
       ];
       const collected = {};
       const completed = ['bohrok_legend_of_krana'];
@@ -87,12 +87,12 @@ describe('encounterVisibility', () => {
     test('shows next tier when all krana from lower tier collected', () => {
       const encounters: EnemyEncounter[] = [
         mockEncounter('tahnok-1', 'tahnok', 1, [
-          { id: 'krana-xa-blue', chance: 0.15 },
-          { id: 'krana-bo-blue', chance: 0.1 },
+          { chance: 0.15, id: 'krana-xa-blue' },
+          { chance: 0.1, id: 'krana-bo-blue' },
         ]),
         mockEncounter('tahnok-2', 'tahnok', 2, [
-          { id: 'krana-su-blue', chance: 0.15 },
-          { id: 'krana-za-blue', chance: 0.1 },
+          { chance: 0.15, id: 'krana-su-blue' },
+          { chance: 0.1, id: 'krana-za-blue' },
         ]),
       ];
       const collected: KranaCollection = { [ElementTribe.Fire]: ['Xa', 'Bo'] };
@@ -106,12 +106,12 @@ describe('encounterVisibility', () => {
     test('excludes headliner entirely when all krana collected across tiers', () => {
       const encounters: EnemyEncounter[] = [
         mockEncounter('tahnok-1', 'tahnok', 1, [
-          { id: 'krana-xa-blue', chance: 0.15 },
-          { id: 'krana-bo-blue', chance: 0.1 },
+          { chance: 0.15, id: 'krana-xa-blue' },
+          { chance: 0.1, id: 'krana-bo-blue' },
         ]),
         mockEncounter('tahnok-2', 'tahnok', 2, [
-          { id: 'krana-su-blue', chance: 0.15 },
-          { id: 'krana-za-blue', chance: 0.1 },
+          { chance: 0.15, id: 'krana-su-blue' },
+          { chance: 0.1, id: 'krana-za-blue' },
         ]),
       ];
       const collected: KranaCollection = {
@@ -129,7 +129,7 @@ describe('encounterVisibility', () => {
           'locked',
           'tahnok',
           1,
-          [{ id: 'krana-xa-blue', chance: 0.15 }],
+          [{ chance: 0.15, id: 'krana-xa-blue' }],
           ['some_other_quest']
         ),
       ];
@@ -146,7 +146,7 @@ describe('encounterVisibility', () => {
           'tahnok-1',
           'tahnok',
           1,
-          [{ id: 'krana-xa-blue', chance: 0.15 }],
+          [{ chance: 0.15, id: 'krana-xa-blue' }],
           ['bohrok_legend_of_krana']
         ),
       ];
@@ -160,7 +160,7 @@ describe('encounterVisibility', () => {
           'unlocked',
           'tahnok',
           1,
-          [{ id: 'krana-xa-blue', chance: 0.15 }],
+          [{ chance: 0.15, id: 'krana-xa-blue' }],
           ['bohrok_legend_of_krana']
         ),
       ];

@@ -59,15 +59,15 @@ function getBohrokMaterial(
 export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ id }, ref) => {
   const group = useRef<Group>(null);
 
-  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'bohrok_master.glb');
+  const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + 'bohrok_master.glb');
 
   const bohrokInstance = useMemo(() => nodes.Bohrok.clone(true), [nodes]);
 
   const { playAnimation } = useCombatAnimations(animations, group, {
-    modelId: id,
     actionTimeScale: 2,
-    transitionMode: 'stopAll',
     attackResolveAtFraction: 0.1,
+    modelId: id,
+    transitionMode: 'stopAll',
   });
 
   useImperativeHandle(ref, () => ({ playAnimation }));
@@ -109,28 +109,28 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
 
     if (USE_WEATHERED_METAL) {
       const materialColorMap: Record<string, string> = {
-        Bohrok_Main: colorScheme.body,
-        Bohrok_Secondary: colorScheme.arms,
         Bohrok_Feet: colorScheme.feet,
         Bohrok_Joints: colorScheme.face,
+        Bohrok_Main: colorScheme.body,
+        Bohrok_Secondary: colorScheme.arms,
         'Bohrok Kal Shield': colorScheme.face,
+        'Bohrok Teeth': LegoColor.White,
         Solid_Black: LegoColor.Black,
         Solid_Light_Grey: LegoColor.LightGray,
-        'Bohrok Teeth': LegoColor.White,
       };
       applyWeatheredMetalToObject(bohrokInstance, {
-        roughness: 0.55,
-        metalness: 0.05,
-        grimeDarken: 0.4,
-        grimeRoughness: 0.2,
-        grimeMetalnessReduce: 0.5,
-        largeScale: 5,
-        fineScale: 18,
         cavityStrength: 1,
         edgeColor: '#ffffff',
-        edgeStrength: 0.15,
         edgeCurvatureScale: 2,
+        edgeStrength: 0.15,
+        fineScale: 18,
+        grimeDarken: 0.4,
+        grimeMetalnessReduce: 0.5,
+        grimeRoughness: 0.2,
+        largeScale: 5,
         materialColorMap,
+        metalness: 0.05,
+        roughness: 0.55,
       });
     }
 

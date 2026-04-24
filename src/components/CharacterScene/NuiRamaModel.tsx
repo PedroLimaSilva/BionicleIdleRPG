@@ -33,18 +33,18 @@ type Anim = 'idle' | 'attack' | 'hit' | 'defeat';
 const WINGS_CLIP = 'Wings';
 
 const WEATHERED_OPTS = {
-  roughness: 0.55,
-  metalness: 0.05,
-  grimeDarken: 0.4,
-  grimeRoughness: 0.2,
-  grimeMetalnessReduce: 0.5,
-  largeScale: 3.5,
-  fineScale: 18.0,
   cavityStrength: 1,
   edgeColor: '#ffffff',
-  edgeStrength: 0.15,
   edgeCurvatureScale: 2,
+  edgeStrength: 0.15,
   excludeMaterialNames: ['Glow Mask', 'Glow Glass'],
+  fineScale: 18.0,
+  grimeDarken: 0.4,
+  grimeMetalnessReduce: 0.5,
+  grimeRoughness: 0.2,
+  largeScale: 3.5,
+  metalness: 0.05,
+  roughness: 0.55,
 };
 
 /**
@@ -54,7 +54,7 @@ const WEATHERED_OPTS = {
 export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaVariant }>(
   ({ variant }, ref) => {
     const root = useRef<Group>(null);
-    const { nodes, animations } = useGLTF(GLB_PATH) as unknown as {
+    const { animations, nodes } = useGLTF(GLB_PATH) as unknown as {
       nodes: { Nui_Rama: Group };
       animations: AnimationClip[];
     };
@@ -101,8 +101,8 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
         ...WEATHERED_OPTS,
         materialColorMap: {
           Accent: accentHex,
-          'Solid Black': '#1a1a1a',
           Solid_Light_Grey: '#c8c8c8',
+          'Solid Black': '#1a1a1a',
         },
       });
     }, [instance, variant]);

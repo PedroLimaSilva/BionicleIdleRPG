@@ -9,7 +9,7 @@ type ModalProps = {
   classNames: string;
 };
 
-export function Modal({ children, onClose, classNames }: ModalProps) {
+export function Modal({ children, classNames, onClose }: ModalProps) {
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
   const backdropTransition = buildTransition(
     {

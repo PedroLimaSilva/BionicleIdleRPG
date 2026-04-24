@@ -5,15 +5,15 @@ import { PartialGameState } from '../types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../data/gameState';
 
 const MOCK_STATE: PartialGameState = {
-  version: CURRENT_GAME_STATE_VERSION,
+  activeQuests: [],
+  collectedKrana: {},
+  completedQuests: [],
+  kraataCollection: {},
   protodermis: 100,
   protodermisCap: 2000,
-  collectedKrana: {},
-  kraataCollection: {},
   rahkshi: [],
   recruitedCharacters: [],
-  activeQuests: [],
-  completedQuests: [],
+  version: CURRENT_GAME_STATE_VERSION,
 };
 
 let mockTelemetryEnabled: boolean;
@@ -43,9 +43,9 @@ beforeEach(() => {
   (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = '';
 
   Object.defineProperty(navigator, 'sendBeacon', {
+    configurable: true,
     value: mockSendBeacon,
     writable: true,
-    configurable: true,
   });
 
   globalThis.fetch = mockFetch as unknown as typeof fetch;
@@ -122,9 +122,9 @@ describe('sendSessionTelemetry', () => {
     (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
 
     Object.defineProperty(navigator, 'sendBeacon', {
+      configurable: true,
       value: undefined,
       writable: true,
-      configurable: true,
     });
 
     const { sendSessionTelemetry } = loadModule();
@@ -134,8 +134,8 @@ describe('sendSessionTelemetry', () => {
     expect(mockFetch).toHaveBeenCalledWith(
       'https://example.com/telemetry',
       expect.objectContaining({
-        method: 'POST',
         keepalive: true,
+        method: 'POST',
       })
     );
   });

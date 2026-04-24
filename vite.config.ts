@@ -34,110 +34,110 @@ export default defineConfig(({ mode }) => {
 
   return {
     base: '/BionicleIdleRPG/',
+    build: {
+      rollupOptions: {
+        external: ['tools'],
+      },
+    },
+    define: {
+      __APP_VERSION__: JSON.stringify(appVersion),
+      __TELEMETRY_URL__: JSON.stringify(env.VITE_TELEMETRY_URL ?? ''),
+    },
     plugins: [
       react(),
       VitePWA({
-        injectRegister: false,
-
-        includeAssets: ['favicon-32-light.png', 'favicon-32-dark.png', 'apple-touch-icon.png'],
-
-        // Icons are produced by `yarn make-pwa-icons` (scripts/make-pwa-icons.mts), not vite-pwa assets.
-        pwaAssets: {
-          disabled: true,
-        },
-
-        manifest: {
-          name: 'BionicleIdleRpg',
-          short_name: 'Bionicle',
-          description: 'BionicleIdleRpg',
-          theme_color: '#ffffff',
-          background_color: '#ffffff',
-          icons: [
-            {
-              src: 'pwa-192.png',
-              sizes: '192x192',
-              type: 'image/png',
-              purpose: 'any maskable',
-            },
-            {
-              src: 'pwa-512.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'any maskable',
-            },
-            // Default SVG (silver glyph, transparent; tab favicon also uses prefers-color-scheme in the SVG)
-            {
-              src: 'ThreeVirtues-default.svg',
-              sizes: 'any',
-              type: 'image/svg+xml',
-              purpose: 'any',
-            },
-            {
-              src: 'ThreeVirtues-light.svg',
-              sizes: 'any',
-              type: 'image/svg+xml',
-              purpose: 'any',
-              color_scheme: 'light',
-            },
-            {
-              src: 'ThreeVirtues-dark.svg',
-              sizes: 'any',
-              type: 'image/svg+xml',
-              purpose: 'any',
-              color_scheme: 'dark',
-            },
-            // Monochrome icon for adaptive/tinted icon rendering
-            {
-              src: 'ThreeVirtues-monochrome.svg',
-              sizes: 'any',
-              type: 'image/svg+xml',
-              purpose: 'monochrome',
-            },
-            // Liquid glass icon for iOS 26+ / macOS Tahoe
-            // The system applies the translucent glass effect over the glyph
-            {
-              src: 'ThreeVirtues-monochrome.svg',
-              sizes: 'any',
-              type: 'image/svg+xml',
-              purpose: 'any',
-              design: 'liquid-glass',
-            },
-          ] satisfies ExtendedIconResource[] as unknown as IconResource[],
-          // Extended manifest fields for dark mode theming
-          ...({ dark_theme_color: '#2d2d2d', dark_background_color: '#2d2d2d' } as Record<
-            string,
-            string
-          >),
-        },
-
-        strategies: 'injectManifest',
-        srcDir: 'src',
-        filename: 'sw.ts',
-        injectManifest: {
-          globPatterns: ['**/*.{js,css,html,svg,png,ico,glb,woff2,ttf}'],
-          maximumFileSizeToCacheInBytes: 10485760,
-        },
-
         devOptions: {
           enabled: false,
           navigateFallback: 'index.html',
           suppressWarnings: true,
           type: 'module',
         },
+
+        filename: 'sw.ts',
+
+        includeAssets: ['favicon-32-light.png', 'favicon-32-dark.png', 'apple-touch-icon.png'],
+
+        injectManifest: {
+          globPatterns: ['**/*.{js,css,html,svg,png,ico,glb,woff2,ttf}'],
+          maximumFileSizeToCacheInBytes: 10485760,
+        },
+
+        injectRegister: false,
+        manifest: {
+          background_color: '#ffffff',
+          description: 'BionicleIdleRpg',
+          icons: [
+            {
+              purpose: 'any maskable',
+              sizes: '192x192',
+              src: 'pwa-192.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'any maskable',
+              sizes: '512x512',
+              src: 'pwa-512.png',
+              type: 'image/png',
+            },
+            // Default SVG (silver glyph, transparent; tab favicon also uses prefers-color-scheme in the SVG)
+            {
+              purpose: 'any',
+              sizes: 'any',
+              src: 'ThreeVirtues-default.svg',
+              type: 'image/svg+xml',
+            },
+            {
+              color_scheme: 'light',
+              purpose: 'any',
+              sizes: 'any',
+              src: 'ThreeVirtues-light.svg',
+              type: 'image/svg+xml',
+            },
+            {
+              color_scheme: 'dark',
+              purpose: 'any',
+              sizes: 'any',
+              src: 'ThreeVirtues-dark.svg',
+              type: 'image/svg+xml',
+            },
+            // Monochrome icon for adaptive/tinted icon rendering
+            {
+              purpose: 'monochrome',
+              sizes: 'any',
+              src: 'ThreeVirtues-monochrome.svg',
+              type: 'image/svg+xml',
+            },
+            // Liquid glass icon for iOS 26+ / macOS Tahoe
+            // The system applies the translucent glass effect over the glyph
+            {
+              design: 'liquid-glass',
+              purpose: 'any',
+              sizes: 'any',
+              src: 'ThreeVirtues-monochrome.svg',
+              type: 'image/svg+xml',
+            },
+          ] satisfies ExtendedIconResource[] as unknown as IconResource[],
+          name: 'BionicleIdleRpg',
+          short_name: 'Bionicle',
+          theme_color: '#ffffff',
+          // Extended manifest fields for dark mode theming
+          ...({ dark_background_color: '#2d2d2d', dark_theme_color: '#2d2d2d' } as Record<
+            string,
+            string
+          >),
+        },
+        // Icons are produced by `yarn make-pwa-icons` (scripts/make-pwa-icons.mts), not vite-pwa assets.
+        pwaAssets: {
+          disabled: true,
+        },
+        srcDir: 'src',
+
+        strategies: 'injectManifest',
       }),
       watch({
-        pattern: 'src/data/quests/**/*',
         command: 'tsx tools/generate-quest-graph.ts',
+        pattern: 'src/data/quests/**/*',
       }),
     ],
-    define: {
-      __APP_VERSION__: JSON.stringify(appVersion),
-      __TELEMETRY_URL__: JSON.stringify(env.VITE_TELEMETRY_URL ?? ''),
-    },
-    build: {
-      rollupOptions: {
-        external: ['tools'],
-      },
-    },
   };
 });

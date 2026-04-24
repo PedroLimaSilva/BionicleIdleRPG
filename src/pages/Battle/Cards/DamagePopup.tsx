@@ -10,10 +10,10 @@ export type DamagePopupEvent = {
 };
 
 export const DamagePopup = ({
-  popup,
   direction,
   isHealing = false,
   onComplete,
+  popup,
 }: {
   popup: DamagePopupEvent;
   direction: 'up' | 'down';
@@ -37,8 +37,8 @@ export const DamagePopup = ({
       key={popup.id}
       className={`damage-popup ${direction} ${isHealing ? 'healing' : ''}`}
       style={{ fontSize: `${fontScale}rem` }}
-      initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
-      animate={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: travelDistance, scale: 2 }}
+      initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+      animate={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 2, y: travelDistance }}
       transition={transition}
       onAnimationComplete={() => onComplete(popup.id)}
     >

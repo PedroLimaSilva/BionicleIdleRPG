@@ -14,15 +14,15 @@ jest.mock('./useModelProceduralCombatMotion', () => ({
 jest.mock('./useIdleAnimation', () => ({
   useIdleAnimation: () => ({
     actions: {
-      Idle: null,
       Attack: null,
-      Hit: null,
       Defeat: null,
+      Hit: null,
+      Idle: null,
     },
     mixer: {
-      stopAllAction: jest.fn(),
       addEventListener: jest.fn(),
       removeEventListener: jest.fn(),
+      stopAllAction: jest.fn(),
     },
   }),
 }));

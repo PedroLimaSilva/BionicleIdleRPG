@@ -13,26 +13,26 @@ describe('gamePersistence', () => {
   describe('loadGameState – sanitizeUnrecognizedJobs', () => {
     test('keeps valid job assignments untouched', () => {
       const saved = {
-        version: CURRENT_GAME_STATE_VERSION,
+        activeQuests: [],
+        buyableCharacters: [],
+        collectedKrana: {},
+        completedQuests: [],
+        inventory: {},
+        kraataCollection: {},
         protodermis: 100,
         protodermisCap: 2000,
-        completedQuests: [],
-        activeQuests: [],
-        collectedKrana: {},
-        kraataCollection: {},
-        inventory: {},
         recruitedCharacters: [
           {
-            id: 'Jala',
-            exp: 50,
             assignment: {
-              job: MatoranJob.CharcoalMaker,
-              expRatePerSecond: 1.2,
               assignedAt: Date.now() - 1000,
+              expRatePerSecond: 1.2,
+              job: MatoranJob.CharcoalMaker,
             },
+            exp: 50,
+            id: 'Jala',
           },
         ],
-        buyableCharacters: [],
+        version: CURRENT_GAME_STATE_VERSION,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
 
@@ -44,26 +44,26 @@ describe('gamePersistence', () => {
 
     test('clears assignment when job is unrecognized (retro-compatibility)', () => {
       const saved = {
-        version: CURRENT_GAME_STATE_VERSION,
+        activeQuests: [],
+        buyableCharacters: [],
+        collectedKrana: {},
+        completedQuests: [],
+        inventory: {},
+        kraataCollection: {},
         protodermis: 100,
         protodermisCap: 2000,
-        completedQuests: [],
-        activeQuests: [],
-        collectedKrana: {},
-        kraataCollection: {},
-        inventory: {},
         recruitedCharacters: [
           {
-            id: 'Taipu',
-            exp: 200,
             assignment: {
-              job: 'LightStoneFarmer',
-              expRatePerSecond: 1.0,
               assignedAt: Date.now() - 5000,
+              expRatePerSecond: 1.0,
+              job: 'LightStoneFarmer',
             },
+            exp: 200,
+            id: 'Taipu',
           },
         ],
-        buyableCharacters: [],
+        version: CURRENT_GAME_STATE_VERSION,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
 
@@ -75,16 +75,16 @@ describe('gamePersistence', () => {
 
     test('preserves idle matoran (no assignment)', () => {
       const saved = {
-        version: CURRENT_GAME_STATE_VERSION,
+        activeQuests: [],
+        buyableCharacters: [],
+        collectedKrana: {},
+        completedQuests: [],
+        inventory: {},
+        kraataCollection: {},
         protodermis: 100,
         protodermisCap: 2000,
-        completedQuests: [],
-        activeQuests: [],
-        collectedKrana: {},
-        kraataCollection: {},
-        inventory: {},
-        recruitedCharacters: [{ id: 'Hahli', exp: 0 }],
-        buyableCharacters: [],
+        recruitedCharacters: [{ exp: 0, id: 'Hahli' }],
+        version: CURRENT_GAME_STATE_VERSION,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
 
@@ -95,36 +95,36 @@ describe('gamePersistence', () => {
 
     test('handles mix of valid, invalid, and idle assignments', () => {
       const saved = {
-        version: CURRENT_GAME_STATE_VERSION,
+        activeQuests: [],
+        buyableCharacters: [],
+        collectedKrana: {},
+        completedQuests: [],
+        inventory: {},
+        kraataCollection: {},
         protodermis: 100,
         protodermisCap: 2000,
-        completedQuests: [],
-        activeQuests: [],
-        collectedKrana: {},
-        kraataCollection: {},
-        inventory: {},
         recruitedCharacters: [
           {
-            id: 'Jala',
-            exp: 50,
             assignment: {
-              job: MatoranJob.CharcoalMaker,
-              expRatePerSecond: 1.2,
               assignedAt: Date.now() - 1000,
+              expRatePerSecond: 1.2,
+              job: MatoranJob.CharcoalMaker,
             },
+            exp: 50,
+            id: 'Jala',
           },
           {
-            id: 'Taipu',
-            exp: 100,
             assignment: {
-              job: 'SomeDeletedJob',
-              expRatePerSecond: 1.0,
               assignedAt: Date.now() - 1000,
+              expRatePerSecond: 1.0,
+              job: 'SomeDeletedJob',
             },
+            exp: 100,
+            id: 'Taipu',
           },
-          { id: 'Hahli', exp: 0 },
+          { exp: 0, id: 'Hahli' },
         ],
-        buyableCharacters: [],
+        version: CURRENT_GAME_STATE_VERSION,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
 

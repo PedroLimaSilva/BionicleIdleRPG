@@ -4,8 +4,8 @@ import { goto, INITIAL_GAME_STATE, setupGameState, hideCanvas } from './helpers'
 test.describe('Recruitment Celebration', () => {
   const GAME_STATE_WITH_BUYABLE = {
     ...INITIAL_GAME_STATE,
-    protodermis: 500,
     completedQuests: ['story_toa_arrival'],
+    protodermis: 500,
   };
 
   test('should show celebration modal instead of alert when recruiting', async ({ page }) => {
@@ -68,14 +68,14 @@ test.describe('Recruitment Celebration', () => {
   test('should navigate to characters when last character is recruited', async ({ page }) => {
     await setupGameState(page, {
       ...INITIAL_GAME_STATE,
-      protodermis: 500,
       completedQuests: ['story_toa_arrival'],
+      protodermis: 500,
       recruitedCharacters: [
-        { id: 'Toa_Kopaka', exp: 0 },
-        { id: 'Toa_Pohatu', exp: 0 },
-        { id: 'Toa_Onua', exp: 0 },
-        { id: 'Toa_Lewa', exp: 0 },
-        { id: 'Toa_Gali', exp: 0 },
+        { exp: 0, id: 'Toa_Kopaka' },
+        { exp: 0, id: 'Toa_Pohatu' },
+        { exp: 0, id: 'Toa_Onua' },
+        { exp: 0, id: 'Toa_Lewa' },
+        { exp: 0, id: 'Toa_Gali' },
       ],
     });
 

@@ -22,9 +22,9 @@ export function getExpProgress(totalExp: number): {
   const expForNextLevel = getTotalExpThresholdForLevel(level + 1) - expCurrent;
   const progress = (totalExp - expCurrent) / expForNextLevel;
   return {
-    level,
     currentLevelExp: totalExp - expCurrent,
     expForNextLevel,
+    level,
     progress,
   };
 }

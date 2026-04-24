@@ -16,11 +16,11 @@ export const TakanuvaModel = forwardRef<
   }
 >(({ matoran }, ref) => {
   const group = useRef<Group>(null);
-  const { nodes, animations } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/takanuva.glb');
+  const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + 'Toa_Nuva/takanuva.glb');
 
   const { playAnimation } = useCombatAnimations(animations, group, {
-    modelId: matoran.id,
     attackResolveAtFraction: 0.5,
+    modelId: matoran.id,
   });
 
   useImperativeHandle(ref, () => ({ playAnimation }));
@@ -30,17 +30,10 @@ export const TakanuvaModel = forwardRef<
     if (!root || !nodes) return;
     if (USE_WEATHERED_METAL) {
       applyWeatheredMetalToObject(root, {
-        roughness: 0.55,
-        metalness: 0.05,
-        grimeDarken: 0.4,
-        grimeRoughness: 0.2,
-        grimeMetalnessReduce: 0.5,
-        largeScale: 3.5,
-        fineScale: 18.0,
         cavityStrength: 1,
         edgeColor: '#ffffff',
-        edgeStrength: 0.15,
         edgeCurvatureScale: 2,
+        edgeStrength: 0.15,
         excludeMaterialNames: [
           'Holder.001',
           'SOLID-SILVER',
@@ -48,6 +41,13 @@ export const TakanuvaModel = forwardRef<
           'Trans Dark Pink',
           'Gali Eyes',
         ],
+        fineScale: 18.0,
+        grimeDarken: 0.4,
+        grimeMetalnessReduce: 0.5,
+        grimeRoughness: 0.2,
+        largeScale: 3.5,
+        metalness: 0.05,
+        roughness: 0.55,
       });
     }
   }, [nodes]);

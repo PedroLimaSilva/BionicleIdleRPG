@@ -20,7 +20,13 @@ function fillTier(ratio: number): 'high' | 'mid' | 'low' | 'empty' {
   return 'high';
 }
 
-export function WorldSpaceHpBar({ name, hp, maxHp, yOffset = 0.18, popupDirection = 'up' }: WorldSpaceHpBarProps) {
+export function WorldSpaceHpBar({
+  hp,
+  maxHp,
+  name,
+  popupDirection = 'up',
+  yOffset = 0.18,
+}: WorldSpaceHpBarProps) {
   const prevHpRef = useRef(hp);
   const popupSeqRef = useRef(0);
   const [damage, setDamage] = useState<DamagePopupEvent | null>(null);
@@ -28,10 +34,10 @@ export function WorldSpaceHpBar({ name, hp, maxHp, yOffset = 0.18, popupDirectio
 
   useEffect(() => {
     if (hp < prevHpRef.current) {
-      setDamage({ id: ++popupSeqRef.current, value: prevHpRef.current - hp, maxHp });
+      setDamage({ id: ++popupSeqRef.current, maxHp, value: prevHpRef.current - hp });
       setHealing(null);
     } else if (hp > prevHpRef.current) {
-      setHealing({ id: ++popupSeqRef.current, value: hp - prevHpRef.current, maxHp });
+      setHealing({ id: ++popupSeqRef.current, maxHp, value: hp - prevHpRef.current });
       setDamage(null);
     }
     prevHpRef.current = hp;

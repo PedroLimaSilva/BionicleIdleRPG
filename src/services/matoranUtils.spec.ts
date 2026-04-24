@@ -12,60 +12,60 @@ import { MatoranJob } from '../types/Jobs';
 import { LegoColor } from '../types/Colors';
 
 const MOCK_COLORS = {
-  face: LegoColor.LightGray,
-  mask: LegoColor.Black,
-  body: LegoColor.Black,
-  feet: LegoColor.Black,
   arms: LegoColor.Black,
+  body: LegoColor.Black,
   eyes: LegoColor.Black,
+  face: LegoColor.LightGray,
+  feet: LegoColor.Black,
+  mask: LegoColor.Black,
 };
 
 describe('matoranUtils', () => {
   describe('isMatoran', () => {
     test('returns true for Diminished stage', () => {
       const matoran: BaseMatoran = {
-        id: 'test',
-        name: 'Test',
-        element: ElementTribe.Fire,
-        stage: MatoranStage.Diminished,
-        mask: Mask.Hau,
         colors: MOCK_COLORS,
+        element: ElementTribe.Fire,
+        id: 'test',
+        mask: Mask.Hau,
+        name: 'Test',
+        stage: MatoranStage.Diminished,
       };
       expect(isMatoran(matoran)).toBe(true);
     });
 
     test('returns true for Rebuilt stage', () => {
       const matoran: BaseMatoran = {
-        id: 'test',
-        name: 'Test',
-        element: ElementTribe.Fire,
-        stage: MatoranStage.Rebuilt,
-        mask: Mask.Hau,
         colors: MOCK_COLORS,
+        element: ElementTribe.Fire,
+        id: 'test',
+        mask: Mask.Hau,
+        name: 'Test',
+        stage: MatoranStage.Rebuilt,
       };
       expect(isMatoran(matoran)).toBe(true);
     });
 
     test('returns true for Metru stage', () => {
       const matoran: BaseMatoran = {
-        id: 'test',
-        name: 'Test',
-        element: ElementTribe.Fire,
-        stage: MatoranStage.Metru,
-        mask: Mask.Hau,
         colors: MOCK_COLORS,
+        element: ElementTribe.Fire,
+        id: 'test',
+        mask: Mask.Hau,
+        name: 'Test',
+        stage: MatoranStage.Metru,
       };
       expect(isMatoran(matoran)).toBe(true);
     });
 
     test('returns false for ToaMata stage', () => {
       const toa: BaseMatoran = {
-        id: 'test',
-        name: 'Test',
-        element: ElementTribe.Fire,
-        stage: MatoranStage.ToaMata,
-        mask: Mask.Hau,
         colors: MOCK_COLORS,
+        element: ElementTribe.Fire,
+        id: 'test',
+        mask: Mask.Hau,
+        name: 'Test',
+        stage: MatoranStage.ToaMata,
       };
       expect(isMatoran(toa)).toBe(false);
     });
@@ -74,24 +74,24 @@ describe('matoranUtils', () => {
   describe('isToaMata', () => {
     test('returns true for ToaMata stage', () => {
       const toa: BaseMatoran = {
-        id: 'test',
-        name: 'Test',
-        element: ElementTribe.Fire,
-        stage: MatoranStage.ToaMata,
-        mask: Mask.Hau,
         colors: MOCK_COLORS,
+        element: ElementTribe.Fire,
+        id: 'test',
+        mask: Mask.Hau,
+        name: 'Test',
+        stage: MatoranStage.ToaMata,
       };
       expect(isToaMata(toa)).toBe(true);
     });
 
     test('returns false for Matoran stages', () => {
       const matoran: BaseMatoran = {
-        id: 'test',
-        name: 'Test',
-        element: ElementTribe.Fire,
-        stage: MatoranStage.Diminished,
-        mask: Mask.Hau,
         colors: MOCK_COLORS,
+        element: ElementTribe.Fire,
+        id: 'test',
+        mask: Mask.Hau,
+        name: 'Test',
+        stage: MatoranStage.Diminished,
       };
       expect(isToaMata(matoran)).toBe(false);
     });
@@ -100,24 +100,24 @@ describe('matoranUtils', () => {
   describe('isToa', () => {
     test('returns true for ToaMata', () => {
       const toa: BaseMatoran = {
-        id: 'test',
-        name: 'Test',
-        element: ElementTribe.Fire,
-        stage: MatoranStage.ToaMata,
-        mask: Mask.Hau,
         colors: MOCK_COLORS,
+        element: ElementTribe.Fire,
+        id: 'test',
+        mask: Mask.Hau,
+        name: 'Test',
+        stage: MatoranStage.ToaMata,
       };
       expect(isToa(toa)).toBe(true);
     });
 
     test('returns false for Matoran', () => {
       const matoran: BaseMatoran = {
-        id: 'test',
-        name: 'Test',
-        element: ElementTribe.Fire,
-        stage: MatoranStage.Diminished,
-        mask: Mask.Hau,
         colors: MOCK_COLORS,
+        element: ElementTribe.Fire,
+        id: 'test',
+        mask: Mask.Hau,
+        name: 'Test',
+        stage: MatoranStage.Diminished,
       };
       expect(isToa(matoran)).toBe(false);
     });
@@ -126,22 +126,22 @@ describe('matoranUtils', () => {
   describe('recruitMatoran', () => {
     test('recruits character when enough protodermis', () => {
       const character: ListedCharacterData = {
-        id: 'Jala',
         cost: 100,
+        id: 'Jala',
       };
       const buyableCharacters: ListedCharacterData[] = [character];
 
       const result = recruitMatoran(character, 150, buyableCharacters);
 
       expect(result.updatedProtodermis).toBe(50);
-      expect(result.newRecruit).toEqual({ id: 'Jala', exp: 0 });
+      expect(result.newRecruit).toEqual({ exp: 0, id: 'Jala' });
       expect(result.updatedBuyable).toHaveLength(0);
     });
 
     test('fails to recruit when not enough protodermis', () => {
       const character: ListedCharacterData = {
-        id: 'Jala',
         cost: 100,
+        id: 'Jala',
       };
       const buyableCharacters: ListedCharacterData[] = [character];
 
@@ -154,12 +154,12 @@ describe('matoranUtils', () => {
 
     test('removes recruited character from buyable list', () => {
       const character1: ListedCharacterData = {
-        id: 'Jala',
         cost: 100,
+        id: 'Jala',
       };
       const character2: ListedCharacterData = {
-        id: 'Hahli',
         cost: 100,
+        id: 'Hahli',
       };
       const buyableCharacters: ListedCharacterData[] = [character1, character2];
 
@@ -173,8 +173,8 @@ describe('matoranUtils', () => {
   describe('assignJob', () => {
     test('assigns job to specific matoran', () => {
       const matoran: RecruitedCharacterData[] = [
-        { id: 'Jala', exp: 0 },
-        { id: 'Hahli', exp: 0 },
+        { exp: 0, id: 'Jala' },
+        { exp: 0, id: 'Hahli' },
       ];
 
       const result = assignJob('Jala', MatoranJob.CharcoalMaker, matoran);
@@ -185,7 +185,7 @@ describe('matoranUtils', () => {
     });
 
     test('sets correct exp rate based on productivity modifier', () => {
-      const matoran: RecruitedCharacterData[] = [{ id: 'Jala', exp: 0 }];
+      const matoran: RecruitedCharacterData[] = [{ exp: 0, id: 'Jala' }];
 
       const result = assignJob('Jala', MatoranJob.CharcoalMaker, matoran);
 
@@ -195,7 +195,7 @@ describe('matoranUtils', () => {
     });
 
     test('sets assignedAt timestamp', () => {
-      const matoran: RecruitedCharacterData[] = [{ id: 'Jala', exp: 0 }];
+      const matoran: RecruitedCharacterData[] = [{ exp: 0, id: 'Jala' }];
       const beforeTime = Date.now();
 
       const result = assignJob('Jala', MatoranJob.CharcoalMaker, matoran);
@@ -207,13 +207,13 @@ describe('matoranUtils', () => {
 
     test('does not modify other matoran', () => {
       const matoran: RecruitedCharacterData[] = [
-        { id: 'Jala', exp: 100 },
-        { id: 'Hahli', exp: 200 },
+        { exp: 100, id: 'Jala' },
+        { exp: 200, id: 'Hahli' },
       ];
 
       const result = assignJob('Jala', MatoranJob.CharcoalMaker, matoran);
 
-      expect(result[1]).toEqual({ id: 'Hahli', exp: 200 });
+      expect(result[1]).toEqual({ exp: 200, id: 'Hahli' });
     });
   });
 
@@ -221,13 +221,13 @@ describe('matoranUtils', () => {
     test('removes job from specific matoran', () => {
       const matoran: RecruitedCharacterData[] = [
         {
-          id: 'Jala',
-          exp: 0,
           assignment: {
-            job: MatoranJob.CharcoalMaker,
-            expRatePerSecond: 1.2,
             assignedAt: Date.now(),
+            expRatePerSecond: 1.2,
+            job: MatoranJob.CharcoalMaker,
           },
+          exp: 0,
+          id: 'Jala',
         },
       ];
 
@@ -237,32 +237,32 @@ describe('matoranUtils', () => {
     });
 
     test('does not modify matoran without assignment', () => {
-      const matoran: RecruitedCharacterData[] = [{ id: 'Jala', exp: 0 }];
+      const matoran: RecruitedCharacterData[] = [{ exp: 0, id: 'Jala' }];
 
       const result = removeJob('Jala', matoran);
 
-      expect(result[0]).toEqual({ id: 'Jala', exp: 0 });
+      expect(result[0]).toEqual({ exp: 0, id: 'Jala' });
     });
 
     test('does not modify other matoran', () => {
       const matoran: RecruitedCharacterData[] = [
         {
-          id: 'Jala',
-          exp: 0,
           assignment: {
-            job: MatoranJob.CharcoalMaker,
-            expRatePerSecond: 1.2,
             assignedAt: Date.now(),
+            expRatePerSecond: 1.2,
+            job: MatoranJob.CharcoalMaker,
           },
+          exp: 0,
+          id: 'Jala',
         },
         {
-          id: 'Hahli',
-          exp: 0,
           assignment: {
-            job: MatoranJob.AlgaeHarvester,
-            expRatePerSecond: 1.2,
             assignedAt: Date.now(),
+            expRatePerSecond: 1.2,
+            job: MatoranJob.AlgaeHarvester,
           },
+          exp: 0,
+          id: 'Hahli',
         },
       ];
 
@@ -275,12 +275,12 @@ describe('matoranUtils', () => {
 
   describe('masksCollected', () => {
     const mockToa: BaseMatoran = {
-      id: 'Toa_Tahu',
-      name: 'Tahu',
-      element: ElementTribe.Fire,
-      stage: MatoranStage.ToaMata,
-      mask: Mask.Hau,
       colors: MOCK_COLORS,
+      element: ElementTribe.Fire,
+      id: 'Toa_Tahu',
+      mask: Mask.Hau,
+      name: 'Tahu',
+      stage: MatoranStage.ToaMata,
     };
 
     test('returns only base mask when no quests completed', () => {
@@ -311,12 +311,12 @@ describe('matoranUtils', () => {
 
     describe('Toa Nuva', () => {
       const mockToaNuva: BaseMatoran = {
-        id: 'Toa_Tahu_Nuva',
-        name: 'Toa Tahu Nuva',
-        element: ElementTribe.Fire,
-        stage: MatoranStage.ToaNuva,
-        mask: Mask.HauNuva,
         colors: MOCK_COLORS,
+        element: ElementTribe.Fire,
+        id: 'Toa_Tahu_Nuva',
+        mask: Mask.HauNuva,
+        name: 'Toa Tahu Nuva',
+        stage: MatoranStage.ToaNuva,
       };
 
       test('returns only dex mask when no quests completed', () => {

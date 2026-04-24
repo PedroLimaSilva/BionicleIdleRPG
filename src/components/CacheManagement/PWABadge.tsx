@@ -7,8 +7,8 @@ export function PWABadge() {
   const period = 60 * 60 * 1000;
 
   const {
-    offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
+    offlineReady: [offlineReady, setOfflineReady],
     updateServiceWorker,
   } = useRegisterSW({
     onRegisteredSW(swUrl, r) {

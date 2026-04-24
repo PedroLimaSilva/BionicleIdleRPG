@@ -31,11 +31,11 @@ export function usePlayAnimation(
   options: UsePlayAnimationOptions = {}
 ) {
   const {
-    modelId,
     actionTimeScale = 1,
-    transitionMode = 'fadeIdle',
     attackResolveAtFraction = 0.5,
     idleActionName = 'Idle',
+    modelId,
+    transitionMode = 'fadeIdle',
   } = options;
 
   const pendingAttackResolve = useRef<{
@@ -91,9 +91,9 @@ export function usePlayAnimation(
           const resolveAtTime = clip.duration * attackResolveAtFraction;
           pendingAttackResolve.current = {
             action,
+            hasResolved: false,
             resolve,
             resolveAtTime,
-            hasResolved: false,
           };
 
           const onFinished = (e: { action: AnimationAction }) => {

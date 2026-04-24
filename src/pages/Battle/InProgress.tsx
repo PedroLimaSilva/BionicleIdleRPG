@@ -20,14 +20,14 @@ export interface BattleInProgressProps {
 export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressProps) => {
   const { battle } = useGame();
   const {
+    actionQueue,
     currentWave,
     enemies,
-    team,
-    actionQueue,
-    playActionQueue,
     isRunningRound,
-    retreat,
     phase,
+    playActionQueue,
+    retreat,
+    team,
   } = battle;
   const [waveClearPlaying, setWaveClearPlaying] = useState(false);
   const waveClearTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -70,9 +70,9 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
 
   const exitTransition = buildTransition(
     {
+      delay: 0.18,
       duration: MOTION_DURATION.slow,
       ease: MOTION_EASING.standard,
-      delay: 0.18,
     },
     shouldReduceMotion
   );
@@ -82,9 +82,7 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
       <motion.div
         className="battle-in-progress__chrome"
         initial={{ opacity: 1, y: 0 }}
-        animate={
-          exitPresentation ? { opacity: 0, y: 10 } : { opacity: 1, y: 0 }
-        }
+        animate={exitPresentation ? { opacity: 0, y: 10 } : { opacity: 1, y: 0 }}
         transition={exitTransition}
         style={{ pointerEvents: exitPresentation ? 'none' : undefined }}
       >

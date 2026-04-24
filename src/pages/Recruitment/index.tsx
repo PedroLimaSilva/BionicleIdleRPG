@@ -11,7 +11,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { RecruitmentCelebration } from '../../components/RecruitmentCelebration';
 
 export const Recruitment: React.FC = () => {
-  const { protodermis, recruitCharacter, buyableCharacters } = useGame();
+  const { buyableCharacters, protodermis, recruitCharacter } = useGame();
   const { setScene } = useSceneCanvas();
 
   const navigate = useNavigate();

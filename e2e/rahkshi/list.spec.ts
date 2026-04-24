@@ -4,28 +4,28 @@ import { goto, INITIAL_GAME_STATE, setupGameState } from '../helpers';
 const RAHKSHI_INVENTORY_GAME_STATE = {
   ...INITIAL_GAME_STATE,
   kraataCollection: {
-    KraataDisintegration: { 1: 5 },
-    KraataChainLightning: { 1: 1 },
-    KraataElectricity: { 1: 1 },
     KraataAccuracy: { 1: 20 },
+    KraataChainLightning: { 1: 1 },
+    KraataDisintegration: { 1: 5 },
+    KraataElectricity: { 1: 1 },
   },
   recruitedCharacters: [
     {
-      id: 'Takua',
       exp: 0,
+      id: 'Takua',
       quest: 'mnog_find_canister_beach',
     },
     {
+      exp: 0,
       id: 'Toa_Tahu',
-      exp: 0,
     },
     {
-      id: 'Jala',
       exp: 20000, // High exp so job gains during E2E tests don't cause level-up
+      id: 'Jala',
     },
     {
-      id: 'Toa_Gali',
       exp: 0,
+      id: 'Toa_Gali',
     },
   ],
 };

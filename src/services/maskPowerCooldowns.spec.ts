@@ -6,31 +6,31 @@ describe('Mask Power Cooldowns', () => {
   describe('Wave-based Cooldowns', () => {
     test('decrements wave-based mask power duration when active', () => {
       const combatant: Combatant = {
-        id: 'test',
-        name: 'Test',
-        model: '',
-        lvl: 1,
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 5,
-        speed: 5,
         element: ElementTribe.Fire,
+        hp: 100,
+        id: 'test',
+        lvl: 1,
+        maskPower: {
+          active: true,
+          cooldown: { amount: 0, unit: 'wave' },
+          description: 'Test mask',
+          effect: {
+            duration: { amount: 3, unit: 'wave' },
+            multiplier: 1.5,
+            type: 'ATK_MULT',
+          },
+          longName: 'Test Mask',
+          shortName: Mask.Pakari,
+          target: 'self',
+        },
+        maxHp: 100,
+        model: '',
+        name: 'Test',
+        speed: 5,
         strategy: BattleStrategy.Random,
         willUseAbility: false,
-        maskPower: {
-          description: 'Test mask',
-          shortName: Mask.Pakari,
-          longName: 'Test Mask',
-          target: 'self',
-          active: true,
-          cooldown: { unit: 'wave', amount: 0 },
-          effect: {
-            type: 'ATK_MULT',
-            multiplier: 1.5,
-            duration: { unit: 'wave', amount: 3 },
-          },
-        },
       };
 
       const [updated] = decrementWaveCounters([combatant]);
@@ -41,31 +41,31 @@ describe('Mask Power Cooldowns', () => {
 
     test('deactivates mask power when duration reaches 0', () => {
       const combatant: Combatant = {
-        id: 'Toa_Tahu', // Use a real combatant ID so it can look up the original mask
-        name: 'Test',
-        model: '',
-        lvl: 1,
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 5,
-        speed: 5,
         element: ElementTribe.Fire,
+        hp: 100,
+        id: 'Toa_Tahu', // Use a real combatant ID so it can look up the original mask
+        lvl: 1,
+        maskPower: {
+          active: true,
+          cooldown: { amount: 0, unit: 'wave' },
+          description: 'Test mask',
+          effect: {
+            duration: { amount: 1, unit: 'wave' },
+            multiplier: 0.5,
+            type: 'DMG_MITIGATOR',
+          },
+          longName: 'Test Mask',
+          shortName: Mask.Hau,
+          target: 'self',
+        },
+        maxHp: 100,
+        model: '',
+        name: 'Test',
+        speed: 5,
         strategy: BattleStrategy.Random,
         willUseAbility: false,
-        maskPower: {
-          description: 'Test mask',
-          shortName: Mask.Hau,
-          longName: 'Test Mask',
-          target: 'self',
-          active: true,
-          cooldown: { unit: 'wave', amount: 0 },
-          effect: {
-            type: 'DMG_MITIGATOR',
-            multiplier: 0.5,
-            duration: { unit: 'wave', amount: 1 },
-          },
-        },
       };
 
       const [updated] = decrementWaveCounters([combatant]);
@@ -79,31 +79,31 @@ describe('Mask Power Cooldowns', () => {
 
     test('decrements cooldown when mask power is inactive', () => {
       const combatant: Combatant = {
-        id: 'test',
-        name: 'Test',
-        model: '',
-        lvl: 1,
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 5,
-        speed: 5,
         element: ElementTribe.Fire,
+        hp: 100,
+        id: 'test',
+        lvl: 1,
+        maskPower: {
+          active: false,
+          cooldown: { amount: 3, unit: 'wave' },
+          description: 'Test mask',
+          effect: {
+            duration: { amount: 2, unit: 'wave' },
+            multiplier: 1.5,
+            type: 'ATK_MULT',
+          },
+          longName: 'Test Mask',
+          shortName: Mask.Pakari,
+          target: 'self',
+        },
+        maxHp: 100,
+        model: '',
+        name: 'Test',
+        speed: 5,
         strategy: BattleStrategy.Random,
         willUseAbility: false,
-        maskPower: {
-          description: 'Test mask',
-          shortName: Mask.Pakari,
-          longName: 'Test Mask',
-          target: 'self',
-          active: false,
-          cooldown: { unit: 'wave', amount: 3 },
-          effect: {
-            type: 'ATK_MULT',
-            multiplier: 1.5,
-            duration: { unit: 'wave', amount: 2 },
-          },
-        },
       };
 
       const [updated] = decrementWaveCounters([combatant]);
@@ -114,31 +114,31 @@ describe('Mask Power Cooldowns', () => {
 
     test('does not decrement non-wave counters', () => {
       const combatant: Combatant = {
-        id: 'test',
-        name: 'Test',
-        model: '',
-        lvl: 1,
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 5,
-        speed: 5,
         element: ElementTribe.Fire,
+        hp: 100,
+        id: 'test',
+        lvl: 1,
+        maskPower: {
+          active: true,
+          cooldown: { amount: 0, unit: 'turn' },
+          description: 'Test mask',
+          effect: {
+            duration: { amount: 3, unit: 'turn' },
+            multiplier: 1.5,
+            type: 'ATK_MULT',
+          },
+          longName: 'Test Mask',
+          shortName: Mask.Pakari,
+          target: 'self',
+        },
+        maxHp: 100,
+        model: '',
+        name: 'Test',
+        speed: 5,
         strategy: BattleStrategy.Random,
         willUseAbility: false,
-        maskPower: {
-          description: 'Test mask',
-          shortName: Mask.Pakari,
-          longName: 'Test Mask',
-          target: 'self',
-          active: true,
-          cooldown: { unit: 'turn', amount: 0 },
-          effect: {
-            type: 'ATK_MULT',
-            multiplier: 1.5,
-            duration: { unit: 'turn', amount: 3 },
-          },
-        },
       };
 
       const [updated] = decrementWaveCounters([combatant]);
@@ -151,58 +151,58 @@ describe('Mask Power Cooldowns', () => {
     test('handles multiple combatants', () => {
       const combatants: Combatant[] = [
         {
-          id: 'test1',
-          name: 'Test1',
-          model: '',
-          lvl: 1,
-          hp: 100,
-          maxHp: 100,
           attack: 10,
           defense: 5,
-          speed: 5,
           element: ElementTribe.Fire,
+          hp: 100,
+          id: 'test1',
+          lvl: 1,
+          maskPower: {
+            active: true,
+            cooldown: { amount: 0, unit: 'wave' },
+            description: 'Test mask',
+            effect: {
+              duration: { amount: 2, unit: 'wave' },
+              multiplier: 1.5,
+              type: 'ATK_MULT',
+            },
+            longName: 'Test Mask',
+            shortName: Mask.Pakari,
+            target: 'self',
+          },
+          maxHp: 100,
+          model: '',
+          name: 'Test1',
+          speed: 5,
           strategy: BattleStrategy.Random,
           willUseAbility: false,
-          maskPower: {
-            description: 'Test mask',
-            shortName: Mask.Pakari,
-            longName: 'Test Mask',
-            target: 'self',
-            active: true,
-            cooldown: { unit: 'wave', amount: 0 },
-            effect: {
-              type: 'ATK_MULT',
-              multiplier: 1.5,
-              duration: { unit: 'wave', amount: 2 },
-            },
-          },
         },
         {
-          id: 'test2',
-          name: 'Test2',
-          model: '',
-          lvl: 1,
-          hp: 100,
-          maxHp: 100,
           attack: 10,
           defense: 5,
-          speed: 5,
           element: ElementTribe.Water,
+          hp: 100,
+          id: 'test2',
+          lvl: 1,
+          maskPower: {
+            active: false,
+            cooldown: { amount: 3, unit: 'wave' },
+            description: 'Test mask',
+            effect: {
+              duration: { amount: 1, unit: 'wave' },
+              multiplier: 0.2,
+              type: 'HEAL',
+            },
+            longName: 'Test Mask',
+            shortName: Mask.Kaukau,
+            target: 'self',
+          },
+          maxHp: 100,
+          model: '',
+          name: 'Test2',
+          speed: 5,
           strategy: BattleStrategy.Random,
           willUseAbility: false,
-          maskPower: {
-            description: 'Test mask',
-            shortName: Mask.Kaukau,
-            longName: 'Test Mask',
-            target: 'self',
-            active: false,
-            cooldown: { unit: 'wave', amount: 3 },
-            effect: {
-              type: 'HEAL',
-              multiplier: 0.2,
-              duration: { unit: 'wave', amount: 1 },
-            },
-          },
         },
       ];
 
@@ -214,31 +214,31 @@ describe('Mask Power Cooldowns', () => {
 
     test('cooldown does not go below 0', () => {
       const combatant: Combatant = {
-        id: 'test',
-        name: 'Test',
-        model: '',
-        lvl: 1,
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 5,
-        speed: 5,
         element: ElementTribe.Fire,
+        hp: 100,
+        id: 'test',
+        lvl: 1,
+        maskPower: {
+          active: false,
+          cooldown: { amount: 0, unit: 'wave' },
+          description: 'Test mask',
+          effect: {
+            duration: { amount: 2, unit: 'wave' },
+            multiplier: 1.5,
+            type: 'ATK_MULT',
+          },
+          longName: 'Test Mask',
+          shortName: Mask.Pakari,
+          target: 'self',
+        },
+        maxHp: 100,
+        model: '',
+        name: 'Test',
+        speed: 5,
         strategy: BattleStrategy.Random,
         willUseAbility: false,
-        maskPower: {
-          description: 'Test mask',
-          shortName: Mask.Pakari,
-          longName: 'Test Mask',
-          target: 'self',
-          active: false,
-          cooldown: { unit: 'wave', amount: 0 },
-          effect: {
-            type: 'ATK_MULT',
-            multiplier: 1.5,
-            duration: { unit: 'wave', amount: 2 },
-          },
-        },
       };
 
       const [updated] = decrementWaveCounters([combatant]);
@@ -262,47 +262,47 @@ describe('Mask Power Cooldowns', () => {
       }> = {}
     ): Combatant {
       const {
-        id = 'test',
         active = true,
-        shortName = Mask.Pakari,
-        durationUnit = 'attack',
-        durationAmount = 2,
-        cooldownUnit = 'turn',
         cooldownAmount = 0,
+        cooldownUnit = 'turn',
+        durationAmount = 2,
+        durationUnit = 'attack',
+        id = 'test',
+        shortName = Mask.Pakari,
       } = overrides;
       return {
-        id,
-        name: 'Test',
-        model: '',
-        lvl: 1,
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 5,
-        speed: 5,
         element: ElementTribe.Fire,
+        hp: 100,
+        id,
+        lvl: 1,
+        maskPower: {
+          active,
+          cooldown: { amount: cooldownAmount, unit: cooldownUnit },
+          description: 'Test',
+          effect: {
+            duration: { amount: durationAmount, unit: durationUnit },
+            multiplier: 3,
+            type: 'ATK_MULT',
+          },
+          longName: 'Test Mask',
+          shortName,
+          target: 'self',
+        },
+        maxHp: 100,
+        model: '',
+        name: 'Test',
+        speed: 5,
         strategy: BattleStrategy.Random,
         willUseAbility: false,
-        maskPower: {
-          description: 'Test',
-          shortName,
-          longName: 'Test Mask',
-          target: 'self',
-          active,
-          cooldown: { unit: cooldownUnit, amount: cooldownAmount },
-          effect: {
-            type: 'ATK_MULT',
-            multiplier: 3,
-            duration: { unit: durationUnit, amount: durationAmount },
-          },
-        },
       };
     }
 
     // ─── Duration decrements ───
 
     test('attack-based duration decrements on "attack" unit', () => {
-      const c = makeCombatant({ durationUnit: 'attack', durationAmount: 2 });
+      const c = makeCombatant({ durationAmount: 2, durationUnit: 'attack' });
       const updated = decrementMaskPowerCounter(c, 'attack');
       expect(updated.maskPower?.effect.duration.amount).toBe(1);
       expect(updated.maskPower?.active).toBe(true);
@@ -310,11 +310,11 @@ describe('Mask Power Cooldowns', () => {
 
     test('attack-based duration reaching 0 deactivates and sets cooldown', () => {
       const c = makeCombatant({
-        shortName: Mask.Pakari,
-        durationUnit: 'attack',
-        durationAmount: 1,
-        cooldownUnit: 'turn',
         cooldownAmount: 0,
+        cooldownUnit: 'turn',
+        durationAmount: 1,
+        durationUnit: 'attack',
+        shortName: Mask.Pakari,
       });
       const updated = decrementMaskPowerCounter(c, 'attack');
       expect(updated.maskPower?.effect.duration.amount).toBe(0);
@@ -326,9 +326,9 @@ describe('Mask Power Cooldowns', () => {
 
     test('hit-based duration decrements on "hit" unit', () => {
       const c = makeCombatant({
-        shortName: Mask.Miru,
-        durationUnit: 'hit',
         durationAmount: 2,
+        durationUnit: 'hit',
+        shortName: Mask.Miru,
       });
       const updated = decrementMaskPowerCounter(c, 'hit');
       expect(updated.maskPower?.effect.duration.amount).toBe(1);
@@ -337,11 +337,11 @@ describe('Mask Power Cooldowns', () => {
 
     test('hit-based duration reaching 0 deactivates and sets cooldown', () => {
       const c = makeCombatant({
-        shortName: Mask.Miru,
-        durationUnit: 'hit',
-        durationAmount: 1,
-        cooldownUnit: 'wave',
         cooldownAmount: 0,
+        cooldownUnit: 'wave',
+        durationAmount: 1,
+        durationUnit: 'hit',
+        shortName: Mask.Miru,
       });
       const updated = decrementMaskPowerCounter(c, 'hit');
       expect(updated.maskPower?.effect.duration.amount).toBe(0);
@@ -353,9 +353,9 @@ describe('Mask Power Cooldowns', () => {
 
     test('turn-based duration decrements on "turn" unit', () => {
       const c = makeCombatant({
-        shortName: Mask.Kaukau,
-        durationUnit: 'turn',
         durationAmount: 3,
+        durationUnit: 'turn',
+        shortName: Mask.Kaukau,
       });
       const updated = decrementMaskPowerCounter(c, 'turn');
       expect(updated.maskPower?.effect.duration.amount).toBe(2);
@@ -364,11 +364,11 @@ describe('Mask Power Cooldowns', () => {
 
     test('turn-based duration reaching 0 deactivates and sets cooldown', () => {
       const c = makeCombatant({
-        shortName: Mask.Kaukau,
-        durationUnit: 'turn',
-        durationAmount: 1,
-        cooldownUnit: 'wave',
         cooldownAmount: 0,
+        cooldownUnit: 'wave',
+        durationAmount: 1,
+        durationUnit: 'turn',
+        shortName: Mask.Kaukau,
       });
       const updated = decrementMaskPowerCounter(c, 'turn');
       expect(updated.maskPower?.effect.duration.amount).toBe(0);
@@ -380,9 +380,9 @@ describe('Mask Power Cooldowns', () => {
 
     test('round-based duration decrements on "round" unit', () => {
       const c = makeCombatant({
-        shortName: Mask.Hau,
-        durationUnit: 'round',
         durationAmount: 2,
+        durationUnit: 'round',
+        shortName: Mask.Hau,
       });
       const updated = decrementMaskPowerCounter(c, 'round');
       expect(updated.maskPower?.effect.duration.amount).toBe(1);
@@ -391,11 +391,11 @@ describe('Mask Power Cooldowns', () => {
 
     test('round-based duration reaching 0 deactivates and sets cooldown', () => {
       const c = makeCombatant({
-        shortName: Mask.Hau,
-        durationUnit: 'round',
-        durationAmount: 1,
-        cooldownUnit: 'wave',
         cooldownAmount: 0,
+        cooldownUnit: 'wave',
+        durationAmount: 1,
+        durationUnit: 'round',
+        shortName: Mask.Hau,
       });
       const updated = decrementMaskPowerCounter(c, 'round');
       expect(updated.maskPower?.effect.duration.amount).toBe(0);
@@ -410,10 +410,10 @@ describe('Mask Power Cooldowns', () => {
     test('turn-based cooldown decrements on "turn" unit when inactive', () => {
       const c = makeCombatant({
         active: false,
-        durationUnit: 'attack',
-        durationAmount: 1,
-        cooldownUnit: 'turn',
         cooldownAmount: 3,
+        cooldownUnit: 'turn',
+        durationAmount: 1,
+        durationUnit: 'attack',
       });
       const updated = decrementMaskPowerCounter(c, 'turn');
       expect(updated.maskPower?.cooldown.amount).toBe(2);
@@ -423,10 +423,10 @@ describe('Mask Power Cooldowns', () => {
     test('wave-based cooldown decrements on "wave" unit when inactive', () => {
       const c = makeCombatant({
         active: false,
-        durationUnit: 'round',
-        durationAmount: 1,
-        cooldownUnit: 'wave',
         cooldownAmount: 2,
+        cooldownUnit: 'wave',
+        durationAmount: 1,
+        durationUnit: 'round',
       });
       const updated = decrementMaskPowerCounter(c, 'wave');
       expect(updated.maskPower?.cooldown.amount).toBe(1);
@@ -436,7 +436,7 @@ describe('Mask Power Cooldowns', () => {
     // ─── No-op scenarios ───
 
     test('does not decrement duration when unit does not match', () => {
-      const c = makeCombatant({ durationUnit: 'attack', durationAmount: 2 });
+      const c = makeCombatant({ durationAmount: 2, durationUnit: 'attack' });
       const updated = decrementMaskPowerCounter(c, 'turn');
       expect(updated.maskPower?.effect.duration.amount).toBe(2);
       expect(updated.maskPower?.active).toBe(true);
@@ -445,8 +445,8 @@ describe('Mask Power Cooldowns', () => {
     test('does not decrement cooldown when unit does not match', () => {
       const c = makeCombatant({
         active: false,
-        cooldownUnit: 'turn',
         cooldownAmount: 3,
+        cooldownUnit: 'turn',
       });
       const updated = decrementMaskPowerCounter(c, 'wave');
       expect(updated.maskPower?.cooldown.amount).toBe(3);
@@ -454,16 +454,16 @@ describe('Mask Power Cooldowns', () => {
 
     test('returns same combatant when no maskPower is present', () => {
       const c: Combatant = {
-        id: 'test',
-        name: 'Test',
-        model: '',
-        lvl: 1,
-        hp: 100,
-        maxHp: 100,
         attack: 10,
         defense: 5,
-        speed: 5,
         element: ElementTribe.Fire,
+        hp: 100,
+        id: 'test',
+        lvl: 1,
+        maxHp: 100,
+        model: '',
+        name: 'Test',
+        speed: 5,
         strategy: BattleStrategy.Random,
         willUseAbility: false,
       };
@@ -475,11 +475,11 @@ describe('Mask Power Cooldowns', () => {
       // Pakari: attack-based duration 1. When duration expires, cooldown is set from MASK_POWERS.
       // In the same call, cooldown should NOT be decremented.
       const c = makeCombatant({
-        shortName: Mask.Pakari,
-        durationUnit: 'attack',
-        durationAmount: 1,
-        cooldownUnit: 'turn',
         cooldownAmount: 0,
+        cooldownUnit: 'turn',
+        durationAmount: 1,
+        durationUnit: 'attack',
+        shortName: Mask.Pakari,
       });
       const updated = decrementMaskPowerCounter(c, 'attack');
       expect(updated.maskPower?.active).toBe(false);

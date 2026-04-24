@@ -3,14 +3,14 @@ import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 
 export const INITIAL_GAME_STATE: PartialGameState = {
-  version: CURRENT_GAME_STATE_VERSION,
+  activeQuests: [],
+  collectedKrana: {},
+  completedQuests: [],
+  kraataCollection: {},
   protodermis: 0,
   protodermisCap: 2000,
-  collectedKrana: {},
-  kraataCollection: {},
   recruitedCharacters: [],
-  activeQuests: [],
-  completedQuests: [],
+  version: CURRENT_GAME_STATE_VERSION,
 };
 
 /**
@@ -100,9 +100,9 @@ export function isMobile(testInfo: TestInfo): boolean {
 
 /** Viewport sizes for responsiveness tests */
 export const VIEWPORTS = {
-  desktop: { width: 1920, height: 1080 },
-  mobilePortrait: { width: 412, height: 915 }, // Pixel 7
-  mobileLandscape: { width: 851, height: 393 },
+  desktop: { height: 1080, width: 1920 },
+  mobileLandscape: { height: 393, width: 851 },
+  mobilePortrait: { height: 915, width: 412 }, // Pixel 7
 } as const;
 
 /**
@@ -111,7 +111,7 @@ export const VIEWPORTS = {
  * In CI/Docker, software WebGL is slower - allow more time for initial frame
  */
 export async function waitForCanvas(page: Page, timeout = 10000) {
-  await page.waitForSelector('canvas', { timeout, state: 'visible' });
+  await page.waitForSelector('canvas', { state: 'visible', timeout });
 
   const isCI = !!process.env.CI || !!process.env.PLAYWRIGHT_DOCKER;
   await page.waitForTimeout(isCI ? 6000 : 3000);
@@ -214,8 +214,8 @@ export async function disableCSSAnimations(page: Page) {
  */
 export async function waitForAvatars(page: Page, timeout = 10000) {
   await page.waitForSelector('.composited-avatar, .matoran-avatar', {
-    timeout,
     state: 'attached',
+    timeout,
   });
   // Give time for images to fully render
   await page.waitForTimeout(1000);
@@ -226,8 +226,8 @@ export async function waitForAvatars(page: Page, timeout = 10000) {
  */
 export async function waitForCharacterCards(page: Page, timeout = 10000) {
   await page.waitForSelector('.character-card, .matoran-card', {
-    timeout,
     state: 'visible',
+    timeout,
   });
   await page.waitForTimeout(500);
 }
@@ -239,11 +239,11 @@ export const SCREENSHOT_OPTIONS = {
   standard: {
     maxDiffPixels: 100,
   },
-  withImages: {
-    maxDiffPixels: 200,
-  },
   webgl: {
     maxDiffPixels: 500,
     threshold: 0.3,
+  },
+  withImages: {
+    maxDiffPixels: 200,
   },
 };

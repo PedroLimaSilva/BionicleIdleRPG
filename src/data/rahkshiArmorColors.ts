@@ -12,32 +12,32 @@ import { KraataPower } from '../types/Kraata';
 
 /** LEGO color names (as on wiki) to hex. Extends palette for Rahkshi-specific colors. */
 const LEGO_COLOR_HEX: Record<string, string> = {
+  Aquamarine: '#00A3B5',
   Black: '#05131D',
-  White: '#FFFFFF',
   Blue: '#0055BF',
   'Bright Blue': '#0055BF',
-  'Medium Blue': '#5A93DB',
-  'Light Blue': '#5A93DB',
-  Red: '#C91A09',
-  'Bright Red': '#C91A09',
-  Green: '#237841',
-  'Dark Green': '#1B5E20',
-  Yellow: '#F2CD37',
-  'Bright Yellow': '#F2CD37',
-  Orange: '#FE8A18',
   'Bright Orange': '#FE8A18',
-  Purple: '#81007B',
-  'Light Purple': '#A5499B',
+  'Bright Red': '#C91A09',
+  'Bright Yellow': '#F2CD37',
   Brown: '#583927',
-  Tan: '#E4CD9E',
-  Grey: '#6D6E5C',
-  Gray: '#6D6E5C',
+  'Dark Green': '#1B5E20',
   Gold: '#D4AF37',
-  'Reddish Gold': '#AA7F2E',
-  Silver: '#9BA19D',
-  Aquamarine: '#00A3B5',
+  Gray: '#6D6E5C',
+  Green: '#237841',
+  Grey: '#6D6E5C',
+  'Light Blue': '#5A93DB',
+  'Light Purple': '#A5499B',
   Magenta: '#C91A9B',
   Maroon: '#722F37',
+  'Medium Blue': '#5A93DB',
+  Orange: '#FE8A18',
+  Purple: '#81007B',
+  Red: '#C91A09',
+  'Reddish Gold': '#AA7F2E',
+  Silver: '#9BA19D',
+  Tan: '#E4CD9E',
+  White: '#FFFFFF',
+  Yellow: '#F2CD37',
 };
 
 function hex(name: string): string {
@@ -93,6 +93,11 @@ export const RAHKSHI_ARMOR_COLORS: Partial<Record<KraataPower, RahkshiArmorColor
     joint: hex('Light Purple'),
     staff: 'Turahk',
   },
+  [KraataPower.MolecularDisruption]: {
+    armor: hex('Light Blue'),
+    joint: hex('Light Blue'),
+    staff: 'Panrahk',
+  },
   [KraataPower.PlantControl]: { armor: hex('Green'), joint: hex('Brown'), staff: 'Turahk' },
   [KraataPower.Plasma]: { armor: hex('Tan'), joint: hex('Red'), staff: 'Turahk' },
   [KraataPower.Poison]: { armor: hex('Green'), joint: hex('Green'), staff: 'Lerahk' },
@@ -100,11 +105,6 @@ export const RAHKSHI_ARMOR_COLORS: Partial<Record<KraataPower, RahkshiArmorColor
   [KraataPower.QuickHealing]: { armor: hex('Black'), joint: hex('Brown'), staff: 'Turahk' },
   [KraataPower.RahiControl]: { armor: hex('Magenta'), joint: hex('Magenta'), staff: 'Turahk' },
   [KraataPower.Shapeshifting]: { armor: hex('Blue'), joint: hex('Gold'), staff: 'Turahk' },
-  [KraataPower.MolecularDisruption]: {
-    armor: hex('Light Blue'),
-    joint: hex('Light Blue'),
-    staff: 'Panrahk',
-  },
   [KraataPower.Silence]: { armor: hex('Gray'), joint: hex('Black'), staff: 'Turahk' },
   [KraataPower.Sleep]: { armor: hex('Maroon'), joint: hex('Maroon'), staff: 'Turahk' },
   [KraataPower.Slow]: { armor: hex('Blue'), joint: hex('Yellow'), staff: 'Turahk' },
@@ -117,9 +117,9 @@ export const RAHKSHI_ARMOR_COLORS: Partial<Record<KraataPower, RahkshiArmorColor
 
 /** Fallback when power has no defined Rahkshi armor colors. */
 const FALLBACK: RahkshiArmorColors = {
-  staff: 'Turahk',
   armor: hex('Tan'),
   joint: hex('Gold'),
+  staff: 'Turahk',
 };
 
 export function getRahkshiArmorColors(power: KraataPower): RahkshiArmorColors {
