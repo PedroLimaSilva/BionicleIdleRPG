@@ -13,8 +13,10 @@ export const TahuMataModel = forwardRef<
   CombatantModelHandle,
   {
     matoran: RecruitedCharacterData & BaseMatoran & { maskPowerActive?: boolean };
+    /** CharacterScene passes this to re-scan selective bloom after materials settle */
+    onKitMeshesAttached?: () => void;
   }
->(({ matoran }, ref) => {
+>(({ matoran, onKitMeshesAttached }, ref) => {
   const group = useRef<Group>(null);
   const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/tahu.glb');
   const { playAnimation } = useCombatAnimations(animations, group, {
@@ -43,7 +45,8 @@ export const TahuMataModel = forwardRef<
         roughness: 0.55,
       });
     }
-  }, [nodes]);
+    onKitMeshesAttached?.();
+  }, [nodes, onKitMeshesAttached]);
 
   // Inject the active mask from the shared masks.glb
   const maskTarget = matoran.maskOverride || matoran.mask;
