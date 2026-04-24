@@ -139,11 +139,6 @@ function buildMeshMaterials(
 export type UseKitAttachmentsParams = {
   /** `nodes` from `useGLTF` on the character (must include socket names as keys when flat) */
   characterNodes: Record<string, Object3D | undefined> | undefined;
-  /**
-   * Optional: map attachment table keys → actual `nodes` keys when the rig uses different names
-   * than the Tahu reference (e.g. other Toa Mata GLBs).
-   */
-  socketAliases?: Record<string, string>;
   kitUrl: string;
   /** Key = socket name on character; O(1) lookup when matching nodes to kit pieces */
   attachments: Record<string, KitSocketAttachment>;
@@ -171,7 +166,6 @@ export type UseKitAttachmentsParams = {
 export function useKitAttachments({
   attachments,
   characterNodes,
-  socketAliases,
   colors,
   kitUrl,
   onAttached,
@@ -188,14 +182,11 @@ export function useKitAttachments({
     const clones: Object3D[] = [];
 
     for (const [socketName, row] of Object.entries(attachments)) {
-      const nodeKey = socketAliases?.[socketName] ?? socketName;
-      const socket = characterNodes[nodeKey];
+      const socket = characterNodes[socketName];
       const template = kitNodes[row.kitNodeName];
 
       if (!socket) {
-        console.warn(
-          `[useKitAttachments] Socket '${socketName}' (node '${nodeKey}') not found on character`
-        );
+        console.warn(`[useKitAttachments] Socket '${socketName}' not found on character`);
         continue;
       }
       if (!template) {
@@ -228,7 +219,7 @@ export function useKitAttachments({
         if (p) p.remove(clone);
       }
     };
-  }, [characterNodes, kitUrl, attachments, socketAliases, colors, kitNodes, weathered]);
+  }, [characterNodes, kitUrl, attachments, colors, kitNodes, weathered]);
 }
 
 useKitAttachments.preload = (kitUrl: string) => {

@@ -8,7 +8,6 @@ import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
 import { ONUA_MATA_KIT_2001_ATTACHMENTS } from './onuaMataKitAttach';
-import { ONUA_MATA_KIT_SOCKET_ALIASES } from './onuaMataKitSocketAliases';
 import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
 const ONUA_WEATHERED: WeatheredMetalOptions = {
@@ -47,7 +46,6 @@ export const OnuaMataModel = forwardRef<
 
   useKitAttachments({
     attachments: ONUA_MATA_KIT_2001_ATTACHMENTS,
-    socketAliases: ONUA_MATA_KIT_SOCKET_ALIASES,
     characterNodes: nodes as Record<string, Object3D | undefined>,
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,

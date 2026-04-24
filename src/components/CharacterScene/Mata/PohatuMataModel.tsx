@@ -8,7 +8,6 @@ import { useMask } from '../../../hooks/useMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
 import { POHATU_MATA_KIT_2001_ATTACHMENTS } from './pohatuMataKitAttach';
-import { POHATU_MATA_KIT_SOCKET_ALIASES } from './pohatuMataKitSocketAliases';
 import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
 const POHATU_WEATHERED: WeatheredMetalOptions = {
@@ -45,7 +44,6 @@ export const PohatuMataModel = forwardRef<
 
   useKitAttachments({
     attachments: POHATU_MATA_KIT_2001_ATTACHMENTS,
-    socketAliases: POHATU_MATA_KIT_SOCKET_ALIASES,
     characterNodes: nodes as Record<string, Object3D | undefined>,
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,

@@ -8,7 +8,6 @@ import { useMask } from '../../../hooks/useMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
 import { LEWA_MATA_KIT_2001_ATTACHMENTS } from './lewaMataKitAttach';
-import { LEWA_MATA_KIT_SOCKET_ALIASES } from './lewaMataKitSocketAliases';
 import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
 const LEWA_WEATHERED: WeatheredMetalOptions = {
@@ -48,7 +47,6 @@ export const LewaMataModel = forwardRef<
 
   useKitAttachments({
     attachments: LEWA_MATA_KIT_2001_ATTACHMENTS,
-    socketAliases: LEWA_MATA_KIT_SOCKET_ALIASES,
     characterNodes: nodes as Record<string, Object3D | undefined>,
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,
