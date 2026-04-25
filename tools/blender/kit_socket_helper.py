@@ -12,7 +12,6 @@ import json
 
 import bpy
 from mathutils import Matrix
-from mathutils import Matrix
 
 
 SOCKET_PROP = "bionicle_socket"
