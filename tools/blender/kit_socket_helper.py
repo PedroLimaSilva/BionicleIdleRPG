@@ -11,6 +11,8 @@ bl_info = {
 import json
 
 import bpy
+from mathutils import Matrix
+from mathutils import Matrix
 
 
 SOCKET_PROP = "bionicle_socket"
@@ -69,6 +71,27 @@ def _copy_parenting(source, empty):
         empty.parent_bone = source.parent_bone
 
 
+def _parent_world_matrix(source):
+    if source.parent is None:
+        return Matrix.Identity(4)
+    if source.parent_type == "BONE" and source.parent_bone:
+        pose_bone = source.parent.pose.bones.get(source.parent_bone)
+        if pose_bone is not None:
+            return source.parent.matrix_world @ pose_bone.matrix
+    return source.parent.matrix_world
+
+
+def _place_at_source_origin(source, empty, parent_mode):
+    world_location = source.matrix_world.translation.copy()
+    if parent_mode == "SAME_PARENT":
+        parent_inverse = _parent_world_matrix(source).inverted()
+        empty.location = parent_inverse @ world_location
+    else:
+        empty.location = world_location
+    empty.rotation_euler = (0.0, 0.0, 0.0)
+    empty.scale = (1.0, 1.0, 1.0)
+
+
 def _json_string(value):
     return json.dumps(value)
 
@@ -96,7 +119,6 @@ class BIONICLE_OT_create_socket_empties(bpy.types.Operator):
 
             socket_name = _socket_name(scene, source)
             kit_node_name = _kit_node_name(scene, source)
-            world_matrix = source.matrix_world.copy()
 
             empty = bpy.data.objects.new(socket_name, None)
             empty.empty_display_type = scene.bionicle_empty_display_type
@@ -109,7 +131,7 @@ class BIONICLE_OT_create_socket_empties(bpy.types.Operator):
 
             if scene.bionicle_parent_mode == "SAME_PARENT":
                 _copy_parenting(source, empty)
-            empty.matrix_world = world_matrix
+            _place_at_source_origin(source, empty, scene.bionicle_parent_mode)
 
             if scene.bionicle_hide_source:
                 source.hide_viewport = True

@@ -8,7 +8,7 @@ objects with named empties that the app can use as attachment sockets.
 
 For every selected non-empty object, the addon can:
 
-- create an empty at the object's origin with the same world transform;
+- create an empty at the object's origin with identity rotation and scale;
 - parent the empty to the same object or armature bone as the source object;
 - name the empty from the source object's parent bone/object, source object name,
   source object base name, or a custom value;
