@@ -192,6 +192,8 @@ The game includes 3D models for:
 - Arena environments
 
 Models are stored in `public/` as GLB files and rendered using React Three Fiber.
+For shared kit mesh authoring, see `docs/BLENDER_KIT_SOCKET_HELPER.md` and the
+Blender addon at `tools/blender/kit_socket_helper.py`.
 
 ## ⚙️ Settings Page
 
