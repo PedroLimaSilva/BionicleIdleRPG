@@ -1,20 +1,36 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import { Group } from 'three';
+import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
+import { Group, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
-import { useMask } from '../../../hooks/useMask';
-import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
-import { applyWeatheredMetalToObject } from '../WeatheredMetalMaterial';
+import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
+import { useMask } from '../../../hooks/useMask';
+import { useKitAttachments } from '../../../hooks/useKitAttachments';
+import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
+import { LEWA_MATA_KIT_2001_ATTACHMENTS } from './lewaMataKitAttach';
+import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
-const USE_WEATHERED_METAL = true;
+const LEWA_WEATHERED: WeatheredMetalOptions = {
+  cavityStrength: 1,
+  edgeColor: '#ffffff',
+  edgeCurvatureScale: 2,
+  edgeStrength: 0.15,
+  fineScale: 18.0,
+  grimeDarken: 0.4,
+  grimeMetalnessReduce: 0.5,
+  grimeRoughness: 0.2,
+  largeScale: 3.5,
+  metalness: 0.05,
+  roughness: 0.55,
+};
 
 export const LewaMataModel = forwardRef<
   CombatantModelHandle,
   {
     matoran: RecruitedCharacterData & BaseMatoran & { maskPowerActive?: boolean };
+    onKitMeshesAttached?: () => void;
   }
->(({ matoran }, ref) => {
+>(({ matoran, onKitMeshesAttached }, ref) => {
   const group = useRef<Group>(null);
   const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + '/Toa_Mata/lewa.glb');
   const { playAnimation } = useCombatAnimations(animations, group, {
@@ -24,28 +40,20 @@ export const LewaMataModel = forwardRef<
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 
-  useEffect(() => {
-    const root = group.current;
-    if (!root || !nodes) return;
-    if (USE_WEATHERED_METAL) {
-      applyWeatheredMetalToObject(root, {
-        cavityStrength: 1,
-        edgeColor: '#ffffff',
-        edgeCurvatureScale: 2,
-        edgeStrength: 0.15,
-        excludeMaterialNames: ['Lewa Eyes', 'Lewa Glow', 'Trans Neon Green'],
-        fineScale: 18.0,
-        grimeDarken: 0.4,
-        grimeMetalnessReduce: 0.5,
-        grimeRoughness: 0.2,
-        largeScale: 3.5,
-        metalness: 0.05,
-        roughness: 0.55,
-      });
-    }
-  }, [nodes]);
+  const onAttached = useMemo(
+    () => (onKitMeshesAttached ? () => onKitMeshesAttached() : undefined),
+    [onKitMeshesAttached]
+  );
 
-  // Inject the active mask from the shared masks.glb
+  useKitAttachments({
+    attachments: LEWA_MATA_KIT_2001_ATTACHMENTS,
+    characterNodes: nodes as Record<string, Object3D | undefined>,
+    colors: matoran.colors,
+    kitUrl: KIT_2001_GLB_PATH,
+    onAttached,
+    weathered: LEWA_WEATHERED,
+  });
+
   const maskTarget = matoran.maskOverride || matoran.mask;
   const glowColor = matoran.colors.eyes;
   useMask(nodes.Masks, maskTarget, matoran, glowColor, matoran.maskPowerActive);
