@@ -70,7 +70,7 @@ function CharacterModel({
         case 'Toa_Gali':
           return <GaliMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Pohatu':
-          return <PohatuMataModel matoran={matoran} />;
+          return <PohatuMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Kopaka':
           return <KopakaMataModel matoran={matoran} />;
         case 'Toa_Onua':
