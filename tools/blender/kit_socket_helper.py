@@ -91,6 +91,10 @@ def _place_at_source_origin(source, empty, parent_mode):
     empty.scale = (1.0, 1.0, 1.0)
 
 
+def _copy_source_world_transform(source, empty):
+    empty.matrix_world = source.matrix_world.copy()
+
+
 def _json_string(value):
     return json.dumps(value)
 
@@ -130,7 +134,10 @@ class BIONICLE_OT_create_socket_empties(bpy.types.Operator):
 
             if scene.bionicle_parent_mode == "SAME_PARENT":
                 _copy_parenting(source, empty)
-            _place_at_source_origin(source, empty, scene.bionicle_parent_mode)
+            if scene.bionicle_preserve_source_transform:
+                _copy_source_world_transform(source, empty)
+            else:
+                _place_at_source_origin(source, empty, scene.bionicle_parent_mode)
 
             if scene.bionicle_hide_source:
                 source.hide_viewport = True
@@ -227,6 +234,7 @@ class BIONICLE_PT_kit_socket_helper(bpy.types.Panel):
 
         layout.separator()
         layout.prop(scene, "bionicle_parent_mode")
+        layout.prop(scene, "bionicle_preserve_source_transform")
         layout.prop(scene, "bionicle_empty_display_type")
         layout.prop(scene, "bionicle_empty_size")
         layout.prop(scene, "bionicle_hide_source")
@@ -273,6 +281,11 @@ def _register_scene_props():
         ),
         default="SAME_PARENT",
     )
+    bpy.types.Scene.bionicle_preserve_source_transform = bpy.props.BoolProperty(
+        name="Preserve Source Transform",
+        description="Copy the source object's world rotation and scale instead of creating an identity-transform socket",
+        default=False,
+    )
     bpy.types.Scene.bionicle_custom_socket_name = bpy.props.StringProperty(name="Custom Socket")
     bpy.types.Scene.bionicle_custom_kit_node_name = bpy.props.StringProperty(name="Custom Kit Node")
     bpy.types.Scene.bionicle_empty_display_type = bpy.props.EnumProperty(
@@ -306,6 +319,7 @@ def _unregister_scene_props():
     del bpy.types.Scene.bionicle_socket_name_mode
     del bpy.types.Scene.bionicle_kit_name_mode
     del bpy.types.Scene.bionicle_parent_mode
+    del bpy.types.Scene.bionicle_preserve_source_transform
     del bpy.types.Scene.bionicle_custom_socket_name
     del bpy.types.Scene.bionicle_custom_kit_node_name
     del bpy.types.Scene.bionicle_empty_display_type

@@ -8,7 +8,8 @@ objects with named empties that the app can use as attachment sockets.
 
 For every selected non-empty object, the addon can:
 
-- create an empty at the object's origin with identity rotation and scale;
+- create an empty at the object's origin with identity rotation and scale, or
+  preserve the source object's full transform when enabled;
 - parent the empty to the same object or armature bone as the source object;
 - name the empty from the source object's parent bone/object, source object name,
   source object base name, or a custom value;
@@ -46,6 +47,8 @@ The panel appears in `View3D > Sidebar > Bionicle Kit`.
    - set `Kit Node Name` to `Object Name (No .001)` for repeated instances of the
      same kit asset;
    - keep `Parent` as `Same Parent`;
+   - enable `Preserve Source Transform` only when the socket should keep the
+     source object's rotation and scale;
    - keep `Hide Source Objects` enabled if the selected meshes should be removed
      from the exported character GLB.
 4. Click `Create Socket Empties`.
