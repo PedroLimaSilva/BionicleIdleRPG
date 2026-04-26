@@ -76,7 +76,7 @@ function CharacterModel({
         case 'Toa_Onua':
           return <OnuaMataModel matoran={matoran} />;
         case 'Toa_Lewa':
-          return <LewaMataModel matoran={matoran} />;
+          return <LewaMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         default:
           return <TahuMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
