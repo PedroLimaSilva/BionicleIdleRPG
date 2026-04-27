@@ -196,9 +196,6 @@ export default function SettingsPage() {
       </div>
 
       <div className="settings-section">
-        <h1 className="title" style={{ margin: 0 }}>
-          SETTINGS
-        </h1>
         <label className="settings-option">
           <p>Found a bug or have a suggestion? Open an issue on GitHub.</p>
           <a

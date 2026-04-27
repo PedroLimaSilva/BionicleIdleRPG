@@ -106,7 +106,7 @@ export const QuestTreePage = () => {
   }, [questStates]);
 
   return (
-    <div className="quest-tree">
+    <div className="page-container quest-tree">
       <div className="quest-tree__diagram-container">
         {isLoading && <div className="quest-tree__loading">Loading quest tree...</div>}
         {error && (

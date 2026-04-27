@@ -425,36 +425,3 @@ $rahkshi-card-border: 2px;
   }
 }
 
-.recruit-button {
-  text-align: center;
-  margin-top: 2rem;
-
-  button {
-    background: linear-gradient(135deg, var(--color-surface-mid), var(--color-surface-high));
-    color: var(--color-accent);
-    padding: 0.75rem 2rem;
-    border: 2px solid var(--color-accent);
-    border-radius: var(--border-radius-md);
-    font-weight: 700;
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    transition: all var(--transition-base);
-    box-shadow:
-      var(--shadow-sm),
-      0 0 12px var(--color-accent-hover);
-
-    &:hover {
-      background: linear-gradient(135deg, var(--color-surface-high), var(--color-surface-elevated));
-      box-shadow:
-        var(--shadow-glow),
-        0 0 20px var(--color-accent-hover);
-      transform: translateY(-2px);
-      border-color: var(--color-accent-hover);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
-}

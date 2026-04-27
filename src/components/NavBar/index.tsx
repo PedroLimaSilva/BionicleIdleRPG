@@ -38,21 +38,52 @@ export const NavBar = ({ isPortrait }: { isPortrait: boolean }) => {
         {shouldShowCurrencyBar(pathname) && <CurrencyBar isPortrait={isPortrait} />}
       </AnimatePresence>
       <nav className="nav-bar">
-        {hasVisibleEncounters && (
-          <NavLink to="/battle/selector" className="nav-item">
-            <Swords />
-            <label>Battle</label>
-          </NavLink>
-        )}
-        <NavLink to="/" className="nav-item">
+        <NavLink
+          to="/"
+          end
+          className={() =>
+            `nav-item ${pathname === '/' || pathname === '/quests' || pathname === '/quest-tree' ? 'active' : ''}`
+          }
+        >
           <Map />
           <label>Quests</label>
         </NavLink>
-        <NavLink to="/characters" className="nav-item">
+        <NavLink
+          to="/characters"
+          className={() =>
+            `nav-item ${
+              pathname.startsWith('/characters') ||
+              pathname === '/recruitment' ||
+              pathname.startsWith('/rahkshi/')
+                ? 'active'
+                : ''
+            }`
+          }
+        >
           <UserCircle2 />
           <label>Characters</label>
         </NavLink>
-        <NavLink to="/settings" className="nav-item">
+        <NavLink
+          to="/battle/selector"
+          className={() =>
+            `nav-item ${pathname.startsWith('/battle') || pathname === '/type-effectiveness' ? 'active' : ''} ${
+              hasVisibleEncounters ? '' : 'disabled'
+            }`
+          }
+          aria-disabled={!hasVisibleEncounters}
+          onClick={(event) => {
+            if (!hasVisibleEncounters) event.preventDefault();
+          }}
+        >
+          <Swords />
+          <label>Battle</label>
+        </NavLink>
+        <NavLink
+          to="/settings"
+          className={() =>
+            `nav-item ${pathname.startsWith('/settings') || pathname === '/privacy-policy' ? 'active' : ''}`
+          }
+        >
           <Settings />
           <label>Settings</label>
         </NavLink>

@@ -1,5 +1,9 @@
 :root {
   --character-detail-model-h: 480px;
+  --top-nav-height: 72px;
+  --bottom-nav-height: 88px;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .main-content {
@@ -54,8 +58,8 @@
 
 .page-container {
   width: 100%;
-  padding: 2rem;
-  padding-bottom: 170px; //space for .nav-bar
+  padding: calc(var(--top-nav-height) + var(--safe-area-top) + 1rem) 2rem
+    calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 2rem);
   max-width: 1400px;
   margin: 0 auto;
 

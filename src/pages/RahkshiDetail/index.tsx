@@ -1,6 +1,5 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft } from 'lucide-react';
 import { useGame } from '../../context/Game';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { getKraataPowerDescription } from '../../data/kraataPowerDescriptions';
@@ -232,9 +231,6 @@ export const RahkshiDetail: React.FC = () => {
     return (
       <div className="page-container">
         <p>Rahkshi armor not found.</p>
-        <Link to="/characters">
-          <ArrowLeft size={18} aria-hidden /> Back to Characters
-        </Link>
       </div>
     );
   }
@@ -255,9 +251,6 @@ export const RahkshiDetail: React.FC = () => {
           } as React.CSSProperties
         }
       >
-        <Link to="/characters" className="rahkshi-detail__back">
-          <ArrowLeft size={18} aria-hidden /> Back
-        </Link>
         <div id="rahkshi-model-frame" className="rahkshi-detail__model-frame" />
         <div className="rahkshi-detail-header">
           <h1 className="rahkshi-detail-header__name">

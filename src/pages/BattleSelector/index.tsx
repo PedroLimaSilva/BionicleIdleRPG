@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ElementTag } from '../../components/ElementTag';
 import { Tooltip } from '../../components/Tooltip';
 import { useGame } from '../../context/Game';
@@ -87,9 +87,6 @@ export const BattleSelector: React.FC = () => {
       <div className="page-container">
         <h1 className="title">No encounters available</h1>
         <p>Complete quests to unlock encounters.</p>
-        <Link to="/type-effectiveness" className="battle-selector__type-chart-link">
-          View type effectiveness chart
-        </Link>
       </div>
     );
   }
@@ -97,9 +94,6 @@ export const BattleSelector: React.FC = () => {
   return (
     <div className="page-container">
       <h1 className="title">Select an Encounter</h1>
-      <Link to="/type-effectiveness" className="battle-selector__type-chart-link">
-        View type effectiveness chart
-      </Link>
       <div className="encounter-list">
         {visibleEncounters.map((encounter) => {
           const displayableLoot = getDisplayableLoot(encounter.loot, collectedKrana);

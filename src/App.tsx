@@ -22,6 +22,7 @@ import { BattleSelector } from './pages/BattleSelector/index.tsx';
 import { BattlePage } from './pages/Battle/index.tsx';
 import TypeEffectivenessPage from './pages/TypeEffectiveness/index.tsx';
 import { NavBar } from './components/NavBar/index.tsx';
+import { TopNav } from './components/TopNav/index.tsx';
 import { TelemetryConsentPrompt } from './components/TelemetryConsentPrompt/index.tsx';
 import PrivacyPolicyPage from './pages/PrivacyPolicy/index.tsx';
 
@@ -94,6 +95,7 @@ export function App() {
         <Router basename="/BionicleIdleRPG/">
           <SceneCanvasProvider>
             <div className="app-container">
+              <TopNav />
               <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
                 <div id="canvas-mount"></div>
                 <AnimatedRoutes />

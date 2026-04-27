@@ -1,11 +1,10 @@
 .quest-tree {
   width: 100%;
-  overflow: hidden;
+  min-height: 100%;
   background: var(--color-surface-low);
 
   &__diagram-container {
     width: 100%;
-    height: 100%;
     overflow: auto;
     background: linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-mid) 100%);
     padding: 2rem;

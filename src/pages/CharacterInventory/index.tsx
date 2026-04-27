@@ -36,7 +36,6 @@ type TabId = 'matoran' | 'toa' | 'other' | 'rahkshi';
 
 export const CharacterInventory: React.FC = () => {
   const {
-    buyableCharacters,
     kraataCollection,
     mergeAllKraata,
     protodermis,
@@ -175,15 +174,6 @@ export const CharacterInventory: React.FC = () => {
               </Link>
             );
           })}
-        </div>
-      )}
-      {buyableCharacters.length !== 0 && effectiveTab !== 'rahkshi' && (
-        <div className="recruit-button">
-          <Link to="/recruitment">
-            <button type="button" className="recruitment-button">
-              Recruit More
-            </button>
-          </Link>
         </div>
       )}
     </div>

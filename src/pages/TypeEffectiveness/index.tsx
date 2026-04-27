@@ -30,7 +30,6 @@ function getCellClassName(multiplier: number): string {
 export default function TypeEffectivenessPage() {
   return (
     <div className="page-container type-effectiveness">
-      <h1 className="title">Type Effectiveness</h1>
       <p className="type-effectiveness__intro">
         Damage multiplier when an element (row) attacks another element (column).
       </p>
