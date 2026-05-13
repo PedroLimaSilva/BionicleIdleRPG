@@ -6,6 +6,7 @@ export function useGamePersistence({
   activeQuests,
   collectedKrana,
   completedQuests,
+  customCharacters,
   kraataCollection,
   protodermis,
   protodermisCap,
@@ -18,6 +19,7 @@ export function useGamePersistence({
       activeQuests,
       collectedKrana,
       completedQuests,
+      customCharacters,
       kraataCollection,
       protodermis,
       protodermisCap,
@@ -35,6 +37,7 @@ export function useGamePersistence({
     kraataCollection,
     rahkshi,
     recruitedCharacters,
+    customCharacters,
     activeQuests,
     completedQuests,
   ]);

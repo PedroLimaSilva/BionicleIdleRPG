@@ -8,6 +8,7 @@ const MOCK_STATE: PartialGameState = {
   activeQuests: [],
   collectedKrana: {},
   completedQuests: [],
+  customCharacters: [],
   kraataCollection: {},
   protodermis: 100,
   protodermisCap: 2000,

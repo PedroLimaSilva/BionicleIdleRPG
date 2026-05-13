@@ -90,6 +90,9 @@ export function loadGameState() {
       if (!Array.isArray(parsed.rahkshi)) {
         parsed.rahkshi = [];
       }
+      if (!Array.isArray(parsed.customCharacters)) {
+        parsed.customCharacters = [];
+      }
 
       migrateKraataFromInventory(parsed);
       sanitizeUnrecognizedJobs(parsed);
