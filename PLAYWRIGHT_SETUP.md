@@ -127,34 +127,18 @@ If tests fail, view the HTML report to see visual diffs:
 yarn test:e2e:report
 ```
 
-## Files Created/Modified
+## Key project files
 
-### New Files
-
-- `playwright.config.ts` - Playwright configuration
-- `e2e/homepage.spec.ts` - Homepage tests
-- `e2e/characters/recruitment.spec.ts` - Recruitment page tests
-- `e2e/characters/inventory.spec.ts` - Character inventory tests
-- `e2e/characters/detail.spec.ts` - Character detail tests
-- `e2e/quests.spec.ts` - Quest page tests
-- `e2e/battle/selector.spec.ts` - Battle selector tests
-- `e2e/helpers.ts` - Test helper utilities (includes `enableTestMode()`, `setupGameState()`, `goto()`)
-- `e2e/README.md` - E2E testing documentation
-- `src/utils/testMode.ts` - Test mode detection and animation control utilities (localStorage-based)
-
-### Modified Files
-
-- `package.json` - Added Playwright scripts
-- `.gitignore` - Added Playwright artifacts
-- `.github/workflows/main.yml` - Added E2E test job
-- `src/hooks/useAnimationController.tsx` - Added test mode support
-- All Toa model components - Added animation pausing in test mode
-- `BohrokModel.tsx` - Added animation pausing in test mode
-- All navigation components - Removed test mode wrappers, now use standard React Router components
+- `playwright.config.ts` - Playwright projects, snapshot paths, and reporters
+- `e2e/**/*.spec.ts` - Test suites (homepage, recruitment, quests, battle, characters, settings, cutscenes, responsiveness, …)
+- `e2e/helpers.ts` - `enableTestMode()`, `setupGameState()`, `goto()`, canvas-hiding helpers
+- `e2e/README.md` and `e2e/DOCKER_TESTING.md` - How to run tests and match CI snapshots
+- `Dockerfile.playwright` / `docker-compose.playwright.yml` - Linux/CI-like Docker runs (`yarn test:e2e:docker*`)
+- `src/utils/testMode.ts` - Test mode detection and animation control (localStorage)
 
 ## Best Practices
 
-1. **Always use `gotoWithTestMode()`** - This is critical for preventing flaky tests due to animations
+1. **Enable test mode before the first navigation** - Call `enableTestMode(page)` or `setupGameState(page, …)` (both set `TEST_MODE` in localStorage), then use `goto(page, path)`. For heavy 3D pages, pass `hideCanvasBeforeNav: true` to `goto()` so navigation stays within timeouts.
 2. **Run tests before committing** - Catch visual regressions early
 3. **Review diffs carefully** - Don't blindly update snapshots
 4. **Responsiveness** - Use `responsiveness.spec.ts` for viewport-specific tests
@@ -173,7 +157,7 @@ yarn test:e2e:report
 - **Animations are now paused in test mode** - This should eliminate most flakiness
 - 3D scene tests have moderate tolerance due to GPU rendering variations
 - Mobile tests use Chrome (Chromium) for better WebGL consistency
-- Make sure all tests use `gotoWithTestMode()` helper
+- Make sure tests enable test mode (`enableTestMode` / `setupGameState`) before navigating, and use `goto()` for in-app routes
 
 ### Snapshots differ between machines
 
