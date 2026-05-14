@@ -107,8 +107,10 @@ export const CharacterCreation: React.FC = () => {
   const [mask, setMask] = useState<Mask>(Mask.Hau);
   const [element, setElement] = useState<ElementTribe>(ElementTribe.Fire);
   const [colors, setColors] = useState({ ...DEFAULT_COLORS });
-  const [isMaskTransparent, setIsMaskTransparent] = useState(false);
   const [activePart, setActivePart] = useState<ColorPart>('mask');
+
+  // Only the Kaukau is canonically transparent in the dex; mirror that for custom matoran.
+  const isMaskTransparent = mask === Mask.Kaukau;
 
   const canAfford = protodermis >= CUSTOM_CHARACTER_COST;
   const nameValid = name.trim().length > 0;
@@ -125,7 +127,9 @@ export const CharacterCreation: React.FC = () => {
       stage: MatoranStage.Diminished,
       tags: [MatoranTag.Custom],
     }),
-    [colors, element, isMaskTransparent, mask, name]
+    // isMaskTransparent is derived from `mask`, so we only depend on `mask` (and the others).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [colors, element, mask, name]
   );
 
   // Debounced preview matoran. The 3D `CharacterScene` recreates Three.js materials whenever
@@ -223,22 +227,10 @@ export const CharacterCreation: React.FC = () => {
                 onClick={() => setMask(m)}
                 title={m}
               >
-                <img
-                  src={`${import.meta.env.BASE_URL}/avatar/Kanohi/${m}.webp`}
-                  alt={m}
-                  style={{ filter: isMaskTransparent ? 'opacity(0.6)' : undefined }}
-                />
+                <img src={`${import.meta.env.BASE_URL}/avatar/Kanohi/${m}.webp`} alt={m} />
               </button>
             ))}
           </div>
-          <label className="checkbox-row">
-            <input
-              type="checkbox"
-              checked={isMaskTransparent}
-              onChange={(e) => setIsMaskTransparent(e.target.checked)}
-            />
-            <span>Transparent mask</span>
-          </label>
         </div>
 
         <div className="field">
