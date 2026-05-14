@@ -178,16 +178,17 @@ export const CharacterInventory: React.FC = () => {
           })}
         </div>
       )}
-      {buyableCharacters.some((c) => c.id !== CREATE_CUSTOM_CHARACTER_ID) &&
-        effectiveTab !== 'rahkshi' && (
-          <div className="recruit-button">
-            <Link to="/recruitment">
-              <button type="button" className="recruitment-button">
-                Recruit More
-              </button>
-            </Link>
-          </div>
-        )}
+      {effectiveTab !== 'rahkshi' && (
+        <div className="recruit-button">
+          <Link to="/recruitment">
+            <button type="button" className="recruitment-button">
+              {buyableCharacters.some((c) => c.id !== CREATE_CUSTOM_CHARACTER_ID)
+                ? 'Recruit More'
+                : 'Create Matoran'}
+            </button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
