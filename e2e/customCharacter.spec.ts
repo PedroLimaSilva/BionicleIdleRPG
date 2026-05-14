@@ -130,6 +130,11 @@ test.describe('Custom Character', () => {
         await expect(confirmBtn).toBeVisible();
         await confirmBtn.click();
 
+        const createModal = page.getByTestId('create-matoran-confirm-modal');
+        await expect(createModal).toBeVisible({ timeout: 10000 });
+        await expect(createModal).toContainText('cannot change');
+        await page.getByTestId('create-matoran-confirm-submit').click();
+
         await page.waitForURL(/\/characters\/custom_0$/, { timeout: 10000 });
 
         const persisted = await page.evaluate(() =>

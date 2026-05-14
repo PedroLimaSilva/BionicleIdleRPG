@@ -210,3 +210,25 @@
   border-top: none;
   border-left: 2px solid var(--theme-element-primary);
 }
+
+.modal-backdrop.character-create-confirm-modal .modal-content {
+  max-width: 420px;
+}
+
+.character-create-confirm-modal__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+  color: var(--color-text);
+}
+
+.character-create-confirm-modal__body {
+  margin: 0 0 1.25rem;
+  line-height: 1.45;
+  color: var(--color-text-muted, var(--color-text));
+}
+
+.character-create-confirm-modal__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
