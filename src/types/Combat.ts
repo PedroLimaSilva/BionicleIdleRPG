@@ -73,6 +73,11 @@ export interface Combatant {
   id: string;
   name: string;
   model: string;
+  /**
+   * When set (e.g. custom Toa Mata), which Mata `CombatantModel` branch to render; `model`
+   * stays the COMBATANT_DEX template key for stats lookup.
+   */
+  mataRenderModelId?: string;
   /** Set for `nui_rama` template: jaw hook (orange) vs teeth (lime). */
   nuiRamaVariant?: NuiRamaVariant;
   lvl: number;

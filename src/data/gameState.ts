@@ -96,7 +96,11 @@ export const INITIAL_GAME_STATE: GameState = {
   startRahkshiForge: function (_power: KraataPower, _stage: number): void {
     throw new Error('Function not implemented.');
   },
-  updateCustomCharacter: function (_id: string, _base: Omit<BaseMatoran, 'id'>): boolean {
+  updateCustomCharacter: function (
+    _id: string,
+    _base: Omit<BaseMatoran, 'id'>,
+    _extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+  ): boolean {
     throw new Error('Function not implemented.');
   },
   version: CURRENT_GAME_STATE_VERSION,

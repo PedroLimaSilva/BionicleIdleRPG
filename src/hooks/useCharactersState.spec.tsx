@@ -33,7 +33,13 @@ describe('useCharactersState', () => {
       const completedQuests = ['mnog_restore_ga_koro']; // unlocks Hahli
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       expect(result.current.recruitedCharacters).toEqual(initialRecruited);
@@ -45,7 +51,13 @@ describe('useCharactersState', () => {
       const completedQuests = ['mnog_tahu_unlock_01', 'mnog_restore_ga_koro']; // Jala + Hahli
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       // Buyable list always includes the "create custom matoran" sentinel entry plus other recruits.
@@ -84,7 +96,13 @@ describe('useCharactersState', () => {
       const completedQuests = ['mnog_tahu_unlock_01'];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -123,7 +141,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -140,7 +164,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -168,7 +198,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -183,7 +219,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -200,7 +242,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -218,7 +266,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -254,7 +308,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [customBase], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [customBase],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       let ok = false;
@@ -283,6 +343,30 @@ describe('useCharactersState', () => {
       expect(result.current.recruitedCharacters[0].stage).toBe(MatoranStage.ToaMata);
     });
 
+    test('optional extras set customMataModelId on recruit', () => {
+      const initialRecruited: RecruitedCharacterData[] = [{ exp: 50, id: 'custom_0' }];
+      const { result } = renderHook(() =>
+        useCharactersState(initialRecruited, [customBase], [], mockProtodermis, mockSetProtodermis)
+      );
+
+      act(() => {
+        result.current.updateCustomCharacter(
+          'custom_0',
+          {
+            colors: customBase.colors,
+            element: ElementTribe.Fire,
+            mask: Mask.Hau,
+            name: 'X',
+            stage: MatoranStage.ToaMata,
+            tags: [MatoranTag.Custom],
+          },
+          { customMataModelId: 'Toa_Pohatu' }
+        );
+      });
+
+      expect(result.current.recruitedCharacters[0].customMataModelId).toBe('Toa_Pohatu');
+    });
+
     test('returns false for non-custom id', () => {
       const { result } = renderHook(() =>
         useCharactersState([{ exp: 0, id: 'Jala' }], [], [], mockProtodermis, mockSetProtodermis)
@@ -305,7 +389,13 @@ describe('useCharactersState', () => {
 
     test('returns false when custom id is not in customCharacters', () => {
       const { result } = renderHook(() =>
-        useCharactersState([{ exp: 0, id: 'custom_0' }], [], [], mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          [{ exp: 0, id: 'custom_0' }],
+          [],
+          [],
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       let ok = true;

@@ -26,8 +26,7 @@ export function useCharactersState(
 ) {
   const [recruitedCharacters, setRecruitedCharacters] =
     useState<RecruitedCharacterData[]>(initialRecruited);
-  const [customCharacters, setCustomCharacters] =
-    useState<BaseMatoran[]>(initialCustomCharacters);
+  const [customCharacters, setCustomCharacters] = useState<BaseMatoran[]>(initialCustomCharacters);
 
   useEffect(() => {
     for (const base of customCharacters) {
@@ -114,7 +113,11 @@ export function useCharactersState(
     setCustomCharacters((prev) => prev.filter((c) => c.id !== id));
   };
 
-  const updateCustomCharacter = (id: string, base: Omit<BaseMatoran, 'id'>): boolean => {
+  const updateCustomCharacter = (
+    id: string,
+    base: Omit<BaseMatoran, 'id'>,
+    extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+  ): boolean => {
     if (!isCustomCharacterId(id)) return false;
     const existing = customCharacters.find((c) => c.id === id);
     if (!existing) return false;
@@ -129,7 +132,14 @@ export function useCharactersState(
     registerCustomCharacterInDex(updated);
     setCustomCharacters((prev) => prev.map((c) => (c.id === id ? updated : c)));
     setRecruitedCharacters((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, stage: base.stage } : m))
+      prev.map((m) => {
+        if (m.id !== id) return m;
+        const next: RecruitedCharacterData = { ...m, stage: base.stage };
+        if (extras?.customMataModelId !== undefined) {
+          next.customMataModelId = extras.customMataModelId;
+        }
+        return next;
+      })
     );
     return true;
   };

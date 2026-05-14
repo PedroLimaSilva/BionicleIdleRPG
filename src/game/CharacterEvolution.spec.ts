@@ -218,5 +218,39 @@ describe('CharacterEvolution', () => {
       const result = applyCharacterEvolution(char, evolution);
       expect(result.exp).toBe(50000);
     });
+
+    test('sets default custom Mata model when custom evolves to Toa Mata', () => {
+      const char: RecruitedCharacterData = {
+        exp: 100000,
+        id: 'custom_0',
+        stage: MatoranStage.Rebuilt,
+      };
+      const evolution: AvailableEvolution = {
+        label: 'Evolve',
+        levelRequired: 60,
+        protodermisCost: 3000,
+        stageOverride: MatoranStage.ToaMata,
+      };
+      const result = applyCharacterEvolution(char, evolution);
+      expect(result.stage).toBe(MatoranStage.ToaMata);
+      expect(result.customMataModelId).toBe('Toa_Tahu');
+    });
+
+    test('does not replace an existing custom Mata model when evolving to Toa Mata', () => {
+      const char: RecruitedCharacterData = {
+        customMataModelId: 'Toa_Gali',
+        exp: 100000,
+        id: 'custom_0',
+        stage: MatoranStage.Rebuilt,
+      };
+      const evolution: AvailableEvolution = {
+        label: 'Evolve',
+        levelRequired: 60,
+        protodermisCost: 3000,
+        stageOverride: MatoranStage.ToaMata,
+      };
+      const result = applyCharacterEvolution(char, evolution);
+      expect(result.customMataModelId).toBe('Toa_Gali');
+    });
   });
 });

@@ -103,4 +103,8 @@ export type RecruitedCharacterData = {
   maskOverride?: Mask;
   /** Overrides stage from CHARACTER_DEX when present (e.g. Rebuilt after Naming Day). */
   stage?: MatoranStage;
+  /**
+   * For custom characters at Toa Mata: which Mata dex rig/kit GLB to render (`Toa_Tahu`, `Toa_Gali`, …).
+   */
+  customMataModelId?: string;
 };
