@@ -96,13 +96,19 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
   const {
     assignJobToMatoran,
     buyableCharacters,
+    createCustomCharacter,
+    customCharacters,
+    dismissCustomCharacter,
     recruitCharacter,
     recruitedCharacters,
+    registerSharedCustomCharacter,
     removeJobFromMatoran,
+    renameCustomCharacter,
     setMaskOverride,
     setRecruitedCharacters,
   } = useCharactersState(
     initialState.recruitedCharacters,
+    initialState.customCharacters ?? [],
     completedQuests,
     protodermis,
     setProtodermis
@@ -124,6 +130,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     activeQuests,
     collectedKrana,
     completedQuests,
+    customCharacters,
     kraataCollection,
     protodermis,
     protodermisCap,
@@ -137,6 +144,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
       activeQuests,
       collectedKrana,
       completedQuests,
+      customCharacters,
       kraataCollection,
       protodermis,
       protodermisCap,
@@ -260,6 +268,9 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
       );
       return true;
     },
+    createCustomCharacter,
+    customCharacters,
+    dismissCustomCharacter,
     evolveCharacter: (
       matoranId: RecruitedCharacterData['id'],
       onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
@@ -310,6 +321,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     rahkshi,
     recruitCharacter,
     recruitedCharacters,
+    registerSharedCustomCharacter,
     removeJobFromMatoran,
     removeKraataFromRahkshi: (rahkshiId: string) => {
       const armor = rahkshi.find((r) => r.id === rahkshiId);
@@ -320,6 +332,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
       );
       setKraataCollection((prev) => addKraataToCollection(prev, power, stage, 1));
     },
+    renameCustomCharacter,
     setCollectedKrana,
     // State editor API (raw setters; only use while editor is open to avoid conflicts)
     setCompletedQuests,

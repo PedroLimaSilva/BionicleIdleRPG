@@ -1,4 +1,4 @@
-import { Mask, MatoranStage, RecruitedCharacterData } from '../types/Matoran';
+import { isCustomCharacterId, Mask, MatoranStage, RecruitedCharacterData } from '../types/Matoran';
 import { CHARACTER_DEX } from '../data/dex/index';
 import { getLevelFromExp } from './Levelling';
 import { MOL_TAKANUVA_RISES_QUEST_ID } from '../data/quests/mask_of_light';
@@ -6,6 +6,20 @@ import { MOL_TAKANUVA_RISES_QUEST_ID } from '../data/quests/mask_of_light';
 export const EVOLUTION_LEVEL_REQUIREMENT = 40;
 export const BOHROK_KAL_LEVEL_REQUIREMENT = 100;
 export const TAKANUVA_LEVEL_REQUIREMENT = 100;
+export const CUSTOM_TOA_LEVEL_REQUIREMENT = 60;
+
+/** Cost for upgrading a custom matoran to Rebuilt form (matches the standard Rebuilt cost). */
+export const CUSTOM_REBUILT_COST = 1000;
+/** Cost for evolving a custom matoran to Toa Mata form. */
+export const CUSTOM_TOA_COST = 3000;
+
+/**
+ * Special quest id used to gate custom-character Toa evolution. The Metru Nui saga is
+ * not yet implemented in this codebase; once it is, completing this quest will unlock
+ * custom Toa evolution. Until then, players can still trigger the Toa stage manually by
+ * completing this quest id via the game state editor for testing.
+ */
+export const CUSTOM_TOA_UNLOCK_QUEST_ID = 'story_metru_nui_saga_begin';
 
 export interface EvolutionPath {
   unlockedByQuest: string;
@@ -96,6 +110,33 @@ export function getAvailableEvolution(
   character: RecruitedCharacterData,
   completedQuests: string[]
 ): AvailableEvolution | null {
+  if (isCustomCharacterId(character.id)) {
+    const currentStage = character.stage ?? CHARACTER_DEX[character.id]?.stage;
+    if (
+      currentStage === MatoranStage.Diminished &&
+      completedQuests.includes('bohrok_kal_naming_day')
+    ) {
+      return {
+        label: `Upgrade to ${MatoranStage.Rebuilt} form`,
+        levelRequired: EVOLUTION_LEVEL_REQUIREMENT,
+        protodermisCost: CUSTOM_REBUILT_COST,
+        stageOverride: MatoranStage.Rebuilt,
+      };
+    }
+    if (
+      currentStage === MatoranStage.Rebuilt &&
+      completedQuests.includes(CUSTOM_TOA_UNLOCK_QUEST_ID)
+    ) {
+      return {
+        label: `Evolve to Toa`,
+        levelRequired: CUSTOM_TOA_LEVEL_REQUIREMENT,
+        protodermisCost: CUSTOM_TOA_COST,
+        stageOverride: MatoranStage.ToaMata,
+      };
+    }
+    return null;
+  }
+
   for (const path of EVOLUTION_PATHS) {
     if (!completedQuests.includes(path.unlockedByQuest)) continue;
 

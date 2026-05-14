@@ -41,7 +41,21 @@ export enum ElementTribe {
 
 export const enum MatoranTag {
   ChroniclersCompany = 'ChroniclersCompany',
+  Custom = 'Custom',
 }
+
+/** ID prefix for player-created custom characters (e.g. "custom_0"). */
+export const CUSTOM_CHARACTER_ID_PREFIX = 'custom_';
+
+export function isCustomCharacterId(id: string): boolean {
+  return id.startsWith(CUSTOM_CHARACTER_ID_PREFIX);
+}
+
+/** Special sentinel id used in the buyable list to represent the "create a new matoran" slot. */
+export const CREATE_CUSTOM_CHARACTER_ID = 'create_custom_matoran';
+
+/** Protodermis cost to create or recruit a custom matoran. */
+export const CUSTOM_CHARACTER_COST = 500;
 
 export const enum MatoranStage {
   Turaga = 'Turaga',

@@ -6,9 +6,11 @@ export const INITIAL_GAME_STATE: PartialGameState = {
   activeQuests: [],
   collectedKrana: {},
   completedQuests: [],
+  customCharacters: [],
   kraataCollection: {},
   protodermis: 0,
   protodermisCap: 2000,
+  rahkshi: [],
   recruitedCharacters: [],
   version: CURRENT_GAME_STATE_VERSION,
 };

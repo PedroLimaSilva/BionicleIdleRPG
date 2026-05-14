@@ -34,6 +34,9 @@
       left: calc(anchor(left) - 4rem);
       right: calc(anchor(right) - 4rem);
     }
+    &[class*='route--character-create'] {
+      display: block;
+    }
     &.route--battle {
       display: block;
       z-index: -1;

@@ -29,6 +29,7 @@ import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { CompositedImage } from '../../components/CompositedImage';
 import { RahkshiArmor } from '../../types/Rahkshi';
 import { LegoColor } from '../../types/Colors';
+import { CREATE_CUSTOM_CHARACTER_ID } from '../../types/Matoran';
 
 const CHARACTERS_TAB_KEY = 'characters-tab';
 
@@ -177,15 +178,16 @@ export const CharacterInventory: React.FC = () => {
           })}
         </div>
       )}
-      {buyableCharacters.length !== 0 && effectiveTab !== 'rahkshi' && (
-        <div className="recruit-button">
-          <Link to="/recruitment">
-            <button type="button" className="recruitment-button">
-              Recruit More
-            </button>
-          </Link>
-        </div>
-      )}
+      {buyableCharacters.some((c) => c.id !== CREATE_CUSTOM_CHARACTER_ID) &&
+        effectiveTab !== 'rahkshi' && (
+          <div className="recruit-button">
+            <Link to="/recruitment">
+              <button type="button" className="recruitment-button">
+                Recruit More
+              </button>
+            </Link>
+          </div>
+        )}
     </div>
   );
 };

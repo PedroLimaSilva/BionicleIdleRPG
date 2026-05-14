@@ -44,6 +44,13 @@ export const INITIAL_GAME_STATE: GameState = {
   ): boolean {
     throw new Error('Function not implemented.');
   },
+  createCustomCharacter: function (_base: Omit<BaseMatoran, 'id'>): string | null {
+    throw new Error('Function not implemented.');
+  },
+  customCharacters: [],
+  dismissCustomCharacter: function (_id: string): void {
+    throw new Error('Function not implemented.');
+  },
   evolveCharacter: function (
     _matoranId: RecruitedCharacterData['id'],
     _onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
@@ -71,10 +78,16 @@ export const INITIAL_GAME_STATE: GameState = {
     throw new Error('Function not implemented.');
   },
   recruitedCharacters: RECRUITED_MATORAN_DATA,
+  registerSharedCustomCharacter: function (_base: BaseMatoran): string {
+    throw new Error('Function not implemented.');
+  },
   removeJobFromMatoran: function (_id: BaseMatoran['id']): void {
     throw new Error('Function not implemented.');
   },
   removeKraataFromRahkshi: function (_rahkshiId: string): void {
+    throw new Error('Function not implemented.');
+  },
+  renameCustomCharacter: function (_id: string, _newName: string): void {
     throw new Error('Function not implemented.');
   },
   setMaskOverride: function (_id: RecruitedCharacterData['id'], _mask: Mask): void {

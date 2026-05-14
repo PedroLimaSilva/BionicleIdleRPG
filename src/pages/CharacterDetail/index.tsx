@@ -21,7 +21,9 @@ import { CharacterChronicle } from './Chronicle';
 import { ProtodermisTraining } from '../../components/ProtodermisTraining';
 import { isKranaCollectionActive } from '../../game/Krana';
 import { MASK_POWERS } from '../../data/combat';
-import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
+import { BaseMatoran, isCustomCharacterId, Mask, RecruitedCharacterData } from '../../types/Matoran';
+import { CustomCharacterShareButton } from './CustomCharacterShareButton';
+import { RenameCustomCharacterModal } from './RenameCustomCharacterModal';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -32,7 +34,9 @@ export const CharacterDetail: React.FC = () => {
     evolveCharacter,
     protodermis,
     recruitedCharacters,
+    renameCustomCharacter,
   } = useGame();
+  const [renameTargetId, setRenameTargetId] = useState<string | null>(null);
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const { setScene } = useSceneCanvas();
@@ -60,11 +64,20 @@ export const CharacterDetail: React.FC = () => {
 
   useEffect(() => {
     if (matoran) {
-      setScene(<CharacterScene matoran={matoran}></CharacterScene>);
+      // Use the stable "character-preview" key that CharacterCreation also uses. When the user
+      // navigates from /character-create to /characters/:id, React reuses the same scene
+      // instance (and its postprocessing EffectComposer) instead of unmounting + remounting,
+      // which avoids a "Cannot read properties of null (alpha)" crash if the WebGL context
+      // was in the middle of a re-init when the new EffectComposer was constructed.
+      //
+      // We intentionally do not null the scene on unmount; global route-aware cleanup in
+      // `SceneCanvasProvider` clears the scene whenever the user navigates to a non-canvas
+      // route. Letting the next canvas page (or the current page itself) replace the scene
+      // directly avoids a transient null state that would tear down the EffectComposer.
+      setScene(
+        <CharacterScene key="character-preview" matoran={matoran}></CharacterScene>
+      );
     }
-    return () => {
-      setScene(null);
-    };
   }, [matoran, setScene]);
 
   const { activeMask, maskDescription } = useMemo(() => {
@@ -80,6 +93,8 @@ export const CharacterDetail: React.FC = () => {
     return <p>Something is wrong, this matoran does not exist</p>;
   }
 
+  const isCustom = isCustomCharacterId(matoran.id);
+
   return (
     <div className={`page-container character-detail element-${matoran.element}`}>
       <motion.div
@@ -90,6 +105,7 @@ export const CharacterDetail: React.FC = () => {
       >
         <div className="character-header">
           <h1 className="character-name">{matoran.name}</h1>
+          {isCustom && <CustomCharacterShareButton matoran={matoran} />}
         </div>
 
         <div id="model-frame">
@@ -110,9 +126,13 @@ export const CharacterDetail: React.FC = () => {
               activeMask={activeMask}
               maskDescription={maskDescription}
               onEvolveCharacter={(id) =>
-                evolveCharacter(id, (evolvedId) =>
-                  navigate(`/characters/${evolvedId}`, { replace: true })
-                )
+                evolveCharacter(id, (evolvedId) => {
+                  if (isCustomCharacterId(evolvedId)) {
+                    setRenameTargetId(evolvedId);
+                    return;
+                  }
+                  navigate(`/characters/${evolvedId}`, { replace: true });
+                })
               }
             />
           )}
@@ -148,6 +168,16 @@ export const CharacterDetail: React.FC = () => {
           )}
         </div>
       </div>
+      {renameTargetId && (
+        <RenameCustomCharacterModal
+          currentName={matoran.name}
+          onClose={() => setRenameTargetId(null)}
+          onRename={(newName) => {
+            renameCustomCharacter(renameTargetId, newName);
+            setRenameTargetId(null);
+          }}
+        />
+      )}
     </div>
   );
 };

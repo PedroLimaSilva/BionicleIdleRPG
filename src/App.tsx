@@ -4,6 +4,7 @@ import { LayoutGroup } from 'motion/react';
 
 import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
 import { Recruitment } from './pages/Recruitment/index.tsx';
+import { CharacterCreation } from './pages/CharacterCreation/index.tsx';
 import { CharacterDetail } from './pages/CharacterDetail/index.tsx';
 import { RahkshiDetail } from './pages/RahkshiDetail/index.tsx';
 
@@ -23,6 +24,7 @@ import { BattlePage } from './pages/Battle/index.tsx';
 import TypeEffectivenessPage from './pages/TypeEffectiveness/index.tsx';
 import { NavBar } from './components/NavBar/index.tsx';
 import { TelemetryConsentPrompt } from './components/TelemetryConsentPrompt/index.tsx';
+import { SharedCharacterPrompt } from './components/SharedCharacterPrompt/index.tsx';
 import PrivacyPolicyPage from './pages/PrivacyPolicy/index.tsx';
 
 const NotFound: React.FC = () => (
@@ -43,6 +45,7 @@ function AnimatedRoutes() {
         <Route path="/characters/:id" element={<CharacterDetail />} />
         <Route path="/rahkshi/:id" element={<RahkshiDetail />} />
         <Route path="/recruitment" element={<Recruitment />} />
+        <Route path="/character-create" element={<CharacterCreation />} />
         <Route path="/quests" element={<QuestsPage />} />
         <Route path="/quest-tree" element={<QuestTreePage />} />
         <Route path="/type-effectiveness" element={<TypeEffectivenessPage />} />
@@ -102,6 +105,7 @@ export function App() {
             </div>
             <PWABadge />
             <TelemetryConsentPrompt />
+            <SharedCharacterPrompt />
           </SceneCanvasProvider>
         </Router>
       </SettingsProvider>
