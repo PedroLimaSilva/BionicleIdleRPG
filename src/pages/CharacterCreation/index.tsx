@@ -220,6 +220,10 @@ export const CharacterCreation: React.FC = () => {
     trimmedName.length > 0 && trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME;
   const canAfford = protodermis >= CUSTOM_CHARACTER_COST;
   const canCreate = isEditMode ? nameAllowed : canAfford && nameAllowed;
+  const displayColors = useMemo(
+    () => normalizeCustomCharacterColorsForStage(creationStage, colors),
+    [colors, creationStage]
+  );
 
   const displayColors = useMemo(
     () => normalizeCustomCharacterColorsForStage(creationStage, colors),
