@@ -6,6 +6,11 @@ import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { useGame } from '../../context/Game';
 import { getRecruitedMatoran } from '../../services/matoranUtils';
 import {
+  getOrderedEditableColorTabs,
+  normalizeCustomCharacterColorsForStage,
+  prefillColorsAfterEvolution,
+} from '../../game/customCharacterColorSlots';
+import {
   BaseMatoran,
   CUSTOM_CHARACTER_COST,
   ElementTribe,
@@ -14,6 +19,7 @@ import {
   MatoranStage,
   MatoranTag,
 } from '../../types/Matoran';
+import type { MatoranPaletteKey } from '../../types/KitParts';
 import { LegoColor } from '../../types/Colors';
 
 import './index.scss';
@@ -98,9 +104,17 @@ function readableTextColor(hex: string): string {
   return luminance > 0.6 ? '#000' : '#fff';
 }
 
-type ColorPart = 'mask' | 'body' | 'arms' | 'feet' | 'eyes';
+function colorPartLabel(part: MatoranPaletteKey, stage: MatoranStage): string {
+  if (part === 'feet' && stage === MatoranStage.Rebuilt) {
+    return 'feet & hands';
+  }
+  return part;
+}
 
-type CharacterCreateLocationState = { customizeAfterEvolution?: string };
+type CharacterCreateLocationState = {
+  customizeAfterEvolution?: string;
+  evolutionFromStage?: MatoranStage;
+};
 
 export const CharacterCreation: React.FC = () => {
   const {
@@ -114,7 +128,9 @@ export const CharacterCreation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const customizeId = (location.state as CharacterCreateLocationState | null)?.customizeAfterEvolution;
+  const locationState = location.state as CharacterCreateLocationState | null;
+  const customizeId = locationState?.customizeAfterEvolution;
+  const evolutionFromStage = locationState?.evolutionFromStage;
 
   const isEditMode = useMemo(
     () =>
@@ -127,13 +143,30 @@ export const CharacterCreation: React.FC = () => {
     [customCharacters, customizeId, recruitedCharacters]
   );
 
+  const creationStage = useMemo(() => {
+    if (isEditMode && customizeId) {
+      return getRecruitedMatoran(customizeId, recruitedCharacters).stage;
+    }
+    return MatoranStage.Diminished;
+  }, [customizeId, isEditMode, recruitedCharacters]);
+
+  const colorTabs = useMemo(() => getOrderedEditableColorTabs(creationStage), [creationStage]);
+
   const [name, setName] = useState('New Matoran');
   const [mask, setMask] = useState<Mask>(Mask.Hau);
   const [element, setElement] = useState<ElementTribe>(ElementTribe.Fire);
-  const [colors, setColors] = useState({ ...DEFAULT_COLORS });
-  const [activePart, setActivePart] = useState<ColorPart>('mask');
+  const [colors, setColors] = useState(() =>
+    normalizeCustomCharacterColorsForStage(MatoranStage.Diminished, { ...DEFAULT_COLORS })
+  );
+  const [activePart, setActivePart] = useState<MatoranPaletteKey>('mask');
 
-  const initializedFromEvolutionRef = useRef<string | null>(null);
+  const lastFormInitKeyRef = useRef('');
+
+  useEffect(() => {
+    if (!colorTabs.includes(activePart)) {
+      setActivePart(colorTabs[0] ?? 'mask');
+    }
+  }, [activePart, colorTabs]);
 
   useEffect(() => {
     if (!customizeId) return;
@@ -143,17 +176,31 @@ export const CharacterCreation: React.FC = () => {
 
   useEffect(() => {
     if (!customizeId || !isEditMode) {
-      initializedFromEvolutionRef.current = null;
+      lastFormInitKeyRef.current = '';
       return;
     }
-    if (initializedFromEvolutionRef.current === customizeId) return;
     const full = getRecruitedMatoran(customizeId, recruitedCharacters);
+    const initKey = `${customizeId}|${full.stage}|${evolutionFromStage ?? 'none'}`;
+    if (lastFormInitKeyRef.current === initKey) return;
+    lastFormInitKeyRef.current = initKey;
+
     setName(full.name);
     setMask(full.maskOverride ?? full.mask);
     setElement(full.element);
-    setColors({ ...full.colors });
-    initializedFromEvolutionRef.current = customizeId;
-  }, [customizeId, isEditMode, recruitedCharacters]);
+    let nextColors = { ...full.colors };
+    if (evolutionFromStage !== undefined) {
+      nextColors = prefillColorsAfterEvolution(evolutionFromStage, full.stage, nextColors);
+    }
+    setColors(normalizeCustomCharacterColorsForStage(full.stage, nextColors));
+  }, [customizeId, evolutionFromStage, isEditMode, recruitedCharacters]);
+
+  useEffect(() => {
+    if (creationStage !== MatoranStage.Diminished) return;
+    setColors((c) => {
+      if (c.arms === c.body) return c;
+      return { ...c, arms: c.body };
+    });
+  }, [colors.body, creationStage]);
 
   // Only the Kaukau is canonically transparent in the dex; mirror that for custom matoran.
   const isMaskTransparent = mask === Mask.Kaukau;
@@ -162,25 +209,23 @@ export const CharacterCreation: React.FC = () => {
   const nameValid = name.trim().length > 0;
   const canCreate = isEditMode ? nameValid : canAfford && nameValid;
 
-  const effectivePreviewStage = useMemo(() => {
-    if (isEditMode && customizeId) {
-      return getRecruitedMatoran(customizeId, recruitedCharacters).stage;
-    }
-    return MatoranStage.Diminished;
-  }, [customizeId, isEditMode, recruitedCharacters]);
+  const displayColors = useMemo(
+    () => normalizeCustomCharacterColorsForStage(creationStage, colors),
+    [colors, creationStage]
+  );
 
   const previewBase = useMemo<BaseMatoran>(
     () => ({
-      colors,
+      colors: displayColors,
       element,
       id: 'custom_preview',
       isMaskTransparent,
       mask,
       name: name.trim() || 'New Matoran',
-      stage: effectivePreviewStage,
+      stage: creationStage,
       tags: [MatoranTag.Custom],
     }),
-    [colors, element, effectivePreviewStage, isMaskTransparent, mask, name]
+    [creationStage, displayColors, element, isMaskTransparent, mask, name]
   );
 
   // Debounced preview matoran. The 3D `CharacterScene` recreates Three.js materials whenever
@@ -224,8 +269,9 @@ export const CharacterCreation: React.FC = () => {
     if (!canCreate) return;
     if (isEditMode && customizeId) {
       const stage = getRecruitedMatoran(customizeId, recruitedCharacters).stage;
+      const resolvedColors = normalizeCustomCharacterColorsForStage(stage, colors);
       const ok = updateCustomCharacter(customizeId, {
-        colors,
+        colors: resolvedColors,
         element,
         isMaskTransparent,
         mask,
@@ -238,8 +284,9 @@ export const CharacterCreation: React.FC = () => {
       }
       return;
     }
+    const resolvedColors = normalizeCustomCharacterColorsForStage(MatoranStage.Diminished, colors);
     const id = createCustomCharacter({
-      colors,
+      colors: resolvedColors,
       element,
       isMaskTransparent,
       mask,
@@ -303,7 +350,7 @@ export const CharacterCreation: React.FC = () => {
         <div className="field">
           <span className="field-label">Color Scheme</span>
           <div className="part-tabs">
-            {(['mask', 'body', 'arms', 'feet', 'eyes'] as ColorPart[]).map((p) => (
+            {colorTabs.map((p) => (
               <button
                 type="button"
                 key={p}
@@ -312,10 +359,10 @@ export const CharacterCreation: React.FC = () => {
               >
                 <span
                   className="part-tab-swatch"
-                  style={{ backgroundColor: colors[p] }}
+                  style={{ backgroundColor: displayColors[p] }}
                   aria-hidden
                 />
-                <span>{p}</span>
+                <span>{colorPartLabel(p, creationStage)}</span>
               </button>
             ))}
           </div>
@@ -323,7 +370,7 @@ export const CharacterCreation: React.FC = () => {
             {palette.map((c) => (
               <div
                 key={c}
-                className={`color-swatch${colors[activePart] === c ? ' color-swatch--selected' : ''}`}
+                className={`color-swatch${displayColors[activePart] === c ? ' color-swatch--selected' : ''}`}
                 style={{ background: c, color: readableTextColor(c) }}
                 onClick={() => setColors((prev) => ({ ...prev, [activePart]: c }))}
                 aria-label={c}
