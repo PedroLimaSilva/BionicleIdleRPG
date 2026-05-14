@@ -128,9 +128,17 @@ export const CharacterCreation: React.FC = () => {
     [colors, element, isMaskTransparent, mask, name]
   );
 
+  // Update the scene in-place on every change. The Canvas children diff by element type, so
+  // updating the prop reuses the existing <CharacterScene> instance instead of remounting it
+  // every keystroke (which would tear down + re-create the postprocessing EffectComposer and
+  // can race with WebGL context setup, surfacing as "Cannot read properties of null (alpha)").
+  //
+  // We intentionally do not null the scene on unmount: the next page (CharacterDetail after
+  // navigate, or Recruitment after cancel) calls its own setScene immediately. Letting the
+  // next page replace the scene directly avoids a brief null transition that would tear down
+  // the EffectComposer and can leave it in a half-initialised state on the next mount.
   useEffect(() => {
     setScene(<CharacterScene matoran={{ ...previewBase, exp: 0 }} />);
-    return () => setScene(null);
   }, [previewBase, setScene]);
 
   const palette = activePart === 'eyes' ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
