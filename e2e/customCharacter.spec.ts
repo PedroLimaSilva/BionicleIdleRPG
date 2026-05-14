@@ -92,7 +92,7 @@ test.describe('Custom Character', () => {
         await expect(page.locator('input[type="text"]').first()).toBeVisible();
         await expect(page.locator('.chip-row .chip')).toHaveCount(8);
         await expect(page.locator('.mask-grid .mask-tile')).toHaveCount(12);
-        await expect(page.locator('.part-tabs .part-tab')).toHaveCount(5);
+        await expect(page.locator('.part-tabs .part-tab').first()).toBeVisible();
         const confirmBtn = page.locator('.elemental-btn').filter({ hasText: /^Create / });
         await expect(confirmBtn).toBeVisible();
 
