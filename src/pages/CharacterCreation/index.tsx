@@ -114,15 +114,16 @@ export const CharacterCreation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const customizeId = (location.state as CharacterCreateLocationState | null)?.customizeAfterEvolution;
+  const customizeId = (location.state as CharacterCreateLocationState | null)
+    ?.customizeAfterEvolution;
 
   const isEditMode = useMemo(
     () =>
       Boolean(
         customizeId &&
-          isCustomCharacterId(customizeId) &&
-          customCharacters.some((c) => c.id === customizeId) &&
-          recruitedCharacters.some((r) => r.id === customizeId)
+        isCustomCharacterId(customizeId) &&
+        customCharacters.some((c) => c.id === customizeId) &&
+        recruitedCharacters.some((r) => r.id === customizeId)
       ),
     [customCharacters, customizeId, recruitedCharacters]
   );

@@ -21,7 +21,12 @@ import { CharacterChronicle } from './Chronicle';
 import { ProtodermisTraining } from '../../components/ProtodermisTraining';
 import { isKranaCollectionActive } from '../../game/Krana';
 import { MASK_POWERS } from '../../data/combat';
-import { BaseMatoran, isCustomCharacterId, Mask, RecruitedCharacterData } from '../../types/Matoran';
+import {
+  BaseMatoran,
+  isCustomCharacterId,
+  Mask,
+  RecruitedCharacterData,
+} from '../../types/Matoran';
 import { CustomCharacterShareButton } from './CustomCharacterShareButton';
 
 export const CharacterDetail: React.FC = () => {
@@ -71,9 +76,7 @@ export const CharacterDetail: React.FC = () => {
       // `SceneCanvasProvider` clears the scene whenever the user navigates to a non-canvas
       // route. Letting the next canvas page (or the current page itself) replace the scene
       // directly avoids a transient null state that would tear down the EffectComposer.
-      setScene(
-        <CharacterScene key="character-preview" matoran={matoran}></CharacterScene>
-      );
+      setScene(<CharacterScene key="character-preview" matoran={matoran}></CharacterScene>);
     }
   }, [matoran, setScene]);
 

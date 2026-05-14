@@ -26,8 +26,7 @@ export function useCharactersState(
 ) {
   const [recruitedCharacters, setRecruitedCharacters] =
     useState<RecruitedCharacterData[]>(initialRecruited);
-  const [customCharacters, setCustomCharacters] =
-    useState<BaseMatoran[]>(initialCustomCharacters);
+  const [customCharacters, setCustomCharacters] = useState<BaseMatoran[]>(initialCustomCharacters);
 
   useEffect(() => {
     for (const base of customCharacters) {
