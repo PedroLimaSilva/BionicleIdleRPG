@@ -21,10 +21,10 @@ export function getEditablePaletteKeysForStage(
 ): ReadonlySet<MatoranPaletteKey> {
   switch (stage) {
     case MatoranStage.Diminished:
-      // Limbs share the torso color; arms are driven from body (see normalize…).
-      return new Set(['mask', 'body', 'feet', 'eyes', 'face']);
     case MatoranStage.Rebuilt:
-      return new Set(['mask', 'body', 'arms', 'feet', 'eyes', 'face']);
+      // Custom characters may use any palette slot at each stage (canon matoran often match
+      // torso and limbs; players are not restricted to that).
+      return new Set(CUSTOM_CHARACTER_COLOR_TAB_ORDER);
     case MatoranStage.ToaMata:
       // Kit plastics use fixed LEGO tints; mask + eyes follow the custom palette today.
       return new Set(['mask', 'eyes']);
@@ -39,17 +39,14 @@ export function getOrderedEditableColorTabs(stage: MatoranStage): MatoranPalette
 }
 
 /**
- * Coerces stored colors to rules for the given stage (e.g. diminished arms track body).
+ * Coerces stored colors to rules for the given stage. Reserved for future per-stage fixes;
+ * custom palettes are not forced to match canon defaults (e.g. arms vs body on Diminished).
  */
 export function normalizeCustomCharacterColorsForStage(
-  stage: MatoranStage,
+  _stage: MatoranStage,
   colors: BaseMatoran['colors']
 ): BaseMatoran['colors'] {
-  const next = { ...colors };
-  if (stage === MatoranStage.Diminished) {
-    next.arms = next.body;
-  }
-  return next;
+  return { ...colors };
 }
 
 /**
@@ -62,12 +59,5 @@ export function prefillColorsAfterEvolution(
   colors: BaseMatoran['colors']
 ): BaseMatoran['colors'] {
   if (fromStage === toStage) return { ...colors };
-  const next = { ...colors };
-
-  if (fromStage === MatoranStage.Diminished && toStage === MatoranStage.Rebuilt) {
-    // Rebuilt exposes separate arm plastics; start from the torso color the player used before.
-    next.arms = next.body;
-  }
-
-  return normalizeCustomCharacterColorsForStage(toStage, next);
+  return normalizeCustomCharacterColorsForStage(toStage, { ...colors });
 }

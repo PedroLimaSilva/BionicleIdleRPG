@@ -18,9 +18,9 @@ const sampleColors = {
 
 describe('customCharacterColorSlots', () => {
   describe('getEditablePaletteKeysForStage', () => {
-    test('diminished omits arms', () => {
+    test('diminished includes arms like rebuilt', () => {
       const s = getEditablePaletteKeysForStage(MatoranStage.Diminished);
-      expect(s.has('arms')).toBe(false);
+      expect(s.has('arms')).toBe(true);
       expect(s.has('body')).toBe(true);
       expect(s.has('mask')).toBe(true);
     });
@@ -42,6 +42,7 @@ describe('customCharacterColorSlots', () => {
       expect(getOrderedEditableColorTabs(MatoranStage.Diminished)).toEqual([
         'mask',
         'body',
+        'arms',
         'feet',
         'eyes',
         'face',
@@ -50,25 +51,26 @@ describe('customCharacterColorSlots', () => {
   });
 
   describe('normalizeCustomCharacterColorsForStage', () => {
-    test('forces arms to body for diminished', () => {
+    test('preserves palette for diminished (arms may differ from body)', () => {
       const c = normalizeCustomCharacterColorsForStage(MatoranStage.Diminished, sampleColors);
-      expect(c.arms).toBe(sampleColors.body);
+      expect(c).toEqual(sampleColors);
     });
 
-    test('does not merge arms into body for rebuilt', () => {
+    test('preserves palette for rebuilt', () => {
       const c = normalizeCustomCharacterColorsForStage(MatoranStage.Rebuilt, sampleColors);
-      expect(c.arms).toBe(sampleColors.arms);
+      expect(c).toEqual(sampleColors);
     });
   });
 
   describe('prefillColorsAfterEvolution', () => {
-    test('diminished to rebuilt seeds arms from body', () => {
+    test('diminished to rebuilt keeps arm color from custom palette', () => {
       const merged = prefillColorsAfterEvolution(
         MatoranStage.Diminished,
         MatoranStage.Rebuilt,
-        normalizeCustomCharacterColorsForStage(MatoranStage.Diminished, sampleColors)
+        sampleColors
       );
-      expect(merged.arms).toBe(merged.body);
+      expect(merged.arms).toBe(sampleColors.arms);
+      expect(merged.body).toBe(sampleColors.body);
     });
 
     test('no-op when stages match', () => {

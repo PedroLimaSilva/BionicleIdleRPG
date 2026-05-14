@@ -162,9 +162,7 @@ export const CharacterCreation: React.FC = () => {
   const [showCreateConfirm, setShowCreateConfirm] = useState(false);
   const [mask, setMask] = useState<Mask>(Mask.Hau);
   const [element, setElement] = useState<ElementTribe>(ElementTribe.Fire);
-  const [colors, setColors] = useState(() =>
-    normalizeCustomCharacterColorsForStage(MatoranStage.Diminished, { ...DEFAULT_COLORS })
-  );
+  const [colors, setColors] = useState(() => ({ ...DEFAULT_COLORS }));
   const [activePart, setActivePart] = useState<MatoranPaletteKey>('mask');
 
   const lastFormInitKeyRef = useRef('');
@@ -200,14 +198,6 @@ export const CharacterCreation: React.FC = () => {
     }
     setColors(normalizeCustomCharacterColorsForStage(full.stage, nextColors));
   }, [customizeId, evolutionFromStage, isEditMode, recruitedCharacters]);
-
-  useEffect(() => {
-    if (creationStage !== MatoranStage.Diminished) return;
-    setColors((c) => {
-      if (c.arms === c.body) return c;
-      return { ...c, arms: c.body };
-    });
-  }, [colors.body, creationStage]);
 
   // Only the Kaukau is canonically transparent in the dex; mirror that for custom matoran.
   const isMaskTransparent = mask === Mask.Kaukau;
