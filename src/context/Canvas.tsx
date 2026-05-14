@@ -39,6 +39,29 @@ function ShadowMapConfig() {
   return null;
 }
 
+/**
+ * Routes that own a shared 3D scene. The set is used to decide whether to clear the scene
+ * on navigation; pages NOT in this set get a cleared scene (so e.g. the Quests page doesn't
+ * inherit a leftover character preview).
+ *
+ * Listing the prefixes here lets canvas-using pages drop the `setScene(null)` cleanup from
+ * their own effects, which is what enables the same `CharacterScene` instance (and its
+ * postprocessing EffectComposer) to survive the /character-create → /characters/:id
+ * transition. Tearing the scene down + recreating it during that transition was racing with
+ * WebGL context setup and surfaced as "Cannot read properties of null (alpha)".
+ */
+const CANVAS_ROUTE_PREFIXES = [
+  '/recruitment',
+  '/character-create',
+  '/characters/',
+  '/rahkshi/',
+  '/battle',
+];
+
+function isCanvasRoute(pathname: string): boolean {
+  return CANVAS_ROUTE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p));
+}
+
 export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [scene, setScene] = useState<React.ReactNode>(null);
   const [target, setTarget] = useState<HTMLElement | null>(null);
@@ -56,6 +79,12 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
       el.className = `canvas-mount route-${location.pathname.replace(/\//g, '-')}`;
 
       setTimeout(() => {}, 0);
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isCanvasRoute(location.pathname)) {
+      setScene(null);
     }
   }, [location.pathname]);
 

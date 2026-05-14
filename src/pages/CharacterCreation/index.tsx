@@ -132,8 +132,8 @@ export const CharacterCreation: React.FC = () => {
   // `matoran.colors` (a new object) is passed in. Pushing that on every keystroke / color pick
   // creates many short-lived WebGL materials in quick succession, which has been observed to
   // exhaust the GL context in dev (manifesting as "Context Lost" + "Cannot read properties of
-  // null (alpha)" from EffectComposer.setRenderer on the next page). Throttling the prop
-  // updates lets rapid edits coalesce into a single material re-application.
+  // null (alpha)" from the postprocessing EffectComposer on the next page). Throttling the
+  // prop updates lets rapid edits coalesce into a single material re-application.
   const [livePreview, setLivePreview] = useState<BaseMatoran>(previewBase);
   const previewTimerRef = useRef<number | null>(null);
   useEffect(() => {
@@ -143,7 +143,7 @@ export const CharacterCreation: React.FC = () => {
     previewTimerRef.current = window.setTimeout(() => {
       setLivePreview(previewBase);
       previewTimerRef.current = null;
-    }, 200);
+    }, 400);
     return () => {
       if (previewTimerRef.current !== null) {
         window.clearTimeout(previewTimerRef.current);
@@ -152,19 +152,18 @@ export const CharacterCreation: React.FC = () => {
     };
   }, [previewBase]);
 
-  // Mount the 3D scene once with a stable key so React reuses the same CharacterScene
-  // instance (and its underlying postprocessing EffectComposer) across debounced prop
-  // updates and across the navigation to /characters/:id after creation.
+  // Mount the 3D scene with a stable key shared with `CharacterDetail`. When the user
+  // confirms creation and navigates to /characters/:id, the new page re-uses the same key
+  // and React reconciles into the existing `CharacterScene` instance instead of tearing
+  // it (and its postprocessing EffectComposer) down. We deliberately do NOT null the scene
+  // on unmount: the route we navigate to next either replaces it (CharacterDetail, back to
+  // Recruitment) or — for arbitrary navigations away (e.g. nav-bar to /quests) — the global
+  // route-aware cleanup in `SceneCanvasProvider` handles tearing it down.
   useEffect(() => {
     setScene(
       <CharacterScene key="character-preview" matoran={{ ...livePreview, exp: 0 }} />
     );
   }, [livePreview, setScene]);
-
-  // Null the scene only on unmount, never between debounced updates.
-  useEffect(() => {
-    return () => setScene(null);
-  }, [setScene]);
 
   const palette = activePart === 'eyes' ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
 

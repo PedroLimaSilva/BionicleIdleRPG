@@ -69,13 +69,15 @@ export const CharacterDetail: React.FC = () => {
       // instance (and its postprocessing EffectComposer) instead of unmounting + remounting,
       // which avoids a "Cannot read properties of null (alpha)" crash if the WebGL context
       // was in the middle of a re-init when the new EffectComposer was constructed.
+      //
+      // We intentionally do not null the scene on unmount; global route-aware cleanup in
+      // `SceneCanvasProvider` clears the scene whenever the user navigates to a non-canvas
+      // route. Letting the next canvas page (or the current page itself) replace the scene
+      // directly avoids a transient null state that would tear down the EffectComposer.
       setScene(
         <CharacterScene key="character-preview" matoran={matoran}></CharacterScene>
       );
     }
-    return () => {
-      setScene(null);
-    };
   }, [matoran, setScene]);
 
   const { activeMask, maskDescription } = useMemo(() => {

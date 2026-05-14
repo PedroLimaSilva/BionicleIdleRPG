@@ -91,12 +91,15 @@ export const Recruitment: React.FC = () => {
     if (selectedMatoran) {
       const base = getDexEntry(selectedMatoran.id);
       if (base) {
-        setScene(<CharacterScene matoran={{ ...base, exp: 0 }} />);
+        // Stable "character-preview" key shared with CharacterCreation and CharacterDetail
+        // so transitions between any of those reuse the same scene instance (and its
+        // postprocessing EffectComposer) instead of tearing it down and recreating it.
+        // The SceneCanvasProvider clears the scene globally on navigation to non-canvas routes.
+        setScene(
+          <CharacterScene key="character-preview" matoran={{ ...base, exp: 0 }} />
+        );
       }
     }
-    return () => {
-      setScene(null);
-    };
   }, [selectedMatoran, setScene, celebratedCharacter, getDexEntry]);
 
   const selectPrev = useCallback(() => {
