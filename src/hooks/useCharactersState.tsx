@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import {
   BaseMatoran,
   CUSTOM_CHARACTER_COST,
@@ -28,11 +28,13 @@ export function useCharactersState(
     useState<RecruitedCharacterData[]>(initialRecruited);
   const [customCharacters, setCustomCharacters] = useState<BaseMatoran[]>(initialCustomCharacters);
 
-  useEffect(() => {
-    for (const base of customCharacters) {
-      registerCustomCharacterInDex(base);
-    }
-  }, [customCharacters]);
+  // Register in render (not only in useEffect) so CHARACTER_DEX is populated before the first
+  // paint. Otherwise getRecruitedMatoran spreads undefined from CHARACTER_DEX[id] for custom
+  // ids until effects run — e.g. reloading /characters/:id on a custom character crashes
+  // RebuiltMatoranModel when reading matoran.colors.
+  for (const base of customCharacters) {
+    registerCustomCharacterInDex(base);
+  }
 
   const buyableCharacters = useMemo(() => {
     const standard = getBuyableCharacters(completedQuests, recruitedCharacters);

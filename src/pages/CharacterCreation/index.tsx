@@ -1,6 +1,8 @@
+import { AnimatePresence } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { Modal } from '../../components/Modal';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { useGame } from '../../context/Game';
@@ -28,6 +30,9 @@ import type { MatoranPaletteKey } from '../../types/KitParts';
 import { LegoColor } from '../../types/Colors';
 
 import './index.scss';
+
+/** Placeholder label in the name field; cannot be submitted as the final name. */
+const DEFAULT_CUSTOM_MATORAN_NAME = 'New Matoran';
 
 /** The 12 standard Kanohi available to custom characters (Matoran-tier masks). */
 const SELECTABLE_MASKS: Mask[] = [
@@ -141,9 +146,9 @@ export const CharacterCreation: React.FC = () => {
     () =>
       Boolean(
         customizeId &&
-        isCustomCharacterId(customizeId) &&
-        customCharacters.some((c) => c.id === customizeId) &&
-        recruitedCharacters.some((r) => r.id === customizeId)
+          isCustomCharacterId(customizeId) &&
+          customCharacters.some((c) => c.id === customizeId) &&
+          recruitedCharacters.some((r) => r.id === customizeId)
       ),
     [customCharacters, customizeId, recruitedCharacters]
   );
@@ -155,7 +160,8 @@ export const CharacterCreation: React.FC = () => {
     return MatoranStage.Diminished;
   }, [customizeId, isEditMode, recruitedCharacters]);
 
-  const [name, setName] = useState('New Matoran');
+  const [name, setName] = useState(DEFAULT_CUSTOM_MATORAN_NAME);
+  const [showCreateConfirm, setShowCreateConfirm] = useState(false);
   const [mask, setMask] = useState<Mask>(Mask.Hau);
   const [element, setElement] = useState<ElementTribe>(ElementTribe.Fire);
   const [colors, setColors] = useState(() => ({ ...DEFAULT_COLORS }));
@@ -209,9 +215,11 @@ export const CharacterCreation: React.FC = () => {
   // Only the Kaukau is canonically transparent in the dex; mirror that for custom matoran.
   const isMaskTransparent = mask === Mask.Kaukau;
 
+  const trimmedName = name.trim();
+  const nameAllowed =
+    trimmedName.length > 0 && trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME;
   const canAfford = protodermis >= CUSTOM_CHARACTER_COST;
-  const nameValid = name.trim().length > 0;
-  const canCreate = isEditMode ? nameValid : canAfford && nameValid;
+  const canCreate = isEditMode ? nameAllowed : canAfford && nameAllowed;
 
   const displayColors = useMemo(
     () => normalizeCustomCharacterColorsForStage(creationStage, colors),
@@ -225,7 +233,7 @@ export const CharacterCreation: React.FC = () => {
       id: 'custom_preview',
       isMaskTransparent,
       mask,
-      name: name.trim() || 'New Matoran',
+      name: name.trim() || DEFAULT_CUSTOM_MATORAN_NAME,
       stage: creationStage,
       tags: [MatoranTag.Custom],
     }),
@@ -278,7 +286,7 @@ export const CharacterCreation: React.FC = () => {
 
   const palette = activePart === 'eyes' ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
 
-  const onConfirm = () => {
+  const performCreate = () => {
     if (!canCreate) return;
     if (isEditMode && customizeId) {
       const stage = getRecruitedMatoran(customizeId, recruitedCharacters).stage;
@@ -290,7 +298,7 @@ export const CharacterCreation: React.FC = () => {
           element,
           isMaskTransparent,
           mask,
-          name: name.trim(),
+          name: trimmedName,
           stage,
           tags: [MatoranTag.Custom],
         },
@@ -307,13 +315,23 @@ export const CharacterCreation: React.FC = () => {
       element,
       isMaskTransparent,
       mask,
-      name: name.trim(),
+      name: trimmedName,
       stage: MatoranStage.Diminished,
       tags: [MatoranTag.Custom],
     });
     if (id) {
+      setShowCreateConfirm(false);
       navigate(`/characters/${id}`);
     }
+  };
+
+  const onCreateClick = () => {
+    if (!canCreate) return;
+    if (isEditMode) {
+      performCreate();
+      return;
+    }
+    setShowCreateConfirm(true);
   };
 
   return (
@@ -328,6 +346,7 @@ export const CharacterCreation: React.FC = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             maxLength={32}
+            aria-invalid={!nameAllowed}
           />
         </label>
 
@@ -422,9 +441,9 @@ export const CharacterCreation: React.FC = () => {
           <button
             type="button"
             className={`elemental-btn element-${element}${canCreate ? '' : ' disabled'}`}
-            onClick={onConfirm}
+            onClick={onCreateClick}
           >
-            {isEditMode ? `Save ${name.trim() || 'Matoran'}` : `Create ${name.trim() || 'Matoran'}`}
+            {isEditMode ? `Save ${trimmedName || 'Matoran'}` : `Create ${trimmedName || 'Matoran'}`}
           </button>
           <button
             type="button"
@@ -439,6 +458,48 @@ export const CharacterCreation: React.FC = () => {
           </button>
         </div>
       </div>
+
+      <AnimatePresence>
+        {showCreateConfirm && (
+          <Modal
+            classNames="character-create-confirm-modal"
+            onClose={() => setShowCreateConfirm(false)}
+          >
+            <div
+              className="character-create-confirm-modal__inner"
+              data-testid="create-matoran-confirm-modal"
+            >
+              <h2
+                className="character-create-confirm-modal__title"
+                id="create-matoran-confirm-title"
+              >
+                Create {trimmedName}?
+              </h2>
+              <p className="character-create-confirm-modal__body">
+                This spends {CUSTOM_CHARACTER_COST} protodermis. After creation, you cannot change
+                their name, mask, element, or colors.
+              </p>
+              <div className="character-create-confirm-modal__actions">
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={() => setShowCreateConfirm(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="confirm-button"
+                  data-testid="create-matoran-confirm-submit"
+                  onClick={performCreate}
+                >
+                  Confirm creation
+                </button>
+              </div>
+            </div>
+          </Modal>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { useGame } from '../../context/Game';
 import { BaseMatoran } from '../../types/Matoran';
 import { MatoranAvatar } from '../MatoranAvatar';
-import {
-  parseCustomCharacterShare,
-  SHARE_QUERY_PARAM,
-} from '../../services/customCharacterShare';
+import { parseCustomCharacterShare, SHARE_QUERY_PARAM } from '../../services/customCharacterShare';
 import './index.scss';
 
 /**

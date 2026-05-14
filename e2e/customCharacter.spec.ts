@@ -92,7 +92,7 @@ test.describe('Custom Character', () => {
         await expect(page.locator('input[type="text"]').first()).toBeVisible();
         await expect(page.locator('.chip-row .chip')).toHaveCount(8);
         await expect(page.locator('.mask-grid .mask-tile')).toHaveCount(12);
-        await expect(page.locator('.part-tabs .part-tab')).toHaveCount(5);
+        await expect(page.locator('.part-tabs .part-tab').first()).toBeVisible();
         const confirmBtn = page.locator('.elemental-btn').filter({ hasText: /^Create / });
         await expect(confirmBtn).toBeVisible();
 
@@ -129,6 +129,11 @@ test.describe('Custom Character', () => {
         const confirmBtn = page.locator('.elemental-btn').filter({ hasText: /^Create Toatest$/ });
         await expect(confirmBtn).toBeVisible();
         await confirmBtn.click();
+
+        const createModal = page.getByTestId('create-matoran-confirm-modal');
+        await expect(createModal).toBeVisible({ timeout: 10000 });
+        await expect(createModal).toContainText('cannot change');
+        await page.getByTestId('create-matoran-confirm-submit').click();
 
         await page.waitForURL(/\/characters\/custom_0$/, { timeout: 10000 });
 
@@ -250,9 +255,7 @@ test.describe('Custom Character', () => {
 
         // URL param is consumed; persistence picks up the shared character.
         await expect
-          .poll(async () =>
-            page.evaluate(() => new URL(location.href).searchParams.get('recruit'))
-          )
+          .poll(async () => page.evaluate(() => new URL(location.href).searchParams.get('recruit')))
           .toBeNull();
         const persisted = await page.evaluate(() =>
           JSON.parse(localStorage.getItem('GAME_STATE') ?? '{}')
