@@ -7,10 +7,23 @@
 }
 
 .character-creation-preview {
-  anchor-name: --canvas-anchor;
   position: relative;
   width: 100%;
   height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at center, var(--theme-element-glow-transparent) 0%, transparent 60%),
+    var(--color-surface-low);
+
+  .character-creation-avatar {
+    width: 60vmin;
+    max-width: 320px;
+    max-height: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 20px var(--theme-element-glow-transparent));
+  }
 }
 
 .character-creation-form {
@@ -213,6 +226,10 @@
 .landscape .character-creation-preview {
   width: 50%;
   height: 100%;
+
+  .character-creation-avatar {
+    max-width: 60%;
+  }
 }
 
 .landscape .character-creation-form {

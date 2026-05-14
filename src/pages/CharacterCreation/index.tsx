@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { CharacterScene } from '../../components/CharacterScene';
+import { MatoranAvatar } from '../../components/MatoranAvatar';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { useGame } from '../../context/Game';
 import {
@@ -128,19 +128,15 @@ export const CharacterCreation: React.FC = () => {
     [colors, element, isMaskTransparent, mask, name]
   );
 
+  // Clear any existing 3D scene while on the creation page; the live preview here uses a
+  // lightweight 2D avatar (see render below). Mounting a CharacterScene here would
+  // re-instantiate its postprocessing EffectComposer on every color/name keystroke and can
+  // race with WebGL context setup ("Cannot read properties of null (alpha)") on the
+  // subsequent transition to the character detail page.
   useEffect(() => {
-    // Key by previewBase.id (constant during creation) so React only remounts the scene when
-    // the character identity changes, not on every color/name keystroke. Remounting on
-    // every keystroke would tear down + re-create the postprocessing EffectComposer and can
-    // race with WebGL context setup ("Cannot read properties of null (alpha)").
-    setScene(
-      <CharacterScene
-        key={previewBase.id}
-        matoran={{ ...previewBase, exp: 0 }}
-      />
-    );
+    setScene(null);
     return () => setScene(null);
-  }, [previewBase, setScene]);
+  }, [setScene]);
 
   const palette = activePart === 'eyes' ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
 
@@ -162,7 +158,12 @@ export const CharacterCreation: React.FC = () => {
 
   return (
     <div className={`character-creation element-${element}`}>
-      <div className="character-creation-preview" />
+      <div className="character-creation-preview">
+        <MatoranAvatar
+          matoran={{ ...previewBase, exp: 0 }}
+          styles="character-creation-avatar"
+        />
+      </div>
       <div className="character-creation-form">
         <h1 className="character-creation-title">Forge a New Matoran</h1>
 
