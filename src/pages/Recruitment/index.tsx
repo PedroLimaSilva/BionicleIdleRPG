@@ -95,9 +95,7 @@ export const Recruitment: React.FC = () => {
         // so transitions between any of those reuse the same scene instance (and its
         // postprocessing EffectComposer) instead of tearing it down and recreating it.
         // The SceneCanvasProvider clears the scene globally on navigation to non-canvas routes.
-        setScene(
-          <CharacterScene key="character-preview" matoran={{ ...base, exp: 0 }} />
-        );
+        setScene(<CharacterScene key="character-preview" matoran={{ ...base, exp: 0 }} />);
       }
     }
   }, [selectedMatoran, setScene, celebratedCharacter, getDexEntry]);

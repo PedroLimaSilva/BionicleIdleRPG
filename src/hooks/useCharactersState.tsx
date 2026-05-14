@@ -6,6 +6,7 @@ import {
   ListedCharacterData,
   Mask,
   RecruitedCharacterData,
+  isCustomCharacterId,
 } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
@@ -25,8 +26,7 @@ export function useCharactersState(
 ) {
   const [recruitedCharacters, setRecruitedCharacters] =
     useState<RecruitedCharacterData[]>(initialRecruited);
-  const [customCharacters, setCustomCharacters] =
-    useState<BaseMatoran[]>(initialCustomCharacters);
+  const [customCharacters, setCustomCharacters] = useState<BaseMatoran[]>(initialCustomCharacters);
 
   useEffect(() => {
     for (const base of customCharacters) {
@@ -113,17 +113,24 @@ export function useCharactersState(
     setCustomCharacters((prev) => prev.filter((c) => c.id !== id));
   };
 
-  const renameCustomCharacter = (id: string, newName: string) => {
-    const trimmed = newName.trim();
-    if (!trimmed) return;
-    setCustomCharacters((prev) =>
-      prev.map((c) => {
-        if (c.id !== id) return c;
-        const updated = { ...c, name: trimmed };
-        registerCustomCharacterInDex(updated);
-        return updated;
-      })
+  const updateCustomCharacter = (id: string, base: Omit<BaseMatoran, 'id'>): boolean => {
+    if (!isCustomCharacterId(id)) return false;
+    const existing = customCharacters.find((c) => c.id === id);
+    if (!existing) return false;
+    if (!recruitedCharacters.some((m) => m.id === id)) return false;
+
+    const updated: BaseMatoran = {
+      ...existing,
+      ...base,
+      id,
+      tags: base.tags ?? existing.tags,
+    };
+    registerCustomCharacterInDex(updated);
+    setCustomCharacters((prev) => prev.map((c) => (c.id === id ? updated : c)));
+    setRecruitedCharacters((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, stage: base.stage } : m))
     );
+    return true;
   };
 
   return {
@@ -136,9 +143,9 @@ export function useCharactersState(
     recruitedCharacters,
     registerSharedCustomCharacter,
     removeJobFromMatoran,
-    renameCustomCharacter,
     setCustomCharacters,
     setMaskOverride,
     setRecruitedCharacters,
+    updateCustomCharacter,
   };
 }

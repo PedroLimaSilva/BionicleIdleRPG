@@ -1,15 +1,17 @@
 import { AnimatePresence } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Modal } from '../../components/Modal';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { useGame } from '../../context/Game';
+import { getRecruitedMatoran } from '../../services/matoranUtils';
 import {
   BaseMatoran,
   CUSTOM_CHARACTER_COST,
   ElementTribe,
+  isCustomCharacterId,
   Mask,
   MatoranStage,
   MatoranTag,
@@ -103,10 +105,33 @@ function readableTextColor(hex: string): string {
 
 type ColorPart = 'mask' | 'body' | 'arms' | 'feet' | 'eyes';
 
+type CharacterCreateLocationState = { customizeAfterEvolution?: string };
+
 export const CharacterCreation: React.FC = () => {
-  const { createCustomCharacter, protodermis } = useGame();
+  const {
+    createCustomCharacter,
+    customCharacters,
+    protodermis,
+    recruitedCharacters,
+    updateCustomCharacter,
+  } = useGame();
   const { setScene } = useSceneCanvas();
+  const location = useLocation();
   const navigate = useNavigate();
+
+  const customizeId = (location.state as CharacterCreateLocationState | null)
+    ?.customizeAfterEvolution;
+
+  const isEditMode = useMemo(
+    () =>
+      Boolean(
+        customizeId &&
+        isCustomCharacterId(customizeId) &&
+        customCharacters.some((c) => c.id === customizeId) &&
+        recruitedCharacters.some((r) => r.id === customizeId)
+      ),
+    [customCharacters, customizeId, recruitedCharacters]
+  );
 
   const [name, setName] = useState(DEFAULT_CUSTOM_MATORAN_NAME);
   const [nameDirty, setNameDirty] = useState(false);
@@ -116,6 +141,28 @@ export const CharacterCreation: React.FC = () => {
   const [colors, setColors] = useState({ ...DEFAULT_COLORS });
   const [activePart, setActivePart] = useState<ColorPart>('mask');
 
+  const initializedFromEvolutionRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!customizeId) return;
+    if (isEditMode) return;
+    navigate('/recruitment', { replace: true });
+  }, [customizeId, isEditMode, navigate]);
+
+  useEffect(() => {
+    if (!customizeId || !isEditMode) {
+      initializedFromEvolutionRef.current = null;
+      return;
+    }
+    if (initializedFromEvolutionRef.current === customizeId) return;
+    const full = getRecruitedMatoran(customizeId, recruitedCharacters);
+    setName(full.name);
+    setMask(full.maskOverride ?? full.mask);
+    setElement(full.element);
+    setColors({ ...full.colors });
+    initializedFromEvolutionRef.current = customizeId;
+  }, [customizeId, isEditMode, recruitedCharacters]);
+
   // Only the Kaukau is canonically transparent in the dex; mirror that for custom matoran.
   const isMaskTransparent = mask === Mask.Kaukau;
 
@@ -123,9 +170,17 @@ export const CharacterCreation: React.FC = () => {
   const nameAllowed =
     nameDirty &&
     trimmedName.length > 0 &&
-    trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME;
+    trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME &&
+    name.trim().length > 0;
   const canAfford = protodermis >= CUSTOM_CHARACTER_COST;
-  const canCreate = canAfford && nameAllowed;
+
+  const effectivePreviewStage = useMemo(() => {
+    if (isEditMode && customizeId) {
+      return getRecruitedMatoran(customizeId, recruitedCharacters).stage;
+    }
+    return MatoranStage.Diminished;
+  }, [customizeId, isEditMode, recruitedCharacters]);
+  const canCreate = isEditMode ? nameAllowed : canAfford && nameAllowed;
 
   const previewBase = useMemo<BaseMatoran>(
     () => ({
@@ -135,12 +190,10 @@ export const CharacterCreation: React.FC = () => {
       isMaskTransparent,
       mask,
       name: name.trim() || DEFAULT_CUSTOM_MATORAN_NAME,
-      stage: MatoranStage.Diminished,
+      stage: effectivePreviewStage,
       tags: [MatoranTag.Custom],
     }),
-    // isMaskTransparent is derived from `mask`, so we only depend on `mask` (and the others).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [colors, element, mask, name]
+    [colors, element, effectivePreviewStage, isMaskTransparent, mask, name]
   );
 
   // Debounced preview matoran. The 3D `CharacterScene` recreates Three.js materials whenever
@@ -182,6 +235,22 @@ export const CharacterCreation: React.FC = () => {
 
   const performCreate = () => {
     if (!canCreate) return;
+    if (isEditMode && customizeId) {
+      const stage = getRecruitedMatoran(customizeId, recruitedCharacters).stage;
+      const ok = updateCustomCharacter(customizeId, {
+        colors,
+        element,
+        isMaskTransparent,
+        mask,
+        name: name.trim(),
+        stage,
+        tags: [MatoranTag.Custom],
+      });
+      if (ok) {
+        navigate(`/characters/${customizeId}`);
+      }
+      return;
+    }
     const id = createCustomCharacter({
       colors,
       element,
@@ -287,20 +356,26 @@ export const CharacterCreation: React.FC = () => {
         </div>
 
         <div className="creation-actions">
-          <div className={`creation-cost ${canAfford ? 'has-enough' : 'not-enough'}`}>
-            {canAfford ? '✅' : '❌'} {CUSTOM_CHARACTER_COST} protodermis
-          </div>
+          {!isEditMode && (
+            <div className={`creation-cost ${canAfford ? 'has-enough' : 'not-enough'}`}>
+              {canAfford ? '✅' : '❌'} {CUSTOM_CHARACTER_COST} protodermis
+            </div>
+          )}
           <button
             type="button"
             className={`elemental-btn element-${element}${canCreate ? '' : ' disabled'}`}
             onClick={onCreateClick}
           >
-            Create {trimmedName || 'Matoran'}
+            {isEditMode ? `Save ${trimmedName || 'Matoran'}` : `Create ${trimmedName || 'Matoran'}`}
           </button>
           <button
             type="button"
             className="creation-cancel"
-            onClick={() => navigate('/recruitment')}
+            onClick={() =>
+              isEditMode && customizeId
+                ? navigate(`/characters/${customizeId}`)
+                : navigate('/recruitment')
+            }
           >
             Cancel
           </button>
@@ -317,7 +392,10 @@ export const CharacterCreation: React.FC = () => {
               className="character-create-confirm-modal__inner"
               data-testid="create-matoran-confirm-modal"
             >
-              <h2 className="character-create-confirm-modal__title" id="create-matoran-confirm-title">
+              <h2
+                className="character-create-confirm-modal__title"
+                id="create-matoran-confirm-title"
+              >
                 Create {trimmedName}?
               </h2>
               <p className="character-create-confirm-modal__body">

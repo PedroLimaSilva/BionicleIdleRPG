@@ -3,7 +3,16 @@
  */
 import { renderHook, act } from '@testing-library/react';
 import { useCharactersState } from './useCharactersState';
-import { ListedCharacterData, RecruitedCharacterData, Mask } from '../types/Matoran';
+import {
+  BaseMatoran,
+  ListedCharacterData,
+  Mask,
+  MatoranStage,
+  MatoranTag,
+  RecruitedCharacterData,
+  ElementTribe,
+} from '../types/Matoran';
+import { LegoColor } from '../types/Colors';
 import { MatoranJob } from '../types/Jobs';
 
 describe('useCharactersState', () => {
@@ -24,7 +33,13 @@ describe('useCharactersState', () => {
       const completedQuests = ['mnog_restore_ga_koro']; // unlocks Hahli
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       expect(result.current.recruitedCharacters).toEqual(initialRecruited);
@@ -36,7 +51,13 @@ describe('useCharactersState', () => {
       const completedQuests = ['mnog_tahu_unlock_01', 'mnog_restore_ga_koro']; // Jala + Hahli
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       // Buyable list always includes the "create custom matoran" sentinel entry plus other recruits.
@@ -75,7 +96,13 @@ describe('useCharactersState', () => {
       const completedQuests = ['mnog_tahu_unlock_01'];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -114,7 +141,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -131,7 +164,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -159,7 +198,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -174,7 +219,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -191,7 +242,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -209,7 +266,13 @@ describe('useCharactersState', () => {
       const completedQuests: string[] = [];
 
       const { result } = renderHook(() =>
-        useCharactersState(initialRecruited, [], completedQuests, mockProtodermis, mockSetProtodermis)
+        useCharactersState(
+          initialRecruited,
+          [],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
       );
 
       act(() => {
@@ -217,6 +280,113 @@ describe('useCharactersState', () => {
       });
 
       expect(result.current.recruitedCharacters[1].maskOverride).toBeUndefined();
+    });
+  });
+
+  describe('updateCustomCharacter', () => {
+    const customBase: BaseMatoran = {
+      colors: {
+        arms: LegoColor.LightGray,
+        body: LegoColor.LightGray,
+        eyes: LegoColor.TransNeonOrange,
+        face: LegoColor.DarkGray,
+        feet: LegoColor.LightGray,
+        mask: LegoColor.LightGray,
+      },
+      element: ElementTribe.Fire,
+      id: 'custom_0',
+      mask: Mask.Hau,
+      name: 'Old',
+      stage: MatoranStage.Diminished,
+      tags: [MatoranTag.Custom],
+    };
+
+    test('updates custom base, recruited stage, and returns true', () => {
+      const initialRecruited: RecruitedCharacterData[] = [
+        { exp: 50, id: 'custom_0', stage: MatoranStage.Rebuilt },
+      ];
+      const completedQuests: string[] = [];
+
+      const { result } = renderHook(() =>
+        useCharactersState(
+          initialRecruited,
+          [customBase],
+          completedQuests,
+          mockProtodermis,
+          mockSetProtodermis
+        )
+      );
+
+      let ok = false;
+      act(() => {
+        ok = result.current.updateCustomCharacter('custom_0', {
+          colors: {
+            arms: LegoColor.Red,
+            body: LegoColor.Blue,
+            eyes: LegoColor.TransGreen,
+            face: LegoColor.White,
+            feet: LegoColor.Black,
+            mask: LegoColor.Yellow,
+          },
+          element: ElementTribe.Water,
+          mask: Mask.Kaukau,
+          name: 'New Name',
+          stage: MatoranStage.ToaMata,
+          tags: [MatoranTag.Custom],
+        });
+      });
+
+      expect(ok).toBe(true);
+      expect(result.current.customCharacters[0].name).toBe('New Name');
+      expect(result.current.customCharacters[0].element).toBe(ElementTribe.Water);
+      expect(result.current.customCharacters[0].mask).toBe(Mask.Kaukau);
+      expect(result.current.recruitedCharacters[0].stage).toBe(MatoranStage.ToaMata);
+    });
+
+    test('returns false for non-custom id', () => {
+      const { result } = renderHook(() =>
+        useCharactersState([{ exp: 0, id: 'Jala' }], [], [], mockProtodermis, mockSetProtodermis)
+      );
+
+      let ok = true;
+      act(() => {
+        ok = result.current.updateCustomCharacter('Jala', {
+          colors: customBase.colors,
+          element: ElementTribe.Fire,
+          mask: Mask.Hau,
+          name: 'x',
+          stage: MatoranStage.Diminished,
+          tags: [MatoranTag.Custom],
+        });
+      });
+
+      expect(ok).toBe(false);
+    });
+
+    test('returns false when custom id is not in customCharacters', () => {
+      const { result } = renderHook(() =>
+        useCharactersState(
+          [{ exp: 0, id: 'custom_0' }],
+          [],
+          [],
+          mockProtodermis,
+          mockSetProtodermis
+        )
+      );
+
+      let ok = true;
+      act(() => {
+        ok = result.current.updateCustomCharacter('custom_0', {
+          colors: customBase.colors,
+          element: ElementTribe.Fire,
+          mask: Mask.Hau,
+          name: 'x',
+          stage: MatoranStage.Diminished,
+          tags: [MatoranTag.Custom],
+        });
+      });
+
+      expect(ok).toBe(false);
     });
   });
 });

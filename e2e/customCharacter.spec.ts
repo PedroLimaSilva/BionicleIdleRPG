@@ -255,9 +255,7 @@ test.describe('Custom Character', () => {
 
         // URL param is consumed; persistence picks up the shared character.
         await expect
-          .poll(async () =>
-            page.evaluate(() => new URL(location.href).searchParams.get('recruit'))
-          )
+          .poll(async () => page.evaluate(() => new URL(location.href).searchParams.get('recruit')))
           .toBeNull();
         const persisted = await page.evaluate(() =>
           JSON.parse(localStorage.getItem('GAME_STATE') ?? '{}')

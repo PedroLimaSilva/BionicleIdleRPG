@@ -55,8 +55,12 @@ export type GameState = {
   registerSharedCustomCharacter: (base: BaseMatoran) => string;
   /** Removes a custom character from the recruitment list (only valid before recruitment). */
   dismissCustomCharacter: (id: string) => void;
-  /** Renames an existing custom character (used after evolution). */
-  renameCustomCharacter: (id: string, newName: string) => void;
+  /**
+   * Updates an existing recruited custom character's appearance and name, and syncs their
+   * `stage` on the recruited slice (used when confirming the character-creation form after
+   * evolution). Returns false if the id is invalid or the character is not found.
+   */
+  updateCustomCharacter: (id: string, base: Omit<BaseMatoran, 'id'>) => boolean;
   setMaskOverride: (id: RecruitedCharacterData['id'], mask: Mask) => void;
   collectKrana: (element: KranaElement, id: KranaId) => void;
   addKraata: (power: KraataPower, stage: number, count: number) => void;
