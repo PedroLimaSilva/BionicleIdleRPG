@@ -40,12 +40,16 @@ test.describe('Character Inventory Page', () => {
     });
   });
 
-  test('should display character inventory without recruit button', async ({ page }) => {
+  test('should display character inventory with create matoran when no story recruits remain', async ({
+    page,
+  }) => {
     await setupGameState(page, { ...CHARACTER_INVENTORY_GAME_STATE, completedQuests: [] });
     await goto(page, '/characters');
 
     // Wait for character cards to be visible instead of networkidle
     await waitForCharacterCards(page);
+
+    await expect(page.getByRole('button', { name: 'Create Matoran' })).toBeVisible();
 
     // Take a screenshot
     await expect(page).toHaveScreenshot({
