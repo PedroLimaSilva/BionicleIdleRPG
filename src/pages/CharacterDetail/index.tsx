@@ -23,7 +23,6 @@ import { isKranaCollectionActive } from '../../game/Krana';
 import { MASK_POWERS } from '../../data/combat';
 import { BaseMatoran, isCustomCharacterId, Mask, RecruitedCharacterData } from '../../types/Matoran';
 import { CustomCharacterShareButton } from './CustomCharacterShareButton';
-import { RenameCustomCharacterModal } from './RenameCustomCharacterModal';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -34,9 +33,7 @@ export const CharacterDetail: React.FC = () => {
     evolveCharacter,
     protodermis,
     recruitedCharacters,
-    renameCustomCharacter,
   } = useGame();
-  const [renameTargetId, setRenameTargetId] = useState<string | null>(null);
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
   const { setScene } = useSceneCanvas();
@@ -128,7 +125,9 @@ export const CharacterDetail: React.FC = () => {
               onEvolveCharacter={(id) =>
                 evolveCharacter(id, (evolvedId) => {
                   if (isCustomCharacterId(evolvedId)) {
-                    setRenameTargetId(evolvedId);
+                    navigate('/character-create', {
+                      state: { customizeAfterEvolution: evolvedId },
+                    });
                     return;
                   }
                   navigate(`/characters/${evolvedId}`, { replace: true });
@@ -168,16 +167,6 @@ export const CharacterDetail: React.FC = () => {
           )}
         </div>
       </div>
-      {renameTargetId && (
-        <RenameCustomCharacterModal
-          currentName={matoran.name}
-          onClose={() => setRenameTargetId(null)}
-          onRename={(newName) => {
-            renameCustomCharacter(renameTargetId, newName);
-            setRenameTargetId(null);
-          }}
-        />
-      )}
     </div>
   );
 };

@@ -87,9 +87,6 @@ export const INITIAL_GAME_STATE: GameState = {
   removeKraataFromRahkshi: function (_rahkshiId: string): void {
     throw new Error('Function not implemented.');
   },
-  renameCustomCharacter: function (_id: string, _newName: string): void {
-    throw new Error('Function not implemented.');
-  },
   setMaskOverride: function (_id: RecruitedCharacterData['id'], _mask: Mask): void {
     throw new Error('Function not implemented.');
   },
@@ -97,6 +94,9 @@ export const INITIAL_GAME_STATE: GameState = {
     throw new Error('Function not implemented.');
   },
   startRahkshiForge: function (_power: KraataPower, _stage: number): void {
+    throw new Error('Function not implemented.');
+  },
+  updateCustomCharacter: function (_id: string, _base: Omit<BaseMatoran, 'id'>): boolean {
     throw new Error('Function not implemented.');
   },
   version: CURRENT_GAME_STATE_VERSION,

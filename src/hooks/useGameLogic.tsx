@@ -103,9 +103,9 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     recruitedCharacters,
     registerSharedCustomCharacter,
     removeJobFromMatoran,
-    renameCustomCharacter,
     setMaskOverride,
     setRecruitedCharacters,
+    updateCustomCharacter,
   } = useCharactersState(
     initialState.recruitedCharacters,
     initialState.customCharacters ?? [],
@@ -332,7 +332,6 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
       );
       setKraataCollection((prev) => addKraataToCollection(prev, power, stage, 1));
     },
-    renameCustomCharacter,
     setCollectedKrana,
     // State editor API (raw setters; only use while editor is open to avoid conflicts)
     setCompletedQuests,
@@ -367,6 +366,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
         return prevProto - RAHKSHI_FORGE_COST;
       });
     },
+    updateCustomCharacter,
     version,
   };
 };
