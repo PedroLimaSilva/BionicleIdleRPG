@@ -225,35 +225,3 @@
   align-items: center;
   justify-content: center;
 }
-
-.rename-custom-modal {
-  .rename-custom-input {
-    width: 100%;
-    background: var(--color-surface-low);
-    color: var(--color-text);
-    border: 1px solid var(--color-border-subtle);
-    padding: 0.5rem 0.75rem;
-    border-radius: var(--border-radius-sm);
-    font: inherit;
-    margin: 0.75rem 0;
-  }
-
-  .rename-custom-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-
-    button {
-      flex: 1;
-    }
-  }
-
-  .rename-custom-keep {
-    background: none;
-    color: var(--color-text);
-    border: 1px solid var(--color-border-subtle);
-    padding: 0.5rem;
-    border-radius: var(--border-radius-sm);
-    cursor: pointer;
-  }
-}
