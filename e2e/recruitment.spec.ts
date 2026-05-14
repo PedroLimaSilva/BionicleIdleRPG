@@ -1,5 +1,18 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { goto, INITIAL_GAME_STATE, setupGameState, hideCanvas } from './helpers';
+
+/**
+ * The buyable list always starts with the "Create a new matoran" slot. Tests targeting a
+ * specific recruit need to advance past it; this helper clicks the right arrow until the
+ * carousel lands on a non-create entry.
+ */
+async function advancePastCreateSlot(page: Page) {
+  const characterName = page.locator('.character-name');
+  if ((await characterName.textContent())?.trim() === 'New Matoran') {
+    await page.locator('.recruitment-arrow--right').click();
+    await expect(characterName).not.toHaveText('New Matoran');
+  }
+}
 
 test.describe('Recruitment Celebration', () => {
   const GAME_STATE_WITH_BUYABLE = {
@@ -18,6 +31,7 @@ test.describe('Recruitment Celebration', () => {
 
     await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 10000 });
     await hideCanvas(page);
+    await advancePastCreateSlot(page);
 
     const recruitBtn = page.locator('.elemental-btn').filter({ hasText: 'Recruit' });
     await expect(recruitBtn).toBeVisible();
@@ -50,6 +64,7 @@ test.describe('Recruitment Celebration', () => {
 
     await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 10000 });
     await hideCanvas(page);
+    await advancePastCreateSlot(page);
 
     const recruitBtn = page.locator('.elemental-btn').filter({ hasText: 'Recruit' });
     await recruitBtn.click();
@@ -86,6 +101,7 @@ test.describe('Recruitment Celebration', () => {
 
     await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 10000 });
     await hideCanvas(page);
+    await advancePastCreateSlot(page);
 
     const recruitBtn = page.locator('.elemental-btn').filter({ hasText: 'Recruit' });
     await expect(recruitBtn).toBeVisible();
@@ -115,6 +131,7 @@ test.describe('Recruitment Celebration', () => {
 
     await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 10000 });
     await hideCanvas(page);
+    await advancePastCreateSlot(page);
 
     const recruitBtn = page.locator('.elemental-btn').filter({ hasText: 'Recruit' });
     await recruitBtn.click();

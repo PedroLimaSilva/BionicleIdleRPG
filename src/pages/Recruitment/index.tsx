@@ -124,8 +124,12 @@ export const Recruitment: React.FC = () => {
     }
     const recruited = getDexEntry(selectedMatoran.id);
     if (!recruited) return;
-    const nextFocusedCharacter =
-      buyableCharacters.filter((c) => c.id !== selectedMatoran.id)[0] ?? null;
+    // After recruiting, navigate to /characters when the only thing left in the carousel is
+    // the always-on "create custom matoran" slot. Otherwise advance to the next recruitable.
+    const remaining = buyableCharacters.filter(
+      (c) => c.id !== selectedMatoran.id && c.id !== CREATE_CUSTOM_CHARACTER_ID
+    );
+    const nextFocusedCharacter = remaining[0] ?? null;
     pendingNextRef.current = nextFocusedCharacter;
     pendingNavigateRef.current = !nextFocusedCharacter;
     recruitCharacter(selectedMatoran);
