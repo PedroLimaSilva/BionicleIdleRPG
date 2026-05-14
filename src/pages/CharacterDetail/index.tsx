@@ -64,7 +64,9 @@ export const CharacterDetail: React.FC = () => {
 
   useEffect(() => {
     if (matoran) {
-      setScene(<CharacterScene matoran={matoran}></CharacterScene>);
+      // Key by matoran.id so a fresh CharacterScene mounts when the route's character changes
+      // (e.g. transitioning here from /character-create where preview used a different id).
+      setScene(<CharacterScene key={matoran.id} matoran={matoran}></CharacterScene>);
     }
     return () => {
       setScene(null);
