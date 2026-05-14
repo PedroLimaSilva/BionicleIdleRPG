@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { MatoranAvatar } from '../../components/MatoranAvatar';
+import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { useGame } from '../../context/Game';
 import {
@@ -128,13 +128,41 @@ export const CharacterCreation: React.FC = () => {
     [colors, element, isMaskTransparent, mask, name]
   );
 
-  // Clear any existing 3D scene while on the creation page; the live preview here uses a
-  // lightweight 2D avatar (see render below). Mounting a CharacterScene here would
-  // re-instantiate its postprocessing EffectComposer on every color/name keystroke and can
-  // race with WebGL context setup ("Cannot read properties of null (alpha)") on the
-  // subsequent transition to the character detail page.
+  // Debounced preview matoran. The 3D `CharacterScene` recreates Three.js materials whenever
+  // `matoran.colors` (a new object) is passed in. Pushing that on every keystroke / color pick
+  // creates many short-lived WebGL materials in quick succession, which has been observed to
+  // exhaust the GL context in dev (manifesting as "Context Lost" + "Cannot read properties of
+  // null (alpha)" from EffectComposer.setRenderer on the next page). Throttling the prop
+  // updates lets rapid edits coalesce into a single material re-application.
+  const [livePreview, setLivePreview] = useState<BaseMatoran>(previewBase);
+  const previewTimerRef = useRef<number | null>(null);
   useEffect(() => {
-    setScene(null);
+    if (previewTimerRef.current !== null) {
+      window.clearTimeout(previewTimerRef.current);
+    }
+    previewTimerRef.current = window.setTimeout(() => {
+      setLivePreview(previewBase);
+      previewTimerRef.current = null;
+    }, 200);
+    return () => {
+      if (previewTimerRef.current !== null) {
+        window.clearTimeout(previewTimerRef.current);
+        previewTimerRef.current = null;
+      }
+    };
+  }, [previewBase]);
+
+  // Mount the 3D scene once with a stable key so React reuses the same CharacterScene
+  // instance (and its underlying postprocessing EffectComposer) across debounced prop
+  // updates and across the navigation to /characters/:id after creation.
+  useEffect(() => {
+    setScene(
+      <CharacterScene key="character-preview" matoran={{ ...livePreview, exp: 0 }} />
+    );
+  }, [livePreview, setScene]);
+
+  // Null the scene only on unmount, never between debounced updates.
+  useEffect(() => {
     return () => setScene(null);
   }, [setScene]);
 
@@ -158,12 +186,7 @@ export const CharacterCreation: React.FC = () => {
 
   return (
     <div className={`character-creation element-${element}`}>
-      <div className="character-creation-preview">
-        <MatoranAvatar
-          matoran={{ ...previewBase, exp: 0 }}
-          styles="character-creation-avatar"
-        />
-      </div>
+      <div className="character-creation-preview" />
       <div className="character-creation-form">
         <h1 className="character-creation-title">Forge a New Matoran</h1>
 

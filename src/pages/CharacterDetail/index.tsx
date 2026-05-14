@@ -64,9 +64,14 @@ export const CharacterDetail: React.FC = () => {
 
   useEffect(() => {
     if (matoran) {
-      // Key by matoran.id so a fresh CharacterScene mounts when the route's character changes
-      // (e.g. transitioning here from /character-create where preview used a different id).
-      setScene(<CharacterScene key={matoran.id} matoran={matoran}></CharacterScene>);
+      // Use the stable "character-preview" key that CharacterCreation also uses. When the user
+      // navigates from /character-create to /characters/:id, React reuses the same scene
+      // instance (and its postprocessing EffectComposer) instead of unmounting + remounting,
+      // which avoids a "Cannot read properties of null (alpha)" crash if the WebGL context
+      // was in the middle of a re-init when the new EffectComposer was constructed.
+      setScene(
+        <CharacterScene key="character-preview" matoran={matoran}></CharacterScene>
+      );
     }
     return () => {
       setScene(null);
