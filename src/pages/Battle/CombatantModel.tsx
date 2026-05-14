@@ -266,7 +266,8 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     const rotation: Euler = [0, rotationY, 0];
 
     const model = (() => {
-      switch (combatant.model) {
+      const displayModel = combatant.mataRenderModelId ?? combatant.model;
+      switch (displayModel) {
         case 'bohrok':
           return (
             <group scale={0.175}>

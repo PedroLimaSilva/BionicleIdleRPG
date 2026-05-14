@@ -840,6 +840,8 @@ export interface GenerateCombatantStatsOptions {
   maskOverride?: Mask;
   /** When true and templateId is Toa Nuva, stats are diminished. */
   nuvaSymbolsSequestered?: boolean;
+  /** Custom Toa Mata: which Mata model branch `CombatantModel` should render. */
+  mataRenderModelId?: string;
 }
 
 /** Stable pseudo-random jaw variant per spawn id (prep + battle use the same id → same look). */
@@ -899,6 +901,7 @@ export function generateCombatantStats(
   return {
     id,
     model: template.model,
+    ...(opts.mataRenderModelId && { mataRenderModelId: opts.mataRenderModelId }),
     name: template.name,
     ...(nuiRamaVariant && { nuiRamaVariant }),
     attack,

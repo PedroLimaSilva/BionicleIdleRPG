@@ -13,6 +13,11 @@ import {
   prefillColorsAfterEvolution,
 } from '../../game/customCharacterColorSlots';
 import {
+  CUSTOM_SELECTABLE_MATA_MODEL_IDS,
+  DEFAULT_CUSTOM_MATA_MODEL_ID,
+} from '../../game/customMataBuild';
+import { CHARACTER_DEX } from '../../data/dex';
+import {
   BaseMatoran,
   CUSTOM_CHARACTER_COST,
   ElementTribe,
@@ -155,8 +160,6 @@ export const CharacterCreation: React.FC = () => {
     return MatoranStage.Diminished;
   }, [customizeId, isEditMode, recruitedCharacters]);
 
-  const colorTabs = useMemo(() => getOrderedEditableColorTabs(creationStage), [creationStage]);
-
   const [name, setName] = useState(DEFAULT_CUSTOM_MATORAN_NAME);
   const [nameDirty, setNameDirty] = useState(false);
   const [showCreateConfirm, setShowCreateConfirm] = useState(false);
@@ -164,6 +167,16 @@ export const CharacterCreation: React.FC = () => {
   const [element, setElement] = useState<ElementTribe>(ElementTribe.Fire);
   const [colors, setColors] = useState(() => ({ ...DEFAULT_COLORS }));
   const [activePart, setActivePart] = useState<MatoranPaletteKey>('mask');
+  const [mataBuildId, setMataBuildId] = useState<string>(DEFAULT_CUSTOM_MATA_MODEL_ID);
+
+  const colorTabs = useMemo(
+    () =>
+      getOrderedEditableColorTabs(
+        creationStage,
+        creationStage === MatoranStage.ToaMata ? mataBuildId : undefined
+      ),
+    [creationStage, mataBuildId]
+  );
 
   const lastFormInitKeyRef = useRef('');
 
@@ -197,6 +210,7 @@ export const CharacterCreation: React.FC = () => {
       nextColors = prefillColorsAfterEvolution(evolutionFromStage, full.stage, nextColors);
     }
     setColors(normalizeCustomCharacterColorsForStage(full.stage, nextColors));
+    setMataBuildId(full.customMataModelId ?? DEFAULT_CUSTOM_MATA_MODEL_ID);
   }, [customizeId, evolutionFromStage, isEditMode, recruitedCharacters]);
 
   // Only the Kaukau is canonically transparent in the dex; mirror that for custom matoran.
@@ -268,8 +282,17 @@ export const CharacterCreation: React.FC = () => {
   // Recruitment) or — for arbitrary navigations away (e.g. nav-bar to /quests) — the global
   // route-aware cleanup in `SceneCanvasProvider` handles tearing it down.
   useEffect(() => {
-    setScene(<CharacterScene key="character-preview" matoran={{ ...livePreview, exp: 0 }} />);
-  }, [livePreview, setScene]);
+    setScene(
+      <CharacterScene
+        key="character-preview"
+        matoran={{
+          ...livePreview,
+          exp: 0,
+          ...(creationStage === MatoranStage.ToaMata ? { customMataModelId: mataBuildId } : {}),
+        }}
+      />
+    );
+  }, [creationStage, livePreview, mataBuildId, setScene]);
 
   const palette = activePart === 'eyes' ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
 
@@ -278,15 +301,19 @@ export const CharacterCreation: React.FC = () => {
     if (isEditMode && customizeId) {
       const stage = getRecruitedMatoran(customizeId, recruitedCharacters).stage;
       const resolvedColors = normalizeCustomCharacterColorsForStage(stage, colors);
-      const ok = updateCustomCharacter(customizeId, {
-        colors: resolvedColors,
-        element,
-        isMaskTransparent,
-        mask,
-        name: name.trim(),
-        stage,
-        tags: [MatoranTag.Custom],
-      });
+      const ok = updateCustomCharacter(
+        customizeId,
+        {
+          colors: resolvedColors,
+          element,
+          isMaskTransparent,
+          mask,
+          name: name.trim(),
+          stage,
+          tags: [MatoranTag.Custom],
+        },
+        stage === MatoranStage.ToaMata ? { customMataModelId: mataBuildId } : undefined
+      );
       if (ok) {
         navigate(`/characters/${customizeId}`);
       }
@@ -364,6 +391,23 @@ export const CharacterCreation: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {isEditMode && creationStage === MatoranStage.ToaMata && (
+          <label className="field">
+            <span className="field-label">Toa build (model)</span>
+            <select
+              className="field-input"
+              value={mataBuildId}
+              onChange={(e) => setMataBuildId(e.target.value)}
+            >
+              {CUSTOM_SELECTABLE_MATA_MODEL_IDS.map((mid) => (
+                <option key={mid} value={mid}>
+                  {CHARACTER_DEX[mid]?.name ?? mid}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
 
         <div className="field">
           <span className="field-label">Color Scheme</span>

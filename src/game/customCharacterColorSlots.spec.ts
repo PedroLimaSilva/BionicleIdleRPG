@@ -31,15 +31,39 @@ describe('customCharacterColorSlots', () => {
       expect(s.has('feet')).toBe(true);
     });
 
-    test('toa mata only exposes mask and eyes', () => {
-      const s = getEditablePaletteKeysForStage(MatoranStage.ToaMata);
+    test('toa mata with kit rig exposes full palette', () => {
+      const s = getEditablePaletteKeysForStage(MatoranStage.ToaMata, 'Toa_Tahu');
+      expect(s.has('arms')).toBe(true);
+      expect(s.has('body')).toBe(true);
+    });
+
+    test('toa mata GLB-only rig keeps mask and eyes', () => {
+      const s = getEditablePaletteKeysForStage(MatoranStage.ToaMata, 'Toa_Kopaka');
       expect([...s].sort()).toEqual(['eyes', 'mask']);
+    });
+
+    test('toa mata without build id defaults to mask and eyes', () => {
+      expect([...getEditablePaletteKeysForStage(MatoranStage.ToaMata)].sort()).toEqual([
+        'eyes',
+        'mask',
+      ]);
     });
   });
 
   describe('getOrderedEditableColorTabs', () => {
-    test('returns tabs in canonical order', () => {
+    test('returns tabs in canonical order for diminished', () => {
       expect(getOrderedEditableColorTabs(MatoranStage.Diminished)).toEqual([
+        'mask',
+        'body',
+        'arms',
+        'feet',
+        'eyes',
+        'face',
+      ]);
+    });
+
+    test('toa mata kit build includes body and arms tabs in order', () => {
+      expect(getOrderedEditableColorTabs(MatoranStage.ToaMata, 'Toa_Gali')).toEqual([
         'mask',
         'body',
         'arms',

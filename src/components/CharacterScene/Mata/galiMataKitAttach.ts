@@ -1,14 +1,15 @@
 import { LegoColor } from '../../../types/Colors';
 import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../types/KitParts';
+import {
+  MATA_KIT_PLAYER_PALETTE_BRAIN,
+  MATA_KIT_PLAYER_PALETTE_PLASTICS,
+  mataKitPlayerPaletteGlow,
+} from '../../../game/mataKitPlayerPalette';
 
 const GALI_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Brain: {
-    color: { kind: 'lego', value: LegoColor.TransNeonYellow },
-    weathered: false,
-  },
-  Main: { kind: 'lego', value: LegoColor.Blue },
-  Metal: { kind: 'lego', value: LegoColor.LightGray },
-  Secondary: { kind: 'lego', value: LegoColor.MediumBlue },
+  ...MATA_KIT_PLAYER_PALETTE_BRAIN,
+  ...mataKitPlayerPaletteGlow(50),
+  ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
 };
 
 /**

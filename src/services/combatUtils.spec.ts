@@ -244,6 +244,14 @@ describe('chooseTarget', () => {
       expect(withFlag.maxHp).toBe(normal.maxHp);
       expect(withFlag.attack).toBe(normal.attack);
     });
+
+    test('includes mataRenderModelId when provided', () => {
+      const c = generateCombatantStats('ally', 'Toa_Tahu', 10, {
+        mataRenderModelId: 'Toa_Gali',
+      });
+      expect(c.model).toBe('Toa_Tahu');
+      expect(c.mataRenderModelId).toBe('Toa_Gali');
+    });
   });
 
   describe('getScaledEnemyLevelForEncounter', () => {
