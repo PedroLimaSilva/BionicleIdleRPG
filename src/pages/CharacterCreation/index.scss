@@ -22,13 +22,8 @@
   background: var(--color-surface-mid);
   border-top: 2px solid var(--theme-element-primary);
   border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
-}
-
-.character-creation-title {
-  margin: 0;
-  text-shadow:
-    0 0 12px var(--theme-element-glow),
-    0 0 24px var(--theme-element-glow-transparent);
+  height: 60vh;
+  overflow-y: auto;
 }
 
 .field {
@@ -178,7 +173,7 @@
   flex-direction: column;
   gap: 0.5rem;
   margin-top: 1rem;
-  padding-bottom: 6rem;
+  padding-bottom: 9rem;
 }
 
 .creation-cost {

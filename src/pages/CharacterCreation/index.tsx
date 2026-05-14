@@ -160,9 +160,7 @@ export const CharacterCreation: React.FC = () => {
   // Recruitment) or — for arbitrary navigations away (e.g. nav-bar to /quests) — the global
   // route-aware cleanup in `SceneCanvasProvider` handles tearing it down.
   useEffect(() => {
-    setScene(
-      <CharacterScene key="character-preview" matoran={{ ...livePreview, exp: 0 }} />
-    );
+    setScene(<CharacterScene key="character-preview" matoran={{ ...livePreview, exp: 0 }} />);
   }, [livePreview, setScene]);
 
   const palette = activePart === 'eyes' ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
@@ -187,8 +185,6 @@ export const CharacterCreation: React.FC = () => {
     <div className={`character-creation element-${element}`}>
       <div className="character-creation-preview" />
       <div className="character-creation-form">
-        <h1 className="character-creation-title">Forge a New Matoran</h1>
-
         <label className="field">
           <span className="field-label">Name</span>
           <input
@@ -266,11 +262,10 @@ export const CharacterCreation: React.FC = () => {
           </div>
           <div className="color-grid">
             {palette.map((c) => (
-              <button
-                type="button"
+              <div
                 key={c}
                 className={`color-swatch${colors[activePart] === c ? ' color-swatch--selected' : ''}`}
-                style={{ backgroundColor: c, color: readableTextColor(c) }}
+                style={{ background: c, color: readableTextColor(c) }}
                 onClick={() => setColors((prev) => ({ ...prev, [activePart]: c }))}
                 aria-label={c}
               />
