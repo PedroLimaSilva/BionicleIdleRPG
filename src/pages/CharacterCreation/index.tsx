@@ -134,7 +134,6 @@ export const CharacterCreation: React.FC = () => {
   );
 
   const [name, setName] = useState(DEFAULT_CUSTOM_MATORAN_NAME);
-  const [nameDirty, setNameDirty] = useState(false);
   const [showCreateConfirm, setShowCreateConfirm] = useState(false);
   const [mask, setMask] = useState<Mask>(Mask.Hau);
   const [element, setElement] = useState<ElementTribe>(ElementTribe.Fire);
@@ -168,10 +167,7 @@ export const CharacterCreation: React.FC = () => {
 
   const trimmedName = name.trim();
   const nameAllowed =
-    nameDirty &&
-    trimmedName.length > 0 &&
-    trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME &&
-    name.trim().length > 0;
+    trimmedName.length > 0 && trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME;
   const canAfford = protodermis >= CUSTOM_CHARACTER_COST;
 
   const effectivePreviewStage = useMemo(() => {
@@ -281,12 +277,9 @@ export const CharacterCreation: React.FC = () => {
             className="field-input"
             type="text"
             value={name}
-            onChange={(e) => {
-              setNameDirty(true);
-              setName(e.target.value);
-            }}
+            onChange={(e) => setName(e.target.value)}
             maxLength={32}
-            aria-invalid={nameDirty && !nameAllowed}
+            aria-invalid={!nameAllowed}
           />
         </label>
 
