@@ -125,17 +125,21 @@ export const CharacterDetail: React.FC = () => {
               convertProtodermisToExp={convertProtodermisToExp}
               activeMask={activeMask}
               maskDescription={maskDescription}
-              onEvolveCharacter={(id) =>
-                evolveCharacter(id, (evolvedId) => {
+              onEvolveCharacter={(charId) => {
+                const evolutionFromStage = matoran.stage;
+                evolveCharacter(charId, (evolvedId) => {
                   if (isCustomCharacterId(evolvedId)) {
                     navigate('/character-create', {
-                      state: { customizeAfterEvolution: evolvedId },
+                      state: {
+                        customizeAfterEvolution: evolvedId,
+                        evolutionFromStage,
+                      },
                     });
                     return;
                   }
                   navigate(`/characters/${evolvedId}`, { replace: true });
-                })
-              }
+                });
+              }}
             />
           )}
           {activeTab === 'inventory' && (
