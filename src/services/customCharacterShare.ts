@@ -97,22 +97,16 @@ export function parseCustomCharacterShare(token: string): BaseMatoran | null {
   for (const key of ['mask', 'body', 'arms', 'feet', 'eyes', 'face']) {
     if (typeof c[key] !== 'string') return null;
   }
-  if (c.weaponGlow !== undefined && typeof c.weaponGlow !== 'string') return null;
-
-  const colorCore: BaseMatoran['colors'] = {
-    arms: c.arms as LegoColor,
-    body: c.body as LegoColor,
-    eyes: c.eyes as LegoColor,
-    face: c.face as LegoColor,
-    feet: c.feet as LegoColor,
-    mask: c.mask as LegoColor,
-  };
-  if (typeof c.weaponGlow === 'string') {
-    colorCore.weaponGlow = c.weaponGlow as LegoColor;
-  }
 
   const safe: BaseMatoran = {
-    colors: colorCore,
+    colors: {
+      arms: c.arms as LegoColor,
+      body: c.body as LegoColor,
+      eyes: c.eyes as LegoColor,
+      face: c.face as LegoColor,
+      feet: c.feet as LegoColor,
+      mask: c.mask as LegoColor,
+    },
     element: obj.element as ElementTribe,
     id: obj.id,
     isMaskTransparent: !!obj.isMaskTransparent,

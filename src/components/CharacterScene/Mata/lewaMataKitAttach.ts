@@ -4,12 +4,18 @@ import {
   MATA_KIT_PLAYER_PALETTE_BRAIN,
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
   mataKitPlayerPaletteGlow,
+  mataKitPlayerPaletteWeaponGlowFromSecondaryArms,
 } from '../../../game/mataKitPlayerPalette';
 
 const LEWA_MATA_KIT_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
   ...mataKitPlayerPaletteGlow(50),
   ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
+};
+
+const LEWA_AXE_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...LEWA_MATA_KIT_PALETTE_COLORS,
+  ...mataKitPlayerPaletteWeaponGlowFromSecondaryArms(50),
 };
 
 /**
@@ -94,7 +100,7 @@ export const LEWA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     materialColors: LEWA_MATA_KIT_PALETTE_COLORS,
   },
   Leg_Upper_R_1: { kitNodeName: 'MataLegModShin', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
-  LewaAxe: { kitNodeName: 'LewaAxe', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
+  LewaAxe: { kitNodeName: 'LewaAxe', materialColors: LEWA_AXE_PALETTE_COLORS },
   MataAbdomen: { kitNodeName: 'MataAbdomen', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
   MataBrain: {
     kitNodeName: 'MataBrain',

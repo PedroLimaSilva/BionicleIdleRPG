@@ -1,7 +1,7 @@
 import type { LegoColor } from './Colors';
 
 /** Keys on `BaseMatoran.colors` used to tint kit materials at runtime */
-export type MatoranPaletteKey = 'mask' | 'body' | 'feet' | 'arms' | 'eyes' | 'face' | 'weaponGlow';
+export type MatoranPaletteKey = 'mask' | 'body' | 'feet' | 'arms' | 'eyes' | 'face';
 
 /** How to resolve a hex color for a named material slot on a kit mesh */
 export type KitMaterialColorSource =

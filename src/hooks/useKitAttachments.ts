@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Color, Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../types/Matoran';
-import { LegoColor } from '../types/Colors';
 import type {
   KitMaterialColorSource,
   KitMaterialSlotOverride,
@@ -24,11 +23,7 @@ function resolveColorSource(
   source: KitMaterialColorSource,
   palette: BaseMatoran['colors']
 ): string {
-  if (source.kind === 'lego') return source.value;
-  if (source.key === 'weaponGlow') {
-    return palette.weaponGlow ?? LegoColor.TransNeonYellow;
-  }
-  return palette[source.key];
+  return source.kind === 'lego' ? source.value : palette[source.key];
 }
 
 function normalizeSlotName(name: string): string {

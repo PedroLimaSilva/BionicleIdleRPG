@@ -35,14 +35,12 @@ describe('customCharacterColorSlots', () => {
       const s = getEditablePaletteKeysForStage(MatoranStage.ToaMata, 'Toa_Tahu');
       expect(s.has('arms')).toBe(true);
       expect(s.has('body')).toBe(true);
-      expect(s.has('weaponGlow')).toBe(true);
     });
 
     test('toa mata kopaka kit exposes full palette', () => {
       const s = getEditablePaletteKeysForStage(MatoranStage.ToaMata, 'Toa_Kopaka');
       expect(s.has('feet')).toBe(true);
       expect(s.has('mask')).toBe(true);
-      expect(s.has('weaponGlow')).toBe(true);
     });
 
     test('toa mata GLB-only rig keeps mask and eyes', () => {
@@ -78,7 +76,6 @@ describe('customCharacterColorSlots', () => {
         'feet',
         'eyes',
         'face',
-        'weaponGlow',
       ]);
     });
   });

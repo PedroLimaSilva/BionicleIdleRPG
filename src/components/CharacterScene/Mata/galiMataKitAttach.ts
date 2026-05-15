@@ -4,7 +4,7 @@ import {
   MATA_KIT_PLAYER_PALETTE_BRAIN,
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
   mataKitPlayerPaletteGlow,
-  mataKitPlayerPaletteWeaponGlow,
+  mataKitPlayerPaletteWeaponGlowFromSecondaryArms,
 } from '../../../game/mataKitPlayerPalette';
 
 const GALI_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -15,7 +15,7 @@ const GALI_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 
 const GALI_HOOK_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...GALI_PALETTE_COLORS,
-  ...mataKitPlayerPaletteWeaponGlow(50),
+  ...mataKitPlayerPaletteWeaponGlowFromSecondaryArms(50),
 };
 
 /**

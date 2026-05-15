@@ -11,8 +11,7 @@ import { LegoColor } from '../types/Colors';
  *   passes `materialColors` (usually built from the exports below). `useKitAttachments`
  *   (`src/hooks/useKitAttachments.ts`) walks each kit mesh, matches **material `.name`** to those
  *   keys (case-insensitive), and resolves `kind: 'palette'` with `resolveColorSource` →
- *   `palette[key]` from that character’s `colors` (optional `weaponGlow` falls back to
- *   `LegoColor.TransNeonYellow` when unset).
+ *   `palette[key]` from that character’s `colors`.
  */
 export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMaterialSlotEntry>> = {
   Main: { key: 'body', kind: 'palette' },
@@ -43,13 +42,16 @@ export function mataKitPlayerPaletteGlow(
   };
 }
 
-/** Weapon / tool emissive accents (e.g. Gali hooks); uses optional `colors.weaponGlow`. */
-export function mataKitPlayerPaletteWeaponGlow(
+/**
+ * Weapon / tool `Glow` mesh slot: kit Secondary plastic color, driven by the player `arms`
+ * palette (same mapping as `Secondary` in `MATA_KIT_PLAYER_PALETTE_PLASTICS`).
+ */
+export function mataKitPlayerPaletteWeaponGlowFromSecondaryArms(
   emissiveIntensity = 50
 ): Partial<Record<string, KitMaterialSlotEntry>> {
   return {
     Glow: {
-      emissive: { key: 'weaponGlow', kind: 'palette' },
+      emissive: { key: 'arms', kind: 'palette' },
       emissiveIntensity,
       weathered: false,
     },
