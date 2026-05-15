@@ -15,7 +15,7 @@ const TAHU_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 
 const TAHU_WEAPON_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...TAHU_PALETTE_COLORS,
-  ...mataKitPlayerPaletteWeaponGlow(50),
+  ...mataKitPlayerPaletteWeaponGlow(2.5),
 };
 
 /**
