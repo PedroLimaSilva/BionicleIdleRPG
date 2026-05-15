@@ -169,7 +169,7 @@ export const CharacterCreation: React.FC = () => {
   const [showCreateConfirm, setShowCreateConfirm] = useState(false);
   const [mask, setMask] = useState<Mask>(Mask.Hau);
   const [element, setElement] = useState<ElementTribe>(ElementTribe.Fire);
-  const [colors, setColors] = useState(() => ({ ...DEFAULT_COLORS }));
+  const [colors, setColors] = useState<BaseMatoran['colors']>(() => ({ ...DEFAULT_COLORS }));
   const [activePart, setActivePart] = useState<MatoranPaletteKey>('mask');
   const [mataBuildId, setMataBuildId] = useState<string>(DEFAULT_CUSTOM_MATA_MODEL_ID);
 
