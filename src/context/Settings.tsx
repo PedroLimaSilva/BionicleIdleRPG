@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
+  getDebugCharacterCreation,
   getDebugMode,
   getPerformanceMonitorEnabled,
   getShadowsEnabled,
   getTelemetryEnabled,
+  saveDebugCharacterCreation,
   saveDebugMode,
   savePerformanceMonitorEnabled,
   saveShadowsEnabled,
@@ -13,12 +15,17 @@ import {
 import { SettingsContext } from './SettingsContext';
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
+  const [debugCharacterCreation, setDebugCharacterCreationState] = useState(getDebugCharacterCreation);
   const [debugMode, setDebugModeState] = useState(getDebugMode);
   const [performanceMonitorEnabled, setPerformanceMonitorEnabledState] = useState(
     getPerformanceMonitorEnabled
   );
   const [shadowsEnabled, setShadowsEnabledState] = useState(getShadowsEnabled);
   const [telemetryEnabled, setTelemetryEnabledState] = useState(getTelemetryEnabled);
+
+  useEffect(() => {
+    saveDebugCharacterCreation(debugCharacterCreation);
+  }, [debugCharacterCreation]);
 
   useEffect(() => {
     saveDebugMode(debugMode);
@@ -40,8 +47,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   return (
     <SettingsContext.Provider
       value={{
+        debugCharacterCreation,
         debugMode,
         performanceMonitorEnabled,
+        setDebugCharacterCreation: setDebugCharacterCreationState,
         setDebugMode: setDebugModeState,
         setPerformanceMonitorEnabled: setPerformanceMonitorEnabledState,
         setShadowsEnabled: setShadowsEnabledState,

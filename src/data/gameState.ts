@@ -44,7 +44,10 @@ export const INITIAL_GAME_STATE: GameState = {
   ): boolean {
     throw new Error('Function not implemented.');
   },
-  createCustomCharacter: function (_base: Omit<BaseMatoran, 'id'>): string | null {
+  createCustomCharacter: function (
+    _base: Omit<BaseMatoran, 'id'>,
+    _extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+  ): string | null {
     throw new Error('Function not implemented.');
   },
   customCharacters: [],

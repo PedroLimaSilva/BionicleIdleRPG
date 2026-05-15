@@ -46,7 +46,10 @@ export type GameState = {
    * stores its base data in `customCharacters`, deducts the cost, and adds it to
    * `recruitedCharacters`. Returns the created id, or null if it could not be created.
    */
-  createCustomCharacter: (base: Omit<BaseMatoran, 'id'>) => string | null;
+  createCustomCharacter: (
+    base: Omit<BaseMatoran, 'id'>,
+    extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+  ) => string | null;
   /**
    * Registers a custom character base entry received from a share link, without
    * recruiting it. Appears in the buyable list until recruited or dismissed.

@@ -45,9 +45,10 @@ describe('customCharacterColorSlots', () => {
       expect(s.has('weaponGlow')).toBe(true);
     });
 
-    test('toa mata GLB-only rig keeps mask and eyes', () => {
+    test('toa mata onua kit exposes full palette', () => {
       const s = getEditablePaletteKeysForStage(MatoranStage.ToaMata, 'Toa_Onua');
-      expect([...s].sort()).toEqual(['eyes', 'mask']);
+      expect(s.has('arms')).toBe(true);
+      expect(s.has('weaponGlow')).toBe(true);
     });
 
     test('toa mata without build id defaults to mask and eyes', () => {
