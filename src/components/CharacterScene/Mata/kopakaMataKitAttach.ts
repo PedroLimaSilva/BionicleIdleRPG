@@ -1,24 +1,15 @@
 import { LegoColor } from '../../../types/Colors';
 import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../types/KitParts';
+import {
+  MATA_KIT_PLAYER_PALETTE_BRAIN,
+  MATA_KIT_PLAYER_PALETTE_PLASTICS,
+  mataKitPlayerPaletteGlow,
+} from '../../../game/mataKitPlayerPalette';
 
 const KOPAKA_MATA_KIT_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Brain: {
-    color: { kind: 'lego', value: LegoColor.TransMediumBlue },
-    weathered: false,
-  },
-  Glow: {
-    emissive: { kind: 'lego', value: LegoColor.MediumBlue },
-    emissiveIntensity: 4,
-    weathered: false,
-  },
-  'Glowing Eyes': {
-    emissive: { kind: 'lego', value: LegoColor.MediumBlue },
-    emissiveIntensity: 50,
-    weathered: false,
-  },
-  Main: { kind: 'lego', value: LegoColor.White },
-  Metal: { kind: 'lego', value: LegoColor.LightGray },
-  Secondary: { kind: 'lego', value: LegoColor.LightGray },
+  ...MATA_KIT_PLAYER_PALETTE_BRAIN,
+  ...mataKitPlayerPaletteGlow(50),
+  ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
 };
 
 /**

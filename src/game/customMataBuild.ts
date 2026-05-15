@@ -25,10 +25,11 @@ export function isValidCustomMataModelId(
 
 /** Toa Mata rigs whose kit attachments read player palette keys (not GLB-only bodies). */
 export const MATA_MODELS_WITH_KIT_PLAYER_PALETTE = new Set<string>([
-  'Toa_Tahu',
   'Toa_Gali',
+  'Toa_Kopaka',
   'Toa_Lewa',
   'Toa_Pohatu',
+  'Toa_Tahu',
 ]);
 
 export function mataModelUsesKitPlayerPalette(buildId: string): boolean {
