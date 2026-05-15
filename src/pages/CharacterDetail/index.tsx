@@ -235,6 +235,7 @@ function StatsTab({
       )}
       <ProtodermisTraining
         characterId={matoran.id}
+        currentExp={matoran.exp}
         element={matoran.element}
         protodermis={protodermis}
         convertProtodermisToExp={convertProtodermisToExp}
