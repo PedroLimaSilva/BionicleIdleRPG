@@ -22,7 +22,7 @@ export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMateria
 };
 
 export const MATA_KIT_PLAYER_PALETTE_BRAIN: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Brain: { color: { key: 'face', kind: 'palette' }, weathered: false },
+  Brain: { color: { key: 'eyes', kind: 'palette' }, weathered: false },
 };
 
 /** Face / head kit glow (e.g. Tahu flame); follows eye color. */
