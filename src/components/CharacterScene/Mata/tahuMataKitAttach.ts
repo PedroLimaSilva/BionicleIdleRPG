@@ -4,18 +4,12 @@ import {
   MATA_KIT_PLAYER_PALETTE_BRAIN,
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
   mataKitPlayerPaletteGlow,
-  mataKitPlayerPaletteWeaponGlowFromSecondaryArms,
 } from '../../../game/mataKitPlayerPalette';
 
 const TAHU_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
   ...mataKitPlayerPaletteGlow(50),
   ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
-};
-
-const TAHU_WEAPON_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...TAHU_PALETTE_COLORS,
-  ...mataKitPlayerPaletteWeaponGlowFromSecondaryArms(50),
 };
 
 /**
@@ -159,12 +153,9 @@ export const TAHU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
   Spacer1LF: { kitNodeName: 'AxleSpacer1L' },
   TahuSword: {
     kitNodeName: 'TahuSword',
-    materialColors: TAHU_WEAPON_PALETTE_COLORS,
+    materialColors: TAHU_PALETTE_COLORS,
   },
-  TahuSwordFlame: {
-    kitNodeName: 'TahuSwordFlame',
-    materialColors: TAHU_WEAPON_PALETTE_COLORS,
-  },
+  TahuSwordFlame: { kitNodeName: 'TahuSwordFlame', materialColors: TAHU_PALETTE_COLORS },
   Waist_1_1: {
     kitNodeName: 'MataAbdomen',
     materialColors: TAHU_PALETTE_COLORS,
