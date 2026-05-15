@@ -1,18 +1,27 @@
 import type { KitMaterialSlotEntry } from '../types/KitParts';
+import { LegoColor } from '../types/Colors';
 
 /**
- * Shared kit material slots for Mata (2001) builds that use `useKitAttachments`.
- * Maps kit "Main / Secondary / Metal" plastics to the custom character palette so
- * creation and in-game rendering stay consistent.
+ * Default kit tinting for Mata (2001) rigs using `useKitAttachments`.
+ *
+ * **Where colors come from**
+ * - Per-character hex values: `BaseMatoran.colors` in `src/types/Matoran.ts` (dex entries,
+ *   `customCharacters`, and the character-creation preview).
+ * - How they reach meshes: each `*MataKitAttach.ts` maps character sockets → kit GLB nodes and
+ *   passes `materialColors` (usually built from the exports below). `useKitAttachments`
+ *   (`src/hooks/useKitAttachments.ts`) walks each kit mesh, matches **material `.name`** to those
+ *   keys (case-insensitive), and resolves `kind: 'palette'` with `resolveColorSource` →
+ *   `palette[key]` from that character’s `colors`.
  */
 export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMaterialSlotEntry>> = {
   Main: { key: 'body', kind: 'palette' },
-  Metal: { key: 'feet', kind: 'palette' },
+  /** Technic pins / flat silver: fixed LEGO light gray (set dress), not a palette slot. */
+  Metal: { kind: 'lego', value: LegoColor.LightGray },
   Secondary: { key: 'arms', kind: 'palette' },
 };
 
 export const MATA_KIT_PLAYER_PALETTE_BRAIN: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Brain: { color: { key: 'face', kind: 'palette' }, weathered: false },
+  Brain: { color: { key: 'eyes', kind: 'palette' }, weathered: false },
 };
 
 /** Glow slots follow eye color from the character palette. */

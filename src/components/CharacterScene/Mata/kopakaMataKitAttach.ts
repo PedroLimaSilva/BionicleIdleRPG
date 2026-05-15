@@ -49,8 +49,8 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   Foot_L_1: { kitNodeName: 'MataFoot', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   Foot_R_1: { kitNodeName: 'MataFoot', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   GearB: { kitNodeName: 'GearB', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  GearMM: { kitNodeName: 'GearM', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  GearMR: { kitNodeName: 'GearM', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  GearMM: { kitNodeName: 'GearM' },
+  GearMR: { kitNodeName: 'GearM' },
   Hand_L_1: { kitNodeName: 'Socket', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   Hip_Joint_L_1: {
     kitNodeName: 'SocketModTop',
@@ -83,9 +83,12 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   },
   Leg_Upper_R_1: { kitNodeName: 'MataLegModShin', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   MataAbdomen: { kitNodeName: 'MataAbdomen', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  MataBrain: { kitNodeName: 'MataBrain', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  MataBrain: {
+    kitNodeName: 'MataBrain',
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
   MataChest: { kitNodeName: 'MataChest', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  MataFace: { kitNodeName: 'MataFace', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  MataFace: { kitNodeName: 'MataFace' },
   MataGlowingEyes: {
     kitNodeName: 'MataGlowingEyes',
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
@@ -108,11 +111,9 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   },
   MataSingleArmPistonUpperL: {
     kitNodeName: 'MataSingleArmPistonUpperL',
-    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
   MataSingleArmPistonUpperL001: {
     kitNodeName: 'MataSingleArmPistonUpperL',
-    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
   MataSingleArmUpper: {
     kitNodeName: 'MataSingleArmUpper',

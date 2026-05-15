@@ -88,7 +88,10 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   Body_Piston_Lower_R_1: { kitNodeName: 'MataObliqueN' },
   Body_Piston_Upper_L_1: { kitNodeName: 'MataObliqueW', materialColors: POHATU_PALETTE_COLORS },
   Body_Piston_Upper_R_1: { kitNodeName: 'MataObliqueW', materialColors: POHATU_PALETTE_COLORS },
-  Brain: { kitNodeName: 'MataBrain', materialColors: POHATU_PALETTE_COLORS },
+  Brain: {
+    kitNodeName: 'MataBrain',
+    materialColors: POHATU_PALETTE_COLORS,
+  },
   Chest_1: { kitNodeName: 'MataHip', materialColors: POHATU_PALETTE_COLORS },
   Face: { kitNodeName: 'MataFace' },
   FootL: {
