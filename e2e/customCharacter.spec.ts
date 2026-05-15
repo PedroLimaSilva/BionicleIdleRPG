@@ -285,6 +285,40 @@ test.describe('Custom Character', () => {
         );
         expect(persisted.customCharacters ?? []).toHaveLength(0);
       });
+
+      test(`${name}: redeem share link from recruitment modal`, async ({ page }) => {
+        await setupGameState(page, INITIAL_GAME_STATE);
+        await page.setViewportSize(size);
+
+        await goto(page, '/recruitment', {
+          hideCanvasBeforeNav: true,
+          waitUntil: 'domcontentloaded',
+        });
+        await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 10000 });
+        await hideCanvas(page);
+        await disableCSSAnimations(page);
+
+        await page.getByRole('button', { name: /Redeem share link/i }).click();
+        await expect(page.getByTestId('recruitment-redeem-modal')).toBeVisible();
+
+        const pasted = `https://example.com/BionicleIdleRPG${buildShareUrl(SHARED_BASE)}`;
+        await page.locator('[data-testid="recruitment-redeem-modal"] textarea').fill(pasted);
+
+        await page.getByRole('button', { name: /Add to recruitment list/i }).click();
+
+        const dialog = page.locator('[data-testid="shared-character-prompt"]');
+        await expect(dialog).toBeVisible({ timeout: 10000 });
+        await expect(dialog).toContainText('Pridak');
+
+        await dialog.getByRole('button', { name: 'Continue' }).click();
+        await expect(dialog).not.toBeVisible();
+
+        const persisted = await page.evaluate(() =>
+          JSON.parse(localStorage.getItem('GAME_STATE') ?? '{}')
+        );
+        expect(persisted.customCharacters).toHaveLength(1);
+        expect(persisted.customCharacters[0].id).toBe('custom_42');
+      });
     }
   });
 });

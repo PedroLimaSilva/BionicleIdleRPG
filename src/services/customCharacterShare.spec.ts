@@ -3,6 +3,7 @@
  */
 import {
   encodeCustomCharacterShare,
+  extractRecruitTokenFromShareInput,
   parseCustomCharacterShare,
   SHARE_QUERY_PARAM,
 } from './customCharacterShare';
@@ -115,5 +116,43 @@ describe('customCharacterShare', () => {
 
   it('exposes the expected query param name', () => {
     expect(SHARE_QUERY_PARAM).toBe('recruit');
+  });
+
+  describe('extractRecruitTokenFromShareInput', () => {
+    it('extracts token from a full URL', () => {
+      const token = encodeCustomCharacterShare(makeCustom());
+      const url = `https://example.org/BionicleIdleRPG/?${SHARE_QUERY_PARAM}=${token}`;
+      expect(extractRecruitTokenFromShareInput(url)).toBe(token);
+    });
+
+    it('extracts token from a path-only URL fragment', () => {
+      const token = encodeCustomCharacterShare(makeCustom());
+      const path = `/BionicleIdleRPG/?${SHARE_QUERY_PARAM}=${token}`;
+      expect(extractRecruitTokenFromShareInput(path)).toBe(token);
+    });
+
+    it('extracts token after other query params', () => {
+      const token = encodeCustomCharacterShare(makeCustom());
+      const url = `https://x.test/app?foo=1&${SHARE_QUERY_PARAM}=${token}`;
+      expect(extractRecruitTokenFromShareInput(url)).toBe(token);
+    });
+
+    it('decodes percent-encoded token values', () => {
+      const token = encodeCustomCharacterShare(makeCustom());
+      const encoded = encodeURIComponent(token);
+      const url = `https://x.test/?${SHARE_QUERY_PARAM}=${encoded}`;
+      expect(extractRecruitTokenFromShareInput(url)).toBe(token);
+    });
+
+    it('returns raw token when pasted alone', () => {
+      const token = encodeCustomCharacterShare(makeCustom());
+      expect(extractRecruitTokenFromShareInput(`  ${token}  `)).toBe(token);
+    });
+
+    it('returns null for unrelated strings', () => {
+      expect(extractRecruitTokenFromShareInput('https://example.com/')).toBeNull();
+      expect(extractRecruitTokenFromShareInput('')).toBeNull();
+      expect(extractRecruitTokenFromShareInput('short')).toBeNull();
+    });
   });
 });
