@@ -46,6 +46,19 @@ describe('customCharacterShare', () => {
       expect(parsed!.colors).toEqual(original.colors);
     });
 
+    it('round-trips optional weaponGlow', () => {
+      const base = makeCustom();
+      const original = makeCustom({
+        colors: {
+          ...base.colors,
+          weaponGlow: LegoColor.TransNeonGreen,
+        },
+      });
+      const parsed = parseCustomCharacterShare(encodeCustomCharacterShare(original));
+      expect(parsed).not.toBeNull();
+      expect(parsed!.colors.weaponGlow).toBe(LegoColor.TransNeonGreen);
+    });
+
     it('produces URL-safe tokens (no +/= characters)', () => {
       const token = encodeCustomCharacterShare(makeCustom());
       expect(token).not.toMatch(/[+/=]/);
@@ -70,6 +83,15 @@ describe('customCharacterShare', () => {
       const token = encodeCustomCharacterShare(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         makeCustom({ element: 'Plasma' as any })
+      );
+      expect(parseCustomCharacterShare(token)).toBeNull();
+    });
+
+    it('rejects payloads with invalid weaponGlow type', () => {
+      const base = makeCustom();
+      const token = encodeCustomCharacterShare(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        makeCustom({ colors: { ...base.colors, weaponGlow: 123 as any } })
       );
       expect(parseCustomCharacterShare(token)).toBeNull();
     });

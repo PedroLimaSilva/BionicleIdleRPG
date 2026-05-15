@@ -15,6 +15,7 @@ import {
 import {
   CUSTOM_SELECTABLE_MATA_MODEL_IDS,
   DEFAULT_CUSTOM_MATA_MODEL_ID,
+  mataModelUsesKitPlayerPalette,
 } from '../../game/customMataBuild';
 import { CHARACTER_DEX } from '../../data/dex';
 import {
@@ -103,6 +104,7 @@ const DEFAULT_COLORS = {
   face: LegoColor.DarkGray,
   feet: LegoColor.LightGray,
   mask: LegoColor.LightGray,
+  weaponGlow: LegoColor.TransNeonYellow,
 };
 
 function readableTextColor(hex: string): string {
@@ -117,6 +119,9 @@ function readableTextColor(hex: string): string {
 function colorPartLabel(part: MatoranPaletteKey, stage: MatoranStage): string {
   if (part === 'feet' && stage === MatoranStage.Rebuilt) {
     return 'feet & hands';
+  }
+  if (part === 'weaponGlow') {
+    return 'weapon glow';
   }
   return part;
 }
@@ -219,10 +224,18 @@ export const CharacterCreation: React.FC = () => {
   const nameAllowed = trimmedName.length > 0 && trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME;
   const canAfford = protodermis >= CUSTOM_CHARACTER_COST;
   const canCreate = isEditMode ? nameAllowed : canAfford && nameAllowed;
-  const displayColors = useMemo(
-    () => normalizeCustomCharacterColorsForStage(creationStage, colors),
-    [colors, creationStage]
-  );
+  const displayColors = useMemo(() => {
+    const base = normalizeCustomCharacterColorsForStage(creationStage, colors);
+    if (
+      creationStage === MatoranStage.ToaMata &&
+      mataBuildId &&
+      mataModelUsesKitPlayerPalette(mataBuildId) &&
+      base.weaponGlow === undefined
+    ) {
+      return { ...base, weaponGlow: LegoColor.TransNeonYellow };
+    }
+    return base;
+  }, [colors, creationStage, mataBuildId]);
 
   const previewBase = useMemo<BaseMatoran>(
     () => ({
@@ -282,7 +295,8 @@ export const CharacterCreation: React.FC = () => {
     );
   }, [creationStage, livePreview, mataBuildId, setScene]);
 
-  const palette = activePart === 'eyes' ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
+  const palette =
+    activePart === 'eyes' || activePart === 'weaponGlow' ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
 
   const performCreate = () => {
     if (!canCreate) return;

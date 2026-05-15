@@ -11,7 +11,8 @@ import { LegoColor } from '../types/Colors';
  *   passes `materialColors` (usually built from the exports below). `useKitAttachments`
  *   (`src/hooks/useKitAttachments.ts`) walks each kit mesh, matches **material `.name`** to those
  *   keys (case-insensitive), and resolves `kind: 'palette'` with `resolveColorSource` →
- *   `palette[key]` from that character’s `colors`.
+ *   `palette[key]` from that character’s `colors` (optional `weaponGlow` falls back to
+ *   `LegoColor.TransNeonYellow` when unset).
  */
 export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMaterialSlotEntry>> = {
   Main: { key: 'body', kind: 'palette' },
@@ -21,10 +22,10 @@ export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMateria
 };
 
 export const MATA_KIT_PLAYER_PALETTE_BRAIN: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Brain: { color: { key: 'eyes', kind: 'palette' }, weathered: false },
+  Brain: { color: { key: 'face', kind: 'palette' }, weathered: false },
 };
 
-/** Glow slots follow eye color from the character palette. */
+/** Face / head kit glow (e.g. Tahu flame); follows eye color. */
 export function mataKitPlayerPaletteGlow(
   glowingEyesIntensity = 50
 ): Partial<Record<string, KitMaterialSlotEntry>> {
@@ -37,6 +38,19 @@ export function mataKitPlayerPaletteGlow(
     'Glowing Eyes': {
       emissive: { key: 'eyes', kind: 'palette' },
       emissiveIntensity: glowingEyesIntensity,
+      weathered: false,
+    },
+  };
+}
+
+/** Weapon / tool emissive accents (e.g. Gali hooks); uses optional `colors.weaponGlow`. */
+export function mataKitPlayerPaletteWeaponGlow(
+  emissiveIntensity = 50
+): Partial<Record<string, KitMaterialSlotEntry>> {
+  return {
+    Glow: {
+      emissive: { key: 'weaponGlow', kind: 'palette' },
+      emissiveIntensity,
       weathered: false,
     },
   };

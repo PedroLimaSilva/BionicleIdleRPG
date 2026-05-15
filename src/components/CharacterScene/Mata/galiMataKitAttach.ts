@@ -4,12 +4,18 @@ import {
   MATA_KIT_PLAYER_PALETTE_BRAIN,
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
   mataKitPlayerPaletteGlow,
+  mataKitPlayerPaletteWeaponGlow,
 } from '../../../game/mataKitPlayerPalette';
 
 const GALI_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
   ...mataKitPlayerPaletteGlow(50),
   ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
+};
+
+const GALI_HOOK_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...GALI_PALETTE_COLORS,
+  ...mataKitPlayerPaletteWeaponGlow(50),
 };
 
 /**
@@ -104,8 +110,8 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
   HipPinBackR: { kitNodeName: 'Pin2L' },
   HipPinFrontL: { kitNodeName: 'Pin2L' },
   HipPinFrontR: { kitNodeName: 'Pin2L' },
-  HookL: { kitNodeName: 'Hook', materialColors: GALI_PALETTE_COLORS },
-  HookR: { kitNodeName: 'Hook', materialColors: GALI_PALETTE_COLORS },
+  HookL: { kitNodeName: 'Hook', materialColors: GALI_HOOK_PALETTE_COLORS },
+  HookR: { kitNodeName: 'Hook', materialColors: GALI_HOOK_PALETTE_COLORS },
   Leg_Lower_Piston_L_1: { kitNodeName: 'MataLegModPistonN' },
   Leg_Lower_Piston_R_1: { kitNodeName: 'MataLegModPistonN' },
   Leg_Upper_L_1: {
