@@ -7,6 +7,7 @@ import {
   MatoranStage,
   MatoranTag,
 } from '../types/Matoran';
+import { LegoColor } from '../types/Colors';
 
 /** URL query param used to share a custom character. Value is a base64-encoded JSON BaseMatoran. */
 export const SHARE_QUERY_PARAM = 'recruit';
@@ -96,17 +97,22 @@ export function parseCustomCharacterShare(token: string): BaseMatoran | null {
   for (const key of ['mask', 'body', 'arms', 'feet', 'eyes', 'face']) {
     if (typeof c[key] !== 'string') return null;
   }
+  if (c.weaponGlow !== undefined && typeof c.weaponGlow !== 'string') return null;
+
+  const colorCore: BaseMatoran['colors'] = {
+    arms: c.arms as LegoColor,
+    body: c.body as LegoColor,
+    eyes: c.eyes as LegoColor,
+    face: c.face as LegoColor,
+    feet: c.feet as LegoColor,
+    mask: c.mask as LegoColor,
+  };
+  if (typeof c.weaponGlow === 'string') {
+    colorCore.weaponGlow = c.weaponGlow as LegoColor;
+  }
 
   const safe: BaseMatoran = {
-    colors: {
-      arms: c.arms as string,
-      body: c.body as string,
-      eyes: c.eyes as string,
-      face: c.face as string,
-      feet: c.feet as string,
-      mask: c.mask as string,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any,
+    colors: colorCore,
     element: obj.element as ElementTribe,
     id: obj.id,
     isMaskTransparent: !!obj.isMaskTransparent,

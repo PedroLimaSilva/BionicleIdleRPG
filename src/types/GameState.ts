@@ -60,7 +60,11 @@ export type GameState = {
    * `stage` on the recruited slice (used when confirming the character-creation form after
    * evolution). Returns false if the id is invalid or the character is not found.
    */
-  updateCustomCharacter: (id: string, base: Omit<BaseMatoran, 'id'>) => boolean;
+  updateCustomCharacter: (
+    id: string,
+    base: Omit<BaseMatoran, 'id'>,
+    extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+  ) => boolean;
   setMaskOverride: (id: RecruitedCharacterData['id'], mask: Mask) => void;
   collectKrana: (element: KranaElement, id: KranaId) => void;
   addKraata: (power: KraataPower, stage: number, count: number) => void;

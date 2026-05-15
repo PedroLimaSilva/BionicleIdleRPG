@@ -1,24 +1,15 @@
 import { LegoColor } from '../../../types/Colors';
 import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../types/KitParts';
+import {
+  MATA_KIT_PLAYER_PALETTE_BRAIN,
+  MATA_KIT_PLAYER_PALETTE_PLASTICS,
+  mataKitPlayerPaletteGlow,
+} from '../../../game/mataKitPlayerPalette';
 
 const KOPAKA_MATA_KIT_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Brain: {
-    color: { kind: 'lego', value: LegoColor.TransMediumBlue },
-    weathered: false,
-  },
-  Glow: {
-    emissive: { kind: 'lego', value: LegoColor.MediumBlue },
-    emissiveIntensity: 4,
-    weathered: false,
-  },
-  'Glowing Eyes': {
-    emissive: { kind: 'lego', value: LegoColor.MediumBlue },
-    emissiveIntensity: 50,
-    weathered: false,
-  },
-  Main: { kind: 'lego', value: LegoColor.White },
-  Metal: { kind: 'lego', value: LegoColor.LightGray },
-  Secondary: { kind: 'lego', value: LegoColor.LightGray },
+  ...MATA_KIT_PLAYER_PALETTE_BRAIN,
+  ...mataKitPlayerPaletteGlow(50),
+  ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
 };
 
 /**
@@ -58,8 +49,8 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   Foot_L_1: { kitNodeName: 'MataFoot', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   Foot_R_1: { kitNodeName: 'MataFoot', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   GearB: { kitNodeName: 'GearB', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  GearMM: { kitNodeName: 'GearM', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  GearMR: { kitNodeName: 'GearM', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  GearMM: { kitNodeName: 'GearM' },
+  GearMR: { kitNodeName: 'GearM' },
   Hand_L_1: { kitNodeName: 'Socket', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   Hip_Joint_L_1: {
     kitNodeName: 'SocketModTop',
@@ -92,9 +83,12 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   },
   Leg_Upper_R_1: { kitNodeName: 'MataLegModShin', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   MataAbdomen: { kitNodeName: 'MataAbdomen', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  MataBrain: { kitNodeName: 'MataBrain', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  MataBrain: {
+    kitNodeName: 'MataBrain',
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
   MataChest: { kitNodeName: 'MataChest', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  MataFace: { kitNodeName: 'MataFace', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  MataFace: { kitNodeName: 'MataFace' },
   MataGlowingEyes: {
     kitNodeName: 'MataGlowingEyes',
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
@@ -117,11 +111,9 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   },
   MataSingleArmPistonUpperL: {
     kitNodeName: 'MataSingleArmPistonUpperL',
-    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
   MataSingleArmPistonUpperL001: {
     kitNodeName: 'MataSingleArmPistonUpperL',
-    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
   MataSingleArmUpper: {
     kitNodeName: 'MataSingleArmUpper',

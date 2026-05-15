@@ -84,6 +84,8 @@ export type BaseMatoran = {
     arms: LegoColor;
     eyes: LegoColor;
     face: LegoColor;
+    /** Toa kit weapon accents (e.g. Gali hooks); when unset, kit code uses a neutral default. */
+    weaponGlow?: LegoColor;
   };
   tags?: MatoranTag[];
   /** Reference to shared chronicle set - multiple matoran entries can share the same chronicle ID */
@@ -103,4 +105,8 @@ export type RecruitedCharacterData = {
   maskOverride?: Mask;
   /** Overrides stage from CHARACTER_DEX when present (e.g. Rebuilt after Naming Day). */
   stage?: MatoranStage;
+  /**
+   * For custom characters at Toa Mata: which Mata dex rig/kit GLB to render (`Toa_Tahu`, `Toa_Gali`, …).
+   */
+  customMataModelId?: string;
 };

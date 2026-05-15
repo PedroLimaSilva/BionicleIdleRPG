@@ -1,24 +1,21 @@
 import { LegoColor } from '../../../types/Colors';
 import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../types/KitParts';
+import {
+  MATA_KIT_PLAYER_PALETTE_BRAIN,
+  MATA_KIT_PLAYER_PALETTE_PLASTICS,
+  mataKitPlayerPaletteGlow,
+  mataKitPlayerPaletteWeaponGlow,
+} from '../../../game/mataKitPlayerPalette';
 
 const TAHU_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Brain: {
-    color: { kind: 'lego', value: LegoColor.TransNeonPink },
-    weathered: false,
-  },
-  Glow: {
-    emissive: { kind: 'lego', value: LegoColor.DarkOrange },
-    emissiveIntensity: 4,
-    weathered: false,
-  },
-  'Glowing Eyes': {
-    emissive: { kind: 'lego', value: LegoColor.TransNeonPink },
-    emissiveIntensity: 50,
-    weathered: false,
-  },
-  Main: { kind: 'lego', value: LegoColor.Red },
-  Metal: { kind: 'lego', value: LegoColor.LightGray },
-  Secondary: { kind: 'lego', value: LegoColor.Orange },
+  ...MATA_KIT_PLAYER_PALETTE_BRAIN,
+  ...mataKitPlayerPaletteGlow(50),
+  ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
+};
+
+const TAHU_WEAPON_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...TAHU_PALETTE_COLORS,
+  ...mataKitPlayerPaletteWeaponGlow(50),
 };
 
 /**
@@ -162,9 +159,12 @@ export const TAHU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
   Spacer1LF: { kitNodeName: 'AxleSpacer1L' },
   TahuSword: {
     kitNodeName: 'TahuSword',
-    materialColors: TAHU_PALETTE_COLORS,
+    materialColors: TAHU_WEAPON_PALETTE_COLORS,
   },
-  TahuSwordFlame: { kitNodeName: 'TahuSwordFlame', materialColors: TAHU_PALETTE_COLORS },
+  TahuSwordFlame: {
+    kitNodeName: 'TahuSwordFlame',
+    materialColors: TAHU_WEAPON_PALETTE_COLORS,
+  },
   Waist_1_1: {
     kitNodeName: 'MataAbdomen',
     materialColors: TAHU_PALETTE_COLORS,

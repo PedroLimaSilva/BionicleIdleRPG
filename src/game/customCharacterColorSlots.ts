@@ -1,5 +1,6 @@
 import { MatoranStage, type BaseMatoran } from '../types/Matoran';
 import type { MatoranPaletteKey } from '../types/KitParts';
+import { mataModelUsesKitPlayerPalette } from './customMataBuild';
 
 /** Display order for color tabs in character creation. */
 export const CUSTOM_CHARACTER_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
@@ -11,13 +12,20 @@ export const CUSTOM_CHARACTER_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
   'face',
 ];
 
+/** Kit Toa Mata rigs add optional weapon glow after the standard body palette. */
+const TOA_MATA_KIT_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
+  ...CUSTOM_CHARACTER_COLOR_TAB_ORDER,
+  'weaponGlow',
+];
+
 /**
- * Palette keys the player may edit for a custom character at this stage. Matches how each
- * body model maps `BaseMatoran.colors` (see DiminishedMatoranModel, RebuiltMatoranModel, and
- * custom Toa using the Mata kit + useMask).
+ * Palette keys the player may edit for a custom character at this stage. For Toa Mata,
+ * `mataBuildId` is the resolved Mata dex id (`Toa_Tahu`, …) so kit-driven rigs expose the full
+ * palette; GLB-only Mata (e.g. `Toa_Onua`) still only mask + eyes.
  */
 export function getEditablePaletteKeysForStage(
-  stage: MatoranStage
+  stage: MatoranStage,
+  mataBuildId?: string
 ): ReadonlySet<MatoranPaletteKey> {
   switch (stage) {
     case MatoranStage.Diminished:
@@ -26,16 +34,25 @@ export function getEditablePaletteKeysForStage(
       // torso and limbs; players are not restricted to that).
       return new Set(CUSTOM_CHARACTER_COLOR_TAB_ORDER);
     case MatoranStage.ToaMata:
-      // Kit plastics use fixed LEGO tints; mask + eyes follow the custom palette today.
+      if (mataBuildId && mataModelUsesKitPlayerPalette(mataBuildId)) {
+        return new Set(TOA_MATA_KIT_COLOR_TAB_ORDER);
+      }
       return new Set(['mask', 'eyes']);
     default:
       return new Set(CUSTOM_CHARACTER_COLOR_TAB_ORDER);
   }
 }
 
-export function getOrderedEditableColorTabs(stage: MatoranStage): MatoranPaletteKey[] {
-  const allowed = getEditablePaletteKeysForStage(stage);
-  return CUSTOM_CHARACTER_COLOR_TAB_ORDER.filter((k) => allowed.has(k));
+export function getOrderedEditableColorTabs(
+  stage: MatoranStage,
+  mataBuildId?: string
+): MatoranPaletteKey[] {
+  const allowed = getEditablePaletteKeysForStage(stage, mataBuildId);
+  const order =
+    stage === MatoranStage.ToaMata && mataBuildId && mataModelUsesKitPlayerPalette(mataBuildId)
+      ? TOA_MATA_KIT_COLOR_TAB_ORDER
+      : CUSTOM_CHARACTER_COLOR_TAB_ORDER;
+  return order.filter((k) => allowed.has(k));
 }
 
 /**

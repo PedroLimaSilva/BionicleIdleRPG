@@ -343,6 +343,30 @@ describe('useCharactersState', () => {
       expect(result.current.recruitedCharacters[0].stage).toBe(MatoranStage.ToaMata);
     });
 
+    test('optional extras set customMataModelId on recruit', () => {
+      const initialRecruited: RecruitedCharacterData[] = [{ exp: 50, id: 'custom_0' }];
+      const { result } = renderHook(() =>
+        useCharactersState(initialRecruited, [customBase], [], mockProtodermis, mockSetProtodermis)
+      );
+
+      act(() => {
+        result.current.updateCustomCharacter(
+          'custom_0',
+          {
+            colors: customBase.colors,
+            element: ElementTribe.Fire,
+            mask: Mask.Hau,
+            name: 'X',
+            stage: MatoranStage.ToaMata,
+            tags: [MatoranTag.Custom],
+          },
+          { customMataModelId: 'Toa_Pohatu' }
+        );
+      });
+
+      expect(result.current.recruitedCharacters[0].customMataModelId).toBe('Toa_Pohatu');
+    });
+
     test('returns false for non-custom id', () => {
       const { result } = renderHook(() =>
         useCharactersState([{ exp: 0, id: 'Jala' }], [], [], mockProtodermis, mockSetProtodermis)

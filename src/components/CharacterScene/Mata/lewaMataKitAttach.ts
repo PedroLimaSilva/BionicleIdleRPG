@@ -1,24 +1,21 @@
 import { LegoColor } from '../../../types/Colors';
 import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../types/KitParts';
+import {
+  MATA_KIT_PLAYER_PALETTE_BRAIN,
+  MATA_KIT_PLAYER_PALETTE_PLASTICS,
+  mataKitPlayerPaletteGlow,
+  mataKitPlayerPaletteWeaponGlow,
+} from '../../../game/mataKitPlayerPalette';
 
 const LEWA_MATA_KIT_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Brain: {
-    color: { kind: 'lego', value: LegoColor.TransNeonGreen },
-    weathered: false,
-  },
-  Glow: {
-    emissive: { kind: 'lego', value: LegoColor.Lime },
-    emissiveIntensity: 4,
-    weathered: false,
-  },
-  'Glowing Eyes': {
-    emissive: { kind: 'lego', value: LegoColor.TransNeonGreen },
-    emissiveIntensity: 50,
-    weathered: false,
-  },
-  Main: { kind: 'lego', value: LegoColor.Green },
-  Metal: { kind: 'lego', value: LegoColor.LightGray },
-  Secondary: { kind: 'lego', value: LegoColor.Lime },
+  ...MATA_KIT_PLAYER_PALETTE_BRAIN,
+  ...mataKitPlayerPaletteGlow(50),
+  ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
+};
+
+const LEWA_AXE_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...LEWA_MATA_KIT_PALETTE_COLORS,
+  ...mataKitPlayerPaletteWeaponGlow(50),
 };
 
 /**
@@ -68,8 +65,8 @@ export const LEWA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
   Foot_L_1: { kitNodeName: 'MataFoot', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
   Foot_R_1: { kitNodeName: 'MataFoot', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
   GearB: { kitNodeName: 'GearB' },
-  GearMB: { kitNodeName: 'GearM', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
-  GearMR: { kitNodeName: 'GearM', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
+  GearMB: { kitNodeName: 'GearM' },
+  GearMR: { kitNodeName: 'GearM' },
   Hand_L: { kitNodeName: 'MataHand', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
   Hand_R_1: {
     kitNodeName: 'MataSingleArmHand',
@@ -103,11 +100,14 @@ export const LEWA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     materialColors: LEWA_MATA_KIT_PALETTE_COLORS,
   },
   Leg_Upper_R_1: { kitNodeName: 'MataLegModShin', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
-  LewaAxe: { kitNodeName: 'LewaAxe', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
+  LewaAxe: { kitNodeName: 'LewaAxe', materialColors: LEWA_AXE_PALETTE_COLORS },
   MataAbdomen: { kitNodeName: 'MataAbdomen', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
-  MataBrain: { kitNodeName: 'MataBrain', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
+  MataBrain: {
+    kitNodeName: 'MataBrain',
+    materialColors: LEWA_MATA_KIT_PALETTE_COLORS,
+  },
   MataChest: { kitNodeName: 'MataChest', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
-  MataFace: { kitNodeName: 'MataFace', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
+  MataFace: { kitNodeName: 'MataFace' },
   MataGlowingEyes: { kitNodeName: 'MataGlowingEyes', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
   MataObliqueNL: { kitNodeName: 'MataObliqueN', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
   MataObliqueNR: { kitNodeName: 'MataObliqueN', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },

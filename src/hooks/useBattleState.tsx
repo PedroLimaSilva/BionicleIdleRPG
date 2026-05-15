@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
 import { Combatant, EnemyEncounter } from '../types/Combat';
-import { RecruitedCharacterData } from '../types/Matoran';
+import { RecruitedCharacterData, isCustomCharacterId, MatoranStage } from '../types/Matoran';
 import { getLevelFromExp } from '../game/Levelling';
 import {
   generateCombatantStats,
@@ -11,6 +11,8 @@ import {
   hasReadyMaskPowers,
 } from '../services/combatUtils';
 import { getBattleOutcomePhaseDelayMs } from '../game/battleOutcomeVisualDelay';
+import { getEffectiveMatoran } from '../services/matoranUtils';
+import { resolveToaMataBuildId } from '../game/customMataBuild';
 
 export const enum BattlePhase {
   Idle = 'idle',
@@ -256,13 +258,18 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
     );
 
     setTeam(
-      team.map(({ exp, id, maskOverride }) =>
-        generateCombatantStats(id, id, getLevelFromExp(exp), {
+      team.map((rec) => {
+        const { exp, id, maskOverride } = rec;
+        const effective = getEffectiveMatoran(rec);
+        return generateCombatantStats(id, id, getLevelFromExp(exp), {
           maskOverride,
           nuvaSymbolsSequestered:
             nuvaSymbolsSequestered && TOA_NUVA_IDS.includes(id as (typeof TOA_NUVA_IDS)[number]),
-        })
-      )
+          ...(isCustomCharacterId(id) && effective.stage === MatoranStage.ToaMata
+            ? { mataRenderModelId: resolveToaMataBuildId(rec) }
+            : {}),
+        });
+      })
     );
     setCurrentWave(0);
 

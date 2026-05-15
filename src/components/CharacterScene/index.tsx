@@ -10,6 +10,7 @@ import { shouldEnableSelectiveBloom, shouldEnableShadows } from '../../utils/tes
 import { CYLINDER_RADIUS } from './BoundsCylinder';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
+import { resolveToaMataBuildId } from '../../game/customMataBuild';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
 import { RebuiltMatoranModel } from './RebuiltMatoranModel';
 import { GaliMataModel } from './Mata/GaliMataModel';
@@ -62,11 +63,12 @@ function CharacterModel({
 }) {
   useEffect(() => {
     onModelReady?.();
-  }, [matoran.id, matoran.stage, onModelReady]);
+  }, [matoran.customMataModelId, matoran.id, matoran.stage, onModelReady]);
 
   switch (matoran.stage) {
-    case MatoranStage.ToaMata:
-      switch (matoran.id) {
+    case MatoranStage.ToaMata: {
+      const buildId = resolveToaMataBuildId(matoran);
+      switch (buildId) {
         case 'Toa_Gali':
           return <GaliMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Pohatu':
@@ -80,6 +82,7 @@ function CharacterModel({
         default:
           return <TahuMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
+    }
     case MatoranStage.ToaNuva:
       switch (matoran.id) {
         case 'Takanuva':

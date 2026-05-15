@@ -2,6 +2,7 @@ import { isCustomCharacterId, Mask, MatoranStage, RecruitedCharacterData } from 
 import { CHARACTER_DEX } from '../data/dex/index';
 import { getLevelFromExp } from './Levelling';
 import { MOL_TAKANUVA_RISES_QUEST_ID } from '../data/quests/mask_of_light';
+import { DEFAULT_CUSTOM_MATA_MODEL_ID } from './customMataBuild';
 
 export const EVOLUTION_LEVEL_REQUIREMENT = 40;
 export const BOHROK_KAL_LEVEL_REQUIREMENT = 100;
@@ -192,10 +193,18 @@ export function applyCharacterEvolution(
     };
   }
   if (evolution.stageOverride !== undefined) {
-    return {
+    const next: RecruitedCharacterData = {
       ...character,
       stage: evolution.stageOverride,
     };
+    if (
+      isCustomCharacterId(character.id) &&
+      evolution.stageOverride === MatoranStage.ToaMata &&
+      character.customMataModelId === undefined
+    ) {
+      next.customMataModelId = DEFAULT_CUSTOM_MATA_MODEL_ID;
+    }
+    return next;
   }
   return character;
 }

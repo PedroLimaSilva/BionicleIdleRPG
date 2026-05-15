@@ -1,19 +1,15 @@
 import { LegoColor } from '../../../types/Colors';
 import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../types/KitParts';
+import {
+  MATA_KIT_PLAYER_PALETTE_BRAIN,
+  MATA_KIT_PLAYER_PALETTE_PLASTICS,
+  mataKitPlayerPaletteGlow,
+} from '../../../game/mataKitPlayerPalette';
 
 const POHATU_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Brain: {
-    color: { kind: 'lego', value: LegoColor.TransNeonOrange },
-    weathered: false,
-  },
-  'Glowing Eyes': {
-    emissive: { kind: 'lego', value: LegoColor.TransNeonOrange },
-    emissiveIntensity: 50,
-    weathered: false,
-  },
-  Main: { kind: 'lego', value: LegoColor.Brown },
-  Metal: { kind: 'lego', value: LegoColor.LightGray },
-  Secondary: { kind: 'lego', value: LegoColor.Tan },
+  ...MATA_KIT_PLAYER_PALETTE_BRAIN,
+  ...mataKitPlayerPaletteGlow(50),
+  ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
 };
 
 /**
@@ -92,7 +88,10 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   Body_Piston_Lower_R_1: { kitNodeName: 'MataObliqueN' },
   Body_Piston_Upper_L_1: { kitNodeName: 'MataObliqueW', materialColors: POHATU_PALETTE_COLORS },
   Body_Piston_Upper_R_1: { kitNodeName: 'MataObliqueW', materialColors: POHATU_PALETTE_COLORS },
-  Brain: { kitNodeName: 'MataBrain', materialColors: POHATU_PALETTE_COLORS },
+  Brain: {
+    kitNodeName: 'MataBrain',
+    materialColors: POHATU_PALETTE_COLORS,
+  },
   Chest_1: { kitNodeName: 'MataHip', materialColors: POHATU_PALETTE_COLORS },
   Face: { kitNodeName: 'MataFace' },
   FootL: {
