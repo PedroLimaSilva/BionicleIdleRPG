@@ -177,25 +177,37 @@ export function savePerformanceMonitorEnabled(value: boolean) {
   localStorage.setItem('PERFORMANCE_MONITOR_ENABLED', JSON.stringify(performanceMonitorEnabled));
 }
 
-let creationDebugEditable: boolean | undefined;
+let debugCharacterCreation: boolean | undefined;
 
-export function getCreationDebugEditable() {
-  if (creationDebugEditable !== undefined) {
-    return creationDebugEditable;
+const DEBUG_CHARACTER_CREATION_KEY = 'DEBUG_CHARACTER_CREATION';
+const LEGACY_DEBUG_CHARACTER_CREATION_KEY = 'CHARACTER_CREATION_DEBUG_EDITABLE';
+
+export function getDebugCharacterCreation() {
+  if (debugCharacterCreation !== undefined) {
+    return debugCharacterCreation;
   }
-  const stored = localStorage.getItem('CHARACTER_CREATION_DEBUG_EDITABLE');
+  const stored = localStorage.getItem(DEBUG_CHARACTER_CREATION_KEY);
   if (stored !== null) {
     const parsed = JSON.parse(stored) as boolean;
-    creationDebugEditable = parsed;
+    debugCharacterCreation = parsed;
     return parsed;
   }
-  creationDebugEditable = false;
+  const legacy = localStorage.getItem(LEGACY_DEBUG_CHARACTER_CREATION_KEY);
+  if (legacy !== null) {
+    const parsed = JSON.parse(legacy) as boolean;
+    debugCharacterCreation = parsed;
+    localStorage.setItem(DEBUG_CHARACTER_CREATION_KEY, JSON.stringify(parsed));
+    localStorage.removeItem(LEGACY_DEBUG_CHARACTER_CREATION_KEY);
+    return parsed;
+  }
+  debugCharacterCreation = false;
   return false;
 }
 
-export function saveCreationDebugEditable(value: boolean) {
-  creationDebugEditable = value;
-  localStorage.setItem('CHARACTER_CREATION_DEBUG_EDITABLE', JSON.stringify(creationDebugEditable));
+export function saveDebugCharacterCreation(value: boolean) {
+  debugCharacterCreation = value;
+  localStorage.setItem(DEBUG_CHARACTER_CREATION_KEY, JSON.stringify(debugCharacterCreation));
+  localStorage.removeItem(LEGACY_DEBUG_CHARACTER_CREATION_KEY);
 }
 
 let telemetryEnabled: boolean | undefined;

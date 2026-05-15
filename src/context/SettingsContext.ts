@@ -1,8 +1,8 @@
 import { createContext } from 'react';
 
 export interface SettingsState {
-  creationDebugEditable: boolean;
-  setCreationDebugEditable: (value: boolean) => void;
+  debugCharacterCreation: boolean;
+  setDebugCharacterCreation: (value: boolean) => void;
   debugMode: boolean;
   setDebugMode: (value: boolean) => void;
   performanceMonitorEnabled: boolean;

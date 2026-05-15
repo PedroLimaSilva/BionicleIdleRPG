@@ -63,7 +63,7 @@ const SELECTABLE_ELEMENTS: ElementTribe[] = [
   ElementTribe.Shadow,
 ];
 
-/** Stages exposed when settings "Editable" creation debug is on (new characters only). */
+/** Stages exposed when "Debug character creation" is on (new characters only). */
 const DEBUG_CREATION_STAGES: MatoranStage[] = [
   MatoranStage.Diminished,
   MatoranStage.Rebuilt,
@@ -151,7 +151,7 @@ export const CharacterCreation: React.FC = () => {
     updateCustomCharacter,
   } = useGame();
   const { setScene } = useSceneCanvas();
-  const { creationDebugEditable } = useSettings();
+  const { debugCharacterCreation } = useSettings();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -176,12 +176,12 @@ export const CharacterCreation: React.FC = () => {
     if (isEditMode && customizeId) {
       return getRecruitedMatoran(customizeId, recruitedCharacters).stage;
     }
-    if (creationDebugEditable) {
+    if (debugCharacterCreation) {
       return debugStartingStage;
     }
     return MatoranStage.Diminished;
   }, [
-    creationDebugEditable,
+    debugCharacterCreation,
     customizeId,
     debugStartingStage,
     isEditMode,
@@ -376,7 +376,7 @@ export const CharacterCreation: React.FC = () => {
     <div className={`character-creation element-${element}`}>
       <div className="character-creation-preview" />
       <div className="character-creation-form">
-        {creationDebugEditable && !isEditMode && (
+        {debugCharacterCreation && !isEditMode && (
           <label className="field">
             <span className="field-label">Stage (debug)</span>
             <select
@@ -438,7 +438,7 @@ export const CharacterCreation: React.FC = () => {
           </div>
         </div>
 
-        {(isEditMode || creationDebugEditable) && creationStage === MatoranStage.ToaMata && (
+        {(isEditMode || debugCharacterCreation) && creationStage === MatoranStage.ToaMata && (
           <label className="field">
             <span className="field-label">Toa build (model)</span>
             <select

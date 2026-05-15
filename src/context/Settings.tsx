@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
-  getCreationDebugEditable,
+  getDebugCharacterCreation,
   getDebugMode,
   getPerformanceMonitorEnabled,
   getShadowsEnabled,
   getTelemetryEnabled,
-  saveCreationDebugEditable,
+  saveDebugCharacterCreation,
   saveDebugMode,
   savePerformanceMonitorEnabled,
   saveShadowsEnabled,
@@ -15,7 +15,7 @@ import {
 import { SettingsContext } from './SettingsContext';
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [creationDebugEditable, setCreationDebugEditableState] = useState(getCreationDebugEditable);
+  const [debugCharacterCreation, setDebugCharacterCreationState] = useState(getDebugCharacterCreation);
   const [debugMode, setDebugModeState] = useState(getDebugMode);
   const [performanceMonitorEnabled, setPerformanceMonitorEnabledState] = useState(
     getPerformanceMonitorEnabled
@@ -24,8 +24,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [telemetryEnabled, setTelemetryEnabledState] = useState(getTelemetryEnabled);
 
   useEffect(() => {
-    saveCreationDebugEditable(creationDebugEditable);
-  }, [creationDebugEditable]);
+    saveDebugCharacterCreation(debugCharacterCreation);
+  }, [debugCharacterCreation]);
 
   useEffect(() => {
     saveDebugMode(debugMode);
@@ -47,10 +47,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   return (
     <SettingsContext.Provider
       value={{
-        creationDebugEditable,
+        debugCharacterCreation,
         debugMode,
         performanceMonitorEnabled,
-        setCreationDebugEditable: setCreationDebugEditableState,
+        setDebugCharacterCreation: setDebugCharacterCreationState,
         setDebugMode: setDebugModeState,
         setPerformanceMonitorEnabled: setPerformanceMonitorEnabledState,
         setShadowsEnabled: setShadowsEnabledState,
