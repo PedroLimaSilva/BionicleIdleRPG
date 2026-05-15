@@ -6,6 +6,7 @@ import { Modal } from '../../components/Modal';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { useGame } from '../../context/Game';
+import { useSettings } from '../../context/useSettings';
 import { getRecruitedMatoran } from '../../services/matoranUtils';
 import {
   getOrderedEditableColorTabs,
@@ -60,6 +61,16 @@ const SELECTABLE_ELEMENTS: ElementTribe[] = [
   ElementTribe.Earth,
   ElementTribe.Light,
   ElementTribe.Shadow,
+];
+
+/** Stages exposed when settings "Editable" creation debug is on (new characters only). */
+const DEBUG_CREATION_STAGES: MatoranStage[] = [
+  MatoranStage.Diminished,
+  MatoranStage.Rebuilt,
+  MatoranStage.Metru,
+  MatoranStage.ToaMata,
+  MatoranStage.ToaNuva,
+  MatoranStage.Turaga,
 ];
 
 /** Subset of LegoColors useful as body/armor colors for a custom character. */
@@ -140,6 +151,7 @@ export const CharacterCreation: React.FC = () => {
     updateCustomCharacter,
   } = useGame();
   const { setScene } = useSceneCanvas();
+  const { creationDebugEditable } = useSettings();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -158,12 +170,23 @@ export const CharacterCreation: React.FC = () => {
     [customCharacters, customizeId, recruitedCharacters]
   );
 
+  const [debugStartingStage, setDebugStartingStage] = useState<MatoranStage>(MatoranStage.Diminished);
+
   const creationStage = useMemo(() => {
     if (isEditMode && customizeId) {
       return getRecruitedMatoran(customizeId, recruitedCharacters).stage;
     }
+    if (creationDebugEditable) {
+      return debugStartingStage;
+    }
     return MatoranStage.Diminished;
-  }, [customizeId, isEditMode, recruitedCharacters]);
+  }, [
+    creationDebugEditable,
+    customizeId,
+    debugStartingStage,
+    isEditMode,
+    recruitedCharacters,
+  ]);
 
   const [name, setName] = useState(DEFAULT_CUSTOM_MATORAN_NAME);
   const [showCreateConfirm, setShowCreateConfirm] = useState(false);
@@ -321,16 +344,19 @@ export const CharacterCreation: React.FC = () => {
       }
       return;
     }
-    const resolvedColors = normalizeCustomCharacterColorsForStage(MatoranStage.Diminished, colors);
-    const id = createCustomCharacter({
-      colors: resolvedColors,
-      element,
-      isMaskTransparent,
-      mask,
-      name: trimmedName,
-      stage: MatoranStage.Diminished,
-      tags: [MatoranTag.Custom],
-    });
+    const resolvedColors = normalizeCustomCharacterColorsForStage(creationStage, colors);
+    const id = createCustomCharacter(
+      {
+        colors: resolvedColors,
+        element,
+        isMaskTransparent,
+        mask,
+        name: trimmedName,
+        stage: creationStage,
+        tags: [MatoranTag.Custom],
+      },
+      creationStage === MatoranStage.ToaMata ? { customMataModelId: mataBuildId } : undefined
+    );
     if (id) {
       setShowCreateConfirm(false);
       navigate(`/characters/${id}`);
@@ -350,6 +376,23 @@ export const CharacterCreation: React.FC = () => {
     <div className={`character-creation element-${element}`}>
       <div className="character-creation-preview" />
       <div className="character-creation-form">
+        {creationDebugEditable && !isEditMode && (
+          <label className="field">
+            <span className="field-label">Stage (debug)</span>
+            <select
+              className="field-input"
+              value={debugStartingStage}
+              onChange={(e) => setDebugStartingStage(e.target.value as MatoranStage)}
+            >
+              {DEBUG_CREATION_STAGES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
         <label className="field">
           <span className="field-label">Name</span>
           <input
@@ -395,7 +438,7 @@ export const CharacterCreation: React.FC = () => {
           </div>
         </div>
 
-        {isEditMode && creationStage === MatoranStage.ToaMata && (
+        {(isEditMode || creationDebugEditable) && creationStage === MatoranStage.ToaMata && (
           <label className="field">
             <span className="field-label">Toa build (model)</span>
             <select

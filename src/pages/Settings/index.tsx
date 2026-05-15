@@ -8,8 +8,10 @@ const showTelemetryOption = !!getTelemetryUrl();
 
 export default function SettingsPage() {
   const {
+    creationDebugEditable,
     debugMode,
     performanceMonitorEnabled,
+    setCreationDebugEditable,
     setDebugMode,
     setPerformanceMonitorEnabled,
     setShadowsEnabled,
@@ -240,6 +242,13 @@ export default function SettingsPage() {
           <div
             className={`toggle-placeholder ${debugMode ? 'on' : ''}`}
             onClick={() => setDebugMode(!debugMode)}
+          />
+        </label>
+        <label className="settings-option">
+          <span>Editable</span>
+          <div
+            className={`toggle-placeholder ${creationDebugEditable ? 'on' : ''}`}
+            onClick={() => setCreationDebugEditable(!creationDebugEditable)}
           />
         </label>
         <label className="settings-option">

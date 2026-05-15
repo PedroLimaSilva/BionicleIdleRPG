@@ -177,6 +177,27 @@ export function savePerformanceMonitorEnabled(value: boolean) {
   localStorage.setItem('PERFORMANCE_MONITOR_ENABLED', JSON.stringify(performanceMonitorEnabled));
 }
 
+let creationDebugEditable: boolean | undefined;
+
+export function getCreationDebugEditable() {
+  if (creationDebugEditable !== undefined) {
+    return creationDebugEditable;
+  }
+  const stored = localStorage.getItem('CHARACTER_CREATION_DEBUG_EDITABLE');
+  if (stored !== null) {
+    const parsed = JSON.parse(stored) as boolean;
+    creationDebugEditable = parsed;
+    return parsed;
+  }
+  creationDebugEditable = false;
+  return false;
+}
+
+export function saveCreationDebugEditable(value: boolean) {
+  creationDebugEditable = value;
+  localStorage.setItem('CHARACTER_CREATION_DEBUG_EDITABLE', JSON.stringify(creationDebugEditable));
+}
+
 let telemetryEnabled: boolean | undefined;
 
 /** Returns true only if the user has explicitly chosen a telemetry preference. */
