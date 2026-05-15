@@ -15,7 +15,7 @@ const GALI_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 
 const GALI_HOOK_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...GALI_PALETTE_COLORS,
-  ...mataKitPlayerPaletteWeaponGlow(50),
+  ...mataKitPlayerPaletteWeaponGlow(2.5),
 };
 
 /**

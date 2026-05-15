@@ -15,7 +15,7 @@ const LEWA_MATA_KIT_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>
 
 const LEWA_AXE_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...LEWA_MATA_KIT_PALETTE_COLORS,
-  ...mataKitPlayerPaletteWeaponGlow(50),
+  ...mataKitPlayerPaletteWeaponGlow(2.5),
 };
 
 /**

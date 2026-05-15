@@ -21,7 +21,7 @@ const TOA_MATA_KIT_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
 /**
  * Palette keys the player may edit for a custom character at this stage. For Toa Mata,
  * `mataBuildId` is the resolved Mata dex id (`Toa_Tahu`, …) so kit-driven rigs expose the full
- * palette; GLB-only Mata (e.g. `Toa_Onua`) still only mask + eyes.
+ * palette; all selectable Mata builds use the kit palette.
  */
 export function getEditablePaletteKeysForStage(
   stage: MatoranStage,
