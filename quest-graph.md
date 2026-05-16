@@ -455,5 +455,4 @@ classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff
 classDef locked fill:#6b7280,stroke:#4b5563,stroke-width:2px,color:#d1d5db,opacity:0.6
-
 ```
