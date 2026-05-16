@@ -26,7 +26,7 @@ describe('customMataBuild', () => {
   test('mataModelUsesKitPlayerPalette', () => {
     expect(mataModelUsesKitPlayerPalette('Toa_Tahu')).toBe(true);
     expect(mataModelUsesKitPlayerPalette('Toa_Kopaka')).toBe(true);
-    expect(mataModelUsesKitPlayerPalette('Toa_Onua')).toBe(false);
+    expect(mataModelUsesKitPlayerPalette('Toa_Onua')).toBe(true);
   });
 
   test('CUSTOM_SELECTABLE_MATA_MODEL_IDS lists six Mata', () => {

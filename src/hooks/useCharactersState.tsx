@@ -5,9 +5,11 @@ import {
   CREATE_CUSTOM_CHARACTER_ID,
   ListedCharacterData,
   Mask,
+  MatoranStage,
   RecruitedCharacterData,
   isCustomCharacterId,
 } from '../types/Matoran';
+import { DEFAULT_CUSTOM_MATA_MODEL_ID } from '../game/customMataBuild';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
 import { getBuyableCharacters, isCharacterRecruited } from '../game/Recruitment';
@@ -91,13 +93,23 @@ export function useCharactersState(
     return id;
   };
 
-  const createCustomCharacter = (base: Omit<BaseMatoran, 'id'>): string | null => {
+  const createCustomCharacter = (
+    base: Omit<BaseMatoran, 'id'>,
+    extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+  ): string | null => {
     if (protodermis < CUSTOM_CHARACTER_COST) return null;
     const id = nextCustomId(customCharacters);
     const newBase: BaseMatoran = { ...base, id };
     registerCustomCharacterInDex(newBase);
     setCustomCharacters((prev) => [...prev, newBase]);
-    setRecruitedCharacters((prev) => [...prev, { exp: 0, id }]);
+    const recruitEntry: RecruitedCharacterData = {
+      exp: 0,
+      id,
+      ...(base.stage === MatoranStage.ToaMata
+        ? { customMataModelId: extras?.customMataModelId ?? DEFAULT_CUSTOM_MATA_MODEL_ID }
+        : {}),
+    };
+    setRecruitedCharacters((prev) => [...prev, recruitEntry]);
     setProtodermis(protodermis - CUSTOM_CHARACTER_COST);
     return id;
   };

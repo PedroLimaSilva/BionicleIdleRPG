@@ -28,6 +28,7 @@ export const MATA_MODELS_WITH_KIT_PLAYER_PALETTE = new Set<string>([
   'Toa_Gali',
   'Toa_Kopaka',
   'Toa_Lewa',
+  'Toa_Onua',
   'Toa_Pohatu',
   'Toa_Tahu',
 ]);

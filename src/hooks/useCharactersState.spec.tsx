@@ -132,6 +132,53 @@ describe('useCharactersState', () => {
     });
   });
 
+  describe('createCustomCharacter', () => {
+    const baseMinusId = (stage: MatoranStage): Omit<BaseMatoran, 'id'> => ({
+      colors: {
+        arms: LegoColor.LightGray,
+        body: LegoColor.LightGray,
+        eyes: LegoColor.TransNeonOrange,
+        face: LegoColor.DarkGray,
+        feet: LegoColor.LightGray,
+        mask: LegoColor.LightGray,
+      },
+      element: ElementTribe.Fire,
+      mask: Mask.Hau,
+      name: 'Test',
+      stage,
+      tags: [MatoranTag.Custom],
+    });
+
+    test('stores customMataModelId on recruit when creating at Toa Mata', () => {
+      const { result } = renderHook(() =>
+        useCharactersState([], [], [], mockProtodermis, mockSetProtodermis)
+      );
+
+      let id: string | null = null;
+      act(() => {
+        id = result.current.createCustomCharacter(baseMinusId(MatoranStage.ToaMata), {
+          customMataModelId: 'Toa_Gali',
+        });
+      });
+
+      expect(id).toBe('custom_0');
+      expect(result.current.recruitedCharacters[0].customMataModelId).toBe('Toa_Gali');
+      expect(result.current.customCharacters[0].stage).toBe(MatoranStage.ToaMata);
+    });
+
+    test('defaults customMataModelId when Toa Mata extras omitted', () => {
+      const { result } = renderHook(() =>
+        useCharactersState([], [], [], mockProtodermis, mockSetProtodermis)
+      );
+
+      act(() => {
+        result.current.createCustomCharacter(baseMinusId(MatoranStage.ToaMata));
+      });
+
+      expect(result.current.recruitedCharacters[0].customMataModelId).toBe('Toa_Tahu');
+    });
+  });
+
   describe('assignJobToMatoran', () => {
     test('assigns job to specific matoran', () => {
       const initialRecruited: RecruitedCharacterData[] = [
