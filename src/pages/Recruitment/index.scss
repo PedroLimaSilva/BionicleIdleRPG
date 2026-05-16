@@ -1,3 +1,121 @@
+.recruitment-redeem-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--color-border-subtle);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-base),
+    color var(--transition-base);
+
+  &:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+}
+
+.recruitment-redeem-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.recruitment-redeem-panel {
+  width: 100%;
+  max-width: 400px;
+  background: var(--color-surface-mid);
+  border: 1px solid var(--color-border-muted);
+  border-radius: var(--border-radius-lg, 12px);
+  padding: 1.25rem 1.25rem 1rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.recruitment-redeem-heading {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+}
+
+.recruitment-redeem-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  opacity: 0.9;
+}
+
+.recruitment-redeem-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 0.5rem;
+  padding: 0.6rem 0.65rem;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-low);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  resize: vertical;
+  min-height: 4.5rem;
+}
+
+.recruitment-redeem-error {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-danger, #e94f4f);
+}
+
+.recruitment-redeem-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.recruitment-redeem-primary {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--border-radius-sm);
+  border: none;
+  background: var(--color-accent, #4a9eff);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.08);
+  }
+}
+
+.recruitment-redeem-secondary {
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--color-border-subtle);
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+}
+
 .recruitment-screen {
   width: 100vw;
   background: var(--color-surface-low);

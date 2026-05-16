@@ -16,8 +16,13 @@ import { useGame } from '../../context/Game';
 import { CharacterScene } from '../../components/CharacterScene';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { CHARACTER_DEX } from '../../data/dex/index';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Link2, X } from 'lucide-react';
 import { RecruitmentCelebration } from '../../components/RecruitmentCelebration';
+import { SharedCharacterReceivedDialog } from '../../components/SharedCharacterPrompt/SharedCharacterReceivedDialog';
+import {
+  extractRecruitTokenFromShareInput,
+  parseCustomCharacterShare,
+} from '../../services/customCharacterShare';
 
 /**
  * Placeholder BaseMatoran shown in the recruitment carousel for the "create a new matoran" slot.
@@ -47,6 +52,7 @@ export const Recruitment: React.FC = () => {
     dismissCustomCharacter,
     protodermis,
     recruitCharacter,
+    registerSharedCustomCharacter,
   } = useGame();
   const { setScene } = useSceneCanvas();
 
@@ -54,6 +60,13 @@ export const Recruitment: React.FC = () => {
 
   const [selectedMatoran, setSelectedMatoran] = useState<ListedCharacterData | null>(null);
   const [celebratedCharacter, setCelebratedCharacter] = useState<BaseMatoran | null>(null);
+  const [redeemModalOpen, setRedeemModalOpen] = useState(false);
+  const [redeemInput, setRedeemInput] = useState('');
+  const [redeemError, setRedeemError] = useState<string | null>(null);
+  const [shareWelcome, setShareWelcome] = useState<{
+    alreadyOnList: boolean;
+    received: BaseMatoran;
+  } | null>(null);
   const pendingNextRef = useRef<ListedCharacterData | null>(null);
   const pendingNavigateRef = useRef(false);
 
@@ -141,6 +154,39 @@ export const Recruitment: React.FC = () => {
     setSelectedMatoran(next);
   };
 
+  const submitRedeemShare = useCallback(() => {
+    setRedeemError(null);
+    const token = extractRecruitTokenFromShareInput(redeemInput);
+    if (!token) {
+      setRedeemError('Paste a full share link or the recruit code from the link.');
+      return;
+    }
+    const parsed = parseCustomCharacterShare(token);
+    if (!parsed) {
+      setRedeemError('That link is not valid or the character data is unsupported.');
+      return;
+    }
+    const alreadyHad = customCharacters.some((c) => c.id === parsed.id);
+    registerSharedCustomCharacter(parsed);
+    setRedeemModalOpen(false);
+    setRedeemInput('');
+    setShareWelcome({ alreadyOnList: alreadyHad, received: parsed });
+  }, [customCharacters, redeemInput, registerSharedCustomCharacter]);
+
+  const tryPasteFromClipboard = useCallback(async () => {
+    setRedeemError(null);
+    try {
+      if (!navigator.clipboard?.readText) {
+        setRedeemError('Clipboard paste is not available in this browser.');
+        return;
+      }
+      const text = await navigator.clipboard.readText();
+      setRedeemInput(text);
+    } catch {
+      setRedeemError('Clipboard access was denied. Paste manually into the box.');
+    }
+  }, []);
+
   const dismissCelebration = useCallback(() => {
     setCelebratedCharacter(null);
     if (pendingNavigateRef.current) {
@@ -191,6 +237,17 @@ export const Recruitment: React.FC = () => {
                     protodermis
                   </li>
                 </ul>
+                <button
+                  type="button"
+                  className="recruitment-redeem-open"
+                  onClick={() => {
+                    setRedeemModalOpen(true);
+                    setRedeemError(null);
+                  }}
+                >
+                  <Link2 size={16} aria-hidden />
+                  Redeem share link
+                </button>
                 {isSharedCustom && (
                   <p className="custom-character-note">
                     Shared custom matoran. Recruit to add to your team, or dismiss to remove from
@@ -219,6 +276,76 @@ export const Recruitment: React.FC = () => {
         })()}
 
       <RecruitmentCelebration matoran={celebratedCharacter} onDismiss={dismissCelebration} />
+
+      {redeemModalOpen && (
+        <div
+          className="recruitment-redeem-backdrop"
+          role="presentation"
+          onClick={() => setRedeemModalOpen(false)}
+        >
+          <div
+            className="recruitment-redeem-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="recruitment-redeem-title"
+            data-testid="recruitment-redeem-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 id="recruitment-redeem-title" className="recruitment-redeem-heading">
+              Redeem share link
+            </h2>
+            <p className="recruitment-redeem-hint">
+              Pasted links work here even when the installed app does not share storage with your
+              browser (for example, some iOS home-screen shortcuts).
+            </p>
+            <textarea
+              className="recruitment-redeem-textarea"
+              rows={4}
+              value={redeemInput}
+              onChange={(e) => {
+                setRedeemInput(e.target.value);
+                setRedeemError(null);
+              }}
+              placeholder="Paste the full URL or only the recruit=… code from a share link"
+              aria-label="Share link or recruit code"
+            />
+            {redeemError && <p className="recruitment-redeem-error">{redeemError}</p>}
+            <div className="recruitment-redeem-actions">
+              {typeof navigator !== 'undefined' && !!navigator.clipboard?.readText && (
+                <button
+                  type="button"
+                  className="recruitment-redeem-secondary"
+                  onClick={tryPasteFromClipboard}
+                >
+                  Paste from clipboard
+                </button>
+              )}
+              <button
+                type="button"
+                className="recruitment-redeem-primary"
+                onClick={submitRedeemShare}
+              >
+                Add to recruitment list
+              </button>
+              <button
+                type="button"
+                className="recruitment-redeem-secondary"
+                onClick={() => setRedeemModalOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {shareWelcome && (
+        <SharedCharacterReceivedDialog
+          alreadyOnList={shareWelcome.alreadyOnList}
+          onDismiss={() => setShareWelcome(null)}
+          received={shareWelcome.received}
+        />
+      )}
     </div>
   );
 };

@@ -124,6 +124,53 @@ export function parseCustomCharacterShare(token: string): BaseMatoran | null {
   return safe;
 }
 
+/**
+ * Pulls the `recruit` query value from pasted text: full URL, partial path, or raw token.
+ * Used when the app cannot read the browser URL (e.g. share link opened in Safari but the
+ * player uses the installed PWA, which has separate storage).
+ */
+export function extractRecruitTokenFromShareInput(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+
+  const decodeSafe = (value: string) => {
+    try {
+      return decodeURIComponent(value.replace(/\+/g, '%20'));
+    } catch {
+      return value;
+    }
+  };
+
+  const fromQueryString = (s: string): string | null => {
+    const match = s.match(/(?:^|[?&])recruit=([^&\s#]+)/i);
+    if (!match) return null;
+    return decodeSafe(match[1]);
+  };
+
+  let token = fromQueryString(trimmed);
+  if (!token && trimmed.includes('#')) {
+    token = fromQueryString(trimmed.slice(trimmed.indexOf('#') + 1));
+  }
+  if (token) return token;
+
+  try {
+    const href =
+      trimmed.startsWith('http://') || trimmed.startsWith('https://')
+        ? trimmed
+        : `https://invalid.invalid${trimmed.startsWith('/') ? '' : '/'}${trimmed}`;
+    const url = new URL(href);
+    const fromSearch = url.searchParams.get(SHARE_QUERY_PARAM);
+    if (fromSearch) return fromSearch;
+  } catch {
+    // ignore
+  }
+
+  if (/^[A-Za-z0-9_-]+$/.test(trimmed) && trimmed.length >= 24) {
+    return trimmed;
+  }
+  return null;
+}
+
 export function buildCustomCharacterShareUrl(base: BaseMatoran): string {
   const token = encodeCustomCharacterShare(base);
   const { origin, pathname } = window.location;

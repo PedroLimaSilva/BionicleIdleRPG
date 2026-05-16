@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useGame } from '../../context/Game';
 import { BaseMatoran } from '../../types/Matoran';
-import { MatoranAvatar } from '../MatoranAvatar';
 import { parseCustomCharacterShare, SHARE_QUERY_PARAM } from '../../services/customCharacterShare';
-import './index.scss';
+import { SharedCharacterReceivedDialog } from './SharedCharacterReceivedDialog';
 
 /**
  * On mount, inspects `?recruit=…` in the URL and, if it parses to a valid custom-character
@@ -36,28 +35,5 @@ export function SharedCharacterPrompt() {
 
   if (!received) return null;
 
-  return (
-    <div
-      className={`shared-character-backdrop element-${received.element}`}
-      role="dialog"
-      aria-modal="true"
-      data-testid="shared-character-prompt"
-    >
-      <div className="shared-character-panel">
-        <MatoranAvatar matoran={{ ...received, exp: 0 }} styles="shared-character-avatar" />
-        <h2 className="shared-character-title">A New Friend Approaches!</h2>
-        <p className="shared-character-body">
-          Someone shared <strong>{received.name}</strong>, a custom matoran of {received.element},
-          with you. They have been added to your recruitment list.
-        </p>
-        <button
-          type="button"
-          className={`elemental-btn element-${received.element}`}
-          onClick={() => setReceived(null)}
-        >
-          Continue
-        </button>
-      </div>
-    </div>
-  );
+  return <SharedCharacterReceivedDialog received={received} onDismiss={() => setReceived(null)} />;
 }
