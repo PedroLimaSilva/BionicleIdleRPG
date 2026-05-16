@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { ElementTribe } from '../../types/Matoran';
-import { expGainedFromProtodermisSpend, PROTODERMIS_TO_EXP_RATIO } from '../../game/ProtodermisConversion';
+import {
+  expGainedFromProtodermisSpend,
+  PROTODERMIS_TO_EXP_RATIO,
+} from '../../game/ProtodermisConversion';
 import { getLevelFromExp } from '../../game/Levelling';
 import './index.scss';
 
@@ -76,7 +79,10 @@ export const ProtodermisTraining: React.FC<ProtodermisTrainingProps> = ({
         <p className="protodermis-training__preview" aria-live="polite">
           Level after this conversion: <strong>{levelAfter}</strong>
           {levelAfter > levelNow ? (
-            <span className="protodermis-training__preview-delta"> ({levelNow} → {levelAfter})</span>
+            <span className="protodermis-training__preview-delta">
+              {' '}
+              ({levelNow} → {levelAfter})
+            </span>
           ) : previewExpGain > 0 ? (
             <span className="protodermis-training__preview-delta"> (+{previewExpGain} XP)</span>
           ) : null}
