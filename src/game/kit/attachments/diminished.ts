@@ -12,8 +12,8 @@ import {
 export const DIMINISHED_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment> = {
   FootL: { kitNodeName: 'MatoranFoot', materialColors: MATORAN_KIT_PALETTE_FEET },
   FootR: { kitNodeName: 'MatoranFoot', materialColors: MATORAN_KIT_PALETTE_FEET },
+  Head: { kitNodeName: 'McToranFace', materialColors: MATORAN_KIT_PALETTE_FACE },
   McArmL: { kitNodeName: 'McArmL', materialColors: MATORAN_KIT_PALETTE_ARMS },
   McArmR: { kitNodeName: 'McArmR', materialColors: MATORAN_KIT_PALETTE_ARMS },
-  Head: { kitNodeName: 'McToranFace', materialColors: MATORAN_KIT_PALETTE_FACE },
   McTorso: { kitNodeName: 'McTorso', materialColors: MATORAN_KIT_PALETTE_BODY },
 };
