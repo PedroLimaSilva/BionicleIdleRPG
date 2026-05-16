@@ -70,25 +70,9 @@ def _copy_parenting(source, empty):
         empty.parent_bone = source.parent_bone
 
 
-def _parent_world_matrix(source):
-    if source.parent is None:
-        return Matrix.Identity(4)
-    if source.parent_type == "BONE" and source.parent_bone:
-        pose_bone = source.parent.pose.bones.get(source.parent_bone)
-        if pose_bone is not None:
-            return source.parent.matrix_world @ pose_bone.matrix
-    return source.parent.matrix_world
-
-
-def _place_at_source_origin(source, empty, parent_mode):
-    world_location = source.matrix_world.translation.copy()
-    if parent_mode == "SAME_PARENT":
-        parent_inverse = _parent_world_matrix(source).inverted()
-        empty.location = parent_inverse @ world_location
-    else:
-        empty.location = world_location
-    empty.rotation_euler = (0.0, 0.0, 0.0)
-    empty.scale = (1.0, 1.0, 1.0)
+def _copy_source_origin_transform(source, empty):
+    location, rotation, _scale = source.matrix_world.decompose()
+    empty.matrix_world = Matrix.LocRotScale(location, rotation, (1.0, 1.0, 1.0))
 
 
 def _copy_source_world_transform(source, empty):
@@ -137,7 +121,7 @@ class BIONICLE_OT_create_socket_empties(bpy.types.Operator):
             if scene.bionicle_preserve_source_transform:
                 _copy_source_world_transform(source, empty)
             else:
-                _place_at_source_origin(source, empty, scene.bionicle_parent_mode)
+                _copy_source_origin_transform(source, empty)
 
             if scene.bionicle_hide_source:
                 source.hide_viewport = True
@@ -283,7 +267,7 @@ def _register_scene_props():
     )
     bpy.types.Scene.bionicle_preserve_source_transform = bpy.props.BoolProperty(
         name="Preserve Source Transform",
-        description="Copy the source object's world rotation and scale instead of creating an identity-transform socket",
+        description="Copy the source object's full world transform, including scale; otherwise keep source origin and rotation only",
         default=False,
     )
     bpy.types.Scene.bionicle_custom_socket_name = bpy.props.StringProperty(name="Custom Socket")
