@@ -20,6 +20,7 @@ import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from '../../components/CharacterScen
 import { useEmissiveMeshes } from '../../components/CharacterScene/selectiveBloom';
 import { StableSelectiveBloom } from '../../components/CharacterScene/StableSelectiveBloom';
 import { useSettings } from '../../context/useSettings';
+import { CITY_ENVIRONMENT_PROPS } from '../../utils/cityEnvironmentHdri';
 import { isTestMode, shouldEnableSelectiveBloom, shouldEnableShadows } from '../../utils/testMode';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
 
@@ -89,7 +90,7 @@ function RahkshiDetailScene({ hasKraata, kraata }: { kraata: KraataPower; hasKra
   return (
     <>
       <RahkshiFraming />
-      <Environment preset="city" />
+      <Environment {...CITY_ENVIRONMENT_PROPS} />
       <EnvironmentIntensity value={0.01} />
       <ambientLight intensity={0.005} />
       <directionalLight
