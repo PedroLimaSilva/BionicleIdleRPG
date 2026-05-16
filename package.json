@@ -25,7 +25,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:unused-css": "tsx tools/check-unused-css.ts",
-    "make-pwa-icons": "tsx scripts/make-pwa-icons.mts"
+    "make-pwa-icons": "tsx scripts/make-pwa-icons.mts",
+    "sum-glb-sizes": "tsx scripts/sum-glb-sizes.mts",
+    "glb-size-report": "tsx scripts/glb-size-report.mts"
   },
   "dependencies": {
     "@react-three/drei": "9.92.7",
