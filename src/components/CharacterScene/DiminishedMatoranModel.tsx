@@ -1,46 +1,38 @@
-import { useEffect, useRef } from 'react';
-import { BaseMatoran } from '../../types/Matoran';
-import { Color as ThreeColor, Group, Mesh } from 'three';
-import { MeshPhysicalMaterial } from 'three';
+import { useMemo, useRef } from 'react';
+import { BaseMatoran, Mask } from '../../types/Matoran';
+import { Group, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../../hooks/useAnimationController';
 import { useIdleAnimation } from '../../hooks/useIdleAnimation';
 import { useMask } from '../../hooks/useMask';
-import { useSettings } from '../../context/useSettings';
-import { Color } from '../../types/Colors';
-import { applyWeatheredMetalToObject, isWeatheredMetalMaterial } from './WeatheredMetalMaterial';
+import { useKitAttachments } from '../../hooks/useKitAttachments';
+import { KIT_2001_GLB_PATH } from '../../game/kit/kit2001';
+import { DIMINISHED_KIT_2001_ATTACHMENTS } from '../../game/kit/attachments/diminished';
+import type { WeatheredMetalOptions } from './WeatheredMetalMaterial';
 
-/** Set to true to apply weathered metal (procedural grime) to meshes without normalMap. Masks exempt. */
-const USE_WEATHERED_METAL = true;
-
-const MAT_COLOR_MAP = {
-  Akaku: 'mask',
-  'Arm.L': 'arms',
-  'Arm.R': 'arms',
-  Brain: 'eyes',
-  Face: 'face',
-  'Foot.L': 'feet',
-  'Foot.R': 'feet',
-  GlowingEyes: 'eyes',
-  Hau: 'mask',
-  Huna: 'mask',
-  Kakama: 'mask',
-  Kaukau: 'mask',
-  Komau: 'mask',
-  Mahiki: 'mask',
-  Mask: 'mask',
-  Matatu: 'mask',
-  Miru: 'mask',
-  Pakari: 'mask',
-  Rau: 'mask',
-  Ruru: 'mask',
-  Torso: 'body',
+const DIMINISHED_WEATHERED: WeatheredMetalOptions = {
+  cavityStrength: 1,
+  edgeColor: '#ffffff',
+  edgeCurvatureScale: 2,
+  edgeStrength: 0.15,
+  fineScale: 18.0,
+  grimeDarken: 0.4,
+  grimeMetalnessReduce: 0.5,
+  grimeRoughness: 0.2,
+  largeScale: 3.5,
+  metalness: 0.05,
+  roughness: 0.55,
 };
 
-export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
+export function DiminishedMatoranModel({
+  matoran,
+  onKitMeshesAttached,
+}: {
+  matoran: BaseMatoran & { maskOverride?: Mask };
+  onKitMeshesAttached?: () => void;
+}) {
   const group = useRef<Group>(null);
-  const { debugMode } = useSettings();
-  const { animations, materials, nodes } = useGLTF(import.meta.env.BASE_URL + 'matoran_master.glb');
+  const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + 'matoran_master.glb');
   const { actions, mixer } = useIdleAnimation(animations, group);
 
   useAnimationController({
@@ -49,68 +41,31 @@ export function DiminishedMatoranModel({ matoran }: { matoran: BaseMatoran }) {
     mixer,
   });
 
-  useEffect(() => {
-    const root = group.current;
-    if (!root) return;
+  const onAttached = useMemo(
+    () => (onKitMeshesAttached ? () => onKitMeshesAttached() : undefined),
+    [onKitMeshesAttached]
+  );
 
-    const colorMap = matoran.colors;
+  /** Body’s face socket is also named `Head`; expose it as `McToranFace` for kit lookup. */
+  const kitCharacterNodes = useMemo(() => {
+    const body = nodes.Body as Object3D | undefined;
+    const faceSocket = body?.children.find((child) => child.name === 'Head');
+    return {
+      ...(nodes as Record<string, Object3D | undefined>),
+      McToranFace: faceSocket,
+    };
+  }, [nodes]);
 
-    Object.entries(MAT_COLOR_MAP).forEach(([materialName, colorName]) => {
-      const original = materials[materialName] as MeshPhysicalMaterial;
-      if (!original) return;
+  useKitAttachments({
+    attachments: DIMINISHED_KIT_2001_ATTACHMENTS,
+    characterNodes: kitCharacterNodes,
+    colors: matoran.colors,
+    kitUrl: KIT_2001_GLB_PATH,
+    onAttached,
+    weathered: DIMINISHED_WEATHERED,
+  });
 
-      const color = colorMap[colorName as keyof BaseMatoran['colors']] as Color;
-      original.color = new ThreeColor(color);
-
-      const needsEmissive =
-        materialName === 'GlowingEyes' &&
-        original.emissive &&
-        (original.emissiveIntensity ?? 0) > 0;
-
-      if (needsEmissive) {
-        if (needsEmissive && original.emissive) {
-          original.emissive = new ThreeColor(color);
-          original.emissiveIntensity = original.emissiveIntensity ?? 0;
-        }
-      }
-    });
-
-    if (USE_WEATHERED_METAL) {
-      const materialColorMap: Record<string, string> = {};
-      Object.entries(MAT_COLOR_MAP).forEach(([materialName, colorName]) => {
-        if (materialName !== 'Brain' && materialName !== 'GlowingEyes') {
-          materialColorMap[materialName] = colorMap[
-            colorName as keyof BaseMatoran['colors']
-          ] as string;
-        }
-      });
-      applyWeatheredMetalToObject(root, {
-        cavityStrength: 1,
-        edgeColor: '#ffffff',
-        edgeCurvatureScale: 2,
-        edgeStrength: 0.15,
-        excludeMaterialNames: ['Brain', 'GlowingEyes'],
-        fineScale: 18.0,
-        grimeDarken: 0.4,
-        grimeMetalnessReduce: 0.5,
-        grimeRoughness: 0.2,
-        largeScale: 3.5,
-        materialColorMap,
-        metalness: 0.05,
-        roughness: 0.55,
-      });
-      if (debugMode) {
-        let count = 0;
-        root.traverse((c) => {
-          if ((c as Mesh).isMesh && isWeatheredMetalMaterial((c as Mesh).material)) count++;
-        });
-        console.log('[DiminishedMatoranModel] Weathered metal applied to', count, 'meshes');
-      }
-    }
-  }, [nodes, materials, matoran.id, matoran.colors, debugMode]);
-
-  // Inject the active mask from the shared masks.glb
-  const maskTarget = matoran.mask;
+  const maskTarget = matoran.maskOverride ?? matoran.mask;
   const glowColor = matoran.colors.eyes;
   useMask(nodes.Masks, maskTarget, matoran, glowColor);
 

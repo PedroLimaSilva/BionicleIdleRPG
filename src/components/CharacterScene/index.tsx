@@ -111,11 +111,11 @@ function CharacterModel({
         </group>
       );
     case MatoranStage.Diminished:
-      return <DiminishedMatoranModel matoran={matoran} />;
+      return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Rebuilt:
       return <RebuiltMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     default:
-      return <DiminishedMatoranModel matoran={matoran} />;
+      return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
   }
 }
 
