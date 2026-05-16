@@ -4,6 +4,8 @@
 import {
   encodeCustomCharacterShare,
   extractRecruitTokenFromShareInput,
+  areEquivalentSharedCustomMatoran,
+  findSharedCustomCharacterIdentityMatch,
   parseCustomCharacterShare,
   SHARE_QUERY_PARAM,
 } from './customCharacterShare';
@@ -153,6 +155,41 @@ describe('customCharacterShare', () => {
       expect(extractRecruitTokenFromShareInput('https://example.com/')).toBeNull();
       expect(extractRecruitTokenFromShareInput('')).toBeNull();
       expect(extractRecruitTokenFromShareInput('short')).toBeNull();
+    });
+  });
+
+  describe('areEquivalentSharedCustomMatoran', () => {
+    it('returns true for same design with different ids', () => {
+      const a = makeCustom({ id: 'custom_0' });
+      const b = makeCustom({ id: 'custom_99' });
+      expect(areEquivalentSharedCustomMatoran(a, b)).toBe(true);
+    });
+
+    it('returns false when mask differs', () => {
+      const a = makeCustom({ id: 'custom_0' });
+      const b = makeCustom({ id: 'custom_0', mask: Mask.Hau });
+      expect(areEquivalentSharedCustomMatoran(a, b)).toBe(false);
+    });
+
+    it('treats optional weaponGlow consistently', () => {
+      const base = makeCustom();
+      const withGlow = makeCustom({
+        colors: { ...base.colors, weaponGlow: LegoColor.TransNeonGreen },
+      });
+      const withGlow2 = makeCustom({
+        colors: { ...base.colors, weaponGlow: LegoColor.TransNeonGreen },
+        id: 'custom_5',
+      });
+      expect(areEquivalentSharedCustomMatoran(withGlow, withGlow2)).toBe(true);
+      expect(areEquivalentSharedCustomMatoran(base, withGlow)).toBe(false);
+    });
+  });
+
+  describe('findSharedCustomCharacterIdentityMatch', () => {
+    it('finds a matching entry ignoring id', () => {
+      const stored = makeCustom({ id: 'custom_1', name: 'Zaktan' });
+      const incoming = makeCustom({ id: 'custom_0', name: 'Zaktan' });
+      expect(findSharedCustomCharacterIdentityMatch([stored], incoming)).toBe(stored);
     });
   });
 });

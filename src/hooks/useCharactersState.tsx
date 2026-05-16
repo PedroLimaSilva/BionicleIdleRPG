@@ -12,6 +12,7 @@ import {
 import { DEFAULT_CUSTOM_MATA_MODEL_ID } from '../game/customMataBuild';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
+import { areEquivalentSharedCustomMatoran } from '../services/customCharacterShare';
 import { getBuyableCharacters, isCharacterRecruited } from '../game/Recruitment';
 import { registerCustomCharacterInDex } from '../data/dex/index';
 
@@ -114,11 +115,21 @@ export function useCharactersState(
     return id;
   };
 
-  const registerSharedCustomCharacter = (base: BaseMatoran): string => {
-    if (customCharacters.some((c) => c.id === base.id)) return base.id;
+  const registerSharedCustomCharacter = (base: BaseMatoran): BaseMatoran => {
+    const identityMatch = customCharacters.find((c) => areEquivalentSharedCustomMatoran(c, base));
+    if (identityMatch) return identityMatch;
+
+    if (customCharacters.some((c) => c.id === base.id)) {
+      const id = nextCustomId(customCharacters);
+      const newBase: BaseMatoran = { ...base, id };
+      registerCustomCharacterInDex(newBase);
+      setCustomCharacters((prev) => [...prev, newBase]);
+      return newBase;
+    }
+
     registerCustomCharacterInDex(base);
     setCustomCharacters((prev) => [...prev, base]);
-    return base.id;
+    return base;
   };
 
   const dismissCustomCharacter = (id: string) => {

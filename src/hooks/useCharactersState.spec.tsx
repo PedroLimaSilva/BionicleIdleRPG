@@ -330,6 +330,73 @@ describe('useCharactersState', () => {
     });
   });
 
+  describe('registerSharedCustomCharacter', () => {
+    const sharedLook: BaseMatoran = {
+      colors: {
+        arms: LegoColor.Blue,
+        body: LegoColor.Blue,
+        eyes: LegoColor.TransNeonOrange,
+        face: LegoColor.DarkGray,
+        feet: LegoColor.Yellow,
+        mask: LegoColor.Blue,
+      },
+      element: ElementTribe.Water,
+      id: 'custom_0',
+      isMaskTransparent: false,
+      mask: Mask.Kaukau,
+      name: 'Pridak',
+      stage: MatoranStage.Diminished,
+      tags: [MatoranTag.Custom],
+    };
+
+    test('returns existing entry when share identity matches (incoming id may differ)', () => {
+      const { result } = renderHook(() =>
+        useCharactersState([], [sharedLook], [], mockProtodermis, mockSetProtodermis)
+      );
+
+      const incoming = { ...sharedLook, id: 'custom_999' };
+      let registered: BaseMatoran | undefined;
+      act(() => {
+        registered = result.current.registerSharedCustomCharacter(incoming);
+      });
+
+      expect(result.current.customCharacters).toHaveLength(1);
+      expect(registered).toBe(result.current.customCharacters[0]);
+      expect(registered?.id).toBe('custom_0');
+    });
+
+    test('assigns a new id when incoming id collides with a different design', () => {
+      const occupant: BaseMatoran = {
+        ...sharedLook,
+        colors: { ...sharedLook.colors, mask: LegoColor.Red },
+        id: 'custom_0',
+        mask: Mask.Hau,
+        name: 'Mine',
+      };
+      const incoming: BaseMatoran = {
+        ...sharedLook,
+        colors: { ...sharedLook.colors, mask: LegoColor.Green },
+        id: 'custom_0',
+        mask: Mask.Miru,
+        name: 'Theirs',
+      };
+
+      const { result } = renderHook(() =>
+        useCharactersState([], [occupant], [], mockProtodermis, mockSetProtodermis)
+      );
+
+      let registered: BaseMatoran | undefined;
+      act(() => {
+        registered = result.current.registerSharedCustomCharacter(incoming);
+      });
+
+      expect(result.current.customCharacters).toHaveLength(2);
+      expect(registered?.id).toBe('custom_1');
+      expect(registered?.mask).toBe(Mask.Miru);
+      expect(result.current.customCharacters[0].id).toBe('custom_0');
+    });
+  });
+
   describe('updateCustomCharacter', () => {
     const customBase: BaseMatoran = {
       colors: {

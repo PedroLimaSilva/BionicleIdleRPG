@@ -125,6 +125,41 @@ export function parseCustomCharacterShare(token: string): BaseMatoran | null {
 }
 
 /**
+ * True when two customs match as the same shared design (name, element, mask, stage,
+ * transparency, colors). Ignores `id` so imports from different saves do not false-dedupe
+ * or false-collide on `custom_*` indices alone.
+ */
+export function areEquivalentSharedCustomMatoran(a: BaseMatoran, b: BaseMatoran): boolean {
+  if (a.name.trim() !== b.name.trim()) return false;
+  if (a.mask !== b.mask) return false;
+  if (a.element !== b.element) return false;
+  if (a.stage !== b.stage) return false;
+  if (!!a.isMaskTransparent !== !!b.isMaskTransparent) return false;
+  const ac = a.colors;
+  const bc = b.colors;
+  if (
+    ac.mask !== bc.mask ||
+    ac.body !== bc.body ||
+    ac.feet !== bc.feet ||
+    ac.arms !== bc.arms ||
+    ac.eyes !== bc.eyes ||
+    ac.face !== bc.face
+  ) {
+    return false;
+  }
+  if ((ac.weaponGlow ?? null) !== (bc.weaponGlow ?? null)) return false;
+  return true;
+}
+
+/** First custom entry whose share identity matches `candidate`, if any. */
+export function findSharedCustomCharacterIdentityMatch(
+  customs: BaseMatoran[],
+  candidate: BaseMatoran
+): BaseMatoran | undefined {
+  return customs.find((c) => areEquivalentSharedCustomMatoran(c, candidate));
+}
+
+/**
  * Pulls the `recruit` query value from pasted text: full URL, partial path, or raw token.
  * Used when the app cannot read the browser URL (e.g. share link opened in Safari but the
  * player uses the installed PWA, which has separate storage).

@@ -21,6 +21,7 @@ import { RecruitmentCelebration } from '../../components/RecruitmentCelebration'
 import { SharedCharacterReceivedDialog } from '../../components/SharedCharacterPrompt/SharedCharacterReceivedDialog';
 import {
   extractRecruitTokenFromShareInput,
+  findSharedCustomCharacterIdentityMatch,
   parseCustomCharacterShare,
 } from '../../services/customCharacterShare';
 
@@ -166,11 +167,12 @@ export const Recruitment: React.FC = () => {
       setRedeemError('That link is not valid or the character data is unsupported.');
       return;
     }
-    const alreadyHad = customCharacters.some((c) => c.id === parsed.id);
-    registerSharedCustomCharacter(parsed);
+    const alreadyHad =
+      findSharedCustomCharacterIdentityMatch(customCharacters, parsed) !== undefined;
+    const registered = registerSharedCustomCharacter(parsed);
     setRedeemModalOpen(false);
     setRedeemInput('');
-    setShareWelcome({ alreadyOnList: alreadyHad, received: parsed });
+    setShareWelcome({ alreadyOnList: alreadyHad, received: registered });
   }, [customCharacters, redeemInput, registerSharedCustomCharacter]);
 
   const tryPasteFromClipboard = useCallback(async () => {
@@ -237,17 +239,19 @@ export const Recruitment: React.FC = () => {
                     protodermis
                   </li>
                 </ul>
-                <button
-                  type="button"
-                  className="recruitment-redeem-open"
-                  onClick={() => {
-                    setRedeemModalOpen(true);
-                    setRedeemError(null);
-                  }}
-                >
-                  <Link2 size={16} aria-hidden />
-                  Redeem share link
-                </button>
+                {isCreateSlot && (
+                  <button
+                    type="button"
+                    className="recruitment-redeem-open"
+                    onClick={() => {
+                      setRedeemModalOpen(true);
+                      setRedeemError(null);
+                    }}
+                  >
+                    <Link2 size={16} aria-hidden />
+                    Redeem share link
+                  </button>
+                )}
                 {isSharedCustom && (
                   <p className="custom-character-note">
                     Shared custom matoran. Recruit to add to your team, or dismiss to remove from
