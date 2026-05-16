@@ -6,6 +6,7 @@ import { BlendFunction } from 'postprocessing';
 import { DirectionalLight, Mesh, Object3D } from 'three';
 
 import { useSettings } from '../../context/useSettings';
+import { CITY_ENVIRONMENT_PROPS } from '../../utils/cityEnvironmentHdri';
 import { shouldEnableSelectiveBloom, shouldEnableShadows } from '../../utils/testMode';
 import { CYLINDER_RADIUS } from './BoundsCylinder';
 
@@ -194,7 +195,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
   return (
     <>
       <CharacterFraming />
-      <Environment preset="city" />
+      <Environment {...CITY_ENVIRONMENT_PROPS} />
       <EnvironmentIntensity value={0.4} />
       <directionalLight
         ref={setMainLightRef}

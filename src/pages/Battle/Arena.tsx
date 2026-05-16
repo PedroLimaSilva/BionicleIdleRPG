@@ -6,6 +6,7 @@ import { CombatantModel, CombatantModelHandle } from './CombatantModel';
 import { useCallback, useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/useSettings';
+import { CITY_ENVIRONMENT_PROPS } from '../../utils/cityEnvironmentHdri';
 import { shouldEnableShadows } from '../../utils/testMode';
 import { HitImpactParticles } from './HitImpactParticles';
 import { subscribeBattleCameraEmphasis } from '../../utils/battleCameraEmphasis';
@@ -343,7 +344,7 @@ export function Arena({ currentWave, enemies, team }: ArenaProps) {
     <>
       <PerspectiveCamera makeDefault />
       <ArenaFraming />
-      <Environment preset="city" />
+      <Environment {...CITY_ENVIRONMENT_PROPS} />
       <EnvironmentIntensity value={0.4} />
       <directionalLight
         ref={(el) => {
