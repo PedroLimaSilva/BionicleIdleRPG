@@ -7,7 +7,7 @@ import { useIdleAnimation } from '../../hooks/useIdleAnimation';
 import { useMask } from '../../hooks/useMask';
 import { useKitAttachments } from '../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../game/kit/kit2001';
-import { REBUILT_KIT_2001_ATTACHMENTS } from './rebuiltKitAttach';
+import { REBUILT_KIT_2001_ATTACHMENTS } from '../../game/kit/attachments/rebuilt';
 import type { WeatheredMetalOptions } from './WeatheredMetalMaterial';
 
 const REBUILT_WEATHERED: WeatheredMetalOptions = {

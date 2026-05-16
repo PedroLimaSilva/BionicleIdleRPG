@@ -1,11 +1,11 @@
-import { LegoColor } from '../../../types/Colors';
-import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../types/KitParts';
+import { LegoColor } from '../../../../types/Colors';
+import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../../types/KitParts';
 import {
   MATA_KIT_PLAYER_PALETTE_BRAIN,
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
   mataKitPlayerPaletteGlow,
   mataKitPlayerPaletteWeaponGlow,
-} from '../../../game/mataKitPlayerPalette';
+} from '../../palettes/mataKitPlayerPalette';
 
 const TAHU_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
