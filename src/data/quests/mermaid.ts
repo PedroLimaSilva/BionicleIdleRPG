@@ -78,5 +78,6 @@ export function generateMermaidFlowchart(quests: Quest[], questStates?: QuestSta
     }
   });
 
-  return `\`\`\`mermaid\ngraph TD\n${nodes.join('\n')}\n${edges.join('\n')}\n${classDefs.join('\n')}\n${classAssignments.join('\n')}\n\`\`\``;
+  const lines = ['graph TD', ...nodes, ...edges, ...classDefs, ...classAssignments];
+  return `\`\`\`mermaid\n${lines.join('\n')}\n\`\`\``;
 }
