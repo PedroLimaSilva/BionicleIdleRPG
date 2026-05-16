@@ -1,0 +1,51 @@
+name: GLB size report
+
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+    paths:
+      - 'public/**/*.glb'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  report:
+    name: Comment GLB size diff
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Generate GLB size report
+        id: report
+        run: |
+          {
+            echo 'body<<EOF'
+            yarn glb-size-report --markdown
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+        env:
+          GLB_SIZE_BASE_REF: origin/${{ github.base_ref }}
+
+      - name: Comment on pull request
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-tag: glb-size-report
+          body: ${{ steps.report.outputs.body }}
