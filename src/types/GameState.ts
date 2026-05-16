@@ -53,9 +53,10 @@ export type GameState = {
   /**
    * Registers a custom character base entry received from a share link, without
    * recruiting it. Appears in the buyable list until recruited or dismissed.
-   * No-ops if the id is already known. Returns the registered id (existing or new).
+   * Dedupes by share identity (appearance, not `custom_*` id). Remaps to a fresh id when the
+   * incoming id is taken by a different design. Returns the stored `BaseMatoran`.
    */
-  registerSharedCustomCharacter: (base: BaseMatoran) => string;
+  registerSharedCustomCharacter: (base: BaseMatoran) => BaseMatoran;
   /** Removes a custom character from the recruitment list (only valid before recruitment). */
   dismissCustomCharacter: (id: string) => void;
   /**

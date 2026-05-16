@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useGame } from '../../context/Game';
 import { BaseMatoran } from '../../types/Matoran';
-import { parseCustomCharacterShare, SHARE_QUERY_PARAM } from '../../services/customCharacterShare';
+import {
+  findSharedCustomCharacterIdentityMatch,
+  parseCustomCharacterShare,
+  SHARE_QUERY_PARAM,
+} from '../../services/customCharacterShare';
 import { SharedCharacterReceivedDialog } from './SharedCharacterReceivedDialog';
 
 /**
@@ -10,8 +14,11 @@ import { SharedCharacterReceivedDialog } from './SharedCharacterReceivedDialog';
  * (removed from the URL) so it isn't reapplied on refresh / share.
  */
 export function SharedCharacterPrompt() {
-  const { registerSharedCustomCharacter } = useGame();
-  const [received, setReceived] = useState<BaseMatoran | null>(null);
+  const { customCharacters, registerSharedCustomCharacter } = useGame();
+  const [welcome, setWelcome] = useState<{
+    alreadyOnList: boolean;
+    received: BaseMatoran;
+  } | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -26,14 +33,22 @@ export function SharedCharacterPrompt() {
     window.history.replaceState({}, '', url.toString());
 
     if (parsed) {
-      registerSharedCustomCharacter(parsed);
-      setReceived(parsed);
+      const alreadyOnList =
+        findSharedCustomCharacterIdentityMatch(customCharacters, parsed) !== undefined;
+      const registered = registerSharedCustomCharacter(parsed);
+      setWelcome({ alreadyOnList, received: registered });
     }
     // Intentionally only run once on mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!received) return null;
+  if (!welcome) return null;
 
-  return <SharedCharacterReceivedDialog received={received} onDismiss={() => setReceived(null)} />;
+  return (
+    <SharedCharacterReceivedDialog
+      alreadyOnList={welcome.alreadyOnList}
+      onDismiss={() => setWelcome(null)}
+      received={welcome.received}
+    />
+  );
 }

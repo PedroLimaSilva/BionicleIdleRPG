@@ -81,7 +81,7 @@ export const INITIAL_GAME_STATE: GameState = {
     throw new Error('Function not implemented.');
   },
   recruitedCharacters: RECRUITED_MATORAN_DATA,
-  registerSharedCustomCharacter: function (_base: BaseMatoran): string {
+  registerSharedCustomCharacter: function (_base: BaseMatoran): BaseMatoran {
     throw new Error('Function not implemented.');
   },
   removeJobFromMatoran: function (_id: BaseMatoran['id']): void {
