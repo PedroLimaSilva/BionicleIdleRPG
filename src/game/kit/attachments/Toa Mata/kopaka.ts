@@ -1,15 +1,21 @@
-import { LegoColor } from '../../../types/Colors';
-import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../types/KitParts';
+import { LegoColor } from '../../../../types/Colors';
+import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../../types/KitParts';
 import {
   MATA_KIT_PLAYER_PALETTE_BRAIN,
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
   mataKitPlayerPaletteGlow,
-} from '../../../game/mataKitPlayerPalette';
+  mataKitPlayerPaletteWeaponGlow,
+} from '../../palettes/mataKitPlayerPalette';
 
 const KOPAKA_MATA_KIT_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
   ...mataKitPlayerPaletteGlow(50),
   ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
+};
+
+const KOPAKA_SWORD_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...KOPAKA_MATA_KIT_PALETTE_COLORS,
+  ...mataKitPlayerPaletteWeaponGlow(2.5, 'eyes'),
 };
 
 /**
@@ -61,7 +67,7 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
   KopakaShield: { kitNodeName: 'KopakaShield', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  KopakaSword: { kitNodeName: 'KopakaSword', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  KopakaSword: { kitNodeName: 'KopakaSword', materialColors: KOPAKA_SWORD_PALETTE_COLORS },
   Leg_Lower_L_1: { kitNodeName: 'MataLegModThigh', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   Leg_Lower_Piston_L_1: {
     kitNodeName: 'MataLegModPistonT',

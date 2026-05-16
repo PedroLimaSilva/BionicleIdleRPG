@@ -7,7 +7,7 @@ import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { useMask } from '../../../hooks/useMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
-import { LEWA_MATA_KIT_2001_ATTACHMENTS } from './lewaMataKitAttach';
+import { LEWA_MATA_KIT_2001_ATTACHMENTS } from '../../../game/kit/attachments/Toa Mata/lewa';
 import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
 const LEWA_WEATHERED: WeatheredMetalOptions = {

@@ -7,7 +7,7 @@ import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { useMask } from '../../../hooks/useMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
-import { KOPAKA_MATA_KIT_2001_ATTACHMENTS } from './kopakaMataKitAttach';
+import { KOPAKA_MATA_KIT_2001_ATTACHMENTS } from '../../../game/kit/attachments/Toa Mata/kopaka';
 import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
 const KOPAKA_WEATHERED: WeatheredMetalOptions = {

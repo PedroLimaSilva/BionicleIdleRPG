@@ -1,5 +1,5 @@
-import type { KitMaterialSlotEntry } from '../types/KitParts';
-import { LegoColor } from '../types/Colors';
+import type { KitMaterialSlotEntry, MatoranPaletteKey } from '../../../types/KitParts';
+import { LegoColor } from '../../../types/Colors';
 
 /**
  * Default kit tinting for Mata (2001) rigs using `useKitAttachments`.
@@ -32,7 +32,7 @@ export function mataKitPlayerPaletteGlow(
   return {
     Glow: {
       emissive: { key: 'eyes', kind: 'palette' },
-      emissiveIntensity: 4,
+      emissiveIntensity: glowingEyesIntensity,
       weathered: false,
     },
     'Glowing Eyes': {
@@ -45,11 +45,12 @@ export function mataKitPlayerPaletteGlow(
 
 /** Weapon / tool emissive accents (e.g. Gali hooks); uses optional `colors.weaponGlow`. */
 export function mataKitPlayerPaletteWeaponGlow(
-  emissiveIntensity = 50
+  emissiveIntensity = 50,
+  colorKey: MatoranPaletteKey = 'weaponGlow'
 ): Partial<Record<string, KitMaterialSlotEntry>> {
   return {
     Glow: {
-      emissive: { key: 'weaponGlow', kind: 'palette' },
+      emissive: { key: colorKey, kind: 'palette' },
       emissiveIntensity,
       weathered: false,
     },

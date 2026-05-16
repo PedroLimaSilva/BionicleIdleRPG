@@ -7,7 +7,7 @@ import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { useMask } from '../../../hooks/useMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
-import { GALI_MATA_KIT_2001_ATTACHMENTS } from './galiMataKitAttach';
+import { GALI_MATA_KIT_2001_ATTACHMENTS } from '../../../game/kit/attachments/Toa Mata/gali';
 import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
 const GALI_WEATHERED: WeatheredMetalOptions = {

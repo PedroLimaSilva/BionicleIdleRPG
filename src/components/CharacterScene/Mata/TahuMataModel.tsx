@@ -7,7 +7,7 @@ import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { useMask } from '../../../hooks/useMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
-import { TAHU_MATA_KIT_2001_ATTACHMENTS } from './tahuMataKitAttach';
+import { TAHU_MATA_KIT_2001_ATTACHMENTS } from '../../../game/kit/attachments/Toa Mata/tahu';
 import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
 const TAHU_WEATHERED: WeatheredMetalOptions = {
