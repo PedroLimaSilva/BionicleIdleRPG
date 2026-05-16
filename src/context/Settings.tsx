@@ -15,7 +15,8 @@ import {
 import { SettingsContext } from './SettingsContext';
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [debugCharacterCreation, setDebugCharacterCreationState] = useState(getDebugCharacterCreation);
+  const [debugCharacterCreation, setDebugCharacterCreationState] =
+    useState(getDebugCharacterCreation);
   const [debugMode, setDebugModeState] = useState(getDebugMode);
   const [performanceMonitorEnabled, setPerformanceMonitorEnabledState] = useState(
     getPerformanceMonitorEnabled

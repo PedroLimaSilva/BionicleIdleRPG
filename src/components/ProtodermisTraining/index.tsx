@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { ElementTribe } from '../../types/Matoran';
-import { PROTODERMIS_TO_EXP_RATIO } from '../../game/ProtodermisConversion';
+import {
+  expGainedFromProtodermisSpend,
+  PROTODERMIS_TO_EXP_RATIO,
+} from '../../game/ProtodermisConversion';
+import { getLevelFromExp } from '../../game/Levelling';
 import './index.scss';
 
 type ProtodermisTrainingProps = {
   characterId: string;
+  currentExp: number;
   element: ElementTribe;
   protodermis: number;
   convertProtodermisToExp: (characterId: string, protodermisSpent: number) => boolean;
@@ -14,6 +19,7 @@ type ProtodermisTrainingProps = {
 export const ProtodermisTraining: React.FC<ProtodermisTrainingProps> = ({
   characterId,
   convertProtodermisToExp,
+  currentExp,
   element,
   protodermis,
 }) => {
@@ -24,6 +30,12 @@ export const ProtodermisTraining: React.FC<ProtodermisTrainingProps> = ({
   }, [protodermis]);
 
   const spendClamped = Math.min(Math.max(1, spend), Math.max(protodermis, 1));
+  /** Protodermis amount used for XP / level preview (0 when broke so we do not imply spending impossible amounts). */
+  const spendForPreview = protodermis >= 1 ? Math.min(spendClamped, protodermis) : 0;
+  const previewExpGain = expGainedFromProtodermisSpend(spendForPreview);
+  const totalExp = currentExp || 0;
+  const levelNow = getLevelFromExp(totalExp);
+  const levelAfter = getLevelFromExp(totalExp + previewExpGain);
   const canConvert = protodermis >= 1 && spendClamped >= 1 && spendClamped <= protodermis;
 
   return (
@@ -63,6 +75,19 @@ export const ProtodermisTraining: React.FC<ProtodermisTrainingProps> = ({
           Max
         </button>
       </div>
+      {spendForPreview > 0 && (
+        <p className="protodermis-training__preview" aria-live="polite">
+          Level after this conversion: <strong>{levelAfter}</strong>
+          {levelAfter > levelNow ? (
+            <span className="protodermis-training__preview-delta">
+              {' '}
+              ({levelNow} → {levelAfter})
+            </span>
+          ) : previewExpGain > 0 ? (
+            <span className="protodermis-training__preview-delta"> (+{previewExpGain} XP)</span>
+          ) : null}
+        </p>
+      )}
       <button
         type="button"
         className={`elemental-btn element-${element}${canConvert ? '' : ' disabled'}`}

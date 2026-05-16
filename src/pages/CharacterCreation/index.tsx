@@ -170,7 +170,9 @@ export const CharacterCreation: React.FC = () => {
     [customCharacters, customizeId, recruitedCharacters]
   );
 
-  const [debugStartingStage, setDebugStartingStage] = useState<MatoranStage>(MatoranStage.Diminished);
+  const [debugStartingStage, setDebugStartingStage] = useState<MatoranStage>(
+    MatoranStage.Diminished
+  );
 
   const creationStage = useMemo(() => {
     if (isEditMode && customizeId) {
@@ -180,13 +182,7 @@ export const CharacterCreation: React.FC = () => {
       return debugStartingStage;
     }
     return MatoranStage.Diminished;
-  }, [
-    debugCharacterCreation,
-    customizeId,
-    debugStartingStage,
-    isEditMode,
-    recruitedCharacters,
-  ]);
+  }, [debugCharacterCreation, customizeId, debugStartingStage, isEditMode, recruitedCharacters]);
 
   const [name, setName] = useState(DEFAULT_CUSTOM_MATORAN_NAME);
   const [showCreateConfirm, setShowCreateConfirm] = useState(false);
