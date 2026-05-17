@@ -7,6 +7,7 @@ import { useIdleAnimation } from '../../hooks/useIdleAnimation';
 import { useMask } from '../../hooks/useMask';
 import { useKitAttachments } from '../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../game/kit/kit2001';
+import { KIT_2003_GLB_PATH } from '../../game/kit/kit2003';
 import { REBUILT_KIT_2001_ATTACHMENTS } from '../../game/kit/attachments/rebuilt';
 import type { WeatheredMetalOptions } from './WeatheredMetalMaterial';
 
@@ -52,6 +53,7 @@ export function RebuiltMatoranModel({
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached,
+    secondaryKitUrl: KIT_2003_GLB_PATH,
     weathered: REBUILT_WEATHERED,
   });
 

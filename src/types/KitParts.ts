@@ -71,6 +71,11 @@ export type KitMaterialSlotEntry = KitMaterialColorSource | KitMaterialSlotOverr
 export type KitSocketAttachment = {
   kitNodeName: string;
   /**
+   * GLB to clone this piece from. Must match `kitUrl` or `secondaryKitUrl` passed to
+   * `useKitAttachments`. When omitted, `kitUrl` (primary) is used.
+   */
+  kitUrl?: string;
+  /**
    * Map from kit **material** name (e.g. Main, Metal, Glow) to color and/or PBR overrides.
    * Omitted entries keep the kit GLB’s defaults for that slot.
    */
