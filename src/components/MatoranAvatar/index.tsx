@@ -42,6 +42,14 @@ export function MatoranAvatar({
     [effectiveMask]
   );
 
+  const faceLayer = useMemo(() => {
+    const base = `${import.meta.env.BASE_URL}/avatar/`;
+    if (matoran.stage === MatoranStage.Diminished || matoran.stage === MatoranStage.Rebuilt) {
+      return `${base}McFace.webp`;
+    }
+    return `${base}Face.webp`;
+  }, [matoran.stage]);
+
   const glowStyle = maskPowerActive ? { filter: `drop-shadow(0 0 12px ${maskColor})` } : undefined;
 
   // Bohrok and Bohrok Kal use pre-rendered avatar images
@@ -63,7 +71,7 @@ export function MatoranAvatar({
       style={glowStyle}
       images={[
         `${import.meta.env.BASE_URL}/avatar/Brain.webp`,
-        `${import.meta.env.BASE_URL}/avatar/Face.webp`,
+        faceLayer,
         mask,
       ]}
       colors={[colors.eyes, colors.face, maskColor]}
