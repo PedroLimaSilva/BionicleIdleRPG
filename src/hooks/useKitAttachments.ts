@@ -161,13 +161,7 @@ function buildMeshMaterials(
 export type UseKitAttachmentsParams = {
   /** `nodes` from `useGLTF` on the character (must include socket names as keys when flat) */
   characterNodes: Record<string, Object3D | undefined> | undefined;
-  /** Primary kit GLB (used when an attachment omits `kitUrl`). */
   kitUrl: string;
-  /**
-   * Optional second kit GLB. When set, any attachment with `kitUrl` equal to this string
-   * resolves nodes from the secondary file; others use `kitUrl`.
-   */
-  secondaryKitUrl?: string;
   /** Key = socket name on character; O(1) lookup when matching nodes to kit pieces */
   attachments: Record<string, KitSocketAttachment>;
   colors: BaseMatoran['colors'];
@@ -190,6 +184,9 @@ export type UseKitAttachmentsParams = {
  *
  * No post-hoc tree walk is needed — materials are decided once here, and the
  * weathered shared cache is reused across instances with the same spec.
+ *
+ * For multiple kit GLBs on one character, call this hook once per `kitUrl` with
+ * disjoint `attachments` keys (each socket should appear in at most one map).
  */
 export function useKitAttachments({
   attachments,
@@ -197,16 +194,10 @@ export function useKitAttachments({
   colors,
   kitUrl,
   onAttached,
-  secondaryKitUrl,
   weathered,
 }: UseKitAttachmentsParams): void {
-  const primaryGltf = useGLTF(kitUrl);
-  const secondaryGltf = useGLTF(secondaryKitUrl ?? kitUrl);
-  const primaryKitNodes = useMemo(() => buildKitNodeIndex(primaryGltf.scene), [primaryGltf]);
-  const secondaryKitNodes = useMemo(
-    () => buildKitNodeIndex(secondaryGltf.scene),
-    [secondaryGltf]
-  );
+  const gltf = useGLTF(kitUrl);
+  const kitNodes = useMemo(() => buildKitNodeIndex(gltf.scene), [gltf]);
   const onAttachedRef = useRef(onAttached);
   onAttachedRef.current = onAttached;
 
@@ -215,32 +206,16 @@ export function useKitAttachments({
 
     const clones: Object3D[] = [];
 
-    const pickKitNodes = (row: KitSocketAttachment): Record<string, Object3D> => {
-      const rowKitUrl = row.kitUrl ?? kitUrl;
-      if (rowKitUrl === kitUrl) return primaryKitNodes;
-      if (secondaryKitUrl && rowKitUrl === secondaryKitUrl) return secondaryKitNodes;
-      if (row.kitUrl) {
-        console.warn(
-          `[useKitAttachments] attachment kitUrl '${rowKitUrl}' does not match kitUrl or secondaryKitUrl; using primary kit`
-        );
-      }
-      return primaryKitNodes;
-    };
-
     for (const [socketName, row] of Object.entries(attachments)) {
       const socket = characterNodes[socketName];
-      const kitNodes = pickKitNodes(row);
       const template = kitNodes[row.kitNodeName];
-      const sourceUrl = row.kitUrl ?? kitUrl;
 
       if (!socket) {
         console.warn(`[useKitAttachments] Socket '${socketName}' not found on character`);
         continue;
       }
       if (!template) {
-        console.warn(
-          `[useKitAttachments] Kit node '${row.kitNodeName}' not found in ${sourceUrl}`
-        );
+        console.warn(`[useKitAttachments] Kit node '${row.kitNodeName}' not found in ${kitUrl}`);
         continue;
       }
 
@@ -269,16 +244,7 @@ export function useKitAttachments({
         if (p) p.remove(clone);
       }
     };
-  }, [
-    characterNodes,
-    kitUrl,
-    secondaryKitUrl,
-    attachments,
-    colors,
-    primaryKitNodes,
-    secondaryKitNodes,
-    weathered,
-  ]);
+  }, [characterNodes, kitUrl, attachments, colors, kitNodes, weathered]);
 }
 
 useKitAttachments.preload = (...kitUrls: string[]) => {
