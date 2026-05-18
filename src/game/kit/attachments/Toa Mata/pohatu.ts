@@ -33,7 +33,7 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   },
   Arm_Upper_L_1: { kitNodeName: 'TechnicArmJoint', materialColors: POHATU_PALETTE_COLORS },
   Arm_Upper_R_1: { kitNodeName: 'TechnicArmJoint', materialColors: POHATU_PALETTE_COLORS },
-  Axle2L: { kitNodeName: 'Axle2L' },
+  Axle2L: { kitNodeName: 'Axle2L', materialColors: POHATU_PALETTE_COLORS },
   Axle3L: {
     kitNodeName: 'Axle3L',
     materialColors: { main: { kind: 'lego', value: LegoColor.Black } },
@@ -66,14 +66,15 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
     kitNodeName: 'AxleMod3L',
     materialColors: { main: { kind: 'lego', value: LegoColor.Black } },
   },
-  AxleModHips: { kitNodeName: 'AxleModHips' },
+  AxleModHips: { kitNodeName: 'AxleModHips', materialColors: POHATU_PALETTE_COLORS },
   AxlePinPerp3L: {
     kitNodeName: 'AxlePinPerp3L',
     materialColors: { main: { kind: 'lego', value: LegoColor.Black } },
   },
-  AxleSpacer1L: { kitNodeName: 'AxleSpacer1L' },
+  AxleSpacer1L: { kitNodeName: 'AxleSpacer1L', materialColors: POHATU_PALETTE_COLORS },
   AxleSpacer1L001: {
     kitNodeName: 'AxleSpacer1L',
+    materialColors: POHATU_PALETTE_COLORS,
   },
   BallJoint: {
     kitNodeName: 'BallJoint',
@@ -84,8 +85,14 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
     materialColors: { main: { kind: 'lego', value: LegoColor.Black } },
   },
   Body_1: { kitNodeName: 'MataAbdomen', materialColors: POHATU_PALETTE_COLORS },
-  Body_Piston_Lower_L_1: { kitNodeName: 'MataObliqueN' },
-  Body_Piston_Lower_R_1: { kitNodeName: 'MataObliqueN' },
+  Body_Piston_Lower_L_1: {
+    kitNodeName: 'MataObliqueN',
+    materialColors: POHATU_PALETTE_COLORS,
+  },
+  Body_Piston_Lower_R_1: {
+    kitNodeName: 'MataObliqueN',
+    materialColors: POHATU_PALETTE_COLORS,
+  },
   Body_Piston_Upper_L_1: { kitNodeName: 'MataObliqueW', materialColors: POHATU_PALETTE_COLORS },
   Body_Piston_Upper_R_1: { kitNodeName: 'MataObliqueW', materialColors: POHATU_PALETTE_COLORS },
   Brain: {
@@ -102,9 +109,9 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
     kitNodeName: 'MataFoot',
     materialColors: POHATU_PALETTE_COLORS,
   },
-  GearB: { kitNodeName: 'GearB' },
-  GearMB: { kitNodeName: 'GearM' },
-  GearMR: { kitNodeName: 'GearM' },
+  GearB: { kitNodeName: 'GearB', materialColors: POHATU_PALETTE_COLORS },
+  GearMB: { kitNodeName: 'GearM', materialColors: POHATU_PALETTE_COLORS },
+  GearMR: { kitNodeName: 'GearM', materialColors: POHATU_PALETTE_COLORS },
   Glowing_Eyes: { kitNodeName: 'MataGlowingEyes', materialColors: POHATU_PALETTE_COLORS },
   Hand_L_1: {
     kitNodeName: 'MataHand',
@@ -140,10 +147,22 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
     kitNodeName: 'PerpendicularAxleJoint',
     materialColors: { main: { kind: 'lego', value: LegoColor.Black } },
   },
-  Pin: { kitNodeName: 'Pin2L' },
-  Pin001: { kitNodeName: 'Pin2L' },
-  Pin002: { kitNodeName: 'Pin2L' },
-  Pin003: { kitNodeName: 'Pin2L' },
+  Pin: {
+    kitNodeName: 'Pin2L',
+    materialColors: { main: { kind: 'lego', value: LegoColor.Black } },
+  },
+  Pin001: {
+    kitNodeName: 'Pin2L',
+    materialColors: { main: { kind: 'lego', value: LegoColor.Black } },
+  },
+  Pin002: {
+    kitNodeName: 'Pin2L',
+    materialColors: { main: { kind: 'lego', value: LegoColor.Black } },
+  },
+  Pin003: {
+    kitNodeName: 'Pin2L',
+    materialColors: { main: { kind: 'lego', value: LegoColor.Black } },
+  },
   Shoulder_L_1: {
     kitNodeName: 'SocketModSide',
     materialColors: { main: { kind: 'lego', value: LegoColor.Black } },

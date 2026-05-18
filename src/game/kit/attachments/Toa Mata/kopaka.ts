@@ -55,8 +55,8 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   Foot_L_1: { kitNodeName: 'MataFoot', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   Foot_R_1: { kitNodeName: 'MataFoot', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   GearB: { kitNodeName: 'GearB', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  GearMM: { kitNodeName: 'GearM' },
-  GearMR: { kitNodeName: 'GearM' },
+  GearMM: { kitNodeName: 'GearM', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  GearMR: { kitNodeName: 'GearM', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   Hand_L_1: { kitNodeName: 'Socket', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   Hip_Joint_L_1: {
     kitNodeName: 'SocketModTop',
@@ -117,9 +117,11 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   },
   MataSingleArmPistonUpperL: {
     kitNodeName: 'MataSingleArmPistonUpperL',
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
   MataSingleArmPistonUpperL001: {
     kitNodeName: 'MataSingleArmPistonUpperL',
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
   MataSingleArmUpper: {
     kitNodeName: 'MataSingleArmUpper',
@@ -137,7 +139,10 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
     kitNodeName: 'AxleMod2L',
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
-  Shoulder_R_1: { kitNodeName: 'AxleMod3L' },
+  Shoulder_R_1: {
+    kitNodeName: 'AxleMod3L',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
+  },
   TechnicArmJoint001: {
     kitNodeName: 'TechnicArmJoint',
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
