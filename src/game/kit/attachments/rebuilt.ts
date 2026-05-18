@@ -24,8 +24,6 @@ export const REBUILT_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment> =
   Hand_R_1: { kitNodeName: 'Socket', materialColors: MATORAN_KIT_PALETTE_FEET },
   HipL: { kitNodeName: 'Pin2L', materialColors: MATORAN_KIT_PALETTE_BLACK },
   HipR: { kitNodeName: 'Pin2L', materialColors: MATORAN_KIT_PALETTE_BLACK },
-  LegL: { kitNodeName: 'PerpendicularLiftArm', materialColors: MATORAN_KIT_PALETTE_FEET },
-  LegR: { kitNodeName: 'PerpendicularLiftArm', materialColors: MATORAN_KIT_PALETTE_FEET },
   McToranFace: { kitNodeName: 'McToranFace', materialColors: MATORAN_KIT_PALETTE_FACE },
   Shoulder_L_1: { kitNodeName: 'Axle2L', materialColors: MATORAN_KIT_PALETTE_BLACK },
   Shoulder_R_1: { kitNodeName: 'Axle2L', materialColors: MATORAN_KIT_PALETTE_BLACK },
@@ -37,6 +35,8 @@ export const REBUILT_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment> =
 export const REBUILT_KIT_2003_ATTACHMENTS: Record<string, KitSocketAttachment> = {
   Arm_L001: { kitNodeName: 'BohrokArm', materialColors: MATORAN_KIT_PALETTE_ARMS },
   Arm_R_1: { kitNodeName: 'BohrokArm', materialColors: MATORAN_KIT_PALETTE_ARMS },
+  LegL: { kitNodeName: 'PerpendicularLiftArm', materialColors: MATORAN_KIT_PALETTE_FEET },
+  LegR: { kitNodeName: 'PerpendicularLiftArm', materialColors: MATORAN_KIT_PALETTE_FEET },
   MatoranBody: { kitNodeName: 'MatoranBody', materialColors: MATORAN_KIT_PALETTE_BODY },
   TechnicTorsoPivot: {
     kitNodeName: 'TechnicTorsoPivot',
