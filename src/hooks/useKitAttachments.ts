@@ -3,10 +3,11 @@ import { Color, Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Obje
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../types/Matoran';
 import { LegoColor } from '../types/Colors';
-import type {
-  KitMaterialColorSource,
-  KitMaterialSlotOverride,
-  KitSocketAttachment,
+import {
+  KIT_MATERIAL_WEATHERED_OPTION_KEYS,
+  type KitMaterialColorSource,
+  type KitMaterialSlotOverride,
+  type KitSocketAttachment,
 } from '../types/KitParts';
 import { normalizeKitMaterialSlotEntry } from '../game/kit/kitMaterialUtils';
 import {
@@ -113,6 +114,23 @@ function resolveWeatheredColor(
   return base.color.getStyle();
 }
 
+/** Per-slot PBR + procedural tuning merged over the character's weathered-metal base. */
+function mergeSlotWeatheredOpts(
+  spec: KitMaterialSlotOverride | undefined
+): Partial<WeatheredMetalOptions> {
+  if (!spec) return {};
+  const out: Partial<WeatheredMetalOptions> = {};
+  if (spec.roughness !== undefined) out.roughness = spec.roughness;
+  if (spec.metalness !== undefined) out.metalness = spec.metalness;
+  for (const key of KIT_MATERIAL_WEATHERED_OPTION_KEYS) {
+    const v = spec[key];
+    if (v !== undefined) {
+      (out as Record<string, string | number>)[key] = v;
+    }
+  }
+  return out;
+}
+
 function buildMeshMaterials(
   mesh: Mesh,
   slotLookup: Map<string, KitMaterialSlotOverride>,
@@ -129,8 +147,7 @@ function buildMeshMaterials(
     if (weatheredBase && shouldApplyWeathered(spec, mat.name)) {
       const opts: WeatheredMetalOptions = {
         ...weatheredBase,
-        ...(spec?.roughness !== undefined ? { roughness: spec.roughness } : null),
-        ...(spec?.metalness !== undefined ? { metalness: spec.metalness } : null),
+        ...mergeSlotWeatheredOpts(spec),
       };
       const color = resolveWeatheredColor(mat, spec, palette);
       return getWeatheredMetalMaterial(color, opts);

@@ -25,8 +25,14 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     kitNodeName: 'MataSingleArmPistonLowerL',
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
   },
-  Arm_L_Piston_Upper_L: { kitNodeName: 'MataSingleArmPistonUpperL' },
-  Arm_L_Piston_Upper_R: { kitNodeName: 'MataSingleArmPistonUpperL' },
+  Arm_L_Piston_Upper_L: {
+    kitNodeName: 'MataSingleArmPistonUpperL',
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
+  Arm_L_Piston_Upper_R: {
+    kitNodeName: 'MataSingleArmPistonUpperL',
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
   Arm_Lower_L_1: {
     kitNodeName: 'MataSingleArmLower',
     materialColors: { Main: ONUA_MATA_KIT_PALETTE_COLORS.Secondary },
@@ -43,8 +49,14 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     kitNodeName: 'MataSingleArmPistonLowerL',
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
   },
-  Arm_R_Piston_Upper_L: { kitNodeName: 'MataSingleArmPistonUpperL' },
-  Arm_R_Piston_Upper_R: { kitNodeName: 'MataSingleArmPistonUpperL' },
+  Arm_R_Piston_Upper_L: {
+    kitNodeName: 'MataSingleArmPistonUpperL',
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
+  Arm_R_Piston_Upper_R: {
+    kitNodeName: 'MataSingleArmPistonUpperL',
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
   Arm_Upper_L_1: {
     kitNodeName: 'MataSingleArmUpper',
     materialColors: { Main: ONUA_MATA_KIT_PALETTE_COLORS.Secondary },
@@ -58,8 +70,8 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     kitNodeName: 'AxleConPin1',
     materialColors: { Main: { kind: 'lego', value: LegoColor.LightGray } },
   },
-  AxleMod2L: { kitNodeName: 'AxleMod2L' },
-  AxleModHips: { kitNodeName: 'AxleModHips' },
+  AxleMod2L: { kitNodeName: 'AxleMod2L', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  AxleModHips: { kitNodeName: 'AxleModHips', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   AxleSpacer1LB: { kitNodeName: 'AxleSpacer1L', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   AxleSpacer1LF: { kitNodeName: 'AxleSpacer1L', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   Body_1: { kitNodeName: 'MataHip', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
@@ -68,9 +80,9 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
   Foot_L_1: { kitNodeName: 'MataFoot', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   Foot_R_1: { kitNodeName: 'MataFoot', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   GearB: { kitNodeName: 'GearB', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  GearMB: { kitNodeName: 'GearM' },
-  GearML: { kitNodeName: 'GearM' },
-  GearMR: { kitNodeName: 'GearM' },
+  GearMB: { kitNodeName: 'GearM', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  GearML: { kitNodeName: 'GearM', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  GearMR: { kitNodeName: 'GearM', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   Hand_L_1: {
     kitNodeName: 'MataSingleArmHand',
     materialColors: { Main: ONUA_MATA_KIT_PALETTE_COLORS.Secondary },
@@ -79,7 +91,7 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     kitNodeName: 'MataSingleArmHand',
     materialColors: { Main: ONUA_MATA_KIT_PALETTE_COLORS.Secondary },
   },
-  Head_1: { kitNodeName: 'AxleSocket3L' },
+  Head_1: { kitNodeName: 'AxleSocket3L', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   Hip_Joint_L_1: {
     kitNodeName: 'SocketModTop',
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
@@ -114,7 +126,7 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
   },
   MataChest: { kitNodeName: 'MataChest', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  MataFace: { kitNodeName: 'MataFace' },
+  MataFace: { kitNodeName: 'MataFace', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   MataGlowingEyes: {
     kitNodeName: 'MataGlowingEyes',
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
@@ -131,7 +143,10 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     kitNodeName: 'AxleMod3L',
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
-  Shoulder_R_1: { kitNodeName: 'AxleMod3L' },
+  Shoulder_R_1: {
+    kitNodeName: 'AxleMod3L',
+    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
+  },
   Waist_Piston_Lower_L_1: {
     kitNodeName: 'MataObliqueW',
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
