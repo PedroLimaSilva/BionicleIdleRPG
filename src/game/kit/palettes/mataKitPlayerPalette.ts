@@ -12,12 +12,24 @@ import { LegoColor } from '../../../types/Colors';
  *   (`src/hooks/useKitAttachments.ts`) walks each kit mesh, matches **material `.name`** to those
  *   keys (case-insensitive), and resolves `kind: 'palette'` with `resolveColorSource` →
  *   `palette[key]` from that character’s `colors` (optional `weaponGlow` falls back to
- *   `LegoColor.TransNeonYellow` when unset).
+ *   `LegoColor.TransNeonYellow` when unset). Slots may also set `metalness`, `roughness`, and
+ *   `KitMaterialWeatheredTuning` fields so kit metal reads correctly under the Mata weathered pass.
  */
 export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMaterialSlotEntry>> = {
   Main: { key: 'body', kind: 'palette' },
-  /** Technic pins / flat silver: fixed LEGO light gray (set dress), not a palette slot. */
-  Metal: { kind: 'lego', value: LegoColor.LightGray },
+  /**
+   * Technic silver (light gray): not a palette color slot — override character-level
+   * weathered defaults (Mata bodies use very low metalness) so pins/gears read as metal.
+   */
+  Metal: {
+    color: { kind: 'lego', value: LegoColor.LightGray },
+    envMapIntensity: 0.52,
+    fineScale: 26,
+    grimeMetalnessReduce: 0.52,
+    grimeRoughness: 0.22,
+    metalness: 0.88,
+    roughness: 0.32,
+  },
   Secondary: { key: 'arms', kind: 'palette' },
 };
 

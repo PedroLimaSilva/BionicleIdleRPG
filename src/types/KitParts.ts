@@ -9,6 +9,38 @@ export type KitMaterialColorSource =
   | { kind: 'palette'; key: MatoranPaletteKey };
 
 /**
+ * Optional per-slot fields merged into the character's weathered-metal shader when
+ * that slot participates in the pass (`useKitAttachments` + `weathered` on the model).
+ * Omitted keys keep the character-level `WeatheredMetalOptions` defaults.
+ */
+export type KitMaterialWeatheredTuning = {
+  grimeDarken?: number;
+  grimeRoughness?: number;
+  grimeMetalnessReduce?: number;
+  largeScale?: number;
+  fineScale?: number;
+  cavityStrength?: number;
+  edgeColor?: string;
+  edgeStrength?: number;
+  edgeCurvatureScale?: number;
+  envMapIntensity?: number;
+};
+
+/** Keys merged from `KitMaterialSlotOverride` into weathered-metal options (see hook). */
+export const KIT_MATERIAL_WEATHERED_OPTION_KEYS: readonly (keyof KitMaterialWeatheredTuning)[] = [
+  'grimeDarken',
+  'grimeRoughness',
+  'grimeMetalnessReduce',
+  'largeScale',
+  'fineScale',
+  'cavityStrength',
+  'edgeColor',
+  'edgeStrength',
+  'edgeCurvatureScale',
+  'envMapIntensity',
+];
+
+/**
  * Per-material overrides on a kit piece (key = kit material `.name`, matched case-insensitively).
  * Shorthand: a value that is only `KitMaterialColorSource` is treated as `{ color: … }`.
  */
@@ -27,7 +59,7 @@ export type KitMaterialSlotOverride = {
    * shouldn't be weathered (e.g. translucent brain plastic).
    */
   weathered?: boolean;
-};
+} & KitMaterialWeatheredTuning;
 
 export type KitMaterialSlotEntry = KitMaterialColorSource | KitMaterialSlotOverride;
 
