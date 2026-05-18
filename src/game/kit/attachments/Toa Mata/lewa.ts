@@ -107,7 +107,7 @@ export const LEWA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     materialColors: LEWA_MATA_KIT_PALETTE_COLORS,
   },
   MataChest: { kitNodeName: 'MataChest', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
-  MataFace: { kitNodeName: 'MataFace' },
+  MataFace: { kitNodeName: 'MataFace', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
   MataGlowingEyes: { kitNodeName: 'MataGlowingEyes', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
   MataObliqueNL: { kitNodeName: 'MataObliqueN', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },
   MataObliqueNR: { kitNodeName: 'MataObliqueN', materialColors: LEWA_MATA_KIT_PALETTE_COLORS },

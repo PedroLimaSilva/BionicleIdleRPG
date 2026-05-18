@@ -91,7 +91,7 @@ export const TAHU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     kitNodeName: 'MataChest',
     materialColors: TAHU_PALETTE_COLORS,
   },
-  Face: { kitNodeName: 'MataFace' },
+  Face: { kitNodeName: 'MataFace', materialColors: TAHU_PALETTE_COLORS },
   FingerB: {
     kitNodeName: 'Axle3L',
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },

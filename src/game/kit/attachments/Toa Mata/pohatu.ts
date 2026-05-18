@@ -100,7 +100,7 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
     materialColors: POHATU_PALETTE_COLORS,
   },
   Chest_1: { kitNodeName: 'MataHip', materialColors: POHATU_PALETTE_COLORS },
-  Face: { kitNodeName: 'MataFace' },
+  Face: { kitNodeName: 'MataFace', materialColors: POHATU_PALETTE_COLORS },
   FootL: {
     kitNodeName: 'MataFoot',
     materialColors: POHATU_PALETTE_COLORS,

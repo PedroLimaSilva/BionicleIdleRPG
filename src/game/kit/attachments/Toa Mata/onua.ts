@@ -126,7 +126,7 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
   },
   MataChest: { kitNodeName: 'MataChest', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  MataFace: { kitNodeName: 'MataFace' },
+  MataFace: { kitNodeName: 'MataFace', materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   MataGlowingEyes: {
     kitNodeName: 'MataGlowingEyes',
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,

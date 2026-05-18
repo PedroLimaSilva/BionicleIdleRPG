@@ -94,7 +94,7 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
   MataChest: { kitNodeName: 'MataChest', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  MataFace: { kitNodeName: 'MataFace' },
+  MataFace: { kitNodeName: 'MataFace', materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   MataGlowingEyes: {
     kitNodeName: 'MataGlowingEyes',
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,

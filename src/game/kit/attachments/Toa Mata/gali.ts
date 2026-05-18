@@ -96,7 +96,7 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
     kitNodeName: 'MataBrain',
     materialColors: GALI_PALETTE_COLORS,
   },
-  Face: { kitNodeName: 'MataFace' },
+  Face: { kitNodeName: 'MataFace', materialColors: GALI_PALETTE_COLORS },
   Gear_Big: { kitNodeName: 'GearB', materialColors: GALI_PALETTE_COLORS },
   GearML: { kitNodeName: 'GearM', materialColors: GALI_PALETTE_COLORS },
   GearMM: { kitNodeName: 'GearM', materialColors: GALI_PALETTE_COLORS },
