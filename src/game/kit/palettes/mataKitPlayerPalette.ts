@@ -11,11 +11,14 @@ import { LegoColor } from '../../../types/Colors';
  *   passes `materialColors` (usually built from the exports below). `useKitAttachments`
  *   (`src/hooks/useKitAttachments.ts`) walks each kit mesh, matches **material `.name`** to those
  *   keys (case-insensitive), and resolves `kind: 'palette'` with `resolveColorSource` →
- *   `palette[key]` from that character’s `colors` (optional `weaponGlow` falls back to
- *   `LegoColor.TransNeonYellow` when unset). Slots may also set `metalness`, `roughness`, and
- *   `KitMaterialWeatheredTuning` fields so kit metal reads correctly under the Mata weathered pass.
+ *   `palette[key]` from that character’s `colors` (e.g. `Face` → `colors.face` on MataFace;
+ *   optional `weaponGlow` falls back to `LegoColor.TransNeonYellow` when unset). Slots may also
+ *   set `metalness`, `roughness`, and `KitMaterialWeatheredTuning` fields so kit metal reads
+ *   correctly under the Mata weathered pass.
  */
 export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  /** MataFace mask plastic; GLB material slot name `Face` (same convention as Matoran kit). */
+  Face: { color: { key: 'face', kind: 'palette' }, weathered: true },
   Main: { key: 'body', kind: 'palette' },
   /**
    * Technic silver (light gray): not a palette color slot — override character-level
