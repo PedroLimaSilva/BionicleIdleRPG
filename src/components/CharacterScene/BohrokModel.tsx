@@ -67,23 +67,12 @@ function showObjectTree(root: Object3D): void {
   });
 }
 
-/**
- * Parents a GLB template onto a rig socket at the socket origin.
- * When `preserveScale` is true (symbols), keeps the template's authored scale only.
- */
-function attachTemplateAtSocket(
-  template: Object3D,
-  socket: Object3D,
-  preserveScale: boolean
-): Object3D {
+/** Parents a GLB template onto a rig socket at the socket origin. */
+function attachTemplateAtSocket(template: Object3D, socket: Object3D): Object3D {
   const clone = template.clone(true);
   clone.position.set(0, 0, 0);
   clone.rotation.set(0, 0, 0);
-  if (preserveScale) {
-    clone.scale.copy(template.scale);
-  } else {
-    clone.scale.set(1, 1, 1);
-  }
+  clone.scale.set(1, 1, 1);
   showObjectTree(clone);
   socket.add(clone);
   return clone;
@@ -231,7 +220,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
       }
       if (!shieldTemplate) return;
 
-      const clone = attachTemplateAtSocket(shieldTemplate, socket, false);
+      const clone = attachTemplateAtSocket(shieldTemplate, socket);
       applyShieldMaterials(clone, shieldSlotLookup, colorScheme);
       shieldClones.push(clone);
     });
@@ -247,7 +236,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
       } else if (!symbolSocket) {
         console.warn("[BohrokModel] Socket 'Symbol' not found on Bohrok rig");
       } else {
-        kalSymbol = attachTemplateAtSocket(symbolTemplate, symbolSocket, true);
+        kalSymbol = attachTemplateAtSocket(symbolTemplate, symbolSocket);
       }
     }
 
