@@ -82,21 +82,8 @@
   flex-direction: column;
   gap: 0.5rem;
   margin-top: 0.5rem;
-}
-
-.recruitment-redeem-primary {
-  width: 100%;
-  padding: 0.55rem 0.75rem;
-  border-radius: var(--border-radius-sm);
-  border: none;
-  background: var(--color-accent, #4a9eff);
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-
-  &:hover {
-    filter: brightness(1.08);
+  .confirm-button {
+    padding: 0.55rem 0.75rem;
   }
 }
 
