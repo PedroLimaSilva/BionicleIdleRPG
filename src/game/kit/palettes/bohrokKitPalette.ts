@@ -9,7 +9,7 @@ import { mataKitPlayerPaletteGlow } from './mataKitPlayerPalette';
 
 export const BOHROK_KIT_PALETTE_BODY = MATORAN_KIT_PALETTE_BODY;
 export const BOHROK_KIT_PALETTE_ARMS = MATORAN_KIT_PALETTE_ARMS;
-export const BOHROK_KIT_PALETTE_FEET = {
+export const BOHROK_KIT_PALETTE_FEET: Partial<Record<string, KitMaterialSlotEntry>> = {
   Main: {
     color: { key: 'feet', kind: 'palette' },
     envMapIntensity: 0.52,
