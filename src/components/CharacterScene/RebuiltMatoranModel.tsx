@@ -7,7 +7,11 @@ import { useIdleAnimation } from '../../hooks/useIdleAnimation';
 import { useMask } from '../../hooks/useMask';
 import { useKitAttachments } from '../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../game/kit/kit2001';
-import { REBUILT_KIT_2001_ATTACHMENTS } from '../../game/kit/attachments/rebuilt';
+import { KIT_2003_GLB_PATH } from '../../game/kit/kit2003';
+import {
+  REBUILT_KIT_2001_ATTACHMENTS,
+  REBUILT_KIT_2003_ATTACHMENTS,
+} from '../../game/kit/attachments/rebuilt';
 import type { WeatheredMetalOptions } from './WeatheredMetalMaterial';
 
 const REBUILT_WEATHERED: WeatheredMetalOptions = {
@@ -23,6 +27,9 @@ const REBUILT_WEATHERED: WeatheredMetalOptions = {
   metalness: 0.05,
   roughness: 0.55,
 };
+
+/** Must match how many `useKitAttachments` calls this component makes. */
+const REBUILT_KIT_ATTACHMENT_RUNS = 2;
 
 export function RebuiltMatoranModel({
   matoran,
@@ -41,17 +48,35 @@ export function RebuiltMatoranModel({
     mixer,
   });
 
-  const onAttached = useMemo(
-    () => (onKitMeshesAttached ? () => onKitMeshesAttached() : undefined),
-    [onKitMeshesAttached]
-  );
+  const kitLayersDone = useRef(0);
+  const onKitLayerAttached = useMemo(() => {
+    if (!onKitMeshesAttached) return undefined;
+    return () => {
+      kitLayersDone.current += 1;
+      if (kitLayersDone.current >= REBUILT_KIT_ATTACHMENT_RUNS) {
+        kitLayersDone.current = 0;
+        onKitMeshesAttached();
+      }
+    };
+  }, [onKitMeshesAttached]);
+
+  const characterNodes = nodes as Record<string, Object3D | undefined>;
 
   useKitAttachments({
     attachments: REBUILT_KIT_2001_ATTACHMENTS,
-    characterNodes: nodes as Record<string, Object3D | undefined>,
+    characterNodes,
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,
-    onAttached,
+    onAttached: onKitLayerAttached,
+    weathered: REBUILT_WEATHERED,
+  });
+
+  useKitAttachments({
+    attachments: REBUILT_KIT_2003_ATTACHMENTS,
+    characterNodes,
+    colors: matoran.colors,
+    kitUrl: KIT_2003_GLB_PATH,
+    onAttached: onKitLayerAttached,
     weathered: REBUILT_WEATHERED,
   });
 

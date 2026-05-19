@@ -184,6 +184,9 @@ export type UseKitAttachmentsParams = {
  *
  * No post-hoc tree walk is needed — materials are decided once here, and the
  * weathered shared cache is reused across instances with the same spec.
+ *
+ * For multiple kit GLBs on one character, call this hook once per `kitUrl` with
+ * disjoint `attachments` keys (each socket should appear in at most one map).
  */
 export function useKitAttachments({
   attachments,
@@ -244,6 +247,8 @@ export function useKitAttachments({
   }, [characterNodes, kitUrl, attachments, colors, kitNodes, weathered]);
 }
 
-useKitAttachments.preload = (kitUrl: string) => {
-  useGLTF.preload(kitUrl);
+useKitAttachments.preload = (...kitUrls: string[]) => {
+  for (const url of kitUrls) {
+    useGLTF.preload(url);
+  }
 };
