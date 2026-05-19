@@ -1,67 +1,192 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
-import { Color, LegoColor } from '../../types/Colors';
+import { Color as ColorType } from '../../types/Colors';
 import { CombatantModelHandle } from '../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
+import { useKitAttachments } from '../../hooks/useKitAttachments';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { BaseMatoran } from '../../types/Matoran';
-import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
+import { KIT_2001_GLB_PATH } from '../../game/kit/kit2001';
+import { KIT_2003_GLB_PATH } from '../../game/kit/kit2003';
+import {
+  BOHROK_KIT_2001_ATTACHMENTS,
+  BOHROK_KIT_2003_ATTACHMENTS,
+} from '../../game/kit/attachments/bohrok';
+import {
+  BOHROK_KAL_FACEPLATE_PALETTE,
+  BOHROK_SHIELD_KAL_PALETTE,
+  BOHROK_PRIMARY_PALETTE,
+  BOHROK_SWARM_FACEPLATE_PALETTE,
+} from '../../game/kit/palettes/bohrokKitPalette';
+import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../types/KitParts';
+import { normalizeKitMaterialSlotEntry } from '../../game/kit/kitMaterialUtils';
+import { getWeatheredMetalMaterial, type WeatheredMetalOptions } from './WeatheredMetalMaterial';
 
-const USE_WEATHERED_METAL = true;
+const BOHROK_MASTER_GLB = import.meta.env.BASE_URL + 'bohrok_master.glb';
 
-/** Cache key: materialName + color. Shared across all Bohrok instances with same scheme. */
-const bohrokMaterialCache = new Map<string, MeshStandardMaterial>();
+const BOHROK_WEATHERED: WeatheredMetalOptions = {
+  cavityStrength: 1,
+  edgeColor: '#ffffff',
+  edgeCurvatureScale: 2,
+  edgeStrength: 0.15,
+  fineScale: 18,
+  grimeDarken: 0.4,
+  grimeMetalnessReduce: 0.5,
+  grimeRoughness: 0.2,
+  largeScale: 5,
+  metalness: 0.05,
+  roughness: 0.55,
+};
 
-function getBohrokMaterial(
+/** Cache key: materialName + color. Shared across Bohrok instances with the same Krana tint. */
+const kranaMaterialCache = new Map<string, MeshStandardMaterial>();
+
+function capitalizeBreed(id: string): string {
+  const [breed] = id.split('_');
+  return breed.replace(/^./, (char) => char.toUpperCase());
+}
+
+function isBohrokKal(id: string): boolean {
+  return id.split('_').length > 1;
+}
+
+/** Deepest node wins for duplicate socket names (e.g. nested `Foot L`). */
+function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
+  const map: Record<string, Object3D> = {};
+  root.traverse((child) => {
+    if (child.name) map[child.name] = child;
+  });
+  return map;
+}
+
+function showObjectTree(root: Object3D): void {
+  root.visible = true;
+  root.traverse((child) => {
+    child.visible = true;
+  });
+}
+
+/**
+ * Parents a GLB template onto a rig socket at the socket origin.
+ * When `preserveScale` is true (symbols), keeps the template's authored scale only.
+ */
+function attachTemplateAtSocket(
+  template: Object3D,
+  socket: Object3D,
+  preserveScale: boolean
+): Object3D {
+  const clone = template.clone(true);
+  clone.position.set(0, 0, 0);
+  clone.rotation.set(0, 0, 0);
+  if (preserveScale) {
+    clone.scale.copy(template.scale);
+  } else {
+    clone.scale.set(1, 1, 1);
+  }
+  showObjectTree(clone);
+  socket.add(clone);
+  return clone;
+}
+
+function normalizeSlotName(name: string): string {
+  return name.trim().toLowerCase();
+}
+
+function buildSlotLookup(
+  materialColors: Partial<Record<string, KitMaterialSlotEntry>>
+): Map<string, ReturnType<typeof normalizeKitMaterialSlotEntry>> {
+  const lookup = new Map<string, ReturnType<typeof normalizeKitMaterialSlotEntry>>();
+  for (const [slotName, entry] of Object.entries(materialColors)) {
+    if (!entry) continue;
+    lookup.set(normalizeSlotName(slotName), normalizeKitMaterialSlotEntry(entry));
+  }
+  return lookup;
+}
+
+function resolvePaletteColor(key: 'body' | 'eyes', palette: BaseMatoran['colors']): string {
+  return palette[key];
+}
+
+function applyShieldMaterials(
+  root: Object3D,
+  slotLookup: Map<string, ReturnType<typeof normalizeKitMaterialSlotEntry>>,
+  palette: BaseMatoran['colors']
+): void {
+  root.traverse((child) => {
+    if (!(child as Mesh).isMesh) return;
+    const mesh = child as Mesh;
+    const raw = mesh.material;
+    const mats = Array.isArray(raw) ? raw : [raw];
+    const next = mats.map((mat) => {
+      if (!(mat instanceof MeshStandardMaterial)) return mat;
+      const spec = slotLookup.get(normalizeSlotName(mat.name));
+      if (!spec) return mat;
+
+      if (BOHROK_WEATHERED && spec.weathered !== false && !spec.emissive) {
+        const color =
+          spec.color?.kind === 'lego'
+            ? spec.color.value
+            : spec.color?.kind === 'palette'
+              ? resolvePaletteColor(spec.color.key as 'body', palette)
+              : mat.color.getStyle();
+        return getWeatheredMetalMaterial(color, BOHROK_WEATHERED);
+      }
+
+      const cloned = mat.clone();
+      if (spec.color?.kind === 'lego') {
+        cloned.color.set(spec.color.value as ColorType);
+      } else if (spec.color?.kind === 'palette') {
+        cloned.color.set(resolvePaletteColor(spec.color.key as 'body', palette) as ColorType);
+      }
+      return cloned;
+    });
+    mesh.material = Array.isArray(raw) ? next : next[0];
+  });
+}
+
+function getKranaMaterial(
   original: MeshStandardMaterial,
   colorScheme: BaseMatoran['colors']
 ): MeshStandardMaterial {
-  const name = original.name;
-  let color: string;
-  let cacheKey: string;
-
-  if (name === 'Bohrok_Main') {
-    color = colorScheme.body;
-    cacheKey = `Bohrok_Main_${color}`;
-  } else if (name === 'Bohrok_Secondary') {
-    color = colorScheme.arms;
-    cacheKey = `Bohrok_Secondary_${color}`;
-  } else if (name === 'Bohrok_Eye' || name === 'Bohrok_Iris') {
-    color = colorScheme.eyes;
-    cacheKey = `${name}_${color}`;
-  } else if (name === 'Krana') {
-    color = colorScheme.eyes;
-    cacheKey = `Krana_${color}`;
-  } else if (name === 'Bohrok_Feet') {
-    color = colorScheme.feet;
-    cacheKey = `Feet_${color}`;
-  } else if (name === 'Bohrok_Joints' || name === 'Bohrok Kal Shield') {
-    color = colorScheme.face;
-    cacheKey = `Joints_${color}`;
-  } else {
-    // Unknown material: leave as-is, came from GLTF as needed
-    return original;
-  }
-
-  let mat = bohrokMaterialCache.get(cacheKey);
+  const color = colorScheme.eyes;
+  const cacheKey = `Krana_${color}`;
+  let mat = kranaMaterialCache.get(cacheKey);
   if (!mat) {
     mat = original.clone();
-    mat.color.set(color as Color);
-    if (name === 'Bohrok_Eye' || name === 'Bohrok_Iris') {
-      mat.emissive.set(color as Color);
-    }
-    bohrokMaterialCache.set(cacheKey, mat);
+    mat.color.set(color as ColorType);
+    mat.emissive.set(color as ColorType);
+    kranaMaterialCache.set(cacheKey, mat);
   }
   return mat;
 }
 
+function mergeFaceplateAttachments(isKal: boolean): Record<string, KitSocketAttachment> {
+  const faceplateColors = isKal ? BOHROK_KAL_FACEPLATE_PALETTE : BOHROK_SWARM_FACEPLATE_PALETTE;
+  return {
+    ...BOHROK_KIT_2003_ATTACHMENTS,
+    Face_Plate_1: {
+      kitNodeName: 'Face_Plate',
+      materialColors: faceplateColors,
+    },
+  };
+}
+
 export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ id }, ref) => {
   const group = useRef<Group>(null);
+  const { animations, nodes } = useGLTF(BOHROK_MASTER_GLB);
 
-  const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + 'bohrok_master.glb');
+  const breed = capitalizeBreed(id);
+  const isKal = isBohrokKal(id);
+  const colorScheme = CHARACTER_DEX[id].colors;
 
   const bohrokInstance = useMemo(() => nodes.Bohrok.clone(true), [nodes]);
+  const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(bohrokInstance), [bohrokInstance]);
+
+  const kit2003Attachments = useMemo(() => mergeFaceplateAttachments(isKal), [isKal]);
+
+  const shieldPalette = isKal ? BOHROK_SHIELD_KAL_PALETTE : BOHROK_PRIMARY_PALETTE;
+  const shieldSlotLookup = useMemo(() => buildSlotLookup(shieldPalette), [shieldPalette]);
 
   const { playAnimation } = useCombatAnimations(animations, group, {
     actionTimeScale: 2,
@@ -72,80 +197,76 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 
-  useEffect(() => {
-    const colorScheme = CHARACTER_DEX[id].colors;
-    const [name, kal] = id.split('_');
-    const uppercaseName = name.replace(/^./, (char) => char.toUpperCase());
-    const isKal = kal !== undefined;
+  useKitAttachments({
+    attachments: BOHROK_KIT_2001_ATTACHMENTS,
+    characterNodes: kitCharacterNodes,
+    colors: colorScheme,
+    kitUrl: KIT_2001_GLB_PATH,
+    weathered: BOHROK_WEATHERED,
+  });
 
-    const hiddenMeshes: string[] = [];
-    if (isKal) {
-      hiddenMeshes.push('Part-41671p01_dot_dat003', 'Part-41671p01_dot_dat003_1');
-      hiddenMeshes.push(
-        ...[
-          'TahnokSymbol',
-          'NuhvokSymbol',
-          'GahlokSymbol',
-          'LehvakSymbol',
-          'PahrakSymbol',
-          'KohrakSymbol',
-        ].filter((e) => !e.includes(uppercaseName))
+  useKitAttachments({
+    attachments: kit2003Attachments,
+    characterNodes: kitCharacterNodes,
+    colors: colorScheme,
+    kitUrl: KIT_2003_GLB_PATH,
+    weathered: BOHROK_WEATHERED,
+  });
+
+  useEffect(() => {
+    const shieldTemplateName = isKal ? `${breed}Kal` : breed;
+    const shieldTemplate = nodes[shieldTemplateName] as Object3D | undefined;
+    if (!shieldTemplate) {
+      console.warn(
+        `[BohrokModel] Shield template '${shieldTemplateName}' not found in ${BOHROK_MASTER_GLB}`
       );
-    } else {
-      hiddenMeshes.push('FacePlateSilver');
+    }
+
+    const shieldClones: Object3D[] = [];
+    (['L', 'R'] as const).forEach((side) => {
+      const socket = kitCharacterNodes[`Shield${side}`];
+      if (!socket) {
+        console.warn(`[BohrokModel] Socket 'Shield${side}' not found on Bohrok rig`);
+        return;
+      }
+      if (!shieldTemplate) return;
+
+      const clone = attachTemplateAtSocket(shieldTemplate, socket, false);
+      applyShieldMaterials(clone, shieldSlotLookup, colorScheme);
+      shieldClones.push(clone);
+    });
+
+    let kalSymbol: Object3D | undefined;
+    if (isKal) {
+      const symbolTemplate = nodes[`${breed}Symbol`] as Object3D | undefined;
+      const symbolSocket = kitCharacterNodes.Symbol;
+      if (!symbolTemplate) {
+        console.warn(
+          `[BohrokModel] Symbol template '${breed}Symbol' not found in ${BOHROK_MASTER_GLB}`
+        );
+      } else if (!symbolSocket) {
+        console.warn("[BohrokModel] Socket 'Symbol' not found on Bohrok rig");
+      } else {
+        kalSymbol = attachTemplateAtSocket(symbolTemplate, symbolSocket, true);
+      }
     }
 
     bohrokInstance.traverse((child) => {
       if (!(child instanceof Mesh)) return;
-
-      if (hiddenMeshes.includes(child.name)) {
-        child.visible = false;
-        return;
+      const mat = child.material as MeshStandardMaterial;
+      if (mat?.name === 'Krana') {
+        child.material = getKranaMaterial(mat, colorScheme);
       }
-
-      const originalMaterial = child.material as MeshStandardMaterial;
-      child.material = getBohrokMaterial(originalMaterial, colorScheme);
     });
 
-    if (USE_WEATHERED_METAL) {
-      const materialColorMap: Record<string, string> = {
-        Bohrok_Feet: colorScheme.feet,
-        Bohrok_Joints: colorScheme.face,
-        Bohrok_Main: colorScheme.body,
-        Bohrok_Secondary: colorScheme.arms,
-        'Bohrok Kal Shield': colorScheme.face,
-        'Bohrok Teeth': LegoColor.White,
-        Solid_Black: LegoColor.Black,
-        Solid_Light_Grey: LegoColor.LightGray,
-      };
-      applyWeatheredMetalToObject(bohrokInstance, {
-        cavityStrength: 1,
-        edgeColor: '#ffffff',
-        edgeCurvatureScale: 2,
-        edgeStrength: 0.15,
-        fineScale: 18,
-        grimeDarken: 0.4,
-        grimeMetalnessReduce: 0.5,
-        grimeRoughness: 0.2,
-        largeScale: 5,
-        materialColorMap,
-        metalness: 0.05,
-        roughness: 0.55,
-      });
-    }
-
-    const shieldTarget = uppercaseName.concat(isKal ? 'Kal' : '');
-    ['L', 'R'].forEach((suffix) => {
-      bohrokInstance.traverse((child) => {
-        if (child.name === `Hand${suffix}`) {
-          child.children.forEach((shield) => {
-            const isTarget = shield.name === `${shieldTarget}${suffix}`;
-            shield.visible = isTarget;
-          });
-        }
-      });
-    });
-  }, [bohrokInstance, id]);
+    return () => {
+      for (const clone of shieldClones) {
+        const parent = clone.parent;
+        if (parent) parent.remove(clone);
+      }
+      if (kalSymbol?.parent) kalSymbol.parent.remove(kalSymbol);
+    };
+  }, [bohrokInstance, breed, colorScheme, isKal, kitCharacterNodes, nodes, shieldSlotLookup]);
 
   return (
     <group ref={group} dispose={null}>
@@ -153,4 +274,6 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
     </group>
   );
 });
-useGLTF.preload(import.meta.env.BASE_URL + 'bohrok_master.glb');
+
+useGLTF.preload(BOHROK_MASTER_GLB);
+useKitAttachments.preload(KIT_2001_GLB_PATH, KIT_2003_GLB_PATH);
