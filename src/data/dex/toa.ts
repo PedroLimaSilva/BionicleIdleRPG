@@ -64,6 +64,7 @@ export const TOA_DEX = {
       face: LegoColor.DarkGray,
       feet: LegoColor.White,
       mask: LegoColor.White,
+      weaponGlow: LegoColor.MediumBlue,
     },
     element: ElementTribe.Ice,
     id: 'Toa_Kopaka',

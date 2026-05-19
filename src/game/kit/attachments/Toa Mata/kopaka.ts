@@ -15,7 +15,7 @@ const KOPAKA_MATA_KIT_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntr
 
 const KOPAKA_SWORD_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...KOPAKA_MATA_KIT_PALETTE_COLORS,
-  ...mataKitPlayerPaletteWeaponGlow(2.5, 'eyes'),
+  ...mataKitPlayerPaletteWeaponGlow(2.5),
 };
 
 /**
