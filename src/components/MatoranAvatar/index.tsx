@@ -42,12 +42,14 @@ export function MatoranAvatar({
     [effectiveMask]
   );
 
-  const faceLayer = useMemo(() => {
+  const { brainLayer, faceLayer } = useMemo(() => {
     const base = `${import.meta.env.BASE_URL}/avatar/`;
-    if (matoran.stage === MatoranStage.Diminished || matoran.stage === MatoranStage.Rebuilt) {
-      return `${base}McFace.webp`;
-    }
-    return `${base}Face.webp`;
+    const mcToran =
+      matoran.stage === MatoranStage.Diminished || matoran.stage === MatoranStage.Rebuilt;
+    return {
+      brainLayer: `${base}${mcToran ? 'McBrain' : 'Brain'}.webp`,
+      faceLayer: `${base}${mcToran ? 'McFace' : 'Face'}.webp`,
+    };
   }, [matoran.stage]);
 
   const glowStyle = maskPowerActive ? { filter: `drop-shadow(0 0 12px ${maskColor})` } : undefined;
@@ -69,11 +71,7 @@ export function MatoranAvatar({
       key={matoran.name}
       className={`composited-avatar ${styles}`}
       style={glowStyle}
-      images={[
-        `${import.meta.env.BASE_URL}/avatar/Brain.webp`,
-        faceLayer,
-        mask,
-      ]}
+      images={[brainLayer, faceLayer, mask]}
       colors={[colors.eyes, colors.face, maskColor]}
     />
   );
