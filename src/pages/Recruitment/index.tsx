@@ -324,11 +324,7 @@ export const Recruitment: React.FC = () => {
                   Paste from clipboard
                 </button>
               )}
-              <button
-                type="button"
-                className="recruitment-redeem-primary"
-                onClick={submitRedeemShare}
-              >
+              <button type="button" className="confirm-button" onClick={submitRedeemShare}>
                 Add to recruitment list
               </button>
               <button
