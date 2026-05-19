@@ -11,7 +11,7 @@ export const BOHROK_KIT_PALETTE_BODY = MATORAN_KIT_PALETTE_BODY;
 export const BOHROK_KIT_PALETTE_ARMS = MATORAN_KIT_PALETTE_ARMS;
 export const BOHROK_KIT_PALETTE_FEET = {
   Main: {
-    color: { kind: 'palette', key: 'feet' },
+    color: { key: 'feet', kind: 'palette' },
     envMapIntensity: 0.52,
     fineScale: 26,
     grimeMetalnessReduce: 0.5,
@@ -20,7 +20,7 @@ export const BOHROK_KIT_PALETTE_FEET = {
     roughness: 0.3,
   },
   Metal: {
-    color: { kind: 'palette', key: 'feet' },
+    color: { key: 'feet', kind: 'palette' },
     envMapIntensity: 0.52,
     fineScale: 26,
     grimeMetalnessReduce: 0.5,
@@ -34,7 +34,7 @@ export const BOHROK_KIT_PALETTE_METAL = MATORAN_KIT_PALETTE_METAL;
 /** Bohrok socket colors: Black in swarm, Light Gray in Kal. */
 export const BOHROK_KIT_PALETTE_SOCKETS: Partial<Record<string, KitMaterialSlotEntry>> = {
   Main: {
-    color: { kind: 'palette', key: 'mask' },
+    color: { key: 'mask', kind: 'palette' },
     envMapIntensity: 0.52,
     fineScale: 26,
     grimeMetalnessReduce: 0.5,
