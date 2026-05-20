@@ -144,7 +144,8 @@ function getKranaMaterial(
   if (!mat) {
     mat = original.clone();
     mat.color.set(color as ColorType);
-    mat.emissive.set(color as ColorType);
+    mat.emissive.set(0x000000);
+    mat.emissiveIntensity = 0;
     kranaMaterialCache.set(cacheKey, mat);
   }
   return mat;
