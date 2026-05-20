@@ -47,6 +47,7 @@ export const TOA_DEX = {
       face: LegoColor.DarkGray,
       feet: LegoColor.Blue,
       mask: LegoColor.Blue,
+      weaponGlow: LegoColor.MediumBlue,
     },
     element: ElementTribe.Water,
     id: 'Toa_Gali_Nuva',
