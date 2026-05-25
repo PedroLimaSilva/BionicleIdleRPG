@@ -7,6 +7,8 @@ import { ElementTribe } from '../../types/Matoran';
 const MAX_PARTICLES = 64;
 const BURST_MIN = 8;
 const BURST_MAX = 12;
+import { scaleBattleDurationMs } from '../../utils/battleSpeed';
+
 const BURST_DURATION_MS = 400;
 const FLOOR_LIFT = 0.6;
 
@@ -156,7 +158,7 @@ export function HitImpactParticles() {
 
       particle.active = true;
       particle.startMs = startMs;
-      particle.durationMs = BURST_DURATION_MS;
+      particle.durationMs = scaleBattleDurationMs(BURST_DURATION_MS);
       particle.origin.copy(origin);
       particle.velocity.copy(velocity);
       const scaleMult = Math.min(1 + damageRatio, 2);

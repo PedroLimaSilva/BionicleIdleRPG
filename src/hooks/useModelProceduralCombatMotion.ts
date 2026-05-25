@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import type { RefObject } from 'react';
 import type { Group } from 'three';
 import type { PlayAnimationCallOptions } from './usePlayAnimation';
+import { battleSpeedProgress, scaleBattleDurationMs } from '../utils/battleSpeed';
 
 /** Match RahiPlaceholderModel / NuiRamaModel timing for consistent combat pacing. */
 const ATTACK_CONTACT_MS = 140;
@@ -36,14 +37,14 @@ export function useModelProceduralCombatMotion(rootRef: RefObject<Group | null>)
     const elapsed = (performance.now() - animStartRef.current) / 1000;
 
     if (anim === 'attack') {
-      const punch = Math.min(1, elapsed / (ATTACK_TOTAL_MS / 1000));
+      const punch = battleSpeedProgress(elapsed, ATTACK_TOTAL_MS / 1000);
       const lunge = Math.sin(punch * Math.PI) * 0.35;
       g.position.z = lunge;
       g.position.y = Math.sin(t * 2.2) * 0.02;
     } else if (anim === 'hit') {
       g.rotation.z = Math.sin(elapsed * 28) * 0.12;
     } else if (anim === 'defeat') {
-      const k = Math.min(1, elapsed / (DEFEAT_MS / 1000));
+      const k = battleSpeedProgress(elapsed, DEFEAT_MS / 1000);
       g.rotation.x = k * (Math.PI / 2);
       g.position.y = -k * 0.25;
     }
@@ -55,12 +56,12 @@ export function useModelProceduralCombatMotion(rootRef: RefObject<Group | null>)
         setAnim('attack');
         animStartRef.current = performance.now();
         await new Promise<void>((resolve) => {
-          window.setTimeout(resolve, ATTACK_CONTACT_MS);
+          window.setTimeout(resolve, scaleBattleDurationMs(ATTACK_CONTACT_MS));
         });
         window.setTimeout(() => {
           setAnim('idle');
           callOptions?.onAnimationComplete?.();
-        }, ATTACK_TOTAL_MS);
+        }, scaleBattleDurationMs(ATTACK_TOTAL_MS));
         return;
       }
 
@@ -71,7 +72,7 @@ export function useModelProceduralCombatMotion(rootRef: RefObject<Group | null>)
           window.setTimeout(() => {
             setAnim('idle');
             resolve();
-          }, HIT_MS);
+          }, scaleBattleDurationMs(HIT_MS));
         });
         return;
       }
@@ -80,7 +81,7 @@ export function useModelProceduralCombatMotion(rootRef: RefObject<Group | null>)
         setAnim('defeat');
         animStartRef.current = performance.now();
         await new Promise<void>((resolve) => {
-          window.setTimeout(resolve, DEFEAT_MS);
+          window.setTimeout(resolve, scaleBattleDurationMs(DEFEAT_MS));
         });
       }
     },

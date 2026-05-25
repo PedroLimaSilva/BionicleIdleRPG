@@ -11,6 +11,7 @@ import {
   hasReadyMaskPowers,
 } from '../services/combatUtils';
 import { getBattleOutcomePhaseDelayMs } from '../game/battleOutcomeVisualDelay';
+import { scaleBattleDurationMs } from '../utils/battleSpeed';
 import { getEffectiveMatoran } from '../services/matoranUtils';
 import { resolveToaMataBuildId } from '../game/customMataBuild';
 
@@ -167,7 +168,7 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
       setOutcomePresentationReady(true);
       return;
     }
-    const delayMs = getBattleOutcomePhaseDelayMs(reduceMotion);
+    const delayMs = scaleBattleDurationMs(getBattleOutcomePhaseDelayMs(reduceMotion));
     if (delayMs === 0) {
       setOutcomePresentationReady(true);
       return;

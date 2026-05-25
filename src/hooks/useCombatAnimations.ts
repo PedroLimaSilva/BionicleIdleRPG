@@ -1,6 +1,8 @@
-import { useCallback, type RefObject } from 'react';
+import { useCallback, useEffect, type RefObject } from 'react';
 import type { AnimationClip, Group } from 'three';
 import { useIdleAnimation } from './useIdleAnimation';
+import { getBattleSpeedMultiplier, subscribeBattleSpeed } from '../utils/battleSpeed';
+import { getAnimationTimeScale } from '../utils/testMode';
 import {
   usePlayAnimation,
   type PlayAnimationCallOptions,
@@ -26,6 +28,15 @@ export function useCombatAnimations(
   const { actions, mixer } = useIdleAnimation(animations, groupRef, {
     idleActionName: options.idleActionName,
   });
+
+  useEffect(() => {
+    const syncMixerTimeScale = () => {
+      mixer.timeScale = getAnimationTimeScale() * getBattleSpeedMultiplier();
+    };
+    syncMixerTimeScale();
+    return subscribeBattleSpeed(syncMixerTimeScale);
+  }, [mixer]);
+
   const basePlay = usePlayAnimation(actions, mixer, options);
   const { playProceduralCombatAnimation } = useModelProceduralCombatMotion(groupRef);
 

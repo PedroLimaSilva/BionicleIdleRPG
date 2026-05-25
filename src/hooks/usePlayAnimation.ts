@@ -2,6 +2,7 @@ import { useCallback, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import type { AnimationAction, AnimationMixer } from 'three';
 import { LoopOnce } from 'three';
+import { getEffectiveActionTimeScale } from '../utils/battleSpeed';
 
 export type UsePlayAnimationOptions = {
   /** ID for console warnings when animation not found (e.g. matoran.id) */
@@ -81,7 +82,7 @@ export function usePlayAnimation(
         action.reset();
         action.setLoop(LoopOnce, 1);
         action.clampWhenFinished = true;
-        action.setEffectiveTimeScale(actionTimeScale);
+        action.setEffectiveTimeScale(getEffectiveActionTimeScale(actionTimeScale));
         action.play();
 
         const isAttackWithEarlyResolve = name === 'Attack';

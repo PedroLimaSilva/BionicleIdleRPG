@@ -14,6 +14,7 @@ import {
   CAMERA_EMPHASIS_HOLD_MS,
   CAMERA_EMPHASIS_OUT_MS,
 } from '../../game/battleOutcomeVisualDelay';
+import { scaleBattleDurationMs } from '../../utils/battleSpeed';
 
 function EnvironmentIntensity({ value }: { value: number }) {
   const scene = useThree((s) => s.scene);
@@ -129,7 +130,10 @@ function ArenaFraming() {
     toPositionRef.current.copy(basePositionRef.current);
     toLookAtRef.current.copy(baseLookAtRef.current);
     toZoomRef.current = baseZoomRef.current;
-    transitionRef.current = { durationMs: CAMERA_EMPHASIS_OUT_MS, startMs: now };
+    transitionRef.current = {
+      durationMs: scaleBattleDurationMs(CAMERA_EMPHASIS_OUT_MS),
+      startMs: now,
+    };
   }, []);
 
   const snapshotFrom = () => {
@@ -206,7 +210,9 @@ function ArenaFraming() {
 
           const isRetarget = transitionRef.current !== null;
           transitionRef.current = {
-            durationMs: isRetarget ? CAMERA_EMPHASIS_RETARGET_MS : CAMERA_EMPHASIS_IN_MS,
+            durationMs: scaleBattleDurationMs(
+              isRetarget ? CAMERA_EMPHASIS_RETARGET_MS : CAMERA_EMPHASIS_IN_MS
+            ),
             startMs: performance.now(),
           };
           return;
@@ -228,7 +234,10 @@ function ArenaFraming() {
         if (holdTimerRef.current !== null) {
           clearTimeout(holdTimerRef.current);
         }
-        holdTimerRef.current = setTimeout(beginZoomOut, CAMERA_EMPHASIS_HOLD_MS);
+        holdTimerRef.current = setTimeout(
+          beginZoomOut,
+          scaleBattleDurationMs(CAMERA_EMPHASIS_HOLD_MS)
+        );
       }
     );
     return unsubscribe;

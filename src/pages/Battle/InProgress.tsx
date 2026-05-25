@@ -5,6 +5,7 @@ import { BattlePhase } from '../../hooks/useBattleState';
 import { isTestMode } from '../../utils/testMode';
 import { AllyCard } from './Cards/Ally';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
+import { scaleBattleDurationMs } from '../../utils/battleSpeed';
 
 /** Total fade in + fade out; keep in sync with `battle-arena-wave-clear` duration in `battle.scss`. */
 const WAVE_CLEAR_TOTAL_MS = 1000;
@@ -55,14 +56,15 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
     waveClearTimersRef.current.forEach(clearTimeout);
     waveClearTimersRef.current = [];
     setWaveClearPlaying(true);
+    const waveClearMs = scaleBattleDurationMs(WAVE_CLEAR_TOTAL_MS);
     waveClearTimersRef.current.push(
       setTimeout(() => {
         battle.advanceWave();
-      }, WAVE_CLEAR_TOTAL_MS / 2),
+      }, waveClearMs / 2),
       setTimeout(() => {
         setWaveClearPlaying(false);
         waveClearTimersRef.current = [];
-      }, WAVE_CLEAR_TOTAL_MS)
+      }, waveClearMs)
     );
   };
 
@@ -88,7 +90,16 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
       >
         <h1 className="title">Wave {currentWave + 1}</h1>
 
-        <div className={`battle-arena${waveClearPlaying ? ' battle-arena--wave-clear' : ''}`}>
+        <div
+          className={`battle-arena${waveClearPlaying ? ' battle-arena--wave-clear' : ''}`}
+          style={
+            waveClearPlaying
+              ? {
+                  ['--battle-wave-clear-ms' as string]: `${scaleBattleDurationMs(WAVE_CLEAR_TOTAL_MS)}ms`,
+                }
+              : undefined
+          }
+        >
           <div className="enemy-side"></div>
 
           <div className="ally-side">

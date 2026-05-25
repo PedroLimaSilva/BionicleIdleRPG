@@ -14,6 +14,12 @@ import { Group, LoopRepeat } from 'three';
 import type { CombatantModelHandle, PlayAnimationOptions } from '../../pages/Battle/CombatantModel';
 import type { NuiRamaVariant } from '../../types/Combat';
 import { getAnimationTimeScale, setupAnimationForTestMode } from '../../utils/testMode';
+import {
+  battleSpeedProgress,
+  getBattleSpeedMultiplier,
+  scaleBattleDurationMs,
+  subscribeBattleSpeed,
+} from '../../utils/battleSpeed';
 import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
 import { LegoColor } from '../../types/Colors';
 
@@ -65,7 +71,11 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
     const wingsActionRef = useRef<AnimationAction | null>(null);
 
     useLayoutEffect(() => {
-      mixer.timeScale = getAnimationTimeScale();
+      const syncMixerTimeScale = () => {
+        mixer.timeScale = getAnimationTimeScale() * getBattleSpeedMultiplier();
+      };
+      syncMixerTimeScale();
+      const unsubSpeed = subscribeBattleSpeed(syncMixerTimeScale);
       const wings = actions[WINGS_CLIP];
       if (!wings) {
         wingsActionRef.current = null;
@@ -79,6 +89,7 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
       wings.play();
       setupAnimationForTestMode(wings);
       return () => {
+        unsubSpeed();
         wings.stop();
         wingsActionRef.current = null;
       };
@@ -115,12 +126,12 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
           setAnim('attack');
           animStartRef.current = performance.now();
           await new Promise<void>((resolve) => {
-            window.setTimeout(resolve, ATTACK_CONTACT_MS);
+            window.setTimeout(resolve, scaleBattleDurationMs(ATTACK_CONTACT_MS));
           });
           window.setTimeout(() => {
             setAnim('idle');
             options?.onAnimationComplete?.();
-          }, ATTACK_TOTAL_MS);
+          }, scaleBattleDurationMs(ATTACK_TOTAL_MS));
           return;
         }
 
@@ -131,7 +142,7 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
             window.setTimeout(() => {
               setAnim('idle');
               resolve();
-            }, HIT_MS);
+            }, scaleBattleDurationMs(HIT_MS));
           });
           return;
         }
@@ -141,7 +152,7 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
           setAnim('defeat');
           animStartRef.current = performance.now();
           await new Promise<void>((resolve) => {
-            window.setTimeout(resolve, DEFEAT_MS);
+            window.setTimeout(resolve, scaleBattleDurationMs(DEFEAT_MS));
           });
           options?.onAnimationComplete?.();
         }
@@ -166,14 +177,14 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
       const elapsed = (performance.now() - animStartRef.current) / 1000;
 
       if (anim === 'attack') {
-        const punch = Math.min(1, elapsed / (ATTACK_TOTAL_MS / 1000));
+        const punch = battleSpeedProgress(elapsed, ATTACK_TOTAL_MS / 1000);
         const lunge = Math.sin(punch * Math.PI) * 0.35;
         g.position.z = lunge;
         g.position.y = Math.sin(t * 2.2 + idleBobPhase) * 0.02;
       } else if (anim === 'hit') {
         g.rotation.z = Math.sin(elapsed * 28) * 0.12;
       } else if (anim === 'defeat') {
-        const k = Math.min(1, elapsed / (DEFEAT_MS / 1000));
+        const k = battleSpeedProgress(elapsed, DEFEAT_MS / 1000);
         g.rotation.z = 0;
         // Fall backwards (negative pitch vs previous forward tip), slight drop and recoil in -Z.
         g.rotation.x = -k * (Math.PI / 2);

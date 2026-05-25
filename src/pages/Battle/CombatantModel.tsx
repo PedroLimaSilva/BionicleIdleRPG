@@ -25,6 +25,7 @@ import { RahiPlaceholderModel } from '../../components/CharacterScene/RahiPlaceh
 import { NuiRamaModel } from '../../components/CharacterScene/NuiRamaModel';
 import { WorldSpaceHpBar } from './WorldSpaceHpBar';
 import { DEFEAT_SINK_DURATION_SEC } from '../../game/battleOutcomeVisualDelay';
+import { battleSpeedProgress } from '../../utils/battleSpeed';
 
 const ROTATION_RESTORE_DURATION = 0.25;
 const DEFEAT_SINK_DEPTH = 0.55;
@@ -118,7 +119,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
       const restore = restoreRef.current;
       if (restore) {
         const elapsedSec = (performance.now() - restore.startTimeMs) / 1000;
-        const t = Math.min(1, elapsedSec / ROTATION_RESTORE_DURATION);
+        const t = battleSpeedProgress(elapsedSec, ROTATION_RESTORE_DURATION);
         setOverrideRotationY(lerpAngle(restore.from, baseRotationY, t));
         if (t >= 1) {
           restoreRef.current = null;
@@ -137,7 +138,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
       }
 
       const elapsedSec = (performance.now() - sink.startMs) / 1000;
-      const t = Math.min(1, elapsedSec / DEFEAT_SINK_DURATION_SEC);
+      const t = battleSpeedProgress(elapsedSec, DEFEAT_SINK_DURATION_SEC);
       g.position.y = -t * DEFEAT_SINK_DEPTH;
       const fade = 1 - t;
       for (const mat of defeatFadeMaterialsRef.current) {

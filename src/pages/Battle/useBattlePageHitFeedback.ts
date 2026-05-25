@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { subscribeBattleHitFeedback } from '../../utils/battleHitFeedback';
 import { isTestMode } from '../../utils/testMode';
+import { scaleBattleDurationMs } from '../../utils/battleSpeed';
 
 const SHAKE_MS = 400;
 
@@ -35,7 +36,7 @@ export function useBattlePageHitFeedback(): string {
         shakeClearRef.current = setTimeout(() => {
           setHitShake(false);
           shakeClearRef.current = null;
-        }, SHAKE_MS);
+        }, scaleBattleDurationMs(SHAKE_MS));
       }
     });
     return () => {

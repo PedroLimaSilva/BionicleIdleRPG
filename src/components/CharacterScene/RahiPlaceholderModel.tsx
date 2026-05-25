@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import type { CombatantModelHandle, PlayAnimationOptions } from '../../pages/Battle/CombatantModel';
 import { ElementTribe } from '../../types/Matoran';
+import { battleSpeedProgress, scaleBattleDurationMs } from '../../utils/battleSpeed';
 
 const BODY = 0.55;
 const HEAD = 0.28;
@@ -61,12 +62,12 @@ export const RahiPlaceholderModel = forwardRef<CombatantModelHandle, { element: 
           setAnim('attack');
           animStartRef.current = performance.now();
           await new Promise<void>((resolve) => {
-            window.setTimeout(resolve, ATTACK_CONTACT_MS);
+            window.setTimeout(resolve, scaleBattleDurationMs(ATTACK_CONTACT_MS));
           });
           window.setTimeout(() => {
             setAnim('idle');
             options?.onAnimationComplete?.();
-          }, ATTACK_TOTAL_MS);
+          }, scaleBattleDurationMs(ATTACK_TOTAL_MS));
           return;
         }
 
@@ -77,7 +78,7 @@ export const RahiPlaceholderModel = forwardRef<CombatantModelHandle, { element: 
             window.setTimeout(() => {
               setAnim('idle');
               resolve();
-            }, HIT_MS);
+            }, scaleBattleDurationMs(HIT_MS));
           });
           return;
         }
@@ -86,7 +87,7 @@ export const RahiPlaceholderModel = forwardRef<CombatantModelHandle, { element: 
           setAnim('defeat');
           animStartRef.current = performance.now();
           await new Promise<void>((resolve) => {
-            window.setTimeout(resolve, DEFEAT_MS);
+            window.setTimeout(resolve, scaleBattleDurationMs(DEFEAT_MS));
           });
           options?.onAnimationComplete?.();
         }
@@ -120,7 +121,7 @@ export const RahiPlaceholderModel = forwardRef<CombatantModelHandle, { element: 
       const elapsed = (performance.now() - animStartRef.current) / 1000;
 
       if (anim === 'attack') {
-        const punch = Math.min(1, elapsed / (ATTACK_TOTAL_MS / 1000));
+        const punch = battleSpeedProgress(elapsed, ATTACK_TOTAL_MS / 1000);
         const lunge = Math.sin(punch * Math.PI) * 0.35;
         g.position.z = lunge;
         g.position.y = Math.sin(t * 2.2) * 0.02;

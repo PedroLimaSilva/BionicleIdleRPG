@@ -15,6 +15,8 @@ import {
   computeKraataRewardsForBattle,
 } from '../../game/BattleRewards';
 import { KraataReward } from '../../types/Kraata';
+import { BattleSpeedControl } from './BattleSpeedControl';
+import { setBattleSpeedMultiplier } from '../../utils/battleSpeed';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
@@ -67,6 +69,10 @@ export const BattlePage: React.FC = () => {
   }, [navigate, currentEncounter]);
 
   useEffect(() => {
+    return () => setBattleSpeedMultiplier(1);
+  }, []);
+
+  useEffect(() => {
     if (currentEncounter) {
       setScene(<Arena team={battle.team} enemies={battle.enemies} currentWave={currentWave} />);
     } else {
@@ -80,7 +86,8 @@ export const BattlePage: React.FC = () => {
 
   if (phase === BattlePhase.Preparing) {
     return (
-      <div className={battlePageRootClass}>
+      <div className={`${battlePageRootClass} battle-page-with-speed`}>
+        <BattleSpeedControl />
         <BattlePrep />
       </div>
     );
@@ -88,7 +95,8 @@ export const BattlePage: React.FC = () => {
 
   if (phase === BattlePhase.Inprogress) {
     return (
-      <div className={battlePageRootClass}>
+      <div className={`${battlePageRootClass} battle-page-with-speed`}>
+        <BattleSpeedControl />
         <BattleInProgress />
       </div>
     );
@@ -104,7 +112,8 @@ export const BattlePage: React.FC = () => {
 
     if (waitingOnOutcomePresentation) {
       return (
-        <div className={battlePageRootClass}>
+        <div className={`${battlePageRootClass} battle-page-with-speed`}>
+          <BattleSpeedControl />
           <BattleInProgress exitPresentation />
         </div>
       );
