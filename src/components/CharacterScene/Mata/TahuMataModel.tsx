@@ -55,9 +55,8 @@ export const TahuMataModel = forwardRef<
     weathered: TAHU_WEATHERED,
   });
 
-  const maskTarget = matoran.maskOverride || matoran.mask;
   const glowColor = matoran.colors.eyes;
-  useMask(nodes.Masks, maskTarget, matoran, glowColor, matoran.maskPowerActive);
+  useMask(nodes.Masks, matoran, glowColor, matoran.maskPowerActive);
 
   return (
     <group ref={group} dispose={null}>

@@ -39,6 +39,15 @@ describe('maskColor', () => {
     test('returns base mask color when no quests completed', () => {
       expect(getEffectiveMataMaskColor(toaMata, [])).toBe(LegoColor.Red);
     });
+
+    test('does not apply gold mask tint to custom Toa Mata', () => {
+      const custom: BaseMatoran & RecruitedCharacterData = {
+        ...toaMata,
+        id: 'custom_0',
+        mask: Mask.Huna,
+      };
+      expect(getEffectiveMataMaskColor(custom, ['mnog_kini_nui_arrival'])).toBe(LegoColor.Red);
+    });
   });
 
   describe('getEffectiveNuvaMaskColor', () => {

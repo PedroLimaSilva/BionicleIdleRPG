@@ -1,4 +1,10 @@
-import { BaseMatoran, ListedCharacterData, Mask, RecruitedCharacterData } from '../types/Matoran';
+import {
+  BaseMatoran,
+  isCustomCharacterId,
+  ListedCharacterData,
+  Mask,
+  RecruitedCharacterData,
+} from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { JOB_DETAILS } from '../data/jobs';
 import { getProductivityModifier } from '../game/Jobs';
@@ -43,6 +49,10 @@ export function masksCollected(
       return [Mask.HauNuvaInfected];
     }
 
+    if (isCustomCharacterId(matoran.id)) {
+      return [matoran.mask];
+    }
+
     let masks: Mask[] = [matoran.mask];
     if (matoran.id === 'Toa_Tahu_Nuva' && storyProgress.includes('bohrok_kal_reconstruction')) {
       masks.push(Mask.Vahi);
@@ -55,6 +65,9 @@ export function masksCollected(
     }
     return masks;
   } else if (isToaMata(matoran)) {
+    if (isCustomCharacterId(matoran.id)) {
+      return [matoran.mask];
+    }
     const masks: Mask[] = [];
     if (storyProgress.includes('maskhunt_final_collection')) {
       return FULL_MASK_SET;

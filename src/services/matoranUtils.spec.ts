@@ -324,6 +324,18 @@ describe('matoranUtils', () => {
         expect(masks).toEqual([Mask.HauNuva]);
       });
 
+      test('custom Toa Nuva only has dex mask even after Kanohi Nuva hunt', () => {
+        const custom: BaseMatoran = {
+          colors: MOCK_COLORS,
+          element: ElementTribe.Fire,
+          id: 'custom_0',
+          mask: Mask.HauNuva,
+          name: 'Custom',
+          stage: MatoranStage.ToaNuva,
+        };
+        expect(masksCollected(custom, ['tales_kanohi_nuva_hunt'])).toEqual([Mask.HauNuva]);
+      });
+
       test('returns only dex mask even when final collection quest is completed', () => {
         const masks = masksCollected(mockToaNuva, ['maskhunt_final_collection']);
         expect(masks).toEqual([Mask.HauNuva]);

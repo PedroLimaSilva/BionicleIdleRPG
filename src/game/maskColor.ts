@@ -1,4 +1,4 @@
-import { BaseMatoran, MatoranStage } from '../types/Matoran';
+import { BaseMatoran, isCustomCharacterId, MatoranStage } from '../types/Matoran';
 import { LegoColor } from '../types/Colors';
 import { isNuvaSymbolsSequestered } from './nuvaSymbols';
 
@@ -10,25 +10,29 @@ function isGoldMaskQuestCompleted(completedQuests: string[]): boolean {
 
 /**
  * Effective mask color for Toa Mata, based on user override and game state.
- * Gold mask override when Kini-Nui quests are completed.
+ * Gold mask override when Kini-Nui quests are completed (canon Toa only).
  */
 export function getEffectiveMataMaskColor(
   matoran: BaseMatoran & { maskOverride?: string },
   completedQuests: string[]
 ): string {
-  if (isGoldMaskQuestCompleted(completedQuests)) return LegoColor.PearlGold;
+  if (!isCustomCharacterId(matoran.id) && isGoldMaskQuestCompleted(completedQuests)) {
+    return LegoColor.PearlGold;
+  }
   return matoran.colors.mask;
 }
 
 /**
  * Effective mask color for Toa Nuva, based on user override and game state.
- * Light gray when nuva symbols are sequestered.
+ * Light gray when nuva symbols are sequestered (canon Toa only).
  */
 export function getEffectiveNuvaMaskColor(
   matoran: BaseMatoran & { maskOverride?: string },
   completedQuests: string[]
 ): string {
-  if (isNuvaSymbolsSequestered(completedQuests)) return LegoColor.LightGray;
+  if (!isCustomCharacterId(matoran.id) && isNuvaSymbolsSequestered(completedQuests)) {
+    return LegoColor.LightGray;
+  }
   return matoran.colors.mask;
 }
 

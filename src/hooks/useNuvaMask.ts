@@ -11,6 +11,7 @@ import {
   startMaskTransition,
   useMaskTransitionFrame,
 } from './maskTransition';
+import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import { masksCollected } from '../services/matoranUtils';
 
 const NUVA_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/masks.glb';
@@ -121,6 +122,8 @@ export function useNuvaMask(
 
   useEffect(() => {
     if (!masksNodes || !masksParent) return;
+
+    ensureMaskSlotPlaceholderHidden(masksParent);
 
     const source = masksNodes[maskNodeName];
     if (!source) {

@@ -5,12 +5,14 @@ import { useGame } from '../context/Game';
 import { useSettings } from '../context/useSettings';
 import { shouldEnableShadows } from '../utils/testMode';
 import { getEffectiveMataMaskColor } from '../game/maskColor';
+import { masksCollected } from '../services/matoranUtils';
 import { BaseMatoran, Mask, MatoranStage } from '../types/Matoran';
 import {
   createMaskTransitionState,
   startMaskTransition,
   useMaskTransitionFrame,
 } from './maskTransition';
+import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 
@@ -87,8 +89,7 @@ function applyMaskColors(
  * The first mask shown on load appears immediately with no transition.
  *
  * @param masksParent - The Object3D to parent the mask to (e.g. `nodes.Masks`)
- * @param maskName    - The name of the mask mesh in masks.glb (must match the Mask enum value)
- * @param matoran     - Character data (Mata/Diminished) for mask color derivation
+ * @param matoran     - Character data (Mata/Diminished) for mask selection and color
  * @param glowColor   - Optional color for emissive "glow" materials (e.g. lens glow matching eye color).
  *                      When provided, materials whose names include "glow" (case-insensitive) will use
  *                      this color for both their base color and emissive color instead of maskColor.
@@ -96,7 +97,6 @@ function applyMaskColors(
  */
 export function useMask(
   masksParent: Object3D | undefined,
-  maskName: string,
   matoran: BaseMatoran & { maskOverride?: string },
   glowColor?: string,
   maskPowerActive?: boolean
@@ -106,6 +106,16 @@ export function useMask(
   const { completedQuests } = useGame();
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
+
+  const collected = useMemo(
+    () => masksCollected(matoran, completedQuests),
+    [matoran, completedQuests]
+  );
+  const maskName = useMemo(() => {
+    const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
+    const override = matoran.maskOverride;
+    return override && collected.includes(override) ? override : effectiveMask;
+  }, [collected, matoran.mask, matoran.maskOverride]);
 
   const maskColor =
     matoran.stage === MatoranStage.ToaMata
@@ -130,6 +140,8 @@ export function useMask(
   // Clone the mask and attach to parent; animate transitions between masks
   useEffect(() => {
     if (!masksNodes || !masksParent) return;
+
+    ensureMaskSlotPlaceholderHidden(masksParent);
 
     const source = masksNodes[maskName];
     if (!source) {

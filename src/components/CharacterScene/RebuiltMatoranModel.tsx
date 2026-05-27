@@ -80,9 +80,8 @@ export function RebuiltMatoranModel({
     weathered: REBUILT_WEATHERED,
   });
 
-  const maskTarget = matoran.maskOverride || matoran.mask;
   const glowColor = matoran.colors.eyes;
-  useMask(nodes.Masks, maskTarget, matoran, glowColor);
+  useMask(nodes.Masks, matoran, glowColor);
 
   return (
     <group ref={group} dispose={null}>
