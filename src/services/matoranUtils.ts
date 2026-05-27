@@ -41,6 +41,10 @@ export function masksCollected(
   matoran: BaseMatoran,
   storyProgress: GameState['completedQuests']
 ): Mask[] {
+  if (isCustomCharacterId(matoran.id)) {
+    return [matoran.mask];
+  }
+
   if (isToaNuva(matoran)) {
     if (matoran.id === 'Takanuva') {
       return [Mask.Avohkii];
@@ -49,9 +53,6 @@ export function masksCollected(
       return [Mask.HauNuvaInfected];
     }
 
-    if (isCustomCharacterId(matoran.id)) {
-      return [matoran.mask];
-    }
 
     let masks: Mask[] = [matoran.mask];
     if (matoran.id === 'Toa_Tahu_Nuva' && storyProgress.includes('bohrok_kal_reconstruction')) {
@@ -65,9 +66,6 @@ export function masksCollected(
     }
     return masks;
   } else if (isToaMata(matoran)) {
-    if (isCustomCharacterId(matoran.id)) {
-      return [matoran.mask];
-    }
     const masks: Mask[] = [];
     if (storyProgress.includes('maskhunt_final_collection')) {
       return FULL_MASK_SET;

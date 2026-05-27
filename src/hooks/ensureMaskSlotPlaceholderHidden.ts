@@ -7,10 +7,11 @@ function isTintableMat(mat: unknown): mat is MeshPhysicalMaterial | MeshStandard
 }
 
 /**
- * Mata / Matoran character GLBs parent mask clones under a node named "Masks" that
- * often still includes the mesh author's default kanohi. Hide that placeholder mesh
- * so only masks.glb clones render. Without this, equipping a mask that differs from
- * the default (e.g. custom Toa on a borrowed Mata rig) shows two overlapping masks.
+ * Mata / Matoran GLBs parent mask clones under a node named `Masks` that also carries
+ * a tiny placeholder solid (e.g. a small cube) from the mesh author — not a second
+ * Kanohi, and not meaningfully visible with current mask assets. We still make that
+ * mesh fully transparent so it cannot z-fight or clip through the real mask from
+ * `masks.glb` if transforms or materials change.
  *
  * Uses a WeakSet so we only replace materials once per shared cached `nodes.Masks`
  * instance from useGLTF.
