@@ -97,7 +97,7 @@ function applyMaskColors(
  */
 export function useMask(
   masksParent: Object3D | undefined,
-  matoran: BaseMatoran & { maskOverride?: string },
+  matoran: BaseMatoran & { maskOverride?: Mask },
   glowColor?: string,
   maskPowerActive?: boolean
 ) {
