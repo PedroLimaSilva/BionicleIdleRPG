@@ -14,7 +14,11 @@ import { useGame } from '../../context/Game';
 import { QUESTS } from '../../data/quests';
 import { getEffectiveMatoran } from '../../services/matoranUtils';
 import { isBohrokOrKal, isMatoran, isToa } from '../../game/matoranStage';
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useLayoutEffect } from 'react';
+import {
+  consumeCharactersReturnScrollId,
+  scrollMainContentElementIntoView,
+} from '../../utils/mainContentScroll';
 import { Tabs } from '../../components/Tabs';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import {
@@ -111,6 +115,18 @@ export const CharacterInventory: React.FC = () => {
     });
   }, [recruitedCharacters, effectiveTab]);
 
+  useLayoutEffect(() => {
+    const returnScrollId = consumeCharactersReturnScrollId();
+    if (!returnScrollId) return;
+
+    const card = document.querySelector<HTMLElement>(
+      `[data-character-id="${CSS.escape(returnScrollId)}"]`
+    );
+    if (!card) return;
+
+    scrollMainContentElementIntoView(card);
+  }, [effectiveTab, characters]);
+
   const collectedKraata = useMemo(() => {
     const groups: { power: KraataPower; stage: number; name: string; count: number }[] = [];
     for (const [power, stages] of Object.entries(kraataCollection)) {
@@ -154,6 +170,7 @@ export const CharacterInventory: React.FC = () => {
             return (
               <Link key={matoran.id} to={`/characters/${matoran.id}`}>
                 <motion.div
+                  data-character-id={matoran.id}
                   className={`character-card element-${effective.element}`}
                   layoutId={shouldReduceMotion ? undefined : `character-${matoran.id}`}
                   layout
