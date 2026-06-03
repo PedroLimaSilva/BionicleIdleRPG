@@ -37,26 +37,26 @@ describe('mainContentScroll', () => {
 
     // jsdom does not compute layout; mock rects so scroll math is exercised.
     const mainRect = {
-      top: 0,
-      left: 0,
       bottom: 100,
-      right: 300,
-      width: 300,
       height: 100,
+      left: 0,
+      right: 300,
+      toJSON: () => ({}),
+      top: 0,
+      width: 300,
       x: 0,
       y: 0,
-      toJSON: () => ({}),
     } as DOMRect;
     const targetRect = {
-      top: 250,
-      left: 0,
       bottom: 270,
-      right: 100,
-      width: 100,
       height: 20,
+      left: 0,
+      right: 100,
+      toJSON: () => ({}),
+      top: 250,
+      width: 100,
       x: 0,
       y: 250,
-      toJSON: () => ({}),
     } as DOMRect;
 
     jest.spyOn(main, 'getBoundingClientRect').mockReturnValue(mainRect);
