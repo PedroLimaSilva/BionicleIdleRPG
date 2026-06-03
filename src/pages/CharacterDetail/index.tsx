@@ -6,7 +6,11 @@ import { isTestMode } from '../../utils/testMode';
 import './index.scss';
 import { CharacterScene } from '../../components/CharacterScene';
 import { ElementTag } from '../../components/ElementTag';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  rememberCharactersReturnScrollId,
+  scrollMainContentToTop,
+} from '../../utils/mainContentScroll';
 import { useSceneCanvas } from '../../hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
 import { getRecruitedMatoran, masksCollected } from '../../services/matoranUtils';
@@ -49,6 +53,12 @@ export const CharacterDetail: React.FC = () => {
   );
 
   const [activeTab, setActiveTab] = useState('stats');
+
+  useLayoutEffect(() => {
+    if (!id) return;
+    rememberCharactersReturnScrollId(String(id));
+    scrollMainContentToTop();
+  }, [id]);
 
   const tabs = useMemo(() => {
     const base = ['stats'];
