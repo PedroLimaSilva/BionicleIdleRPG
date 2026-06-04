@@ -61,6 +61,7 @@ export const KOPAKA_NUVA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachmen
   AxleMod3LR: { kitNodeName: 'AxleMod3L', materialColors: KOPAKA_NUVA_BLACK },
   AxleModHips: { kitNodeName: 'AxleModHips', materialColors: KOPAKA_NUVA_PALETTE_COLORS },
   AxlePin: { kitNodeName: 'AxlePin', materialColors: KOPAKA_NUVA_PALETTE_COLORS },
+  AxleSocket1L: { kitNodeName: 'AxleSocket1L', materialColors: KOPAKA_NUVA_PALETTE_COLORS },
   AxleSpacer1LB: { kitNodeName: 'AxleSpacer1L', materialColors: KOPAKA_NUVA_PALETTE_COLORS },
   AxleSpacer1LF: { kitNodeName: 'AxleSpacer1L', materialColors: KOPAKA_NUVA_PALETTE_COLORS },
   Foot_R_1: { kitNodeName: 'MataFoot', materialColors: KOPAKA_NUVA_PALETTE_COLORS },
