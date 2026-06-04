@@ -99,9 +99,9 @@ function CharacterModel({
         case 'Toa_Gali_Nuva':
           return <GaliNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Tahu_Nuva':
-          return <TahuNuvaModel matoran={matoran} />;
+          return <TahuNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         default:
-          return <TahuNuvaModel matoran={matoran} />;
+          return <TahuNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
     case MatoranStage.Bohrok:
     case MatoranStage.BohrokKal:

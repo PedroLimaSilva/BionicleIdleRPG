@@ -213,6 +213,7 @@ export const TOA_DEX = {
       face: LegoColor.LightGray,
       feet: LegoColor.Red,
       mask: LegoColor.Red,
+      weaponGlow: LegoColor.Orange,
     },
     element: ElementTribe.Fire,
     id: 'Toa_Tahu_Nuva',

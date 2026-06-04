@@ -21,8 +21,8 @@ export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMateria
   Face: { color: { key: 'face', kind: 'palette' }, weathered: true },
   Main: { key: 'body', kind: 'palette' },
   /**
-   * Technic silver (light gray): not a palette color slot — override character-level
-   * weathered defaults (Mata bodies use very low metalness) so pins/gears read as metal.
+   * Technic silver (light gray) for Mata rigs only — duller than `NUVA_KIT_METAL` on Toa Nuva.
+   * Overrides character-level weathered defaults (Mata bodies use very low metalness).
    */
   Metal: {
     color: { kind: 'lego', value: LegoColor.LightGray },
