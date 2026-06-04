@@ -6,11 +6,13 @@ import {
   mataKitPlayerPaletteGlow,
   mataKitPlayerPaletteWeaponGlow,
 } from '../../palettes/mataKitPlayerPalette';
+import { NUVA_KIT_METAL } from '../../palettes/nuvaKitPlayerPalette';
 
 const GALI_NUVA_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
   ...mataKitPlayerPaletteGlow(50),
   ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
+  ...NUVA_KIT_METAL,
 };
 
 const GALI_NUVA_EYES_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {

@@ -91,6 +91,7 @@ function buildStandardSlotMaterial(
   if (spec.color) cloned.color = new Color(resolveColorSource(spec.color, palette));
   if (spec.roughness !== undefined) cloned.roughness = spec.roughness;
   if (spec.metalness !== undefined) cloned.metalness = spec.metalness;
+  if (spec.envMapIntensity !== undefined) cloned.envMapIntensity = spec.envMapIntensity;
   if (spec.emissive) {
     cloned.emissive = new Color(resolveColorSource(spec.emissive, palette));
     cloned.emissiveIntensity =
