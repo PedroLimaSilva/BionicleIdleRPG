@@ -57,37 +57,37 @@ Optional (future): add a small wrapper module for shared transition presets.
 
 ## Rollout Plan
 
-## Phase 0: Baseline and guardrails
+## Phase 0: Baseline and guardrails ✅ Complete
 
-1. Add the dependency.
-2. Define shared transition presets (durations/easing) aligned with existing CSS tokens.
-3. Add reduced-motion handling for Motion components (`useReducedMotion` + graceful fallbacks).
-4. Ensure test strategy can disable/neutralize UI motion where screenshots are taken.
+1. ✅ Add the dependency (`motion` in `package.json`).
+2. ✅ Define shared transition presets (`src/motion/transitions.ts`).
+3. ✅ Add reduced-motion handling (`useReducedMotion` + `buildTransition` zero-duration fallback).
+4. ✅ Test strategy neutralizes motion in screenshot tests where needed (`isTestMode`, reduced-motion hooks).
 
 ### Exit criteria
 
-- `motion` is installed and builds cleanly.
-- Shared presets exist and are reused by pilot components.
-- Screenshot tests remain stable.
+- ✅ `motion` is installed and builds cleanly.
+- ✅ Shared presets exist and are reused by pilot components.
+- ✅ Screenshot tests remain stable.
 
 ---
 
-## Phase 1 (Pilot): High-impact, low-risk UI surfaces
+## Phase 1 (Pilot): High-impact, low-risk UI surfaces ✅ Complete
 
 ### Pilot scope
 
-1. **Modal enter/exit**
+1. ✅ **Modal enter/exit** (`src/components/Modal/index.tsx`)
    - Backdrop fade
    - Panel fade/scale
    - Proper unmount animation on close
 
-2. **Quests accordion transitions**
-   - Replace `max-height` accordion animation with Motion `height`/`opacity`.
-   - Keep section toggle behavior unchanged.
+2. ✅ **Quests accordion transitions** (`src/pages/Quests/index.tsx`)
+   - Replaced `max-height` accordion animation with Motion `height`/`opacity`.
+   - Section toggle behavior unchanged.
 
-3. **Battle damage popup**
-   - Replace class-reflow keyframe restart with keyed Motion animation.
-   - Keep timing and direction semantics (`up`/`down`) equivalent.
+3. ✅ **Battle damage popup** (`src/pages/Battle/Cards/DamagePopup.tsx`)
+   - Keyed Motion animation replaces class-reflow keyframe restart.
+   - Timing and direction semantics (`up`/`down`) preserved.
 
 ### Why this pilot
 
@@ -103,14 +103,14 @@ Optional (future): add a small wrapper module for shared transition presets.
 
 ---
 
-## Phase 2: Expand to interactive panels
+## Phase 2: Expand to interactive panels (in progress)
 
 Candidate surfaces:
 
-- Chronicle accordion sections/entries
-- Battle prep team selector reveal
-- Recruitment requirement drawer
-- Tooltip entrance/exit polish
+- ✅ Chronicle accordion sections/entries (`src/pages/CharacterDetail/Chronicle/index.tsx`)
+- [ ] Battle prep team selector reveal
+- [ ] Recruitment requirement drawer
+- [ ] Tooltip entrance/exit polish
 
 ### Exit criteria
 
@@ -179,10 +179,12 @@ Because many E2E tests use screenshots:
 
 ## First pilot implementation checklist
 
-- [ ] Install `motion` dependency.
-- [ ] Add shared transition presets module.
-- [ ] Animate `Modal` open/close with `AnimatePresence`.
-- [ ] Animate Quests accordion content with Motion.
-- [ ] Migrate battle damage popups to Motion.
-- [ ] Run lint/tests and update snapshots if needed.
-- [ ] Verify reduced-motion behavior for pilot components.
+- [x] Install `motion` dependency.
+- [x] Add shared transition presets module (`src/motion/transitions.ts`).
+- [x] Animate `Modal` open/close with `motion` + shared presets.
+- [x] Animate Quests accordion content with Motion (`AnimatePresence`).
+- [x] Migrate battle damage popups to Motion.
+- [x] Run lint/tests and update snapshots if needed.
+- [x] Verify reduced-motion behavior for pilot components.
+
+Motion is also adopted more broadly (e.g. `RecruitmentCelebration`, `BattleOutcome`, `CharacterInventory`, `NavBar`, `RahkshiDetail`). Phase 2–3 items above track remaining surfaces.

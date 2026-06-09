@@ -62,7 +62,7 @@ The game runs entirely in the browser. All game logic must support offline progr
 
 **NEVER** duplicate static data into runtime state.
 
-**NEVER** mutate objects in `CHARACTER_DEX`, `JOB_DETAILS`, `ITEM_DICTIONARY`, or other data dictionaries.
+**NEVER** mutate objects in `CHARACTER_DEX`, `JOB_DETAILS`, or other static data dictionaries.
 
 ---
 
@@ -145,7 +145,7 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 
 **MUST ENFORCE:**
 
-1. Only these fields are persisted (see `PartialGameState` / `useGamePersistence`): `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `activeQuests`, `completedQuests`. (`buyableCharacters` is derived at runtime from `completedQuests` and `recruitedCharacters` via the recruitment registry.) Legacy saves may still contain an `inventory` key until migration runs; it is not part of the current save shape.
+1. Only these fields are persisted (see `PartialGameState` / `useGamePersistence`): `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `customCharacters`, `activeQuests`, `completedQuests`. (`buyableCharacters` is derived at runtime from `completedQuests` and `recruitedCharacters` via the recruitment registry.) Legacy saves may still contain an `inventory` key until migration runs; it is not part of the current save shape.
 2. Battle state is NOT persisted (battles reset on page refresh)
 3. Save version must match `CURRENT_GAME_STATE_VERSION` or the save is rejected
 
