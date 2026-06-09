@@ -10,22 +10,16 @@ This document identifies technical debt, inconsistencies, and architectural impr
 
 ## Priority 2: Consistency Improvements (Low Risk)
 
-### 2.1 Standardize User Feedback Mechanism
+### 2.1 Standardize User Feedback Mechanism ✅ Implemented
 
-**Issue:** Mixed use of `alert()` and activity log for user feedback.
+**Status:** Resolved. No `alert()` calls remain in the codebase.
 
-**Current locations:**
+**Implementation:**
 
-- `src/services/matoranUtils.ts` - uses `alert()` for insufficient protodermis
-- `src/pages/Recruitment/index.tsx` - uses `alert()` for successful recruitment
+- Successful recruitment shows `RecruitmentCelebration` (animated modal with 3D character reveal and element-colored particles).
+- Insufficient protodermis disables the recruit button (`canRecruit` guard); `recruitMatoran` returns the prior state without side effects.
 
-**Recommendation:** Replace `alert()` calls with proper UI feedback (toast notifications or activity log).
-
-**Acceptance Criteria:**
-
-- No `alert()` calls remain in codebase
-- User feedback is visible and non-blocking
-- Feedback is consistent across all actions
+**Remaining gap (optional polish):** There is still no shared toast/activity-log system for other transient feedback (e.g. PWA update badge is the only toast-like UI). Consider a unified non-blocking feedback component if more surfaces need it.
 
 ---
 
@@ -49,11 +43,14 @@ This document identifies technical debt, inconsistencies, and architectural impr
 
 ### 3.1 Add Save Migration System
 
-**Issue:** Changing `CURRENT_GAME_STATE_VERSION` invalidates all saves with no migration path.
+**Issue:** Changing `CURRENT_GAME_STATE_VERSION` invalidates all saves when no version-step migration exists.
 
-**Current behavior:** Version mismatch → reject save → load `INITIAL_GAME_STATE`
+**Current behavior:**
 
-**Recommendation:** Implement migration functions for version upgrades.
+- Version mismatch → reject save → load `INITIAL_GAME_STATE`
+- Ad-hoc retrocompat in `loadGameState` (`src/services/gamePersistence.ts`) handles specific legacy shapes when the version still matches: `widgets` → `protodermis`, kraata in legacy `inventory` → `kraataCollection`, unrecognized job IDs cleared, and missing `customCharacters` / `collectedKrana` / `rahkshi` defaults filled in
+
+**Recommendation:** Add explicit per-version migration functions so `CURRENT_GAME_STATE_VERSION` bumps can upgrade older saves instead of discarding them.
 
 **Proposed approach:**
 
@@ -116,13 +113,13 @@ function detectQuestCycles(quests: Quest[]): string[] {
 
 **Issue:** Minimal test coverage, especially for pure game logic functions.
 
-**Current:** Tests exist for `combatUtils`, `Levelling`, `Jobs`, `Quests`, `BattleRewards`, `Krana`, `encounterVisibility`, and various hooks/services. Coverage is improved but not yet comprehensive.
+**Current:** Unit tests exist across `src/game/` (e.g. `Levelling`, `Jobs`, `Quests`, `BattleRewards`, `Krana`, `CharacterEvolution`, `masks`, `nuvaSymbols`, `ProtodermisConversion`, `encounterVisibility`, `customMataBuild`) and `src/services/` (e.g. `combatUtils`, `maskPowers`, `maskPowerCooldowns`, `battleSimulation`, `gamePersistence`, `matoranUtils`, `customCharacterShare`). E2E coverage includes recruitment, quests, cutscenes, custom characters, battle flow, and character detail. Coverage is substantially improved but not yet comprehensive (e.g. some mask powers like Ruru/Matatu remain untested in combat).
 
-**Recommendation:** Continue adding tests for critical game logic in `src/game/`:
+**Recommendation:** Continue adding tests for critical game logic and combat edge cases:
 
-- `Levelling.ts` - exp calculations
-- `Jobs.ts` - productivity modifiers, offline progress, reward rolling
-- `Quests.ts` - quest availability filtering
+- Remaining mask power implementations (`Ruru`, `Matatu`)
+- Quest prerequisite validation (see 3.2)
+- Integration paths for custom character share/recruit flows
 
 **Acceptance Criteria:**
 
@@ -134,60 +131,56 @@ function detectQuestCycles(quests: Quest[]): string[] {
 
 ## Priority 5: Code Quality (Low Risk)
 
-### 5.1 Remove Commented Code
+### 5.1 Remove Commented Code ✅ Resolved
 
-**Issue:** Commented code suggests incomplete features or abandoned approaches.
+**Status:** The previously noted commented-out combatant-stats block in `CharacterDetail` has been removed. No other significant commented-out feature blocks are known in that file.
 
-**Locations:**
+**Acceptance Criteria (ongoing):**
 
-- `src/pages/CharacterDetail/index.tsx` (combatant stats in stats tab)
-
-**Recommendation:** Either implement the feature or remove the comment.
-
-**Acceptance Criteria:**
-
-- No commented-out code remains
-- If feature is needed, create a task to implement it properly
+- No commented-out code remains when discovered
+- If a feature is needed, create a task to implement it properly
 
 ---
 
-### 5.2 Populate Missing Item Metadata
+### 5.2 Item System (Removed — Deferred)
 
-**Issue:** Item fields like `rarity`, `value`, `description`, `icon` are mostly unpopulated.
+**Issue:** A generic item/inventory economy was removed from the game.
 
-**Current:** Items have been removed from the active economy. The `ITEM_DICTIONARY` and `GameItemId` enum still exist for future quest-item mechanics. Fields remain undefined in most entries.
+**Current:** `ITEM_DICTIONARY`, `GameItemId`, and the generic `inventory` save field are gone. Collectibles use dedicated state (`collectedKrana`, `kraataCollection`, mask collection via quest progress). Legacy saves with `inventory` are migrated into `kraataCollection` on load.
 
-**Recommendation:** Defer until items are reintroduced as quest items. At that point, either populate the fields or pare down the type.
+**Recommendation:** Defer reintroducing items until a concrete quest-item mechanic is designed. If reintroduced, define a minimal type from scratch rather than reviving the old dictionary.
 
-**Decision needed:**
+**Decision needed (when items return):**
 
-- What item types will be needed for quest-item mechanics?
-- Should the existing item definitions be repurposed or replaced?
+- What item types will quest mechanics require?
+- Should items be IDs in state or embedded in quest progress only?
 
-**Acceptance Criteria:**
+**Acceptance Criteria (when reintroduced):**
 
-- All items have complete metadata, OR
-- Unused fields are removed from type definition
+- Item types and metadata are complete for every item in use, OR unused fields are removed from the type definition
 
 ---
 
 ### 5.3 Clarify Character Tags System
 
-**Issue:** `MatoranTag` enum exists with only one value (`ChroniclersCompany`), but tags aren't used in game logic.
+**Issue:** `MatoranTag` exists but has limited use in game logic.
 
-**Current:** Tags are defined but not referenced in quests, jobs, or combat.
+**Current:**
 
-**Recommendation:** Either implement tag-based mechanics or remove the system.
+- `MatoranTag.Custom` — used for player-created characters (creation, persistence, share tokens)
+- `MatoranTag.ChroniclersCompany` — set on Chronicler's Company matoran in `src/data/dex/matoran.ts` but not referenced by quests, jobs, or combat
+
+**Recommendation:** Either implement tag-based mechanics for story tags (e.g. Chronicler's Company quest requirements) or remove unused tag values.
 
 **Decision needed:**
 
-- Are tags planned for quest requirements or special abilities?
-- Should the system be removed as premature abstraction?
+- Are tags planned for quest requirements or special abilities beyond custom characters?
+- Should `ChroniclersCompany` drive a mechanic, or be removed as premature abstraction?
 
 **Acceptance Criteria:**
 
-- Tags are used in at least one game mechanic, OR
-- Tag system is removed from types and data
+- Story tags are used in at least one game mechanic, OR
+- Unused tag values are removed from types and data
 
 ---
 
@@ -227,18 +220,23 @@ function detectQuestCycles(quests: Quest[]): string[] {
 
 ---
 
-### 6.3 Complete Mask Hunt Quest Line
+### 6.3 Mask Hunt Unlock Pattern ✅ Documented
 
-**Issue:** `masksCollected` function has hardcoded quest IDs but not all masks have individual unlock quests.
+**Status:** Individual mask quests exist in `src/data/quests/mask_hunt.ts`; `masksCollected` in `src/services/matoranUtils.ts` maps quest IDs to masks per Toa. This is intentional, not an incomplete implementation.
 
-**Current:** Some masks unlock via specific quests, others only via `maskhunt_final_collection`.
+**Unlock pattern (Toa Mata):**
 
-**Recommendation:** Either complete individual mask hunt quests or document the intended unlock pattern.
+- Each Toa starts with their story mask; additional masks unlock via named `maskhunt_*` quests (see the per-Toa `switch` in `masksCollected`).
+- **`maskhunt_final_collection`** grants the full 12-mask set at once (shortcut for players who reach the finale).
+- **`Rau` and `Ruru`** have no individual quest mapping — they are only included via `maskhunt_final_collection` (or the full-set shortcut). All other masks in `FULL_MASK_SET` have at least one individual quest path.
 
-**Acceptance Criteria:**
+**Acceptance Criteria:** Met — pattern is documented here and encoded in `masksCollected` + quest data.
 
-- All masks have individual unlock quests, OR
-- Documentation clarifies which masks are only available via final collection
+---
+
+### 6.4 Custom Matoran Creation & Sharing ✅ Implemented
+
+**Status:** Players can design custom Matoran (`/character-create`), recruit them for protodermis, persist them in `customCharacters`, and share/import via encoded tokens (`customCharacterShare` service). E2E coverage in `e2e/customCharacter.spec.ts`.
 
 ---
 
@@ -246,28 +244,17 @@ function detectQuestCycles(quests: Quest[]): string[] {
 
 ### 7.1 Optimize Job Tick Interval
 
-**Issue:** 5-second tick interval may cause performance issues with many characters.
+**Issue:** 5-second tick interval may cause unnecessary work with many characters.
 
-**Current:** All characters processed every 5 seconds regardless of assignment status.
+**Current:** `useJobTickEffect` maps over every recruited character every 5 seconds. `applyJobExp` in `src/game/Jobs.ts` already no-ops for characters without an assignment (returns `[matoran, 0]` immediately), so idle characters incur only a cheap map iteration, not job math.
 
-**Recommendation:** Only process characters with active assignments.
-
-**Proposed approach:**
-
-```typescript
-setRecruitedCharacters((prev) =>
-  prev.map((matoran) => {
-    if (!matoran.assignment) return matoran; // Skip idle characters
-    // ... process job tick
-  })
-);
-```
+**Recommendation (optional micro-optimization):** Short-circuit at the map level — `if (!matoran.assignment) return matoran` — to avoid object spreads for idle characters when rosters are large.
 
 **Acceptance Criteria:**
 
-- Idle characters are skipped during tick processing
+- Idle characters do no job exp/protodermis work (already true)
+- Optional: map-level skip reduces allocations with 20+ characters
 - No functional changes to job mechanics
-- Performance improvement measurable with 20+ characters
 
 ---
 
@@ -289,21 +276,15 @@ setRecruitedCharacters((prev) =>
 
 ### 7.3 Add Memoization for Expensive Computations
 
-**Issue:** Some computations (quest availability, job unlocks) recalculate on every render.
+**Issue:** Some derived state may still recalculate more often than needed.
 
-**Current:** Functions are called directly in components without memoization.
+**Current:** Many surfaces already use `useMemo` (e.g. `CharacterDetail` tabs/mask info, `CharacterInventory` lists, `Quests` completed sections, `MaskCollection`, recruitment `canRecruit`). Other paths may still recompute on every render.
 
-**Recommendation:** Use `useMemo` for expensive derived state.
-
-**Examples:**
-
-- Quest availability filtering
-- Job unlock status
-- Mask collection status
+**Recommendation:** Audit remaining hot paths (quest availability filtering, job unlock status) and memoize where profiling shows cost.
 
 **Acceptance Criteria:**
 
-- Expensive computations are memoized
+- Expensive computations are memoized where measured
 - Dependencies are correctly specified
 - No stale data issues
 

@@ -9,6 +9,7 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - **Recruitment System**: Recruit Matoran and Toa characters using protodermis (currency)
 - **Character Progression**: Characters gain XP from jobs and quests, leveling up to become more powerful
 - **Character Customization**: Override mask colors and appearances
+- **Custom Matoran**: Design and recruit your own Matoran; share them via import codes
 - **3D Character Rendering**: View your characters in 3D using React Three Fiber
 
 ### Idle Gameplay
@@ -236,7 +237,8 @@ The game automatically saves to localStorage:
 | [AGENTS.md](AGENTS.md)                             | Cursor Cloud / agent quick reference (commands and caveats)                |
 | [docs/TELEMETRY.md](docs/TELEMETRY.md)             | Optional build-time telemetry (`VITE_TELEMETRY_URL`) and privacy behaviour |
 | [e2e/README.md](e2e/README.md)                     | Playwright E2E tests and snapshot workflow                                 |
-| [ARCHITECTURE_ROADMAP.md](ARCHITECTURE_ROADMAP.md) | Backlog of possible technical improvements (not a commitment)              |
+| [ARCHITECTURE_ROADMAP.md](ARCHITECTURE_ROADMAP.md) | Technical debt and improvement backlog (updated as items land or change)   |
+| [docs/UI_UX_STRATEGY.md](docs/UI_UX_STRATEGY.md) | Portrait-first UI/UX direction and phased 3D expansion plan                |
 
 ## 🤝 Contributing
 

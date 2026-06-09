@@ -46,8 +46,7 @@ This direction maximizes immersion-per-engineering-hour, stays performant on mid
 2. **Battle feedback is split-brain** — The 3D arena sits behind the UI (`z-index: -1`) with models animating, but the player reads combat primarily from 2D cards. The two layers don't reinforce each other; they compete for attention.
 3. **No environmental storytelling** — Every screen has the same dark gradient background. There's no sense of _place_ (Mata Nui, Kini-Nui, Ta-Koro) despite the rich lore.
 4. **Idle progression is invisible** — The only idle indicator is a protodermis counter and job badges. There's no visual heartbeat showing the game is alive when you're on the quests or characters screen.
-5. **Recruitment uses `alert()`** — The most exciting moment (getting a new character) has the worst feedback.
-6. **Text-heavy quest flow** — Available quests are a card list with requirement chips. No visual hook to the world the quest describes.
+5. **Text-heavy quest flow** — Available quests are a card list with requirement chips. No visual hook to the world the quest describes.
 
 ---
 
@@ -63,7 +62,7 @@ This direction maximizes immersion-per-engineering-hour, stays performant on mid
 | **Loot anticipation**         | Krana/kraata drops shown as text rewards                                                   | 3D loot reveal, glow, physical drop from enemy                           |
 | **Sense of place**            | None — every screen is same dark void                                                      | Route-specific 3D backdrops                                              |
 | **Juicy feedback**            | `motion` for layout transitions; damage popups float                                       | Screen shake, particle bursts on crits, elemental VFX on mask powers     |
-| **One-hand reachability**     | Bottom nav is good; battle "Run Round" button is not always thumb-reachable                | Action buttons must live in bottom 40% of viewport                       |
+| **One-hand reachability**     | Bottom nav and battle action bar are thumb-friendly; some secondary actions remain higher  | Keep primary actions in the bottom 40% of the viewport                   |
 
 ---
 
@@ -285,7 +284,7 @@ The codebase uses **GLTF animation clips** stored in the model GLBs. `useCombatA
 
 | Concern                     | Guideline                                                                                                                                                                                                                                       |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Thumb reach**             | Primary action buttons (Run Round, Recruit, Start Quest) must be in the bottom 40% of viewport height. Current "Run Round" is mid-screen — needs to move down.                                                                                  |
+| **Thumb reach**             | Primary action buttons (Run Round, Recruit, Start Quest) must stay in the bottom 40% of viewport height. Battle actions use a fixed bottom bar above the nav; audit new screens against the same rule.                                         |
 | **Safe areas**              | Use `env(safe-area-inset-top)` and `env(safe-area-inset-bottom)` in CSS. The nav is already 24px from bottom; add `+ env(safe-area-inset-bottom)` for iPhone home indicator.                                                                    |
 | **Text size**               | Minimum 14px for body text, 12px for secondary labels. Current `0.7rem` nav labels (~11.2px) are borderline — consider bumping to `0.75rem`.                                                                                                    |
 | **Touch targets**           | Minimum 44x44px for all interactive elements (WCAG 2.5.8). Current nav items are fine (64px tall); check quest/battle card buttons.                                                                                                             |
