@@ -66,9 +66,9 @@ export function PWABadge() {
               {showNeedRefresh ? <RefreshCw size={22} /> : <Download size={22} />}
             </div>
             <div className="pwa-update-banner__text">
-              <p id="pwa-update-title" className="pwa-update-banner__title">
+              <h2 id="pwa-update-title" className="pwa-update-banner__title">
                 {showNeedRefresh ? 'Update available' : 'Ready for offline play'}
-              </p>
+              </h2>
               <p id="pwa-update-description" className="pwa-update-banner__description">
                 {showNeedRefresh
                   ? 'A new version of the game is ready. Reload to get the latest content.'

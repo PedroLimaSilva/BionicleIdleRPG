@@ -45,15 +45,19 @@
 
   &__title {
     margin: 0 0 0.25rem;
+    font-family: var(--font-display);
     font-size: 0.95rem;
     font-weight: 700;
+    line-height: 1.2;
     color: var(--color-accent);
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 8px var(--color-accent-hover);
   }
 
   &__description {
     margin: 0;
+    font-family: var(--font-body);
     font-size: 0.85rem;
     line-height: 1.45;
     color: var(--color-text-muted);
