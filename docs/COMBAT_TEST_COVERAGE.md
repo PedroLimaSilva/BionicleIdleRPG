@@ -107,7 +107,7 @@ _(All suggested next steps have been addressed by the fix above.)_
 | Kakama | SPEED (extra turn)        | round(1)  | turn(5)  | ✓ (triggerMaskPowers) |
 | Pakari | ATK_MULT (3x)             | attack(1) | turn(2)  | ✓                     |
 | Miru   | DMG_MITIGATOR (0, 2 hits) | hit(2)    | wave(1)  | ✓                     |
-| Ruru   | ACCURACY_MULT (0.5)       | turn(2)   | turn(4)  | ✗                     |
+| Ruru   | ACCURACY_MULT (0.5)       | turn(2)   | turn(4)  | ✓ (rollAttackHits)    |
 | Komau  | CONFUSION                 | turn(3)   | turn(4)  | ✓                     |
 | Rau    | ATK_MULT (1.5x, wave)     | wave(1)   | wave(2)  | ✓                     |
 | Matatu | Immobilize enemy          | wave(1)   | turn(2)  | ✗                     |
@@ -125,6 +125,7 @@ _(All suggested next steps have been addressed by the fix above.)_
 - `calculateAtkDmg` with ATK_MULT masks
 - `applyDamage` with DMG_MITIGATOR masks
 - `applyHealing` with HEAL masks
+- `getAccuracyMultiplier` / `rollAttackHits` with ACCURACY_MULT (Ruru)
 
 ### Masks covered
 
@@ -136,6 +137,7 @@ _(All suggested next steps have been addressed by the fix above.)_
 | Miru   | ✓       | Full immunity when active                                  |
 | Mahiki | ✓       | Full immunity when active                                  |
 | Kaukau | ✓       | 20% heal when active, no heal when inactive, cap at max HP |
+| Ruru   | ✓       | Accuracy multiplier stacking; hit/miss rolls at 0.5 debuff   |
 
 ### Gaps
 
@@ -196,6 +198,9 @@ _(All suggested next steps have been addressed by the fix above.)_
 | Miru (2 hit duration) provides mitigation for first 2 hits             | ✓         |
 | Mahiki (1 hit duration) provides mitigation for 1 hit then expires     | ✓         |
 | Huna (1 turn untargetable) makes enemy untargetable when active        | ✓         |
+| Ruru applies ACCURACY_MULT to every living enemy on activation         | ✓         |
+| Ruru blinded enemy misses their attack                                 | ✓         |
+| Ruru ACCURACY_MULT lasts exactly 2 enemy turns                         | ✓         |
 | Komau CONFUSION makes enemy attack their own team                      | ✓         |
 | Komau CONFUSION: confused enemy attacks itself when alone              | ✓         |
 | Kakama grants Pohatu two attacks in one round                          | ✓         |
@@ -221,6 +226,7 @@ _(All suggested next steps have been addressed by the fix above.)_
 | Mahiki | ✓       | Hit duration (1 hit)                                                          |
 | Huna   | ✓       | AGGRO untargetable                                                            |
 | Komau  | ✓       | CONFUSION debuff                                                              |
+| Ruru   | ✓       | allEnemies ACCURACY_MULT, miss on blind, 2-turn duration on enemy             |
 
 ### Gaps / Known issues
 
@@ -234,8 +240,8 @@ _(All suggested next steps have been addressed by the fix above.)_
 
 | Aspect                   | maskPowers | maskPowerCooldowns | battleSimulation         |
 | ------------------------ | ---------- | ------------------ | ------------------------ |
-| Masks tested             | 6 of 12    | N/A (wave only)    | 9 of 12                  |
-| Effect types tested      | 3 of 7     | -                  | -                        |
+| Masks tested             | 7 of 12    | N/A (wave only)    | 10 of 12                 |
+| Effect types tested      | 4 of 8     | -                  | -                        |
 | Duration units exercised | -          | 5 of 5 (all)       | round, attack, turn, hit |
 | Cooldown units exercised | -          | 2 of 2 (all)       | wave                     |
 | Full combat flow         | ✗          | ✗                  | ✓                        |
@@ -248,12 +254,14 @@ _(All suggested next steps have been addressed by the fix above.)_
 2. ~~**maskPowerCooldowns.spec.ts**: Consider exporting `decrementMaskPowerCounter` for unit tests, or add tests via battle simulation for turn/round/attack/hit.~~ ✓ Exported and tested for all unit types
 3. ~~**battleSimulation.spec.ts**: Add Akaku, Miru, Mahiki, Huna; add hit-based duration tests.~~ ✓ Implemented
 4. ~~**battleSimulation.spec.ts**: Fix multi-round post-advanceWave bug (Hau stays active in wave 2 when wave 1 rounds run first).~~ ✓ Fixed — duration reset on reactivation, all tests pass.
-5. **Unimplemented effects**: Ruru (ACCURACY_MULT), Matatu (immobilize) — tests can wait until implemented. Komau (CONFUSION) — ✓ Implemented.
+5. ~~**Ruru (ACCURACY_MULT)**: Implement effect + tests.~~ ✓ Implemented (`rollAttackHits`, `allEnemies` activation, battle simulation coverage).
+6. **Matatu (immobilize)**: Implement skip-turn effect and tests when combat support is added.
 
 ---
 
 ## Implementation Notes
 
+- **combatUtils.ts**: `rollAttackHits` runs before `calculateAtkDmg`; misses skip damage and target hit animations.
 - **combatUtils.ts**: Cooldown is correctly set from MASK_POWERS when duration expires; not decremented in same pass.
 - **combatUtils.ts**: Round-end decrements (mask power duration, debuffs) run as a dedicated final step after all actor turns, so they always execute regardless of turn order or early exits.
 - **combatUtils.ts**: Optional `getLatestState` callback allows round-end to read latest team/enemies and avoid stale closures.

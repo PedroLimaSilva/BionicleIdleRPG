@@ -142,7 +142,15 @@ interface CombatDuration {
 // Applied effect on a combatant (created from MaskEffect template).
 // Actual code uses a discriminated union; shown here simplified.
 type TargetEffect = {
-  type: 'DMG_MITIGATOR' | 'HEAL' | 'ATK_MULT' | 'AGGRO' | 'SPEED' | 'DEFENSE' | 'CONFUSION';
+  type:
+    | 'DMG_MITIGATOR'
+    | 'HEAL'
+    | 'ATK_MULT'
+    | 'AGGRO'
+    | 'SPEED'
+    | 'DEFENSE'
+    | 'ACCURACY_MULT'
+    | 'CONFUSION';
   multiplier?: number; // Effect strength (can be negative for debuffs); absent on CONFUSION
   durationRemaining: number; // Decrements each matching unit
   durationUnit: 'attack' | 'hit' | 'turn' | 'round';
@@ -211,6 +219,16 @@ When a mask is activated, it creates `TargetEffect` instances on the appropriate
 
 **Important:** Cooldown only starts decrementing AFTER all effects with `sourceId === combatant.id` have expired (durationRemaining === 0).
 
+### Hit Accuracy (ACCURACY_MULT)
+
+Attacks normally always connect (`BASE_HIT_CHANCE = 1`). Before damage is calculated, `rollAttackHits(attacker)` checks whether the swing lands:
+
+- `hitChance = BASE_HIT_CHANCE × product(active ACCURACY_MULT multipliers on attacker)`
+- Multipliers stack multiplicatively (e.g. two `0.5` debuffs → 25% hit chance)
+- On miss: no damage, no hit feedback, no target Hit/Defeat animation; attacker turn counters still decrement
+
+**Ruru (Mask of Night Vision):** `target: 'allEnemies'`. On activation at round start, every living enemy receives `ACCURACY_MULT` with `multiplier: 0.5` for 2 turns (duration decrements on each enemy's turn). Cooldown: 4 turns.
+
 ## State Persistence
 
 ### Ephemeral (Lost on Reload)
@@ -239,7 +257,8 @@ When a mask is activated, it creates `TargetEffect` instances on the appropriate
 ### Combat Utils (`combatUtils.ts`)
 
 - `queueCombatRound`: Orchestrates round execution
-- `triggerMaskPowers`: Handles mask power activation
+- `triggerMaskPowers`: Handles mask power activation (self, team, allEnemies)
+- `getAccuracyMultiplier` / `rollAttackHits`: Hit chance from ACCURACY_MULT debuffs
 - `calculateAtkDmg`: Computes damage with element effectiveness
 - `chooseTarget`: Implements targeting strategies
 - `generateCombatantStats`: Creates combatant instances from templates
@@ -251,11 +270,12 @@ When a mask is activated, it creates `TargetEffect` instances on the appropriate
 - ✅ Element effectiveness system
 - ✅ Battle strategies (Random, LowestHp, MostEffective)
 - ✅ Mask power activation
-- ✅ Mask power effect application (ATK_MULT, DMG_MITIGATOR, HEAL, AGGRO, SPEED)
+- ✅ Mask power effect application (ATK_MULT, DMG_MITIGATOR, HEAL, AGGRO, SPEED, ACCURACY_MULT)
 - ✅ Mask power duration tracking (all unit types)
 - ✅ Mask power cooldown tracking (all unit types)
 - ✅ Komau CONFUSION effect
+- ✅ Ruru ACCURACY_MULT (allEnemies blind, hit roll)
 - ✅ Reward distribution (EXP, loot, Krana)
 - ✅ Experience gain (persisted on Collect Rewards)
-- ❌ Advanced mask effects (ACCURACY_MULT for Ruru, Matatu immobilize)
+- ❌ Matatu immobilize (skip enemy turn)
 - ✅ Nuva mask powers (team-wide effects)

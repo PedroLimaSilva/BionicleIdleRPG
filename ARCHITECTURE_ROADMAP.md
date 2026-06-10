@@ -123,11 +123,11 @@ function detectQuestCycles(quests: Quest[]): string[] {
 
 **Issue:** Minimal test coverage, especially for pure game logic functions.
 
-**Current:** Unit tests exist across `src/game/` (e.g. `Levelling`, `Jobs`, `Quests`, `BattleRewards`, `Krana`, `CharacterEvolution`, `masks`, `nuvaSymbols`, `ProtodermisConversion`, `encounterVisibility`, `customMataBuild`) and `src/services/` (e.g. `combatUtils`, `maskPowers`, `maskPowerCooldowns`, `battleSimulation`, `gamePersistence`, `matoranUtils`, `customCharacterShare`). E2E coverage includes recruitment, quests, cutscenes, custom characters, battle flow, and character detail. Coverage is substantially improved but not yet comprehensive (e.g. some mask powers like Ruru/Matatu remain untested in combat).
+**Current:** Unit tests exist across `src/game/` (e.g. `Levelling`, `Jobs`, `Quests`, `BattleRewards`, `Krana`, `CharacterEvolution`, `masks`, `nuvaSymbols`, `ProtodermisConversion`, `encounterVisibility`, `customMataBuild`) and `src/services/` (e.g. `combatUtils`, `maskPowers`, `maskPowerCooldowns`, `battleSimulation`, `gamePersistence`, `matoranUtils`, `customCharacterShare`). E2E coverage includes recruitment, quests, cutscenes, custom characters, battle flow, and character detail. Coverage is substantially improved but not yet comprehensive (e.g. Matatu immobilize remains unimplemented in combat).
 
 **Recommendation:** Continue adding tests for critical game logic and combat edge cases:
 
-- Remaining mask power implementations (`Ruru`, `Matatu`)
+- Remaining mask power implementation (`Matatu` immobilize)
 - Quest prerequisite validation (see 3.2)
 - Integration paths for custom character share/recruit flows
 
