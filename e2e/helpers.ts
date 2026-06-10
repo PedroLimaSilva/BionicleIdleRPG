@@ -1,6 +1,11 @@
 import { Page, TestInfo } from '@playwright/test';
 import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
+import type { E2ePwaBannerState } from '../src/utils/testMode';
+
+type TestModeOptions = {
+  pwaBanner?: E2ePwaBannerState;
+};
 
 export const INITIAL_GAME_STATE: PartialGameState = {
   activeQuests: [],
@@ -20,11 +25,14 @@ export const INITIAL_GAME_STATE: PartialGameState = {
  * This should be called before navigation to ensure test mode is active.
  * Also dismisses the telemetry consent prompt so it doesn't block tests.
  */
-export async function enableTestMode(page: Page) {
-  await page.addInitScript(() => {
+export async function enableTestMode(page: Page, options?: TestModeOptions) {
+  await page.addInitScript((pwaBanner?: E2ePwaBannerState) => {
     localStorage.setItem('TEST_MODE', 'true');
     localStorage.setItem('TELEMETRY_ENABLED', 'false');
-  });
+    if (pwaBanner) {
+      localStorage.setItem('E2E_PWA_BANNER', pwaBanner);
+    }
+  }, options?.pwaBanner);
 }
 
 /**
@@ -48,12 +56,22 @@ export async function addCanvasHidingInitScript(page: Page) {
  * Creates a game state and stores it in localStorage to be loaded by the game.
  * Also enables test mode and dismisses the telemetry consent prompt.
  */
-export async function setupGameState(page: Page, gameState: PartialGameState) {
-  await page.addInitScript((state) => {
-    localStorage.setItem('GAME_STATE', JSON.stringify(state));
-    localStorage.setItem('TEST_MODE', 'true');
-    localStorage.setItem('TELEMETRY_ENABLED', 'false');
-  }, gameState);
+export async function setupGameState(
+  page: Page,
+  gameState: PartialGameState,
+  options?: TestModeOptions
+) {
+  await page.addInitScript(
+    ({ pwaBanner, state }: { pwaBanner?: E2ePwaBannerState; state: PartialGameState }) => {
+      localStorage.setItem('GAME_STATE', JSON.stringify(state));
+      localStorage.setItem('TEST_MODE', 'true');
+      localStorage.setItem('TELEMETRY_ENABLED', 'false');
+      if (pwaBanner) {
+        localStorage.setItem('E2E_PWA_BANNER', pwaBanner);
+      }
+    },
+    { pwaBanner: options?.pwaBanner, state: gameState }
+  );
 }
 
 export type GotoOptions = {

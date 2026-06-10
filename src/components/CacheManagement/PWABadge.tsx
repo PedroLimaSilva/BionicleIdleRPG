@@ -1,13 +1,16 @@
 import { Download, RefreshCw } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { useState } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
-import { isTestMode } from '../../utils/testMode';
+import { getE2ePwaBannerState, isTestMode } from '../../utils/testMode';
 import './PWABadge.scss';
 
 export function PWABadge() {
   const period = 60 * 60 * 1000;
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
+  const [e2eBannerState] = useState(getE2ePwaBannerState);
+  const [dismissed, setDismissed] = useState(false);
 
   const {
     needRefresh: [needRefresh, setNeedRefresh],
@@ -27,9 +30,12 @@ export function PWABadge() {
     },
   });
 
-  const visible = offlineReady || needRefresh;
+  const showNeedRefresh = e2eBannerState === 'needRefresh' || (e2eBannerState === null && needRefresh);
+  const visible =
+    !dismissed && (e2eBannerState !== null || offlineReady || needRefresh);
 
   function close() {
+    setDismissed(true);
     setOfflineReady(false);
     setNeedRefresh(false);
   }
@@ -57,21 +63,21 @@ export function PWABadge() {
         >
           <div className="pwa-update-banner__content">
             <div className="pwa-update-banner__icon" aria-hidden="true">
-              {needRefresh ? <RefreshCw size={22} /> : <Download size={22} />}
+              {showNeedRefresh ? <RefreshCw size={22} /> : <Download size={22} />}
             </div>
             <div className="pwa-update-banner__text">
               <p id="pwa-update-title" className="pwa-update-banner__title">
-                {needRefresh ? 'Update available' : 'Ready for offline play'}
+                {showNeedRefresh ? 'Update available' : 'Ready for offline play'}
               </p>
               <p id="pwa-update-description" className="pwa-update-banner__description">
-                {needRefresh
+                {showNeedRefresh
                   ? 'A new version of the game is ready. Reload to get the latest content.'
                   : 'Your progress is cached and the game can be played without a connection.'}
               </p>
             </div>
           </div>
           <div className="pwa-update-banner__actions">
-            {needRefresh ? (
+            {showNeedRefresh ? (
               <>
                 <button type="button" className="button cancel-button" onClick={close}>
                   Later

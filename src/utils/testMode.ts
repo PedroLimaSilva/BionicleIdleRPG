@@ -15,6 +15,19 @@ export function isTestMode(): boolean {
   return localStorage.getItem('TEST_MODE') === 'true';
 }
 
+export type E2ePwaBannerState = 'needRefresh' | 'offlineReady';
+
+/**
+ * Playwright-only override to force the PWA update banner visible for visual regression tests.
+ * Set via localStorage: E2E_PWA_BANNER=needRefresh|offlineReady (requires TEST_MODE=true).
+ */
+export function getE2ePwaBannerState(): E2ePwaBannerState | null {
+  if (!isTestMode()) return null;
+  const value = localStorage.getItem('E2E_PWA_BANNER');
+  if (value === 'needRefresh' || value === 'offlineReady') return value;
+  return null;
+}
+
 /**
  * Get animation time scale based on test mode
  * Returns 0 in test mode to pause animations, 1 otherwise
