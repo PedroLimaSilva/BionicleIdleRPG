@@ -252,19 +252,21 @@ function detectQuestCycles(quests: Quest[]): string[] {
 
 ## Priority 7: Performance & Scalability (Low Priority)
 
-### 7.1 Optimize Job Tick Interval
+### 7.1 Optimize Job Tick Interval ✅ Implemented
 
-**Issue:** 5-second tick interval may cause unnecessary work with many characters.
+**Status:** Resolved.
 
-**Current:** `useJobTickEffect` maps over every recruited character every 5 seconds. `applyJobExp` in `src/game/Jobs.ts` already no-ops for characters without an assignment (returns `[matoran, 0]` immediately), so idle characters incur only a cheap map iteration, not job math.
+**Implementation:**
 
-**Recommendation (optional micro-optimization):** Short-circuit at the map level — `if (!matoran.assignment) return matoran` — to avoid object spreads for idle characters when rosters are large.
+- **Battle pause:** `useJobTickEffect` stops its 5-second interval while `battle.phase !== Idle`. On battle start it flushes the partial interval via `applyJobExp`; on resume it applies elapsed battle time through the same catch-up path. This avoids main-thread spikes from full save rewrites and broad `useGame()` re-renders during combat.
+- **Map-level skip:** `tickRecruitedCharactersJobExp` in `src/services/jobUtils.ts` and `applyOfflineJobExp` in `src/game/Jobs.ts` return idle roster members unchanged (`if (!matoran.assignment) return matoran`), avoiding object spreads when rosters are large.
+- **Batched protodermis:** Each tick aggregates protodermis across assigned characters into a single `addProtodermis` call.
 
 **Acceptance Criteria:**
 
-- Idle characters do no job exp/protodermis work (already true)
-- Optional: map-level skip reduces allocations with 20+ characters
-- No functional changes to job mechanics
+- Idle characters do no job exp/protodermis work ✅
+- Map-level skip reduces allocations with large rosters ✅
+- No functional changes to job mechanics ✅
 
 ---
 

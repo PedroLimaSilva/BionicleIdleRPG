@@ -213,13 +213,15 @@ All game state must flow through the single `GameContext` provided by `GameProvi
 
 ### Forbidden: Breaking the Job Tick Contract
 
-The `useJobTickEffect` hook runs on an interval and processes all assigned jobs.
+The `useJobTickEffect` hook runs on an interval and processes all assigned jobs. It pauses while `battle.phase !== Idle`: interval ticks stop during battle, partial progress is flushed at battle start, and elapsed time is applied on resume via `applyJobExp` catch-up.
 
 **NEVER** create multiple job tick intervals.
 
 **NEVER** process job exp outside of `applyJobExp` or `applyOfflineJobExp`.
 
 **NEVER** modify the job tick logic without ensuring offline progress calculations remain consistent.
+
+**NEVER** run job ticks during active battle outside of the pause/resume flush and catch-up handled by `useJobTickEffect`.
 
 ---
 

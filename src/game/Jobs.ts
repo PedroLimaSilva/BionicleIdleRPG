@@ -122,6 +122,8 @@ export function applyOfflineJobExp(
   let currencyGain = 0;
 
   const updated = characters.map((m) => {
+    if (!m.assignment) return m;
+
     const [updatedMatoran, earned] = applyJobExp(m, now, true);
 
     if (earned > 0) {

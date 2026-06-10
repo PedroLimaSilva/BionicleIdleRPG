@@ -8,7 +8,7 @@ import { useGamePersistence } from './useGamePersistence';
 import { GameState, GameStateEditorApi } from '../types/GameState';
 import { useQuestState } from './useQuestState';
 import { useQuestNotifications } from './useQuestNotifications';
-import { useBattleState } from './useBattleState';
+import { BattlePhase, useBattleState } from './useBattleState';
 import { clamp } from '../utils/math';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
 import { BattleRewardParams, KranaReward } from '../types/GameState';
@@ -117,13 +117,15 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
   recruitedCharactersRef.current = recruitedCharacters;
   setRecruitedCharactersRef.current = setRecruitedCharacters;
 
-  useJobTickEffect(setRecruitedCharacters, (amount) =>
-    setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap))
+  const battle = useBattleState(isNuvaSymbolsSequestered(completedQuests));
+
+  useJobTickEffect(
+    setRecruitedCharacters,
+    (amount) => setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap)),
+    battle.phase !== BattlePhase.Idle
   );
 
   useQuestNotifications(activeQuests);
-
-  const battle = useBattleState(isNuvaSymbolsSequestered(completedQuests));
 
   // Auto-save when critical state changes (buyableCharacters is derived, not persisted)
   useGamePersistence({
