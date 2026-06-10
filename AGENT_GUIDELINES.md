@@ -155,6 +155,8 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 
 **NEVER** persist battle state.
 
+**Planned improvements:** See `docs/SAVE_PERSISTENCE_PLAN.md` for the approved direction — version-step migrations, quota handling, and (Phase B) IndexedDB split stores for row-level saves. Do not implement without explicit approval.
+
 ---
 
 ## Explicit Anti-Patterns and Forbidden Changes

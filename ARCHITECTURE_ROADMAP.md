@@ -41,44 +41,54 @@ This document identifies technical debt, inconsistencies, and architectural impr
 
 ## Priority 3: Technical Debt (Medium Risk)
 
-### 3.1 Add Save Migration System
+### 3.1 Save Migration & Persistence Overhaul
 
-**Issue:** Changing `CURRENT_GAME_STATE_VERSION` invalidates all saves when no version-step migration exists.
+**Issue:** Three related persistence problems:
+
+1. **Version bumps wipe saves** — `CURRENT_GAME_STATE_VERSION` mismatch rejects the save and loads `INITIAL_GAME_STATE`.
+2. **Unbounded `customCharacters`** — no cap or quota handling; large share-import collections can hit `localStorage` limits (~5 MB) with silent write failures.
+3. **Full blob rewrite on job tick** — every 5 s, `useGamePersistence` re-serializes the entire save (including all custom characters) when only character `exp` changed.
 
 **Current behavior:**
 
 - Version mismatch → reject save → load `INITIAL_GAME_STATE`
 - Ad-hoc retrocompat in `loadGameState` (`src/services/gamePersistence.ts`) handles specific legacy shapes when the version still matches: `widgets` → `protodermis`, kraata in legacy `inventory` → `kraataCollection`, unrecognized job IDs cleared, and missing `customCharacters` / `collectedKrana` / `rahkshi` defaults filled in
+- `useGamePersistence` writes one `localStorage` key with no debounce, try/catch, or partial updates
 
-**Recommendation:** Add explicit per-version migration functions so `CURRENT_GAME_STATE_VERSION` bumps can upgrade older saves instead of discarding them.
+**Recommendation:** Two-phase plan documented in [`docs/SAVE_PERSISTENCE_PLAN.md`](docs/SAVE_PERSISTENCE_PLAN.md).
 
-**Proposed approach:**
+**Phase A (near term, localStorage):**
 
-```typescript
-type Migration = (oldState: any) => any;
+- Per-version document migrations (`saveMigrations.ts` + `migrateState`)
+- Quota error handling with user-visible warning
+- Debounced saves
+- Prune dismissed custom characters (optional soft cap)
 
-const MIGRATIONS: Record<number, Migration> = {
-  9: (state) => state, // v8 → v9
-  10: (state) => ({ ...state, newField: defaultValue }), // v9 → v10
-};
+**Phase B (medium term, IndexedDB via Dexie):**
 
-function migrateState(state: any, targetVersion: number): any {
-  let current = state;
-  for (let v = state.version + 1; v <= targetVersion; v++) {
-    if (MIGRATIONS[v]) {
-      current = MIGRATIONS[v](current);
-      current.version = v;
-    }
-  }
-  return current;
-}
-```
+- Split stores: `meta`, `recruited` (per character row), `customCharacters` (per row)
+- Row-level writes on job tick (exp changes do not rewrite custom character data)
+- One-time import from legacy `localStorage` blob
+- Async load with loading UI; in-memory `GameState` / `useGame()` API unchanged
+
+Document-shape migrations (Phase A) are required regardless of storage backend. Dexie schema migrations alone do not replace them.
 
 **Acceptance Criteria:**
+
+_Phase A:_
 
 - Old saves are migrated instead of discarded
 - Migration failures fall back to initial state
 - Each version bump includes a migration function
+- `QuotaExceededError` is caught and surfaced to the user
+- Saves are debounced during idle job ticks
+
+_Phase B:_
+
+- `localStorage` saves import into IndexedDB split stores
+- Job tick persists only changed recruited-character rows
+- Load is async with loading state (no flash of initial state for valid saves)
+- Tests and E2E helpers updated for IndexedDB
 
 ---
 
@@ -322,7 +332,7 @@ This roadmap does NOT include:
 - **Major architectural rewrites** - The current architecture is sound
 - **Framework migrations** - React, Vite, TypeScript are appropriate choices
 - **State management library adoption** - Custom hooks pattern works well
-- **Database integration** - localStorage is sufficient for this use case
+- **Backend / cloud database** - client-side IndexedDB for saves is planned (see `docs/SAVE_PERSISTENCE_PLAN.md`); no server-side persistence
 - **Multiplayer features** - Out of scope for idle game
 - **Mobile app conversion** - PWA support is adequate
 
