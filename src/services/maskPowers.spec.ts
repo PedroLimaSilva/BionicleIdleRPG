@@ -6,6 +6,8 @@ import {
   applyDamage,
   applyHealing,
   chooseTarget,
+  getAccuracyMultiplier,
+  rollAttackHits,
 } from './combatUtils';
 
 describe('Mask Powers - Combat Mechanics', () => {
@@ -249,6 +251,71 @@ describe('Mask Powers - Combat Mechanics', () => {
       const chosen = chooseTarget(attacker, targets);
 
       expect(chosen.id).toBe('enemy_huna');
+    });
+  });
+
+  describe('ACCURACY_MULT - Ruru (Mask of Night Vision)', () => {
+    test('getAccuracyMultiplier returns 1 with no effects', () => {
+      const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+      expect(getAccuracyMultiplier(attacker)).toBe(1);
+    });
+
+    test('getAccuracyMultiplier applies active ACCURACY_MULT multiplicatively', () => {
+      const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+      attacker.effects = [
+        {
+          durationRemaining: 2,
+          durationUnit: 'turn',
+          multiplier: 0.5,
+          sourceId: 'caster',
+          type: 'ACCURACY_MULT',
+        },
+      ];
+      expect(getAccuracyMultiplier(attacker)).toBe(0.5);
+    });
+
+    test('getAccuracyMultiplier stacks multiple ACCURACY_MULT effects', () => {
+      const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+      attacker.effects = [
+        {
+          durationRemaining: 2,
+          durationUnit: 'turn',
+          multiplier: 0.5,
+          sourceId: 'caster-a',
+          type: 'ACCURACY_MULT',
+        },
+        {
+          durationRemaining: 1,
+          durationUnit: 'turn',
+          multiplier: 0.5,
+          sourceId: 'caster-b',
+          type: 'ACCURACY_MULT',
+        },
+      ];
+      expect(getAccuracyMultiplier(attacker)).toBe(0.25);
+    });
+
+    test('rollAttackHits always succeeds without accuracy debuffs', () => {
+      const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+      jest.spyOn(Math, 'random').mockReturnValue(0.99);
+      expect(rollAttackHits(attacker)).toBe(true);
+    });
+
+    test('rollAttackHits can miss when ACCURACY_MULT halves hit chance', () => {
+      const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+      attacker.effects = [
+        {
+          durationRemaining: 2,
+          durationUnit: 'turn',
+          multiplier: 0.5,
+          sourceId: 'caster',
+          type: 'ACCURACY_MULT',
+        },
+      ];
+      jest.spyOn(Math, 'random').mockReturnValue(0.6);
+      expect(rollAttackHits(attacker)).toBe(false);
+      jest.spyOn(Math, 'random').mockReturnValue(0.4);
+      expect(rollAttackHits(attacker)).toBe(true);
     });
   });
 
