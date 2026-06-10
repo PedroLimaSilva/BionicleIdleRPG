@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { RecruitedCharacterData } from '../types/Matoran';
-import { tickMatoranJobExp } from '../services/jobUtils';
+import { tickRecruitedCharactersJobExp } from '../services/jobUtils';
 
 export function useJobTickEffect(
   setRecruitedCharacters: (
@@ -33,12 +33,7 @@ export function useJobTickEffect(
 
       // Flush the partial interval since the last tick so battle-start time is not lost.
       setRecruitedCharactersRef.current((prev) => {
-        let protodermisGain = 0;
-        const updated = prev.map((matoran) => {
-          const { earnedProtodermis, updatedMatoran } = tickMatoranJobExp(matoran, pauseStartedAt);
-          protodermisGain += earnedProtodermis;
-          return updatedMatoran;
-        });
+        const { protodermisGain, updated } = tickRecruitedCharactersJobExp(prev, pauseStartedAt);
         if (protodermisGain > 0) {
           addProtodermisRef.current(protodermisGain);
         }
@@ -52,12 +47,7 @@ export function useJobTickEffect(
 
       // assignedAt was reset to battle start on pause; applyJobExp(now) covers battle elapsed.
       setRecruitedCharactersRef.current((prev) => {
-        let protodermisGain = 0;
-        const updated = prev.map((matoran) => {
-          const { earnedProtodermis, updatedMatoran } = tickMatoranJobExp(matoran, now);
-          protodermisGain += earnedProtodermis;
-          return updatedMatoran;
-        });
+        const { protodermisGain, updated } = tickRecruitedCharactersJobExp(prev, now);
         if (protodermisGain > 0) {
           addProtodermisRef.current(protodermisGain);
         }
@@ -72,15 +62,13 @@ export function useJobTickEffect(
     const interval = setInterval(() => {
       const now = Date.now();
 
-      setRecruitedCharactersRef.current((prev) =>
-        prev.map((matoran) => {
-          const { earnedProtodermis, updatedMatoran } = tickMatoranJobExp(matoran, now);
-
-          if (earnedProtodermis > 0) addProtodermisRef.current(earnedProtodermis);
-
-          return updatedMatoran;
-        })
-      );
+      setRecruitedCharactersRef.current((prev) => {
+        const { protodermisGain, updated } = tickRecruitedCharactersJobExp(prev, now);
+        if (protodermisGain > 0) {
+          addProtodermisRef.current(protodermisGain);
+        }
+        return updated;
+      });
     }, intervalMs);
 
     return () => clearInterval(interval);
