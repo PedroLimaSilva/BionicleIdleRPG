@@ -434,4 +434,27 @@ describe('Jobs', () => {
       });
     });
   });
+
+  describe('battle pause catch-up via applyJobExp', () => {
+    test('applyJobExp after assignedAt reset at battle start covers battle elapsed', () => {
+      const battleStart = 1_000;
+      const battleEnd = 61_000;
+      const matoran: RecruitedCharacterData = {
+        assignment: {
+          assignedAt: 0,
+          expRatePerSecond: 1,
+          job: MatoranJob.CharcoalMaker,
+        },
+        exp: 0,
+        id: 'Jala',
+      };
+
+      const [atBattleStart] = applyJobExp(matoran, battleStart);
+      const [afterBattle, earned] = applyJobExp(atBattleStart, battleEnd);
+
+      expect(earned).toBe(60);
+      expect(afterBattle.exp).toBe(61);
+      expect(afterBattle.assignment?.assignedAt).toBe(battleEnd);
+    });
+  });
 });
