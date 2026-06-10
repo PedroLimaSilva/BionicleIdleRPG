@@ -142,10 +142,30 @@ export const ELEMENT_EFFECTIVENESS: Record<ElementTribe, Record<ElementTribe, nu
   },
 };
 
+const BASE_HIT_CHANCE = 1;
 const CRIT_CHANCE = 0.125;
 const CRIT_DAMAGE_MULT = 1.5;
 
 export type AtkDamageResult = { damage: number; isCritical: boolean };
+
+/** Product of active ACCURACY_MULT effects on the attacker (1 = normal accuracy). */
+export function getAccuracyMultiplier(combatant: Combatant): number {
+  let mult = 1;
+  for (const e of combatant.effects ?? []) {
+    if (e.type === 'ACCURACY_MULT' && e.durationRemaining > 0) {
+      mult *= e.multiplier;
+    }
+  }
+  return mult;
+}
+
+/** Whether the attacker's swing connects (Ruru and future accuracy effects). */
+export function rollAttackHits(attacker: Combatant): boolean {
+  const hitChance = BASE_HIT_CHANCE * getAccuracyMultiplier(attacker);
+  if (hitChance >= 1) return true;
+  if (hitChance <= 0) return false;
+  return Math.random() < hitChance;
+}
 
 export function calculateAtkDmg(attacker: Combatant, defender: Combatant): AtkDamageResult {
   // DEFENSE multiplies the defense stat: >1 = fortify, <1 = weaken
@@ -255,6 +275,16 @@ function createEffectFromMaskEffect(
         multiplier: effect.multiplier ?? 1,
         sourceId,
         type: 'DEFENSE',
+      };
+    }
+    case 'ACCURACY_MULT': {
+      const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'turn';
+      return {
+        durationRemaining: amount,
+        durationUnit: unit,
+        multiplier: effect.multiplier ?? 1,
+        sourceId,
+        type: 'ACCURACY_MULT',
       };
     }
     case 'CONFUSION': {
@@ -512,6 +542,20 @@ function triggerMaskPowers(
             }
           }
         }
+      } else if (actor.maskPower.target === 'allEnemies') {
+        // All-enemies mask (e.g. Ruru): apply effect to every living opponent.
+        const eff = createEffectFromMaskEffect(effect, actor.id);
+        if (eff) {
+          if (isTeam) {
+            currentEnemies = currentEnemies.map((e) =>
+              e.hp > 0 ? applyEffectToCombatant(e, eff) : e
+            );
+          } else {
+            currentTeam = currentTeam.map((t) =>
+              t.hp > 0 ? applyEffectToCombatant(t, eff) : t
+            );
+          }
+        }
       } else if (actor.maskPower.target === 'self') {
         // Self-target: apply effect to caster. Effects drive changes; mask target is only for application.
         const eff = createEffectFromMaskEffect(effect, actor.id);
@@ -643,8 +687,11 @@ export function queueCombatRound(
         else currentTeam = newOpponentListForMark;
       }
 
-      const { damage, isCritical } = calculateAtkDmg(self, target);
-      const willBeDefeated = target.hp - damage <= 0;
+      const attackHits = rollAttackHits(self);
+      const { damage, isCritical } = attackHits
+        ? calculateAtkDmg(self, target)
+        : { damage: 0, isCritical: false };
+      const willBeDefeated = attackHits && target.hp - damage <= 0;
 
       // Expect 3D combatant refs to be globally accessible for now
       const actorRef = window.combatantRefs?.[self.id];
@@ -667,8 +714,8 @@ export function queueCombatRound(
         }
 
         // Apply damage and update state when contact occurs (HP bar drops at impact)
-        let updatedTarget = applyDamage(target, damage);
-        const damageDealt = target.hp - updatedTarget.hp;
+        let updatedTarget = attackHits ? applyDamage(target, damage) : target;
+        const damageDealt = attackHits ? target.hp - updatedTarget.hp : 0;
         if (damageDealt > 0) {
           emitBattleHitFeedback({
             attackerElement: self.element,
@@ -686,8 +733,10 @@ export function queueCombatRound(
         self = decrementEffectDurations(self, 'attack');
 
         // Decrement 'hit' unit counters for defender (mask + buffs)
-        updatedTarget = decrementMaskPowerCounter(updatedTarget, 'hit');
-        updatedTarget = decrementEffectDurations(updatedTarget, 'hit');
+        if (attackHits) {
+          updatedTarget = decrementMaskPowerCounter(updatedTarget, 'hit');
+          updatedTarget = decrementEffectDurations(updatedTarget, 'hit');
+        }
 
         // Decrement 'turn' unit counters ONLY for the combatant whose turn it is
         self = decrementMaskPowerCounter(self, 'turn');
@@ -736,7 +785,12 @@ export function queueCombatRound(
         // and Hit/Defeat runs stopAllAction(), which would cancel the in-progress Attack clip.
         // Skip when targetRef === actorRef with different ids (stale combatantRefs map): Hit would
         // run on the attacker's mixer and cancel Attack.
-        if (target.id !== self.id && targetRef?.playAnimation && targetRef !== actorRef) {
+        if (
+          attackHits &&
+          target.id !== self.id &&
+          targetRef?.playAnimation &&
+          targetRef !== actorRef
+        ) {
           if (willBeDefeated) {
             pendingAnimations.push(targetRef.playAnimation('Defeat', { faceTargetId: self.id }));
           } else {

@@ -61,6 +61,13 @@ export type TargetEffect =
       sourceId: string;
     }
   | {
+      type: 'ACCURACY_MULT';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round';
+      sourceId: string;
+    }
+  | {
       type: 'CONFUSION';
       durationRemaining: number;
       durationUnit: 'turn' | 'round';

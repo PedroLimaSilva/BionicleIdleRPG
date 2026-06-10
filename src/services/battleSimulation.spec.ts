@@ -379,6 +379,81 @@ describe('Battle Simulation', () => {
       expect(sim.team.length).toBe(2);
     });
 
+    test('Ruru applies ACCURACY_MULT to every living enemy on activation', async () => {
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Onua', maskOverride: Mask.Ruru }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [
+          [
+            { id: 'tahnok', lvl: 1 },
+            { id: 'tahnok', lvl: 1 },
+          ],
+        ],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Onua'], true);
+
+      await sim.runRound();
+
+      expect(
+        sim.enemies.every((enemy) =>
+          enemy.effects?.some(
+            (effect) => effect.type === 'ACCURACY_MULT' && effect.multiplier === 0.5
+          )
+        )
+      ).toBe(true);
+      const onua = sim.team.find((t) => t.id === 'Toa_Onua')!;
+      expect(onua.maskPower?.active).toBe(true);
+      expect(hasActiveEffectFromSource(sim.team, sim.enemies, 'Toa_Onua')).toBe(true);
+    });
+
+    test('Ruru blinded enemy misses their attack', async () => {
+      jest.spyOn(Math, 'random').mockReturnValue(0.6);
+
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Onua', maskOverride: Mask.Ruru }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      const hpBefore = sim.team[0].hp;
+      sim.team = setAbilities(sim.team, ['Toa_Onua'], true);
+
+      await sim.runRound();
+
+      expect(sim.team[0].hp).toBe(hpBefore);
+      expect(sim.enemies[0].effects?.some((effect) => effect.type === 'ACCURACY_MULT')).toBe(true);
+    });
+
+    test('Ruru ACCURACY_MULT lasts exactly 2 enemy turns', async () => {
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Onua', maskOverride: Mask.Ruru }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Onua'], true);
+      await sim.runRound();
+
+      const blindEffectAfterR1 = sim.enemies[0].effects?.find(
+        (effect) => effect.type === 'ACCURACY_MULT'
+      );
+      expect(blindEffectAfterR1?.durationRemaining).toBe(1);
+
+      sim.team = setAbilities(sim.team, [], false);
+      await sim.runRound();
+
+      expect(
+        sim.enemies[0].effects?.some((effect) => effect.type === 'ACCURACY_MULT') ?? false
+      ).toBe(false);
+    });
+
     test('Komau CONFUSION makes enemy attack their own team', async () => {
       const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu', maskOverride: Mask.Komau }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;

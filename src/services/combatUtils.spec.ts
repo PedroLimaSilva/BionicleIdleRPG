@@ -421,6 +421,15 @@ describe('chooseTarget', () => {
       expect(matoran.maskPower?.effect.type).toBe('AGGRO');
     });
 
+    test('generates combatant with Ruru mask (ACCURACY_MULT)', () => {
+      const onua = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+
+      expect(onua.maskPower).toBeDefined();
+      expect(onua.maskPower?.effect.type).toBe('ACCURACY_MULT');
+      expect(onua.maskPower?.target).toBe('allEnemies');
+      expect(onua.maskPower?.effect.multiplier).toBe(0.5);
+    });
+
     test('mask power has duration and cooldown properties', () => {
       const tahu = generateCombatantStats('tahu', 'Toa_Tahu', 1, Mask.Hau);
 
