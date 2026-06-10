@@ -1,0 +1,87 @@
+.pwa-update-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 550;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(135deg, rgba(26, 26, 35, 0.98) 0%, rgba(20, 20, 28, 0.96) 100%);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-top: 1px solid var(--color-border-subtle);
+  box-shadow:
+    0 -8px 32px rgba(0, 0, 0, 0.45),
+    0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 0 20px var(--color-accent-hover);
+
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex: 1 1 220px;
+    min-width: 0;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--color-accent);
+    background: radial-gradient(circle, var(--color-accent-hover) 0%, transparent 72%);
+    box-shadow: 0 0 12px var(--theme-element-glow-transparent);
+  }
+
+  &__text {
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0 0 0.25rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__description {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+
+    .button {
+      padding: 0.6rem 1.1rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .pwa-update-banner {
+    &__actions {
+      width: 100%;
+
+      .button {
+        flex: 1 1 0;
+      }
+    }
+  }
+}
