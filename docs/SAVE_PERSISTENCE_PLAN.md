@@ -1,6 +1,6 @@
 # Save Migration & Persistence Plan
 
-This document describes the planned evolution of game save/load from a single `localStorage` JSON blob to a versioned, quota-safe persistence layer. It supersedes the brief proposal in `ARCHITECTURE_ROADMAP.md` §3.1.
+This document describes the planned evolution of game save/load from a single `localStorage` JSON blob to a versioned, quota-safe persistence layer. Tracked in GitHub issues [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) (Phase A) and [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) (Phase B); see also `ARCHITECTURE_ROADMAP.md`.
 
 **Status:** Planned — not yet implemented. Do not implement without explicit approval.
 
@@ -205,9 +205,11 @@ The primary growth vector is `customCharacters`, not recruited character count.
 
 ---
 
-## Related Roadmap Items
+## Related tracking
 
-- **ARCHITECTURE_ROADMAP.md §3.1** — summary and link to this document
+- **GitHub [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333)** — Phase A (localStorage migrations and hardening)
+- **GitHub [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331)** — Phase B (IndexedDB split stores)
+- **ARCHITECTURE_ROADMAP.md** — backlog index
 - **AGENT_GUIDELINES.md** — persistence rules (`PartialGameState`, version matching, never bump version without migration)
 
 ---
