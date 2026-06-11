@@ -263,19 +263,6 @@ Attacks normally always connect (`BASE_HIT_CHANCE = 1`). Before damage is calcul
 - `chooseTarget`: Implements targeting strategies
 - `generateCombatantStats`: Creates combatant instances from templates
 
-### Current Implementation Status
+### Open work
 
-- ✅ Basic combat flow
-- ✅ Wave progression
-- ✅ Element effectiveness system
-- ✅ Battle strategies (Random, LowestHp, MostEffective)
-- ✅ Mask power activation
-- ✅ Mask power effect application (ATK_MULT, DMG_MITIGATOR, HEAL, AGGRO, SPEED, ACCURACY_MULT)
-- ✅ Mask power duration tracking (all unit types)
-- ✅ Mask power cooldown tracking (all unit types)
-- ✅ Komau CONFUSION effect
-- ✅ Ruru ACCURACY_MULT (allEnemies blind, hit roll)
-- ✅ Reward distribution (EXP, loot, Krana)
-- ✅ Experience gain (persisted on Collect Rewards)
-- ❌ Matatu immobilize (skip enemy turn)
-- ✅ Nuva mask powers (team-wide effects)
+- Matatu immobilize (skip enemy turn) — [#344](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/344)

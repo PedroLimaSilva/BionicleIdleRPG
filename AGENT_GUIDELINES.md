@@ -155,7 +155,7 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 
 **NEVER** persist battle state.
 
-**Planned improvements:** See `docs/SAVE_PERSISTENCE_PLAN.md` for the approved direction — version-step migrations, quota handling, and (Phase B) IndexedDB split stores for row-level saves. Do not implement without explicit approval.
+**Planned improvements:** Persistence work is tracked in GitHub [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) and [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331); technical design in `docs/SAVE_PERSISTENCE_PLAN.md`. Do not implement without explicit approval.
 
 ---
 

@@ -2,6 +2,8 @@
 
 Decisions for the Bohrok Kal arc after Toa Nuva evolution: Nuva symbols sequestered, overpowered opponents, story battle system, no grinding.
 
+**Tracking:** [#351](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/351)–[#355](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/355).
+
 ---
 
 ## Decided Approach
@@ -38,7 +40,7 @@ We invest in a **story battle system** for key quest moments:
 | Gathering Strength      | No            | Planning, regrouping. No combat.            |
 | The Final Confrontation | **Yes**       | Climax. Winnable story battle.              |
 
-**Decided**: Minimal story battles—only the Final Confrontation has a required story battle. First Strikes may add an optional scripted-loss battle later.
+**Decided**: Minimal story battles—only the Final Confrontation has a required story battle. Optional First Strikes scripted-loss battle: [#355](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/355).
 
 ---
 
@@ -63,12 +65,14 @@ We invest in a **story battle system** for key quest moments:
 - **Quest**: Optional `storyBattle?: { encounterId: string; trigger: 'onStart' | 'onComplete'; scriptedOutcome: 'win' | 'loss' }`.
 - **EnemyEncounter**: Optional `scriptedOutcome?: 'win' | 'loss'` for story battles.
 
-### Implementation Phases
+### Implementation (GitHub)
 
-1. **Phase 1**: Add `isNuvaSymbolsSequestered(completedQuests)` and stat modifier for Toa Nuva.
-2. **Phase 2**: Add `scriptedOutcome`; defeat with `scriptedOutcome === 'loss'` advances quest.
-3. **Phase 3**: Quest-triggered battle flow.
-4. **Phase 4**: Bohrok Kal combatants, encounters, and quest line content.
+| Step | Issue |
+| ---- | ----- |
+| Nuva symbols sequestered stat modifier | [#351](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/351) |
+| Scripted outcome battles | [#352](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/352) |
+| Quest-triggered battle flow | [#353](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/353) |
+| Combatants, encounters, quest content | [#354](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/354) |
 
 ---
 
