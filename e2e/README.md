@@ -95,13 +95,14 @@ All 3D character models in this app have animations (idle animations, flavor ani
 
 - **Test Mode Utilities** (`src/utils/testMode.ts`):
   - `isTestMode()` - Detects if `localStorage.getItem('TEST_MODE') === 'true'`
+  - `getE2ePwaBannerState()` - Reads `E2E_PWA_BANNER` (`needRefresh` \| `offlineReady`) when test mode is on; used by `PWABadge` for deterministic banner screenshots
   - `getAnimationTimeScale()` - Returns 0 in test mode, 1 otherwise
   - `shouldDisableAnimations()` - Returns true in test mode
   - `setupAnimationForTestMode(action)` - Forces animation to frame 0 and pauses it in test mode
 
 - **Test Helpers** (`e2e/helpers.ts`):
-  - `enableTestMode(page)` - Sets localStorage flag before page load
-  - `setupGameState(page, state)` - Sets game state and automatically enables test mode
+  - `enableTestMode(page, options?)` - Sets localStorage flag before page load; optional `{ pwaBanner: 'needRefresh' | 'offlineReady' }`
+  - `setupGameState(page, state, options?)` - Sets game state and automatically enables test mode; optional `{ pwaBanner }` as above
   - `goto(page, path)` - Navigate to a path (test mode persists via localStorage)
 
 - **Model Integration**: All character models (Toa, Matoran, Bohrok) call `setupAnimationForTestMode()` on their idle animations to ensure they're paused at frame 0
@@ -132,6 +133,12 @@ test('should render with custom state', async ({ page }) => {
 });
 ```
 
+### PWA update banner
+
+The PWA update prompt normally appears only when the service worker detects a new build. For visual regression, pass `{ pwaBanner: 'needRefresh' }` or `{ pwaBanner: 'offlineReady' }` to `setupGameState` (or `enableTestMode`). This sets `localStorage.E2E_PWA_BANNER`, which `PWABadge` reads in test mode.
+
+See `e2e/pwaUpdateBanner.spec.ts` for banner element snapshots at desktop, mobile portrait, and mobile landscape, plus one full-page mobile portrait shot over the character inventory and nav.
+
 ## Visual Regression Tolerance
 
 Different test scenarios have different tolerance levels for pixel differences:
@@ -153,6 +160,7 @@ Different test scenarios have different tolerance levels for pixel differences:
 - `battle/flow.spec.ts` - Battle flow (prep, combat, victory/defeat)
 - `battle/type-effectiveness.spec.ts` - Type effectiveness page
 - `settings.spec.ts` - Settings page (about, credits, disclaimers, game reset, debug mode, shadows)
+- `pwaUpdateBanner.spec.ts` - PWA update / offline-ready bottom banner over navigation
 
 ## CI/CD Integration
 

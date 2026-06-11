@@ -18,8 +18,9 @@ This document identifies technical debt, inconsistencies, and architectural impr
 
 - Successful recruitment shows `RecruitmentCelebration` (animated modal with 3D character reveal and element-colored particles).
 - Insufficient protodermis disables the recruit button (`canRecruit` guard); `recruitMatoran` returns the prior state without side effects.
+- PWA update and offline-ready prompts use `PWABadge` (`src/components/CacheManagement/PWABadge.tsx`): a dark-themed bottom banner over the nav bar (Orbitron title, app button styles, slide-up motion). Replaces the previous default Vite PWA white top-right toast. Visual regression coverage in `e2e/pwaUpdateBanner.spec.ts`.
 
-**Remaining gap (optional polish):** There is still no shared toast/activity-log system for other transient feedback (e.g. PWA update badge is the only toast-like UI). Consider a unified non-blocking feedback component if more surfaces need it.
+**Remaining gap (optional polish):** There is still no shared toast/activity-log system for _other_ transient feedback beyond recruitment celebration and the PWA banner. Consider a unified non-blocking feedback component if more surfaces need it.
 
 ---
 
