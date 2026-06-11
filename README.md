@@ -217,6 +217,17 @@ The game automatically saves to localStorage:
 - Save data includes versioning for compatibility
 - You can reset your game data from the Settings page
 
+## 📲 PWA & app updates
+
+The app is installable as a progressive web app (Vite PWA plugin + Workbox). Assets and GLBs are cached for offline play.
+
+When a new deployment is available, `PWABadge` (`src/components/CacheManagement/PWABadge.tsx`) shows a **bottom banner** over the navigation bar:
+
+- **Update available** — Reload applies the new service worker; Later dismisses until the next detection
+- **Ready for offline play** — Shown after the service worker is first activated; Got it dismisses
+
+The banner uses the same dark glass styling, Orbitron headings, and button classes as the rest of the UI. Playwright visual tests force banner visibility via `E2E_PWA_BANNER` in test mode — see `e2e/pwaUpdateBanner.spec.ts` and `e2e/README.md`.
+
 ## 🐛 Debug & Performance
 
 - **Quest Debug mode** (Settings): Shortens quest durations to 1 second for testing
@@ -236,7 +247,7 @@ The game automatically saves to localStorage:
 | [AGENT_GUIDELINES.md](AGENT_GUIDELINES.md)         | Architecture, layers, and invariants for contributors and automation       |
 | [AGENTS.md](AGENTS.md)                             | Cursor Cloud / agent quick reference (commands and caveats)                |
 | [docs/TELEMETRY.md](docs/TELEMETRY.md)             | Optional build-time telemetry (`VITE_TELEMETRY_URL`) and privacy behaviour |
-| [e2e/README.md](e2e/README.md)                     | Playwright E2E tests and snapshot workflow                                 |
+| [e2e/README.md](e2e/README.md)                     | Playwright E2E tests and snapshot workflow (incl. PWA banner overrides)    |
 | [ARCHITECTURE_ROADMAP.md](ARCHITECTURE_ROADMAP.md) | Technical debt and improvement backlog (updated as items land or change)   |
 | [docs/UI_UX_STRATEGY.md](docs/UI_UX_STRATEGY.md) | Portrait-first UI/UX direction and phased 3D expansion plan                |
 
