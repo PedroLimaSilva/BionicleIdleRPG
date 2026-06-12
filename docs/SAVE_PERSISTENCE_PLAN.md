@@ -1,8 +1,8 @@
 # Save Migration & Persistence Plan
 
-This document describes the planned evolution of game save/load from a single `localStorage` JSON blob to a versioned, quota-safe persistence layer. It supersedes the brief proposal in `ARCHITECTURE_ROADMAP.md` §3.1.
+This document describes the planned evolution of game save/load from a single `localStorage` JSON blob to a versioned, quota-safe persistence layer.
 
-**Status:** Planned — not yet implemented. Do not implement without explicit approval.
+**Tracking:** [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) (Phase A), [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) (Phase B). Do not implement without explicit approval.
 
 ---
 
@@ -107,13 +107,7 @@ Implement before or independently of IndexedDB. Storage-agnostic; remains valid 
    - Remove dismissed buyable customs from `customCharacters` when the player dismisses them.
    - Optional soft cap with UX warning before hard block.
 
-**Phase A acceptance criteria:**
-
-- Old saves migrate to `CURRENT_GAME_STATE_VERSION` instead of being discarded
-- Each version bump includes a migration function (or explicit decision to reset)
-- Migration failures fall back to `INITIAL_GAME_STATE` with a console error
-- `QuotaExceededError` is caught and surfaced to the user
-- Saves are debounced; no more than one write per debounce window during idle job ticks
+Acceptance criteria: see [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333).
 
 ---
 
@@ -161,14 +155,7 @@ On first load after deploy:
 
 Document migrations run on the assembled state regardless of import path.
 
-**Phase B acceptance criteria:**
-
-- Existing `localStorage` saves import cleanly into IndexedDB
-- Job tick persists only changed recruited character rows (custom characters not rewritten)
-- Load is async with a loading UI; no flash of `INITIAL_GAME_STATE` for valid saves
-- `fake-indexeddb` (or equivalent) covers unit tests; E2E helpers seed IndexedDB
-- `AGENT_GUIDELINES.md` persistence section updated
-- Telemetry `gameState` snapshot still works (reads assembled `PartialGameState`)
+Acceptance criteria: see [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331).
 
 ---
 
@@ -205,9 +192,11 @@ The primary growth vector is `customCharacters`, not recruited character count.
 
 ---
 
-## Related Roadmap Items
+## Related tracking
 
-- **ARCHITECTURE_ROADMAP.md §3.1** — summary and link to this document
+- **GitHub [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333)** — Phase A (localStorage migrations and hardening)
+- **GitHub [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331)** — Phase B (IndexedDB split stores)
+- **ARCHITECTURE_ROADMAP.md** — backlog index
 - **AGENT_GUIDELINES.md** — persistence rules (`PartialGameState`, version matching, never bump version without migration)
 
 ---
