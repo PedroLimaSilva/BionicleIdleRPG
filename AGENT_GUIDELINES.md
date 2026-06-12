@@ -123,7 +123,7 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 2. Kraata colors are looked up via `getKraataCompositedColors(power)` from `src/data/kraataColors.ts`
 3. Rahkshi armor and joint colors (distinct from kraata colors) are looked up via `getRahkshiArmorColors(power)` from `src/data/rahkshiArmorColors.ts`
 4. Battle kraata drops always use stage 1
-5. A migration in `loadGameState` moves any legacy kraata from `inventory` into `kraataCollection`
+5. `loadGameState` runs document migrations (`migrateState` in `saveMigrations.ts`) and moves any legacy kraata from `inventory` into `kraataCollection`
 
 **NEVER** store kraata in the generic `inventory`. Always use `kraataCollection`.
 
@@ -147,15 +147,16 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 
 1. Only these fields are persisted (see `PartialGameState` / `useGamePersistence`): `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `customCharacters`, `activeQuests`, `completedQuests`. (`buyableCharacters` is derived at runtime from `completedQuests` and `recruitedCharacters` via the recruitment registry.) Legacy saves may still contain an `inventory` key until migration runs; it is not part of the current save shape.
 2. Battle state is NOT persisted (battles reset on page refresh)
-3. Save version must match `CURRENT_GAME_STATE_VERSION` or the save is rejected
+3. Saves with `version <= CURRENT_GAME_STATE_VERSION` are upgraded via `migrateState`; saves newer than the app or that fail migration load `INITIAL_GAME_STATE`
+4. `saveGameState` (called from debounced `useGamePersistence`) catches `QuotaExceededError` and surfaces it via `SaveErrorBanner`
 
 **NEVER** add new fields to persistence without updating `useGamePersistence` and `loadGameState`.
 
-**NEVER** change `CURRENT_GAME_STATE_VERSION` without providing migration logic or accepting that old saves will be lost.
+**NEVER** change `CURRENT_GAME_STATE_VERSION` without adding a matching step to `MIGRATIONS` in `src/services/saveMigrations.ts`.
 
 **NEVER** persist battle state.
 
-**Planned improvements:** Persistence work is tracked in GitHub [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) and [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331); technical design in `docs/SAVE_PERSISTENCE_PLAN.md`. Do not implement without explicit approval.
+**Further persistence work:** IndexedDB split stores are tracked in GitHub [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331); design in `docs/SAVE_PERSISTENCE_PLAN.md`. Phase A (localStorage migrations and hardening) is implemented ([#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333)).
 
 ---
 

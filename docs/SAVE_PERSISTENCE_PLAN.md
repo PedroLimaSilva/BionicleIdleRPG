@@ -2,7 +2,7 @@
 
 This document describes the planned evolution of game save/load from a single `localStorage` JSON blob to a versioned, quota-safe persistence layer.
 
-**Tracking:** [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) (Phase A), [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) (Phase B). Do not implement without explicit approval.
+**Tracking:** [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) (Phase A — **implemented**), [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) (Phase B — planned).
 
 ---
 
@@ -46,10 +46,10 @@ Ad-hoc retrocompat already exists in `src/services/gamePersistence.ts`, but only
 
 These solve different problems. Both may be needed.
 
-| Layer | What changes | Mechanism |
-| --- | --- | --- |
-| **Document shape** | Rename fields, add defaults, reshape arrays in saved game data | `MIGRATIONS` registry keyed by `GameState.version` |
-| **Storage layout** | Move from one blob to multiple stores/tables | Dexie (or IndexedDB) schema version + upgrade handlers |
+| Layer              | What changes                                                   | Mechanism                                              |
+| ------------------ | -------------------------------------------------------------- | ------------------------------------------------------ |
+| **Document shape** | Rename fields, add defaults, reshape arrays in saved game data | `MIGRATIONS` registry keyed by `GameState.version`     |
+| **Storage layout** | Move from one blob to multiple stores/tables                   | Dexie (or IndexedDB) schema version + upgrade handlers |
 
 Dexie's `.version(n).upgrade()` migrates **database schema** (object stores, indexes). It does **not** automatically evolve `GameState` JSON. Even with Dexie, application-level document migrations are required when persisted fields change.
 
@@ -59,9 +59,9 @@ A single-blob Dexie table has the same full-rewrite problem as `localStorage`. G
 
 ## Phased Implementation
 
-### Phase A — Near term (localStorage, low risk)
+### Phase A — Near term (localStorage, low risk) ✅ Implemented
 
-Implement before or independently of IndexedDB. Storage-agnostic; remains valid if Phase B uses the same migration registry.
+Implemented in `src/services/saveMigrations.ts`, `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, and `src/components/SaveErrorBanner/`. Storage-agnostic; remains valid when Phase B adopts the same migration registry.
 
 1. **Version migration system** (`src/services/saveMigrations.ts` or equivalent)
 
@@ -93,21 +93,25 @@ Implement before or independently of IndexedDB. Storage-agnostic; remains valid 
    - On migration failure: log, fall back to `INITIAL_GAME_STATE`.
 
 2. **Quota error handling**
-
    - Wrap `localStorage.setItem` in try/catch in `useGamePersistence`.
    - Surface a user-visible warning (e.g. toast or modal): save failed, export/back up if possible.
 
 3. **Debounced save**
-
    - Debounce persistence writes (e.g. 2–5 s) so job ticks do not write 12×/minute.
    - Flush on `beforeunload` / `visibilitychange` where appropriate.
 
 4. **Custom character hygiene** (product decision)
-
    - Remove dismissed buyable customs from `customCharacters` when the player dismisses them.
    - Optional soft cap with UX warning before hard block.
 
-Acceptance criteria: see [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333).
+Acceptance criteria ([#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333)):
+
+- [x] Old saves are migrated instead of discarded (`migrateState` + `normalizeGameStateDocument`)
+- [x] Migration failures fall back to initial state
+- [x] Each version bump includes a migration function (`MIGRATIONS` in `saveMigrations.ts`)
+- [x] `QuotaExceededError` is caught and surfaced via `SaveErrorBanner`
+- [x] Saves are debounced during idle job ticks (3 s; immediate in `TEST_MODE`; flush on tab hide / unload)
+- [x] Dismissed buyable customs are removed from `customCharacters` (existing `dismissCustomCharacter` behavior)
 
 ---
 
@@ -119,9 +123,9 @@ Move game save data off `localStorage`. Keep settings keys (`DEBUG_MODE`, `TELEM
 
 ```typescript
 db.version(1).stores({
-  meta: 'key',              // protodermis, version, quest lists, kraata, rahkshi, caps, …
-  recruited: 'id',          // RecruitedCharacterData per row
-  customCharacters: 'id',   // BaseMatoran per row
+  meta: 'key', // protodermis, version, quest lists, kraata, rahkshi, caps, …
+  recruited: 'id', // RecruitedCharacterData per row
+  customCharacters: 'id', // BaseMatoran per row
 });
 ```
 
@@ -135,13 +139,13 @@ db.version(1).stores({
 
 **Save path (granular):**
 
-| Event | Write |
-| --- | --- |
-| Job tick / exp change | `db.recruited.update(id, { exp, assignment })` — one row |
-| Custom character create/import | `db.customCharacters.put(base)` — one row |
-| Custom character dismiss | `db.customCharacters.delete(id)` |
-| Quest complete, protodermis, kraata, etc. | `db.meta.put(...)` — small cold blob |
-| Version bump after migration | Update `meta.version` |
+| Event                                     | Write                                                    |
+| ----------------------------------------- | -------------------------------------------------------- |
+| Job tick / exp change                     | `db.recruited.update(id, { exp, assignment })` — one row |
+| Custom character create/import            | `db.customCharacters.put(base)` — one row                |
+| Custom character dismiss                  | `db.customCharacters.delete(id)`                         |
+| Quest complete, protodermis, kraata, etc. | `db.meta.put(...)` — small cold blob                     |
+| Version bump after migration              | Update `meta.version`                                    |
 
 In-memory React state can continue to update the full `recruitedCharacters` array on tick; the persistence layer diffs by `id` or receives explicit patch calls from the tick path.
 
@@ -161,34 +165,34 @@ Acceptance criteria: see [#331](https://github.com/PedroLimaSilva/BionicleIdleRP
 
 ## Options Considered
 
-| Option | Pros | Cons | Verdict |
-| --- | --- | --- | --- |
-| **A only: migrations + debounce on localStorage** | Small diff, no dependency | Quota ceiling; still rewrites full blob | Good stopgap; insufficient long-term for unbounded customs |
-| **Split localStorage keys** | Partial writes without IndexedDB | Shared ~5 MB quota; still synchronous `JSON.stringify` | Middle ground; defer if committing to Dexie |
-| **Dexie single blob** | Async, more quota | Same rewrite problem | Not recommended |
-| **Dexie split stores (Phase B)** | Quota, row-level writes, async | Refactor load/save, async hydration, new dependency | **Recommended** for long-term |
-| **Raw IndexedDB** | No dependency | More boilerplate than Dexie | Dexie preferred for ergonomics |
+| Option                                            | Pros                             | Cons                                                   | Verdict                                                    |
+| ------------------------------------------------- | -------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------- |
+| **A only: migrations + debounce on localStorage** | Small diff, no dependency        | Quota ceiling; still rewrites full blob                | Good stopgap; insufficient long-term for unbounded customs |
+| **Split localStorage keys**                       | Partial writes without IndexedDB | Shared ~5 MB quota; still synchronous `JSON.stringify` | Middle ground; defer if committing to Dexie                |
+| **Dexie single blob**                             | Async, more quota                | Same rewrite problem                                   | Not recommended                                            |
+| **Dexie split stores (Phase B)**                  | Quota, row-level writes, async   | Refactor load/save, async hydration, new dependency    | **Recommended** for long-term                              |
+| **Raw IndexedDB**                                 | No dependency                    | More boilerplate than Dexie                            | Dexie preferred for ergonomics                             |
 
 ---
 
 ## Save Size Estimates
 
-| Scenario | Approx. size |
-| --- | --- |
-| Normal play (~20 recruits, ~5 customs) | 30–80 KB |
-| Heavy collector (~100 customs, full kraata) | 200–500 KB |
-| Share-link hoarder (2000+ customs) | 2–5+ MB — `localStorage` danger zone |
+| Scenario                                    | Approx. size                         |
+| ------------------------------------------- | ------------------------------------ |
+| Normal play (~20 recruits, ~5 customs)      | 30–80 KB                             |
+| Heavy collector (~100 customs, full kraata) | 200–500 KB                           |
+| Share-link hoarder (2000+ customs)          | 2–5+ MB — `localStorage` danger zone |
 
 The primary growth vector is `customCharacters`, not recruited character count.
 
 ---
 
-## Files Affected (when implemented)
+## Files Affected
 
-| Phase | Files |
-| --- | --- |
-| A | `src/services/saveMigrations.ts` (new), `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, `src/services/gamePersistence.spec.ts`, `AGENT_GUIDELINES.md` |
-| B | Above plus `src/services/gameDatabase.ts` (new), `src/hooks/useGameLogic.tsx` (async load), `e2e/helpers.ts`, `package.json` (dexie), test setup for IndexedDB |
+| Phase    | Files                                                                                                                                                                                                                                                                                     |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A (done) | `src/services/saveMigrations.ts`, `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, `src/components/SaveErrorBanner/`, `src/services/gamePersistence.spec.ts`, `src/services/saveMigrations.spec.ts`, `src/hooks/useGamePersistence.spec.tsx`, `AGENT_GUIDELINES.md` |
+| B        | Above plus `src/services/gameDatabase.ts` (new), `src/hooks/useGameLogic.tsx` (async load), `e2e/helpers.ts`, `package.json` (dexie), test setup for IndexedDB                                                                                                                            |
 
 ---
 
@@ -203,6 +207,7 @@ The primary growth vector is `customCharacters`, not recruited character count.
 
 ## Decision Log
 
-| Date | Decision |
-| --- | --- |
+| Date       | Decision                                                                                                                                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-06-09 | Adopt two-phase plan: Phase A (migrations + localStorage hardening) then Phase B (Dexie split stores). Document migrations required regardless of storage backend. Single-blob Dexie is not sufficient for granular writes. |
+| 2026-06-12 | Phase A shipped: `saveMigrations.ts`, debounced `useGamePersistence`, `saveGameState` quota handling, `SaveErrorBanner`.                                                                                                    |
