@@ -454,6 +454,62 @@ describe('Battle Simulation', () => {
       ).toBe(false);
     });
 
+    test('Matatu immobilizes enemy preventing them from attacking', async () => {
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const teamWithout = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu' }]);
+      const simWithout = new BattleSimulator(teamWithout, customEncounter);
+      const hpBeforeWithout = simWithout.team[0].hp;
+      await simWithout.runRound();
+      const damageWithout = hpBeforeWithout - simWithout.team[0].hp;
+
+      const teamWith = createTeamFromRecruited([
+        { exp: 0, id: 'Toa_Tahu', maskOverride: Mask.Matatu },
+      ]);
+      const simWith = new BattleSimulator(teamWith, customEncounter);
+      simWith.team = setAbilities(simWith.team, ['Toa_Tahu'], true);
+      const hpBeforeWith = simWith.team[0].hp;
+      await simWith.runRound();
+      const damageWith = hpBeforeWith - simWith.team[0].hp;
+
+      const immobilizedEnemy = simWith.enemies[0];
+      expect(
+        immobilizedEnemy.effects?.some(
+          (e) => e.type === 'SPEED' && (e.multiplier ?? 0) < 0 && e.durationRemaining > 0
+        )
+      ).toBe(true);
+      expect(damageWith).toBe(0);
+      expect(damageWith).toBeLessThan(damageWithout);
+    });
+
+    test('Matatu (wave 1 duration) stays active until wave ends then enters turn cooldown', async () => {
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu', maskOverride: Mask.Matatu }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }], [{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
+      await sim.runRound();
+
+      const tahuAfterRound = sim.team.find((t) => t.id === 'Toa_Tahu')!;
+      expect(tahuAfterRound.maskPower?.active).toBe(true);
+      expect(tahuAfterRound.maskPower?.effect.duration.unit).toBe('wave');
+
+      sim.advanceWave();
+
+      const tahuAfterWave = sim.team.find((t) => t.id === 'Toa_Tahu')!;
+      expect(tahuAfterWave.maskPower?.active).toBe(false);
+      expect(tahuAfterWave.maskPower?.cooldown.amount).toBe(2);
+      expect(tahuAfterWave.maskPower?.cooldown.unit).toBe('turn');
+    });
+
     test('Komau CONFUSION makes enemy attack their own team', async () => {
       const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu', maskOverride: Mask.Komau }]);
       const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;

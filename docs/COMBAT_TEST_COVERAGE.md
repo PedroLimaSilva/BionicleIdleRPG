@@ -1,6 +1,6 @@
 # Combat & Mask Power Test Coverage
 
-Reference for combat-related test suites and mask power coverage. Open work: [#344](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/344) (Matatu), [#338](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/338) (broader coverage).
+Reference for combat-related test suites and mask power coverage. Open work: [#338](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/338) (broader coverage).
 
 ---
 
@@ -28,13 +28,11 @@ Reference for combat-related test suites and mask power coverage. Open work: [#3
 | Ruru   | ACCURACY_MULT (0.5)       | turn(2)   | turn(4)  |
 | Komau  | CONFUSION                 | turn(3)   | turn(4)  |
 | Rau    | ATK_MULT (1.5x, wave)     | wave(1)   | wave(2)  |
-| Matatu | Immobilize enemy          | wave(1)   | turn(2)  |
+| Matatu | SPEED (skip enemy turn)   | wave(1)   | turn(2)  |
 | Mahiki | DMG_MITIGATOR (0, 1 hit)  | hit(1)    | turn(2)  |
 
 **Duration units:** `attack`, `hit`, `turn`, `round`, `wave`  
 **Cooldown units:** `turn`, `wave`
-
-Matatu is not yet implemented — see [#344](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/344).
 
 ---
 
@@ -42,7 +40,7 @@ Matatu is not yet implemented — see [#344](https://github.com/PedroLimaSilva/B
 
 ### maskPowers.spec.ts
 
-Tests `calculateAtkDmg`, `applyDamage`, `applyHealing`, `getAccuracyMultiplier` / `rollAttackHits` for Pakari, Akaku, Hau, Miru, Mahiki, Kaukau, Ruru, Huna, Kakama, and Rau.
+Tests `calculateAtkDmg`, `applyDamage`, `applyHealing`, `getAccuracyMultiplier` / `rollAttackHits`, and `isImmobilized` for Pakari, Akaku, Hau, Miru, Mahiki, Kaukau, Ruru, Huna, Kakama, Rau, and Matatu.
 
 ### maskPowerCooldowns.spec.ts
 
@@ -50,7 +48,7 @@ Tests `decrementMaskPowerCounter` for all duration and cooldown unit types, incl
 
 ### battleSimulation.spec.ts
 
-Full battle flow from team confirm through victory; mask lifecycle (activation, effect, deactivation); wave advance; multi-round and post-`advanceWave` scenarios. Covers Hau, Kakama, Pakari, Kaukau, Akaku, Miru, Mahiki, Huna, Komau, and Ruru.
+Full battle flow from team confirm through victory; mask lifecycle (activation, effect, deactivation); wave advance; multi-round and post-`advanceWave` scenarios. Covers Hau, Kakama, Pakari, Kaukau, Akaku, Miru, Mahiki, Huna, Komau, Ruru, and Matatu.
 
 ---
 

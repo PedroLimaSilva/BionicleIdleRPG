@@ -25,8 +25,6 @@ This document indexes known technical debt, inconsistencies, and architectural i
 | Code quality | [#340](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/340) | Standardize timestamp units to milliseconds |
 | Performance | [#335](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/335) | Lazy loading for 3D character models |
 | Performance | [#339](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/339) | Memoization for expensive derived-state computations |
-| Combat | [#344](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/344) | Implement Matatu mask power (immobilize / skip enemy turn) |
-
 ### UI/UX and motion
 
 | Area | Issue | Summary |

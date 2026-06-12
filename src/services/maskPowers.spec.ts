@@ -7,6 +7,7 @@ import {
   applyHealing,
   chooseTarget,
   getAccuracyMultiplier,
+  isImmobilized,
   rollAttackHits,
 } from './combatUtils';
 
@@ -403,6 +404,45 @@ describe('Mask Powers - Combat Mechanics', () => {
         // Should cap at max HP
         expect(healed.hp).toBe(maxHp);
       });
+    });
+  });
+
+  describe('SPEED - Matatu (immobilize / skip turn)', () => {
+    test('isImmobilized returns true for negative SPEED effect', () => {
+      const enemy = generateCombatantStats('enemy', 'tahnok', 1);
+      enemy.effects = [
+        {
+          durationRemaining: 1,
+          durationUnit: 'wave',
+          multiplier: -1,
+          sourceId: 'caster',
+          type: 'SPEED',
+        },
+      ];
+
+      expect(isImmobilized(enemy)).toBe(true);
+    });
+
+    test('isImmobilized returns false without negative SPEED effect', () => {
+      const enemy = generateCombatantStats('enemy', 'tahnok', 1);
+      enemy.effects = [];
+
+      expect(isImmobilized(enemy)).toBe(false);
+    });
+
+    test('positive SPEED effect does not immobilize', () => {
+      const combatant = generateCombatantStats('pohatu', 'Toa_Pohatu', 1, Mask.Kakama);
+      combatant.effects = [
+        {
+          durationRemaining: 1,
+          durationUnit: 'round',
+          multiplier: 2,
+          sourceId: combatant.id,
+          type: 'SPEED',
+        },
+      ];
+
+      expect(isImmobilized(combatant)).toBe(false);
     });
   });
 

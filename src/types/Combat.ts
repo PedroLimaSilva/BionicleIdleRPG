@@ -50,7 +50,7 @@ export type TargetEffect =
       type: 'SPEED';
       multiplier: number;
       durationRemaining: number;
-      durationUnit: 'round';
+      durationUnit: 'round' | 'wave';
       sourceId: string;
     }
   | {
