@@ -562,9 +562,7 @@ function triggerMaskPowers(
               e.hp > 0 ? applyEffectToCombatant(e, eff) : e
             );
           } else {
-            currentTeam = currentTeam.map((t) =>
-              t.hp > 0 ? applyEffectToCombatant(t, eff) : t
-            );
+            currentTeam = currentTeam.map((t) => (t.hp > 0 ? applyEffectToCombatant(t, eff) : t));
           }
         }
       } else if (actor.maskPower.target === 'self') {
