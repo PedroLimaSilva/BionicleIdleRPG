@@ -155,11 +155,12 @@ function formatSignedCount(delta: number): string {
   return delta > 0 ? `+${delta}` : `${delta}`;
 }
 
-function formatTopUsageTable(
+function formatUsageTable(
   title: string,
   ranking: KitNodeUsageEntry[],
   beforeRanking: KitNodeUsageEntry[] | undefined,
-  topN: number
+  rows: KitNodeUsageEntry[],
+  rankOffset: number
 ): string[] {
   const beforeByName = new Map((beforeRanking ?? []).map((row) => [row.glbName, row.count]));
   const lines = [
@@ -169,7 +170,7 @@ function formatTopUsageTable(
     `| ---: | --- | ---: | ---: |`,
   ];
 
-  ranking.slice(0, topN).forEach((row, index) => {
+  rows.forEach((row, index) => {
     const beforeCount = beforeByName.get(row.glbName);
     const delta =
       beforeCount === undefined
@@ -177,7 +178,9 @@ function formatTopUsageTable(
           ? `+${row.count}`
           : '—'
         : formatSignedCount(row.count - beforeCount);
-    lines.push(`| ${index + 1} | ${formatNodeLabel(row)} | ${row.count} | ${delta} |`);
+    lines.push(
+      `| ${rankOffset + index + 1} | ${formatNodeLabel(row)} | ${row.count} | ${delta} |`
+    );
   });
 
   if (ranking.length === 0) {
@@ -185,6 +188,35 @@ function formatTopUsageTable(
   }
 
   return lines;
+}
+
+function formatMostUsedTable(
+  ranking: KitNodeUsageEntry[],
+  beforeRanking: KitNodeUsageEntry[] | undefined,
+  topN: number
+): string[] {
+  return formatUsageTable(
+    'Most used nodes',
+    ranking,
+    beforeRanking,
+    ranking.slice(0, topN),
+    0
+  );
+}
+
+function formatLeastUsedTable(
+  ranking: KitNodeUsageEntry[],
+  beforeRanking: KitNodeUsageEntry[] | undefined,
+  bottomN: number
+): string[] {
+  const rows = ranking.slice(-bottomN);
+  return formatUsageTable(
+    'Least used nodes',
+    ranking,
+    beforeRanking,
+    rows,
+    Math.max(0, ranking.length - rows.length)
+  );
 }
 
 function formatUsageDeltaTable(deltas: KitNodeUsageDelta[]): string[] {
@@ -220,9 +252,10 @@ function formatRegistryDelta(before: string[], after: string[]): string[] {
 export function buildMarkdownReport(
   after: KitUsageSnapshot,
   before: KitUsageSnapshot | null,
-  options: { topN?: number } = {}
+  options: { bottomN?: number; topN?: number } = {}
 ): string {
   const topN = options.topN ?? 15;
+  const bottomN = options.bottomN ?? topN;
   const lines: string[] = ['## Kit node usage report', ''];
 
   lines.push(
@@ -256,7 +289,9 @@ export function buildMarkdownReport(
       lines.push('');
     }
 
-    lines.push(...formatTopUsageTable('Most used nodes', current.ranking, previous?.ranking, topN));
+    lines.push(...formatMostUsedTable(current.ranking, previous?.ranking, topN));
+    lines.push('');
+    lines.push(...formatLeastUsedTable(current.ranking, previous?.ranking, bottomN));
     lines.push('');
 
     if (before) {

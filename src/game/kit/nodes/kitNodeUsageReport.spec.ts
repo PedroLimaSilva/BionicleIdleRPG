@@ -45,13 +45,24 @@ describe('kit-node-usage report', () => {
     ]);
   });
 
-  test('buildMarkdownReport includes top usage table', () => {
+  test('buildMarkdownReport includes most and least used tables', () => {
     const snapshot = usageSnapshotFromWorkspace();
     const report = buildMarkdownReport(snapshot, null, { topN: 5 });
     expect(report).toContain('## Kit node usage report');
     expect(report).toContain('### Most used nodes');
+    expect(report).toContain('### Least used nodes');
     expect(report).toContain('kit_2001.glb');
     expect(report).toContain('kit_2003.glb');
     expect(snapshot.kit2001.ranking.length).toBeGreaterThan(0);
+
+    const leastUsedRow = snapshot.kit2001.ranking.at(-1);
+    if (leastUsedRow) {
+      expect(report).toContain(formatNodeLabelForTest(leastUsedRow));
+    }
   });
 });
+
+function formatNodeLabelForTest(entry: { constantKey: string | null; glbName: string }): string {
+  if (entry.constantKey) return `\`${entry.constantKey}\` (\`${entry.glbName}\`)`;
+  return `\`${entry.glbName}\``;
+}
