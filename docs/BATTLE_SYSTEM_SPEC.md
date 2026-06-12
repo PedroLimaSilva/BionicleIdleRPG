@@ -257,12 +257,10 @@ Attacks normally always connect (`BASE_HIT_CHANCE = 1`). Before damage is calcul
 ### Combat Utils (`combatUtils.ts`)
 
 - `queueCombatRound`: Orchestrates round execution
-- `triggerMaskPowers`: Handles mask power activation (self, team, allEnemies)
+- `triggerMaskPowers`: Handles mask power activation (self, team, enemy, allEnemies)
+- `isImmobilized`: Detects negative SPEED effects that skip a combatant's turn
 - `getAccuracyMultiplier` / `rollAttackHits`: Hit chance from ACCURACY_MULT debuffs
 - `calculateAtkDmg`: Computes damage with element effectiveness
 - `chooseTarget`: Implements targeting strategies
 - `generateCombatantStats`: Creates combatant instances from templates
 
-### Open work
-
-- Matatu immobilize (skip enemy turn) — [#344](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/344)

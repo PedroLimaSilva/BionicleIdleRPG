@@ -259,14 +259,16 @@ function createEffectFromMaskEffect(
         type: 'AGGRO',
       };
     }
-    case 'SPEED':
+    case 'SPEED': {
+      const unit = dur.unit === 'wave' || dur.unit === 'round' ? dur.unit : 'round';
       return {
         durationRemaining: amount,
-        durationUnit: 'round',
+        durationUnit: unit,
         multiplier: effect.multiplier ?? 2,
         sourceId,
         type: 'SPEED',
       };
+    }
     case 'DEFENSE': {
       const unit = dur.unit === 'turn' || dur.unit === 'round' ? dur.unit : 'round';
       return {
@@ -332,10 +334,19 @@ function applyOnAttackEffectToTarget(
   return { attacker, target: { ...target, effects } };
 }
 
+/** Returns true when a combatant has an active negative SPEED effect (skip turn). */
+export function isImmobilized(combatant: Combatant): boolean {
+  return (
+    combatant.effects?.some(
+      (e) => e.type === 'SPEED' && e.durationRemaining > 0 && (e.multiplier ?? 0) < 0
+    ) ?? false
+  );
+}
+
 /** Decrements effect durations for a combatant. Handles all effect types (buffs and debuffs). */
 function decrementEffectDurations(
   combatant: Combatant,
-  unit: 'attack' | 'hit' | 'turn' | 'round'
+  unit: 'attack' | 'hit' | 'turn' | 'round' | 'wave'
 ): Combatant {
   if (!combatant.effects?.length) return combatant;
   const updatedEffects = combatant.effects
@@ -535,7 +546,7 @@ function triggerMaskPowers(
         const eff = createEffectFromMaskEffect(effect, actor.id);
         if (eff) {
           currentTeam = currentTeam.map((t) => (t.hp > 0 ? applyEffectToCombatant(t, eff) : t));
-          if (effect.type === 'SPEED') {
+          if (effect.type === 'SPEED' && (effect.multiplier ?? 0) > 0) {
             const aliveAllies = currentTeam.filter((t) => t.hp > 0);
             for (const ally of aliveAllies) {
               newTurnOrder.push({ ...ally, side: 'team' });
@@ -569,9 +580,32 @@ function triggerMaskPowers(
               t.id === actor.id ? applyEffectToCombatant(t, eff) : t
             );
           }
-          if (effect.type === 'SPEED') {
+          if (effect.type === 'SPEED' && (effect.multiplier ?? 0) > 0) {
             const clonedActor = { ...actor, maskPower: structuredClone(actor.maskPower) };
             newTurnOrder.push(clonedActor);
+          }
+        }
+      } else if (
+        actor.maskPower.target === 'enemy' &&
+        effect.type !== 'DEFENSE' &&
+        effect.type !== 'CONFUSION'
+      ) {
+        // Enemy-target on activation (e.g. Matatu). DEFENSE/CONFUSION apply on attack instead.
+        const opponentList = isTeam ? currentEnemies : currentTeam;
+        const validTargets = opponentList.filter((t) => t.hp > 0);
+        if (validTargets.length > 0) {
+          const target = chooseTarget(actor, validTargets);
+          const eff = createEffectFromMaskEffect(effect, actor.id);
+          if (eff) {
+            if (isTeam) {
+              currentEnemies = currentEnemies.map((e) =>
+                e.id === target.id ? applyEffectToCombatant(e, eff) : e
+              );
+            } else {
+              currentTeam = currentTeam.map((t) =>
+                t.id === target.id ? applyEffectToCombatant(t, eff) : t
+              );
+            }
           }
         }
       }
@@ -655,6 +689,21 @@ export function queueCombatRound(
           currentEnemies = newActorList;
           setEnemies(currentEnemies);
         }
+      }
+
+      // SPEED (negative): immobilized combatants skip their turn (e.g. Matatu)
+      if (isImmobilized(self)) {
+        self = decrementMaskPowerCounter(self, 'turn');
+        self = decrementEffectDurations(self, 'turn');
+        const immobilizedActorList = actorList.map((c) => (c.id === self!.id ? self! : c));
+        if (isTeam) {
+          currentTeam = immobilizedActorList;
+          setTeam(currentTeam);
+        } else {
+          currentEnemies = immobilizedActorList;
+          setEnemies(currentEnemies);
+        }
+        return;
       }
 
       // CONFUSION: attack own allies instead of enemies (or self if alone)
@@ -875,7 +924,9 @@ export function hasReadyMaskPowers(team: Combatant[], enemies: Combatant[] = [])
  * Should be called when advancing to a new wave
  */
 export function decrementWaveCounters(combatants: Combatant[]): Combatant[] {
-  return combatants.map((c) => decrementMaskPowerCounter(c, 'wave'));
+  return combatants.map((c) =>
+    decrementEffectDurations(decrementMaskPowerCounter(c, 'wave'), 'wave')
+  );
 }
 
 /** When true and combatant is Toa Nuva, stats are reduced (Nuva symbols sequestered). */
