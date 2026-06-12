@@ -33,6 +33,71 @@ function collectUsedNodes(maps: Record<string, KitSocketAttachment<string>>[]): 
   return used;
 }
 
+/** Counts how many sockets clone each kit node across the given attachment maps. */
+export function countKitNodeReferences(
+  maps: readonly Record<string, KitSocketAttachment<string>>[]
+): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const map of maps) {
+    for (const row of Object.values(map)) {
+      const name = row.kitNodeName;
+      counts.set(name, (counts.get(name) ?? 0) + 1);
+    }
+  }
+  return counts;
+}
+
+export type KitNodeUsageEntry = {
+  /** Registry constant key when known (e.g. `Socket` for `KIT_2001_NODES.Socket`). */
+  constantKey: string | null;
+  count: number;
+  glbName: string;
+};
+
+function invertRegistry(registry: Record<string, string>): Map<string, string> {
+  const byGlbName = new Map<string, string>();
+  for (const [key, glbName] of Object.entries(registry)) {
+    byGlbName.set(glbName, key);
+  }
+  return byGlbName;
+}
+
+export function rankKitNodeUsage(
+  counts: Map<string, number>,
+  registry: Record<string, string>
+): KitNodeUsageEntry[] {
+  const keysByGlbName = invertRegistry(registry);
+  return [...counts.entries()]
+    .map(([glbName, count]) => ({
+      constantKey: keysByGlbName.get(glbName) ?? null,
+      count,
+      glbName,
+    }))
+    .sort((a, b) => b.count - a.count || a.glbName.localeCompare(b.glbName));
+}
+
+export function getKit2001NodeUsageRanking(): KitNodeUsageEntry[] {
+  return rankKitNodeUsage(countKitNodeReferences(KIT_2001_ATTACHMENT_MAPS), KIT_2001_NODES);
+}
+
+export function getKit2003NodeUsageRanking(): KitNodeUsageEntry[] {
+  return rankKitNodeUsage(countKitNodeReferences(KIT_2003_ATTACHMENT_MAPS), KIT_2003_NODES);
+}
+
+export function getTotalKit2001SocketReferences(): number {
+  return [...countKitNodeReferences(KIT_2001_ATTACHMENT_MAPS).values()].reduce(
+    (sum, count) => sum + count,
+    0
+  );
+}
+
+export function getTotalKit2003SocketReferences(): number {
+  return [...countKitNodeReferences(KIT_2003_ATTACHMENT_MAPS).values()].reduce(
+    (sum, count) => sum + count,
+    0
+  );
+}
+
 export const KIT_2001_ATTACHMENT_MAPS = [
   BOHROK_KIT_2001_ATTACHMENTS,
   DIMINISHED_KIT_2001_ATTACHMENTS,
