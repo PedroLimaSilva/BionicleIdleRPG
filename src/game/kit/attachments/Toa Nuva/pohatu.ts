@@ -28,8 +28,8 @@ const POHATU_NUVA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
 
 /** FootKick only exposes `Main`; match Nuva kit metal shininess. */
 const POHATU_NUVA_FOOT_KICK_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  Metal: POHATU_NUVA_PALETTE_COLORS.Secondary,
   Secondary: NUVA_KIT_METAL.Metal!,
-  Metal: POHATU_NUVA_PALETTE_COLORS.Secondary
 };
 
 /**
