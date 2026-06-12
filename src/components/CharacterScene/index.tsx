@@ -91,9 +91,9 @@ function CharacterModel({
         case 'Toa_Kopaka_Nuva':
           return <KopakaNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Lewa_Nuva':
-          return <LewaNuvaModel matoran={matoran} />;
+          return <LewaNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Pohatu_Nuva':
-          return <PohatuNuvaModel matoran={matoran} />;
+          return <PohatuNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Onua_Nuva':
           return <OnuaNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Gali_Nuva':
