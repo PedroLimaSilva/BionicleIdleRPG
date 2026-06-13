@@ -263,4 +263,3 @@ Attacks normally always connect (`BASE_HIT_CHANCE = 1`). Before damage is calcul
 - `calculateAtkDmg`: Computes damage with element effectiveness
 - `chooseTarget`: Implements targeting strategies
 - `generateCombatantStats`: Creates combatant instances from templates
-

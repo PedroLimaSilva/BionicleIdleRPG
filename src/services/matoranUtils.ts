@@ -53,7 +53,6 @@ export function masksCollected(
       return [Mask.HauNuvaInfected];
     }
 
-
     let masks: Mask[] = [matoran.mask];
     if (matoran.id === 'Toa_Tahu_Nuva' && storyProgress.includes('bohrok_kal_reconstruction')) {
       masks.push(Mask.Vahi);

@@ -12,40 +12,41 @@ This document indexes known technical debt, inconsistencies, and architectural i
 
 ## Open backlog
 
-| Area | Issue | Summary |
-| ---- | ----- | ------- |
-| Consistency | [#334](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/334) | Standardize variable naming conventions (camelCase for locals) |
-| Consistency | [#337](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/337) | Unified non-blocking feedback component (toast/activity log) |
-| Persistence | [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) | Save migration & persistence — Phase A (localStorage) |
-| Persistence | [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) | Save migration & persistence — Phase B (IndexedDB) |
-| Game logic | [#332](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/332) | Quest prerequisite cycle detection |
-| Testing | [#338](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/338) | Expand unit test coverage for game logic |
-| Code quality | [#341](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/341) | Item system (deferred) — design before reintroduction |
+| Area         | Issue                                                                | Summary                                                         |
+| ------------ | -------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Consistency  | [#334](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/334) | Standardize variable naming conventions (camelCase for locals)  |
+| Consistency  | [#337](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/337) | Unified non-blocking feedback component (toast/activity log)    |
+| Persistence  | [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) | Save migration & persistence — Phase A (localStorage)           |
+| Persistence  | [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) | Save migration & persistence — Phase B (IndexedDB)              |
+| Game logic   | [#332](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/332) | Quest prerequisite cycle detection                              |
+| Testing      | [#338](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/338) | Expand unit test coverage for game logic                        |
+| Code quality | [#341](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/341) | Item system (deferred) — design before reintroduction           |
 | Code quality | [#336](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/336) | Clarify character tags system (implement or remove unused tags) |
-| Code quality | [#340](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/340) | Standardize timestamp units to milliseconds |
-| Performance | [#335](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/335) | Lazy loading for 3D character models |
-| Performance | [#339](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/339) | Memoization for expensive derived-state computations |
+| Code quality | [#340](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/340) | Standardize timestamp units to milliseconds                     |
+| Performance  | [#335](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/335) | Lazy loading for 3D character models                            |
+| Performance  | [#339](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/339) | Memoization for expensive derived-state computations            |
+
 ### UI/UX and motion
 
-| Area | Issue | Summary |
-| ---- | ----- | ------- |
+| Area        | Issue                                                                | Summary                                                    |
+| ----------- | -------------------------------------------------------------------- | ---------------------------------------------------------- |
 | 3D / canvas | [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343) | Phase 1 — persistent canvas and remaining battle 3D polish |
-| 3D / canvas | [#346](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/346) | Phase 2 — environmental 3D backdrops per route |
-| 3D / canvas | [#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) | Phase 3 — advanced combat feedback and idle ambient life |
-| Portrait UX | [#345](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/345) | Nav label size and orientation lock |
-| Stretch | [#348](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/348) | Phase 4+ — explorable world and advanced 3D features |
-| Motion | [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347) | UI motion Phase 2 — interactive panel animations |
-| Motion | [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350) | UI motion Phase 3 — navigation and list choreography |
+| 3D / canvas | [#346](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/346) | Phase 2 — environmental 3D backdrops per route             |
+| 3D / canvas | [#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) | Phase 3 — advanced combat feedback and idle ambient life   |
+| Portrait UX | [#345](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/345) | Nav label size and orientation lock                        |
+| Stretch     | [#348](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/348) | Phase 4+ — explorable world and advanced 3D features       |
+| Motion      | [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347) | UI motion Phase 2 — interactive panel animations           |
+| Motion      | [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350) | UI motion Phase 3 — navigation and list choreography       |
 
 ### Related design docs
 
-| Document | Purpose |
-| -------- | ------- |
-| [`docs/SAVE_PERSISTENCE_PLAN.md`](docs/SAVE_PERSISTENCE_PLAN.md) | Technical design for [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) and [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) |
-| [`docs/UI_UX_STRATEGY.md`](docs/UI_UX_STRATEGY.md) | Portrait-first UI/UX direction — tracked via issues [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343)–[#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) |
-| [`docs/DESIGN_UI_MOTION_ROLLOUT.md`](docs/DESIGN_UI_MOTION_ROLLOUT.md) | UI motion rollout — tracked via [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347), [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350) |
-| [`docs/BATTLE_SYSTEM_SPEC.md`](docs/BATTLE_SYSTEM_SPEC.md) | Combat system reference |
-| [`docs/COMBAT_TEST_COVERAGE.md`](docs/COMBAT_TEST_COVERAGE.md) | Combat test reference |
+| Document                                                               | Purpose                                                                                                                                                                                       |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`docs/SAVE_PERSISTENCE_PLAN.md`](docs/SAVE_PERSISTENCE_PLAN.md)       | Technical design for [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) and [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331)                            |
+| [`docs/UI_UX_STRATEGY.md`](docs/UI_UX_STRATEGY.md)                     | Portrait-first UI/UX direction — tracked via issues [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343)–[#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) |
+| [`docs/DESIGN_UI_MOTION_ROLLOUT.md`](docs/DESIGN_UI_MOTION_ROLLOUT.md) | UI motion rollout — tracked via [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347), [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350)                    |
+| [`docs/BATTLE_SYSTEM_SPEC.md`](docs/BATTLE_SYSTEM_SPEC.md)             | Combat system reference                                                                                                                                                                       |
+| [`docs/COMBAT_TEST_COVERAGE.md`](docs/COMBAT_TEST_COVERAGE.md)         | Combat test reference                                                                                                                                                                         |
 
 ---
 

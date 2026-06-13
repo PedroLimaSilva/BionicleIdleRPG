@@ -3,7 +3,7 @@ import type { Kit2001SocketAttachment } from '../../nodes/kit2001Nodes';
 import { KIT_2001_NODES } from '../../nodes/kit2001Nodes';
 import { KIT_2003_NODES } from '../../nodes/kit2003Nodes';
 import type { Kit2003SocketAttachment } from '../../nodes/kit2003Nodes';
-import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../../types/KitParts';
+import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
 import {
   MATA_KIT_PLAYER_PALETTE_BRAIN,
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
