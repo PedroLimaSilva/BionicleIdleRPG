@@ -5,7 +5,6 @@ import { CURRENT_GAME_STATE_VERSION } from '../data/gameState';
 import {
   clearGameDatabase,
   gameDb,
-  META_KEY,
   readAssembledGameStateFromDatabase,
   writeFullGameStateToDatabase,
   writeGranularGameStateToDatabase,
@@ -36,7 +35,17 @@ describe('gameDatabase', () => {
     expect(assembled).toEqual(baseState);
   });
 
-  test('writeGranularGameStateToDatabase updates only changed recruited rows', async () => {
+  test('writeFullGameStateToDatabase flattens meta into per-field game rows', async () => {
+    await writeFullGameStateToDatabase(baseState);
+
+    const protodermis = await gameDb.game.get('protodermis');
+    const version = await gameDb.game.get('version');
+
+    expect(protodermis).toEqual({ key: 'protodermis', value: 42 });
+    expect(version).toEqual({ key: 'version', value: CURRENT_GAME_STATE_VERSION });
+  });
+
+  test('writeGranularGameStateToDatabase updates only changed game fields', async () => {
     await writeFullGameStateToDatabase(baseState);
 
     const updated = {
@@ -47,11 +56,24 @@ describe('gameDatabase', () => {
 
     await writeGranularGameStateToDatabase(updated, baseState);
 
-    const meta = await gameDb.meta.get(META_KEY);
-    const recruited = await gameDb.recruited.toArray();
+    const assembled = await readAssembledGameStateFromDatabase();
+    expect(assembled?.protodermis).toBe(99);
+    expect(assembled?.recruitedCharacters).toEqual([{ exp: 25, id: 'Jala' }]);
+    expect(assembled?.completedQuests).toEqual([]);
+  });
 
-    expect(meta?.protodermis).toBe(99);
-    expect(recruited).toEqual([{ exp: 25, id: 'Jala' }]);
+  test('writeGranularGameStateToDatabase updates only protodermis when currency changes', async () => {
+    await writeFullGameStateToDatabase(baseState);
+
+    const putSpy = jest.spyOn(gameDb.game, 'bulkPut');
+
+    await writeGranularGameStateToDatabase(
+      { ...baseState, protodermis: 55 },
+      baseState
+    );
+
+    expect(putSpy).toHaveBeenCalledWith([{ key: 'protodermis', value: 55 }]);
+    putSpy.mockRestore();
   });
 
   test('writeGranularGameStateToDatabase deletes removed custom characters', async () => {

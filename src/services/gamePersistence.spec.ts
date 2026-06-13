@@ -91,6 +91,115 @@ describe('gamePersistence', () => {
     });
   });
 
+  describe('loadGameStateAsync – sanitizeOrphanedCustomCharacters', () => {
+    test('removes recruited customs missing from customCharacters and drops their quests', async () => {
+      const saved = {
+        activeQuests: [
+          {
+            assignedMatoran: ['custom_0', 'Jala'],
+            endsAt: Date.now() / 1000 + 3600,
+            questId: 'test_quest',
+            startedAt: Date.now() / 1000,
+          },
+        ],
+        collectedKrana: {},
+        completedQuests: [],
+        customCharacters: [],
+        kraataCollection: {},
+        protodermis: 100,
+        protodermisCap: 2000,
+        recruitedCharacters: [
+          { exp: 10, id: 'custom_0' },
+          { exp: 5, id: 'Jala' },
+        ],
+        version: CURRENT_GAME_STATE_VERSION,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
+      localStorage.setItem('TEST_MODE', 'true');
+
+      const state = await loadGameStateAsync();
+
+      expect(state.recruitedCharacters.map((m) => m.id)).toEqual(['Jala']);
+      expect(state.activeQuests).toHaveLength(1);
+      expect(state.activeQuests[0].assignedMatoran).toEqual(['Jala']);
+    });
+
+    test('removes quests that only assigned orphaned customs', async () => {
+      const saved = {
+        activeQuests: [
+          {
+            assignedMatoran: ['custom_0'],
+            endsAt: Date.now() / 1000 + 3600,
+            questId: 'solo_custom_quest',
+            startedAt: Date.now() / 1000,
+          },
+        ],
+        collectedKrana: {},
+        completedQuests: [],
+        customCharacters: [],
+        kraataCollection: {},
+        protodermis: 100,
+        protodermisCap: 2000,
+        recruitedCharacters: [{ exp: 10, id: 'custom_0' }],
+        version: CURRENT_GAME_STATE_VERSION,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
+      localStorage.setItem('TEST_MODE', 'true');
+
+      const state = await loadGameStateAsync();
+
+      expect(state.recruitedCharacters).toEqual([]);
+      expect(state.activeQuests).toEqual([]);
+    });
+  });
+
+  describe('importFromLocalStorageIfNeeded', () => {
+    test('removes legacy localStorage blob after import in normal mode', async () => {
+      const saved = {
+        activeQuests: [],
+        collectedKrana: {},
+        completedQuests: [],
+        customCharacters: [],
+        kraataCollection: {},
+        protodermis: 77,
+        protodermisCap: 2000,
+        rahkshi: [],
+        recruitedCharacters: [],
+        version: CURRENT_GAME_STATE_VERSION,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+
+      await loadGameStateAsync();
+
+      expect(loadRawGameState()).toBeNull();
+      expect((await readAssembledGameStateFromDatabase())?.protodermis).toBe(77);
+    });
+
+    test('keeps legacy localStorage blob when E2E force-import is enabled', async () => {
+      const saved = {
+        activeQuests: [],
+        collectedKrana: {},
+        completedQuests: [],
+        customCharacters: [],
+        kraataCollection: {},
+        protodermis: 88,
+        protodermisCap: 2000,
+        rahkshi: [],
+        recruitedCharacters: [],
+        version: CURRENT_GAME_STATE_VERSION,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
+      localStorage.setItem('TEST_MODE', 'true');
+
+      await loadGameStateAsync();
+
+      expect(loadRawGameState()).not.toBeNull();
+    });
+  });
+
   describe('loadGameStateAsync – version migrations', () => {
     test('migrates older-version localStorage saves into IndexedDB', async () => {
       const saved = {

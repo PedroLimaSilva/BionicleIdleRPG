@@ -26,12 +26,6 @@ describe('useGamePersistence', () => {
     localStorage.setItem('TEST_MODE', 'true');
     localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
     await clearGameDatabase();
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-    localStorage.clear();
   });
 
   test('saves immediately in test mode', async () => {
@@ -52,6 +46,7 @@ describe('useGamePersistence', () => {
 
   test('debounces saves outside test mode', async () => {
     localStorage.removeItem('TEST_MODE');
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
 
     const { rerender } = renderHook((props) => useGamePersistence(props), {
       initialProps: baseState,
@@ -62,19 +57,20 @@ describe('useGamePersistence', () => {
       protodermis: 50,
     });
 
+    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 3000);
     expect(await readAssembledGameStateFromDatabase()).toBeNull();
 
-    act(() => {
-      jest.advanceTimersByTime(2999);
-    });
-    expect(await readAssembledGameStateFromDatabase()).toBeNull();
+    const debouncedSave = setTimeoutSpy.mock.calls.at(-1)?.[0] as (() => void) | undefined;
+    expect(debouncedSave).toBeDefined();
 
     await act(async () => {
-      jest.advanceTimersByTime(1);
+      debouncedSave?.();
+      await Promise.resolve();
     });
 
     const saved = await readAssembledGameStateFromDatabase();
     expect(saved?.protodermis).toBe(50);
+    setTimeoutSpy.mockRestore();
   });
 
   test('flushes pending save when the tab becomes hidden', async () => {
@@ -95,9 +91,12 @@ describe('useGamePersistence', () => {
         value: 'hidden',
       });
       document.dispatchEvent(new Event('visibilitychange'));
+      await Promise.resolve();
     });
 
-    const saved = await readAssembledGameStateFromDatabase();
-    expect(saved?.protodermis).toBe(77);
+    await waitFor(async () => {
+      const saved = await readAssembledGameStateFromDatabase();
+      expect(saved?.protodermis).toBe(77);
+    });
   });
 });

@@ -3,16 +3,16 @@ import { applyOfflineJobExp } from '../game/Jobs';
 import { PartialGameState } from '../types/GameState';
 import { MatoranJob } from '../types/Jobs';
 import { isKraataPower, addKraataToCollection, KraataCollection } from '../types/Kraata';
-import { RecruitedCharacterData } from '../types/Matoran';
+import { BaseMatoran, isCustomCharacterId, RecruitedCharacterData } from '../types/Matoran';
+import { QuestProgress } from '../types/Quests';
 import { clamp } from '../utils/math';
 import { isTestMode } from '../utils/testMode';
 import {
   clearGameDatabase,
   E2E_FORCE_GAME_STATE_IMPORT_KEY,
-  gameDb,
   isGameDatabasePopulated,
-  META_KEY,
   readAssembledGameStateFromDatabase,
+  wasImportedFromLocalStorage,
   writeFullGameStateToDatabase,
   writeGranularGameStateToDatabase,
 } from './gameDatabase';
@@ -96,6 +96,10 @@ async function importFromLocalStorageIfNeeded(): Promise<void> {
   await writeFullGameStateToDatabase(loaded, {
     importedFromLocalStorage: true,
   });
+
+  if (!shouldForceLocalStorageImport()) {
+    localStorage.removeItem(STORAGE_KEY);
+  }
 }
 
 /**
@@ -137,6 +141,42 @@ function sanitizeUnrecognizedJobs(parsed: Record<string, unknown>): void {
   });
 }
 
+/**
+ * Removes recruited custom characters whose base data is missing from `customCharacters`.
+ * Also strips them from active quest assignments so job ticks do not keep updating ghosts.
+ */
+function sanitizeOrphanedCustomCharacters(parsed: Record<string, unknown>): void {
+  const recruitedCharacters = parsed.recruitedCharacters as RecruitedCharacterData[] | undefined;
+  if (!Array.isArray(recruitedCharacters)) return;
+
+  const customCharacters = parsed.customCharacters as BaseMatoran[] | undefined;
+  const knownCustomIds = new Set(
+    Array.isArray(customCharacters) ? customCharacters.map((character) => character.id) : []
+  );
+
+  const orphanedIds = new Set(
+    recruitedCharacters
+      .filter((character) => isCustomCharacterId(character.id) && !knownCustomIds.has(character.id))
+      .map((character) => character.id)
+  );
+
+  if (orphanedIds.size === 0) return;
+
+  parsed.recruitedCharacters = recruitedCharacters.filter(
+    (character) => !orphanedIds.has(character.id)
+  );
+
+  const activeQuests = parsed.activeQuests as QuestProgress[] | undefined;
+  if (!Array.isArray(activeQuests)) return;
+
+  parsed.activeQuests = activeQuests
+    .map((quest) => ({
+      ...quest,
+      assignedMatoran: quest.assignedMatoran.filter((id) => !orphanedIds.has(id)),
+    }))
+    .filter((quest) => quest.assignedMatoran.length > 0);
+}
+
 function isValidLoadedGameState(data: PartialGameState): boolean {
   return (
     typeof data.version === 'number' &&
@@ -151,6 +191,7 @@ export function processLoadedGameDocument(parsed: Record<string, unknown>): Load
   normalizeGameStateDocument(migrated);
   migrateKraataFromInventory(migrated);
   sanitizeUnrecognizedJobs(migrated);
+  sanitizeOrphanedCustomCharacters(migrated);
 
   if (!isValidLoadedGameState(migrated as PartialGameState)) {
     throw new Error('Invalid game state document after migration');
@@ -177,9 +218,8 @@ export async function loadGameStateAsync(): Promise<LoadedGameState> {
 
     const loaded = processLoadedGameDocument(assembled as unknown as Record<string, unknown>);
     if (JSON.stringify(loaded) !== JSON.stringify(toLoadedGameState(assembled))) {
-      const existingMeta = await gameDb.meta.get(META_KEY);
       await writeFullGameStateToDatabase(loaded, {
-        importedFromLocalStorage: existingMeta?.importedFromLocalStorage,
+        importedFromLocalStorage: await wasImportedFromLocalStorage(),
       });
     }
 

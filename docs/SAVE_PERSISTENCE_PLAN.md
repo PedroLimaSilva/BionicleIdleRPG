@@ -122,12 +122,14 @@ Implemented in `src/services/gameDatabase.ts` with async hydration in `GameProvi
 #### Proposed schema
 
 ```typescript
-db.version(1).stores({
-  meta: 'key', // protodermis, version, quest lists, kraata, rahkshi, caps, …
+db.version(2).stores({
+  game: 'key', // flattened: protodermis, version, quest lists, kraata, rahkshi, caps, …
   recruited: 'id', // RecruitedCharacterData per row
   customCharacters: 'id', // BaseMatoran per row
 });
 ```
+
+Each cold field is stored as `{ key, value }` so protodermis ticks update only the `protodermis` row.
 
 **Load path (async):**
 
@@ -144,8 +146,8 @@ db.version(1).stores({
 | Job tick / exp change                     | `db.recruited.update(id, { exp, assignment })` — one row |
 | Custom character create/import            | `db.customCharacters.put(base)` — one row                |
 | Custom character dismiss                  | `db.customCharacters.delete(id)`                         |
-| Quest complete, protodermis, kraata, etc. | `db.meta.put(...)` — small cold blob                     |
-| Version bump after migration              | Update `meta.version`                                    |
+| Quest complete, protodermis, kraata, etc. | `db.game.put({ key, value })` — only changed fields |
+| Version bump after migration              | Update `game.version` row                               |
 
 In-memory React state can continue to update the full `recruitedCharacters` array on tick; the persistence layer diffs by `id` or receives explicit patch calls from the tick path.
 
@@ -154,8 +156,8 @@ In-memory React state can continue to update the full `recruitedCharacters` arra
 On first load after deploy:
 
 1. If IndexedDB is empty and `localStorage` has `GAME_STATE`, import blob into split stores.
-2. Set a one-time flag in `meta` (e.g. `importedFromLocalStorage: true`).
-3. Optionally clear or retain `localStorage` key for rollback during transition.
+2. Set a one-time flag in `game.importedFromLocalStorage`.
+3. Delete the legacy `localStorage` blob (retained when `E2E_FORCE_GAME_STATE_IMPORT` is set for Playwright).
 
 Document migrations run on the assembled state regardless of import path.
 

@@ -3,8 +3,8 @@ import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 import type { E2ePwaBannerState } from '../src/utils/testMode';
 
-const GAME_DB_NAME = 'BionicleIdleRPG';
-const META_KEY = 'game';
+import { GAME_DB_NAME, GAME_DB_SCHEMA_VERSION } from '../src/services/gameDatabase';
+
 const E2E_FORCE_GAME_STATE_IMPORT_KEY = 'E2E_FORCE_GAME_STATE_IMPORT';
 
 type TestModeOptions = {
@@ -84,10 +84,10 @@ export async function setupGameState(
  */
 export async function readPersistedGameState(page: Page): Promise<PartialGameState> {
   return page.evaluate(
-    async ({ dbName, metaKey }) => {
+    async ({ dbName, schemaVersion }) => {
       function openDb(): Promise<IDBDatabase> {
         return new Promise((resolve, reject) => {
-          const request = indexedDB.open(dbName, 1);
+          const request = indexedDB.open(dbName, schemaVersion);
           request.onerror = () => reject(request.error);
           request.onsuccess = () => resolve(request.result);
         });
@@ -102,40 +102,32 @@ export async function readPersistedGameState(page: Page): Promise<PartialGameSta
         });
       }
 
-      function readMeta(db: IDBDatabase): Promise<Record<string, unknown> | undefined> {
-        return new Promise((resolve, reject) => {
-          const tx = db.transaction('meta', 'readonly');
-          const request = tx.objectStore('meta').get(metaKey);
-          request.onerror = () => reject(request.error);
-          request.onsuccess = () => resolve(request.result as Record<string, unknown> | undefined);
-        });
-      }
-
       const db = await openDb();
-      const meta = await readMeta(db);
-      if (!meta) {
+      const gameRows = await readAll<{ key: string; value: unknown }>(db, 'game');
+      if (gameRows.length === 0) {
         db.close();
         return {};
       }
 
+      const fields = Object.fromEntries(gameRows.map((row) => [row.key, row.value]));
       const recruitedCharacters = await readAll<Record<string, unknown>>(db, 'recruited');
       const customCharacters = await readAll<Record<string, unknown>>(db, 'customCharacters');
       db.close();
 
       return {
-        activeQuests: meta.activeQuests,
-        collectedKrana: meta.collectedKrana,
-        completedQuests: meta.completedQuests,
+        activeQuests: fields.activeQuests,
+        collectedKrana: fields.collectedKrana,
+        completedQuests: fields.completedQuests,
         customCharacters,
-        kraataCollection: meta.kraataCollection,
-        protodermis: meta.protodermis,
-        protodermisCap: meta.protodermisCap,
-        rahkshi: meta.rahkshi,
+        kraataCollection: fields.kraataCollection,
+        protodermis: fields.protodermis,
+        protodermisCap: fields.protodermisCap,
+        rahkshi: fields.rahkshi,
         recruitedCharacters,
-        version: meta.version,
+        version: fields.version,
       };
     },
-    { dbName: GAME_DB_NAME, metaKey: META_KEY }
+    { dbName: GAME_DB_NAME, schemaVersion: GAME_DB_SCHEMA_VERSION }
   );
 }
 

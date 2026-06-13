@@ -150,6 +150,7 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 3. Saves with `version <= CURRENT_GAME_STATE_VERSION` are upgraded via `migrateState`; saves newer than the app or that fail migration load `INITIAL_GAME_STATE`
 4. `saveGameStateAsync` (called from debounced `useGamePersistence`) catches `QuotaExceededError` and surfaces it via `SaveErrorBanner`
 5. `GameProvider` loads saves asynchronously — do not read game state synchronously on mount; use `loadGameStateAsync` or in-memory `useGame()` state
+6. Orphaned recruited `custom_*` characters (missing from `customCharacters`) are removed on load, including from active quest assignments
 
 **NEVER** add new fields to persistence without updating `useGamePersistence` and `loadGameState`.
 

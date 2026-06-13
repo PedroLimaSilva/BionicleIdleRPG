@@ -7,15 +7,37 @@ import { KraataCollection } from '../types/Kraata';
 import { RahkshiArmor } from '../types/Rahkshi';
 
 export const GAME_DB_NAME = 'BionicleIdleRPG';
-export const META_KEY = 'game';
 export const E2E_FORCE_GAME_STATE_IMPORT_KEY = 'E2E_FORCE_GAME_STATE_IMPORT';
 
-export type GameMetaRecord = {
-  key: typeof META_KEY;
+/** IndexedDB schema version — bump when object stores change. */
+export const GAME_DB_SCHEMA_VERSION = 2;
+
+export const GAME_FIELD_KEYS = [
+  'activeQuests',
+  'collectedKrana',
+  'completedQuests',
+  'importedFromLocalStorage',
+  'kraataCollection',
+  'protodermis',
+  'protodermisCap',
+  'rahkshi',
+  'version',
+] as const;
+
+export type GameFieldKey = (typeof GAME_FIELD_KEYS)[number];
+
+export type GameFieldRecord = {
+  key: GameFieldKey;
+  value: unknown;
+};
+
+/** @deprecated v1 blob shape — migrated to flattened `game` rows on schema upgrade. */
+type LegacyGameMetaRecord = {
   activeQuests: QuestProgress[];
   collectedKrana: KranaCollection;
   completedQuests: string[];
   importedFromLocalStorage?: boolean;
+  key: 'game';
   kraataCollection: KraataCollection;
   protodermis: number;
   protodermisCap: number;
@@ -25,7 +47,7 @@ export type GameMetaRecord = {
 
 class GameDatabase extends Dexie {
   customCharacters!: Table<BaseMatoran, string>;
-  meta!: Table<GameMetaRecord, string>;
+  game!: Table<GameFieldRecord, GameFieldKey>;
   recruited!: Table<RecruitedCharacterData, string>;
 
   constructor() {
@@ -35,106 +57,145 @@ class GameDatabase extends Dexie {
       meta: 'key',
       recruited: 'id',
     });
+    this.version(GAME_DB_SCHEMA_VERSION)
+      .stores({
+        customCharacters: 'id',
+        game: 'key',
+        recruited: 'id',
+      })
+      .upgrade(async (tx) => {
+        const legacyTable = tx.table('meta');
+        const legacy = (await legacyTable.get('game')) as LegacyGameMetaRecord | undefined;
+        if (!legacy) return;
+
+        const gameTable = tx.table('game');
+        const rows = gameFieldsFromState({
+          activeQuests: legacy.activeQuests,
+          collectedKrana: legacy.collectedKrana,
+          completedQuests: legacy.completedQuests,
+          customCharacters: [],
+          kraataCollection: legacy.kraataCollection,
+          protodermis: legacy.protodermis,
+          protodermisCap: legacy.protodermisCap,
+          rahkshi: legacy.rahkshi,
+          recruitedCharacters: [],
+          version: legacy.version,
+        });
+        if (legacy.importedFromLocalStorage) {
+          rows.push({ key: 'importedFromLocalStorage', value: true });
+        }
+        await gameTable.bulkPut(rows);
+      });
   }
 }
 
 export const gameDb = new GameDatabase();
 
-function metaFromState(
+function gameFieldsFromState(
   state: PartialGameState,
-  extras?: Pick<GameMetaRecord, 'importedFromLocalStorage'>
-): GameMetaRecord {
-  return {
-    activeQuests: state.activeQuests,
-    collectedKrana: state.collectedKrana,
-    completedQuests: state.completedQuests,
-    key: META_KEY,
-    kraataCollection: state.kraataCollection,
-    protodermis: state.protodermis,
-    protodermisCap: state.protodermisCap,
-    rahkshi: state.rahkshi,
-    version: state.version,
-    ...extras,
-  };
+  extras?: { importedFromLocalStorage?: boolean }
+): GameFieldRecord[] {
+  const rows: GameFieldRecord[] = [
+    { key: 'activeQuests', value: state.activeQuests },
+    { key: 'collectedKrana', value: state.collectedKrana },
+    { key: 'completedQuests', value: state.completedQuests },
+    { key: 'kraataCollection', value: state.kraataCollection },
+    { key: 'protodermis', value: state.protodermis },
+    { key: 'protodermisCap', value: state.protodermisCap },
+    { key: 'rahkshi', value: state.rahkshi },
+    { key: 'version', value: state.version },
+  ];
+
+  if (extras?.importedFromLocalStorage) {
+    rows.push({ key: 'importedFromLocalStorage', value: true });
+  }
+
+  return rows;
 }
 
-function metaPayload(meta: GameMetaRecord): Omit<GameMetaRecord, 'key'> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { key, ...rest } = meta;
-  return rest;
+function fieldValue<T>(fields: Map<GameFieldKey, unknown>, key: GameFieldKey, fallback: T): T {
+  const value = fields.get(key);
+  return (value === undefined ? fallback : value) as T;
 }
 
 export function assemblePartialGameState(
-  meta: GameMetaRecord,
+  fields: Map<GameFieldKey, unknown>,
   recruitedCharacters: RecruitedCharacterData[],
   customCharacters: BaseMatoran[]
 ): PartialGameState {
   return {
-    activeQuests: meta.activeQuests,
-    collectedKrana: meta.collectedKrana,
-    completedQuests: meta.completedQuests,
+    activeQuests: fieldValue(fields, 'activeQuests', []),
+    collectedKrana: fieldValue(fields, 'collectedKrana', {}),
+    completedQuests: fieldValue(fields, 'completedQuests', []),
     customCharacters,
-    kraataCollection: meta.kraataCollection,
-    protodermis: meta.protodermis,
-    protodermisCap: meta.protodermisCap,
-    rahkshi: meta.rahkshi,
+    kraataCollection: fieldValue(fields, 'kraataCollection', {}),
+    protodermis: fieldValue(fields, 'protodermis', 0),
+    protodermisCap: fieldValue(fields, 'protodermisCap', 2000),
+    rahkshi: fieldValue(fields, 'rahkshi', []),
     recruitedCharacters,
-    version: meta.version,
+    version: fieldValue(fields, 'version', 0),
   };
 }
 
+async function readGameFieldMap(): Promise<Map<GameFieldKey, unknown>> {
+  const rows = await gameDb.game.toArray();
+  return new Map(rows.map((row) => [row.key, row.value]));
+}
+
 export async function isGameDatabasePopulated(): Promise<boolean> {
-  const meta = await gameDb.meta.get(META_KEY);
-  return meta !== undefined;
+  const version = await gameDb.game.get('version');
+  return version !== undefined;
+}
+
+export async function wasImportedFromLocalStorage(): Promise<boolean> {
+  const flag = await gameDb.game.get('importedFromLocalStorage');
+  return flag?.value === true;
 }
 
 export async function clearGameDatabase(): Promise<void> {
-  await gameDb.transaction(
-    'rw',
-    gameDb.meta,
-    gameDb.recruited,
-    gameDb.customCharacters,
-    async () => {
-      await gameDb.meta.clear();
-      await gameDb.recruited.clear();
-      await gameDb.customCharacters.clear();
-    }
-  );
+  await gameDb.transaction('rw', gameDb.game, gameDb.recruited, gameDb.customCharacters, async () => {
+    await gameDb.game.clear();
+    await gameDb.recruited.clear();
+    await gameDb.customCharacters.clear();
+  });
 }
 
 export async function readAssembledGameStateFromDatabase(): Promise<PartialGameState | null> {
-  const meta = await gameDb.meta.get(META_KEY);
-  if (!meta) return null;
+  const fields = await readGameFieldMap();
+  if (!fields.has('version')) return null;
 
   const [recruitedCharacters, customCharacters] = await Promise.all([
     gameDb.recruited.toArray(),
     gameDb.customCharacters.toArray(),
   ]);
 
-  return assemblePartialGameState(meta, recruitedCharacters, customCharacters);
+  return assemblePartialGameState(fields, recruitedCharacters, customCharacters);
 }
 
 export async function writeFullGameStateToDatabase(
   state: PartialGameState,
-  extras?: Pick<GameMetaRecord, 'importedFromLocalStorage'>
+  extras?: { importedFromLocalStorage?: boolean }
 ): Promise<void> {
-  await gameDb.transaction(
-    'rw',
-    gameDb.meta,
-    gameDb.recruited,
-    gameDb.customCharacters,
-    async () => {
-      await gameDb.meta.put(metaFromState(state, extras));
-      await gameDb.recruited.clear();
-      await gameDb.customCharacters.clear();
-      if (state.recruitedCharacters.length > 0) {
-        await gameDb.recruited.bulkPut(state.recruitedCharacters);
-      }
-      if (state.customCharacters.length > 0) {
-        await gameDb.customCharacters.bulkPut(state.customCharacters);
-      }
+  await gameDb.transaction('rw', gameDb.game, gameDb.recruited, gameDb.customCharacters, async () => {
+    const existingFlag = await gameDb.game.get('importedFromLocalStorage');
+    const shouldMarkImported =
+      extras?.importedFromLocalStorage === true ||
+      (extras?.importedFromLocalStorage === undefined && existingFlag?.value === true);
+
+    await gameDb.game.clear();
+    const rows = gameFieldsFromState(state, {
+      importedFromLocalStorage: shouldMarkImported ? true : undefined,
+    });
+    await gameDb.game.bulkPut(rows);
+    await gameDb.recruited.clear();
+    await gameDb.customCharacters.clear();
+    if (state.recruitedCharacters.length > 0) {
+      await gameDb.recruited.bulkPut(state.recruitedCharacters);
     }
-  );
+    if (state.customCharacters.length > 0) {
+      await gameDb.customCharacters.bulkPut(state.customCharacters);
+    }
+  });
 }
 
 function rowsChanged<T extends { id: string }>(current: T[], previous: T[]): T[] {
@@ -150,6 +211,23 @@ function deletedIds<T extends { id: string }>(current: T[], previous: T[]): stri
   return previous.filter((row) => !currentIds.has(row.id)).map((row) => row.id);
 }
 
+const PERSISTED_GAME_FIELDS = GAME_FIELD_KEYS.filter(
+  (key) => key !== 'importedFromLocalStorage'
+) as Exclude<GameFieldKey, 'importedFromLocalStorage'>[];
+
+function changedGameFields(
+  current: PartialGameState,
+  previous: PartialGameState
+): GameFieldRecord[] {
+  const changed: GameFieldRecord[] = [];
+  for (const key of PERSISTED_GAME_FIELDS) {
+    if (JSON.stringify(current[key]) !== JSON.stringify(previous[key])) {
+      changed.push({ key, value: current[key] });
+    }
+  }
+  return changed;
+}
+
 export async function writeGranularGameStateToDatabase(
   current: PartialGameState,
   previous: PartialGameState | null
@@ -163,37 +241,33 @@ export async function writeGranularGameStateToDatabase(
   const recruitedDeletes = deletedIds(current.recruitedCharacters, previous.recruitedCharacters);
   const customUpdates = rowsChanged(current.customCharacters, previous.customCharacters);
   const customDeletes = deletedIds(current.customCharacters, previous.customCharacters);
-  const nextMeta = metaFromState(current, {
-    importedFromLocalStorage: undefined,
-  });
-  const metaChanged =
-    JSON.stringify(metaPayload(nextMeta)) !== JSON.stringify(metaPayload(metaFromState(previous)));
+  const gameFieldUpdates = changedGameFields(current, previous);
 
-  await gameDb.transaction(
-    'rw',
-    gameDb.meta,
-    gameDb.recruited,
-    gameDb.customCharacters,
-    async () => {
-      if (metaChanged) {
-        const existingMeta = await gameDb.meta.get(META_KEY);
-        await gameDb.meta.put({
-          ...nextMeta,
-          importedFromLocalStorage: existingMeta?.importedFromLocalStorage,
-        });
-      }
-      if (recruitedUpdates.length > 0) {
-        await gameDb.recruited.bulkPut(recruitedUpdates);
-      }
-      if (recruitedDeletes.length > 0) {
-        await gameDb.recruited.bulkDelete(recruitedDeletes);
-      }
-      if (customUpdates.length > 0) {
-        await gameDb.customCharacters.bulkPut(customUpdates);
-      }
-      if (customDeletes.length > 0) {
-        await gameDb.customCharacters.bulkDelete(customDeletes);
-      }
+  if (
+    recruitedUpdates.length === 0 &&
+    recruitedDeletes.length === 0 &&
+    customUpdates.length === 0 &&
+    customDeletes.length === 0 &&
+    gameFieldUpdates.length === 0
+  ) {
+    return;
+  }
+
+  await gameDb.transaction('rw', gameDb.game, gameDb.recruited, gameDb.customCharacters, async () => {
+    if (gameFieldUpdates.length > 0) {
+      await gameDb.game.bulkPut(gameFieldUpdates);
     }
-  );
+    if (recruitedUpdates.length > 0) {
+      await gameDb.recruited.bulkPut(recruitedUpdates);
+    }
+    if (recruitedDeletes.length > 0) {
+      await gameDb.recruited.bulkDelete(recruitedDeletes);
+    }
+    if (customUpdates.length > 0) {
+      await gameDb.customCharacters.bulkPut(customUpdates);
+    }
+    if (customDeletes.length > 0) {
+      await gameDb.customCharacters.bulkDelete(customDeletes);
+    }
+  });
 }
