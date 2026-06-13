@@ -53,10 +53,13 @@ test.describe('PWA Update Banner', () => {
       await page.setViewportSize(VIEWPORTS.mobilePortrait);
       await gotoCharactersWithPwaBanner(page, 'needRefresh');
 
-      await expect(page).toHaveScreenshot('pwa-update-banner-need-refresh-page-mobile-portrait.png', {
-        fullPage: true,
-        maxDiffPixels: 200,
-      });
+      await expect(page).toHaveScreenshot(
+        'pwa-update-banner-need-refresh-page-mobile-portrait.png',
+        {
+          fullPage: true,
+          maxDiffPixels: 200,
+        }
+      );
     });
   });
 

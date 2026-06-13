@@ -13,10 +13,7 @@ import {
   ONUA_NUVA_KIT_2001_ATTACHMENTS,
   ONUA_NUVA_KIT_2003_ATTACHMENTS,
 } from '../../../game/kit/attachments/Toa Nuva/onua';
-import {
-  applyWeatheredMetalToObject,
-  type WeatheredMetalOptions,
-} from '../WeatheredMetalMaterial';
+import { applyWeatheredMetalToObject, type WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
 const ONUA_NUVA_WEATHERED: WeatheredMetalOptions = {
   cavityStrength: 1,

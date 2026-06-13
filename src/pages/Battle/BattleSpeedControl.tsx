@@ -17,7 +17,12 @@ export function BattleSpeedControl() {
         <Play className="battle-speed-control__icon" aria-hidden size={20} strokeWidth={2} />
       ) : (
         <>
-          <FastForward className="battle-speed-control__icon" aria-hidden size={20} strokeWidth={2} />
+          <FastForward
+            className="battle-speed-control__icon"
+            aria-hidden
+            size={20}
+            strokeWidth={2}
+          />
           <span className="battle-speed-control__label">{speed}x</span>
         </>
       )}
