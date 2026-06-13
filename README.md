@@ -242,14 +242,14 @@ The banner uses the same dark glass styling, Orbitron headings, and button class
 
 ## 📚 Additional documentation
 
-| Document                                           | Purpose                                                                    |
-| -------------------------------------------------- | -------------------------------------------------------------------------- |
-| [AGENT_GUIDELINES.md](AGENT_GUIDELINES.md)         | Architecture, layers, and invariants for contributors and automation       |
-| [AGENTS.md](AGENTS.md)                             | Cursor Cloud / agent quick reference (commands and caveats)                |
-| [docs/TELEMETRY.md](docs/TELEMETRY.md)             | Optional build-time telemetry (`VITE_TELEMETRY_URL`) and privacy behaviour |
-| [e2e/README.md](e2e/README.md)                     | Playwright E2E tests and snapshot workflow (incl. PWA banner overrides)    |
-| [ARCHITECTURE_ROADMAP.md](ARCHITECTURE_ROADMAP.md) | Index of technical debt and improvements (tracked via GitHub issues)       |
-| [docs/UI_UX_STRATEGY.md](docs/UI_UX_STRATEGY.md) | Portrait-first UI/UX direction (tracked via GitHub issues)                 |
+| Document                                                     | Purpose                                                                    |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| [AGENT_GUIDELINES.md](AGENT_GUIDELINES.md)                   | Architecture, layers, and invariants for contributors and automation       |
+| [AGENTS.md](AGENTS.md)                                       | Cursor Cloud / agent quick reference (commands and caveats)                |
+| [docs/TELEMETRY.md](docs/TELEMETRY.md)                       | Optional build-time telemetry (`VITE_TELEMETRY_URL`) and privacy behaviour |
+| [e2e/README.md](e2e/README.md)                               | Playwright E2E tests and snapshot workflow (incl. PWA banner overrides)    |
+| [ARCHITECTURE_ROADMAP.md](ARCHITECTURE_ROADMAP.md)           | Index of technical debt and improvements (tracked via GitHub issues)       |
+| [docs/UI_UX_STRATEGY.md](docs/UI_UX_STRATEGY.md)             | Portrait-first UI/UX direction (tracked via GitHub issues)                 |
 | [docs/COMBAT_TEST_COVERAGE.md](docs/COMBAT_TEST_COVERAGE.md) | Combat and mask power test reference                                       |
 
 ## 🤝 Contributing
