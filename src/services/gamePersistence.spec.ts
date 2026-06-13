@@ -14,7 +14,7 @@ import {
   saveGameStateAsync,
   STORAGE_KEY,
 } from './gamePersistence';
-import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameState';
+import { CURRENT_GAME_STATE_VERSION } from '../data/gameState';
 import { MatoranJob } from '../types/Jobs';
 
 describe('gamePersistence', () => {
@@ -30,7 +30,6 @@ describe('gamePersistence', () => {
         collectedKrana: {},
         completedQuests: [],
         customCharacters: [],
-        inventory: {},
         kraataCollection: {},
         protodermis: 100,
         protodermisCap: 2000,
@@ -63,7 +62,6 @@ describe('gamePersistence', () => {
         collectedKrana: {},
         completedQuests: [],
         customCharacters: [],
-        inventory: {},
         kraataCollection: {},
         protodermis: 100,
         protodermisCap: 2000,
@@ -200,8 +198,8 @@ describe('gamePersistence', () => {
     });
   });
 
-  describe('loadGameStateAsync – version migrations', () => {
-    test('migrates older-version localStorage saves into IndexedDB', async () => {
+  describe('loadGameStateAsync – version validation', () => {
+    test('rejects older-version localStorage saves', async () => {
       const saved = {
         activeQuests: [],
         completedQuests: [],
@@ -216,15 +214,11 @@ describe('gamePersistence', () => {
 
       const state = await loadGameStateAsync();
 
-      expect(state.version).toBe(CURRENT_GAME_STATE_VERSION);
-      expect(state.protodermis).toBe(250);
-      expect(state.customCharacters).toEqual([]);
-
-      const persisted = await readAssembledGameStateFromDatabase();
-      expect(persisted?.version).toBe(CURRENT_GAME_STATE_VERSION);
+      expect(state).toEqual(getInitialLoadedGameState());
+      expect(await readAssembledGameStateFromDatabase()).toBeNull();
     });
 
-    test('falls back to initial state when migration fails', async () => {
+    test('rejects newer-version saves', async () => {
       const saved = {
         protodermis: 10,
         recruitedCharacters: [],
@@ -236,8 +230,7 @@ describe('gamePersistence', () => {
 
       const state = await loadGameStateAsync();
 
-      expect(state.recruitedCharacters).toEqual(INITIAL_GAME_STATE.recruitedCharacters);
-      expect(state.version).toBe(CURRENT_GAME_STATE_VERSION);
+      expect(state).toEqual(getInitialLoadedGameState());
     });
 
     test('returns initial state when no save exists', async () => {

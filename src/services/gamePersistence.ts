@@ -2,7 +2,6 @@ import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameStat
 import { applyOfflineJobExp } from '../game/Jobs';
 import { PartialGameState } from '../types/GameState';
 import { MatoranJob } from '../types/Jobs';
-import { isKraataPower, addKraataToCollection, KraataCollection } from '../types/Kraata';
 import { BaseMatoran, isCustomCharacterId, RecruitedCharacterData } from '../types/Matoran';
 import { QuestProgress } from '../types/Quests';
 import { clamp } from '../utils/math';
@@ -16,7 +15,6 @@ import {
   writeFullGameStateToDatabase,
   writeGranularGameStateToDatabase,
 } from './gameDatabase';
-import { migrateState, normalizeGameStateDocument } from './saveMigrations';
 
 export const STORAGE_KEY = `GAME_STATE`;
 
@@ -102,27 +100,28 @@ async function importFromLocalStorageIfNeeded(): Promise<void> {
   }
 }
 
-/**
- * Retrocompatibility: migrates any kraata from the legacy `inventory` (old saves)
- * into `kraataCollection` at stage 1, then clears the legacy key.
- */
-function migrateKraataFromInventory(parsed: Record<string, unknown>): void {
-  const inventory = parsed.inventory as Record<string, number> | undefined;
-  if (!inventory || typeof inventory !== 'object') return;
-
-  let kraataCollection = (parsed.kraataCollection ?? {}) as KraataCollection;
-  let migrated = false;
-
-  for (const [id, qty] of Object.entries(inventory)) {
-    if (isKraataPower(id) && typeof qty === 'number' && qty > 0) {
-      kraataCollection = addKraataToCollection(kraataCollection, id, 1, qty);
-      migrated = true;
-    }
+/** Fills optional fields missing from a current-version save document. */
+function applyOptionalDefaults(parsed: Record<string, unknown>): void {
+  if (!parsed.protodermisCap) {
+    parsed.protodermisCap = INITIAL_GAME_STATE.protodermisCap;
   }
-
-  if (migrated) {
-    parsed.kraataCollection = kraataCollection;
-    parsed.inventory = {};
+  if (!parsed.collectedKrana) {
+    parsed.collectedKrana = {};
+  }
+  if (!parsed.kraataCollection) {
+    parsed.kraataCollection = {};
+  }
+  if (!Array.isArray(parsed.rahkshi)) {
+    parsed.rahkshi = [];
+  }
+  if (!Array.isArray(parsed.customCharacters)) {
+    parsed.customCharacters = [];
+  }
+  if (!Array.isArray(parsed.activeQuests)) {
+    parsed.activeQuests = [];
+  }
+  if (!Array.isArray(parsed.completedQuests)) {
+    parsed.completedQuests = [];
   }
 }
 
@@ -187,17 +186,15 @@ function isValidLoadedGameState(data: PartialGameState): boolean {
 }
 
 export function processLoadedGameDocument(parsed: Record<string, unknown>): LoadedGameState {
-  const migrated = migrateState(parsed, CURRENT_GAME_STATE_VERSION);
-  normalizeGameStateDocument(migrated);
-  migrateKraataFromInventory(migrated);
-  sanitizeUnrecognizedJobs(migrated);
-  sanitizeOrphanedCustomCharacters(migrated);
+  applyOptionalDefaults(parsed);
+  sanitizeUnrecognizedJobs(parsed);
+  sanitizeOrphanedCustomCharacters(parsed);
 
-  if (!isValidLoadedGameState(migrated as PartialGameState)) {
-    throw new Error('Invalid game state document after migration');
+  if (!isValidLoadedGameState(parsed as PartialGameState)) {
+    throw new Error('Invalid game state document');
   }
 
-  const typed = migrated as PartialGameState;
+  const typed = parsed as PartialGameState;
   const [recruitedCharacters, currency] = applyOfflineJobExp(typed.recruitedCharacters);
 
   return toLoadedGameState({
