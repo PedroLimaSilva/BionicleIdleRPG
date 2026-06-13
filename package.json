@@ -28,6 +28,7 @@
     "make-pwa-icons": "tsx scripts/make-pwa-icons.mts",
     "sum-glb-sizes": "tsx scripts/sum-glb-sizes.mts",
     "glb-size-report": "tsx scripts/glb-size-report.mts",
+    "generate:arena-blockout": "tsx scripts/generate-arena-blockout-glb.mts",
     "kit-node-usage-report": "tsx scripts/kit-node-usage-report.mts"
   },
   "dependencies": {

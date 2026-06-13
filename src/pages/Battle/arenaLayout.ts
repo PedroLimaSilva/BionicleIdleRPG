@@ -9,6 +9,9 @@
  * - **Combat zone:** keep the inner ~2.2-unit circle clear for models and animations.
  * - **Rim rocks / canyon walls:** optional in the GLB, or leave to code blockout props below.
  * - **Export:** GLB, Y-up, apply transforms, then `yarn compress public/arena.glb`.
+ * - **Layout reference:** run `yarn generate:arena-blockout` → `public/arena_blockout.glb`
+ *   (import into Blender to match slot markers, rocks, and canyon walls).
+ * - **Sky HDRI in Blender:** `public/hdri/quarry_01_1k.hdr` (same file as in-game lighting).
  */
 
 /** Full stage diameter used for camera framing and ground mesh bounds. */

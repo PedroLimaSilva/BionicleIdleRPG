@@ -260,7 +260,7 @@ export function ArenaEnvironment({ receiveShadow }: ArenaEnvironmentProps) {
   return (
     <>
       <ArenaFog />
-      <Environment {...DESERT_ENVIRONMENT_PROPS} />
+      <Environment {...DESERT_ENVIRONMENT_PROPS} background backgroundBlurriness={0.12} />
       <EnvironmentIntensity value={0.55} />
       <ArenaDesertLighting castShadow={receiveShadow} />
       <group name="ArenaEnvironment">
