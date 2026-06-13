@@ -3,7 +3,7 @@ import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 import type { E2ePwaBannerState } from '../src/utils/testMode';
 
-import { GAME_DB_NAME, GAME_DB_SCHEMA_VERSION } from '../src/services/gameDatabase';
+import { GAME_DB_NAME } from '../src/services/gameDatabase';
 
 const E2E_FORCE_GAME_STATE_IMPORT_KEY = 'E2E_FORCE_GAME_STATE_IMPORT';
 
@@ -84,10 +84,10 @@ export async function setupGameState(
  */
 export async function readPersistedGameState(page: Page): Promise<PartialGameState> {
   return page.evaluate(
-    async ({ dbName, schemaVersion }) => {
+    async ({ dbName }) => {
       function openDb(): Promise<IDBDatabase> {
         return new Promise((resolve, reject) => {
-          const request = indexedDB.open(dbName, schemaVersion);
+          const request = indexedDB.open(dbName);
           request.onerror = () => reject(request.error);
           request.onsuccess = () => resolve(request.result);
         });
@@ -140,7 +140,7 @@ export async function readPersistedGameState(page: Page): Promise<PartialGameSta
         version: fields.version,
       };
     },
-    { dbName: GAME_DB_NAME, schemaVersion: GAME_DB_SCHEMA_VERSION }
+    { dbName: GAME_DB_NAME }
   );
 }
 
