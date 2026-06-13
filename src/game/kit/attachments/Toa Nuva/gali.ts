@@ -1,5 +1,9 @@
 import { LegoColor } from '../../../../types/Colors';
-import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../../../types/KitParts';
+import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
+import type { Kit2001SocketAttachment } from '../../nodes/kit2001Nodes';
+import { KIT_2001_NODES } from '../../nodes/kit2001Nodes';
+import { KIT_2003_NODES } from '../../nodes/kit2003Nodes';
+import type { Kit2003SocketAttachment } from '../../nodes/kit2003Nodes';
 import {
   MATA_KIT_PLAYER_PALETTE_BRAIN,
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
@@ -44,29 +48,44 @@ const GALI_NUVA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
 /**
  * Gali Nuva — sockets on `Toa_Nuva/gali.glb` filled from `kit_2001.glb`.
  */
-export const GALI_NUVA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment> = {
-  Axle6L: { kitNodeName: 'Axle6L', materialColors: GALI_NUVA_PALETTE_COLORS },
-  AxleConPin2: { kitNodeName: 'AxleConPin2', materialColors: GALI_NUVA_BLACK },
-  AxleMod2L: { kitNodeName: 'AxleMod2L', materialColors: GALI_NUVA_PALETTE_COLORS },
-  AxleModHips: { kitNodeName: 'AxleModHips', materialColors: GALI_NUVA_PALETTE_COLORS },
-  AxlePinL: { kitNodeName: 'AxlePin', materialColors: GALI_NUVA_PALETTE_COLORS },
-  AxlePinR: { kitNodeName: 'AxlePin', materialColors: GALI_NUVA_PALETTE_COLORS },
-  AxleSocket1L: { kitNodeName: 'AxleSocket1L', materialColors: GALI_NUVA_PALETTE_COLORS },
-  AxleSpacer1LB: { kitNodeName: 'AxleSpacer1L', materialColors: GALI_NUVA_PALETTE_COLORS },
-  AxleSpacer1LF: { kitNodeName: 'AxleSpacer1L', materialColors: GALI_NUVA_PALETTE_COLORS },
-  FootL: { kitNodeName: 'MataFoot', materialColors: GALI_NUVA_PALETTE_COLORS },
-  FootR: { kitNodeName: 'MataFoot', materialColors: GALI_NUVA_PALETTE_COLORS },
-  GearB: { kitNodeName: 'GearB', materialColors: GALI_NUVA_PALETTE_COLORS },
-  GearMB: { kitNodeName: 'GearM', materialColors: GALI_NUVA_PALETTE_COLORS },
-  GearML: { kitNodeName: 'GearM', materialColors: GALI_NUVA_PALETTE_COLORS },
-  GearMR: { kitNodeName: 'GearM', materialColors: GALI_NUVA_PALETTE_COLORS },
-  HandL: { kitNodeName: 'Socket', materialColors: GALI_NUVA_PALETTE_COLORS },
-  HandR: { kitNodeName: 'Socket', materialColors: GALI_NUVA_PALETTE_COLORS },
-  HipL: { kitNodeName: 'SocketModTop', materialColors: GALI_NUVA_BLACK },
-  HipR: { kitNodeName: 'SocketModTop', materialColors: GALI_NUVA_BLACK },
-  MataAbdomen: { kitNodeName: 'MataAbdomen', materialColors: GALI_NUVA_PALETTE_COLORS },
+export const GALI_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
+  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: GALI_NUVA_PALETTE_COLORS },
+  AxleConPin2: { kitNodeName: KIT_2001_NODES.AxleConPin2, materialColors: GALI_NUVA_BLACK },
+  AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: GALI_NUVA_PALETTE_COLORS },
+  AxleModHips: {
+    kitNodeName: KIT_2001_NODES.AxleModHips,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  AxlePinL: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: GALI_NUVA_PALETTE_COLORS },
+  AxlePinR: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: GALI_NUVA_PALETTE_COLORS },
+  AxleSocket1L: {
+    kitNodeName: KIT_2001_NODES.AxleSocket1L,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  AxleSpacer1LB: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  AxleSpacer1LF: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  FootL: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: GALI_NUVA_PALETTE_COLORS },
+  FootR: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: GALI_NUVA_PALETTE_COLORS },
+  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: GALI_NUVA_PALETTE_COLORS },
+  GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_NUVA_PALETTE_COLORS },
+  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_NUVA_PALETTE_COLORS },
+  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_NUVA_PALETTE_COLORS },
+  HandL: { kitNodeName: KIT_2001_NODES.Socket, materialColors: GALI_NUVA_PALETTE_COLORS },
+  HandR: { kitNodeName: KIT_2001_NODES.Socket, materialColors: GALI_NUVA_PALETTE_COLORS },
+  HipL: { kitNodeName: KIT_2001_NODES.SocketModTop, materialColors: GALI_NUVA_BLACK },
+  HipR: { kitNodeName: KIT_2001_NODES.SocketModTop, materialColors: GALI_NUVA_BLACK },
+  MataAbdomen: {
+    kitNodeName: KIT_2001_NODES.MataAbdomen,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
   MataBrain: {
-    kitNodeName: 'MataBrain',
+    kitNodeName: KIT_2001_NODES.MataBrain,
     materialColors: {
       Brain: {
         color: { key: 'eyes', kind: 'palette' },
@@ -74,64 +93,118 @@ export const GALI_NUVA_KIT_2001_ATTACHMENTS: Record<string, KitSocketAttachment>
       },
     },
   },
-  MataChest: { kitNodeName: 'MataChest', materialColors: GALI_NUVA_PALETTE_COLORS },
-  MataFace: { kitNodeName: 'MataFace', materialColors: GALI_NUVA_PALETTE_COLORS },
+  MataChest: { kitNodeName: KIT_2001_NODES.MataChest, materialColors: GALI_NUVA_PALETTE_COLORS },
+  MataFace: { kitNodeName: KIT_2001_NODES.MataFace, materialColors: GALI_NUVA_PALETTE_COLORS },
   MataGlowingEyes: {
-    kitNodeName: 'MataGlowingEyes',
+    kitNodeName: KIT_2001_NODES.MataGlowingEyes,
     materialColors: GALI_NUVA_EYES_PALETTE_COLORS,
   },
-  MataHip: { kitNodeName: 'MataHip', materialColors: GALI_NUVA_PALETTE_COLORS },
-  MataObliqueNL: { kitNodeName: 'MataObliqueN', materialColors: GALI_NUVA_PALETTE_COLORS },
-  MataObliqueNR: { kitNodeName: 'MataObliqueN', materialColors: GALI_NUVA_PALETTE_COLORS },
-  MataObliqueWL: { kitNodeName: 'MataObliqueW', materialColors: GALI_NUVA_PALETTE_COLORS },
-  MataObliqueWR: { kitNodeName: 'MataObliqueW', materialColors: GALI_NUVA_PALETTE_COLORS },
-  ShoulderJointL: { kitNodeName: 'SocketModSide', materialColors: GALI_NUVA_BLACK },
-  ShoulderJointR: { kitNodeName: 'SocketModSide', materialColors: GALI_NUVA_BLACK },
+  MataHip: { kitNodeName: KIT_2001_NODES.MataHip, materialColors: GALI_NUVA_PALETTE_COLORS },
+  MataObliqueNL: {
+    kitNodeName: KIT_2001_NODES.MataObliqueN,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  MataObliqueNR: {
+    kitNodeName: KIT_2001_NODES.MataObliqueN,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  MataObliqueWL: {
+    kitNodeName: KIT_2001_NODES.MataObliqueW,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  MataObliqueWR: {
+    kitNodeName: KIT_2001_NODES.MataObliqueW,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  ShoulderJointL: { kitNodeName: KIT_2001_NODES.SocketModSide, materialColors: GALI_NUVA_BLACK },
+  ShoulderJointR: { kitNodeName: KIT_2001_NODES.SocketModSide, materialColors: GALI_NUVA_BLACK },
 };
 
 /**
  * Gali Nuva — Nuva limbs, tools, and 2003 axles from `kit_2003.glb`.
  * Socket names on the rig use `.L` / `R`; kit nodes are unpaired.
  */
-export const GALI_NUVA_KIT_2003_ATTACHMENTS: Record<string, KitSocketAttachment> = {
-  AquaAxeL: { kitNodeName: 'AquaAxe', materialColors: GALI_NUVA_AQUA_AXE_PALETTE_COLORS },
-  AquaAxeR: { kitNodeName: 'AquaAxe', materialColors: GALI_NUVA_AQUA_AXE_PALETTE_COLORS },
+export const GALI_NUVA_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment> = {
+  AquaAxeL: {
+    kitNodeName: KIT_2003_NODES.AquaAxe,
+    materialColors: GALI_NUVA_AQUA_AXE_PALETTE_COLORS,
+  },
+  AquaAxeR: {
+    kitNodeName: KIT_2003_NODES.AquaAxe,
+    materialColors: GALI_NUVA_AQUA_AXE_PALETTE_COLORS,
+  },
   Axle3LStudL: {
-    kitNodeName: 'Axle3LStud',
+    kitNodeName: KIT_2003_NODES.Axle3LStud,
     materialColors: { Main: { kind: 'lego', value: LegoColor.DarkGray } },
   },
   Axle3LStudR: {
-    kitNodeName: 'Axle3LStud',
+    kitNodeName: KIT_2003_NODES.Axle3LStud,
     materialColors: { Main: { kind: 'lego', value: LegoColor.DarkGray } },
   },
-  AxleSpacer12L: { kitNodeName: 'AxleSpacer12', materialColors: GALI_NUVA_PALETTE_COLORS },
-  AxleSpacer12R: { kitNodeName: 'AxleSpacer12', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaBicepsL: { kitNodeName: 'NuvaBiceps', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaBicepsR: { kitNodeName: 'NuvaBiceps', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaCalfL: { kitNodeName: 'NuvaCalf', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaCalfR: { kitNodeName: 'NuvaCalf', materialColors: GALI_NUVA_PALETTE_COLORS },
+  AxleSpacer12L: {
+    kitNodeName: KIT_2003_NODES.AxleSpacerHalf,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  AxleSpacer12R: {
+    kitNodeName: KIT_2003_NODES.AxleSpacerHalf,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  NuvaBicepsL: { kitNodeName: KIT_2003_NODES.NuvaBiceps, materialColors: GALI_NUVA_PALETTE_COLORS },
+  NuvaBicepsR: { kitNodeName: KIT_2003_NODES.NuvaBiceps, materialColors: GALI_NUVA_PALETTE_COLORS },
+  NuvaCalfL: { kitNodeName: KIT_2003_NODES.NuvaCalf, materialColors: GALI_NUVA_PALETTE_COLORS },
+  NuvaCalfR: { kitNodeName: KIT_2003_NODES.NuvaCalf, materialColors: GALI_NUVA_PALETTE_COLORS },
   NuvaForearmArmorL: {
-    kitNodeName: 'NuvaForearmArmor',
+    kitNodeName: KIT_2003_NODES.NuvaForearmArmor,
     materialColors: GALI_NUVA_PALETTE_COLORS,
   },
   NuvaForearmArmorR: {
-    kitNodeName: 'NuvaForearmArmor',
+    kitNodeName: KIT_2003_NODES.NuvaForearmArmor,
     materialColors: GALI_NUVA_PALETTE_COLORS,
   },
-  NuvaForearmL: { kitNodeName: 'NuvaForearm', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaForearmR: { kitNodeName: 'NuvaForearm', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaPistonNL: { kitNodeName: 'NuvaPistonN', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaPistonNR: { kitNodeName: 'NuvaPistonN', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaPistonTL: { kitNodeName: 'NuvaPistonT', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaPistonTR: { kitNodeName: 'NuvaPistonT', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaQuadL: { kitNodeName: 'NuvaQuad', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaQuadR: { kitNodeName: 'NuvaQuad', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaShinL: { kitNodeName: 'NuvaShin', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaShinR: { kitNodeName: 'NuvaShin', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaThighL: { kitNodeName: 'NuvaThigh', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaThighR: { kitNodeName: 'NuvaThigh', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaTricepsL: { kitNodeName: 'NuvaTriceps', materialColors: GALI_NUVA_PALETTE_COLORS },
-  NuvaTricepsR: { kitNodeName: 'NuvaTriceps', materialColors: GALI_NUVA_PALETTE_COLORS },
-  PropellerL: { kitNodeName: 'Propeller', materialColors: GALI_NUVA_PROPELLER_PALETTE_COLORS },
-  PropellerR: { kitNodeName: 'Propeller', materialColors: GALI_NUVA_PROPELLER_PALETTE_COLORS },
+  NuvaForearmL: {
+    kitNodeName: KIT_2003_NODES.NuvaForearm,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  NuvaForearmR: {
+    kitNodeName: KIT_2003_NODES.NuvaForearm,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  NuvaPistonNL: {
+    kitNodeName: KIT_2003_NODES.NuvaPistonN,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  NuvaPistonNR: {
+    kitNodeName: KIT_2003_NODES.NuvaPistonN,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  NuvaPistonTL: {
+    kitNodeName: KIT_2003_NODES.NuvaPistonT,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  NuvaPistonTR: {
+    kitNodeName: KIT_2003_NODES.NuvaPistonT,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  NuvaQuadL: { kitNodeName: KIT_2003_NODES.NuvaQuad, materialColors: GALI_NUVA_PALETTE_COLORS },
+  NuvaQuadR: { kitNodeName: KIT_2003_NODES.NuvaQuad, materialColors: GALI_NUVA_PALETTE_COLORS },
+  NuvaShinL: { kitNodeName: KIT_2003_NODES.NuvaShin, materialColors: GALI_NUVA_PALETTE_COLORS },
+  NuvaShinR: { kitNodeName: KIT_2003_NODES.NuvaShin, materialColors: GALI_NUVA_PALETTE_COLORS },
+  NuvaThighL: { kitNodeName: KIT_2003_NODES.NuvaThigh, materialColors: GALI_NUVA_PALETTE_COLORS },
+  NuvaThighR: { kitNodeName: KIT_2003_NODES.NuvaThigh, materialColors: GALI_NUVA_PALETTE_COLORS },
+  NuvaTricepsL: {
+    kitNodeName: KIT_2003_NODES.NuvaTriceps,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  NuvaTricepsR: {
+    kitNodeName: KIT_2003_NODES.NuvaTriceps,
+    materialColors: GALI_NUVA_PALETTE_COLORS,
+  },
+  PropellerL: {
+    kitNodeName: KIT_2003_NODES.Propeller,
+    materialColors: GALI_NUVA_PROPELLER_PALETTE_COLORS,
+  },
+  PropellerR: {
+    kitNodeName: KIT_2003_NODES.Propeller,
+    materialColors: GALI_NUVA_PROPELLER_PALETTE_COLORS,
+  },
 };

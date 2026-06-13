@@ -11,15 +11,13 @@ import { KIT_2001_GLB_PATH } from '../../game/kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../../game/kit/kit2003';
 import {
   BOHROK_KIT_2001_ATTACHMENTS,
-  BOHROK_KIT_2003_ATTACHMENTS,
+  buildBohrokKit2003Attachments,
 } from '../../game/kit/attachments/bohrok';
 import {
-  BOHROK_KAL_FACEPLATE_PALETTE,
   BOHROK_SHIELD_KAL_PALETTE,
   BOHROK_PRIMARY_PALETTE,
-  BOHROK_SWARM_FACEPLATE_PALETTE,
 } from '../../game/kit/palettes/bohrokKitPalette';
-import type { KitMaterialSlotEntry, KitSocketAttachment } from '../../types/KitParts';
+import type { KitMaterialSlotEntry } from '../../types/KitParts';
 import { normalizeKitMaterialSlotEntry } from '../../game/kit/kitMaterialUtils';
 import { getWeatheredMetalMaterial, type WeatheredMetalOptions } from './WeatheredMetalMaterial';
 
@@ -151,17 +149,6 @@ function getKranaMaterial(
   return mat;
 }
 
-function mergeFaceplateAttachments(isKal: boolean): Record<string, KitSocketAttachment> {
-  const faceplateColors = isKal ? BOHROK_KAL_FACEPLATE_PALETTE : BOHROK_SWARM_FACEPLATE_PALETTE;
-  return {
-    ...BOHROK_KIT_2003_ATTACHMENTS,
-    Face_Plate_1: {
-      kitNodeName: 'Face_Plate',
-      materialColors: faceplateColors,
-    },
-  };
-}
-
 export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ id }, ref) => {
   const group = useRef<Group>(null);
   const { animations, nodes } = useGLTF(BOHROK_MASTER_GLB);
@@ -173,7 +160,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
   const bohrokInstance = useMemo(() => nodes.Bohrok.clone(true), [nodes]);
   const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(bohrokInstance), [bohrokInstance]);
 
-  const kit2003Attachments = useMemo(() => mergeFaceplateAttachments(isKal), [isKal]);
+  const kit2003Attachments = useMemo(() => buildBohrokKit2003Attachments(isKal), [isKal]);
 
   const shieldPalette = isKal ? BOHROK_SHIELD_KAL_PALETTE : BOHROK_PRIMARY_PALETTE;
   const shieldSlotLookup = useMemo(() => buildSlotLookup(shieldPalette), [shieldPalette]);
