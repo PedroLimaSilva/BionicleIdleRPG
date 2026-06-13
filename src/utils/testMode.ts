@@ -22,7 +22,6 @@ export type E2ePwaBannerState = 'needRefresh' | 'offlineReady';
  * Set via localStorage: E2E_PWA_BANNER=needRefresh|offlineReady (requires TEST_MODE=true).
  */
 export function getE2ePwaBannerState(): E2ePwaBannerState | null {
-  if (!isTestMode()) return null;
   const value = localStorage.getItem('E2E_PWA_BANNER');
   if (value === 'needRefresh' || value === 'offlineReady') return value;
   return null;

@@ -31,8 +31,8 @@ async function gotoCharactersWithPwaBanner(
   });
   await waitForCharacterCards(page);
   await hideCanvas(page);
-  await disableCSSAnimations(page);
   await expect(page.locator('.pwa-update-banner')).toBeVisible();
+  await disableCSSAnimations(page);
 }
 
 test.describe('PWA Update Banner', () => {

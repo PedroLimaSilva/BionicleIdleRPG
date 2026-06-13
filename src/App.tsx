@@ -93,24 +93,26 @@ export function App() {
   }, []);
 
   return (
-    <GameProvider>
-      <SettingsProvider>
-        <Router basename="/BionicleIdleRPG/">
-          <SceneCanvasProvider>
-            <div className="app-container">
-              <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
-                <div id="canvas-mount"></div>
-                <AnimatedRoutes />
-              </main>
-              <NavBar isPortrait={isPortrait} />
-            </div>
-            <PWABadge />
-            <SaveErrorBanner />
-            <TelemetryConsentPrompt />
-            <SharedCharacterPrompt />
-          </SceneCanvasProvider>
-        </Router>
-      </SettingsProvider>
-    </GameProvider>
+    <>
+      <GameProvider>
+        <SettingsProvider>
+          <Router basename="/BionicleIdleRPG/">
+            <SceneCanvasProvider>
+              <div className="app-container">
+                <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
+                  <div id="canvas-mount"></div>
+                  <AnimatedRoutes />
+                </main>
+                <NavBar isPortrait={isPortrait} />
+              </div>
+              <SaveErrorBanner />
+              <TelemetryConsentPrompt />
+              <SharedCharacterPrompt />
+            </SceneCanvasProvider>
+          </Router>
+        </SettingsProvider>
+      </GameProvider>
+      <PWABadge />
+    </>
   );
 }

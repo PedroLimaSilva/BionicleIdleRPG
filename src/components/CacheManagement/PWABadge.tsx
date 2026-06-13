@@ -8,8 +8,9 @@ import './PWABadge.scss';
 
 export function PWABadge() {
   const period = 60 * 60 * 1000;
-  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
-  const [e2eBannerState] = useState(getE2ePwaBannerState);
+  const e2eBannerState = getE2ePwaBannerState();
+  const shouldReduceMotion =
+    (useReducedMotion() ?? false) || isTestMode() || e2eBannerState !== null;
   const [dismissed, setDismissed] = useState(false);
 
   const {
@@ -47,6 +48,7 @@ export function PWABadge() {
     },
     shouldReduceMotion
   );
+  const skipEnterAnimation = shouldReduceMotion || e2eBannerState !== null;
 
   return (
     <AnimatePresence>
@@ -56,7 +58,7 @@ export function PWABadge() {
           role="alertdialog"
           aria-labelledby="pwa-update-title"
           aria-describedby="pwa-update-description"
-          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
+          initial={skipEnterAnimation ? false : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
           transition={panelTransition}

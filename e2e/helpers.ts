@@ -30,13 +30,16 @@ export const INITIAL_GAME_STATE: PartialGameState = {
  * Also dismisses the telemetry consent prompt so it doesn't block tests.
  */
 export async function enableTestMode(page: Page, options?: TestModeOptions) {
-  await page.addInitScript((pwaBanner?: E2ePwaBannerState) => {
+  await page.addInitScript(() => {
     localStorage.setItem('TEST_MODE', 'true');
     localStorage.setItem('TELEMETRY_ENABLED', 'false');
-    if (pwaBanner) {
-      localStorage.setItem('E2E_PWA_BANNER', pwaBanner);
-    }
-  }, options?.pwaBanner);
+  });
+
+  if (options?.pwaBanner) {
+    await page.addInitScript((banner: E2ePwaBannerState) => {
+      localStorage.setItem('E2E_PWA_BANNER', banner);
+    }, options.pwaBanner);
+  }
 }
 
 /**
@@ -65,18 +68,18 @@ export async function setupGameState(
   gameState: PartialGameState,
   options?: TestModeOptions
 ) {
-  await page.addInitScript(
-    ({ pwaBanner, state }: { pwaBanner?: E2ePwaBannerState; state: PartialGameState }) => {
-      localStorage.setItem('GAME_STATE', JSON.stringify(state));
-      localStorage.setItem('TEST_MODE', 'true');
-      localStorage.setItem('TELEMETRY_ENABLED', 'false');
-      localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
-      if (pwaBanner) {
-        localStorage.setItem('E2E_PWA_BANNER', pwaBanner);
-      }
-    },
-    { pwaBanner: options?.pwaBanner, state: gameState }
-  );
+  await page.addInitScript((state: PartialGameState) => {
+    localStorage.setItem('GAME_STATE', JSON.stringify(state));
+    localStorage.setItem('TEST_MODE', 'true');
+    localStorage.setItem('TELEMETRY_ENABLED', 'false');
+    localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
+  }, gameState);
+
+  if (options?.pwaBanner) {
+    await page.addInitScript((banner: E2ePwaBannerState) => {
+      localStorage.setItem('E2E_PWA_BANNER', banner);
+    }, options.pwaBanner);
+  }
 }
 
 /**
