@@ -72,10 +72,22 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
     kitNodeName: KIT_2001_NODES.AxleConPin1,
     materialColors: { Main: { kind: 'lego', value: LegoColor.LightGray } },
   },
-  AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  AxleModHips: { kitNodeName: KIT_2001_NODES.AxleModHips, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  AxleSpacer1LB: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  AxleSpacer1LF: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  AxleMod2L: {
+    kitNodeName: KIT_2001_NODES.AxleMod2L,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
+  AxleModHips: {
+    kitNodeName: KIT_2001_NODES.AxleModHips,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
+  AxleSpacer1LB: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
+  AxleSpacer1LF: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
   Body_1: { kitNodeName: KIT_2001_NODES.MataHip, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   ClawL: { kitNodeName: KIT_2001_NODES.Claw, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   ClawR: { kitNodeName: KIT_2001_NODES.Claw, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
@@ -93,7 +105,10 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
     kitNodeName: KIT_2001_NODES.MataSingleArmHand,
     materialColors: { Main: ONUA_MATA_KIT_PALETTE_COLORS.Secondary },
   },
-  Head_1: { kitNodeName: KIT_2001_NODES.AxleSocket3L, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  Head_1: {
+    kitNodeName: KIT_2001_NODES.AxleSocket3L,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
   Hip_Joint_L_1: {
     kitNodeName: KIT_2001_NODES.SocketModTop,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
@@ -102,7 +117,10 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
     kitNodeName: KIT_2001_NODES.SocketModTop,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
-  Leg_Lower_L_1: { kitNodeName: KIT_2001_NODES.MataLegModShin, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  Leg_Lower_L_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModShin,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
   Leg_Lower_Piston_L_1: {
     kitNodeName: KIT_2001_NODES.MataLegModPistonN,
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
@@ -111,8 +129,14 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
     kitNodeName: KIT_2001_NODES.MataLegModPistonN,
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
   },
-  Leg_Lower_R_1: { kitNodeName: KIT_2001_NODES.MataLegModShin, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  Leg_Upper_L_1: { kitNodeName: KIT_2001_NODES.MataLegModThigh, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  Leg_Lower_R_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModShin,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
+  Leg_Upper_L_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModThigh,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
   Leg_Upper_Piston_L_1: {
     kitNodeName: KIT_2001_NODES.MataLegModPistonT,
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
@@ -121,13 +145,22 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
     kitNodeName: KIT_2001_NODES.MataLegModPistonT,
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
   },
-  Leg_Upper_R_1: { kitNodeName: KIT_2001_NODES.MataLegModThigh, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  MataAbdomen: { kitNodeName: KIT_2001_NODES.MataAbdomen, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  Leg_Upper_R_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModThigh,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
+  MataAbdomen: {
+    kitNodeName: KIT_2001_NODES.MataAbdomen,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
   MataBrain: {
     kitNodeName: KIT_2001_NODES.MataBrain,
     materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
   },
-  MataChest: { kitNodeName: KIT_2001_NODES.MataChest, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  MataChest: {
+    kitNodeName: KIT_2001_NODES.MataChest,
+    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+  },
   MataFace: { kitNodeName: KIT_2001_NODES.MataFace, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   MataGlowingEyes: {
     kitNodeName: KIT_2001_NODES.MataGlowingEyes,

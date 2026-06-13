@@ -61,9 +61,18 @@ export const BOHROK_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment
     kitNodeName: KIT_2003_NODES.BohrokHead,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
-  Bohrok_Lever: { kitNodeName: KIT_2003_NODES.BohrokLever, materialColors: BOHROK_KIT_PALETTE_METAL },
-  Bohrok_TeethL: { kitNodeName: KIT_2003_NODES.BohrokTeeth, materialColors: BOHROK_KIT_PALETTE_TEETH },
-  Bohrok_TeethR: { kitNodeName: KIT_2003_NODES.BohrokTeeth, materialColors: BOHROK_KIT_PALETTE_TEETH },
+  Bohrok_Lever: {
+    kitNodeName: KIT_2003_NODES.BohrokLever,
+    materialColors: BOHROK_KIT_PALETTE_METAL,
+  },
+  Bohrok_TeethL: {
+    kitNodeName: KIT_2003_NODES.BohrokTeeth,
+    materialColors: BOHROK_KIT_PALETTE_TEETH,
+  },
+  Bohrok_TeethR: {
+    kitNodeName: KIT_2003_NODES.BohrokTeeth,
+    materialColors: BOHROK_KIT_PALETTE_TEETH,
+  },
   Foot_L_1: { kitNodeName: KIT_2003_NODES.BohrokFoot, materialColors: BOHROK_KIT_PALETTE_FEET },
   Foot_R_1: { kitNodeName: KIT_2003_NODES.BohrokFoot, materialColors: BOHROK_KIT_PALETTE_FEET },
   Leg_L_1: { kitNodeName: KIT_2003_NODES.BohrokArm, materialColors: BOHROK_KIT_PALETTE_ARMS },
@@ -81,7 +90,9 @@ export const BOHROK_FACEPLATE_KIT_2003_ATTACHMENTS: Record<string, Kit2003Socket
   },
 };
 
-export function buildBohrokKit2003Attachments(isKal: boolean): Record<string, Kit2003SocketAttachment> {
+export function buildBohrokKit2003Attachments(
+  isKal: boolean
+): Record<string, Kit2003SocketAttachment> {
   const faceplateColors = isKal ? BOHROK_KAL_FACEPLATE_PALETTE : BOHROK_SWARM_FACEPLATE_PALETTE;
   return {
     ...BOHROK_KIT_2003_ATTACHMENTS,

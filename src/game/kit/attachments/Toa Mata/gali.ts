@@ -93,7 +93,10 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
   AxleShoulderR: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: GALI_PALETTE_COLORS },
   AxleSocket1L: { kitNodeName: KIT_2001_NODES.AxleSocket1L, materialColors: GALI_PALETTE_COLORS },
   AxleSpacer1L: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: GALI_PALETTE_COLORS },
-  AxleSpacer1L001: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: GALI_PALETTE_COLORS },
+  AxleSpacer1L001: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: GALI_PALETTE_COLORS,
+  },
   Brain: {
     kitNodeName: KIT_2001_NODES.MataBrain,
     materialColors: GALI_PALETTE_COLORS,
@@ -103,7 +106,10 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
   GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_PALETTE_COLORS },
   GearMM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_PALETTE_COLORS },
   GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_PALETTE_COLORS },
-  Glowing_Eyes: { kitNodeName: KIT_2001_NODES.MataGlowingEyes, materialColors: GALI_PALETTE_COLORS },
+  Glowing_Eyes: {
+    kitNodeName: KIT_2001_NODES.MataGlowingEyes,
+    materialColors: GALI_PALETTE_COLORS,
+  },
   Hand_L_1: {
     kitNodeName: KIT_2001_NODES.MataSingleArmHand,
     materialColors: { Main: GALI_PALETTE_COLORS.Secondary },

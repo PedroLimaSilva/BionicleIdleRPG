@@ -1,5 +1,9 @@
 import type { KitSocketAttachment } from '../../../types/KitParts';
-import { BOHROK_KIT_2001_ATTACHMENTS, BOHROK_FACEPLATE_KIT_2003_ATTACHMENTS, BOHROK_KIT_2003_ATTACHMENTS } from '../attachments/bohrok';
+import {
+  BOHROK_KIT_2001_ATTACHMENTS,
+  BOHROK_FACEPLATE_KIT_2003_ATTACHMENTS,
+  BOHROK_KIT_2003_ATTACHMENTS,
+} from '../attachments/bohrok';
 import { DIMINISHED_KIT_2001_ATTACHMENTS } from '../attachments/diminished';
 import { REBUILT_KIT_2001_ATTACHMENTS, REBUILT_KIT_2003_ATTACHMENTS } from '../attachments/rebuilt';
 import { GALI_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/gali';
@@ -8,12 +12,34 @@ import { LEWA_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/lewa';
 import { ONUA_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/onua';
 import { POHATU_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/pohatu';
 import { TAHU_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/tahu';
-import { GALI_NUVA_KIT_2001_ATTACHMENTS, GALI_NUVA_KIT_2003_ATTACHMENTS } from '../attachments/Toa Nuva/gali';
-import { KOPAKA_NUVA_KIT_2001_ATTACHMENTS, KOPAKA_NUVA_KIT_2003_ATTACHMENTS } from '../attachments/Toa Nuva/kopaka';
-import { LEWA_NUVA_KIT_2001_ATTACHMENTS, LEWA_NUVA_KIT_2003_ATTACHMENTS } from '../attachments/Toa Nuva/lewa';
-import { ONUA_NUVA_KIT_2001_ATTACHMENTS, ONUA_NUVA_KIT_2003_ATTACHMENTS } from '../attachments/Toa Nuva/onua';
-import { POHATU_NUVA_KIT_2001_ATTACHMENTS, POHATU_NUVA_KIT_2003_ATTACHMENTS } from '../attachments/Toa Nuva/pohatu';
-import { TAHU_NUVA_KIT_2001_ATTACHMENTS, TAHU_NUVA_KIT_2003_ATTACHMENTS } from '../attachments/Toa Nuva/tahu';
+import {
+  GALI_NUVA_KIT_2001_ATTACHMENTS,
+  GALI_NUVA_KIT_2003_ATTACHMENTS,
+} from '../attachments/Toa Nuva/gali';
+import {
+  KOPAKA_NUVA_KIT_2001_ATTACHMENTS,
+  KOPAKA_NUVA_KIT_2003_ATTACHMENTS,
+} from '../attachments/Toa Nuva/kopaka';
+import {
+  LEWA_NUVA_KIT_2001_ATTACHMENTS,
+  LEWA_NUVA_KIT_2003_ATTACHMENTS,
+} from '../attachments/Toa Nuva/lewa';
+import {
+  ONUA_NUVA_KIT_2001_ATTACHMENTS,
+  ONUA_NUVA_KIT_2003_ATTACHMENTS,
+} from '../attachments/Toa Nuva/onua';
+import {
+  POHATU_NUVA_KIT_2001_ATTACHMENTS,
+  POHATU_NUVA_KIT_2003_ATTACHMENTS,
+} from '../attachments/Toa Nuva/pohatu';
+import {
+  TAHU_NUVA_KIT_2001_ATTACHMENTS,
+  TAHU_NUVA_KIT_2003_ATTACHMENTS,
+} from '../attachments/Toa Nuva/tahu';
+import {
+  TAKANUVA_KIT_2001_ATTACHMENTS,
+  TAKANUVA_KIT_2003_ATTACHMENTS,
+} from '../attachments/Toa Nuva/takanuva';
 import { KIT_2001_NODES, type Kit2001NodeName } from './kit2001Nodes';
 import { KIT_2003_NODES, type Kit2003NodeName } from './kit2003Nodes';
 
@@ -114,6 +140,7 @@ export const KIT_2001_ATTACHMENT_MAPS = [
   ONUA_NUVA_KIT_2001_ATTACHMENTS,
   POHATU_NUVA_KIT_2001_ATTACHMENTS,
   TAHU_NUVA_KIT_2001_ATTACHMENTS,
+  TAKANUVA_KIT_2001_ATTACHMENTS,
 ] as const;
 
 export const KIT_2003_ATTACHMENT_MAPS = [
@@ -126,6 +153,7 @@ export const KIT_2003_ATTACHMENT_MAPS = [
   ONUA_NUVA_KIT_2003_ATTACHMENTS,
   POHATU_NUVA_KIT_2003_ATTACHMENTS,
   TAHU_NUVA_KIT_2003_ATTACHMENTS,
+  TAKANUVA_KIT_2003_ATTACHMENTS,
 ] as const;
 
 export function getUsedKit2001NodeNames(): Set<Kit2001NodeName> {

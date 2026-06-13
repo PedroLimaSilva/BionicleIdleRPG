@@ -67,4 +67,5 @@ export const KIT_2001_NODES = {
 } as const;
 
 export type Kit2001NodeName = (typeof KIT_2001_NODES)[keyof typeof KIT_2001_NODES];
-export type Kit2001SocketAttachment = import('../../../types/KitParts').KitSocketAttachment<Kit2001NodeName>;
+export type Kit2001SocketAttachment =
+  import('../../../types/KitParts').KitSocketAttachment<Kit2001NodeName>;

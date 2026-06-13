@@ -18,9 +18,18 @@ const POHATU_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
  * Pohatu Mata (2001 kit): same `kitNodeName` / material layout as Tahu; keys match `nodes` on pohatu.glb.
  */
 export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
-  Arm_Lower_L_1: { kitNodeName: KIT_2001_NODES.TechnicArmMain, materialColors: POHATU_PALETTE_COLORS },
-  Arm_Lower_R_1: { kitNodeName: KIT_2001_NODES.TechnicArmMain, materialColors: POHATU_PALETTE_COLORS },
-  Arm_Piston_Lower_L_1: { kitNodeName: KIT_2001_NODES.TechnicArmPistonT, materialColors: POHATU_PALETTE_COLORS },
+  Arm_Lower_L_1: {
+    kitNodeName: KIT_2001_NODES.TechnicArmMain,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
+  Arm_Lower_R_1: {
+    kitNodeName: KIT_2001_NODES.TechnicArmMain,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
+  Arm_Piston_Lower_L_1: {
+    kitNodeName: KIT_2001_NODES.TechnicArmPistonT,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
   Arm_Piston_Lower_R_1: {
     kitNodeName: KIT_2001_NODES.TechnicArmPistonT,
     materialColors: POHATU_PALETTE_COLORS,
@@ -33,8 +42,14 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     kitNodeName: KIT_2001_NODES.TechnicArmPistonN,
     materialColors: POHATU_PALETTE_COLORS,
   },
-  Arm_Upper_L_1: { kitNodeName: KIT_2001_NODES.TechnicArmJoint, materialColors: POHATU_PALETTE_COLORS },
-  Arm_Upper_R_1: { kitNodeName: KIT_2001_NODES.TechnicArmJoint, materialColors: POHATU_PALETTE_COLORS },
+  Arm_Upper_L_1: {
+    kitNodeName: KIT_2001_NODES.TechnicArmJoint,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
+  Arm_Upper_R_1: {
+    kitNodeName: KIT_2001_NODES.TechnicArmJoint,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
   Axle2L: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: POHATU_PALETTE_COLORS },
   Axle3L: {
     kitNodeName: KIT_2001_NODES.Axle3L,
@@ -95,8 +110,14 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     kitNodeName: KIT_2001_NODES.MataObliqueN,
     materialColors: POHATU_PALETTE_COLORS,
   },
-  Body_Piston_Upper_L_1: { kitNodeName: KIT_2001_NODES.MataObliqueW, materialColors: POHATU_PALETTE_COLORS },
-  Body_Piston_Upper_R_1: { kitNodeName: KIT_2001_NODES.MataObliqueW, materialColors: POHATU_PALETTE_COLORS },
+  Body_Piston_Upper_L_1: {
+    kitNodeName: KIT_2001_NODES.MataObliqueW,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
+  Body_Piston_Upper_R_1: {
+    kitNodeName: KIT_2001_NODES.MataObliqueW,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
   Brain: {
     kitNodeName: KIT_2001_NODES.MataBrain,
     materialColors: POHATU_PALETTE_COLORS,
@@ -114,7 +135,10 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
   GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: POHATU_PALETTE_COLORS },
   GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: POHATU_PALETTE_COLORS },
   GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: POHATU_PALETTE_COLORS },
-  Glowing_Eyes: { kitNodeName: KIT_2001_NODES.MataGlowingEyes, materialColors: POHATU_PALETTE_COLORS },
+  Glowing_Eyes: {
+    kitNodeName: KIT_2001_NODES.MataGlowingEyes,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
   Hand_L_1: {
     kitNodeName: KIT_2001_NODES.MataHand,
     materialColors: { main: { kind: 'lego', value: LegoColor.Black } },
@@ -133,10 +157,22 @@ export const POHATU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
   },
   KickL: { kitNodeName: KIT_2001_NODES.FootKick, materialColors: POHATU_PALETTE_COLORS },
   KickR: { kitNodeName: KIT_2001_NODES.FootKick, materialColors: POHATU_PALETTE_COLORS },
-  Leg_Piston_Lower_L_1: { kitNodeName: KIT_2001_NODES.MataLegModPistonT, materialColors: POHATU_PALETTE_COLORS },
-  Leg_Piston_Lower_R_1: { kitNodeName: KIT_2001_NODES.MataLegModPistonT, materialColors: POHATU_PALETTE_COLORS },
-  Leg_Piston_Upper_L_1: { kitNodeName: KIT_2001_NODES.MataLegModPistonN, materialColors: POHATU_PALETTE_COLORS },
-  Leg_Piston_Upper_R_1: { kitNodeName: KIT_2001_NODES.MataLegModPistonN, materialColors: POHATU_PALETTE_COLORS },
+  Leg_Piston_Lower_L_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModPistonT,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
+  Leg_Piston_Lower_R_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModPistonT,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
+  Leg_Piston_Upper_L_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModPistonN,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
+  Leg_Piston_Upper_R_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModPistonN,
+    materialColors: POHATU_PALETTE_COLORS,
+  },
   Lower_Leg_L_1: {
     kitNodeName: KIT_2001_NODES.MataLegModThigh,
     materialColors: POHATU_PALETTE_COLORS,

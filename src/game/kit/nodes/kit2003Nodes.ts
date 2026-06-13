@@ -7,17 +7,18 @@ export const KIT_2003_NODES = {
   AirCutter: 'AirCutter',
   AquaAxe: 'AquaAxe',
   Axle3LStud: 'Axle3LStud',
-  AxleSpacerHalf: 'AxleSpacer1/2',
+  AxleSpacerHalf: 'AxleSpacer12',
   BohrokArm: 'BohrokArm',
-  BohrokBody: 'Bohrok Body',
-  BohrokEye: 'Bohrok Eye',
-  BohrokFoot: 'Bohrok Foot',
-  BohrokHead: 'Bohrok Head',
-  BohrokLever: 'Bohrok Lever',
-  BohrokNeck: 'Bohrok Neck',
-  BohrokTeeth: 'Bohrok Teeth',
-  FacePlate: 'Face Plate',
+  BohrokBody: 'Bohrok_Body',
+  BohrokEye: 'Bohrok_Eye',
+  BohrokFoot: 'Bohrok_Foot',
+  BohrokHead: 'Bohrok_Head',
+  BohrokLever: 'Bohrok_Lever',
+  BohrokNeck: 'Bohrok_Neck',
+  BohrokTeeth: 'Bohrok_Teeth',
+  FacePlate: 'Face_Plate',
   IceNuvaBlade: 'IceNuvaBlade',
+  LightSpear: 'LightSpear',
   MagmaBlade: 'MagmaBlade',
   MatoranBody: 'MatoranBody',
   NuvaBiceps: 'NuvaBiceps',
@@ -39,4 +40,5 @@ export const KIT_2003_NODES = {
 } as const;
 
 export type Kit2003NodeName = (typeof KIT_2003_NODES)[keyof typeof KIT_2003_NODES];
-export type Kit2003SocketAttachment = import('../../../types/KitParts').KitSocketAttachment<Kit2003NodeName>;
+export type Kit2003SocketAttachment =
+  import('../../../types/KitParts').KitSocketAttachment<Kit2003NodeName>;

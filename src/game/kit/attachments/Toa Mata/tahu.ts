@@ -113,7 +113,10 @@ export const TAHU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
   GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: TAHU_PALETTE_COLORS },
   GearMM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: TAHU_PALETTE_COLORS },
   GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: TAHU_PALETTE_COLORS },
-  Glowing_Eyes: { kitNodeName: KIT_2001_NODES.MataGlowingEyes, materialColors: TAHU_PALETTE_COLORS },
+  Glowing_Eyes: {
+    kitNodeName: KIT_2001_NODES.MataGlowingEyes,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
   HandL: {
     kitNodeName: KIT_2001_NODES.MataHand,
     materialColors: TAHU_PALETTE_COLORS,

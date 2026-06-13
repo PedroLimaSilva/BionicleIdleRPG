@@ -24,8 +24,7 @@ export type KitUsageSnapshot = {
   };
 };
 
-const KIT_NODE_REF_RE =
-  /kitNodeName:\s*(?:KIT_2001_NODES\.(\w+)|KIT_2003_NODES\.(\w+)|'([^']+)')/g;
+const KIT_NODE_REF_RE = /kitNodeName:\s*(?:KIT_2001_NODES\.(\w+)|KIT_2003_NODES\.(\w+)|'([^']+)')/g;
 
 export function parseKitNodeRegistry(source: string): Record<string, string> {
   const registry: Record<string, string> = {};
@@ -178,9 +177,7 @@ function formatUsageTable(
           ? `+${row.count}`
           : '—'
         : formatSignedCount(row.count - beforeCount);
-    lines.push(
-      `| ${rankOffset + index + 1} | ${formatNodeLabel(row)} | ${row.count} | ${delta} |`
-    );
+    lines.push(`| ${rankOffset + index + 1} | ${formatNodeLabel(row)} | ${row.count} | ${delta} |`);
   });
 
   if (ranking.length === 0) {
@@ -195,13 +192,7 @@ function formatMostUsedTable(
   beforeRanking: KitNodeUsageEntry[] | undefined,
   topN: number
 ): string[] {
-  return formatUsageTable(
-    'Most used nodes',
-    ranking,
-    beforeRanking,
-    ranking.slice(0, topN),
-    0
-  );
+  return formatUsageTable('Most used nodes', ranking, beforeRanking, ranking.slice(0, topN), 0);
 }
 
 function formatLeastUsedTable(

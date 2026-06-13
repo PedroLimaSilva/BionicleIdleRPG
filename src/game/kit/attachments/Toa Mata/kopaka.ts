@@ -41,7 +41,10 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     kitNodeName: KIT_2001_NODES.AxleMod2L,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
-  AxleModHips: { kitNodeName: KIT_2001_NODES.AxleModHips, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  AxleModHips: {
+    kitNodeName: KIT_2001_NODES.AxleModHips,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
   AxlePin: {
     kitNodeName: KIT_2001_NODES.AxlePin,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
@@ -50,12 +53,27 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     kitNodeName: KIT_2001_NODES.AxleSocket1L,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
-  AxleSpacer1LB: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  AxleSpacer1LF: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  BallJoint: { kitNodeName: KIT_2001_NODES.BallJoint, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  AxleSpacer1LB: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
+  AxleSpacer1LF: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
+  BallJoint: {
+    kitNodeName: KIT_2001_NODES.BallJoint,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
   Body_1: { kitNodeName: KIT_2001_NODES.MataHip, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  Foot_L_1: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  Foot_R_1: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  Foot_L_1: {
+    kitNodeName: KIT_2001_NODES.MataFoot,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
+  Foot_R_1: {
+    kitNodeName: KIT_2001_NODES.MataFoot,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
   GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   GearMM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
@@ -68,9 +86,18 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     kitNodeName: KIT_2001_NODES.SocketModTop,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
-  KopakaShield: { kitNodeName: KIT_2001_NODES.KopakaShield, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  KopakaSword: { kitNodeName: KIT_2001_NODES.KopakaSword, materialColors: KOPAKA_SWORD_PALETTE_COLORS },
-  Leg_Lower_L_1: { kitNodeName: KIT_2001_NODES.MataLegModThigh, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  KopakaShield: {
+    kitNodeName: KIT_2001_NODES.KopakaShield,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
+  KopakaSword: {
+    kitNodeName: KIT_2001_NODES.KopakaSword,
+    materialColors: KOPAKA_SWORD_PALETTE_COLORS,
+  },
+  Leg_Lower_L_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModThigh,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
   Leg_Lower_Piston_L_1: {
     kitNodeName: KIT_2001_NODES.MataLegModPistonT,
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
@@ -79,8 +106,14 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     kitNodeName: KIT_2001_NODES.MataLegModPistonT,
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
-  Leg_Lower_R_1: { kitNodeName: KIT_2001_NODES.MataLegModThigh, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  Leg_Upper_L_1: { kitNodeName: KIT_2001_NODES.MataLegModShin, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  Leg_Lower_R_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModThigh,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
+  Leg_Upper_L_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModShin,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
   Leg_Upper_Piston_L_1: {
     kitNodeName: KIT_2001_NODES.MataLegModPistonN,
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
@@ -89,14 +122,26 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     kitNodeName: KIT_2001_NODES.MataLegModPistonN,
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
-  Leg_Upper_R_1: { kitNodeName: KIT_2001_NODES.MataLegModShin, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  MataAbdomen: { kitNodeName: KIT_2001_NODES.MataAbdomen, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  Leg_Upper_R_1: {
+    kitNodeName: KIT_2001_NODES.MataLegModShin,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
+  MataAbdomen: {
+    kitNodeName: KIT_2001_NODES.MataAbdomen,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
   MataBrain: {
     kitNodeName: KIT_2001_NODES.MataBrain,
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
-  MataChest: { kitNodeName: KIT_2001_NODES.MataChest, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  MataFace: { kitNodeName: KIT_2001_NODES.MataFace, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  MataChest: {
+    kitNodeName: KIT_2001_NODES.MataChest,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
+  MataFace: {
+    kitNodeName: KIT_2001_NODES.MataFace,
+    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+  },
   MataGlowingEyes: {
     kitNodeName: KIT_2001_NODES.MataGlowingEyes,
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,

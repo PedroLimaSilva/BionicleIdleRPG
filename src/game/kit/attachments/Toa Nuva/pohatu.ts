@@ -48,16 +48,34 @@ export const POHATU_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
   AxleConPin1: { kitNodeName: KIT_2001_NODES.AxleConPin1, materialColors: POHATU_NUVA_BLACK },
   AxleMod3LL: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: POHATU_NUVA_BLACK },
   AxleMod3LR: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: POHATU_NUVA_BLACK },
-  AxleModHips: { kitNodeName: KIT_2001_NODES.AxleModHips, materialColors: POHATU_NUVA_PALETTE_COLORS },
+  AxleModHips: {
+    kitNodeName: KIT_2001_NODES.AxleModHips,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
   AxlePinPerp3L: { kitNodeName: KIT_2001_NODES.AxlePinPerp3L, materialColors: POHATU_NUVA_BLACK },
-  AxleSpacer1LB: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  AxleSpacer1LF: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  FootKickL: { kitNodeName: KIT_2001_NODES.FootKick, materialColors: POHATU_NUVA_FOOT_KICK_PALETTE_COLORS },
-  FootKickR: { kitNodeName: KIT_2001_NODES.FootKick, materialColors: POHATU_NUVA_FOOT_KICK_PALETTE_COLORS },
+  AxleSpacer1LB: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  AxleSpacer1LF: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  FootKickL: {
+    kitNodeName: KIT_2001_NODES.FootKick,
+    materialColors: POHATU_NUVA_FOOT_KICK_PALETTE_COLORS,
+  },
+  FootKickR: {
+    kitNodeName: KIT_2001_NODES.FootKick,
+    materialColors: POHATU_NUVA_FOOT_KICK_PALETTE_COLORS,
+  },
   GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: POHATU_NUVA_PALETTE_COLORS },
   GearM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: POHATU_NUVA_PALETTE_COLORS },
   GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  MataAbdomen: { kitNodeName: KIT_2001_NODES.MataAbdomen, materialColors: POHATU_NUVA_PALETTE_COLORS },
+  MataAbdomen: {
+    kitNodeName: KIT_2001_NODES.MataAbdomen,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
   MataBrain: {
     kitNodeName: KIT_2001_NODES.MataBrain,
     materialColors: {
@@ -76,10 +94,22 @@ export const POHATU_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     materialColors: POHATU_NUVA_EYES_PALETTE_COLORS,
   },
   MataHip: { kitNodeName: KIT_2001_NODES.MataHip, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  MataObliqueNL: { kitNodeName: KIT_2001_NODES.MataObliqueN, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  MataObliqueNR: { kitNodeName: KIT_2001_NODES.MataObliqueN, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  MataObliqueWL: { kitNodeName: KIT_2001_NODES.MataObliqueW, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  MataObliqueWR: { kitNodeName: KIT_2001_NODES.MataObliqueW, materialColors: POHATU_NUVA_PALETTE_COLORS },
+  MataObliqueNL: {
+    kitNodeName: KIT_2001_NODES.MataObliqueN,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  MataObliqueNR: {
+    kitNodeName: KIT_2001_NODES.MataObliqueN,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  MataObliqueWL: {
+    kitNodeName: KIT_2001_NODES.MataObliqueW,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  MataObliqueWR: {
+    kitNodeName: KIT_2001_NODES.MataObliqueW,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
   PerpendicularAxleJoint: {
     kitNodeName: KIT_2001_NODES.PerpendicularAxleJoint,
     materialColors: POHATU_NUVA_BLACK,
@@ -90,10 +120,22 @@ export const POHATU_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
   SocketModSideHL: { kitNodeName: KIT_2001_NODES.SocketModSide, materialColors: POHATU_NUVA_BLACK },
   SocketModSideHR: { kitNodeName: KIT_2001_NODES.SocketModSide, materialColors: POHATU_NUVA_BLACK },
   SocketR: { kitNodeName: KIT_2001_NODES.Socket, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  TechnicArmJointL: { kitNodeName: KIT_2001_NODES.TechnicArmJoint, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  TechnicArmJointR: { kitNodeName: KIT_2001_NODES.TechnicArmJoint, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  TechnicArmMainL: { kitNodeName: KIT_2001_NODES.TechnicArmMain, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  TechnicArmMainR: { kitNodeName: KIT_2001_NODES.TechnicArmMain, materialColors: POHATU_NUVA_PALETTE_COLORS },
+  TechnicArmJointL: {
+    kitNodeName: KIT_2001_NODES.TechnicArmJoint,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  TechnicArmJointR: {
+    kitNodeName: KIT_2001_NODES.TechnicArmJoint,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  TechnicArmMainL: {
+    kitNodeName: KIT_2001_NODES.TechnicArmMain,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  TechnicArmMainR: {
+    kitNodeName: KIT_2001_NODES.TechnicArmMain,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
   TechnicArmPistonNL: {
     kitNodeName: KIT_2001_NODES.TechnicArmPistonN,
     materialColors: POHATU_NUVA_PALETTE_COLORS,
@@ -118,16 +160,34 @@ export const POHATU_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
 export const POHATU_NUVA_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment> = {
   NuvaCalfL: { kitNodeName: KIT_2003_NODES.NuvaCalf, materialColors: POHATU_NUVA_PALETTE_COLORS },
   NuvaCalfR: { kitNodeName: KIT_2003_NODES.NuvaCalf, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  NuvaPistonNL: { kitNodeName: KIT_2003_NODES.NuvaPistonN, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  NuvaPistonNR: { kitNodeName: KIT_2003_NODES.NuvaPistonN, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  NuvaPistonTL: { kitNodeName: KIT_2003_NODES.NuvaPistonT, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  NuvaPistonTR: { kitNodeName: KIT_2003_NODES.NuvaPistonT, materialColors: POHATU_NUVA_PALETTE_COLORS },
+  NuvaPistonNL: {
+    kitNodeName: KIT_2003_NODES.NuvaPistonN,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  NuvaPistonNR: {
+    kitNodeName: KIT_2003_NODES.NuvaPistonN,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  NuvaPistonTL: {
+    kitNodeName: KIT_2003_NODES.NuvaPistonT,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  NuvaPistonTR: {
+    kitNodeName: KIT_2003_NODES.NuvaPistonT,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
   NuvaQuadL: { kitNodeName: KIT_2003_NODES.NuvaQuad, materialColors: POHATU_NUVA_PALETTE_COLORS },
   NuvaQuadR: { kitNodeName: KIT_2003_NODES.NuvaQuad, materialColors: POHATU_NUVA_PALETTE_COLORS },
   NuvaShinL: { kitNodeName: KIT_2003_NODES.NuvaShin, materialColors: POHATU_NUVA_PALETTE_COLORS },
   NuvaShinR: { kitNodeName: KIT_2003_NODES.NuvaShin, materialColors: POHATU_NUVA_PALETTE_COLORS },
   NuvaThighL: { kitNodeName: KIT_2003_NODES.NuvaThigh, materialColors: POHATU_NUVA_PALETTE_COLORS },
   NuvaThighR: { kitNodeName: KIT_2003_NODES.NuvaThigh, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  PohatuClawL: { kitNodeName: KIT_2003_NODES.PohatuClaw, materialColors: POHATU_NUVA_PALETTE_COLORS },
-  PohatuClawR: { kitNodeName: KIT_2003_NODES.PohatuClaw, materialColors: POHATU_NUVA_PALETTE_COLORS },
+  PohatuClawL: {
+    kitNodeName: KIT_2003_NODES.PohatuClaw,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
+  PohatuClawR: {
+    kitNodeName: KIT_2003_NODES.PohatuClaw,
+    materialColors: POHATU_NUVA_PALETTE_COLORS,
+  },
 };
