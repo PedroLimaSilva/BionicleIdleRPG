@@ -87,7 +87,7 @@ function CharacterModel({
     case MatoranStage.ToaNuva:
       switch (matoran.id) {
         case 'Takanuva':
-          return <TakanuvaModel matoran={matoran} />;
+          return <TakanuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Kopaka_Nuva':
           return <KopakaNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Lewa_Nuva':
