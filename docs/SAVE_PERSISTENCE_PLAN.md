@@ -2,7 +2,7 @@
 
 This document describes the planned evolution of game save/load from a single `localStorage` JSON blob to a versioned, quota-safe persistence layer.
 
-**Tracking:** [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) (Phase A), [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) (Phase B). Do not implement without explicit approval.
+**Tracking:** [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) (Phase A — **implemented**), [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) (Phase B — planned).
 
 ---
 
@@ -59,9 +59,9 @@ A single-blob Dexie table has the same full-rewrite problem as `localStorage`. G
 
 ## Phased Implementation
 
-### Phase A — Near term (localStorage, low risk)
+### Phase A — Near term (localStorage, low risk) ✅ Implemented
 
-Implement before or independently of IndexedDB. Storage-agnostic; remains valid if Phase B uses the same migration registry.
+Implemented in `src/services/saveMigrations.ts`, `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, and `src/components/SaveErrorBanner/`. Storage-agnostic; remains valid when Phase B adopts the same migration registry.
 
 1. **Version migration system** (`src/services/saveMigrations.ts` or equivalent)
 
@@ -104,7 +104,14 @@ Implement before or independently of IndexedDB. Storage-agnostic; remains valid 
    - Remove dismissed buyable customs from `customCharacters` when the player dismisses them.
    - Optional soft cap with UX warning before hard block.
 
-Acceptance criteria: see [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333).
+Acceptance criteria ([#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333)):
+
+- [x] Old saves are migrated instead of discarded (`migrateState` + `normalizeGameStateDocument`)
+- [x] Migration failures fall back to initial state
+- [x] Each version bump includes a migration function (`MIGRATIONS` in `saveMigrations.ts`)
+- [x] `QuotaExceededError` is caught and surfaced via `SaveErrorBanner`
+- [x] Saves are debounced during idle job ticks (3 s; immediate in `TEST_MODE`; flush on tab hide / unload)
+- [x] Dismissed buyable customs are removed from `customCharacters` (existing `dismissCustomCharacter` behavior)
 
 ---
 
@@ -180,12 +187,12 @@ The primary growth vector is `customCharacters`, not recruited character count.
 
 ---
 
-## Files Affected (when implemented)
+## Files Affected
 
-| Phase | Files                                                                                                                                                                        |
-| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A     | `src/services/saveMigrations.ts` (new), `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, `src/services/gamePersistence.spec.ts`, `AGENT_GUIDELINES.md` |
-| B     | Above plus `src/services/gameDatabase.ts` (new), `src/hooks/useGameLogic.tsx` (async load), `e2e/helpers.ts`, `package.json` (dexie), test setup for IndexedDB               |
+| Phase    | Files                                                                                                                                                                                                                                                                                     |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A (done) | `src/services/saveMigrations.ts`, `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, `src/components/SaveErrorBanner/`, `src/services/gamePersistence.spec.ts`, `src/services/saveMigrations.spec.ts`, `src/hooks/useGamePersistence.spec.tsx`, `AGENT_GUIDELINES.md` |
+| B        | Above plus `src/services/gameDatabase.ts` (new), `src/hooks/useGameLogic.tsx` (async load), `e2e/helpers.ts`, `package.json` (dexie), test setup for IndexedDB                                                                                                                            |
 
 ---
 
@@ -203,3 +210,4 @@ The primary growth vector is `customCharacters`, not recruited character count.
 | Date       | Decision                                                                                                                                                                                                                    |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-06-09 | Adopt two-phase plan: Phase A (migrations + localStorage hardening) then Phase B (Dexie split stores). Document migrations required regardless of storage backend. Single-blob Dexie is not sufficient for granular writes. |
+| 2026-06-12 | Phase A shipped: `saveMigrations.ts`, debounced `useGamePersistence`, `saveGameState` quota handling, `SaveErrorBanner`.                                                                                                    |

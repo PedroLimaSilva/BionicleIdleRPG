@@ -1,8 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import { loadGameState, STORAGE_KEY } from './gamePersistence';
-import { CURRENT_GAME_STATE_VERSION } from '../data/gameState';
+import { loadGameState, saveGameState, STORAGE_KEY } from './gamePersistence';
+import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameState';
 import { MatoranJob } from '../types/Jobs';
 
 describe('gamePersistence', () => {
@@ -133,6 +133,100 @@ describe('gamePersistence', () => {
       expect(state.recruitedCharacters[0].assignment?.job).toBe(MatoranJob.CharcoalMaker);
       expect(state.recruitedCharacters[1].assignment).toBeUndefined();
       expect(state.recruitedCharacters[2].assignment).toBeUndefined();
+    });
+  });
+
+  describe('loadGameState – version migrations', () => {
+    test('migrates older-version saves instead of discarding them', () => {
+      const saved = {
+        activeQuests: [],
+        completedQuests: [],
+        protodermis: 250,
+        protodermisCap: 2000,
+        recruitedCharacters: [{ exp: 0, id: 'Jala' }],
+        version: CURRENT_GAME_STATE_VERSION - 1,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+
+      const state = loadGameState();
+
+      expect(state.version).toBe(CURRENT_GAME_STATE_VERSION);
+      expect(state.protodermis).toBe(250);
+      expect(state.recruitedCharacters).toHaveLength(1);
+      expect(state.customCharacters).toEqual([]);
+    });
+
+    test('migrates legacy widgets key on older saves', () => {
+      const saved = {
+        activeQuests: [],
+        completedQuests: [],
+        recruitedCharacters: [{ exp: 0, id: 'Jala' }],
+        version: CURRENT_GAME_STATE_VERSION - 1,
+        widgetCap: 1500,
+        widgets: 42,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+
+      const state = loadGameState();
+
+      expect(state.protodermis).toBe(42);
+      expect(state.protodermisCap).toBe(1500);
+    });
+
+    test('falls back to initial state when migration fails', () => {
+      const saved = {
+        protodermis: 10,
+        recruitedCharacters: [],
+        version: 99,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+
+      const state = loadGameState();
+
+      expect(state).toEqual(INITIAL_GAME_STATE);
+    });
+  });
+
+  describe('saveGameState', () => {
+    test('persists state to localStorage', () => {
+      const state = {
+        activeQuests: [],
+        collectedKrana: {},
+        completedQuests: [],
+        customCharacters: [],
+        kraataCollection: {},
+        protodermis: 10,
+        protodermisCap: 2000,
+        rahkshi: [],
+        recruitedCharacters: [],
+        version: CURRENT_GAME_STATE_VERSION,
+      };
+
+      expect(saveGameState(state)).toEqual({ ok: true });
+      expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')).toEqual(state);
+    });
+
+    test('returns quota error when storage is full', () => {
+      const setItem = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        const error = new DOMException('Quota exceeded', 'QuotaExceededError');
+        throw error;
+      });
+
+      const result = saveGameState({
+        activeQuests: [],
+        collectedKrana: {},
+        completedQuests: [],
+        customCharacters: [],
+        kraataCollection: {},
+        protodermis: 10,
+        protodermisCap: 2000,
+        rahkshi: [],
+        recruitedCharacters: [],
+        version: CURRENT_GAME_STATE_VERSION,
+      });
+
+      expect(result).toEqual({ ok: false, reason: 'quota' });
+      setItem.mockRestore();
     });
   });
 });

@@ -1,10 +1,11 @@
 import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameState';
 import { applyOfflineJobExp } from '../game/Jobs';
-import { GameState } from '../types/GameState';
+import { GameState, PartialGameState } from '../types/GameState';
 import { MatoranJob } from '../types/Jobs';
 import { isKraataPower, addKraataToCollection, KraataCollection } from '../types/Kraata';
 import { RecruitedCharacterData } from '../types/Matoran';
 import { clamp } from '../utils/math';
+import { migrateState, normalizeGameStateDocument } from './saveMigrations';
 
 export const STORAGE_KEY = `GAME_STATE`;
 
@@ -69,36 +70,60 @@ function sanitizeUnrecognizedJobs(parsed: Record<string, unknown>): void {
   });
 }
 
+export type SavePersistenceErrorReason = 'quota' | 'unknown';
+
+export type SaveGameStateResult = { ok: true } | { ok: false; reason: SavePersistenceErrorReason };
+
+type SavePersistenceErrorListener = (error: SavePersistenceErrorReason | null) => void;
+
+const savePersistenceErrorListeners = new Set<SavePersistenceErrorListener>();
+
+export function subscribeSavePersistenceError(listener: SavePersistenceErrorListener): () => void {
+  savePersistenceErrorListeners.add(listener);
+  return () => savePersistenceErrorListeners.delete(listener);
+}
+
+function notifySavePersistenceError(error: SavePersistenceErrorReason | null): void {
+  for (const listener of savePersistenceErrorListeners) {
+    listener(error);
+  }
+}
+
+function isQuotaExceededError(error: unknown): boolean {
+  if (error instanceof DOMException) {
+    return error.name === 'QuotaExceededError' || error.code === 22;
+  }
+  return error instanceof Error && error.name === 'QuotaExceededError';
+}
+
+export function saveGameState(state: PartialGameState): SaveGameStateResult {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    notifySavePersistenceError(null);
+    return { ok: true };
+  } catch (error) {
+    if (isQuotaExceededError(error)) {
+      console.error('Failed to save game state: storage quota exceeded', error);
+      notifySavePersistenceError('quota');
+      return { ok: false, reason: 'quota' };
+    }
+    console.error('Failed to save game state:', error);
+    notifySavePersistenceError('unknown');
+    return { ok: false, reason: 'unknown' };
+  }
+}
+
 export function loadGameState() {
   const parsed = loadRawGameState();
   if (parsed) {
     try {
-      // Migrate old save keys (widgets/widgetCap) to protodermis/protodermisCap
-      if (parsed.protodermis === undefined && typeof parsed.widgets === 'number') {
-        parsed.protodermis = parsed.widgets;
-        parsed.protodermisCap = parsed.widgetCap ?? INITIAL_GAME_STATE.protodermisCap;
-      }
-      if (!parsed.protodermisCap) {
-        parsed.protodermisCap = INITIAL_GAME_STATE.protodermisCap;
-      }
-      if (!parsed.collectedKrana) {
-        parsed.collectedKrana = {};
-      }
-      if (!parsed.kraataCollection) {
-        parsed.kraataCollection = {};
-      }
-      if (!Array.isArray(parsed.rahkshi)) {
-        parsed.rahkshi = [];
-      }
-      if (!Array.isArray(parsed.customCharacters)) {
-        parsed.customCharacters = [];
-      }
+      const migrated = migrateState(parsed, CURRENT_GAME_STATE_VERSION);
+      normalizeGameStateDocument(migrated);
+      migrateKraataFromInventory(migrated);
+      sanitizeUnrecognizedJobs(migrated);
 
-      migrateKraataFromInventory(parsed);
-      sanitizeUnrecognizedJobs(parsed);
-
-      if (isValidGameState(parsed as unknown as GameState)) {
-        const typed = parsed as unknown as GameState;
+      if (isValidGameState(migrated as unknown as GameState)) {
+        const typed = migrated as unknown as GameState;
         const [recruitedCharacters, currency] = applyOfflineJobExp(typed.recruitedCharacters);
 
         return {
@@ -108,7 +133,7 @@ export function loadGameState() {
         };
       }
     } catch (e) {
-      console.error('Failed to parse game state:', e);
+      console.error('Failed to load game state:', e);
     }
   }
   return INITIAL_GAME_STATE;

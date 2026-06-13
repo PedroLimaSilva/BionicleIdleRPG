@@ -16,7 +16,6 @@ This document indexes known technical debt, inconsistencies, and architectural i
 | ------------ | -------------------------------------------------------------------- | --------------------------------------------------------------- |
 | Consistency  | [#334](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/334) | Standardize variable naming conventions (camelCase for locals)  |
 | Consistency  | [#337](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/337) | Unified non-blocking feedback component (toast/activity log)    |
-| Persistence  | [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) | Save migration & persistence — Phase A (localStorage)           |
 | Persistence  | [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) | Save migration & persistence — Phase B (IndexedDB)              |
 | Game logic   | [#332](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/332) | Quest prerequisite cycle detection                              |
 | Testing      | [#338](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/338) | Expand unit test coverage for game logic                        |
