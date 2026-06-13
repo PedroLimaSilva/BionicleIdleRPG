@@ -114,6 +114,19 @@ export async function readPersistedGameState(page: Page): Promise<PartialGameSta
       const customCharacters = await readAll<Record<string, unknown>>(db, 'customCharacters');
       db.close();
 
+      const recruitedOrder = Array.isArray(fields.recruitedOrder)
+        ? (fields.recruitedOrder as string[])
+        : [];
+      const recruitedById = new Map(
+        recruitedCharacters.map((character) => [character.id as string, character])
+      );
+      const orderedRecruited =
+        recruitedOrder.length > 0
+          ? recruitedOrder
+              .map((id) => recruitedById.get(id))
+              .filter((character): character is Record<string, unknown> => character !== undefined)
+          : recruitedCharacters;
+
       return {
         activeQuests: fields.activeQuests,
         collectedKrana: fields.collectedKrana,
@@ -123,7 +136,7 @@ export async function readPersistedGameState(page: Page): Promise<PartialGameSta
         protodermis: fields.protodermis,
         protodermisCap: fields.protodermisCap,
         rahkshi: fields.rahkshi,
-        recruitedCharacters,
+        recruitedCharacters: orderedRecruited,
         version: fields.version,
       };
     },

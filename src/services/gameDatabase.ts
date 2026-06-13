@@ -21,6 +21,7 @@ export const GAME_FIELD_KEYS = [
   'protodermis',
   'protodermisCap',
   'rahkshi',
+  'recruitedOrder',
   'version',
 ] as const;
 
@@ -110,12 +111,38 @@ function gameFieldsFromState(
     rows.push({ key: 'importedFromLocalStorage', value: true });
   }
 
+  if (state.recruitedCharacters.length > 0) {
+    rows.push({ key: 'recruitedOrder', value: recruitedOrderFromState(state) });
+  }
+
   return rows;
 }
 
 function fieldValue<T>(fields: Map<GameFieldKey, unknown>, key: GameFieldKey, fallback: T): T {
   const value = fields.get(key);
   return (value === undefined ? fallback : value) as T;
+}
+
+function recruitedOrderFromState(state: PartialGameState): string[] {
+  return state.recruitedCharacters.map((character) => character.id);
+}
+
+function orderRecruitedCharacters(
+  recruitedCharacters: RecruitedCharacterData[],
+  order: string[] | undefined
+): RecruitedCharacterData[] {
+  if (!order || order.length === 0) return recruitedCharacters;
+
+  const byId = new Map(recruitedCharacters.map((character) => [character.id, character]));
+  const ordered: RecruitedCharacterData[] = [];
+  for (const id of order) {
+    const character = byId.get(id);
+    if (character) ordered.push(character);
+  }
+  for (const character of recruitedCharacters) {
+    if (!order.includes(character.id)) ordered.push(character);
+  }
+  return ordered;
 }
 
 export function assemblePartialGameState(
@@ -170,10 +197,12 @@ export async function readAssembledGameStateFromDatabase(): Promise<PartialGameS
   const fields = await readGameFieldMap();
   if (!fields.has('version')) return null;
 
-  const [recruitedCharacters, customCharacters] = await Promise.all([
+  const [recruitedRows, customCharacters] = await Promise.all([
     gameDb.recruited.toArray(),
     gameDb.customCharacters.toArray(),
   ]);
+  const recruitedOrder = fieldValue(fields, 'recruitedOrder', [] as string[]);
+  const recruitedCharacters = orderRecruitedCharacters(recruitedRows, recruitedOrder);
 
   return assemblePartialGameState(fields, recruitedCharacters, customCharacters);
 }
@@ -224,8 +253,8 @@ function deletedIds<T extends { id: string }>(current: T[], previous: T[]): stri
 }
 
 const PERSISTED_GAME_FIELDS = GAME_FIELD_KEYS.filter(
-  (key) => key !== 'importedFromLocalStorage'
-) as Exclude<GameFieldKey, 'importedFromLocalStorage'>[];
+  (key) => key !== 'importedFromLocalStorage' && key !== 'recruitedOrder'
+) as Exclude<GameFieldKey, 'importedFromLocalStorage' | 'recruitedOrder'>[];
 
 function changedGameFields(
   current: PartialGameState,
@@ -254,13 +283,17 @@ export async function writeGranularGameStateToDatabase(
   const customUpdates = rowsChanged(current.customCharacters, previous.customCharacters);
   const customDeletes = deletedIds(current.customCharacters, previous.customCharacters);
   const gameFieldUpdates = changedGameFields(current, previous);
+  const recruitedOrderChanged =
+    JSON.stringify(recruitedOrderFromState(current)) !==
+    JSON.stringify(recruitedOrderFromState(previous));
 
   if (
     recruitedUpdates.length === 0 &&
     recruitedDeletes.length === 0 &&
     customUpdates.length === 0 &&
     customDeletes.length === 0 &&
-    gameFieldUpdates.length === 0
+    gameFieldUpdates.length === 0 &&
+    !recruitedOrderChanged
   ) {
     return;
   }
@@ -273,6 +306,14 @@ export async function writeGranularGameStateToDatabase(
     async () => {
       if (gameFieldUpdates.length > 0) {
         await gameDb.game.bulkPut(gameFieldUpdates);
+      }
+      if (recruitedOrderChanged) {
+        const order = recruitedOrderFromState(current);
+        if (order.length > 0) {
+          await gameDb.game.put({ key: 'recruitedOrder', value: order });
+        } else {
+          await gameDb.game.delete('recruitedOrder');
+        }
       }
       if (recruitedUpdates.length > 0) {
         await gameDb.recruited.bulkPut(recruitedUpdates);

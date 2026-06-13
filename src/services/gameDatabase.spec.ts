@@ -35,6 +35,26 @@ describe('gameDatabase', () => {
     expect(assembled).toEqual(baseState);
   });
 
+  test('readAssembledGameStateFromDatabase preserves recruited character order', async () => {
+    const state = {
+      ...baseState,
+      recruitedCharacters: [
+        { exp: 10, id: 'Toa_Tahu' },
+        { exp: 20, id: 'Toa_Gali' },
+        { exp: 30, id: 'Toa_Kopaka' },
+      ],
+    };
+
+    await writeFullGameStateToDatabase(state);
+
+    const assembled = await readAssembledGameStateFromDatabase();
+    expect(assembled?.recruitedCharacters.map((character) => character.id)).toEqual([
+      'Toa_Tahu',
+      'Toa_Gali',
+      'Toa_Kopaka',
+    ]);
+  });
+
   test('writeFullGameStateToDatabase flattens meta into per-field game rows', async () => {
     await writeFullGameStateToDatabase(baseState);
 
