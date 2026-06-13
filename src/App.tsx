@@ -1,4 +1,5 @@
 import { PWABadge } from './components/CacheManagement/PWABadge.tsx';
+import { SaveErrorBanner } from './components/SaveErrorBanner/index.tsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LayoutGroup } from 'motion/react';
 
@@ -104,6 +105,7 @@ export function App() {
               <NavBar isPortrait={isPortrait} />
             </div>
             <PWABadge />
+            <SaveErrorBanner />
             <TelemetryConsentPrompt />
             <SharedCharacterPrompt />
           </SceneCanvasProvider>
