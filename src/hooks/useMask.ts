@@ -16,6 +16,15 @@ import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidd
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 
+/** Scale on Toa Mata `Masks` sockets so Kanohi from `masks.glb` fit the face. */
+export const MATA_MASK_SLOT_SCALE: [number, number, number] = [
+  37.19623565673828, 37.19623565673828, 37.1963005065918,
+];
+
+function applyMataMaskSlotScale(masksParent: Object3D): void {
+  masksParent.scale.set(...MATA_MASK_SLOT_SCALE);
+}
+
 function buildMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
   const nodes: Record<string, Object3D> = {};
   gltf.scene.traverse((child) => {
@@ -94,12 +103,15 @@ function applyMaskColors(
  *                      When provided, materials whose names include "glow" (case-insensitive) will use
  *                      this color for both their base color and emissive color instead of maskColor.
  * @param maskPowerActive - When true, non-glow materials emit the mask color at intensity 5.
+ * @param applyMataSlotScale - When true, scale the parent socket to match Toa Mata rigs (needed
+ *                             when using `masks.glb` on a character whose GLB omits that scale).
  */
 export function useMask(
   masksParent: Object3D | undefined,
   matoran: BaseMatoran & { maskOverride?: Mask },
   glowColor?: string,
-  maskPowerActive?: boolean
+  maskPowerActive?: boolean,
+  applyMataSlotScale?: boolean
 ) {
   const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
   const masksNodes = useMemo(() => buildMaskNodes(gltf), [gltf]);
@@ -140,6 +152,10 @@ export function useMask(
   // Clone the mask and attach to parent; animate transitions between masks
   useEffect(() => {
     if (!masksNodes || !masksParent) return;
+
+    if (applyMataSlotScale) {
+      applyMataMaskSlotScale(masksParent);
+    }
 
     ensureMaskSlotPlaceholderHidden(masksParent);
 
@@ -200,7 +216,7 @@ export function useMask(
     // Mask lifecycle is managed imperatively at the top of each effect run and
     // in the unmount-only effect below, so the old mask can remain in the scene
     // during the exit animation.
-  }, [masksNodes, masksParent, maskName, effectiveShadows]);
+  }, [masksNodes, masksParent, maskName, effectiveShadows, applyMataSlotScale]);
 
   // Unmount-only cleanup: remove any lingering masks from the scene
   useEffect(() => {
