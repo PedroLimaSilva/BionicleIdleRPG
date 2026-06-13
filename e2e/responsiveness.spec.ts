@@ -83,11 +83,11 @@ test.describe('Responsiveness', () => {
           completedQuests: ['story_toa_arrival', 'bohrok_legend_of_krana'],
           protodermis: 500,
           recruitedCharacters: [
-            { exp: 0, id: 'Takua' },
             { exp: 5000, id: 'Jala' },
-            { exp: 0, id: 'Toa_Tahu' },
+            { exp: 0, id: 'Takua' },
             { exp: 0, id: 'Toa_Gali' },
             { exp: 0, id: 'Toa_Kopaka' },
+            { exp: 0, id: 'Toa_Tahu' },
           ],
         };
 

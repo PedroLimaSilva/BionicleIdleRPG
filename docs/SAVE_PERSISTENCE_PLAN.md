@@ -2,7 +2,7 @@
 
 This document describes the planned evolution of game save/load from a single `localStorage` JSON blob to a versioned, quota-safe persistence layer.
 
-**Tracking:** [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) (Phase A — **implemented**), [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) (Phase B — planned).
+**Tracking:** [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) (Phase A — **implemented**), [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) (Phase B — **implemented**).
 
 ---
 
@@ -10,9 +10,9 @@ This document describes the planned evolution of game save/load from a single `l
 
 ### 1. Version bumps wipe saves
 
-`loadGameState` rejects any save whose `version` does not exactly match `CURRENT_GAME_STATE_VERSION`. Bumping the version without a migration path resets all players to `INITIAL_GAME_STATE`.
+`loadGameStateAsync` accepts only saves whose `version` exactly matches `CURRENT_GAME_STATE_VERSION` (currently 9). Bumping the version without a deliberate migration strategy resets non-matching players to `INITIAL_GAME_STATE`.
 
-Ad-hoc retrocompat already exists in `src/services/gamePersistence.ts`, but only when the version still matches: `widgets` → `protodermis`, legacy `inventory` → `kraataCollection`, unrecognized job IDs cleared, and missing `customCharacters` / `collectedKrana` / `rahkshi` defaults filled in.
+On load, current-version saves are sanitized (unrecognized job IDs cleared, orphaned custom recruits removed) and optional fields receive defaults when missing.
 
 ### 2. Unbounded custom characters with no quota safety
 
@@ -42,18 +42,14 @@ Ad-hoc retrocompat already exists in `src/services/gamePersistence.ts`, but only
 
 ---
 
-## Two Layers of Migration
+## Migration scope
 
-These solve different problems. Both may be needed.
+| Layer              | What changes                       | Mechanism                                             |
+| ------------------ | ---------------------------------- | ----------------------------------------------------- |
+| **Storage layout** | Move from one blob to split stores | Dexie schema upgrade + one-time `localStorage` import |
+| **Document shape** | Field renames / version bumps      | **Not supported** — baseline is v9 localStorage shape |
 
-| Layer              | What changes                                                   | Mechanism                                              |
-| ------------------ | -------------------------------------------------------------- | ------------------------------------------------------ |
-| **Document shape** | Rename fields, add defaults, reshape arrays in saved game data | `MIGRATIONS` registry keyed by `GameState.version`     |
-| **Storage layout** | Move from one blob to multiple stores/tables                   | Dexie (or IndexedDB) schema version + upgrade handlers |
-
-Dexie's `.version(n).upgrade()` migrates **database schema** (object stores, indexes). It does **not** automatically evolve `GameState` JSON. Even with Dexie, application-level document migrations are required when persisted fields change.
-
-A single-blob Dexie table has the same full-rewrite problem as `localStorage`. Granular writes require a **split store** design.
+Dexie's `.version(n).upgrade()` migrates **database schema** (object stores, indexes). Application-level per-version document migrations were removed; only the `localStorage` → IndexedDB import remains.
 
 ---
 
@@ -61,81 +57,43 @@ A single-blob Dexie table has the same full-rewrite problem as `localStorage`. G
 
 ### Phase A — Near term (localStorage, low risk) ✅ Implemented
 
-Implemented in `src/services/saveMigrations.ts`, `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, and `src/components/SaveErrorBanner/`. Storage-agnostic; remains valid when Phase B adopts the same migration registry.
+Implemented in `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, and `src/components/SaveErrorBanner/`.
 
-1. **Version migration system** (`src/services/saveMigrations.ts` or equivalent)
-
-   ```typescript
-   type Migration = (state: Record<string, unknown>) => Record<string, unknown>;
-
-   const MIGRATIONS: Record<number, Migration> = {
-     10: (state) => ({ ...state, newField: defaultValue }),
-   };
-
-   function migrateState(
-     state: Record<string, unknown>,
-     targetVersion: number
-   ): Record<string, unknown> {
-     let current = { ...state };
-     const from = typeof current.version === 'number' ? current.version : 0;
-     for (let v = from + 1; v <= targetVersion; v++) {
-       if (MIGRATIONS[v]) {
-         current = MIGRATIONS[v](current);
-         current.version = v;
-       }
-     }
-     return current;
-   }
-   ```
-
-   - Fold existing ad-hoc retrocompat into numbered steps where possible, or treat current version as baseline and migrate forward only.
-   - Change validation to accept `version <= CURRENT_GAME_STATE_VERSION` after migration, not strict equality before.
-   - On migration failure: log, fall back to `INITIAL_GAME_STATE`.
-
-2. **Quota error handling**
-   - Wrap `localStorage.setItem` in try/catch in `useGamePersistence`.
-   - Surface a user-visible warning (e.g. toast or modal): save failed, export/back up if possible.
-
-3. **Debounced save**
-   - Debounce persistence writes (e.g. 2–5 s) so job ticks do not write 12×/minute.
-   - Flush on `beforeunload` / `visibilitychange` where appropriate.
-
-4. **Custom character hygiene** (product decision)
-   - Remove dismissed buyable customs from `customCharacters` when the player dismisses them.
-   - Optional soft cap with UX warning before hard block.
+- Debounced saves with quota error surfacing via `SaveErrorBanner`
+- Strict v9 save validation with load-time sanitizers (jobs, orphaned customs)
+- Optional-field defaults for current-version documents
 
 Acceptance criteria ([#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333)):
 
-- [x] Old saves are migrated instead of discarded (`migrateState` + `normalizeGameStateDocument`)
-- [x] Migration failures fall back to initial state
-- [x] Each version bump includes a migration function (`MIGRATIONS` in `saveMigrations.ts`)
 - [x] `QuotaExceededError` is caught and surfaced via `SaveErrorBanner`
 - [x] Saves are debounced during idle job ticks (3 s; immediate in `TEST_MODE`; flush on tab hide / unload)
 - [x] Dismissed buyable customs are removed from `customCharacters` (existing `dismissCustomCharacter` behavior)
+- [x] Non-matching save versions fall back to `INITIAL_GAME_STATE`
 
 ---
 
-### Phase B — Medium term (IndexedDB via Dexie)
+### Phase B — Medium term (IndexedDB via Dexie) ✅ Implemented
 
-Move game save data off `localStorage`. Keep settings keys (`DEBUG_MODE`, `TELEMETRY_ENABLED`, etc.) on `localStorage` unless there is reason to consolidate.
+Implemented in `src/services/gameDatabase.ts` with async hydration in `GameProvider`, granular writes from `useGamePersistence`, and one-time import from the legacy `localStorage` blob.
 
 #### Proposed schema
 
 ```typescript
-db.version(1).stores({
-  meta: 'key', // protodermis, version, quest lists, kraata, rahkshi, caps, …
+db.version(2).stores({
+  game: 'key', // flattened: protodermis, version, quest lists, kraata, rahkshi, caps, …
   recruited: 'id', // RecruitedCharacterData per row
   customCharacters: 'id', // BaseMatoran per row
 });
 ```
 
+Each cold field is stored as `{ key, value }` so protodermis ticks update only the `protodermis` row.
+
 **Load path (async):**
 
 1. Read all tables from IndexedDB.
-2. Run document migrations on assembled state (`migrateState` using `meta.version`).
-3. Apply existing sanitizers (job ID cleanup, defaults).
-4. Apply offline job exp (`applyOfflineJobExp`).
-5. Hydrate React state via `useGameLogic` (requires initial loading state before `GameProvider` renders children).
+2. Run load-time sanitizers on assembled state (job ID cleanup, orphaned customs, optional defaults).
+3. Apply offline job exp (`applyOfflineJobExp`).
+4. Hydrate React state via `useGameLogic` (requires initial loading state before `GameProvider` renders children).
 
 **Save path (granular):**
 
@@ -144,8 +102,8 @@ db.version(1).stores({
 | Job tick / exp change                     | `db.recruited.update(id, { exp, assignment })` — one row |
 | Custom character create/import            | `db.customCharacters.put(base)` — one row                |
 | Custom character dismiss                  | `db.customCharacters.delete(id)`                         |
-| Quest complete, protodermis, kraata, etc. | `db.meta.put(...)` — small cold blob                     |
-| Version bump after migration              | Update `meta.version`                                    |
+| Quest complete, protodermis, kraata, etc. | `db.game.put({ key, value })` — only changed fields      |
+| Version bump after migration              | Update `game.version` row                                |
 
 In-memory React state can continue to update the full `recruitedCharacters` array on tick; the persistence layer diffs by `id` or receives explicit patch calls from the tick path.
 
@@ -154,12 +112,17 @@ In-memory React state can continue to update the full `recruitedCharacters` arra
 On first load after deploy:
 
 1. If IndexedDB is empty and `localStorage` has `GAME_STATE`, import blob into split stores.
-2. Set a one-time flag in `meta` (e.g. `importedFromLocalStorage: true`).
-3. Optionally clear or retain `localStorage` key for rollback during transition.
+2. Set a one-time flag in `game.importedFromLocalStorage`.
+3. Delete the legacy `localStorage` blob (retained when `E2E_FORCE_GAME_STATE_IMPORT` is set for Playwright).
 
-Document migrations run on the assembled state regardless of import path.
+Load-time sanitizers run on the assembled state regardless of import path.
 
-Acceptance criteria: see [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331).
+Acceptance criteria ([#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331)):
+
+- [x] `localStorage` saves import into IndexedDB split stores (`importFromLocalStorageIfNeeded`)
+- [x] Job tick persists only changed recruited-character rows (`writeGranularGameStateToDatabase`)
+- [x] Load is async with loading state (`GameProvider` gate — no flash of initial state for valid saves)
+- [x] Tests and E2E helpers updated for IndexedDB (`fake-indexeddb`, `readPersistedGameState`)
 
 ---
 
@@ -189,10 +152,10 @@ The primary growth vector is `customCharacters`, not recruited character count.
 
 ## Files Affected
 
-| Phase    | Files                                                                                                                                                                                                                                                                                     |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A (done) | `src/services/saveMigrations.ts`, `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, `src/components/SaveErrorBanner/`, `src/services/gamePersistence.spec.ts`, `src/services/saveMigrations.spec.ts`, `src/hooks/useGamePersistence.spec.tsx`, `AGENT_GUIDELINES.md` |
-| B        | Above plus `src/services/gameDatabase.ts` (new), `src/hooks/useGameLogic.tsx` (async load), `e2e/helpers.ts`, `package.json` (dexie), test setup for IndexedDB                                                                                                                            |
+| Phase    | Files                                                                                                                                                                                                            |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A (done) | `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, `src/components/SaveErrorBanner/`, `src/services/gamePersistence.spec.ts`, `src/hooks/useGamePersistence.spec.tsx`, `AGENT_GUIDELINES.md` |
+| B (done) | `src/services/gameDatabase.ts`, `src/context/Game.tsx`, `src/hooks/useGameLogic.tsx`, `e2e/helpers.ts`, `package.json` (dexie), `src/setupTests.ts` (fake-indexeddb), `src/services/gameDatabase.spec.ts`        |
 
 ---
 
@@ -201,7 +164,7 @@ The primary growth vector is `customCharacters`, not recruited character count.
 - **GitHub [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333)** — Phase A (localStorage migrations and hardening)
 - **GitHub [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331)** — Phase B (IndexedDB split stores)
 - **ARCHITECTURE_ROADMAP.md** — backlog index
-- **AGENT_GUIDELINES.md** — persistence rules (`PartialGameState`, version matching, never bump version without migration)
+- **AGENT_GUIDELINES.md** — persistence rules (`PartialGameState`, strict version matching)
 
 ---
 
@@ -211,3 +174,5 @@ The primary growth vector is `customCharacters`, not recruited character count.
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-06-09 | Adopt two-phase plan: Phase A (migrations + localStorage hardening) then Phase B (Dexie split stores). Document migrations required regardless of storage backend. Single-blob Dexie is not sufficient for granular writes. |
 | 2026-06-12 | Phase A shipped: `saveMigrations.ts`, debounced `useGamePersistence`, `saveGameState` quota handling, `SaveErrorBanner`.                                                                                                    |
+| 2026-06-12 | Phase B shipped: Dexie split stores (`game`, `recruited`, `customCharacters`), async `loadGameStateAsync`, granular saves, E2E IndexedDB helpers.                                                                           |
+| 2026-06-12 | Dropped per-version document migrations and legacy kraata `inventory` support. Baseline is v9 localStorage shape; only `localStorage` → IndexedDB import remains.                                                           |

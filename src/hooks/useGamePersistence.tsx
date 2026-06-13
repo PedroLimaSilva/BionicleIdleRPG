@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { saveGameState } from '../services/gamePersistence';
+import { saveGameStateAsync } from '../services/gamePersistence';
 import { PartialGameState } from '../types/GameState';
 import { isTestMode } from '../utils/testMode';
 
@@ -43,6 +43,7 @@ export function useGamePersistence({
     version,
   };
 
+  const prevPersistedRef = useRef<PartialGameState | null>(null);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const flushSave = useCallback(() => {
@@ -50,12 +51,21 @@ export function useGamePersistence({
       clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
     }
-    saveGameState(stateRef.current);
+
+    const current = stateRef.current;
+    const previous = prevPersistedRef.current;
+    const savePromise = saveGameStateAsync(current, previous).then((result) => {
+      if (result.ok) {
+        prevPersistedRef.current = structuredClone(current);
+      }
+    });
+
+    return savePromise;
   }, []);
 
   const scheduleSave = useCallback(() => {
     if (isTestMode()) {
-      flushSave();
+      void flushSave();
       return;
     }
 
@@ -65,7 +75,7 @@ export function useGamePersistence({
 
     debounceTimerRef.current = setTimeout(() => {
       debounceTimerRef.current = null;
-      saveGameState(stateRef.current);
+      void flushSave();
     }, SAVE_DEBOUNCE_MS);
   }, [flushSave]);
 
@@ -95,12 +105,12 @@ export function useGamePersistence({
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
-        flushSave();
+        void flushSave();
       }
     };
 
     const handleBeforeUnload = () => {
-      flushSave();
+      void flushSave();
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);

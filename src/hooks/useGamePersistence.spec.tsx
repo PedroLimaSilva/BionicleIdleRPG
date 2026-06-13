@@ -1,10 +1,11 @@
 /**
  * @jest-environment jsdom
  */
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { useGamePersistence } from './useGamePersistence';
 import { CURRENT_GAME_STATE_VERSION } from '../data/gameState';
-import { STORAGE_KEY } from '../services/gamePersistence';
+import { clearGameDatabase, readAssembledGameStateFromDatabase } from '../services/gameDatabase';
+import { E2E_FORCE_GAME_STATE_IMPORT_KEY } from '../services/gameDatabase';
 
 const baseState = {
   activeQuests: [],
@@ -20,18 +21,14 @@ const baseState = {
 };
 
 describe('useGamePersistence', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
+  beforeEach(async () => {
     localStorage.clear();
     localStorage.setItem('TEST_MODE', 'true');
+    localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
+    await clearGameDatabase();
   });
 
-  afterEach(() => {
-    jest.useRealTimers();
-    localStorage.clear();
-  });
-
-  test('saves immediately in test mode', () => {
+  test('saves immediately in test mode', async () => {
     const { rerender } = renderHook((props) => useGamePersistence(props), {
       initialProps: baseState,
     });
@@ -41,12 +38,15 @@ describe('useGamePersistence', () => {
       protodermis: 99,
     });
 
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}');
-    expect(saved.protodermis).toBe(99);
+    await waitFor(async () => {
+      const saved = await readAssembledGameStateFromDatabase();
+      expect(saved?.protodermis).toBe(99);
+    });
   });
 
-  test('debounces saves outside test mode', () => {
+  test('debounces saves outside test mode', async () => {
     localStorage.removeItem('TEST_MODE');
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
 
     const { rerender } = renderHook((props) => useGamePersistence(props), {
       initialProps: baseState,
@@ -57,22 +57,23 @@ describe('useGamePersistence', () => {
       protodermis: 50,
     });
 
-    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 3000);
+    expect(await readAssembledGameStateFromDatabase()).toBeNull();
 
-    act(() => {
-      jest.advanceTimersByTime(2999);
+    const debouncedSave = setTimeoutSpy.mock.calls.at(-1)?.[0] as (() => void) | undefined;
+    expect(debouncedSave).toBeDefined();
+
+    await act(async () => {
+      debouncedSave?.();
+      await Promise.resolve();
     });
-    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
 
-    act(() => {
-      jest.advanceTimersByTime(1);
-    });
-
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}');
-    expect(saved.protodermis).toBe(50);
+    const saved = await readAssembledGameStateFromDatabase();
+    expect(saved?.protodermis).toBe(50);
+    setTimeoutSpy.mockRestore();
   });
 
-  test('flushes pending save when the tab becomes hidden', () => {
+  test('flushes pending save when the tab becomes hidden', async () => {
     localStorage.removeItem('TEST_MODE');
 
     const { rerender } = renderHook((props) => useGamePersistence(props), {
@@ -84,15 +85,18 @@ describe('useGamePersistence', () => {
       protodermis: 77,
     });
 
-    act(() => {
+    await act(async () => {
       Object.defineProperty(document, 'visibilityState', {
         configurable: true,
         value: 'hidden',
       });
       document.dispatchEvent(new Event('visibilitychange'));
+      await Promise.resolve();
     });
 
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}');
-    expect(saved.protodermis).toBe(77);
+    await waitFor(async () => {
+      const saved = await readAssembledGameStateFromDatabase();
+      expect(saved?.protodermis).toBe(77);
+    });
   });
 });

@@ -3,6 +3,10 @@ import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 import type { E2ePwaBannerState } from '../src/utils/testMode';
 
+import { GAME_DB_NAME } from '../src/services/gameDatabase';
+
+const E2E_FORCE_GAME_STATE_IMPORT_KEY = 'E2E_FORCE_GAME_STATE_IMPORT';
+
 type TestModeOptions = {
   pwaBanner?: E2ePwaBannerState;
 };
@@ -26,13 +30,16 @@ export const INITIAL_GAME_STATE: PartialGameState = {
  * Also dismisses the telemetry consent prompt so it doesn't block tests.
  */
 export async function enableTestMode(page: Page, options?: TestModeOptions) {
-  await page.addInitScript((pwaBanner?: E2ePwaBannerState) => {
+  await page.addInitScript(() => {
     localStorage.setItem('TEST_MODE', 'true');
     localStorage.setItem('TELEMETRY_ENABLED', 'false');
-    if (pwaBanner) {
-      localStorage.setItem('E2E_PWA_BANNER', pwaBanner);
-    }
-  }, options?.pwaBanner);
+  });
+
+  if (options?.pwaBanner) {
+    await page.addInitScript((banner: E2ePwaBannerState) => {
+      localStorage.setItem('E2E_PWA_BANNER', banner);
+    }, options.pwaBanner);
+  }
 }
 
 /**
@@ -61,16 +68,69 @@ export async function setupGameState(
   gameState: PartialGameState,
   options?: TestModeOptions
 ) {
-  await page.addInitScript(
-    ({ pwaBanner, state }: { pwaBanner?: E2ePwaBannerState; state: PartialGameState }) => {
-      localStorage.setItem('GAME_STATE', JSON.stringify(state));
-      localStorage.setItem('TEST_MODE', 'true');
-      localStorage.setItem('TELEMETRY_ENABLED', 'false');
-      if (pwaBanner) {
-        localStorage.setItem('E2E_PWA_BANNER', pwaBanner);
+  await page.addInitScript((state: PartialGameState) => {
+    localStorage.setItem('GAME_STATE', JSON.stringify(state));
+    localStorage.setItem('TEST_MODE', 'true');
+    localStorage.setItem('TELEMETRY_ENABLED', 'false');
+    localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
+  }, gameState);
+
+  if (options?.pwaBanner) {
+    await page.addInitScript((banner: E2ePwaBannerState) => {
+      localStorage.setItem('E2E_PWA_BANNER', banner);
+    }, options.pwaBanner);
+  }
+}
+
+/**
+ * Reads the assembled game save from IndexedDB split stores (Phase B persistence).
+ */
+export async function readPersistedGameState(page: Page): Promise<PartialGameState> {
+  return page.evaluate(
+    async ({ dbName }) => {
+      function openDb(): Promise<IDBDatabase> {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(dbName);
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => resolve(request.result);
+        });
       }
+
+      function readAll<T>(db: IDBDatabase, storeName: string): Promise<T[]> {
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(storeName, 'readonly');
+          const request = tx.objectStore(storeName).getAll();
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => resolve(request.result as T[]);
+        });
+      }
+
+      const db = await openDb();
+      const gameRows = await readAll<{ key: string; value: unknown }>(db, 'game');
+      if (gameRows.length === 0) {
+        db.close();
+        return {};
+      }
+
+      const fields = Object.fromEntries(gameRows.map((row) => [row.key, row.value]));
+      const recruitedCharacters = await readAll<Record<string, unknown>>(db, 'recruited');
+      const customCharacters = await readAll<Record<string, unknown>>(db, 'customCharacters');
+      db.close();
+
+      return {
+        activeQuests: fields.activeQuests,
+        collectedKrana: fields.collectedKrana,
+        completedQuests: fields.completedQuests,
+        customCharacters,
+        kraataCollection: fields.kraataCollection,
+        protodermis: fields.protodermis,
+        protodermisCap: fields.protodermisCap,
+        rahkshi: fields.rahkshi,
+        recruitedCharacters,
+        version: fields.version,
+      };
     },
-    { pwaBanner: options?.pwaBanner, state: gameState }
+    { dbName: GAME_DB_NAME }
   );
 }
 

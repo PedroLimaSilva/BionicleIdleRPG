@@ -86,11 +86,11 @@ test.describe('Recruitment Celebration', () => {
       completedQuests: ['story_toa_arrival'],
       protodermis: 500,
       recruitedCharacters: [
-        { exp: 0, id: 'Toa_Kopaka' },
-        { exp: 0, id: 'Toa_Pohatu' },
-        { exp: 0, id: 'Toa_Onua' },
-        { exp: 0, id: 'Toa_Lewa' },
         { exp: 0, id: 'Toa_Gali' },
+        { exp: 0, id: 'Toa_Kopaka' },
+        { exp: 0, id: 'Toa_Lewa' },
+        { exp: 0, id: 'Toa_Onua' },
+        { exp: 0, id: 'Toa_Pohatu' },
       ],
     });
 

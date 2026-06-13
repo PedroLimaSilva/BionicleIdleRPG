@@ -20,6 +20,7 @@ const MOCK_STATE: PartialGameState = {
 let mockTelemetryEnabled: boolean;
 
 jest.mock('./gamePersistence', () => ({
+  getLastPersistedGameState: () => null,
   getTelemetryEnabled: () => mockTelemetryEnabled,
   getTelemetryId: () => 'test-uuid-1234',
   loadRawGameState: () => null,

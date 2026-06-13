@@ -1,5 +1,10 @@
 import { PartialGameState } from '../types/GameState';
-import { getTelemetryEnabled, getTelemetryId, loadRawGameState } from './gamePersistence';
+import {
+  getTelemetryEnabled,
+  getTelemetryId,
+  getLastPersistedGameState,
+  loadRawGameState,
+} from './gamePersistence';
 
 const SESSION_KEY = 'TELEMETRY_SENT';
 
@@ -73,6 +78,9 @@ export function sendSessionTelemetry(state: PartialGameState): void {
 }
 
 function loadGameStateFromStorage(): PartialGameState | null {
+  const cached = getLastPersistedGameState();
+  if (cached) return cached;
+
   const raw = loadRawGameState();
   if (raw && typeof raw.version === 'number') return raw as unknown as PartialGameState;
   return null;

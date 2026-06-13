@@ -16,8 +16,8 @@ test.describe('Character Model Rendering', () => {
         ...INITIAL_GAME_STATE,
         recruitedCharacters: [
           ...INITIAL_GAME_STATE.recruitedCharacters,
-          { exp: 0, id: 'Takua' },
           { exp: 0, id: 'Hahli' },
+          { exp: 0, id: 'Takua' },
         ],
       });
 
