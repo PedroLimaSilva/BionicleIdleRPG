@@ -1,9 +1,9 @@
 /**
- * Warm quarry HDRI (Poly Haven, CC0) — reserved for future arena skybox / IBL.
+ * Warm quarry HDRI (Poly Haven, CC0) — local copy avoids runtime fetches.
  * @see https://polyhaven.com/a/quarry_01
  *
- * Not currently used in the battle arena (background left blank while ground art is in progress).
- * Pass `background` on `<Environment>` when re-enabling a visible skybox.
+ * Used for image-based lighting in the battle arena. Omit `background` on `<Environment>`
+ * to skip the visible skybox while keeping reflections and ambient light from the HDR.
  */
 export const DESERT_ENVIRONMENT_PROPS = {
   files: 'quarry_01_1k.hdr',
