@@ -11,7 +11,8 @@
  * - **Export:** GLB, Y-up, apply transforms, then `yarn compress public/arena.glb`.
  * - **Layout reference:** run `yarn generate:arena-blockout` → `public/arena_blockout.glb`
  *   (import into Blender to match slot markers, rocks, and canyon walls).
- * - **Sky HDRI in Blender:** `public/hdri/quarry_01_1k.hdr` (same file as in-game lighting).
+ * - **Sky HDRI in Blender:** `public/hdri/quarry_01_1k.hdr` (optional reference; not used in-game yet).
+ * - **Background geometry:** `ARENA_BACKDROP_WALLS` are layout reference only — not rendered in-game until art lands.
  */
 
 /** Full stage diameter used for camera framing and ground mesh bounds. */

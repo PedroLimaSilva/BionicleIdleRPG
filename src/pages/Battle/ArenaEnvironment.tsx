@@ -1,10 +1,8 @@
 import * as THREE from 'three';
-import { Environment, useGLTF } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
 import { useEffect, useMemo } from 'react';
 import { useThree } from '@react-three/fiber';
-import { DESERT_ENVIRONMENT_PROPS } from '../../utils/desertEnvironmentHdri';
 import {
-  ARENA_BACKDROP_WALLS,
   ARENA_CENTER,
   ARENA_DIAMETER,
   ARENA_GLB_PLACEHOLDER_DIAMETER,
@@ -17,41 +15,44 @@ import {
 
 const ARENA_GLB_URL = import.meta.env.BASE_URL + '/arena.glb';
 
-/** Warm sandstone palette for Po-Wahi desert blockout. */
+/** Ground-focused palette — background fill is intentionally omitted for now. */
 const COLORS = {
-  canyon: '#7a5c42',
-  canyonDeep: '#4a3428',
-  fog: '#e8c992',
   rock: '#8b7355',
-  rockDark: '#6b5740',
   sand: '#c9a66b',
   sandDark: '#a8844f',
-  skyFill: '#c8dff5',
   sun: '#fff0d4',
 } as const;
 
-function EnvironmentIntensity({ value }: { value: number }) {
+/** No skybox, HDRI, fog, or backdrop meshes — keeps the void behind the stage neutral. */
+function ArenaClearBackground() {
   const scene = useThree((s) => s.scene);
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (scene as any).environmentIntensity = value;
-  }, [scene, value]);
-  return null;
-}
+    const previousBackground = scene.background;
+    const previousEnvironment = scene.environment;
+    const previousFog = scene.fog;
 
-function ArenaFog() {
-  return <fog attach="fog" args={[COLORS.fog, 2.5, 9]} />;
+    scene.background = null;
+    scene.environment = null;
+    scene.fog = null;
+
+    return () => {
+      scene.background = previousBackground;
+      scene.environment = previousEnvironment;
+      scene.fog = previousFog;
+    };
+  }, [scene]);
+  return null;
 }
 
 interface ArenaLightingProps {
   castShadow: boolean;
 }
 
-function ArenaDesertLighting({ castShadow }: ArenaLightingProps) {
+function ArenaLighting({ castShadow }: ArenaLightingProps) {
   return (
     <>
-      <ambientLight color="#f5e6c8" intensity={0.35} />
-      <hemisphereLight args={[COLORS.sun, COLORS.sandDark, 0.45]} />
+      <ambientLight color="#e8e4dc" intensity={0.45} />
+      <hemisphereLight args={['#f5f0e8', COLORS.sandDark, 0.35]} />
       <directionalLight
         ref={(el) => {
           if (el && el.parent && !el.target.parent) {
@@ -61,7 +62,7 @@ function ArenaDesertLighting({ castShadow }: ArenaLightingProps) {
         }}
         position={[2.8, 4.5, 2.2]}
         color={COLORS.sun}
-        intensity={1.45}
+        intensity={1.35}
         castShadow={castShadow}
         shadow-mapSize={[2048, 2048]}
         shadow-camera-far={15}
@@ -72,7 +73,7 @@ function ArenaDesertLighting({ castShadow }: ArenaLightingProps) {
         shadow-bias={-0.0005}
         shadow-normalBias={0.005}
       />
-      <directionalLight position={[-2.5, 2.5, -1.5]} color={COLORS.skyFill} intensity={0.2} />
+      <directionalLight position={[-2.5, 2.5, -1.5]} color="#d8e8f8" intensity={0.15} />
     </>
   );
 }
@@ -90,7 +91,7 @@ function ArenaBlockoutGround({ receiveShadow }: ShadowSurfaceProps) {
       receiveShadow={receiveShadow}
     >
       <circleGeometry args={[ARENA_RADIUS, 72]} />
-      <meshStandardMaterial color={COLORS.sand} roughness={0.92} metalness={0.02} />
+      <meshStandardMaterial color={COLORS.sand} metalness={0.02} roughness={0.92} />
     </mesh>
   );
 }
@@ -118,47 +119,10 @@ function ArenaGlbGround({ receiveShadow }: ShadowSurfaceProps) {
 }
 
 function ArenaGround({ receiveShadow }: ShadowSurfaceProps) {
-  return (
-    <>
-      {USE_ARENA_GLB_GROUND ? (
-        <ArenaGlbGround receiveShadow={receiveShadow} />
-      ) : (
-        <ArenaBlockoutGround receiveShadow={receiveShadow} />
-      )}
-    </>
-  );
-}
-
-function ArenaBackdrop() {
-  const material = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: COLORS.canyon,
-        metalness: 0,
-        roughness: 0.98,
-        side: THREE.DoubleSide,
-      }),
-    []
-  );
-
-  return (
-    <group name="ArenaBackdrop">
-      {ARENA_BACKDROP_WALLS.map((wall, index) => (
-        <mesh
-          key={`backdrop-${index}`}
-          name={`BackdropWall${index}`}
-          position={wall.position}
-          rotation={[0, wall.rotation[1], 0]}
-          material={material}
-        >
-          <planeGeometry args={wall.size} />
-        </mesh>
-      ))}
-      <mesh name="BackdropFloorHaze" position={[0, -0.01, -2.2]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[5.5, 3.5]} />
-        <meshStandardMaterial color={COLORS.canyonDeep} roughness={1} transparent opacity={0.35} />
-      </mesh>
-    </group>
+  return USE_ARENA_GLB_GROUND ? (
+    <ArenaGlbGround receiveShadow={receiveShadow} />
+  ) : (
+    <ArenaBlockoutGround receiveShadow={receiveShadow} />
   );
 }
 
@@ -253,18 +217,15 @@ interface ArenaEnvironmentProps {
 }
 
 /**
- * Desert arena diorama — blockout ground, canyon backdrop, rim rocks, and lighting.
- * Swap `USE_ARENA_GLB_GROUND` in `arenaLayout.ts` once `public/arena.glb` is ready.
+ * Arena stage — ground mesh, rim rocks, and neutral lighting only.
+ * Background (skybox, canyon walls, fog) is intentionally blank until art is ready.
  */
 export function ArenaEnvironment({ receiveShadow }: ArenaEnvironmentProps) {
   return (
     <>
-      <ArenaFog />
-      <Environment {...DESERT_ENVIRONMENT_PROPS} background backgroundBlurriness={0.12} />
-      <EnvironmentIntensity value={0.55} />
-      <ArenaDesertLighting castShadow={receiveShadow} />
+      <ArenaClearBackground />
+      <ArenaLighting castShadow={receiveShadow} />
       <group name="ArenaEnvironment">
-        <ArenaBackdrop />
         <ArenaGround receiveShadow={receiveShadow} />
         <ArenaRimRocks />
         <ArenaLayoutGuides />
@@ -275,7 +236,6 @@ export function ArenaEnvironment({ receiveShadow }: ArenaEnvironmentProps) {
 
 useGLTF.preload(ARENA_GLB_URL);
 
-// Re-export layout constants for consumers that already import from Arena.tsx paths.
 export {
   ARENA_BOX_SIZE,
   ARENA_CENTER,
