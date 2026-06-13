@@ -35,7 +35,7 @@ describe('gameDatabase', () => {
     expect(assembled).toEqual(baseState);
   });
 
-  test('readAssembledGameStateFromDatabase preserves recruited character order', async () => {
+  test('readAssembledGameStateFromDatabase returns recruited characters sorted by id', async () => {
     const state = {
       ...baseState,
       recruitedCharacters: [
@@ -49,9 +49,9 @@ describe('gameDatabase', () => {
 
     const assembled = await readAssembledGameStateFromDatabase();
     expect(assembled?.recruitedCharacters.map((character) => character.id)).toEqual([
-      'Toa_Tahu',
       'Toa_Gali',
       'Toa_Kopaka',
+      'Toa_Tahu',
     ]);
   });
 

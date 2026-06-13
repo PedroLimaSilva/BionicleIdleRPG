@@ -13,10 +13,10 @@ const CHARACTER_INVENTORY_GAME_STATE = {
   ...INITIAL_GAME_STATE,
   completedQuests: ['story_toa_arrival'],
   recruitedCharacters: [
-    { exp: 0, id: 'Takua', quest: 'mnog_find_canister_beach' },
-    { exp: 0, id: 'Toa_Tahu' },
     { exp: 20000, id: 'Jala' },
+    { exp: 0, id: 'Takua', quest: 'mnog_find_canister_beach' },
     { exp: 0, id: 'Toa_Gali' },
+    { exp: 0, id: 'Toa_Tahu' },
   ],
 };
 
