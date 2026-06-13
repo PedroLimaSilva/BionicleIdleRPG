@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
-import { loadGameState } from '../services/gamePersistence';
+import { getDebugMode } from '../services/gamePersistence';
+import type { LoadedGameState } from '../services/gamePersistence';
 import { sendSessionTelemetry } from '../services/telemetry';
 import { useCharactersState } from './useCharactersState';
 import { useJobTickEffect } from './useJobTickEffect';
@@ -43,12 +44,9 @@ import {
   KRAATA_ARMOR_DURATION_MS,
   RAHKSHI_FORGE_COST,
 } from '../game/KraataActions';
-import { getDebugMode } from '../services/gamePersistence';
 import { expGainedFromProtodermisSpend } from '../game/ProtodermisConversion';
 
-export const useGameLogic = (): GameState & GameStateEditorApi => {
-  const [initialState] = useState(() => loadGameState());
-
+export const useGameLogic = (initialState: LoadedGameState): GameState & GameStateEditorApi => {
   const [version] = useState(initialState.version);
 
   const [collectedKrana, setCollectedKrana] = useState<KranaCollection>(

@@ -2,7 +2,7 @@
 
 This document describes the planned evolution of game save/load from a single `localStorage` JSON blob to a versioned, quota-safe persistence layer.
 
-**Tracking:** [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) (Phase A — **implemented**), [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) (Phase B — planned).
+**Tracking:** [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) (Phase A — **implemented**), [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331) (Phase B — **implemented**).
 
 ---
 
@@ -115,9 +115,9 @@ Acceptance criteria ([#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/is
 
 ---
 
-### Phase B — Medium term (IndexedDB via Dexie)
+### Phase B — Medium term (IndexedDB via Dexie) ✅ Implemented
 
-Move game save data off `localStorage`. Keep settings keys (`DEBUG_MODE`, `TELEMETRY_ENABLED`, etc.) on `localStorage` unless there is reason to consolidate.
+Implemented in `src/services/gameDatabase.ts` with async hydration in `GameProvider`, granular writes from `useGamePersistence`, and one-time import from the legacy `localStorage` blob.
 
 #### Proposed schema
 
@@ -159,7 +159,12 @@ On first load after deploy:
 
 Document migrations run on the assembled state regardless of import path.
 
-Acceptance criteria: see [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331).
+Acceptance criteria ([#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331)):
+
+- [x] `localStorage` saves import into IndexedDB split stores (`importFromLocalStorageIfNeeded`)
+- [x] Job tick persists only changed recruited-character rows (`writeGranularGameStateToDatabase`)
+- [x] Load is async with loading state (`GameProvider` gate — no flash of initial state for valid saves)
+- [x] Tests and E2E helpers updated for IndexedDB (`fake-indexeddb`, `readPersistedGameState`)
 
 ---
 
@@ -192,7 +197,7 @@ The primary growth vector is `customCharacters`, not recruited character count.
 | Phase    | Files                                                                                                                                                                                                                                                                                     |
 | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A (done) | `src/services/saveMigrations.ts`, `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, `src/components/SaveErrorBanner/`, `src/services/gamePersistence.spec.ts`, `src/services/saveMigrations.spec.ts`, `src/hooks/useGamePersistence.spec.tsx`, `AGENT_GUIDELINES.md` |
-| B        | Above plus `src/services/gameDatabase.ts` (new), `src/hooks/useGameLogic.tsx` (async load), `e2e/helpers.ts`, `package.json` (dexie), test setup for IndexedDB                                                                                                                            |
+| B (done) | `src/services/gameDatabase.ts`, `src/context/Game.tsx`, `src/hooks/useGameLogic.tsx`, `e2e/helpers.ts`, `package.json` (dexie), `src/setupTests.ts` (fake-indexeddb), `src/services/gameDatabase.spec.ts`                                                                                 |
 
 ---
 
@@ -211,3 +216,4 @@ The primary growth vector is `customCharacters`, not recruited character count.
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-06-09 | Adopt two-phase plan: Phase A (migrations + localStorage hardening) then Phase B (Dexie split stores). Document migrations required regardless of storage backend. Single-blob Dexie is not sufficient for granular writes. |
 | 2026-06-12 | Phase A shipped: `saveMigrations.ts`, debounced `useGamePersistence`, `saveGameState` quota handling, `SaveErrorBanner`.                                                                                                    |
+| 2026-06-12 | Phase B shipped: Dexie split stores (`meta`, `recruited`, `customCharacters`), async `loadGameStateAsync`, granular saves, E2E IndexedDB helpers.                                                                           |

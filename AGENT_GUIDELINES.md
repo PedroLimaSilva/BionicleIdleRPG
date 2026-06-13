@@ -145,10 +145,11 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 
 **MUST ENFORCE:**
 
-1. Only these fields are persisted (see `PartialGameState` / `useGamePersistence`): `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `customCharacters`, `activeQuests`, `completedQuests`. (`buyableCharacters` is derived at runtime from `completedQuests` and `recruitedCharacters` via the recruitment registry.) Legacy saves may still contain an `inventory` key until migration runs; it is not part of the current save shape.
+1. Only these fields are persisted (see `PartialGameState` / `useGamePersistence`): `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `customCharacters`, `activeQuests`, `completedQuests`. (`buyableCharacters` is derived at runtime from `completedQuests` and `recruitedCharacters` via the recruitment registry.) Legacy saves may still contain an `inventory` key until migration runs; it is not part of the current save shape. Game data is stored in IndexedDB split stores (`src/services/gameDatabase.ts`); settings remain in `localStorage`.
 2. Battle state is NOT persisted (battles reset on page refresh)
 3. Saves with `version <= CURRENT_GAME_STATE_VERSION` are upgraded via `migrateState`; saves newer than the app or that fail migration load `INITIAL_GAME_STATE`
-4. `saveGameState` (called from debounced `useGamePersistence`) catches `QuotaExceededError` and surfaces it via `SaveErrorBanner`
+4. `saveGameStateAsync` (called from debounced `useGamePersistence`) catches `QuotaExceededError` and surfaces it via `SaveErrorBanner`
+5. `GameProvider` loads saves asynchronously — do not read game state synchronously on mount; use `loadGameStateAsync` or in-memory `useGame()` state
 
 **NEVER** add new fields to persistence without updating `useGamePersistence` and `loadGameState`.
 
@@ -156,7 +157,7 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 
 **NEVER** persist battle state.
 
-**Further persistence work:** IndexedDB split stores are tracked in GitHub [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331); design in `docs/SAVE_PERSISTENCE_PLAN.md`. Phase A (localStorage migrations and hardening) is implemented ([#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333)).
+**Further persistence work:** Phase A ([#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333)) and Phase B ([#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331)) are implemented. Design history in `docs/SAVE_PERSISTENCE_PLAN.md`.
 
 ---
 

@@ -4,6 +4,7 @@ import {
   goto,
   hideCanvas,
   INITIAL_GAME_STATE,
+  readPersistedGameState,
   setupGameState,
   VIEWPORTS,
 } from './helpers';
@@ -137,9 +138,7 @@ test.describe('Custom Character', () => {
 
         await page.waitForURL(/\/characters\/custom_0$/, { timeout: 10000 });
 
-        const persisted = await page.evaluate(() =>
-          JSON.parse(localStorage.getItem('GAME_STATE') ?? '{}')
-        );
+        const persisted = await readPersistedGameState(page);
         expect(persisted.protodermis).toBe(4500);
         expect(persisted.customCharacters).toHaveLength(1);
         expect(persisted.customCharacters[0].id).toBe('custom_0');
@@ -229,9 +228,7 @@ test.describe('Custom Character', () => {
         // Dismiss removes the character from the buyable list and from persistence.
         await dismissBtn.click();
         await expect(page.locator('.character-name')).toHaveText('New Matoran');
-        const after = await page.evaluate(() =>
-          JSON.parse(localStorage.getItem('GAME_STATE') ?? '{}')
-        );
+        const after = await readPersistedGameState(page);
         expect(after.customCharacters).toHaveLength(0);
       });
 
@@ -257,9 +254,7 @@ test.describe('Custom Character', () => {
         await expect
           .poll(async () => page.evaluate(() => new URL(location.href).searchParams.get('recruit')))
           .toBeNull();
-        const persisted = await page.evaluate(() =>
-          JSON.parse(localStorage.getItem('GAME_STATE') ?? '{}')
-        );
+        const persisted = await readPersistedGameState(page);
         expect(persisted.customCharacters).toHaveLength(1);
         expect(persisted.customCharacters[0].id).toBe('custom_42');
         expect(persisted.customCharacters[0].name).toBe('Pridak');
@@ -280,9 +275,7 @@ test.describe('Custom Character', () => {
 
         const dialog = page.locator('[data-testid="shared-character-prompt"]');
         await expect(dialog).toHaveCount(0);
-        const persisted = await page.evaluate(() =>
-          JSON.parse(localStorage.getItem('GAME_STATE') ?? '{}')
-        );
+        const persisted = await readPersistedGameState(page);
         expect(persisted.customCharacters ?? []).toHaveLength(0);
       });
 
@@ -313,9 +306,7 @@ test.describe('Custom Character', () => {
         await dialog.getByRole('button', { name: 'Continue' }).click();
         await expect(dialog).not.toBeVisible();
 
-        const persisted = await page.evaluate(() =>
-          JSON.parse(localStorage.getItem('GAME_STATE') ?? '{}')
-        );
+        const persisted = await readPersistedGameState(page);
         expect(persisted.customCharacters).toHaveLength(1);
         expect(persisted.customCharacters[0].id).toBe('custom_42');
       });

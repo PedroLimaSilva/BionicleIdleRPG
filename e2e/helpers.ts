@@ -3,6 +3,10 @@ import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 import type { E2ePwaBannerState } from '../src/utils/testMode';
 
+const GAME_DB_NAME = 'BionicleIdleRPG';
+const META_KEY = 'game';
+const E2E_FORCE_GAME_STATE_IMPORT_KEY = 'E2E_FORCE_GAME_STATE_IMPORT';
+
 type TestModeOptions = {
   pwaBanner?: E2ePwaBannerState;
 };
@@ -66,11 +70,72 @@ export async function setupGameState(
       localStorage.setItem('GAME_STATE', JSON.stringify(state));
       localStorage.setItem('TEST_MODE', 'true');
       localStorage.setItem('TELEMETRY_ENABLED', 'false');
+      localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
       if (pwaBanner) {
         localStorage.setItem('E2E_PWA_BANNER', pwaBanner);
       }
     },
     { pwaBanner: options?.pwaBanner, state: gameState }
+  );
+}
+
+/**
+ * Reads the assembled game save from IndexedDB split stores (Phase B persistence).
+ */
+export async function readPersistedGameState(page: Page): Promise<PartialGameState> {
+  return page.evaluate(
+    async ({ dbName, metaKey }) => {
+      function openDb(): Promise<IDBDatabase> {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(dbName, 1);
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => resolve(request.result);
+        });
+      }
+
+      function readAll<T>(db: IDBDatabase, storeName: string): Promise<T[]> {
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(storeName, 'readonly');
+          const request = tx.objectStore(storeName).getAll();
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => resolve(request.result as T[]);
+        });
+      }
+
+      function readMeta(db: IDBDatabase): Promise<Record<string, unknown> | undefined> {
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction('meta', 'readonly');
+          const request = tx.objectStore('meta').get(metaKey);
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => resolve(request.result as Record<string, unknown> | undefined);
+        });
+      }
+
+      const db = await openDb();
+      const meta = await readMeta(db);
+      if (!meta) {
+        db.close();
+        return {};
+      }
+
+      const recruitedCharacters = await readAll<Record<string, unknown>>(db, 'recruited');
+      const customCharacters = await readAll<Record<string, unknown>>(db, 'customCharacters');
+      db.close();
+
+      return {
+        activeQuests: meta.activeQuests,
+        collectedKrana: meta.collectedKrana,
+        completedQuests: meta.completedQuests,
+        customCharacters,
+        kraataCollection: meta.kraataCollection,
+        protodermis: meta.protodermis,
+        protodermisCap: meta.protodermisCap,
+        rahkshi: meta.rahkshi,
+        recruitedCharacters,
+        version: meta.version,
+      };
+    },
+    { dbName: GAME_DB_NAME, metaKey: META_KEY }
   );
 }
 

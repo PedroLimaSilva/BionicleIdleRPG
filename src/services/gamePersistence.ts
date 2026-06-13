@@ -1,15 +1,64 @@
 import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameState';
 import { applyOfflineJobExp } from '../game/Jobs';
-import { GameState, PartialGameState } from '../types/GameState';
+import { PartialGameState } from '../types/GameState';
 import { MatoranJob } from '../types/Jobs';
 import { isKraataPower, addKraataToCollection, KraataCollection } from '../types/Kraata';
 import { RecruitedCharacterData } from '../types/Matoran';
 import { clamp } from '../utils/math';
+import { isTestMode } from '../utils/testMode';
+import {
+  clearGameDatabase,
+  E2E_FORCE_GAME_STATE_IMPORT_KEY,
+  gameDb,
+  isGameDatabasePopulated,
+  META_KEY,
+  readAssembledGameStateFromDatabase,
+  writeFullGameStateToDatabase,
+  writeGranularGameStateToDatabase,
+} from './gameDatabase';
 import { migrateState, normalizeGameStateDocument } from './saveMigrations';
 
 export const STORAGE_KEY = `GAME_STATE`;
 
-/** Reads and parses the raw game state from localStorage without migrations or side effects. */
+export type LoadedGameState = PartialGameState;
+
+let lastPersistedState: PartialGameState | null = null;
+
+export function getLastPersistedGameState(): PartialGameState | null {
+  return lastPersistedState;
+}
+
+export function toLoadedGameState(state: PartialGameState): LoadedGameState {
+  return {
+    activeQuests: state.activeQuests,
+    collectedKrana: state.collectedKrana,
+    completedQuests: state.completedQuests,
+    customCharacters: state.customCharacters,
+    kraataCollection: state.kraataCollection,
+    protodermis: state.protodermis,
+    protodermisCap: state.protodermisCap,
+    rahkshi: state.rahkshi,
+    recruitedCharacters: state.recruitedCharacters,
+    version: state.version,
+  };
+}
+
+export function getInitialLoadedGameState(): LoadedGameState {
+  return toLoadedGameState({
+    activeQuests: INITIAL_GAME_STATE.activeQuests,
+    collectedKrana: INITIAL_GAME_STATE.collectedKrana,
+    completedQuests: INITIAL_GAME_STATE.completedQuests,
+    customCharacters: INITIAL_GAME_STATE.customCharacters,
+    kraataCollection: INITIAL_GAME_STATE.kraataCollection,
+    protodermis: INITIAL_GAME_STATE.protodermis,
+    protodermisCap: INITIAL_GAME_STATE.protodermisCap,
+    rahkshi: INITIAL_GAME_STATE.rahkshi,
+    recruitedCharacters: INITIAL_GAME_STATE.recruitedCharacters,
+    version: INITIAL_GAME_STATE.version,
+  });
+}
+
+/** Reads and parses the raw legacy localStorage blob without migrations or side effects. */
 export function loadRawGameState(): Record<string, unknown> | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -22,15 +71,36 @@ export function loadRawGameState(): Record<string, unknown> | null {
   return null;
 }
 
-export function resetGameData() {
-  localStorage.setItem(STORAGE_KEY, '');
-  window.location.reload();
+function shouldForceLocalStorageImport(): boolean {
+  return isTestMode() && localStorage.getItem(E2E_FORCE_GAME_STATE_IMPORT_KEY) === 'true';
+}
+
+async function importFromLocalStorageIfNeeded(): Promise<void> {
+  if (await isGameDatabasePopulated()) {
+    if (!shouldForceLocalStorageImport()) return;
+    await clearGameDatabase();
+  }
+
+  const raw = loadRawGameState();
+  if (!raw || typeof raw !== 'object') return;
+
+  const document = { ...raw };
+  if (!Array.isArray(document.recruitedCharacters)) {
+    document.recruitedCharacters = [];
+  }
+  if (!Array.isArray(document.customCharacters)) {
+    document.customCharacters = [];
+  }
+
+  const loaded = processLoadedGameDocument(document);
+  await writeFullGameStateToDatabase(loaded, {
+    importedFromLocalStorage: true,
+  });
 }
 
 /**
  * Retrocompatibility: migrates any kraata from the legacy `inventory` (old saves)
  * into `kraataCollection` at stage 1, then clears the legacy key.
- * Inventory is no longer used elsewhere; this is the only remaining migration.
  */
 function migrateKraataFromInventory(parsed: Record<string, unknown>): void {
   const inventory = parsed.inventory as Record<string, number> | undefined;
@@ -54,10 +124,7 @@ function migrateKraataFromInventory(parsed: Record<string, unknown>): void {
 
 const VALID_JOBS = new Set<string>(Object.values(MatoranJob));
 
-/**
- * Retrocompatibility: clears any job assignment whose `job` value is not a
- * recognised MatoranJob (e.g. after a rename). The matoran becomes idle.
- */
+/** Clears any job assignment whose `job` value is not a recognised MatoranJob. */
 function sanitizeUnrecognizedJobs(parsed: Record<string, unknown>): void {
   const characters = parsed.recruitedCharacters as RecruitedCharacterData[] | undefined;
   if (!Array.isArray(characters)) return;
@@ -68,6 +135,73 @@ function sanitizeUnrecognizedJobs(parsed: Record<string, unknown>): void {
     }
     return m;
   });
+}
+
+function isValidLoadedGameState(data: PartialGameState): boolean {
+  return (
+    typeof data.version === 'number' &&
+    data.version === CURRENT_GAME_STATE_VERSION &&
+    typeof data.protodermis === 'number' &&
+    Array.isArray(data.recruitedCharacters)
+  );
+}
+
+export function processLoadedGameDocument(parsed: Record<string, unknown>): LoadedGameState {
+  const migrated = migrateState(parsed, CURRENT_GAME_STATE_VERSION);
+  normalizeGameStateDocument(migrated);
+  migrateKraataFromInventory(migrated);
+  sanitizeUnrecognizedJobs(migrated);
+
+  if (!isValidLoadedGameState(migrated as PartialGameState)) {
+    throw new Error('Invalid game state document after migration');
+  }
+
+  const typed = migrated as PartialGameState;
+  const [recruitedCharacters, currency] = applyOfflineJobExp(typed.recruitedCharacters);
+
+  return toLoadedGameState({
+    ...typed,
+    protodermis: clamp(typed.protodermis + currency, 0, typed.protodermisCap),
+    recruitedCharacters,
+  });
+}
+
+export async function loadGameStateAsync(): Promise<LoadedGameState> {
+  try {
+    await importFromLocalStorageIfNeeded();
+
+    const assembled = await readAssembledGameStateFromDatabase();
+    if (!assembled) {
+      return getInitialLoadedGameState();
+    }
+
+    const loaded = processLoadedGameDocument(assembled as unknown as Record<string, unknown>);
+    if (JSON.stringify(loaded) !== JSON.stringify(toLoadedGameState(assembled))) {
+      const existingMeta = await gameDb.meta.get(META_KEY);
+      await writeFullGameStateToDatabase(loaded, {
+        importedFromLocalStorage: existingMeta?.importedFromLocalStorage,
+      });
+    }
+
+    lastPersistedState = loaded;
+    return loaded;
+  } catch (error) {
+    console.error('Failed to load game state:', error);
+    return getInitialLoadedGameState();
+  }
+}
+
+/** @deprecated Use `loadGameStateAsync`. Synchronous load remains for legacy callers in tests. */
+export function loadGameState(): LoadedGameState {
+  const parsed = loadRawGameState();
+  if (parsed) {
+    try {
+      return processLoadedGameDocument(parsed);
+    } catch (e) {
+      console.error('Failed to parse game state:', e);
+    }
+  }
+  return getInitialLoadedGameState();
 }
 
 export type SavePersistenceErrorReason = 'quota' | 'unknown';
@@ -96,6 +230,28 @@ function isQuotaExceededError(error: unknown): boolean {
   return error instanceof Error && error.name === 'QuotaExceededError';
 }
 
+export async function saveGameStateAsync(
+  state: PartialGameState,
+  previous: PartialGameState | null = null
+): Promise<SaveGameStateResult> {
+  try {
+    await writeGranularGameStateToDatabase(state, previous);
+    lastPersistedState = toLoadedGameState(state);
+    notifySavePersistenceError(null);
+    return { ok: true };
+  } catch (error) {
+    if (isQuotaExceededError(error)) {
+      console.error('Failed to save game state: storage quota exceeded', error);
+      notifySavePersistenceError('quota');
+      return { ok: false, reason: 'quota' };
+    }
+    console.error('Failed to save game state:', error);
+    notifySavePersistenceError('unknown');
+    return { ok: false, reason: 'unknown' };
+  }
+}
+
+/** @deprecated Use `saveGameStateAsync`. Writes the legacy localStorage blob only. */
 export function saveGameState(state: PartialGameState): SaveGameStateResult {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -113,30 +269,12 @@ export function saveGameState(state: PartialGameState): SaveGameStateResult {
   }
 }
 
-export function loadGameState() {
-  const parsed = loadRawGameState();
-  if (parsed) {
-    try {
-      const migrated = migrateState(parsed, CURRENT_GAME_STATE_VERSION);
-      normalizeGameStateDocument(migrated);
-      migrateKraataFromInventory(migrated);
-      sanitizeUnrecognizedJobs(migrated);
-
-      if (isValidGameState(migrated as unknown as GameState)) {
-        const typed = migrated as unknown as GameState;
-        const [recruitedCharacters, currency] = applyOfflineJobExp(typed.recruitedCharacters);
-
-        return {
-          ...typed,
-          protodermis: clamp(typed.protodermis + currency, 0, typed.protodermisCap),
-          recruitedCharacters,
-        };
-      }
-    } catch (e) {
-      console.error('Failed to load game state:', e);
-    }
-  }
-  return INITIAL_GAME_STATE;
+export async function resetGameData(): Promise<void> {
+  await clearGameDatabase();
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(E2E_FORCE_GAME_STATE_IMPORT_KEY);
+  lastPersistedState = null;
+  window.location.reload();
 }
 
 let debugMode: boolean | undefined;
@@ -268,14 +406,4 @@ export function saveTelemetryEnabled(value: boolean) {
 /** Returns the random telemetry ID, or undefined if consent was not given. */
 export function getTelemetryId(): string | undefined {
   return localStorage.getItem('TELEMETRY_ID') ?? undefined;
-}
-
-function isValidGameState(data: GameState): data is typeof INITIAL_GAME_STATE {
-  return (
-    data &&
-    typeof data === 'object' &&
-    data.version === CURRENT_GAME_STATE_VERSION &&
-    typeof data.protodermis === 'number' &&
-    Array.isArray(data.recruitedCharacters)
-  );
 }
