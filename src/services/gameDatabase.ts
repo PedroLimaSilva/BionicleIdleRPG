@@ -153,11 +153,17 @@ export async function wasImportedFromLocalStorage(): Promise<boolean> {
 }
 
 export async function clearGameDatabase(): Promise<void> {
-  await gameDb.transaction('rw', gameDb.game, gameDb.recruited, gameDb.customCharacters, async () => {
-    await gameDb.game.clear();
-    await gameDb.recruited.clear();
-    await gameDb.customCharacters.clear();
-  });
+  await gameDb.transaction(
+    'rw',
+    gameDb.game,
+    gameDb.recruited,
+    gameDb.customCharacters,
+    async () => {
+      await gameDb.game.clear();
+      await gameDb.recruited.clear();
+      await gameDb.customCharacters.clear();
+    }
+  );
 }
 
 export async function readAssembledGameStateFromDatabase(): Promise<PartialGameState | null> {
@@ -176,26 +182,32 @@ export async function writeFullGameStateToDatabase(
   state: PartialGameState,
   extras?: { importedFromLocalStorage?: boolean }
 ): Promise<void> {
-  await gameDb.transaction('rw', gameDb.game, gameDb.recruited, gameDb.customCharacters, async () => {
-    const existingFlag = await gameDb.game.get('importedFromLocalStorage');
-    const shouldMarkImported =
-      extras?.importedFromLocalStorage === true ||
-      (extras?.importedFromLocalStorage === undefined && existingFlag?.value === true);
+  await gameDb.transaction(
+    'rw',
+    gameDb.game,
+    gameDb.recruited,
+    gameDb.customCharacters,
+    async () => {
+      const existingFlag = await gameDb.game.get('importedFromLocalStorage');
+      const shouldMarkImported =
+        extras?.importedFromLocalStorage === true ||
+        (extras?.importedFromLocalStorage === undefined && existingFlag?.value === true);
 
-    await gameDb.game.clear();
-    const rows = gameFieldsFromState(state, {
-      importedFromLocalStorage: shouldMarkImported ? true : undefined,
-    });
-    await gameDb.game.bulkPut(rows);
-    await gameDb.recruited.clear();
-    await gameDb.customCharacters.clear();
-    if (state.recruitedCharacters.length > 0) {
-      await gameDb.recruited.bulkPut(state.recruitedCharacters);
+      await gameDb.game.clear();
+      const rows = gameFieldsFromState(state, {
+        importedFromLocalStorage: shouldMarkImported ? true : undefined,
+      });
+      await gameDb.game.bulkPut(rows);
+      await gameDb.recruited.clear();
+      await gameDb.customCharacters.clear();
+      if (state.recruitedCharacters.length > 0) {
+        await gameDb.recruited.bulkPut(state.recruitedCharacters);
+      }
+      if (state.customCharacters.length > 0) {
+        await gameDb.customCharacters.bulkPut(state.customCharacters);
+      }
     }
-    if (state.customCharacters.length > 0) {
-      await gameDb.customCharacters.bulkPut(state.customCharacters);
-    }
-  });
+  );
 }
 
 function rowsChanged<T extends { id: string }>(current: T[], previous: T[]): T[] {
@@ -253,21 +265,27 @@ export async function writeGranularGameStateToDatabase(
     return;
   }
 
-  await gameDb.transaction('rw', gameDb.game, gameDb.recruited, gameDb.customCharacters, async () => {
-    if (gameFieldUpdates.length > 0) {
-      await gameDb.game.bulkPut(gameFieldUpdates);
+  await gameDb.transaction(
+    'rw',
+    gameDb.game,
+    gameDb.recruited,
+    gameDb.customCharacters,
+    async () => {
+      if (gameFieldUpdates.length > 0) {
+        await gameDb.game.bulkPut(gameFieldUpdates);
+      }
+      if (recruitedUpdates.length > 0) {
+        await gameDb.recruited.bulkPut(recruitedUpdates);
+      }
+      if (recruitedDeletes.length > 0) {
+        await gameDb.recruited.bulkDelete(recruitedDeletes);
+      }
+      if (customUpdates.length > 0) {
+        await gameDb.customCharacters.bulkPut(customUpdates);
+      }
+      if (customDeletes.length > 0) {
+        await gameDb.customCharacters.bulkDelete(customDeletes);
+      }
     }
-    if (recruitedUpdates.length > 0) {
-      await gameDb.recruited.bulkPut(recruitedUpdates);
-    }
-    if (recruitedDeletes.length > 0) {
-      await gameDb.recruited.bulkDelete(recruitedDeletes);
-    }
-    if (customUpdates.length > 0) {
-      await gameDb.customCharacters.bulkPut(customUpdates);
-    }
-    if (customDeletes.length > 0) {
-      await gameDb.customCharacters.bulkDelete(customDeletes);
-    }
-  });
+  );
 }

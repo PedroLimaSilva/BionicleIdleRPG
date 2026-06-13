@@ -260,9 +260,9 @@ describe('gamePersistence', () => {
     });
 
     test('returns quota error when storage is full', async () => {
-      const bulkPut = jest.spyOn(gameDb.recruited, 'bulkPut').mockRejectedValue(
-        new DOMException('Quota exceeded', 'QuotaExceededError')
-      );
+      const bulkPut = jest
+        .spyOn(gameDb.recruited, 'bulkPut')
+        .mockRejectedValue(new DOMException('Quota exceeded', 'QuotaExceededError'));
 
       const result = await saveGameStateAsync({
         activeQuests: [],

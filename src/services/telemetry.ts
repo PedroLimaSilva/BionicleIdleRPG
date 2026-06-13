@@ -1,5 +1,10 @@
 import { PartialGameState } from '../types/GameState';
-import { getTelemetryEnabled, getTelemetryId, getLastPersistedGameState, loadRawGameState } from './gamePersistence';
+import {
+  getTelemetryEnabled,
+  getTelemetryId,
+  getLastPersistedGameState,
+  loadRawGameState,
+} from './gamePersistence';
 
 const SESSION_KEY = 'TELEMETRY_SENT';
 

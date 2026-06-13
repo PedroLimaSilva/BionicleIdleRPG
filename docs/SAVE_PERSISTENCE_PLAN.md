@@ -44,10 +44,10 @@ On load, current-version saves are sanitized (unrecognized job IDs cleared, orph
 
 ## Migration scope
 
-| Layer              | What changes                          | Mechanism                                           |
-| ------------------ | ------------------------------------- | --------------------------------------------------- |
-| **Storage layout** | Move from one blob to split stores    | Dexie schema upgrade + one-time `localStorage` import |
-| **Document shape** | Field renames / version bumps         | **Not supported** — baseline is v9 localStorage shape |
+| Layer              | What changes                       | Mechanism                                             |
+| ------------------ | ---------------------------------- | ----------------------------------------------------- |
+| **Storage layout** | Move from one blob to split stores | Dexie schema upgrade + one-time `localStorage` import |
+| **Document shape** | Field renames / version bumps      | **Not supported** — baseline is v9 localStorage shape |
 
 Dexie's `.version(n).upgrade()` migrates **database schema** (object stores, indexes). Application-level per-version document migrations were removed; only the `localStorage` → IndexedDB import remains.
 
@@ -102,8 +102,8 @@ Each cold field is stored as `{ key, value }` so protodermis ticks update only t
 | Job tick / exp change                     | `db.recruited.update(id, { exp, assignment })` — one row |
 | Custom character create/import            | `db.customCharacters.put(base)` — one row                |
 | Custom character dismiss                  | `db.customCharacters.delete(id)`                         |
-| Quest complete, protodermis, kraata, etc. | `db.game.put({ key, value })` — only changed fields |
-| Version bump after migration              | Update `game.version` row                               |
+| Quest complete, protodermis, kraata, etc. | `db.game.put({ key, value })` — only changed fields      |
+| Version bump after migration              | Update `game.version` row                                |
 
 In-memory React state can continue to update the full `recruitedCharacters` array on tick; the persistence layer diffs by `id` or receives explicit patch calls from the tick path.
 
@@ -152,10 +152,10 @@ The primary growth vector is `customCharacters`, not recruited character count.
 
 ## Files Affected
 
-| Phase    | Files                                                                                                                                                                                                                                                                                     |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phase    | Files                                                                                                                                                                                                            |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A (done) | `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, `src/components/SaveErrorBanner/`, `src/services/gamePersistence.spec.ts`, `src/hooks/useGamePersistence.spec.tsx`, `AGENT_GUIDELINES.md` |
-| B (done) | `src/services/gameDatabase.ts`, `src/context/Game.tsx`, `src/hooks/useGameLogic.tsx`, `e2e/helpers.ts`, `package.json` (dexie), `src/setupTests.ts` (fake-indexeddb), `src/services/gameDatabase.spec.ts`                                                                                 |
+| B (done) | `src/services/gameDatabase.ts`, `src/context/Game.tsx`, `src/hooks/useGameLogic.tsx`, `e2e/helpers.ts`, `package.json` (dexie), `src/setupTests.ts` (fake-indexeddb), `src/services/gameDatabase.spec.ts`        |
 
 ---
 
@@ -175,4 +175,4 @@ The primary growth vector is `customCharacters`, not recruited character count.
 | 2026-06-09 | Adopt two-phase plan: Phase A (migrations + localStorage hardening) then Phase B (Dexie split stores). Document migrations required regardless of storage backend. Single-blob Dexie is not sufficient for granular writes. |
 | 2026-06-12 | Phase A shipped: `saveMigrations.ts`, debounced `useGamePersistence`, `saveGameState` quota handling, `SaveErrorBanner`.                                                                                                    |
 | 2026-06-12 | Phase B shipped: Dexie split stores (`game`, `recruited`, `customCharacters`), async `loadGameStateAsync`, granular saves, E2E IndexedDB helpers.                                                                           |
-| 2026-06-12 | Dropped per-version document migrations and legacy kraata `inventory` support. Baseline is v9 localStorage shape; only `localStorage` → IndexedDB import remains. |
+| 2026-06-12 | Dropped per-version document migrations and legacy kraata `inventory` support. Baseline is v9 localStorage shape; only `localStorage` → IndexedDB import remains.                                                           |

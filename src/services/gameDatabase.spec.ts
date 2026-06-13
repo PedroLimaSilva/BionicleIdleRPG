@@ -67,10 +67,7 @@ describe('gameDatabase', () => {
 
     const putSpy = jest.spyOn(gameDb.game, 'bulkPut');
 
-    await writeGranularGameStateToDatabase(
-      { ...baseState, protodermis: 55 },
-      baseState
-    );
+    await writeGranularGameStateToDatabase({ ...baseState, protodermis: 55 }, baseState);
 
     expect(putSpy).toHaveBeenCalledWith([{ key: 'protodermis', value: 55 }]);
     putSpy.mockRestore();
