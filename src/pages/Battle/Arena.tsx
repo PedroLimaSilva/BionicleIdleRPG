@@ -1,12 +1,10 @@
-import * as THREE from 'three';
-import { useGLTF, Environment, PresentationControls, PerspectiveCamera } from '@react-three/drei';
+import { PresentationControls, PerspectiveCamera } from '@react-three/drei';
 import { Combatant } from '../../types/Combat';
 import { hasActiveEffectFromSource } from '../../services/combatUtils';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
 import { useCallback, useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/useSettings';
-import { CITY_ENVIRONMENT_PROPS } from '../../utils/cityEnvironmentHdri';
 import { shouldEnableShadows } from '../../utils/testMode';
 import { HitImpactParticles } from './HitImpactParticles';
 import { subscribeBattleCameraEmphasis } from '../../utils/battleCameraEmphasis';
@@ -15,15 +13,15 @@ import {
   CAMERA_EMPHASIS_OUT_MS,
 } from '../../game/battleOutcomeVisualDelay';
 import { scaleBattleDurationMs } from '../../utils/battleSpeed';
-
-function EnvironmentIntensity({ value }: { value: number }) {
-  const scene = useThree((s) => s.scene);
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (scene as any).environmentIntensity = value;
-  }, [scene, value]);
-  return null;
-}
+import * as THREE from 'three';
+import {
+  ArenaEnvironment,
+  ARENA_BOX_SIZE,
+  ARENA_CENTER,
+  ARENA_MARGIN,
+  ENEMY_POSITIONS,
+  TEAM_POSITIONS,
+} from './ArenaEnvironment';
 
 interface ArenaProps {
   team: Combatant[];
@@ -31,23 +29,6 @@ interface ArenaProps {
   currentWave: number;
 }
 
-const TEAM_POSITIONS: [number, number, number][] = [
-  [-0.7, 0, 0.78],
-  [0, 0, 0.46],
-  [0.7, 0, 0.78],
-];
-const ENEMY_POSITIONS: [number, number, number][] = [
-  [0, 0, -0.5],
-  [-0.5, 0, -0.75],
-  [0.5, 0, -0.75],
-];
-
-/** World-size of the arena used for framing calculations. */
-const ARENA_BOX_SIZE = 3;
-/** Multiplier > 1 adds margin around the arena so combatants aren't at the screen edge. */
-const ARENA_MARGIN = 1;
-/** Arena center (camera looks at this). */
-const ARENA_CENTER: [number, number, number] = [0, 0, 0];
 const CAMERA_EMPHASIS_IN_MS = 320;
 const CAMERA_EMPHASIS_RETARGET_MS = 240;
 const CAMERA_EMPHASIS_ZOOM_MULT = 1.05;
@@ -338,7 +319,15 @@ export function Arena({ currentWave, enemies, team }: ArenaProps) {
       sceneGroupRef.current?.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           const mesh = child as THREE.Mesh;
-          if (mesh.name.startsWith('Plane') || mesh.name === 'HitImpactParticles') return;
+          if (
+            mesh.name.startsWith('Plane') ||
+            mesh.name.startsWith('Backdrop') ||
+            mesh.name.startsWith('RimRock') ||
+            mesh.name.startsWith('ArenaLayout') ||
+            mesh.name === 'HitImpactParticles'
+          ) {
+            return;
+          }
           mesh.castShadow = true;
           mesh.receiveShadow = true;
         }
@@ -353,29 +342,7 @@ export function Arena({ currentWave, enemies, team }: ArenaProps) {
     <>
       <PerspectiveCamera makeDefault />
       <ArenaFraming />
-      <Environment {...CITY_ENVIRONMENT_PROPS} />
-      <EnvironmentIntensity value={0.4} />
-      <directionalLight
-        ref={(el) => {
-          if (el && el.parent && !el.target.parent) {
-            el.target.position.set(0, 0.25, 0);
-            el.parent.add(el.target);
-          }
-        }}
-        position={[2, 3, 4]}
-        intensity={1.2}
-        castShadow={effectiveShadows}
-        shadow-mapSize={[2048, 2048]}
-        shadow-camera-far={15}
-        shadow-camera-left={-3}
-        shadow-camera-right={3}
-        shadow-camera-top={3}
-        shadow-camera-bottom={-3}
-        shadow-bias={-0.0005}
-        shadow-normalBias={0.005}
-      />
-
-      <directionalLight position={[-3, 2, -2]} intensity={0.015} />
+      <ArenaEnvironment receiveShadow={effectiveShadows} />
       <PresentationControls
         enabled={false}
         global={true}
@@ -386,16 +353,6 @@ export function Arena({ currentWave, enemies, team }: ArenaProps) {
         config={{ friction: 26, mass: 0.5, tension: 170 }}
       >
         <group dispose={null} name="Scene" ref={sceneGroupRef}>
-          <mesh
-            name="Ground"
-            rotation={[-Math.PI / 2, 0, 0]}
-            position={[0, 0, 0]}
-            receiveShadow={effectiveShadows}
-          >
-            <circleGeometry args={[ARENA_BOX_SIZE / 2, 64]} />
-            <meshStandardMaterial color="#151518" transparent={true} opacity={1} />
-          </mesh>
-
           <HitImpactParticles />
 
           {team.map((c, i) => (
@@ -433,5 +390,3 @@ export function Arena({ currentWave, enemies, team }: ArenaProps) {
     </>
   );
 }
-
-useGLTF.preload(import.meta.env.BASE_URL + '/arena.glb');
