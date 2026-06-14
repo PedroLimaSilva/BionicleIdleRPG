@@ -50,7 +50,7 @@ export function prepareArenaGlbScene(
     if ((child as THREE.Mesh).isMesh) {
       const mesh = child as THREE.Mesh;
       mesh.receiveShadow = receiveShadow;
-      mesh.castShadow = false;
+      mesh.castShadow = receiveShadow;
     }
   });
 
