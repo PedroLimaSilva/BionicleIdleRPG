@@ -1,12 +1,6 @@
 /**
  * Battle arena layout — camera framing and combat spawn slots.
- *
- * ## Blender export (`public/arena_blockout.glb`)
- * Desert arena definition: `arenas/desert/desertArena.ts`
- * - **Units:** 1 Blender unit = 1 world unit.
- * - **Origin:** arena center at (0, 0, 0).
- * - **Layout markers:** may stay in the export; runtime hides them by name/material.
- * - **Export:** GLB, Y-up, apply transforms, then `yarn compress public/arena_blockout.glb`.
+ * See `docs/ARENA_ENVIRONMENTS.md` for Blender export and arena system docs.
  */
 
 /** Full stage diameter used for camera framing. */

@@ -28,6 +28,7 @@ This document indexes known technical debt, inconsistencies, and architectural i
 
 | Area        | Issue                                                                | Summary                                                    |
 | ----------- | -------------------------------------------------------------------- | ---------------------------------------------------------- |
+| 3D / canvas | [#366](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/366) | Battle arena environments — desert GLB and multi-biome framework   |
 | 3D / canvas | [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343) | Phase 1 — persistent canvas and remaining battle 3D polish |
 | 3D / canvas | [#346](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/346) | Phase 2 — environmental 3D backdrops per route             |
 | 3D / canvas | [#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) | Phase 3 — advanced combat feedback and idle ambient life   |
@@ -41,6 +42,7 @@ This document indexes known technical debt, inconsistencies, and architectural i
 | Document                                                               | Purpose                                                                                                                                                                                       |
 | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`docs/SAVE_PERSISTENCE_PLAN.md`](docs/SAVE_PERSISTENCE_PLAN.md)       | Technical design for [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) and [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331)                            |
+| [`docs/ARENA_ENVIRONMENTS.md`](docs/ARENA_ENVIRONMENTS.md)             | Battle arena GLB workflow and per-arena atmosphere system — [#366](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/366)                                                              |
 | [`docs/UI_UX_STRATEGY.md`](docs/UI_UX_STRATEGY.md)                     | Portrait-first UI/UX direction — tracked via issues [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343)–[#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) |
 | [`docs/DESIGN_UI_MOTION_ROLLOUT.md`](docs/DESIGN_UI_MOTION_ROLLOUT.md) | UI motion rollout — tracked via [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347), [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350)                    |
 | [`docs/BATTLE_SYSTEM_SPEC.md`](docs/BATTLE_SYSTEM_SPEC.md)             | Combat system reference                                                                                                                                                                       |
