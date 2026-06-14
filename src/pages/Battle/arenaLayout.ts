@@ -1,16 +1,16 @@
 /**
  * Battle arena stage layout — single source of truth for R3F scenes and Blender exports.
  *
- * ## Blender export checklist (`public/arena.glb`)
+ * ## Blender export checklist (`public/arena_blockout.glb`)
  * - **Units:** 1 Blender unit = 1 world unit here.
  * - **Origin:** arena center at (0, 0, 0); floor sits on Y = 0.
  * - **Diameter:** ground mesh should span `ARENA_DIAMETER` (3 units) on X/Z.
- * - **Root object name:** `Ground` (loaded by `ArenaGround`).
  * - **Combat zone:** keep the inner ~2.2-unit circle clear for models and animations.
- * - **Rim rocks / canyon walls:** optional in the GLB, or leave to code blockout props below.
- * - **Export:** GLB, Y-up, apply transforms, then `yarn compress public/arena.glb`.
- * - **Layout reference:** run `yarn generate:arena-blockout` → `public/arena_blockout.glb`
- *   (import into Blender to match slot markers, rocks, and canyon walls).
+ * - **Layout markers:** may stay in the export for Blender reference; runtime hides them by
+ *   name (`TeamSlotMarker*`, `EnemySlotMarker*`, `ArenaBoundary`, …).
+ * - **Export:** GLB, Y-up, apply transforms, then `yarn compress public/arena_blockout.glb`.
+ * - **Code layout reference:** run `yarn generate:arena-blockout` → `public/arena_layout_reference.glb`
+ *   (procedural markers only — do not overwrite your Blender export).
  * - **Sky HDRI in Blender:** `public/hdri/quarry_01_1k.hdr` (same file used for in-game IBL).
  */
 
@@ -63,11 +63,3 @@ export const ARENA_BACKDROP_WALLS = [
   { position: [0.05, 1.25, -2.55] as const, rotation: [0, 0, 0] as const, size: [4.6, 2.8] as const },
 ] as const;
 
-/** Placeholder GLB ground spans 2 units on X/Z; scale to `ARENA_DIAMETER` until the final mesh is exported. */
-export const ARENA_GLB_PLACEHOLDER_DIAMETER = 2;
-
-/**
- * Flip to `true` after `arena.glb` contains the final desert floor from Blender.
- * While `false`, the sandy blockout disc remains visible under dev layout guides.
- */
-export const USE_ARENA_GLB_GROUND = false;

@@ -1,11 +1,11 @@
 /**
- * Generate `public/arena_blockout.glb` from `arenaLayout.ts` for Blender import.
+ * Generate `public/arena_layout_reference.glb` from `arenaLayout.ts` for Blender import.
  *
  * Usage: yarn generate:arena-blockout
  *
  * The output is a layout reference (ground disc, canyon walls, rim rocks, slot
- * empties, boundary ring) — not the final in-game asset. Import into Blender,
- * model on top, then export your finished floor as `public/arena.glb`.
+ * empties, boundary ring) — not the in-game asset. Import into Blender to align
+ * markers, then export your finished arena as `public/arena_blockout.glb`.
  */
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -35,7 +35,7 @@ if (typeof FileReader === 'undefined') {
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUT_PATH = path.join(__dirname, '../public/arena_blockout.glb');
+const OUT_PATH = path.join(__dirname, '../public/arena_layout_reference.glb');
 
 const COLORS = {
   boundary: 0xf5d742,

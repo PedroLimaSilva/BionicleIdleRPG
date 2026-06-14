@@ -22,6 +22,7 @@ import {
   ENEMY_POSITIONS,
   TEAM_POSITIONS,
 } from './ArenaEnvironment';
+import { shouldSkipArenaShadow } from './arenaGlbUtils';
 
 interface ArenaProps {
   team: Combatant[];
@@ -319,13 +320,7 @@ export function Arena({ currentWave, enemies, team }: ArenaProps) {
       sceneGroupRef.current?.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           const mesh = child as THREE.Mesh;
-          if (
-            mesh.name.startsWith('Plane') ||
-            mesh.name.startsWith('Backdrop') ||
-            mesh.name.startsWith('RimRock') ||
-            mesh.name.startsWith('ArenaLayout') ||
-            mesh.name === 'HitImpactParticles'
-          ) {
+          if (shouldSkipArenaShadow(mesh)) {
             return;
           }
           mesh.castShadow = true;
