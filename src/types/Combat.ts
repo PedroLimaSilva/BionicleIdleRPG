@@ -1,3 +1,4 @@
+import { ArenaId } from './Arena';
 import { GameState } from './GameState';
 import { ElementTribe, Mask } from './Matoran';
 
@@ -165,4 +166,10 @@ export interface EnemyEncounter {
    * Solo Rahkshi waves add a small level bonus so one enemy is not overwhelmed by the full team.
    */
   scalesWithParty?: boolean;
+  /**
+   * 3D battle arena biome this encounter is fought in. Resolved against the
+   * arena registry in `src/pages/Battle/arenas/`. Defaults to the desert arena
+   * when omitted. See `docs/ARENA_ENVIRONMENTS.md`.
+   */
+  arenaId?: ArenaId;
 }

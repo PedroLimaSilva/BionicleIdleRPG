@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { applyArenaRecolor } from './arenaRecolor';
+import type { ArenaRecolor } from './types';
 
 /** glTF object names exported from the Blender layout reference (hidden at runtime). */
 const ARENA_MARKER_NAME = /^Arena(LayoutGuides|Boundary|Center)$/;
@@ -32,12 +34,14 @@ export function shouldSkipArenaShadow(mesh: THREE.Mesh): boolean {
 
 interface PrepareArenaGlbSceneOptions {
   receiveShadow: boolean;
+  /** Optional element-tribe recolor applied to (cloned) arena materials. */
+  recolor?: ArenaRecolor;
 }
 
 /** Clone arena glTF, hide layout markers, and apply shadow flags to environment meshes. */
 export function prepareArenaGlbScene(
   source: THREE.Object3D,
-  { receiveShadow }: PrepareArenaGlbSceneOptions
+  { receiveShadow, recolor }: PrepareArenaGlbSceneOptions
 ): THREE.Object3D {
   const clone = source.clone(true);
 
@@ -53,6 +57,10 @@ export function prepareArenaGlbScene(
       mesh.castShadow = receiveShadow;
     }
   });
+
+  if (recolor) {
+    applyArenaRecolor(clone, recolor);
+  }
 
   return clone;
 }

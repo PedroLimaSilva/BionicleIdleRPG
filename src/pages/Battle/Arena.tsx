@@ -14,20 +14,20 @@ import {
 } from '../../game/battleOutcomeVisualDelay';
 import { scaleBattleDurationMs } from '../../utils/battleSpeed';
 import * as THREE from 'three';
-import {
-  ARENA_BOX_SIZE,
-  ARENA_CENTER,
-  ARENA_MARGIN,
-  ENEMY_POSITIONS,
-  TEAM_POSITIONS,
-} from './arenaLayout';
+import { ARENA_MARGIN } from './arenaLayout';
 import { ArenaEnvironment } from './ArenaEnvironment';
 import { shouldSkipArenaShadow } from './arenas/arenaGlbUtils';
+import { getArenaDefinition } from './arenas/registry';
+import type { ArenaId, ArenaLayout } from './arenas/types';
+import type { ElementTribe } from '../../types/Matoran';
 
 interface ArenaProps {
   team: Combatant[];
   enemies: Combatant[];
   currentWave: number;
+  arenaId?: ArenaId;
+  /** Element tribe of the encounter headliner, used to recolor the arena. */
+  tribe?: ElementTribe;
 }
 
 const CAMERA_EMPHASIS_IN_MS = 320;
@@ -47,16 +47,16 @@ const SHOULDER_BACK = 1.2;
  * current animated camera state as "from" and smoothly lerps to the computed
  * "to", so back-to-back attacks never cause a positional jump.
  */
-function ArenaFraming() {
+function ArenaFraming({ layout }: { layout: ArenaLayout }) {
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
 
   const basePositionRef = useRef(new THREE.Vector3());
-  const baseLookAtRef = useRef(new THREE.Vector3(...ARENA_CENTER));
+  const baseLookAtRef = useRef(new THREE.Vector3(...layout.center));
   const baseZoomRef = useRef(1);
 
   const curPositionRef = useRef(new THREE.Vector3());
-  const curLookAtRef = useRef(new THREE.Vector3(...ARENA_CENTER));
+  const curLookAtRef = useRef(new THREE.Vector3(...layout.center));
   const curZoomRef = useRef(1);
 
   const fromPositionRef = useRef(new THREE.Vector3());
@@ -127,21 +127,18 @@ function ArenaFraming() {
   useEffect(() => {
     if (size.width <= 0 || size.height <= 0) return;
 
-    const [cx, cy, cz] = ARENA_CENTER;
-    const d = ARENA_BOX_SIZE;
+    const [cx, cy, cz] = layout.center;
+    const d = layout.boxSize;
     const isPortrait = size.width < size.height;
 
-    if (isPortrait) {
-      basePositionRef.current.set(cx + d * 0.35, cy + d * 0.8, cz + d * 1.2);
-    } else {
-      basePositionRef.current.set(cx + d * 0.75, cy + d * 0.5, cz + d * 0.75);
-    }
+    const [mx, my, mz] = isPortrait ? layout.cameraPortrait : layout.cameraLandscape;
+    basePositionRef.current.set(cx + d * mx, cy + d * my, cz + d * mz);
     baseLookAtRef.current.set(cx, cy, cz);
     camera.near = 0.01;
     camera.far = 100;
 
     const distance = basePositionRef.current.distanceTo(baseLookAtRef.current);
-    const halfArena = (ARENA_BOX_SIZE * ARENA_MARGIN) / 2;
+    const halfArena = (layout.boxSize * ARENA_MARGIN) / 2;
     const aspect = size.width / size.height;
 
     const vFovForHeight = 2 * Math.atan(halfArena / distance) * THREE.MathUtils.RAD2DEG;
@@ -160,7 +157,7 @@ function ArenaFraming() {
       curLookAtRef.current.copy(baseLookAtRef.current);
       curZoomRef.current = 1;
     }
-  }, [camera, size]);
+  }, [camera, size, layout]);
 
   useEffect(() => {
     const unsubscribe = subscribeBattleCameraEmphasis(
@@ -281,11 +278,17 @@ function ArenaFraming() {
   return null;
 }
 
-export function Arena({ currentWave, enemies, team }: ArenaProps) {
+export function Arena({ arenaId, currentWave, enemies, team, tribe }: ArenaProps) {
   const combatantRefs = useRef<Record<string, CombatantModelHandle>>({});
   const sceneGroupRef = useRef<THREE.Group>(null);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
+
+  const arenaDef = getArenaDefinition(arenaId);
+  const layout = arenaDef.layout;
+  const teamPositions = layout.team;
+  const enemyPositions = layout.enemy;
+  const recolor = arenaDef.recolorForTribe?.(tribe);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -305,14 +308,14 @@ export function Arena({ currentWave, enemies, team }: ArenaProps) {
   useEffect(() => {
     const positions: Record<string, [number, number, number]> = {};
     team.forEach((c, i) => {
-      positions[c.id] = TEAM_POSITIONS[i];
+      positions[c.id] = teamPositions[i];
     });
     enemies.forEach((c, i) => {
-      positions[c.id] = ENEMY_POSITIONS[i];
+      positions[c.id] = enemyPositions[i];
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).combatantPositions = positions;
-  }, [team, enemies]);
+  }, [team, enemies, teamPositions, enemyPositions]);
 
   useEffect(() => {
     if (!effectiveShadows || !sceneGroupRef.current) return;
@@ -336,8 +339,8 @@ export function Arena({ currentWave, enemies, team }: ArenaProps) {
   return (
     <>
       <PerspectiveCamera makeDefault />
-      <ArenaFraming />
-      <ArenaEnvironment receiveShadow={effectiveShadows} />
+      <ArenaFraming layout={layout} />
+      <ArenaEnvironment arenaId={arenaId} receiveShadow={effectiveShadows} recolor={recolor} />
       <PresentationControls
         enabled={false}
         global={true}
@@ -355,7 +358,7 @@ export function Arena({ currentWave, enemies, team }: ArenaProps) {
               key={c.id}
               combatant={c}
               side="team"
-              position={TEAM_POSITIONS[i]}
+              position={teamPositions[i]}
               maskPowerActive={
                 !!c.maskPower?.active || hasActiveEffectFromSource(team, enemies, c.id)
               }
@@ -372,7 +375,7 @@ export function Arena({ currentWave, enemies, team }: ArenaProps) {
                 key={`${c.id}-w${currentWave}`}
                 combatant={c}
                 side="enemy"
-                position={ENEMY_POSITIONS[i]}
+                position={enemyPositions[i]}
                 ref={(ref) => {
                   if (ref) combatantRefs.current[c.id] = ref;
                   else delete combatantRefs.current[c.id];

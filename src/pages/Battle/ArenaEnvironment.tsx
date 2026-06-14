@@ -1,27 +1,34 @@
 import { ArenaGlbScene } from './arenas/ArenaGlbScene';
 import { DEFAULT_ARENA_ID, getArenaDefinition } from './arenas/registry';
-import type { ArenaId } from './arenas/types';
+import type { ArenaId, ArenaRecolor } from './arenas/types';
 
 interface ArenaEnvironmentProps {
   arenaId?: ArenaId;
   receiveShadow: boolean;
+  /** Optional element-tribe recolor applied to atmosphere, GLB, and props. */
+  recolor?: ArenaRecolor;
 }
 
 /**
- * Renders an arena GLB with its paired atmosphere (fog, HDRI, lighting).
- * Each arena definition owns its mesh path and atmosphere component.
+ * Renders an arena with its paired atmosphere (fog, HDRI, lighting), an optional
+ * authored GLB, and optional procedural decor. Each arena definition owns these
+ * parts so adding a biome only requires a new folder + registry entry.
  */
 export function ArenaEnvironment({
   arenaId = DEFAULT_ARENA_ID,
   receiveShadow,
+  recolor,
 }: ArenaEnvironmentProps) {
-  const { Atmosphere, glbUrl } = getArenaDefinition(arenaId);
+  const { Atmosphere, glbUrl, Scene } = getArenaDefinition(arenaId);
 
   return (
     <>
-      <Atmosphere castShadow={receiveShadow} />
+      <Atmosphere castShadow={receiveShadow} recolor={recolor} />
       <group name="ArenaEnvironment">
-        <ArenaGlbScene glbUrl={glbUrl} receiveShadow={receiveShadow} />
+        {glbUrl && (
+          <ArenaGlbScene glbUrl={glbUrl} receiveShadow={receiveShadow} recolor={recolor} />
+        )}
+        {Scene && <Scene receiveShadow={receiveShadow} recolor={recolor} />}
       </group>
     </>
   );
