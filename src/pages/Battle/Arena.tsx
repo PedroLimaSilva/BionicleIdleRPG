@@ -15,14 +15,14 @@ import {
 import { scaleBattleDurationMs } from '../../utils/battleSpeed';
 import * as THREE from 'three';
 import {
-  ArenaEnvironment,
   ARENA_BOX_SIZE,
   ARENA_CENTER,
   ARENA_MARGIN,
   ENEMY_POSITIONS,
   TEAM_POSITIONS,
-} from './ArenaEnvironment';
-import { shouldSkipArenaShadow } from './arenaGlbUtils';
+} from './arenaLayout';
+import { ArenaEnvironment } from './ArenaEnvironment';
+import { shouldSkipArenaShadow } from './arenas/arenaGlbUtils';
 
 interface ArenaProps {
   team: Combatant[];
