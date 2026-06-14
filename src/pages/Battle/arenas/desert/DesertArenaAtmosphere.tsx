@@ -1,4 +1,4 @@
-import { ARENA_CENTER } from '../arenaLayout';
+import { ARENA_CENTER } from '../../arenaLayout';
 import { ArenaHdriIbl } from '../shared/ArenaHdriIbl';
 import type { ArenaAtmosphereProps } from '../types';
 
