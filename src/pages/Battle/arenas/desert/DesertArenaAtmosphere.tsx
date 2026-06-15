@@ -34,8 +34,8 @@ export function DesertArenaAtmosphere({ castShadow, recolor }: ArenaAtmospherePr
     <>
       <fog attach="fog" args={[fogColor, 2.5, 11]} />
       <ArenaHdriIbl {...HDRI} />
-      <ambientLight color="#f5e6c8" intensity={0.35} />
-      <hemisphereLight args={[COLORS.sun, COLORS.sandDark, 0.45]} />
+      <ambientLight color="#f5e6c8" intensity={0.22} />
+      <hemisphereLight args={[COLORS.sun, COLORS.sandDark, 0.32]} />
       <directionalLight
         ref={(el) => {
           if (el && el.parent && !el.target.parent) {

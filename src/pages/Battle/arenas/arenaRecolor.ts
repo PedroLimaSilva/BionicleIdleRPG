@@ -9,16 +9,17 @@ import type { ArenaRecolor } from './types';
  * props (e.g. the Kanohi monuments). See issue #366.
  */
 const TRIBE_RECOLORS: Record<ElementTribe, ArenaRecolor> = {
-  [ElementTribe.Air]: { accent: '#56d268', diffuse: '#cfe6bd', fog: '#d8e9c2' },
-  [ElementTribe.Earth]: { accent: '#8a5fd0', diffuse: '#c6bcc6', fog: '#cabfcf' },
+  [ElementTribe.Air]: { accent: '#56d268', blend: 0.6, diffuse: '#3f8f46', fog: '#8fc784' },
+  [ElementTribe.Earth]: { accent: '#9a5fd0', blend: 0.62, diffuse: '#4a3a5a', fog: '#6a5a78' },
   // Volcanic: darken the rock toward scorched basalt with glowing lava accents.
-  [ElementTribe.Fire]: { accent: '#ff5212', blend: 0.42, diffuse: '#5e3322', fog: '#a8492a' },
+  [ElementTribe.Fire]: { accent: '#ff5212', blend: 0.82, diffuse: '#4a1c0d', fog: '#b03a16' },
   // Snowy mountain: lighten the canyon toward frost with icy accents.
-  [ElementTribe.Ice]: { accent: '#9fe8ff', blend: 0.72, diffuse: '#e8eff5', fog: '#eef4f8' },
-  [ElementTribe.Light]: { accent: '#ffe27a', diffuse: '#f3e9c8', fog: '#f0e4c2' },
-  [ElementTribe.Shadow]: { accent: '#7a3aa0', diffuse: '#b4adba', fog: '#b6aebd' },
+  [ElementTribe.Ice]: { accent: '#bfefff', blend: 0.86, diffuse: '#eef5fc', fog: '#f0f6fc' },
+  [ElementTribe.Light]: { accent: '#ffe27a', blend: 0.55, diffuse: '#efe2a0', fog: '#f0e4c2' },
+  [ElementTribe.Shadow]: { accent: '#9a3ad0', blend: 0.65, diffuse: '#352b40', fog: '#4a3a55' },
+  // Stone keeps the natural desert look (subtle warm tint).
   [ElementTribe.Stone]: { accent: '#caa24a', diffuse: '#e7cfa0', fog: '#e8c992' },
-  [ElementTribe.Water]: { accent: '#2aa7ff', diffuse: '#bcd4e6', fog: '#cfe0ec' },
+  [ElementTribe.Water]: { accent: '#2aa7ff', blend: 0.66, diffuse: '#235f93', fog: '#5aa0d0' },
 };
 
 /** Recolor palette for an element tribe, or `undefined` if unknown. */
@@ -51,20 +52,35 @@ export function applyArenaRecolor(root: THREE.Object3D, recolor: ArenaRecolor): 
   const diffuse = new THREE.Color(recolor.diffuse);
   const accent = new THREE.Color(recolor.accent);
 
-  const recolorOne = (mat: THREE.Material): THREE.Material => {
-    if (!isStandardMat(mat)) return mat;
-    const clone = mat.clone();
-    if (isAccentMaterial(clone.name)) {
-      clone.color.copy(accent);
-      clone.emissive = accent.clone();
-      clone.emissiveIntensity = Math.max(clone.emissiveIntensity ?? 1, 1.2);
-    } else if (recolor.blend != null) {
+  const tintColor = (color: THREE.Color) => {
+    if (recolor.blend != null) {
       // Blend toward the target so the base texture can be lightened or darkened.
-      clone.color.lerp(diffuse, recolor.blend);
+      color.lerp(diffuse, recolor.blend);
     } else {
-      clone.color.multiply(diffuse);
+      color.multiply(diffuse);
     }
-    return clone;
+  };
+
+  const recolorOne = (mat: THREE.Material): THREE.Material => {
+    if (isStandardMat(mat)) {
+      const clone = mat.clone();
+      if (isAccentMaterial(clone.name)) {
+        clone.color.copy(accent);
+        clone.emissive = accent.clone();
+        clone.emissiveIntensity = Math.max(clone.emissiveIntensity ?? 1, 1.2);
+      } else {
+        tintColor(clone.color);
+      }
+      return clone;
+    }
+    // Unlit / basic materials (e.g. KHR_materials_unlit) — tint the color directly.
+    if (mat instanceof THREE.MeshBasicMaterial && mat.color) {
+      const clone = mat.clone();
+      if (isAccentMaterial(clone.name)) clone.color.copy(accent);
+      else tintColor(clone.color);
+      return clone;
+    }
+    return mat;
   };
 
   root.traverse((child) => {

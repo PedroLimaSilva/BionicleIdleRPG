@@ -133,7 +133,8 @@ function ArenaFraming({ layout }: { layout: ArenaLayout }) {
 
     const [mx, my, mz] = isPortrait ? layout.cameraPortrait : layout.cameraLandscape;
     basePositionRef.current.set(cx + d * mx, cy + d * my, cz + d * mz);
-    baseLookAtRef.current.set(cx, cy, cz);
+    // Aim slightly above center so open-sky biomes reveal the horizon/sky.
+    baseLookAtRef.current.set(cx, cy + (layout.lookAtHeight ?? 0), cz);
     camera.near = 0.01;
     camera.far = 100;
 

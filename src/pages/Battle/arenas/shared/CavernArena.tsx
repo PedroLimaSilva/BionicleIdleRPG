@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { useMemo } from 'react';
+import { ArenaSky } from './ArenaSky';
 
 /**
  * Lighting mode for a cavern biome — the "time of day" axis. Any cavern palette
@@ -161,10 +162,13 @@ function CeilingVeins({
 export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
   const anchor = palette.anchor ?? DEFAULT_ANCHOR;
   const isDay = (palette.lighting ?? 'underground') === 'daylight';
-  // In daylight the roof reads as lit structure; underground it fades to black.
-  const ceilingColor = isDay
-    ? new THREE.Color(palette.stone).lerp(new THREE.Color('#cfdcea'), 0.45).getStyle()
-    : '#0d0f0c';
+  // Sky/enclosure: blue dome in daylight, dark interior sphere underground.
+  const skyTop = isDay
+    ? '#6f9fd0'
+    : new THREE.Color(palette.ambient).multiplyScalar(0.4).getStyle();
+  const skyBottom = isDay
+    ? new THREE.Color(palette.ambient).lerp(new THREE.Color('#dfe9f5'), 0.6).getStyle()
+    : palette.ambient;
   return (
     <group name="CavernArenaDecor">
       {/* Floor slab */}
@@ -191,16 +195,8 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
           side={THREE.BackSide}
         />
       </mesh>
-      {/* Ceiling dome cap */}
-      <mesh position={[0, 6.4, 0]}>
-        <sphereGeometry args={[10.2, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial
-          color={ceilingColor}
-          roughness={1}
-          metalness={0}
-          side={THREE.BackSide}
-        />
-      </mesh>
+      {/* Sky / enclosure (backside sphere — the camera only sees the inside) */}
+      <ArenaSky top={skyTop} bottom={skyBottom} radius={13} />
 
       {/* Backdrop dome ("Kini") */}
       <group position={anchor}>

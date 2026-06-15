@@ -119,13 +119,14 @@ The desert arena opts in via `recolorForTribe: getTribeRecolor`. The tint flows 
 ### Desert (`desert`)
 
 - **Mesh:** `public/arena_blockout.glb` — BlenderKit low-poly canyon + baked sand ground.
-- **Decor:** two giant **Toa statue monuments** flanking the stage (`KanohiMonument`), reusing character meshes — a `kit_2001.glb` `McTorso` body + `McToranFace` head (the "mcface"), carved in sandstone and wearing a `Hau`/`Pakari` Kanohi from `masks.glb`, on a plinth with a tribe-colored accent band. Placed at the canyon base to mask dune-mesh seams.
-- **Atmosphere:** warm fog `#e8c992`, quarry HDRI (IBL only), warm key light + cool fill.
-- **Recolorable:** yes (per element tribe) — including dramatic restyles via `ArenaRecolor.blend` (e.g. **Ice → snowy mountain**, **Fire → volcano**).
+- **Decor:** three giant **Kanohi monuments** framing the canyon (`KanohiMonument`), reusing character meshes — a `kit_2001.glb` `McToranFace` head carved in sandstone, wearing a Kanohi from `masks.glb`, on a stone plinth with a tribe accent band.
+- **Sky:** a blue sky dome (`ArenaSky`); the camera aims up slightly (`lookAtHeight`) so the sky reads above the canyon rim.
+- **Atmosphere:** warm fog, quarry HDRI (IBL only), warm key light (low ambient so shadows read).
+- **Recolorable:** yes (per element tribe) — `ArenaRecolor.blend` blends the canyon, ground, **and sky/horizon** toward the biome color for dramatic restyles (e.g. **Ice → snowy mountain**, **Fire → volcano**). Recolor applies to both PBR and unlit (`KHR_materials_unlit`) materials.
 
 ### Mangaia (`mangaia`)
 
-- **Mesh:** fully procedural (`CavernArena`): dark stone enclosure, inlaid floor combat stage, and — set back in the **upper-left as a backdrop prop** so it never interferes with combatants — a domed shrine ("Kini") with a descending **green energy beam** and glowing ceiling veins.
+- **Mesh:** fully procedural (`CavernArena`): a backside-culled enclosure sphere (`ArenaSky` — the camera only sees the inside), inlaid floor combat stage, and — set back in the **upper-left as a backdrop prop** so it never interferes with combatants — a domed shrine ("Kini") with a descending **green energy beam** and glowing ceiling veins.
 - **Atmosphere:** night-time (`ambientIntensity 0.45`), dark green fog, a cool directional fill so fighters stay readable.
 - Represents the tunnels beneath Mata Nui (inside the Great Spirit Robot).
 
@@ -140,7 +141,7 @@ Any cavern biome can be authored once and rendered either way.
 
 ### Cavern lighting / time-of-day (`CavernPalette`)
 
-`lighting: 'underground' | 'daylight'` is the primary knob; the rest override the per-mode defaults.
+`lighting: 'underground' | 'daylight'` is the primary knob; the rest override the per-mode defaults. Both modes use `ArenaSky` as a backside enclosure sphere — a blue sky in daylight, a dark interior underground.
 
 | Field              | Effect                                                                                         |
 | ------------------ | ---------------------------------------------------------------------------------------------- |

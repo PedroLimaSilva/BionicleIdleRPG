@@ -39,6 +39,8 @@ export interface ArenaLayout {
   cameraPortrait: [number, number, number];
   /** Base camera offset (multiples of `boxSize`) added to center in landscape. */
   cameraLandscape: [number, number, number];
+  /** Raises the camera look-at target so open-sky biomes reveal the sky. Default 0. */
+  lookAtHeight?: number;
 }
 
 export interface ArenaAtmosphereProps {

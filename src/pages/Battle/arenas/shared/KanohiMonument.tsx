@@ -12,10 +12,10 @@ interface KanohiMonumentProps {
   rotationY?: number;
   /** Target height of the carved mask in world units. */
   maskHeight?: number;
-  /** Target height of the stone body (kit torso) in world units. */
-  bodyHeight?: number;
-  /** Target height of the stone head (kit Matoran face) in world units. */
+  /** Target height of the stone Matoran head in world units. */
   headHeight?: number;
+  /** Height of the stone plinth column in world units. */
+  pedestalHeight?: number;
   receiveShadow?: boolean;
   castShadow?: boolean;
   /** Sandstone color for the carved figure. */
@@ -103,18 +103,18 @@ function makeStonePart(
 }
 
 /**
- * A giant Toa/Matoran statue monument: a kit_2001 body + Matoran face ("mcface")
- * carved in sandstone, wearing a Kanohi mask from `masks.glb`. Reuses character
- * meshes per issue #366 to echo the desert reference more closely than a plain
- * pedestal. Each part is recolored, centered, and scaled to a target height.
+ * A giant carved Kanohi monument: a sandstone Matoran head (kit_2001
+ * `McToranFace`) wearing a Kanohi mask from `masks.glb`, on a stone plinth.
+ * Reuses character meshes per issue #366 to echo the desert reference. Each part
+ * is recolored, centered, and scaled to a target height.
  */
 export function KanohiMonument({
   accent = '#2f6fb0',
-  bodyHeight = 0.95,
   castShadow = false,
-  headHeight = 0.5,
-  maskHeight = 0.6,
+  headHeight = 1.1,
+  maskHeight = 1.15,
   maskName = 'Hau',
+  pedestalHeight = 1.1,
   position,
   receiveShadow = false,
   rotationY = 0,
@@ -126,8 +126,7 @@ export function KanohiMonument({
   const built = useMemo(() => {
     const opts = { accent, castShadow, receiveShadow, stoneColor };
 
-    const torsoSrc = findMeshNode(kitScene, 'McTorso');
-    const faceSrc = findMeshNode(kitScene, 'McToranFace');
+    const headSrc = findMeshNode(kitScene, 'McToranFace');
     let maskSrc = findMeshNode(masksScene, maskName);
     if (!maskSrc) {
       masksScene.traverse((c) => {
@@ -136,37 +135,26 @@ export function KanohiMonument({
     }
     if (!maskSrc) return null;
 
-    const slabHeight = 0.16;
-    const body = torsoSrc ? makeStonePart(torsoSrc, bodyHeight, opts) : null;
-    const head = faceSrc ? makeStonePart(faceSrc, headHeight, opts) : null;
+    const head = headSrc ? makeStonePart(headSrc, headHeight, opts) : null;
     const mask = makeStonePart(maskSrc, maskHeight, { ...opts, isMask: true });
 
-    let cursor = slabHeight;
-    if (body) {
-      body.group.position.set(0, cursor + body.size.y / 2, 0);
-      cursor += body.size.y;
-    }
-    let headCenterY = cursor + headHeight / 2;
-    if (head) {
-      head.group.position.set(0, cursor + head.size.y / 2, 0);
-      headCenterY = cursor + head.size.y / 2;
-      cursor += head.size.y * 0.7; // mask overlaps the upper face
-    }
-    // The mask sits over the face, pushed slightly forward.
-    mask.group.position.set(0, head ? headCenterY : cursor + maskHeight / 2, 0.12);
+    const headSize = head?.size.y ?? headHeight;
+    if (head) head.group.position.set(0, pedestalHeight + headSize / 2, 0);
+    // The mask sits over the front of the head.
+    mask.group.position.set(0, pedestalHeight + headSize * 0.5, 0.12);
 
-    const slabWidth = Math.max(0.7, (body?.size.x ?? 0.6) * 1.5);
+    const plinthWidth = Math.max(0.55, (head?.size.x ?? 0.6) * 1.15);
 
-    return { body, head, mask, slabHeight, slabWidth };
+    return { head, mask, plinthWidth };
   }, [
     masksScene,
     kitScene,
     maskName,
     stoneColor,
     accent,
-    bodyHeight,
     headHeight,
     maskHeight,
+    pedestalHeight,
     castShadow,
     receiveShadow,
   ]);
@@ -175,18 +163,23 @@ export function KanohiMonument({
 
   return (
     <group position={position} rotation-y={rotationY}>
-      {/* Stone plinth */}
+      {/* Stone plinth column */}
       <mesh
-        position={[0, built.slabHeight / 2, 0]}
+        position={[0, pedestalHeight / 2, 0]}
         castShadow={castShadow}
         receiveShadow={receiveShadow}
       >
-        <boxGeometry args={[built.slabWidth, built.slabHeight, built.slabWidth * 0.8]} />
+        <boxGeometry args={[built.plinthWidth, pedestalHeight, built.plinthWidth * 0.85]} />
         <meshStandardMaterial color={stoneColor} roughness={1} metalness={0} />
       </mesh>
-      {/* Tribe-colored accent band on the plinth */}
-      <mesh position={[0, built.slabHeight + 0.005, 0]} rotation-x={-Math.PI / 2}>
-        <ringGeometry args={[built.slabWidth * 0.3, built.slabWidth * 0.42, 24]} />
+      {/* Wider base slab */}
+      <mesh position={[0, 0.08, 0]} castShadow={castShadow} receiveShadow={receiveShadow}>
+        <boxGeometry args={[built.plinthWidth * 1.5, 0.16, built.plinthWidth * 1.3]} />
+        <meshStandardMaterial color={stoneColor} roughness={1} metalness={0} />
+      </mesh>
+      {/* Tribe-colored accent band atop the plinth */}
+      <mesh position={[0, pedestalHeight + 0.005, 0]} rotation-x={-Math.PI / 2}>
+        <ringGeometry args={[built.plinthWidth * 0.32, built.plinthWidth * 0.46, 24]} />
         <meshStandardMaterial
           color={accent}
           emissive={accent}
@@ -195,7 +188,6 @@ export function KanohiMonument({
           side={THREE.DoubleSide}
         />
       </mesh>
-      {built.body && <primitive object={built.body.group} />}
       {built.head && <primitive object={built.head.group} />}
       <primitive object={built.mask.group} />
     </group>
