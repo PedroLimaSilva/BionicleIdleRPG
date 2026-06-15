@@ -10,5 +10,6 @@ export const MANGAIA_PALETTE: CavernPalette = {
   floorAccent: '#4a3f2e',
   fogRange: [5, 18],
   glow: '#3ad14e',
+  lighting: 'underground',
   stone: '#2a261f',
 };

@@ -2,12 +2,24 @@ import * as THREE from 'three';
 import { useMemo } from 'react';
 
 /**
- * Palette for the underground cavern arena. Drives both the procedural scene
+ * Lighting mode for a cavern biome — the "time of day" axis. Any cavern palette
+ * can be rendered either deep `underground` (dark, fogged, no sky) or in
+ * `daylight` (open, brighter, overhead skylight). See issue #366.
+ */
+export type CavernLighting = 'underground' | 'daylight';
+
+/** Default overhead skylight used by `daylight` caverns unless overridden. */
+const DEFAULT_DAY_SKY = { color: '#bcd2ec', ground: '#33424f', intensity: 0.85 } as const;
+
+/**
+ * Palette for the cavern arena. Drives both the procedural scene
  * (`CavernArenaScene`) and atmosphere (`CavernAtmosphere`) so the same biome
- * can represent Mangaia (dark, organic) or Metru Nui (brighter, technological
- * daytime biome) — see issue #366.
+ * can represent Mangaia (organic) or Metru Nui (technological), each in either
+ * lighting mode — see issue #366.
  */
 export interface CavernPalette {
+  /** Lighting mode — supports both daytime and underground. Default `underground`. */
+  lighting?: CavernLighting;
   /** Energy beam + its bloom glow. */
   beam: string;
   /** Ceiling veins / accent point lights. */
@@ -148,6 +160,11 @@ function CeilingVeins({
  */
 export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
   const anchor = palette.anchor ?? DEFAULT_ANCHOR;
+  const isDay = (palette.lighting ?? 'underground') === 'daylight';
+  // In daylight the roof reads as lit structure; underground it fades to black.
+  const ceilingColor = isDay
+    ? new THREE.Color(palette.stone).lerp(new THREE.Color('#cfdcea'), 0.45).getStyle()
+    : '#0d0f0c';
   return (
     <group name="CavernArenaDecor">
       {/* Floor slab */}
@@ -177,7 +194,12 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
       {/* Ceiling dome cap */}
       <mesh position={[0, 6.4, 0]}>
         <sphereGeometry args={[10.2, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color={'#0d0f0c'} roughness={1} metalness={0} side={THREE.BackSide} />
+        <meshStandardMaterial
+          color={ceilingColor}
+          roughness={1}
+          metalness={0}
+          side={THREE.BackSide}
+        />
       </mesh>
 
       {/* Backdrop dome ("Kini") */}
@@ -215,21 +237,28 @@ interface CavernAtmosphereProps {
   castShadow: boolean;
 }
 
-/** Atmosphere for the cavern arena; brightness driven by the palette's time-of-day knobs. */
+/** Atmosphere for the cavern arena; brightness driven by the lighting mode + palette knobs. */
 export function CavernAtmosphere({ castShadow, palette }: CavernAtmosphereProps) {
   const anchor = palette.anchor ?? DEFAULT_ANCHOR;
-  const [fogNear, fogFar] = palette.fogRange ?? [3.5, 16];
-  const ambientIntensity = palette.ambientIntensity ?? 0.18;
-  const keyIntensity = palette.skyLight ? 0.95 : 1.0;
+  const isDay = (palette.lighting ?? 'underground') === 'daylight';
+  const skyLight = isDay
+    ? (palette.skyLight ?? { ...DEFAULT_DAY_SKY, intensity: 1.25 })
+    : undefined;
+  const ambientIntensity = palette.ambientIntensity ?? (isDay ? 0.85 : 0.42);
+  const [fogNear, fogFar] = palette.fogRange ?? (isDay ? [9, 34] : [5, 18]);
+  const keyIntensity = isDay ? 1.15 : 1.0;
+  const keyColor = isDay ? '#eaf1fb' : '#9fb0c8';
+  // Daylight haze is a bright, airy tint; underground fades to the dark ambient.
+  const fogColor = isDay
+    ? new THREE.Color(palette.ambient).lerp(new THREE.Color('#dfe9f5'), 0.7).getStyle()
+    : palette.ambient;
 
   return (
     <>
-      <fog attach="fog" args={[palette.ambient, fogNear, fogFar]} />
-      <ambientLight color={palette.ambient} intensity={ambientIntensity} />
-      {palette.skyLight ? (
-        <hemisphereLight
-          args={[palette.skyLight.color, palette.skyLight.ground, palette.skyLight.intensity]}
-        />
+      <fog attach="fog" args={[fogColor, fogNear, fogFar]} />
+      <ambientLight color={isDay ? '#cdddf0' : palette.ambient} intensity={ambientIntensity} />
+      {skyLight ? (
+        <hemisphereLight args={[skyLight.color, skyLight.ground, skyLight.intensity]} />
       ) : (
         <hemisphereLight args={[palette.glow, '#050605', 0.25]} />
       )}
@@ -243,10 +272,8 @@ export function CavernAtmosphere({ castShadow, palette }: CavernAtmosphereProps)
       {/* Rim accents around the chamber */}
       <pointLight color={palette.glow} intensity={1.6} distance={10} position={[-4, 4.5, -2]} />
       <pointLight color={palette.glow} intensity={1.6} distance={10} position={[4, 4.5, -2]} />
-      {/* Cool fill (no decay) so fighters stay readable when the dome is a far backdrop (night only) */}
-      {!palette.skyLight && (
-        <directionalLight color={palette.glow} intensity={0.55} position={[-2, 4, 1.5]} />
-      )}
+      {/* Cool fill (no decay) so fighters stay readable when underground */}
+      {!isDay && <directionalLight color={palette.glow} intensity={0.55} position={[-2, 4, 1.5]} />}
       {/* Soft bounce on the dome from below */}
       <pointLight
         color={palette.dome}
@@ -257,7 +284,7 @@ export function CavernAtmosphere({ castShadow, palette }: CavernAtmosphereProps)
       {/* Front key / fill so fighters are readable (stronger in daylight) */}
       <directionalLight
         position={[0.6, 4, 3]}
-        color={palette.skyLight ? '#dce6f2' : '#9fb0c8'}
+        color={keyColor}
         intensity={keyIntensity}
         castShadow={castShadow}
         shadow-mapSize={[2048, 2048]}

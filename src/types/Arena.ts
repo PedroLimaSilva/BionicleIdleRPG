@@ -6,4 +6,4 @@
  * component/page layer. The arena registry in `src/pages/Battle/arenas/`
  * provides the concrete `ArenaDefinition` for each id.
  */
-export type ArenaId = 'desert' | 'mangaia' | 'metru';
+export type ArenaId = 'desert' | 'mangaia' | 'metru' | 'metru_archives';

@@ -1331,7 +1331,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('lehvak_kal', 55, 1), ...makeBohrokWave('pahrak_kal', 55, 1)]],
   },
   {
-    arenaId: 'metru',
+    arenaId: 'metru_archives',
     description: 'Three Bohrok Kal converge—Gravity, Sonics, and Electricity.',
     difficulty: 5,
     headliner: 'bohrok_kal_trio',
@@ -1349,7 +1349,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     ],
   },
   {
-    arenaId: 'metru',
+    arenaId: 'metru_archives',
     description:
       'All six Bohrok Kal united—Electricity, Magnetism, Vacuum, Plasma, Gravity, and Sonics. The Toa must stand together to reclaim the Nuva symbols.',
     difficulty: 6,

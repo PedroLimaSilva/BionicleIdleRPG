@@ -129,18 +129,28 @@ The desert arena opts in via `recolorForTribe: getTribeRecolor`. The tint flows 
 - **Atmosphere:** night-time (`ambientIntensity 0.45`), dark green fog, a cool directional fill so fighters stay readable.
 - Represents the tunnels beneath Mata Nui (inside the Great Spirit Robot).
 
-### Metru Nui (`metru`)
+### Metru Nui — daytime (`metru`) and underground (`metru_archives`)
 
-- Same `CavernArena` framework, recast as a **brighter, open daytime biome** with cold/technological materials (cyan beam, silver dome, blue-grey stone). The "time of day" is driven by palette knobs — `skyLight` (overhead hemisphere), `ambientIntensity`, and a wider `fogRange` — demonstrating both cavern reuse and per-arena lighting control.
+The Metru Nui biome ships in **both lighting modes** from one shared palette (`METRU_BASE`, cyan beam / silver dome / blue-grey tech stone):
 
-### Cavern time-of-day knobs (`CavernPalette`)
+- **`metru`** (`lighting: 'daylight'`) — a bright, open daytime biome: overhead skylight, airy haze, lit ceiling.
+- **`metru_archives`** (`lighting: 'underground'`) — the same biome deep underground: dark, fogged, no sky, cool fill light.
 
-| Field              | Effect                                                                   |
-| ------------------ | ------------------------------------------------------------------------ |
-| `ambientIntensity` | Base brightness (night ≈ `0.18`–`0.45`, day ≈ `0.5`)                     |
-| `skyLight`         | Optional overhead hemisphere — turns the cave into an open daytime biome |
-| `fogRange`         | `[near, far]` — tight for a claustrophobic cave, wide for daylight       |
-| `anchor`           | `[x,y,z]` backdrop position of the dome + beam                           |
+Any cavern biome can be authored once and rendered either way.
+
+### Cavern lighting / time-of-day (`CavernPalette`)
+
+`lighting: 'underground' | 'daylight'` is the primary knob; the rest override the per-mode defaults.
+
+| Field              | Effect                                                                                         |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| `lighting`         | `'underground'` (dark, fogged, no sky) or `'daylight'` (open, skylit). Default `'underground'` |
+| `ambientIntensity` | Override base brightness (defaults: day `0.85`, underground `0.42`)                            |
+| `skyLight`         | Override the overhead hemisphere used in daylight                                              |
+| `fogRange`         | `[near, far]` (defaults: day `[9,34]`, underground `[5,18]`)                                   |
+| `anchor`           | `[x,y,z]` backdrop position of the dome + beam                                                 |
+
+Current data mapping: single Bohrok-Kal fights → daytime `metru`; the climactic trio/final (fought in the nest) → underground `metru_archives`.
 
 ---
 
