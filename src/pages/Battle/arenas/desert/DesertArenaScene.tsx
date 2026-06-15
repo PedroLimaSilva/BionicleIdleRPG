@@ -1,7 +1,7 @@
 import { KanohiMonument } from '../shared/KanohiMonument';
 import type { ArenaSceneProps } from '../types';
 
-const SANDSTONE = '#c9a368';
+const SANDSTONE = '#c4b187';
 const DEFAULT_ACCENT = '#2f6fb0';
 
 /**
@@ -15,10 +15,10 @@ export function DesertArenaScene({ receiveShadow, recolor }: ArenaSceneProps) {
     <group name="DesertArenaDecor">
       <KanohiMonument
         maskName="Hau"
-        position={[-1.85, -0.02, 1.35]}
-        rotationY={0.5}
-        maskHeight={1.5}
-        pedestalHeight={1.0}
+        position={[-1.5, -0.05, -0.1]}
+        rotationY={0.42}
+        maskHeight={1.0}
+        pedestalHeight={0.72}
         stoneColor={SANDSTONE}
         accent={accent}
         receiveShadow={receiveShadow}
@@ -26,10 +26,10 @@ export function DesertArenaScene({ receiveShadow, recolor }: ArenaSceneProps) {
       />
       <KanohiMonument
         maskName="Pakari"
-        position={[1.95, -0.02, 1.45]}
-        rotationY={-0.55}
-        maskHeight={1.6}
-        pedestalHeight={1.1}
+        position={[1.55, -0.05, -0.2]}
+        rotationY={-0.46}
+        maskHeight={1.05}
+        pedestalHeight={0.78}
         stoneColor={SANDSTONE}
         accent={accent}
         receiveShadow={receiveShadow}

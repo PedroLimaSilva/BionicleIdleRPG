@@ -42,24 +42,23 @@ function EnergyBeam({ color }: { color: string }) {
     <group position={BEAM_CENTER}>
       {/* Soft outer glow */}
       <mesh position={[0, beamMidY, 0]}>
-        <cylinderGeometry args={[0.22, 0.32, beamHeight, 24, 1, true]} />
+        <cylinderGeometry args={[0.18, 0.3, beamHeight, 24, 1, true]} />
         <meshBasicMaterial
           color={beamColor}
           transparent
-          opacity={0.18}
+          opacity={0.13}
           side={THREE.DoubleSide}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
       </mesh>
-      {/* Bright core */}
+      {/* Bright solid core */}
       <mesh position={[0, beamMidY, 0]}>
-        <cylinderGeometry args={[0.06, 0.1, beamHeight, 20, 1, true]} />
+        <cylinderGeometry args={[0.06, 0.09, beamHeight, 20]} />
         <meshBasicMaterial
           color={'#ffffff'}
           transparent
-          opacity={0.9}
-          side={THREE.DoubleSide}
+          opacity={0.92}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
@@ -101,7 +100,11 @@ function CeilingVeins({ color, receiveShadow }: { color: string; receiveShadow: 
         <mesh
           key={v.key}
           rotation={[0, v.rotationY, Math.PI / 2.4]}
-          position={[Math.cos(v.rotationY) * v.radius * 0.5, 0, Math.sin(v.rotationY) * v.radius * 0.5]}
+          position={[
+            Math.cos(v.rotationY) * v.radius * 0.5,
+            0,
+            Math.sin(v.rotationY) * v.radius * 0.5,
+          ]}
           castShadow={false}
           receiveShadow={receiveShadow}
         >
@@ -142,7 +145,12 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
       {/* Cavern wall shell (open-topped cylinder, viewed from inside) */}
       <mesh position={[0, 3.4, 0]}>
         <cylinderGeometry args={[8.5, 9.5, 8, 40, 1, true]} />
-        <meshStandardMaterial color={palette.stone} roughness={1} metalness={0.05} side={THREE.BackSide} />
+        <meshStandardMaterial
+          color={palette.stone}
+          roughness={1}
+          metalness={0.05}
+          side={THREE.BackSide}
+        />
       </mesh>
       {/* Ceiling dome cap */}
       <mesh position={[0, 6.4, 0]}>
@@ -165,7 +173,12 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
         {/* Dome base ring */}
         <mesh position={[0, 0.02, 0]} rotation-x={-Math.PI / 2} receiveShadow={receiveShadow}>
           <ringGeometry args={[DOME_RADIUS, DOME_RADIUS + 0.18, 32]} />
-          <meshStandardMaterial color={palette.dome} roughness={0.5} metalness={palette.domeMetalness} side={THREE.DoubleSide} />
+          <meshStandardMaterial
+            color={palette.dome}
+            roughness={0.5}
+            metalness={palette.domeMetalness}
+            side={THREE.DoubleSide}
+          />
         </mesh>
       </group>
 

@@ -7,7 +7,16 @@ const ARENA_MARKER_NAME = /^Arena(LayoutGuides|Boundary|Center)$/;
 const ARENA_SLOT_NAME = /^(Team|Enemy)Slot(Marker|Guide)?\d*$/;
 
 /** Blender material used for layout marker meshes in some arena exports. */
-const ARENA_MARKER_MATERIALS = new Set(['Places', 'Material_3', 'Material_4', 'Material_5', 'Material_6', 'Material_7', 'Material_8', 'Material_9']);
+const ARENA_MARKER_MATERIALS = new Set([
+  'Places',
+  'Material_3',
+  'Material_4',
+  'Material_5',
+  'Material_6',
+  'Material_7',
+  'Material_8',
+  'Material_9',
+]);
 
 export function isArenaLayoutMarker(object: THREE.Object3D): boolean {
   if (ARENA_MARKER_NAME.test(object.name) || ARENA_SLOT_NAME.test(object.name)) {

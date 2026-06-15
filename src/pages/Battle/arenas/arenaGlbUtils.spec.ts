@@ -4,13 +4,15 @@ import { isArenaLayoutMarker, shouldSkipArenaShadow } from './arenaGlbUtils';
 describe('arenaGlbUtils', () => {
   it('detects layout marker object names', () => {
     expect(isArenaLayoutMarker(new THREE.Object3D())).toBe(false);
-    expect(isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'ArenaBoundary' }))).toBe(
+    expect(
+      isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'ArenaBoundary' }))
+    ).toBe(true);
+    expect(
+      isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'TeamSlotMarker1' }))
+    ).toBe(true);
+    expect(isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'EnemySlot2' }))).toBe(
       true
     );
-    expect(isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'TeamSlotMarker1' }))).toBe(
-      true
-    );
-    expect(isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'EnemySlot2' }))).toBe(true);
   });
 
   it('detects layout marker meshes by marker materials', () => {

@@ -28,9 +28,7 @@ export function getTribeRecolor(tribe: ElementTribe | undefined): ArenaRecolor |
 type StandardMat = THREE.MeshStandardMaterial | THREE.MeshPhysicalMaterial;
 
 function isStandardMat(mat: unknown): mat is StandardMat {
-  return (
-    mat instanceof THREE.MeshStandardMaterial || mat instanceof THREE.MeshPhysicalMaterial
-  );
+  return mat instanceof THREE.MeshStandardMaterial || mat instanceof THREE.MeshPhysicalMaterial;
 }
 
 /** Materials treated as glowing accents (recolored emissive instead of diffuse). */

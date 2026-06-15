@@ -133,6 +133,17 @@ export function KanohiMonument({
         <boxGeometry args={[pedestalRadius * 1.6, pedestalHeight * 0.9, pedestalRadius * 1.2]} />
         <meshStandardMaterial color={stoneColor} roughness={1} metalness={0} />
       </mesh>
+      {/* Tribe-colored accent band where the mask meets the pillar */}
+      <mesh position={[0, pedestalHeight - 0.02, 0]} rotation-x={-Math.PI / 2}>
+        <ringGeometry args={[pedestalRadius * 0.7, pedestalRadius * 1.0, 24]} />
+        <meshStandardMaterial
+          color={accent}
+          emissive={accent}
+          emissiveIntensity={0.7}
+          roughness={0.6}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
       {/* Carved mask, base resting on top of the pillar */}
       <primitive object={mask} position={[0, pedestalHeight + maskHeight / 2, 0]} />
     </group>

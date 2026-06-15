@@ -16,9 +16,7 @@ export function getEncounterArenaId(encounter: EnemyEncounter | undefined): Aren
  * (e.g. the desert) to reflect the tribe being fought. Returns `undefined` when
  * the headliner is not an elemental combatant (e.g. a Rahkshi kraata power).
  */
-export function getEncounterTribe(
-  encounter: EnemyEncounter | undefined
-): ElementTribe | undefined {
+export function getEncounterTribe(encounter: EnemyEncounter | undefined): ElementTribe | undefined {
   if (!encounter) return undefined;
   return COMBATANT_DEX[encounter.headliner]?.element;
 }
