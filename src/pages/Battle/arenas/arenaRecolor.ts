@@ -11,8 +11,10 @@ import type { ArenaRecolor } from './types';
 const TRIBE_RECOLORS: Record<ElementTribe, ArenaRecolor> = {
   [ElementTribe.Air]: { accent: '#56d268', diffuse: '#cfe6bd', fog: '#d8e9c2' },
   [ElementTribe.Earth]: { accent: '#8a5fd0', diffuse: '#c6bcc6', fog: '#cabfcf' },
-  [ElementTribe.Fire]: { accent: '#ff5a1e', diffuse: '#f0c0a0', fog: '#e8b283' },
-  [ElementTribe.Ice]: { accent: '#9fe8ff', diffuse: '#dcecf2', fog: '#e3eef3' },
+  // Volcanic: darken the rock toward scorched basalt with glowing lava accents.
+  [ElementTribe.Fire]: { accent: '#ff5212', blend: 0.42, diffuse: '#5e3322', fog: '#a8492a' },
+  // Snowy mountain: lighten the canyon toward frost with icy accents.
+  [ElementTribe.Ice]: { accent: '#9fe8ff', blend: 0.72, diffuse: '#e8eff5', fog: '#eef4f8' },
   [ElementTribe.Light]: { accent: '#ffe27a', diffuse: '#f3e9c8', fog: '#f0e4c2' },
   [ElementTribe.Shadow]: { accent: '#7a3aa0', diffuse: '#b4adba', fog: '#b6aebd' },
   [ElementTribe.Stone]: { accent: '#caa24a', diffuse: '#e7cfa0', fog: '#e8c992' },
@@ -56,6 +58,9 @@ export function applyArenaRecolor(root: THREE.Object3D, recolor: ArenaRecolor): 
       clone.color.copy(accent);
       clone.emissive = accent.clone();
       clone.emissiveIntensity = Math.max(clone.emissiveIntensity ?? 1, 1.2);
+    } else if (recolor.blend != null) {
+      // Blend toward the target so the base texture can be lightened or darkened.
+      clone.color.lerp(diffuse, recolor.blend);
     } else {
       clone.color.multiply(diffuse);
     }

@@ -119,19 +119,28 @@ The desert arena opts in via `recolorForTribe: getTribeRecolor`. The tint flows 
 ### Desert (`desert`)
 
 - **Mesh:** `public/arena_blockout.glb` — BlenderKit low-poly canyon + baked sand ground.
-- **Decor:** two giant carved **Kanohi monuments** flanking the stage, reusing `Hau`/`Pakari` meshes from `masks.glb` on stone pedestals with tribe-colored accent bands (`KanohiMonument`).
+- **Decor:** two giant **Toa statue monuments** flanking the stage (`KanohiMonument`), reusing character meshes — a `kit_2001.glb` `McTorso` body + `McToranFace` head (the "mcface"), carved in sandstone and wearing a `Hau`/`Pakari` Kanohi from `masks.glb`, on a plinth with a tribe-colored accent band. Placed at the canyon base to mask dune-mesh seams.
 - **Atmosphere:** warm fog `#e8c992`, quarry HDRI (IBL only), warm key light + cool fill.
-- **Recolorable:** yes (per element tribe).
+- **Recolorable:** yes (per element tribe) — including dramatic restyles via `ArenaRecolor.blend` (e.g. **Ice → snowy mountain**, **Fire → volcano**).
 
 ### Mangaia (`mangaia`)
 
-- **Mesh:** fully procedural (`CavernArena`): dark stone enclosure, inlaid floor platform, central **golden dome**, descending **green energy beam**, glowing ceiling veins.
-- **Atmosphere:** dark green fog, very low ambient, green/gold point lights.
+- **Mesh:** fully procedural (`CavernArena`): dark stone enclosure, inlaid floor combat stage, and — set back in the **upper-left as a backdrop prop** so it never interferes with combatants — a domed shrine ("Kini") with a descending **green energy beam** and glowing ceiling veins.
+- **Atmosphere:** night-time (`ambientIntensity 0.45`), dark green fog, a cool directional fill so fighters stay readable.
 - Represents the tunnels beneath Mata Nui (inside the Great Spirit Robot).
 
 ### Metru Nui (`metru`)
 
-- Same `CavernArena` framework, recast with a **cold/technological palette** (cyan beam, silver dome, blue-grey stone) — demonstrating cavern reuse across biomes.
+- Same `CavernArena` framework, recast as a **brighter, open daytime biome** with cold/technological materials (cyan beam, silver dome, blue-grey stone). The "time of day" is driven by palette knobs — `skyLight` (overhead hemisphere), `ambientIntensity`, and a wider `fogRange` — demonstrating both cavern reuse and per-arena lighting control.
+
+### Cavern time-of-day knobs (`CavernPalette`)
+
+| Field              | Effect                                                                   |
+| ------------------ | ------------------------------------------------------------------------ |
+| `ambientIntensity` | Base brightness (night ≈ `0.18`–`0.45`, day ≈ `0.5`)                     |
+| `skyLight`         | Optional overhead hemisphere — turns the cave into an open daytime biome |
+| `fogRange`         | `[near, far]` — tight for a claustrophobic cave, wide for daylight       |
+| `anchor`           | `[x,y,z]` backdrop position of the dome + beam                           |
 
 ---
 

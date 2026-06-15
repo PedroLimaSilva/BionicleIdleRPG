@@ -11,12 +11,18 @@ export type { ArenaId };
  * emissive accents.
  */
 export interface ArenaRecolor {
-  /** Multiplied into the base/diffuse color of arena meshes (white = no change). */
+  /** Base/diffuse tint of arena meshes. Multiplied in by default (white = no change). */
   diffuse: string;
   /** Color for accent / emissive ("glow"/"accent") materials and props. */
   accent: string;
   /** Optional fog tint for the atmosphere to blend toward. */
   fog?: string;
+  /**
+   * When set (0..1), diffuse is *blended toward* `diffuse` by this amount instead
+   * of multiplied. Blending can both lighten (snow) and darken (volcano) the base
+   * texture, enabling dramatic biome restyles. Omit for a subtle multiply tint.
+   */
+  blend?: number;
 }
 
 /** Per-arena camera framing and combat spawn slots. */

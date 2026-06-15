@@ -4,15 +4,15 @@ import { useMemo } from 'react';
 /**
  * Palette for the underground cavern arena. Drives both the procedural scene
  * (`CavernArenaScene`) and atmosphere (`CavernAtmosphere`) so the same biome
- * can represent Mangaia (green, organic) or Metru Nui (cyan, technological) —
- * see issue #366.
+ * can represent Mangaia (dark, organic) or Metru Nui (brighter, technological
+ * daytime biome) — see issue #366.
  */
 export interface CavernPalette {
   /** Energy beam + its bloom glow. */
   beam: string;
   /** Ceiling veins / accent point lights. */
   glow: string;
-  /** Central dome. */
+  /** Central dome (the "Kini" backdrop prop). */
   dome: string;
   /** Whether the dome reads as metal (Metru) or stone-gold (Mangaia). */
   domeMetalness: number;
@@ -22,6 +22,17 @@ export interface CavernPalette {
   floorAccent: string;
   /** Ambient/fill tint. */
   ambient: string;
+  /** Ambient light intensity — the "time of day" knob. Default `0.18` (night). */
+  ambientIntensity?: number;
+  /**
+   * Optional overhead daylight. When set, a hemisphere skylight + brighter key
+   * give an open, daytime "biome" feel (used for Metru Nui).
+   */
+  skyLight?: { color: string; ground: string; intensity: number };
+  /** Fog `[near, far]`. Default `[3.5, 16]` (claustrophobic cave). */
+  fogRange?: [number, number];
+  /** Beam/dome backdrop anchor `[x, y, z]`. Default top-left, pushed back. */
+  anchor?: [number, number, number];
 }
 
 interface CavernSceneProps {
@@ -29,20 +40,21 @@ interface CavernSceneProps {
   receiveShadow: boolean;
 }
 
-const BEAM_CENTER: [number, number, number] = [0, 0, -0.55];
-const BEAM_TOP = 5.2;
-const DOME_RADIUS = 0.55;
+/** Default backdrop position for the dome + beam: upper-left of frame, set back. */
+const DEFAULT_ANCHOR: [number, number, number] = [-3.1, 0, -2.7];
+const BEAM_TOP = 6.2;
+const DOME_RADIUS = 0.62;
 
 /** Additive, depth-light energy beam descending from the ceiling to the dome. */
-function EnergyBeam({ color }: { color: string }) {
+function EnergyBeam({ anchor, color }: { color: string; anchor: [number, number, number] }) {
   const beamColor = useMemo(() => new THREE.Color(color), [color]);
   const beamHeight = BEAM_TOP - DOME_RADIUS * 0.6;
   const beamMidY = DOME_RADIUS * 0.6 + beamHeight / 2;
   return (
-    <group position={BEAM_CENTER}>
+    <group position={anchor}>
       {/* Soft outer glow */}
       <mesh position={[0, beamMidY, 0]}>
-        <cylinderGeometry args={[0.18, 0.3, beamHeight, 24, 1, true]} />
+        <cylinderGeometry args={[0.2, 0.34, beamHeight, 24, 1, true]} />
         <meshBasicMaterial
           color={beamColor}
           transparent
@@ -54,7 +66,7 @@ function EnergyBeam({ color }: { color: string }) {
       </mesh>
       {/* Bright solid core */}
       <mesh position={[0, beamMidY, 0]}>
-        <cylinderGeometry args={[0.06, 0.09, beamHeight, 20]} />
+        <cylinderGeometry args={[0.07, 0.1, beamHeight, 20]} />
         <meshBasicMaterial
           color={'#ffffff'}
           transparent
@@ -65,7 +77,7 @@ function EnergyBeam({ color }: { color: string }) {
       </mesh>
       {/* Pool of light where the beam meets the dome */}
       <mesh position={[0, DOME_RADIUS * 0.62, 0]} rotation-x={-Math.PI / 2}>
-        <circleGeometry args={[0.5, 24]} />
+        <circleGeometry args={[0.55, 24]} />
         <meshBasicMaterial
           color={beamColor}
           transparent
@@ -80,7 +92,15 @@ function EnergyBeam({ color }: { color: string }) {
 }
 
 /** Glowing ceiling veins approximating the organic webbing of the reference. */
-function CeilingVeins({ color, receiveShadow }: { color: string; receiveShadow: boolean }) {
+function CeilingVeins({
+  anchor,
+  color,
+  receiveShadow,
+}: {
+  color: string;
+  anchor: [number, number, number];
+  receiveShadow: boolean;
+}) {
   const veinColor = useMemo(() => new THREE.Color(color), [color]);
   const veins = useMemo(() => {
     const count = 7;
@@ -95,7 +115,7 @@ function CeilingVeins({ color, receiveShadow }: { color: string; receiveShadow: 
     });
   }, []);
   return (
-    <group position={[0, 5.6, BEAM_CENTER[2]]}>
+    <group position={[anchor[0], 5.9, anchor[2]]}>
       {veins.map((v) => (
         <mesh
           key={v.key}
@@ -122,18 +142,20 @@ function CeilingVeins({ color, receiveShadow }: { color: string; receiveShadow: 
 }
 
 /**
- * Procedural underground arena: dark stone enclosure, an inlaid floor, a central
- * dome, a descending energy beam, and glowing ceiling veins.
+ * Procedural underground arena: dark stone enclosure, an inlaid floor (the
+ * combat stage), and — set back in the upper-left as a backdrop prop — a domed
+ * shrine ("Kini") with a descending energy beam and glowing ceiling veins.
  */
 export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
+  const anchor = palette.anchor ?? DEFAULT_ANCHOR;
   return (
     <group name="CavernArenaDecor">
       {/* Floor slab */}
       <mesh position={[0, -0.06, 0]} receiveShadow={receiveShadow}>
-        <boxGeometry args={[14, 0.12, 14]} />
+        <boxGeometry args={[16, 0.12, 16]} />
         <meshStandardMaterial color={palette.stone} roughness={0.95} metalness={0.05} />
       </mesh>
-      {/* Inlaid square platform */}
+      {/* Inlaid square platform (combat stage) */}
       <mesh position={[0, 0.001, 0]} rotation-x={-Math.PI / 2} receiveShadow={receiveShadow}>
         <planeGeometry args={[4.2, 4.2]} />
         <meshStandardMaterial color={palette.floorAccent} roughness={0.7} metalness={0.2} />
@@ -144,7 +166,7 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
       </mesh>
       {/* Cavern wall shell (open-topped cylinder, viewed from inside) */}
       <mesh position={[0, 3.4, 0]}>
-        <cylinderGeometry args={[8.5, 9.5, 8, 40, 1, true]} />
+        <cylinderGeometry args={[9.5, 10.5, 8, 40, 1, true]} />
         <meshStandardMaterial
           color={palette.stone}
           roughness={1}
@@ -154,12 +176,12 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
       </mesh>
       {/* Ceiling dome cap */}
       <mesh position={[0, 6.4, 0]}>
-        <sphereGeometry args={[9.2, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <sphereGeometry args={[10.2, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshStandardMaterial color={'#0d0f0c'} roughness={1} metalness={0} side={THREE.BackSide} />
       </mesh>
 
-      {/* Central dome */}
-      <group position={BEAM_CENTER}>
+      {/* Backdrop dome ("Kini") */}
+      <group position={anchor}>
         <mesh position={[0, 0, 0]} castShadow={receiveShadow} receiveShadow={receiveShadow}>
           <sphereGeometry args={[DOME_RADIUS, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
           <meshStandardMaterial
@@ -172,7 +194,7 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
         </mesh>
         {/* Dome base ring */}
         <mesh position={[0, 0.02, 0]} rotation-x={-Math.PI / 2} receiveShadow={receiveShadow}>
-          <ringGeometry args={[DOME_RADIUS, DOME_RADIUS + 0.18, 32]} />
+          <ringGeometry args={[DOME_RADIUS, DOME_RADIUS + 0.2, 32]} />
           <meshStandardMaterial
             color={palette.dome}
             roughness={0.5}
@@ -182,8 +204,8 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
         </mesh>
       </group>
 
-      <EnergyBeam color={palette.beam} />
-      <CeilingVeins color={palette.glow} receiveShadow={receiveShadow} />
+      <EnergyBeam color={palette.beam} anchor={anchor} />
+      <CeilingVeins color={palette.glow} anchor={anchor} receiveShadow={receiveShadow} />
     </group>
   );
 }
@@ -193,25 +215,50 @@ interface CavernAtmosphereProps {
   castShadow: boolean;
 }
 
-/** Dark, moody atmosphere for the underground cavern arena. */
+/** Atmosphere for the cavern arena; brightness driven by the palette's time-of-day knobs. */
 export function CavernAtmosphere({ castShadow, palette }: CavernAtmosphereProps) {
+  const anchor = palette.anchor ?? DEFAULT_ANCHOR;
+  const [fogNear, fogFar] = palette.fogRange ?? [3.5, 16];
+  const ambientIntensity = palette.ambientIntensity ?? 0.18;
+  const keyIntensity = palette.skyLight ? 0.95 : 1.0;
+
   return (
     <>
-      <fog attach="fog" args={[palette.ambient, 3.5, 16]} />
-      <ambientLight color={palette.ambient} intensity={0.18} />
-      <hemisphereLight args={[palette.glow, '#050605', 0.25]} />
-      {/* Key glow from the beam direction */}
-      <pointLight color={palette.beam} intensity={3} distance={9} position={[0, 3, -0.55]} />
+      <fog attach="fog" args={[palette.ambient, fogNear, fogFar]} />
+      <ambientLight color={palette.ambient} intensity={ambientIntensity} />
+      {palette.skyLight ? (
+        <hemisphereLight
+          args={[palette.skyLight.color, palette.skyLight.ground, palette.skyLight.intensity]}
+        />
+      ) : (
+        <hemisphereLight args={[palette.glow, '#050605', 0.25]} />
+      )}
+      {/* Glow from the backdrop beam */}
+      <pointLight
+        color={palette.beam}
+        intensity={3}
+        distance={9}
+        position={[anchor[0], 3, anchor[2]]}
+      />
       {/* Rim accents around the chamber */}
       <pointLight color={palette.glow} intensity={1.6} distance={10} position={[-4, 4.5, -2]} />
       <pointLight color={palette.glow} intensity={1.6} distance={10} position={[4, 4.5, -2]} />
-      {/* Soft warm bounce on the dome from below */}
-      <pointLight color={palette.dome} intensity={1} distance={4} position={[0, 0.6, -0.55]} />
-      {/* Subtle front fill so fighters are readable */}
+      {/* Cool fill (no decay) so fighters stay readable when the dome is a far backdrop (night only) */}
+      {!palette.skyLight && (
+        <directionalLight color={palette.glow} intensity={0.55} position={[-2, 4, 1.5]} />
+      )}
+      {/* Soft bounce on the dome from below */}
+      <pointLight
+        color={palette.dome}
+        intensity={1}
+        distance={4}
+        position={[anchor[0], 0.6, anchor[2]]}
+      />
+      {/* Front key / fill so fighters are readable (stronger in daylight) */}
       <directionalLight
-        position={[0.6, 3, 3]}
-        color={'#9fb0c8'}
-        intensity={0.5}
+        position={[0.6, 4, 3]}
+        color={palette.skyLight ? '#dce6f2' : '#9fb0c8'}
+        intensity={keyIntensity}
         castShadow={castShadow}
         shadow-mapSize={[2048, 2048]}
         shadow-camera-far={20}
