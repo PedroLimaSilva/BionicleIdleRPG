@@ -126,7 +126,7 @@ The desert arena opts in via `recolorForTribe: getTribeRecolor`. The tint flows 
 
 ### Mangaia (`mangaia`)
 
-- **Mesh:** fully procedural (`CavernArena`): a backside-culled enclosure sphere (`ArenaSky` — the camera only sees the inside), inlaid floor combat stage, and — set back in the **upper-left as a backdrop prop** so it never interferes with combatants — a domed shrine ("Kini") with a descending **green energy beam** and glowing ceiling veins.
+- **Mesh:** fully procedural (`CavernArena`): a backside-culled enclosure sphere (`ArenaSky` — the camera only sees the inside), inlaid floor combat stage, and — set back in the **upper-left as a backdrop prop** so it never interferes with combatants — a domed shrine ("Kini") with a descending **green energy beam**, glowing **radial floor segments** fanning out from its base, and glowing ceiling veins.
 - **Atmosphere:** night-time (`ambientIntensity 0.45`), dark green fog, a cool directional fill so fighters stay readable.
 - Represents the tunnels beneath Mata Nui (inside the Great Spirit Robot).
 

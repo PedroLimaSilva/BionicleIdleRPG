@@ -155,6 +155,66 @@ function CeilingVeins({
 }
 
 /**
+ * Glowing radial floor segments fanning out from the Kini, echoing the Mangaia
+ * reference's shrine floor. Rendered flat on the ground around the dome anchor.
+ */
+function KiniRadialSegments({
+  accent,
+  glow,
+  receiveShadow,
+}: {
+  accent: string;
+  glow: string;
+  receiveShadow: boolean;
+}) {
+  const COUNT = 12;
+  const INNER = DOME_RADIUS + 0.12;
+  const OUTER = 2.3;
+  const mid = (INNER + OUTER) / 2;
+  const length = OUTER - INNER;
+  const angles = useMemo(
+    () => Array.from({ length: COUNT }, (_, i) => (i / COUNT) * Math.PI * 2),
+    []
+  );
+  return (
+    <group position={[0, 0.014, 0]}>
+      {angles.map((a, i) => (
+        <group key={i} rotation-y={a}>
+          <mesh position={[mid, 0, 0]} receiveShadow={receiveShadow}>
+            <boxGeometry args={[length, 0.02, 0.07]} />
+            <meshStandardMaterial
+              color={accent}
+              emissive={glow}
+              emissiveIntensity={0.7}
+              roughness={0.6}
+            />
+          </mesh>
+        </group>
+      ))}
+      {/* Inner + outer rings tying the spokes together. */}
+      <mesh rotation-x={-Math.PI / 2}>
+        <ringGeometry args={[INNER - 0.04, INNER + 0.04, 48]} />
+        <meshStandardMaterial
+          color={accent}
+          emissive={glow}
+          emissiveIntensity={0.7}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      <mesh rotation-x={-Math.PI / 2}>
+        <ringGeometry args={[OUTER - 0.05, OUTER + 0.03, 64]} />
+        <meshStandardMaterial
+          color={accent}
+          emissive={glow}
+          emissiveIntensity={0.5}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+/**
  * Procedural underground arena: dark stone enclosure, an inlaid floor (the
  * combat stage), and — set back in the upper-left as a backdrop prop — a domed
  * shrine ("Kini") with a descending energy beam and glowing ceiling veins.
@@ -220,6 +280,11 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
             side={THREE.DoubleSide}
           />
         </mesh>
+        <KiniRadialSegments
+          accent={palette.floorAccent}
+          glow={palette.glow}
+          receiveShadow={receiveShadow}
+        />
       </group>
 
       <EnergyBeam color={palette.beam} anchor={anchor} />
