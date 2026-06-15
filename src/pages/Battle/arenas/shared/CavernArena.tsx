@@ -167,9 +167,9 @@ function KiniRadialSegments({
   glow: string;
   receiveShadow: boolean;
 }) {
-  const COUNT = 12;
+  const COUNT = 6;
   const INNER = DOME_RADIUS + 0.12;
-  const OUTER = 2.3;
+  const OUTER = 9.5;
   const mid = (INNER + OUTER) / 2;
   const length = OUTER - INNER;
   const angles = useMemo(
@@ -181,7 +181,7 @@ function KiniRadialSegments({
       {angles.map((a, i) => (
         <group key={i} rotation-y={a}>
           <mesh position={[mid, 0, 0]} receiveShadow={receiveShadow}>
-            <boxGeometry args={[length, 0.02, 0.07]} />
+            <boxGeometry args={[length, 0.02, 0.14]} />
             <meshStandardMaterial
               color={accent}
               emissive={glow}
@@ -191,18 +191,9 @@ function KiniRadialSegments({
           </mesh>
         </group>
       ))}
-      {/* Inner + outer rings tying the spokes together. */}
+      {/* Ring tying the spokes together near the dome. */}
       <mesh rotation-x={-Math.PI / 2}>
-        <ringGeometry args={[INNER - 0.04, INNER + 0.04, 48]} />
-        <meshStandardMaterial
-          color={accent}
-          emissive={glow}
-          emissiveIntensity={0.7}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-      <mesh rotation-x={-Math.PI / 2}>
-        <ringGeometry args={[OUTER - 0.05, OUTER + 0.03, 64]} />
+        <ringGeometry args={[INNER - 0.05, INNER + 0.05, 48]} />
         <meshStandardMaterial
           color={accent}
           emissive={glow}
