@@ -26,11 +26,10 @@ export function DesertArenaScene({ receiveShadow, recolor }: ArenaSceneProps) {
 
       <KanohiMonument
         maskName="Hau"
-        position={[-2.3, -0.05, -0.2]}
-        rotationY={0.6}
-        maskHeight={1.0}
-        headHeight={0.95}
-        pedestalHeight={0.95}
+        position={[-3.2, -0.05, 0.55]}
+        rotationY={1.5}
+        maskHeight={1.1}
+        headHeight={1.05}
         stoneColor={SANDSTONE}
         accent={accent}
         receiveShadow={receiveShadow}
@@ -38,11 +37,10 @@ export function DesertArenaScene({ receiveShadow, recolor }: ArenaSceneProps) {
       />
       <KanohiMonument
         maskName="Kakama"
-        position={[0.0, -0.05, -1.7]}
-        rotationY={0.0}
+        position={[-1.3, -0.05, -1.9]}
+        rotationY={0.6}
         maskHeight={1.1}
         headHeight={1.05}
-        pedestalHeight={1.25}
         stoneColor={SANDSTONE}
         accent={accent}
         receiveShadow={receiveShadow}
@@ -50,11 +48,10 @@ export function DesertArenaScene({ receiveShadow, recolor }: ArenaSceneProps) {
       />
       <KanohiMonument
         maskName="Pakari"
-        position={[2.5, -0.05, 0.0]}
+        position={[2, -0.05, -2.5]}
         rotationY={-0.6}
-        maskHeight={1.05}
-        headHeight={1.0}
-        pedestalHeight={1.0}
+        maskHeight={1.1}
+        headHeight={1.05}
         stoneColor={SANDSTONE}
         accent={accent}
         receiveShadow={receiveShadow}

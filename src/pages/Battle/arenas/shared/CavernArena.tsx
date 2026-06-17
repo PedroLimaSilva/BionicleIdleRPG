@@ -128,15 +128,15 @@ function CeilingVeins({
     });
   }, []);
   return (
-    <group position={[anchor[0], 5.9, anchor[2]]}>
+    <group position={[anchor[0], 2, anchor[2]]}>
       {veins.map((v) => (
         <mesh
           key={v.key}
           rotation={[0, v.rotationY, Math.PI / 2.4]}
           position={[
-            Math.cos(v.rotationY) * v.radius * 0.5,
+            Math.cos(v.rotationY) * v.radius * 3,
             0,
-            Math.sin(v.rotationY) * v.radius * 0.5,
+            Math.sin(v.rotationY) * v.radius * 3,
           ]}
           castShadow={false}
           receiveShadow={receiveShadow}
@@ -220,29 +220,22 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
   const skyBottom = isDay
     ? new THREE.Color(palette.ambient).lerp(new THREE.Color('#dfe9f5'), 0.6).getStyle()
     : palette.ambient;
+  const wallHeight = isDay ? 1 : 10;
+
   return (
     <group name="CavernArenaDecor">
-      {/* Floor slab */}
-      <mesh position={[0, -0.06, 0]} receiveShadow={receiveShadow}>
-        <boxGeometry args={[16, 0.12, 16]} />
+      {/* Floor */}
+      <mesh position={anchor} receiveShadow={receiveShadow}>
+        <cylinderGeometry args={[10, 10, 0.002, 40, 1, false]} />
         <meshStandardMaterial color={palette.stone} roughness={0.95} metalness={0.05} />
       </mesh>
-      {/* Inlaid square platform (combat stage) */}
-      <mesh position={[0, 0.001, 0]} rotation-x={-Math.PI / 2} receiveShadow={receiveShadow}>
-        <planeGeometry args={[4.2, 4.2]} />
-        <meshStandardMaterial color={palette.floorAccent} roughness={0.7} metalness={0.2} />
-      </mesh>
-      <mesh position={[0, 0.002, 0]} rotation-x={-Math.PI / 2} receiveShadow={receiveShadow}>
-        <planeGeometry args={[3.7, 3.7]} />
-        <meshStandardMaterial color={palette.stone} roughness={0.85} metalness={0.1} />
-      </mesh>
       {/* Cavern wall shell (open-topped cylinder, viewed from inside) */}
-      <mesh position={[0, 3.4, 0]}>
-        <cylinderGeometry args={[9.5, 10.5, 8, 40, 1, true]} />
+      <mesh position={anchor}>
+        <cylinderGeometry args={[10, 10, wallHeight, 40, 1, true]} />
         <meshStandardMaterial
-          color={palette.stone}
-          roughness={1}
-          metalness={0.05}
+          color={palette.dome}
+          roughness={0.5}
+          metalness={palette.domeMetalness}
           side={THREE.BackSide}
         />
       </mesh>
@@ -279,7 +272,7 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
       </group>
 
       <EnergyBeam color={palette.beam} anchor={anchor} />
-      <CeilingVeins color={palette.glow} anchor={anchor} receiveShadow={receiveShadow} />
+      {!isDay && <CeilingVeins color={palette.glow} anchor={anchor} receiveShadow={receiveShadow} />}
     </group>
   );
 }

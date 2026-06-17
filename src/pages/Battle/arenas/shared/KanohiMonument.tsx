@@ -1,6 +1,7 @@
 import { useGLTF } from '@react-three/drei';
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { KIT_2001_NODES } from '../../../../game/kit/nodes/kit2001Nodes';
 
 const MASKS_GLB = import.meta.env.BASE_URL + 'masks.glb';
 const KIT_2001_GLB = import.meta.env.BASE_URL + 'kit_2001.glb';
@@ -14,8 +15,6 @@ interface KanohiMonumentProps {
   maskHeight?: number;
   /** Target height of the stone Matoran head in world units. */
   headHeight?: number;
-  /** Height of the stone plinth column in world units. */
-  pedestalHeight?: number;
   receiveShadow?: boolean;
   castShadow?: boolean;
   /** Sandstone color for the carved figure. */
@@ -114,19 +113,18 @@ export function KanohiMonument({
   headHeight = 1.1,
   maskHeight = 1.15,
   maskName = 'Hau',
-  pedestalHeight = 1.1,
   position,
   receiveShadow = false,
   rotationY = 0,
   stoneColor = '#c4b187',
 }: KanohiMonumentProps) {
   const { scene: masksScene } = useGLTF(MASKS_GLB);
-  const { scene: kitScene } = useGLTF(KIT_2001_GLB);
+  const { nodes } = useGLTF(KIT_2001_GLB);
 
   const built = useMemo(() => {
     const opts = { accent, castShadow, receiveShadow, stoneColor };
 
-    const headSrc = findMeshNode(kitScene, 'McToranFace');
+    const headSrc = nodes[KIT_2001_NODES.McToranFace];
     let maskSrc = findMeshNode(masksScene, maskName);
     if (!maskSrc) {
       masksScene.traverse((c) => {
@@ -135,26 +133,25 @@ export function KanohiMonument({
     }
     if (!maskSrc) return null;
 
-    const head = headSrc ? makeStonePart(headSrc, headHeight, opts) : null;
+    const head = makeStonePart(headSrc, headHeight, opts);
     const mask = makeStonePart(maskSrc, maskHeight, { ...opts, isMask: true });
 
     const headSize = head?.size.y ?? headHeight;
-    if (head) head.group.position.set(0, pedestalHeight + headSize / 2, 0);
-    // The mask sits over the front of the head.
-    mask.group.position.set(0, pedestalHeight + headSize * 0.5, 0.12);
+    head.group.position.set(0,  0.16 + headSize / 2, 0);
+    // The mask sits on top of the head.
+    mask.group.position.set(0,  headSize * 1.1, 0.12);
+    mask.group.scale.multiply(new THREE.Vector3(0.75, 0.75, 0.75));
 
     const plinthWidth = Math.max(0.55, (head?.size.x ?? 0.6) * 1.15);
 
     return { head, mask, plinthWidth };
   }, [
     masksScene,
-    kitScene,
     maskName,
     stoneColor,
     accent,
     headHeight,
     maskHeight,
-    pedestalHeight,
     castShadow,
     receiveShadow,
   ]);
@@ -163,32 +160,12 @@ export function KanohiMonument({
 
   return (
     <group position={position} rotation-y={rotationY}>
-      {/* Stone plinth column */}
-      <mesh
-        position={[0, pedestalHeight / 2, 0]}
-        castShadow={castShadow}
-        receiveShadow={receiveShadow}
-      >
-        <boxGeometry args={[built.plinthWidth, pedestalHeight, built.plinthWidth * 0.85]} />
-        <meshStandardMaterial color={stoneColor} roughness={1} metalness={0} />
-      </mesh>
       {/* Wider base slab */}
       <mesh position={[0, 0.08, 0]} castShadow={castShadow} receiveShadow={receiveShadow}>
-        <boxGeometry args={[built.plinthWidth * 1.5, 0.16, built.plinthWidth * 1.3]} />
+        <boxGeometry args={[built.plinthWidth, 0.16, built.plinthWidth]} />
         <meshStandardMaterial color={stoneColor} roughness={1} metalness={0} />
       </mesh>
-      {/* Tribe-colored accent band atop the plinth */}
-      <mesh position={[0, pedestalHeight + 0.005, 0]} rotation-x={-Math.PI / 2}>
-        <ringGeometry args={[built.plinthWidth * 0.32, built.plinthWidth * 0.46, 24]} />
-        <meshStandardMaterial
-          color={accent}
-          emissive={accent}
-          emissiveIntensity={0.7}
-          roughness={0.6}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-      {built.head && <primitive object={built.head.group} />}
+      <primitive object={built.head.group} />
       <primitive object={built.mask.group} />
     </group>
   );
