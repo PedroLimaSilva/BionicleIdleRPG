@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { isArenaLayoutMarker, shouldSkipArenaShadow } from './arenaGlbUtils';
+import { isArenaGlbGroundPlane, isArenaLayoutMarker, shouldSkipArenaShadow } from './arenaGlbUtils';
 
 describe('arenaGlbUtils', () => {
   it('detects layout marker object names', () => {
@@ -32,6 +32,11 @@ describe('arenaGlbUtils', () => {
 
     const ground = new THREE.Mesh();
     ground.name = 'Ground';
-    expect(shouldSkipArenaShadow(ground)).toBe(false);
+    expect(shouldSkipArenaShadow(ground)).toBe(true);
+
+    const plane = new THREE.Mesh();
+    plane.name = 'Plane';
+    expect(isArenaGlbGroundPlane(plane)).toBe(true);
+    expect(shouldSkipArenaShadow(plane)).toBe(true);
   });
 });

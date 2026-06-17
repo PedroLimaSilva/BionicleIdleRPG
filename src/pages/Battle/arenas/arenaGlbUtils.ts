@@ -34,8 +34,17 @@ export function isArenaLayoutMarker(object: THREE.Object3D): boolean {
   return false;
 }
 
+/** Baked sand ground from `arena_blockout.glb` — replaced at runtime by `HoneycombFloor`. */
+export function isArenaGlbGroundPlane(mesh: THREE.Mesh): boolean {
+  if (mesh.name === 'Plane' || mesh.name.startsWith('Ground')) {
+    return true;
+  }
+  const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+  return materials.some((material) => material?.name?.includes('Ground'));
+}
+
 export function shouldSkipArenaShadow(mesh: THREE.Mesh): boolean {
-  if (mesh.name.startsWith('Plane') || mesh.name === 'HitImpactParticles') {
+  if (isArenaGlbGroundPlane(mesh) || mesh.name === 'HitImpactParticles') {
     return true;
   }
   return isArenaLayoutMarker(mesh);
@@ -56,6 +65,11 @@ export function prepareArenaGlbScene(
 
   clone.traverse((child) => {
     if (isArenaLayoutMarker(child)) {
+      child.visible = false;
+      return;
+    }
+
+    if ((child as THREE.Mesh).isMesh && isArenaGlbGroundPlane(child as THREE.Mesh)) {
       child.visible = false;
       return;
     }

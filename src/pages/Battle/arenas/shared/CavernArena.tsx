@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { useMemo } from 'react';
 import { ArenaSky } from './ArenaSky';
+import { HoneycombFloor } from './HoneycombFloor';
 
 /**
  * Lighting mode for a cavern biome — the "time of day" axis. Any cavern palette
@@ -224,11 +225,12 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
 
   return (
     <group name="CavernArenaDecor">
-      {/* Floor */}
-      <mesh position={anchor} receiveShadow={receiveShadow}>
-        <cylinderGeometry args={[10, 10, 0.002, 40, 1, false]} />
-        <meshStandardMaterial color={palette.stone} roughness={0.95} metalness={0.05} />
-      </mesh>
+      <HoneycombFloor
+        stoneColor={palette.stone}
+        receiveShadow={receiveShadow}
+        position={anchor}
+        tileRepeat={250}
+      />
       {/* Cavern wall shell (open-topped cylinder, viewed from inside) */}
       <mesh position={anchor}>
         <cylinderGeometry args={[10, 10, wallHeight, 40, 1, true]} />

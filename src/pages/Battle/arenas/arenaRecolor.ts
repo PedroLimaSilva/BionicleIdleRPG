@@ -22,6 +22,17 @@ const TRIBE_RECOLORS: Record<ElementTribe, ArenaRecolor> = {
   [ElementTribe.Water]: { accent: '#2aa7ff', blend: 0.66, diffuse: '#235f93', fog: '#5aa0d0' },
 };
 
+/** Apply the arena diffuse recolor to a base hex color (e.g. procedural floor stone). */
+export function tintArenaDiffuse(baseHex: string, recolor: ArenaRecolor | undefined): string {
+  const color = new THREE.Color(baseHex);
+  if (!recolor) return color.getStyle();
+
+  const diffuse = new THREE.Color(recolor.diffuse);
+  if (recolor.blend != null) color.lerp(diffuse, recolor.blend);
+  else color.multiply(diffuse);
+  return color.getStyle();
+}
+
 /** Recolor palette for an element tribe, or `undefined` if unknown. */
 export function getTribeRecolor(tribe: ElementTribe | undefined): ArenaRecolor | undefined {
   if (!tribe) return undefined;
