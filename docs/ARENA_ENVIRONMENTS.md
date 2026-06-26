@@ -61,7 +61,7 @@ Each arena exports an `ArenaDefinition`:
 ```ts
 export const desertArena: ArenaDefinition = {
   id: 'desert',
-  glbUrl: import.meta.env.BASE_URL + '/arena_blockout.glb',
+  glbUrl: import.meta.env.BASE_URL + '/arena_desert.glb',
   Atmosphere: DesertArenaAtmosphere,
   Scene: DesertArenaScene, // optional procedural decor
   layout: DEFAULT_ARENA_LAYOUT,
@@ -118,7 +118,7 @@ The desert arena opts in via `recolorForTribe: getTribeRecolor`. The tint flows 
 
 ### Desert (`desert`)
 
-- **Mesh:** `public/arena_blockout.glb` — BlenderKit low-poly canyon + baked sand ground.
+- **Mesh:** `public/arena_desert.glb` — BlenderKit low-poly canyon + baked sand ground.
 - **Decor:** three giant **Kanohi monuments** framing the canyon (`KanohiMonument`), reusing character meshes — a `kit_2001.glb` `McToranFace` head carved in sandstone, wearing a Kanohi from `masks.glb`, on a stone plinth with a tribe accent band.
 - **Sky:** a blue sky dome (`ArenaSky`); the camera aims up slightly (`lookAtHeight`) so the sky reads above the canyon rim.
 - **Atmosphere:** warm fog, quarry HDRI (IBL only), warm key light (low ambient so shadows read).
@@ -209,7 +209,7 @@ The directional shadow frustum is widened to `±6` (was `±3`) so the monuments 
 ### Done
 
 - [x] Registry-based arena definitions (`arenas/`)
-- [x] Desert arena GLB rendering (`arena_blockout.glb`) with markers hidden
+- [x] Desert arena GLB rendering (`arena_desert.glb`) with markers hidden
 - [x] Per-arena atmosphere encapsulation (fog, HDRI, lighting)
 - [x] HDRI IBL without visible skybox
 - [x] Per-arena camera framing + spawn slots (`ArenaLayout`)
@@ -222,7 +222,7 @@ The directional shadow frustum is widened to `±6` (was `±3`) so the monuments 
 
 ### Remaining
 
-- [ ] Compress / optimize `arena_blockout.glb` textures further for production
+- [ ] Compress / optimize `arena_desert.glb` textures further for production
 - [ ] Remove layout markers from the Blender export once positions are finalized
 - [ ] Battle selector arena preview ([#346](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/346))
 - [ ] E2E visual regression for battle arenas (optional)

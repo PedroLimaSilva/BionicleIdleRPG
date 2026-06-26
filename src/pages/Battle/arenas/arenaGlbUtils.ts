@@ -34,7 +34,7 @@ export function isArenaLayoutMarker(object: THREE.Object3D): boolean {
   return false;
 }
 
-/** Baked sand ground from `arena_blockout.glb` — replaced at runtime by `HoneycombFloor`. */
+/** Baked sand ground from `arena_desert.glb` — replaced at runtime by `HoneycombFloor`. */
 export function isArenaGlbGroundPlane(mesh: THREE.Mesh): boolean {
   if (mesh.name === 'Plane' || mesh.name.startsWith('Ground')) {
     return true;

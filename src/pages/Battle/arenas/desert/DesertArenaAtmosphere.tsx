@@ -27,7 +27,7 @@ function resolveFog(tint?: string): string {
   return new THREE.Color(COLORS.fog).lerp(new THREE.Color(tint), 0.5).getStyle();
 }
 
-/** Atmosphere for the Po-Wahi desert arena (`arena_blockout.glb`). */
+/** Atmosphere for the Po-Wahi desert arena (`arena_desert.glb`). */
 export function DesertArenaAtmosphere({ castShadow, recolor }: ArenaAtmosphereProps) {
   const fogColor = resolveFog(recolor?.fog);
   return (

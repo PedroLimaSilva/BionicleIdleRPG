@@ -10,7 +10,7 @@ const SANDSTONE = '#c4b187';
 const DEFAULT_ACCENT = '#2f6fb0';
 const SKY_BLUE = '#6aa0d8';
 const DEFAULT_HORIZON = '#e6d2a4';
-/** `Ground.001` / `Plane` radius from `arena_blockout.glb` (2 m plane × node scale). */
+/** `Ground.001` / `Plane` radius from `arena_desert.glb` (2 m plane × node scale). */
 const DESERT_FLOOR_RADIUS = 8.476853370666504;
 
 /**

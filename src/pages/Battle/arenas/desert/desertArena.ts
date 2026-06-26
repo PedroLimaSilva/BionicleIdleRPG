@@ -5,7 +5,7 @@ import { DesertArenaAtmosphere } from './DesertArenaAtmosphere';
 import { DesertArenaScene } from './DesertArenaScene';
 import type { ArenaDefinition, ArenaLayout } from '../types';
 
-const GLB_URL = import.meta.env.BASE_URL + '/arena_blockout.glb';
+const GLB_URL = import.meta.env.BASE_URL + '/arena_desert.glb';
 
 /** Pull back and aim up slightly so the canyon monuments and blue sky read. */
 const DESERT_LAYOUT: ArenaLayout = {
