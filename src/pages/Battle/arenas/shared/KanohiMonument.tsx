@@ -137,9 +137,9 @@ export function KanohiMonument({
     const mask = makeStonePart(maskSrc, maskHeight, { ...opts, isMask: true });
 
     const headSize = head?.size.y ?? headHeight;
-    head.group.position.set(0,  0.16 + headSize / 2, 0);
+    head.group.position.set(0, 0.16 + headSize / 2, 0);
     // The mask sits on top of the head.
-    mask.group.position.set(0,  headSize * 1.1, 0.12);
+    mask.group.position.set(0, headSize * 1.1, 0.12);
     mask.group.scale.multiply(new THREE.Vector3(0.75, 0.75, 0.75));
 
     const plinthWidth = Math.max(0.55, (head?.size.x ?? 0.6) * 1.15);
@@ -147,6 +147,7 @@ export function KanohiMonument({
     return { head, mask, plinthWidth };
   }, [
     masksScene,
+    nodes,
     maskName,
     stoneColor,
     accent,

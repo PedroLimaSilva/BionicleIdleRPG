@@ -134,11 +134,7 @@ function CeilingVeins({
         <mesh
           key={v.key}
           rotation={[0, v.rotationY, Math.PI / 2.4]}
-          position={[
-            Math.cos(v.rotationY) * v.radius * 3,
-            0,
-            Math.sin(v.rotationY) * v.radius * 3,
-          ]}
+          position={[Math.cos(v.rotationY) * v.radius * 3, 0, Math.sin(v.rotationY) * v.radius * 3]}
           castShadow={false}
           receiveShadow={receiveShadow}
         >
@@ -274,7 +270,9 @@ export function CavernArenaScene({ palette, receiveShadow }: CavernSceneProps) {
       </group>
 
       <EnergyBeam color={palette.beam} anchor={anchor} />
-      {!isDay && <CeilingVeins color={palette.glow} anchor={anchor} receiveShadow={receiveShadow} />}
+      {!isDay && (
+        <CeilingVeins color={palette.glow} anchor={anchor} receiveShadow={receiveShadow} />
+      )}
     </group>
   );
 }
