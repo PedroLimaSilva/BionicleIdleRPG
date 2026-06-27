@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
+import { Color, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { useGame } from '../context/Game';
@@ -12,6 +12,7 @@ import {
   useMaskTransitionFrame,
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
+import { isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
 import { masksCollected } from '../services/matoranUtils';
 
 const NUVA_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/masks.glb';
@@ -22,12 +23,6 @@ function buildNuvaMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D>
     if (child.name) nodes[child.name] = child;
   });
   return nodes;
-}
-
-type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
-
-function isStandardMat(mat: unknown): mat is StandardMat {
-  return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
 }
 
 /** Map Mask enum to node name in Toa_Nuva/masks.glb (user said masks are named Hau, Miru, etc) */
@@ -67,7 +62,7 @@ function applyNuvaMaskColors(
       return;
     }
 
-    if (!isStandardMat(mat)) return;
+    if (!isMaskStandardMat(mat)) return;
 
     if (shouldKeepOriginalColor) return;
 
@@ -139,9 +134,9 @@ export function useNuvaMask(
         mesh.castShadow = effectiveShadows;
         mesh.receiveShadow = effectiveShadows;
         const originalMat = mesh.material;
-        if (isStandardMat(originalMat)) {
+        if (isMaskStandardMat(originalMat)) {
           const mat = originalMat.clone();
-          mat.transparent = true;
+          prepareClonedMaskMaterial(mat);
           mesh.material = mat;
         }
       }

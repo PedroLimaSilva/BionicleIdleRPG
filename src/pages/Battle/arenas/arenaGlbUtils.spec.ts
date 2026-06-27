@@ -1,16 +1,18 @@
 import * as THREE from 'three';
-import { isArenaLayoutMarker, shouldSkipArenaShadow } from './arenaGlbUtils';
+import { isArenaGlbGroundPlane, isArenaLayoutMarker, shouldSkipArenaShadow } from './arenaGlbUtils';
 
 describe('arenaGlbUtils', () => {
   it('detects layout marker object names', () => {
     expect(isArenaLayoutMarker(new THREE.Object3D())).toBe(false);
-    expect(isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'ArenaBoundary' }))).toBe(
+    expect(
+      isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'ArenaBoundary' }))
+    ).toBe(true);
+    expect(
+      isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'TeamSlotMarker1' }))
+    ).toBe(true);
+    expect(isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'EnemySlot2' }))).toBe(
       true
     );
-    expect(isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'TeamSlotMarker1' }))).toBe(
-      true
-    );
-    expect(isArenaLayoutMarker(Object.assign(new THREE.Object3D(), { name: 'EnemySlot2' }))).toBe(true);
   });
 
   it('detects layout marker meshes by marker materials', () => {
@@ -30,6 +32,11 @@ describe('arenaGlbUtils', () => {
 
     const ground = new THREE.Mesh();
     ground.name = 'Ground';
-    expect(shouldSkipArenaShadow(ground)).toBe(false);
+    expect(shouldSkipArenaShadow(ground)).toBe(true);
+
+    const plane = new THREE.Mesh();
+    plane.name = 'Plane';
+    expect(isArenaGlbGroundPlane(plane)).toBe(true);
+    expect(shouldSkipArenaShadow(plane)).toBe(true);
   });
 });

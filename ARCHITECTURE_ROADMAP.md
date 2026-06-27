@@ -26,16 +26,16 @@ This document indexes known technical debt, inconsistencies, and architectural i
 
 ### UI/UX and motion
 
-| Area        | Issue                                                                | Summary                                                    |
-| ----------- | -------------------------------------------------------------------- | ---------------------------------------------------------- |
-| 3D / canvas | [#366](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/366) | Battle arena environments — desert GLB and multi-biome framework   |
-| 3D / canvas | [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343) | Phase 1 — persistent canvas and remaining battle 3D polish |
-| 3D / canvas | [#346](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/346) | Phase 2 — environmental 3D backdrops per route             |
-| 3D / canvas | [#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) | Phase 3 — advanced combat feedback and idle ambient life   |
-| Portrait UX | [#345](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/345) | Nav label size and orientation lock                        |
-| Stretch     | [#348](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/348) | Phase 4+ — explorable world and advanced 3D features       |
-| Motion      | [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347) | UI motion Phase 2 — interactive panel animations           |
-| Motion      | [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350) | UI motion Phase 3 — navigation and list choreography       |
+| Area        | Issue                                                                | Summary                                                          |
+| ----------- | -------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 3D / canvas | [#366](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/366) | Battle arena environments — desert GLB and multi-biome framework |
+| 3D / canvas | [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343) | Phase 1 — persistent canvas and remaining battle 3D polish       |
+| 3D / canvas | [#346](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/346) | Phase 2 — environmental 3D backdrops per route                   |
+| 3D / canvas | [#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) | Phase 3 — advanced combat feedback and idle ambient life         |
+| Portrait UX | [#345](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/345) | Nav label size and orientation lock                              |
+| Stretch     | [#348](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/348) | Phase 4+ — explorable world and advanced 3D features             |
+| Motion      | [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347) | UI motion Phase 2 — interactive panel animations                 |
+| Motion      | [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350) | UI motion Phase 3 — navigation and list choreography             |
 
 ### Related design docs
 

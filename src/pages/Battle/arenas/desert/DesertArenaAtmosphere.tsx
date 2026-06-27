@@ -1,6 +1,9 @@
-import { ARENA_CENTER } from '../../arenaLayout';
+import * as THREE from 'three';
+import { DEFAULT_ARENA_LAYOUT } from '../../arenaLayout';
 import { ArenaHdriIbl } from '../shared/ArenaHdriIbl';
 import type { ArenaAtmosphereProps } from '../types';
+
+const ARENA_CENTER = DEFAULT_ARENA_LAYOUT.center;
 
 const COLORS = {
   fog: '#e8c992',
@@ -15,14 +18,24 @@ const HDRI = {
   path: `${import.meta.env.BASE_URL}hdri/`,
 } as const;
 
-/** Atmosphere for the Po-Wahi desert arena (`arena_blockout.glb`). */
-export function DesertArenaAtmosphere({ castShadow }: ArenaAtmosphereProps) {
+/**
+ * Blend the base fog color toward an optional recolor fog tint so element-tribe
+ * variations read on the haze without losing the warm desert base.
+ */
+function resolveFog(tint?: string): string {
+  if (!tint) return COLORS.fog;
+  return new THREE.Color(COLORS.fog).lerp(new THREE.Color(tint), 0.5).getStyle();
+}
+
+/** Atmosphere for the Po-Wahi desert arena (`arena_desert.glb`). */
+export function DesertArenaAtmosphere({ castShadow, recolor }: ArenaAtmosphereProps) {
+  const fogColor = resolveFog(recolor?.fog);
   return (
     <>
-      <fog attach="fog" args={[COLORS.fog, 2.5, 9]} />
+      <fog attach="fog" args={[fogColor, 2.5, 11]} />
       <ArenaHdriIbl {...HDRI} />
-      <ambientLight color="#f5e6c8" intensity={0.35} />
-      <hemisphereLight args={[COLORS.sun, COLORS.sandDark, 0.45]} />
+      <ambientLight color="#f5e6c8" intensity={0.22} />
+      <hemisphereLight args={[COLORS.sun, COLORS.sandDark, 0.32]} />
       <directionalLight
         ref={(el) => {
           if (el && el.parent && !el.target.parent) {
@@ -35,11 +48,11 @@ export function DesertArenaAtmosphere({ castShadow }: ArenaAtmosphereProps) {
         intensity={1.45}
         castShadow={castShadow}
         shadow-mapSize={[2048, 2048]}
-        shadow-camera-far={15}
-        shadow-camera-left={-3}
-        shadow-camera-right={3}
-        shadow-camera-top={3}
-        shadow-camera-bottom={-3}
+        shadow-camera-far={20}
+        shadow-camera-left={-6}
+        shadow-camera-right={6}
+        shadow-camera-top={6}
+        shadow-camera-bottom={-6}
         shadow-bias={-0.0005}
         shadow-normalBias={0.005}
       />
