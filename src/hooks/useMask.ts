@@ -14,6 +14,7 @@ import {
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import { isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import { useMaskLightingContext } from '../context/MaskLightingContext';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 
@@ -113,6 +114,7 @@ export function useMask(
   const { completedQuests } = useGame();
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
+  const { normalizeForArena } = useMaskLightingContext();
 
   const collected = useMemo(
     () => masksCollected(matoran, completedQuests),
@@ -174,7 +176,7 @@ export function useMask(
         const originalMat = mesh.material;
         if (isMaskStandardMat(originalMat)) {
           const mat = originalMat.clone();
-          prepareClonedMaskMaterial(mat);
+          prepareClonedMaskMaterial(mat, { normalizeForArena });
           mesh.material = mat;
         }
       }
@@ -211,7 +213,7 @@ export function useMask(
     // Mask lifecycle is managed imperatively at the top of each effect run and
     // in the unmount-only effect below, so the old mask can remain in the scene
     // during the exit animation.
-  }, [masksNodes, masksParent, maskName, effectiveShadows, applyMataSlotScale]);
+  }, [masksNodes, masksParent, maskName, effectiveShadows, applyMataSlotScale, normalizeForArena]);
 
   // Unmount-only cleanup: remove any lingering masks from the scene
   useEffect(() => {

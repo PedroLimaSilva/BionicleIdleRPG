@@ -239,6 +239,9 @@ export async function waitForConsoleMessage(
   });
 }
 
+/** In CI/Docker, software WebGL loads models slower — align with Playwright expect timeout (30s). */
+const modelLoadTimeout = process.env.CI || process.env.PLAYWRIGHT_DOCKER ? 30_000 : 10_000;
+
 /**
  * Wait for model animations to be loaded and paused (in test mode)
  * This ensures 3D models are fully loaded before taking screenshots
@@ -252,8 +255,6 @@ export async function waitForConsoleMessage(
  * await goto(page, '/recruitment');
  * await modelLoadPromise;
  */
-/** In CI/Docker, software WebGL loads models slower */
-const modelLoadTimeout = process.env.CI || process.env.PLAYWRIGHT_DOCKER ? 20000 : 10000;
 export function waitForModelLoad(page: Page, timeout = modelLoadTimeout): Promise<void> {
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
@@ -267,6 +268,40 @@ export function waitForModelLoad(page: Page, timeout = modelLoadTimeout): Promis
         page.off('console', handler);
         resolve();
       }
+    };
+
+    page.on('console', handler);
+  });
+}
+
+/**
+ * Wait until the character model is fully ready for screenshots in test mode.
+ * Kit-based characters emit multiple `[TEST_MODE] model ready` events (idle pose,
+ * then kit attach); this settles after the last signal so weathered kit materials
+ * are applied before capture. Fails after `timeout` ms if the model never becomes ready.
+ */
+export function waitForCharacterModelReady(page: Page, timeout = modelLoadTimeout): Promise<void> {
+  return new Promise((resolve, reject) => {
+    let settleId: ReturnType<typeof setTimeout> | undefined;
+
+    const timeoutId = setTimeout(() => {
+      cleanup();
+      reject(new Error(`Timeout waiting for model to load after ${timeout}ms`));
+    }, timeout);
+
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      if (settleId) clearTimeout(settleId);
+      page.off('console', handler);
+    };
+
+    const handler = (msg: { text: () => string }) => {
+      if (!msg.text().includes('[TEST_MODE] model ready')) return;
+      if (settleId) clearTimeout(settleId);
+      settleId = setTimeout(() => {
+        cleanup();
+        resolve();
+      }, 250);
     };
 
     page.on('console', handler);

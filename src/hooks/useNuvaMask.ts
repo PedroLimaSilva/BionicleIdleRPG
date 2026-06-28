@@ -13,6 +13,7 @@ import {
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import { isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import { useMaskLightingContext } from '../context/MaskLightingContext';
 import { masksCollected } from '../services/matoranUtils';
 
 const NUVA_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/masks.glb';
@@ -92,6 +93,7 @@ export function useNuvaMask(
   const { completedQuests } = useGame();
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
+  const { normalizeForArena } = useMaskLightingContext();
   const collected = masksCollected(matoran, completedQuests);
   const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
   const override = matoran.maskOverride;
@@ -136,7 +138,7 @@ export function useNuvaMask(
         const originalMat = mesh.material;
         if (isMaskStandardMat(originalMat)) {
           const mat = originalMat.clone();
-          prepareClonedMaskMaterial(mat);
+          prepareClonedMaskMaterial(mat, { normalizeForArena });
           mesh.material = mat;
         }
       }
@@ -164,7 +166,7 @@ export function useNuvaMask(
     masksParent.add(clone);
     maskRef.current = clone;
     prevMaskFileNameRef.current = maskNodeName;
-  }, [masksNodes, masksParent, maskNodeName, effectiveShadows]);
+  }, [masksNodes, masksParent, maskNodeName, effectiveShadows, normalizeForArena]);
 
   useEffect(() => {
     const transition = transitionRef.current;

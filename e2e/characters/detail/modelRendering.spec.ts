@@ -6,6 +6,7 @@ import {
   setupGameState,
   waitForCanvas,
   waitForCharacterCards,
+  waitForCharacterModelReady,
 } from '../../helpers';
 import { KraataPower } from '../../../src/types/Kraata';
 
@@ -21,9 +22,11 @@ test.describe('Character Model Rendering', () => {
         ],
       });
 
+      const modelReady = waitForCharacterModelReady(page);
       await goto(page, '/characters/Takua');
       await disableCSSAnimations(page);
       await waitForCanvas(page);
+      await modelReady;
     });
     test('should render matoran character detail page', async ({ page }) => {
       // Take screenshot of the entire page including 3D scene
@@ -49,11 +52,13 @@ test.describe('Character Model Rendering', () => {
         threshold: 0.2,
       });
 
+      const modelReady = waitForCharacterModelReady(page);
       const jalaLink = page.locator('a').filter({ hasText: 'Hahli' });
       await jalaLink.click();
       await expect(page).toHaveURL(new RegExp(`/characters/Hahli`));
       await disableCSSAnimations(page);
       await waitForCanvas(page);
+      await modelReady;
 
       await expect(page).toHaveScreenshot({
         fullPage: true,
@@ -77,9 +82,11 @@ test.describe('Character Model Rendering', () => {
               },
             ],
           });
+          const modelReady = waitForCharacterModelReady(page);
           await goto(page, `/characters/${characterId}`);
           await disableCSSAnimations(page);
           await waitForCanvas(page);
+          await modelReady;
 
           // Take screenshot of the entire page including 3D scene
           await expect(page).toHaveScreenshot({
@@ -110,12 +117,14 @@ test.describe('Character Model Rendering', () => {
               id: characterId,
             },
           ],
-        });
-        await goto(page, `/characters/${characterId}`);
-        await disableCSSAnimations(page);
-        await waitForCanvas(page);
+          });
+          const modelReady = waitForCharacterModelReady(page);
+          await goto(page, `/characters/${characterId}`);
+          await disableCSSAnimations(page);
+          await waitForCanvas(page);
+          await modelReady;
 
-        // Take screenshot of the entire page including 3D scene
+          // Take screenshot of the entire page including 3D scene
         await expect(page).toHaveScreenshot({
           fullPage: true,
           // Moderate tolerance for WebGL rendering differences
@@ -135,9 +144,11 @@ test.describe('Character Model Rendering', () => {
         completedQuests: ['maskhunt_final_collection', 'mnog_kini_nui_arrival'],
         recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu' }],
       });
+      const modelReady = waitForCharacterModelReady(page);
       await goto(page, '/characters/Toa_Tahu');
       await disableCSSAnimations(page);
       await waitForCanvas(page);
+      await modelReady;
 
       await expect(page).toHaveScreenshot({
         fullPage: true,
@@ -154,9 +165,11 @@ test.describe('Character Model Rendering', () => {
         completedQuests: ['bohrok_kal_reconstruction', 'bohrok_kal_stolen_symbols'],
         recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu_Nuva' }],
       });
+      const modelReady = waitForCharacterModelReady(page);
       await goto(page, '/characters/Toa_Tahu_Nuva');
       await disableCSSAnimations(page);
       await waitForCanvas(page);
+      await modelReady;
 
       await expect(page).toHaveScreenshot({
         fullPage: true,
@@ -172,9 +185,11 @@ test.describe('Character Model Rendering', () => {
         completedQuests: ['mol_fall_of_ta_koro'],
         recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu_Nuva' }],
       });
+      const modelReady = waitForCharacterModelReady(page);
       await goto(page, '/characters/Toa_Tahu_Nuva');
       await disableCSSAnimations(page);
       await waitForCanvas(page);
+      await modelReady;
 
       await expect(page).toHaveScreenshot({
         fullPage: true,
@@ -190,9 +205,11 @@ test.describe('Character Model Rendering', () => {
         ...INITIAL_GAME_STATE,
         recruitedCharacters: [{ exp: 0, id: 'Jaller' }],
       });
+      const modelReady = waitForCharacterModelReady(page);
       await goto(page, '/characters/Jaller');
       await disableCSSAnimations(page);
       await waitForCanvas(page);
+      await modelReady;
 
       await expect(page).toHaveScreenshot({
         fullPage: true,
@@ -213,12 +230,14 @@ test.describe('Character Model Rendering', () => {
               id: characterId,
             },
           ],
-        });
-        await goto(page, `/characters/${characterId}`);
-        await disableCSSAnimations(page);
-        await waitForCanvas(page);
+          });
+          const modelReady = waitForCharacterModelReady(page);
+          await goto(page, `/characters/${characterId}`);
+          await disableCSSAnimations(page);
+          await waitForCanvas(page);
+          await modelReady;
 
-        // Take screenshot of the entire page including 3D scene
+          // Take screenshot of the entire page including 3D scene
         await expect(page).toHaveScreenshot({
           fullPage: true,
           // Moderate tolerance for WebGL rendering differences
@@ -239,9 +258,11 @@ test.describe('Character Model Rendering', () => {
               },
             ],
           });
+          const modelReady = waitForCharacterModelReady(page);
           await goto(page, `/characters/${characterId}`);
           await disableCSSAnimations(page);
           await waitForCanvas(page);
+          await modelReady;
 
           // Take screenshot of the entire page including 3D scene
           await expect(page).toHaveScreenshot({
@@ -276,9 +297,11 @@ test.describe('Character Model Rendering', () => {
             },
           ],
         });
+        const modelReady = waitForCharacterModelReady(page);
         await goto(page, `/rahkshi/${characterId}`);
         await disableCSSAnimations(page);
         await waitForCanvas(page);
+        await modelReady;
 
         // Take screenshot of the entire page including 3D scene
         await expect(page).toHaveScreenshot({
