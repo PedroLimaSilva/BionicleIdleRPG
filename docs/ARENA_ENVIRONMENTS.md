@@ -227,6 +227,11 @@ The directional shadow frustum is widened to `±6` (was `±3`) so the monuments 
 - [ ] Battle selector arena preview ([#346](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/346))
 - [ ] E2E visual regression for battle arenas (optional)
 
+### CI notes
+
+- Arena GLBs are **not mounted during team prep** (`BattlePhase.Preparing`) so E2E team selection stays responsive.
+- Character model screenshot tests inherit Playwright's global `expect.timeout` (30s in CI); do not override with a lower per-test timeout.
+
 ---
 
 ## References

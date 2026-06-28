@@ -74,7 +74,9 @@ export const BattlePage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (currentEncounter) {
+    // Defer heavy arena GLB/atmosphere until combat starts — prep is DOM-only and E2E
+    // must stay responsive while selecting the team.
+    if (currentEncounter && phase !== BattlePhase.Preparing) {
       setScene(
         <Arena
           team={battle.team}
@@ -85,7 +87,7 @@ export const BattlePage: React.FC = () => {
         />
       );
     } else {
-      setScene(null); // or show something else
+      setScene(null);
     }
   }, [setScene, currentEncounter, battle.team, battle.enemies, currentWave, phase]);
 

@@ -87,7 +87,6 @@ test.describe('Character Model Rendering', () => {
             // Moderate tolerance for WebGL rendering differences
             maxDiffPixels: 300,
             threshold: 0.2,
-            timeout: 15000,
           });
         });
       }
@@ -122,7 +121,6 @@ test.describe('Character Model Rendering', () => {
           // Moderate tolerance for WebGL rendering differences
           maxDiffPixels: 300,
           threshold: 0.2,
-          timeout: 15000,
         });
       });
     });
@@ -145,7 +143,6 @@ test.describe('Character Model Rendering', () => {
         fullPage: true,
         maxDiffPixels: 300,
         threshold: 0.2,
-        timeout: 15000,
       });
     });
 
@@ -165,7 +162,6 @@ test.describe('Character Model Rendering', () => {
         fullPage: true,
         maxDiffPixels: 300,
         threshold: 0.2,
-        timeout: 15000,
       });
     });
     test('should render Toa Tahu Nuva with infected mask after fighting poison rahkshi', async ({
@@ -184,7 +180,6 @@ test.describe('Character Model Rendering', () => {
         fullPage: true,
         maxDiffPixels: 300,
         threshold: 0.2,
-        timeout: 15000,
       });
     });
   });
@@ -203,7 +198,6 @@ test.describe('Character Model Rendering', () => {
         fullPage: true,
         maxDiffPixels: 300,
         threshold: 0.2,
-        timeout: 15000,
       });
     });
   });
@@ -230,7 +224,6 @@ test.describe('Character Model Rendering', () => {
           // Moderate tolerance for WebGL rendering differences
           maxDiffPixels: 300,
           threshold: 0.2,
-          timeout: 15000,
         });
       });
     });
@@ -256,7 +249,6 @@ test.describe('Character Model Rendering', () => {
             // Moderate tolerance for WebGL rendering differences
             maxDiffPixels: 300,
             threshold: 0.2,
-            timeout: 15000,
           });
         });
       }
@@ -294,7 +286,6 @@ test.describe('Character Model Rendering', () => {
           // Moderate tolerance for WebGL rendering differences
           maxDiffPixels: 300,
           threshold: 0.2,
-          timeout: 15000,
         });
       });
     });
