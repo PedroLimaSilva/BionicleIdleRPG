@@ -117,14 +117,14 @@ test.describe('Character Model Rendering', () => {
               id: characterId,
             },
           ],
-          });
-          const modelReady = waitForCharacterModelReady(page);
-          await goto(page, `/characters/${characterId}`);
-          await disableCSSAnimations(page);
-          await waitForCanvas(page);
-          await modelReady;
+        });
+        const modelReady = waitForCharacterModelReady(page);
+        await goto(page, `/characters/${characterId}`);
+        await disableCSSAnimations(page);
+        await waitForCanvas(page);
+        await modelReady;
 
-          // Take screenshot of the entire page including 3D scene
+        // Take screenshot of the entire page including 3D scene
         await expect(page).toHaveScreenshot({
           fullPage: true,
           // Moderate tolerance for WebGL rendering differences
@@ -230,14 +230,14 @@ test.describe('Character Model Rendering', () => {
               id: characterId,
             },
           ],
-          });
-          const modelReady = waitForCharacterModelReady(page);
-          await goto(page, `/characters/${characterId}`);
-          await disableCSSAnimations(page);
-          await waitForCanvas(page);
-          await modelReady;
+        });
+        const modelReady = waitForCharacterModelReady(page);
+        await goto(page, `/characters/${characterId}`);
+        await disableCSSAnimations(page);
+        await waitForCanvas(page);
+        await modelReady;
 
-          // Take screenshot of the entire page including 3D scene
+        // Take screenshot of the entire page including 3D scene
         await expect(page).toHaveScreenshot({
           fullPage: true,
           // Moderate tolerance for WebGL rendering differences
