@@ -1235,6 +1235,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   // Bohrok Kal - Elite encounters; each Kal is unique. Unwinnable until final.
   // 1, 2, or 3 Kal per encounter; multi-Kal waves use different types.
   {
+    arenaId: 'metru',
     description: 'Bohrok-Kal of Electricity, empowered by stolen Nuva symbols.',
     difficulty: 5,
     headliner: 'tahnok_kal',
@@ -1246,6 +1247,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('tahnok_kal', 60, 1)]],
   },
   {
+    arenaId: 'metru',
     description: 'Bohrok-Kal of Magnetism, wielding stolen Nuva symbols.',
     difficulty: 5,
     headliner: 'gahlok_kal',
@@ -1257,6 +1259,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('gahlok_kal', 60, 1)]],
   },
   {
+    arenaId: 'metru',
     description: 'Bohrok-Kal of Vacuum, empowered by stolen Nuva symbols.',
     difficulty: 5,
     headliner: 'lehvak_kal',
@@ -1268,6 +1271,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('lehvak_kal', 60, 1)]],
   },
   {
+    arenaId: 'metru',
     description: 'Bohrok-Kal of Plasma, empowered by stolen Nuva symbols.',
     difficulty: 5,
     headliner: 'pahrak_kal',
@@ -1279,6 +1283,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('pahrak_kal', 60, 1)]],
   },
   {
+    arenaId: 'metru',
     description: 'Bohrok-Kal of Gravity, empowered by stolen Nuva symbols.',
     difficulty: 5,
     headliner: 'nuhvok_kal',
@@ -1290,6 +1295,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('nuhvok_kal', 60, 1)]],
   },
   {
+    arenaId: 'metru',
     description: 'Bohrok-Kal of Sonics, empowered by stolen Nuva symbols.',
     difficulty: 5,
     headliner: 'kohrak_kal',
@@ -1301,6 +1307,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('kohrak_kal', 60, 1)]],
   },
   {
+    arenaId: 'metru',
     description: 'Bohrok-Kal of Electricity and Magnetism attack together.',
     difficulty: 5,
     headliner: 'bohrok_kal_pair',
@@ -1312,6 +1319,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('tahnok_kal', 55, 1), ...makeBohrokWave('gahlok_kal', 55, 1)]],
   },
   {
+    arenaId: 'metru',
     description: 'Bohrok-Kal of Vacuum and Plasma in a coordinated assault.',
     difficulty: 5,
     headliner: 'bohrok_kal_pair',
@@ -1323,6 +1331,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[...makeBohrokWave('lehvak_kal', 55, 1), ...makeBohrokWave('pahrak_kal', 55, 1)]],
   },
   {
+    arenaId: 'metru_archives',
     description: 'Three Bohrok Kal converge—Gravity, Sonics, and Electricity.',
     difficulty: 5,
     headliner: 'bohrok_kal_trio',
@@ -1340,6 +1349,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     ],
   },
   {
+    arenaId: 'metru_archives',
     description:
       'All six Bohrok Kal united—Electricity, Magnetism, Vacuum, Plasma, Gravity, and Sonics. The Toa must stand together to reclaim the Nuva symbols.',
     difficulty: 6,
@@ -1367,6 +1377,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   // First three Rahkshi – unlocked after the Fall of Ta-Koro (Guurahk, Lerahk, Panrahk)
 
   {
+    arenaId: 'mangaia',
     description:
       'The Rahkshi of Disintegration can reduce any substance to dust with a blast from its staff.',
     difficulty: 7,
@@ -1388,6 +1399,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[{ id: KraataPower.Disintegration, lvl: 1 }]],
   },
   {
+    arenaId: 'mangaia',
     description:
       'The Rahkshi of Poison spreads its toxic venom wherever its staff strikes. Even a Toa Nuva can fall to its corruption.',
     difficulty: 7,
@@ -1409,6 +1421,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[{ id: KraataPower.Poison, lvl: 1 }]],
   },
   {
+    arenaId: 'mangaia',
     description:
       'The Rahkshi of Fragmentation stalks the ruins of Ta-Koro. Its staff blasts can shatter stone and metal alike.',
     difficulty: 7,
@@ -1430,6 +1443,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[{ id: KraataPower.Fragmentation, lvl: 1 }]],
   },
   {
+    arenaId: 'mangaia',
     description:
       'All three Rahkshi that destroyed Ta-Koro attack together—Fragmentation, Disintegration, and Poison in concert.',
     difficulty: 8,
@@ -1456,6 +1470,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   // Second three Rahkshi – unlocked after the battle in Onu-Koro (Turahk, Vorahk, Kurahk)
 
   {
+    arenaId: 'mangaia',
     description:
       'The Rahkshi of Fear descended upon Onu-Koro. Its Staff of Fear can freeze even a Toa in terror.',
     difficulty: 7,
@@ -1477,6 +1492,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[{ id: KraataPower.Fear, lvl: 1 }]],
   },
   {
+    arenaId: 'mangaia',
     description:
       'The Rahkshi of Hunger drains the energy and strength of its opponents. Its very presence saps life.',
     difficulty: 7,
@@ -1498,6 +1514,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[{ id: KraataPower.Hunger, lvl: 1 }]],
   },
   {
+    arenaId: 'mangaia',
     description:
       'The Rahkshi of Anger can turn allies against each other with a single blast from its staff.',
     difficulty: 7,
@@ -1519,6 +1536,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     waves: [[{ id: KraataPower.Anger, lvl: 1 }]],
   },
   {
+    arenaId: 'mangaia',
     description:
       'Turahk, Vorahk, and Kurahk—Fear, Hunger, and Anger—descend upon Onu-Koro together.',
     difficulty: 8,
@@ -1541,6 +1559,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   // All six Rahkshi – unlocked when Takanuva rises
 
   {
+    arenaId: 'mangaia',
     description:
       'All six sons of Makuta—Fragmentation, Disintegration, Poison, Fear, Hunger, and Anger—converge at Kini-Nui in two relentless waves.',
     difficulty: 9,
@@ -1575,6 +1594,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   // After the Mask of Light finale — one long Rahkshi run; prior Rahkshi battles are replaced by this.
 
   {
+    arenaId: 'mangaia',
     description:
       'One hundred waves—three Rahkshi each wave, each trio uses the previous, current, and next power in the six-power cycle, and every kraata breed may appear in the spoils.',
     difficulty: 10,

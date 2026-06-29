@@ -14,6 +14,7 @@ import {
   getWeatheredMetalMaterial,
   type WeatheredMetalOptions,
 } from '../components/CharacterScene/WeatheredMetalMaterial';
+import { notifyModelReadyForTestMode } from '../utils/testMode';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -238,6 +239,7 @@ export function useKitAttachments({
     }
 
     onAttachedRef.current?.();
+    notifyModelReadyForTestMode();
 
     return () => {
       for (const clone of clones) {

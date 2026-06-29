@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Color, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
+import { Color, Mesh, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useGame } from '../context/Game';
 import { useSettings } from '../context/useSettings';
@@ -13,6 +13,7 @@ import {
   useMaskTransitionFrame,
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
+import { isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 
@@ -33,12 +34,6 @@ function buildMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
   return nodes;
 }
 
-type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
-
-function isStandardMat(mat: unknown): mat is StandardMat {
-  return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
-}
-
 /** Apply mask color and optional glow color to every mesh material under `root` */
 function applyMaskColors(
   root: Object3D,
@@ -52,10 +47,10 @@ function applyMaskColors(
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
       const mat = (child as Mesh).material;
-      if (!isStandardMat(mat)) return;
+      if (!isMaskStandardMat(mat)) return;
       if (shouldKeepOriginalColor) return;
 
-      if (isStandardMat(mat)) {
+      if (isMaskStandardMat(mat)) {
         const isGlow = mat.name.toLowerCase().includes('glow');
 
         if (isGlow && glowColor) {
@@ -177,9 +172,9 @@ export function useMask(
         mesh.castShadow = effectiveShadows;
         mesh.receiveShadow = effectiveShadows;
         const originalMat = mesh.material;
-        if (isStandardMat(originalMat)) {
+        if (isMaskStandardMat(originalMat)) {
           const mat = originalMat.clone();
-          mat.transparent = true;
+          prepareClonedMaskMaterial(mat);
           mesh.material = mat;
         }
       }

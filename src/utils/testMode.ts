@@ -68,5 +68,14 @@ export function setupAnimationForTestMode(action: AnimationAction): void {
     action.time = 0;
     action.paused = true;
     console.log('[TEST_MODE] animation loaded');
+    notifyModelReadyForTestMode();
   }
+}
+
+/** Playwright listens for this once kit meshes and idle pose are ready. */
+export const TEST_MODE_MODEL_READY_MESSAGE = '[TEST_MODE] model ready';
+
+export function notifyModelReadyForTestMode(): void {
+  if (!isTestMode()) return;
+  console.log(TEST_MODE_MODEL_READY_MESSAGE);
 }

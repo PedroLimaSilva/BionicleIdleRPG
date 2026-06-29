@@ -17,6 +17,7 @@ import {
 import { KraataReward } from '../../types/Kraata';
 import { BattleSpeedControl } from './BattleSpeedControl';
 import { setBattleSpeedMultiplier } from '../../utils/battleSpeed';
+import { getEncounterArenaId, getEncounterTribe } from '../../game/arena';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
@@ -73,10 +74,20 @@ export const BattlePage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (currentEncounter) {
-      setScene(<Arena team={battle.team} enemies={battle.enemies} currentWave={currentWave} />);
+    // Defer heavy arena GLB/atmosphere until combat starts — prep is DOM-only and E2E
+    // must stay responsive while selecting the team.
+    if (currentEncounter && phase !== BattlePhase.Preparing) {
+      setScene(
+        <Arena
+          team={battle.team}
+          enemies={battle.enemies}
+          currentWave={currentWave}
+          arenaId={getEncounterArenaId(currentEncounter)}
+          tribe={getEncounterTribe(currentEncounter)}
+        />
+      );
     } else {
-      setScene(null); // or show something else
+      setScene(null);
     }
   }, [setScene, currentEncounter, battle.team, battle.enemies, currentWave, phase]);
 
