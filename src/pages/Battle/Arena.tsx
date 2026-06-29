@@ -20,7 +20,6 @@ import { shouldSkipArenaShadow } from './arenas/arenaGlbUtils';
 import { getArenaDefinition } from './arenas/registry';
 import type { ArenaId, ArenaLayout } from './arenas/types';
 import type { ElementTribe } from '../../types/Matoran';
-import { ArenaMaskLightingProvider } from '../../context/MaskLightingContext';
 
 interface ArenaProps {
   team: Combatant[];
@@ -355,38 +354,36 @@ export function Arena({ arenaId, currentWave, enemies, team, tribe }: ArenaProps
         <group dispose={null} name="Scene" ref={sceneGroupRef}>
           <HitImpactParticles />
 
-          <ArenaMaskLightingProvider>
-            {team.map((c, i) => (
+          {team.map((c, i) => (
+            <CombatantModel
+              key={c.id}
+              combatant={c}
+              side="team"
+              position={teamPositions[i]}
+              maskPowerActive={
+                !!c.maskPower?.active || hasActiveEffectFromSource(team, enemies, c.id)
+              }
+              ref={(ref) => {
+                if (ref) combatantRefs.current[c.id] = ref;
+                else delete combatantRefs.current[c.id];
+              }}
+            />
+          ))}
+
+          {enemies.map((c, i) => {
+            return (
               <CombatantModel
-                key={c.id}
+                key={`${c.id}-w${currentWave}`}
                 combatant={c}
-                side="team"
-                position={teamPositions[i]}
-                maskPowerActive={
-                  !!c.maskPower?.active || hasActiveEffectFromSource(team, enemies, c.id)
-                }
+                side="enemy"
+                position={enemyPositions[i]}
                 ref={(ref) => {
                   if (ref) combatantRefs.current[c.id] = ref;
                   else delete combatantRefs.current[c.id];
                 }}
               />
-            ))}
-
-            {enemies.map((c, i) => {
-              return (
-                <CombatantModel
-                  key={`${c.id}-w${currentWave}`}
-                  combatant={c}
-                  side="enemy"
-                  position={enemyPositions[i]}
-                  ref={(ref) => {
-                    if (ref) combatantRefs.current[c.id] = ref;
-                    else delete combatantRefs.current[c.id];
-                  }}
-                />
-              );
-            })}
-          </ArenaMaskLightingProvider>
+            );
+          })}
         </group>
       </PresentationControls>
     </>

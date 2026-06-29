@@ -5,8 +5,9 @@
  * emulating a Blender baked look. Grime = darker, less metallic, rougher.
  * No UVs or textures—works globally across all meshes.
  *
- * applyWeatheredMetalToObject skips: meshes with normalMap, meshes under
- * a node named "Masks" (useMask-injected meshes).
+ * applyWeatheredMetalToObject skips: meshes with authored PBR maps (normal /
+ * roughness / metalness), meshes under a node named "Masks" (useMask-injected
+ * meshes).
  */
 
 import {
@@ -224,8 +225,13 @@ function isUnderMasks(obj: Object3D): boolean {
   return false;
 }
 
-function hasNormalMap(mat: unknown): boolean {
-  return !!(mat as { normalMap?: unknown }).normalMap;
+function hasAuthoredPbrMaps(mat: unknown): boolean {
+  const m = mat as {
+    normalMap?: unknown;
+    roughnessMap?: unknown;
+    metalnessMap?: unknown;
+  };
+  return !!(m.normalMap || m.roughnessMap || m.metalnessMap);
 }
 
 function isExcludedMaterial(mat: unknown, excludeNames: string[]): boolean {
@@ -242,7 +248,7 @@ function isExcludedMaterialBySubstring(mat: unknown, substrings: string[]): bool
 /**
  * Replaces mesh materials with weathered metal. Skips:
  * - Meshes under a node named "Masks" (useMask-injected meshes)
- * - Meshes whose material already has a normalMap
+ * - Meshes whose material already has authored PBR maps (normal / roughness / metalness)
  * - Meshes whose material name is in excludeMaterialNames (e.g. Brain, GlowingEyes)
  *
  * When materialColorMap is provided (material name -> hex color), uses it for colors
@@ -288,7 +294,7 @@ export function applyWeatheredMetalToObject(
 
     const nextMaterials = rawMaterials.map((raw) => {
       if (!raw) return raw;
-      if (!includeNormalMappedMaterials && hasNormalMap(raw)) return raw;
+      if (!includeNormalMappedMaterials && hasAuthoredPbrMaps(raw)) return raw;
       if (excludeNames.length > 0 && isExcludedMaterial(raw, excludeNames)) return raw;
       if (excludeSubstrings.length > 0 && isExcludedMaterialBySubstring(raw, excludeSubstrings))
         return raw;
