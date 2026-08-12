@@ -50,7 +50,7 @@ export async function addCanvasHidingInitScript(page: Page) {
   await page.addInitScript(() => {
     const style = document.createElement('style');
     style.id = 'e2e-hide-canvas';
-    style.textContent = `#canvas-mount canvas, canvas { display: none !important; }`;
+    style.textContent = `#canvas-mount canvas { display: none !important; }`;
     if (document.head) {
       document.head.appendChild(style);
     } else {
@@ -68,12 +68,35 @@ export async function setupGameState(
   gameState: PartialGameState,
   options?: TestModeOptions
 ) {
-  await page.addInitScript((state: PartialGameState) => {
-    localStorage.setItem('GAME_STATE', JSON.stringify(state));
-    localStorage.setItem('TEST_MODE', 'true');
-    localStorage.setItem('TELEMETRY_ENABLED', 'false');
-    localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
-  }, gameState);
+  await page.addInitScript(
+    async ({
+      dbName,
+      forceImportKey,
+      state,
+    }: {
+      dbName: string;
+      forceImportKey: string;
+      state: PartialGameState;
+    }) => {
+      // Ensure each test starts from a clean IndexedDB save (Phase B persistence).
+      await new Promise<void>((resolve) => {
+        const request = indexedDB.deleteDatabase(dbName);
+        request.onsuccess = () => resolve();
+        request.onerror = () => resolve();
+        request.onblocked = () => resolve();
+      });
+
+      localStorage.setItem('GAME_STATE', JSON.stringify(state));
+      localStorage.setItem('TEST_MODE', 'true');
+      localStorage.setItem('TELEMETRY_ENABLED', 'false');
+      localStorage.setItem(forceImportKey, 'true');
+    },
+    {
+      dbName: GAME_DB_NAME,
+      forceImportKey: E2E_FORCE_GAME_STATE_IMPORT_KEY,
+      state: gameState,
+    }
+  );
 
   if (options?.pwaBanner) {
     await page.addInitScript((banner: E2ePwaBannerState) => {
@@ -202,14 +225,15 @@ export async function waitForCanvas(page: Page, timeout = 10000) {
  * Use in tests that don't need the 3D scene (e.g. Chronicle tab) to avoid WebGL wait and speed up runs.
  */
 export async function hideCanvas(page: Page, canvasTimeout = 5000) {
-  await page.waitForSelector('canvas', { state: 'attached', timeout: canvasTimeout }).catch(() => {
-    // Canvas may not exist yet or at all; continue
-  });
+  await page
+    .waitForSelector('#canvas-mount canvas', { state: 'attached', timeout: canvasTimeout })
+    .catch(() => {
+      // 3D canvas may not exist on this route; continue
+    });
   await page.evaluate(() => {
-    const canvas = document.querySelector('canvas');
-    if (canvas) {
-      canvas.style.display = 'none';
-    }
+    document.querySelectorAll('#canvas-mount canvas').forEach((canvas) => {
+      (canvas as HTMLCanvasElement).style.display = 'none';
+    });
   });
 }
 
@@ -336,14 +360,30 @@ export async function waitForAvatars(page: Page, timeout = 10000) {
   await page.waitForTimeout(1000);
 }
 
+/** Character inventory waits on async IndexedDB hydration in CI/Docker. */
+const characterCardsTimeout =
+  process.env.CI || process.env.PLAYWRIGHT_DOCKER ? 30_000 : 10_000;
+
 /**
  * Wait for character cards to be visible
  */
-export async function waitForCharacterCards(page: Page, timeout = 10000) {
-  await page.waitForSelector('.character-card, .matoran-card', {
-    state: 'visible',
-    timeout,
-  });
+export async function waitForCharacterCards(page: Page, timeout = characterCardsTimeout) {
+  await page.waitForFunction(
+    () => {
+      if (document.querySelector('.game-load-gate')) {
+        return false;
+      }
+
+      const card = document.querySelector('.character-card, .matoran-card');
+      if (!card) {
+        return false;
+      }
+
+      const style = window.getComputedStyle(card);
+      return style.visibility !== 'hidden' && style.display !== 'none';
+    },
+    { timeout }
+  );
   await page.waitForTimeout(500);
 }
 
