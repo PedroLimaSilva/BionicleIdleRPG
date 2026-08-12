@@ -361,8 +361,7 @@ export async function waitForAvatars(page: Page, timeout = 10000) {
 }
 
 /** Character inventory waits on async IndexedDB hydration in CI/Docker. */
-const characterCardsTimeout =
-  process.env.CI || process.env.PLAYWRIGHT_DOCKER ? 30_000 : 10_000;
+const characterCardsTimeout = process.env.CI || process.env.PLAYWRIGHT_DOCKER ? 30_000 : 10_000;
 
 /**
  * Wait for character cards to be visible
