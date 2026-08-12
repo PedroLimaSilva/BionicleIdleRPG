@@ -14,6 +14,13 @@ import {
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import { isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import {
+  applyMaskDiscolorationToObject,
+  setupMaskDiscolorationShader,
+  type MaskDiscoloration,
+} from './maskDiscoloration';
+
+export type { MaskDiscoloration } from './maskDiscoloration';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 
@@ -40,7 +47,8 @@ function applyMaskColors(
   maskColor: string,
   maskName: Mask,
   glowColor?: string,
-  maskPowerActive?: boolean
+  maskPowerActive?: boolean,
+  discoloration?: MaskDiscoloration
 ): void {
   const shouldKeepOriginalColor = maskName === Mask.Avohkii;
 
@@ -74,6 +82,8 @@ function applyMaskColors(
       }
     }
   });
+
+  applyMaskDiscolorationToObject(root, discoloration);
 }
 
 /**
@@ -100,13 +110,15 @@ function applyMaskColors(
  * @param maskPowerActive - When true, non-glow materials emit the mask color at intensity 5.
  * @param applyMataSlotScale - When true, scale the parent socket to match Toa Mata rigs (needed
  *                             when using `masks.glb` on a character whose GLB omits that scale).
+ * @param discoloration - Optional vertical crown tint (Metru double-injected Kanohi).
  */
 export function useMask(
   masksParent: Object3D | undefined,
   matoran: BaseMatoran & { maskOverride?: Mask },
   glowColor?: string,
   maskPowerActive?: boolean,
-  applyMataSlotScale?: boolean
+  applyMataSlotScale?: boolean,
+  discoloration?: MaskDiscoloration
 ) {
   const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
   const masksNodes = useMemo(() => buildMaskNodes(gltf), [gltf]);
@@ -141,6 +153,8 @@ export function useMask(
   glowColorRef.current = glowColor;
   const maskPowerActiveRef = useRef(maskPowerActive);
   maskPowerActiveRef.current = maskPowerActive;
+  const discolorationRef = useRef(discoloration);
+  discolorationRef.current = discoloration;
 
   const transitionRef = useRef(createMaskTransitionState());
 
@@ -180,6 +194,10 @@ export function useMask(
       }
     });
 
+    if (discolorationRef.current) {
+      setupMaskDiscolorationShader(clone);
+    }
+
     // Apply colors eagerly so they're correct before the first animation frame.
     // (useEffect runs asynchronously after paint, and useFrame/rAF can fire
     // before the next useEffect — applying colors here avoids the brief flash
@@ -189,7 +207,8 @@ export function useMask(
       maskColorRef.current,
       maskName as Mask,
       glowColorRef.current,
-      maskPowerActiveRef.current
+      maskPowerActiveRef.current,
+      discolorationRef.current
     );
 
     const prevMask = maskRef.current;
@@ -211,7 +230,7 @@ export function useMask(
     // Mask lifecycle is managed imperatively at the top of each effect run and
     // in the unmount-only effect below, so the old mask can remain in the scene
     // during the exit animation.
-  }, [masksNodes, masksParent, maskName, effectiveShadows, applyMataSlotScale]);
+  }, [masksNodes, masksParent, maskName, effectiveShadows, applyMataSlotScale, discoloration]);
 
   // Unmount-only cleanup: remove any lingering masks from the scene
   useEffect(() => {
@@ -234,8 +253,8 @@ export function useMask(
     const mask = maskRef.current;
     if (!mask) return;
 
-    applyMaskColors(mask, maskColor, maskName as Mask, glowColor, maskPowerActive);
-  }, [masksNodes, masksParent, maskName, maskColor, glowColor, maskPowerActive]);
+    applyMaskColors(mask, maskColor, maskName as Mask, glowColor, maskPowerActive, discoloration);
+  }, [masksNodes, masksParent, maskName, maskColor, glowColor, maskPowerActive, discoloration]);
 
   return maskRef.current;
 }

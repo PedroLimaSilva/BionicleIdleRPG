@@ -3,12 +3,12 @@ import { getMetruDiskTemplateNode, METRU_DISK_TEMPLATE_BY_ELEMENT } from './metr
 
 describe('metruDisk', () => {
   test('maps the six Metru tribes to disk template nodes', () => {
-    expect(getMetruDiskTemplateNode(ElementTribe.Fire)).toBe('Disk.TaMetru');
-    expect(getMetruDiskTemplateNode(ElementTribe.Water)).toBe('Disk.GaMetru');
-    expect(getMetruDiskTemplateNode(ElementTribe.Air)).toBe('Disk.LeMetru');
-    expect(getMetruDiskTemplateNode(ElementTribe.Ice)).toBe('Disk.KoMetru');
-    expect(getMetruDiskTemplateNode(ElementTribe.Stone)).toBe('Disk.PoMetru');
-    expect(getMetruDiskTemplateNode(ElementTribe.Earth)).toBe('Disk.OnuMetru');
+    expect(getMetruDiskTemplateNode(ElementTribe.Fire)).toBe('DiskTaMetru');
+    expect(getMetruDiskTemplateNode(ElementTribe.Water)).toBe('DiskGaMetru');
+    expect(getMetruDiskTemplateNode(ElementTribe.Air)).toBe('DiskLeMetru');
+    expect(getMetruDiskTemplateNode(ElementTribe.Ice)).toBe('DiskKoMetru');
+    expect(getMetruDiskTemplateNode(ElementTribe.Stone)).toBe('DiskPoMetru');
+    expect(getMetruDiskTemplateNode(ElementTribe.Earth)).toBe('DiskOnuMetru');
   });
 
   test('has no disk for Light or Shadow', () => {

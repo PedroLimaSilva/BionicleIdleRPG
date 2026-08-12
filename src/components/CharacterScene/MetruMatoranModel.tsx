@@ -15,7 +15,7 @@ import {
   METRU_KIT_2004_ATTACHMENTS,
   METRU_RIG_MATERIALS,
 } from '../../game/kit/attachments/metru';
-import { METRU_WEATHERED } from '../../game/kit/palettes/metruKitPlayerPalette';
+import { METRU_MASK_DISCOLORATION, METRU_WEATHERED } from '../../game/kit/palettes/metruKitPlayerPalette';
 
 const METRU_MATORAN_GLB = import.meta.env.BASE_URL + 'matoran_metru.glb';
 
@@ -100,7 +100,7 @@ export function MetruMatoranModel({
   });
 
   const glowColor = matoran.colors.eyes;
-  useMask(nodes.Masks, matoran, glowColor, undefined, true);
+  useMask(nodes.Masks, matoran, glowColor, undefined, true, METRU_MASK_DISCOLORATION);
 
   return (
     <group ref={group} dispose={null}>

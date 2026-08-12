@@ -1,4 +1,6 @@
-import type { WeatheredMetalOptions } from '../../components/CharacterScene/WeatheredMetalMaterial';
+import { WeatheredMetalOptions } from '../../../components/CharacterScene/WeatheredMetalMaterial';
+import { MaskDiscoloration } from '../../../hooks/maskDiscoloration';
+import { LegoColor } from '../../../types/Colors';
 
 /**
  * Pre-Cataclysm Metru Matoran — cleaner plastics and technic than Mata Nui-era
@@ -16,4 +18,12 @@ export const METRU_WEATHERED: WeatheredMetalOptions = {
   largeScale: 3.5,
   metalness: 0.05,
   roughness: 0.45,
+};
+
+/** Double-injected Kanohi: metallic silver-gray crown fading into the mask color below. */
+export const METRU_MASK_DISCOLORATION: MaskDiscoloration = {
+  color: LegoColor.LightGray,
+  intensity: 0.82,
+  metalness: 0.92,
+  roughness: 0.18,
 };
