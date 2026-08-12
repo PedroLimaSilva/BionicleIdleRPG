@@ -14,6 +14,7 @@ import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/M
 import { resolveToaMataBuildId } from '../../game/customMataBuild';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
 import { RebuiltMatoranModel } from './RebuiltMatoranModel';
+import { MetruMatoranModel } from './MetruMatoranModel';
 import { GaliMataModel } from './Mata/GaliMataModel';
 import { PohatuMataModel } from './Mata/PohatuMataModel';
 import { KopakaMataModel } from './Mata/KopakaMataModel';
@@ -114,6 +115,8 @@ function CharacterModel({
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Rebuilt:
       return <RebuiltMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+    case MatoranStage.Metru:
+      return <MetruMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     default:
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
   }
