@@ -53,10 +53,10 @@ export default defineConfig({
       timeout: isCI ? 300_000 : 60_000,
       use: {
         ...devices['Desktop Chrome'],
-        viewport: MODEL_TEST_VIEWPORT,
         launchOptions: {
           args: isCI ? swiftShaderArgs : ['--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
         },
+        viewport: MODEL_TEST_VIEWPORT,
       },
     },
   ],

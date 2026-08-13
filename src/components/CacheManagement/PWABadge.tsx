@@ -32,8 +32,10 @@ export function PWABadge() {
   });
 
   const showNeedRefresh =
-    e2eBannerState === 'needRefresh' || (e2eBannerState === null && needRefresh);
-  const visible = !dismissed && (e2eBannerState !== null || offlineReady || needRefresh);
+    e2eBannerState === 'needRefresh' || (!isTestMode() && e2eBannerState === null && needRefresh);
+  const visible =
+    !dismissed &&
+    (isTestMode() ? e2eBannerState !== null : offlineReady || needRefresh);
 
   function close() {
     setDismissed(true);

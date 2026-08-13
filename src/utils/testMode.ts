@@ -20,6 +20,7 @@ export type E2ePwaBannerState = 'needRefresh' | 'offlineReady';
 /**
  * Playwright-only override to force the PWA update banner visible for visual regression tests.
  * Set via localStorage: E2E_PWA_BANNER=needRefresh|offlineReady (requires TEST_MODE=true).
+ * When TEST_MODE is on and this key is unset, the banner stays hidden.
  */
 export function getE2ePwaBannerState(): E2ePwaBannerState | null {
   const value = localStorage.getItem('E2E_PWA_BANNER');
