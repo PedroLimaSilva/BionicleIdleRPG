@@ -219,6 +219,9 @@ export const VIEWPORTS = {
   mobilePortrait: { height: 915, width: 412 }, // Pixel 7
 } as const;
 
+/** Reduced viewport for 3D model golden masters — full desktop resolution is unnecessary. */
+export const MODEL_TEST_VIEWPORT = { height: 540, width: 960 } as const;
+
 /**
  * Wait for the WebGL canvas element to appear (no fixed settle delay).
  * Prefer {@link waitForCharacterModelScene} for model screenshots — it gates on

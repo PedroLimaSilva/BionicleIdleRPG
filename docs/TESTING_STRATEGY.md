@@ -87,6 +87,7 @@ Tests render on the test-only route `/test/model/:kind/:id` (`ModelPreview` page
 | **Serial suites** (`serialCharacterModelSuite.ts`) | One cold boot per group; client-side preview navigation between models   |
 | **`waitForCharacterModelReady`**                   | Gates on `[TEST_MODE] model ready` console signal, not fixed sleeps      |
 | **`TEST_MODE` disables bloom/shadows**             | Reduces post-processing timing variance (`src/utils/testMode.ts`)        |
+| **Reduced viewport (960×540)**                     | Smaller canvas snapshots; full 1920×1080 is unnecessary for model checks |
 | **SwiftShader in CI**                              | Software WebGL for consistent headless Chromium (`playwright.config.ts`) |
 | **Production preview in models job**               | Pre-bundled assets; faster per-test load than Vite dev server            |
 
