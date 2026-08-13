@@ -16,8 +16,7 @@ import {
   defineSerialCharacterModelSuite,
 } from './serialCharacterModelSuite';
 
-const recruited = (ids: readonly string[]) =>
-  ids.map((id) => ({ exp: 0, id }));
+const recruited = (ids: readonly string[]) => ids.map((id) => ({ exp: 0, id }));
 
 test.describe('Character Model Rendering', () => {
   test.describe('Matoran Character switching', () => {
@@ -38,7 +37,9 @@ test.describe('Character Model Rendering', () => {
     });
 
     test('should render matoran character detail page', async ({ page }) => {
-      await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(CHARACTER_MODEL_SCREENSHOT);
+      await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(
+        CHARACTER_MODEL_SCREENSHOT
+      );
     });
 
     test('should render correct matoran character detail after switching to another character', async ({
@@ -54,7 +55,9 @@ test.describe('Character Model Rendering', () => {
       await expect(page).toHaveURL(new RegExp(`/characters/Hahli`));
       await waitForCharacterModelScene(page, modelReady);
 
-      await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(CHARACTER_MODEL_SCREENSHOT);
+      await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(
+        CHARACTER_MODEL_SCREENSHOT
+      );
     });
   });
 

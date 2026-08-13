@@ -14,11 +14,11 @@ Guidance for keeping the test suite fast, stable, and meaningful. Complements [e
 
 ## Test pyramid
 
-| Layer | Tool | What to test | Stability |
-| ----- | ---- | ------------ | --------- |
-| **Unit** | Jest (`yarn test:ci`) | Pure game logic, services, material/kit rules, persistence | High — no GPU |
-| **E2E (UI)** | Playwright (`yarn test:e2e:app`) | Navigation, forms, quest/evolution flows, DOM state | High when canvas is hidden |
-| **E2E (3D visual)** | Playwright (`yarn test:e2e:models`) | Every character model loads and renders correctly | Lower — WebGL pixel comparison |
+| Layer               | Tool                                | What to test                                               | Stability                      |
+| ------------------- | ----------------------------------- | ---------------------------------------------------------- | ------------------------------ |
+| **Unit**            | Jest (`yarn test:ci`)               | Pure game logic, services, material/kit rules, persistence | High — no GPU                  |
+| **E2E (UI)**        | Playwright (`yarn test:e2e:app`)    | Navigation, forms, quest/evolution flows, DOM state        | High when canvas is hidden     |
+| **E2E (3D visual)** | Playwright (`yarn test:e2e:models`) | Every character model loads and renders correctly          | Lower — WebGL pixel comparison |
 
 **Rule of thumb:** push correctness down the pyramid. Assert behavior in Jest when pixels are not the point.
 
@@ -51,10 +51,10 @@ Guidance for keeping the test suite fast, stable, and meaningful. Complements [e
 
 Playwright is split into two **projects** (see `playwright.config.ts`):
 
-| Project | Command | CI job | Notes |
-| ------- | ------- | ------ | ----- |
-| `Desktop Chrome` | `yarn test:e2e:app` | `e2e-app` | All specs except `modelRendering.spec.ts`; dev server; parallel workers |
-| `Desktop Chrome Models` | `yarn test:e2e:models` | `e2e-models` | Canvas golden masters only; production `preview` server; one worker |
+| Project                 | Command                | CI job       | Notes                                                                   |
+| ----------------------- | ---------------------- | ------------ | ----------------------------------------------------------------------- |
+| `Desktop Chrome`        | `yarn test:e2e:app`    | `e2e-app`    | All specs except `modelRendering.spec.ts`; dev server; parallel workers |
+| `Desktop Chrome Models` | `yarn test:e2e:models` | `e2e-models` | Canvas golden masters only; production `preview` server; one worker     |
 
 `yarn test:e2e` still runs both projects locally.
 
@@ -78,23 +78,23 @@ File: `e2e/characters/detail/modelRendering.spec.ts`
 
 **Improvements in use (do not regress):**
 
-| Technique | Why |
-| --------- | --- |
-| **Canvas-only screenshots** (`#canvas-mount`) | Avoids font/layout noise; only capture when the canvas is visible (detail routes, not inventory) |
-| **Serial suites** (`serialCharacterModelSuite.ts`) | One cold boot per group; client-side inventory navigation between models |
-| **`waitForCharacterModelReady`** | Gates on `[TEST_MODE] model ready` console signal, not fixed sleeps |
-| **`TEST_MODE` disables bloom/shadows** | Reduces post-processing timing variance (`src/utils/testMode.ts`) |
-| **SwiftShader in CI** | Software WebGL for consistent headless Chromium (`playwright.config.ts`) |
-| **Production preview in models job** | Pre-bundled assets; faster per-test load than Vite dev server |
+| Technique                                          | Why                                                                                              |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Canvas-only screenshots** (`#canvas-mount`)      | Avoids font/layout noise; only capture when the canvas is visible (detail routes, not inventory) |
+| **Serial suites** (`serialCharacterModelSuite.ts`) | One cold boot per group; client-side inventory navigation between models                         |
+| **`waitForCharacterModelReady`**                   | Gates on `[TEST_MODE] model ready` console signal, not fixed sleeps                              |
+| **`TEST_MODE` disables bloom/shadows**             | Reduces post-processing timing variance (`src/utils/testMode.ts`)                                |
+| **SwiftShader in CI**                              | Software WebGL for consistent headless Chromium (`playwright.config.ts`)                         |
+| **Production preview in models job**               | Pre-bundled assets; faster per-test load than Vite dev server                                    |
 
-**Do not reduce model count** — the value is verifying that *all* models load. Optimize *how* they are tested (serial navigation, canvas crop, split CI job), not *whether* they are tested.
+**Do not reduce model count** — the value is verifying that _all_ models load. Optimize _how_ they are tested (serial navigation, canvas crop, split CI job), not _whether_ they are tested.
 
 #### Serial suite pattern
 
 ```typescript
 defineSerialCharacterModelSuite({
   suiteName: 'Toa Characters',
-  characterIds: ['Toa_Gali', 'Toa_Kopaka', /* … */],
+  characterIds: ['Toa_Gali', 'Toa_Kopaka' /* … */],
   inventoryTab: 'toa',
   buildGameState: (ids) => ({ ...INITIAL_GAME_STATE, recruitedCharacters: recruited(ids) }),
 });
@@ -106,11 +106,11 @@ defineSerialCharacterModelSuite({
 
 ### Snapshot tolerances
 
-| Content | `maxDiffPixels` | `threshold` |
-| ------- | --------------- | ----------- |
-| Standard UI | 100–150 | default |
-| Images / avatars | 200 | default |
-| 3D canvas (`CHARACTER_MODEL_SCREENSHOT`) | 300 | 0.2 |
+| Content                                  | `maxDiffPixels` | `threshold` |
+| ---------------------------------------- | --------------- | ----------- |
+| Standard UI                              | 100–150         | default     |
+| Images / avatars                         | 200             | default     |
+| 3D canvas (`CHARACTER_MODEL_SCREENSHOT`) | 300             | 0.2         |
 
 Tolerances are a safety valve, not a substitute for deterministic setup. Prefer fixing waits and test-mode flags before widening thresholds.
 
@@ -120,15 +120,14 @@ Tolerances are a safety valve, not a substitute for deterministic setup. Prefer 
 
 Enabled via `localStorage` before navigation (`setupGameState`, `enableTestMode`).
 
-| Behavior | Purpose |
-| -------- | ------- |
-| Animation `timeScale = 0`, paused at frame 0 | Same pose every screenshot |
-| Bloom / selective post-processing off | No frame-to-frame glow variance |
-| Real-time shadows off | Stable lighting |
-| `[TEST_MODE] model ready` console log | Playwright sync point after kit/mask materials apply |
+| Behavior                                     | Purpose                                              |
+| -------------------------------------------- | ---------------------------------------------------- |
+| Animation `timeScale = 0`, paused at frame 0 | Same pose every screenshot                           |
+| Bloom / selective post-processing off        | No frame-to-frame glow variance                      |
+| Real-time shadows off                        | Stable lighting                                      |
+| `[TEST_MODE] model ready` console log        | Playwright sync point after kit/mask materials apply |
 
 `maybeBlockSlowExternalFonts` aborts Google Font requests **only in Docker** (`PLAYWRIGHT_DOCKER`) where outbound network is unavailable. GitHub Actions CI keeps real fonts so UI snapshots match committed baselines.
-
 
 ### Environment
 
@@ -138,12 +137,12 @@ Enabled via `localStorage` before navigation (`setupGameState`, `enableTestMode`
 
 ### CI jobs
 
-| Job | What runs |
-| --- | --------- |
-| `test` | Lint, format, Jest |
-| `e2e-app` | `yarn test:e2e:app` — fast UI/regression specs |
+| Job          | What runs                                                              |
+| ------------ | ---------------------------------------------------------------------- |
+| `test`       | Lint, format, Jest                                                     |
+| `e2e-app`    | `yarn test:e2e:app` — fast UI/regression specs                         |
 | `e2e-models` | `yarn build` + `yarn test:e2e:models` — all character canvas snapshots |
-| `build` | Production build (after all tests pass) |
+| `build`      | Production build (after all tests pass)                                |
 
 `e2e-app` and `e2e-models` run **in parallel** so slow WebGL work does not block UI feedback.
 
@@ -183,7 +182,7 @@ Every named character must still have a canvas golden master — serial navigati
 
 ### Pixel-testing game logic
 
-Quest requirements, combat outcomes, and inventory rules belong in Jest. E2E should confirm the player *sees* the right UI state, not re-derive formulas.
+Quest requirements, combat outcomes, and inventory rules belong in Jest. E2E should confirm the player _sees_ the right UI state, not re-derive formulas.
 
 ---
 
@@ -197,14 +196,14 @@ Quest requirements, combat outcomes, and inventory rules belong in Jest. E2E sho
 
 ## Quick reference
 
-| Task | Command |
-| ---- | ------- |
-| Unit tests | `yarn test:ci` |
-| All E2E (local) | `yarn test:e2e` |
-| App/UI E2E only | `yarn test:e2e:app` |
-| Model canvas E2E only | `yarn test:e2e:models` |
-| E2E in Docker (all) | `yarn test:e2e:docker` |
-| E2E models in Docker | `yarn test:e2e:docker:models` |
-| Update model snapshots (Docker) | `yarn test:e2e:docker:models:update` |
-| Update model snapshots (Linux) | `yarn build && CI=true E2E_USE_PREVIEW=true yarn test:e2e:models:update-snapshots` |
-| Lint | `yarn lint` |
+| Task                            | Command                                                                            |
+| ------------------------------- | ---------------------------------------------------------------------------------- |
+| Unit tests                      | `yarn test:ci`                                                                     |
+| All E2E (local)                 | `yarn test:e2e`                                                                    |
+| App/UI E2E only                 | `yarn test:e2e:app`                                                                |
+| Model canvas E2E only           | `yarn test:e2e:models`                                                             |
+| E2E in Docker (all)             | `yarn test:e2e:docker`                                                             |
+| E2E models in Docker            | `yarn test:e2e:docker:models`                                                      |
+| Update model snapshots (Docker) | `yarn test:e2e:docker:models:update`                                               |
+| Update model snapshots (Linux)  | `yarn build && CI=true E2E_USE_PREVIEW=true yarn test:e2e:models:update-snapshots` |
+| Lint                            | `yarn lint`                                                                        |

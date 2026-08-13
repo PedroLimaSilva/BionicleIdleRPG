@@ -53,7 +53,9 @@ export function defineSerialCharacterModelSuite({
           pathPrefix,
         });
 
-        await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(CHARACTER_MODEL_SCREENSHOT);
+        await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(
+          CHARACTER_MODEL_SCREENSHOT
+        );
       });
     });
   });

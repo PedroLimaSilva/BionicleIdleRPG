@@ -32,7 +32,12 @@ export function hasMetruDiskLauncher(matoran: Pick<BaseMatoran, 'id' | 'tags'>):
   return (METRU_GREAT_DISK_IDS as readonly string[]).includes(matoran.id);
 }
 
-export function setMetruHolsterVisible(holsterRoot: { visible: boolean; traverse: (cb: (o: { visible: boolean }) => void) => void } | undefined, visible: boolean): void {
+export function setMetruHolsterVisible(
+  holsterRoot:
+    | { visible: boolean; traverse: (cb: (o: { visible: boolean }) => void) => void }
+    | undefined,
+  visible: boolean
+): void {
   if (!holsterRoot) return;
   holsterRoot.visible = visible;
   holsterRoot.traverse((child) => {

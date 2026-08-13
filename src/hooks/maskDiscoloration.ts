@@ -1,9 +1,5 @@
 import { Box3, Color, Mesh, Object3D } from 'three';
-import {
-  isMaskGlowMaterialName,
-  isMaskStandardMat,
-  type MaskStandardMat,
-} from './maskMaterial';
+import { isMaskGlowMaterialName, isMaskStandardMat, type MaskStandardMat } from './maskMaterial';
 
 /** Vertical crown tint for Metru double-injected Kanohi (silver-gray top → mask color bottom). */
 export type MaskDiscoloration = {
@@ -148,8 +144,7 @@ export function applyMaskDiscolorationUniforms(
   if (discoloration && discoloration.intensity > 0) {
     uniforms.uDiscolorColor.value.set(discoloration.color);
     uniforms.uDiscolorIntensity.value = discoloration.intensity;
-    uniforms.uDiscolorMetalness.value =
-      discoloration.metalness ?? DEFAULT_DISCOLOR_METALNESS;
+    uniforms.uDiscolorMetalness.value = discoloration.metalness ?? DEFAULT_DISCOLOR_METALNESS;
     uniforms.uDiscolorRoughness.value = discoloration.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS;
   } else {
     uniforms.uDiscolorIntensity.value = 0;

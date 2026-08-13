@@ -1,10 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Object3D } from 'three';
 import { ElementTribe } from '../types/Matoran';
-import {
-  getMetruDiskTemplateNode,
-  METRU_DISK_TEMPLATE_NODES,
-} from '../game/metruDisk';
+import { getMetruDiskTemplateNode, METRU_DISK_TEMPLATE_NODES } from '../game/metruDisk';
 
 export type UseMetruDiskParams = {
   /** Holster socket on the rig (`Disk` under the disk launcher). */

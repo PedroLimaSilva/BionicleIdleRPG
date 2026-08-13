@@ -17,7 +17,10 @@ import {
   METRU_KIT_2001_ATTACHMENTS,
   METRU_KIT_2004_ATTACHMENTS,
 } from '../../game/kit/attachments/metru';
-import { METRU_MASK_DISCOLORATION, METRU_WEATHERED } from '../../game/kit/palettes/metruKitPlayerPalette';
+import {
+  METRU_MASK_DISCOLORATION,
+  METRU_WEATHERED,
+} from '../../game/kit/palettes/metruKitPlayerPalette';
 import {
   hasMetruDiskLauncher,
   METRU_DISK_HOLSTER_NODE,
@@ -70,10 +73,7 @@ export function MetruMatoranModel({
     return map;
   }, [nodes]);
 
-  const templateNodes = useMemo(
-    () => nodes as Record<string, Object3D | undefined>,
-    [nodes]
-  );
+  const templateNodes = useMemo(() => nodes as Record<string, Object3D | undefined>, [nodes]);
 
   const kit2003Attachments = useMemo(
     () => getMetruKit2003Attachments(hasDiskLauncher),

@@ -3,10 +3,7 @@ import { Object3D } from 'three';
 import type { BaseMatoran } from '../types/Matoran';
 import type { KitMaterialSlotEntry } from '../types/KitParts';
 import type { WeatheredMetalOptions } from '../components/CharacterScene/WeatheredMetalMaterial';
-import {
-  applyKitMaterialsToObject,
-  buildKitMaterialSlotLookup,
-} from './kitMaterialApplication';
+import { applyKitMaterialsToObject, buildKitMaterialSlotLookup } from './kitMaterialApplication';
 import { notifyModelReadyForTestMode } from '../utils/testMode';
 
 export type RigMaterialTarget = {
