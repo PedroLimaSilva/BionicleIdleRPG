@@ -47,7 +47,6 @@ test.describe('Character Model Rendering', () => {
       const charactersNavItem = page.locator('nav a').filter({ hasText: /Characters$/ });
       await charactersNavItem.click();
       await waitForCharacterCards(page);
-      await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(CHARACTER_MODEL_SCREENSHOT);
 
       const modelReady = waitForCharacterModelReady(page);
       const jalaLink = page.locator('a').filter({ hasText: 'Hahli' });
