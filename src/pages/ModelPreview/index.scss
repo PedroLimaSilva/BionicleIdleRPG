@@ -1,0 +1,8 @@
+// Canvas anchor geometry for test-only rahkshi model preview routes.
+// Character previews reuse CharacterDetail visualization classes directly.
+
+.model-preview--rahkshi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

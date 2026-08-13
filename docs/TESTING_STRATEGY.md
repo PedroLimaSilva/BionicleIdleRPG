@@ -76,18 +76,21 @@ File: `e2e/characters/detail/modelRendering.spec.ts`
 
 **Coverage:** every recruitable / rahkshi model variant must load without error and match a baseline canvas snapshot.
 
+Tests render on the test-only route `/test/model/:kind/:id` (`ModelPreview` page), which mounts only the 3D scene — no character detail tabs, inventory, or quest UI.
+
 **Improvements in use (do not regress):**
 
 | Technique                                          | Why                                                                                              |
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| **Canvas-only screenshots** (`#canvas-mount`)      | Avoids font/layout noise; only capture when the canvas is visible (detail routes, not inventory) |
-| **Serial suites** (`serialCharacterModelSuite.ts`) | One cold boot per group; client-side inventory navigation between models                         |
+| **Test-only model preview route**                  | Focused canvas rendering without game UI overhead                                                |
+| **Canvas-only screenshots** (`#canvas-mount`)      | Avoids font/layout noise; only capture when the canvas is visible                                |
+| **Serial suites** (`serialCharacterModelSuite.ts`) | One cold boot per group; client-side preview navigation between models                           |
 | **`waitForCharacterModelReady`**                   | Gates on `[TEST_MODE] model ready` console signal, not fixed sleeps                              |
 | **`TEST_MODE` disables bloom/shadows**             | Reduces post-processing timing variance (`src/utils/testMode.ts`)                                |
 | **SwiftShader in CI**                              | Software WebGL for consistent headless Chromium (`playwright.config.ts`)                         |
 | **Production preview in models job**               | Pre-bundled assets; faster per-test load than Vite dev server                                    |
 
-**Do not reduce model count** — the value is verifying that _all_ models load. Optimize _how_ they are tested (serial navigation, canvas crop, split CI job), not _whether_ they are tested.
+**Do not reduce model count** — the value is verifying that _all_ models load. Optimize _how_ they are tested (neutral preview page, serial navigation, canvas crop, split CI job), not _whether_ they are tested.
 
 #### Serial suite pattern
 
@@ -95,13 +98,13 @@ File: `e2e/characters/detail/modelRendering.spec.ts`
 defineSerialCharacterModelSuite({
   suiteName: 'Toa Characters',
   characterIds: ['Toa_Gali', 'Toa_Kopaka' /* … */],
-  inventoryTab: 'toa',
   buildGameState: (ids) => ({ ...INITIAL_GAME_STATE, recruitedCharacters: recruited(ids) }),
 });
 ```
 
 - `test.describe.configure({ mode: 'serial' })` + shared `page` in `beforeAll`.
-- First character: cold `goto`; subsequent: `navigateToCharacterViaInventory` (no reload).
+- First character: cold `goto` to `/test/model/characters/:id`; subsequent: `navigateToModelPreview` (no reload).
+- Rahkshi suites pass `kind: 'rahkshi'` (route `/test/model/rahkshi/:id`).
 - One-off game states (mask overrides, quest flags) use `captureCharacterModelScreenshot` with a full reload.
 
 ### Snapshot tolerances

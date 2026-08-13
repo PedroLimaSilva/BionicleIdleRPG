@@ -3,8 +3,8 @@ import {
   disableCSSAnimations,
   goto,
   INITIAL_GAME_STATE,
+  navigateToModelPreview,
   setupGameState,
-  waitForCharacterCards,
   waitForCharacterModelReady,
   waitForCharacterModelScene,
   CHARACTER_MODEL_SCREENSHOT,
@@ -31,7 +31,7 @@ test.describe('Character Model Rendering', () => {
       });
 
       const modelReady = waitForCharacterModelReady(page);
-      await goto(page, '/characters/Takua');
+      await goto(page, '/test/model/characters/Takua');
       await disableCSSAnimations(page);
       await waitForCharacterModelScene(page, modelReady);
     });
@@ -45,14 +45,8 @@ test.describe('Character Model Rendering', () => {
     test('should render correct matoran character detail after switching to another character', async ({
       page,
     }) => {
-      const charactersNavItem = page.locator('nav a').filter({ hasText: /Characters$/ });
-      await charactersNavItem.click();
-      await waitForCharacterCards(page);
-
       const modelReady = waitForCharacterModelReady(page);
-      const jalaLink = page.locator('a').filter({ hasText: 'Hahli' });
-      await jalaLink.click();
-      await expect(page).toHaveURL(new RegExp(`/characters/Hahli`));
+      await navigateToModelPreview(page, 'Hahli');
       await waitForCharacterModelScene(page, modelReady);
 
       await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(
@@ -81,7 +75,6 @@ test.describe('Character Model Rendering', () => {
       'Toa_Tahu_Nuva',
       'Takanuva',
     ],
-    inventoryTab: 'toa',
     suiteName: 'Toa Characters',
   });
 
@@ -167,7 +160,6 @@ test.describe('Character Model Rendering', () => {
       'tahnok_kal',
       'gahlok_kal',
     ],
-    inventoryTab: 'other',
     suiteName: 'Bohrok Characters',
   });
 
@@ -189,8 +181,7 @@ test.describe('Character Model Rendering', () => {
       KraataPower.Hunger,
       KraataPower.Anger,
     ],
-    inventoryTab: 'rahkshi',
-    pathPrefix: '/rahkshi',
+    kind: 'rahkshi',
     suiteName: 'Rahkshi Characters',
   });
 });

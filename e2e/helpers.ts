@@ -2,6 +2,7 @@ import { Page, TestInfo } from '@playwright/test';
 import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 import type { E2ePwaBannerState } from '../src/utils/testMode';
+import { E2E_MODEL_PREVIEW_NAV_KEY } from '../src/utils/e2eModelPreview';
 
 import { E2E_FORCE_GAME_STATE_IMPORT_KEY, GAME_DB_NAME } from '../src/services/gameDatabase';
 
@@ -268,46 +269,69 @@ export function characterModelScreenshotTarget(page: Page) {
   return page.locator(CANVAS_MOUNT_SELECTOR);
 }
 
-export type CharacterInventoryTab = 'matoran' | 'toa' | 'other' | 'rahkshi';
+export type ModelPreviewKind = 'characters' | 'rahkshi';
+
+export function modelPreviewPath(kind: ModelPreviewKind, characterId: string): string {
+  return `/test/model/${kind}/${characterId}`;
+}
 
 /**
- * Client-side hop from the character inventory to a detail route.
- * Avoids a full document reload when the app is already booted (serial model suites).
+ * Client-side hop between model preview routes (serial model suites).
+ * Requires the app to already be on a `/test/model/...` page with TEST_MODE enabled.
  */
-export async function navigateToCharacterViaInventory(
+export async function navigateToModelPreview(
   page: Page,
   characterId: string,
-  options?: {
-    inventoryTab?: CharacterInventoryTab;
-    pathPrefix?: string;
-  }
+  options?: { kind?: ModelPreviewKind }
 ): Promise<void> {
-  const pathPrefix = options?.pathPrefix ?? '/characters';
-  const escapedId = characterId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const targetPattern = new RegExp(`${pathPrefix}/${escapedId}(?:\\?|$)`);
+  const kind = options?.kind ?? 'characters';
+  const path = modelPreviewPath(kind, characterId);
+  const escapedPath = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const targetPattern = new RegExp(`${escapedPath}(?:\\?|$)`);
 
   if (targetPattern.test(page.url())) {
     return;
   }
 
-  await page
-    .locator('nav a')
-    .filter({ hasText: /Characters$/ })
-    .click();
-  await page.waitForURL(/\/characters(?:\?|$)/);
-
-  const tab = options?.inventoryTab ?? 'matoran';
-  if (tab !== 'matoran') {
-    await page.locator('.tab-btn').filter({ hasText: tab }).click();
-  }
-
-  if (pathPrefix === '/characters') {
-    await page.locator(`[data-character-id="${characterId}"]`).click();
-  } else {
-    await page.locator(`a[href*="${pathPrefix}/${characterId}"]`).click();
-  }
+  await page.evaluate(
+    ({ navKey, targetPath }) => {
+      const nav = (window as Window & Record<string, unknown>)[navKey] as
+        | ((nextPath: string) => void)
+        | undefined;
+      if (!nav) {
+        throw new Error('Model preview navigation hook is not registered');
+      }
+      nav(targetPath);
+    },
+    { navKey: E2E_MODEL_PREVIEW_NAV_KEY, targetPath: path }
+  );
 
   await page.waitForURL(targetPattern);
+}
+
+/**
+ * Navigate to a test-only model preview route and wait until kit/mask materials are ready.
+ * Call {@link waitForCharacterModelReady} first and pass the promise here.
+ */
+export async function openCharacterModelPreview(
+  page: Page,
+  characterId: string,
+  modelReady: Promise<void>,
+  options: {
+    coldStart: boolean;
+    kind?: ModelPreviewKind;
+  }
+): Promise<void> {
+  const kind = options.kind ?? 'characters';
+
+  if (options.coldStart) {
+    await goto(page, modelPreviewPath(kind, characterId));
+    await disableCSSAnimations(page);
+  } else {
+    await navigateToModelPreview(page, characterId, { kind });
+  }
+
+  await waitForCharacterModelScene(page, modelReady);
 }
 
 /**
@@ -320,28 +344,6 @@ export async function waitForCharacterModelScene(
 ): Promise<void> {
   await waitForCanvasVisible(page);
   await modelReady;
-}
-
-export async function openCharacterModelDetail(
-  page: Page,
-  characterId: string,
-  modelReady: Promise<void>,
-  options: {
-    coldStart: boolean;
-    inventoryTab?: CharacterInventoryTab;
-    pathPrefix?: string;
-  }
-): Promise<void> {
-  const pathPrefix = options.pathPrefix ?? '/characters';
-
-  if (options.coldStart) {
-    await goto(page, `${pathPrefix}/${characterId}`);
-    await disableCSSAnimations(page);
-  } else {
-    await navigateToCharacterViaInventory(page, characterId, options);
-  }
-
-  await waitForCharacterModelScene(page, modelReady);
 }
 
 /**

@@ -34,6 +34,20 @@
       left: calc(anchor(left) - 4rem);
       right: calc(anchor(right) - 4rem);
     }
+    &[class*='route--test-model-characters'] {
+      display: block;
+      z-index: 1;
+      top: 2rem;
+      left: calc(anchor(left) - 4rem);
+      right: calc(anchor(right) - 4rem);
+    }
+    &[class*='route--test-model-rahkshi'] {
+      display: block;
+      z-index: 1;
+      top: 2rem;
+      left: calc(anchor(left) - 4rem);
+      right: calc(anchor(right) - 4rem);
+    }
     &[class*='route--character-create'] {
       display: block;
     }

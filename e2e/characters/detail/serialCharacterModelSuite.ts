@@ -4,29 +4,27 @@ import {
   CHARACTER_MODEL_SCREENSHOT,
   INITIAL_GAME_STATE,
   characterModelScreenshotTarget,
-  openCharacterModelDetail,
+  openCharacterModelPreview,
   setupGameState,
   waitForCharacterModelReady,
-  type CharacterInventoryTab,
+  type ModelPreviewKind,
 } from '../../helpers';
 
 type SerialCharacterModelSuiteOptions = {
   suiteName: string;
   characterIds: readonly string[];
   buildGameState: (characterIds: readonly string[]) => PartialGameState;
-  inventoryTab?: CharacterInventoryTab;
-  pathPrefix?: string;
+  kind?: ModelPreviewKind;
 };
 
 /**
- * One cold app boot per suite, then client-side inventory navigation between characters.
+ * One cold app boot per suite, then client-side model preview navigation between characters.
  * Keeps individual test titles (and snapshot names) unchanged.
  */
 export function defineSerialCharacterModelSuite({
   buildGameState,
   characterIds,
-  inventoryTab,
-  pathPrefix = '/characters',
+  kind = 'characters',
   suiteName,
 }: SerialCharacterModelSuiteOptions): void {
   test.describe(suiteName, () => {
@@ -47,10 +45,9 @@ export function defineSerialCharacterModelSuite({
       test(`should render ${characterId} character detail page`, async () => {
         const modelReady = waitForCharacterModelReady(page);
 
-        await openCharacterModelDetail(page, characterId, modelReady, {
+        await openCharacterModelPreview(page, characterId, modelReady, {
           coldStart: index === 0,
-          inventoryTab,
-          pathPrefix,
+          kind,
         });
 
         await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(
@@ -66,15 +63,15 @@ export async function captureCharacterModelScreenshot(
   page: Page,
   characterId: string,
   gameState: PartialGameState,
-  options?: { pathPrefix?: string }
+  options?: { kind?: ModelPreviewKind }
 ): Promise<void> {
   await setupGameState(page, gameState);
   const modelReady = waitForCharacterModelReady(page);
-  const pathPrefix = options?.pathPrefix ?? '/characters';
+  const kind = options?.kind ?? 'characters';
 
-  await openCharacterModelDetail(page, characterId, modelReady, {
+  await openCharacterModelPreview(page, characterId, modelReady, {
     coldStart: true,
-    pathPrefix,
+    kind,
   });
 
   await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(CHARACTER_MODEL_SCREENSHOT);
