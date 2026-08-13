@@ -76,7 +76,7 @@ File: `e2e/characters/detail/modelRendering.spec.ts`
 
 **Coverage:** every recruitable / rahkshi model variant must load without error and match a baseline canvas snapshot.
 
-Tests render on the test-only route `/test/model/:kind/:id` (`ModelPreview` page), which mounts only the 3D scene — no character detail tabs, inventory, or quest UI.
+Tests render on the test-only route `/test/model/:kind/:id` (`ModelPreview` page), which mounts only the shared canvas scene — no page DOM, styles, or game UI.
 
 **Improvements in use (do not regress):**
 

@@ -34,19 +34,13 @@
       left: calc(anchor(left) - 4rem);
       right: calc(anchor(right) - 4rem);
     }
-    &[class*='route--test-model-characters'] {
+    &[class*='route--test-model-'] {
       display: block;
       z-index: 1;
-      top: 2rem;
-      left: calc(anchor(left) - 4rem);
-      right: calc(anchor(right) - 4rem);
-    }
-    &[class*='route--test-model-rahkshi'] {
-      display: block;
-      z-index: 1;
-      top: 2rem;
-      left: calc(anchor(left) - 4rem);
-      right: calc(anchor(right) - 4rem);
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
     }
     &[class*='route--character-create'] {
       display: block;
