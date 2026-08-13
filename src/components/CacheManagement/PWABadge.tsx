@@ -34,8 +34,7 @@ export function PWABadge() {
   const showNeedRefresh =
     e2eBannerState === 'needRefresh' || (!isTestMode() && e2eBannerState === null && needRefresh);
   const visible =
-    !dismissed &&
-    (isTestMode() ? e2eBannerState !== null : offlineReady || needRefresh);
+    !dismissed && (isTestMode() ? e2eBannerState !== null : offlineReady || needRefresh);
 
   function close() {
     setDismissed(true);
