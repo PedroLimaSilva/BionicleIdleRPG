@@ -42,6 +42,8 @@ export enum ElementTribe {
 export const enum MatoranTag {
   ChroniclersCompany = 'ChroniclersCompany',
   Custom = 'Custom',
+  /** Metru-era matoran carrying a Great Disk (disk launcher + Kanoka on the rig). */
+  MetruGreatDisk = 'MetruGreatDisk',
 }
 
 /** ID prefix for player-created custom characters (e.g. "custom_0"). */

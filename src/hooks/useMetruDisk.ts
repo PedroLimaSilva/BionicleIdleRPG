@@ -12,6 +12,7 @@ export type UseMetruDiskParams = {
   /** Flat `nodes` map from `useGLTF` on `matoran_metru.glb`. */
   templateNodes: Record<string, Object3D | undefined>;
   element: ElementTribe;
+  enabled?: boolean;
   onAttached?: () => void;
 };
 
@@ -22,6 +23,7 @@ export type UseMetruDiskParams = {
 export function useMetruDisk({
   diskSocket,
   element,
+  enabled = true,
   onAttached,
   templateNodes,
 }: UseMetruDiskParams): void {
@@ -34,7 +36,7 @@ export function useMetruDisk({
       if (template) template.visible = false;
     }
 
-    if (!diskSocket) return;
+    if (!enabled || !diskSocket) return;
 
     const templateName = getMetruDiskTemplateNode(element);
     const template = templateName ? templateNodes[templateName] : undefined;
@@ -53,5 +55,5 @@ export function useMetruDisk({
     return () => {
       diskSocket.remove(clone);
     };
-  }, [diskSocket, element, templateNodes]);
+  }, [diskSocket, element, enabled, templateNodes]);
 }

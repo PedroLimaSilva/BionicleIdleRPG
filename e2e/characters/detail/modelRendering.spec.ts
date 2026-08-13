@@ -4,11 +4,20 @@ import {
   goto,
   INITIAL_GAME_STATE,
   setupGameState,
-  waitForCanvas,
   waitForCharacterCards,
   waitForCharacterModelReady,
+  waitForCharacterModelScene,
+  CHARACTER_MODEL_SCREENSHOT,
+  characterModelScreenshotTarget,
 } from '../../helpers';
 import { KraataPower } from '../../../src/types/Kraata';
+import {
+  captureCharacterModelScreenshot,
+  defineSerialCharacterModelSuite,
+} from './serialCharacterModelSuite';
+
+const recruited = (ids: readonly string[]) =>
+  ids.map((id) => ({ exp: 0, id }));
 
 test.describe('Character Model Rendering', () => {
   test.describe('Matoran Character switching', () => {
@@ -25,81 +34,43 @@ test.describe('Character Model Rendering', () => {
       const modelReady = waitForCharacterModelReady(page);
       await goto(page, '/characters/Takua');
       await disableCSSAnimations(page);
-      await waitForCanvas(page);
-      await modelReady;
+      await waitForCharacterModelScene(page, modelReady);
     });
+
     test('should render matoran character detail page', async ({ page }) => {
-      // Take screenshot of the entire page including 3D scene
-      await expect(page).toHaveScreenshot({
-        fullPage: true,
-        // Moderate tolerance for WebGL rendering differences
-        maxDiffPixels: 300,
-        threshold: 0.2,
-      });
+      await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(CHARACTER_MODEL_SCREENSHOT);
     });
 
     test('should render correct matoran character detail after switching to another character', async ({
       page,
     }) => {
-      // find the nav item that ends with "Characters"
       const charactersNavItem = page.locator('nav a').filter({ hasText: /Characters$/ });
       await charactersNavItem.click();
       await waitForCharacterCards(page);
-      await expect(page).toHaveScreenshot({
-        fullPage: true,
-        // Moderate tolerance for WebGL rendering differences
-        maxDiffPixels: 300,
-        threshold: 0.2,
-      });
+      await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(CHARACTER_MODEL_SCREENSHOT);
 
       const modelReady = waitForCharacterModelReady(page);
       const jalaLink = page.locator('a').filter({ hasText: 'Hahli' });
       await jalaLink.click();
       await expect(page).toHaveURL(new RegExp(`/characters/Hahli`));
-      await disableCSSAnimations(page);
-      await waitForCanvas(page);
-      await modelReady;
+      await waitForCharacterModelScene(page, modelReady);
 
-      await expect(page).toHaveScreenshot({
-        fullPage: true,
-        // Moderate tolerance for WebGL rendering differences
-        maxDiffPixels: 300,
-        threshold: 0.2,
-      });
+      await expect(characterModelScreenshotTarget(page)).toHaveScreenshot(CHARACTER_MODEL_SCREENSHOT);
     });
   });
 
-  test.describe('Toa Characters', () => {
-    ['Toa_Gali', 'Toa_Kopaka', 'Toa_Lewa', 'Toa_Onua', 'Toa_Pohatu', 'Toa_Tahu'].forEach(
-      (characterId) => {
-        test(`should render ${characterId} character detail page`, async ({ page }) => {
-          await setupGameState(page, {
-            ...INITIAL_GAME_STATE,
-            recruitedCharacters: [
-              {
-                exp: 0,
-                id: characterId,
-              },
-            ],
-          });
-          const modelReady = waitForCharacterModelReady(page);
-          await goto(page, `/characters/${characterId}`);
-          await disableCSSAnimations(page);
-          await waitForCanvas(page);
-          await modelReady;
-
-          // Take screenshot of the entire page including 3D scene
-          await expect(page).toHaveScreenshot({
-            fullPage: true,
-            // Moderate tolerance for WebGL rendering differences
-            maxDiffPixels: 300,
-            threshold: 0.2,
-          });
-        });
-      }
-    );
-
-    [
+  defineSerialCharacterModelSuite({
+    buildGameState: (ids) => ({
+      ...INITIAL_GAME_STATE,
+      recruitedCharacters: recruited(ids),
+    }),
+    characterIds: [
+      'Toa_Gali',
+      'Toa_Kopaka',
+      'Toa_Lewa',
+      'Toa_Onua',
+      'Toa_Pohatu',
+      'Toa_Tahu',
       'Toa_Gali_Nuva',
       'Toa_Kopaka_Nuva',
       'Toa_Lewa_Nuva',
@@ -107,210 +78,117 @@ test.describe('Character Model Rendering', () => {
       'Toa_Pohatu_Nuva',
       'Toa_Tahu_Nuva',
       'Takanuva',
-    ].forEach((characterId) => {
-      test(`should render ${characterId} character detail page`, async ({ page }) => {
-        await setupGameState(page, {
-          ...INITIAL_GAME_STATE,
-          recruitedCharacters: [
-            {
-              exp: 0,
-              id: characterId,
-            },
-          ],
-        });
-        const modelReady = waitForCharacterModelReady(page);
-        await goto(page, `/characters/${characterId}`);
-        await disableCSSAnimations(page);
-        await waitForCanvas(page);
-        await modelReady;
-
-        // Take screenshot of the entire page including 3D scene
-        await expect(page).toHaveScreenshot({
-          fullPage: true,
-          // Moderate tolerance for WebGL rendering differences
-          maxDiffPixels: 300,
-          threshold: 0.2,
-        });
-      });
-    });
+    ],
+    inventoryTab: 'toa',
+    suiteName: 'Toa Characters',
   });
 
   test.describe('Mask color overrides', () => {
     test('should render Toa Tahu with gold mask when Kini-Nui quests completed', async ({
       page,
     }) => {
-      await setupGameState(page, {
+      await captureCharacterModelScreenshot(page, 'Toa_Tahu', {
         ...INITIAL_GAME_STATE,
         completedQuests: ['maskhunt_final_collection', 'mnog_kini_nui_arrival'],
         recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu' }],
-      });
-      const modelReady = waitForCharacterModelReady(page);
-      await goto(page, '/characters/Toa_Tahu');
-      await disableCSSAnimations(page);
-      await waitForCanvas(page);
-      await modelReady;
-
-      await expect(page).toHaveScreenshot({
-        fullPage: true,
-        maxDiffPixels: 300,
-        threshold: 0.2,
       });
     });
 
     test('should render Toa Tahu Nuva with grey mask when nuva symbols sequestered', async ({
       page,
     }) => {
-      await setupGameState(page, {
+      await captureCharacterModelScreenshot(page, 'Toa_Tahu_Nuva', {
         ...INITIAL_GAME_STATE,
         completedQuests: ['bohrok_kal_reconstruction', 'bohrok_kal_stolen_symbols'],
         recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu_Nuva' }],
       });
-      const modelReady = waitForCharacterModelReady(page);
-      await goto(page, '/characters/Toa_Tahu_Nuva');
-      await disableCSSAnimations(page);
-      await waitForCanvas(page);
-      await modelReady;
-
-      await expect(page).toHaveScreenshot({
-        fullPage: true,
-        maxDiffPixels: 300,
-        threshold: 0.2,
-      });
     });
+
     test('should render Toa Tahu Nuva with infected mask after fighting poison rahkshi', async ({
       page,
     }) => {
-      await setupGameState(page, {
+      await captureCharacterModelScreenshot(page, 'Toa_Tahu_Nuva', {
         ...INITIAL_GAME_STATE,
         completedQuests: ['mol_fall_of_ta_koro'],
         recruitedCharacters: [{ exp: 0, id: 'Toa_Tahu_Nuva' }],
       });
-      const modelReady = waitForCharacterModelReady(page);
-      await goto(page, '/characters/Toa_Tahu_Nuva');
-      await disableCSSAnimations(page);
-      await waitForCanvas(page);
-      await modelReady;
-
-      await expect(page).toHaveScreenshot({
-        fullPage: true,
-        maxDiffPixels: 300,
-        threshold: 0.2,
-      });
     });
+  });
+
+  defineSerialCharacterModelSuite({
+    buildGameState: (ids) => ({
+      ...INITIAL_GAME_STATE,
+      recruitedCharacters: recruited(ids),
+    }),
+    characterIds: [
+      'Vakama',
+      'Nokama',
+      'Matau',
+      'Onewa',
+      'Whenua',
+      'Nuju',
+      'Nuhrii',
+      'Vhisola',
+      'Orkahm',
+      'Ahkmou',
+      'Tehutti',
+      'Ehrye',
+    ],
+    suiteName: 'Metru Matoran Characters',
   });
 
   test.describe('Rebuilt Matoran', () => {
     test('should render rebuilt matoran character detail page', async ({ page }) => {
-      await setupGameState(page, {
+      await captureCharacterModelScreenshot(page, 'Jaller', {
         ...INITIAL_GAME_STATE,
         recruitedCharacters: [{ exp: 0, id: 'Jaller' }],
       });
-      const modelReady = waitForCharacterModelReady(page);
-      await goto(page, '/characters/Jaller');
-      await disableCSSAnimations(page);
-      await waitForCanvas(page);
-      await modelReady;
-
-      await expect(page).toHaveScreenshot({
-        fullPage: true,
-        maxDiffPixels: 300,
-        threshold: 0.2,
-      });
     });
   });
 
-  test.describe('Bohrok Characters', () => {
-    ['tahnok', 'gahlok', 'lehvak', 'pahrak', 'nuhvok', 'kohrak'].forEach((characterId) => {
-      test(`should render ${characterId} character detail page`, async ({ page }) => {
-        await setupGameState(page, {
-          ...INITIAL_GAME_STATE,
-          recruitedCharacters: [
-            {
-              exp: 0,
-              id: characterId,
-            },
-          ],
-        });
-        const modelReady = waitForCharacterModelReady(page);
-        await goto(page, `/characters/${characterId}`);
-        await disableCSSAnimations(page);
-        await waitForCanvas(page);
-        await modelReady;
-
-        // Take screenshot of the entire page including 3D scene
-        await expect(page).toHaveScreenshot({
-          fullPage: true,
-          // Moderate tolerance for WebGL rendering differences
-          maxDiffPixels: 300,
-          threshold: 0.2,
-        });
-      });
-    });
-    ['nuhvok_kal', 'kohrak_kal', 'lehvak_kal', 'pahrak_kal', 'tahnok_kal', 'gahlok_kal'].forEach(
-      (characterId) => {
-        test(`should render ${characterId} character detail page`, async ({ page }) => {
-          await setupGameState(page, {
-            ...INITIAL_GAME_STATE,
-            recruitedCharacters: [
-              {
-                exp: 0,
-                id: characterId,
-              },
-            ],
-          });
-          const modelReady = waitForCharacterModelReady(page);
-          await goto(page, `/characters/${characterId}`);
-          await disableCSSAnimations(page);
-          await waitForCanvas(page);
-          await modelReady;
-
-          // Take screenshot of the entire page including 3D scene
-          await expect(page).toHaveScreenshot({
-            fullPage: true,
-            // Moderate tolerance for WebGL rendering differences
-            maxDiffPixels: 300,
-            threshold: 0.2,
-          });
-        });
-      }
-    );
+  defineSerialCharacterModelSuite({
+    buildGameState: (ids) => ({
+      ...INITIAL_GAME_STATE,
+      recruitedCharacters: recruited(ids),
+    }),
+    characterIds: [
+      'tahnok',
+      'gahlok',
+      'lehvak',
+      'pahrak',
+      'nuhvok',
+      'kohrak',
+      'nuhvok_kal',
+      'kohrak_kal',
+      'lehvak_kal',
+      'pahrak_kal',
+      'tahnok_kal',
+      'gahlok_kal',
+    ],
+    inventoryTab: 'other',
+    suiteName: 'Bohrok Characters',
   });
 
-  test.describe('Rahkshi Characters', () => {
-    [
+  defineSerialCharacterModelSuite({
+    buildGameState: (ids) => ({
+      ...INITIAL_GAME_STATE,
+      rahkshi: ids.map((id) => ({
+        id,
+        kraata: { power: id, stage: 6 },
+        power: id,
+        status: 'ready' as const,
+      })),
+    }),
+    characterIds: [
       KraataPower.Disintegration,
       KraataPower.Poison,
       KraataPower.Fragmentation,
       KraataPower.Fear,
       KraataPower.Hunger,
       KraataPower.Anger,
-    ].forEach((characterId) => {
-      test(`should render ${characterId} character detail page`, async ({ page }) => {
-        await setupGameState(page, {
-          ...INITIAL_GAME_STATE,
-          rahkshi: [
-            {
-              id: characterId,
-              kraata: { power: characterId, stage: 6 },
-              power: characterId,
-              status: 'ready',
-            },
-          ],
-        });
-        const modelReady = waitForCharacterModelReady(page);
-        await goto(page, `/rahkshi/${characterId}`);
-        await disableCSSAnimations(page);
-        await waitForCanvas(page);
-        await modelReady;
-
-        // Take screenshot of the entire page including 3D scene
-        await expect(page).toHaveScreenshot({
-          fullPage: true,
-          // Moderate tolerance for WebGL rendering differences
-          maxDiffPixels: 300,
-          threshold: 0.2,
-        });
-      });
-    });
+    ],
+    inventoryTab: 'rahkshi',
+    pathPrefix: '/rahkshi',
+    suiteName: 'Rahkshi Characters',
   });
 });

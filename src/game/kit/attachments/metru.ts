@@ -97,8 +97,8 @@ export const METRU_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment>
   },
 };
 
-/** Bohrok feet and holster pin from `kit_2003.glb`. */
-export const METRU_KIT_2003_ATTACHMENTS: Record<string, KitSocketAttachment> = {
+/** Bohrok feet from `kit_2003.glb` (all Metru matoran). */
+export const METRU_KIT_2003_FOOT_ATTACHMENTS: Record<string, KitSocketAttachment> = {
   Bohrok_FootL: {
     kitNodeName: 'Bohrok_Foot',
     materialColors: MATORAN_KIT_PALETTE_FEET,
@@ -107,22 +107,25 @@ export const METRU_KIT_2003_ATTACHMENTS: Record<string, KitSocketAttachment> = {
     kitNodeName: 'Bohrok_Foot',
     materialColors: MATORAN_KIT_PALETTE_FEET,
   },
+};
+
+/** Holster technic pin — Great Disk matoran only. */
+export const METRU_KIT_2003_HOLSTER_ATTACHMENTS: Record<string, KitSocketAttachment> = {
   Pin3LWeapon_Holster: {
     kitNodeName: KIT_2003_NODES.Pin3L,
     materialColors: { Metal: { color: { kind: 'lego', value: LegoColor.Black } } },
   },
 };
 
-/**
- * Meshes baked into `matoran_metru.glb` under kit-style socket names.
- * These are tinted in place — no kit clone is inserted.
- */
-export const METRU_RIG_MATERIALS: Record<string, RigMaterialTarget> = {
-  Disk_Launcher: {
-    materialColors: {
-      Metal: DISK_LAUNCHER_METAL,
-    },
-  },
+export function getMetruKit2003Attachments(
+  hasDiskLauncher: boolean
+): Record<string, KitSocketAttachment> {
+  if (!hasDiskLauncher) return METRU_KIT_2003_FOOT_ATTACHMENTS;
+  return { ...METRU_KIT_2003_FOOT_ATTACHMENTS, ...METRU_KIT_2003_HOLSTER_ATTACHMENTS };
+}
+
+/** Rig meshes tinted in place — all Metru matoran. */
+export const METRU_RIG_MATERIALS_BASE: Record<string, RigMaterialTarget> = {
   MetruMatoranTorsoBody: {
     materialColors: {
       Torso: MATORAN_KIT_PALETTE_BODY.Main,
@@ -134,3 +137,17 @@ export const METRU_RIG_MATERIALS: Record<string, RigMaterialTarget> = {
     },
   },
 };
+
+/** Disk launcher shell — Great Disk matoran only. */
+export const METRU_RIG_MATERIALS_HOLSTER: Record<string, RigMaterialTarget> = {
+  Disk_Launcher: {
+    materialColors: {
+      Metal: DISK_LAUNCHER_METAL,
+    },
+  },
+};
+
+export function getMetruRigMaterials(hasDiskLauncher: boolean): Record<string, RigMaterialTarget> {
+  if (!hasDiskLauncher) return METRU_RIG_MATERIALS_BASE;
+  return { ...METRU_RIG_MATERIALS_BASE, ...METRU_RIG_MATERIALS_HOLSTER };
+}

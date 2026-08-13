@@ -119,7 +119,9 @@ export function buildKitMeshMaterials(
     if (!isStandardMat(mat)) return mat;
     const spec = slotLookup.get(normalizeSlotName(mat.name));
 
-    if (weatheredBase && shouldApplyWeathered(spec, mat.name)) {
+    // Only tint configured slots — unmapped materials keep their GLB look instead of
+    // re-weathering from stale mesh.material.color (character-switch bug on rig meshes).
+    if (weatheredBase && spec && shouldApplyWeathered(spec, mat.name)) {
       const opts: WeatheredMetalOptions = {
         ...weatheredBase,
         ...mergeSlotWeatheredOpts(spec),

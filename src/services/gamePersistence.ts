@@ -204,7 +204,7 @@ export function processLoadedGameDocument(parsed: Record<string, unknown>): Load
   });
 }
 
-export async function loadGameStateAsync(): Promise<LoadedGameState> {
+async function loadGameStateAsyncInternal(): Promise<LoadedGameState> {
   try {
     await importFromLocalStorageIfNeeded();
 
@@ -226,6 +226,19 @@ export async function loadGameStateAsync(): Promise<LoadedGameState> {
     console.error('Failed to load game state:', error);
     return getInitialLoadedGameState();
   }
+}
+
+/** Coalesce concurrent loads (React StrictMode mounts GameProvider twice in dev). */
+let inFlightLoad: Promise<LoadedGameState> | null = null;
+
+export function loadGameStateAsync(): Promise<LoadedGameState> {
+  if (inFlightLoad) return inFlightLoad;
+
+  inFlightLoad = loadGameStateAsyncInternal().finally(() => {
+    inFlightLoad = null;
+  });
+
+  return inFlightLoad;
 }
 
 /** @deprecated Use `loadGameStateAsync`. Synchronous load remains for legacy callers in tests. */

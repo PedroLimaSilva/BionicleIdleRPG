@@ -15,7 +15,8 @@ const snapshotPathTemplate = isCI
  */
 export default defineConfig({
   expect: {
-    timeout: isCI ? 30_000 : 5_000,
+    /* Full-page WebGL screenshots (fonts + software WebGL capture) are very slow in Docker. */
+    timeout: isCI ? 180_000 : 30_000,
   },
 
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -47,13 +48,25 @@ export default defineConfig({
   snapshotPathTemplate,
   testDir: './e2e',
   /* Timeouts: CI/Docker are slower (no GPU, software WebGL) - use higher limits */
-  timeout: isCI ? 90_000 : 30_000,
+  timeout: isCI ? 300_000 : 30_000,
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     /* Note: Includes /BionicleIdleRPG/ base path to match React Router basename */
     baseURL: 'http://localhost:5173/BionicleIdleRPG',
+
+    /* Headless Chromium needs SwiftShader for WebGL (model rendering tests). */
+    launchOptions: {
+      args: isCI
+        ? [
+            '--enable-unsafe-swiftshader',
+            '--ignore-gpu-blocklist',
+            '--use-gl=angle',
+            '--use-angle=swiftshader-webgl',
+          ]
+        : ['--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
+    },
 
     /* Screenshot on failure */
     screenshot: 'only-on-failure',
@@ -64,12 +77,17 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'yarn dev',
+    command: process.env.PLAYWRIGHT_DOCKER
+      ? 'yarn preview --port 5173 --host 0.0.0.0'
+      : 'yarn dev',
     reuseExistingServer: !process.env.CI,
     timeout: isCI ? 180_000 : 120_000,
     url: 'http://localhost:5173',
   },
 
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /*
+   * Docker/Colima: modest parallelism — modelRendering.spec.ts uses serial
+   * in-app navigation per suite so WebGL scenes are not cold-started every test.
+   */
+  workers: process.env.PLAYWRIGHT_DOCKER ? 1 : process.env.CI ? 1 : undefined,
 });

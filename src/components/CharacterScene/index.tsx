@@ -116,7 +116,13 @@ function CharacterModel({
     case MatoranStage.Rebuilt:
       return <RebuiltMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Metru:
-      return <MetruMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+      return (
+        <MetruMatoranModel
+          key={matoran.id}
+          matoran={matoran}
+          onKitMeshesAttached={onModelReady}
+        />
+      );
     default:
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
   }
