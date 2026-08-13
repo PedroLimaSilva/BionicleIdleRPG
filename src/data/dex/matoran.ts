@@ -252,6 +252,21 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Diminished,
     tags: [MatoranTag.ChroniclersCompany],
   },
+  Matau: {
+    colors: {
+      arms: LegoColor.DarkTurquoise,
+      body: LegoColor.Green,
+      eyes: LegoColor.TransNeonGreen,
+      face: LegoColor.Green,
+      feet: LegoColor.Green,
+      mask: LegoColor.Green,
+    },
+    element: ElementTribe.Air,
+    id: 'Matau',
+    mask: Mask.Mahiki,
+    name: 'Matau',
+    stage: MatoranStage.Metru,
+  },
   Matoro: {
     chronicleId: CHRONICLE_IDS.MATORO,
     colors: {
@@ -268,21 +283,6 @@ export const MATORAN_DEX = {
     name: 'Matoro',
     stage: MatoranStage.Diminished,
   },
-  Matau: {
-    colors: {
-      arms: LegoColor.DarkTurquoise,
-      body: LegoColor.Green,
-      eyes: LegoColor.TransNeonGreen,
-      face: LegoColor.Green,
-      feet: LegoColor.Green,
-      mask: LegoColor.Green,
-    },
-    element: ElementTribe.Air,
-    id: 'Matau',
-    mask: Mask.Mahiki,
-    name: 'Matau',
-    stage: MatoranStage.Metru,
-  },
   Nokama: {
     colors: {
       arms: LegoColor.MediumBlue,
@@ -296,21 +296,6 @@ export const MATORAN_DEX = {
     id: 'Nokama',
     mask: Mask.Rau,
     name: 'Nokama',
-    stage: MatoranStage.Metru,
-  },
-  Nuju: {
-    colors: {
-      arms: LegoColor.LightGray,
-      body: LegoColor.White,
-      eyes: LegoColor.MediumBlue,
-      face: LegoColor.White,
-      feet: LegoColor.White,
-      mask: LegoColor.White,
-    },
-    element: ElementTribe.Ice,
-    id: 'Nuju',
-    mask: Mask.Matatu,
-    name: 'Nuju',
     stage: MatoranStage.Metru,
   },
   Nuhrii: {
@@ -328,6 +313,21 @@ export const MATORAN_DEX = {
     name: 'Nuhrii',
     stage: MatoranStage.Metru,
     tags: [MatoranTag.MetruGreatDisk],
+  },
+  Nuju: {
+    colors: {
+      arms: LegoColor.LightGray,
+      body: LegoColor.White,
+      eyes: LegoColor.MediumBlue,
+      face: LegoColor.White,
+      feet: LegoColor.White,
+      mask: LegoColor.White,
+    },
+    element: ElementTribe.Ice,
+    id: 'Nuju',
+    mask: Mask.Matatu,
+    name: 'Nuju',
+    stage: MatoranStage.Metru,
   },
   Nuparu: {
     chronicleId: CHRONICLE_IDS.NUPARU,
@@ -409,22 +409,6 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Diminished,
     tags: [MatoranTag.ChroniclersCompany],
   },
-  Tehutti: {
-    colors: {
-      arms: LegoColor.DarkGray,
-      body: LegoColor.Black,
-      eyes: LegoColor.TransNeonGreen,
-      face: LegoColor.Black,
-      feet: LegoColor.Black,
-      mask: LegoColor.Black,
-    },
-    element: ElementTribe.Earth,
-    id: 'Tehutti',
-    mask: Mask.Huna,
-    name: 'Tehutti',
-    stage: MatoranStage.Metru,
-    tags: [MatoranTag.MetruGreatDisk],
-  },
   Takua: {
     chronicleId: CHRONICLE_IDS.TAKUA,
     colors: {
@@ -440,6 +424,22 @@ export const MATORAN_DEX = {
     mask: Mask.Pakari,
     name: 'Takua',
     stage: MatoranStage.Diminished,
+  },
+  Tehutti: {
+    colors: {
+      arms: LegoColor.DarkGray,
+      body: LegoColor.Black,
+      eyes: LegoColor.TransNeonGreen,
+      face: LegoColor.Black,
+      feet: LegoColor.Black,
+      mask: LegoColor.Black,
+    },
+    element: ElementTribe.Earth,
+    id: 'Tehutti',
+    mask: Mask.Huna,
+    name: 'Tehutti',
+    stage: MatoranStage.Metru,
+    tags: [MatoranTag.MetruGreatDisk],
   },
   Tamaru: {
     chronicleId: CHRONICLE_IDS.TAMARU,
