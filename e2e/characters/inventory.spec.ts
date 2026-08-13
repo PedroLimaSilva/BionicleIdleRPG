@@ -1,5 +1,13 @@
 import { test, expect } from '@playwright/test';
-import { goto, INITIAL_GAME_STATE, setupGameState, waitForCharacterCards } from '../helpers';
+import {
+  disableCSSAnimations,
+  goto,
+  hideCanvas,
+  INITIAL_GAME_STATE,
+  setupGameState,
+  waitForAvatars,
+  waitForCharacterCards,
+} from '../helpers';
 
 const CHARACTER_INVENTORY_GAME_STATE = {
   ...INITIAL_GAME_STATE,
@@ -28,10 +36,15 @@ const CHARACTER_INVENTORY_GAME_STATE = {
 test.describe('Character Inventory Page', () => {
   test('should display character inventory', async ({ page }) => {
     await setupGameState(page, CHARACTER_INVENTORY_GAME_STATE);
-    await goto(page, '/characters');
+    await goto(page, '/characters', {
+      hideCanvasBeforeNav: true,
+      waitUntil: 'domcontentloaded',
+    });
 
-    // Wait for character cards to be visible instead of networkidle
     await waitForCharacterCards(page);
+    await waitForAvatars(page);
+    await hideCanvas(page);
+    await disableCSSAnimations(page);
 
     // Take a screenshot
     await expect(page).toHaveScreenshot({
@@ -44,10 +57,15 @@ test.describe('Character Inventory Page', () => {
     page,
   }) => {
     await setupGameState(page, { ...CHARACTER_INVENTORY_GAME_STATE, completedQuests: [] });
-    await goto(page, '/characters');
+    await goto(page, '/characters', {
+      hideCanvasBeforeNav: true,
+      waitUntil: 'domcontentloaded',
+    });
 
-    // Wait for character cards to be visible instead of networkidle
     await waitForCharacterCards(page);
+    await waitForAvatars(page);
+    await hideCanvas(page);
+    await disableCSSAnimations(page);
 
     await expect(page.getByRole('button', { name: 'Create Matoran' })).toBeVisible();
 
@@ -61,10 +79,15 @@ test.describe('Character Inventory Page', () => {
   test.describe('Character Cards', () => {
     test('should display character cards with avatars', async ({ page }) => {
       await setupGameState(page, CHARACTER_INVENTORY_GAME_STATE);
-      await goto(page, '/characters');
+      await goto(page, '/characters', {
+        hideCanvasBeforeNav: true,
+        waitUntil: 'domcontentloaded',
+      });
 
-      // Wait for character cards to be visible instead of networkidle
       await waitForCharacterCards(page);
+      await waitForAvatars(page);
+      await hideCanvas(page);
+      await disableCSSAnimations(page);
 
       const cards = await page.locator('.character-card').all();
 
