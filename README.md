@@ -103,7 +103,7 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - `yarn test:e2e` - Run E2E visual regression tests (Playwright)
 - `yarn test:e2e:docker` - Run E2E tests in Docker for deterministic snapshots
 - `yarn format` - Format code with Prettier
-- `yarn format:check` - Check code formatting
+- `yarn format:check` - Check code formatting (also enforced locally via the Husky pre-commit hook)
 - `yarn check:unused-css` - Report unused CSS class selectors (dev hygiene)
 - `yarn deploy` - Build and deploy to GitHub Pages
 

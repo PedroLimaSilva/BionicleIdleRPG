@@ -56,6 +56,7 @@ const CANVAS_ROUTE_PREFIXES = [
   '/characters/',
   '/rahkshi/',
   '/battle',
+  '/test/model/',
 ];
 
 function isCanvasRoute(pathname: string): boolean {

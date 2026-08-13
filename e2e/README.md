@@ -116,7 +116,7 @@ All 3D character models in this app have animations (idle animations, flavor ani
 
 - **Test Mode Utilities** (`src/utils/testMode.ts`):
   - `isTestMode()` - Detects if `localStorage.getItem('TEST_MODE') === 'true'`
-  - `getE2ePwaBannerState()` - Reads `E2E_PWA_BANNER` (`needRefresh` \| `offlineReady`) when test mode is on; used by `PWABadge` for deterministic banner screenshots
+  - `getE2ePwaBannerState()` - Reads `E2E_PWA_BANNER` (`needRefresh` \| `offlineReady`) when test mode is on; used by `PWABadge` for deterministic banner screenshots. When unset in test mode, the banner stays hidden.
   - `getAnimationTimeScale()` - Returns 0 in test mode, 1 otherwise
   - `shouldDisableAnimations()` - Returns true in test mode
   - `setupAnimationForTestMode(action)` - Forces animation to frame 0 and pauses it in test mode

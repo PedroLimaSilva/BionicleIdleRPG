@@ -33,7 +33,8 @@
     "make-pwa-icons": "tsx scripts/make-pwa-icons.mts",
     "sum-glb-sizes": "tsx scripts/sum-glb-sizes.mts",
     "glb-size-report": "tsx scripts/glb-size-report.mts",
-    "kit-node-usage-report": "tsx scripts/kit-node-usage-report.mts"
+    "kit-node-usage-report": "tsx scripts/kit-node-usage-report.mts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@react-three/drei": "9.92.7",
@@ -70,8 +71,10 @@
     "fake-indexeddb": "^6.2.5",
     "gh-pages": "^5.0.0",
     "globals": "^15.14.0",
+    "husky": "^9.1.7",
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.2.0",
+    "lint-staged": "^15.4.3",
     "prettier": "^3.4.2",
     "purgecss": "^8.0.0",
     "sass": "^1.83.4",
@@ -91,6 +94,9 @@
   "resolutions": {
     "sharp": "0.32.6",
     "sharp-ico": "0.1.5"
+  },
+  "lint-staged": {
+    "*.{cjs,css,html,js,json,jsx,md,mjs,scss,ts,tsx,yml,yaml}": "prettier --write"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

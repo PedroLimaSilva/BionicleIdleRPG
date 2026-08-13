@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { MODEL_TEST_VIEWPORT } from './e2e/helpers';
 
 /**
  * Determine snapshot path suffix based on environment
@@ -51,10 +52,11 @@ export default defineConfig({
       testMatch: '**/characters/detail/modelRendering.spec.ts',
       timeout: isCI ? 300_000 : 60_000,
       use: {
-        ...desktopChrome,
+        ...devices['Desktop Chrome'],
         launchOptions: {
           args: isCI ? swiftShaderArgs : ['--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
         },
+        viewport: MODEL_TEST_VIEWPORT,
       },
     },
   ],

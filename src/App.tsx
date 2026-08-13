@@ -27,6 +27,7 @@ import { NavBar } from './components/NavBar/index.tsx';
 import { TelemetryConsentPrompt } from './components/TelemetryConsentPrompt/index.tsx';
 import { SharedCharacterPrompt } from './components/SharedCharacterPrompt/index.tsx';
 import PrivacyPolicyPage from './pages/PrivacyPolicy/index.tsx';
+import { ModelPreview } from './pages/ModelPreview/index.tsx';
 
 const NotFound: React.FC = () => (
   <div className="page-container">
@@ -53,6 +54,7 @@ function AnimatedRoutes() {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/settings/game-state" element={<GameStateEditorPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/test/model/:kind/:id" element={<ModelPreview />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </LayoutGroup>
