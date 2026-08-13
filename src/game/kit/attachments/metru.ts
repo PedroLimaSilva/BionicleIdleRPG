@@ -56,6 +56,10 @@ export const METRU_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
     kitNodeName: KIT_2004_NODES.MetruMatoranLimb,
     materialColors: METRU_LIMB_MATERIAL_COLORS,
   },
+  MetruMatoranTorsoBody: {
+    kitNodeName: KIT_2004_NODES.MetruMatoranTorso,
+    materialColors: MATORAN_KIT_PALETTE_BODY,
+  },
 };
 
 /** Technic pins / face / hands from `kit_2001.glb`. */
@@ -126,11 +130,6 @@ export function getMetruKit2003Attachments(
 
 /** Rig meshes tinted in place — all Metru matoran. */
 export const METRU_RIG_MATERIALS_BASE: Record<string, RigMaterialTarget> = {
-  MetruMatoranTorsoBody: {
-    materialColors: {
-      Torso: MATORAN_KIT_PALETTE_BODY.Main,
-    },
-  },
   PerpendicularAxleJoint2L: {
     materialColors: {
       'SOLID-BLACK': MATORAN_KIT_PALETTE_BLACK.Solid_Black,
