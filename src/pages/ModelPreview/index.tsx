@@ -52,9 +52,7 @@ export const ModelPreview: React.FC = () => {
 
   const armorColors = useMemo(
     () =>
-      armor?.power
-        ? getRahkshiArmorColors(armor.power)
-        : { armor: '#C2A375', joint: '#D4AF37' },
+      armor?.power ? getRahkshiArmorColors(armor.power) : { armor: '#C2A375', joint: '#D4AF37' },
     [armor?.power]
   );
 
@@ -65,13 +63,7 @@ export const ModelPreview: React.FC = () => {
     }
 
     if (kind === 'rahkshi' && armor?.power !== undefined) {
-      setScene(
-        <RahkshiScene
-          key={armor.id}
-          kraata={armor.power}
-          hasKraata={!!armor.kraata}
-        />
-      );
+      setScene(<RahkshiScene key={armor.id} kraata={armor.power} hasKraata={!!armor.kraata} />);
     }
   }, [armor, kind, matoran, setScene]);
 
