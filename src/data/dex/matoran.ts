@@ -425,22 +425,6 @@ export const MATORAN_DEX = {
     name: 'Takua',
     stage: MatoranStage.Diminished,
   },
-  Tehutti: {
-    colors: {
-      arms: LegoColor.DarkGray,
-      body: LegoColor.Black,
-      eyes: LegoColor.TransNeonGreen,
-      face: LegoColor.Black,
-      feet: LegoColor.Black,
-      mask: LegoColor.Black,
-    },
-    element: ElementTribe.Earth,
-    id: 'Tehutti',
-    mask: Mask.Huna,
-    name: 'Tehutti',
-    stage: MatoranStage.Metru,
-    tags: [MatoranTag.MetruGreatDisk],
-  },
   Tamaru: {
     chronicleId: CHRONICLE_IDS.TAMARU,
     colors: {
