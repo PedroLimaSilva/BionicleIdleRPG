@@ -16,6 +16,7 @@ const desktopChrome = {
   viewport: { height: 1080, width: 1920 },
 };
 
+/** Software WebGL for headless model screenshots only — do not use on app/UI specs. */
 const swiftShaderArgs = [
   '--enable-unsafe-swiftshader',
   '--ignore-gpu-blocklist',
@@ -43,12 +44,7 @@ export default defineConfig({
     {
       name: 'Desktop Chrome',
       testIgnore: '**/characters/detail/modelRendering.spec.ts',
-      use: {
-        ...desktopChrome,
-        launchOptions: {
-          args: isCI ? swiftShaderArgs : ['--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
-        },
-      },
+      use: desktopChrome,
     },
     {
       name: 'models',
@@ -90,8 +86,9 @@ export default defineConfig({
   },
 
   /*
-   * Model rendering uses one worker (serial WebGL suites). App specs can run in
-   * parallel when invoked via `yarn test:e2e:app` in a separate CI job.
+   * Serial workers in CI for stable snapshots (matches pre-split behaviour).
+   * Models job also sets PLAYWRIGHT_MODELS_ONLY.
    */
-  workers: process.env.PLAYWRIGHT_MODELS_ONLY || process.env.PLAYWRIGHT_DOCKER ? 1 : undefined,
+  workers:
+    process.env.PLAYWRIGHT_MODELS_ONLY || process.env.PLAYWRIGHT_DOCKER || isCI ? 1 : undefined,
 });

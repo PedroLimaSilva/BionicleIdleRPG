@@ -127,11 +127,8 @@ Enabled via `localStorage` before navigation (`setupGameState`, `enableTestMode`
 | Real-time shadows off | Stable lighting |
 | `[TEST_MODE] model ready` console log | Playwright sync point after kit/mask materials apply |
 
-See `src/utils/testMode.ts` and `e2e/helpers.ts`.
+`maybeBlockSlowExternalFonts` aborts Google Font requests **only in Docker** (`PLAYWRIGHT_DOCKER`) where outbound network is unavailable. GitHub Actions CI keeps real fonts so UI snapshots match committed baselines.
 
----
-
-## CI and snapshot workflow
 
 ### Environment
 
