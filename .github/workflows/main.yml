@@ -90,9 +90,9 @@ jobs:
       - name: Run tests
         run: yarn test:ci
 
-  # Job 2: E2E Visual Tests
-  e2e:
-    name: E2E Visual Tests
+  # Job 2a: E2E app/UI tests (fast — no 3D model golden masters)
+  e2e-app:
+    name: E2E App Tests
     needs: changes
     if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
@@ -113,14 +113,14 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright tests
-        run: yarn test:e2e
+      - name: Run Playwright app tests
+        run: yarn test:e2e:app
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-app
           path: playwright-report/
           retention-days: 30
 
@@ -128,7 +128,54 @@ jobs:
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: playwright-results
+          name: playwright-results-app
+          path: test-results/
+          retention-days: 30
+
+  # Job 2b: E2E 3D model rendering (slow — canvas snapshots for every character)
+  e2e-models:
+    name: E2E Model Rendering
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build production bundle
+        run: yarn build
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright model rendering tests
+        run: yarn test:e2e:models
+        env:
+          E2E_USE_PREVIEW: true
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: playwright-report-models
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: playwright-results-models
           path: test-results/
           retention-days: 30
 
@@ -136,11 +183,12 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [changes, test, e2e]
+    needs: [changes, test, e2e-app, e2e-models]
     if: >-
       needs.changes.outputs.docs_only != 'true' &&
       needs.test.result == 'success' &&
-      needs.e2e.result == 'success'
+      needs.e2e-app.result == 'success' &&
+      needs.e2e-models.result == 'success'
 
     steps:
       - name: Checkout code

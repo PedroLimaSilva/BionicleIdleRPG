@@ -3,9 +3,7 @@ import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 import type { E2ePwaBannerState } from '../src/utils/testMode';
 
-import { GAME_DB_NAME } from '../src/services/gameDatabase';
-
-const E2E_FORCE_GAME_STATE_IMPORT_KEY = 'E2E_FORCE_GAME_STATE_IMPORT';
+import { E2E_FORCE_GAME_STATE_IMPORT_KEY, GAME_DB_NAME } from '../src/services/gameDatabase';
 
 type TestModeOptions = {
   pwaBanner?: E2ePwaBannerState;
@@ -25,11 +23,22 @@ export const INITIAL_GAME_STATE: PartialGameState = {
 };
 
 /**
+ * Headless Docker often has no outbound network; pending Google Font loads block
+ * Playwright's screenshot `document.fonts.ready` wait indefinitely.
+ * GitHub Actions CI has network access — keep real fonts so app snapshots match baselines.
+ */
+async function maybeBlockSlowExternalFonts(page: Page) {
+  if (!process.env.PLAYWRIGHT_DOCKER) return;
+  await page.route(/fonts\.(googleapis|gstatic)\.com/, (route) => route.abort('blockedbyclient'));
+}
+
+/**
  * Enable test mode by setting localStorage flags.
  * This should be called before navigation to ensure test mode is active.
  * Also dismisses the telemetry consent prompt so it doesn't block tests.
  */
 export async function enableTestMode(page: Page, options?: TestModeOptions) {
+  await maybeBlockSlowExternalFonts(page);
   await page.addInitScript(() => {
     localStorage.setItem('TEST_MODE', 'true');
     localStorage.setItem('TELEMETRY_ENABLED', 'false');
@@ -68,6 +77,7 @@ export async function setupGameState(
   gameState: PartialGameState,
   options?: TestModeOptions
 ) {
+  await maybeBlockSlowExternalFonts(page);
   await page.addInitScript(
     async ({
       dbName,
@@ -209,15 +219,129 @@ export const VIEWPORTS = {
 } as const;
 
 /**
+ * Wait for the WebGL canvas element to appear (no fixed settle delay).
+ * Prefer {@link waitForCharacterModelScene} for model screenshots — it gates on
+ * `[TEST_MODE] model ready` instead of an arbitrary sleep.
+ */
+export async function waitForCanvasVisible(page: Page, timeout?: number) {
+  const isCI = !!process.env.CI || !!process.env.PLAYWRIGHT_DOCKER;
+  const resolvedTimeout = timeout ?? (isCI ? 45_000 : 10_000);
+  await page.waitForFunction(
+    () => {
+      const canvas = document.querySelector('canvas');
+      if (!(canvas instanceof HTMLCanvasElement)) return false;
+      const style = window.getComputedStyle(canvas);
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        canvas.width > 0 &&
+        canvas.height > 0
+      );
+    },
+    undefined,
+    { timeout: resolvedTimeout }
+  );
+}
+
+/**
  * Wait for 3D canvas to be ready
  * Note: Animations are automatically paused when TEST_MODE is enabled in localStorage
  * In CI/Docker, software WebGL is slower - allow more time for initial frame
  */
 export async function waitForCanvas(page: Page, timeout = 10000) {
-  await page.waitForSelector('canvas', { state: 'visible', timeout });
+  await waitForCanvasVisible(page, timeout);
 
   const isCI = !!process.env.CI || !!process.env.PLAYWRIGHT_DOCKER;
   await page.waitForTimeout(isCI ? 6000 : 3000);
+}
+
+/** Screenshot settings shared by character detail model rendering tests. */
+export const CHARACTER_MODEL_SCREENSHOT = {
+  maxDiffPixels: 300,
+  threshold: 0.2,
+} as const;
+
+/** 3D preview mount — capture only the WebGL viewport, not the full page chrome. */
+export const CANVAS_MOUNT_SELECTOR = '#canvas-mount';
+
+export function characterModelScreenshotTarget(page: Page) {
+  return page.locator(CANVAS_MOUNT_SELECTOR);
+}
+
+export type CharacterInventoryTab = 'matoran' | 'toa' | 'other' | 'rahkshi';
+
+/**
+ * Client-side hop from the character inventory to a detail route.
+ * Avoids a full document reload when the app is already booted (serial model suites).
+ */
+export async function navigateToCharacterViaInventory(
+  page: Page,
+  characterId: string,
+  options?: {
+    inventoryTab?: CharacterInventoryTab;
+    pathPrefix?: string;
+  }
+): Promise<void> {
+  const pathPrefix = options?.pathPrefix ?? '/characters';
+  const escapedId = characterId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const targetPattern = new RegExp(`${pathPrefix}/${escapedId}(?:\\?|$)`);
+
+  if (targetPattern.test(page.url())) {
+    return;
+  }
+
+  await page
+    .locator('nav a')
+    .filter({ hasText: /Characters$/ })
+    .click();
+  await page.waitForURL(/\/characters(?:\?|$)/);
+
+  const tab = options?.inventoryTab ?? 'matoran';
+  if (tab !== 'matoran') {
+    await page.locator('.tab-btn').filter({ hasText: tab }).click();
+  }
+
+  if (pathPrefix === '/characters') {
+    await page.locator(`[data-character-id="${characterId}"]`).click();
+  } else {
+    await page.locator(`a[href*="${pathPrefix}/${characterId}"]`).click();
+  }
+
+  await page.waitForURL(targetPattern);
+}
+
+/**
+ * Navigate to a character scene and wait until kit/mask materials are ready.
+ * Call {@link waitForCharacterModelReady} first and pass the promise here.
+ */
+export async function waitForCharacterModelScene(
+  page: Page,
+  modelReady: Promise<void>
+): Promise<void> {
+  await waitForCanvasVisible(page);
+  await modelReady;
+}
+
+export async function openCharacterModelDetail(
+  page: Page,
+  characterId: string,
+  modelReady: Promise<void>,
+  options: {
+    coldStart: boolean;
+    inventoryTab?: CharacterInventoryTab;
+    pathPrefix?: string;
+  }
+): Promise<void> {
+  const pathPrefix = options.pathPrefix ?? '/characters';
+
+  if (options.coldStart) {
+    await goto(page, `${pathPrefix}/${characterId}`);
+    await disableCSSAnimations(page);
+  } else {
+    await navigateToCharacterViaInventory(page, characterId, options);
+  }
+
+  await waitForCharacterModelScene(page, modelReady);
 }
 
 /**
@@ -263,8 +387,8 @@ export async function waitForConsoleMessage(
   });
 }
 
-/** In CI/Docker, software WebGL loads models slower — align with Playwright expect timeout (30s). */
-const modelLoadTimeout = process.env.CI || process.env.PLAYWRIGHT_DOCKER ? 30_000 : 10_000;
+/** In CI/Docker, software WebGL loads models slower — allow extra time before screenshot. */
+const modelLoadTimeout = process.env.CI || process.env.PLAYWRIGHT_DOCKER ? 60_000 : 20_000;
 
 /**
  * Wait for model animations to be loaded and paused (in test mode)
@@ -323,8 +447,21 @@ export function waitForCharacterModelReady(page: Page, timeout = modelLoadTimeou
       if (!msg.text().includes('[TEST_MODE] model ready')) return;
       if (settleId) clearTimeout(settleId);
       settleId = setTimeout(() => {
-        cleanup();
-        resolve();
+        void page
+          .evaluate(
+            () =>
+              new Promise<void>((resolve) => {
+                requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+              })
+          )
+          .then(() => {
+            cleanup();
+            resolve();
+          })
+          .catch(() => {
+            cleanup();
+            resolve();
+          });
       }, 250);
     };
 

@@ -6,33 +6,55 @@ import { defineConfig, devices } from '@playwright/test';
  * - Local: Use 'local-darwin' suffix for macOS screenshots (ignored in git)
  */
 const isCI = !!process.env.CI || !!process.env.PLAYWRIGHT_DOCKER;
+const usePreview = !!process.env.E2E_USE_PREVIEW || !!process.env.PLAYWRIGHT_DOCKER;
 const snapshotPathTemplate = isCI
-  ? '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}'
-  : '{testDir}/{testFileDir}/{testFileName}-snapshots-local/{arg}-{projectName}{ext}';
+  ? '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-Desktop-Chrome{ext}'
+  : '{testDir}/{testFileDir}/{testFileName}-snapshots-local/{arg}-Desktop-Chrome{ext}';
+
+const desktopChrome = {
+  ...devices['Desktop Chrome'],
+  viewport: { height: 1080, width: 1920 },
+};
+
+/** Software WebGL for headless model screenshots only — do not use on app/UI specs. */
+const swiftShaderArgs = [
+  '--enable-unsafe-swiftshader',
+  '--ignore-gpu-blocklist',
+  '--use-gl=angle',
+  '--use-angle=swiftshader-webgl',
+];
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
   expect: {
-    timeout: isCI ? 30_000 : 5_000,
+    timeout: isCI ? 180_000 : 30_000,
   },
 
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
 
-  /* Run tests in files in parallel */
+  /* UI tests run in parallel; model suites use serial in-app navigation per file. */
   fullyParallel: true,
 
   globalTimeout: isCI ? 45 * 60 * 1000 : undefined,
 
-  /* Single Desktop project - responsiveness tested in dedicated e2e/responsiveness.spec.ts */
   projects: [
     {
       name: 'Desktop Chrome',
+      testIgnore: '**/characters/detail/modelRendering.spec.ts',
+      use: desktopChrome,
+    },
+    {
+      name: 'models',
+      testMatch: '**/characters/detail/modelRendering.spec.ts',
+      timeout: isCI ? 300_000 : 60_000,
       use: {
-        ...devices['Desktop Chrome'],
-        viewport: { height: 1080, width: 1920 },
+        ...desktopChrome,
+        launchOptions: {
+          args: isCI ? swiftShaderArgs : ['--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
+        },
       },
     },
   ],
@@ -46,30 +68,27 @@ export default defineConfig({
   /* Snapshot path template - different for CI vs local */
   snapshotPathTemplate,
   testDir: './e2e',
-  /* Timeouts: CI/Docker are slower (no GPU, software WebGL) - use higher limits */
+
+  /* Default timeout for app/UI specs */
   timeout: isCI ? 90_000 : 30_000,
 
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    /* Note: Includes /BionicleIdleRPG/ base path to match React Router basename */
     baseURL: 'http://localhost:5173/BionicleIdleRPG',
-
-    /* Screenshot on failure */
     screenshot: 'only-on-failure',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
 
-  /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'yarn dev',
+    command: usePreview ? 'yarn preview --port 5173 --host 0.0.0.0' : 'yarn dev',
     reuseExistingServer: !process.env.CI,
     timeout: isCI ? 180_000 : 120_000,
     url: 'http://localhost:5173',
   },
 
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /*
+   * Serial workers in CI for stable snapshots (matches pre-split behaviour).
+   * Models job also sets PLAYWRIGHT_MODELS_ONLY.
+   */
+  workers:
+    process.env.PLAYWRIGHT_MODELS_ONLY || process.env.PLAYWRIGHT_DOCKER || isCI ? 1 : undefined,
 });

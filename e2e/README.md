@@ -2,6 +2,8 @@
 
 This directory contains end-to-end (E2E) visual regression tests using Playwright.
 
+For the overall testing pyramid (unit vs E2E, 3D snapshot policy, CI workflow), see [docs/TESTING_STRATEGY.md](../docs/TESTING_STRATEGY.md).
+
 ## Overview
 
 These tests validate the UI and prevent visual regressions by:
@@ -19,11 +21,15 @@ Screenshots differ between macOS and Linux (CI environment). See [DOCKER_TESTING
 **Quick commands:**
 
 ```bash
-# Update snapshots for CI (Linux/Docker)
+# Update all snapshots for CI (Linux/Docker)
 yarn test:e2e:docker:update
+
+# Update model canvas snapshots only (Linux/Docker)
+yarn test:e2e:docker:models:update
 
 # Run tests in CI environment (Linux/Docker)
 yarn test:e2e:docker
+yarn test:e2e:docker:models
 ```
 
 ## Running Tests
@@ -33,6 +39,21 @@ yarn test:e2e:docker
 ```bash
 yarn test:e2e
 ```
+
+### Run app/UI tests only (fast — no 3D model golden masters)
+
+```bash
+yarn test:e2e:app
+```
+
+### Run 3D model rendering tests only (requires production build for best speed)
+
+```bash
+yarn build
+E2E_USE_PREVIEW=true yarn test:e2e:models
+```
+
+CI runs these as separate parallel jobs (`e2e-app` and `e2e-models`). See [TESTING_STRATEGY.md](../docs/TESTING_STRATEGY.md).
 
 ### Run tests with UI mode (interactive)
 

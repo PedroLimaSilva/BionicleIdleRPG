@@ -1,45 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Color, Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
+import { Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../types/Matoran';
-import { LegoColor } from '../types/Colors';
-import {
-  KIT_MATERIAL_WEATHERED_OPTION_KEYS,
-  type KitMaterialColorSource,
-  type KitMaterialSlotOverride,
-  type KitSocketAttachment,
-} from '../types/KitParts';
-import { normalizeKitMaterialSlotEntry } from '../game/kit/kitMaterialUtils';
-import {
-  getWeatheredMetalMaterial,
-  type WeatheredMetalOptions,
-} from '../components/CharacterScene/WeatheredMetalMaterial';
+import type { KitSocketAttachment } from '../types/KitParts';
+import type { WeatheredMetalOptions } from '../components/CharacterScene/WeatheredMetalMaterial';
+import { applyKitMaterialsToObject, buildKitMaterialSlotLookup } from './kitMaterialApplication';
 import { notifyModelReadyForTestMode } from '../utils/testMode';
-
-type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
-
-function isStandardMat(mat: unknown): mat is StandardMat {
-  return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
-}
-
-function resolveColorSource(
-  source: KitMaterialColorSource,
-  palette: BaseMatoran['colors']
-): string {
-  if (source.kind === 'lego') return source.value;
-  if (source.key === 'weaponGlow') {
-    return palette.weaponGlow ?? LegoColor.TransNeonYellow;
-  }
-  return palette[source.key];
-}
-
-function normalizeSlotName(name: string): string {
-  return name.trim().toLowerCase();
-}
-
-function isGlowMaterialName(name: string | undefined): boolean {
-  return !!name && name.toLowerCase().includes('glow');
-}
 
 function buildKitNodeIndex(scene: Object3D): Record<string, Object3D> {
   const map: Record<string, Object3D> = {};
@@ -47,117 +13,6 @@ function buildKitNodeIndex(scene: Object3D): Record<string, Object3D> {
     if (child.name) map[child.name] = child;
   });
   return map;
-}
-
-function buildSlotLookup(
-  materialColors: KitSocketAttachment['materialColors']
-): Map<string, KitMaterialSlotOverride> {
-  const lookup = new Map<string, KitMaterialSlotOverride>();
-  if (!materialColors) return lookup;
-  for (const [slotName, entry] of Object.entries(materialColors)) {
-    if (!entry) continue;
-    lookup.set(normalizeSlotName(slotName), normalizeKitMaterialSlotEntry(entry));
-  }
-  return lookup;
-}
-
-/**
- * Whether this slot should receive the character's weathered-metal pass.
- * Emissive slots and glow-named materials default to plain (skip weathering);
- * anything else defaults to weathered. Config can override both directions via
- * `weathered: true | false`.
- */
-function shouldApplyWeathered(
-  spec: KitMaterialSlotOverride | undefined,
-  materialName: string
-): boolean {
-  if (spec?.weathered !== undefined) return spec.weathered;
-  if (spec?.emissive) return false;
-  if (isGlowMaterialName(materialName)) return false;
-  return true;
-}
-
-/**
- * Builds a standard cloned material with per-slot color / PBR / emissive applied.
- * Used for glow slots, weathered opt-outs, and the baseline when no character
- * weathered pass is configured.
- */
-function buildStandardSlotMaterial(
-  base: StandardMat,
-  spec: KitMaterialSlotOverride | undefined,
-  palette: BaseMatoran['colors']
-): StandardMat {
-  if (!spec) return base;
-  const cloned = base.clone();
-  if (spec.color) cloned.color = new Color(resolveColorSource(spec.color, palette));
-  if (spec.roughness !== undefined) cloned.roughness = spec.roughness;
-  if (spec.metalness !== undefined) cloned.metalness = spec.metalness;
-  if (spec.envMapIntensity !== undefined) cloned.envMapIntensity = spec.envMapIntensity;
-  if (spec.emissive) {
-    cloned.emissive = new Color(resolveColorSource(spec.emissive, palette));
-    cloned.emissiveIntensity =
-      spec.emissiveIntensity ?? (base.emissiveIntensity > 0 ? base.emissiveIntensity : 1);
-  } else if (spec.emissiveIntensity !== undefined) {
-    cloned.emissiveIntensity = spec.emissiveIntensity;
-  }
-  return cloned;
-}
-
-/**
- * Resolves the target color for a weathered material: slot-config color takes
- * precedence, otherwise we fall back to whatever the GLB shipped with.
- */
-function resolveWeatheredColor(
-  base: StandardMat,
-  spec: KitMaterialSlotOverride | undefined,
-  palette: BaseMatoran['colors']
-): string {
-  if (spec?.color) return resolveColorSource(spec.color, palette);
-  return base.color.getStyle();
-}
-
-/** Per-slot PBR + procedural tuning merged over the character's weathered-metal base. */
-function mergeSlotWeatheredOpts(
-  spec: KitMaterialSlotOverride | undefined
-): Partial<WeatheredMetalOptions> {
-  if (!spec) return {};
-  const out: Partial<WeatheredMetalOptions> = {};
-  if (spec.roughness !== undefined) out.roughness = spec.roughness;
-  if (spec.metalness !== undefined) out.metalness = spec.metalness;
-  for (const key of KIT_MATERIAL_WEATHERED_OPTION_KEYS) {
-    const v = spec[key];
-    if (v !== undefined) {
-      (out as Record<string, string | number>)[key] = v;
-    }
-  }
-  return out;
-}
-
-function buildMeshMaterials(
-  mesh: Mesh,
-  slotLookup: Map<string, KitMaterialSlotOverride>,
-  palette: BaseMatoran['colors'],
-  weatheredBase: WeatheredMetalOptions | undefined
-): Material | Material[] | undefined {
-  const raw = mesh.material;
-  if (!raw) return raw;
-  const mats = Array.isArray(raw) ? raw : [raw];
-  const next = mats.map((mat) => {
-    if (!isStandardMat(mat)) return mat;
-    const spec = slotLookup.get(normalizeSlotName(mat.name));
-
-    if (weatheredBase && shouldApplyWeathered(spec, mat.name)) {
-      const opts: WeatheredMetalOptions = {
-        ...weatheredBase,
-        ...mergeSlotWeatheredOpts(spec),
-      };
-      const color = resolveWeatheredColor(mat, spec, palette);
-      return getWeatheredMetalMaterial(color, opts);
-    }
-
-    return buildStandardSlotMaterial(mat, spec, palette);
-  });
-  return Array.isArray(raw) ? next : next[0];
 }
 
 export type UseKitAttachmentsParams = {
@@ -226,13 +81,8 @@ export function useKitAttachments({
       clone.rotation.set(0, 0, 0);
       clone.scale.set(1, 1, 1);
 
-      const slotLookup = buildSlotLookup(row.materialColors);
-      clone.traverse((child) => {
-        if (!(child as Mesh).isMesh) return;
-        const mesh = child as Mesh;
-        const next = buildMeshMaterials(mesh, slotLookup, colors, weathered);
-        if (next !== undefined) mesh.material = next as Mesh['material'];
-      });
+      const slotLookup = buildKitMaterialSlotLookup(row.materialColors);
+      applyKitMaterialsToObject(clone, slotLookup, colors, weathered);
 
       socket.add(clone);
       clones.push(clone);

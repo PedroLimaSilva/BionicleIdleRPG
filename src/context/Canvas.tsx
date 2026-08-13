@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { PCFSoftShadowMap, SRGBColorSpace } from 'three';
 import { SceneCanvasContext } from '../hooks/useSceneCanvas';
 import { Perf } from 'r3f-perf';
-import { shouldEnableShadows } from '../utils/testMode';
+import { shouldEnableShadows, isTestMode } from '../utils/testMode';
 import { useSettings } from './useSettings';
 
 /** Clears the WebGL buffer when there is no scene. Prevents stale content from showing if the canvas is revealed. */
@@ -93,10 +93,16 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
       {children}
       {target &&
         createPortal(
-          <Canvas className="shared-canvas" orthographic shadows gl={{ antialias: true }}>
+          <Canvas
+            className="shared-canvas"
+            frameloop={isTestMode() ? 'demand' : 'always'}
+            gl={{ antialias: true }}
+            orthographic
+            shadows
+          >
             <SetSRGBColorSpace />
             <ShadowMapConfig />
-            {performanceMonitorEnabled && <Perf position="top-left" />}
+            {performanceMonitorEnabled && !isTestMode() && <Perf position="top-left" />}
             {scene ?? <ClearCanvas />}
           </Canvas>,
           target
