@@ -31,10 +31,12 @@
     "format:check": "prettier --check .",
     "check:unused-css": "tsx tools/check-unused-css.ts",
     "make-pwa-icons": "tsx scripts/make-pwa-icons.mts",
+    "vendor-draco": "tsx scripts/vendor-draco-decoder.mts",
+    "vendor-fonts": "tsx scripts/vendor-fonts.mts",
     "sum-glb-sizes": "tsx scripts/sum-glb-sizes.mts",
     "glb-size-report": "tsx scripts/glb-size-report.mts",
     "kit-node-usage-report": "tsx scripts/kit-node-usage-report.mts",
-    "prepare": "husky"
+    "prepare": "husky && yarn vendor-draco && yarn vendor-fonts"
   },
   "dependencies": {
     "@react-three/drei": "9.92.7",
@@ -53,6 +55,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/orbitron": "^5.3.0",
     "@gltf-transform/cli": "^4.3.0",
     "@playwright/test": "^1.58.0",
     "@testing-library/dom": "^10.4.1",

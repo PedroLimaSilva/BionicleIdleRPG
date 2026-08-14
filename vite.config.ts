@@ -58,7 +58,7 @@ export default defineConfig(({ mode }) => {
         includeAssets: ['favicon-32-light.png', 'favicon-32-dark.png', 'apple-touch-icon.png'],
 
         injectManifest: {
-          globPatterns: ['**/*.{js,css,html,svg,png,ico,glb,woff2,ttf}'],
+          globPatterns: ['**/*.{js,css,html,svg,png,ico,glb,woff2,ttf,wasm}'],
           maximumFileSizeToCacheInBytes: 10485760,
         },
 

@@ -1416,6 +1416,16 @@
     "@eslint/core" "^0.17.0"
     levn "^0.4.1"
 
+"@fontsource/inter@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/inter/-/inter-5.3.0.tgz#866278dc2357659f8be1755c8b67f29d3697b440"
+  integrity sha512-RofMylZmjlJEfELXeNHFWBRcSs75rGU/6bV2S2jfnvv/3rPXPGe0LgUJTklcHZ9lM4OZmAVFhcJPnACfb91A3g==
+
+"@fontsource/orbitron@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/orbitron/-/orbitron-5.3.0.tgz#d8f944e889ba4ec24de2e873479cf7c6de1dc5af"
+  integrity sha512-+BhPsbUAo/AF7sRcf+TEexm+EWWkgTiR9Zwb7AhYIPkc5oplfvw0C45Oc2xlKPhwVEmxG8hHuA6/Ansbl+Bc6w==
+
 "@gltf-transform/cli@^4.3.0":
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@gltf-transform/cli/-/cli-4.3.0.tgz#073aebd3c7aad39cc97b6076dc907ae49240aea6"
