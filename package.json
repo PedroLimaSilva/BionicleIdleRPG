@@ -31,12 +31,15 @@
     "format:check": "prettier --check .",
     "check:unused-css": "tsx tools/check-unused-css.ts",
     "make-pwa-icons": "tsx scripts/make-pwa-icons.mts",
+    "vendor-draco": "tsx scripts/vendor-draco-decoder.mts",
     "sum-glb-sizes": "tsx scripts/sum-glb-sizes.mts",
     "glb-size-report": "tsx scripts/glb-size-report.mts",
     "kit-node-usage-report": "tsx scripts/kit-node-usage-report.mts",
-    "prepare": "husky"
+    "prepare": "husky && yarn vendor-draco"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/orbitron": "^5.3.0",
     "@react-three/drei": "9.92.7",
     "@react-three/fiber": "9.5.0",
     "@react-three/postprocessing": "3.0.4",
