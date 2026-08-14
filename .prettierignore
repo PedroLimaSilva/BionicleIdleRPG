@@ -9,4 +9,7 @@ pnpm-lock.yaml
 public/*.glb
 # Vendored Draco decoder copied from three.js by scripts/vendor-draco-decoder.mts
 public/draco/
+# Vendored UI fonts copied from @fontsource by scripts/vendor-fonts.mts
+public/fonts/inter-latin-*.woff2
+public/fonts/orbitron-latin-*.woff2
 e2e/**/*.png
