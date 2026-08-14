@@ -25,6 +25,48 @@ export type KitUsageSnapshot = {
 };
 
 const KIT_NODE_REF_RE = /kitNodeName:\s*(?:KIT_2001_NODES\.(\w+)|KIT_2003_NODES\.(\w+)|'([^']+)')/g;
+const EXPORT_ATTACHMENT_MAP_RE = /export const \w*ATTACHMENTS\w*(?:\s*:[^=]*)?\s*=\s*\{/g;
+
+/** Attachment maps not yet wired into `KIT_*_ATTACHMENT_MAPS` usage ranking. */
+export const KIT_ATTACHMENT_SCAN_EXCLUDED_FILES = ['src/game/kit/attachments/metru.ts'] as const;
+
+function findMatchingBrace(source: string, openIndex: number): number {
+  let depth = 0;
+  for (let i = openIndex; i < source.length; i++) {
+    const char = source[i];
+    if (char === '{') depth++;
+    else if (char === '}') {
+      depth--;
+      if (depth === 0) return i;
+    }
+  }
+  return -1;
+}
+
+/** Keeps only exported `*ATTACHMENTS*` object literals (skips helper functions). */
+export function extractAttachmentMapSources(source: string): string {
+  const parts: string[] = [];
+  EXPORT_ATTACHMENT_MAP_RE.lastIndex = 0;
+  let match: RegExpExecArray | null;
+  while ((match = EXPORT_ATTACHMENT_MAP_RE.exec(source))) {
+    const openBrace = match.index + match[0].length - 1;
+    const closeBrace = findMatchingBrace(source, openBrace);
+    if (closeBrace !== -1) {
+      parts.push(source.slice(openBrace, closeBrace + 1));
+    }
+  }
+  return parts.join('\n');
+}
+
+function stripLineComments(source: string): string {
+  return source
+    .split('\n')
+    .map((line) => {
+      const commentStart = line.indexOf('//');
+      return commentStart === -1 ? line : line.slice(0, commentStart);
+    })
+    .join('\n');
+}
 
 export function parseKitNodeRegistry(source: string): Record<string, string> {
   const registry: Record<string, string> = {};
@@ -54,10 +96,11 @@ export function parseAttachmentKitNodeCounts(
   registry2001: Record<string, string>,
   registry2003: Record<string, string>
 ): Map<string, number> {
+  const scopedSource = stripLineComments(extractAttachmentMapSources(source));
   const counts = new Map<string, number>();
   let match: RegExpExecArray | null;
   KIT_NODE_REF_RE.lastIndex = 0;
-  while ((match = KIT_NODE_REF_RE.exec(source))) {
+  while ((match = KIT_NODE_REF_RE.exec(scopedSource))) {
     const glbName = resolveGlbName(match[1], match[2], match[3], registry2001, registry2003);
     if (!glbName) continue;
     counts.set(glbName, (counts.get(glbName) ?? 0) + 1);

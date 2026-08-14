@@ -1,6 +1,8 @@
-import { execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { execFileSync, execSync } from 'node:child_process';
 import {
   buildKitUsageSnapshot,
+  KIT_ATTACHMENT_SCAN_EXCLUDED_FILES,
   parseAttachmentKitNodeCounts,
   parseKitNodeRegistry,
   type KitUsageSnapshot,
@@ -43,7 +45,8 @@ export function resolveMergeBaseRef(): string {
 
 function readFileAtRef(ref: string, repoPath: string): string | null {
   try {
-    return execSync(`git show ${ref}:${repoPath}`, {
+    // Use execFileSync so paths with spaces (e.g. Toa Nuva/) are not split by the shell.
+    return execFileSync('git', ['show', `${ref}:${repoPath}`], {
       encoding: 'utf8',
       stdio: ['pipe', 'pipe', 'pipe'],
     });
@@ -54,14 +57,19 @@ function readFileAtRef(ref: string, repoPath: string): string | null {
 
 function listAttachmentFilesAtRef(ref: string): string[] {
   try {
-    const output = execSync(`git ls-tree -r --name-only ${ref} -- ${ATTACHMENTS_PREFIX}`, {
-      encoding: 'utf8',
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
+    const output = execFileSync(
+      'git',
+      ['ls-tree', '-r', '--name-only', ref, '--', ATTACHMENTS_PREFIX],
+      {
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      }
+    );
+    const excluded = new Set<string>(KIT_ATTACHMENT_SCAN_EXCLUDED_FILES);
     return output
       .split('\n')
       .map((line) => line.trim())
-      .filter((line) => line.endsWith('.ts'));
+      .filter((line) => line.endsWith('.ts') && !excluded.has(line));
   } catch {
     return [];
   }
@@ -73,20 +81,18 @@ function mergeCounts(target: Map<string, number>, source: Map<string, number>): 
   }
 }
 
-export function usageSnapshotFromGitRef(ref: string): KitUsageSnapshot | null {
-  const registry2001Source = readFileAtRef(ref, KIT_2001_NODES_PATH);
-  const registry2003Source = readFileAtRef(ref, KIT_2003_NODES_PATH);
-  if (!registry2001Source || !registry2003Source) return null;
-
+function buildUsageSnapshotFromAttachmentSources(
+  attachmentSources: Map<string, string>,
+  registry2001Source: string,
+  registry2003Source: string
+): KitUsageSnapshot {
   const registry2001 = parseKitNodeRegistry(registry2001Source);
   const registry2003 = parseKitNodeRegistry(registry2003Source);
 
   const counts2001 = new Map<string, number>();
   const counts2003 = new Map<string, number>();
 
-  for (const path of listAttachmentFilesAtRef(ref)) {
-    const source = readFileAtRef(ref, path);
-    if (!source) continue;
+  for (const source of attachmentSources.values()) {
     const fileCounts = parseAttachmentKitNodeCounts(source, registry2001, registry2003);
     for (const [glbName, count] of fileCounts) {
       const in2001 = Object.values(registry2001).includes(glbName);
@@ -97,4 +103,48 @@ export function usageSnapshotFromGitRef(ref: string): KitUsageSnapshot | null {
   }
 
   return buildKitUsageSnapshot(counts2001, counts2003, registry2001, registry2003);
+}
+
+function readWorkingTreeFile(repoPath: string): string | null {
+  try {
+    return readFileSync(repoPath, 'utf8');
+  } catch {
+    return null;
+  }
+}
+
+export function usageSnapshotFromWorkingTree(): KitUsageSnapshot | null {
+  const registry2001Source = readWorkingTreeFile(KIT_2001_NODES_PATH);
+  const registry2003Source = readWorkingTreeFile(KIT_2003_NODES_PATH);
+  if (!registry2001Source || !registry2003Source) return null;
+
+  const attachmentSources = new Map<string, string>();
+  for (const path of listAttachmentFilesAtRef('HEAD')) {
+    const source = readWorkingTreeFile(path);
+    if (source) attachmentSources.set(path, source);
+  }
+
+  return buildUsageSnapshotFromAttachmentSources(
+    attachmentSources,
+    registry2001Source,
+    registry2003Source
+  );
+}
+
+export function usageSnapshotFromGitRef(ref: string): KitUsageSnapshot | null {
+  const registry2001Source = readFileAtRef(ref, KIT_2001_NODES_PATH);
+  const registry2003Source = readFileAtRef(ref, KIT_2003_NODES_PATH);
+  if (!registry2001Source || !registry2003Source) return null;
+
+  const attachmentSources = new Map<string, string>();
+  for (const path of listAttachmentFilesAtRef(ref)) {
+    const source = readFileAtRef(ref, path);
+    if (source) attachmentSources.set(path, source);
+  }
+
+  return buildUsageSnapshotFromAttachmentSources(
+    attachmentSources,
+    registry2001Source,
+    registry2003Source
+  );
 }
