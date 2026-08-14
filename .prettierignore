@@ -7,4 +7,6 @@ yarn.lock
 package-lock.json
 pnpm-lock.yaml
 public/*.glb
+# Vendored Draco decoder copied from three.js by scripts/vendor-draco-decoder.mts
+public/draco/
 e2e/**/*.png
