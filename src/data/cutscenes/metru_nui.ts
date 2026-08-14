@@ -79,9 +79,16 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
       {
         portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Lihkan',
+        text: 'Making Great Masks, Vakama?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
         position: 'right',
         speakerId: 'Vakama',
-        text: 'Making Great Masks, Toa Lihkan? Um… not yet. But with the right disk…',
+        text: 'Toa Lihkan! Um… not yet. But with the right disk…',
         type: 'dialogue',
       },
       {
