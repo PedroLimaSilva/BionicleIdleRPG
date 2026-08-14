@@ -24,22 +24,11 @@ export const INITIAL_GAME_STATE: PartialGameState = {
 };
 
 /**
- * Headless Docker often has no outbound network; pending Google Font loads block
- * Playwright's screenshot `document.fonts.ready` wait indefinitely.
- * GitHub Actions CI has network access — keep real fonts so app snapshots match baselines.
- */
-async function maybeBlockSlowExternalFonts(page: Page) {
-  if (!process.env.PLAYWRIGHT_DOCKER) return;
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, (route) => route.abort('blockedbyclient'));
-}
-
-/**
  * Enable test mode by setting localStorage flags.
  * This should be called before navigation to ensure test mode is active.
  * Also dismisses the telemetry consent prompt so it doesn't block tests.
  */
 export async function enableTestMode(page: Page, options?: TestModeOptions) {
-  await maybeBlockSlowExternalFonts(page);
   await page.addInitScript(() => {
     localStorage.setItem('TEST_MODE', 'true');
     localStorage.setItem('TELEMETRY_ENABLED', 'false');
@@ -78,7 +67,6 @@ export async function setupGameState(
   gameState: PartialGameState,
   options?: TestModeOptions
 ) {
-  await maybeBlockSlowExternalFonts(page);
   await page.addInitScript(
     async ({
       dbName,
