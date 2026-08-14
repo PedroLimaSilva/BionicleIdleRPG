@@ -1,6 +1,7 @@
 import {
   buildMarkdownReport,
   diffKitNodeUsage,
+  extractAttachmentMapSources,
   parseAttachmentKitNodeCounts,
   parseKitNodeRegistry,
   usageSnapshotFromWorkspace,
@@ -21,14 +22,52 @@ describe('kit-node-usage report', () => {
     const registry2001 = { Axle3L: 'Axle3L', Socket: 'Socket' };
     const registry2003 = { BohrokArm: 'BohrokArm' };
     const source = `
-      FootL: { kitNodeName: KIT_2001_NODES.Socket },
-      Legacy: { kitNodeName: 'Axle3L' },
-      Arm: { kitNodeName: KIT_2003_NODES.BohrokArm },
+      export const EXAMPLE_KIT_2001_ATTACHMENTS = {
+        FootL: { kitNodeName: KIT_2001_NODES.Socket },
+        Legacy: { kitNodeName: 'Axle3L' },
+        Arm: { kitNodeName: KIT_2003_NODES.BohrokArm },
+      };
     `;
     const counts = parseAttachmentKitNodeCounts(source, registry2001, registry2003);
     expect(counts.get('Socket')).toBe(1);
     expect(counts.get('Axle3L')).toBe(1);
     expect(counts.get('BohrokArm')).toBe(1);
+  });
+
+  test('parseAttachmentKitNodeCounts ignores comments and helper functions', () => {
+    const registry2001 = { Axle3L: 'Axle3L', Socket: 'Socket' };
+    const registry2003 = { FacePlate: 'Face_Plate' };
+    const source = `
+      export const EXAMPLE_KIT_2001_ATTACHMENTS = {
+        FootL: { kitNodeName: KIT_2001_NODES.Socket },
+        // Axle3LN: { kitNodeName: KIT_2001_NODES.Axle3L },
+      };
+      export function buildExampleKit2003Attachments() {
+        return {
+          Face_Plate_1: { kitNodeName: KIT_2003_NODES.FacePlate },
+        };
+      }
+      export const EXAMPLE_KIT_2003_ATTACHMENTS = {
+        Face_Plate_1: { kitNodeName: KIT_2003_NODES.FacePlate },
+      };
+    `;
+    const counts = parseAttachmentKitNodeCounts(source, registry2001, registry2003);
+    expect(counts.get('Socket')).toBe(1);
+    expect(counts.get('Axle3L')).toBeUndefined();
+    expect(counts.get('Face_Plate')).toBe(1);
+  });
+
+  test('extractAttachmentMapSources keeps exported attachment maps only', () => {
+    const extracted = extractAttachmentMapSources(`
+      export const BOHROK_KIT_2003_ATTACHMENTS = {
+        Arm: { kitNodeName: KIT_2003_NODES.BohrokArm },
+      };
+      export function buildBohrokKit2003Attachments() {
+        return { Face_Plate_1: { kitNodeName: KIT_2003_NODES.FacePlate } };
+      }
+    `);
+    expect(extracted).toContain('BohrokArm');
+    expect(extracted).not.toContain('Face_Plate');
   });
 
   test('diffKitNodeUsage surfaces count changes sorted by magnitude', () => {
