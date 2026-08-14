@@ -5,6 +5,7 @@ import type { Kit2004SocketAttachment } from '../nodes/kit2004Nodes';
 import { KIT_2004_NODES } from '../nodes/kit2004Nodes';
 import { KIT_2003_NODES } from '../nodes/kit2003Nodes';
 import {
+  MATORAN_KIT_PALETTE_ARMS,
   MATORAN_KIT_PALETTE_BLACK,
   MATORAN_KIT_PALETTE_BODY,
   MATORAN_KIT_PALETTE_FACE,
@@ -25,7 +26,7 @@ const METRU_LIMB_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
   Face: { color: { kind: 'lego', value: LegoColor.DarkGray } },
   Main: { color: { kind: 'lego', value: LegoColor.DarkGray } },
   Metal: NUVA_KIT_METAL.Metal,
-  Secondary: MATORAN_KIT_PALETTE_BODY.Main,
+  Secondary: MATORAN_KIT_PALETTE_ARMS.Main,
 };
 
 const PIN_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
