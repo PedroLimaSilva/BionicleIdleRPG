@@ -4,8 +4,8 @@ import { MATA_KIT_PLAYER_PALETTE_BRAIN, mataKitPlayerPaletteGlow } from './mataK
 
 /** Technic pins / axles: fixed black. */
 export const MATORAN_KIT_PALETTE_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Solid_Black: { kind: 'lego', value: LegoColor.Black },
   Metal: { kind: 'lego', value: LegoColor.Black },
+  Solid_Black: { kind: 'lego', value: LegoColor.Black },
 };
 
 /** Flat silver technic: exposed faces vs axle-style pieces (same LEGO gray, different PBR). */

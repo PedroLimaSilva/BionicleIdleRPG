@@ -85,7 +85,7 @@ export function MetruMatoranModel({
     [hasDiskLauncher]
   );
 
-  const rigMaterials = useMemo(() => getMetruRigMaterials(hasDiskLauncher), [hasDiskLauncher]);
+  const rigMaterials = useMemo(() => getMetruRigMaterials(), []);
 
   useEffect(() => {
     setMetruHolsterVisible(characterNodes[METRU_DISK_HOLSTER_NODE], hasDiskLauncher);

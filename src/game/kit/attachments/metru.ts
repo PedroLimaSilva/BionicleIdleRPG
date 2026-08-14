@@ -103,6 +103,10 @@ export function getMetruKit2004Attachments(
 
 /** Technic pins / face / hands from `kit_2001.glb`. */
 export const METRU_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
+  AxleMod2LNeck: {
+    kitNodeName: KIT_2001_NODES.AxleMod2L,
+    materialColors: MATORAN_KIT_PALETTE_BLACK,
+  },
   AxlePinHipL: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: PIN_MATERIAL_COLORS },
   AxlePinHipR: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: PIN_MATERIAL_COLORS },
   AxlePinNeck: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: PIN_MATERIAL_COLORS },
@@ -113,10 +117,6 @@ export const METRU_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment>
   AxlePinShoulderR: {
     kitNodeName: KIT_2001_NODES.AxlePin,
     materialColors: PIN_MATERIAL_COLORS,
-  },
-  AxleMod2LNeck: {
-    kitNodeName: KIT_2001_NODES.AxleMod2L,
-    materialColors: MATORAN_KIT_PALETTE_BLACK,
   },
   AxleSocket1LHead: {
     kitNodeName: KIT_2001_NODES.AxleSocket1L,
@@ -194,6 +194,6 @@ export function getMetruKit2003Attachments(
 /** Rig meshes tinted in place — all Metru matoran (currently none). */
 export const METRU_RIG_MATERIALS_BASE: Record<string, RigMaterialTarget> = {};
 
-export function getMetruRigMaterials(_hasDiskLauncher: boolean): Record<string, RigMaterialTarget> {
+export function getMetruRigMaterials(): Record<string, RigMaterialTarget> {
   return METRU_RIG_MATERIALS_BASE;
 }
