@@ -35,7 +35,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
   },
   {
     description:
-      'Turaga Vakama recounts how Toa Lihkan entrusted the Toa Stones to six Matoran—Vakama, Nokama, Matau, Onewa, Nuju, and Whenua—and how that choice would reshape the destiny of Metru Nui.',
+      'The first tale ends with Lihkan taken and Vakama left with a stone and a vision of horror. Turaga Vakama speaks of the six Matoran who received the stones—craftsmen and scholars in Ta-Metru, Ga-Metru, Le-Metru, Po-Metru, Ko-Metru, and Onu-Metru—and how their ordinary lives were about to change forever.',
     durationSeconds: 18 * 60,
     id: METRU_TOA_STONES_QUEST_ID,
     name: 'Toa Stones for a New Generation',
