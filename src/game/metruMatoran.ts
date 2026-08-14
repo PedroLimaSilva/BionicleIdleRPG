@@ -24,8 +24,8 @@ export const METRU_GREAT_DISK_IDS = [
 export type MetruToaCandidateId = (typeof METRU_TOA_CANDIDATE_IDS)[number];
 export type MetruGreatDiskId = (typeof METRU_GREAT_DISK_IDS)[number];
 
-/** Runtime rig node for the holster branch (sanitized from `Weapon Holster`). */
-export const METRU_DISK_HOLSTER_NODE = 'Weapon_Holster';
+/** Runtime rig node for the holster branch on the loaded rig. */
+export const METRU_DISK_HOLSTER_NODE = 'Disk_LauncherWeapon_Holster';
 
 export function hasMetruDiskLauncher(matoran: Pick<BaseMatoran, 'id' | 'tags'>): boolean {
   if (matoran.tags?.includes(MatoranTag.MetruGreatDisk)) return true;

@@ -17,15 +17,20 @@ import { NUVA_KIT_METAL } from '../palettes/nuvaKitPlayerPalette';
 
 /**
  * Socket keys match **runtime** `Object3D.name` on the loaded rig (after Draco /
- * export). Colons and spaces from Blender (`KitPart:Parent_Side`, `Disk Launcher`)
- * are stripped — e.g. `MetruMatoranLimb:Arm_L` → `MetruMatoranLimbArm_L`.
- * Do not use raw GLB JSON names here.
+ * export). Blender uses `KitName.Bone.Side`, but the loader strips `.` characters
+ * — e.g. `MetruMatoranLimbPiston.LegLower.R` → `MetruMatoranLimbPistonLegLowerR`.
+ * Do not use dotted Blender/GLB JSON names here.
  */
 
-const METRU_LIMB_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
+const METRU_LIMB_PISTON_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
   Face: { color: { kind: 'lego', value: LegoColor.DarkGray } },
   Main: { color: { kind: 'lego', value: LegoColor.DarkGray } },
   Metal: NUVA_KIT_METAL.Metal,
+  Secondary: MATORAN_KIT_PALETTE_ARMS.Main,
+};
+
+const METRU_LIMB_SHIN_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
+  Main: { color: { kind: 'lego', value: LegoColor.DarkGray } },
   Secondary: MATORAN_KIT_PALETTE_ARMS.Main,
 };
 
@@ -41,21 +46,37 @@ const DISK_LAUNCHER_METAL = {
 
 /** Metru Matoran rig sockets filled from `kit_2004.glb`. */
 export const METRU_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment> = {
-  MetruMatoranLimbArm_L: {
-    kitNodeName: KIT_2004_NODES.MetruMatoranLimb,
-    materialColors: METRU_LIMB_MATERIAL_COLORS,
+  MetruMatoranLimbPistonArmUpperL: {
+    kitNodeName: KIT_2004_NODES.MetruMatoranLimbPiston,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
   },
-  MetruMatoranLimbArm_R: {
-    kitNodeName: KIT_2004_NODES.MetruMatoranLimb,
-    materialColors: METRU_LIMB_MATERIAL_COLORS,
+  MetruMatoranLimbPistonArmUpperR: {
+    kitNodeName: KIT_2004_NODES.MetruMatoranLimbPiston,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
   },
-  MetruMatoranLimbLeg_L: {
-    kitNodeName: KIT_2004_NODES.MetruMatoranLimb,
-    materialColors: METRU_LIMB_MATERIAL_COLORS,
+  MetruMatoranLimbPistonLegLowerL: {
+    kitNodeName: KIT_2004_NODES.MetruMatoranLimbPiston,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
   },
-  MetruMatoranLimbLeg_R: {
-    kitNodeName: KIT_2004_NODES.MetruMatoranLimb,
-    materialColors: METRU_LIMB_MATERIAL_COLORS,
+  MetruMatoranLimbPistonLegLowerR: {
+    kitNodeName: KIT_2004_NODES.MetruMatoranLimbPiston,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
+  },
+  MetruMatoranLimbShinArmLowerL: {
+    kitNodeName: KIT_2004_NODES.MetruMatoranLimbShin,
+    materialColors: METRU_LIMB_SHIN_MATERIAL_COLORS,
+  },
+  MetruMatoranLimbShinArmLowerR: {
+    kitNodeName: KIT_2004_NODES.MetruMatoranLimbShin,
+    materialColors: METRU_LIMB_SHIN_MATERIAL_COLORS,
+  },
+  MetruMatoranLimbShinLegUpperL: {
+    kitNodeName: KIT_2004_NODES.MetruMatoranLimbShin,
+    materialColors: METRU_LIMB_SHIN_MATERIAL_COLORS,
+  },
+  MetruMatoranLimbShinLegUpperR: {
+    kitNodeName: KIT_2004_NODES.MetruMatoranLimbShin,
+    materialColors: METRU_LIMB_SHIN_MATERIAL_COLORS,
   },
   MetruMatoranTorsoBody: {
     kitNodeName: KIT_2004_NODES.MetruMatoranTorso,
@@ -63,18 +84,47 @@ export const METRU_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
   },
 };
 
+/** Disk launcher shell — Great Disk matoran only (from `kit_2004.glb`). */
+export const METRU_KIT_2004_DISK_LAUNCHER_ATTACHMENTS: Record<string, Kit2004SocketAttachment> = {
+  Disk_LauncherWeapon_Holster: {
+    kitNodeName: KIT_2004_NODES.DiskLauncher,
+    materialColors: {
+      Metal: DISK_LAUNCHER_METAL,
+    },
+  },
+};
+
+export function getMetruKit2004Attachments(
+  hasDiskLauncher: boolean
+): Record<string, Kit2004SocketAttachment> {
+  if (!hasDiskLauncher) return METRU_KIT_2004_ATTACHMENTS;
+  return { ...METRU_KIT_2004_ATTACHMENTS, ...METRU_KIT_2004_DISK_LAUNCHER_ATTACHMENTS };
+}
+
 /** Technic pins / face / hands from `kit_2001.glb`. */
 export const METRU_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
-  AxlePinHip_L: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: PIN_MATERIAL_COLORS },
-  AxlePinHip_R: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: PIN_MATERIAL_COLORS },
+  AxlePinHipL: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: PIN_MATERIAL_COLORS },
+  AxlePinHipR: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: PIN_MATERIAL_COLORS },
   AxlePinNeck: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: PIN_MATERIAL_COLORS },
-  AxlePinShoulder_L: {
+  AxlePinShoulderL: {
     kitNodeName: KIT_2001_NODES.AxlePin,
     materialColors: PIN_MATERIAL_COLORS,
   },
-  AxlePinShoulder_R: {
+  AxlePinShoulderR: {
     kitNodeName: KIT_2001_NODES.AxlePin,
     materialColors: PIN_MATERIAL_COLORS,
+  },
+  AxleMod2LNeck: {
+    kitNodeName: KIT_2001_NODES.AxleMod2L,
+    materialColors: MATORAN_KIT_PALETTE_BLACK,
+  },
+  AxleSocket1LHead: {
+    kitNodeName: KIT_2001_NODES.AxleSocket1L,
+    materialColors: MATORAN_KIT_PALETTE_BLACK,
+  },
+  AxleSpacer1LNeck: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: MATORAN_KIT_PALETTE_BLACK,
   },
   MataBrainHead: {
     kitNodeName: KIT_2001_NODES.MataBrain,
@@ -82,34 +132,46 @@ export const METRU_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment>
   },
   MataFaceHead: {
     kitNodeName: KIT_2001_NODES.MataFace,
-    materialColors: METRU_LIMB_MATERIAL_COLORS,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
   },
   MataGlowingEyesHead: {
     kitNodeName: KIT_2001_NODES.MataGlowingEyes,
     materialColors: { 'Glowing Eyes': MATORAN_KIT_PALETTE_FACE['Glowing Eyes'] },
   },
-  SocketHand_L: { kitNodeName: KIT_2001_NODES.Socket, materialColors: METRU_LIMB_MATERIAL_COLORS },
-  SocketHand_R: { kitNodeName: KIT_2001_NODES.Socket, materialColors: METRU_LIMB_MATERIAL_COLORS },
-  SocketHip_L: { kitNodeName: KIT_2001_NODES.Socket, materialColors: METRU_LIMB_MATERIAL_COLORS },
-  SocketHip_R: { kitNodeName: KIT_2001_NODES.Socket, materialColors: METRU_LIMB_MATERIAL_COLORS },
-  SocketShoulder_L: {
+  SocketHandL: {
     kitNodeName: KIT_2001_NODES.Socket,
-    materialColors: METRU_LIMB_MATERIAL_COLORS,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
   },
-  SocketShoulder_R: {
+  SocketHandR: {
     kitNodeName: KIT_2001_NODES.Socket,
-    materialColors: METRU_LIMB_MATERIAL_COLORS,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
+  },
+  SocketHipL: {
+    kitNodeName: KIT_2001_NODES.Socket,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
+  },
+  SocketHipR: {
+    kitNodeName: KIT_2001_NODES.Socket,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
+  },
+  SocketShoulderL: {
+    kitNodeName: KIT_2001_NODES.Socket,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
+  },
+  SocketShoulderR: {
+    kitNodeName: KIT_2001_NODES.Socket,
+    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
   },
 };
 
 /** Bohrok feet from `kit_2003.glb` (all Metru matoran). */
 export const METRU_KIT_2003_FOOT_ATTACHMENTS: Record<string, KitSocketAttachment> = {
-  Bohrok_FootL: {
-    kitNodeName: 'Bohrok_Foot',
+  Bohrok_FootFootL: {
+    kitNodeName: KIT_2003_NODES.BohrokFoot,
     materialColors: MATORAN_KIT_PALETTE_FEET,
   },
-  Bohrok_FootR: {
-    kitNodeName: 'Bohrok_Foot',
+  Bohrok_FootFootR: {
+    kitNodeName: KIT_2003_NODES.BohrokFoot,
     materialColors: MATORAN_KIT_PALETTE_FEET,
   },
 };
@@ -129,25 +191,9 @@ export function getMetruKit2003Attachments(
   return { ...METRU_KIT_2003_FOOT_ATTACHMENTS, ...METRU_KIT_2003_HOLSTER_ATTACHMENTS };
 }
 
-/** Rig meshes tinted in place — all Metru matoran. */
-export const METRU_RIG_MATERIALS_BASE: Record<string, RigMaterialTarget> = {
-  PerpendicularAxleJoint2L: {
-    materialColors: {
-      'SOLID-BLACK': MATORAN_KIT_PALETTE_BLACK.Solid_Black,
-    },
-  },
-};
+/** Rig meshes tinted in place — all Metru matoran (currently none). */
+export const METRU_RIG_MATERIALS_BASE: Record<string, RigMaterialTarget> = {};
 
-/** Disk launcher shell — Great Disk matoran only. */
-export const METRU_RIG_MATERIALS_HOLSTER: Record<string, RigMaterialTarget> = {
-  Disk_Launcher: {
-    materialColors: {
-      Metal: DISK_LAUNCHER_METAL,
-    },
-  },
-};
-
-export function getMetruRigMaterials(hasDiskLauncher: boolean): Record<string, RigMaterialTarget> {
-  if (!hasDiskLauncher) return METRU_RIG_MATERIALS_BASE;
-  return { ...METRU_RIG_MATERIALS_BASE, ...METRU_RIG_MATERIALS_HOLSTER };
+export function getMetruRigMaterials(_hasDiskLauncher: boolean): Record<string, RigMaterialTarget> {
+  return METRU_RIG_MATERIALS_BASE;
 }

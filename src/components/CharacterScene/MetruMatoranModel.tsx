@@ -13,9 +13,9 @@ import { KIT_2003_GLB_PATH } from '../../game/kit/kit2003';
 import { KIT_2004_GLB_PATH } from '../../game/kit/kit2004';
 import {
   getMetruKit2003Attachments,
+  getMetruKit2004Attachments,
   getMetruRigMaterials,
   METRU_KIT_2001_ATTACHMENTS,
-  METRU_KIT_2004_ATTACHMENTS,
 } from '../../game/kit/attachments/metru';
 import {
   METRU_MASK_DISCOLORATION,
@@ -80,6 +80,11 @@ export function MetruMatoranModel({
     [hasDiskLauncher]
   );
 
+  const kit2004Attachments = useMemo(
+    () => getMetruKit2004Attachments(hasDiskLauncher),
+    [hasDiskLauncher]
+  );
+
   const rigMaterials = useMemo(() => getMetruRigMaterials(hasDiskLauncher), [hasDiskLauncher]);
 
   useEffect(() => {
@@ -87,7 +92,7 @@ export function MetruMatoranModel({
   }, [characterNodes, hasDiskLauncher]);
 
   useKitAttachments({
-    attachments: METRU_KIT_2004_ATTACHMENTS,
+    attachments: kit2004Attachments,
     characterNodes,
     colors: matoran.colors,
     kitUrl: KIT_2004_GLB_PATH,
@@ -134,7 +139,7 @@ export function MetruMatoranModel({
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.Matoran} position={[0, 0, -1.4]} />
+      <primitive object={nodes.Matoran} position={[0, 6.6, -1.4]} />
     </group>
   );
 }

@@ -22,7 +22,7 @@ export type UseRigMaterialsParams = {
 
 /**
  * Applies player palette / weathered materials to meshes baked into the character rig
- * (e.g. Metru holster shell under `Disk Launcher`). Sockets with no kit
+ * (e.g. Metru holster shell under `Disk_Launcher`). Sockets with no kit
  * counterpart stay in place; only their materials are updated.
  */
 export function useRigMaterials({
