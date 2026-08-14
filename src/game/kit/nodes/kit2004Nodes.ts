@@ -5,6 +5,7 @@
  */
 export const KIT_2004_NODES = {
   MetruMatoranLimb: 'MetruMatoranLimb',
+  MetruMatoranTorso: 'MetruMatoranTorso',
 } as const;
 
 export type Kit2004NodeName = (typeof KIT_2004_NODES)[keyof typeof KIT_2004_NODES];
