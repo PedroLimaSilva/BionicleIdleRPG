@@ -354,6 +354,16 @@ XP: 6000"]
 (12m)
 Currency: 5000
 XP: 4000"]
+  story_metru_nui_saga_begin["Tales of the Lost City
+(15m)
+Unlock: Toa_Lihkan
+Currency: 5500
+XP: 4500"]
+  metru_toa_stones_for_new_generation["Toa Stones for a New Generation
+(18m)
+Unlock: Matau, Nokama, Nuju, Onewa, Vakama, Whenua
+Currency: 6000
+XP: 5000"]
   story_toa_arrival --> maskhunt_kopaka_matoro_icecliff
   maskhunt_kopaka_matoro_icecliff --> maskhunt_kopaka_pohatu_icecliff
   mnog_tahu_unlock_01 --> story_toa_council
@@ -451,6 +461,8 @@ XP: 4000"]
   mol_battle_of_kini_nui --> mol_takanuva_rises
   mol_takanuva_rises --> mol_defeat_of_makuta
   mol_defeat_of_makuta --> mol_rediscovery_of_metru_nui
+  mol_rediscovery_of_metru_nui --> story_metru_nui_saga_begin
+  story_metru_nui_saga_begin --> metru_toa_stones_for_new_generation
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff

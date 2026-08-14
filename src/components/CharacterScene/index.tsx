@@ -116,6 +116,7 @@ function CharacterModel({
     case MatoranStage.Rebuilt:
       return <RebuiltMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Metru:
+    case MatoranStage.ToaMetru:
       return (
         <MetruMatoranModel key={matoran.id} matoran={matoran} onKitMeshesAttached={onModelReady} />
       );

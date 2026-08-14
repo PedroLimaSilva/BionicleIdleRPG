@@ -5,6 +5,7 @@ import { MASK_HUNT_CUTSCENES } from './mask_hunt';
 import { BOHROK_SWARM_CUTSCENES } from './bohrok_swarm';
 import { BOHROK_KAL_CUTSCENES } from './bohrok_kal';
 import { MASK_OF_LIGHT_CUTSCENES } from './mask_of_light';
+import { METRU_NUI_CUTSCENES } from './metru_nui';
 
 export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
   ...MNOG_CUTSCENES,
@@ -13,4 +14,5 @@ export const VISUAL_NOVEL_CUTSCENES: Record<string, VisualNovelCutscene> = {
   ...BOHROK_SWARM_CUTSCENES,
   ...BOHROK_KAL_CUTSCENES,
   ...MASK_OF_LIGHT_CUTSCENES,
+  ...METRU_NUI_CUTSCENES,
 };

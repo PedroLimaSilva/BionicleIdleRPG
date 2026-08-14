@@ -1,5 +1,5 @@
 import type { BaseMatoran } from '../types/Matoran';
-import { MatoranTag } from '../types/Matoran';
+import { MatoranStage, MatoranTag } from '../types/Matoran';
 
 /** Future Toa Metru — no Kanoka disk launcher on the rig. */
 export const METRU_TOA_CANDIDATE_IDS = [
@@ -27,7 +27,8 @@ export type MetruGreatDiskId = (typeof METRU_GREAT_DISK_IDS)[number];
 /** Runtime rig node for the holster branch (sanitized from `Weapon Holster`). */
 export const METRU_DISK_HOLSTER_NODE = 'Weapon_Holster';
 
-export function hasMetruDiskLauncher(matoran: Pick<BaseMatoran, 'id' | 'tags'>): boolean {
+export function hasMetruDiskLauncher(matoran: Pick<BaseMatoran, 'id' | 'tags' | 'stage'>): boolean {
+  if (matoran.stage === MatoranStage.ToaMetru) return false;
   if (matoran.tags?.includes(MatoranTag.MetruGreatDisk)) return true;
   return (METRU_GREAT_DISK_IDS as readonly string[]).includes(matoran.id);
 }

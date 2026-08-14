@@ -2,6 +2,7 @@ import { isCustomCharacterId, Mask, MatoranStage, RecruitedCharacterData } from 
 import { CHARACTER_DEX } from '../data/dex/index';
 import { getLevelFromExp } from './Levelling';
 import { MOL_TAKANUVA_RISES_QUEST_ID } from '../data/quests/mask_of_light';
+import { METRU_NUI_SAGA_BEGIN_QUEST_ID } from '../data/quests/metru_nui';
 import { DEFAULT_CUSTOM_MATA_MODEL_ID } from './customMataBuild';
 
 export const EVOLUTION_LEVEL_REQUIREMENT = 40;
@@ -15,12 +16,10 @@ export const CUSTOM_REBUILT_COST = 1000;
 export const CUSTOM_TOA_COST = 3000;
 
 /**
- * Special quest id used to gate custom-character Toa evolution. The Metru Nui saga is
- * not yet implemented in this codebase; once it is, completing this quest will unlock
- * custom Toa evolution. Until then, players can still trigger the Toa stage manually by
- * completing this quest id via the game state editor for testing.
+ * Special quest id used to gate custom-character Toa evolution. Completing the Metru Nui
+ * saga opener unlocks custom Toa evolution for player-created characters.
  */
-export const CUSTOM_TOA_UNLOCK_QUEST_ID = 'story_metru_nui_saga_begin';
+export const CUSTOM_TOA_UNLOCK_QUEST_ID = METRU_NUI_SAGA_BEGIN_QUEST_ID;
 
 export interface EvolutionPath {
   unlockedByQuest: string;
