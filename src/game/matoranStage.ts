@@ -26,6 +26,10 @@ export function isToaNuva(matoran: BaseMatoran) {
   return matoran.stage === MatoranStage.ToaNuva;
 }
 
+export function isToaMetru(matoran: BaseMatoran) {
+  return matoran.stage === MatoranStage.ToaMetru;
+}
+
 export function isToa(matoran: BaseMatoran) {
-  return isToaMata(matoran) || isToaNuva(matoran);
+  return isToaMata(matoran) || isToaNuva(matoran) || isToaMetru(matoran);
 }

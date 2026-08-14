@@ -47,4 +47,12 @@ export const RECRUITMENT_REGISTRY: RecruitmentEntry[] = [
   { cost: 500, id: 'pahrak', unlockedByQuest: 'bohrok_assistants' },
   { cost: 500, id: 'nuhvok', unlockedByQuest: 'bohrok_assistants' },
   { cost: 500, id: 'kohrak', unlockedByQuest: 'bohrok_assistants' },
+  // Metru Nui
+  { cost: 3000, id: 'Toa_Lihkan', unlockedByQuest: 'story_metru_nui_saga_begin' },
+  { cost: 1500, id: 'Vakama', unlockedByQuest: 'metru_toa_stones_for_new_generation' },
+  { cost: 1500, id: 'Nokama', unlockedByQuest: 'metru_toa_stones_for_new_generation' },
+  { cost: 1500, id: 'Nuju', unlockedByQuest: 'metru_toa_stones_for_new_generation' },
+  { cost: 1500, id: 'Onewa', unlockedByQuest: 'metru_toa_stones_for_new_generation' },
+  { cost: 1500, id: 'Matau', unlockedByQuest: 'metru_toa_stones_for_new_generation' },
+  { cost: 1500, id: 'Whenua', unlockedByQuest: 'metru_toa_stones_for_new_generation' },
 ];

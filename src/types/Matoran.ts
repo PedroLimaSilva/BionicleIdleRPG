@@ -63,6 +63,7 @@ export const enum MatoranStage {
   Turaga = 'Turaga',
   ToaMata = 'Toa Mata',
   ToaNuva = 'Toa Nuva',
+  ToaMetru = 'Toa Metru',
   Diminished = 'Diminished',
   Rebuilt = 'Rebuilt',
   Metru = 'Metru',
