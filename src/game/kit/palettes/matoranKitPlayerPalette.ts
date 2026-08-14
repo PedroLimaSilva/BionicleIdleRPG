@@ -4,6 +4,7 @@ import { MATA_KIT_PLAYER_PALETTE_BRAIN, mataKitPlayerPaletteGlow } from './mataK
 
 /** Technic pins / axles: fixed black. */
 export const MATORAN_KIT_PALETTE_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
+  Metal: { kind: 'lego', value: LegoColor.Black },
   Solid_Black: { kind: 'lego', value: LegoColor.Black },
 };
 

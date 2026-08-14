@@ -4,7 +4,9 @@
  * When adding a node here, wire it in an attachment map or add to `KIT_NODE_EXEMPT`.
  */
 export const KIT_2004_NODES = {
-  MetruMatoranLimb: 'MetruMatoranLimb',
+  DiskLauncher: 'Disk_Launcher',
+  MetruMatoranLimbPiston: 'MetruMatoranLimbPiston',
+  MetruMatoranLimbShin: 'MetruMatoranLimbShin',
   MetruMatoranTorso: 'MetruMatoranTorso',
 } as const;
 
