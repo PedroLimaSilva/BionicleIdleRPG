@@ -19,7 +19,7 @@ const METRU_TOA_CANDIDATE_RECRUIT_IDS = [
 export const METRU_NUI_QUEST_LINE: Quest[] = [
   {
     description:
-      'With Metru Nui revealed below, Turaga Vakama gathers the heroes at the edge of the abyss. At last he begins the tale he has kept hidden for so long—of Toa Lihkan, the Toa Stones, and the Matoran chosen to become legends.',
+      'At Kini-Nui, Turaga Vakama gathers the Toa around the Amaja Circle. He warns that the tales of Metru Nui are tales of sacrifice, betrayal, and heroes—and begins the first tale: how Toa Lihkan sealed the Toa Stones and delivered them across the city, even as the Dark Hunters closed in.',
     durationSeconds: 15 * 60,
     id: METRU_NUI_SAGA_BEGIN_QUEST_ID,
     name: 'Tales of the Lost City',
