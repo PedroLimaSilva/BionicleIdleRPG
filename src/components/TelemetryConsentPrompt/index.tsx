@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { hasTelemetryConsent } from '../../services/gamePersistence';
-import { getTelemetryUrl } from '../../services/telemetry';
+import { isAnalyticsConfigured } from '../../services/telemetry';
 import { useSettings } from '../../context/useSettings';
 import './index.scss';
 
 export function TelemetryConsentPrompt() {
-  const [visible, setVisible] = useState(() => !hasTelemetryConsent() && !!getTelemetryUrl());
+  const [visible, setVisible] = useState(() => !hasTelemetryConsent() && isAnalyticsConfigured());
   const { setTelemetryEnabled } = useSettings();
   const { pathname } = useLocation();
 
