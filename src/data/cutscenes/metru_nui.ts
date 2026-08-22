@@ -1,9 +1,9 @@
 import type { VisualNovelCutscene } from '../../types/Cutscenes';
 
 export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
-  metru_vakama_lihkan_story: {
+  metru_vakama_lhikan_story: {
     background: { from: '#0d1f2d', to: '#ffe28e', type: 'gradient' },
-    id: 'metru_vakama_lihkan_story',
+    id: 'metru_vakama_lhikan_story',
     steps: [
       {
         text: 'Days after Metru Nui was revealed in the abyss below, Turaga Vakama led the heroes back to Kini-Nui. The Toa gathered around the Amaja Circle—the sandpit where legends had been told for as long as anyone could remember.',
@@ -42,7 +42,7 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'dialogue',
       },
       {
-        text: 'Toa Lihkan, guardian of the city of Metru Nui, stood in the semi-darkness of the Great Temple. He had come there many times to remember what had gone before and reflect on the future. This had always been a place that soothed his spirit. But not today.',
+        text: 'Toa Lhikan, guardian of the city of Metru Nui, stood in the semi-darkness of the Great Temple. He had come there many times to remember what had gone before and reflect on the future. This had always been a place that soothed his spirit. But not today.',
         type: 'narration',
       },
       {
@@ -50,27 +50,27 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'narration',
       },
       {
-        text: 'Grimly, Lihkan pried open the suva. Then he reached in and took the sixth and last Toa Stone off its pedestal. As he had done five times before, he placed the stone on a thin sheet of metallic protodermis in his open palm, then clenched his fist around it.',
+        text: 'Grimly, Lhikan pried open the suva. Then he reached in and took the sixth and last Toa Stone off its pedestal. As he had done five times before, he placed the stone on a thin sheet of metallic protodermis in his open palm, then clenched his fist around it.',
         type: 'narration',
       },
       {
-        text: 'Behind his Hau, Lihkan’s eyes narrowed. He knew he was doing far more than taking objects of power. He was taking a step that would change his life, the lives of six others, and the very future of Metru Nui.',
+        text: 'Behind his Hau, Lhikan’s eyes narrowed. He knew he was doing far more than taking objects of power. He was taking a step that would change his life, the lives of six others, and the very future of Metru Nui.',
         type: 'narration',
       },
       {
-        text: 'Six streams of energy merged into a single white lance of power over the wrapped stone. When Lihkan opened his fist, the metallic sheet was sealed around it—imprinted with the symbol of Unity, Duty, and Destiny.',
+        text: 'Six streams of energy merged into a single white lance of power over the wrapped stone. When Lhikan opened his fist, the metallic sheet was sealed around it—imprinted with the symbol of Unity, Duty, and Destiny.',
         type: 'narration',
       },
       {
-        text: 'Lihkan heard a soft sound behind him. Approaching from the darkness were two figures—one a four-legged insectoid being, the other a hulking brute. Nidhiki and Krekka. Lihkan was already moving as the insectoid began hurling energy blasts.',
+        text: 'Lhikan heard a soft sound behind him. Approaching from the darkness were two figures—one a four-legged insectoid being, the other a hulking brute. Nidhiki and Krekka. Lhikan was already moving as the insectoid began hurling energy blasts.',
         type: 'narration',
       },
       {
-        text: 'Fleeing was against Lihkan’s nature, but he had been a Toa long enough to know it did not pay to challenge impossible odds. He ran, dodging as the Dark Hunters snared him in energy webs. As they closed in, the Toa of Fire leaped through a window and plunged into space—then combined his tools into a glider and vanished from view.',
+        text: 'Fleeing was against Lhikan’s nature, but he had been a Toa long enough to know it did not pay to challenge impossible odds. He ran, dodging as the Dark Hunters snared him in energy webs. As they closed in, the Toa of Fire leaped through a window and plunged into space—then combined his tools into a glider and vanished from view.',
         type: 'narration',
       },
       {
-        text: 'Across Metru Nui, Lihkan delivered the stones. To Nokama at the Great Temple, who wondered what it could mean. To Onewa in Po-Metru, where a wrapped package landed at his feet. To Whenua in the Archives, who never heard the Toa approach. To Matau on the Le-Metru test track, after a moto-sled invented by Nuparu nearly threw him to the ground. To Nuju atop a Ko-Metru tower, who saw Lihkan glide toward him through the stars.',
+        text: 'Across Metru Nui, Lhikan delivered the stones. To Nokama at the Great Temple, who wondered what it could mean. To Onewa in Po-Metru, where a wrapped package landed at his feet. To Whenua in the Archives, who never heard the Toa approach. To Matau on the Le-Metru test track, after a moto-sled invented by Nuparu nearly threw him to the ground. To Nuju atop a Ko-Metru tower, who saw Lhikan glide toward him through the stars.',
         type: 'narration',
       },
       {
@@ -80,7 +80,7 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
       {
         portraitType: 'avatar',
         position: 'left',
-        speakerId: 'Toa_Lihkan',
+        speakerId: 'Toa_Lhikan',
         text: 'Making Great Masks, Vakama?',
         type: 'dialogue',
       },
@@ -88,55 +88,55 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'right',
         speakerId: 'Vakama',
-        text: 'Toa Lihkan! Um… not yet. But with the right disk…',
+        text: 'Toa Lhikan! Um… not yet. But with the right disk…',
         type: 'dialogue',
       },
       {
         portraitType: 'avatar',
         position: 'left',
-        speakerId: 'Toa_Lihkan',
+        speakerId: 'Toa_Lhikan',
         text: 'The city needs your help, Vakama. Matoran are vanishing. Deceit lurks in the shadows of Metru Nui.',
         type: 'dialogue',
       },
       {
-        text: 'A large, four-legged insectoid creature stood inside the foundry. “Some of us take our duty seriously, Nidhiki,” Lihkan growled. Nidhiki spat blasts of dark energy. Lihkan evaded them, but one surge sheared through a catwalk support.',
+        text: 'A large, four-legged insectoid creature stood inside the foundry. “Some of us take our duty seriously, Nidhiki,” Lhikan growled. Nidhiki spat blasts of dark energy. Lhikan evaded them, but one surge sheared through a catwalk support.',
         type: 'narration',
       },
       {
         portraitType: 'avatar',
         position: 'left',
-        speakerId: 'Toa_Lihkan',
+        speakerId: 'Toa_Lhikan',
         text: 'Keep it safe. Get to the Great Temple.',
         type: 'dialogue',
       },
       {
-        text: 'Krekka crashed onto the catwalk beside Lihkan. The Toa waited for the right moment, then sidestepped and tossed the Dark Hunter toward the molten protodermis below. Krekka grabbed the edge of the catwalk and began to pull himself back up.',
+        text: 'Krekka crashed onto the catwalk beside Lhikan. The Toa waited for the right moment, then sidestepped and tossed the Dark Hunter toward the molten protodermis below. Krekka grabbed the edge of the catwalk and began to pull himself back up.',
         type: 'narration',
       },
       {
         portraitType: 'avatar',
         position: 'left',
-        speakerId: 'Toa_Lihkan',
+        speakerId: 'Toa_Lhikan',
         text: 'Vakama! Move!',
         type: 'dialogue',
       },
       {
-        text: 'Metal groaned and snapped. The catwalk broke free, sending Vakama sliding toward molten doom. Lihkan jumped to the broken platform and seized the Matoran—even as Nidhiki struck again.',
+        text: 'Metal groaned and snapped. The catwalk broke free, sending Vakama sliding toward molten doom. Lhikan jumped to the broken platform and seized the Matoran—even as Nidhiki struck again.',
         type: 'narration',
       },
       {
-        text: 'Krekka seized the crane and dangled Lihkan and Vakama over the bubbling vat. Lihkan hoisted Vakama onto the claw. Then he swung his body like a pendulum, launched himself onto the cab, and shouldered Krekka aside—just before Nidhiki’s energy web wrapped around him.',
+        text: 'Krekka seized the crane and dangled Lhikan and Vakama over the bubbling vat. Lhikan hoisted Vakama onto the claw. Then he swung his body like a pendulum, launched himself onto the cab, and shouldered Krekka aside—just before Nidhiki’s energy web wrapped around him.',
         type: 'narration',
       },
       {
         portraitType: 'avatar',
         position: 'left',
-        speakerId: 'Toa_Lihkan',
+        speakerId: 'Toa_Lhikan',
         text: 'Vakama, the Great Spirit depends on you! Save the heart of Metru Nui!',
         type: 'dialogue',
       },
       {
-        text: 'Vakama’s mind was overtaken by a vision—time slowing, Lihkan’s face twisted and distorted, and behind him a pair of red eyes radiating pure evil. The sight left him weak and trembling.',
+        text: 'Vakama’s mind was overtaken by a vision—time slowing, Lhikan’s face twisted and distorted, and behind him a pair of red eyes radiating pure evil. The sight left him weak and trembling.',
         type: 'narration',
       },
       {
@@ -147,7 +147,7 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
         type: 'dialogue',
       },
       {
-        text: 'Krekka and Nidhiki dragged Lihkan away. “Time is short!” he yelled. “Stop the darkness!” But there was nothing else Vakama could do.',
+        text: 'Krekka and Nidhiki dragged Lhikan away. “Time is short!” he yelled. “Stop the darkness!” But there was nothing else Vakama could do.',
         type: 'narration',
       },
       {
@@ -158,14 +158,14 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
         portraitType: 'avatar',
         position: 'left',
         speakerId: 'Turaga_Vakama',
-        text: 'That was how the Toa Stones came to us—and how Toa Lihkan was taken. What followed… is a tale for another night. But know this: the heart of Metru Nui was already in danger long before we ever saw its towers from above.',
+        text: 'That was how the Toa Stones came to us—and how Toa Lhikan was taken. What followed… is a tale for another night. But know this: the heart of Metru Nui was already in danger long before we ever saw its towers from above.',
         type: 'dialogue',
       },
       {
         portraitType: 'avatar',
         position: 'right',
         speakerId: 'Jaller',
-        text: 'And Lihkan… is he still down there?',
+        text: 'And Lhikan… is he still down there?',
         type: 'dialogue',
       },
       {

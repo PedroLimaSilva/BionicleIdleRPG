@@ -356,7 +356,7 @@ Currency: 5000
 XP: 4000"]
   story_metru_nui_saga_begin["Tales of the Lost City
 (15m)
-Unlock: Toa_Lihkan
+Unlock: Toa_Lhikan
 Currency: 5500
 XP: 4500"]
   metru_toa_stones_for_new_generation["Toa Stones for a New Generation

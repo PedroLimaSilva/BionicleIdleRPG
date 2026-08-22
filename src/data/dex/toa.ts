@@ -123,7 +123,7 @@ export const TOA_DEX = {
     name: 'Toa Lewa Nuva',
     stage: MatoranStage.ToaNuva,
   },
-  Toa_Lihkan: {
+  Toa_Lhikan: {
     colors: {
       arms: LegoColor.Orange,
       body: LegoColor.Red,
@@ -134,9 +134,9 @@ export const TOA_DEX = {
       weaponGlow: LegoColor.Orange,
     },
     element: ElementTribe.Fire,
-    id: 'Toa_Lihkan',
+    id: 'Toa_Lhikan',
     mask: Mask.Hau,
-    name: 'Toa Lihkan',
+    name: 'Toa Lhikan',
     stage: MatoranStage.ToaMetru,
   },
   Toa_Onua: {
