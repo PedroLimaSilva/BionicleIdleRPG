@@ -18,6 +18,13 @@ import { METRU_WEATHERED } from '../../../game/kit/palettes/metruKitPlayerPalett
 
 const LHIKAN_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Metru/Lhikan.glb';
 
+/**
+ * `Lhikan.glb` authors the armature at Y≈10.11 so feet sit near 0 and the
+ * head near 18 (the CharacterScene framing cylinder). Do not zero Y the way
+ * Mata/Nuva roots do — that drops the legs below the camera.
+ */
+const LHIKAN_BIND_POSE_Y = 10.111;
+
 /** Must match how many `useKitAttachments` calls this component makes. */
 const LHIKAN_KIT_ATTACHMENT_RUNS = 3;
 
@@ -84,7 +91,7 @@ export const LhikanModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={nodes.LHIKAN} scale={1} position={[0, 0, -0.4]} />
+      <primitive object={nodes.LHIKAN} scale={1} position={[0, LHIKAN_BIND_POSE_Y, -0.4]} />
     </group>
   );
 });
