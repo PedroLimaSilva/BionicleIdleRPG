@@ -9,11 +9,7 @@ import { useKitAttachments } from '../../../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../../../game/kit/kit2003';
 import { KIT_2004_GLB_PATH } from '../../../game/kit/kit2004';
-import {
-  LHIKAN_KIT_2001_ATTACHMENTS,
-  LHIKAN_KIT_2003_ATTACHMENTS,
-  LHIKAN_KIT_2004_ATTACHMENTS,
-} from '../../../game/kit/attachments/Toa Metru/lhikan';
+import { buildLhikanKitAttachments } from '../../../game/kit/attachments/Toa Metru/lhikan';
 import { METRU_WEATHERED } from '../../../game/kit/palettes/metruKitPlayerPalette';
 
 const LHIKAN_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Metru/Lhikan.glb';
@@ -58,10 +54,22 @@ export const LhikanModel = forwardRef<
     };
   }, [onKitMeshesAttached]);
 
-  const characterNodes = nodes as Record<string, Object3D | undefined>;
+  const characterNodes = useMemo(() => {
+    const map: Record<string, Object3D> = {};
+    (nodes.LHIKAN as Object3D | undefined)?.traverse((child) => {
+      if (!child.name || child.type === 'Bone') return;
+      map[child.name] = child;
+    });
+    return map;
+  }, [nodes]);
+
+  const { kit2001, kit2003, kit2004 } = useMemo(
+    () => buildLhikanKitAttachments(Object.keys(characterNodes)),
+    [characterNodes]
+  );
 
   useKitAttachments({
-    attachments: LHIKAN_KIT_2004_ATTACHMENTS,
+    attachments: kit2004,
     characterNodes,
     colors: matoran.colors,
     kitUrl: KIT_2004_GLB_PATH,
@@ -70,7 +78,7 @@ export const LhikanModel = forwardRef<
   });
 
   useKitAttachments({
-    attachments: LHIKAN_KIT_2001_ATTACHMENTS,
+    attachments: kit2001,
     characterNodes,
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,
@@ -79,7 +87,7 @@ export const LhikanModel = forwardRef<
   });
 
   useKitAttachments({
-    attachments: LHIKAN_KIT_2003_ATTACHMENTS,
+    attachments: kit2003,
     characterNodes,
     colors: matoran.colors,
     kitUrl: KIT_2003_GLB_PATH,
