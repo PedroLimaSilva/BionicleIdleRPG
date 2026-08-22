@@ -17,6 +17,8 @@ import { NUVA_KIT_METAL } from '../../palettes/nuvaKitPlayerPalette';
 /**
  * Socket keys are Three.js runtime names (`PropertyBinding.sanitizeNodeName`):
  * Blender `MetruFoot.Foot.L` → `MetruFootFootL`.
+ * Duplicate `ArmLower.L` / `ArmLower.R` bones keep the first name; the inner
+ * kit sockets are `ArmLowerL_1` / `ArmLowerR_1`.
  */
 
 const LHIKAN_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -70,8 +72,8 @@ const LHIKAN_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
  * Lhikan — sockets on `Toa_Metru/Lhikan.glb` filled from `kit_2004.glb`.
  */
 export const LHIKAN_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment> = {
-  ArmLowerL: { kitNodeName: KIT_2004_NODES.MetruArm, materialColors: LHIKAN_ARM_COLORS },
-  ArmLowerR: { kitNodeName: KIT_2004_NODES.MetruArm, materialColors: LHIKAN_ARM_COLORS },
+  ArmLowerL_1: { kitNodeName: KIT_2004_NODES.MetruArm, materialColors: LHIKAN_ARM_COLORS },
+  ArmLowerR_1: { kitNodeName: KIT_2004_NODES.MetruArm, materialColors: LHIKAN_ARM_COLORS },
   AxleArm3LB: { kitNodeName: KIT_2004_NODES.AxleArm3L, materialColors: LHIKAN_PALETTE_COLORS },
   AxleArm3LF: { kitNodeName: KIT_2004_NODES.AxleArm3L, materialColors: LHIKAN_PALETTE_COLORS },
   DoubleSocketArmorL: {
