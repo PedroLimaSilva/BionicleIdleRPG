@@ -13,6 +13,11 @@ import { ONUA_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/onua';
 import { POHATU_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/pohatu';
 import { TAHU_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/tahu';
 import {
+  LHIKAN_KIT_2001_ATTACHMENTS,
+  LHIKAN_KIT_2003_ATTACHMENTS,
+  LHIKAN_KIT_2004_ATTACHMENTS,
+} from '../attachments/Toa Metru/lhikan';
+import {
   GALI_NUVA_KIT_2001_ATTACHMENTS,
   GALI_NUVA_KIT_2003_ATTACHMENTS,
 } from '../attachments/Toa Nuva/gali';
@@ -40,14 +45,22 @@ import {
   TAKANUVA_KIT_2001_ATTACHMENTS,
   TAKANUVA_KIT_2003_ATTACHMENTS,
 } from '../attachments/Toa Nuva/takanuva';
+import {
+  METRU_KIT_2004_ATTACHMENTS,
+  METRU_KIT_2004_DISK_LAUNCHER_ATTACHMENTS,
+} from '../attachments/metru';
 import { KIT_2001_NODES, type Kit2001NodeName } from './kit2001Nodes';
 import { KIT_2003_NODES, type Kit2003NodeName } from './kit2003Nodes';
+import { KIT_2004_NODES, type Kit2004NodeName } from './kit2004Nodes';
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
 export const KIT_2001_NODE_EXEMPT: readonly Kit2001NodeName[] = [];
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
 export const KIT_2003_NODE_EXEMPT: readonly Kit2003NodeName[] = [];
+
+/** Kit nodes registered but intentionally not referenced by any attachment map yet. */
+export const KIT_2004_NODE_EXEMPT: readonly Kit2004NodeName[] = [];
 
 function collectUsedNodes(maps: Record<string, KitSocketAttachment<string>>[]): Set<string> {
   const used = new Set<string>();
@@ -141,6 +154,7 @@ export const KIT_2001_ATTACHMENT_MAPS = [
   POHATU_NUVA_KIT_2001_ATTACHMENTS,
   TAHU_NUVA_KIT_2001_ATTACHMENTS,
   TAKANUVA_KIT_2001_ATTACHMENTS,
+  LHIKAN_KIT_2001_ATTACHMENTS,
 ] as const;
 
 export const KIT_2003_ATTACHMENT_MAPS = [
@@ -154,6 +168,13 @@ export const KIT_2003_ATTACHMENT_MAPS = [
   POHATU_NUVA_KIT_2003_ATTACHMENTS,
   TAHU_NUVA_KIT_2003_ATTACHMENTS,
   TAKANUVA_KIT_2003_ATTACHMENTS,
+  LHIKAN_KIT_2003_ATTACHMENTS,
+] as const;
+
+export const KIT_2004_ATTACHMENT_MAPS = [
+  LHIKAN_KIT_2004_ATTACHMENTS,
+  METRU_KIT_2004_ATTACHMENTS,
+  METRU_KIT_2004_DISK_LAUNCHER_ATTACHMENTS,
 ] as const;
 
 export function getUsedKit2001NodeNames(): Set<Kit2001NodeName> {
@@ -174,4 +195,14 @@ export function getUnusedKit2003NodeNames(): Kit2003NodeName[] {
   const used = getUsedKit2003NodeNames();
   const exempt = new Set<string>(KIT_2003_NODE_EXEMPT);
   return Object.values(KIT_2003_NODES).filter((name) => !used.has(name) && !exempt.has(name));
+}
+
+export function getUsedKit2004NodeNames(): Set<Kit2004NodeName> {
+  return collectUsedNodes([...KIT_2004_ATTACHMENT_MAPS]) as Set<Kit2004NodeName>;
+}
+
+export function getUnusedKit2004NodeNames(): Kit2004NodeName[] {
+  const used = getUsedKit2004NodeNames();
+  const exempt = new Set<string>(KIT_2004_NODE_EXEMPT);
+  return Object.values(KIT_2004_NODES).filter((name) => !used.has(name) && !exempt.has(name));
 }

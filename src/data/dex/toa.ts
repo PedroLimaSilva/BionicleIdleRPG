@@ -135,7 +135,7 @@ export const TOA_DEX = {
     },
     element: ElementTribe.Fire,
     id: 'Toa_Lhikan',
-    mask: Mask.Hau,
+    mask: Mask.HauGreat,
     name: 'Toa Lhikan',
     stage: MatoranStage.ToaMetru,
   },

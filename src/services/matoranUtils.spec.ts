@@ -372,5 +372,19 @@ describe('matoranUtils', () => {
         expect(masks).toEqual([Mask.HauNuva, Mask.Vahi]);
       });
     });
+
+    describe('Toa Metru', () => {
+      test('Lhikan only has his Great Hau', () => {
+        const lhikan: BaseMatoran = {
+          colors: MOCK_COLORS,
+          element: ElementTribe.Fire,
+          id: 'Toa_Lhikan',
+          mask: Mask.HauGreat,
+          name: 'Toa Lhikan',
+          stage: MatoranStage.ToaMetru,
+        };
+        expect(masksCollected(lhikan, [])).toEqual([Mask.HauGreat]);
+      });
+    });
   });
 });
