@@ -1,7 +1,10 @@
 import { LegoColor } from '../../../../types/Colors';
 import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
+import type { Kit2001SocketAttachment } from '../../nodes/kit2001Nodes';
 import { KIT_2001_NODES } from '../../nodes/kit2001Nodes';
 import { KIT_2003_NODES } from '../../nodes/kit2003Nodes';
+import type { Kit2003SocketAttachment } from '../../nodes/kit2003Nodes';
+import type { Kit2004SocketAttachment } from '../../nodes/kit2004Nodes';
 import { KIT_2004_NODES } from '../../nodes/kit2004Nodes';
 import {
   MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -10,74 +13,16 @@ import {
   mataKitPlayerPaletteWeaponGlow,
 } from '../../palettes/mataKitPlayerPalette';
 import { NUVA_KIT_METAL } from '../../palettes/nuvaKitPlayerPalette';
-import { buildKitAttachmentsFromSocketNames } from '../../socketKitPart';
 
 /**
- * Lhikan sockets are `{KitPart}(.{qualifier})*` — `AxleMod2L.ArmUpper.L`
- * clones `AxleMod2L`. Qualifiers are optional (`MetruBrain`).
+ * Lhikan sockets on `Toa_Metru/Lhikan.glb` are `{KitPart}(.{qualifier})*`.
+ * The token before the first `.` is the kit node; the rest is optional.
+ * Three.js strips `.` at runtime: `AxleMod2L.ArmUpper.L` → `AxleMod2LArmUpperL`.
  *
- * Aliases cover the two names that differ from the kit GLB:
- * `MetruHip` → `MetruHips`, `ArmLower` → `MetruArm`.
+ * Exceptions: `ArmLower.L` / `R` (duplicate empties `ArmLowerL_1` / `R_1`) clone
+ * `MetruArm`; `MetruHip.Hip` clones kit `MetruHips`; `LhikanSword` clones
+ * `Lhikan_Sword`.
  */
-export const LHIKAN_KIT_PART_ALIASES: Readonly<Record<string, string>> = {
-  ArmLower: KIT_2004_NODES.MetruArm,
-  MetruHip: KIT_2004_NODES.MetruHips,
-};
-
-/**
- * Kit sockets on `Toa_Metru/Lhikan.glb` (Blender names). Used to document the
- * rig and to seed unused-kit-node tests; the model also scans runtime nodes.
- */
-export const LHIKAN_KIT_SOCKET_NAMES = [
-  'ArmLower.L',
-  'ArmLower.R',
-  'Axle2L.Chest',
-  'Axle2L.Head',
-  'Axle3L.Hip.1',
-  'Axle3L.Hip.2',
-  'Axle3L.Hip.3',
-  'Axle6L.001',
-  'AxleArm3L.B',
-  'AxleArm3L.F',
-  'AxleMod2L.ArmUpper.L',
-  'AxleMod2L.ArmUpper.R',
-  'AxleSocket3L.L',
-  'AxleSocket3L.R',
-  'DoubleSocketArmor.L',
-  'DoubleSocketArmor.R',
-  'GearM.Hip.002',
-  'GearM.Shoulder.L',
-  'GearM.Shoulder.R',
-  'LhikanSword.Weapon.L',
-  'LhikanSword.Weapon.R',
-  'MetruBrain',
-  'MetruChestLid',
-  'MetruFoot.Foot.L',
-  'MetruFoot.Foot.R',
-  'MetruGlowingEyes',
-  'MetruHead.Head',
-  'MetruHip.Hip',
-  'MetruLeg.LegLower.L',
-  'MetruLeg.LegLower.R',
-  'MetruShoulderArmorBottom.L',
-  'MetruShoulderArmorBottom.R',
-  'MetruShoulderArmorTop.L',
-  'MetruShoulderArmorTop.R',
-  'MetruTorso.Chest',
-  'Pin2L.Leg.L',
-  'Pin2L.Leg.R',
-  'Pin3L.Chest.L',
-  'Pin3L.Chest.R',
-  'Socket.Foot.L',
-  'Socket.Foot.R',
-  'Socket.Hand.L',
-  'Socket.Hand.R',
-  'Socket.Neck',
-  'SocketDouble1L.ArmUpper.L',
-  'SocketDouble1L.ArmUpper.R',
-  'SocketDouble1L.LegUpper.L',
-  'SocketDouble1L.LegUpper.R',
-] as const;
 
 const LHIKAN_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -126,36 +71,125 @@ const LHIKAN_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
   Metal: { kind: 'lego', value: LegoColor.Black },
 };
 
-const BLACK_KIT_PARTS = new Set<string>([
-  KIT_2001_NODES.Axle2L,
-  KIT_2001_NODES.Axle3L,
-  KIT_2001_NODES.Pin2L,
-  KIT_2003_NODES.Pin3L,
-]);
+/** Lhikan — sockets filled from `kit_2004.glb`. */
+export const LHIKAN_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment> = {
+  ArmLowerL_1: { kitNodeName: KIT_2004_NODES.MetruArm, materialColors: LHIKAN_ARM_COLORS },
+  ArmLowerR_1: { kitNodeName: KIT_2004_NODES.MetruArm, materialColors: LHIKAN_ARM_COLORS },
+  AxleArm3LB: { kitNodeName: KIT_2004_NODES.AxleArm3L, materialColors: LHIKAN_PALETTE_COLORS },
+  AxleArm3LF: { kitNodeName: KIT_2004_NODES.AxleArm3L, materialColors: LHIKAN_PALETTE_COLORS },
+  DoubleSocketArmorL: {
+    kitNodeName: KIT_2004_NODES.DoubleSocketArmor,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  DoubleSocketArmorR: {
+    kitNodeName: KIT_2004_NODES.DoubleSocketArmor,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  LhikanSwordWeaponL: {
+    kitNodeName: KIT_2004_NODES.LhikanSword,
+    materialColors: LHIKAN_SWORD_COLORS,
+  },
+  LhikanSwordWeaponR: {
+    kitNodeName: KIT_2004_NODES.LhikanSword,
+    materialColors: LHIKAN_SWORD_COLORS,
+  },
+  MetruBrain: { kitNodeName: KIT_2004_NODES.MetruBrain, materialColors: LHIKAN_HEAD_COLORS },
+  MetruChestLid: {
+    kitNodeName: KIT_2004_NODES.MetruChestLid,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  MetruFootFootL: { kitNodeName: KIT_2004_NODES.MetruFoot, materialColors: LHIKAN_FEET_COLORS },
+  MetruFootFootR: { kitNodeName: KIT_2004_NODES.MetruFoot, materialColors: LHIKAN_FEET_COLORS },
+  MetruGlowingEyes: {
+    kitNodeName: KIT_2004_NODES.MetruGlowingEyes,
+    materialColors: LHIKAN_EYES_COLORS,
+  },
+  MetruHeadHead: { kitNodeName: KIT_2004_NODES.MetruHead, materialColors: LHIKAN_HEAD_COLORS },
+  MetruHipHip: { kitNodeName: KIT_2004_NODES.MetruHips, materialColors: LHIKAN_PALETTE_COLORS },
+  MetruLegLegLowerL: {
+    kitNodeName: KIT_2004_NODES.MetruLeg,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  MetruLegLegLowerR: {
+    kitNodeName: KIT_2004_NODES.MetruLeg,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  MetruShoulderArmorBottomL: {
+    kitNodeName: KIT_2004_NODES.MetruShoulderArmorBottom,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  MetruShoulderArmorBottomR: {
+    kitNodeName: KIT_2004_NODES.MetruShoulderArmorBottom,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  MetruShoulderArmorTopL: {
+    kitNodeName: KIT_2004_NODES.MetruShoulderArmorTop,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  MetruShoulderArmorTopR: {
+    kitNodeName: KIT_2004_NODES.MetruShoulderArmorTop,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  MetruTorsoChest: {
+    kitNodeName: KIT_2004_NODES.MetruTorso,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  SocketDouble1LArmUpperL: {
+    kitNodeName: KIT_2004_NODES.SocketDouble1L,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  SocketDouble1LArmUpperR: {
+    kitNodeName: KIT_2004_NODES.SocketDouble1L,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  SocketDouble1LLegUpperL: {
+    kitNodeName: KIT_2004_NODES.SocketDouble1L,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  SocketDouble1LLegUpperR: {
+    kitNodeName: KIT_2004_NODES.SocketDouble1L,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+};
 
-export function lhikanMaterialColorsFor(
-  kitNodeName: string
-): Partial<Record<string, KitMaterialSlotEntry>> {
-  if (kitNodeName === KIT_2004_NODES.MetruFoot) return LHIKAN_FEET_COLORS;
-  if (kitNodeName === KIT_2004_NODES.MetruArm) return LHIKAN_ARM_COLORS;
-  if (kitNodeName === KIT_2004_NODES.MetruHead || kitNodeName === KIT_2004_NODES.MetruBrain) {
-    return LHIKAN_HEAD_COLORS;
-  }
-  if (kitNodeName === KIT_2004_NODES.MetruGlowingEyes) return LHIKAN_EYES_COLORS;
-  if (kitNodeName === KIT_2004_NODES.LhikanSword) return LHIKAN_SWORD_COLORS;
-  if (BLACK_KIT_PARTS.has(kitNodeName)) return LHIKAN_BLACK;
-  return LHIKAN_PALETTE_COLORS;
-}
+/** Lhikan — Technic pins / axles / sockets from `kit_2001.glb`. */
+export const LHIKAN_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
+  Axle2LChest: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: LHIKAN_BLACK },
+  Axle2LHead: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: LHIKAN_BLACK },
+  Axle3LHip1: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: LHIKAN_BLACK },
+  Axle3LHip2: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: LHIKAN_BLACK },
+  Axle3LHip3: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: LHIKAN_BLACK },
+  Axle6L001: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: LHIKAN_PALETTE_COLORS },
+  AxleMod2LArmUpperL: {
+    kitNodeName: KIT_2001_NODES.AxleMod2L,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  AxleMod2LArmUpperR: {
+    kitNodeName: KIT_2001_NODES.AxleMod2L,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  AxleSocket3LL: {
+    kitNodeName: KIT_2001_NODES.AxleSocket3L,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  AxleSocket3LR: {
+    kitNodeName: KIT_2001_NODES.AxleSocket3L,
+    materialColors: LHIKAN_PALETTE_COLORS,
+  },
+  GearMHip002: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LHIKAN_PALETTE_COLORS },
+  GearMShoulderL: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LHIKAN_PALETTE_COLORS },
+  GearMShoulderR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LHIKAN_PALETTE_COLORS },
+  Pin2LLegL: { kitNodeName: KIT_2001_NODES.Pin2L, materialColors: LHIKAN_BLACK },
+  Pin2LLegR: { kitNodeName: KIT_2001_NODES.Pin2L, materialColors: LHIKAN_BLACK },
+  SocketFootL: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_PALETTE_COLORS },
+  SocketFootR: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_PALETTE_COLORS },
+  SocketHandL: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_PALETTE_COLORS },
+  SocketHandR: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_PALETTE_COLORS },
+  SocketNeck: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_PALETTE_COLORS },
+};
 
-export function buildLhikanKitAttachments(socketNames: readonly string[]) {
-  return buildKitAttachmentsFromSocketNames(socketNames, {
-    aliases: LHIKAN_KIT_PART_ALIASES,
-    materialColorsFor: lhikanMaterialColorsFor,
-  });
-}
-
-const lhikanAttachments = buildLhikanKitAttachments(LHIKAN_KIT_SOCKET_NAMES);
-
-export const LHIKAN_KIT_2001_ATTACHMENTS = lhikanAttachments.kit2001;
-export const LHIKAN_KIT_2003_ATTACHMENTS = lhikanAttachments.kit2003;
-export const LHIKAN_KIT_2004_ATTACHMENTS = lhikanAttachments.kit2004;
+/** Lhikan — chest pins from `kit_2003.glb`. */
+export const LHIKAN_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment> = {
+  Pin3LChestL: { kitNodeName: KIT_2003_NODES.Pin3L, materialColors: LHIKAN_BLACK },
+  Pin3LChestR: { kitNodeName: KIT_2003_NODES.Pin3L, materialColors: LHIKAN_BLACK },
+};
