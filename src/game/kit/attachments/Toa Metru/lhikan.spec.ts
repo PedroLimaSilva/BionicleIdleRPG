@@ -18,10 +18,11 @@ describe('Toa Lhikan kit palettes', () => {
     expect(colors.weapon?.glow).toBe(LegoColor.Orange);
   });
 
-  test('arm, leg, and foot sockets bind part slots rather than hardcoded gold', () => {
+  test('arm, chest lid, leg, and foot sockets bind part slots rather than hardcoded gold', () => {
     const arm = LHIKAN_KIT_2004_ATTACHMENTS.ArmLowerL_1.materialColors;
-    const leg = LHIKAN_KIT_2004_ATTACHMENTS.MetruLegLegLowerL.materialColors;
+    const chestLid = LHIKAN_KIT_2004_ATTACHMENTS.MetruChestLid.materialColors;
     const foot = LHIKAN_KIT_2004_ATTACHMENTS.MetruFootFootL.materialColors;
+    const leg = LHIKAN_KIT_2004_ATTACHMENTS.MetruLegLegLowerL.materialColors;
     const sword = LHIKAN_KIT_2004_ATTACHMENTS.LhikanSwordWeaponL.materialColors;
 
     expect(normalizeKitMaterialSlotEntry(arm!.Main!).color).toEqual({
@@ -49,13 +50,18 @@ describe('Toa Lhikan kit palettes', () => {
       part: 'feet',
       slot: 'main',
     });
+    expect(normalizeKitMaterialSlotEntry(chestLid!.Main!).color).toEqual({
+      kind: 'part',
+      part: 'feet',
+      slot: 'main',
+    });
     expect(normalizeKitMaterialSlotEntry(sword!.Glow!).emissive).toEqual({
       kind: 'part',
       part: 'weapon',
       slot: 'glow',
     });
 
-    const serialized = JSON.stringify({ arm, foot, leg, sword });
+    const serialized = JSON.stringify({ arm, chestLid, foot, leg, sword });
     expect(serialized).not.toContain(LegoColor.FlatDarkGold);
   });
 });

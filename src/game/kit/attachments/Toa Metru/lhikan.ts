@@ -19,8 +19,9 @@ import { kitPartGlow, kitPartSlots } from '../../palettes/partSlots';
  * `MetruArm`; `MetruHip.Hip` clones kit `MetruHips`; `LhikanSword` clones
  * `Lhikan_Sword`.
  *
- * Gold vs red on arms / legs / feet is authored on the dex (`Toa_Lhikan`
- * part palettes). Attachments bind Main / Secondary / Metal / Glow 1:1.
+ * Gold vs red on arms / legs / feet / chest lid is authored on the dex
+ * (`Toa_Lhikan` part palettes). Attachments bind Main / Secondary / Metal /
+ * Glow 1:1. The chest lid is gold armor (same Main as feet), not the red torso.
  */
 
 const LHIKAN_BODY_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -109,7 +110,7 @@ export const LHIKAN_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment
   MetruBrain: { kitNodeName: KIT_2004_NODES.MetruBrain, materialColors: LHIKAN_HEAD_COLORS },
   MetruChestLid: {
     kitNodeName: KIT_2004_NODES.MetruChestLid,
-    materialColors: LHIKAN_BODY_COLORS,
+    materialColors: LHIKAN_FEET_COLORS,
   },
   MetruFootFootL: { kitNodeName: KIT_2004_NODES.MetruFoot, materialColors: LHIKAN_FEET_COLORS },
   MetruFootFootR: { kitNodeName: KIT_2004_NODES.MetruFoot, materialColors: LHIKAN_FEET_COLORS },
