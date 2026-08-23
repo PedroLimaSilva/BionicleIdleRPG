@@ -21,8 +21,8 @@ import { kitPartGlow, kitPartSlots } from '../../palettes/partSlots';
  *
  * Gold vs red on arms / legs / feet / chest is authored on the dex
  * (`Toa_Lhikan` part palettes). Attachments bind Main / Secondary / Metal /
- * Glow 1:1. The Metru torso shell and chest lid are gold armor (same Main as
- * feet), not the red body structure.
+ * Glow 1:1. The chest lid is gold armor (same Main as feet); the Metru torso
+ * shell stays on the dark-red body palette.
  */
 
 const LHIKAN_BODY_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -153,7 +153,7 @@ export const LHIKAN_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment
   },
   MetruTorsoChest: {
     kitNodeName: KIT_2004_NODES.MetruTorso,
-    materialColors: LHIKAN_FEET_COLORS,
+    materialColors: LHIKAN_BODY_COLORS,
   },
   SocketDouble1LArmUpperL: {
     kitNodeName: KIT_2004_NODES.SocketDouble1L,

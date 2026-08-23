@@ -58,7 +58,7 @@ describe('Toa Lhikan kit palettes', () => {
     });
     expect(normalizeKitMaterialSlotEntry(torso!.Main!).color).toEqual({
       kind: 'part',
-      part: 'feet',
+      part: 'body',
       slot: 'main',
     });
     expect(normalizeKitMaterialSlotEntry(sword!.Glow!).emissive).toEqual({
