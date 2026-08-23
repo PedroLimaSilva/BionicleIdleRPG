@@ -4,26 +4,25 @@
  * (Toa Metru with Great Kanohi) in its idle pose so that camera framing
  * stays consistent regardless of which character is displayed.
  *
- * CharacterFraming (in CharacterScene) reads these to compute
- * camera zoom. The look-at stays at {@link CYLINDER_CENTER_Y} for every
- * model so relative scale is preserved.
+ * The volume sits on the ground plane (Y=0). CharacterFraming looks at
+ * {@link CYLINDER_CENTER_Y} (= height / 2) so every model stays grounded
+ * and relative scale is preserved.
  *
- * Adjust the values here if new, larger characters are added.
+ * Adjust {@link CYLINDER_HEIGHT} here if a taller character is added.
  */
 
 /** Radius of the framing cylinder (half the horizontal extent). */
 export const CYLINDER_RADIUS = 7;
 
 /**
- * Height of the framing cylinder (vertical extent).
- * Taller than the original Toa Mata volume so Great Kanohi and Metru feet
- * sit inside the frame without per-character scale or camera offsets.
+ * Height of the framing cylinder (vertical extent from Y=0).
+ * Toa Lhikan's Great Hau reaches ≈20.8; this is just enough headroom
+ * for that silhouette without lifting anyone off the floor.
  */
-export const CYLINDER_HEIGHT = 34;
+export const CYLINDER_HEIGHT = 22;
 
 /**
- * Shared look-at / light target. Characters stand near Y=0 with heads near
- * Y=20; this stays at the old cylinder midpoint so zooming out does not
- * slide the camera up the model.
+ * Shared look-at / light target — the midpoint of the grounded volume.
+ * Keep this as height / 2 so the frustum floor stays at Y=0.
  */
-export const CYLINDER_CENTER_Y = 10;
+export const CYLINDER_CENTER_Y = CYLINDER_HEIGHT / 2;
