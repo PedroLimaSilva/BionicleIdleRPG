@@ -68,7 +68,7 @@ const LHIKAN_SOCKET_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 
 const LHIKAN_AXLE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...LHIKAN_PALETTE_COLORS,
-  Solid_Black: { value: LegoColor.LightGray, kind: 'lego' },
+  Solid_Black: { kind: 'lego', value: LegoColor.LightGray },
 };
 
 const LHIKAN_EYES_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -132,7 +132,7 @@ export const LHIKAN_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment
     kitNodeName: KIT_2004_NODES.MetruHips,
     materialColors: {
       ...NUVA_KIT_METAL,
-      Main: { color: { value: LegoColor.Black, kind: 'lego' } },
+      Main: { color: { kind: 'lego', value: LegoColor.Black } },
     },
   },
   MetruLegLegLowerL: {
