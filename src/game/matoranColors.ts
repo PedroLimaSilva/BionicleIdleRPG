@@ -1,7 +1,16 @@
 import { partPalette, simpleLimbColors, uniformLimbPalettes } from '../data/dex/partPalettes';
 import { LegoColor } from '../types/Colors';
 import type { BodyPartId, BodyPartSlot } from '../types/KitParts';
-import { MatoranStage, type BodyPartPalette, type MatoranColors } from '../types/Matoran';
+import {
+  BaseMatoran,
+  ElementTribe,
+  isCustomCharacterId,
+  Mask,
+  MatoranStage,
+  MatoranTag,
+  type BodyPartPalette,
+  type MatoranColors,
+} from '../types/Matoran';
 
 export { partPalette, simpleLimbColors, uniformLimbPalettes };
 
@@ -84,6 +93,101 @@ function isLegacyFlatColors(colors: unknown): colors is LegacyFlatColors {
   if (!colors || typeof colors !== 'object') return false;
   const c = colors as Record<string, unknown>;
   return typeof c.body === 'string' && typeof c.arms === 'string' && typeof c.feet === 'string';
+}
+
+function parseBodyPartPalette(raw: unknown): BodyPartPalette | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const p = raw as Record<string, unknown>;
+  if (typeof p.main !== 'string') return null;
+  const next: BodyPartPalette = { main: p.main as LegoColor };
+  for (const slot of ['glow', 'metal', 'secondary'] as const) {
+    if (p[slot] === undefined) continue;
+    if (typeof p[slot] !== 'string') return null;
+    next[slot] = p[slot] as LegoColor;
+  }
+  return next;
+}
+
+/**
+ * Accepts the current per-part palette shape or a pre-refactor flat save / share
+ * token (`body`/`arms`/`feet` as hex strings, optional `weaponGlow`/`metal`/`joints`).
+ */
+export function parseMatoranColors(raw: unknown, stage?: MatoranStage): MatoranColors | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const c = raw as Record<string, unknown>;
+  if (typeof c.mask !== 'string' || typeof c.eyes !== 'string' || typeof c.face !== 'string') {
+    return null;
+  }
+
+  if (typeof c.body === 'string') {
+    for (const key of ['arms', 'feet']) {
+      if (typeof c[key] !== 'string') return null;
+    }
+    if (c.weaponGlow !== undefined && typeof c.weaponGlow !== 'string') return null;
+    if (c.metal !== undefined && typeof c.metal !== 'string') return null;
+    if (c.joints !== undefined && typeof c.joints !== 'string') return null;
+    return normalizeMatoranColors(c, stage);
+  }
+
+  const body = parseBodyPartPalette(c.body);
+  const arms = parseBodyPartPalette(c.arms);
+  const feet = parseBodyPartPalette(c.feet);
+  if (!body || !arms || !feet) return null;
+  const colors: MatoranColors = {
+    arms,
+    body,
+    eyes: c.eyes as LegoColor,
+    face: c.face as LegoColor,
+    feet,
+    mask: c.mask as LegoColor,
+  };
+  if (c.legs !== undefined) {
+    const legs = parseBodyPartPalette(c.legs);
+    if (!legs) return null;
+    colors.legs = legs;
+  }
+  if (c.weapon !== undefined) {
+    const weapon = parseBodyPartPalette(c.weapon);
+    if (!weapon) return null;
+    colors.weapon = weapon;
+  }
+  return normalizeMatoranColors(colors, stage);
+}
+
+function migrateStoredCustomCharacter(raw: unknown): BaseMatoran | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const obj = raw as Record<string, unknown>;
+  if (typeof obj.id !== 'string' || !isCustomCharacterId(obj.id)) return null;
+  if (typeof obj.name !== 'string' || !obj.name.trim()) return null;
+  if (typeof obj.mask !== 'string') return null;
+  if (typeof obj.element !== 'string') return null;
+  if (typeof obj.stage !== 'string') return null;
+  const colors = parseMatoranColors(obj.colors, obj.stage as MatoranStage);
+  if (!colors) return null;
+
+  const next: BaseMatoran = {
+    colors,
+    element: obj.element as ElementTribe,
+    id: obj.id,
+    mask: obj.mask as Mask,
+    name: obj.name,
+    stage: obj.stage as MatoranStage,
+  };
+  if (obj.isMaskTransparent === true) next.isMaskTransparent = true;
+  if (typeof obj.chronicleId === 'string') next.chronicleId = obj.chronicleId;
+  if (Array.isArray(obj.tags)) next.tags = obj.tags as MatoranTag[];
+  return next;
+}
+
+/** One-pass load migration: expand legacy palettes and drop leftover `kitSlotMap`. */
+export function migrateCustomCharacters(raw: unknown): BaseMatoran[] {
+  if (!Array.isArray(raw)) return [];
+  const next: BaseMatoran[] = [];
+  for (const entry of raw) {
+    const migrated = migrateStoredCustomCharacter(entry);
+    if (migrated) next.push(migrated);
+  }
+  return next;
 }
 
 /**

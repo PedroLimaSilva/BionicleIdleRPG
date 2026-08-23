@@ -15,7 +15,9 @@ import {
   STORAGE_KEY,
 } from './gamePersistence';
 import { CURRENT_GAME_STATE_VERSION } from '../data/gameState';
+import { LegoColor } from '../types/Colors';
 import { MatoranJob } from '../types/Jobs';
+import { ElementTribe, Mask, MatoranStage, MatoranTag } from '../types/Matoran';
 
 describe('gamePersistence', () => {
   beforeEach(async () => {
@@ -150,6 +152,94 @@ describe('gamePersistence', () => {
 
       expect(state.recruitedCharacters).toEqual([]);
       expect(state.activeQuests).toEqual([]);
+    });
+  });
+
+  describe('loadGameStateAsync – sanitizeCustomCharacterPalettes', () => {
+    test('translates leftover flat custom palettes and persists the new shape', async () => {
+      const saved = {
+        activeQuests: [],
+        collectedKrana: {},
+        completedQuests: [],
+        customCharacters: [
+          {
+            colors: {
+              arms: LegoColor.Orange,
+              body: LegoColor.Red,
+              eyes: LegoColor.TransNeonRed,
+              face: LegoColor.LightGray,
+              feet: LegoColor.Red,
+              mask: LegoColor.Red,
+              weaponGlow: LegoColor.Orange,
+            },
+            element: ElementTribe.Fire,
+            id: 'custom_0',
+            kitSlotMap: { arms: { Main: 'joints', Secondary: 'body' } },
+            mask: Mask.Hau,
+            name: 'Legacy',
+            stage: MatoranStage.ToaMata,
+            tags: [MatoranTag.Custom],
+          },
+        ],
+        kraataCollection: {},
+        protodermis: 100,
+        protodermisCap: 2000,
+        recruitedCharacters: [{ exp: 0, id: 'custom_0' }],
+        version: CURRENT_GAME_STATE_VERSION,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
+      localStorage.setItem('TEST_MODE', 'true');
+
+      const state = await loadGameStateAsync();
+      const custom = state.customCharacters[0];
+
+      expect(custom.colors.body).toEqual({
+        glow: LegoColor.TransNeonRed,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      });
+      expect(custom.colors.weapon?.glow).toBe(LegoColor.Orange);
+      expect(custom).not.toHaveProperty('kitSlotMap');
+
+      const persisted = await readAssembledGameStateFromDatabase();
+      expect(persisted?.customCharacters[0].colors.body).toEqual(custom.colors.body);
+      expect(persisted?.customCharacters[0]).not.toHaveProperty('kitSlotMap');
+    });
+
+    test('drops unreadable customs and their recruited ghosts', async () => {
+      const saved = {
+        activeQuests: [],
+        collectedKrana: {},
+        completedQuests: [],
+        customCharacters: [
+          {
+            colors: { mask: LegoColor.Red },
+            element: ElementTribe.Fire,
+            id: 'custom_0',
+            mask: Mask.Hau,
+            name: 'Broken',
+            stage: MatoranStage.Diminished,
+          },
+        ],
+        kraataCollection: {},
+        protodermis: 100,
+        protodermisCap: 2000,
+        recruitedCharacters: [
+          { exp: 10, id: 'custom_0' },
+          { exp: 5, id: 'Jala' },
+        ],
+        version: CURRENT_GAME_STATE_VERSION,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
+      localStorage.setItem('TEST_MODE', 'true');
+
+      const state = await loadGameStateAsync();
+
+      expect(state.customCharacters).toEqual([]);
+      expect(state.recruitedCharacters.map((m) => m.id)).toEqual(['Jala']);
     });
   });
 

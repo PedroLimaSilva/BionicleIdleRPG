@@ -1,10 +1,12 @@
 import { LegoColor } from '../types/Colors';
-import { MatoranStage } from '../types/Matoran';
+import { ElementTribe, Mask, MatoranStage, MatoranTag } from '../types/Matoran';
 import {
+  expandToKitStage,
   getBodyPartSlotColor,
   isBodyPartPalette,
-  expandToKitStage,
+  migrateCustomCharacters,
   normalizeMatoranColors,
+  parseMatoranColors,
   partPalette,
   uniformLimbPalettes,
 } from './matoranColors';
@@ -125,6 +127,70 @@ describe('matoranColors', () => {
     expect(next.arms).toEqual(next.body);
     expect(next.body.secondary).toBe(LegoColor.Orange);
     expect(next.feet.main).toBe(LegoColor.Red);
+  });
+
+  test('parseMatoranColors rejects incomplete palettes', () => {
+    expect(
+      parseMatoranColors({ body: LegoColor.Red, mask: LegoColor.Red }, MatoranStage.Diminished)
+    ).toBeNull();
+  });
+
+  test('migrateCustomCharacters expands flat saves and drops leftover kitSlotMap', () => {
+    const [next] = migrateCustomCharacters([
+      {
+        colors: {
+          arms: LegoColor.Orange,
+          body: LegoColor.Red,
+          eyes: LegoColor.TransNeonRed,
+          face: LegoColor.LightGray,
+          feet: LegoColor.Red,
+          mask: LegoColor.Red,
+          weaponGlow: LegoColor.Orange,
+        },
+        element: ElementTribe.Fire,
+        id: 'custom_0',
+        kitSlotMap: { arms: { Main: 'joints' } },
+        mask: Mask.Hau,
+        name: 'Legacy',
+        stage: MatoranStage.ToaMata,
+        tags: [MatoranTag.Custom],
+      },
+    ]);
+    expect(next.colors.body).toEqual({
+      glow: LegoColor.TransNeonRed,
+      main: LegoColor.Red,
+      metal: LegoColor.LightGray,
+      secondary: LegoColor.Orange,
+    });
+    expect(next.colors.weapon?.glow).toBe(LegoColor.Orange);
+    expect(next).not.toHaveProperty('kitSlotMap');
+    expect(next.colors).not.toHaveProperty('weaponGlow');
+  });
+
+  test('migrateCustomCharacters drops invalid customs and keeps already-new palettes', () => {
+    const kept = {
+      colors: {
+        arms: { main: LegoColor.Blue },
+        body: { main: LegoColor.Blue },
+        eyes: LegoColor.TransNeonOrange,
+        face: LegoColor.DarkGray,
+        feet: { main: LegoColor.Yellow },
+        mask: LegoColor.Blue,
+      },
+      element: ElementTribe.Water,
+      id: 'custom_1',
+      mask: Mask.Kaukau,
+      name: 'Pridak',
+      stage: MatoranStage.Diminished,
+    };
+    const next = migrateCustomCharacters([
+      { id: 'Jala', name: 'Not custom' },
+      { colors: { mask: LegoColor.Red }, id: 'custom_0', name: 'Broken' },
+      kept,
+    ]);
+    expect(next).toHaveLength(1);
+    expect(next[0].id).toBe('custom_1');
+    expect(next[0].colors.body).toEqual({ main: LegoColor.Blue });
   });
 
   test('uniformLimbPalettes copies the same slots onto each limb', () => {
