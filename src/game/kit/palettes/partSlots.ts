@@ -20,15 +20,29 @@ const NUVA_METAL_PBR = {
   weathered: true as const,
 };
 
-/** Kit Main / Secondary / Metal / Glow → that body part's dex palette. */
+/** Kit Main / Secondary / Metal / Face → that body part's dex palette. */
 export function kitPartSlots(
   part: BodyPartId,
-  metalStyle: 'mata' | 'nuva' = 'mata',
-  glowIntensity = 50
+  metalStyle: 'mata' | 'nuva' = 'mata'
 ): Partial<Record<string, KitMaterialSlotEntry>> {
   const metalPbr = metalStyle === 'nuva' ? NUVA_METAL_PBR : MATA_METAL_PBR;
   return {
     Face: { color: { key: 'face', kind: 'palette' }, weathered: true },
+    Main: { kind: 'part', part, slot: 'main' },
+    Metal: {
+      color: { kind: 'part', part, slot: 'metal' },
+      ...metalPbr,
+    },
+    Secondary: { kind: 'part', part, slot: 'secondary' },
+  };
+}
+
+/** Emissive Glow / Glowing Eyes for sockets that actually have those materials. */
+export function kitPartGlow(
+  part: BodyPartId,
+  glowIntensity = 50
+): Partial<Record<string, KitMaterialSlotEntry>> {
+  return {
     Glow: {
       emissive: { kind: 'part', part, slot: 'glow' },
       emissiveIntensity: glowIntensity,
@@ -39,12 +53,6 @@ export function kitPartSlots(
       emissiveIntensity: glowIntensity,
       weathered: false,
     },
-    Main: { kind: 'part', part, slot: 'main' },
-    Metal: {
-      color: { kind: 'part', part, slot: 'metal' },
-      ...metalPbr,
-    },
-    Secondary: { kind: 'part', part, slot: 'secondary' },
   };
 }
 

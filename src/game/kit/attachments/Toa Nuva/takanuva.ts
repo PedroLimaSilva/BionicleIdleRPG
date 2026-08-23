@@ -5,7 +5,7 @@ import { KIT_2003_NODES } from '../../nodes/kit2003Nodes';
 import type { Kit2003SocketAttachment } from '../../nodes/kit2003Nodes';
 import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
 import { MATA_KIT_PLAYER_PALETTE_BRAIN } from '../../palettes/mataKitPlayerPalette';
-import { kitPartMainAsMetal, kitPartSlots } from '../../palettes/partSlots';
+import { kitPartGlow, kitPartMainAsMetal, kitPartSlots } from '../../palettes/partSlots';
 
 const TAKANUVA_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -31,17 +31,20 @@ const TAKANUVA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
 };
 
 const TAKANUVA_LIGHT_SPEAR_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...kitPartSlots('weapon', 'nuva', 10),
+  ...kitPartGlow('weapon', 10),
+  ...kitPartSlots('weapon', 'nuva'),
   Main: kitPartMainAsMetal('weapon'),
 };
 
 const TAKANUVA_ARM_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...kitPartSlots('arms', 'nuva', 10),
+  ...kitPartGlow('arms', 10),
+  ...kitPartSlots('arms', 'nuva'),
   Main: kitPartMainAsMetal('arms'),
 };
 
 const TAKANUVA_LEG_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...kitPartSlots('legs', 'nuva', 10),
+  ...kitPartGlow('legs', 10),
+  ...kitPartSlots('legs', 'nuva'),
   Main: kitPartMainAsMetal('legs'),
 };
 
