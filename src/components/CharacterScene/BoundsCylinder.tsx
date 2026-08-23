@@ -19,7 +19,7 @@ export const CYLINDER_RADIUS = 7;
  * Taller than the original Toa Mata volume so Great Kanohi and Metru feet
  * sit inside the frame without per-character scale or camera offsets.
  */
-export const CYLINDER_HEIGHT = 22;
+export const CYLINDER_HEIGHT = 26;
 
 /**
  * Shared look-at / light target. Characters stand near Y=0 with heads near
