@@ -43,7 +43,7 @@ export function defineSerialCharacterModelSuite({
 
     characterIds.forEach((characterId, index) => {
       test(`should render ${characterId} character detail page`, async () => {
-        const modelReady = waitForCharacterModelReady(page);
+        const modelReady = waitForCharacterModelReady(page, { urlIncludes: characterId });
 
         await openCharacterModelPreview(page, characterId, modelReady, {
           coldStart: index === 0,
@@ -66,7 +66,7 @@ export async function captureCharacterModelScreenshot(
   options?: { kind?: ModelPreviewKind }
 ): Promise<void> {
   await setupGameState(page, gameState);
-  const modelReady = waitForCharacterModelReady(page);
+  const modelReady = waitForCharacterModelReady(page, { urlIncludes: characterId });
   const kind = options?.kind ?? 'characters';
 
   await openCharacterModelPreview(page, characterId, modelReady, {

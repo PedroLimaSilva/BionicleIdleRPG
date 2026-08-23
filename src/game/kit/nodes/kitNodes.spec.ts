@@ -1,13 +1,16 @@
 import { KIT_2003_NODES } from './kit2003Nodes';
 import { KIT_2001_NODES } from './kit2001Nodes';
+import { KIT_2004_NODES } from './kit2004Nodes';
 import {
   countKitNodeReferences,
   getKit2001NodeUsageRanking,
   getKit2003NodeUsageRanking,
   getUnusedKit2001NodeNames,
   getUnusedKit2003NodeNames,
+  getUnusedKit2004NodeNames,
   getUsedKit2001NodeNames,
   getUsedKit2003NodeNames,
+  getUsedKit2004NodeNames,
   KIT_2001_ATTACHMENT_MAPS,
 } from './collectKitNodeUsage';
 
@@ -20,6 +23,10 @@ describe('kit nodes', () => {
     expect(getUnusedKit2003NodeNames()).toEqual([]);
   });
 
+  test('every registered 2004 node is referenced by an attachment or exempt list', () => {
+    expect(getUnusedKit2004NodeNames()).toEqual([]);
+  });
+
   test('attachment kitNodeName values are registered constants', () => {
     const registered2001 = new Set(Object.values(KIT_2001_NODES));
     for (const name of getUsedKit2001NodeNames()) {
@@ -29,6 +36,11 @@ describe('kit nodes', () => {
     const registered2003 = new Set(Object.values(KIT_2003_NODES));
     for (const name of getUsedKit2003NodeNames()) {
       expect(registered2003.has(name)).toBe(true);
+    }
+
+    const registered2004 = new Set(Object.values(KIT_2004_NODES));
+    for (const name of getUsedKit2004NodeNames()) {
+      expect(registered2004.has(name)).toBe(true);
     }
   });
 

@@ -69,6 +69,7 @@ const DEBUG_CREATION_STAGES: MatoranStage[] = [
   MatoranStage.Rebuilt,
   MatoranStage.Metru,
   MatoranStage.ToaMata,
+  MatoranStage.ToaMetru,
   MatoranStage.ToaNuva,
   MatoranStage.Turaga,
 ];

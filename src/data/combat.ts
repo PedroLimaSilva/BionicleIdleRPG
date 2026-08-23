@@ -59,6 +59,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     shortName: Mask.Hau,
     target: 'self',
   },
+  [Mask.HauGreat]: {
+    cooldown: {
+      amount: 1,
+      unit: 'wave',
+    },
+    description: 'Grants full immunity to all damage for 1 round',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'round',
+      },
+      multiplier: 0,
+      type: 'DMG_MITIGATOR',
+    },
+    longName: 'Great Mask of Shielding',
+    shortName: Mask.HauGreat,
+    target: 'self',
+  },
   // Nuva masks - team-wide effects
   [Mask.HauNuva]: {
     cooldown: { amount: 2, unit: 'wave' },
@@ -99,6 +117,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     },
     longName: 'Mask of Concealment',
     shortName: Mask.Huna,
+    target: 'self',
+  },
+  [Mask.HunaGreat]: {
+    cooldown: {
+      amount: 3,
+      unit: 'turn',
+    },
+    description: 'Becomes untargetable for 1 turn',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'turn',
+      },
+      multiplier: 0,
+      type: 'AGGRO',
+    },
+    longName: 'Great Mask of Concealment',
+    shortName: Mask.HunaGreat,
     target: 'self',
   },
   [Mask.Kakama]: {
@@ -172,6 +208,17 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     shortName: Mask.Komau,
     target: 'enemy',
   },
+  [Mask.KomauGreat]: {
+    cooldown: { amount: 4, unit: 'turn' },
+    description: 'Forces one enemy to attack their own team for 3 turns',
+    effect: {
+      duration: { amount: 3, unit: 'turn' },
+      type: 'CONFUSION',
+    },
+    longName: 'Great Mask of Mind Control',
+    shortName: Mask.KomauGreat,
+    target: 'enemy',
+  },
   [Mask.Mahiki]: {
     cooldown: {
       amount: 2,
@@ -188,6 +235,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     },
     longName: 'Mask of Illusion',
     shortName: Mask.Mahiki,
+    target: 'self',
+  },
+  [Mask.MahikiGreat]: {
+    cooldown: {
+      amount: 2,
+      unit: 'turn',
+    },
+    description: 'Summons a clone to absorb 1 hit',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'hit',
+      },
+      multiplier: 0,
+      type: 'DMG_MITIGATOR',
+    },
+    longName: 'Great Mask of Illusion',
+    shortName: Mask.MahikiGreat,
     target: 'self',
   },
 
@@ -207,6 +272,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     },
     longName: 'Mask of Telekinesis',
     shortName: Mask.Matatu,
+    target: 'enemy',
+  },
+  [Mask.MatatuGreat]: {
+    cooldown: {
+      amount: 2,
+      unit: 'turn',
+    },
+    description: 'Immobilizes enemy, preventing them from attacking for 1 wave',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'wave',
+      },
+      multiplier: -1,
+      type: 'SPEED',
+    },
+    longName: 'Great Mask of Telekinesis',
+    shortName: Mask.MatatuGreat,
     target: 'enemy',
   },
   [Mask.Miru]: {
@@ -287,6 +370,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     shortName: Mask.Rau,
     target: 'self',
   },
+  [Mask.RauGreat]: {
+    cooldown: {
+      amount: 2,
+      unit: 'wave',
+    },
+    description: `Changes the user's Element so the all attacks are super effective on any enemy. Lasts until the end of the current wave.`,
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'wave',
+      },
+      multiplier: 1.5,
+      type: 'ATK_MULT',
+    },
+    longName: 'Great Mask of Translation',
+    shortName: Mask.RauGreat,
+    target: 'self',
+  },
   [Mask.Ruru]: {
     cooldown: {
       amount: 4,
@@ -303,6 +404,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     },
     longName: 'Mask of Night Vision',
     shortName: Mask.Ruru,
+    target: 'allEnemies',
+  },
+  [Mask.RuruGreat]: {
+    cooldown: {
+      amount: 4,
+      unit: 'turn',
+    },
+    description: 'Blinds all enemies, reducing hit chance for 2 turns',
+    effect: {
+      duration: {
+        amount: 2,
+        unit: 'turn',
+      },
+      multiplier: 0.5,
+      type: 'ACCURACY_MULT',
+    },
+    longName: 'Great Mask of Night Vision',
+    shortName: Mask.RuruGreat,
     target: 'allEnemies',
   },
   [Mask.Vahi]: {
@@ -680,6 +799,17 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     mask: Mask.MiruNuva,
     model: 'Toa_Lewa_Nuva',
     name: 'Toa Lewa Nuva',
+  },
+  Toa_Lhikan: {
+    baseAttack: 18,
+    baseDefense: 10,
+    baseHp: 90,
+    baseSpeed: 9,
+    element: ElementTribe.Fire,
+    id: 'Toa_Lhikan',
+    mask: Mask.HauGreat,
+    model: 'Toa_Lhikan',
+    name: 'Toa Lhikan',
   },
   Toa_Onua: {
     baseAttack: 15,

@@ -20,17 +20,14 @@
       display: block;
       z-index: 0;
     }
-    &[class*='route--characters-'] {
-      display: block;
-      z-index: 1;
-      top: 2rem;
-      left: calc(anchor(left) - 4rem);
-      right: calc(anchor(right) - 4rem);
-    }
+    /* Align the 3D canvas to the model panel. A viewport-relative `top`
+       made the canvas taller than the panel, so the camera framed extra
+       space above the card and the panel cropped the top of every model. */
+    &[class*='route--characters-'],
     &[class*='route--rahkshi'] {
       display: block;
       z-index: 1;
-      top: 2rem;
+      top: anchor(top);
       left: calc(anchor(left) - 4rem);
       right: calc(anchor(right) - 4rem);
     }
