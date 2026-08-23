@@ -55,7 +55,7 @@ describe('Toa Lhikan kit palettes', () => {
       slot: 'glow',
     });
 
-    const serialized = JSON.stringify({ arm, leg, foot, sword });
+    const serialized = JSON.stringify({ arm, foot, leg, sword });
     expect(serialized).not.toContain(LegoColor.FlatDarkGold);
   });
 });
