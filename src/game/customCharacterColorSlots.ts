@@ -38,6 +38,8 @@ export function getEditablePaletteKeysForStage(
         return new Set(TOA_MATA_KIT_COLOR_TAB_ORDER);
       }
       return new Set(['mask', 'eyes']);
+    case MatoranStage.ToaMetru:
+      return new Set(TOA_MATA_KIT_COLOR_TAB_ORDER);
     default:
       return new Set(CUSTOM_CHARACTER_COLOR_TAB_ORDER);
   }
@@ -49,7 +51,8 @@ export function getOrderedEditableColorTabs(
 ): MatoranPaletteKey[] {
   const allowed = getEditablePaletteKeysForStage(stage, mataBuildId);
   const order =
-    stage === MatoranStage.ToaMata && mataBuildId && mataModelUsesKitPlayerPalette(mataBuildId)
+    stage === MatoranStage.ToaMetru ||
+    (stage === MatoranStage.ToaMata && mataBuildId && mataModelUsesKitPlayerPalette(mataBuildId))
       ? TOA_MATA_KIT_COLOR_TAB_ORDER
       : CUSTOM_CHARACTER_COLOR_TAB_ORDER;
   return order.filter((k) => allowed.has(k));

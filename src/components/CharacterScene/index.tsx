@@ -8,7 +8,7 @@ import { DirectionalLight, Mesh, Object3D } from 'three';
 import { useSettings } from '../../context/useSettings';
 import { CITY_ENVIRONMENT_PROPS } from '../../utils/cityEnvironmentHdri';
 import { shouldEnableSelectiveBloom, shouldEnableShadows } from '../../utils/testMode';
-import { CYLINDER_RADIUS } from './BoundsCylinder';
+import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { resolveToaMataBuildId } from '../../game/customMataBuild';
@@ -20,7 +20,6 @@ import { PohatuMataModel } from './Mata/PohatuMataModel';
 import { KopakaMataModel } from './Mata/KopakaMataModel';
 import { OnuaMataModel } from './Mata/OnuaMataModel';
 import { LewaMataModel } from './Mata/LewaMataModel';
-import { CYLINDER_HEIGHT } from './BoundsCylinder';
 import { TahuMataModel } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
@@ -32,9 +31,10 @@ import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
 import { LewaNuvaModel } from './Nuva/LewaNuvaModel';
 import { KopakaNuvaModel } from './Nuva/KopakaNuvaModel';
 import { TakanuvaModel } from './Nuva/TakanuvaModel';
+import { LhikanModel } from './Metru/LhikanModel';
 
 /** Vertical center of the character framing volume. */
-const CHARACTER_CENTER_Y = CYLINDER_HEIGHT / 2;
+const CHARACTER_CENTER_Y = CYLINDER_CENTER_Y;
 
 /** Scale down environment map contribution so IBL doesn't wash out shadows. */
 function EnvironmentIntensity({ value }: { value: number }) {
@@ -115,8 +115,9 @@ function CharacterModel({
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Rebuilt:
       return <RebuiltMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
-    case MatoranStage.Metru:
     case MatoranStage.ToaMetru:
+      return <LhikanModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+    case MatoranStage.Metru:
       return (
         <MetruMatoranModel key={matoran.id} matoran={matoran} onKitMeshesAttached={onModelReady} />
       );
@@ -145,9 +146,9 @@ function CharacterFraming() {
     // zoom=0 causes division by zero → Infinity/NaN in projection matrix.
     if (size.width <= 0 || size.height <= 0) return;
 
-    // Look head-on from the front, vertically centered on the cylinder
-    camera.position.set(0, CYLINDER_HEIGHT / 2, 100);
-    camera.lookAt(0, CYLINDER_HEIGHT / 2, 0);
+    // Look head-on from the front, same world-space aim for every model
+    camera.position.set(0, CYLINDER_CENTER_Y, 100);
+    camera.lookAt(0, CYLINDER_CENTER_Y, 0);
     camera.near = 0.1;
     camera.far = 1000;
 

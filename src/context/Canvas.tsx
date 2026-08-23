@@ -26,6 +26,20 @@ function SetSRGBColorSpace() {
   return null;
 }
 
+/** Lets Playwright request a painted frame after a serial model hop. */
+function TestModeInvalidateBridge() {
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    if (!isTestMode()) return;
+    const w = window as Window & { __R3F_INVALIDATE__?: () => void };
+    w.__R3F_INVALIDATE__ = invalidate;
+    return () => {
+      delete w.__R3F_INVALIDATE__;
+    };
+  }, [invalidate]);
+  return null;
+}
+
 /** Sync shadow map enabled state with the setting. */
 function ShadowMapConfig() {
   const gl = useThree((s) => s.gl);
@@ -103,6 +117,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
           >
             <SetSRGBColorSpace />
             <ShadowMapConfig />
+            <TestModeInvalidateBridge />
             {performanceMonitorEnabled && !isTestMode() && <Perf position="top-left" />}
             {scene ?? <ClearCanvas />}
           </Canvas>,
