@@ -9,23 +9,13 @@ import {
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
   mataKitPlayerPaletteGlow,
 } from '../../palettes/mataKitPlayerPalette';
-import { NUVA_KIT_METAL } from '../../palettes/nuvaKitPlayerPalette';
+import { NUVA_KIT_METAL, nuvaKitMetalForKey } from '../../palettes/nuvaKitPlayerPalette';
 
 const TAKANUVA_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
   ...mataKitPlayerPaletteGlow(50),
   ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
-  Metal: {
-    color: { kind: 'lego', value: LegoColor.FlatDarkGold },
-    envMapIntensity: 0.9,
-    fineScale: 22,
-    grimeDarken: 0.15,
-    grimeMetalnessReduce: 0.25,
-    grimeRoughness: 0.12,
-    metalness: 0.95,
-    roughness: 0.18,
-    weathered: true,
-  },
+  ...NUVA_KIT_METAL,
 };
 
 const TAKANUVA_EYES_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -37,8 +27,8 @@ const TAKANUVA_EYES_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>
 };
 
 const TAKANUVA_GRAY: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Main: { ...NUVA_KIT_METAL.Metal! },
-  Solid_Black: { ...NUVA_KIT_METAL.Metal! },
+  Main: nuvaKitMetalForKey('joints'),
+  Solid_Black: nuvaKitMetalForKey('joints'),
 };
 
 const TAKANUVA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -53,18 +43,8 @@ const TAKANUVA_LIGHT_SPEAR_PALETTE_COLORS: Partial<Record<string, KitMaterialSlo
     emissiveIntensity: 10,
     weathered: false,
   },
-  Main: { ...NUVA_KIT_METAL.Metal!, color: { kind: 'lego', value: LegoColor.FlatDarkGold } },
-  Metal: {
-    color: { kind: 'lego', value: LegoColor.LightGray },
-    envMapIntensity: 0.9,
-    fineScale: 22,
-    grimeDarken: 0.15,
-    grimeMetalnessReduce: 0.25,
-    grimeRoughness: 0.12,
-    metalness: 0.95,
-    roughness: 0.18,
-    weathered: true,
-  },
+  Main: nuvaKitMetalForKey('metal'),
+  Metal: nuvaKitMetalForKey('joints'),
 };
 
 const TAKANUVA_LIMBS_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -74,8 +54,8 @@ const TAKANUVA_LIMBS_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry
     emissiveIntensity: 10,
     weathered: false,
   },
-  Main: { ...NUVA_KIT_METAL.Metal! },
-  Metal: { ...NUVA_KIT_METAL.Metal!, color: { kind: 'lego', value: LegoColor.FlatDarkGold } },
+  Main: nuvaKitMetalForKey('joints'),
+  Metal: nuvaKitMetalForKey('metal'),
   Secondary: { key: 'body', kind: 'palette' },
 };
 

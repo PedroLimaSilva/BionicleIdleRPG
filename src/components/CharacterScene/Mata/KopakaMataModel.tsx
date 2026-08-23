@@ -49,8 +49,10 @@ export const KopakaMataModel = forwardRef<
     attachments: KOPAKA_MATA_KIT_2001_ATTACHMENTS,
     characterNodes: nodes as Record<string, Object3D | undefined>,
     colors: matoran.colors,
+    kitSlotMap: matoran.kitSlotMap,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached,
+    stage: matoran.stage,
     weathered: KOPAKA_WEATHERED,
   });
 

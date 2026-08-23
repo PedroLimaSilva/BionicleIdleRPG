@@ -35,7 +35,15 @@ describe('customCharacterColorSlots', () => {
       const s = getEditablePaletteKeysForStage(MatoranStage.ToaMata, 'Toa_Tahu');
       expect(s.has('arms')).toBe(true);
       expect(s.has('body')).toBe(true);
+      expect(s.has('metal')).toBe(true);
+      expect(s.has('joints')).toBe(true);
       expect(s.has('weaponGlow')).toBe(true);
+    });
+
+    test('toa nuva and metru expose metal and joints', () => {
+      expect(getEditablePaletteKeysForStage(MatoranStage.ToaNuva).has('metal')).toBe(true);
+      expect(getEditablePaletteKeysForStage(MatoranStage.Metru).has('joints')).toBe(true);
+      expect(getEditablePaletteKeysForStage(MatoranStage.ToaMetru).has('metal')).toBe(true);
     });
 
     test('toa mata kopaka kit exposes full palette', () => {
@@ -79,6 +87,8 @@ describe('customCharacterColorSlots', () => {
         'feet',
         'eyes',
         'face',
+        'metal',
+        'joints',
         'weaponGlow',
       ]);
     });
@@ -97,6 +107,16 @@ describe('customCharacterColorSlots', () => {
   });
 
   describe('prefillColorsAfterEvolution', () => {
+    test('diminished to toa mata seeds metal and joints defaults', () => {
+      const merged = prefillColorsAfterEvolution(
+        MatoranStage.Diminished,
+        MatoranStage.ToaMata,
+        sampleColors
+      );
+      expect(merged.metal).toBe(LegoColor.LightGray);
+      expect(merged.joints).toBe(LegoColor.LightGray);
+    });
+
     test('diminished to rebuilt keeps arm color from custom palette', () => {
       const merged = prefillColorsAfterEvolution(
         MatoranStage.Diminished,

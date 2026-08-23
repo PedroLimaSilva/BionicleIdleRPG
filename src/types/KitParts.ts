@@ -4,6 +4,23 @@ import { BaseMatoran } from './Matoran';
 /** Keys on `BaseMatoran.colors` used to tint kit materials at runtime */
 export type MatoranPaletteKey = keyof BaseMatoran['colors'];
 
+/** Kit mesh material names the player can rebind to palette keys. */
+export const KIT_PLAYER_SLOTS = ['Main', 'Secondary', 'Metal', 'Glow'] as const;
+export type KitPlayerSlot = (typeof KIT_PLAYER_SLOTS)[number];
+
+/** Body regions that can have independent Main/Secondary/Metal/Glow bindings. */
+export const KIT_COLOR_REGIONS = ['torso', 'arms', 'legs', 'feet', 'head', 'weapon'] as const;
+export type KitColorRegion = (typeof KIT_COLOR_REGIONS)[number];
+
+/** Which palette key fills each remappable kit slot on one body region. */
+export type KitSlotBindings = Partial<Record<KitPlayerSlot, MatoranPaletteKey>>;
+
+/**
+ * Per-region overrides of kit slot → palette key. Missing regions/slots keep the
+ * attachment's authored mapping (required for existing custom characters).
+ */
+export type CharacterKitSlotMap = Partial<Record<KitColorRegion, KitSlotBindings>>;
+
 /** How to resolve a hex color for a named material slot on a kit mesh */
 export type KitMaterialColorSource =
   | { kind: 'lego'; value: LegoColor }

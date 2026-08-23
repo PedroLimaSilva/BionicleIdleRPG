@@ -40,6 +40,37 @@
   opacity: 0.8;
 }
 
+.field-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--color-text-muted, var(--color-text));
+  opacity: 0.75;
+}
+
+.slot-binding-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.slot-binding-row {
+  display: grid;
+  grid-template-columns: 6.5rem 16px 1fr;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.slot-binding-name {
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  color: var(--color-text);
+}
+
+.slot-binding-select {
+  text-transform: capitalize;
+}
+
 .field-input {
   background: var(--color-surface-low);
   color: var(--color-text);

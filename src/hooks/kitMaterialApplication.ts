@@ -27,6 +27,12 @@ export function resolveKitColorSource(
   if (source.key === 'weaponGlow') {
     return palette.weaponGlow ?? LegoColor.TransNeonYellow;
   }
+  if (source.key === 'metal') {
+    return palette.metal ?? LegoColor.LightGray;
+  }
+  if (source.key === 'joints') {
+    return palette.joints ?? LegoColor.LightGray;
+  }
   return palette[source.key];
 }
 

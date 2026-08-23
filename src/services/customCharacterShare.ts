@@ -8,6 +8,16 @@ import {
   MatoranTag,
 } from '../types/Matoran';
 import { LegoColor } from '../types/Colors';
+import {
+  KIT_COLOR_REGIONS,
+  KIT_PLAYER_SLOTS,
+  type CharacterKitSlotMap,
+  type KitColorRegion,
+  type KitPlayerSlot,
+  type KitSlotBindings,
+  type MatoranPaletteKey,
+} from '../types/KitParts';
+import { kitSlotMapsEquivalent } from '../game/kitSlotMap';
 
 /** URL query param used to share a custom character. Value is a base64-encoded JSON BaseMatoran. */
 export const SHARE_QUERY_PARAM = 'recruit';
@@ -48,6 +58,7 @@ const VALID_STAGES = new Set<string>([
   'Turaga',
   'Toa Mata',
   'Toa Nuva',
+  'Toa Metru',
   'Diminished',
   'Rebuilt',
   'Metru',
@@ -98,6 +109,8 @@ export function parseCustomCharacterShare(token: string): BaseMatoran | null {
     if (typeof c[key] !== 'string') return null;
   }
   if (c.weaponGlow !== undefined && typeof c.weaponGlow !== 'string') return null;
+  if (c.metal !== undefined && typeof c.metal !== 'string') return null;
+  if (c.joints !== undefined && typeof c.joints !== 'string') return null;
 
   const colorCore: BaseMatoran['colors'] = {
     arms: c.arms as LegoColor,
@@ -110,6 +123,15 @@ export function parseCustomCharacterShare(token: string): BaseMatoran | null {
   if (typeof c.weaponGlow === 'string') {
     colorCore.weaponGlow = c.weaponGlow as LegoColor;
   }
+  if (typeof c.metal === 'string') {
+    colorCore.metal = c.metal as LegoColor;
+  }
+  if (typeof c.joints === 'string') {
+    colorCore.joints = c.joints as LegoColor;
+  }
+
+  const kitSlotMap = parseKitSlotMap(obj.kitSlotMap);
+  if (kitSlotMap === false) return null;
 
   const safe: BaseMatoran = {
     colors: colorCore,
@@ -121,7 +143,45 @@ export function parseCustomCharacterShare(token: string): BaseMatoran | null {
     stage: obj.stage as MatoranStage,
     tags: [MatoranTag.Custom],
   };
+  if (kitSlotMap) {
+    safe.kitSlotMap = kitSlotMap;
+  }
   return safe;
+}
+
+const VALID_PALETTE_KEYS = new Set<string>([
+  'mask',
+  'body',
+  'arms',
+  'feet',
+  'eyes',
+  'face',
+  'weaponGlow',
+  'metal',
+  'joints',
+]);
+const VALID_REGIONS = new Set<string>(KIT_COLOR_REGIONS);
+const VALID_SLOTS = new Set<string>(KIT_PLAYER_SLOTS);
+
+/** `false` = malformed; `undefined` = omitted / empty (legacy shares). */
+function parseKitSlotMap(raw: unknown): CharacterKitSlotMap | undefined | false {
+  if (raw === undefined) return undefined;
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return false;
+  const map: CharacterKitSlotMap = {};
+  for (const [region, bindings] of Object.entries(raw as Record<string, unknown>)) {
+    if (!VALID_REGIONS.has(region)) return false;
+    if (!bindings || typeof bindings !== 'object' || Array.isArray(bindings)) return false;
+    const next: KitSlotBindings = {};
+    for (const [slot, key] of Object.entries(bindings as Record<string, unknown>)) {
+      if (!VALID_SLOTS.has(slot)) return false;
+      if (typeof key !== 'string' || !VALID_PALETTE_KEYS.has(key)) return false;
+      next[slot as KitPlayerSlot] = key as MatoranPaletteKey;
+    }
+    if (Object.keys(next).length > 0) {
+      map[region as KitColorRegion] = next;
+    }
+  }
+  return Object.keys(map).length > 0 ? map : undefined;
 }
 
 /**
@@ -148,7 +208,9 @@ export function areEquivalentSharedCustomMatoran(a: BaseMatoran, b: BaseMatoran)
     return false;
   }
   if ((ac.weaponGlow ?? null) !== (bc.weaponGlow ?? null)) return false;
-  return true;
+  if ((ac.metal ?? null) !== (bc.metal ?? null)) return false;
+  if ((ac.joints ?? null) !== (bc.joints ?? null)) return false;
+  return kitSlotMapsEquivalent(a.stage, a.kitSlotMap, b.kitSlotMap);
 }
 
 /** First custom entry whose share identity matches `candidate`, if any. */

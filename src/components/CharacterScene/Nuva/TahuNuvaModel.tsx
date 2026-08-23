@@ -68,8 +68,10 @@ export const TahuNuvaModel = forwardRef<
     attachments: TAHU_NUVA_KIT_2001_ATTACHMENTS,
     characterNodes,
     colors: matoran.colors,
+    kitSlotMap: matoran.kitSlotMap,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached: onKitLayerAttached,
+    stage: matoran.stage,
     weathered: TAHU_NUVA_WEATHERED,
   });
 
@@ -77,8 +79,10 @@ export const TahuNuvaModel = forwardRef<
     attachments: TAHU_NUVA_KIT_2003_ATTACHMENTS,
     characterNodes,
     colors: matoran.colors,
+    kitSlotMap: matoran.kitSlotMap,
     kitUrl: KIT_2003_GLB_PATH,
     onAttached: onKitLayerAttached,
+    stage: matoran.stage,
     weathered: TAHU_NUVA_WEATHERED,
   });
 

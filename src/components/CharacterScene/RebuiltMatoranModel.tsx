@@ -66,8 +66,10 @@ export function RebuiltMatoranModel({
     attachments: REBUILT_KIT_2001_ATTACHMENTS,
     characterNodes,
     colors: matoran.colors,
+    kitSlotMap: matoran.kitSlotMap,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached: onKitLayerAttached,
+    stage: matoran.stage,
     weathered: REBUILT_WEATHERED,
   });
 
@@ -75,8 +77,10 @@ export function RebuiltMatoranModel({
     attachments: REBUILT_KIT_2003_ATTACHMENTS,
     characterNodes,
     colors: matoran.colors,
+    kitSlotMap: matoran.kitSlotMap,
     kitUrl: KIT_2003_GLB_PATH,
     onAttached: onKitLayerAttached,
+    stage: matoran.stage,
     weathered: REBUILT_WEATHERED,
   });
 

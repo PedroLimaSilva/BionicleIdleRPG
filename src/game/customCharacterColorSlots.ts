@@ -1,6 +1,7 @@
 import { MatoranStage, type BaseMatoran } from '../types/Matoran';
 import type { MatoranPaletteKey } from '../types/KitParts';
 import { mataModelUsesKitPlayerPalette } from './customMataBuild';
+import { stageUsesKitSlotEditor, withPaletteDefaults } from './kitSlotMap';
 
 /** Display order for color tabs in character creation. */
 export const CUSTOM_CHARACTER_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
@@ -12,9 +13,15 @@ export const CUSTOM_CHARACTER_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
   'face',
 ];
 
-/** Kit Toa Mata rigs add optional weapon glow after the standard body palette. */
-const TOA_MATA_KIT_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
+/** Multi-slot kits expose metal/joints (and Toa Mata adds weapon glow). */
+const KIT_SLOT_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
   ...CUSTOM_CHARACTER_COLOR_TAB_ORDER,
+  'metal',
+  'joints',
+];
+
+const TOA_MATA_KIT_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
+  ...KIT_SLOT_COLOR_TAB_ORDER,
   'weaponGlow',
 ];
 
@@ -38,6 +45,10 @@ export function getEditablePaletteKeysForStage(
         return new Set(TOA_MATA_KIT_COLOR_TAB_ORDER);
       }
       return new Set(['mask', 'eyes']);
+    case MatoranStage.ToaNuva:
+    case MatoranStage.Metru:
+    case MatoranStage.ToaMetru:
+      return new Set(KIT_SLOT_COLOR_TAB_ORDER);
     default:
       return new Set(CUSTOM_CHARACTER_COLOR_TAB_ORDER);
   }
@@ -51,7 +62,9 @@ export function getOrderedEditableColorTabs(
   const order =
     stage === MatoranStage.ToaMata && mataBuildId && mataModelUsesKitPlayerPalette(mataBuildId)
       ? TOA_MATA_KIT_COLOR_TAB_ORDER
-      : CUSTOM_CHARACTER_COLOR_TAB_ORDER;
+      : stageUsesKitSlotEditor(stage)
+        ? KIT_SLOT_COLOR_TAB_ORDER
+        : CUSTOM_CHARACTER_COLOR_TAB_ORDER;
   return order.filter((k) => allowed.has(k));
 }
 
@@ -76,5 +89,9 @@ export function prefillColorsAfterEvolution(
   colors: BaseMatoran['colors']
 ): BaseMatoran['colors'] {
   if (fromStage === toStage) return { ...colors };
-  return normalizeCustomCharacterColorsForStage(toStage, { ...colors });
+  const next = normalizeCustomCharacterColorsForStage(toStage, { ...colors });
+  if (stageUsesKitSlotEditor(toStage)) {
+    return withPaletteDefaults(next, toStage);
+  }
+  return next;
 }

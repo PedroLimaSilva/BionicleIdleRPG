@@ -62,6 +62,39 @@ describe('customCharacterShare', () => {
       expect(parsed!.colors.weaponGlow).toBe(LegoColor.TransNeonGreen);
     });
 
+    it('round-trips metal, joints, and kitSlotMap', () => {
+      const base = makeCustom();
+      const original = makeCustom({
+        colors: {
+          ...base.colors,
+          joints: LegoColor.LightGray,
+          metal: LegoColor.FlatDarkGold,
+        },
+        kitSlotMap: {
+          arms: { Main: 'joints', Secondary: 'body' },
+          legs: { Main: 'joints' },
+        },
+        stage: MatoranStage.ToaNuva,
+      });
+      const parsed = parseCustomCharacterShare(encodeCustomCharacterShare(original));
+      expect(parsed).not.toBeNull();
+      expect(parsed!.colors.metal).toBe(LegoColor.FlatDarkGold);
+      expect(parsed!.colors.joints).toBe(LegoColor.LightGray);
+      expect(parsed!.kitSlotMap).toEqual({
+        arms: { Main: 'joints', Secondary: 'body' },
+        legs: { Main: 'joints' },
+      });
+    });
+
+    it('parses legacy tokens that omit metal, joints, and kitSlotMap', () => {
+      const token = encodeCustomCharacterShare(makeCustom());
+      const parsed = parseCustomCharacterShare(token);
+      expect(parsed).not.toBeNull();
+      expect(parsed!.colors.metal).toBeUndefined();
+      expect(parsed!.colors.joints).toBeUndefined();
+      expect(parsed!.kitSlotMap).toBeUndefined();
+    });
+
     it('produces URL-safe tokens (no +/= characters)', () => {
       const token = encodeCustomCharacterShare(makeCustom());
       expect(token).not.toMatch(/[+/=]/);
@@ -95,6 +128,14 @@ describe('customCharacterShare', () => {
       const token = encodeCustomCharacterShare(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         makeCustom({ colors: { ...base.colors, weaponGlow: 123 as any } })
+      );
+      expect(parseCustomCharacterShare(token)).toBeNull();
+    });
+
+    it('rejects payloads with an invalid kitSlotMap region', () => {
+      const token = encodeCustomCharacterShare(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        makeCustom({ kitSlotMap: { wings: { Main: 'body' } } as any })
       );
       expect(parseCustomCharacterShare(token)).toBeNull();
     });
@@ -169,6 +210,12 @@ describe('customCharacterShare', () => {
       const a = makeCustom({ id: 'custom_0' });
       const b = makeCustom({ id: 'custom_0', mask: Mask.Hau });
       expect(areEquivalentSharedCustomMatoran(a, b)).toBe(false);
+    });
+
+    it('treats omitted kitSlotMap as equivalent to empty overrides', () => {
+      const a = makeCustom({ stage: MatoranStage.ToaNuva });
+      const b = makeCustom({ id: 'custom_3', kitSlotMap: {}, stage: MatoranStage.ToaNuva });
+      expect(areEquivalentSharedCustomMatoran(a, b)).toBe(true);
     });
 
     it('treats optional weaponGlow consistently', () => {

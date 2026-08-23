@@ -95,8 +95,10 @@ export function MetruMatoranModel({
     attachments: kit2004Attachments,
     characterNodes,
     colors: matoran.colors,
+    kitSlotMap: matoran.kitSlotMap,
     kitUrl: KIT_2004_GLB_PATH,
     onAttached: onLayerAttached,
+    stage: matoran.stage,
     weathered: METRU_WEATHERED,
   });
 
@@ -104,8 +106,10 @@ export function MetruMatoranModel({
     attachments: METRU_KIT_2001_ATTACHMENTS,
     characterNodes,
     colors: matoran.colors,
+    kitSlotMap: matoran.kitSlotMap,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached: onLayerAttached,
+    stage: matoran.stage,
     weathered: METRU_WEATHERED,
   });
 
@@ -113,8 +117,10 @@ export function MetruMatoranModel({
     attachments: kit2003Attachments,
     characterNodes,
     colors: matoran.colors,
+    kitSlotMap: matoran.kitSlotMap,
     kitUrl: KIT_2003_GLB_PATH,
     onAttached: onLayerAttached,
+    stage: matoran.stage,
     weathered: METRU_WEATHERED,
   });
 

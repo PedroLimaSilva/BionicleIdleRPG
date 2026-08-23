@@ -1,5 +1,4 @@
 import type { KitMaterialSlotEntry, MatoranPaletteKey } from '../../../types/KitParts';
-import { LegoColor } from '../../../types/Colors';
 
 /**
  * Default kit tinting for Mata (2001) rigs using `useKitAttachments`.
@@ -12,7 +11,7 @@ import { LegoColor } from '../../../types/Colors';
  *   (`src/hooks/useKitAttachments.ts`) walks each kit mesh, matches **material `.name`** to those
  *   keys (case-insensitive), and resolves `kind: 'palette'` with `resolveColorSource` →
  *   `palette[key]` from that character’s `colors` (e.g. `Face` → `colors.face` on MataFace;
- *   optional `weaponGlow` falls back to `LegoColor.TransNeonYellow` when unset). Slots may also
+ *   optional `weaponGlow` / `metal` fall back to neon yellow / LightGray when unset). Slots may also
  *   set `metalness`, `roughness`, and `KitMaterialWeatheredTuning` fields so kit metal reads
  *   correctly under the Mata weathered pass.
  */
@@ -25,7 +24,7 @@ export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMateria
    * Overrides character-level weathered defaults (Mata bodies use very low metalness).
    */
   Metal: {
-    color: { kind: 'lego', value: LegoColor.LightGray },
+    color: { key: 'metal', kind: 'palette' },
     envMapIntensity: 0.52,
     fineScale: 26,
     grimeMetalnessReduce: 0.52,

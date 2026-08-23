@@ -60,8 +60,10 @@ export function DiminishedMatoranModel({
     attachments: DIMINISHED_KIT_2001_ATTACHMENTS,
     characterNodes: kitCharacterNodes,
     colors: matoran.colors,
+    kitSlotMap: matoran.kitSlotMap,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached,
+    stage: matoran.stage,
     weathered: DIMINISHED_WEATHERED,
   });
 

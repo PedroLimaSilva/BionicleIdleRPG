@@ -23,14 +23,14 @@ import { NUVA_KIT_METAL } from '../palettes/nuvaKitPlayerPalette';
  */
 
 const METRU_LIMB_PISTON_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
-  Face: { color: { kind: 'lego', value: LegoColor.DarkGray } },
-  Main: { color: { kind: 'lego', value: LegoColor.DarkGray } },
+  Face: { color: { key: 'joints', kind: 'palette' } },
+  Main: { color: { key: 'joints', kind: 'palette' } },
   Metal: NUVA_KIT_METAL.Metal,
   Secondary: MATORAN_KIT_PALETTE_ARMS.Main,
 };
 
 const METRU_LIMB_SHIN_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
-  Main: { color: { kind: 'lego', value: LegoColor.DarkGray } },
+  Main: { color: { key: 'joints', kind: 'palette' } },
   Secondary: MATORAN_KIT_PALETTE_ARMS.Main,
 };
 
