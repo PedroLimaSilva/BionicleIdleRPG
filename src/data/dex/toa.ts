@@ -125,12 +125,12 @@ export const TOA_DEX = {
   },
   Toa_Lhikan: {
     colors: {
-      arms: LegoColor.Orange,
-      body: LegoColor.Red,
-      eyes: LegoColor.TransNeonRed,
-      face: LegoColor.LightGray,
-      feet: LegoColor.Red,
-      mask: LegoColor.Red,
+      arms: LegoColor.DarkRed,
+      body: LegoColor.DarkRed,
+      eyes: LegoColor.TransNeonGreen,
+      face: LegoColor.DarkGray,
+      feet: LegoColor.FlatDarkGold,
+      mask: LegoColor.FlatDarkGold,
       weaponGlow: LegoColor.Orange,
     },
     element: ElementTribe.Fire,

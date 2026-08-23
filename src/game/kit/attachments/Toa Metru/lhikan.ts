@@ -24,6 +24,11 @@ import { NUVA_KIT_METAL } from '../../palettes/nuvaKitPlayerPalette';
  * `Lhikan_Sword`.
  */
 
+const LHIKAN_FLAT_GOLD: KitMaterialSlotEntry = {
+  ...NUVA_KIT_METAL.Metal,
+  color: { kind: 'lego', value: LegoColor.FlatDarkGold },
+};
+
 const LHIKAN_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
   ...mataKitPlayerPaletteGlow(50),
@@ -33,18 +38,37 @@ const LHIKAN_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 
 const LHIKAN_FEET_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...LHIKAN_PALETTE_COLORS,
-  Main: { key: 'feet', kind: 'palette' },
+  Main: LHIKAN_FLAT_GOLD,
+  Secondary: { key: 'body', kind: 'palette' },
 };
 
 const LHIKAN_ARM_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...LHIKAN_PALETTE_COLORS,
-  Main: { key: 'arms', kind: 'palette' },
+  Main: LHIKAN_FLAT_GOLD,
+  Secondary: { key: 'arms', kind: 'palette' },
+};
+
+const LHIKAN_LEG_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...LHIKAN_PALETTE_COLORS,
+  Main: { key: 'body', kind: 'palette' },
+  Secondary: LHIKAN_FLAT_GOLD,
 };
 
 const LHIKAN_HEAD_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...LHIKAN_PALETTE_COLORS,
   Face: { color: { key: 'face', kind: 'palette' }, weathered: true },
   Main: { key: 'face', kind: 'palette' },
+};
+
+const LHIKAN_SOCKET_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...LHIKAN_PALETTE_COLORS,
+  Main: { key: 'face', kind: 'palette' },
+  'Solid_Black.002': { key: 'face', kind: 'palette' },
+};
+
+const LHIKAN_AXLE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...LHIKAN_PALETTE_COLORS,
+  Solid_Black: { value: LegoColor.LightGray, kind: 'lego' },
 };
 
 const LHIKAN_EYES_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -63,7 +87,6 @@ const LHIKAN_EYES_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 const LHIKAN_SWORD_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...LHIKAN_PALETTE_COLORS,
   ...mataKitPlayerPaletteWeaponGlow(10),
-  Main: { color: { kind: 'lego', value: LegoColor.FlatDarkGold } },
 };
 
 const LHIKAN_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -79,11 +102,11 @@ export const LHIKAN_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment
   AxleArm3LF: { kitNodeName: KIT_2004_NODES.AxleArm3L, materialColors: LHIKAN_PALETTE_COLORS },
   DoubleSocketArmorL: {
     kitNodeName: KIT_2004_NODES.DoubleSocketArmor,
-    materialColors: LHIKAN_PALETTE_COLORS,
+    materialColors: LHIKAN_ARM_COLORS,
   },
   DoubleSocketArmorR: {
     kitNodeName: KIT_2004_NODES.DoubleSocketArmor,
-    materialColors: LHIKAN_PALETTE_COLORS,
+    materialColors: LHIKAN_ARM_COLORS,
   },
   LhikanSwordWeaponL: {
     kitNodeName: KIT_2004_NODES.LhikanSword,
@@ -105,30 +128,36 @@ export const LHIKAN_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment
     materialColors: LHIKAN_EYES_COLORS,
   },
   MetruHeadHead: { kitNodeName: KIT_2004_NODES.MetruHead, materialColors: LHIKAN_HEAD_COLORS },
-  MetruHipHip: { kitNodeName: KIT_2004_NODES.MetruHips, materialColors: LHIKAN_PALETTE_COLORS },
+  MetruHipHip: {
+    kitNodeName: KIT_2004_NODES.MetruHips,
+    materialColors: {
+      ...NUVA_KIT_METAL,
+      Main: { color: { value: LegoColor.Black, kind: 'lego' } },
+    },
+  },
   MetruLegLegLowerL: {
     kitNodeName: KIT_2004_NODES.MetruLeg,
-    materialColors: LHIKAN_PALETTE_COLORS,
+    materialColors: LHIKAN_LEG_COLORS,
   },
   MetruLegLegLowerR: {
     kitNodeName: KIT_2004_NODES.MetruLeg,
-    materialColors: LHIKAN_PALETTE_COLORS,
+    materialColors: LHIKAN_LEG_COLORS,
   },
   MetruShoulderArmorBottomL: {
     kitNodeName: KIT_2004_NODES.MetruShoulderArmorBottom,
-    materialColors: LHIKAN_PALETTE_COLORS,
+    materialColors: LHIKAN_ARM_COLORS,
   },
   MetruShoulderArmorBottomR: {
     kitNodeName: KIT_2004_NODES.MetruShoulderArmorBottom,
-    materialColors: LHIKAN_PALETTE_COLORS,
+    materialColors: LHIKAN_ARM_COLORS,
   },
   MetruShoulderArmorTopL: {
     kitNodeName: KIT_2004_NODES.MetruShoulderArmorTop,
-    materialColors: LHIKAN_PALETTE_COLORS,
+    materialColors: LHIKAN_ARM_COLORS,
   },
   MetruShoulderArmorTopR: {
     kitNodeName: KIT_2004_NODES.MetruShoulderArmorTop,
-    materialColors: LHIKAN_PALETTE_COLORS,
+    materialColors: LHIKAN_ARM_COLORS,
   },
   MetruTorsoChest: {
     kitNodeName: KIT_2004_NODES.MetruTorso,
@@ -155,11 +184,11 @@ export const LHIKAN_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment
 /** Lhikan — Technic pins / axles / sockets from `kit_2001.glb`. */
 export const LHIKAN_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
   Axle2LChest: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: LHIKAN_BLACK },
-  Axle2LHead: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: LHIKAN_BLACK },
-  Axle3LHip1: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: LHIKAN_BLACK },
-  Axle3LHip2: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: LHIKAN_BLACK },
-  Axle3LHip3: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: LHIKAN_BLACK },
-  Axle6L001: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: LHIKAN_PALETTE_COLORS },
+  Axle2LHead: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: LHIKAN_AXLE_COLORS },
+  Axle3LHip1: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: LHIKAN_AXLE_COLORS },
+  Axle3LHip2: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: LHIKAN_AXLE_COLORS },
+  Axle3LHip3: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: LHIKAN_AXLE_COLORS },
+  Axle6L001: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: LHIKAN_AXLE_COLORS },
   AxleMod2LArmUpperL: {
     kitNodeName: KIT_2001_NODES.AxleMod2L,
     materialColors: LHIKAN_PALETTE_COLORS,
@@ -170,22 +199,22 @@ export const LHIKAN_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment
   },
   AxleSocket3LL: {
     kitNodeName: KIT_2001_NODES.AxleSocket3L,
-    materialColors: LHIKAN_PALETTE_COLORS,
+    materialColors: LHIKAN_SOCKET_COLORS,
   },
   AxleSocket3LR: {
     kitNodeName: KIT_2001_NODES.AxleSocket3L,
-    materialColors: LHIKAN_PALETTE_COLORS,
+    materialColors: LHIKAN_SOCKET_COLORS,
   },
-  GearMHip002: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LHIKAN_PALETTE_COLORS },
-  GearMShoulderL: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LHIKAN_PALETTE_COLORS },
-  GearMShoulderR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LHIKAN_PALETTE_COLORS },
+  GearMHip002: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LHIKAN_BLACK },
+  GearMShoulderL: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LHIKAN_BLACK },
+  GearMShoulderR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LHIKAN_BLACK },
   Pin2LLegL: { kitNodeName: KIT_2001_NODES.Pin2L, materialColors: LHIKAN_BLACK },
   Pin2LLegR: { kitNodeName: KIT_2001_NODES.Pin2L, materialColors: LHIKAN_BLACK },
-  SocketFootL: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_PALETTE_COLORS },
-  SocketFootR: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_PALETTE_COLORS },
-  SocketHandL: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_PALETTE_COLORS },
-  SocketHandR: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_PALETTE_COLORS },
-  SocketNeck: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_PALETTE_COLORS },
+  SocketFootL: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_SOCKET_COLORS },
+  SocketFootR: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_SOCKET_COLORS },
+  SocketHandL: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_SOCKET_COLORS },
+  SocketHandR: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_SOCKET_COLORS },
+  SocketNeck: { kitNodeName: KIT_2001_NODES.Socket, materialColors: LHIKAN_SOCKET_COLORS },
 };
 
 /** Lhikan — chest pins from `kit_2003.glb`. */
