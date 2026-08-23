@@ -30,7 +30,7 @@ test.describe('Character Model Rendering', () => {
         ],
       });
 
-      const modelReady = waitForCharacterModelReady(page);
+      const modelReady = waitForCharacterModelReady(page, { urlIncludes: 'Takua' });
       await goto(page, '/test/model/characters/Takua');
       await disableCSSAnimations(page);
       await waitForCharacterModelScene(page, modelReady);
@@ -45,7 +45,7 @@ test.describe('Character Model Rendering', () => {
     test('should render correct matoran character detail after switching to another character', async ({
       page,
     }) => {
-      const modelReady = waitForCharacterModelReady(page);
+      const modelReady = waitForCharacterModelReady(page, { urlIncludes: 'Hahli' });
       await navigateToModelPreview(page, 'Hahli');
       await waitForCharacterModelScene(page, modelReady);
 
