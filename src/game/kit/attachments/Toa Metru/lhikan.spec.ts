@@ -24,6 +24,7 @@ describe('Toa Lhikan kit palettes', () => {
     const foot = LHIKAN_KIT_2004_ATTACHMENTS.MetruFootFootL.materialColors;
     const leg = LHIKAN_KIT_2004_ATTACHMENTS.MetruLegLegLowerL.materialColors;
     const sword = LHIKAN_KIT_2004_ATTACHMENTS.LhikanSwordWeaponL.materialColors;
+    const torso = LHIKAN_KIT_2004_ATTACHMENTS.MetruTorsoChest.materialColors;
 
     expect(normalizeKitMaterialSlotEntry(arm!.Main!).color).toEqual({
       kind: 'part',
@@ -55,13 +56,18 @@ describe('Toa Lhikan kit palettes', () => {
       part: 'feet',
       slot: 'main',
     });
+    expect(normalizeKitMaterialSlotEntry(torso!.Main!).color).toEqual({
+      kind: 'part',
+      part: 'feet',
+      slot: 'main',
+    });
     expect(normalizeKitMaterialSlotEntry(sword!.Glow!).emissive).toEqual({
       kind: 'part',
       part: 'weapon',
       slot: 'glow',
     });
 
-    const serialized = JSON.stringify({ arm, chestLid, foot, leg, sword });
+    const serialized = JSON.stringify({ arm, chestLid, foot, leg, sword, torso });
     expect(serialized).not.toContain(LegoColor.FlatDarkGold);
   });
 });
