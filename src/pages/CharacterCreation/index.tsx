@@ -9,22 +9,22 @@ import { useGame } from '../../context/Game';
 import { useSettings } from '../../context/useSettings';
 import { getRecruitedMatoran } from '../../services/matoranUtils';
 import {
+  colorPartLabel,
+  getActiveTabColor,
+  getColorTabSwatch,
+  getEditableSlotsForTab,
   getOrderedEditableColorTabs,
+  isFlatColorTab,
   normalizeCustomCharacterColorsForStage,
   prefillColorsAfterEvolution,
+  setColorTabValue,
+  slotLabel,
 } from '../../game/customCharacterColorSlots';
-import {
-  compactKitSlotMap,
-  KIT_SLOT_BINDING_OPTIONS,
-  resolveBindingsForRegion,
-  stageUsesKitSlotEditor,
-  withPaletteDefaults,
-} from '../../game/kitSlotMap';
 import {
   CUSTOM_SELECTABLE_MATA_MODEL_IDS,
   DEFAULT_CUSTOM_MATA_MODEL_ID,
-  mataModelUsesKitPlayerPalette,
 } from '../../game/customMataBuild';
+import { DEFAULT_CUSTOM_COLORS } from '../../data/dex/partPalettes';
 import { CHARACTER_DEX } from '../../data/dex';
 import {
   BaseMatoran,
@@ -34,15 +34,9 @@ import {
   Mask,
   MatoranStage,
   MatoranTag,
+  type ColorTabId,
 } from '../../types/Matoran';
-import {
-  KIT_COLOR_REGIONS,
-  KIT_PLAYER_SLOTS,
-  type CharacterKitSlotMap,
-  type KitColorRegion,
-  type KitPlayerSlot,
-  type MatoranPaletteKey,
-} from '../../types/KitParts';
+import type { BodyPartSlot } from '../../types/KitParts';
 import { LegoColor } from '../../types/Colors';
 
 import './index.scss';
@@ -84,6 +78,7 @@ const DEBUG_CREATION_STAGES: MatoranStage[] = [
   MatoranStage.Metru,
   MatoranStage.ToaMata,
   MatoranStage.ToaNuva,
+  MatoranStage.ToaMetru,
   MatoranStage.Turaga,
 ];
 
@@ -121,17 +116,6 @@ const EYE_COLOR_PALETTE: LegoColor[] = [
   LegoColor.TransNeonPink,
 ];
 
-/** Default starting palette: gray clear-parts placeholder, neon-orange eyes. */
-const DEFAULT_COLORS = {
-  arms: LegoColor.LightGray,
-  body: LegoColor.LightGray,
-  eyes: LegoColor.TransNeonOrange,
-  face: LegoColor.DarkGray,
-  feet: LegoColor.LightGray,
-  mask: LegoColor.LightGray,
-  weaponGlow: LegoColor.TransNeonYellow,
-};
-
 function readableTextColor(hex: string): string {
   const v = hex.replace('#', '');
   const r = parseInt(v.substring(0, 2), 16);
@@ -139,24 +123,6 @@ function readableTextColor(hex: string): string {
   const b = parseInt(v.substring(4, 6), 16);
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   return luminance > 0.6 ? '#000' : '#fff';
-}
-
-function colorPartLabel(part: MatoranPaletteKey, stage: MatoranStage): string {
-  if (part === 'feet' && stage === MatoranStage.Rebuilt) {
-    return 'feet & hands';
-  }
-  if (part === 'weaponGlow') {
-    return 'weapon glow';
-  }
-  return part;
-}
-
-function slotLabel(slot: KitPlayerSlot): string {
-  return slot;
-}
-
-function regionLabel(region: KitColorRegion): string {
-  return region;
 }
 
 type CharacterCreateLocationState = {
@@ -210,12 +176,12 @@ export const CharacterCreation: React.FC = () => {
   const [showCreateConfirm, setShowCreateConfirm] = useState(false);
   const [mask, setMask] = useState<Mask>(Mask.Hau);
   const [element, setElement] = useState<ElementTribe>(ElementTribe.Fire);
-  const [colors, setColors] = useState<BaseMatoran['colors']>(() => ({ ...DEFAULT_COLORS }));
-  const [kitSlotMap, setKitSlotMap] = useState<CharacterKitSlotMap | undefined>();
-  const [activePart, setActivePart] = useState<MatoranPaletteKey>('mask');
-  const [activeRegion, setActiveRegion] = useState<KitColorRegion>('torso');
+  const [colors, setColors] = useState<BaseMatoran['colors']>(() => ({
+    ...DEFAULT_CUSTOM_COLORS,
+  }));
+  const [activePart, setActivePart] = useState<ColorTabId>('mask');
+  const [activeSlot, setActiveSlot] = useState<BodyPartSlot>('main');
   const [mataBuildId, setMataBuildId] = useState<string>(DEFAULT_CUSTOM_MATA_MODEL_ID);
-  const showSlotEditor = stageUsesKitSlotEditor(creationStage);
 
   const colorTabs = useMemo(
     () =>
@@ -227,6 +193,15 @@ export const CharacterCreation: React.FC = () => {
   );
 
   const lastFormInitKeyRef = useRef('');
+  const lastCreationStageRef = useRef(creationStage);
+
+  useEffect(() => {
+    if (isEditMode) return;
+    if (lastCreationStageRef.current === creationStage) return;
+    const fromStage = lastCreationStageRef.current;
+    lastCreationStageRef.current = creationStage;
+    setColors((prev) => prefillColorsAfterEvolution(fromStage, creationStage, prev));
+  }, [creationStage, isEditMode]);
 
   useEffect(() => {
     if (!colorTabs.includes(activePart)) {
@@ -258,7 +233,6 @@ export const CharacterCreation: React.FC = () => {
       nextColors = prefillColorsAfterEvolution(evolutionFromStage, full.stage, nextColors);
     }
     setColors(normalizeCustomCharacterColorsForStage(full.stage, nextColors));
-    setKitSlotMap(full.kitSlotMap);
     setMataBuildId(full.customMataModelId ?? DEFAULT_CUSTOM_MATA_MODEL_ID);
   }, [customizeId, evolutionFromStage, isEditMode, recruitedCharacters]);
 
@@ -269,26 +243,22 @@ export const CharacterCreation: React.FC = () => {
   const nameAllowed = trimmedName.length > 0 && trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME;
   const canAfford = protodermis >= CUSTOM_CHARACTER_COST;
   const canCreate = isEditMode ? nameAllowed : canAfford && nameAllowed;
-  const displayColors = useMemo(() => {
-    const base = normalizeCustomCharacterColorsForStage(creationStage, colors);
-    if (stageUsesKitSlotEditor(creationStage)) {
-      return withPaletteDefaults(base, creationStage);
-    }
-    if (
-      creationStage === MatoranStage.ToaMata &&
-      mataBuildId &&
-      mataModelUsesKitPlayerPalette(mataBuildId) &&
-      base.weaponGlow === undefined
-    ) {
-      return { ...base, weaponGlow: LegoColor.TransNeonYellow };
-    }
-    return base;
-  }, [colors, creationStage, mataBuildId]);
-
-  const activeRegionBindings = useMemo(
-    () => resolveBindingsForRegion(creationStage, activeRegion, kitSlotMap),
-    [activeRegion, creationStage, kitSlotMap]
+  const displayColors = useMemo(
+    () => normalizeCustomCharacterColorsForStage(creationStage, colors),
+    [colors, creationStage]
   );
+
+  const partSlots = useMemo(
+    () => getEditableSlotsForTab(creationStage, activePart),
+    [activePart, creationStage]
+  );
+
+  useEffect(() => {
+    if (isFlatColorTab(activePart)) return;
+    if (!partSlots.includes(activeSlot)) {
+      setActiveSlot(partSlots[0] ?? 'main');
+    }
+  }, [activePart, activeSlot, partSlots]);
 
   const previewBase = useMemo<BaseMatoran>(
     () => ({
@@ -296,13 +266,12 @@ export const CharacterCreation: React.FC = () => {
       element,
       id: 'custom_preview',
       isMaskTransparent,
-      kitSlotMap,
       mask,
       name: name.trim() || DEFAULT_CUSTOM_MATORAN_NAME,
       stage: creationStage,
       tags: [MatoranTag.Custom],
     }),
-    [creationStage, displayColors, element, isMaskTransparent, kitSlotMap, mask, name]
+    [creationStage, displayColors, element, isMaskTransparent, mask, name]
   );
 
   // Debounced preview matoran. The 3D `CharacterScene` recreates Three.js materials whenever
@@ -349,28 +318,16 @@ export const CharacterCreation: React.FC = () => {
     );
   }, [creationStage, livePreview, mataBuildId, setScene]);
 
-  const palette =
-    activePart === 'eyes' || activePart === 'weaponGlow' ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
+  const editingGlow = !isFlatColorTab(activePart) && activeSlot === 'glow';
+  const palette = activePart === 'eyes' || editingGlow ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
+  const currentColor = getActiveTabColor(
+    displayColors,
+    activePart,
+    isFlatColorTab(activePart) ? 'main' : activeSlot
+  );
 
-  const setRegionSlot = (slot: KitPlayerSlot, key: MatoranPaletteKey) => {
-    setKitSlotMap((prev) =>
-      compactKitSlotMap(creationStage, {
-        ...prev,
-        [activeRegion]: {
-          ...prev?.[activeRegion],
-          [slot]: key,
-        },
-      })
-    );
-  };
-
-  const colorsForSave = (
-    stage: MatoranStage,
-    raw: BaseMatoran['colors']
-  ): BaseMatoran['colors'] => {
-    const normalized = normalizeCustomCharacterColorsForStage(stage, raw);
-    return stageUsesKitSlotEditor(stage) ? withPaletteDefaults(normalized, stage) : normalized;
-  };
+  const colorsForSave = (stage: MatoranStage, raw: BaseMatoran['colors']): BaseMatoran['colors'] =>
+    normalizeCustomCharacterColorsForStage(stage, raw);
 
   const performCreate = () => {
     if (!canCreate) return;
@@ -383,7 +340,6 @@ export const CharacterCreation: React.FC = () => {
           colors: resolvedColors,
           element,
           isMaskTransparent,
-          kitSlotMap: compactKitSlotMap(stage, kitSlotMap),
           mask,
           name: trimmedName,
           stage,
@@ -402,7 +358,6 @@ export const CharacterCreation: React.FC = () => {
         colors: resolvedColors,
         element,
         isMaskTransparent,
-        kitSlotMap: compactKitSlotMap(creationStage, kitSlotMap),
         mask,
         name: trimmedName,
         stage: creationStage,
@@ -520,75 +475,55 @@ export const CharacterCreation: React.FC = () => {
               >
                 <span
                   className="part-tab-swatch"
-                  style={{ backgroundColor: displayColors[p] }}
+                  style={{ backgroundColor: getColorTabSwatch(displayColors, p) }}
                   aria-hidden
                 />
                 <span>{colorPartLabel(p, creationStage)}</span>
               </button>
             ))}
           </div>
+          {partSlots.length > 1 && (
+            <div className="slot-tabs" data-testid="part-slots">
+              {partSlots.map((slot) => (
+                <button
+                  type="button"
+                  key={slot}
+                  className={`part-tab${activeSlot === slot ? ' part-tab--selected' : ''}`}
+                  onClick={() => setActiveSlot(slot)}
+                >
+                  <span
+                    className="part-tab-swatch"
+                    style={{
+                      backgroundColor: getActiveTabColor(displayColors, activePart, slot),
+                    }}
+                    aria-hidden
+                  />
+                  <span>{slotLabel(slot)}</span>
+                </button>
+              ))}
+            </div>
+          )}
           <div className="color-grid">
             {palette.map((c) => (
               <div
                 key={c}
-                className={`color-swatch${displayColors[activePart] === c ? ' color-swatch--selected' : ''}`}
+                className={`color-swatch${currentColor === c ? ' color-swatch--selected' : ''}`}
                 style={{ background: c, color: readableTextColor(c) }}
-                onClick={() => setColors((prev) => ({ ...prev, [activePart]: c }))}
+                onClick={() =>
+                  setColors((prev) =>
+                    setColorTabValue(
+                      normalizeCustomCharacterColorsForStage(creationStage, prev),
+                      activePart,
+                      c,
+                      isFlatColorTab(activePart) ? 'main' : activeSlot
+                    )
+                  )
+                }
                 aria-label={c}
               />
             ))}
           </div>
         </div>
-
-        {showSlotEditor && (
-          <div className="field" data-testid="kit-slot-map">
-            <span className="field-label">Part slots</span>
-            <p className="field-hint">
-              Kit pieces have Main, plus optional Secondary, Metal, and Glow. Choose which of your
-              colors fills each slot on a body part. Unchanged parts keep the stage default, so
-              existing customs stay the same until you edit them.
-            </p>
-            <div className="part-tabs">
-              {KIT_COLOR_REGIONS.map((region) => (
-                <button
-                  type="button"
-                  key={region}
-                  className={`part-tab${activeRegion === region ? ' part-tab--selected' : ''}`}
-                  onClick={() => setActiveRegion(region)}
-                >
-                  <span>{regionLabel(region)}</span>
-                </button>
-              ))}
-            </div>
-            <div className="slot-binding-list">
-              {KIT_PLAYER_SLOTS.filter((slot) => activeRegionBindings[slot]).map((slot) => {
-                const bound = activeRegionBindings[slot]!;
-                const swatch = displayColors[bound];
-                return (
-                  <label key={slot} className="slot-binding-row">
-                    <span className="slot-binding-name">{slotLabel(slot)}</span>
-                    <span
-                      className="part-tab-swatch"
-                      style={{ backgroundColor: swatch }}
-                      aria-hidden
-                    />
-                    <select
-                      className="field-input slot-binding-select"
-                      value={bound}
-                      onChange={(e) => setRegionSlot(slot, e.target.value as MatoranPaletteKey)}
-                    >
-                      {KIT_SLOT_BINDING_OPTIONS.filter((key) => displayColors[key]).map((key) => (
-                        <option key={key} value={key}>
-                          {colorPartLabel(key, creationStage)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-        )}
 
         <div className="creation-actions">
           {!isEditMode && (

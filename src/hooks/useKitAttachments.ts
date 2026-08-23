@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../types/Matoran';
-import type { CharacterKitSlotMap, KitSocketAttachment } from '../types/KitParts';
+import type { KitSocketAttachment } from '../types/KitParts';
 import type { WeatheredMetalOptions } from '../components/CharacterScene/WeatheredMetalMaterial';
-import { applyKitSlotMapToAttachments, withPaletteDefaults } from '../game/kitSlotMap';
+import { normalizeMatoranColors } from '../game/matoranColors';
 import { applyKitMaterialsToObject, buildKitMaterialSlotLookup } from './kitMaterialApplication';
 import { notifyModelReadyForTestMode } from '../utils/testMode';
 
@@ -23,9 +23,7 @@ export type UseKitAttachmentsParams = {
   /** Key = socket name on character; O(1) lookup when matching nodes to kit pieces */
   attachments: Record<string, KitSocketAttachment>;
   colors: BaseMatoran['colors'];
-  /** Stored per-region slot overrides. Omitted on canon/legacy customs (no remapping). */
-  kitSlotMap?: CharacterKitSlotMap;
-  /** When set, fills optional palette keys (`metal`, `joints`, `weaponGlow`) for this stage. */
+  /** When set, expands legacy flat custom palettes for this stage. */
   stage?: BaseMatoran['stage'];
   /**
    * Character-level weathered-metal options. When set, kit materials default to
@@ -54,7 +52,6 @@ export function useKitAttachments({
   attachments,
   characterNodes,
   colors,
-  kitSlotMap,
   kitUrl,
   onAttached,
   stage,
@@ -62,12 +59,8 @@ export function useKitAttachments({
 }: UseKitAttachmentsParams): void {
   const gltf = useGLTF(kitUrl);
   const kitNodes = useMemo(() => buildKitNodeIndex(gltf.scene), [gltf]);
-  const resolvedAttachments = useMemo(
-    () => applyKitSlotMapToAttachments(attachments, kitSlotMap),
-    [attachments, kitSlotMap]
-  );
   const resolvedColors = useMemo(
-    () => (stage !== undefined ? withPaletteDefaults(colors, stage) : colors),
+    () => (stage !== undefined ? normalizeMatoranColors(colors, stage) : colors),
     [colors, stage]
   );
   const onAttachedRef = useRef(onAttached);
@@ -78,7 +71,7 @@ export function useKitAttachments({
 
     const clones: Object3D[] = [];
 
-    for (const [socketName, row] of Object.entries(resolvedAttachments)) {
+    for (const [socketName, row] of Object.entries(attachments)) {
       const socket = characterNodes[socketName];
       const template = kitNodes[row.kitNodeName];
 
@@ -112,7 +105,7 @@ export function useKitAttachments({
         if (p) p.remove(clone);
       }
     };
-  }, [characterNodes, kitUrl, resolvedAttachments, resolvedColors, kitNodes, weathered]);
+  }, [attachments, characterNodes, kitUrl, resolvedColors, kitNodes, weathered]);
 }
 
 useKitAttachments.preload = (...kitUrls: string[]) => {

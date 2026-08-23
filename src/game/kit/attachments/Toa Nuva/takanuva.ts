@@ -4,18 +4,12 @@ import { KIT_2001_NODES } from '../../nodes/kit2001Nodes';
 import { KIT_2003_NODES } from '../../nodes/kit2003Nodes';
 import type { Kit2003SocketAttachment } from '../../nodes/kit2003Nodes';
 import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
-import {
-  MATA_KIT_PLAYER_PALETTE_BRAIN,
-  MATA_KIT_PLAYER_PALETTE_PLASTICS,
-  mataKitPlayerPaletteGlow,
-} from '../../palettes/mataKitPlayerPalette';
-import { NUVA_KIT_METAL, nuvaKitMetalForKey } from '../../palettes/nuvaKitPlayerPalette';
+import { MATA_KIT_PLAYER_PALETTE_BRAIN } from '../../palettes/mataKitPlayerPalette';
+import { kitPartMainAsMetal, kitPartSlots } from '../../palettes/partSlots';
 
 const TAKANUVA_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
-  ...mataKitPlayerPaletteGlow(50),
-  ...MATA_KIT_PLAYER_PALETTE_PLASTICS,
-  ...NUVA_KIT_METAL,
+  ...kitPartSlots('body', 'nuva'),
 };
 
 const TAKANUVA_EYES_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -27,8 +21,8 @@ const TAKANUVA_EYES_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>
 };
 
 const TAKANUVA_GRAY: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Main: nuvaKitMetalForKey('joints'),
-  Solid_Black: nuvaKitMetalForKey('joints'),
+  Main: kitPartMainAsMetal('arms'),
+  Solid_Black: kitPartMainAsMetal('arms'),
 };
 
 const TAKANUVA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -37,26 +31,18 @@ const TAKANUVA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
 };
 
 const TAKANUVA_LIGHT_SPEAR_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...TAKANUVA_PALETTE_COLORS,
-  Glow: {
-    emissive: { key: 'eyes', kind: 'palette' },
-    emissiveIntensity: 10,
-    weathered: false,
-  },
-  Main: nuvaKitMetalForKey('metal'),
-  Metal: nuvaKitMetalForKey('joints'),
+  ...kitPartSlots('weapon', 'nuva', 10),
+  Main: kitPartMainAsMetal('weapon'),
 };
 
-const TAKANUVA_LIMBS_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...TAKANUVA_PALETTE_COLORS,
-  Glow: {
-    emissive: { key: 'eyes', kind: 'palette' },
-    emissiveIntensity: 10,
-    weathered: false,
-  },
-  Main: nuvaKitMetalForKey('joints'),
-  Metal: nuvaKitMetalForKey('metal'),
-  Secondary: { key: 'body', kind: 'palette' },
+const TAKANUVA_ARM_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...kitPartSlots('arms', 'nuva', 10),
+  Main: kitPartMainAsMetal('arms'),
+};
+
+const TAKANUVA_LEG_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...kitPartSlots('legs', 'nuva', 10),
+  Main: kitPartMainAsMetal('legs'),
 };
 
 /**
@@ -149,27 +135,27 @@ export const TAKANUVA_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachme
   NuvaBicepsR: { kitNodeName: KIT_2003_NODES.NuvaBiceps, materialColors: TAKANUVA_PALETTE_COLORS },
   NuvaCalfL: {
     kitNodeName: KIT_2003_NODES.NuvaCalf,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_LEG_PALETTE_COLORS,
   },
   NuvaCalfR: {
     kitNodeName: KIT_2003_NODES.NuvaCalf,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_LEG_PALETTE_COLORS,
   },
   NuvaForearmArmorL: {
     kitNodeName: KIT_2003_NODES.NuvaForearmArmor,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_ARM_PALETTE_COLORS,
   },
   NuvaForearmArmorR: {
     kitNodeName: KIT_2003_NODES.NuvaForearmArmor,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_ARM_PALETTE_COLORS,
   },
   NuvaForearmL: {
     kitNodeName: KIT_2003_NODES.NuvaForearm,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_ARM_PALETTE_COLORS,
   },
   NuvaForearmR: {
     kitNodeName: KIT_2003_NODES.NuvaForearm,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_ARM_PALETTE_COLORS,
   },
   NuvaPistonNL: {
     kitNodeName: KIT_2003_NODES.NuvaPistonN,
@@ -191,26 +177,26 @@ export const TAKANUVA_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachme
   NuvaQuadR: { kitNodeName: KIT_2003_NODES.NuvaQuad, materialColors: TAKANUVA_PALETTE_COLORS },
   NuvaShinL: {
     kitNodeName: KIT_2003_NODES.NuvaShin,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_LEG_PALETTE_COLORS,
   },
   NuvaShinR: {
     kitNodeName: KIT_2003_NODES.NuvaShin,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_LEG_PALETTE_COLORS,
   },
   NuvaThighL: {
     kitNodeName: KIT_2003_NODES.NuvaThigh,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_LEG_PALETTE_COLORS,
   },
   NuvaThighR: {
     kitNodeName: KIT_2003_NODES.NuvaThigh,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_LEG_PALETTE_COLORS,
   },
   NuvaTricepsL: {
     kitNodeName: KIT_2003_NODES.NuvaTriceps,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_ARM_PALETTE_COLORS,
   },
   NuvaTricepsR: {
     kitNodeName: KIT_2003_NODES.NuvaTriceps,
-    materialColors: TAKANUVA_LIMBS_PALETTE_COLORS,
+    materialColors: TAKANUVA_ARM_PALETTE_COLORS,
   },
 };

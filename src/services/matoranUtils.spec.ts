@@ -10,15 +10,16 @@ import {
 } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { LegoColor } from '../types/Colors';
+import { simpleLimbColors } from '../data/dex/partPalettes';
 
-const MOCK_COLORS = {
+const MOCK_COLORS = simpleLimbColors({
   arms: LegoColor.Black,
   body: LegoColor.Black,
   eyes: LegoColor.Black,
   face: LegoColor.LightGray,
   feet: LegoColor.Black,
   mask: LegoColor.Black,
-};
+});
 
 describe('matoranUtils', () => {
   describe('isMatoran', () => {

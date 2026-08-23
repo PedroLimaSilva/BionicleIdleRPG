@@ -15,6 +15,7 @@ import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
 import { areEquivalentSharedCustomMatoran } from '../services/customCharacterShare';
 import { getBuyableCharacters, isCharacterRecruited } from '../game/Recruitment';
 import { registerCustomCharacterInDex } from '../data/dex/index';
+import { normalizeMatoranColors } from '../game/matoranColors';
 
 /**
  * @param completedQuests - Used to derive buyable characters (with recruitedCharacters).
@@ -36,7 +37,10 @@ export function useCharactersState(
   // ids until effects run — e.g. reloading /characters/:id on a custom character crashes
   // RebuiltMatoranModel when reading matoran.colors.
   for (const base of customCharacters) {
-    registerCustomCharacterInDex(base);
+    registerCustomCharacterInDex({
+      ...base,
+      colors: normalizeMatoranColors(base.colors, base.stage),
+    });
   }
 
   const buyableCharacters = useMemo(() => {
@@ -100,7 +104,11 @@ export function useCharactersState(
   ): string | null => {
     if (protodermis < CUSTOM_CHARACTER_COST) return null;
     const id = nextCustomId(customCharacters);
-    const newBase: BaseMatoran = { ...base, id };
+    const newBase: BaseMatoran = {
+      ...base,
+      colors: normalizeMatoranColors(base.colors, base.stage),
+      id,
+    };
     registerCustomCharacterInDex(newBase);
     setCustomCharacters((prev) => [...prev, newBase]);
     const recruitEntry: RecruitedCharacterData = {
@@ -121,15 +129,23 @@ export function useCharactersState(
 
     if (customCharacters.some((c) => c.id === base.id)) {
       const id = nextCustomId(customCharacters);
-      const newBase: BaseMatoran = { ...base, id };
+      const newBase: BaseMatoran = {
+        ...base,
+        colors: normalizeMatoranColors(base.colors, base.stage),
+        id,
+      };
       registerCustomCharacterInDex(newBase);
       setCustomCharacters((prev) => [...prev, newBase]);
       return newBase;
     }
 
-    registerCustomCharacterInDex(base);
-    setCustomCharacters((prev) => [...prev, base]);
-    return base;
+    const stored: BaseMatoran = {
+      ...base,
+      colors: normalizeMatoranColors(base.colors, base.stage),
+    };
+    registerCustomCharacterInDex(stored);
+    setCustomCharacters((prev) => [...prev, stored]);
+    return stored;
   };
 
   const dismissCustomCharacter = (id: string) => {
@@ -151,6 +167,7 @@ export function useCharactersState(
     const updated: BaseMatoran = {
       ...existing,
       ...base,
+      colors: normalizeMatoranColors(base.colors, base.stage),
       id,
       tags: base.tags ?? existing.tags,
     };

@@ -29,7 +29,7 @@ const TAHU_NUVA_EYES_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry
 const TAHU_NUVA_MAGMA_BLADE_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...TAHU_NUVA_PALETTE_COLORS,
   Glow: {
-    emissive: { key: 'weaponGlow', kind: 'palette' },
+    emissive: { kind: 'part', part: 'weapon', slot: 'glow' },
     emissiveIntensity: 10,
     weathered: false,
   },

@@ -34,15 +34,15 @@ export const MATORAN_KIT_PALETTE_METAL: Partial<Record<string, KitMaterialSlotEn
 };
 
 export const MATORAN_KIT_PALETTE_BODY: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Main: { key: 'body', kind: 'palette' },
+  Main: { kind: 'part', part: 'body', slot: 'main' },
 };
 
 export const MATORAN_KIT_PALETTE_ARMS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Main: { key: 'arms', kind: 'palette' },
+  Main: { kind: 'part', part: 'arms', slot: 'main' },
 };
 
 export const MATORAN_KIT_PALETTE_FEET: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Main: { key: 'feet', kind: 'palette' },
+  Main: { kind: 'part', part: 'feet', slot: 'main' },
 };
 
 export const MATORAN_KIT_PALETTE_FACE: Partial<Record<string, KitMaterialSlotEntry>> = {

@@ -13,6 +13,7 @@ import {
   ElementTribe,
 } from '../types/Matoran';
 import { LegoColor } from '../types/Colors';
+import { DEFAULT_CUSTOM_COLORS, simpleLimbColors } from '../data/dex/partPalettes';
 import { MatoranJob } from '../types/Jobs';
 
 describe('useCharactersState', () => {
@@ -134,14 +135,7 @@ describe('useCharactersState', () => {
 
   describe('createCustomCharacter', () => {
     const baseMinusId = (stage: MatoranStage): Omit<BaseMatoran, 'id'> => ({
-      colors: {
-        arms: LegoColor.LightGray,
-        body: LegoColor.LightGray,
-        eyes: LegoColor.TransNeonOrange,
-        face: LegoColor.DarkGray,
-        feet: LegoColor.LightGray,
-        mask: LegoColor.LightGray,
-      },
+      colors: DEFAULT_CUSTOM_COLORS,
       element: ElementTribe.Fire,
       mask: Mask.Hau,
       name: 'Test',
@@ -332,14 +326,14 @@ describe('useCharactersState', () => {
 
   describe('registerSharedCustomCharacter', () => {
     const sharedLook: BaseMatoran = {
-      colors: {
+      colors: simpleLimbColors({
         arms: LegoColor.Blue,
         body: LegoColor.Blue,
         eyes: LegoColor.TransNeonOrange,
         face: LegoColor.DarkGray,
         feet: LegoColor.Yellow,
         mask: LegoColor.Blue,
-      },
+      }),
       element: ElementTribe.Water,
       id: 'custom_0',
       isMaskTransparent: false,
@@ -399,14 +393,7 @@ describe('useCharactersState', () => {
 
   describe('updateCustomCharacter', () => {
     const customBase: BaseMatoran = {
-      colors: {
-        arms: LegoColor.LightGray,
-        body: LegoColor.LightGray,
-        eyes: LegoColor.TransNeonOrange,
-        face: LegoColor.DarkGray,
-        feet: LegoColor.LightGray,
-        mask: LegoColor.LightGray,
-      },
+      colors: DEFAULT_CUSTOM_COLORS,
       element: ElementTribe.Fire,
       id: 'custom_0',
       mask: Mask.Hau,
@@ -434,14 +421,14 @@ describe('useCharactersState', () => {
       let ok = false;
       act(() => {
         ok = result.current.updateCustomCharacter('custom_0', {
-          colors: {
+          colors: simpleLimbColors({
             arms: LegoColor.Red,
             body: LegoColor.Blue,
             eyes: LegoColor.TransGreen,
             face: LegoColor.White,
             feet: LegoColor.Black,
             mask: LegoColor.Yellow,
-          },
+          }),
           element: ElementTribe.Water,
           mask: Mask.Kaukau,
           name: 'New Name',

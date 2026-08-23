@@ -48,29 +48,6 @@
   opacity: 0.75;
 }
 
-.slot-binding-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-
-.slot-binding-row {
-  display: grid;
-  grid-template-columns: 6.5rem 16px 1fr;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.slot-binding-name {
-  font-size: 0.85rem;
-  text-transform: capitalize;
-  color: var(--color-text);
-}
-
-.slot-binding-select {
-  text-transform: capitalize;
-}
-
 .field-input {
   background: var(--color-surface-low);
   color: var(--color-text);
@@ -134,10 +111,15 @@
   box-shadow: 0 0 10px var(--theme-element-glow-transparent);
 }
 
-.part-tabs {
+.part-tabs,
+.slot-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+}
+
+.slot-tabs {
+  padding-top: 0.15rem;
 }
 
 .part-tab {

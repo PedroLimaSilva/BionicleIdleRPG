@@ -1,6 +1,6 @@
 import { LegoColor } from './Colors';
 import { JobAssignment } from './Jobs';
-import type { CharacterKitSlotMap } from './KitParts';
+import type { BodyPartId, BodyPartSlot } from './KitParts';
 import { Quest } from './Quests';
 
 export const enum Mask {
@@ -73,6 +73,33 @@ export const enum MatoranStage {
   Makuta = 'Makuta',
 }
 
+/** Kit material slots a body part can author in the dex. */
+export type BodyPartPalette = {
+  main: LegoColor;
+  secondary?: LegoColor;
+  metal?: LegoColor;
+  glow?: LegoColor;
+};
+
+/**
+ * Character colors. Mask / eyes / face stay flat (avatar + Kanohi). Limb and armor
+ * pieces use per-part palettes so kit Main/Secondary/Metal/Glow map 1:1.
+ */
+export type MatoranColors = {
+  mask: LegoColor;
+  eyes: LegoColor;
+  face: LegoColor;
+  body: BodyPartPalette;
+  arms: BodyPartPalette;
+  feet: BodyPartPalette;
+  legs?: BodyPartPalette;
+  weapon?: BodyPartPalette;
+};
+
+export type ColorTabId = 'mask' | 'eyes' | 'face' | BodyPartId;
+
+export type BodyPartSlotName = BodyPartSlot;
+
 // Static data for any Matoran
 export type BaseMatoran = {
   id: string;
@@ -81,32 +108,7 @@ export type BaseMatoran = {
   element: ElementTribe;
   isMaskTransparent?: boolean;
   stage: MatoranStage;
-  colors: {
-    mask: LegoColor;
-    body: LegoColor;
-    feet: LegoColor;
-    arms: LegoColor;
-    eyes: LegoColor;
-    face: LegoColor;
-    /** Toa kit weapon accents (e.g. Gali hooks); when unset, kit code uses a neutral default. */
-    weaponGlow?: LegoColor;
-    /**
-     * Metallic accent (pins, gears, gold/silver armor). When unset, kit code uses LightGray.
-     * Optional so existing custom characters stay visually unchanged.
-     */
-    metal?: LegoColor;
-    /**
-     * Limb/structure color for multi-slot kits (Metru pistons, Takanuva silver Main).
-     * When unset: DarkGray on Metru/Toa Metru, LightGray otherwise.
-     */
-    joints?: LegoColor;
-  };
-  /**
-   * Optional per-region overrides for what kit slots (Main, Secondary, Metal, Glow)
-   * pull from the color palette. Omitted regions/slots keep attachment defaults, so
-   * existing custom characters without this field render as they always have.
-   */
-  kitSlotMap?: CharacterKitSlotMap;
+  colors: MatoranColors;
   tags?: MatoranTag[];
   /** Reference to shared chronicle set - multiple matoran entries can share the same chronicle ID */
   chronicleId?: string;

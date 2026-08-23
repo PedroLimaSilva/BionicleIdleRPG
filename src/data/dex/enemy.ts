@@ -1,16 +1,17 @@
 import { LegoColor } from '../../types/Colors';
 import { ElementTribe, Mask, MatoranStage } from '../../types/Matoran';
+import { simpleLimbColors } from './partPalettes';
 
 export const ENEMY_DEX = {
   gahlok: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.MediumBlue,
       body: LegoColor.Blue,
       eyes: LegoColor.Orange,
       face: LegoColor.Black,
       feet: LegoColor.Blue,
       mask: LegoColor.Black,
-    },
+    }),
     element: ElementTribe.Water,
     id: 'gahlok',
     mask: Mask.Pakari,
@@ -18,14 +19,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.Bohrok,
   },
   gahlok_kal: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.Blue,
       body: LegoColor.Blue,
       eyes: LegoColor.Orange,
       face: LegoColor.LightGray,
       feet: LegoColor.LightGray,
       mask: LegoColor.LightGray,
-    },
+    }),
     element: ElementTribe.Water,
     id: 'gahlok_kal',
     mask: Mask.Pakari,
@@ -33,14 +34,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   kohrak: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.LightGray,
       body: LegoColor.White,
       eyes: LegoColor.MediumBlue,
       face: LegoColor.Black,
       feet: LegoColor.White,
       mask: LegoColor.Black,
-    },
+    }),
     element: ElementTribe.Ice,
     id: 'kohrak',
     mask: Mask.Pakari,
@@ -48,14 +49,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.Bohrok,
   },
   kohrak_kal: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.White,
       body: LegoColor.White,
       eyes: LegoColor.MediumBlue,
       face: LegoColor.LightGray,
       feet: LegoColor.LightGray,
       mask: LegoColor.LightGray,
-    },
+    }),
     element: ElementTribe.Ice,
     id: 'kohrak_kal',
     mask: Mask.Pakari,
@@ -63,14 +64,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   lehvak: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.Lime,
       body: LegoColor.Green,
       eyes: LegoColor.Red,
       face: LegoColor.Black,
       feet: LegoColor.Green,
       mask: LegoColor.Black,
-    },
+    }),
     element: ElementTribe.Air,
     id: 'lehvak',
     mask: Mask.Pakari,
@@ -78,14 +79,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.Bohrok,
   },
   lehvak_kal: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.Green,
       body: LegoColor.Green,
       eyes: LegoColor.Red,
       face: LegoColor.LightGray,
       feet: LegoColor.LightGray,
       mask: LegoColor.LightGray,
-    },
+    }),
     element: ElementTribe.Air,
     id: 'lehvak_kal',
     mask: Mask.Pakari,
@@ -93,14 +94,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   Makuta: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.DarkGray,
       body: LegoColor.Black,
       eyes: LegoColor.TransNeonRed,
       face: LegoColor.DarkGray,
       feet: LegoColor.Black,
       mask: LegoColor.White,
-    },
+    }),
     element: ElementTribe.Shadow,
     id: 'Makuta',
     mask: Mask.Kraahkan,
@@ -108,14 +109,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.Makuta,
   },
   nuhvok: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.DarkGray,
       body: LegoColor.Black,
       eyes: LegoColor.Lime,
       face: LegoColor.Black,
       feet: LegoColor.Black,
       mask: LegoColor.Black,
-    },
+    }),
     element: ElementTribe.Earth,
     id: 'nuhvok',
     mask: Mask.Pakari,
@@ -123,14 +124,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.Bohrok,
   },
   nuhvok_kal: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.Black,
       body: LegoColor.Black,
       eyes: LegoColor.Lime,
       face: LegoColor.LightGray,
       feet: LegoColor.LightGray,
       mask: LegoColor.LightGray,
-    },
+    }),
     element: ElementTribe.Earth,
     id: 'nuhvok_kal',
     mask: Mask.Pakari,
@@ -138,14 +139,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   pahrak: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.Tan,
       body: LegoColor.Brown,
       eyes: LegoColor.Green,
       face: LegoColor.Black,
       feet: LegoColor.Brown,
       mask: LegoColor.Black,
-    },
+    }),
     element: ElementTribe.Stone,
     id: 'pahrak',
     mask: Mask.Pakari,
@@ -153,14 +154,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.Bohrok,
   },
   pahrak_kal: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.Brown,
       body: LegoColor.Brown,
       eyes: LegoColor.Green,
       face: LegoColor.LightGray,
       feet: LegoColor.LightGray,
       mask: LegoColor.LightGray,
-    },
+    }),
     element: ElementTribe.Stone,
     id: 'pahrak_kal',
     mask: Mask.Pakari,
@@ -168,14 +169,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   tahnok: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.Orange,
       body: LegoColor.Red,
       eyes: LegoColor.Blue,
       face: LegoColor.Black,
       feet: LegoColor.Red,
       mask: LegoColor.Black,
-    },
+    }),
     element: ElementTribe.Fire,
     id: 'tahnok',
     mask: Mask.Pakari,
@@ -183,14 +184,14 @@ export const ENEMY_DEX = {
     stage: MatoranStage.Bohrok,
   },
   tahnok_kal: {
-    colors: {
+    colors: simpleLimbColors({
       arms: LegoColor.Red,
       body: LegoColor.Red,
       eyes: LegoColor.Blue,
       face: LegoColor.LightGray,
       feet: LegoColor.LightGray,
       mask: LegoColor.LightGray,
-    },
+    }),
     element: ElementTribe.Fire,
     id: 'tahnok_kal',
     mask: Mask.Pakari,

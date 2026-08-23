@@ -30,7 +30,7 @@ const GALI_NUVA_EYES_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry
 const GALI_NUVA_AQUA_AXE_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...GALI_NUVA_PALETTE_COLORS,
   Glow: {
-    emissive: { key: 'weaponGlow', kind: 'palette' },
+    emissive: { kind: 'part', part: 'weapon', slot: 'glow' },
     emissiveIntensity: 50,
     weathered: false,
   },

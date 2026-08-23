@@ -50,7 +50,6 @@ export const TahuMataModel = forwardRef<
     attachments: TAHU_MATA_KIT_2001_ATTACHMENTS,
     characterNodes: nodes as Record<string, Object3D | undefined>,
     colors: matoran.colors,
-    kitSlotMap: matoran.kitSlotMap,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached,
     stage: matoran.stage,

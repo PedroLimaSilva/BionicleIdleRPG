@@ -5,7 +5,6 @@ import type { Kit2004SocketAttachment } from '../nodes/kit2004Nodes';
 import { KIT_2004_NODES } from '../nodes/kit2004Nodes';
 import { KIT_2003_NODES } from '../nodes/kit2003Nodes';
 import {
-  MATORAN_KIT_PALETTE_ARMS,
   MATORAN_KIT_PALETTE_BLACK,
   MATORAN_KIT_PALETTE_BODY,
   MATORAN_KIT_PALETTE_FACE,
@@ -23,15 +22,27 @@ import { NUVA_KIT_METAL } from '../palettes/nuvaKitPlayerPalette';
  */
 
 const METRU_LIMB_PISTON_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
-  Face: { color: { key: 'joints', kind: 'palette' } },
-  Main: { color: { key: 'joints', kind: 'palette' } },
-  Metal: NUVA_KIT_METAL.Metal,
-  Secondary: MATORAN_KIT_PALETTE_ARMS.Main,
+  Face: { color: { kind: 'part', part: 'arms', slot: 'main' } },
+  Main: { color: { kind: 'part', part: 'arms', slot: 'main' } },
+  Metal: { color: { kind: 'part', part: 'arms', slot: 'metal' }, ...NUVA_KIT_METAL.Metal },
+  Secondary: { kind: 'part', part: 'arms', slot: 'secondary' },
 };
 
 const METRU_LIMB_SHIN_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
-  Main: { color: { key: 'joints', kind: 'palette' } },
-  Secondary: MATORAN_KIT_PALETTE_ARMS.Main,
+  Main: { color: { kind: 'part', part: 'arms', slot: 'main' } },
+  Secondary: { kind: 'part', part: 'arms', slot: 'secondary' },
+};
+
+const METRU_LEG_PISTON_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
+  Face: { color: { kind: 'part', part: 'legs', slot: 'main' } },
+  Main: { color: { kind: 'part', part: 'legs', slot: 'main' } },
+  Metal: { color: { kind: 'part', part: 'legs', slot: 'metal' }, ...NUVA_KIT_METAL.Metal },
+  Secondary: { kind: 'part', part: 'legs', slot: 'secondary' },
+};
+
+const METRU_LEG_SHIN_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
+  Main: { color: { kind: 'part', part: 'legs', slot: 'main' } },
+  Secondary: { kind: 'part', part: 'legs', slot: 'secondary' },
 };
 
 const PIN_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
@@ -56,11 +67,11 @@ export const METRU_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
   },
   MetruMatoranLimbPistonLegLowerL: {
     kitNodeName: KIT_2004_NODES.MetruMatoranLimbPiston,
-    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
+    materialColors: METRU_LEG_PISTON_MATERIAL_COLORS,
   },
   MetruMatoranLimbPistonLegLowerR: {
     kitNodeName: KIT_2004_NODES.MetruMatoranLimbPiston,
-    materialColors: METRU_LIMB_PISTON_MATERIAL_COLORS,
+    materialColors: METRU_LEG_PISTON_MATERIAL_COLORS,
   },
   MetruMatoranLimbShinArmLowerL: {
     kitNodeName: KIT_2004_NODES.MetruMatoranLimbShin,
@@ -72,11 +83,11 @@ export const METRU_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
   },
   MetruMatoranLimbShinLegUpperL: {
     kitNodeName: KIT_2004_NODES.MetruMatoranLimbShin,
-    materialColors: METRU_LIMB_SHIN_MATERIAL_COLORS,
+    materialColors: METRU_LEG_SHIN_MATERIAL_COLORS,
   },
   MetruMatoranLimbShinLegUpperR: {
     kitNodeName: KIT_2004_NODES.MetruMatoranLimbShin,
-    materialColors: METRU_LIMB_SHIN_MATERIAL_COLORS,
+    materialColors: METRU_LEG_SHIN_MATERIAL_COLORS,
   },
   MetruMatoranTorsoBody: {
     kitNodeName: KIT_2004_NODES.MetruMatoranTorso,
