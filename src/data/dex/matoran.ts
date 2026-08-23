@@ -1,19 +1,33 @@
 import { LegoColor } from '../../types/Colors';
 import { ElementTribe, Mask, MatoranStage, MatoranTag } from '../../types/Matoran';
 import { CHRONICLE_IDS } from '../chronicles';
-import { metruMatoranColors, simpleLimbColors } from './partPalettes';
 
 export const MATORAN_DEX = {
   Ahkmou: {
     chronicleId: CHRONICLE_IDS.AHKMOU,
-    colors: metruMatoranColors({
-      arms: LegoColor.Tan,
-      body: LegoColor.LightBrown,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
+      body: {
+        main: LegoColor.LightBrown,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.TransDarkBlue,
       face: LegoColor.LightBrown,
-      feet: LegoColor.LightBrown,
+      feet: {
+        main: LegoColor.LightBrown,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
       mask: LegoColor.LightBrown,
-    }),
+    },
     element: ElementTribe.Stone,
     id: 'Ahkmou',
     mask: Mask.Rau,
@@ -22,14 +36,29 @@ export const MATORAN_DEX = {
     tags: [MatoranTag.MetruGreatDisk],
   },
   Ehrye: {
-    colors: metruMatoranColors({
-      arms: LegoColor.LightGray,
-      body: LegoColor.White,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
+      body: {
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.TransLightBlue,
       face: LegoColor.White,
-      feet: LegoColor.White,
+      feet: {
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
       mask: LegoColor.White,
-    }),
+    },
     element: ElementTribe.Ice,
     id: 'Ehrye',
     mask: Mask.Mahiki,
@@ -39,14 +68,14 @@ export const MATORAN_DEX = {
   },
   Hafu: {
     chronicleId: CHRONICLE_IDS.HAFU,
-    colors: simpleLimbColors({
-      arms: LegoColor.Tan,
-      body: LegoColor.Tan,
+    colors: {
+      arms: { main: LegoColor.Tan },
+      body: { main: LegoColor.Tan },
       eyes: LegoColor.TransNeonOrange,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Black,
+      feet: { main: LegoColor.Black },
       mask: LegoColor.Black,
-    }),
+    },
     element: ElementTribe.Stone,
     id: 'Hafu',
     mask: Mask.Pakari,
@@ -56,14 +85,14 @@ export const MATORAN_DEX = {
   },
   Hahli: {
     chronicleId: CHRONICLE_IDS.HAHLI,
-    colors: simpleLimbColors({
-      arms: LegoColor.MediumBlue,
-      body: LegoColor.MediumBlue,
+    colors: {
+      arms: { main: LegoColor.MediumBlue },
+      body: { main: LegoColor.MediumBlue },
       eyes: LegoColor.TransNeonYellow,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Blue,
+      feet: { main: LegoColor.Blue },
       mask: LegoColor.Blue,
-    }),
+    },
     element: ElementTribe.Water,
     id: 'Hahli',
     isMaskTransparent: true,
@@ -73,14 +102,14 @@ export const MATORAN_DEX = {
   },
   Hewkii: {
     chronicleId: CHRONICLE_IDS.HUKI,
-    colors: simpleLimbColors({
-      arms: LegoColor.Tan,
-      body: LegoColor.Tan,
+    colors: {
+      arms: { main: LegoColor.Tan },
+      body: { main: LegoColor.Tan },
       eyes: LegoColor.TransNeonOrange,
       face: LegoColor.DarkGray,
-      feet: LegoColor.DarkOrange,
+      feet: { main: LegoColor.DarkOrange },
       mask: LegoColor.DarkOrange,
-    }),
+    },
     element: ElementTribe.Stone,
     id: 'Hewkii',
     mask: Mask.Kakama,
@@ -89,14 +118,14 @@ export const MATORAN_DEX = {
   },
   Huki: {
     chronicleId: CHRONICLE_IDS.HUKI,
-    colors: simpleLimbColors({
-      arms: LegoColor.Tan,
-      body: LegoColor.Tan,
+    colors: {
+      arms: { main: LegoColor.Tan },
+      body: { main: LegoColor.Tan },
       eyes: LegoColor.TransNeonOrange,
       face: LegoColor.DarkGray,
-      feet: LegoColor.DarkOrange,
+      feet: { main: LegoColor.DarkOrange },
       mask: LegoColor.DarkOrange,
-    }),
+    },
     element: ElementTribe.Stone,
     id: 'Huki',
     mask: Mask.Kakama,
@@ -105,14 +134,14 @@ export const MATORAN_DEX = {
   },
   Jala: {
     chronicleId: CHRONICLE_IDS.JALA,
-    colors: simpleLimbColors({
-      arms: LegoColor.Red,
-      body: LegoColor.Red,
+    colors: {
+      arms: { main: LegoColor.Red },
+      body: { main: LegoColor.Red },
       eyes: LegoColor.TransNeonRed,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Yellow,
+      feet: { main: LegoColor.Yellow },
       mask: LegoColor.Yellow,
-    }),
+    },
     element: ElementTribe.Fire,
     id: 'Jala',
     mask: Mask.Hau,
@@ -122,14 +151,14 @@ export const MATORAN_DEX = {
   // Rebuilt Matoran with new names (Naming Day ceremony, post–Bohrok Kal)
   Jaller: {
     chronicleId: CHRONICLE_IDS.JALA,
-    colors: simpleLimbColors({
-      arms: LegoColor.Red,
-      body: LegoColor.Red,
+    colors: {
+      arms: { main: LegoColor.Red },
+      body: { main: LegoColor.Red },
       eyes: LegoColor.TransNeonRed,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Yellow,
+      feet: { main: LegoColor.Yellow },
       mask: LegoColor.Yellow,
-    }),
+    },
     element: ElementTribe.Fire,
     id: 'Jaller',
     mask: Mask.Hau,
@@ -138,14 +167,14 @@ export const MATORAN_DEX = {
   },
   Kapura: {
     chronicleId: CHRONICLE_IDS.KAPURA,
-    colors: simpleLimbColors({
-      arms: LegoColor.Red,
-      body: LegoColor.Red,
+    colors: {
+      arms: { main: LegoColor.Red },
+      body: { main: LegoColor.Red },
       eyes: LegoColor.TransNeonRed,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Red,
+      feet: { main: LegoColor.Red },
       mask: LegoColor.Red,
-    }),
+    },
     element: ElementTribe.Fire,
     id: 'Kapura',
     mask: Mask.Pakari,
@@ -155,14 +184,14 @@ export const MATORAN_DEX = {
   },
   Kivi: {
     chronicleId: CHRONICLE_IDS.KIVI,
-    colors: simpleLimbColors({
-      arms: LegoColor.Tan,
-      body: LegoColor.Tan,
+    colors: {
+      arms: { main: LegoColor.Tan },
+      body: { main: LegoColor.Tan },
       eyes: LegoColor.TransNeonOrange,
       face: LegoColor.DarkGray,
-      feet: LegoColor.DarkOrange,
+      feet: { main: LegoColor.DarkOrange },
       mask: LegoColor.DarkOrange,
-    }),
+    },
     element: ElementTribe.Stone,
     id: 'Kivi',
     isMaskTransparent: true,
@@ -172,14 +201,14 @@ export const MATORAN_DEX = {
   },
   Kongu: {
     chronicleId: CHRONICLE_IDS.KONGU,
-    colors: simpleLimbColors({
-      arms: LegoColor.Lime,
-      body: LegoColor.Lime,
+    colors: {
+      arms: { main: LegoColor.Lime },
+      body: { main: LegoColor.Lime },
       eyes: LegoColor.TransNeonGreen,
       face: LegoColor.DarkGray,
-      feet: LegoColor.DarkTurquoise,
+      feet: { main: LegoColor.DarkTurquoise },
       mask: LegoColor.DarkTurquoise,
-    }),
+    },
     element: ElementTribe.Air,
     id: 'Kongu',
     mask: Mask.Miru,
@@ -188,14 +217,14 @@ export const MATORAN_DEX = {
   },
   Kopeke: {
     chronicleId: CHRONICLE_IDS.KOPEKE,
-    colors: simpleLimbColors({
-      arms: LegoColor.White,
-      body: LegoColor.White,
+    colors: {
+      arms: { main: LegoColor.White },
+      body: { main: LegoColor.White },
       eyes: LegoColor.MediumBlue,
       face: LegoColor.DarkGray,
-      feet: LegoColor.SandBlue,
+      feet: { main: LegoColor.SandBlue },
       mask: LegoColor.SandBlue,
-    }),
+    },
     element: ElementTribe.Ice,
     id: 'Kopeke',
     mask: Mask.Komau,
@@ -205,14 +234,14 @@ export const MATORAN_DEX = {
   },
   Lumi: {
     chronicleId: CHRONICLE_IDS.LUMI,
-    colors: simpleLimbColors({
-      arms: LegoColor.White,
-      body: LegoColor.White,
+    colors: {
+      arms: { main: LegoColor.White },
+      body: { main: LegoColor.White },
       eyes: LegoColor.MediumBlue,
       face: LegoColor.DarkGray,
-      feet: LegoColor.SandBlue,
+      feet: { main: LegoColor.SandBlue },
       mask: LegoColor.SandBlue,
-    }),
+    },
     element: ElementTribe.Ice,
     id: 'Lumi',
     mask: Mask.Hau,
@@ -221,14 +250,14 @@ export const MATORAN_DEX = {
   },
   Macku: {
     chronicleId: CHRONICLE_IDS.MAKU,
-    colors: simpleLimbColors({
-      arms: LegoColor.MediumBlue,
-      body: LegoColor.MediumBlue,
+    colors: {
+      arms: { main: LegoColor.MediumBlue },
+      body: { main: LegoColor.MediumBlue },
       eyes: LegoColor.TransNeonYellow,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Blue,
+      feet: { main: LegoColor.Blue },
       mask: LegoColor.Blue,
-    }),
+    },
     element: ElementTribe.Water,
     id: 'Macku',
     mask: Mask.Huna,
@@ -238,14 +267,14 @@ export const MATORAN_DEX = {
   },
   Maku: {
     chronicleId: CHRONICLE_IDS.MAKU,
-    colors: simpleLimbColors({
-      arms: LegoColor.MediumBlue,
-      body: LegoColor.MediumBlue,
+    colors: {
+      arms: { main: LegoColor.MediumBlue },
+      body: { main: LegoColor.MediumBlue },
       eyes: LegoColor.TransNeonYellow,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Blue,
+      feet: { main: LegoColor.Blue },
       mask: LegoColor.Blue,
-    }),
+    },
     element: ElementTribe.Water,
     id: 'Maku',
     mask: Mask.Huna,
@@ -254,14 +283,29 @@ export const MATORAN_DEX = {
     tags: [MatoranTag.ChroniclersCompany],
   },
   Matau: {
-    colors: metruMatoranColors({
-      arms: LegoColor.Lime,
-      body: LegoColor.DarkGreen,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
+      body: {
+        main: LegoColor.DarkGreen,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.Red,
       face: LegoColor.DarkGreen,
-      feet: LegoColor.DarkGreen,
+      feet: {
+        main: LegoColor.DarkGreen,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
       mask: LegoColor.DarkGreen,
-    }),
+    },
     element: ElementTribe.Air,
     id: 'Matau',
     mask: Mask.Mahiki,
@@ -270,14 +314,14 @@ export const MATORAN_DEX = {
   },
   Matoro: {
     chronicleId: CHRONICLE_IDS.MATORO,
-    colors: simpleLimbColors({
-      arms: LegoColor.White,
-      body: LegoColor.White,
+    colors: {
+      arms: { main: LegoColor.White },
+      body: { main: LegoColor.White },
       eyes: LegoColor.MediumBlue,
       face: LegoColor.DarkGray,
-      feet: LegoColor.SandBlue,
+      feet: { main: LegoColor.SandBlue },
       mask: LegoColor.SandBlue,
-    }),
+    },
     element: ElementTribe.Ice,
     id: 'Matoro',
     mask: Mask.Akaku,
@@ -285,14 +329,29 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Diminished,
   },
   Nokama: {
-    colors: metruMatoranColors({
-      arms: LegoColor.MediumBlue,
-      body: LegoColor.DarkBlue,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
+      body: {
+        main: LegoColor.DarkBlue,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.TransNeonOrange,
       face: LegoColor.DarkBlue,
-      feet: LegoColor.DarkBlue,
+      feet: {
+        main: LegoColor.DarkBlue,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
       mask: LegoColor.DarkBlue,
-    }),
+    },
     element: ElementTribe.Water,
     id: 'Nokama',
     mask: Mask.Rau,
@@ -300,14 +359,29 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Metru,
   },
   Nuhrii: {
-    colors: metruMatoranColors({
-      arms: LegoColor.Orange,
-      body: LegoColor.DarkRed,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
+      body: {
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.TransNeonGreen,
       face: LegoColor.DarkRed,
-      feet: LegoColor.DarkRed,
+      feet: {
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
       mask: LegoColor.DarkRed,
-    }),
+    },
     element: ElementTribe.Fire,
     id: 'Nuhrii',
     mask: Mask.Ruru,
@@ -316,14 +390,29 @@ export const MATORAN_DEX = {
     tags: [MatoranTag.MetruGreatDisk],
   },
   Nuju: {
-    colors: metruMatoranColors({
-      arms: LegoColor.LightGray,
-      body: LegoColor.White,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
+      body: {
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.TransLightBlue,
       face: LegoColor.White,
-      feet: LegoColor.White,
+      feet: {
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
       mask: LegoColor.White,
-    }),
+    },
     element: ElementTribe.Ice,
     id: 'Nuju',
     mask: Mask.Matatu,
@@ -332,14 +421,14 @@ export const MATORAN_DEX = {
   },
   Nuparu: {
     chronicleId: CHRONICLE_IDS.NUPARU,
-    colors: simpleLimbColors({
-      arms: LegoColor.Black,
-      body: LegoColor.Black,
+    colors: {
+      arms: { main: LegoColor.Black },
+      body: { main: LegoColor.Black },
       eyes: LegoColor.Green,
       face: LegoColor.DarkGray,
-      feet: LegoColor.DarkGray,
+      feet: { main: LegoColor.DarkGray },
       mask: LegoColor.Orange,
-    }),
+    },
     element: ElementTribe.Earth,
     id: 'Nuparu',
     mask: Mask.Pakari,
@@ -348,14 +437,14 @@ export const MATORAN_DEX = {
   },
   Onepu: {
     chronicleId: CHRONICLE_IDS.ONEPU,
-    colors: simpleLimbColors({
-      arms: LegoColor.Black,
-      body: LegoColor.Black,
+    colors: {
+      arms: { main: LegoColor.Black },
+      body: { main: LegoColor.Black },
       eyes: LegoColor.Green,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Purple,
+      feet: { main: LegoColor.Purple },
       mask: LegoColor.Purple,
-    }),
+    },
     element: ElementTribe.Earth,
     id: 'Onepu',
     mask: Mask.Pakari,
@@ -363,14 +452,29 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Diminished,
   },
   Onewa: {
-    colors: metruMatoranColors({
-      arms: LegoColor.Tan,
-      body: LegoColor.LightBrown,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
+      body: {
+        main: LegoColor.LightBrown,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.TransDarkBlue,
       face: LegoColor.LightBrown,
-      feet: LegoColor.LightBrown,
+      feet: {
+        main: LegoColor.LightBrown,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
       mask: LegoColor.LightBrown,
-    }),
+    },
     element: ElementTribe.Stone,
     id: 'Onewa',
     mask: Mask.Komau,
@@ -378,14 +482,29 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Metru,
   },
   Orkahm: {
-    colors: metruMatoranColors({
-      arms: LegoColor.Lime,
-      body: LegoColor.DarkGreen,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
+      body: {
+        main: LegoColor.DarkGreen,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.Red,
       face: LegoColor.DarkGreen,
-      feet: LegoColor.DarkGreen,
+      feet: {
+        main: LegoColor.DarkGreen,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
       mask: LegoColor.DarkGreen,
-    }),
+    },
     element: ElementTribe.Air,
     id: 'Orkahm',
     mask: Mask.Matatu,
@@ -395,14 +514,14 @@ export const MATORAN_DEX = {
   },
   Taipu: {
     chronicleId: CHRONICLE_IDS.TAIPU,
-    colors: simpleLimbColors({
-      arms: LegoColor.Tan,
-      body: LegoColor.Tan,
+    colors: {
+      arms: { main: LegoColor.Tan },
+      body: { main: LegoColor.Tan },
       eyes: LegoColor.Green,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Black,
+      feet: { main: LegoColor.Black },
       mask: LegoColor.Black,
-    }),
+    },
     element: ElementTribe.Earth,
     id: 'Taipu',
     mask: Mask.Ruru,
@@ -412,14 +531,14 @@ export const MATORAN_DEX = {
   },
   Takua: {
     chronicleId: CHRONICLE_IDS.TAKUA,
-    colors: simpleLimbColors({
-      arms: LegoColor.Red,
-      body: LegoColor.Red,
+    colors: {
+      arms: { main: LegoColor.Red },
+      body: { main: LegoColor.Red },
       eyes: LegoColor.TransNeonRed,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Yellow,
+      feet: { main: LegoColor.Yellow },
       mask: LegoColor.MediumBlue,
-    }),
+    },
     element: ElementTribe.Light,
     id: 'Takua',
     mask: Mask.Pakari,
@@ -428,14 +547,14 @@ export const MATORAN_DEX = {
   },
   Tamaru: {
     chronicleId: CHRONICLE_IDS.TAMARU,
-    colors: simpleLimbColors({
-      arms: LegoColor.DarkTurquoise,
-      body: LegoColor.DarkTurquoise,
+    colors: {
+      arms: { main: LegoColor.DarkTurquoise },
+      body: { main: LegoColor.DarkTurquoise },
       eyes: LegoColor.TransNeonGreen,
       face: LegoColor.DarkGray,
-      feet: LegoColor.Lime,
+      feet: { main: LegoColor.Lime },
       mask: LegoColor.Lime,
-    }),
+    },
     element: ElementTribe.Air,
     id: 'Tamaru',
     mask: Mask.Rau,
@@ -444,14 +563,29 @@ export const MATORAN_DEX = {
     tags: [MatoranTag.ChroniclersCompany],
   },
   Tehutti: {
-    colors: metruMatoranColors({
-      arms: LegoColor.Black,
-      body: LegoColor.Black,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Black,
+      },
+      body: {
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.TransGreen,
       face: LegoColor.Black,
-      feet: LegoColor.Black,
+      feet: {
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Black,
+      },
       mask: LegoColor.Black,
-    }),
+    },
     element: ElementTribe.Earth,
     id: 'Tehutti',
     mask: Mask.Huna,
@@ -460,14 +594,14 @@ export const MATORAN_DEX = {
     tags: [MatoranTag.MetruGreatDisk],
   },
   Turaga_Matau: {
-    colors: simpleLimbColors({
-      arms: LegoColor.DarkTurquoise,
-      body: LegoColor.Green,
+    colors: {
+      arms: { main: LegoColor.DarkTurquoise },
+      body: { main: LegoColor.Green },
       eyes: LegoColor.TransNeonGreen,
       face: LegoColor.Green,
-      feet: LegoColor.Green,
+      feet: { main: LegoColor.Green },
       mask: LegoColor.DarkTurquoise,
-    }),
+    },
     element: ElementTribe.Air,
     id: 'Turaga_Matau',
     mask: Mask.Mahiki,
@@ -475,14 +609,14 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Turaga,
   },
   Turaga_Nokama: {
-    colors: simpleLimbColors({
-      arms: LegoColor.MediumBlue,
-      body: LegoColor.Blue,
+    colors: {
+      arms: { main: LegoColor.MediumBlue },
+      body: { main: LegoColor.Blue },
       eyes: LegoColor.TransNeonYellow,
       face: LegoColor.Blue,
-      feet: LegoColor.Blue,
+      feet: { main: LegoColor.Blue },
       mask: LegoColor.MediumBlue,
-    }),
+    },
     element: ElementTribe.Water,
     id: 'Turaga_Nokama',
     mask: Mask.Rau,
@@ -490,14 +624,14 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Turaga,
   },
   Turaga_Nuju: {
-    colors: simpleLimbColors({
-      arms: LegoColor.LightGray,
-      body: LegoColor.Black,
+    colors: {
+      arms: { main: LegoColor.LightGray },
+      body: { main: LegoColor.Black },
       eyes: LegoColor.MediumBlue,
       face: LegoColor.White,
-      feet: LegoColor.White,
+      feet: { main: LegoColor.White },
       mask: LegoColor.LightGray,
-    }),
+    },
     element: ElementTribe.Ice,
     id: 'Turaga_Nuju',
     mask: Mask.Matatu,
@@ -506,14 +640,14 @@ export const MATORAN_DEX = {
   },
 
   Turaga_Onewa: {
-    colors: simpleLimbColors({
-      arms: LegoColor.Tan,
-      body: LegoColor.Brown,
+    colors: {
+      arms: { main: LegoColor.Tan },
+      body: { main: LegoColor.Brown },
       eyes: LegoColor.TransNeonOrange,
       face: LegoColor.Brown,
-      feet: LegoColor.Brown,
+      feet: { main: LegoColor.Brown },
       mask: LegoColor.Tan,
-    }),
+    },
     element: ElementTribe.Stone,
     id: 'Turaga_Onewa',
     mask: Mask.Komau,
@@ -521,14 +655,14 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Turaga,
   },
   Turaga_Vakama: {
-    colors: simpleLimbColors({
-      arms: LegoColor.Orange,
-      body: LegoColor.Red,
+    colors: {
+      arms: { main: LegoColor.Orange },
+      body: { main: LegoColor.Red },
       eyes: LegoColor.TransNeonRed,
       face: LegoColor.Red,
-      feet: LegoColor.Red,
+      feet: { main: LegoColor.Red },
       mask: LegoColor.Orange,
-    }),
+    },
     element: ElementTribe.Fire,
     id: 'Turaga_Vakama',
     mask: Mask.Huna,
@@ -536,14 +670,14 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Turaga,
   },
   Turaga_Whenua: {
-    colors: simpleLimbColors({
-      arms: LegoColor.DarkGray,
-      body: LegoColor.Black,
+    colors: {
+      arms: { main: LegoColor.DarkGray },
+      body: { main: LegoColor.Black },
       eyes: LegoColor.TransNeonGreen,
       face: LegoColor.Black,
-      feet: LegoColor.Black,
+      feet: { main: LegoColor.Black },
       mask: LegoColor.DarkGray,
-    }),
+    },
     element: ElementTribe.Earth,
     id: 'Turaga_Whenua',
     mask: Mask.Ruru,
@@ -551,14 +685,29 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Turaga,
   },
   Vakama: {
-    colors: metruMatoranColors({
-      arms: LegoColor.Orange,
-      body: LegoColor.DarkRed,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
+      body: {
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.TransNeonGreen,
       face: LegoColor.DarkRed,
-      feet: LegoColor.DarkRed,
+      feet: {
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
       mask: LegoColor.DarkRed,
-    }),
+    },
     element: ElementTribe.Fire,
     id: 'Vakama',
     mask: Mask.Huna,
@@ -566,14 +715,29 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Metru,
   },
   Vhisola: {
-    colors: metruMatoranColors({
-      arms: LegoColor.MediumBlue,
-      body: LegoColor.DarkBlue,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
+      body: {
+        main: LegoColor.DarkBlue,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.TransNeonOrange,
       face: LegoColor.DarkBlue,
-      feet: LegoColor.DarkBlue,
+      feet: {
+        main: LegoColor.DarkBlue,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
       mask: LegoColor.DarkBlue,
-    }),
+    },
     element: ElementTribe.Water,
     id: 'Vhisola',
     mask: Mask.Komau,
@@ -582,14 +746,29 @@ export const MATORAN_DEX = {
     tags: [MatoranTag.MetruGreatDisk],
   },
   Whenua: {
-    colors: metruMatoranColors({
-      arms: LegoColor.Black,
-      body: LegoColor.Black,
+    colors: {
+      arms: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Black,
+      },
+      body: {
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+      },
       eyes: LegoColor.TransGreen,
       face: LegoColor.Black,
-      feet: LegoColor.Black,
+      feet: {
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkGray,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Black,
+      },
       mask: LegoColor.Black,
-    }),
+    },
     element: ElementTribe.Earth,
     id: 'Whenua',
     mask: Mask.Ruru,

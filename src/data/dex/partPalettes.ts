@@ -20,18 +20,6 @@ export function uniformLimbPalettes(
   };
 }
 
-export function metruLimbPalettes(
-  accent: LegoColor,
-  extra: { glow?: LegoColor; metal?: LegoColor } = {}
-): Pick<MatoranColors, 'arms' | 'legs'> {
-  const limb = partPalette(LegoColor.DarkGray, {
-    metal: extra.metal ?? LegoColor.LightGray,
-    secondary: accent,
-    ...(extra.glow ? { glow: extra.glow } : {}),
-  });
-  return { arms: { ...limb }, legs: { ...limb } };
-}
-
 export type FlatLimbColors = {
   arms: LegoColor;
   body: LegoColor;
@@ -53,23 +41,11 @@ export function simpleLimbColors(colors: FlatLimbColors): MatoranColors {
   };
 }
 
-/** Metru matoran: DarkGray structure on arms/legs, accent as Secondary. */
-export function metruMatoranColors(colors: FlatLimbColors): MatoranColors {
-  return {
-    ...metruLimbPalettes(colors.arms),
-    body: partPalette(colors.body, { metal: LegoColor.LightGray }),
-    eyes: colors.eyes,
-    face: colors.face,
-    feet: partPalette(colors.feet, { metal: LegoColor.LightGray }),
-    mask: colors.mask,
-  };
-}
-
-export const DEFAULT_CUSTOM_COLORS: MatoranColors = simpleLimbColors({
-  arms: LegoColor.LightGray,
-  body: LegoColor.LightGray,
+export const DEFAULT_CUSTOM_COLORS: MatoranColors = {
+  arms: { main: LegoColor.LightGray },
+  body: { main: LegoColor.LightGray },
   eyes: LegoColor.TransNeonOrange,
   face: LegoColor.DarkGray,
-  feet: LegoColor.LightGray,
+  feet: { main: LegoColor.LightGray },
   mask: LegoColor.LightGray,
-});
+};
