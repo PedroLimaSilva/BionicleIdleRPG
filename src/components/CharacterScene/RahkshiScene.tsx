@@ -9,12 +9,12 @@ import { useSettings } from '../../context/useSettings';
 import { CITY_ENVIRONMENT_PROPS } from '../../utils/cityEnvironmentHdri';
 import { shouldEnableSelectiveBloom, shouldEnableShadows } from '../../utils/testMode';
 import { KraataPower } from '../../types/Kraata';
-import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
+import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 import { RahkshiModel } from './Rahkshi';
 import { useEmissiveMeshes } from './selectiveBloom';
 import { StableSelectiveBloom } from './StableSelectiveBloom';
 
-const CENTER_Y = CYLINDER_HEIGHT / 2;
+const CENTER_Y = CYLINDER_CENTER_Y;
 
 /** Scale down environment map contribution so IBL doesn't wash out shadows. */
 function EnvironmentIntensity({ value }: { value: number }) {
