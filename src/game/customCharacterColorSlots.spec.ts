@@ -68,6 +68,13 @@ describe('customCharacterColorSlots', () => {
         'mask',
       ]);
     });
+
+    test('toa metru exposes full kit palette including weapon', () => {
+      const s = getEditablePaletteKeysForStage(MatoranStage.ToaMetru);
+      expect(s.has('arms')).toBe(true);
+      expect(s.has('weapon')).toBe(true);
+      expect(s.has('legs')).toBe(true);
+    });
   });
 
   describe('getOrderedEditableColorTabs', () => {

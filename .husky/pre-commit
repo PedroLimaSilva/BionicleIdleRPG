@@ -1,1 +1,11 @@
+#!/usr/bin/env sh
+
+# Git hooks often run without nvm in PATH (e.g. GUI clients), which falls back to
+# an older system Node and breaks lint-staged (requires Node >= 18).
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+cd "$(dirname -- "$0")/.." || exit 1
+nvm use --silent
+
 yarn lint-staged

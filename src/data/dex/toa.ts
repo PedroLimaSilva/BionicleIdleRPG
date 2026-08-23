@@ -1,7 +1,7 @@
 import { LegoColor } from '../../types/Colors';
 import { ElementTribe, Mask, MatoranStage } from '../../types/Matoran';
 import { CHRONICLE_IDS } from '../chronicles';
-import { metruLimbPalettes, partPalette, uniformLimbPalettes } from './partPalettes';
+import { partPalette, uniformLimbPalettes } from './partPalettes';
 
 function mataToaColors(colors: {
   arms: LegoColor;
@@ -173,25 +173,34 @@ export const TOA_DEX = {
   },
   Toa_Lhikan: {
     colors: {
-      ...metruLimbPalettes(LegoColor.Orange),
-      body: partPalette(LegoColor.Red, {
+      arms: partPalette(LegoColor.FlatDarkGold, {
         metal: LegoColor.LightGray,
-        secondary: LegoColor.Orange,
+        secondary: LegoColor.DarkRed,
       }),
-      eyes: LegoColor.TransNeonRed,
-      face: LegoColor.LightGray,
-      feet: partPalette(LegoColor.Red, {
+      body: partPalette(LegoColor.DarkRed, {
         metal: LegoColor.LightGray,
-        secondary: LegoColor.Orange,
+        secondary: LegoColor.DarkRed,
       }),
-      mask: LegoColor.Red,
-      weapon: partPalette(LegoColor.Orange, {
+      eyes: LegoColor.TransNeonGreen,
+      face: LegoColor.DarkGray,
+      feet: partPalette(LegoColor.FlatDarkGold, {
         metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkRed,
+      }),
+      legs: partPalette(LegoColor.DarkRed, {
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.FlatDarkGold,
+      }),
+      mask: LegoColor.FlatDarkGold,
+      weapon: partPalette(LegoColor.DarkRed, {
+        glow: LegoColor.Orange,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkRed,
       }),
     },
     element: ElementTribe.Fire,
     id: 'Toa_Lhikan',
-    mask: Mask.Hau,
+    mask: Mask.HauGreat,
     name: 'Toa Lhikan',
     stage: MatoranStage.ToaMetru,
   },
