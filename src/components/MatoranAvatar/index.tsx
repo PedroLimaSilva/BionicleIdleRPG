@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { BaseMatoran, Mask, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { useGame } from '../../context/Game';
+import { getAvatarLayerNames } from '../../game/avatarLayers';
 import { getEffectiveMaskColor } from '../../game/maskColor';
 
 import { CompositedImage } from '../CompositedImage';
@@ -37,20 +38,15 @@ export function MatoranAvatar({
     return getEffectiveMaskColor(matoran, completedQuests);
   }, [matoran, completedQuests, effectiveMask]);
 
-  const mask = useMemo(
-    () => `${import.meta.env.BASE_URL}/avatar/Kanohi/${effectiveMask}.webp`,
-    [effectiveMask]
-  );
-
-  const { brainLayer, faceLayer } = useMemo(() => {
+  const { brainLayer, faceLayer, maskLayer } = useMemo(() => {
     const base = `${import.meta.env.BASE_URL}/avatar/`;
-    const mcToran =
-      matoran.stage === MatoranStage.Diminished || matoran.stage === MatoranStage.Rebuilt;
+    const layers = getAvatarLayerNames(matoran.stage, effectiveMask);
     return {
-      brainLayer: `${base}${mcToran ? 'McBrain' : 'Brain'}.webp`,
-      faceLayer: `${base}${mcToran ? 'McFace' : 'Face'}.webp`,
+      brainLayer: `${base}${layers.brain}.webp`,
+      faceLayer: `${base}${layers.face}.webp`,
+      maskLayer: `${base}Kanohi/${layers.mask}.webp`,
     };
-  }, [matoran.stage]);
+  }, [effectiveMask, matoran.stage]);
 
   const glowStyle = maskPowerActive ? { filter: `drop-shadow(0 0 12px ${maskColor})` } : undefined;
 
@@ -71,7 +67,7 @@ export function MatoranAvatar({
       key={matoran.name}
       className={`composited-avatar ${styles}`}
       style={glowStyle}
-      images={[brainLayer, faceLayer, mask]}
+      images={[brainLayer, faceLayer, maskLayer]}
       colors={[colors.eyes, colors.face, maskColor]}
     />
   );
