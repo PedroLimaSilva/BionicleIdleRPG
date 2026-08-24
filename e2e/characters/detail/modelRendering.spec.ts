@@ -132,6 +132,15 @@ test.describe('Character Model Rendering', () => {
     suiteName: 'Metru Matoran Characters',
   });
 
+  defineSerialCharacterModelSuite({
+    buildGameState: (ids) => ({
+      ...INITIAL_GAME_STATE,
+      recruitedCharacters: recruited(ids),
+    }),
+    characterIds: ['Toa_Lhikan'],
+    suiteName: 'Toa Metru Characters',
+  });
+
   test.describe('Rebuilt Matoran', () => {
     test('should render rebuilt matoran character detail page', async ({ page }) => {
       await captureCharacterModelScreenshot(page, 'Jaller', {
