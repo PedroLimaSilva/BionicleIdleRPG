@@ -20,10 +20,10 @@ describe('getAvatarLayerNames', () => {
     });
   });
 
-  test('uses the Metru head and keeps noble Kanohi for Metru Matoran', () => {
+  test('gives Metru Matoran the Toa Mata head and their noble Kanohi', () => {
     expect(getAvatarLayerNames(MatoranStage.Metru, Mask.Huna)).toEqual({
-      brain: 'MetruBrain',
-      face: 'MetruFace',
+      brain: 'Brain',
+      face: 'Face',
       mask: Mask.Huna,
     });
   });
@@ -45,8 +45,13 @@ describe('getAvatarLayerNames', () => {
     expect(getAvatarLayerNames(MatoranStage.ToaMetru, Mask.Akaku).mask).toBe(Mask.Akaku);
   });
 
-  test('falls back to the standard head for Toa and Turaga', () => {
-    for (const stage of [MatoranStage.ToaMata, MatoranStage.ToaNuva, MatoranStage.Turaga]) {
+  test('falls back to the standard head for Toa, Turaga and Metru Matoran', () => {
+    for (const stage of [
+      MatoranStage.ToaMata,
+      MatoranStage.ToaNuva,
+      MatoranStage.Turaga,
+      MatoranStage.Metru,
+    ]) {
       expect(getAvatarLayerNames(stage, Mask.Hau)).toEqual({
         brain: 'Brain',
         face: 'Face',
