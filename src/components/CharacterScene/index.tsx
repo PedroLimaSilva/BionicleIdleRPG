@@ -32,6 +32,7 @@ import { LewaNuvaModel } from './Nuva/LewaNuvaModel';
 import { KopakaNuvaModel } from './Nuva/KopakaNuvaModel';
 import { TakanuvaModel } from './Nuva/TakanuvaModel';
 import { LhikanModel } from './Metru/LhikanModel';
+import { MatauModel } from './Metru/MatauModel';
 
 /** Vertical center of the character framing volume. */
 const CHARACTER_CENTER_Y = CYLINDER_CENTER_Y;
@@ -116,7 +117,14 @@ function CharacterModel({
     case MatoranStage.Rebuilt:
       return <RebuiltMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.ToaMetru:
-      return <LhikanModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+      switch (matoran.id) {
+        case 'Toa_Matau':
+          return <MatauModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+        case 'Toa_Lhikan':
+          return <LhikanModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+        default:
+          return <LhikanModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+      }
     case MatoranStage.Metru:
       return (
         <MetruMatoranModel key={matoran.id} matoran={matoran} onKitMeshesAttached={onModelReady} />

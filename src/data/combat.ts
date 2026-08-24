@@ -811,6 +811,17 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'Toa_Lhikan',
     name: 'Toa Lhikan',
   },
+  Toa_Matau: {
+    baseAttack: 14,
+    baseDefense: 9,
+    baseHp: 88,
+    baseSpeed: 15,
+    element: ElementTribe.Air,
+    id: 'Toa_Matau',
+    mask: Mask.MahikiGreat,
+    model: 'Toa_Matau',
+    name: 'Toa Matau',
+  },
   Toa_Onua: {
     baseAttack: 15,
     baseDefense: 16,

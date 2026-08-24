@@ -4,6 +4,7 @@
  * When adding a node here, wire it in an attachment map or add to `KIT_NODE_EXEMPT`.
  */
 export const KIT_2004_NODES = {
+  AeroSlicer: 'AeroSlicer',
   AxleArm3L: 'AxleArm3L',
   DiskLauncher: 'Disk_Launcher',
   DoubleSocketArmor: 'DoubleSocketArmor',
@@ -23,6 +24,7 @@ export const KIT_2004_NODES = {
   MetruShoulderArmorTop: 'MetruShoulderArmorTop',
   MetruTorso: 'MetruTorso',
   SocketDouble1L: 'SocketDouble1L',
+  TechnicPinBush: 'TechnicPinBush',
 } as const;
 
 export type Kit2004NodeName = (typeof KIT_2004_NODES)[keyof typeof KIT_2004_NODES];

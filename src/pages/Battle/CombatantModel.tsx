@@ -22,6 +22,7 @@ import { disposeObject3DResources } from '../../utils/disposeThreeObject';
 import { KraataPower } from '../../types/Kraata';
 import { TakanuvaModel } from '../../components/CharacterScene/Nuva/TakanuvaModel';
 import { LhikanModel } from '../../components/CharacterScene/Metru/LhikanModel';
+import { MatauModel } from '../../components/CharacterScene/Metru/MatauModel';
 import { RahiPlaceholderModel } from '../../components/CharacterScene/RahiPlaceholderModel';
 import { NuiRamaModel } from '../../components/CharacterScene/NuiRamaModel';
 import { WorldSpaceHpBar } from './WorldSpaceHpBar';
@@ -493,6 +494,21 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.04}>
               <LhikanModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Matau':
+          return (
+            <group scale={0.04}>
+              <MatauModel
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
