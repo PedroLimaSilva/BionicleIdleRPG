@@ -8,6 +8,12 @@ import { join } from 'node:path';
  * names each CharacterScene model asks for, checked against the shipped GLBs.
  */
 const REQUIRED_IDLE_CLIPS: Record<string, string> = {
+  'bohrok_master.glb': 'Idle',
+  'matoran_master.glb': 'Idle',
+  'matoran_metru.glb': 'Idle',
+  // RahkshiModel swaps between 'Empty' (no Kraata) and 'Idle' (glow complete).
+  'rahkshi.glb': 'Empty',
+  'rebuilt.glb': 'Idle',
   'Toa_Mata/gali.glb': 'Idle',
   'Toa_Mata/kopaka.glb': 'Idle',
   'Toa_Mata/lewa.glb': 'Idle',
@@ -22,12 +28,6 @@ const REQUIRED_IDLE_CLIPS: Record<string, string> = {
   'Toa_Nuva/pohatu.glb': 'Idle',
   'Toa_Nuva/tahu.glb': 'Idle',
   'Toa_Nuva/takanuva.glb': 'Idle',
-  'bohrok_master.glb': 'Idle',
-  'matoran_master.glb': 'Idle',
-  'matoran_metru.glb': 'Idle',
-  // RahkshiModel swaps between 'Empty' (no Kraata) and 'Idle' (glow complete).
-  'rahkshi.glb': 'Empty',
-  'rebuilt.glb': 'Idle',
 };
 
 const GLB_HEADER_BYTES = 12;
