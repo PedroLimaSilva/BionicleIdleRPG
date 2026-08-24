@@ -8,6 +8,7 @@ import {
 } from '../types/KitParts';
 import { getBodyPartSlotColor } from '../game/matoranColors';
 import { normalizeKitMaterialSlotEntry } from '../game/kit/kitMaterialUtils';
+import { metallicColorPbr, type KitMetalPbr } from '../game/kit/palettes/metalPbr';
 import {
   getWeatheredMetalMaterial,
   type WeatheredMetalOptions,
@@ -63,11 +64,18 @@ function shouldApplyWeathered(
 function buildStandardSlotMaterial(
   base: StandardMat,
   spec: KitMaterialSlotOverride | undefined,
-  palette: BaseMatoran['colors']
+  palette: BaseMatoran['colors'],
+  slotColor: string | undefined,
+  metalPbr: KitMetalPbr | undefined
 ): StandardMat {
   if (!spec) return base;
   const cloned = base.clone();
-  if (spec.color) cloned.color = new Color(resolveKitColorSource(spec.color, palette));
+  if (slotColor) cloned.color = new Color(slotColor);
+  if (metalPbr) {
+    if (metalPbr.roughness !== undefined) cloned.roughness = metalPbr.roughness;
+    if (metalPbr.metalness !== undefined) cloned.metalness = metalPbr.metalness;
+    if (metalPbr.envMapIntensity !== undefined) cloned.envMapIntensity = metalPbr.envMapIntensity;
+  }
   if (spec.roughness !== undefined) cloned.roughness = spec.roughness;
   if (spec.metalness !== undefined) cloned.metalness = spec.metalness;
   if (spec.envMapIntensity !== undefined) cloned.envMapIntensity = spec.envMapIntensity;
@@ -79,15 +87,6 @@ function buildStandardSlotMaterial(
     cloned.emissiveIntensity = spec.emissiveIntensity;
   }
   return cloned;
-}
-
-function resolveWeatheredColor(
-  base: StandardMat,
-  spec: KitMaterialSlotOverride | undefined,
-  palette: BaseMatoran['colors']
-): string {
-  if (spec?.color) return resolveKitColorSource(spec.color, palette);
-  return base.color.getStyle();
 }
 
 function mergeSlotWeatheredOpts(
@@ -118,19 +117,23 @@ export function buildKitMeshMaterials(
   const next = mats.map((mat) => {
     if (!isStandardMat(mat)) return mat;
     const spec = slotLookup.get(normalizeSlotName(mat.name));
+    const slotColor = spec?.color ? resolveKitColorSource(spec.color, palette) : undefined;
+    // Metallic plastics (gold) shine on any slot, not just Metal; the slot's own
+    // PBR still wins so a Metal entry can tune its own look.
+    const metalPbr = slotColor ? metallicColorPbr(slotColor) : undefined;
 
     // Only tint configured slots — unmapped materials keep their GLB look instead of
     // re-weathering from stale mesh.material.color (character-switch bug on rig meshes).
     if (weatheredBase && spec && shouldApplyWeathered(spec, mat.name)) {
       const opts: WeatheredMetalOptions = {
         ...weatheredBase,
+        ...metalPbr,
         ...mergeSlotWeatheredOpts(spec),
       };
-      const color = resolveWeatheredColor(mat, spec, palette);
-      return getWeatheredMetalMaterial(color, opts);
+      return getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
     }
 
-    return buildStandardSlotMaterial(mat, spec, palette);
+    return buildStandardSlotMaterial(mat, spec, palette, slotColor, metalPbr);
   });
   return Array.isArray(raw) ? next : next[0];
 }
