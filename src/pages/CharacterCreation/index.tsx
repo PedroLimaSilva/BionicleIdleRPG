@@ -26,6 +26,7 @@ import {
 } from '../../game/customMataBuild';
 import { DEFAULT_CUSTOM_COLORS } from '../../data/dex/partPalettes';
 import { CHARACTER_DEX } from '../../data/dex';
+import { ALL_MASKS, isTransparentMask } from '../../data/masks';
 import {
   BaseMatoran,
   CUSTOM_CHARACTER_COST,
@@ -43,22 +44,6 @@ import './index.scss';
 
 /** Placeholder label in the name field; cannot be submitted as the final name. */
 const DEFAULT_CUSTOM_MATORAN_NAME = 'New Matoran';
-
-/** The 12 standard Kanohi available to custom characters (Matoran-tier masks). */
-const SELECTABLE_MASKS: Mask[] = [
-  Mask.Akaku,
-  Mask.Hau,
-  Mask.Huna,
-  Mask.Kakama,
-  Mask.Kaukau,
-  Mask.Komau,
-  Mask.Mahiki,
-  Mask.Matatu,
-  Mask.Miru,
-  Mask.Pakari,
-  Mask.Rau,
-  Mask.Ruru,
-];
 
 const SELECTABLE_ELEMENTS: ElementTribe[] = [
   ElementTribe.Fire,
@@ -236,8 +221,8 @@ export const CharacterCreation: React.FC = () => {
     setMataBuildId(full.customMataModelId ?? DEFAULT_CUSTOM_MATA_MODEL_ID);
   }, [customizeId, evolutionFromStage, isEditMode, recruitedCharacters]);
 
-  // Only the Kaukau is canonically transparent in the dex; mirror that for custom matoran.
-  const isMaskTransparent = mask === Mask.Kaukau;
+  // Mirror the dex, where only the Kaukau sculpts are flagged as transparent.
+  const isMaskTransparent = isTransparentMask(mask);
 
   const trimmedName = name.trim();
   const nameAllowed = trimmedName.length > 0 && trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME;
@@ -432,7 +417,7 @@ export const CharacterCreation: React.FC = () => {
         <div className="field">
           <span className="field-label">Kanohi (Mask)</span>
           <div className="mask-grid">
-            {SELECTABLE_MASKS.map((m) => (
+            {ALL_MASKS.map((m) => (
               <button
                 type="button"
                 key={m}
