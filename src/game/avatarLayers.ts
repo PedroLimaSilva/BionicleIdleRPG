@@ -1,5 +1,4 @@
 import { Mask, MatoranStage } from '../types/Matoran';
-import { getGreatMaskVariant } from './greatMasks';
 
 /**
  * Grayscale head sculpts in `public/avatar/`. Each entry names the eye/brain layer and the
@@ -24,10 +23,9 @@ export type AvatarLayerNames = {
 };
 
 /**
- * Resolve the three composited avatar layers for a character. The head sculpt follows the
- * stage, and Toa Metru wear the Great sculpt of their Kanohi so the 2D avatar matches what
- * `useGreatMask` attaches to the 3D rig. Metru Matoran share the Toa Mata / Nuva head and
- * their noble Kanohi.
+ * Resolve the three composited avatar layers for a character. Only the head sculpt depends on
+ * the stage; the Kanohi is whatever the character wears, so a Toa Metru renders the Great
+ * sculpt by naming it in their dex entry (`Mask.HauGreat`).
  */
 export function getAvatarLayerNames(stage: MatoranStage, mask: Mask): AvatarLayerNames {
   switch (stage) {
@@ -35,7 +33,7 @@ export function getAvatarLayerNames(stage: MatoranStage, mask: Mask): AvatarLaye
     case MatoranStage.Rebuilt:
       return { ...HEAD_LAYERS.mc, mask };
     case MatoranStage.ToaMetru:
-      return { ...HEAD_LAYERS.metru, mask: getGreatMaskVariant(mask) };
+      return { ...HEAD_LAYERS.metru, mask };
     default:
       return { ...HEAD_LAYERS.standard, mask };
   }

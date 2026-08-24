@@ -12,46 +12,16 @@ import {
   normalizeMatoranColors,
   parseMatoranColors,
 } from '../game/matoranColors';
+import { ALL_MASKS } from '../data/masks';
 
 /** URL query param used to share a custom character. Value is a base64-encoded JSON BaseMatoran. */
 export const SHARE_QUERY_PARAM = 'recruit';
 
 /**
- * Mask/MatoranStage are const enums (no runtime object). We enumerate their valid string values
- * here so we can reject malformed share tokens. Keep this list in sync with the enum.
+ * Mask/MatoranStage are const enums (no runtime object), so share tokens are validated against
+ * explicit string sets. Masks come from `ALL_MASKS`; keep the stage list in sync with the enum.
  */
-const VALID_MASKS = new Set<string>([
-  'Avohkii',
-  'Hau',
-  'Kaukau',
-  'Kakama',
-  'Akaku',
-  'Pakari',
-  'Miru',
-  'Hau_Nuva',
-  'Hau_Nuva_Infected',
-  'Kaukau_Nuva',
-  'Kakama_Nuva',
-  'Akaku_Nuva',
-  'Pakari_Nuva',
-  'Miru_Nuva',
-  'Huna',
-  'Ruru',
-  'Komau',
-  'Rau',
-  'Matatu',
-  'Mahiki',
-  'Hau_Great',
-  'Huna_Great',
-  'Komau_Great',
-  'Mahiki_Great',
-  'Matatu_Great',
-  'Rau_Great',
-  'Ruru_Great',
-  'Vahi',
-  'Kraahkan',
-  'Krana',
-]);
+const VALID_MASKS = new Set<string>(ALL_MASKS);
 
 const VALID_ELEMENTS = new Set<string>(Object.values(ElementTribe));
 
