@@ -70,6 +70,7 @@ export const PohatuNuvaModel = forwardRef<
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached: onKitLayerAttached,
+    stage: matoran.stage,
     weathered: POHATU_NUVA_WEATHERED,
   });
 
@@ -79,6 +80,7 @@ export const PohatuNuvaModel = forwardRef<
     colors: matoran.colors,
     kitUrl: KIT_2003_GLB_PATH,
     onAttached: onKitLayerAttached,
+    stage: matoran.stage,
     weathered: POHATU_NUVA_WEATHERED,
   });
 

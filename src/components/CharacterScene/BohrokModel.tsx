@@ -19,6 +19,7 @@ import {
 } from '../../game/kit/palettes/bohrokKitPalette';
 import type { KitMaterialSlotEntry } from '../../types/KitParts';
 import { normalizeKitMaterialSlotEntry } from '../../game/kit/kitMaterialUtils';
+import { resolveKitColorSource } from '../../hooks/kitMaterialApplication';
 import { getWeatheredMetalMaterial, type WeatheredMetalOptions } from './WeatheredMetalMaterial';
 
 const BOHROK_MASTER_GLB = import.meta.env.BASE_URL + 'bohrok_master.glb';
@@ -91,10 +92,6 @@ function buildSlotLookup(
   return lookup;
 }
 
-function resolvePaletteColor(key: 'body' | 'eyes', palette: BaseMatoran['colors']): string {
-  return palette[key];
-}
-
 function applyShieldMaterials(
   root: Object3D,
   slotLookup: Map<string, ReturnType<typeof normalizeKitMaterialSlotEntry>>,
@@ -111,20 +108,15 @@ function applyShieldMaterials(
       if (!spec) return mat;
 
       if (BOHROK_WEATHERED && spec.weathered !== false && !spec.emissive) {
-        const color =
-          spec.color?.kind === 'lego'
-            ? spec.color.value
-            : spec.color?.kind === 'palette'
-              ? resolvePaletteColor(spec.color.key as 'body', palette)
-              : mat.color.getStyle();
+        const color = spec.color
+          ? resolveKitColorSource(spec.color, palette)
+          : mat.color.getStyle();
         return getWeatheredMetalMaterial(color, BOHROK_WEATHERED);
       }
 
       const cloned = mat.clone();
-      if (spec.color?.kind === 'lego') {
-        cloned.color.set(spec.color.value as ColorType);
-      } else if (spec.color?.kind === 'palette') {
-        cloned.color.set(resolvePaletteColor(spec.color.key as 'body', palette) as ColorType);
+      if (spec.color) {
+        cloned.color.set(resolveKitColorSource(spec.color, palette) as ColorType);
       }
       return cloned;
     });

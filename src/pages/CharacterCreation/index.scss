@@ -103,10 +103,15 @@
   box-shadow: 0 0 10px var(--theme-element-glow-transparent);
 }
 
-.part-tabs {
+.part-tabs,
+.slot-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+}
+
+.slot-tabs {
+  padding-top: 0.15rem;
 }
 
 .part-tab {

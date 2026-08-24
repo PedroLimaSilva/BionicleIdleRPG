@@ -6,16 +6,17 @@ import {
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../types/Matoran';
 import { ElementTribe, Mask } from '../types/Matoran';
 import { LegoColor } from '../types/Colors';
+import { simpleLimbColors } from '../data/dex/partPalettes';
 import { BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID } from './nuvaSymbols';
 
-const MOCK_COLORS = {
+const MOCK_COLORS = simpleLimbColors({
   arms: LegoColor.Orange,
   body: LegoColor.Red,
   eyes: LegoColor.TransNeonRed,
   face: LegoColor.DarkGray,
   feet: LegoColor.Red,
   mask: LegoColor.Red,
-};
+});
 
 describe('maskColor', () => {
   describe('getEffectiveMataMaskColor', () => {

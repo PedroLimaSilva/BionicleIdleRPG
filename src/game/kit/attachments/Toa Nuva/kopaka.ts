@@ -29,7 +29,7 @@ const KOPAKA_NUVA_EYES_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEnt
 const KOPAKA_NUVA_ICE_BLADE_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...KOPAKA_NUVA_PALETTE_COLORS,
   Glow: {
-    emissive: { key: 'weaponGlow', kind: 'palette' },
+    emissive: { kind: 'part', part: 'weapon', slot: 'glow' },
     emissiveIntensity: 50,
     weathered: false,
   },

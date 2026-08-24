@@ -51,6 +51,7 @@ export const OnuaMataModel = forwardRef<
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached,
+    stage: matoran.stage,
     weathered: ONUA_WEATHERED,
   });
 

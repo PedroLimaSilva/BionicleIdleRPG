@@ -62,6 +62,7 @@ export function DiminishedMatoranModel({
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached,
+    stage: matoran.stage,
     weathered: DIMINISHED_WEATHERED,
   });
 

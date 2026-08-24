@@ -7,7 +7,11 @@ import {
   MatoranStage,
   MatoranTag,
 } from '../types/Matoran';
-import { LegoColor } from '../types/Colors';
+import {
+  matoranColorsEqual,
+  normalizeMatoranColors,
+  parseMatoranColors,
+} from '../game/matoranColors';
 
 /** URL query param used to share a custom character. Value is a base64-encoded JSON BaseMatoran. */
 export const SHARE_QUERY_PARAM = 'recruit';
@@ -99,28 +103,11 @@ export function parseCustomCharacterShare(token: string): BaseMatoran | null {
   if (typeof obj.mask !== 'string' || !VALID_MASKS.has(obj.mask)) return null;
   if (typeof obj.element !== 'string' || !VALID_ELEMENTS.has(obj.element)) return null;
   if (typeof obj.stage !== 'string' || !VALID_STAGES.has(obj.stage)) return null;
-  const colors = obj.colors;
-  if (!colors || typeof colors !== 'object') return null;
-  const c = colors as Record<string, unknown>;
-  for (const key of ['mask', 'body', 'arms', 'feet', 'eyes', 'face']) {
-    if (typeof c[key] !== 'string') return null;
-  }
-  if (c.weaponGlow !== undefined && typeof c.weaponGlow !== 'string') return null;
+  const colors = parseMatoranColors(obj.colors, obj.stage as MatoranStage);
+  if (!colors) return null;
 
-  const colorCore: BaseMatoran['colors'] = {
-    arms: c.arms as LegoColor,
-    body: c.body as LegoColor,
-    eyes: c.eyes as LegoColor,
-    face: c.face as LegoColor,
-    feet: c.feet as LegoColor,
-    mask: c.mask as LegoColor,
-  };
-  if (typeof c.weaponGlow === 'string') {
-    colorCore.weaponGlow = c.weaponGlow as LegoColor;
-  }
-
-  const safe: BaseMatoran = {
-    colors: colorCore,
+  return {
+    colors,
     element: obj.element as ElementTribe,
     id: obj.id,
     isMaskTransparent: !!obj.isMaskTransparent,
@@ -129,7 +116,6 @@ export function parseCustomCharacterShare(token: string): BaseMatoran | null {
     stage: obj.stage as MatoranStage,
     tags: [MatoranTag.Custom],
   };
-  return safe;
 }
 
 /**
@@ -143,20 +129,10 @@ export function areEquivalentSharedCustomMatoran(a: BaseMatoran, b: BaseMatoran)
   if (a.element !== b.element) return false;
   if (a.stage !== b.stage) return false;
   if (!!a.isMaskTransparent !== !!b.isMaskTransparent) return false;
-  const ac = a.colors;
-  const bc = b.colors;
-  if (
-    ac.mask !== bc.mask ||
-    ac.body !== bc.body ||
-    ac.feet !== bc.feet ||
-    ac.arms !== bc.arms ||
-    ac.eyes !== bc.eyes ||
-    ac.face !== bc.face
-  ) {
-    return false;
-  }
-  if ((ac.weaponGlow ?? null) !== (bc.weaponGlow ?? null)) return false;
-  return true;
+  return matoranColorsEqual(
+    normalizeMatoranColors(a.colors, a.stage),
+    normalizeMatoranColors(b.colors, b.stage)
+  );
 }
 
 /** First custom entry whose share identity matches `candidate`, if any. */

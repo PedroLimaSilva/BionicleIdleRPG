@@ -1,12 +1,12 @@
 import { Color, Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import type { BaseMatoran } from '../types/Matoran';
-import { LegoColor } from '../types/Colors';
 import {
   KIT_MATERIAL_WEATHERED_OPTION_KEYS,
   type KitMaterialColorSource,
   type KitMaterialSlotEntry,
   type KitMaterialSlotOverride,
 } from '../types/KitParts';
+import { getBodyPartSlotColor } from '../game/matoranColors';
 import { normalizeKitMaterialSlotEntry } from '../game/kit/kitMaterialUtils';
 import {
   getWeatheredMetalMaterial,
@@ -24,8 +24,8 @@ export function resolveKitColorSource(
   palette: BaseMatoran['colors']
 ): string {
   if (source.kind === 'lego') return source.value;
-  if (source.key === 'weaponGlow') {
-    return palette.weaponGlow ?? LegoColor.TransNeonYellow;
+  if (source.kind === 'part') {
+    return getBodyPartSlotColor(palette, source.part, source.slot);
   }
   return palette[source.key];
 }

@@ -70,6 +70,7 @@ export const LewaNuvaModel = forwardRef<
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached: onKitLayerAttached,
+    stage: matoran.stage,
     weathered: LEWA_NUVA_WEATHERED,
   });
 
@@ -79,6 +80,7 @@ export const LewaNuvaModel = forwardRef<
     colors: matoran.colors,
     kitUrl: KIT_2003_GLB_PATH,
     onAttached: onKitLayerAttached,
+    stage: matoran.stage,
     weathered: LEWA_NUVA_WEATHERED,
   });
 

@@ -1,9 +1,22 @@
-import { MatoranStage, type BaseMatoran } from '../types/Matoran';
-import type { MatoranPaletteKey } from '../types/KitParts';
+import { LegoColor } from '../types/Colors';
+import type { BodyPartId, BodyPartSlot } from '../types/KitParts';
+import {
+  MatoranStage,
+  type BaseMatoran,
+  type ColorTabId,
+  type MatoranColors,
+} from '../types/Matoran';
 import { mataModelUsesKitPlayerPalette } from './customMataBuild';
+import {
+  expandToKitStage,
+  getBodyPartSlotColor,
+  normalizeMatoranColors,
+  setBodyPartSlot,
+  stageUsesPartSlots,
+} from './matoranColors';
 
-/** Display order for color tabs in character creation. */
-export const CUSTOM_CHARACTER_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
+/** Display order for color tabs in character creation (matoran stages). */
+export const CUSTOM_CHARACTER_COLOR_TAB_ORDER: ColorTabId[] = [
   'mask',
   'body',
   'arms',
@@ -12,72 +25,140 @@ export const CUSTOM_CHARACTER_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
   'face',
 ];
 
-/** Kit Toa Mata rigs add optional weapon glow after the standard body palette. */
-const TOA_MATA_KIT_COLOR_TAB_ORDER: MatoranPaletteKey[] = [
-  ...CUSTOM_CHARACTER_COLOR_TAB_ORDER,
-  'weaponGlow',
+/** Kit stages expose legs + weapon palettes in addition to the matoran tabs. */
+const KIT_PART_TAB_ORDER: ColorTabId[] = [
+  'mask',
+  'body',
+  'arms',
+  'legs',
+  'feet',
+  'weapon',
+  'eyes',
+  'face',
 ];
 
-/**
- * Palette keys the player may edit for a custom character at this stage. For Toa Mata,
- * `mataBuildId` is the resolved Mata dex id (`Toa_Tahu`, …) so kit-driven rigs expose the full
- * palette; all selectable Mata builds use the kit palette.
- */
-export function getEditablePaletteKeysForStage(
-  stage: MatoranStage,
-  mataBuildId?: string
-): ReadonlySet<MatoranPaletteKey> {
+const FLAT_TABS = new Set<ColorTabId>(['mask', 'eyes', 'face']);
+
+export function isFlatColorTab(tab: ColorTabId): tab is 'eyes' | 'face' | 'mask' {
+  return FLAT_TABS.has(tab);
+}
+
+export function getEditableColorTabs(stage: MatoranStage, mataBuildId?: string): ColorTabId[] {
   switch (stage) {
     case MatoranStage.Diminished:
     case MatoranStage.Rebuilt:
-      // Custom characters may use any palette slot at each stage (canon matoran often match
-      // torso and limbs; players are not restricted to that).
-      return new Set(CUSTOM_CHARACTER_COLOR_TAB_ORDER);
+    case MatoranStage.Turaga:
+      return CUSTOM_CHARACTER_COLOR_TAB_ORDER;
     case MatoranStage.ToaMata:
       if (mataBuildId && mataModelUsesKitPlayerPalette(mataBuildId)) {
-        return new Set(TOA_MATA_KIT_COLOR_TAB_ORDER);
+        return KIT_PART_TAB_ORDER;
       }
-      return new Set(['mask', 'eyes']);
+      return ['mask', 'eyes'];
+    case MatoranStage.ToaNuva:
+    case MatoranStage.Metru:
     case MatoranStage.ToaMetru:
-      return new Set(TOA_MATA_KIT_COLOR_TAB_ORDER);
+      return KIT_PART_TAB_ORDER;
     default:
-      return new Set(CUSTOM_CHARACTER_COLOR_TAB_ORDER);
+      return CUSTOM_CHARACTER_COLOR_TAB_ORDER;
   }
 }
 
+/** @deprecated Use {@link getEditableColorTabs}. Kept for existing call sites. */
 export function getOrderedEditableColorTabs(
   stage: MatoranStage,
   mataBuildId?: string
-): MatoranPaletteKey[] {
-  const allowed = getEditablePaletteKeysForStage(stage, mataBuildId);
-  const order =
-    stage === MatoranStage.ToaMetru ||
-    (stage === MatoranStage.ToaMata && mataBuildId && mataModelUsesKitPlayerPalette(mataBuildId))
-      ? TOA_MATA_KIT_COLOR_TAB_ORDER
-      : CUSTOM_CHARACTER_COLOR_TAB_ORDER;
-  return order.filter((k) => allowed.has(k));
+): ColorTabId[] {
+  return getEditableColorTabs(stage, mataBuildId);
+}
+
+export function getEditablePaletteKeysForStage(
+  stage: MatoranStage,
+  mataBuildId?: string
+): ReadonlySet<ColorTabId> {
+  return new Set(getEditableColorTabs(stage, mataBuildId));
 }
 
 /**
- * Coerces stored colors to rules for the given stage. Reserved for future per-stage fixes;
- * custom palettes are not forced to match canon defaults (e.g. arms vs body on Diminished).
+ * Material slots shown under a body-part tab. Flat tabs (mask/eyes/face) return [].
+ * Diminished / Rebuilt only edit Main; kit stages edit Main/Secondary/Metal/Glow.
+ */
+export function getEditableSlotsForTab(stage: MatoranStage, tab: ColorTabId): BodyPartSlot[] {
+  if (isFlatColorTab(tab)) return [];
+  if (!stageUsesPartSlots(stage)) return ['main'];
+  return ['main', 'secondary', 'metal', 'glow'];
+}
+
+export function getColorTabSwatch(colors: MatoranColors, tab: ColorTabId): LegoColor {
+  if (isFlatColorTab(tab)) return colors[tab];
+  if (tab === 'legs') return (colors.legs ?? colors.feet).main;
+  if (tab === 'weapon') return (colors.weapon ?? colors.body).main;
+  return colors[tab].main;
+}
+
+export function getActiveTabColor(
+  colors: MatoranColors,
+  tab: ColorTabId,
+  slot: BodyPartSlot = 'main'
+): LegoColor {
+  if (isFlatColorTab(tab)) return colors[tab];
+  return getBodyPartSlotColor(colors, tab, slot);
+}
+
+export function setColorTabValue(
+  colors: MatoranColors,
+  tab: ColorTabId,
+  value: LegoColor,
+  slot: BodyPartSlot = 'main'
+): MatoranColors {
+  if (isFlatColorTab(tab)) return { ...colors, [tab]: value };
+  return setBodyPartSlot(colors, tab as BodyPartId, slot, value);
+}
+
+export function colorPartLabel(part: ColorTabId, stage: MatoranStage): string {
+  if (part === 'feet' && stage === MatoranStage.Rebuilt) {
+    return 'feet & hands';
+  }
+  return part;
+}
+
+export function slotLabel(slot: BodyPartSlot): string {
+  switch (slot) {
+    case 'main':
+      return 'Main';
+    case 'secondary':
+      return 'Secondary';
+    case 'metal':
+      return 'Metal';
+    case 'glow':
+      return 'Glow';
+    default:
+      return slot;
+  }
+}
+
+/**
+ * Coerces stored colors (legacy flat or current palettes) to the dex shape.
  */
 export function normalizeCustomCharacterColorsForStage(
-  _stage: MatoranStage,
-  colors: BaseMatoran['colors']
-): BaseMatoran['colors'] {
-  return { ...colors };
+  stage: MatoranStage,
+  colors: BaseMatoran['colors'] | Record<string, unknown>
+): MatoranColors {
+  return normalizeMatoranColors(colors, stage);
 }
 
 /**
- * When opening the editor right after evolution, seed colors for slots that gain new meaning.
- * `fromStage` is the stage before evolution; `toStage` is the current (post-evolve) stage.
+ * When opening the editor right after evolution, seed per-part slots so kit
+ * Main/Secondary/Metal/Glow match the old flat-palette defaults.
  */
 export function prefillColorsAfterEvolution(
   fromStage: MatoranStage,
   toStage: MatoranStage,
-  colors: BaseMatoran['colors']
-): BaseMatoran['colors'] {
-  if (fromStage === toStage) return { ...colors };
-  return normalizeCustomCharacterColorsForStage(toStage, { ...colors });
+  colors: BaseMatoran['colors'] | Record<string, unknown>
+): MatoranColors {
+  const from = normalizeMatoranColors(colors, fromStage);
+  if (fromStage === toStage) return from;
+  if (stageUsesPartSlots(toStage) && !stageUsesPartSlots(fromStage)) {
+    return expandToKitStage(from, toStage);
+  }
+  return normalizeMatoranColors(from, toStage);
 }

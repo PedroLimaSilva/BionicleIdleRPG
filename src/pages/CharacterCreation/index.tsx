@@ -9,15 +9,22 @@ import { useGame } from '../../context/Game';
 import { useSettings } from '../../context/useSettings';
 import { getRecruitedMatoran } from '../../services/matoranUtils';
 import {
+  colorPartLabel,
+  getActiveTabColor,
+  getColorTabSwatch,
+  getEditableSlotsForTab,
   getOrderedEditableColorTabs,
+  isFlatColorTab,
   normalizeCustomCharacterColorsForStage,
   prefillColorsAfterEvolution,
+  setColorTabValue,
+  slotLabel,
 } from '../../game/customCharacterColorSlots';
 import {
   CUSTOM_SELECTABLE_MATA_MODEL_IDS,
   DEFAULT_CUSTOM_MATA_MODEL_ID,
-  mataModelUsesKitPlayerPalette,
 } from '../../game/customMataBuild';
+import { DEFAULT_CUSTOM_COLORS } from '../../data/dex/partPalettes';
 import { CHARACTER_DEX } from '../../data/dex';
 import {
   BaseMatoran,
@@ -27,8 +34,9 @@ import {
   Mask,
   MatoranStage,
   MatoranTag,
+  type ColorTabId,
 } from '../../types/Matoran';
-import type { MatoranPaletteKey } from '../../types/KitParts';
+import type { BodyPartSlot } from '../../types/KitParts';
 import { LegoColor } from '../../types/Colors';
 
 import './index.scss';
@@ -69,8 +77,8 @@ const DEBUG_CREATION_STAGES: MatoranStage[] = [
   MatoranStage.Rebuilt,
   MatoranStage.Metru,
   MatoranStage.ToaMata,
-  MatoranStage.ToaMetru,
   MatoranStage.ToaNuva,
+  MatoranStage.ToaMetru,
   MatoranStage.Turaga,
 ];
 
@@ -108,17 +116,6 @@ const EYE_COLOR_PALETTE: LegoColor[] = [
   LegoColor.TransNeonPink,
 ];
 
-/** Default starting palette: gray clear-parts placeholder, neon-orange eyes. */
-const DEFAULT_COLORS = {
-  arms: LegoColor.LightGray,
-  body: LegoColor.LightGray,
-  eyes: LegoColor.TransNeonOrange,
-  face: LegoColor.DarkGray,
-  feet: LegoColor.LightGray,
-  mask: LegoColor.LightGray,
-  weaponGlow: LegoColor.TransNeonYellow,
-};
-
 function readableTextColor(hex: string): string {
   const v = hex.replace('#', '');
   const r = parseInt(v.substring(0, 2), 16);
@@ -126,16 +123,6 @@ function readableTextColor(hex: string): string {
   const b = parseInt(v.substring(4, 6), 16);
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   return luminance > 0.6 ? '#000' : '#fff';
-}
-
-function colorPartLabel(part: MatoranPaletteKey, stage: MatoranStage): string {
-  if (part === 'feet' && stage === MatoranStage.Rebuilt) {
-    return 'feet & hands';
-  }
-  if (part === 'weaponGlow') {
-    return 'weapon glow';
-  }
-  return part;
 }
 
 type CharacterCreateLocationState = {
@@ -189,8 +176,11 @@ export const CharacterCreation: React.FC = () => {
   const [showCreateConfirm, setShowCreateConfirm] = useState(false);
   const [mask, setMask] = useState<Mask>(Mask.Hau);
   const [element, setElement] = useState<ElementTribe>(ElementTribe.Fire);
-  const [colors, setColors] = useState<BaseMatoran['colors']>(() => ({ ...DEFAULT_COLORS }));
-  const [activePart, setActivePart] = useState<MatoranPaletteKey>('mask');
+  const [colors, setColors] = useState<BaseMatoran['colors']>(() => ({
+    ...DEFAULT_CUSTOM_COLORS,
+  }));
+  const [activePart, setActivePart] = useState<ColorTabId>('mask');
+  const [activeSlot, setActiveSlot] = useState<BodyPartSlot>('main');
   const [mataBuildId, setMataBuildId] = useState<string>(DEFAULT_CUSTOM_MATA_MODEL_ID);
 
   const colorTabs = useMemo(
@@ -203,6 +193,15 @@ export const CharacterCreation: React.FC = () => {
   );
 
   const lastFormInitKeyRef = useRef('');
+  const lastCreationStageRef = useRef(creationStage);
+
+  useEffect(() => {
+    if (isEditMode) return;
+    if (lastCreationStageRef.current === creationStage) return;
+    const fromStage = lastCreationStageRef.current;
+    lastCreationStageRef.current = creationStage;
+    setColors((prev) => prefillColorsAfterEvolution(fromStage, creationStage, prev));
+  }, [creationStage, isEditMode]);
 
   useEffect(() => {
     if (!colorTabs.includes(activePart)) {
@@ -244,18 +243,22 @@ export const CharacterCreation: React.FC = () => {
   const nameAllowed = trimmedName.length > 0 && trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME;
   const canAfford = protodermis >= CUSTOM_CHARACTER_COST;
   const canCreate = isEditMode ? nameAllowed : canAfford && nameAllowed;
-  const displayColors = useMemo(() => {
-    const base = normalizeCustomCharacterColorsForStage(creationStage, colors);
-    if (
-      creationStage === MatoranStage.ToaMata &&
-      mataBuildId &&
-      mataModelUsesKitPlayerPalette(mataBuildId) &&
-      base.weaponGlow === undefined
-    ) {
-      return { ...base, weaponGlow: LegoColor.TransNeonYellow };
+  const displayColors = useMemo(
+    () => normalizeCustomCharacterColorsForStage(creationStage, colors),
+    [colors, creationStage]
+  );
+
+  const partSlots = useMemo(
+    () => getEditableSlotsForTab(creationStage, activePart),
+    [activePart, creationStage]
+  );
+
+  useEffect(() => {
+    if (isFlatColorTab(activePart)) return;
+    if (!partSlots.includes(activeSlot)) {
+      setActiveSlot(partSlots[0] ?? 'main');
     }
-    return base;
-  }, [colors, creationStage, mataBuildId]);
+  }, [activePart, activeSlot, partSlots]);
 
   const previewBase = useMemo<BaseMatoran>(
     () => ({
@@ -315,14 +318,22 @@ export const CharacterCreation: React.FC = () => {
     );
   }, [creationStage, livePreview, mataBuildId, setScene]);
 
-  const palette =
-    activePart === 'eyes' || activePart === 'weaponGlow' ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
+  const editingGlow = !isFlatColorTab(activePart) && activeSlot === 'glow';
+  const palette = activePart === 'eyes' || editingGlow ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
+  const currentColor = getActiveTabColor(
+    displayColors,
+    activePart,
+    isFlatColorTab(activePart) ? 'main' : activeSlot
+  );
+
+  const colorsForSave = (stage: MatoranStage, raw: BaseMatoran['colors']): BaseMatoran['colors'] =>
+    normalizeCustomCharacterColorsForStage(stage, raw);
 
   const performCreate = () => {
     if (!canCreate) return;
     if (isEditMode && customizeId) {
       const stage = getRecruitedMatoran(customizeId, recruitedCharacters).stage;
-      const resolvedColors = normalizeCustomCharacterColorsForStage(stage, colors);
+      const resolvedColors = colorsForSave(stage, colors);
       const ok = updateCustomCharacter(
         customizeId,
         {
@@ -341,7 +352,7 @@ export const CharacterCreation: React.FC = () => {
       }
       return;
     }
-    const resolvedColors = normalizeCustomCharacterColorsForStage(creationStage, colors);
+    const resolvedColors = colorsForSave(creationStage, colors);
     const id = createCustomCharacter(
       {
         colors: resolvedColors,
@@ -464,20 +475,50 @@ export const CharacterCreation: React.FC = () => {
               >
                 <span
                   className="part-tab-swatch"
-                  style={{ backgroundColor: displayColors[p] }}
+                  style={{ backgroundColor: getColorTabSwatch(displayColors, p) }}
                   aria-hidden
                 />
                 <span>{colorPartLabel(p, creationStage)}</span>
               </button>
             ))}
           </div>
+          {partSlots.length > 1 && (
+            <div className="slot-tabs" data-testid="part-slots">
+              {partSlots.map((slot) => (
+                <button
+                  type="button"
+                  key={slot}
+                  className={`part-tab${activeSlot === slot ? ' part-tab--selected' : ''}`}
+                  onClick={() => setActiveSlot(slot)}
+                >
+                  <span
+                    className="part-tab-swatch"
+                    style={{
+                      backgroundColor: getActiveTabColor(displayColors, activePart, slot),
+                    }}
+                    aria-hidden
+                  />
+                  <span>{slotLabel(slot)}</span>
+                </button>
+              ))}
+            </div>
+          )}
           <div className="color-grid">
             {palette.map((c) => (
               <div
                 key={c}
-                className={`color-swatch${displayColors[activePart] === c ? ' color-swatch--selected' : ''}`}
+                className={`color-swatch${currentColor === c ? ' color-swatch--selected' : ''}`}
                 style={{ background: c, color: readableTextColor(c) }}
-                onClick={() => setColors((prev) => ({ ...prev, [activePart]: c }))}
+                onClick={() =>
+                  setColors((prev) =>
+                    setColorTabValue(
+                      normalizeCustomCharacterColorsForStage(creationStage, prev),
+                      activePart,
+                      c,
+                      isFlatColorTab(activePart) ? 'main' : activeSlot
+                    )
+                  )
+                }
                 aria-label={c}
               />
             ))}

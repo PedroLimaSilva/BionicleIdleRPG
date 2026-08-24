@@ -97,6 +97,7 @@ export function MetruMatoranModel({
     colors: matoran.colors,
     kitUrl: KIT_2004_GLB_PATH,
     onAttached: onLayerAttached,
+    stage: matoran.stage,
     weathered: METRU_WEATHERED,
   });
 
@@ -106,6 +107,7 @@ export function MetruMatoranModel({
     colors: matoran.colors,
     kitUrl: KIT_2001_GLB_PATH,
     onAttached: onLayerAttached,
+    stage: matoran.stage,
     weathered: METRU_WEATHERED,
   });
 
@@ -115,6 +117,7 @@ export function MetruMatoranModel({
     colors: matoran.colors,
     kitUrl: KIT_2003_GLB_PATH,
     onAttached: onLayerAttached,
+    stage: matoran.stage,
     weathered: METRU_WEATHERED,
   });
 

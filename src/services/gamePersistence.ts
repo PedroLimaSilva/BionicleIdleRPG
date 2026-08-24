@@ -1,5 +1,6 @@
 import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameState';
 import { applyOfflineJobExp } from '../game/Jobs';
+import { migrateCustomCharacters } from '../game/matoranColors';
 import { PartialGameState } from '../types/GameState';
 import { MatoranJob } from '../types/Jobs';
 import { BaseMatoran, isCustomCharacterId, RecruitedCharacterData } from '../types/Matoran';
@@ -144,6 +145,11 @@ function sanitizeUnrecognizedJobs(parsed: Record<string, unknown>): void {
  * Removes recruited custom characters whose base data is missing from `customCharacters`.
  * Also strips them from active quest assignments so job ticks do not keep updating ghosts.
  */
+/** Expand leftover flat custom palettes and drop `kitSlotMap` without a version bump. */
+function sanitizeCustomCharacterPalettes(parsed: Record<string, unknown>): void {
+  parsed.customCharacters = migrateCustomCharacters(parsed.customCharacters);
+}
+
 function sanitizeOrphanedCustomCharacters(parsed: Record<string, unknown>): void {
   const recruitedCharacters = parsed.recruitedCharacters as RecruitedCharacterData[] | undefined;
   if (!Array.isArray(recruitedCharacters)) return;
@@ -188,6 +194,7 @@ function isValidLoadedGameState(data: PartialGameState): boolean {
 export function processLoadedGameDocument(parsed: Record<string, unknown>): LoadedGameState {
   applyOptionalDefaults(parsed);
   sanitizeUnrecognizedJobs(parsed);
+  sanitizeCustomCharacterPalettes(parsed);
   sanitizeOrphanedCustomCharacters(parsed);
 
   if (!isValidLoadedGameState(parsed as PartialGameState)) {

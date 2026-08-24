@@ -1,18 +1,42 @@
-import { ElementTribe, Mask } from '../../types/Matoran';
-import { MatoranStage } from '../../types/Matoran';
 import { LegoColor } from '../../types/Colors';
+import { ElementTribe, Mask, MatoranStage } from '../../types/Matoran';
 import { CHRONICLE_IDS } from '../chronicles';
 
 export const TOA_DEX = {
   Takanuva: {
     chronicleId: CHRONICLE_IDS.TAKUA,
     colors: {
-      arms: LegoColor.White,
-      body: LegoColor.White,
+      arms: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.LightGray,
+        metal: LegoColor.FlatDarkGold,
+        secondary: LegoColor.White,
+      },
+      body: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.White,
+        metal: LegoColor.FlatDarkGold,
+        secondary: LegoColor.White,
+      },
       eyes: LegoColor.TransNeonOrange,
       face: LegoColor.White,
-      feet: LegoColor.White,
+      feet: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.White,
+        metal: LegoColor.FlatDarkGold,
+      },
+      legs: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.LightGray,
+        metal: LegoColor.FlatDarkGold,
+        secondary: LegoColor.White,
+      },
       mask: LegoColor.FlatDarkGold,
+      weapon: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.FlatDarkGold,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Light,
     id: 'Takanuva',
@@ -23,13 +47,38 @@ export const TOA_DEX = {
   Toa_Gali: {
     chronicleId: CHRONICLE_IDS.GALI,
     colors: {
-      arms: LegoColor.MediumBlue,
-      body: LegoColor.Blue,
+      arms: {
+        glow: LegoColor.TransNeonYellow,
+        main: LegoColor.Blue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
+      body: {
+        glow: LegoColor.TransNeonYellow,
+        main: LegoColor.Blue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
       eyes: LegoColor.TransNeonYellow,
       face: LegoColor.LightGray,
-      feet: LegoColor.Blue,
+      feet: {
+        glow: LegoColor.TransNeonYellow,
+        main: LegoColor.Blue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
+      legs: {
+        glow: LegoColor.TransNeonYellow,
+        main: LegoColor.Blue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
       mask: LegoColor.Blue,
-      weaponGlow: LegoColor.MediumBlue,
+      weapon: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.Blue,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Water,
     id: 'Toa_Gali',
@@ -41,13 +90,38 @@ export const TOA_DEX = {
   Toa_Gali_Nuva: {
     chronicleId: CHRONICLE_IDS.GALI,
     colors: {
-      arms: LegoColor.MediumBlue,
-      body: LegoColor.Blue,
+      arms: {
+        glow: LegoColor.TransNeonYellow,
+        main: LegoColor.Blue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
+      body: {
+        glow: LegoColor.TransNeonYellow,
+        main: LegoColor.Blue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
       eyes: LegoColor.TransNeonYellow,
       face: LegoColor.LightGray,
-      feet: LegoColor.Blue,
+      feet: {
+        glow: LegoColor.TransNeonYellow,
+        main: LegoColor.Blue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
+      legs: {
+        glow: LegoColor.TransNeonYellow,
+        main: LegoColor.Blue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
       mask: LegoColor.Blue,
-      weaponGlow: LegoColor.MediumBlue,
+      weapon: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.Blue,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Water,
     id: 'Toa_Gali_Nuva',
@@ -59,13 +133,38 @@ export const TOA_DEX = {
   Toa_Kopaka: {
     chronicleId: CHRONICLE_IDS.KOPAKA,
     colors: {
-      arms: LegoColor.LightGray,
-      body: LegoColor.White,
+      arms: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
+      body: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
       eyes: LegoColor.MediumBlue,
       face: LegoColor.LightGray,
-      feet: LegoColor.White,
+      feet: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
+      legs: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
       mask: LegoColor.White,
-      weaponGlow: LegoColor.MediumBlue,
+      weapon: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Ice,
     id: 'Toa_Kopaka',
@@ -76,13 +175,38 @@ export const TOA_DEX = {
   Toa_Kopaka_Nuva: {
     chronicleId: CHRONICLE_IDS.KOPAKA,
     colors: {
-      arms: LegoColor.LightGray,
-      body: LegoColor.White,
+      arms: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
+      body: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
       eyes: LegoColor.MediumBlue,
       face: LegoColor.LightGray,
-      feet: LegoColor.White,
+      feet: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
+      legs: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.LightGray,
+      },
       mask: LegoColor.White,
-      weaponGlow: LegoColor.MediumBlue,
+      weapon: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Ice,
     id: 'Toa_Kopaka_Nuva',
@@ -93,13 +217,38 @@ export const TOA_DEX = {
   Toa_Lewa: {
     chronicleId: CHRONICLE_IDS.LEWA,
     colors: {
-      arms: LegoColor.Lime,
-      body: LegoColor.Green,
+      arms: {
+        glow: LegoColor.TransNeonGreen,
+        main: LegoColor.Green,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
+      body: {
+        glow: LegoColor.TransNeonGreen,
+        main: LegoColor.Green,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
       eyes: LegoColor.TransNeonGreen,
       face: LegoColor.LightGray,
-      feet: LegoColor.Green,
+      feet: {
+        glow: LegoColor.TransNeonGreen,
+        main: LegoColor.Green,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
+      legs: {
+        glow: LegoColor.TransNeonGreen,
+        main: LegoColor.Green,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
       mask: LegoColor.Green,
-      weaponGlow: LegoColor.Lime,
+      weapon: {
+        glow: LegoColor.Lime,
+        main: LegoColor.Green,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Air,
     id: 'Toa_Lewa',
@@ -110,12 +259,38 @@ export const TOA_DEX = {
   Toa_Lewa_Nuva: {
     chronicleId: CHRONICLE_IDS.LEWA,
     colors: {
-      arms: LegoColor.Lime,
-      body: LegoColor.Green,
+      arms: {
+        glow: LegoColor.TransNeonGreen,
+        main: LegoColor.Green,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
+      body: {
+        glow: LegoColor.TransNeonGreen,
+        main: LegoColor.Green,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
       eyes: LegoColor.TransNeonGreen,
       face: LegoColor.LightGray,
-      feet: LegoColor.Green,
+      feet: {
+        glow: LegoColor.TransNeonGreen,
+        main: LegoColor.Green,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
+      legs: {
+        glow: LegoColor.TransNeonGreen,
+        main: LegoColor.Green,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Lime,
+      },
       mask: LegoColor.Green,
+      weapon: {
+        glow: LegoColor.Lime,
+        main: LegoColor.Green,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Air,
     id: 'Toa_Lewa_Nuva',
@@ -125,13 +300,35 @@ export const TOA_DEX = {
   },
   Toa_Lhikan: {
     colors: {
-      arms: LegoColor.DarkRed,
-      body: LegoColor.DarkRed,
+      arms: {
+        main: LegoColor.FlatDarkGold,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkRed,
+      },
+      body: {
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkRed,
+      },
       eyes: LegoColor.TransNeonGreen,
       face: LegoColor.DarkGray,
-      feet: LegoColor.FlatDarkGold,
+      feet: {
+        main: LegoColor.FlatDarkGold,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkRed,
+      },
+      legs: {
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.FlatDarkGold,
+      },
       mask: LegoColor.FlatDarkGold,
-      weaponGlow: LegoColor.Orange,
+      weapon: {
+        glow: LegoColor.Orange,
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkRed,
+      },
     },
     element: ElementTribe.Fire,
     id: 'Toa_Lhikan',
@@ -142,12 +339,38 @@ export const TOA_DEX = {
   Toa_Onua: {
     chronicleId: CHRONICLE_IDS.ONUA,
     colors: {
-      arms: LegoColor.DarkGray,
-      body: LegoColor.Black,
+      arms: {
+        glow: LegoColor.Green,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
+      body: {
+        glow: LegoColor.Green,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
       eyes: LegoColor.Green,
       face: LegoColor.LightGray,
-      feet: LegoColor.Black,
+      feet: {
+        glow: LegoColor.Green,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
+      legs: {
+        glow: LegoColor.Green,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
       mask: LegoColor.Black,
+      weapon: {
+        glow: LegoColor.DarkGray,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Earth,
     id: 'Toa_Onua',
@@ -158,12 +381,38 @@ export const TOA_DEX = {
   Toa_Onua_Nuva: {
     chronicleId: CHRONICLE_IDS.ONUA,
     colors: {
-      arms: LegoColor.DarkGray,
-      body: LegoColor.Black,
+      arms: {
+        glow: LegoColor.Green,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
+      body: {
+        glow: LegoColor.Green,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
       eyes: LegoColor.Green,
       face: LegoColor.LightGray,
-      feet: LegoColor.Black,
+      feet: {
+        glow: LegoColor.Green,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
+      legs: {
+        glow: LegoColor.Green,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
       mask: LegoColor.Black,
+      weapon: {
+        glow: LegoColor.DarkGray,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Earth,
     id: 'Toa_Onua_Nuva',
@@ -174,12 +423,38 @@ export const TOA_DEX = {
   Toa_Pohatu: {
     chronicleId: CHRONICLE_IDS.POHATU,
     colors: {
-      arms: LegoColor.Tan,
-      body: LegoColor.Brown,
+      arms: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.Brown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
+      body: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.Brown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
       eyes: LegoColor.TransNeonOrange,
       face: LegoColor.LightGray,
-      feet: LegoColor.Brown,
+      feet: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.Brown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
+      legs: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.Brown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
       mask: LegoColor.Brown,
+      weapon: {
+        glow: LegoColor.Tan,
+        main: LegoColor.Brown,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Stone,
     id: 'Toa_Pohatu',
@@ -190,12 +465,38 @@ export const TOA_DEX = {
   Toa_Pohatu_Nuva: {
     chronicleId: CHRONICLE_IDS.POHATU,
     colors: {
-      arms: LegoColor.Tan,
-      body: LegoColor.Brown,
+      arms: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.Brown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
+      body: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.Brown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
       eyes: LegoColor.TransNeonOrange,
       face: LegoColor.LightGray,
-      feet: LegoColor.Brown,
+      feet: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.Brown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
+      legs: {
+        glow: LegoColor.TransNeonOrange,
+        main: LegoColor.Brown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
       mask: LegoColor.Brown,
+      weapon: {
+        glow: LegoColor.Tan,
+        main: LegoColor.Brown,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Stone,
     id: 'Toa_Pohatu_Nuva',
@@ -206,13 +507,38 @@ export const TOA_DEX = {
   Toa_Tahu: {
     chronicleId: CHRONICLE_IDS.TAHU,
     colors: {
-      arms: LegoColor.Orange,
-      body: LegoColor.Red,
+      arms: {
+        glow: LegoColor.TransNeonRed,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
+      body: {
+        glow: LegoColor.TransNeonRed,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
       eyes: LegoColor.TransNeonRed,
       face: LegoColor.LightGray,
-      feet: LegoColor.Red,
+      feet: {
+        glow: LegoColor.TransNeonRed,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
+      legs: {
+        glow: LegoColor.TransNeonRed,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
       mask: LegoColor.Red,
-      weaponGlow: LegoColor.Orange,
+      weapon: {
+        glow: LegoColor.Orange,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Fire,
     id: 'Toa_Tahu',
@@ -223,13 +549,38 @@ export const TOA_DEX = {
   Toa_Tahu_Nuva: {
     chronicleId: CHRONICLE_IDS.TAHU,
     colors: {
-      arms: LegoColor.Orange,
-      body: LegoColor.Red,
+      arms: {
+        glow: LegoColor.TransNeonRed,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
+      body: {
+        glow: LegoColor.TransNeonRed,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
       eyes: LegoColor.TransNeonRed,
       face: LegoColor.LightGray,
-      feet: LegoColor.Red,
+      feet: {
+        glow: LegoColor.TransNeonRed,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
+      legs: {
+        glow: LegoColor.TransNeonRed,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
       mask: LegoColor.Red,
-      weaponGlow: LegoColor.Orange,
+      weapon: {
+        glow: LegoColor.Orange,
+        main: LegoColor.Red,
+        metal: LegoColor.LightGray,
+      },
     },
     element: ElementTribe.Fire,
     id: 'Toa_Tahu_Nuva',

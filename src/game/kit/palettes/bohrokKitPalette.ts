@@ -11,7 +11,7 @@ export const BOHROK_KIT_PALETTE_BODY = MATORAN_KIT_PALETTE_BODY;
 export const BOHROK_KIT_PALETTE_ARMS = MATORAN_KIT_PALETTE_ARMS;
 export const BOHROK_KIT_PALETTE_FEET: Partial<Record<string, KitMaterialSlotEntry>> = {
   Main: {
-    color: { key: 'feet', kind: 'palette' },
+    color: { kind: 'part', part: 'feet', slot: 'main' },
     envMapIntensity: 0.52,
     fineScale: 26,
     grimeMetalnessReduce: 0.5,
@@ -20,7 +20,7 @@ export const BOHROK_KIT_PALETTE_FEET: Partial<Record<string, KitMaterialSlotEntr
     roughness: 0.3,
   },
   Metal: {
-    color: { key: 'feet', kind: 'palette' },
+    color: { kind: 'part', part: 'feet', slot: 'main' },
     envMapIntensity: 0.52,
     fineScale: 26,
     grimeMetalnessReduce: 0.5,
@@ -66,7 +66,7 @@ export const BOHROK_KIT_PALETTE_TEETH: Partial<Record<string, KitMaterialSlotEnt
 export const BOHROK_SWARM_FACEPLATE_PALETTE: Partial<Record<string, KitMaterialSlotEntry>> = {
   CLEAR: { weathered: false },
   Clear: { weathered: false },
-  Main: { key: 'body', kind: 'palette' },
+  Main: { kind: 'part', part: 'body', slot: 'main' },
 };
 
 /** Bohrok-Kal faceplate: silver shell and viewport. */
@@ -92,7 +92,7 @@ export const BOHROK_KAL_FACEPLATE_PALETTE: Partial<Record<string, KitMaterialSlo
 };
 
 export const BOHROK_PRIMARY_PALETTE: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Main: { key: 'body', kind: 'palette' },
+  Main: { kind: 'part', part: 'body', slot: 'main' },
   Metal: {
     color: { kind: 'lego', value: LegoColor.LightGray },
     envMapIntensity: 0.52,
