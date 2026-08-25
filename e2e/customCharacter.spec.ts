@@ -92,8 +92,8 @@ test.describe('Custom Character', () => {
         // Form essentials are visible and reachable
         await expect(page.locator('input[type="text"]').first()).toBeVisible();
         await expect(page.locator('.chip-row .chip')).toHaveCount(8);
-        // Every Kanohi in the Mask enum is selectable.
-        await expect(page.locator('.mask-grid .mask-tile')).toHaveCount(30);
+        // Default diminished rig shows the original 12 Kanohi only.
+        await expect(page.locator('.mask-grid .mask-tile')).toHaveCount(12);
         await expect(page.locator('.part-tabs .part-tab').first()).toBeVisible();
         const confirmBtn = page.locator('.elemental-btn').filter({ hasText: /^Create / });
         await expect(confirmBtn).toBeVisible();
