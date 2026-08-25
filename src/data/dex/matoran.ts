@@ -593,6 +593,22 @@ export const MATORAN_DEX = {
     stage: MatoranStage.Metru,
     tags: [MatoranTag.MetruGreatDisk],
   },
+  Turaga_Dume: {
+    colors: {
+      arms: { main: LegoColor.Red },
+      body: { main: LegoColor.DarkRed },
+      eyes: LegoColor.TransNeonOrange,
+      face: LegoColor.DarkRed,
+      feet: { main: LegoColor.DarkRed },
+      mask: LegoColor.Yellow,
+    },
+    element: ElementTribe.Fire,
+    id: 'Turaga_Dume',
+    // Placeholder until Mask.Kiril is added to the dex.
+    mask: Mask.Hau,
+    name: 'Turaga Dume',
+    stage: MatoranStage.Turaga,
+  },
   Turaga_Matau: {
     colors: {
       arms: { main: LegoColor.DarkTurquoise },
