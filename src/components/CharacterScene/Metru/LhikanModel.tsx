@@ -90,7 +90,7 @@ export const LhikanModel = forwardRef<
     weathered: METRU_WEATHERED,
   });
 
-  useGreatMask(nodes.Masks, matoran, matoran.maskPowerActive);
+  useGreatMask(nodes.Masks, matoran, undefined, matoran.maskPowerActive);
 
   return (
     <group ref={group} dispose={null}>

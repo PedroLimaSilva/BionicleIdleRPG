@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { MatoranJob } from '../types/Jobs';
 import { ListedCharacterData, BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { BattleRewardParams, GameState } from '../types/GameState';

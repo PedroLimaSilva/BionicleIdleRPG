@@ -53,7 +53,6 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   advanceWave: function (): void {
     throw new Error('Function not implemented.');
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   confirmTeam: function (_team: RecruitedCharacterData[]): void {
     throw new Error('Function not implemented.');
   },
@@ -75,12 +74,10 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   runRound: function (): void {
     throw new Error('Function not implemented.');
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   startBattle: function (_encounter: EnemyEncounter): void {
     throw new Error('Function not implemented.');
   },
   team: [],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   toggleAbility: function (_toa: Combatant): boolean {
     throw new Error('Function not implemented.');
   },
