@@ -2,13 +2,19 @@ import { isCustomCharacterId, Mask, MatoranStage, RecruitedCharacterData } from 
 import { CHARACTER_DEX } from '../data/dex/index';
 import { getLevelFromExp } from './Levelling';
 import { MOL_TAKANUVA_RISES_QUEST_ID } from '../data/quests/mask_of_light';
-import { METRU_NUI_SAGA_BEGIN_QUEST_ID } from '../data/quests/metru_nui';
+import {
+  METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID,
+  METRU_NUI_SAGA_BEGIN_QUEST_ID,
+} from '../data/quests/metru_nui';
+import { METRU_TOA_EVOLUTION_MAP } from './metruMatoran';
 import { DEFAULT_CUSTOM_MATA_MODEL_ID } from './customMataBuild';
 
 export const EVOLUTION_LEVEL_REQUIREMENT = 40;
 export const BOHROK_KAL_LEVEL_REQUIREMENT = 100;
 export const TAKANUVA_LEVEL_REQUIREMENT = 100;
 export const CUSTOM_TOA_LEVEL_REQUIREMENT = 60;
+export const METRU_TOA_METRU_LEVEL_REQUIREMENT = 27;
+export const METRU_TOA_METRU_COST = 3000;
 
 /** Cost for upgrading a custom matoran to Rebuilt form (matches the standard Rebuilt cost). */
 export const CUSTOM_REBUILT_COST = 1000;
@@ -90,6 +96,12 @@ export const EVOLUTION_PATHS: EvolutionPath[] = [
     maskRequired: Mask.Avohkii,
     protodermisCost: 3000,
     unlockedByQuest: MOL_TAKANUVA_RISES_QUEST_ID,
+  },
+  {
+    evolutions: METRU_TOA_EVOLUTION_MAP,
+    levelRequired: METRU_TOA_METRU_LEVEL_REQUIREMENT,
+    protodermisCost: METRU_TOA_METRU_COST,
+    unlockedByQuest: METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID,
   },
 ];
 

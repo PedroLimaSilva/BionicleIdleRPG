@@ -4,8 +4,11 @@ import {
   applyCharacterEvolution,
   EVOLUTION_LEVEL_REQUIREMENT,
   BOHROK_KAL_LEVEL_REQUIREMENT,
+  METRU_TOA_METRU_LEVEL_REQUIREMENT,
+  METRU_TOA_METRU_COST,
   AvailableEvolution,
 } from './CharacterEvolution';
+import { METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID } from '../data/quests/metru_nui';
 import { RecruitedCharacterData, MatoranStage, Mask } from '../types/Matoran';
 import { getLevelFromExp } from './Levelling';
 
@@ -15,6 +18,8 @@ function expForLevel(level: number): number {
 
 const expFor40 = expForLevel(40);
 const expFor100 = expForLevel(100);
+const expFor27 = expForLevel(27);
+const expFor28 = expForLevel(28);
 
 describe('CharacterEvolution', () => {
   describe('getAvailableEvolution - Toa Nuva', () => {
@@ -112,6 +117,45 @@ describe('CharacterEvolution', () => {
     });
   });
 
+  describe('getAvailableEvolution - Metru Matoran to Toa Metru', () => {
+    test('returns null when Great Temple quest is not completed', () => {
+      const char: RecruitedCharacterData = { exp: expFor28, id: 'Vakama' };
+      expect(getAvailableEvolution(char, [])).toBeNull();
+    });
+
+    test('returns evolution with correct cost for Metru Toa candidate', () => {
+      const char: RecruitedCharacterData = { exp: expFor28, id: 'Vakama' };
+      const result = getAvailableEvolution(char, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID]);
+      expect(result).not.toBeNull();
+      expect(result!.evolvedId).toBe('Toa_Vakama');
+      expect(result!.levelRequired).toBe(METRU_TOA_METRU_LEVEL_REQUIREMENT);
+      expect(result!.protodermisCost).toBe(METRU_TOA_METRU_COST);
+      expect(result!.label).toBe('Evolve to Toa Vakama');
+    });
+
+    test('returns evolution for all Metru Toa candidates', () => {
+      const candidates = [
+        ['Matau', 'Toa_Matau'],
+        ['Nokama', 'Toa_Nokama'],
+        ['Nuju', 'Toa_Nuju'],
+        ['Onewa', 'Toa_Onewa'],
+        ['Vakama', 'Toa_Vakama'],
+        ['Whenua', 'Toa_Whenua'],
+      ] as const;
+
+      candidates.forEach(([fromId, toId]) => {
+        const char: RecruitedCharacterData = { exp: expFor28, id: fromId };
+        const result = getAvailableEvolution(char, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID]);
+        expect(result?.evolvedId).toBe(toId);
+      });
+    });
+
+    test('returns null for Great Disk matoran', () => {
+      const char: RecruitedCharacterData = { exp: expFor28, id: 'Ahkmou' };
+      expect(getAvailableEvolution(char, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID])).toBeNull();
+    });
+  });
+
   describe('meetsEvolutionLevel', () => {
     const evo40: AvailableEvolution = {
       evolvedId: 'test',
@@ -135,6 +179,18 @@ describe('CharacterEvolution', () => {
       expect(getLevelFromExp(expFor40)).toBe(EVOLUTION_LEVEL_REQUIREMENT);
       const char: RecruitedCharacterData = { exp: expFor40, id: 'Toa_Tahu' };
       expect(meetsEvolutionLevel(char, evo40)).toBe(true);
+    });
+
+    test('returns true at level 27 for Metru Toa Metru evolution', () => {
+      expect(getLevelFromExp(expFor27)).toBe(METRU_TOA_METRU_LEVEL_REQUIREMENT);
+      const char: RecruitedCharacterData = { exp: expFor27, id: 'Vakama' };
+      const evo: AvailableEvolution = {
+        evolvedId: 'Toa_Vakama',
+        label: 'Evolve to Toa Vakama',
+        levelRequired: METRU_TOA_METRU_LEVEL_REQUIREMENT,
+        protodermisCost: METRU_TOA_METRU_COST,
+      };
+      expect(meetsEvolutionLevel(char, evo)).toBe(true);
     });
 
     test('returns false below level 100 for Bohrok Kal evolution', () => {
@@ -205,6 +261,20 @@ describe('CharacterEvolution', () => {
       const result = applyCharacterEvolution(char, evolution);
       expect(result.id).toBe('tahnok_kal');
       expect(result.exp).toBe(expFor100);
+    });
+
+    test('applies Metru Toa Metru evolution', () => {
+      const char: RecruitedCharacterData = { exp: expFor28, id: 'Nokama' };
+      const evolution: AvailableEvolution = {
+        evolvedId: 'Toa_Nokama',
+        label: 'Evolve to Toa Nokama',
+        levelRequired: METRU_TOA_METRU_LEVEL_REQUIREMENT,
+        protodermisCost: METRU_TOA_METRU_COST,
+      };
+      const result = applyCharacterEvolution(char, evolution);
+      expect(result.id).toBe('Toa_Nokama');
+      expect(result.stage).toBe(MatoranStage.ToaMetru);
+      expect(result.exp).toBe(expFor28);
     });
 
     test('preserves exp on evolution', () => {

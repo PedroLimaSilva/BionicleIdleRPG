@@ -24,6 +24,7 @@ import { TakanuvaModel } from '../../components/CharacterScene/Nuva/TakanuvaMode
 import { LhikanModel } from '../../components/CharacterScene/Metru/LhikanModel';
 import { MatauModel } from '../../components/CharacterScene/Metru/MatauModel';
 import { NujuModel } from '../../components/CharacterScene/Metru/NujuModel';
+import { usesNujuToaMetruRig } from '../../game/metruMatoran';
 import { RahiPlaceholderModel } from '../../components/CharacterScene/RahiPlaceholderModel';
 import { NuiRamaModel } from '../../components/CharacterScene/NuiRamaModel';
 import { WorldSpaceHpBar } from './WorldSpaceHpBar';
@@ -537,6 +538,22 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
             </group>
           );
         default:
+          if (usesNujuToaMetruRig(displayModel)) {
+            return (
+              <group scale={0.04}>
+                <NujuModel
+                  ref={childRef}
+                  matoran={{
+                    maskOverride: combatant.maskPower?.shortName,
+                    ...CHARACTER_DEX[combatant.id],
+                    ...combatant,
+                    exp: 0,
+                    maskPowerActive,
+                  }}
+                />
+              </group>
+            );
+          }
           return null;
       }
     })();

@@ -372,6 +372,42 @@ export const TOA_DEX = {
     name: 'Toa Matau',
     stage: MatoranStage.ToaMetru,
   },
+  Toa_Nokama: {
+    colors: {
+      arms: {
+        main: LegoColor.DarkBlue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
+      body: {
+        main: LegoColor.DarkBlue,
+        metal: LegoColor.LightGray,
+      },
+      eyes: LegoColor.TransNeonOrange,
+      face: LegoColor.DarkGray,
+      feet: {
+        main: LegoColor.DarkBlue,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkBlue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
+      mask: LegoColor.DarkBlue,
+      weapon: {
+        glow: LegoColor.MediumBlue,
+        main: LegoColor.DarkBlue,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.MediumBlue,
+      },
+    },
+    element: ElementTribe.Water,
+    id: 'Toa_Nokama',
+    mask: Mask.RauGreat,
+    name: 'Toa Nokama',
+    stage: MatoranStage.ToaMetru,
+  },
   Toa_Nuju: {
     colors: {
       arms: {
@@ -406,6 +442,42 @@ export const TOA_DEX = {
     id: 'Toa_Nuju',
     mask: Mask.MatatuGreat,
     name: 'Toa Nuju',
+    stage: MatoranStage.ToaMetru,
+  },
+  Toa_Onewa: {
+    colors: {
+      arms: {
+        main: LegoColor.LightBrown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
+      body: {
+        main: LegoColor.LightBrown,
+        metal: LegoColor.LightGray,
+      },
+      eyes: LegoColor.TransDarkBlue,
+      face: LegoColor.DarkGray,
+      feet: {
+        main: LegoColor.LightBrown,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.LightBrown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
+      mask: LegoColor.LightBrown,
+      weapon: {
+        glow: LegoColor.Tan,
+        main: LegoColor.LightBrown,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Tan,
+      },
+    },
+    element: ElementTribe.Stone,
+    id: 'Toa_Onewa',
+    mask: Mask.KomauGreat,
+    name: 'Toa Onewa',
     stage: MatoranStage.ToaMetru,
   },
   Toa_Onua: {
@@ -659,5 +731,77 @@ export const TOA_DEX = {
     mask: Mask.HauNuva,
     name: 'Toa Tahu Nuva',
     stage: MatoranStage.ToaNuva,
+  },
+  Toa_Vakama: {
+    colors: {
+      arms: {
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
+      body: {
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+      },
+      eyes: LegoColor.TransNeonGreen,
+      face: LegoColor.DarkGray,
+      feet: {
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
+      mask: LegoColor.DarkRed,
+      weapon: {
+        glow: LegoColor.Orange,
+        main: LegoColor.DarkRed,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.Orange,
+      },
+    },
+    element: ElementTribe.Fire,
+    id: 'Toa_Vakama',
+    mask: Mask.HunaGreat,
+    name: 'Toa Vakama',
+    stage: MatoranStage.ToaMetru,
+  },
+  Toa_Whenua: {
+    colors: {
+      arms: {
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
+      body: {
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+      },
+      eyes: LegoColor.TransGreen,
+      face: LegoColor.DarkGray,
+      feet: {
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
+      mask: LegoColor.Black,
+      weapon: {
+        glow: LegoColor.DarkGray,
+        main: LegoColor.Black,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.DarkGray,
+      },
+    },
+    element: ElementTribe.Earth,
+    id: 'Toa_Whenua',
+    mask: Mask.RuruGreat,
+    name: 'Toa Whenua',
+    stage: MatoranStage.ToaMetru,
   },
 };
