@@ -6,7 +6,6 @@ import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { useCombatAnimations } from '../../../hooks/useCombatAnimations';
 import { useGreatMask } from '../../../hooks/useGreatMask';
 import { useKitAttachments } from '../../../hooks/useKitAttachments';
-import { useRigMaterials } from '../../../hooks/useRigMaterials';
 import { KIT_2001_GLB_PATH } from '../../../game/kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../../../game/kit/kit2003';
 import { KIT_2004_GLB_PATH } from '../../../game/kit/kit2004';
@@ -14,7 +13,6 @@ import {
   NUJU_KIT_2001_ATTACHMENTS,
   NUJU_KIT_2003_ATTACHMENTS,
   NUJU_KIT_2004_ATTACHMENTS,
-  NUJU_RIG_MATERIALS,
 } from '../../../game/kit/attachments/Toa Metru/nuju';
 import { METRU_WEATHERED } from '../../../game/kit/palettes/metruKitPlayerPalette';
 
@@ -27,8 +25,8 @@ const NUJU_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Metru/Nuju.glb';
  */
 const NUJU_BIND_POSE_Y = 10.115;
 
-/** Must match how many kit / rig material hooks this component runs. */
-const NUJU_ATTACHMENT_RUNS = 4;
+/** Must match how many `useKitAttachments` calls this component makes. */
+const NUJU_ATTACHMENT_RUNS = 3;
 
 export const NujuModel = forwardRef<
   CombatantModelHandle,
@@ -98,15 +96,8 @@ export const NujuModel = forwardRef<
     weathered: METRU_WEATHERED,
   });
 
-  useRigMaterials({
-    characterNodes,
-    colors: matoran.colors,
-    onApplied: onKitLayerAttached,
-    targets: NUJU_RIG_MATERIALS,
-    weathered: METRU_WEATHERED,
-  });
-
-  useGreatMask(nodes.Masks, matoran, matoran.maskPowerActive);
+  const glowColor = matoran.colors.eyes;
+  useGreatMask(nodes.Masks, matoran, glowColor, matoran.maskPowerActive);
 
   return (
     <group ref={group} dispose={null}>

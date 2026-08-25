@@ -8,7 +8,6 @@ import type { Kit2004SocketAttachment } from '../../nodes/kit2004Nodes';
 import { KIT_2004_NODES } from '../../nodes/kit2004Nodes';
 import { MATA_KIT_PLAYER_PALETTE_BRAIN } from '../../palettes/mataKitPlayerPalette';
 import { kitPartGlow, kitPartSlots } from '../../palettes/partSlots';
-import type { RigMaterialTarget } from '../../../../hooks/useRigMaterials';
 
 /**
  * Nuju sockets on `Toa_Metru/Nuju.glb` are `{KitPart}_{qualifier}`.
@@ -18,7 +17,6 @@ import type { RigMaterialTarget } from '../../../../hooks/useRigMaterials';
  *
  * Crystal Spike blades and handles share one kit mesh (`CrystalSpike`); each empty
  * clones the full tool so grips and spikes tint from the weapon palette.
- * `ScopeLight` is a custom rig mesh (not in the kit) tinted via `NUJU_RIG_MATERIALS`.
  */
 
 const NUJU_BODY_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -216,9 +214,4 @@ export const NUJU_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> 
 export const NUJU_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment> = {
   Pin3L_ChestL: { kitNodeName: KIT_2003_NODES.Pin3L, materialColors: NUJU_BLACK },
   Pin3L_ChestR: { kitNodeName: KIT_2003_NODES.Pin3L, materialColors: NUJU_BLACK },
-};
-
-/** Custom rig meshes tinted in place (mask scope glow). */
-export const NUJU_RIG_MATERIALS: Record<string, RigMaterialTarget> = {
-  ScopeLight: { materialColors: NUJU_EYES_COLORS },
 };
