@@ -42,6 +42,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
     requirements: { matoran: ['Takanuva', 'Toa_Tahu_Nuva', 'Toa_Gali_Nuva'], minLevel: 25 },
     rewards: {
       currency: 6000,
+      cutscene: { cutsceneId: 'metru_great_temple_transformation', type: 'visual_novel' },
       unlockCharacters: METRU_TOA_CANDIDATE_RECRUIT_IDS.map((id) => ({ cost: 1500, id })),
       xpPerMatoran: 5000,
     },
