@@ -17,7 +17,7 @@ function solidImageData(width: number, height: number, rgb: [number, number, num
 }
 
 describe('applyMaskAvatarDiscoloration', () => {
-  test('leaves rows below the eye line unchanged and tints only the crown', () => {
+  test('tints from crown to base with full-height falloff and leaves the bottom unchanged', () => {
     const image = solidImageData(2, 10, [200, 0, 0]);
     applyMaskAvatarDiscoloration(image, {
       color: LegoColor.LightGray,
@@ -29,11 +29,11 @@ describe('applyMaskAvatarDiscoloration', () => {
     expect(image.data[bottom + 1]).toBe(0);
     expect(image.data[bottom + 2]).toBe(0);
 
-    const belowEyeLine = 4 * 2 * 4;
-    expect(image.data[belowEyeLine]).toBe(200);
+    const mid = 4 * 2 * 4;
+    expect(image.data[mid]).toBeLessThan(200);
 
     const top = 4;
-    expect(image.data[top]).toBeLessThan(200);
+    expect(image.data[top]).toBeLessThan(image.data[mid]);
     expect(image.data[top + 1]).toBeGreaterThan(0);
     expect(image.data[top + 2]).toBeGreaterThan(0);
   });

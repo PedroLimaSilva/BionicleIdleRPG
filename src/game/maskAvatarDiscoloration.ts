@@ -1,6 +1,6 @@
 import type { MaskDiscoloration } from '../hooks/maskDiscoloration';
 
-/** Crown-only band: normalized distance from top (0) where tint reaches zero (~eye line). */
+/** Vertical crown tint for Metru double-injected Kanohi on 2D composited avatars. */
 const AVATAR_DISCOLORATION_END_Y = 1;
 /** Higher = sharper transition from silver crown into base mask color. */
 const AVATAR_DISCOLORATION_SHARPNESS = 3;
@@ -20,7 +20,7 @@ function mixChannel(base: number, target: number, amount: number): number {
 
 /**
  * Approximates the Metru double-injected Kanohi crown tint on a tinted mask layer.
- * Abrupt silver crown ending around the eye line (tighter than the full-height 3D gradient).
+ * Abrupt silver crown on Metru double-injected Kanohi (full mask height, power-curve falloff).
  */
 export function applyMaskAvatarDiscoloration(
   imageData: ImageData,
