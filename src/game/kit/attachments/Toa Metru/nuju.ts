@@ -80,6 +80,13 @@ const NUJU_WEAPON_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...NUJU_BODY_COLORS,
   ...kitPartSlots('weapon', 'nuva'),
   ...kitPartGlow('weapon', 10),
+  Secondary: {
+    color: { kind: 'part', part: 'weapon', slot: 'secondary' },
+    metalness: 0,
+    opacity: 0.5,
+    roughness: 0.2,
+    weathered: false,
+  },
 };
 
 const NUJU_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {

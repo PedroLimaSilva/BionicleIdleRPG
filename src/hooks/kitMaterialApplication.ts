@@ -86,6 +86,10 @@ function buildStandardSlotMaterial(
   } else if (spec.emissiveIntensity !== undefined) {
     cloned.emissiveIntensity = spec.emissiveIntensity;
   }
+  if (spec.opacity !== undefined) {
+    cloned.opacity = spec.opacity;
+    cloned.transparent = spec.opacity < 1;
+  }
   return cloned;
 }
 
