@@ -375,31 +375,31 @@ export const TOA_DEX = {
   Toa_Nuju: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.White,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.LightGray,
+        secondary: LegoColor.White,
       },
       body: {
         main: LegoColor.White,
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransLightBlue,
-      face: LegoColor.White,
+      face: LegoColor.DarkGray,
       feet: {
         main: LegoColor.White,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.White,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.LightGray,
+        secondary: LegoColor.White,
       },
       mask: LegoColor.White,
       weapon: {
         glow: LegoColor.TransLightBlue,
         main: LegoColor.White,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkGray,
+        secondary: LegoColor.TransLightBlue,
       },
     },
     element: ElementTribe.Ice,

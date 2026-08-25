@@ -167,7 +167,7 @@ export const NUJU_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment> 
 
 /** Nuju — Technic pins / axles / sockets from `kit_2001.glb`. */
 export const NUJU_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
-  Axle2L_Chest: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: NUJU_AXLE_COLORS },
+  Axle2L_Chest: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: NUJU_BLACK },
   Axle2L_Head: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: NUJU_BLACK },
   Axle3L_Hip1: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: NUJU_AXLE_COLORS },
   Axle3L_Hip2: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: NUJU_AXLE_COLORS },
@@ -189,9 +189,9 @@ export const NUJU_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> 
     kitNodeName: KIT_2001_NODES.AxleSocket3L,
     materialColors: NUJU_SOCKET_COLORS,
   },
-  GearM_Hip: { kitNodeName: KIT_2001_NODES.GearM, materialColors: NUJU_BLACK },
-  GearM_ShoulderL: { kitNodeName: KIT_2001_NODES.GearM, materialColors: NUJU_BLACK },
-  GearM_ShoulderR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: NUJU_BLACK },
+  GearM_Hip: { kitNodeName: KIT_2001_NODES.GearM, materialColors: NUJU_AXLE_COLORS },
+  GearM_ShoulderL: { kitNodeName: KIT_2001_NODES.GearM, materialColors: NUJU_AXLE_COLORS },
+  GearM_ShoulderR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: NUJU_AXLE_COLORS },
   Pin2L_L: { kitNodeName: KIT_2001_NODES.Pin2L, materialColors: NUJU_BLACK },
   Pin2L_R: { kitNodeName: KIT_2001_NODES.Pin2L, materialColors: NUJU_BLACK },
   Pin2L_WL1: { kitNodeName: KIT_2001_NODES.Pin2L, materialColors: NUJU_BLACK },
