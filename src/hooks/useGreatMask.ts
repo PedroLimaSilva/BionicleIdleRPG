@@ -14,6 +14,7 @@ import {
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import {
+  applyMaskMetallicPbr,
   isMaskGlowMaterialName,
   isMaskStandardMat,
   prepareClonedMaskMaterial,
@@ -54,6 +55,7 @@ function applyGreatMaskColors(
     }
 
     mat.color.copy(new Color(maskColor));
+    applyMaskMetallicPbr(mat, maskColor);
     if (mat.emissive) {
       if (maskPowerActive) {
         mat.emissive = new Color(maskColor);

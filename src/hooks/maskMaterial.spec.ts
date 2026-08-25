@@ -1,5 +1,6 @@
 import { MeshStandardMaterial, Texture } from 'three';
-import { prepareClonedMaskMaterial } from './maskMaterial';
+import { LegoColor } from '../types/Colors';
+import { applyMaskMetallicPbr, prepareClonedMaskMaterial } from './maskMaterial';
 
 describe('prepareClonedMaskMaterial', () => {
   it('forces dielectric shading on non-glow mask materials without PBR maps', () => {
@@ -32,5 +33,19 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.transparent).toBe(true);
     expect(mat.metalness).toBe(0.8);
     expect(mat.roughness).toBe(0.2);
+  });
+
+  it('boosts gold mask colors beyond baked PBR map metalness', () => {
+    const mat = new MeshStandardMaterial({
+      metalness: 0.2,
+      name: 'Hau_baked.001',
+      roughness: 0.8,
+      roughnessMap: new Texture(),
+    });
+    applyMaskMetallicPbr(mat, LegoColor.FlatDarkGold);
+    expect(mat.metalness).toBe(0.95);
+    expect(mat.roughness).toBe(0.18);
+    expect(mat.envMapIntensity).toBe(0.9);
+    expect(mat.roughnessMap).toBeDefined();
   });
 });

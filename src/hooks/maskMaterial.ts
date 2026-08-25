@@ -1,4 +1,5 @@
 import { MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
+import { metallicColorPbr } from '../game/kit/palettes/metalPbr';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -30,4 +31,20 @@ export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
 
   mat.metalness = 0;
   mat.roughness = 0.55;
+}
+
+/**
+ * Boost metallic LEGO mask colors (gold) beyond baked PBR map metalness.
+ * Great/Mata Kanohi keep their normal/roughness maps; scalars are raised so
+ * FlatDarkGold and PearlGold read as metal instead of flat plastic.
+ */
+export function applyMaskMetallicPbr(mat: MaskStandardMat, maskColor: string): void {
+  if (isMaskGlowMaterialName(mat.name)) return;
+
+  const metalPbr = metallicColorPbr(maskColor);
+  if (!metalPbr) return;
+
+  if (metalPbr.metalness !== undefined) mat.metalness = metalPbr.metalness;
+  if (metalPbr.roughness !== undefined) mat.roughness = metalPbr.roughness;
+  if (metalPbr.envMapIntensity !== undefined) mat.envMapIntensity = metalPbr.envMapIntensity;
 }
