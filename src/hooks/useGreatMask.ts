@@ -13,7 +13,11 @@ import {
   useMaskTransitionFrame,
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
-import { isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import {
+  isMaskGlowMaterialName,
+  isMaskStandardMat,
+  prepareClonedMaskMaterial,
+} from './maskMaterial';
 import { masksCollected } from '../services/matoranUtils';
 
 const GREAT_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Metru/Masks.glb';
@@ -26,12 +30,28 @@ function buildGreatMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D
   return nodes;
 }
 
-function applyGreatMaskColors(root: Object3D, maskColor: string, maskPowerActive?: boolean): void {
+function applyGreatMaskColors(
+  root: Object3D,
+  maskColor: string,
+  glowColor?: string,
+  maskPowerActive?: boolean
+): void {
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;
     const mat = mesh.material;
     if (!isMaskStandardMat(mat)) return;
+
+    if (isMaskGlowMaterialName(mat.name)) {
+      if (!glowColor) return;
+      const col = new Color(glowColor);
+      mat.color.copy(col);
+      if (mat.emissive) {
+        mat.emissive.copy(col);
+        mat.emissiveIntensity = 50;
+      }
+      return;
+    }
 
     mat.color.copy(new Color(maskColor));
     if (mat.emissive) {
@@ -50,10 +70,13 @@ function applyGreatMaskColors(root: Object3D, maskColor: string, maskPowerActive
  * Loads a Great Kanohi from `Toa_Metru/Masks.glb` and attaches it to the parent.
  * Mask selection: `matoran.maskOverride || matoran.mask` among collected masks.
  * Avatar ids use the `_Great` suffix (`Hau_Great`); GLB nodes stay `Hau`, `Huna`, …
+ *
+ * @param glowColor - Optional color for emissive `Glow` materials (e.g. Matatu scope lens).
  */
 export function useGreatMask(
   masksParent: Object3D | undefined,
   matoran: BaseMatoran & RecruitedCharacterData,
+  glowColor?: string,
   maskPowerActive?: boolean
 ) {
   const { completedQuests } = useGame();
@@ -75,6 +98,8 @@ export function useGreatMask(
 
   const maskColorRef = useRef(maskColor);
   maskColorRef.current = maskColor;
+  const glowColorRef = useRef(glowColor);
+  glowColorRef.current = glowColor;
   const maskPowerActiveRef = useRef(maskPowerActive);
   maskPowerActiveRef.current = maskPowerActive;
 
@@ -107,7 +132,12 @@ export function useGreatMask(
       }
     });
 
-    applyGreatMaskColors(clone, maskColorRef.current, maskPowerActiveRef.current);
+    applyGreatMaskColors(
+      clone,
+      maskColorRef.current,
+      glowColorRef.current,
+      maskPowerActiveRef.current
+    );
 
     const prevMask = maskRef.current;
     const isChange =
@@ -144,8 +174,8 @@ export function useGreatMask(
   useEffect(() => {
     const mask = maskRef.current;
     if (!mask) return;
-    applyGreatMaskColors(mask, maskColor, maskPowerActive);
-  }, [maskColor, maskPowerActive]);
+    applyGreatMaskColors(mask, maskColor, glowColor, maskPowerActive);
+  }, [maskColor, glowColor, maskPowerActive]);
 }
 
 useGreatMask.preload = () => {
