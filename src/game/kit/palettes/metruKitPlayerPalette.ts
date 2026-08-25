@@ -23,7 +23,7 @@ export const METRU_WEATHERED: WeatheredMetalOptions = {
 /** Double-injected Kanohi: metallic silver-gray crown fading into the mask color below. */
 export const METRU_MASK_DISCOLORATION: MaskDiscoloration = {
   color: LegoColor.LightGray,
-  intensity: 0.82,
+  intensity: 1,
   metalness: 0.92,
   roughness: 0.18,
 };
