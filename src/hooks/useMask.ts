@@ -13,7 +13,7 @@ import {
   useMaskTransitionFrame,
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
-import { isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import { applyMaskMetallicPbr, isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
 import {
   applyMaskDiscolorationToObject,
   setupMaskDiscolorationShader,
@@ -69,6 +69,7 @@ function applyMaskColors(
           }
         } else {
           mat.color = new Color(maskColor);
+          applyMaskMetallicPbr(mat, maskColor);
           if (mat.emissive) {
             if (maskPowerActive) {
               mat.emissive = new Color(maskColor);
