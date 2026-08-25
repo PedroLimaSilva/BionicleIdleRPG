@@ -1,9 +1,9 @@
 import type { MaskDiscoloration } from '../hooks/maskDiscoloration';
 
 /** Crown-only band: normalized distance from top (0) where tint reaches zero (~eye line). */
-const AVATAR_DISCOLORATION_END_Y = 0.3;
+const AVATAR_DISCOLORATION_END_Y = 1;
 /** Higher = sharper transition from silver crown into base mask color. */
-const AVATAR_DISCOLORATION_SHARPNESS = 5;
+const AVATAR_DISCOLORATION_SHARPNESS = 3;
 
 function parseHexColor(hex: string): [number, number, number] {
   const normalized = hex.startsWith('#') ? hex.slice(1) : hex;
