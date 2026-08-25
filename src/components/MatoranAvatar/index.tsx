@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { BaseMatoran, Mask, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { useGame } from '../../context/Game';
 import { getAvatarLayerNames } from '../../game/avatarLayers';
+import { METRU_MASK_DISCOLORATION } from '../../game/kit/palettes/metruKitPlayerPalette';
 import { getEffectiveMaskColor } from '../../game/maskColor';
 
 import { CompositedImage } from '../CompositedImage';
@@ -49,6 +50,8 @@ export function MatoranAvatar({
   }, [effectiveMask, matoran.stage]);
 
   const glowStyle = maskPowerActive ? { filter: `drop-shadow(0 0 12px ${maskColor})` } : undefined;
+  const maskDiscoloration =
+    matoran.stage === MatoranStage.Metru ? METRU_MASK_DISCOLORATION : undefined;
 
   // Bohrok and Bohrok Kal use pre-rendered avatar images
   if (matoran.stage === MatoranStage.Bohrok || matoran.stage === MatoranStage.BohrokKal) {
@@ -69,6 +72,7 @@ export function MatoranAvatar({
       style={glowStyle}
       images={[brainLayer, faceLayer, maskLayer]}
       colors={[colors.eyes, colors.face, maskColor]}
+      maskDiscoloration={maskDiscoloration}
     />
   );
 }

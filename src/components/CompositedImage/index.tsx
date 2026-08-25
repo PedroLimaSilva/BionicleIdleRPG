@@ -1,28 +1,39 @@
 import { useRef, useEffect } from 'react';
 
+import { applyMaskAvatarDiscoloration } from '../../game/maskAvatarDiscoloration';
+import type { MaskDiscoloration } from '../../hooks/maskDiscoloration';
+
 interface CompositedImageProps {
   images: string[]; // Grayscale image URL
   colors: string[]; // Desired overlay color in hex (e.g., '#ff0000')
   className: string;
   style?: React.CSSProperties;
+  /** Applied to the final (mask) layer after tinting — Metru double-injected Kanohi crown. */
+  maskDiscoloration?: MaskDiscoloration;
 }
 
-function arraysEqual(a: string[], b: string[]) {
-  return a.length === b.length && a.every((v, i) => v === b[i]);
+function renderKey(
+  images: string[],
+  colors: string[],
+  maskDiscoloration: MaskDiscoloration | undefined
+): string {
+  return JSON.stringify({ colors, images, maskDiscoloration });
 }
 
 export const CompositedImage: React.FC<CompositedImageProps> = ({
   className,
   colors,
   images,
+  maskDiscoloration,
   style,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const prevImages = useRef<string[]>([]);
+  const prevRenderKey = useRef('');
 
   useEffect(() => {
-    if (arraysEqual(prevImages.current, images)) return;
-    prevImages.current = images;
+    const nextKey = renderKey(images, colors, maskDiscoloration);
+    if (prevRenderKey.current === nextKey) return;
+    prevRenderKey.current = nextKey;
 
     Promise.all(
       images.map(
@@ -61,8 +72,12 @@ export const CompositedImage: React.FC<CompositedImageProps> = ({
         bctx.fillRect(0, 0, canvas.width, canvas.height);
 
         const imageData = bctx.getImageData(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < imageData.data.length; i += 4) {
-          imageData.data[i + 3] = grayscale.data[i + 3];
+        for (let j = 0; j < imageData.data.length; j += 4) {
+          imageData.data[j + 3] = grayscale.data[j + 3];
+        }
+
+        if (maskDiscoloration && i === loadedImages.length - 1) {
+          applyMaskAvatarDiscoloration(imageData, maskDiscoloration);
         }
 
         bctx.putImageData(imageData, 0, 0);
@@ -71,7 +86,7 @@ export const CompositedImage: React.FC<CompositedImageProps> = ({
         bctx.clearRect(0, 0, buffer.width, buffer.height);
       }
     });
-  }, [images, colors]);
+  }, [colors, images, maskDiscoloration]);
 
   return <canvas className={className} style={style} ref={canvasRef} />;
 };
