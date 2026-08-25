@@ -604,6 +604,7 @@ export const MATORAN_DEX = {
     },
     element: ElementTribe.Fire,
     id: 'Turaga_Dume',
+    // Placeholder until Mask.Kiril is added to the dex.
     mask: Mask.Hau,
     name: 'Turaga Dume',
     stage: MatoranStage.Turaga,
