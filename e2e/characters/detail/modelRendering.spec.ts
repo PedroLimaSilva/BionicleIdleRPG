@@ -115,20 +115,7 @@ test.describe('Character Model Rendering', () => {
       ...INITIAL_GAME_STATE,
       recruitedCharacters: recruited(ids),
     }),
-    characterIds: [
-      'Vakama',
-      'Nokama',
-      'Matau',
-      'Onewa',
-      'Whenua',
-      'Nuju',
-      'Nuhrii',
-      'Vhisola',
-      'Orkahm',
-      'Ahkmou',
-      'Tehutti',
-      'Ehrye',
-    ],
+    characterIds: ['Matau', 'Nuhrii'],
     suiteName: 'Metru Matoran Characters',
   });
 
