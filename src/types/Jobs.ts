@@ -4,6 +4,8 @@ import { Quest } from './Quests';
 
 export enum MatoranJob {
   CharcoalMaker = 'CharcoalMaker',
+  MaskMaker = 'MaskMaker',
+  Teacher = 'Teacher',
   ProtodermisSmelter = 'ProtodermisSmelter',
   AlgaeHarvester = 'AlgaeHarvester',
   HydroTechnician = 'HydroTechnician',

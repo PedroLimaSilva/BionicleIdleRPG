@@ -1,9 +1,10 @@
 import { JOB_DETAILS } from '../data/jobs';
 import { JobAssignment, MatoranJob, ProductivityEffect } from '../types/Jobs';
-import { RecruitedCharacterData } from '../types/Matoran';
+import { MatoranStage, RecruitedCharacterData } from '../types/Matoran';
 import { GameState } from '../types/GameState';
 import { CHARACTER_DEX } from '../data/dex/index';
 import { isBohrokOrKal } from './matoranStage';
+import { getMetruProfession } from './metruMatoran';
 
 export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const jobData = JOB_DETAILS[job];
@@ -32,9 +33,16 @@ export function getAvailableJobs(
     if (!matoranDex) {
       return jobs.filter((job) => !JOB_DETAILS[job].allowedStages);
     }
+    const effectiveStage = matoran.stage ?? matoranDex.stage;
+    const metruProfession = getMetruProfession(matoran.id);
+
+    if (effectiveStage === MatoranStage.Metru && metruProfession) {
+      return isJobUnlocked(metruProfession, gameState) ? [metruProfession] : [];
+    }
+
     const effectiveMatoran = {
       ...matoranDex,
-      stage: matoran.stage ?? matoranDex.stage,
+      stage: effectiveStage,
     };
 
     jobs = jobs.filter((job) => {

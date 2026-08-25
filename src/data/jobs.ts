@@ -28,12 +28,12 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {},
   },
   [MatoranJob.ChuteController]: {
-    description: 'Manages Le-Metru’s high-speed chute transport systems.',
+    description: 'Tests and monitors Le-Metru’s high-speed chute transport systems.',
     elementAffinity: {
       favored: [ElementTribe.Air],
       opposed: [],
     },
-    label: '🚀 Chute Controller',
+    label: '🚀 Chute Test Driver',
     rate: 2,
     unlock: {
       requiredProgress: ['settle_metru_nui'],
@@ -106,6 +106,18 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     rate: 1,
     unlock: { requiredProgress: ['mnog_arrive_onu_koro'] },
   },
+  [MatoranJob.MaskMaker]: {
+    description: 'Forges Kanohi masks in the foundries of Ta-Metru.',
+    elementAffinity: {
+      favored: [ElementTribe.Fire],
+      opposed: [ElementTribe.Ice],
+    },
+    label: '🎭 Mask Maker',
+    rate: 2,
+    unlock: {
+      requiredProgress: ['settle_metru_nui'],
+    },
+  },
   [MatoranJob.OnuKoroRebuilder]: {
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
     description: 'Reinforces tunnel supports and restores mine passages in Onu-Koro.',
@@ -177,7 +189,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
   },
   [MatoranJob.StasisTechnician]: {
-    description: 'Maintains Rahi stasis chambers in Metru Nui Archives.',
+    description: 'Catalogues artifacts and maintains stasis chambers in the Metru Nui Archives.',
     elementAffinity: {
       favored: [ElementTribe.Earth],
       opposed: [],
@@ -211,5 +223,17 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     label: '🏠 Ta-Koro Rebuilder',
     rate: 1.5,
     unlock: { requiredProgress: ['bohrok_assistants'] },
+  },
+  [MatoranJob.Teacher]: {
+    description: 'Instructs students in the schools and labs of Ga-Metru.',
+    elementAffinity: {
+      favored: [ElementTribe.Water],
+      opposed: [],
+    },
+    label: '📖 Teacher',
+    rate: 2,
+    unlock: {
+      requiredProgress: ['settle_metru_nui'],
+    },
   },
 };
