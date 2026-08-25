@@ -2,7 +2,15 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import { CHARACTER_DEX } from './dex';
-import { ALL_MASKS, isTransparentMask } from './masks';
+import {
+  ALL_MASKS,
+  getSelectableMasksForStage,
+  isMaskSelectableForStage,
+  isTransparentMask,
+  GREAT_MASKS,
+  MATAN_MASKS,
+  NUVA_MASKS,
+} from './masks';
 import { Mask, MatoranStage } from '../types/Matoran';
 
 /**
@@ -35,6 +43,69 @@ describe('ALL_MASKS', () => {
       Mask.Pakari,
       Mask.Miru,
     ]);
+  });
+});
+
+describe('mask tiers', () => {
+  test('partition ALL_MASKS into mata, great, and nuva tiers before story masks', () => {
+    expect(MATAN_MASKS).toHaveLength(12);
+    expect(GREAT_MASKS).toHaveLength(7);
+    expect(NUVA_MASKS).toHaveLength(6);
+    expect([...MATAN_MASKS, ...GREAT_MASKS, ...NUVA_MASKS]).toEqual(ALL_MASKS.slice(0, 25));
+  });
+});
+
+describe('getSelectableMasksForStage', () => {
+  test('mata-tier rigs offer the original 12 masks', () => {
+    for (const stage of [
+      MatoranStage.Diminished,
+      MatoranStage.Rebuilt,
+      MatoranStage.Metru,
+      MatoranStage.ToaMata,
+      MatoranStage.Turaga,
+    ]) {
+      expect(getSelectableMasksForStage(stage)).toEqual(MATAN_MASKS);
+    }
+  });
+
+  test('Toa Metru offers Great masks only', () => {
+    expect(getSelectableMasksForStage(MatoranStage.ToaMetru)).toEqual(GREAT_MASKS);
+  });
+
+  test('Toa Nuva offers Nuva masks only', () => {
+    expect(getSelectableMasksForStage(MatoranStage.ToaNuva)).toEqual(NUVA_MASKS);
+  });
+
+  test('excludes story masks from every creation stage', () => {
+    const storyMasks = [Mask.Avohkii, Mask.Vahi, Mask.Kraahkan, Mask.HauNuvaInfected, Mask.Krana];
+    const stages = [
+      MatoranStage.Diminished,
+      MatoranStage.Rebuilt,
+      MatoranStage.Metru,
+      MatoranStage.ToaMata,
+      MatoranStage.ToaMetru,
+      MatoranStage.ToaNuva,
+      MatoranStage.Turaga,
+      MatoranStage.Bohrok,
+      MatoranStage.BohrokKal,
+      MatoranStage.Makuta,
+    ];
+    for (const stage of stages) {
+      const selectable = getSelectableMasksForStage(stage);
+      for (const storyMask of storyMasks) {
+        expect(selectable).not.toContain(storyMask);
+      }
+    }
+  });
+});
+
+describe('isMaskSelectableForStage', () => {
+  test('rejects a Great mask on a diminished rig', () => {
+    expect(isMaskSelectableForStage(Mask.HauGreat, MatoranStage.Diminished)).toBe(false);
+  });
+
+  test('accepts a Nuva mask on a Toa Nuva rig', () => {
+    expect(isMaskSelectableForStage(Mask.HauNuva, MatoranStage.ToaNuva)).toBe(true);
   });
 });
 

@@ -61,6 +61,7 @@ describe('customCharacterShare', () => {
           legs: partPalette(LegoColor.LightGray, { secondary: LegoColor.White }),
           weapon: partPalette(LegoColor.FlatDarkGold, { glow: LegoColor.TransNeonGreen }),
         },
+        mask: Mask.KaukauNuva,
         stage: MatoranStage.ToaNuva,
       });
       const parsed = parseCustomCharacterShare(encodeCustomCharacterShare(original));
@@ -88,7 +89,7 @@ describe('customCharacterShare', () => {
         kitSlotMap: {
           arms: { Main: 'joints', Secondary: 'body' },
         },
-        mask: Mask.Hau,
+        mask: Mask.HauGreat,
         name: 'Legacy',
         stage: MatoranStage.ToaMetru,
         tags: [MatoranTag.Custom],
@@ -143,6 +144,13 @@ describe('customCharacterShare', () => {
       const token = encodeCustomCharacterShare(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         makeCustom({ mask: 'NotARealMask' as any })
+      );
+      expect(parseCustomCharacterShare(token)).toBeNull();
+    });
+
+    it('rejects a mask that does not match the rig stage', () => {
+      const token = encodeCustomCharacterShare(
+        makeCustom({ mask: Mask.HauGreat, stage: MatoranStage.Diminished })
       );
       expect(parseCustomCharacterShare(token)).toBeNull();
     });
@@ -262,7 +270,7 @@ describe('customCharacterShare', () => {
     });
 
     it('treats optional weapon glow consistently', () => {
-      const base = makeCustom({ stage: MatoranStage.ToaNuva });
+      const base = makeCustom({ mask: Mask.HauNuva, stage: MatoranStage.ToaNuva });
       const withGlow = makeCustom({
         colors: {
           ...base.colors,

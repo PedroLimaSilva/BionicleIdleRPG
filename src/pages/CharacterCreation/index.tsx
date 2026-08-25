@@ -26,7 +26,7 @@ import {
 } from '../../game/customMataBuild';
 import { DEFAULT_CUSTOM_COLORS } from '../../data/dex/partPalettes';
 import { CHARACTER_DEX } from '../../data/dex';
-import { ALL_MASKS, isTransparentMask } from '../../data/masks';
+import { getSelectableMasksForStage, isTransparentMask } from '../../data/masks';
 import {
   BaseMatoran,
   CUSTOM_CHARACTER_COST,
@@ -167,6 +167,14 @@ export const CharacterCreation: React.FC = () => {
   const [activePart, setActivePart] = useState<ColorTabId>('mask');
   const [activeSlot, setActiveSlot] = useState<BodyPartSlot>('main');
   const [mataBuildId, setMataBuildId] = useState<string>(DEFAULT_CUSTOM_MATA_MODEL_ID);
+
+  const selectableMasks = useMemo(() => getSelectableMasksForStage(creationStage), [creationStage]);
+
+  useEffect(() => {
+    if (!selectableMasks.includes(mask)) {
+      setMask(selectableMasks[0] ?? Mask.Hau);
+    }
+  }, [mask, selectableMasks]);
 
   const colorTabs = useMemo(
     () =>
@@ -417,7 +425,7 @@ export const CharacterCreation: React.FC = () => {
         <div className="field">
           <span className="field-label">Kanohi (Mask)</span>
           <div className="mask-grid">
-            {ALL_MASKS.map((m) => (
+            {selectableMasks.map((m) => (
               <button
                 type="button"
                 key={m}

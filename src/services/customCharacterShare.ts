@@ -12,7 +12,7 @@ import {
   normalizeMatoranColors,
   parseMatoranColors,
 } from '../game/matoranColors';
-import { ALL_MASKS } from '../data/masks';
+import { ALL_MASKS, isMaskSelectableForStage } from '../data/masks';
 
 /** URL query param used to share a custom character. Value is a base64-encoded JSON BaseMatoran. */
 export const SHARE_QUERY_PARAM = 'recruit';
@@ -73,6 +73,7 @@ export function parseCustomCharacterShare(token: string): BaseMatoran | null {
   if (typeof obj.mask !== 'string' || !VALID_MASKS.has(obj.mask)) return null;
   if (typeof obj.element !== 'string' || !VALID_ELEMENTS.has(obj.element)) return null;
   if (typeof obj.stage !== 'string' || !VALID_STAGES.has(obj.stage)) return null;
+  if (!isMaskSelectableForStage(obj.mask as Mask, obj.stage as MatoranStage)) return null;
   const colors = parseMatoranColors(obj.colors, obj.stage as MatoranStage);
   if (!colors) return null;
 
