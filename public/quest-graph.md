@@ -356,14 +356,9 @@ Currency: 5000
 XP: 4000"]
   story_metru_nui_saga_begin["Tales of the Lost City
 (15m)
-Unlock: Toa_Lhikan
+Unlock: Toa_Lhikan, Matau, Nokama, Nuju, Onewa, Vakama, Whenua
 Currency: 5500
 XP: 4500"]
-  metru_toa_stones_for_new_generation["Toa Stones for a New Generation
-(18m)
-Unlock: Matau, Nokama, Nuju, Onewa, Vakama, Whenua
-Currency: 6000
-XP: 5000"]
   metru_vakama_dume_and_the_great_temple["The Turaga’s Visit
 (20m)
 Currency: 6500
@@ -470,8 +465,7 @@ XP: 6000"]
   mol_takanuva_rises --> mol_defeat_of_makuta
   mol_defeat_of_makuta --> mol_rediscovery_of_metru_nui
   mol_rediscovery_of_metru_nui --> story_metru_nui_saga_begin
-  story_metru_nui_saga_begin --> metru_toa_stones_for_new_generation
-  metru_toa_stones_for_new_generation --> metru_vakama_dume_and_the_great_temple
+  story_metru_nui_saga_begin --> metru_vakama_dume_and_the_great_temple
   metru_vakama_dume_and_the_great_temple --> metru_great_temple_transformation
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
