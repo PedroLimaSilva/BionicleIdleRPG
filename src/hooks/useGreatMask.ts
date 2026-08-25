@@ -13,11 +13,12 @@ import {
   useMaskTransitionFrame,
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
+import { isWeatheredMetalMaterial } from '../components/CharacterScene/WeatheredMetalMaterial';
 import {
   applyMaskMetallicPbr,
+  cloneGreatMaskMaterial,
   isMaskGlowMaterialName,
   isMaskStandardMat,
-  prepareClonedMaskMaterial,
 } from './maskMaterial';
 import { masksCollected } from '../services/matoranUtils';
 
@@ -55,7 +56,9 @@ function applyGreatMaskColors(
     }
 
     mat.color.copy(new Color(maskColor));
-    applyMaskMetallicPbr(mat, maskColor);
+    if (!isWeatheredMetalMaterial(mat)) {
+      applyMaskMetallicPbr(mat, maskColor);
+    }
     if (mat.emissive) {
       if (maskPowerActive) {
         mat.emissive = new Color(maskColor);
@@ -127,9 +130,7 @@ export function useGreatMask(
         mesh.receiveShadow = effectiveShadows;
         const originalMat = mesh.material;
         if (isMaskStandardMat(originalMat)) {
-          const mat = originalMat.clone();
-          prepareClonedMaskMaterial(mat);
-          mesh.material = mat;
+          mesh.material = cloneGreatMaskMaterial(originalMat, maskColorRef.current);
         }
       }
     });
