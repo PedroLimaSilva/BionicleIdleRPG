@@ -6,6 +6,9 @@ export const METRU_NUI_SAGA_BEGIN_QUEST_ID = 'story_metru_nui_saga_begin';
 /** Unlocks recruitment of the future Toa Metru Matoran (non–Great Disk carriers). */
 export const METRU_TOA_STONES_QUEST_ID = 'metru_toa_stones_for_new_generation';
 
+/** Vakama's encounter with Turaga Dume and the map to the Great Temple. */
+export const METRU_VAKAMA_DUME_QUEST_ID = 'metru_vakama_dume_and_the_great_temple';
+
 /** Future Toa Metru Matoran — no Kanoka disk launcher on the rig. */
 const METRU_TOA_CANDIDATE_RECRUIT_IDS = [
   'Matau',
@@ -47,5 +50,20 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
     },
     section: 'Metru Nui',
     unlockedAfter: [METRU_NUI_SAGA_BEGIN_QUEST_ID],
+  },
+  {
+    description:
+      'With Lhikan gone, Turaga Dume announces his disappearance across Metru Nui and visits Vakama in his Ta-Metru forge—demanding the Mask of Time while Vahki stand watch. Vakama must hide the Toa Stone, endure the Turaga’s scrutiny, and decipher the map hidden in Lhikan’s wrapping before destiny calls him to the Great Temple.',
+    durationSeconds: 20 * 60,
+    id: METRU_VAKAMA_DUME_QUEST_ID,
+    name: 'The Turaga’s Visit',
+    requirements: { matoran: ['Vakama'], minLevel: 26 },
+    rewards: {
+      currency: 6500,
+      cutscene: { cutsceneId: 'metru_vakama_dume_visit', type: 'visual_novel' },
+      xpPerMatoran: 5500,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_TOA_STONES_QUEST_ID],
   },
 ];
