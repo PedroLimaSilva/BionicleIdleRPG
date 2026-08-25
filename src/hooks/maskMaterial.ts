@@ -1,6 +1,4 @@
 import { MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
-import { cloneAsWeatheredMetalMaterial } from '../components/CharacterScene/WeatheredMetalMaterial';
-import { METRU_WEATHERED } from '../game/kit/palettes/metruKitPlayerPalette';
 import { metallicColorPbr } from '../game/kit/palettes/metalPbr';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
@@ -53,26 +51,11 @@ export function applyMaskMetallicPbr(mat: MaskStandardMat, maskColor: string): v
   if (metalPbr.envMapIntensity !== undefined) mat.envMapIntensity = metalPbr.envMapIntensity;
 }
 
-/** Great Kanohi gold uses the same weathered-metal path as Metru kit armor. */
+/** Clone a Great Kanohi material for per-instance tinting (same path as Mata masks). */
 export function cloneGreatMaskMaterial(
   originalMat: MaskStandardMat,
-  maskColor: string
+  _maskColor: string
 ): MaskStandardMat {
-  if (isMaskGlowMaterialName(originalMat.name)) {
-    const mat = originalMat.clone();
-    prepareClonedMaskMaterial(mat);
-    return mat;
-  }
-
-  const metalPbr = metallicColorPbr(maskColor);
-  if (metalPbr) {
-    return cloneAsWeatheredMetalMaterial(originalMat, maskColor, {
-      ...METRU_WEATHERED,
-      ...metalPbr,
-      transparent: true,
-    });
-  }
-
   const mat = originalMat.clone();
   prepareClonedMaskMaterial(mat);
   return mat;

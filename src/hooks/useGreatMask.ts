@@ -13,7 +13,6 @@ import {
   useMaskTransitionFrame,
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
-import { isWeatheredMetalMaterial } from '../components/CharacterScene/WeatheredMetalMaterial';
 import {
   applyMaskMetallicPbr,
   cloneGreatMaskMaterial,
@@ -56,9 +55,7 @@ function applyGreatMaskColors(
     }
 
     mat.color.copy(new Color(maskColor));
-    if (!isWeatheredMetalMaterial(mat)) {
-      applyMaskMetallicPbr(mat, maskColor);
-    }
+    applyMaskMetallicPbr(mat, maskColor);
     if (mat.emissive) {
       if (maskPowerActive) {
         mat.emissive = new Color(maskColor);
