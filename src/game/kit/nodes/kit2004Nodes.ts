@@ -6,6 +6,7 @@
 export const KIT_2004_NODES = {
   AeroSlicer: 'AeroSlicer',
   AxleArm3L: 'AxleArm3L',
+  CrystalSpike: 'CrystalSpike',
   DiskLauncher: 'Disk_Launcher',
   DoubleSocketArmor: 'DoubleSocketArmor',
   LhikanSword: 'Lhikan_Sword',
