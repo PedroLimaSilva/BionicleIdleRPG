@@ -1,5 +1,10 @@
 import type { MaskDiscoloration } from '../hooks/maskDiscoloration';
 
+/** Crown-only band: normalized distance from top (0) where tint reaches zero (~eye line). */
+const AVATAR_DISCOLORATION_END_Y = 0.3;
+/** Higher = sharper transition from silver crown into base mask color. */
+const AVATAR_DISCOLORATION_SHARPNESS = 5;
+
 function parseHexColor(hex: string): [number, number, number] {
   const normalized = hex.startsWith('#') ? hex.slice(1) : hex;
   return [
@@ -15,7 +20,7 @@ function mixChannel(base: number, target: number, amount: number): number {
 
 /**
  * Approximates the Metru double-injected Kanohi crown tint on a tinted mask layer.
- * Matches the 3D shader: base mask color at the bottom, `discoloration.color` at the crown.
+ * Abrupt silver crown ending around the eye line (tighter than the full-height 3D gradient).
  */
 export function applyMaskAvatarDiscoloration(
   imageData: ImageData,
@@ -25,10 +30,13 @@ export function applyMaskAvatarDiscoloration(
   if (discoloration.intensity <= 0 || height <= 0) return;
 
   const [dr, dg, db] = parseHexColor(discoloration.color);
-  const maxY = height - 1;
+  const endY = Math.max(1, height * AVATAR_DISCOLORATION_END_Y);
 
   for (let y = 0; y < height; y++) {
-    const amount = (maxY > 0 ? (maxY - y) / maxY : 0) * discoloration.intensity;
+    if (y >= endY) continue;
+
+    const t = 1 - y / endY;
+    const amount = Math.pow(t, AVATAR_DISCOLORATION_SHARPNESS) * discoloration.intensity;
     if (amount <= 0) continue;
 
     for (let x = 0; x < width; x++) {
