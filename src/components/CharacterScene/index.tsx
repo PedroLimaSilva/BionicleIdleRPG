@@ -12,6 +12,7 @@ import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCyl
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { resolveToaMataBuildId } from '../../game/customMataBuild';
+import { usesNujuToaMetruRig } from '../../game/metruMatoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
 import { RebuiltMatoranModel } from './RebuiltMatoranModel';
 import { MetruMatoranModel } from './MetruMatoranModel';
@@ -118,6 +119,9 @@ function CharacterModel({
     case MatoranStage.Rebuilt:
       return <RebuiltMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.ToaMetru:
+      if (usesNujuToaMetruRig(matoran.id)) {
+        return <NujuModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+      }
       switch (matoran.id) {
         case 'Toa_Matau':
           return <MatauModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
