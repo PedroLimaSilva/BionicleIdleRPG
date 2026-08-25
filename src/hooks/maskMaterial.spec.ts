@@ -64,7 +64,9 @@ describe('cloneGreatMaskMaterial', () => {
       metalness: 0.2,
       metalnessMap: new Texture(),
       name: 'Hau_baked',
+      normalMap: new Texture(),
       roughness: 0.8,
+      roughnessMap: new Texture(),
     });
     const mat = cloneGreatMaskMaterial(original, LegoColor.FlatDarkGold);
     expect(isWeatheredMetalMaterial(mat)).toBe(true);
@@ -72,6 +74,9 @@ describe('cloneGreatMaskMaterial', () => {
     expect(mat.metalness).toBe(0.95);
     expect(mat.roughness).toBe(0.18);
     expect(mat.envMapIntensity).toBe(0.9);
+    expect(mat.metalnessMap).toBeNull();
+    expect(mat.normalMap).toBeDefined();
+    expect(mat.roughnessMap).toBeDefined();
   });
 
   it('clones non-gold materials with dielectric fallbacks', () => {

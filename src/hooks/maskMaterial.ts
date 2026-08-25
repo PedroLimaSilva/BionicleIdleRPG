@@ -1,5 +1,5 @@
 import { MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
-import { getWeatheredMetalMaterial } from '../components/CharacterScene/WeatheredMetalMaterial';
+import { cloneAsWeatheredMetalMaterial } from '../components/CharacterScene/WeatheredMetalMaterial';
 import { METRU_WEATHERED } from '../game/kit/palettes/metruKitPlayerPalette';
 import { metallicColorPbr } from '../game/kit/palettes/metalPbr';
 
@@ -66,11 +66,11 @@ export function cloneGreatMaskMaterial(
 
   const metalPbr = metallicColorPbr(maskColor);
   if (metalPbr) {
-    return getWeatheredMetalMaterial(maskColor, {
+    return cloneAsWeatheredMetalMaterial(originalMat, maskColor, {
       ...METRU_WEATHERED,
       ...metalPbr,
       transparent: true,
-    }).clone();
+    });
   }
 
   const mat = originalMat.clone();

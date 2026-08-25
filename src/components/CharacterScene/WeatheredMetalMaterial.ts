@@ -213,6 +213,31 @@ export function getWeatheredMetalMaterial(
   return materialCache.get(key)!;
 }
 
+/**
+ * Weathered metal from an existing material, keeping authored normal/roughness maps.
+ * Drops metalness maps so scalar metalness applies (baked maps often encode plastic).
+ */
+export function cloneAsWeatheredMetalMaterial(
+  source: MeshStandardMaterial,
+  color: ColorRepresentation,
+  opts: WeatheredMetalOptions = {}
+): MeshStandardMaterial {
+  const clone = source.clone();
+  clone.metalnessMap = null;
+  clone.name = MATERIAL_NAME;
+  clone.color = new Color(color);
+  clone.roughness = opts.roughness ?? DEFAULT_ROUGHNESS;
+  clone.metalness = opts.metalness ?? DEFAULT_METALNESS;
+  clone.envMapIntensity = opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY;
+  clone.side = DoubleSide;
+  clone.transparent = opts.transparent ?? false;
+  (clone as MeshStandardMaterial & { extensions?: { derivatives?: boolean } }).extensions = {
+    derivatives: true,
+  };
+  applyWeatheredMetalModifier(clone, opts);
+  return clone;
+}
+
 /** Returns true if the material is our weathered metal material. */
 export function isWeatheredMetalMaterial(m: unknown): m is MeshStandardMaterial {
   return m instanceof MeshStandardMaterial && m.name === MATERIAL_NAME;
