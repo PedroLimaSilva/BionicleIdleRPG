@@ -372,6 +372,42 @@ export const TOA_DEX = {
     name: 'Toa Matau',
     stage: MatoranStage.ToaMetru,
   },
+  Toa_Nuju: {
+    colors: {
+      arms: {
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.White,
+      },
+      body: {
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+      },
+      eyes: LegoColor.TransLightBlue,
+      face: LegoColor.DarkGray,
+      feet: {
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+      },
+      legs: {
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.White,
+      },
+      mask: LegoColor.White,
+      weapon: {
+        glow: LegoColor.TransLightBlue,
+        main: LegoColor.White,
+        metal: LegoColor.LightGray,
+        secondary: LegoColor.TransLightBlue,
+      },
+    },
+    element: ElementTribe.Ice,
+    id: 'Toa_Nuju',
+    mask: Mask.MatatuGreat,
+    name: 'Toa Nuju',
+    stage: MatoranStage.ToaMetru,
+  },
   Toa_Onua: {
     chronicleId: CHRONICLE_IDS.ONUA,
     colors: {

@@ -124,7 +124,7 @@ test.describe('Character Model Rendering', () => {
       ...INITIAL_GAME_STATE,
       recruitedCharacters: recruited(ids),
     }),
-    characterIds: ['Toa_Lhikan', 'Toa_Matau'],
+    characterIds: ['Toa_Lhikan', 'Toa_Matau', 'Toa_Nuju'],
     suiteName: 'Toa Metru Characters',
   });
 

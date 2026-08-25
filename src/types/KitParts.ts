@@ -67,6 +67,8 @@ export type KitMaterialSlotOverride = {
    * shouldn't be weathered (e.g. translucent brain plastic).
    */
   weathered?: boolean;
+  /** When below 1, enables alpha blending on the cloned kit material. */
+  opacity?: number;
 } & KitMaterialWeatheredTuning;
 
 export type KitMaterialSlotEntry = KitMaterialColorSource | KitMaterialSlotOverride;

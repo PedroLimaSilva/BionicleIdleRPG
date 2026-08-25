@@ -71,4 +71,16 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(mat.metalness).toBe(0.5);
     expect(mat.roughness).toBe(0.5);
   });
+
+  test('opacity below 1 enables transparent blending on the cloned material', () => {
+    const mat = buildSingle('Secondary', {
+      Secondary: {
+        color: { kind: 'part', part: 'weapon', slot: 'secondary' },
+        opacity: 0.5,
+        weathered: false,
+      },
+    });
+    expect(mat.opacity).toBe(0.5);
+    expect(mat.transparent).toBe(true);
+  });
 });
