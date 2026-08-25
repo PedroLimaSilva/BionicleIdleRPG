@@ -9,6 +9,9 @@ export const METRU_TOA_STONES_QUEST_ID = 'metru_toa_stones_for_new_generation';
 /** Vakama's encounter with Turaga Dume and the map to the Great Temple. */
 export const METRU_VAKAMA_DUME_QUEST_ID = 'metru_vakama_dume_and_the_great_temple';
 
+/** The six Matoran answer Lhikan's call at the Great Temple and become Toa Metru. */
+export const METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID = 'metru_great_temple_transformation';
+
 /** Future Toa Metru Matoran — no Kanoka disk launcher on the rig. */
 const METRU_TOA_CANDIDATE_RECRUIT_IDS = [
   'Matau',
@@ -65,5 +68,20 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
     },
     section: 'Metru Nui',
     unlockedAfter: [METRU_TOA_STONES_QUEST_ID],
+  },
+  {
+    description:
+      'Following the map on Lhikan’s wrapping, Vakama journeys to the Great Temple in Ga-Metru. Five other Matoran arrive with Toa Stones of their own. At the Toa Suva, Lhikan’s final message reaches them—and six Matoran become Toa Metru.',
+    durationSeconds: 22 * 60,
+    id: METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID,
+    name: 'Destiny at the Great Temple',
+    requirements: { matoran: [...METRU_TOA_CANDIDATE_RECRUIT_IDS], minLevel: 27 },
+    rewards: {
+      currency: 7000,
+      cutscene: { cutsceneId: 'metru_great_temple_transformation', type: 'visual_novel' },
+      xpPerMatoran: 6000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
   },
 ];

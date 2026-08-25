@@ -1,6 +1,124 @@
 import type { VisualNovelCutscene } from '../../types/Cutscenes';
 
 export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
+  metru_great_temple_transformation: {
+    background: { from: '#1a2840', to: '#c9a84c', type: 'gradient' },
+    id: 'metru_great_temple_transformation',
+    steps: [
+      {
+        text: 'As soon as he was able, Vakama slipped away from Ta-Metru and journeyed to the Great Temple in Ga-Metru. To his surprise, five other Matoran were already there—strangers to him.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Matau',
+        text: 'Fire-spitter? Did you wrong-turn?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Vakama',
+        text: 'You tell me.',
+        type: 'dialogue',
+      },
+      {
+        text: 'Vakama opened his hand to reveal the Toa Stone he carried. Nokama stepped forward and showed hers. Each of the others did the same.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Nokama',
+        text: "It seems we are all recipients of Toa Lhikan's gifts. All similar, yet each unique.",
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Matau',
+        text: 'Like us! All Matoran—some just more handsome than the rest.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Whenua',
+        text: "Who's ever heard of Matoran getting summoned to the Great Temple like this?",
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Nuju',
+        text: 'What will be asked of us? We are all just… strangers.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Onewa',
+        text: 'Some stranger than others.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Nokama',
+        text: 'Your negativity pollutes this sanctuary, builder.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Onewa',
+        text: 'Save the lessons for your class, teacher.',
+        type: 'dialogue',
+      },
+      {
+        text: 'Their argument was interrupted by the sudden rise of a stone shrine from the floor—the Toa Suva.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Vakama',
+        text: 'The Toa Suva!',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Whenua',
+        text: 'When Toa realize their full potential, this suva shrine grants them their elemental powers.',
+        type: 'dialogue',
+      },
+      {
+        text: 'Each Matoran stepped forward and placed their Toa Stone in a niche. A beam of elemental energy shot from the assembled stones, and the temple chamber shook as if a great earthquake had struck the city—then, as suddenly as it began, the tremors stopped.',
+        type: 'narration',
+      },
+      {
+        text: "Bewildered, the six looked at one another as the image of Toa Lhikan's mask appeared in the energy beam—a yellow Kanohi Hau hovering in the air.",
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Lhikan',
+        text: 'Faithful Matoran, Metru Nui needs you. A shadow threatens its heart. Prove yourselves worthy Toa and fear not. The Great Spirit shall guide you in ways you could not imagine.',
+        type: 'dialogue',
+      },
+      {
+        text: 'The mask glowed blindingly bright. Beams of energy shot forth, bathing the Matoran in unimaginable power. Their bodies grew taller and stronger; armor formed where none had been before. Their masks transformed from simple Kanohi into Great Masks of Power.',
+        type: 'narration',
+      },
+      {
+        text: 'The hovering mask winked out—no sign of it or the Toa Stones remained. Six armored Toa Metru looked at themselves and each other in awe.',
+        type: 'narration',
+      },
+    ],
+  },
   metru_vakama_dume_visit: {
     background: { from: '#0d1f2d', to: '#ffe28e', type: 'gradient' },
     id: 'metru_vakama_dume_visit',
