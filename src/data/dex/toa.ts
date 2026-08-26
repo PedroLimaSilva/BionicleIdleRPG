@@ -793,7 +793,7 @@ export const TOA_DEX = {
       },
       mask: LegoColor.Black,
       weapon: {
-        glow: LegoColor.Black,
+        glow: LegoColor.TransGreen,
         main: LegoColor.Black,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Black,
