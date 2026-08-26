@@ -161,8 +161,6 @@ export const WHENUA_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment
     kitNodeName: KIT_2004_NODES.TechnicPinBush,
     materialColors: WHENUA_BLACK,
   },
-  Weapon_L: { kitNodeName: KIT_2004_NODES.EarthshockDrill, materialColors: WHENUA_WEAPON_COLORS },
-  Weapon_R: { kitNodeName: KIT_2004_NODES.EarthshockDrill, materialColors: WHENUA_WEAPON_COLORS },
 };
 
 /** Whenua — Technic pins / axles / sockets from `kit_2001.glb`. */
