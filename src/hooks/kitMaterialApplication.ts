@@ -13,6 +13,7 @@ import {
   getWeatheredMetalMaterial,
   type WeatheredMetalOptions,
 } from '../components/CharacterScene/WeatheredMetalMaterial';
+import { hasMaskPbrMaps } from './maskMaterial';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -37,6 +38,12 @@ function normalizeSlotName(name: string): string {
 
 function isGlowMaterialName(name: string | undefined): boolean {
   return !!name && name.toLowerCase().includes('glow');
+}
+
+/** Rig meshes with baked PBR (masks, Vakama's Kanoka disk, etc.) keep GLB-authored look. */
+function isPreservedBakedMaterial(mat: StandardMat): boolean {
+  if (hasMaskPbrMaps(mat)) return true;
+  return mat.name.toLowerCase().includes('_baked');
 }
 
 export function buildKitMaterialSlotLookup(
@@ -120,6 +127,7 @@ export function buildKitMeshMaterials(
   const mats = Array.isArray(raw) ? raw : [raw];
   const next = mats.map((mat) => {
     if (!isStandardMat(mat)) return mat;
+    if (isPreservedBakedMaterial(mat)) return mat;
     const spec = slotLookup.get(normalizeSlotName(mat.name));
     const slotColor = spec?.color ? resolveKitColorSource(spec.color, palette) : undefined;
     // Metallic plastics (gold) shine on any slot, not just Metal; the slot's own
