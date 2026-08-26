@@ -141,8 +141,6 @@ export const NOKAMA_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment
     kitNodeName: KIT_2004_NODES.SocketDouble1L,
     materialColors: NOKAMA_SOCKET_COLORS,
   },
-  Weapon_L: { kitNodeName: KIT_2004_NODES.Hydroblade, materialColors: NOKAMA_WEAPON_COLORS },
-  Weapon_R: { kitNodeName: KIT_2004_NODES.Hydroblade, materialColors: NOKAMA_WEAPON_COLORS },
 };
 
 /** Nokama — Technic pins / axles / sockets from `kit_2001.glb`. */
