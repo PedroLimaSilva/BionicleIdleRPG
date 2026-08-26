@@ -13,9 +13,9 @@ import { kitPartGlow, kitPartSlots } from '../../palettes/partSlots';
  * Three.js sanitizes glTF node names at load: spaces → `_`, `.` removed
  * (`AxleMod2L.ShoulderPivot.R` → `AxleMod2L_ShoulderPivotR`).
  *
- * The disk launcher frame attaches at `Weapon_Handle`. `Disk_Baked` lives on the
- * rig under `VakamaDiskLauncher` with authored PBR textures — kit tinting skips
- * `_baked` / mapped materials the same way as Great Kanohi masks.
+ * The disk launcher frame attaches at `VakamaDiskLauncher` (the kit socket empty).
+ * `Weapon_Handle` is the arm bone; `Disk_Baked` is a child mesh with authored PBR
+ * textures — kit tinting skips `_baked` / mapped materials like Great Kanohi masks.
  */
 
 const VAKAMA_BODY_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -149,7 +149,7 @@ export const VAKAMA_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment
     kitNodeName: KIT_2004_NODES.TechnicPinBush,
     materialColors: VAKAMA_BLACK,
   },
-  Weapon_Handle: {
+  VakamaDiskLauncher: {
     kitNodeName: KIT_2004_NODES.VakamaDiskLauncher,
     materialColors: VAKAMA_WEAPON_COLORS,
   },

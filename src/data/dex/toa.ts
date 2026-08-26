@@ -737,7 +737,7 @@ export const TOA_DEX = {
       arms: {
         main: LegoColor.DarkRed,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.Orange,
+        secondary: LegoColor.DarkRed,
       },
       body: {
         main: LegoColor.DarkRed,
@@ -752,14 +752,14 @@ export const TOA_DEX = {
       legs: {
         main: LegoColor.DarkRed,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.Orange,
+        secondary: LegoColor.DarkRed,
       },
       mask: LegoColor.DarkRed,
       weapon: {
-        glow: LegoColor.Orange,
+        glow: LegoColor.DarkRed,
         main: LegoColor.DarkRed,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.Orange,
+        secondary: LegoColor.DarkRed,
       },
     },
     element: ElementTribe.Fire,
