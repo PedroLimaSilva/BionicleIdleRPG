@@ -162,7 +162,7 @@ export function useGreatMask(
     masksParent.add(clone);
     maskRef.current = clone;
     prevMaskFileNameRef.current = maskNodeName;
-  }, [effectiveShadows, maskNodeName, masksNodes, masksParent]);
+  }, [effectiveShadows, maskName, maskNodeName, masksNodes, masksParent]);
 
   useEffect(() => {
     const transition = transitionRef.current;
@@ -183,7 +183,7 @@ export function useGreatMask(
     const mask = maskRef.current;
     if (!mask) return;
     applyGreatMaskColors(mask, maskColor, maskName, glowColor, maskPowerActive);
-  }, [maskColor, glowColor, maskPowerActive]);
+  }, [maskColor, glowColor, maskName, maskPowerActive]);
 }
 
 useGreatMask.preload = () => {
