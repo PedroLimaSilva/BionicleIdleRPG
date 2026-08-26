@@ -9,6 +9,8 @@ export const KIT_2004_NODES = {
   CrystalSpike: 'CrystalSpike',
   DiskLauncher: 'Disk_Launcher',
   DoubleSocketArmor: 'DoubleSocketArmor',
+  EarthshockDrill: 'EarthshockDrill',
+  Hydroblade: 'Hydroblade',
   LhikanSword: 'Lhikan_Sword',
   MetruArm: 'MetruArm',
   MetruBrain: 'MetruBrain',
@@ -24,8 +26,10 @@ export const KIT_2004_NODES = {
   MetruShoulderArmorBottom: 'MetruShoulderArmorBottom',
   MetruShoulderArmorTop: 'MetruShoulderArmorTop',
   MetruTorso: 'MetruTorso',
+  ProtoPiton: 'ProtoPiton',
   SocketDouble1L: 'SocketDouble1L',
   TechnicPinBush: 'TechnicPinBush',
+  VakamaDiskLauncher: 'VakamaDiskLauncher',
 } as const;
 
 export type Kit2004NodeName = (typeof KIT_2004_NODES)[keyof typeof KIT_2004_NODES];

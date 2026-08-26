@@ -69,7 +69,12 @@ export const KIT_2001_NODE_EXEMPT: readonly Kit2001NodeName[] = [];
 export const KIT_2003_NODE_EXEMPT: readonly Kit2003NodeName[] = [];
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
-export const KIT_2004_NODE_EXEMPT: readonly Kit2004NodeName[] = [];
+export const KIT_2004_NODE_EXEMPT: readonly Kit2004NodeName[] = [
+  KIT_2004_NODES.EarthshockDrill,
+  KIT_2004_NODES.Hydroblade,
+  KIT_2004_NODES.ProtoPiton,
+  KIT_2004_NODES.VakamaDiskLauncher,
+];
 
 function collectUsedNodes(maps: Record<string, KitSocketAttachment<string>>[]): Set<string> {
   const used = new Set<string>();
