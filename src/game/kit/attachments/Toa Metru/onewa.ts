@@ -133,6 +133,18 @@ export const ONEWA_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
     kitNodeName: KIT_2004_NODES.SocketDouble1L,
     materialColors: ONEWA_SOCKET_COLORS,
   },
+  SocketDouble1L_LegUpperL: {
+    kitNodeName: KIT_2004_NODES.SocketDouble1L,
+    materialColors: ONEWA_SOCKET_COLORS,
+  },
+  SocketDouble1L_LegUpperR: {
+    kitNodeName: KIT_2004_NODES.SocketDouble1L,
+    materialColors: ONEWA_SOCKET_COLORS,
+  },
+  TechnicPinBush_L: {
+    kitNodeName: KIT_2004_NODES.TechnicPinBush,
+    materialColors: ONEWA_BLACK,
+  },
   TechnicPinBush_R: {
     kitNodeName: KIT_2004_NODES.TechnicPinBush,
     materialColors: ONEWA_BLACK,
