@@ -68,12 +68,6 @@ const NOKAMA_EYES_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   },
 };
 
-const NOKAMA_WEAPON_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...NOKAMA_BODY_COLORS,
-  ...kitPartSlots('weapon', 'nuva'),
-  ...kitPartGlow('weapon', 10),
-};
-
 const NOKAMA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
   Main: { kind: 'lego', value: LegoColor.Black },
   Metal: { kind: 'lego', value: LegoColor.Black },
