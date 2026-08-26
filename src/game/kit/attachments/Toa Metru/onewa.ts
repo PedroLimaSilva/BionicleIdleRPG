@@ -137,12 +137,6 @@ export const ONEWA_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
     kitNodeName: KIT_2004_NODES.TechnicPinBush,
     materialColors: ONEWA_BLACK,
   },
-  Weapon_Bend_L: { kitNodeName: KIT_2004_NODES.ProtoPiton, materialColors: ONEWA_WEAPON_COLORS },
-  Weapon_Bend_R: { kitNodeName: KIT_2004_NODES.ProtoPiton, materialColors: ONEWA_WEAPON_COLORS },
-  Weapon_End_L: { kitNodeName: KIT_2004_NODES.ProtoPiton, materialColors: ONEWA_WEAPON_COLORS },
-  Weapon_End_R: { kitNodeName: KIT_2004_NODES.ProtoPiton, materialColors: ONEWA_WEAPON_COLORS },
-  Weapon_Start_L: { kitNodeName: KIT_2004_NODES.ProtoPiton, materialColors: ONEWA_WEAPON_COLORS },
-  Weapon_Start_R: { kitNodeName: KIT_2004_NODES.ProtoPiton, materialColors: ONEWA_WEAPON_COLORS },
 };
 
 /** Onewa — Technic pins / axles / sockets from `kit_2001.glb`. */
