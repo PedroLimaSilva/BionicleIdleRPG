@@ -377,7 +377,7 @@ export const TOA_DEX = {
       arms: {
         main: LegoColor.DarkBlue,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.MediumBlue,
+        secondary: LegoColor.DarkBlue,
       },
       body: {
         main: LegoColor.DarkBlue,
@@ -392,18 +392,19 @@ export const TOA_DEX = {
       legs: {
         main: LegoColor.DarkBlue,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.MediumBlue,
+        secondary: LegoColor.DarkBlue,
       },
       mask: LegoColor.DarkBlue,
       weapon: {
-        glow: LegoColor.MediumBlue,
+        glow: LegoColor.DarkBlue,
         main: LegoColor.DarkBlue,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.MediumBlue,
+        secondary: LegoColor.DarkBlue,
       },
     },
     element: ElementTribe.Water,
     id: 'Toa_Nokama',
+    isMaskTransparent: true,
     mask: Mask.RauGreat,
     name: 'Toa Nokama',
     stage: MatoranStage.ToaMetru,
@@ -773,7 +774,7 @@ export const TOA_DEX = {
       arms: {
         main: LegoColor.Black,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkGray,
+        secondary: LegoColor.Black,
       },
       body: {
         main: LegoColor.Black,
@@ -788,14 +789,14 @@ export const TOA_DEX = {
       legs: {
         main: LegoColor.Black,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkGray,
+        secondary: LegoColor.Black,
       },
       mask: LegoColor.Black,
       weapon: {
-        glow: LegoColor.DarkGray,
+        glow: LegoColor.TransGreen,
         main: LegoColor.Black,
         metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkGray,
+        secondary: LegoColor.Black,
       },
     },
     element: ElementTribe.Earth,

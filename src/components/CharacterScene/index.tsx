@@ -36,6 +36,7 @@ import { LhikanModel } from './Metru/LhikanModel';
 import { MatauModel } from './Metru/MatauModel';
 import { NujuModel } from './Metru/NujuModel';
 import { VakamaModel } from './Metru/VakamaModel';
+import { WhenuaModel } from './Metru/WhenuaModel';
 
 /** Vertical center of the character framing volume. */
 const CHARACTER_CENTER_Y = CYLINDER_CENTER_Y;
@@ -130,6 +131,8 @@ function CharacterModel({
           return <NujuModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Vakama':
           return <VakamaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+        case 'Toa_Whenua':
+          return <WhenuaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Lhikan':
           return <LhikanModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         default:
