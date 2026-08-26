@@ -5,7 +5,7 @@ import { getAvatarLayerNames } from './avatarLayers';
 import { ALL_MASKS } from '../../data/masks';
 import { Mask, MatoranStage } from '../../types/Matoran';
 
-const AVATAR_DIR = resolve(__dirname, '../../public/avatar');
+const AVATAR_DIR = resolve(__dirname, '../../../public/avatar');
 
 const ALL_STAGES = [
   MatoranStage.Diminished,

@@ -37,7 +37,7 @@ const CHUNK_HEADER_BYTES = 8;
 
 /** Reads clip names out of a GLB's JSON chunk without decoding any geometry. */
 function readClipNames(relativePath: string): string[] {
-  const buffer = readFileSync(join(__dirname, '../../../public', relativePath));
+  const buffer = readFileSync(join(__dirname, '../../../../public', relativePath));
   const jsonChunkLength = buffer.readUInt32LE(GLB_HEADER_BYTES);
   const jsonStart = GLB_HEADER_BYTES + CHUNK_HEADER_BYTES;
   const gltf = JSON.parse(buffer.subarray(jsonStart, jsonStart + jsonChunkLength).toString());
