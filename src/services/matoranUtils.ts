@@ -7,9 +7,9 @@ import {
 } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { JOB_DETAILS } from '../data/jobs';
-import { getProductivityModifier } from '../game/Jobs';
-import { isToaMata, isToaNuva } from '../game/matoranStage';
-import { isTahuNuvaInfectedMaskPeriod } from '../game/masks';
+import { getProductivityModifier } from '../game/jobs/Jobs';
+import { isToaMata, isToaNuva } from '../game/characters/matoranStage';
+import { isTahuNuvaInfectedMaskPeriod } from '../game/masks/masks';
 import { CHARACTER_DEX } from '../data/dex/index';
 import { GameState } from '../types/GameState';
 

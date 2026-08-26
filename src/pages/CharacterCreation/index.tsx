@@ -3,8 +3,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Modal } from '../../components/Modal';
-import { CharacterScene } from '../../components/CharacterScene';
-import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { CharacterScene } from '../../rendering/3d/CharacterScene';
+import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { useGame } from '../../context/Game';
 import { useSettings } from '../../context/useSettings';
 import { getRecruitedMatoran } from '../../services/matoranUtils';
@@ -19,11 +19,11 @@ import {
   prefillColorsAfterEvolution,
   setColorTabValue,
   slotLabel,
-} from '../../game/customCharacterColorSlots';
+} from '../../game/characters/customCharacterColorSlots';
 import {
   CUSTOM_SELECTABLE_MATA_MODEL_IDS,
   DEFAULT_CUSTOM_MATA_MODEL_ID,
-} from '../../game/customMataBuild';
+} from '../../rendering/3d/customMataBuild';
 import { DEFAULT_CUSTOM_COLORS } from '../../data/dex/partPalettes';
 import { CHARACTER_DEX } from '../../data/dex';
 import { getSelectableMasksForStage, isTransparentMask } from '../../data/masks';

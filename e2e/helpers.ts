@@ -2,9 +2,9 @@ import { Page, TestInfo } from '@playwright/test';
 import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 import type { E2ePwaBannerState } from '../src/utils/testMode';
-import { E2E_MODEL_PREVIEW_NAV_KEY } from '../src/utils/e2eModelPreview';
+import { E2E_MODEL_PREVIEW_NAV_KEY } from '../src/rendering/3d/utils/e2eModelPreview';
 
-import { E2E_FORCE_GAME_STATE_IMPORT_KEY, GAME_DB_NAME } from '../src/services/gameDatabase';
+import { E2E_FORCE_GAME_STATE_IMPORT_KEY, GAME_DB_NAME } from '../src/persistence/gameDatabase';
 
 type TestModeOptions = {
   pwaBanner?: E2ePwaBannerState;

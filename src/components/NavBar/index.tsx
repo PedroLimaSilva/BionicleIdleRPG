@@ -6,7 +6,7 @@ import { BattlePhase } from '../../hooks/useBattleState';
 import { CurrencyBar } from '../CurrencyBar';
 import { AnimatePresence } from 'motion/react';
 import { ENCOUNTERS } from '../../data/combat';
-import { getVisibleEncounters } from '../../game/encounterVisibility';
+import { getVisibleEncounters } from '../../game/combat/encounterVisibility';
 
 const shouldShowCurrencyBar = (pathname: string) => {
   return !['/settings'].includes(pathname);

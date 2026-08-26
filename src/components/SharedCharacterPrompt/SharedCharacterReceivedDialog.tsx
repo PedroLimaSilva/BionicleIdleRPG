@@ -1,5 +1,5 @@
 import { BaseMatoran } from '../../types/Matoran';
-import { MatoranAvatar } from '../MatoranAvatar';
+import { MatoranAvatar } from '../../rendering/2d/MatoranAvatar';
 import './index.scss';
 
 type Props = {

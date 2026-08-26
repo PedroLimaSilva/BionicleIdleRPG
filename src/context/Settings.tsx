@@ -10,7 +10,7 @@ import {
   savePerformanceMonitorEnabled,
   saveShadowsEnabled,
   saveTelemetryEnabled,
-} from '../services/gamePersistence';
+} from '../persistence/gamePersistence';
 
 import { SettingsContext } from './SettingsContext';
 

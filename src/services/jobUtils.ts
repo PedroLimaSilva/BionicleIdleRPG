@@ -1,4 +1,4 @@
-import { applyJobExp } from '../game/Jobs';
+import { applyJobExp } from '../game/jobs/Jobs';
 import { PROTODERMIS_RATE } from '../data/jobs';
 import { RecruitedCharacterData } from '../types/Matoran';
 
