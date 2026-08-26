@@ -36,7 +36,7 @@ export const METRU_TOA_EVOLUTION_MAP: Record<MetruToaCandidateId, string> = {
 
 /**
  * Toa Metru without a dedicated GLB — rendered with Nuju's rig and their dex palette.
- * Matau, Nuju, and Lhikan have their own models.
+ * Onewa is the only remaining fallback until #401 merges.
  */
 export const TOA_METRU_NUJU_RIG_IDS = ['Toa_Onewa'] as const;
 
