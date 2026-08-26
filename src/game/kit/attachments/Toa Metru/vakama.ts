@@ -182,6 +182,10 @@ export const VAKAMA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment
     kitNodeName: KIT_2001_NODES.AxleSocket3L,
     materialColors: VAKAMA_SOCKET_COLORS,
   },
+  AxleSocket3L_R: {
+    kitNodeName: KIT_2001_NODES.AxleSocket3L,
+    materialColors: VAKAMA_SOCKET_COLORS,
+  },
   GearM_ShoulderL: { kitNodeName: KIT_2001_NODES.GearM, materialColors: VAKAMA_BLACK },
   GearM_ShoulderR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: VAKAMA_BLACK },
   Pin2L_L: { kitNodeName: KIT_2001_NODES.Pin2L, materialColors: VAKAMA_BLACK },
