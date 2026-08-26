@@ -69,7 +69,7 @@ const WHENUA_EYES_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 const WHENUA_WEAPON_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...WHENUA_BODY_COLORS,
   ...kitPartSlots('weapon', 'nuva'),
-  ...kitPartGlow('weapon', 10),
+  ...kitPartGlow('weapon', 1),
 };
 
 const WHENUA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
