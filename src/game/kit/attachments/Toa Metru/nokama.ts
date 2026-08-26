@@ -7,15 +7,15 @@ import type { Kit2003SocketAttachment } from '../../nodes/kit2003Nodes';
 import type { Kit2004SocketAttachment } from '../../nodes/kit2004Nodes';
 import { KIT_2004_NODES } from '../../nodes/kit2004Nodes';
 import { MATA_KIT_PLAYER_PALETTE_BRAIN } from '../../palettes/mataKitPlayerPalette';
-import { kitPartSlots } from '../../palettes/partSlots';
+import { kitPartGlow, kitPartSlots } from '../../palettes/partSlots';
 
 /**
  * Nokama sockets on `Toa_Metru/Nokama.glb` are `{KitPart}_{qualifier}`.
  * The token before the first `_` is the kit node; the rest is optional.
  * Three.js sanitizes glTF node names at load: spaces → `_`, `.` removed.
  *
- * Hydroblades are authored on the rig; only sockets whose names match a kit
- * part prefix receive `useKitAttachments` clones.
+ * Hydroblades attach at `Hydroblade_L` / `Hydroblade_R`; each empty clones the
+ * full tool so grips and blades tint from the weapon palette.
  */
 
 const NOKAMA_BODY_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -68,6 +68,12 @@ const NOKAMA_EYES_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   },
 };
 
+const NOKAMA_WEAPON_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...NOKAMA_BODY_COLORS,
+  ...kitPartSlots('weapon', 'nuva'),
+  ...kitPartGlow('weapon', 10),
+};
+
 const NOKAMA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
   Main: { kind: 'lego', value: LegoColor.Black },
   Metal: { kind: 'lego', value: LegoColor.Black },
@@ -85,6 +91,8 @@ export const NOKAMA_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment
     kitNodeName: KIT_2004_NODES.DoubleSocketArmor,
     materialColors: NOKAMA_ARM_COLORS,
   },
+  Hydroblade_L: { kitNodeName: KIT_2004_NODES.Hydroblade, materialColors: NOKAMA_WEAPON_COLORS },
+  Hydroblade_R: { kitNodeName: KIT_2004_NODES.Hydroblade, materialColors: NOKAMA_WEAPON_COLORS },
   MetruArm_L: { kitNodeName: KIT_2004_NODES.MetruArm, materialColors: NOKAMA_ARM_COLORS },
   MetruArm_R: { kitNodeName: KIT_2004_NODES.MetruArm, materialColors: NOKAMA_ARM_COLORS },
   MetruBrain: { kitNodeName: KIT_2004_NODES.MetruBrain, materialColors: NOKAMA_HEAD_COLORS },
