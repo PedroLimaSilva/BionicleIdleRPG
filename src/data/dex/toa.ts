@@ -756,7 +756,7 @@ export const TOA_DEX = {
       },
       mask: LegoColor.DarkRed,
       weapon: {
-        glow: LegoColor.DarkRed,
+        glow: LegoColor.Orange,
         main: LegoColor.DarkRed,
         metal: LegoColor.LightGray,
         secondary: LegoColor.DarkRed,
