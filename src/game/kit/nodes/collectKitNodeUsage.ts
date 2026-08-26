@@ -32,6 +32,14 @@ import {
   NOKAMA_KIT_2004_ATTACHMENTS,
 } from '../attachments/Toa Metru/nokama';
 import {
+  VAKAMA_KIT_2001_ATTACHMENTS,
+  VAKAMA_KIT_2004_ATTACHMENTS,
+} from '../attachments/Toa Metru/vakama';
+import {
+  WHENUA_KIT_2001_ATTACHMENTS,
+  WHENUA_KIT_2004_ATTACHMENTS,
+} from '../attachments/Toa Metru/whenua';
+import {
   GALI_NUVA_KIT_2001_ATTACHMENTS,
   GALI_NUVA_KIT_2003_ATTACHMENTS,
 } from '../attachments/Toa Nuva/gali';
@@ -74,11 +82,7 @@ export const KIT_2001_NODE_EXEMPT: readonly Kit2001NodeName[] = [];
 export const KIT_2003_NODE_EXEMPT: readonly Kit2003NodeName[] = [];
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
-export const KIT_2004_NODE_EXEMPT: readonly Kit2004NodeName[] = [
-  KIT_2004_NODES.EarthshockDrill,
-  KIT_2004_NODES.ProtoPiton,
-  KIT_2004_NODES.VakamaDiskLauncher,
-];
+export const KIT_2004_NODE_EXEMPT: readonly Kit2004NodeName[] = [KIT_2004_NODES.ProtoPiton];
 
 function collectUsedNodes(maps: Record<string, KitSocketAttachment<string>>[]): Set<string> {
   const used = new Set<string>();
@@ -176,6 +180,8 @@ export const KIT_2001_ATTACHMENT_MAPS = [
   MATAU_KIT_2001_ATTACHMENTS,
   NUJU_KIT_2001_ATTACHMENTS,
   NOKAMA_KIT_2001_ATTACHMENTS,
+  VAKAMA_KIT_2001_ATTACHMENTS,
+  WHENUA_KIT_2001_ATTACHMENTS,
 ] as const;
 
 export const KIT_2003_ATTACHMENT_MAPS = [
@@ -199,6 +205,8 @@ export const KIT_2004_ATTACHMENT_MAPS = [
   MATAU_KIT_2004_ATTACHMENTS,
   NUJU_KIT_2004_ATTACHMENTS,
   NOKAMA_KIT_2004_ATTACHMENTS,
+  VAKAMA_KIT_2004_ATTACHMENTS,
+  WHENUA_KIT_2004_ATTACHMENTS,
   METRU_KIT_2004_ATTACHMENTS,
   METRU_KIT_2004_DISK_LAUNCHER_ATTACHMENTS,
 ] as const;

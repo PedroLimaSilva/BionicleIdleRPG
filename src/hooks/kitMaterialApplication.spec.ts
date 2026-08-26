@@ -72,6 +72,21 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(mat.roughness).toBe(0.5);
   });
 
+  test('baked PBR rig materials stay untouched even when a slot would match', () => {
+    const mesh = meshWithMaterialNamed('Disk_Baked');
+    const baked = mesh.material as MeshStandardMaterial;
+    baked.normalMap = {} as MeshStandardMaterial['normalMap'];
+    baked.metalnessMap = {} as MeshStandardMaterial['metalnessMap'];
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({ Main: { kind: 'part', part: 'weapon', slot: 'main' } }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(next).toBe(baked);
+    expect(next.metalness).toBe(0.5);
+  });
+
   test('opacity below 1 enables transparent blending on the cloned material', () => {
     const mat = buildSingle('Secondary', {
       Secondary: {

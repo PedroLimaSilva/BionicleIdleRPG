@@ -25,6 +25,8 @@ import { LhikanModel } from '../../components/CharacterScene/Metru/LhikanModel';
 import { MatauModel } from '../../components/CharacterScene/Metru/MatauModel';
 import { NujuModel } from '../../components/CharacterScene/Metru/NujuModel';
 import { NokamaModel } from '../../components/CharacterScene/Metru/NokamaModel';
+import { VakamaModel } from '../../components/CharacterScene/Metru/VakamaModel';
+import { WhenuaModel } from '../../components/CharacterScene/Metru/WhenuaModel';
 import { usesNujuToaMetruRig } from '../../game/metruMatoran';
 import { RahiPlaceholderModel } from '../../components/CharacterScene/RahiPlaceholderModel';
 import { NuiRamaModel } from '../../components/CharacterScene/NuiRamaModel';
@@ -542,6 +544,36 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.04}>
               <NokamaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Vakama':
+          return (
+            <group scale={0.04}>
+              <VakamaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Whenua':
+          return (
+            <group scale={0.04}>
+              <WhenuaModel
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,
