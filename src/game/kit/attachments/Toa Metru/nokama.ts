@@ -7,15 +7,15 @@ import type { Kit2003SocketAttachment } from '../../nodes/kit2003Nodes';
 import type { Kit2004SocketAttachment } from '../../nodes/kit2004Nodes';
 import { KIT_2004_NODES } from '../../nodes/kit2004Nodes';
 import { MATA_KIT_PLAYER_PALETTE_BRAIN } from '../../palettes/mataKitPlayerPalette';
-import { kitPartGlow, kitPartSlots } from '../../palettes/partSlots';
+import { kitPartSlots } from '../../palettes/partSlots';
 
 /**
  * Nokama sockets on `Toa_Metru/Nokama.glb` are `{KitPart}_{qualifier}`.
  * The token before the first `_` is the kit node; the rest is optional.
  * Three.js sanitizes glTF node names at load: spaces → `_`, `.` removed.
  *
- * Hydroblade blades and handles share one kit mesh (`Hydroblade`); each empty
- * clones the full tool so grips and blades tint from the weapon palette.
+ * Hydroblades are authored on the rig; only sockets whose names match a kit
+ * part prefix receive `useKitAttachments` clones.
  */
 
 const NOKAMA_BODY_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
