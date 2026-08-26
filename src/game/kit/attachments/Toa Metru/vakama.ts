@@ -71,7 +71,7 @@ const VAKAMA_EYES_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 const VAKAMA_WEAPON_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...VAKAMA_BODY_COLORS,
   ...kitPartSlots('weapon', 'nuva'),
-  ...kitPartGlow('weapon', 10),
+  ...kitPartGlow('weapon', 5),
 };
 
 const VAKAMA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
