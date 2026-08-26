@@ -27,6 +27,11 @@ import {
   NUJU_KIT_2004_ATTACHMENTS,
 } from '../attachments/Toa Metru/nuju';
 import {
+  NOKAMA_KIT_2001_ATTACHMENTS,
+  NOKAMA_KIT_2003_ATTACHMENTS,
+  NOKAMA_KIT_2004_ATTACHMENTS,
+} from '../attachments/Toa Metru/nokama';
+import {
   VAKAMA_KIT_2001_ATTACHMENTS,
   VAKAMA_KIT_2004_ATTACHMENTS,
 } from '../attachments/Toa Metru/vakama';
@@ -77,10 +82,7 @@ export const KIT_2001_NODE_EXEMPT: readonly Kit2001NodeName[] = [];
 export const KIT_2003_NODE_EXEMPT: readonly Kit2003NodeName[] = [];
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
-export const KIT_2004_NODE_EXEMPT: readonly Kit2004NodeName[] = [
-  KIT_2004_NODES.Hydroblade,
-  KIT_2004_NODES.ProtoPiton,
-];
+export const KIT_2004_NODE_EXEMPT: readonly Kit2004NodeName[] = [KIT_2004_NODES.ProtoPiton];
 
 function collectUsedNodes(maps: Record<string, KitSocketAttachment<string>>[]): Set<string> {
   const used = new Set<string>();
@@ -177,6 +179,7 @@ export const KIT_2001_ATTACHMENT_MAPS = [
   LHIKAN_KIT_2001_ATTACHMENTS,
   MATAU_KIT_2001_ATTACHMENTS,
   NUJU_KIT_2001_ATTACHMENTS,
+  NOKAMA_KIT_2001_ATTACHMENTS,
   VAKAMA_KIT_2001_ATTACHMENTS,
   WHENUA_KIT_2001_ATTACHMENTS,
 ] as const;
@@ -194,12 +197,14 @@ export const KIT_2003_ATTACHMENT_MAPS = [
   TAKANUVA_KIT_2003_ATTACHMENTS,
   LHIKAN_KIT_2003_ATTACHMENTS,
   NUJU_KIT_2003_ATTACHMENTS,
+  NOKAMA_KIT_2003_ATTACHMENTS,
 ] as const;
 
 export const KIT_2004_ATTACHMENT_MAPS = [
   LHIKAN_KIT_2004_ATTACHMENTS,
   MATAU_KIT_2004_ATTACHMENTS,
   NUJU_KIT_2004_ATTACHMENTS,
+  NOKAMA_KIT_2004_ATTACHMENTS,
   VAKAMA_KIT_2004_ATTACHMENTS,
   WHENUA_KIT_2004_ATTACHMENTS,
   METRU_KIT_2004_ATTACHMENTS,

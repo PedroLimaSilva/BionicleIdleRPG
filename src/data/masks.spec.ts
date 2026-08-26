@@ -132,6 +132,7 @@ describe('isTransparentMask', () => {
   test('matches the Kaukau sculpts flagged transparent in the dex', () => {
     expect(isTransparentMask(Mask.Kaukau)).toBe(true);
     expect(isTransparentMask(Mask.KaukauNuva)).toBe(true);
+    expect(isTransparentMask(Mask.RauGreat)).toBe(true);
   });
 
   test('is false for opaque Kanohi', () => {
