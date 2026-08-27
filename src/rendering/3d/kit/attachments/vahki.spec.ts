@@ -4,7 +4,12 @@ import { KIT_2001_NODES } from '../nodes/kit2001Nodes';
 import { KIT_2003_NODES } from '../nodes/kit2003Nodes';
 import { KIT_2004_NODES } from '../nodes/kit2004Nodes';
 import { LegoColor } from '../../../../types/Colors';
-import { VAHKI_KIT_PALETTE_BODY, VAHKI_KIT_PALETTE_SOCKET } from '../palettes/vahkiKitPalette';
+import {
+  VAHKI_HOOD_EMISSIVE_INTENSITY,
+  VAHKI_KIT_PALETTE_BODY,
+  VAHKI_KIT_PALETTE_HOOD,
+  VAHKI_KIT_PALETTE_SOCKET,
+} from '../palettes/vahkiKitPalette';
 import {
   VAHKI_KIT_2001_ATTACHMENTS,
   VAHKI_KIT_2003_ATTACHMENTS,
@@ -89,6 +94,16 @@ describe('Vahki kit attachments', () => {
     expect(VAHKI_KIT_2004_ATTACHMENTS.VahkiHood_Baked.kitNodeName).toBe(
       KIT_2004_NODES.VahkiHoodBaked
     );
+  });
+
+  test('hood visor uses a modest emissive intensity instead of the baked default of 1', () => {
+    expect(VAHKI_KIT_PALETTE_HOOD.VahkiHood_baked).toEqual(
+      expect.objectContaining({
+        emissiveIntensity: VAHKI_HOOD_EMISSIVE_INTENSITY,
+      })
+    );
+    expect(VAHKI_HOOD_EMISSIVE_INTENSITY).toBeLessThan(1);
+    expect(VAHKI_KIT_2004_ATTACHMENTS.VahkiHood_Baked.materialColors).toBe(VAHKI_KIT_PALETTE_HOOD);
   });
 
   test('RahkshiBody clones the kit_2003 torso shell named on the rig', () => {
