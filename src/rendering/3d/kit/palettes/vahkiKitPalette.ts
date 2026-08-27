@@ -27,7 +27,7 @@ export const VAHKI_KIT_PALETTE_EYES: Partial<Record<string, KitMaterialSlotEntry
  * emissive is replaced with a full eye color and selective bloom. Use a modest
  * visor glow instead of the 35× eye / 50× mask intensities.
  */
-export const VAHKI_HOOD_EMISSIVE_INTENSITY = 0.25;
+export const VAHKI_HOOD_EMISSIVE_INTENSITY = 0.1;
 
 export const VAHKI_KIT_PALETTE_HOOD: Partial<Record<string, KitMaterialSlotEntry>> = {
   VahkiHood_baked: {

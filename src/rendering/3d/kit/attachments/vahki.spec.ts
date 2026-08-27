@@ -102,7 +102,7 @@ describe('Vahki kit attachments', () => {
         emissiveIntensity: VAHKI_HOOD_EMISSIVE_INTENSITY,
       })
     );
-    expect(VAHKI_HOOD_EMISSIVE_INTENSITY).toBeLessThan(1);
+    expect(VAHKI_HOOD_EMISSIVE_INTENSITY).toBe(0.1);
     expect(VAHKI_KIT_2004_ATTACHMENTS.VahkiHood_Baked.materialColors).toBe(VAHKI_KIT_PALETTE_HOOD);
   });
 
