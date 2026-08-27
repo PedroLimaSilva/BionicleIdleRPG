@@ -25,6 +25,7 @@ import { LhikanModel } from '../../components/CharacterScene/Metru/LhikanModel';
 import { MatauModel } from '../../components/CharacterScene/Metru/MatauModel';
 import { NujuModel } from '../../components/CharacterScene/Metru/NujuModel';
 import { NokamaModel } from '../../components/CharacterScene/Metru/NokamaModel';
+import { OnewaModel } from '../../components/CharacterScene/Metru/OnewaModel';
 import { VakamaModel } from '../../components/CharacterScene/Metru/VakamaModel';
 import { WhenuaModel } from '../../components/CharacterScene/Metru/WhenuaModel';
 import { usesNujuToaMetruRig } from '../../game/metruMatoran';
@@ -544,6 +545,21 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.04}>
               <NokamaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Onewa':
+          return (
+            <group scale={0.04}>
+              <OnewaModel
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,

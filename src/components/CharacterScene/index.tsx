@@ -36,6 +36,7 @@ import { LhikanModel } from './Metru/LhikanModel';
 import { MatauModel } from './Metru/MatauModel';
 import { NujuModel } from './Metru/NujuModel';
 import { NokamaModel } from './Metru/NokamaModel';
+import { OnewaModel } from './Metru/OnewaModel';
 import { VakamaModel } from './Metru/VakamaModel';
 import { WhenuaModel } from './Metru/WhenuaModel';
 
@@ -132,6 +133,8 @@ function CharacterModel({
           return <NujuModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Nokama':
           return <NokamaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+        case 'Toa_Onewa':
+          return <OnewaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Vakama':
           return <VakamaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Whenua':

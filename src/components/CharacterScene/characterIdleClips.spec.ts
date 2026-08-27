@@ -22,6 +22,7 @@ const REQUIRED_IDLE_CLIPS: Record<string, string> = {
   'Toa_Mata/tahu.glb': 'Idle',
   'Toa_Metru/Lhikan.glb': 'Idle',
   'Toa_Metru/Nokama.glb': 'Idle',
+  'Toa_Metru/Onewa.glb': 'Idle',
   'Toa_Metru/Vakama.glb': 'Idle',
   'Toa_Metru/Whenua.glb': 'Idle',
   'Toa_Nuva/gali.glb': 'Idle',
