@@ -9,7 +9,7 @@ import { RecruitedCharacterData } from '../../types/Matoran';
 import { KranaCollection, KranaElement, KranaId } from '../../types/Krana';
 import { KraataCollection, KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { ElementTribe } from '../../types/Matoran';
-import { getLevelFromExp } from '../../game/Levelling';
+import { getLevelFromExp } from '../../game/characters/Levelling';
 import './index.scss';
 
 const RECRUITABLE_IDS = [...Object.keys(TOA_DEX), ...Object.keys(MATORAN_DEX)];

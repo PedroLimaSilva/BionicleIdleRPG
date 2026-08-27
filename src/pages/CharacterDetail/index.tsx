@@ -4,18 +4,21 @@ import { useGame } from '../../context/Game';
 import { isTestMode } from '../../utils/testMode';
 
 import './index.scss';
-import { CharacterScene } from '../../components/CharacterScene';
+import { CharacterScene } from '../../rendering/3d/CharacterScene';
 import { ElementTag } from '../../components/ElementTag';
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {
   rememberCharactersReturnScrollId,
   scrollMainContentToTop,
 } from '../../utils/mainContentScroll';
-import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
 import { getRecruitedMatoran, masksCollected } from '../../services/matoranUtils';
-import { isBohrokOrKal, isMatoran, isToa, isToaMata } from '../../game/matoranStage';
-import { getAvailableEvolution, meetsEvolutionLevel } from '../../game/CharacterEvolution';
+import { isBohrokOrKal, isMatoran, isToa, isToaMata } from '../../game/characters/matoranStage';
+import {
+  getAvailableEvolution,
+  meetsEvolutionLevel,
+} from '../../game/evolution/CharacterEvolution';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { KranaCollection } from './KranaCollection';
@@ -23,7 +26,7 @@ import { JobAssignment } from './JobAssignment';
 import { Tabs } from '../../components/Tabs';
 import { CharacterChronicle } from './Chronicle';
 import { ProtodermisTraining } from '../../components/ProtodermisTraining';
-import { isKranaCollectionActive } from '../../game/Krana';
+import { isKranaCollectionActive } from '../../game/krana/Krana';
 import { MASK_POWERS } from '../../data/combat';
 import {
   BaseMatoran,

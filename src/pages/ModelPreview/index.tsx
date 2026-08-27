@@ -1,14 +1,14 @@
 import { useEffect, useMemo } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useGame } from '../../context/Game';
-import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { getRecruitedMatoran } from '../../services/matoranUtils';
-import { CharacterScene } from '../../components/CharacterScene';
-import { RahkshiScene } from '../../components/CharacterScene/RahkshiScene';
+import { CharacterScene } from '../../rendering/3d/CharacterScene';
+import { RahkshiScene } from '../../rendering/3d/CharacterScene/RahkshiScene';
 import {
   registerE2eModelPreviewNavigate,
   unregisterE2eModelPreviewNavigate,
-} from '../../utils/e2eModelPreview';
+} from '../../rendering/3d/utils/e2eModelPreview';
 import { isTestMode } from '../../utils/testMode';
 
 type ModelPreviewKind = 'characters' | 'rahkshi';

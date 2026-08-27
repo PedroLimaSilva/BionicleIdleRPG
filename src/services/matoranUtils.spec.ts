@@ -1,4 +1,4 @@
-import { isMatoran, isToa, isToaMata } from '../game/matoranStage';
+import { isMatoran, isToa, isToaMata } from '../game/characters/matoranStage';
 import { recruitMatoran, assignJob, removeJob, masksCollected } from './matoranUtils';
 import {
   BaseMatoran,

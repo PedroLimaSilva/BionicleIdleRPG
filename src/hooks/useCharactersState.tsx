@@ -9,13 +9,13 @@ import {
   RecruitedCharacterData,
   isCustomCharacterId,
 } from '../types/Matoran';
-import { DEFAULT_CUSTOM_MATA_MODEL_ID } from '../game/customMataBuild';
+import { DEFAULT_CUSTOM_MATA_MODEL_ID } from '../rendering/3d/customMataBuild';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
 import { areEquivalentSharedCustomMatoran } from '../services/customCharacterShare';
-import { getBuyableCharacters, isCharacterRecruited } from '../game/Recruitment';
+import { getBuyableCharacters, isCharacterRecruited } from '../game/recruitment/Recruitment';
 import { registerCustomCharacterInDex } from '../data/dex/index';
-import { normalizeMatoranColors } from '../game/matoranColors';
+import { normalizeMatoranColors } from '../game/characters/matoranColors';
 
 /**
  * @param completedQuests - Used to derive buyable characters (with recruitedCharacters).

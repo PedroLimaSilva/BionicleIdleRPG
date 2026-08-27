@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
 import { Combatant, EnemyEncounter } from '../types/Combat';
 import { RecruitedCharacterData, isCustomCharacterId, MatoranStage } from '../types/Matoran';
-import { getLevelFromExp } from '../game/Levelling';
+import { getLevelFromExp } from '../game/characters/Levelling';
 import {
   generateCombatantStats,
   getScaledEnemyLevelForEncounter,
@@ -10,10 +10,10 @@ import {
   decrementWaveCounters,
   hasReadyMaskPowers,
 } from '../services/combatUtils';
-import { getBattleOutcomePhaseDelayMs } from '../game/battleOutcomeVisualDelay';
+import { getBattleOutcomePhaseDelayMs } from '../rendering/3d/battleOutcomeVisualDelay';
 import { scaleBattleDurationMs } from '../utils/battleSpeed';
 import { getEffectiveMatoran } from '../services/matoranUtils';
-import { resolveToaMataBuildId } from '../game/customMataBuild';
+import { resolveToaMataBuildId } from '../rendering/3d/customMataBuild';
 
 export const enum BattlePhase {
   Idle = 'idle',

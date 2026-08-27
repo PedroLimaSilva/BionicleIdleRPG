@@ -33,7 +33,9 @@ Arena.tsx (resolves arenaId + tribe)
 ```
 src/pages/Battle/
 ├── Arena.tsx                 # combatants, camera, shadow pass; resolves arena + recolor
-├── ArenaEnvironment.tsx      # renders atmosphere + optional GLB + optional Scene
+└── ArenaEnvironment.tsx      # renders atmosphere + optional GLB + optional Scene
+
+src/rendering/3d/
 ├── arenaLayout.ts            # DEFAULT_ARENA_LAYOUT + shared spawn constants
 └── arenas/
     ├── types.ts              # ArenaDefinition, ArenaLayout, ArenaRecolor, ArenaId
@@ -50,7 +52,7 @@ src/pages/Battle/
     └── metru/                # cyan technological cavern (Metru Nui variant)
 ```
 
-Encounter → arena mapping is pure and lives in `src/game/arena.ts`.
+Encounter → arena mapping is pure and lives in `src/game/combat/arena.ts`.
 
 ---
 
@@ -91,7 +93,7 @@ That is the entire surface — no other code changes are required.
 
 ## Per-encounter selection
 
-`EnemyEncounter.arenaId?: ArenaId` (in `src/types/Combat.ts`) selects the biome per encounter. `Battle/index.tsx` resolves it via `src/game/arena.ts`:
+`EnemyEncounter.arenaId?: ArenaId` (in `src/types/Combat.ts`) selects the biome per encounter. `Battle/index.tsx` resolves it via `src/game/combat/arena.ts`:
 
 | Helper                           | Behavior                                            |
 | -------------------------------- | --------------------------------------------------- |
@@ -213,7 +215,7 @@ The directional shadow frustum is widened to `±6` (was `±3`) so the monuments 
 - [x] Per-arena atmosphere encapsulation (fog, HDRI, lighting)
 - [x] HDRI IBL without visible skybox
 - [x] Per-arena camera framing + spawn slots (`ArenaLayout`)
-- [x] `arenaId` selected per encounter (`src/game/arena.ts`)
+- [x] `arenaId` selected per encounter (`src/game/combat/arena.ts`)
 - [x] Element-tribe recolor (diffuse/emissive) for the desert
 - [x] Desert Kanohi monuments reusing `masks.glb`
 - [x] Mangaia cavern (dome + energy beam) and Metru Nui variation

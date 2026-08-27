@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { useGame } from '../../../context/Game';
 import { masksCollected } from '../../../services/matoranUtils';
-import { getEffectiveMaskColor } from '../../../game/maskColor';
+import { getEffectiveMaskColor } from '../../../game/characters/maskColor';
 import { MASK_POWERS } from '../../../data/combat';
 import { BaseMatoran, Mask } from '../../../types/Matoran';
-import { CompositedImage } from '../../../components/CompositedImage';
+import { CompositedImage } from '../../../rendering/2d/CompositedImage';
 
 import './index.scss';
 import { Tooltip } from '../../../components/Tooltip';
