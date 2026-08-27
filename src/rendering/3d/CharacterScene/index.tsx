@@ -120,7 +120,12 @@ function CharacterModel({
         </group>
       );
     case MatoranStage.Vahki:
-      return <VahkiModel key={matoran.id} id={matoran.id} onKitMeshesAttached={onModelReady} />;
+      // Bind pose faces +Z (battle forward). Character-sheet camera looks from +Z, so yaw 180°.
+      return (
+        <group rotation={[0, Math.PI, 0]}>
+          <VahkiModel key={matoran.id} id={matoran.id} onKitMeshesAttached={onModelReady} />
+        </group>
+      );
     case MatoranStage.Diminished:
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Rebuilt:

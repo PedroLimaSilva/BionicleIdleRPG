@@ -361,6 +361,7 @@ Currency: 5500
 XP: 4500"]
   metru_vakama_dume_and_the_great_temple["The Turaga’s Visit
 (20m)
+Unlock: bordakh, nuurakh, vorzakh, zadakh, rorzakh, keerakh
 Currency: 6500
 XP: 5500"]
   metru_great_temple_transformation["Destiny at the Great Temple
