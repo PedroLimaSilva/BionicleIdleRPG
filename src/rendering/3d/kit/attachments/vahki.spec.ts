@@ -3,6 +3,8 @@ import { join } from 'node:path';
 import { KIT_2001_NODES } from '../nodes/kit2001Nodes';
 import { KIT_2003_NODES } from '../nodes/kit2003Nodes';
 import { KIT_2004_NODES } from '../nodes/kit2004Nodes';
+import { LegoColor } from '../../../../types/Colors';
+import { VAHKI_KIT_PALETTE_BODY, VAHKI_KIT_PALETTE_SOCKET } from '../palettes/vahkiKitPalette';
 import {
   VAHKI_KIT_2001_ATTACHMENTS,
   VAHKI_KIT_2003_ATTACHMENTS,
@@ -84,6 +86,31 @@ describe('Vahki kit attachments', () => {
   test('TechnicTorsoPivot clones the kit_2003 piece named on the rig', () => {
     expect(VAHKI_KIT_2003_ATTACHMENTS.TechnicTorsoPivot.kitNodeName).toBe(
       KIT_2003_NODES.TechnicTorsoPivot
+    );
+  });
+
+  test('TechnicTorsoPivot uses hive body color', () => {
+    expect(VAHKI_KIT_2003_ATTACHMENTS.TechnicTorsoPivot.materialColors).toBe(
+      VAHKI_KIT_PALETTE_BODY
+    );
+  });
+
+  test('sockets and double sockets are DarkBluishGray', () => {
+    expect(VAHKI_KIT_PALETTE_SOCKET.Main).toEqual({
+      kind: 'lego',
+      value: LegoColor.DarkBluishGray,
+    });
+    expect(VAHKI_KIT_2004_ATTACHMENTS.SocketDouble1L_L.materialColors).toBe(
+      VAHKI_KIT_PALETTE_SOCKET
+    );
+    expect(VAHKI_KIT_2004_ATTACHMENTS.SocketDouble1L_R.materialColors).toBe(
+      VAHKI_KIT_PALETTE_SOCKET
+    );
+    expect(VAHKI_KIT_2001_ATTACHMENTS.Socket_ShoulderL.materialColors).toBe(
+      VAHKI_KIT_PALETTE_SOCKET
+    );
+    expect(VAHKI_KIT_2001_ATTACHMENTS.Socket_ShoulderR.materialColors).toBe(
+      VAHKI_KIT_PALETTE_SOCKET
     );
   });
 });
