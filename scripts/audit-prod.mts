@@ -5,9 +5,9 @@ type Severity = 'critical' | 'high' | 'moderate' | 'low' | 'info';
 const SEVERITY_RANK: Record<Severity, number> = {
   critical: 4,
   high: 3,
-  moderate: 2,
-  low: 1,
   info: 0,
+  low: 1,
+  moderate: 2,
 };
 
 const minSeverity = (process.argv[2] ?? 'critical') as Severity;
@@ -45,7 +45,7 @@ if (failing.length === 0) {
 }
 
 console.error(
-  `Found ${failing.length} production dependency advisories at or above "${minSeverity}":`,
+  `Found ${failing.length} production dependency advisories at or above "${minSeverity}":`
 );
 for (const entry of failing) {
   const advisory = entry?.data?.advisory;

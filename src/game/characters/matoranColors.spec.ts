@@ -61,7 +61,7 @@ describe('matoranColors', () => {
         eyes: LegoColor.TransNeonRed,
         face: LegoColor.LightGray,
         feet: LegoColor.Red,
-        joints: LegoColor.DarkGray,
+        joints: LegoColor.DarkBluishGray,
         mask: LegoColor.Red,
         metal: LegoColor.LightGray,
       },
@@ -69,7 +69,7 @@ describe('matoranColors', () => {
     );
     expect(next.body.main).toBe(LegoColor.Red);
     expect(next.arms).toEqual({
-      main: LegoColor.DarkGray,
+      main: LegoColor.DarkBluishGray,
       metal: LegoColor.LightGray,
       secondary: LegoColor.Orange,
     });

@@ -69,7 +69,7 @@ const MATAU_EYES_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 const MATAU_WEAPON_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATAU_BODY_COLORS,
   ...kitPartSlots('weapon', 'nuva'),
-  ...kitPartGlow('weapon', 10),
+  ...kitPartGlow('weapon', 5),
 };
 
 const MATAU_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
