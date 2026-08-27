@@ -2,11 +2,11 @@ import './index.scss';
 import { useMemo, useState } from 'react';
 import { MatoranJob } from '../../types/Jobs';
 import { useGame } from '../../context/Game';
-import { getAvailableJobs, getProductivityModifier } from '../../game/Jobs';
+import { getAvailableJobs, getProductivityModifier } from '../../game/jobs/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { JobCard } from './JobCard';
 import { RecruitedCharacterData } from '../../types/Matoran';
-import { getMetruProfession } from '../../game/metruMatoran';
+import { getMetruProfession } from '../../game/jobs/metruProfessions';
 
 type JobListProps = {
   matoran: RecruitedCharacterData;

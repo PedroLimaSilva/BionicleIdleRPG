@@ -1,4 +1,4 @@
-import { Mask } from '../types/Matoran';
+import { Mask, MatoranStage } from '../types/Matoran';
 
 /**
  * Every Kanohi in the game, in the order the character-creation picker shows them:
@@ -41,8 +41,47 @@ export const ALL_MASKS: Mask[] = [
   Mask.Krana,
 ];
 
-/** Kanohi rendered with a transparent lens (Kaukau and its Nuva sculpt). */
-export const TRANSPARENT_MASKS: Mask[] = [Mask.Kaukau, Mask.KaukauNuva];
+/** Original 12 Kanohi in `masks.glb` (diminished, rebuilt, metru, toa mata, turaga rigs). */
+export const MATAN_MASKS: Mask[] = ALL_MASKS.slice(0, 12);
+
+/** Great Kanohi in `Toa_Metru/Masks.glb` (Toa Metru rig). */
+export const GREAT_MASKS: Mask[] = ALL_MASKS.slice(12, 19);
+
+/** Nuva Kanohi in `Toa_Nuva/masks.glb` (Toa Nuva rig). */
+export const NUVA_MASKS: Mask[] = ALL_MASKS.slice(19, 25);
+
+/**
+ * Kanohi the character-creation picker may offer for a rig stage.
+ * Story masks (Avohkii, Vahi, Kraahkan, etc.) are excluded — they are not modeled on custom rigs.
+ */
+export function getSelectableMasksForStage(stage: MatoranStage): Mask[] {
+  switch (stage) {
+    case MatoranStage.ToaMetru:
+      return GREAT_MASKS;
+    case MatoranStage.ToaNuva:
+      return NUVA_MASKS;
+    case MatoranStage.Diminished:
+    case MatoranStage.Rebuilt:
+    case MatoranStage.Metru:
+    case MatoranStage.ToaMata:
+    case MatoranStage.Turaga:
+      return MATAN_MASKS;
+    default:
+      return MATAN_MASKS;
+  }
+}
+
+export function isMaskSelectableForStage(mask: Mask, stage: MatoranStage): boolean {
+  return getSelectableMasksForStage(stage).includes(mask);
+}
+
+/** Kanohi rendered with a transparent lens (Kaukau and its Nuva sculpt, Great Rau). */
+export const TRANSPARENT_MASKS: Mask[] = [Mask.Kaukau, Mask.KaukauNuva, Mask.RauGreat];
+
+/** Runtime opacity for transparent Kanohi when the GLB does not bake alpha. */
+export const TRANSPARENT_MASK_OPACITY: Partial<Record<Mask, number>> = {
+  [Mask.RauGreat]: 0.75,
+};
 
 export function isTransparentMask(mask: Mask): boolean {
   return TRANSPARENT_MASKS.includes(mask);

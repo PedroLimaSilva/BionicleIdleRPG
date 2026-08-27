@@ -9,6 +9,7 @@ export const enum LegoColor {
   Blue = '#0055BF',
   Brown = '#583927',
   DarkBlue = '#0A3463',
+  DarkBluishGray = '#6C6E68',
   DarkGray = '#6D6E5C',
   DarkGreen = '#184632',
   DarkOrange = '#A95500',

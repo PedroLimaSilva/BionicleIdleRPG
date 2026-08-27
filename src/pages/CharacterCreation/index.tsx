@@ -3,8 +3,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Modal } from '../../components/Modal';
-import { CharacterScene } from '../../components/CharacterScene';
-import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { CharacterScene } from '../../rendering/3d/CharacterScene';
+import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { useGame } from '../../context/Game';
 import { useSettings } from '../../context/useSettings';
 import { getRecruitedMatoran } from '../../services/matoranUtils';
@@ -19,14 +19,14 @@ import {
   prefillColorsAfterEvolution,
   setColorTabValue,
   slotLabel,
-} from '../../game/customCharacterColorSlots';
+} from '../../game/characters/customCharacterColorSlots';
 import {
   CUSTOM_SELECTABLE_MATA_MODEL_IDS,
   DEFAULT_CUSTOM_MATA_MODEL_ID,
-} from '../../game/customMataBuild';
+} from '../../rendering/3d/customMataBuild';
 import { DEFAULT_CUSTOM_COLORS } from '../../data/dex/partPalettes';
 import { CHARACTER_DEX } from '../../data/dex';
-import { ALL_MASKS, isTransparentMask } from '../../data/masks';
+import { getSelectableMasksForStage, isTransparentMask } from '../../data/masks';
 import {
   BaseMatoran,
   CUSTOM_CHARACTER_COST,
@@ -167,6 +167,14 @@ export const CharacterCreation: React.FC = () => {
   const [activePart, setActivePart] = useState<ColorTabId>('mask');
   const [activeSlot, setActiveSlot] = useState<BodyPartSlot>('main');
   const [mataBuildId, setMataBuildId] = useState<string>(DEFAULT_CUSTOM_MATA_MODEL_ID);
+
+  const selectableMasks = useMemo(() => getSelectableMasksForStage(creationStage), [creationStage]);
+
+  useEffect(() => {
+    if (!selectableMasks.includes(mask)) {
+      setMask(selectableMasks[0] ?? Mask.Hau);
+    }
+  }, [mask, selectableMasks]);
 
   const colorTabs = useMemo(
     () =>
@@ -417,7 +425,7 @@ export const CharacterCreation: React.FC = () => {
         <div className="field">
           <span className="field-label">Kanohi (Mask)</span>
           <div className="mask-grid">
-            {ALL_MASKS.map((m) => (
+            {selectableMasks.map((m) => (
               <button
                 type="button"
                 key={m}

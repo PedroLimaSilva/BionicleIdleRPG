@@ -2,7 +2,7 @@ import { Quest } from '../../types/Quests';
 import {
   BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID,
   BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID,
-} from '../../game/nuvaSymbols';
+} from '../../game/masks/nuvaSymbols';
 
 export { BOHROK_KAL_STOLEN_SYMBOLS_QUEST_ID, BOHROK_KAL_FINAL_CONFRONTATION_QUEST_ID };
 

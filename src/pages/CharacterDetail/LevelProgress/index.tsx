@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { getExpProgress, getLevelFromExp } from '../../../game/Levelling';
+import { getExpProgress, getLevelFromExp } from '../../../game/characters/Levelling';
 import './index.scss';
 
 export const LevelProgress = ({ exp }: { exp: number }) => {

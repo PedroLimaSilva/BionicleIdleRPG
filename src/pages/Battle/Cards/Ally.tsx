@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Combatant } from '../../../types/Combat';
 import { hasActiveEffectFromSource } from '../../../services/combatUtils';
 import { CHARACTER_DEX } from '../../../data/dex/index';
-import { MatoranAvatar } from '../../../components/MatoranAvatar';
+import { MatoranAvatar } from '../../../rendering/2d/MatoranAvatar';
 import { MaskPowerTooltip } from '../../../components/MaskPowerTooltip';
 import { MaskActivationBurst } from './MaskActivationBurst';
 

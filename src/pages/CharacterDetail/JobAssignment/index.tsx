@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { JOB_DETAILS } from '../../../data/jobs';
 import { JobCard } from '../../../components/JobList/JobCard';
-import { getProductivityModifier } from '../../../game/Jobs';
+import { getProductivityModifier } from '../../../game/jobs/Jobs';
 import { Modal } from '../../../components/Modal';
 import { JobList } from '../../../components/JobList';
 import { AnimatePresence } from 'motion/react';

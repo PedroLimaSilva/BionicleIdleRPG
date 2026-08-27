@@ -8,8 +8,8 @@ on:
     paths:
       - 'public/kit_2001.glb'
       - 'public/kit_2003.glb'
-      - 'src/game/kit/attachments/**'
-      - 'src/game/kit/nodes/**'
+      - 'src/rendering/3d/kit/attachments/**'
+      - 'src/rendering/3d/kit/nodes/**'
 
 permissions:
   contents: read

@@ -1,19 +1,19 @@
 import './index.scss';
 import { motion } from 'motion/react';
-import { MatoranAvatar } from '../../components/MatoranAvatar';
+import { MatoranAvatar } from '../../rendering/2d/MatoranAvatar';
 import { Link } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 import { Modal } from '../../components/Modal';
 import { useReducedMotion } from 'motion/react';
 import { isTestMode } from '../../utils/testMode';
-import { getLevelFromExp } from '../../game/Levelling';
+import { getLevelFromExp } from '../../game/characters/Levelling';
 import { JobStatusBadge } from '../../components/JobStatusBadge';
-import { getJobStatus } from '../../game/Jobs';
+import { getJobStatus } from '../../game/jobs/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
 import { QUESTS } from '../../data/quests';
 import { getEffectiveMatoran } from '../../services/matoranUtils';
-import { isBohrokOrKal, isMatoran, isToa } from '../../game/matoranStage';
+import { isBohrokOrKal, isMatoran, isToa } from '../../game/characters/matoranStage';
 import { useMemo, useState, useCallback, useLayoutEffect } from 'react';
 import {
   consumeCharactersReturnScrollId,
@@ -26,11 +26,11 @@ import {
   canStartRahkshiForge,
   hasRahkshiArmorForPower,
   RAHKSHI_FORGE_COST,
-} from '../../game/KraataActions';
+} from '../../game/kraata/KraataActions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
 import { KraataPower, KRAATA_POWER_NAMES, KraataCollection } from '../../types/Kraata';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
-import { CompositedImage } from '../../components/CompositedImage';
+import { CompositedImage } from '../../rendering/2d/CompositedImage';
 import { RahkshiArmor } from '../../types/Rahkshi';
 import { LegoColor } from '../../types/Colors';
 import { CREATE_CUSTOM_CHARACTER_ID } from '../../types/Matoran';

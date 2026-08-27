@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { GameState, GameStateEditorApi } from '../types/GameState';
 import { useGameLogic } from '../hooks/useGameLogic';
-import { getInitialLoadedGameState, loadGameStateAsync } from '../services/gamePersistence';
-import type { LoadedGameState } from '../services/gamePersistence';
+import { getInitialLoadedGameState, loadGameStateAsync } from '../persistence/gamePersistence';
+import type { LoadedGameState } from '../persistence/gamePersistence';
 import './GameLoadGate.scss';
 
 export type GameContextValue = GameState & GameStateEditorApi;

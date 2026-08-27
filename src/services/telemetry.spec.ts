@@ -19,7 +19,7 @@ const MOCK_STATE: PartialGameState = {
 
 let mockTelemetryEnabled: boolean;
 
-jest.mock('./gamePersistence', () => ({
+jest.mock('../persistence/gamePersistence', () => ({
   getLastPersistedGameState: () => null,
   getTelemetryEnabled: () => mockTelemetryEnabled,
   getTelemetryId: () => 'test-uuid-1234',
