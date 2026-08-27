@@ -75,8 +75,13 @@ export function isMaskSelectableForStage(mask: Mask, stage: MatoranStage): boole
   return getSelectableMasksForStage(stage).includes(mask);
 }
 
-/** Kanohi rendered with a transparent lens (Kaukau and its Nuva sculpt). */
-export const TRANSPARENT_MASKS: Mask[] = [Mask.Kaukau, Mask.KaukauNuva];
+/** Kanohi rendered with a transparent lens (Kaukau and its Nuva sculpt, Great Rau). */
+export const TRANSPARENT_MASKS: Mask[] = [Mask.Kaukau, Mask.KaukauNuva, Mask.RauGreat];
+
+/** Runtime opacity for transparent Kanohi when the GLB does not bake alpha. */
+export const TRANSPARENT_MASK_OPACITY: Partial<Record<Mask, number>> = {
+  [Mask.RauGreat]: 0.75,
+};
 
 export function isTransparentMask(mask: Mask): boolean {
   return TRANSPARENT_MASKS.includes(mask);
