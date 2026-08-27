@@ -367,6 +367,10 @@ XP: 5500"]
 (22m)
 Currency: 7000
 XP: 6000"]
+  metru_seek_the_great_disks["Search for the Great Disks
+(20m)
+Currency: 7500
+XP: 6500"]
   story_toa_arrival --> maskhunt_kopaka_matoro_icecliff
   maskhunt_kopaka_matoro_icecliff --> maskhunt_kopaka_pohatu_icecliff
   mnog_tahu_unlock_01 --> story_toa_council
@@ -467,6 +471,7 @@ XP: 6000"]
   mol_rediscovery_of_metru_nui --> story_metru_nui_saga_begin
   story_metru_nui_saga_begin --> metru_vakama_dume_and_the_great_temple
   metru_vakama_dume_and_the_great_temple --> metru_great_temple_transformation
+  metru_great_temple_transformation --> metru_seek_the_great_disks
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff
