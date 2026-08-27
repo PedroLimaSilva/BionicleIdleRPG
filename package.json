@@ -39,6 +39,8 @@
     "sum-glb-sizes": "tsx scripts/sum-glb-sizes.mts",
     "glb-size-report": "tsx scripts/glb-size-report.mts",
     "kit-node-usage-report": "tsx scripts/kit-node-usage-report.mts",
+    "audit:prod": "tsx scripts/audit-prod.mts high",
+    "audit:prod:critical": "tsx scripts/audit-prod.mts critical",
     "prepare": "husky && yarn vendor-draco && yarn vendor-fonts"
   },
   "dependencies": {
@@ -48,12 +50,12 @@
     "@types/three": "0.160.0",
     "dexie": "^4.4.3",
     "lucide-react": "^0.487.0",
-    "mermaid": "^11.12.1",
+    "mermaid": "^11.15.0",
     "motion": "^12.34.3",
     "r3f-perf": "^7.2.3",
     "react": "19",
     "react-dom": "19",
-    "react-router-dom": "^7.1.3",
+    "react-router-dom": "^7.18.2",
     "three": "0.160.0"
   },
   "devDependencies": {
@@ -85,7 +87,7 @@
     "prettier": "^3.4.2",
     "purgecss": "^8.0.0",
     "sass": "^1.83.4",
-    "sharp": "0.32.6",
+    "sharp": "0.35.4",
     "sharp-ico": "0.1.5",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
@@ -101,7 +103,10 @@
   "resolutions": {
     "@react-three/drei": "10.7.8",
     "camera-controls": "3.1.0",
-    "sharp": "0.32.6",
+    "handlebars": "^4.7.9",
+    "js-yaml": "^4.1.1",
+    "lodash-es": "^4.18.0",
+    "sharp": "0.35.4",
     "sharp-ico": "0.1.5"
   },
   "lint-staged": {

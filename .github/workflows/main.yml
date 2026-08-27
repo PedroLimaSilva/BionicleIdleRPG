@@ -81,6 +81,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Audit production dependencies
+        run: yarn audit:prod:critical
+
       - name: Run linter
         run: yarn lint
 
