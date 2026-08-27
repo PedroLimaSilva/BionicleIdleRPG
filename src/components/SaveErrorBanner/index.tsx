@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   SavePersistenceErrorReason,
   subscribeSavePersistenceError,
-} from '../../services/gamePersistence';
+} from '../../persistence/gamePersistence';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
 import { isTestMode } from '../../utils/testMode';
 import './SaveErrorBanner.scss';

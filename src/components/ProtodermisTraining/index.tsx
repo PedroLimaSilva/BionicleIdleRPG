@@ -4,8 +4,8 @@ import { ElementTribe } from '../../types/Matoran';
 import {
   expGainedFromProtodermisSpend,
   PROTODERMIS_TO_EXP_RATIO,
-} from '../../game/ProtodermisConversion';
-import { getLevelFromExp } from '../../game/Levelling';
+} from '../../game/economy/ProtodermisConversion';
+import { getLevelFromExp } from '../../game/characters/Levelling';
 import './index.scss';
 
 type ProtodermisTrainingProps = {

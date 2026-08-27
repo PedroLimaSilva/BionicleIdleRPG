@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
-import { getDebugMode } from '../services/gamePersistence';
-import type { LoadedGameState } from '../services/gamePersistence';
+import { getDebugMode } from '../persistence/gamePersistence';
+import type { LoadedGameState } from '../persistence/gamePersistence';
 import { sendSessionTelemetry } from '../services/telemetry';
 import { useCharactersState } from './useCharactersState';
 import { useJobTickEffect } from './useJobTickEffect';
-import { useGamePersistence } from './useGamePersistence';
+import { useGamePersistence } from '../persistence/useGamePersistence';
 import { GameState, GameStateEditorApi } from '../types/GameState';
 import { useQuestState } from './useQuestState';
 import { useQuestNotifications } from './useQuestNotifications';
@@ -20,14 +20,14 @@ import {
   computeKranaRewardsForBattle,
   computeKraataRewardsForBattle,
   getParticipantIds,
-} from '../game/BattleRewards';
-import { isKranaCollectionActive } from '../game/Krana';
+} from '../game/combat/BattleRewards';
+import { isKranaCollectionActive } from '../game/krana/Krana';
 import {
   getAvailableEvolution,
   meetsEvolutionLevel,
   applyCharacterEvolution,
-} from '../game/CharacterEvolution';
-import { isNuvaSymbolsSequestered } from '../game/nuvaSymbols';
+} from '../game/evolution/CharacterEvolution';
+import { isNuvaSymbolsSequestered } from '../game/masks/nuvaSymbols';
 import {
   KraataCollection,
   KraataPower,
@@ -43,8 +43,8 @@ import {
   canStartRahkshiForge,
   KRAATA_ARMOR_DURATION_MS,
   RAHKSHI_FORGE_COST,
-} from '../game/KraataActions';
-import { expGainedFromProtodermisSpend } from '../game/ProtodermisConversion';
+} from '../game/kraata/KraataActions';
+import { expGainedFromProtodermisSpend } from '../game/economy/ProtodermisConversion';
 
 export const useGameLogic = (initialState: LoadedGameState): GameState & GameStateEditorApi => {
   const [version] = useState(initialState.version);

@@ -11,7 +11,7 @@ import {
   matoranColorsEqual,
   normalizeMatoranColors,
   parseMatoranColors,
-} from '../game/matoranColors';
+} from '../game/characters/matoranColors';
 import { ALL_MASKS, isMaskSelectableForStage } from '../data/masks';
 
 /** URL query param used to share a custom character. Value is a base64-encoded JSON BaseMatoran. */

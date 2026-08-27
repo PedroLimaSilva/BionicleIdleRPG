@@ -168,7 +168,7 @@ export interface EnemyEncounter {
   scalesWithParty?: boolean;
   /**
    * 3D battle arena biome this encounter is fought in. Resolved against the
-   * arena registry in `src/pages/Battle/arenas/`. Defaults to the desert arena
+   * arena registry in `src/rendering/3d/arenas/`. Defaults to the desert arena
    * when omitted. See `docs/ARENA_ENVIRONMENTS.md`.
    */
   arenaId?: ArenaId;

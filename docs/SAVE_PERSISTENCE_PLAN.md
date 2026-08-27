@@ -57,7 +57,7 @@ Dexie's `.version(n).upgrade()` migrates **database schema** (object stores, ind
 
 ### Phase A — Near term (localStorage, low risk) ✅ Implemented
 
-Implemented in `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, and `src/components/SaveErrorBanner/`.
+Implemented in `src/persistence/gamePersistence.ts`, `src/persistence/useGamePersistence.tsx`, and `src/components/SaveErrorBanner/`.
 
 - Debounced saves with quota error surfacing via `SaveErrorBanner`
 - Strict v9 save validation with load-time sanitizers (jobs, orphaned customs)
@@ -74,7 +74,7 @@ Acceptance criteria ([#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/is
 
 ### Phase B — Medium term (IndexedDB via Dexie) ✅ Implemented
 
-Implemented in `src/services/gameDatabase.ts` with async hydration in `GameProvider`, granular writes from `useGamePersistence`, and one-time import from the legacy `localStorage` blob.
+Implemented in `src/persistence/gameDatabase.ts` with async hydration in `GameProvider`, granular writes from `useGamePersistence`, and one-time import from the legacy `localStorage` blob.
 
 #### Proposed schema
 
@@ -152,10 +152,10 @@ The primary growth vector is `customCharacters`, not recruited character count.
 
 ## Files Affected
 
-| Phase    | Files                                                                                                                                                                                                            |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A (done) | `src/services/gamePersistence.ts`, `src/hooks/useGamePersistence.tsx`, `src/components/SaveErrorBanner/`, `src/services/gamePersistence.spec.ts`, `src/hooks/useGamePersistence.spec.tsx`, `AGENT_GUIDELINES.md` |
-| B (done) | `src/services/gameDatabase.ts`, `src/context/Game.tsx`, `src/hooks/useGameLogic.tsx`, `e2e/helpers.ts`, `package.json` (dexie), `src/setupTests.ts` (fake-indexeddb), `src/services/gameDatabase.spec.ts`        |
+| Phase    | Files                                                                                                                                                                                                                              |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A (done) | `src/persistence/gamePersistence.ts`, `src/persistence/useGamePersistence.tsx`, `src/components/SaveErrorBanner/`, `src/persistence/gamePersistence.spec.ts`, `src/persistence/useGamePersistence.spec.tsx`, `AGENT_GUIDELINES.md` |
+| B (done) | `src/persistence/gameDatabase.ts`, `src/context/Game.tsx`, `src/hooks/useGameLogic.tsx`, `e2e/helpers.ts`, `package.json` (dexie), `src/setupTests.ts` (fake-indexeddb), `src/persistence/gameDatabase.spec.ts`                    |
 
 ---
 

@@ -1,37 +1,38 @@
 import { Combatant } from '../../types/Combat';
-import { BohrokModel } from '../../components/CharacterScene/BohrokModel';
-import { RahkshiModel } from '../../components/CharacterScene/Rahkshi';
-import { KopakaMataModel } from '../../components/CharacterScene/Mata/KopakaMataModel';
+import { BohrokModel } from '../../rendering/3d/CharacterScene/BohrokModel';
+import { RahkshiModel } from '../../rendering/3d/CharacterScene/Rahkshi';
+import { KopakaMataModel } from '../../rendering/3d/CharacterScene/Mata/KopakaMataModel';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { Euler } from '@react-three/fiber';
-import { TahuMataModel } from '../../components/CharacterScene/Mata/TahuMataModel';
-import { PohatuMataModel } from '../../components/CharacterScene/Mata/PohatuMataModel';
-import { OnuaMataModel } from '../../components/CharacterScene/Mata/OnuaMataModel';
-import { LewaMataModel } from '../../components/CharacterScene/Mata/LewaMataModel';
-import { GaliMataModel } from '../../components/CharacterScene/Mata/GaliMataModel';
-import { TahuNuvaModel } from '../../components/CharacterScene/Nuva/TahuNuvaModel';
-import { GaliNuvaModel } from '../../components/CharacterScene/Nuva/GaliNuvaModel';
-import { KopakaNuvaModel } from '../../components/CharacterScene/Nuva/KopakaNuvaModel';
-import { LewaNuvaModel } from '../../components/CharacterScene/Nuva/LewaNuvaModel';
-import { OnuaNuvaModel } from '../../components/CharacterScene/Nuva/OnuaNuvaModel';
-import { PohatuNuvaModel } from '../../components/CharacterScene/Nuva/PohatuNuvaModel';
+import { TahuMataModel } from '../../rendering/3d/CharacterScene/Mata/TahuMataModel';
+import { PohatuMataModel } from '../../rendering/3d/CharacterScene/Mata/PohatuMataModel';
+import { OnuaMataModel } from '../../rendering/3d/CharacterScene/Mata/OnuaMataModel';
+import { LewaMataModel } from '../../rendering/3d/CharacterScene/Mata/LewaMataModel';
+import { GaliMataModel } from '../../rendering/3d/CharacterScene/Mata/GaliMataModel';
+import { TahuNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/TahuNuvaModel';
+import { GaliNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/GaliNuvaModel';
+import { KopakaNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/KopakaNuvaModel';
+import { LewaNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/LewaNuvaModel';
+import { OnuaNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/OnuaNuvaModel';
+import { PohatuNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/PohatuNuvaModel';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Group, Material, Mesh } from 'three';
-import { disposeObject3DResources } from '../../utils/disposeThreeObject';
+import { disposeObject3DResources } from '../../rendering/3d/utils/disposeThreeObject';
 import { KraataPower } from '../../types/Kraata';
-import { TakanuvaModel } from '../../components/CharacterScene/Nuva/TakanuvaModel';
-import { LhikanModel } from '../../components/CharacterScene/Metru/LhikanModel';
-import { MatauModel } from '../../components/CharacterScene/Metru/MatauModel';
-import { NujuModel } from '../../components/CharacterScene/Metru/NujuModel';
-import { NokamaModel } from '../../components/CharacterScene/Metru/NokamaModel';
-import { VakamaModel } from '../../components/CharacterScene/Metru/VakamaModel';
-import { WhenuaModel } from '../../components/CharacterScene/Metru/WhenuaModel';
-import { usesNujuToaMetruRig } from '../../game/metruMatoran';
-import { RahiPlaceholderModel } from '../../components/CharacterScene/RahiPlaceholderModel';
-import { NuiRamaModel } from '../../components/CharacterScene/NuiRamaModel';
+import { TakanuvaModel } from '../../rendering/3d/CharacterScene/Nuva/TakanuvaModel';
+import { LhikanModel } from '../../rendering/3d/CharacterScene/Metru/LhikanModel';
+import { MatauModel } from '../../rendering/3d/CharacterScene/Metru/MatauModel';
+import { NujuModel } from '../../rendering/3d/CharacterScene/Metru/NujuModel';
+import { NokamaModel } from '../../rendering/3d/CharacterScene/Metru/NokamaModel';
+import { OnewaModel } from '../../rendering/3d/CharacterScene/Metru/OnewaModel';
+import { VakamaModel } from '../../rendering/3d/CharacterScene/Metru/VakamaModel';
+import { WhenuaModel } from '../../rendering/3d/CharacterScene/Metru/WhenuaModel';
+import { usesNujuToaMetruRig } from '../../rendering/3d/metruMatoran';
+import { RahiPlaceholderModel } from '../../rendering/3d/CharacterScene/RahiPlaceholderModel';
+import { NuiRamaModel } from '../../rendering/3d/CharacterScene/NuiRamaModel';
 import { WorldSpaceHpBar } from './WorldSpaceHpBar';
-import { DEFEAT_SINK_DURATION_SEC } from '../../game/battleOutcomeVisualDelay';
+import { DEFEAT_SINK_DURATION_SEC } from '../../rendering/3d/battleOutcomeVisualDelay';
 import { battleSpeedProgress } from '../../utils/battleSpeed';
 
 const ROTATION_RESTORE_DURATION = 0.25;
@@ -544,6 +545,21 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.04}>
               <NokamaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Onewa':
+          return (
+            <group scale={0.04}>
+              <OnewaModel
                 ref={childRef}
                 matoran={{
                   maskOverride: combatant.maskPower?.shortName,

@@ -1,6 +1,6 @@
-import { ArenaGlbScene } from './arenas/ArenaGlbScene';
-import { DEFAULT_ARENA_ID, getArenaDefinition } from './arenas/registry';
-import type { ArenaId, ArenaRecolor } from './arenas/types';
+import { ArenaGlbScene } from '../../rendering/3d/arenas/ArenaGlbScene';
+import { DEFAULT_ARENA_ID, getArenaDefinition } from '../../rendering/3d/arenas/registry';
+import type { ArenaId, ArenaRecolor } from '../../rendering/3d/arenas/types';
 
 interface ArenaEnvironmentProps {
   arenaId?: ArenaId;

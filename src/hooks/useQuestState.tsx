@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Quest, QuestProgress } from '../types/Quests';
 import { RecruitedCharacterData } from '../types/Matoran';
-import { getDebugMode } from '../services/gamePersistence';
+import { getDebugMode } from '../persistence/gamePersistence';
 
 export function getCurrentTimestamp(): number {
   return Math.floor(Date.now() / 1000); // seconds

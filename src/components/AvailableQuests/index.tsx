@@ -1,11 +1,11 @@
 import { CHARACTER_DEX } from '../../data/dex/index';
-import { getLevelFromExp } from '../../game/Levelling';
-import { getAvailableQuests } from '../../game/Quests';
-import { getCharactersUnlockedByQuest } from '../../game/Recruitment';
+import { getLevelFromExp } from '../../game/characters/Levelling';
+import { getAvailableQuests } from '../../game/quests/Quests';
+import { getCharactersUnlockedByQuest } from '../../game/recruitment/Recruitment';
 import { RecruitedCharacterData } from '../../types/Matoran';
 import { Quest } from '../../types/Quests';
 import { KranaCollection } from '../../types/Krana';
-import { areAllKranaCollected } from '../../game/Krana';
+import { areAllKranaCollected } from '../../game/krana/Krana';
 import { Tooltip } from '../Tooltip';
 import './index.scss';
 

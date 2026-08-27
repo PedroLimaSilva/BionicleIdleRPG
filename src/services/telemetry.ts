@@ -4,7 +4,7 @@ import {
   getTelemetryId,
   getLastPersistedGameState,
   loadRawGameState,
-} from './gamePersistence';
+} from '../persistence/gamePersistence';
 
 const SESSION_KEY = 'TELEMETRY_SENT';
 
