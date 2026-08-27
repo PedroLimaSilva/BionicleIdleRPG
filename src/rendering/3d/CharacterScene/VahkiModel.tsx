@@ -22,8 +22,13 @@ const VAHKI_GLB = import.meta.env.BASE_URL + 'Vahki.glb';
  * `Vahki.glb` authors the Vahki root at Y=10 so feet sit near 0 (same
  * CharacterScene framing as Toa Metru). Do not zero Y — that drops the legs
  * below the camera.
+ *
+ * The updated rest pose faces −Z (visor toward the character-sheet camera).
+ * Yaw 180° so combat still treats +Z as forward, matching other combatants.
+ * CharacterScene applies another 180° for the sheet camera.
  */
 const VAHKI_BIND_POSE_Y = 10;
+const VAHKI_BIND_POSE_YAW = Math.PI;
 
 /** Must match how many `useKitAttachments` calls this component makes. */
 const VAHKI_ATTACHMENT_RUNS = 3;
@@ -117,7 +122,7 @@ export const VahkiModel = forwardRef<
   });
 
   return (
-    <group ref={group} dispose={null}>
+    <group ref={group} dispose={null} rotation={[0, VAHKI_BIND_POSE_YAW, 0]}>
       <primitive object={vahkiInstance} scale={1} position={[0, VAHKI_BIND_POSE_Y, 0]} />
     </group>
   );
