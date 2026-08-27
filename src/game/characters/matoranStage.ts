@@ -12,6 +12,10 @@ export function isBohrokOrKal(matoran: BaseMatoran) {
   return isBohrok(matoran) || isBohrokKal(matoran);
 }
 
+export function isVahki(matoran: BaseMatoran) {
+  return matoran.stage === MatoranStage.Vahki;
+}
+
 export function isMatoran(matoran: BaseMatoran) {
   return [MatoranStage.Diminished, MatoranStage.Rebuilt, MatoranStage.Metru].includes(
     matoran.stage

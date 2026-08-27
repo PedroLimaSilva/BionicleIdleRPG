@@ -3,6 +3,7 @@ import { ElementTribe, Mask } from '../types/Matoran';
 import { KraataPower } from '../types/Kraata';
 import { MOL_DEFEAT_OF_MAKUTA_QUEST_ID, MOL_TAKANUVA_RISES_QUEST_ID } from './quests/mask_of_light';
 import { BOHROK_KRANA_LEGEND_QUEST_ID } from './quests/bohrok_swarm';
+import { METRU_VAKAMA_DUME_QUEST_ID } from './quests/metru_nui';
 
 export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   [Mask.Akaku]: {
@@ -461,6 +462,17 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Bohrok Kal',
   },
+  // Vahki — one chassis, six hive palettes. Staff of Suggestion until hive tools exist.
+  bordakh: {
+    baseAttack: 16,
+    baseDefense: 14,
+    baseHp: 90,
+    baseSpeed: 11,
+    element: ElementTribe.Water,
+    id: 'bordakh',
+    model: 'vahki',
+    name: 'Bordakh',
+  },
   gahlok: {
     baseAttack: 18,
     baseDefense: 12,
@@ -481,6 +493,17 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Gahlok Kal',
   },
+  keerakh: {
+    baseAttack: 18,
+    baseDefense: 13,
+    baseHp: 85,
+    baseSpeed: 15,
+    element: ElementTribe.Ice,
+    id: 'keerakh',
+    model: 'vahki',
+    name: 'Keerakh',
+  },
+
   kohrak: {
     baseAttack: 19,
     baseDefense: 11,
@@ -501,7 +524,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Kohrak Kal',
   },
-
   [KraataPower.Anger]: {
     baseAttack: 30,
     baseDefense: 18,
@@ -512,6 +534,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'rahkshi',
     name: 'Kurahk',
   },
+
   [KraataPower.Disintegration]: {
     baseAttack: 32,
     baseDefense: 16,
@@ -533,7 +556,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'rahkshi',
     name: 'Turahk',
   },
-
   [KraataPower.Fragmentation]: {
     baseAttack: 30,
     baseDefense: 20,
@@ -584,6 +606,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Lehvak Kal',
   },
+
   muaka: {
     baseAttack: 14,
     baseDefense: 11,
@@ -604,7 +627,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Nuhvok',
   },
-
   nuhvok_kal: {
     baseAttack: 55,
     baseDefense: 46,
@@ -636,6 +658,17 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'nui_rama',
     name: 'Nui-Rama',
   },
+  nuurakh: {
+    baseAttack: 20,
+    baseDefense: 12,
+    baseHp: 85,
+    baseSpeed: 10,
+    element: ElementTribe.Fire,
+    id: 'nuurakh',
+    model: 'vahki',
+    name: 'Nuurakh',
+  },
+
   pahrak: {
     baseAttack: 20,
     baseDefense: 14,
@@ -666,7 +699,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'rahkshi',
     name: 'Rahkshi',
   },
-
   rahkshi_kraata_gauntlet: {
     baseAttack: 28,
     baseDefense: 18,
@@ -697,6 +729,16 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     id: 'rahkshi_trio_ta_koro',
     model: 'rahkshi',
     name: 'Rahkshi',
+  },
+  rorzakh: {
+    baseAttack: 16,
+    baseDefense: 15,
+    baseHp: 100,
+    baseSpeed: 8,
+    element: ElementTribe.Earth,
+    id: 'rorzakh',
+    model: 'vahki',
+    name: 'Rorzakh',
   },
   // Bohrok - Differentiated by swarm behavior
   tahnok: {
@@ -755,7 +797,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'Toa_Gali_Nuva',
     name: 'Toa Gali Nuva',
   },
-
   Toa_Kopaka: {
     baseAttack: 16,
     baseDefense: 14,
@@ -789,6 +830,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'Toa_Lewa',
     name: 'Toa Lewa',
   },
+
   Toa_Lewa_Nuva: {
     baseAttack: 21,
     baseDefense: 12,
@@ -944,6 +986,36 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'Toa_Whenua',
     name: 'Toa Whenua',
   },
+  vahki_squad: {
+    baseAttack: 18,
+    baseDefense: 14,
+    baseHp: 90,
+    baseSpeed: 11,
+    element: ElementTribe.Water,
+    id: 'vahki_squad',
+    model: 'vahki',
+    name: 'Vahki',
+  },
+  vorzakh: {
+    baseAttack: 18,
+    baseDefense: 11,
+    baseHp: 80,
+    baseSpeed: 14,
+    element: ElementTribe.Air,
+    id: 'vorzakh',
+    model: 'vahki',
+    name: 'Vorzakh',
+  },
+  zadakh: {
+    baseAttack: 17,
+    baseDefense: 16,
+    baseHp: 95,
+    baseSpeed: 9,
+    element: ElementTribe.Stone,
+    id: 'zadakh',
+    model: 'vahki',
+    name: 'Zadakh',
+  },
 };
 
 /** Krana drop ids by color: blue=Fire, orange=Water, red=Air, green=Stone, lime=Earth, white=Ice */
@@ -1024,6 +1096,10 @@ function makeBohrokWave(
   count: number
 ): { id: string; lvl: number }[] {
   return Array.from({ length: count }, () => ({ id: bohrokId, lvl }));
+}
+
+function makeVahkiWave(vahkiId: string, lvl: number, count: number): { id: string; lvl: number }[] {
+  return Array.from({ length: count }, () => ({ id: vahkiId, lvl }));
 }
 
 function makeKraataLoot(powers: KraataPower[]): { id: string; chance: number }[] {
@@ -1801,5 +1877,46 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     scalesWithParty: true,
     unlockedAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
     waves: makeRahkshiKraataGauntletWaves(),
+  },
+
+  // Vahki — Metru Nui order enforcement, after Turaga Dume's visit to Vakama.
+  {
+    arenaId: 'metru',
+    description:
+      'Ga-Metru Bordakh sweep the canals with Staffs of Suggestion, herding Matoran who stray from their tasks.',
+    difficulty: 4,
+    headliner: 'bordakh',
+    id: 'bordakh-1',
+    loot: [],
+    name: 'Bordakh Patrol',
+    scalesWithParty: true,
+    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
+    waves: [[...makeVahkiWave('bordakh', 26, 2)], [...makeVahkiWave('bordakh', 26, 3)]],
+  },
+  {
+    arenaId: 'metru',
+    description:
+      'All six Vahki hives take to the streets. One chassis, six palettes — every squad still carries Bordakh staffs until hive tools are kitted.',
+    difficulty: 5,
+    headliner: 'vahki_squad',
+    id: 'vahki_six_hives',
+    loot: [],
+    name: 'Six Hives',
+    scalesWithParty: true,
+    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
+    waves: [
+      [
+        { id: 'bordakh', lvl: 26 },
+        { id: 'nuurakh', lvl: 26 },
+      ],
+      [
+        { id: 'vorzakh', lvl: 26 },
+        { id: 'zadakh', lvl: 26 },
+      ],
+      [
+        { id: 'rorzakh', lvl: 26 },
+        { id: 'keerakh', lvl: 26 },
+      ],
+    ],
   },
 ];

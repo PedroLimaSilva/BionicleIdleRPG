@@ -21,7 +21,9 @@ function isBloomMesh(mesh: Mesh): boolean {
     if (!mat || (mat.emissiveIntensity ?? 0) <= 0) continue;
 
     const matName = (mat.name || '').toLowerCase();
-    if (matName.includes('glow') || isInsideMasksNode(mesh)) return true;
+    if (matName.includes('glow') || matName.includes('vahkihood') || isInsideMasksNode(mesh)) {
+      return true;
+    }
   }
   return false;
 }

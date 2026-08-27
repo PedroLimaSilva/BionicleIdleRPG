@@ -1,0 +1,103 @@
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
+import { Group, Object3D } from 'three';
+import { useGLTF } from '@react-three/drei';
+import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
+import { useCombatAnimations } from '../hooks/useCombatAnimations';
+import { useKitAttachments } from '../hooks/useKitAttachments';
+import { CHARACTER_DEX } from '../../../data/dex/index';
+import { MatoranStage } from '../../../types/Matoran';
+import { KIT_2001_GLB_PATH } from '../kit/kit2001';
+import { KIT_2004_GLB_PATH } from '../kit/kit2004';
+import { VAHKI_KIT_2001_ATTACHMENTS, VAHKI_KIT_2004_ATTACHMENTS } from '../kit/attachments/vahki';
+import { VAHKI_WEATHERED } from '../kit/palettes/vahkiKitPalette';
+
+const VAHKI_GLB = import.meta.env.BASE_URL + 'Vahki.glb';
+
+/** Deepest node wins for duplicate socket names. */
+function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
+  const map: Record<string, Object3D> = {};
+  root.traverse((child) => {
+    if (child.name) map[child.name] = child;
+  });
+  return map;
+}
+
+/**
+ * One Vahki chassis for all six hives. `Vahki.glb` is a socket-only rig; every
+ * visible piece (including Bordakh staffs) is cloned from kit_2001 / kit_2004.
+ * There is no Idle clip yet — combat uses procedural Attack / Hit / Defeat.
+ */
+export const VahkiModel = forwardRef<
+  CombatantModelHandle,
+  { id: string; onKitMeshesAttached?: () => void }
+>(({ id, onKitMeshesAttached }, ref) => {
+  const group = useRef<Group>(null);
+  const { animations, nodes } = useGLTF(VAHKI_GLB);
+
+  const colorScheme = CHARACTER_DEX[id].colors;
+  const kitLayersDone = useRef(0);
+  useEffect(() => {
+    kitLayersDone.current = 0;
+  }, [id]);
+  const onKitLayerAttached = useMemo(() => {
+    if (!onKitMeshesAttached) return undefined;
+    return () => {
+      kitLayersDone.current += 1;
+      if (kitLayersDone.current >= 2) {
+        kitLayersDone.current = 0;
+        onKitMeshesAttached();
+      }
+    };
+  }, [onKitMeshesAttached]);
+
+  const vahkiInstance = useMemo(() => {
+    const root = nodes.Bordakh as Object3D | undefined;
+    if (!root) {
+      console.warn(`[VahkiModel] Root 'Bordakh' not found in ${VAHKI_GLB}`);
+      return new Group();
+    }
+    return root.clone(true);
+  }, [nodes]);
+
+  const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(vahkiInstance), [vahkiInstance]);
+
+  const { playAnimation } = useCombatAnimations(animations, group, {
+    actionTimeScale: 1,
+    attackResolveAtFraction: 0.1,
+    modelId: id,
+    transitionMode: 'stopAll',
+  });
+
+  useImperativeHandle(ref, () => ({ playAnimation }));
+
+  useKitAttachments({
+    attachments: VAHKI_KIT_2004_ATTACHMENTS,
+    characterNodes: kitCharacterNodes,
+    colors: colorScheme,
+    kitUrl: KIT_2004_GLB_PATH,
+    onAttached: onKitLayerAttached,
+    stage: MatoranStage.Vahki,
+    weathered: VAHKI_WEATHERED,
+  });
+
+  useKitAttachments({
+    attachments: VAHKI_KIT_2001_ATTACHMENTS,
+    characterNodes: kitCharacterNodes,
+    colors: colorScheme,
+    kitUrl: KIT_2001_GLB_PATH,
+    onAttached: onKitLayerAttached,
+    stage: MatoranStage.Vahki,
+    weathered: VAHKI_WEATHERED,
+  });
+
+  return (
+    <group ref={group} dispose={null}>
+      <primitive object={vahkiInstance} scale={1} position={[0, 0, 0]} />
+    </group>
+  );
+});
+
+VahkiModel.displayName = 'VahkiModel';
+
+useGLTF.preload(VAHKI_GLB);
+useKitAttachments.preload(KIT_2001_GLB_PATH, KIT_2004_GLB_PATH);

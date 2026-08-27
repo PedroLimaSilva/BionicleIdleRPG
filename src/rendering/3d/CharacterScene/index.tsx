@@ -25,6 +25,7 @@ import { TahuMataModel } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { BohrokModel } from './BohrokModel';
+import { VahkiModel } from './VahkiModel';
 import { useCharacterBloomMeshes } from './selectiveBloom';
 import { StableSelectiveBloom } from './StableSelectiveBloom';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
@@ -118,6 +119,8 @@ function CharacterModel({
           <BohrokModel key={matoran.id} id={matoran.id} />
         </group>
       );
+    case MatoranStage.Vahki:
+      return <VahkiModel key={matoran.id} id={matoran.id} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Diminished:
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Rebuilt:
