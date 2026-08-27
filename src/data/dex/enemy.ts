@@ -1,37 +1,37 @@
 import { LegoColor } from '../../types/Colors';
-import { ElementTribe, Mask, MatoranStage } from '../../types/Matoran';
+import { ElementTribe, Mask, MatoranColors, MatoranStage } from '../../types/Matoran';
+
+/**
+ * One Vahki chassis, six hive palettes. Plastics follow the matching Toa Metru:
+ * main = secondary = that Toa's tribal color; glow / visor / eyes = that Toa's eyes.
+ * Feet stay DarkBluishGray (same as sockets).
+ */
+function vahkiHiveColors(tribal: LegoColor, eyes: LegoColor): MatoranColors {
+  const colored = {
+    main: tribal,
+    metal: LegoColor.LightGray,
+    secondary: tribal,
+  };
+  return {
+    arms: { ...colored },
+    body: { glow: eyes, ...colored },
+    eyes,
+    face: tribal,
+    feet: {
+      main: LegoColor.DarkBluishGray,
+      metal: LegoColor.LightGray,
+      secondary: tribal,
+    },
+    legs: { ...colored },
+    mask: tribal,
+    weapon: { glow: eyes, ...colored },
+  };
+}
 
 export const ENEMY_DEX = {
   // Vahki — Metru Nui law enforcement. One socket rig, six hive palettes.
   bordakh: {
-    colors: {
-      arms: { main: LegoColor.DarkBlue, metal: LegoColor.LightGray },
-      body: {
-        glow: LegoColor.TransNeonOrange,
-        main: LegoColor.DarkBlue,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkBlue,
-      },
-      eyes: LegoColor.TransNeonOrange,
-      face: LegoColor.DarkBlue,
-      feet: {
-        main: LegoColor.DarkBluishGray,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkBlue,
-      },
-      legs: {
-        main: LegoColor.DarkBlue,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkBlue,
-      },
-      mask: LegoColor.DarkBlue,
-      weapon: {
-        glow: LegoColor.TransNeonOrange,
-        main: LegoColor.DarkBlue,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkBlue,
-      },
-    },
+    colors: vahkiHiveColors(LegoColor.DarkBlue, LegoColor.TransNeonOrange),
     element: ElementTribe.Water,
     id: 'bordakh',
     mask: Mask.Pakari,
@@ -69,30 +69,7 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   keerakh: {
-    colors: {
-      arms: { main: LegoColor.Black, metal: LegoColor.LightGray },
-      body: {
-        glow: LegoColor.TransLightBlue,
-        main: LegoColor.White,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.LightGray,
-      },
-      eyes: LegoColor.TransLightBlue,
-      face: LegoColor.Black,
-      feet: { main: LegoColor.Black, metal: LegoColor.LightGray },
-      legs: {
-        main: LegoColor.White,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.LightGray,
-      },
-      mask: LegoColor.White,
-      weapon: {
-        glow: LegoColor.TransLightBlue,
-        main: LegoColor.White,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.LightGray,
-      },
-    },
+    colors: vahkiHiveColors(LegoColor.White, LegoColor.TransLightBlue),
     element: ElementTribe.Ice,
     id: 'keerakh',
     mask: Mask.Pakari,
@@ -205,30 +182,7 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   nuurakh: {
-    colors: {
-      arms: { main: LegoColor.Black, metal: LegoColor.LightGray },
-      body: {
-        glow: LegoColor.TransNeonOrange,
-        main: LegoColor.DarkRed,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkOrange,
-      },
-      eyes: LegoColor.TransNeonOrange,
-      face: LegoColor.Black,
-      feet: { main: LegoColor.Black, metal: LegoColor.LightGray },
-      legs: {
-        main: LegoColor.DarkRed,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkOrange,
-      },
-      mask: LegoColor.DarkRed,
-      weapon: {
-        glow: LegoColor.TransNeonOrange,
-        main: LegoColor.DarkRed,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkOrange,
-      },
-    },
+    colors: vahkiHiveColors(LegoColor.DarkRed, LegoColor.TransNeonGreen),
     element: ElementTribe.Fire,
     id: 'nuurakh',
     mask: Mask.Pakari,
@@ -266,30 +220,7 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   rorzakh: {
-    colors: {
-      arms: { main: LegoColor.Black, metal: LegoColor.LightGray },
-      body: {
-        glow: LegoColor.TransNeonOrange,
-        main: LegoColor.Black,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkGray,
-      },
-      eyes: LegoColor.TransNeonOrange,
-      face: LegoColor.Black,
-      feet: { main: LegoColor.Black, metal: LegoColor.LightGray },
-      legs: {
-        main: LegoColor.Black,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkGray,
-      },
-      mask: LegoColor.Black,
-      weapon: {
-        glow: LegoColor.TransNeonOrange,
-        main: LegoColor.DarkGray,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.DarkGray,
-      },
-    },
+    colors: vahkiHiveColors(LegoColor.Black, LegoColor.TransGreen),
     element: ElementTribe.Earth,
     id: 'rorzakh',
     mask: Mask.Pakari,
@@ -327,30 +258,7 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   vorzakh: {
-    colors: {
-      arms: { main: LegoColor.Black, metal: LegoColor.LightGray },
-      body: {
-        glow: LegoColor.Lime,
-        main: LegoColor.Green,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.Lime,
-      },
-      eyes: LegoColor.Lime,
-      face: LegoColor.Black,
-      feet: { main: LegoColor.Black, metal: LegoColor.LightGray },
-      legs: {
-        main: LegoColor.Green,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.Lime,
-      },
-      mask: LegoColor.Green,
-      weapon: {
-        glow: LegoColor.Lime,
-        main: LegoColor.Lime,
-        metal: LegoColor.LightGray,
-        secondary: LegoColor.Lime,
-      },
-    },
+    colors: vahkiHiveColors(LegoColor.DarkGreen, LegoColor.Red),
     element: ElementTribe.Air,
     id: 'vorzakh',
     mask: Mask.Pakari,
@@ -358,30 +266,7 @@ export const ENEMY_DEX = {
     stage: MatoranStage.Vahki,
   },
   zadakh: {
-    colors: {
-      arms: { main: LegoColor.Black, metal: LegoColor.LightGray },
-      body: {
-        glow: LegoColor.Yellow,
-        main: LegoColor.Tan,
-        metal: LegoColor.PearlGold,
-        secondary: LegoColor.Brown,
-      },
-      eyes: LegoColor.Yellow,
-      face: LegoColor.Black,
-      feet: { main: LegoColor.Black, metal: LegoColor.LightGray },
-      legs: {
-        main: LegoColor.Tan,
-        metal: LegoColor.PearlGold,
-        secondary: LegoColor.Brown,
-      },
-      mask: LegoColor.Tan,
-      weapon: {
-        glow: LegoColor.Yellow,
-        main: LegoColor.Tan,
-        metal: LegoColor.PearlGold,
-        secondary: LegoColor.Brown,
-      },
-    },
+    colors: vahkiHiveColors(LegoColor.LightBrown, LegoColor.TransDarkBlue),
     element: ElementTribe.Stone,
     id: 'zadakh',
     mask: Mask.Pakari,

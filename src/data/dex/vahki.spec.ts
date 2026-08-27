@@ -6,8 +6,19 @@ import {
 } from '../../game/recruitment/Recruitment';
 import { METRU_VAKAMA_DUME_QUEST_ID } from '../quests/metru_nui';
 import { CHARACTER_DEX } from './index';
+import { TOA_DEX } from './toa';
 
 const VAHKI_HIVES = ['bordakh', 'nuurakh', 'vorzakh', 'zadakh', 'rorzakh', 'keerakh'] as const;
+
+/** Water / Fire / Air / Stone / Earth / Ice — same pairing as the Toa Metru. */
+const VAHKI_TOA_METRU = {
+  bordakh: 'Toa_Nokama',
+  keerakh: 'Toa_Nuju',
+  nuurakh: 'Toa_Vakama',
+  rorzakh: 'Toa_Whenua',
+  vorzakh: 'Toa_Matau',
+  zadakh: 'Toa_Onewa',
+} as const;
 
 describe('Vahki opponents', () => {
   test('each hive has a Vahki-stage dex entry and a vahki combat template', () => {
@@ -43,5 +54,28 @@ describe('Vahki opponents', () => {
     expect(getBuyableCharacters([METRU_VAKAMA_DUME_QUEST_ID], [{ exp: 0, id: 'bordakh' }])).toEqual(
       expected.filter((entry) => entry.id !== 'bordakh')
     );
+  });
+
+  test('main and secondary match the Toa Metru tribal color; glow and eyes match that Toa', () => {
+    for (const [hiveId, toaId] of Object.entries(VAHKI_TOA_METRU)) {
+      const hive = CHARACTER_DEX[hiveId];
+      const toa = TOA_DEX[toaId];
+      const tribal = toa.colors.body.main;
+      const eyes = toa.colors.eyes;
+
+      expect(hive.colors.body.main).toBe(tribal);
+      expect(hive.colors.body.secondary).toBe(tribal);
+      expect(hive.colors.arms.main).toBe(tribal);
+      expect(hive.colors.arms.secondary).toBe(tribal);
+      expect(hive.colors.legs?.main).toBe(tribal);
+      expect(hive.colors.legs?.secondary).toBe(tribal);
+      expect(hive.colors.weapon?.main).toBe(tribal);
+      expect(hive.colors.weapon?.secondary).toBe(tribal);
+      expect(hive.colors.mask).toBe(tribal);
+
+      expect(hive.colors.eyes).toBe(eyes);
+      expect(hive.colors.body.glow).toBe(eyes);
+      expect(hive.colors.weapon?.glow).toBe(eyes);
+    }
   });
 });
