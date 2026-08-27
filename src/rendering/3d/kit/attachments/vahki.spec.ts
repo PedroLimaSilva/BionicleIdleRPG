@@ -95,8 +95,8 @@ describe('Vahki kit attachments', () => {
     expect(VAHKI_KIT_2003_ATTACHMENTS.RahkshiBody.kitNodeName).toBe(KIT_2003_NODES.RahkshiBody);
   });
 
-  test('RahkshiBody uses hive body color', () => {
-    expect(VAHKI_KIT_2003_ATTACHMENTS.RahkshiBody.materialColors).toBe(VAHKI_KIT_PALETTE_BODY);
+  test('RahkshiBody uses the same DarkBluishGray as sockets', () => {
+    expect(VAHKI_KIT_2003_ATTACHMENTS.RahkshiBody.materialColors).toBe(VAHKI_KIT_PALETTE_SOCKET);
   });
 
   test('TechnicTorsoPivot clones the kit_2003 piece named on the rig', () => {
@@ -128,5 +128,6 @@ describe('Vahki kit attachments', () => {
     expect(VAHKI_KIT_2001_ATTACHMENTS.Socket_ShoulderR.materialColors).toBe(
       VAHKI_KIT_PALETTE_SOCKET
     );
+    expect(VAHKI_KIT_2003_ATTACHMENTS.RahkshiBody.materialColors).toBe(VAHKI_KIT_PALETTE_SOCKET);
   });
 });

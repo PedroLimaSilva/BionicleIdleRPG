@@ -81,11 +81,11 @@ export const VAHKI_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
   },
 };
 
-/** 2003-era Rahkshi torso shell and technic pivot — socket names match `kit_2003.glb`. */
+/** Rahkshi torso shell (socket gray) and technic pivot (hive body) from `kit_2003.glb`. */
 export const VAHKI_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment> = {
   RahkshiBody: {
     kitNodeName: KIT_2003_NODES.RahkshiBody,
-    materialColors: VAHKI_KIT_PALETTE_BODY,
+    materialColors: VAHKI_KIT_PALETTE_SOCKET,
   },
   TechnicTorsoPivot: {
     kitNodeName: KIT_2003_NODES.TechnicTorsoPivot,
