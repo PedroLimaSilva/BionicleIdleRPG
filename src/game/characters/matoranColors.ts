@@ -47,7 +47,7 @@ function defaultMetalForStage(): LegoColor {
 }
 
 function defaultJointsForStage(stage?: MatoranStage): LegoColor {
-  if (stage && METRU_STAGES.has(stage)) return LegoColor.DarkGray;
+  if (stage && METRU_STAGES.has(stage)) return LegoColor.DarkBluishGray;
   return LegoColor.LightGray;
 }
 

@@ -311,7 +311,7 @@ export const TOA_DEX = {
         secondary: LegoColor.DarkRed,
       },
       eyes: LegoColor.TransNeonGreen,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.FlatDarkGold,
         metal: LegoColor.LightGray,
@@ -348,7 +348,7 @@ export const TOA_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.Red,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.DarkGreen,
         metal: LegoColor.LightGray,
@@ -384,7 +384,7 @@ export const TOA_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransNeonOrange,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.DarkBlue,
         metal: LegoColor.LightGray,
@@ -421,7 +421,7 @@ export const TOA_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransLightBlue,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.White,
         metal: LegoColor.LightGray,
@@ -457,7 +457,7 @@ export const TOA_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransDarkBlue,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.LightBrown,
         metal: LegoColor.LightGray,
@@ -745,7 +745,7 @@ export const TOA_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransNeonGreen,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.DarkRed,
         metal: LegoColor.LightGray,
@@ -781,7 +781,7 @@ export const TOA_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransGreen,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.Black,
         metal: LegoColor.LightGray,
