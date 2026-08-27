@@ -10,7 +10,7 @@ import { CharacterDetail } from './pages/CharacterDetail/index.tsx';
 import { RahkshiDetail } from './pages/RahkshiDetail/index.tsx';
 
 import { GameProvider } from './context/Game.tsx';
-import { SceneCanvasProvider } from './context/Canvas.tsx';
+import { SceneCanvasProvider } from './rendering/3d/Canvas.tsx';
 import { SettingsProvider } from './context/Settings.tsx';
 
 import './styles/index.scss';

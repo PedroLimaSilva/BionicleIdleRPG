@@ -6,18 +6,18 @@ import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
 import { BattleOutcome } from './BattleOutcome';
 import { useBattlePageHitFeedback } from './useBattlePageHitFeedback';
-import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { Arena } from './Arena';
 import {
   getEnemiesDefeatedCount,
   computeBattleExpTotal,
   computeKranaRewardsForBattle,
   computeKraataRewardsForBattle,
-} from '../../game/BattleRewards';
+} from '../../game/combat/BattleRewards';
 import { KraataReward } from '../../types/Kraata';
 import { BattleSpeedControl } from './BattleSpeedControl';
 import { setBattleSpeedMultiplier } from '../../utils/battleSpeed';
-import { getEncounterArenaId, getEncounterTribe } from '../../game/arena';
+import { getEncounterArenaId, getEncounterTribe } from '../../game/combat/arena';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();

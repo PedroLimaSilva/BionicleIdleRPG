@@ -13,7 +13,7 @@ import {
   hasReadyMaskPowers,
   hasActiveEffectFromSource,
 } from './combatUtils';
-import { getLevelFromExp } from '../game/Levelling';
+import { getLevelFromExp } from '../game/characters/Levelling';
 import type { RecruitedCharacterData } from '../types/Matoran';
 
 /** Deep clone combatants to avoid cross-test pollution */
