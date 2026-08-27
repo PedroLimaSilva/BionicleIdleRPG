@@ -19,7 +19,7 @@ import { VAHKI_WEATHERED } from '../kit/palettes/vahkiKitPalette';
 const VAHKI_GLB = import.meta.env.BASE_URL + 'Vahki.glb';
 
 /**
- * `Vahki.glb` authors the Bordakh root at Y=10 so feet sit near 0 (same
+ * `Vahki.glb` authors the Vahki root at Y=10 so feet sit near 0 (same
  * CharacterScene framing as Toa Metru). Do not zero Y — that drops the legs
  * below the camera.
  */
@@ -67,9 +67,9 @@ export const VahkiModel = forwardRef<
   }, [onKitMeshesAttached]);
 
   const vahkiInstance = useMemo(() => {
-    const root = nodes.Bordakh as Object3D | undefined;
+    const root = nodes.Vahki as Object3D | undefined;
     if (!root) {
-      console.warn(`[VahkiModel] Root 'Bordakh' not found in ${VAHKI_GLB}`);
+      console.warn(`[VahkiModel] Root 'Vahki' not found in ${VAHKI_GLB}`);
       return new Group();
     }
     return root.clone(true);

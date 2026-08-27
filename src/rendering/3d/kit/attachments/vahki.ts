@@ -20,7 +20,8 @@ import {
  * `Vahki.glb` sockets are kit node names (Three.js-sanitized: `.` stripped, spaces
  * to `_`). Duplicate kit pieces on the head use a `_Head` suffix. Staff mounts are
  * `Tool_L` / `Tool_R` — the only hive tool in `kit_2004.glb` so far is Bordakh's.
- * `TechnicTorsoPivot` is the kit_2003 piece named on the rig.
+ * `RahkshiBody` and `TechnicTorsoPivot` are the kit_2003 pieces named on the rig.
+ * The visor socket is `VahkiHood_Baked` (same name as the kit_2004 node).
  */
 
 const VAHKI_HEAD_COLORS = {
@@ -58,7 +59,7 @@ export const VAHKI_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
     kitNodeName: KIT_2004_NODES.VahkiHip,
     materialColors: VAHKI_KIT_PALETTE_BODY,
   },
-  VahkiHood: {
+  VahkiHood_Baked: {
     kitNodeName: KIT_2004_NODES.VahkiHoodBaked,
     materialColors: VAHKI_KIT_PALETTE_HOOD,
   },
@@ -80,8 +81,12 @@ export const VAHKI_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
   },
 };
 
-/** 2003-era technic torso pivot — socket name matches `kit_2003.glb`. */
+/** 2003-era Rahkshi torso shell and technic pivot — socket names match `kit_2003.glb`. */
 export const VAHKI_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment> = {
+  RahkshiBody: {
+    kitNodeName: KIT_2003_NODES.RahkshiBody,
+    materialColors: VAHKI_KIT_PALETTE_BODY,
+  },
   TechnicTorsoPivot: {
     kitNodeName: KIT_2003_NODES.TechnicTorsoPivot,
     materialColors: VAHKI_KIT_PALETTE_BODY,

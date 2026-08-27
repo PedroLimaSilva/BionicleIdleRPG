@@ -79,8 +79,24 @@ describe('Vahki kit attachments', () => {
     expect(VAHKI_KIT_2001_ATTACHMENTS.Pin2L_Head_F.kitNodeName).toBe(KIT_2001_NODES.Pin2L);
   });
 
+  test('Vahki.glb root is named Vahki after sanitization', () => {
+    const sockets = readGlbNodeNames('Vahki.glb');
+    expect(sockets.has('Vahki')).toBe(true);
+    expect(sockets.has('Bordakh')).toBe(false);
+  });
+
   test('hood socket clones the baked visor kit node', () => {
-    expect(VAHKI_KIT_2004_ATTACHMENTS.VahkiHood.kitNodeName).toBe(KIT_2004_NODES.VahkiHoodBaked);
+    expect(VAHKI_KIT_2004_ATTACHMENTS.VahkiHood_Baked.kitNodeName).toBe(
+      KIT_2004_NODES.VahkiHoodBaked
+    );
+  });
+
+  test('RahkshiBody clones the kit_2003 torso shell named on the rig', () => {
+    expect(VAHKI_KIT_2003_ATTACHMENTS.RahkshiBody.kitNodeName).toBe(KIT_2003_NODES.RahkshiBody);
+  });
+
+  test('RahkshiBody uses hive body color', () => {
+    expect(VAHKI_KIT_2003_ATTACHMENTS.RahkshiBody.materialColors).toBe(VAHKI_KIT_PALETTE_BODY);
   });
 
   test('TechnicTorsoPivot clones the kit_2003 piece named on the rig', () => {
