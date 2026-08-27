@@ -82,6 +82,10 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
    yarn install
    ```
 
+   The `prepare` hook copies vendored assets into `public/` (Draco decoder from `three`, UI fonts from `@fontsource/*`). Those files are committed so GitHub Pages and CI builds do not depend on CDN fetches; after install, `git status` should stay clean unless `three` or font packages were upgraded—in that case run `yarn vendor-draco` / `yarn vendor-fonts` and commit the updated `public/` files.
+
+   **Dependency audit:** Run `yarn audit:prod:critical` (CI gate) or `yarn audit:prod` for high-severity production issues. One known unpatched advisory remains: `lodash.pick` via `@react-three/drei@9` (no fix available upstream; removed in drei v10).
+
 3. **Start the development server**
 
    ```bash
@@ -105,6 +109,8 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - `yarn format` - Format code with Prettier
 - `yarn format:check` - Check code formatting (also enforced locally via the Husky pre-commit hook)
 - `yarn check:unused-css` - Report unused CSS class selectors (dev hygiene)
+- `yarn audit:prod` - Audit production dependencies for high-severity vulnerabilities (see note below)
+- `yarn audit:prod:critical` - Audit production dependencies for critical vulnerabilities (used in CI)
 - `yarn deploy` - Build and deploy to GitHub Pages
 
 ## 📁 Project Structure
