@@ -1,3 +1,4 @@
+import { LegoColor } from '../../../../types/Colors';
 import type { Kit2001SocketAttachment } from '../nodes/kit2001Nodes';
 import { KIT_2001_NODES } from '../nodes/kit2001Nodes';
 import type { Kit2003SocketAttachment } from '../nodes/kit2003Nodes';
@@ -100,8 +101,14 @@ export const VAHKI_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment>
   Axle3L_B: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: VAHKI_KIT_PALETTE_BLACK },
   Axle3L_Hip: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: VAHKI_KIT_PALETTE_BLACK },
   AxlePin: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: VAHKI_KIT_PALETTE_BLACK },
-  GearM_B: { kitNodeName: KIT_2001_NODES.GearM, materialColors: VAHKI_KIT_PALETTE_BLACK },
-  GearM_F: { kitNodeName: KIT_2001_NODES.GearM, materialColors: VAHKI_KIT_PALETTE_BLACK },
+  GearM_B: {
+    kitNodeName: KIT_2001_NODES.GearM,
+    materialColors: { Main: { color: { kind: 'lego', value: LegoColor.LightGray } } },
+  },
+  GearM_F: {
+    kitNodeName: KIT_2001_NODES.GearM,
+    materialColors: { Main: { color: { kind: 'lego', value: LegoColor.LightGray } } },
+  },
   MataFoot_L: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: VAHKI_KIT_PALETTE_FEET },
   MataFoot_R: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: VAHKI_KIT_PALETTE_FEET },
   MataSingleArmHand_L: {
