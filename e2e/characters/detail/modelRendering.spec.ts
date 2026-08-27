@@ -172,7 +172,7 @@ test.describe('Character Model Rendering', () => {
       ...INITIAL_GAME_STATE,
       recruitedCharacters: recruited(ids),
     }),
-    characterIds: ['bordakh'],
+    characterIds: ['bordakh', 'nuurakh', 'vorzakh', 'zadakh', 'rorzakh', 'keerakh'],
     suiteName: 'Vahki Characters',
   });
 
