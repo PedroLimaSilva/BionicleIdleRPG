@@ -42,7 +42,7 @@
     "prepare": "husky && yarn vendor-draco && yarn vendor-fonts"
   },
   "dependencies": {
-    "@react-three/drei": "9.92.7",
+    "@react-three/drei": "10.7.8",
     "@react-three/fiber": "9.5.0",
     "@react-three/postprocessing": "3.0.4",
     "@types/three": "0.160.0",
@@ -99,6 +99,7 @@
     "workbox-window": "^7.3.0"
   },
   "resolutions": {
+    "@react-three/drei": "10.7.8",
     "sharp": "0.32.6",
     "sharp-ico": "0.1.5"
   },

@@ -261,14 +261,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
         </mesh>
       )}
       <group ref={characterRootRef}>
-        <PresentationControls
-          global={true}
-          snap={false}
-          speed={2}
-          zoom={1}
-          polar={[0, 0]}
-          config={{ friction: 26, mass: 0.5, tension: 170 }}
-        >
+        <PresentationControls global={true} snap={false} speed={2} zoom={1} polar={[0, 0]}>
           <Suspense fallback={null}>
             <CharacterModel matoran={matoran} onModelReady={bumpBloomRecollection} />
           </Suspense>
