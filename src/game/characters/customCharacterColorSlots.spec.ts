@@ -165,7 +165,7 @@ describe('customCharacterColorSlots', () => {
         MatoranStage.Metru,
         sampleColors
       );
-      expect(merged.arms.main).toBe(LegoColor.DarkGray);
+      expect(merged.arms.main).toBe(LegoColor.DarkBluishGray);
       expect(merged.arms.secondary).toBe(LegoColor.Red);
       expect(merged.body.main).toBe(LegoColor.Blue);
     });

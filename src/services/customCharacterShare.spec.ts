@@ -78,7 +78,7 @@ describe('customCharacterShare', () => {
           eyes: LegoColor.TransNeonRed,
           face: LegoColor.LightGray,
           feet: LegoColor.Red,
-          joints: LegoColor.DarkGray,
+          joints: LegoColor.DarkBluishGray,
           mask: LegoColor.Red,
           metal: LegoColor.FlatDarkGold,
           weaponGlow: LegoColor.Orange,
@@ -97,7 +97,7 @@ describe('customCharacterShare', () => {
       const parsed = parseCustomCharacterShare(token);
       expect(parsed).not.toBeNull();
       expect(parsed!.colors.body.main).toBe(LegoColor.Red);
-      expect(parsed!.colors.arms.main).toBe(LegoColor.DarkGray);
+      expect(parsed!.colors.arms.main).toBe(LegoColor.DarkBluishGray);
       expect(parsed!.colors.arms.secondary).toBe(LegoColor.Orange);
       expect(parsed!.colors.arms.metal).toBe(LegoColor.FlatDarkGold);
       expect(parsed!.colors.weapon?.glow).toBe(LegoColor.Orange);

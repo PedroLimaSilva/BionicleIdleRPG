@@ -45,7 +45,7 @@ if (failing.length === 0) {
 }
 
 console.error(
-  `Found ${failing.length} production dependency advisories at or above "${minSeverity}":`,
+  `Found ${failing.length} production dependency advisories at or above "${minSeverity}":`
 );
 for (const entry of failing) {
   const advisory = entry?.data?.advisory;

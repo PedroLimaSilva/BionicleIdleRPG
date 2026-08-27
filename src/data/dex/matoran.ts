@@ -7,7 +7,7 @@ export const MATORAN_DEX = {
     chronicleId: CHRONICLE_IDS.AHKMOU,
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Tan,
       },
@@ -16,13 +16,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransDarkBlue,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.LightBrown,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Tan,
       },
@@ -38,7 +38,7 @@ export const MATORAN_DEX = {
   Ehrye: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.LightGray,
       },
@@ -47,13 +47,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransLightBlue,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.White,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.LightGray,
       },
@@ -285,7 +285,7 @@ export const MATORAN_DEX = {
   Matau: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Lime,
       },
@@ -294,13 +294,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.Red,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.DarkGreen,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Lime,
       },
@@ -331,7 +331,7 @@ export const MATORAN_DEX = {
   Nokama: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.MediumBlue,
       },
@@ -340,13 +340,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransNeonOrange,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.DarkBlue,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.MediumBlue,
       },
@@ -361,7 +361,7 @@ export const MATORAN_DEX = {
   Nuhrii: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Orange,
       },
@@ -370,13 +370,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransNeonGreen,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.DarkRed,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Orange,
       },
@@ -392,7 +392,7 @@ export const MATORAN_DEX = {
   Nuju: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.LightGray,
       },
@@ -401,13 +401,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransLightBlue,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.White,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.LightGray,
       },
@@ -454,7 +454,7 @@ export const MATORAN_DEX = {
   Onewa: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Tan,
       },
@@ -463,13 +463,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransDarkBlue,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.LightBrown,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Tan,
       },
@@ -484,7 +484,7 @@ export const MATORAN_DEX = {
   Orkahm: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Lime,
       },
@@ -493,13 +493,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.Red,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.DarkGreen,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Lime,
       },
@@ -565,7 +565,7 @@ export const MATORAN_DEX = {
   Tehutti: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Black,
       },
@@ -574,13 +574,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransGreen,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.Black,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Black,
       },
@@ -702,7 +702,7 @@ export const MATORAN_DEX = {
   Vakama: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Orange,
       },
@@ -711,13 +711,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransNeonGreen,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.DarkRed,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Orange,
       },
@@ -732,7 +732,7 @@ export const MATORAN_DEX = {
   Vhisola: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.MediumBlue,
       },
@@ -741,13 +741,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransNeonOrange,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.DarkBlue,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.MediumBlue,
       },
@@ -763,7 +763,7 @@ export const MATORAN_DEX = {
   Whenua: {
     colors: {
       arms: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Black,
       },
@@ -772,13 +772,13 @@ export const MATORAN_DEX = {
         metal: LegoColor.LightGray,
       },
       eyes: LegoColor.TransGreen,
-      face: LegoColor.DarkGray,
+      face: LegoColor.DarkBluishGray,
       feet: {
         main: LegoColor.Black,
         metal: LegoColor.LightGray,
       },
       legs: {
-        main: LegoColor.DarkGray,
+        main: LegoColor.DarkBluishGray,
         metal: LegoColor.LightGray,
         secondary: LegoColor.Black,
       },
