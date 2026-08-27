@@ -12,6 +12,7 @@ import {
   VAHKI_KIT_PALETTE_FEET,
   VAHKI_KIT_PALETTE_HOOD,
   VAHKI_KIT_PALETTE_LEGS,
+  VAHKI_KIT_PALETTE_SOCKET,
   VAHKI_KIT_PALETTE_WEAPON,
 } from '../palettes/vahkiKitPalette';
 
@@ -31,11 +32,11 @@ const VAHKI_HEAD_COLORS = {
 export const VAHKI_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment> = {
   SocketDouble1L_L: {
     kitNodeName: KIT_2004_NODES.SocketDouble1L,
-    materialColors: VAHKI_KIT_PALETTE_BODY,
+    materialColors: VAHKI_KIT_PALETTE_SOCKET,
   },
   SocketDouble1L_R: {
     kitNodeName: KIT_2004_NODES.SocketDouble1L,
-    materialColors: VAHKI_KIT_PALETTE_BODY,
+    materialColors: VAHKI_KIT_PALETTE_SOCKET,
   },
   Tool_L: {
     kitNodeName: KIT_2004_NODES.BordakhTool,
@@ -83,7 +84,7 @@ export const VAHKI_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
 export const VAHKI_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment> = {
   TechnicTorsoPivot: {
     kitNodeName: KIT_2003_NODES.TechnicTorsoPivot,
-    materialColors: VAHKI_KIT_PALETTE_BLACK,
+    materialColors: VAHKI_KIT_PALETTE_BODY,
   },
 };
 
@@ -158,10 +159,10 @@ export const VAHKI_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment>
   Pin2L_Head_F: { kitNodeName: KIT_2001_NODES.Pin2L, materialColors: VAHKI_KIT_PALETTE_BLACK },
   Socket_ShoulderL: {
     kitNodeName: KIT_2001_NODES.Socket,
-    materialColors: VAHKI_KIT_PALETTE_BLACK,
+    materialColors: VAHKI_KIT_PALETTE_SOCKET,
   },
   Socket_ShoulderR: {
     kitNodeName: KIT_2001_NODES.Socket,
-    materialColors: VAHKI_KIT_PALETTE_BLACK,
+    materialColors: VAHKI_KIT_PALETTE_SOCKET,
   },
 };

@@ -38,3 +38,11 @@ export const VAHKI_KIT_PALETTE_BLACK: Partial<Record<string, KitMaterialSlotEntr
   Metal: { kind: 'lego', value: LegoColor.Black },
   Solid_Black: { kind: 'lego', value: LegoColor.Black },
 };
+
+/** Shoulder sockets and double sockets — always DarkBluishGray, not hive body. */
+export const VAHKI_KIT_PALETTE_SOCKET: Partial<Record<string, KitMaterialSlotEntry>> = {
+  Main: { kind: 'lego', value: LegoColor.DarkBluishGray },
+  Metal: { kind: 'lego', value: LegoColor.DarkBluishGray },
+  Solid_Black: { kind: 'lego', value: LegoColor.DarkBluishGray },
+  'Solid_Black.002': { kind: 'lego', value: LegoColor.DarkBluishGray },
+};
