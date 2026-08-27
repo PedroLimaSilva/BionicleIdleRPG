@@ -44,7 +44,7 @@
     "prepare": "husky && yarn vendor-draco && yarn vendor-fonts"
   },
   "dependencies": {
-    "@react-three/drei": "9.92.7",
+    "@react-three/drei": "10.7.8",
     "@react-three/fiber": "9.5.0",
     "@react-three/postprocessing": "3.0.4",
     "@types/three": "0.160.0",
@@ -62,7 +62,7 @@
     "@eslint/js": "^9.18.0",
     "@fontsource/inter": "^5.3.0",
     "@fontsource/orbitron": "^5.3.0",
-    "@gltf-transform/cli": "^4.3.0",
+    "@gltf-transform/cli": "4.3.0",
     "@playwright/test": "^1.58.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -101,8 +101,12 @@
     "workbox-window": "^7.3.0"
   },
   "resolutions": {
+    "@gltf-transform/cli": "4.3.0",
+    "@react-three/drei": "10.7.8",
+    "camera-controls": "3.1.0",
     "handlebars": "^4.7.9",
     "js-yaml": "^4.1.1",
+    "language-tags": "1.0.9",
     "lodash-es": "^4.18.0",
     "sharp": "0.35.4",
     "sharp-ico": "0.1.5"

@@ -349,7 +349,6 @@ export function Arena({ arenaId, currentWave, enemies, team, tribe }: ArenaProps
         speed={2}
         zoom={1}
         polar={[-Math.PI / 2, 0]}
-        config={{ friction: 26, mass: 0.5, tension: 170 }}
       >
         <group dispose={null} name="Scene" ref={sceneGroupRef}>
           <HitImpactParticles />

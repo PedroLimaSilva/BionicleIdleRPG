@@ -110,14 +110,7 @@ export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKr
         </mesh>
       )}
       <group ref={sceneRootRef}>
-        <PresentationControls
-          global
-          snap={false}
-          speed={2}
-          zoom={1}
-          polar={[0, 0]}
-          config={{ friction: 26, mass: 0.5, tension: 170 }}
-        >
+        <PresentationControls global snap={false} speed={2} zoom={1} polar={[0, 0]}>
           <Suspense fallback={null}>
             <RahkshiModel kraata={kraata} hasKraata={hasKraata} />
           </Suspense>
