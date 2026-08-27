@@ -100,6 +100,7 @@
   },
   "resolutions": {
     "@react-three/drei": "10.7.8",
+    "camera-controls": "3.1.0",
     "sharp": "0.32.6",
     "sharp-ico": "0.1.5"
   },
