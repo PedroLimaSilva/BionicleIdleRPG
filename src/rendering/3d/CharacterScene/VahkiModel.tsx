@@ -7,11 +7,26 @@ import { useKitAttachments } from '../hooks/useKitAttachments';
 import { CHARACTER_DEX } from '../../../data/dex/index';
 import { MatoranStage } from '../../../types/Matoran';
 import { KIT_2001_GLB_PATH } from '../kit/kit2001';
+import { KIT_2003_GLB_PATH } from '../kit/kit2003';
 import { KIT_2004_GLB_PATH } from '../kit/kit2004';
-import { VAHKI_KIT_2001_ATTACHMENTS, VAHKI_KIT_2004_ATTACHMENTS } from '../kit/attachments/vahki';
+import {
+  VAHKI_KIT_2001_ATTACHMENTS,
+  VAHKI_KIT_2003_ATTACHMENTS,
+  VAHKI_KIT_2004_ATTACHMENTS,
+} from '../kit/attachments/vahki';
 import { VAHKI_WEATHERED } from '../kit/palettes/vahkiKitPalette';
 
 const VAHKI_GLB = import.meta.env.BASE_URL + 'Vahki.glb';
+
+/**
+ * `Vahki.glb` authors the Bordakh root at Y=10 so feet sit near 0 (same
+ * CharacterScene framing as Toa Metru). Do not zero Y — that drops the legs
+ * below the camera.
+ */
+const VAHKI_BIND_POSE_Y = 10;
+
+/** Must match how many `useKitAttachments` calls this component makes. */
+const VAHKI_ATTACHMENT_RUNS = 3;
 
 /** Deepest node wins for duplicate socket names. */
 function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
@@ -24,8 +39,9 @@ function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
 
 /**
  * One Vahki chassis for all six hives. `Vahki.glb` is a socket-only rig; every
- * visible piece (including Bordakh staffs) is cloned from kit_2001 / kit_2004.
- * There is no Idle clip yet — combat uses procedural Attack / Hit / Defeat.
+ * visible piece (including Bordakh staffs) is cloned from kit_2004 / kit_2003 /
+ * kit_2001. There is no Idle clip yet — combat uses procedural Attack / Hit /
+ * Defeat.
  */
 export const VahkiModel = forwardRef<
   CombatantModelHandle,
@@ -43,7 +59,7 @@ export const VahkiModel = forwardRef<
     if (!onKitMeshesAttached) return undefined;
     return () => {
       kitLayersDone.current += 1;
-      if (kitLayersDone.current >= 2) {
+      if (kitLayersDone.current >= VAHKI_ATTACHMENT_RUNS) {
         kitLayersDone.current = 0;
         onKitMeshesAttached();
       }
@@ -81,6 +97,16 @@ export const VahkiModel = forwardRef<
   });
 
   useKitAttachments({
+    attachments: VAHKI_KIT_2003_ATTACHMENTS,
+    characterNodes: kitCharacterNodes,
+    colors: colorScheme,
+    kitUrl: KIT_2003_GLB_PATH,
+    onAttached: onKitLayerAttached,
+    stage: MatoranStage.Vahki,
+    weathered: VAHKI_WEATHERED,
+  });
+
+  useKitAttachments({
     attachments: VAHKI_KIT_2001_ATTACHMENTS,
     characterNodes: kitCharacterNodes,
     colors: colorScheme,
@@ -92,7 +118,7 @@ export const VahkiModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={vahkiInstance} scale={1} position={[0, 0, 0]} />
+      <primitive object={vahkiInstance} scale={1} position={[0, VAHKI_BIND_POSE_Y, 0]} />
     </group>
   );
 });
@@ -100,4 +126,4 @@ export const VahkiModel = forwardRef<
 VahkiModel.displayName = 'VahkiModel';
 
 useGLTF.preload(VAHKI_GLB);
-useKitAttachments.preload(KIT_2001_GLB_PATH, KIT_2004_GLB_PATH);
+useKitAttachments.preload(KIT_2001_GLB_PATH, KIT_2003_GLB_PATH, KIT_2004_GLB_PATH);

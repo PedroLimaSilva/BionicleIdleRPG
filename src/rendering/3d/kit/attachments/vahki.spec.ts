@@ -1,8 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { KIT_2001_NODES } from '../nodes/kit2001Nodes';
+import { KIT_2003_NODES } from '../nodes/kit2003Nodes';
 import { KIT_2004_NODES } from '../nodes/kit2004Nodes';
-import { VAHKI_KIT_2001_ATTACHMENTS, VAHKI_KIT_2004_ATTACHMENTS } from './vahki';
+import {
+  VAHKI_KIT_2001_ATTACHMENTS,
+  VAHKI_KIT_2003_ATTACHMENTS,
+  VAHKI_KIT_2004_ATTACHMENTS,
+} from './vahki';
 
 const GLB_HEADER_BYTES = 12;
 const CHUNK_HEADER_BYTES = 8;
@@ -34,17 +39,22 @@ describe('Vahki kit attachments', () => {
     const sockets = readGlbNodeNames('Vahki.glb');
     for (const socketName of [
       ...Object.keys(VAHKI_KIT_2004_ATTACHMENTS),
+      ...Object.keys(VAHKI_KIT_2003_ATTACHMENTS),
       ...Object.keys(VAHKI_KIT_2001_ATTACHMENTS),
     ]) {
       expect(sockets.has(socketName)).toBe(true);
     }
   });
 
-  test('kit node names exist in kit_2004.glb / kit_2001.glb', () => {
+  test('kit node names exist in kit_2004.glb / kit_2003.glb / kit_2001.glb', () => {
     const kit2004 = readGlbNodeNames('kit_2004.glb');
+    const kit2003 = readGlbNodeNames('kit_2003.glb');
     const kit2001 = readGlbNodeNames('kit_2001.glb');
     for (const row of Object.values(VAHKI_KIT_2004_ATTACHMENTS)) {
       expect(kit2004.has(row.kitNodeName)).toBe(true);
+    }
+    for (const row of Object.values(VAHKI_KIT_2003_ATTACHMENTS)) {
+      expect(kit2003.has(row.kitNodeName)).toBe(true);
     }
     for (const row of Object.values(VAHKI_KIT_2001_ATTACHMENTS)) {
       expect(kit2001.has(row.kitNodeName)).toBe(true);
@@ -54,6 +64,7 @@ describe('Vahki kit attachments', () => {
   test('socket keys are Three.js runtime names (no leftover Blender dots)', () => {
     for (const socketName of [
       ...Object.keys(VAHKI_KIT_2004_ATTACHMENTS),
+      ...Object.keys(VAHKI_KIT_2003_ATTACHMENTS),
       ...Object.keys(VAHKI_KIT_2001_ATTACHMENTS),
     ]) {
       expect(socketName).not.toContain('.');
@@ -68,5 +79,11 @@ describe('Vahki kit attachments', () => {
 
   test('hood socket clones the baked visor kit node', () => {
     expect(VAHKI_KIT_2004_ATTACHMENTS.VahkiHood.kitNodeName).toBe(KIT_2004_NODES.VahkiHoodBaked);
+  });
+
+  test('TechnicTorsoPivot clones the kit_2003 piece named on the rig', () => {
+    expect(VAHKI_KIT_2003_ATTACHMENTS.TechnicTorsoPivot.kitNodeName).toBe(
+      KIT_2003_NODES.TechnicTorsoPivot
+    );
   });
 });

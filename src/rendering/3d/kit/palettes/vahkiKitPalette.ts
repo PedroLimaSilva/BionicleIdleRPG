@@ -21,14 +21,13 @@ export const VAHKI_KIT_PALETTE_EYES: Partial<Record<string, KitMaterialSlotEntry
 };
 
 /**
- * Baked transmissive visor (`VahkiHood_baked`): keep maps / transmission, tint
- * both diffuse and emission from the hive's eye color.
+ * Baked transmissive visor (`VahkiHood_baked`): keep maps / transmission / authored
+ * emissive intensity, tint both diffuse and emission from the hive's eye color.
  */
 export const VAHKI_KIT_PALETTE_HOOD: Partial<Record<string, KitMaterialSlotEntry>> = {
   VahkiHood_baked: {
     color: { key: 'eyes', kind: 'palette' },
     emissive: { key: 'eyes', kind: 'palette' },
-    emissiveIntensity: 3,
     weathered: false,
   },
 };

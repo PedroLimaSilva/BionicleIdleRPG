@@ -99,7 +99,6 @@ describe('buildKitMeshMaterials metallic colors', () => {
         VahkiHood_baked: {
           color: { key: 'eyes', kind: 'palette' },
           emissive: { key: 'eyes', kind: 'palette' },
-          emissiveIntensity: 3,
           weathered: false,
         },
       }),
@@ -109,7 +108,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(next).not.toBe(baked);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
     expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.emissiveIntensity).toBe(3);
+    expect(next.emissiveIntensity).toBe(1);
     expect(next.normalMap).toBe(baked.normalMap);
   });
 

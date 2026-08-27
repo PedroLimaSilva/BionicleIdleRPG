@@ -1,5 +1,7 @@
 import type { Kit2001SocketAttachment } from '../nodes/kit2001Nodes';
 import { KIT_2001_NODES } from '../nodes/kit2001Nodes';
+import type { Kit2003SocketAttachment } from '../nodes/kit2003Nodes';
+import { KIT_2003_NODES } from '../nodes/kit2003Nodes';
 import type { Kit2004SocketAttachment } from '../nodes/kit2004Nodes';
 import { KIT_2004_NODES } from '../nodes/kit2004Nodes';
 import {
@@ -17,6 +19,7 @@ import {
  * `Vahki.glb` sockets are kit node names (Three.js-sanitized: `.` stripped, spaces
  * to `_`). Duplicate kit pieces on the head use a `_Head` suffix. Staff mounts are
  * `Tool_L` / `Tool_R` — the only hive tool in `kit_2004.glb` so far is Bordakh's.
+ * `TechnicTorsoPivot` is the kit_2003 piece named on the rig.
  */
 
 const VAHKI_HEAD_COLORS = {
@@ -73,6 +76,14 @@ export const VAHKI_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
   VahkiSpine: {
     kitNodeName: KIT_2004_NODES.VahkiSpine,
     materialColors: VAHKI_KIT_PALETTE_BODY,
+  },
+};
+
+/** 2003-era technic torso pivot — socket name matches `kit_2003.glb`. */
+export const VAHKI_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment> = {
+  TechnicTorsoPivot: {
+    kitNodeName: KIT_2003_NODES.TechnicTorsoPivot,
+    materialColors: VAHKI_KIT_PALETTE_BLACK,
   },
 };
 

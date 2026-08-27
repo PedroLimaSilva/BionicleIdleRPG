@@ -75,7 +75,11 @@ import {
   METRU_KIT_2004_ATTACHMENTS,
   METRU_KIT_2004_DISK_LAUNCHER_ATTACHMENTS,
 } from '../attachments/metru';
-import { VAHKI_KIT_2001_ATTACHMENTS, VAHKI_KIT_2004_ATTACHMENTS } from '../attachments/vahki';
+import {
+  VAHKI_KIT_2001_ATTACHMENTS,
+  VAHKI_KIT_2003_ATTACHMENTS,
+  VAHKI_KIT_2004_ATTACHMENTS,
+} from '../attachments/vahki';
 import { KIT_2001_NODES, type Kit2001NodeName } from './kit2001Nodes';
 import { KIT_2003_NODES, type Kit2003NodeName } from './kit2003Nodes';
 import { KIT_2004_NODES, type Kit2004NodeName } from './kit2004Nodes';
@@ -205,6 +209,7 @@ export const KIT_2003_ATTACHMENT_MAPS = [
   LHIKAN_KIT_2003_ATTACHMENTS,
   NUJU_KIT_2003_ATTACHMENTS,
   NOKAMA_KIT_2003_ATTACHMENTS,
+  VAHKI_KIT_2003_ATTACHMENTS,
 ] as const;
 
 export const KIT_2004_ATTACHMENT_MAPS = [
