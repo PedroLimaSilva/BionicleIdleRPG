@@ -1,5 +1,5 @@
 import { LegoColor } from './Colors';
-import { JobAssignment, MatoranJob } from './Jobs';
+import { JobAssignment } from './Jobs';
 import type { BodyPartId, BodyPartSlot } from './KitParts';
 import { Quest } from './Quests';
 
@@ -119,8 +119,6 @@ export type BaseMatoran = {
   tags?: MatoranTag[];
   /** Reference to shared chronicle set - multiple matoran entries can share the same chronicle ID */
   chronicleId?: string;
-  /** Canonical Metru-era day job before becoming Toa; limits job assignments while in Metru stage. */
-  metruProfession?: MatoranJob;
 };
 
 export type ListedCharacterData = {

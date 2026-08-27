@@ -1,7 +1,7 @@
 import type { BaseMatoran } from '../types/Matoran';
 import { MatoranStage, MatoranTag } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
-import { CHARACTER_DEX } from '../data/dex/index';
+import { JOB_DETAILS } from '../data/jobs';
 
 /** Future Toa Metru — no Kanoka disk launcher on the rig. */
 export const METRU_TOA_CANDIDATE_IDS = [
@@ -26,9 +26,18 @@ export const METRU_GREAT_DISK_IDS = [
 export type MetruToaCandidateId = (typeof METRU_TOA_CANDIDATE_IDS)[number];
 export type MetruGreatDiskId = (typeof METRU_GREAT_DISK_IDS)[number];
 
-/** Returns the canonical Metru-era profession for a character, if any. */
+/** Returns the canonical Metru-era profession job for a character, if any. */
 export function getMetruProfession(matoranId: string): MatoranJob | undefined {
-  return CHARACTER_DEX[matoranId]?.metruProfession;
+  for (const job of Object.values(MatoranJob)) {
+    const details = JOB_DETAILS[job];
+    if (
+      details.allowedStages?.includes(MatoranStage.Metru) &&
+      details.allowedCharacters?.includes(matoranId)
+    ) {
+      return job;
+    }
+  }
+  return undefined;
 }
 
 /** Runtime rig node for the holster branch on the loaded rig. */

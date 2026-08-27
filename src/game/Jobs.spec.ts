@@ -225,6 +225,18 @@ describe('Jobs', () => {
       expect(jobs).not.toContain(MatoranJob.CharcoalMaker);
       expect(jobs).not.toContain(MatoranJob.AlgaeHarvester);
     });
+
+    test('Metru Matoran do not see Metru jobs without an allowedCharacters entry', () => {
+      const mockGameState: GameState = {
+        completedQuests: ['settle_metru_nui'],
+      } as GameState;
+
+      const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
+      const jobs = getAvailableJobs(mockGameState, vakama);
+
+      expect(jobs).not.toContain(MatoranJob.HydroTechnician);
+      expect(jobs).not.toContain(MatoranJob.ProtodermisSmelter);
+    });
   });
 
   describe('applyJobExp', () => {

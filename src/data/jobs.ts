@@ -28,6 +28,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {},
   },
   [MatoranJob.ChuteController]: {
+    allowedCharacters: ['Ehrye', 'Matau', 'Orkahm'],
+    allowedStages: [MatoranStage.Metru],
     description: 'Tests and monitors Le-Metru’s high-speed chute transport systems.',
     elementAffinity: {
       favored: [ElementTribe.Air],
@@ -51,6 +53,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: { requiredProgress: ['bohrok_assistants'] },
   },
   [MatoranJob.HydroTechnician]: {
+    allowedStages: [MatoranStage.Metru],
     description: 'Manages purified protodermis flow in Ga-Metru research systems.',
     elementAffinity: {
       favored: [ElementTribe.Water],
@@ -63,6 +66,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
   },
   [MatoranJob.KnowledgeScribe]: {
+    allowedCharacters: ['Nuju'],
+    allowedStages: [MatoranStage.Metru],
     description: 'Records prophecies and research in Ko-Metru knowledge towers.',
     elementAffinity: {
       favored: [ElementTribe.Ice],
@@ -107,6 +112,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: { requiredProgress: ['mnog_arrive_onu_koro'] },
   },
   [MatoranJob.MaskMaker]: {
+    allowedCharacters: ['Nuhrii', 'Vakama'],
+    allowedStages: [MatoranStage.Metru],
     description: 'Forges Kanohi masks in the foundries of Ta-Metru.',
     elementAffinity: {
       favored: [ElementTribe.Fire],
@@ -141,6 +148,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: { requiredProgress: ['bohrok_assistants'] },
   },
   [MatoranJob.ProtodermisSmelter]: {
+    allowedStages: [MatoranStage.Metru],
     description: 'Operates high-temperature smelting units in Ta-Metru.',
     elementAffinity: {
       favored: [ElementTribe.Fire],
@@ -177,6 +185,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
   },
   [MatoranJob.SculptureOperator]: {
+    allowedCharacters: ['Ahkmou', 'Onewa'],
+    allowedStages: [MatoranStage.Metru],
     description: 'Builds large-scale statues and carvings in Po-Metru.',
     elementAffinity: {
       favored: [ElementTribe.Stone],
@@ -189,6 +199,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
   },
   [MatoranJob.StasisTechnician]: {
+    allowedCharacters: ['Tehutti', 'Whenua'],
+    allowedStages: [MatoranStage.Metru],
     description: 'Catalogues artifacts and maintains stasis chambers in the Metru Nui Archives.',
     elementAffinity: {
       favored: [ElementTribe.Earth],
@@ -225,6 +237,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: { requiredProgress: ['bohrok_assistants'] },
   },
   [MatoranJob.Teacher]: {
+    allowedCharacters: ['Nokama', 'Vhisola'],
+    allowedStages: [MatoranStage.Metru],
     description: 'Instructs students in the schools and labs of Ga-Metru.',
     elementAffinity: {
       favored: [ElementTribe.Water],

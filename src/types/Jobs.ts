@@ -38,6 +38,8 @@ export interface JobDetails {
   };
   /** If set, only characters with these stages can be assigned this job. */
   allowedStages?: MatoranStage[];
+  /** If set with allowedStages, only these character IDs can be assigned this job. */
+  allowedCharacters?: string[];
 }
 
 export type JobAssignment = {

@@ -12,6 +12,27 @@ export function isBohrokOrKal(matoran: BaseMatoran) {
   return isBohrok(matoran) || isBohrokKal(matoran);
 }
 
+export function isMetru(matoran: BaseMatoran) {
+  return matoran.stage === MatoranStage.Metru;
+}
+
+export function isMetruStage(stage: MatoranStage) {
+  return stage === MatoranStage.Metru;
+}
+
+/** Stages whose characters may only take jobs explicitly marked for that stage. */
+export function hasStageRestrictedJobs(matoran: BaseMatoran) {
+  return isBohrokOrKal(matoran) || isMetru(matoran);
+}
+
+export function hasStageRestrictedJobPool(stage: MatoranStage) {
+  return (
+    stage === MatoranStage.Bohrok ||
+    stage === MatoranStage.BohrokKal ||
+    stage === MatoranStage.Metru
+  );
+}
+
 export function isMatoran(matoran: BaseMatoran) {
   return [MatoranStage.Diminished, MatoranStage.Rebuilt, MatoranStage.Metru].includes(
     matoran.stage
