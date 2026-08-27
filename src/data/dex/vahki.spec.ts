@@ -1,5 +1,10 @@
 import { MatoranStage } from '../../types/Matoran';
 import { COMBATANT_DEX, ENCOUNTERS } from '../combat';
+import {
+  getBuyableCharacters,
+  getCharactersUnlockedByQuest,
+} from '../../game/recruitment/Recruitment';
+import { METRU_VAKAMA_DUME_QUEST_ID } from '../quests/metru_nui';
 import { CHARACTER_DEX } from './index';
 
 const VAHKI_HIVES = ['bordakh', 'nuurakh', 'vorzakh', 'zadakh', 'rorzakh', 'keerakh'] as const;
@@ -28,6 +33,15 @@ describe('Vahki opponents', () => {
     }
     expect(new Set(sixHives?.waves.flatMap((wave) => wave.map((slot) => slot.id)))).toEqual(
       new Set(VAHKI_HIVES)
+    );
+  });
+
+  test('all six hives become buyable after The Turaga’s Visit', () => {
+    const expected = VAHKI_HIVES.map((id) => ({ cost: 500, id }));
+    expect(getCharactersUnlockedByQuest(METRU_VAKAMA_DUME_QUEST_ID)).toEqual(expected);
+    expect(getBuyableCharacters([METRU_VAKAMA_DUME_QUEST_ID], [])).toEqual(expected);
+    expect(getBuyableCharacters([METRU_VAKAMA_DUME_QUEST_ID], [{ exp: 0, id: 'bordakh' }])).toEqual(
+      expected.filter((entry) => entry.id !== 'bordakh')
     );
   });
 });

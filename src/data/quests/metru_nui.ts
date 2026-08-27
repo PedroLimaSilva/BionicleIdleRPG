@@ -49,6 +49,14 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
     rewards: {
       currency: 6500,
       cutscene: { cutsceneId: 'metru_vakama_dume_visit', type: 'visual_novel' },
+      unlockCharacters: [
+        { cost: 500, id: 'bordakh' },
+        { cost: 500, id: 'nuurakh' },
+        { cost: 500, id: 'vorzakh' },
+        { cost: 500, id: 'zadakh' },
+        { cost: 500, id: 'rorzakh' },
+        { cost: 500, id: 'keerakh' },
+      ],
       xpPerMatoran: 5500,
     },
     section: 'Metru Nui',
