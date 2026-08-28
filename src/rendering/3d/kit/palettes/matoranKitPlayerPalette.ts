@@ -1,6 +1,7 @@
 import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
 import { LegoColor } from '../../../../types/Colors';
-import { MATA_KIT_PLAYER_PALETTE_BRAIN, mataKitPlayerPaletteGlow } from './mataKitPlayerPalette';
+import { KIT_PALETTE_BRAIN_BAKED } from './brainKitPalette';
+import { mataKitPlayerPaletteGlow } from './mataKitPlayerPalette';
 
 /** Technic pins / axles: fixed black. */
 export const MATORAN_KIT_PALETTE_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -47,13 +48,12 @@ export const MATORAN_KIT_PALETTE_FEET: Partial<Record<string, KitMaterialSlotEnt
 
 export const MATORAN_KIT_PALETTE_FACE: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...mataKitPlayerPaletteGlow(50),
-  Brain: { color: { key: 'eyes', kind: 'palette' }, weathered: false },
+  ...KIT_PALETTE_BRAIN_BAKED,
   Face: { color: { key: 'face', kind: 'palette' }, weathered: true },
 };
 
-export const MATORAN_KIT_PALETTE_BRAIN: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...MATA_KIT_PLAYER_PALETTE_BRAIN,
-};
+export const MATORAN_KIT_PALETTE_BRAIN: Partial<Record<string, KitMaterialSlotEntry>> =
+  KIT_PALETTE_BRAIN_BAKED;
 
 export const MATORAN_KIT_PALETTE_GLOW: Partial<Record<string, KitMaterialSlotEntry>> =
   mataKitPlayerPaletteGlow(50);
