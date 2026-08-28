@@ -18,7 +18,7 @@ export type IdleSwitchConfig = {
    * When a pair has no entry (or the clip is missing), falls back to crossfade.
    */
   transitions?: Record<string, string>;
-  /** Minimum ms between switches. Default: 800. */
+  /** Minimum ms between switches after the first. Default: 5000 (5 seconds). */
   cooldownMs?: number;
 };
 

@@ -29,7 +29,7 @@ export function useIdleSwitchController(
   const [idleActionName, setIdleActionName] = useState(initialClip);
   const currentIndexRef = useRef(defaultIndex);
   const isTransitioningRef = useRef(false);
-  const lastSwitchAtRef = useRef(0);
+  const lastSwitchAtRef = useRef<number | null>(null);
   const prevEpochRef = useRef(interactionEpoch);
 
   useEffect(() => {
@@ -39,9 +39,9 @@ export function useIdleSwitchController(
     if (shouldDisableAnimations()) return;
     if (isTransitioningRef.current) return;
 
-    const cooldownMs = config.cooldownMs ?? 800;
+    const cooldownMs = config.cooldownMs ?? 5000;
     const now = performance.now();
-    if (now - lastSwitchAtRef.current < cooldownMs) return;
+    if (lastSwitchAtRef.current !== null && now - lastSwitchAtRef.current < cooldownMs) return;
     lastSwitchAtRef.current = now;
 
     const fromIndex = currentIndexRef.current;

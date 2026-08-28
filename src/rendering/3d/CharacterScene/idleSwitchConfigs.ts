@@ -10,7 +10,6 @@ export const REBUILT_IDLE_SWITCH: IdleSwitchConfig = {
  * Wire into `VahkiModel` once `vahki.glb` lands with these clip names.
  */
 export const VAHKI_IDLE_SWITCH: IdleSwitchConfig = {
-  cooldownMs: 1200,
   idles: [{ clip: 'Idle Biped' }, { clip: 'Idle Quadruped' }],
   transitions: {
     [idleTransitionKey('Idle Biped', 'Idle Quadruped')]: 'Biped To Quadruped',

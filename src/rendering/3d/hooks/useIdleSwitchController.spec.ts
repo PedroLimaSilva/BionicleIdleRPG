@@ -146,4 +146,37 @@ describe('useIdleSwitchController', () => {
 
     nowSpy.mockRestore();
   });
+
+  it('defaults to a 5 second cooldown when cooldownMs is omitted', () => {
+    const nowSpy = jest.spyOn(performance, 'now');
+    nowSpy.mockReturnValue(1000);
+
+    const config: IdleSwitchConfig = {
+      idles: [{ clip: 'Idle A' }, { clip: 'Idle B' }],
+    };
+    const actions = {
+      'Idle A': fakeAction(),
+      'Idle B': fakeAction(),
+    };
+
+    const { rerender, result } = renderHook(() =>
+      useIdleSwitchController(actions, mixer, { config })
+    );
+
+    mockInteractionEpoch.mockReturnValue(1);
+    rerender();
+    expect(result.current).toBe('Idle B');
+
+    nowSpy.mockReturnValue(5000);
+    mockInteractionEpoch.mockReturnValue(2);
+    rerender();
+    expect(result.current).toBe('Idle B');
+
+    nowSpy.mockReturnValue(6000);
+    mockInteractionEpoch.mockReturnValue(3);
+    rerender();
+    expect(result.current).toBe('Idle A');
+
+    nowSpy.mockRestore();
+  });
 });
