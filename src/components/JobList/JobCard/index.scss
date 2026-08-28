@@ -65,6 +65,23 @@
   font-weight: 600;
   color: var(--theme-element-primary);
   text-shadow: 0 0 4px var(--theme-element-glow-transparent);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.profession-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--theme-element-linear-gradient);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
 }
 
 .job-description {

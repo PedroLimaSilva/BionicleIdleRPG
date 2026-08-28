@@ -6,6 +6,13 @@
   margin-bottom: 24px;
 }
 
+.metru-profession-hint {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin: -12px 0 20px;
+}
+
 .job-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));

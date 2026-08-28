@@ -28,6 +28,8 @@ import { TelemetryConsentPrompt } from './components/TelemetryConsentPrompt/inde
 import { SharedCharacterPrompt } from './components/SharedCharacterPrompt/index.tsx';
 import PrivacyPolicyPage from './pages/PrivacyPolicy/index.tsx';
 import { ModelPreview } from './pages/ModelPreview/index.tsx';
+import { CharacterDex } from './pages/CharacterDex/index.tsx';
+import { CharacterDexPreview } from './pages/CharacterDex/Preview.tsx';
 
 const NotFound: React.FC = () => (
   <div className="page-container">
@@ -54,6 +56,8 @@ function AnimatedRoutes() {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/settings/game-state" element={<GameStateEditorPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/test/dex" element={<CharacterDex />} />
+        <Route path="/test/dex/:id" element={<CharacterDexPreview />} />
         <Route path="/test/model/:kind/:id" element={<ModelPreview />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

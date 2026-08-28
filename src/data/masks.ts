@@ -75,6 +75,28 @@ export function isMaskSelectableForStage(mask: Mask, stage: MatoranStage): boole
   return getSelectableMasksForStage(stage).includes(mask);
 }
 
+/**
+ * Kanohi the character dex preview may swap onto a rig. Starts from the creation
+ * picker list and always includes the character's own dex mask (story Kanohi like
+ * Avohkii). Bohrok / Vahki have no Kanohi socket.
+ */
+export function getDexPreviewMasks(stage: MatoranStage, wornMask: Mask): Mask[] {
+  switch (stage) {
+    case MatoranStage.Bohrok:
+    case MatoranStage.BohrokKal:
+    case MatoranStage.Vahki:
+    case MatoranStage.Makuta:
+      return [];
+    default: {
+      const masks = [...getSelectableMasksForStage(stage)];
+      if (!masks.includes(wornMask)) {
+        masks.unshift(wornMask);
+      }
+      return masks;
+    }
+  }
+}
+
 /** Kanohi rendered with a transparent lens (Kaukau and its Nuva sculpt, Great Rau). */
 export const TRANSPARENT_MASKS: Mask[] = [Mask.Kaukau, Mask.KaukauNuva, Mask.RauGreat];
 

@@ -1,9 +1,24 @@
 import { JOB_DETAILS } from '../../data/jobs';
 import { JobAssignment, MatoranJob, ProductivityEffect } from '../../types/Jobs';
-import { RecruitedCharacterData } from '../../types/Matoran';
+import { MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { GameState } from '../../types/GameState';
 import { CHARACTER_DEX } from '../../data/dex/index';
-import { isBohrokOrKal } from '../characters/matoranStage';
+import { hasStageRestrictedJobPool, isMetruStage } from '../characters/matoranStage';
+
+function jobMatchesCharacter(job: MatoranJob, matoranId: string, stage: MatoranStage): boolean {
+  const { allowedCharacters, allowedStages } = JOB_DETAILS[job];
+
+  if (hasStageRestrictedJobPool(stage)) {
+    if (!allowedStages?.includes(stage)) return false;
+    if (isMetruStage(stage)) {
+      return allowedCharacters?.includes(matoranId) ?? false;
+    }
+    return allowedCharacters?.includes(matoranId) ?? true;
+  }
+
+  if (!allowedStages) return true;
+  return allowedStages.includes(stage);
+}
 
 export function isJobUnlocked(job: MatoranJob, gameState: GameState): boolean {
   const jobData = JOB_DETAILS[job];
@@ -32,20 +47,9 @@ export function getAvailableJobs(
     if (!matoranDex) {
       return jobs.filter((job) => !JOB_DETAILS[job].allowedStages);
     }
-    const effectiveMatoran = {
-      ...matoranDex,
-      stage: matoran.stage ?? matoranDex.stage,
-    };
+    const effectiveStage = matoran.stage ?? matoranDex.stage;
 
-    jobs = jobs.filter((job) => {
-      const { allowedStages } = JOB_DETAILS[job];
-      if (isBohrokOrKal(effectiveMatoran)) {
-        // Bohrok only have access to reconstruction jobs (jobs with allowedStages for Bohrok)
-        return allowedStages?.includes(effectiveMatoran.stage) ?? false;
-      }
-      if (!allowedStages) return true;
-      return allowedStages.includes(effectiveMatoran.stage);
-    });
+    jobs = jobs.filter((job) => jobMatchesCharacter(job, matoran.id, effectiveStage));
   }
 
   return jobs;
