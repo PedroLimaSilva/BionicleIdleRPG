@@ -22,8 +22,8 @@ export const TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS = 0.3;
 
 export const TRANSMISSIVE_KIT_THICKNESS = 0.15;
 
-/** Draw transmissive kit gel before opaque Kanohi masks (see `KANOHI_RENDER_ORDER`). */
-export const TRANSMISSIVE_KIT_RENDER_ORDER = 0;
+/** Draw transmissive kit gel before opaque head stalk + Kanohi masks. */
+export const TRANSMISSIVE_KIT_RENDER_ORDER = -1;
 
 export type TransmissiveKitKind = KitTransmissivePreset;
 
@@ -89,8 +89,8 @@ export function buildTransmissiveKitMaterial(
     name: materialName,
     opacity: 1,
     polygonOffset: true,
-    polygonOffsetFactor: -0.75,
-    polygonOffsetUnits: -0.75,
+    polygonOffsetFactor: -2,
+    polygonOffsetUnits: -2,
     roughness: preset.roughness,
     side: FrontSide,
     thickness: preset.thickness,

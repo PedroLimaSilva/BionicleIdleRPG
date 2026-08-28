@@ -1,4 +1,4 @@
-import { MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
+import { FrontSide, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { metallicColorPbr } from '../kit/palettes/metalPbr';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
@@ -27,6 +27,14 @@ export function hasMaskPbrMaps(mat: MaskStandardMat): boolean {
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
   mat.transparent = true;
   if (isMaskGlowMaterialName(mat.name)) return;
+
+  // Closed Kanohi shells are only viewed from outside — interior back-faces z-fight
+  // with transmissive brain gel inside the mask cavity (including baked PBR Hau / Avohkii).
+  mat.side = FrontSide;
+  mat.polygonOffset = true;
+  mat.polygonOffsetFactor = 1;
+  mat.polygonOffsetUnits = 1;
+
   if (hasMaskPbrMaps(mat)) return;
 
   mat.metalness = 0;

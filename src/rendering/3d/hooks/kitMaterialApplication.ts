@@ -1,4 +1,12 @@
-import { Color, Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
+import {
+  Color,
+  FrontSide,
+  Material,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Object3D,
+} from 'three';
 import type { BaseMatoran } from '../../../types/Matoran';
 import {
   KIT_MATERIAL_WEATHERED_OPTION_KEYS,
@@ -182,7 +190,14 @@ export function buildKitMeshMaterials(
         ...metalPbr,
         ...mergeSlotWeatheredOpts(spec),
       };
-      return getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
+      const weathered = getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
+      // MataFace stalk shares a plane with brain gel — DoubleSide back-faces z-fight the gel.
+      if (normalizeSlotName(mat.name) === 'face') {
+        const faceMat = weathered.clone();
+        faceMat.side = FrontSide;
+        return faceMat;
+      }
+      return weathered;
     }
 
     return buildStandardSlotMaterial(mat, spec, palette, slotColor, metalPbr);
