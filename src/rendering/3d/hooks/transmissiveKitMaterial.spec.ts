@@ -9,10 +9,19 @@ import {
 } from './transmissiveKitMaterial';
 
 describe('transmissiveKitMaterial', () => {
-  test('recognizes Brain and VahkiHood when the slot tints emissive', () => {
-    const spec = { emissive: { key: 'eyes' as const, kind: 'palette' as const } };
-    expect(resolveTransmissiveKitKind('Brain', spec)).toBe('brain');
-    expect(resolveTransmissiveKitKind('VahkiHood', spec)).toBe('vahkiHood');
+  test('uses explicit transmissive preset when the slot tints emissive', () => {
+    expect(
+      resolveTransmissiveKitKind('Brain', {
+        emissive: { key: 'eyes', kind: 'palette' as const },
+        transmissive: 'brain' as const,
+      })
+    ).toBe('brain');
+    expect(
+      resolveTransmissiveKitKind('VahkiHood', {
+        emissive: { key: 'eyes', kind: 'palette' as const },
+        transmissive: 'vahkiHood' as const,
+      })
+    ).toBe('vahkiHood');
     expect(
       resolveTransmissiveKitKind('Brain', {
         color: { key: 'eyes', kind: 'palette' as const },
@@ -23,7 +32,11 @@ describe('transmissiveKitMaterial', () => {
     expect(resolveTransmissiveKitKind('Brain', { color: { key: 'eyes', kind: 'palette' } })).toBe(
       undefined
     );
-    expect(resolveTransmissiveKitKind('Disk_Baked', spec)).toBe(undefined);
+    expect(
+      resolveTransmissiveKitKind('Disk', {
+        emissive: { key: 'eyes', kind: 'palette' as const },
+      })
+    ).toBe(undefined);
   });
 
   test('McToran face brain is clearer than Toa brain; hood is murkiest', () => {

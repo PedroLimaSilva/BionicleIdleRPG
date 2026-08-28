@@ -4,12 +4,12 @@ import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
  * Transmissive brains (`Brain` on MataBrain / MetruBrain kit nodes): runtime
  * transmission + IOR with diffuse / emission from eyes (`transmissiveKitMaterial`).
  */
-export const BRAIN_BAKED_EMISSIVE_INTENSITY = 0.1;
+export const BRAIN_EMISSIVE_INTENSITY = 0.1;
 
 const brainTransmissiveSlot = (): KitMaterialSlotEntry => ({
   color: { key: 'eyes', kind: 'palette' },
   emissive: { key: 'eyes', kind: 'palette' },
-  emissiveIntensity: BRAIN_BAKED_EMISSIVE_INTENSITY,
+  emissiveIntensity: BRAIN_EMISSIVE_INTENSITY,
   transmissive: 'brain',
   weathered: false,
 });
@@ -18,7 +18,7 @@ const brainTransmissiveSlot = (): KitMaterialSlotEntry => ({
 export const MCTORAN_FACE_BRAIN_SLOT: KitMaterialSlotEntry = {
   color: { key: 'eyes', kind: 'palette' },
   emissive: { key: 'eyes', kind: 'palette' },
-  emissiveIntensity: BRAIN_BAKED_EMISSIVE_INTENSITY,
+  emissiveIntensity: BRAIN_EMISSIVE_INTENSITY,
   transmissive: 'mctoranFace',
   weathered: false,
 };
@@ -26,12 +26,6 @@ export const MCTORAN_FACE_BRAIN_SLOT: KitMaterialSlotEntry = {
 const BRAIN_TRANSMISSIVE_SLOT = brainTransmissiveSlot();
 
 /** Spread into Toa / Nuva rig palettes wherever brain sockets clone kit parts. */
-export const KIT_PALETTE_BRAIN_BAKED: Partial<Record<string, KitMaterialSlotEntry>> = {
+export const KIT_PALETTE_BRAIN: Partial<Record<string, KitMaterialSlotEntry>> = {
   Brain: BRAIN_TRANSMISSIVE_SLOT,
 };
-
-/** @deprecated Use `KIT_PALETTE_BRAIN_BAKED` — kept for import stability. */
-export const MATA_KIT_PALETTE_BRAIN_BAKED = KIT_PALETTE_BRAIN_BAKED;
-
-/** @deprecated Use `KIT_PALETTE_BRAIN_BAKED` — kept for import stability. */
-export const METRU_KIT_PALETTE_BRAIN_BAKED = KIT_PALETTE_BRAIN_BAKED;

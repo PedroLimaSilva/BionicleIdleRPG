@@ -78,18 +78,18 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(mat.roughness).toBe(0.5);
   });
 
-  test('baked PBR rig materials stay untouched even when a slot would match', () => {
-    const mesh = meshWithMaterialNamed('Disk_Baked');
-    const baked = mesh.material as MeshStandardMaterial;
-    baked.normalMap = {} as MeshStandardMaterial['normalMap'];
-    baked.metalnessMap = {} as MeshStandardMaterial['metalnessMap'];
+  test('mapped PBR rig materials stay untouched even when a slot would match', () => {
+    const mesh = meshWithMaterialNamed('Disk');
+    const mapped = mesh.material as MeshStandardMaterial;
+    mapped.normalMap = {} as MeshStandardMaterial['normalMap'];
+    mapped.metalnessMap = {} as MeshStandardMaterial['metalnessMap'];
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({ Main: { kind: 'part', part: 'weapon', slot: 'main' } }),
       COLORS,
       PLASTIC_WEATHERED
     ) as MeshStandardMaterial;
-    expect(next).toBe(baked);
+    expect(next).toBe(mapped);
     expect(next.metalness).toBe(0.5);
   });
 
@@ -122,6 +122,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
           color: { key: 'eyes', kind: 'palette' },
           emissive: { key: 'eyes', kind: 'palette' },
           emissiveIntensity: 0.1,
+          transmissive: 'brain',
           weathered: false,
         },
       }),
@@ -143,6 +144,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
           color: { key: 'eyes', kind: 'palette' },
           emissive: { key: 'eyes', kind: 'palette' },
           emissiveIntensity: 0.1,
+          transmissive: 'vahkiHood',
           weathered: false,
         },
       }),

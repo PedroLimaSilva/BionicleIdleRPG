@@ -24,27 +24,16 @@ export const TRANSMISSIVE_KIT_THICKNESS = 0.25;
 
 export type TransmissiveKitKind = KitTransmissivePreset;
 
-const LEGACY_TRANSMISSIVE_NAMES: Record<string, TransmissiveKitKind> = {
-  brain: 'brain',
-  matabrain: 'brain',
-  metrubrain: 'brain',
-  matabrain_baked: 'brain',
-  metrubrain_baked: 'brain',
-  vahkihood: 'vahkiHood',
-  vahkihood_baked: 'vahkiHood',
-};
-
 /**
  * Brains / Vahki visor use runtime transmission when the slot tints emissive (Bohrok
  * `Brain` is color-only and stays on the normal plastic path).
  */
 export function resolveTransmissiveKitKind(
-  materialName: string,
+  _materialName: string,
   spec: KitMaterialSlotOverride | undefined
 ): TransmissiveKitKind | undefined {
   if (!spec?.emissive) return undefined;
-  if (spec.transmissive) return spec.transmissive;
-  return LEGACY_TRANSMISSIVE_NAMES[materialName.trim().toLowerCase()];
+  return spec.transmissive;
 }
 
 function presetForKind(kind: TransmissiveKitKind): {

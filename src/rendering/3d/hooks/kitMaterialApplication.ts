@@ -57,10 +57,9 @@ function resolveKitMaterialSlotSpec(
   return undefined;
 }
 
-/** Rig meshes with baked PBR (masks, Vakama's Kanoka disk, etc.) keep GLB-authored look. */
-function isPreservedBakedMaterial(mat: StandardMat): boolean {
-  if (hasMaskPbrMaps(mat)) return true;
-  return mat.name.toLowerCase().includes('_baked');
+/** Rig meshes with authored PBR maps (Kanoka disk, Great Kanohi masks, etc.) keep GLB look. */
+function isPreservedMappedMaterial(mat: StandardMat): boolean {
+  return hasMaskPbrMaps(mat);
 }
 
 export function buildKitMaterialSlotLookup(
@@ -160,13 +159,13 @@ export function buildKitMeshMaterials(
         emissiveIntensity
       );
     }
-    // Baked / mapped materials keep GLB maps (Kanoka disk, etc.).
-    if (isPreservedBakedMaterial(mat)) {
+    // Mapped materials keep GLB textures (Kanoka disk, etc.).
+    if (isPreservedMappedMaterial(mat)) {
       if (!spec || (!spec.color && !spec.emissive && spec.emissiveIntensity === undefined)) {
         return mat;
       }
-      const bakedColor = spec.color ? resolveKitColorSource(spec.color, palette) : undefined;
-      return buildStandardSlotMaterial(mat, spec, palette, bakedColor, undefined);
+      const mappedColor = spec.color ? resolveKitColorSource(spec.color, palette) : undefined;
+      return buildStandardSlotMaterial(mat, spec, palette, mappedColor, undefined);
     }
     const slotColor = spec?.color ? resolveKitColorSource(spec.color, palette) : undefined;
     // Metallic plastics (gold) shine on any slot, not just Metal; the slot's own

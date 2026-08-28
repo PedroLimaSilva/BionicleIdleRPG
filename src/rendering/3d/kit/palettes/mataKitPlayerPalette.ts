@@ -1,5 +1,5 @@
 import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
-import { KIT_PALETTE_BRAIN_BAKED } from './brainKitPalette';
+import { KIT_PALETTE_BRAIN } from './brainKitPalette';
 import { kitPartSlots } from './partSlots';
 
 /**
@@ -12,9 +12,9 @@ import { kitPartSlots } from './partSlots';
 export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMaterialSlotEntry>> =
   kitPartSlots('body', 'mata');
 
-/** Baked transmissive Mata / Metru brains — `Brain` material slot (see `brainKitPalette`). */
+/** Transmissive Mata / Metru brains — `Brain` material slot (see `brainKitPalette`). */
 export const MATA_KIT_PLAYER_PALETTE_BRAIN: Partial<Record<string, KitMaterialSlotEntry>> =
-  KIT_PALETTE_BRAIN_BAKED;
+  KIT_PALETTE_BRAIN;
 
 /** Face / head kit glow (e.g. Tahu flame); follows the body glow slot (eyes fallback). */
 export function mataKitPlayerPaletteGlow(

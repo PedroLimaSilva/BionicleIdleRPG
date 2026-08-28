@@ -31,6 +31,7 @@ export const VAHKI_KIT_PALETTE_HOOD: Partial<Record<string, KitMaterialSlotEntry
     color: { key: 'eyes', kind: 'palette' },
     emissive: { key: 'eyes', kind: 'palette' },
     emissiveIntensity: VAHKI_HOOD_EMISSIVE_INTENSITY,
+    transmissive: 'vahkiHood',
     weathered: false,
   },
 };
