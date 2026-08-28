@@ -21,19 +21,17 @@ export const VAHKI_KIT_PALETTE_EYES: Partial<Record<string, KitMaterialSlotEntry
 };
 
 /**
- * Baked transmissive visor (`VahkiHood_baked`): keep maps / transmission, tint
- * diffuse and emission from the hive eye color. The kit GLB has no
- * `KHR_materials_emissive_strength`, so Three.js defaults to 1 — too hot once
- * emissive is replaced with a full eye color and selective bloom. Use a modest
- * visor glow instead of the 35× eye / 50× mask intensities.
+ * Transmissive visor (`VahkiHood` kit material): runtime transmission + IOR, less clear
+ * than brain gel. Tint diffuse / emission from hive eye color (`transmissiveKitMaterial`).
  */
 export const VAHKI_HOOD_EMISSIVE_INTENSITY = 0.1;
 
 export const VAHKI_KIT_PALETTE_HOOD: Partial<Record<string, KitMaterialSlotEntry>> = {
-  VahkiHood_baked: {
+  VahkiHood: {
     color: { key: 'eyes', kind: 'palette' },
     emissive: { key: 'eyes', kind: 'palette' },
     emissiveIntensity: VAHKI_HOOD_EMISSIVE_INTENSITY,
+    transmissive: 'vahkiHood',
     weathered: false,
   },
 };

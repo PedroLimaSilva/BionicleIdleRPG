@@ -13,6 +13,7 @@ import {
   useMaskTransitionFrame,
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
+import { applyKanohiRenderOrder } from './kanohiRenderOrder';
 import { isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
 import { masksCollected } from '../../../services/matoranUtils';
 
@@ -140,6 +141,8 @@ export function useNuvaMask(
         }
       }
     });
+
+    applyKanohiRenderOrder(clone);
 
     applyNuvaMaskColors(
       clone,
