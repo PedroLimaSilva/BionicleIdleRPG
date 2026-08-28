@@ -1,22 +1,28 @@
 import { Color, DoubleSide, MeshPhysicalMaterial } from 'three';
+import type { KitTransmissivePreset } from '../../../types/KitParts';
+import type { KitMaterialSlotOverride } from '../../../types/KitParts';
 
 /** Kit GLB `KHR_materials_ior` export (~1.45 glass / trans-plastic). */
 export const TRANSMISSIVE_KIT_IOR = 1.45;
 
-/** Brain gel — kit export transmission 0.35. */
+/** Toa / Metru brain gel (`MataBrain` / `MetruBrain` kit nodes) — kit transmission 0.35. */
 export const TRANSMISSIVE_KIT_BRAIN_TRANSMISSION = 0.35;
 
+/** McToran face brain — clearer than Toa brain gel. */
+export const TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION = 0.55;
+
 /**
- * Vahki visor — dialed less clear than brain in-game (kit export is 0.75; we override).
+ * Vahki visor — murkier than brain in-game (kit export is 0.75; we override down).
  */
 export const TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION = 0.15;
 
 export const TRANSMISSIVE_KIT_BRAIN_ROUGHNESS = 0.2;
+export const TRANSMISSIVE_KIT_MCTORAN_FACE_ROUGHNESS = 0.15;
 export const TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS = 0.3;
 
 export const TRANSMISSIVE_KIT_THICKNESS = 0.25;
 
-export type TransmissiveKitKind = 'brain' | 'vahkiHood';
+export type TransmissiveKitKind = KitTransmissivePreset;
 
 const LEGACY_TRANSMISSIVE_NAMES: Record<string, TransmissiveKitKind> = {
   brain: 'brain',
@@ -34,9 +40,10 @@ const LEGACY_TRANSMISSIVE_NAMES: Record<string, TransmissiveKitKind> = {
  */
 export function resolveTransmissiveKitKind(
   materialName: string,
-  spec: { emissive?: unknown } | undefined
+  spec: KitMaterialSlotOverride | undefined
 ): TransmissiveKitKind | undefined {
   if (!spec?.emissive) return undefined;
+  if (spec.transmissive) return spec.transmissive;
   return LEGACY_TRANSMISSIVE_NAMES[materialName.trim().toLowerCase()];
 }
 
@@ -46,20 +53,29 @@ function presetForKind(kind: TransmissiveKitKind): {
   roughness: number;
   thickness: number;
 } {
-  if (kind === 'brain') {
-    return {
-      ior: TRANSMISSIVE_KIT_IOR,
-      transmission: TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
-      roughness: TRANSMISSIVE_KIT_BRAIN_ROUGHNESS,
-      thickness: TRANSMISSIVE_KIT_THICKNESS,
-    };
+  switch (kind) {
+    case 'brain':
+      return {
+        ior: TRANSMISSIVE_KIT_IOR,
+        transmission: TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
+        roughness: TRANSMISSIVE_KIT_BRAIN_ROUGHNESS,
+        thickness: TRANSMISSIVE_KIT_THICKNESS,
+      };
+    case 'mctoranFace':
+      return {
+        ior: TRANSMISSIVE_KIT_IOR,
+        transmission: TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
+        roughness: TRANSMISSIVE_KIT_MCTORAN_FACE_ROUGHNESS,
+        thickness: TRANSMISSIVE_KIT_THICKNESS,
+      };
+    case 'vahkiHood':
+      return {
+        ior: TRANSMISSIVE_KIT_IOR,
+        transmission: TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
+        roughness: TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS,
+        thickness: TRANSMISSIVE_KIT_THICKNESS,
+      };
   }
-  return {
-    ior: TRANSMISSIVE_KIT_IOR,
-    transmission: TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
-    roughness: TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS,
-    thickness: TRANSMISSIVE_KIT_THICKNESS,
-  };
 }
 
 /** Uniform transmissive plastic — no baked maps; avoids `alphaMode: BLEND` vs Kanohi masks. */

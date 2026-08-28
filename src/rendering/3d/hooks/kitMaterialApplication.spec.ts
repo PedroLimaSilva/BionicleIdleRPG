@@ -4,6 +4,7 @@ import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
 import {
   TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
   TRANSMISSIVE_KIT_IOR,
+  TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
   TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
 } from './transmissiveKitMaterial';
 import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
@@ -92,7 +93,27 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(next.metalness).toBe(0.5);
   });
 
-  test('Brain slot builds transmissive gel (clearer than Vahki hood)', () => {
+  test('McToran Face Brain slot is clearer than Toa brain', () => {
+    const mesh = meshWithMaterialNamed('Brain');
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Brain: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 0.1,
+          transmissive: 'mctoranFace',
+          weathered: false,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshPhysicalMaterial;
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION);
+    expect(next.transmission).toBeGreaterThan(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
+  });
+
+  test('Brain slot gets runtime transmission when slot tints emissive', () => {
     const mesh = meshWithMaterialNamed('Brain');
     const next = buildKitMeshMaterials(
       mesh,

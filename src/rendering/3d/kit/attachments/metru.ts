@@ -10,6 +10,7 @@ import {
   MATORAN_KIT_PALETTE_FACE,
   MATORAN_KIT_PALETTE_FEET,
 } from '../palettes/matoranKitPlayerPalette';
+import { KIT_PALETTE_BRAIN_BAKED } from '../palettes/brainKitPalette';
 import type { RigMaterialTarget } from '../../hooks/useRigMaterials';
 import { LegoColor } from '../../../../types/Colors';
 import { NUVA_KIT_METAL } from '../palettes/nuvaKitPlayerPalette';
@@ -139,7 +140,10 @@ export const METRU_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment>
   },
   MataBrainHead: {
     kitNodeName: KIT_2001_NODES.MataBrain,
-    materialColors: MATORAN_KIT_PALETTE_FACE,
+    materialColors: {
+      ...MATORAN_KIT_PALETTE_FACE,
+      Brain: KIT_PALETTE_BRAIN_BAKED.Brain,
+    },
   },
   MataFaceHead: {
     kitNodeName: KIT_2001_NODES.MataFace,

@@ -10,6 +10,9 @@ export type BodyPartSlot = (typeof BODY_PART_SLOTS)[number];
 /** Flat palette keys that are not per-part kit slots (avatar / Kanohi / brain). */
 export type FlatPaletteKey = 'mask' | 'eyes' | 'face';
 
+/** Runtime transmission presets for kit gel / visor slots (`transmissiveKitMaterial`). */
+export type KitTransmissivePreset = 'brain' | 'mctoranFace' | 'vahkiHood';
+
 /** How to resolve a hex color for a named material slot on a kit mesh */
 export type KitMaterialColorSource =
   | { kind: 'lego'; value: LegoColor }
@@ -69,6 +72,8 @@ export type KitMaterialSlotOverride = {
   weathered?: boolean;
   /** When below 1, enables alpha blending on the cloned kit material. */
   opacity?: number;
+  /** Overrides material-name defaults for runtime transmission gel / visor. */
+  transmissive?: KitTransmissivePreset;
 } & KitMaterialWeatheredTuning;
 
 export type KitMaterialSlotEntry = KitMaterialColorSource | KitMaterialSlotOverride;
