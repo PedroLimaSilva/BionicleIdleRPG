@@ -8,9 +8,12 @@ import {
 } from './maskMaterial';
 
 describe('maskNeedsAlphaBlend', () => {
-  it('detects Kaukau and sub-1 opacity masks', () => {
+  it('detects sub-1 opacity and trans-named masks', () => {
     expect(
       maskNeedsAlphaBlend(new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 1 }))
+    ).toBe(false);
+    expect(
+      maskNeedsAlphaBlend(new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 0.5 }))
     ).toBe(true);
     expect(maskNeedsAlphaBlend(new MeshStandardMaterial({ name: 'Hau_baked', opacity: 0.5 }))).toBe(
       true
@@ -18,6 +21,9 @@ describe('maskNeedsAlphaBlend', () => {
     expect(maskNeedsAlphaBlend(new MeshStandardMaterial({ name: 'Hau_baked', opacity: 1 }))).toBe(
       false
     );
+    expect(
+      maskNeedsAlphaBlend(new MeshStandardMaterial({ name: 'Rau_trans_baked', opacity: 1 }))
+    ).toBe(true);
   });
 });
 
@@ -49,10 +55,16 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.roughnessMap).toBeDefined();
   });
 
-  it('uses alpha blending for Kaukau', () => {
-    const mat = new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 1, roughness: 0.5 });
-    prepareClonedMaskMaterial(mat);
-    expect(mat.transparent).toBe(true);
+  it('keeps Nuva Kaukau opaque while Mata Kaukau blends', () => {
+    const nuva = new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 1, roughness: 0.5 });
+    prepareClonedMaskMaterial(nuva);
+    expect(nuva.transparent).toBe(false);
+    expect(nuva.side).toBe(FrontSide);
+    expect(nuva.depthWrite).toBe(true);
+
+    const mata = new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 0.5, roughness: 0.5 });
+    prepareClonedMaskMaterial(mata);
+    expect(mata.transparent).toBe(true);
   });
 
   it('leaves glow materials metallic for emissive lenses', () => {

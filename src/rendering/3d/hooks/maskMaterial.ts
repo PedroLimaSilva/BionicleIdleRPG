@@ -16,11 +16,14 @@ export function hasMaskPbrMaps(mat: MaskStandardMat): boolean {
   return !!(mat.normalMap || mat.roughnessMap || mat.metalnessMap);
 }
 
-/** Kaukau and similar Kanohi need alpha blending (GLB `alphaMode: BLEND`). */
+/**
+ * Kanohi that need alpha blending (GLB `alphaMode: BLEND` or sub-1 opacity).
+ * Do not infer from sculpt name — Nuva `Kaukau` is opacity 1 with vent holes only;
+ * Mata `Kaukau` ships at 0.5 opacity and still blends correctly via the opacity check.
+ */
 export function maskNeedsAlphaBlend(mat: MaskStandardMat): boolean {
   if (mat.opacity < 0.999) return true;
-  const name = mat.name.toLowerCase();
-  return name.includes('kaukau') || name.includes('trans');
+  return mat.name.toLowerCase().includes('trans');
 }
 
 /**
