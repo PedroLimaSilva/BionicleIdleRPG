@@ -12,12 +12,6 @@ export const METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID = 'metru_great_temple_tr
 /** The Toa Metru claim their tools, learn of the Great Disks, and set out to find six Matoran. */
 export const METRU_SEEK_GREAT_DISKS_QUEST_ID = 'metru_seek_the_great_disks';
 
-/** Unlocks Ko-Metru knowledge tower jobs. */
-export const ACTIVATE_KNOWLEDGE_TOWERS_QUEST_ID = 'activate_knowledge_towers';
-
-/** Unlocks Onu-Metru Archives jobs. */
-export const UNLOCK_ARCHIVES_QUEST_ID = 'unlock_archives';
-
 /** Future Toa Metru Matoran — no Kanoka disk launcher on the rig. */
 const METRU_TOA_CANDIDATE_RECRUIT_IDS = [
   'Matau',
@@ -80,34 +74,6 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
     },
     section: 'Metru Nui',
     unlockedAfter: [METRU_NUI_SAGA_BEGIN_QUEST_ID],
-  },
-  {
-    description:
-      'Nuju reports to the Knowledge Towers of Ko-Metru, resuming his work transcribing prophecies and cataloguing research alongside the city’s scholars.',
-    durationSeconds: 22 * 60,
-    id: ACTIVATE_KNOWLEDGE_TOWERS_QUEST_ID,
-    name: 'Knowledge Towers Reopened',
-    requirements: { matoran: ['Nuju'], minLevel: 27 },
-    rewards: {
-      currency: 7000,
-      xpPerMatoran: 6000,
-    },
-    section: 'Metru Nui',
-    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
-  },
-  {
-    description:
-      'Whenua descends into the Archives beneath Onu-Metru, returning to his duties as archivist—sorting artifacts, updating records, and tending the stasis chambers.',
-    durationSeconds: 22 * 60,
-    id: UNLOCK_ARCHIVES_QUEST_ID,
-    name: 'Archives Reopened',
-    requirements: { matoran: ['Whenua'], minLevel: 27 },
-    rewards: {
-      currency: 7000,
-      xpPerMatoran: 6000,
-    },
-    section: 'Metru Nui',
-    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
   },
   {
     description:

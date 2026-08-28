@@ -37,9 +37,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '🚀 Chute Test Driver',
     rate: 2,
-    unlock: {
-      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
-    },
+    unlock: {},
   },
   [MatoranJob.GaKoroRebuilder]: {
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
@@ -61,9 +59,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '💧 Hydro Technician',
     rate: 2,
-    unlock: {
-      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
-    },
+    unlock: {},
   },
   [MatoranJob.KnowledgeScribe]: {
     allowedCharacters: ['Nuju'],
@@ -75,9 +71,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '📚 Knowledge Scribe',
     rate: 2,
-    unlock: {
-      requiredProgress: ['activate_knowledge_towers'],
-    },
+    unlock: {},
   },
   [MatoranJob.KoKoroRebuilder]: {
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
@@ -121,9 +115,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '🎭 Mask Maker',
     rate: 2,
-    unlock: {
-      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
-    },
+    unlock: {},
   },
   [MatoranJob.OnuKoroRebuilder]: {
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
@@ -156,9 +148,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '⚙️ Protodermis Smelter',
     rate: 2,
-    unlock: {
-      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
-    },
+    unlock: {},
   },
   [MatoranJob.RahiNestWatcher]: {
     description: 'Observes and documents flying Rahi behavior in Le-Wahi.',
@@ -194,9 +184,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '🗿 Sculpture Operator',
     rate: 2,
-    unlock: {
-      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
-    },
+    unlock: {},
   },
   [MatoranJob.StasisTechnician]: {
     allowedCharacters: ['Tehutti', 'Whenua'],
@@ -208,9 +196,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '🔒 Stasis Technician',
     rate: 2,
-    unlock: {
-      requiredProgress: ['unlock_archives'],
-    },
+    unlock: {},
   },
   [MatoranJob.StoneMason]: {
     description: 'Builds stone structures and sculputres in Po-Wahi.',
@@ -246,8 +232,6 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '📖 Teacher',
     rate: 2,
-    unlock: {
-      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
-    },
+    unlock: {},
   },
 };

@@ -121,7 +121,8 @@ describe('Jobs', () => {
     });
 
     test('returns false when required progress is not met', () => {
-      expect(isJobUnlocked(MatoranJob.ProtodermisSmelter, mockGameState)).toBe(false);
+      const lockedState = { completedQuests: [] } as unknown as GameState;
+      expect(isJobUnlocked(MatoranJob.AlgaeHarvester, lockedState)).toBe(false);
     });
   });
 
@@ -135,8 +136,8 @@ describe('Jobs', () => {
 
       // CharcoalMaker has no requirements
       expect(available).toContain(MatoranJob.CharcoalMaker);
-      // ProtodermisSmelter requires 'metru_vakama_dume_and_the_great_temple'
-      expect(available).not.toContain(MatoranJob.ProtodermisSmelter);
+      // AlgaeHarvester requires quest progress
+      expect(available).not.toContain(MatoranJob.AlgaeHarvester);
     });
 
     test('includes jobs when requirements are met', () => {
@@ -180,10 +181,10 @@ describe('Jobs', () => {
       expect(bohrokJobs).not.toContain(MatoranJob.StoneMason);
     });
 
-    test('Metru Matoran only see their canonical profession when unlocked', () => {
-      const mockGameState: GameState = {
-        completedQuests: ['metru_vakama_dume_and_the_great_temple'],
-      } as GameState;
+    test('Metru Matoran only see their canonical profession', () => {
+      const mockGameState = {
+        completedQuests: [],
+      } as unknown as GameState;
 
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
       const nokama = { exp: 0, id: 'Nokama' } as RecruitedCharacterData;
@@ -194,29 +195,21 @@ describe('Jobs', () => {
       expect(getAvailableJobs(mockGameState, matau)).toEqual([MatoranJob.ChuteController]);
     });
 
-    test('Metru Matoran with district-specific unlocks only see profession when quest met', () => {
-      const settledOnly: GameState = {
-        completedQuests: ['metru_vakama_dume_and_the_great_temple'],
-      } as GameState;
-      const withTowers: GameState = {
-        completedQuests: ['metru_vakama_dume_and_the_great_temple', 'activate_knowledge_towers'],
-      } as GameState;
-      const withArchives: GameState = {
-        completedQuests: ['metru_vakama_dume_and_the_great_temple', 'unlock_archives'],
-      } as GameState;
+    test('Metru Matoran with district-specific professions see them without quest progress', () => {
+      const mockGameState = {
+        completedQuests: [],
+      } as unknown as GameState;
 
       const nuju = { exp: 0, id: 'Nuju' } as RecruitedCharacterData;
       const whenua = { exp: 0, id: 'Whenua' } as RecruitedCharacterData;
 
-      expect(getAvailableJobs(settledOnly, nuju)).toEqual([]);
-      expect(getAvailableJobs(withTowers, nuju)).toEqual([MatoranJob.KnowledgeScribe]);
-      expect(getAvailableJobs(settledOnly, whenua)).toEqual([]);
-      expect(getAvailableJobs(withArchives, whenua)).toEqual([MatoranJob.StasisTechnician]);
+      expect(getAvailableJobs(mockGameState, nuju)).toEqual([MatoranJob.KnowledgeScribe]);
+      expect(getAvailableJobs(mockGameState, whenua)).toEqual([MatoranJob.StasisTechnician]);
     });
 
     test('Metru Matoran do not see Mata Nui jobs even when unlocked', () => {
       const mockGameState: GameState = {
-        completedQuests: ['metru_vakama_dume_and_the_great_temple', 'mnog_ga_koro_sos'],
+        completedQuests: ['mnog_ga_koro_sos'],
       } as GameState;
 
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
@@ -227,9 +220,9 @@ describe('Jobs', () => {
     });
 
     test('Metru Matoran do not see Metru jobs without an allowedCharacters entry', () => {
-      const mockGameState: GameState = {
-        completedQuests: ['metru_vakama_dume_and_the_great_temple'],
-      } as GameState;
+      const mockGameState = {
+        completedQuests: [],
+      } as unknown as GameState;
 
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
       const jobs = getAvailableJobs(mockGameState, vakama);

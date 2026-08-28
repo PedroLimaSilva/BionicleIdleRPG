@@ -364,14 +364,6 @@ XP: 4500"]
 Unlock: bordakh, nuurakh, vorzakh, zadakh, rorzakh, keerakh
 Currency: 6500
 XP: 5500"]
-  activate_knowledge_towers["Knowledge Towers Reopened
-(22m)
-Currency: 7000
-XP: 6000"]
-  unlock_archives["Archives Reopened
-(22m)
-Currency: 7000
-XP: 6000"]
   metru_great_temple_transformation["Destiny at the Great Temple
 (22m)
 Currency: 7000
@@ -479,8 +471,6 @@ XP: 6500"]
   mol_defeat_of_makuta --> mol_rediscovery_of_metru_nui
   mol_rediscovery_of_metru_nui --> story_metru_nui_saga_begin
   story_metru_nui_saga_begin --> metru_vakama_dume_and_the_great_temple
-  metru_vakama_dume_and_the_great_temple --> activate_knowledge_towers
-  metru_vakama_dume_and_the_great_temple --> unlock_archives
   metru_vakama_dume_and_the_great_temple --> metru_great_temple_transformation
   metru_great_temple_transformation --> metru_seek_the_great_disks
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
