@@ -148,7 +148,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
   {
     description:
       'Toa Nokama returns to Ga-Metru to find her old student Vhisola—one of six Matoran who can lead the Toa to the Great Disks. But Vhisola has vanished, Vahki patrol the canals, and a four-legged hunter has already struck the Archives lab.',
-    durationSeconds: 25 * 60,
+    durationSeconds: 8 * 60,
     id: METRU_NOKAMA_GREAT_DISK_QUEST_ID,
     name: 'The Ga-Metru Great Disk',
     requirements: { matoran: ['Toa_Nokama'], minLevel: 28 },
@@ -164,7 +164,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
   {
     description:
       'Toa Nuju returns to Ko-Metru searching for the errand-runner Ehrye—one of six Matoran who can lead the Toa to the Great Disks. Ehrye has vanished into the Knowledge Towers chasing glory, a tower cracks under sabotage, and Ahkmou’s trail leads to a four-legged hunter.',
-    durationSeconds: 25 * 60,
+    durationSeconds: 8 * 60,
     id: METRU_NUJU_GREAT_DISK_QUEST_ID,
     name: 'The Ko-Metru Great Disk',
     requirements: { matoran: ['Toa_Nuju'], minLevel: 28 },
@@ -180,7 +180,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
   {
     description:
       'Toa Onewa returns to Po-Metru searching for the carver Ahkmou—one of six Matoran who can lead the Toa to the Great Disks. Ahkmou waits atop a sculpture in the fields, Nidhiki stalks the shadows, and the Toa Metru soon suspect the Po-Matoran of betraying them all.',
-    durationSeconds: 25 * 60,
+    durationSeconds: 8 * 60,
     id: METRU_ONEWA_GREAT_DISK_QUEST_ID,
     name: 'The Po-Metru Great Disk',
     requirements: { matoran: ['Toa_Onewa'], minLevel: 28 },
@@ -196,7 +196,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
   {
     description:
       'Toa Matau returns to Le-Metru searching for the Ussal rider Orkahm—one of six Matoran who can lead the Toa to the Great Disks. A sabotaged chute sends him hurtling out of control, Morbuzakh vines close in on sector 3, and Ahkmou’s trail leads deeper into the moto-hub.',
-    durationSeconds: 25 * 60,
+    durationSeconds: 8 * 60,
     id: METRU_MATAU_GREAT_DISK_QUEST_ID,
     name: 'The Le-Metru Great Disk',
     requirements: { matoran: ['Toa_Matau'], minLevel: 28 },
@@ -212,7 +212,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
   {
     description:
       'Toa Vakama returns to Ta-Metru searching for the mask maker Nuhrii—one of six Matoran who can lead the Toa to the Great Disks. Morbuzakh vines attack a protodermis vat, a four-legged hunter has sabotaged the forges, and Nuhrii has vanished into the abandoned northern reaches.',
-    durationSeconds: 25 * 60,
+    durationSeconds: 8 * 60,
     id: METRU_VAKAMA_GREAT_DISK_QUEST_ID,
     name: 'The Ta-Metru Great Disk',
     requirements: { matoran: ['Toa_Vakama'], minLevel: 28 },
@@ -228,7 +228,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
   {
     description:
       'Toa Whenua returns to the Onu-Metru Archives searching for Tehutti—one of six Matoran who can lead the Toa to the Great Disks. A forged Nui-Jaga trade lured the archivist underground, a Rahkshi stalks the deepest levels, and a four-legged hunter waits in the shadows.',
-    durationSeconds: 25 * 60,
+    durationSeconds: 8 * 60,
     id: METRU_WHENUA_GREAT_DISK_QUEST_ID,
     name: 'The Onu-Metru Great Disk',
     requirements: { matoran: ['Toa_Whenua'], minLevel: 28 },
