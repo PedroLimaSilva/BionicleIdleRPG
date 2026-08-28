@@ -21,6 +21,9 @@ describe('brainKitPalette', () => {
         weathered: false,
       })
     );
+    expect(METRU_KIT_PALETTE_BRAIN_BAKED.MetruBrain).toBe(
+      METRU_KIT_PALETTE_BRAIN_BAKED.MetruBrain_baked
+    );
   });
 
   test('MATA_KIT_PLAYER_PALETTE_BRAIN re-exports the combined baked brain slots', () => {
