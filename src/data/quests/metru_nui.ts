@@ -18,6 +18,9 @@ export const METRU_SEEK_GREAT_DISKS_QUEST_ID = 'metru_seek_the_great_disks';
 /** Toa Nokama tracks down Vhisola and the Ga-Metru Great Disk. */
 export const METRU_NOKAMA_GREAT_DISK_QUEST_ID = 'metru_nokama_great_disk';
 
+/** Toa Nuju tracks down Ehrye and the Ko-Metru Great Disk. */
+export const METRU_NUJU_GREAT_DISK_QUEST_ID = 'metru_nuju_great_disk';
+
 /** Toa Vakama tracks down Nuhrii and the Ta-Metru Great Disk. */
 export const METRU_VAKAMA_GREAT_DISK_QUEST_ID = 'metru_vakama_great_disk';
 
@@ -144,6 +147,22 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
       currency: 8000,
       cutscene: { cutsceneId: 'metru_nokama_great_disk', type: 'visual_novel' },
       unlockCharacters: [{ cost: 1200, id: 'Vhisola' }],
+      xpPerMatoran: 7000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
+  },
+  {
+    description:
+      'Toa Nuju returns to Ko-Metru searching for the errand-runner Ehrye—one of six Matoran who can lead the Toa to the Great Disks. Ehrye has vanished into the Knowledge Towers chasing glory, a tower cracks under sabotage, and Ahkmou’s trail leads to a four-legged hunter.',
+    durationSeconds: 25 * 60,
+    id: METRU_NUJU_GREAT_DISK_QUEST_ID,
+    name: 'The Ko-Metru Great Disk',
+    requirements: { matoran: ['Toa_Nuju'], minLevel: 28 },
+    rewards: {
+      currency: 8000,
+      cutscene: { cutsceneId: 'metru_nuju_great_disk', type: 'visual_novel' },
+      unlockCharacters: [{ cost: 1200, id: 'Ehrye' }],
       xpPerMatoran: 7000,
     },
     section: 'Metru Nui',

@@ -381,6 +381,11 @@ XP: 6500"]
 Unlock: Vhisola
 Currency: 8000
 XP: 7000"]
+  metru_nuju_great_disk["The Ko-Metru Great Disk
+(25m)
+Unlock: Ehrye
+Currency: 8000
+XP: 7000"]
   metru_vakama_great_disk["The Ta-Metru Great Disk
 (25m)
 Unlock: Nuhrii
@@ -494,6 +499,7 @@ XP: 7000"]
   metru_vakama_dume_and_the_great_temple --> metru_great_temple_transformation
   metru_great_temple_transformation --> metru_seek_the_great_disks
   metru_seek_the_great_disks --> metru_nokama_great_disk
+  metru_seek_the_great_disks --> metru_nuju_great_disk
   metru_seek_the_great_disks --> metru_vakama_great_disk
   metru_seek_the_great_disks --> metru_whenua_great_disk
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
