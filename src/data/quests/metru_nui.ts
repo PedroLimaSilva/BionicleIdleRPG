@@ -3,6 +3,9 @@ import { Quest } from '../../types/Quests';
 /** Gates custom-character Toa evolution and unlocks the Metru Nui saga. */
 export const METRU_NUI_SAGA_BEGIN_QUEST_ID = 'story_metru_nui_saga_begin';
 
+/** Kapura witnesses the Morbuzakh vines destroy an abandoned Ta-Metru forge. */
+export const METRU_KAPURA_MORBUZAKH_QUEST_ID = 'metru_kapura_morbuzakh';
+
 /** Vakama's encounter with Turaga Dume and the map to the Great Temple. */
 export const METRU_VAKAMA_DUME_QUEST_ID = 'metru_vakama_dume_and_the_great_temple';
 
@@ -55,11 +58,27 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
       unlockCharacters: [
         { cost: 3000, id: 'Toa_Lhikan' },
         ...METRU_TOA_CANDIDATE_RECRUIT_IDS.map((id) => ({ cost: 1500, id })),
+        { cost: 750, id: 'Kapura' },
       ],
       xpPerMatoran: 4500,
     },
     section: 'Metru Nui',
     unlockedAfter: ['mol_rediscovery_of_metru_nui'],
+  },
+  {
+    description:
+      'While Toa Lhikan delivers the Toa Stones across Metru Nui, Kapura patrols the abandoned outskirts of Ta-Metru—checking forsaken forges and factories for anything left behind. Workers have been vanishing, and something far worse than rumor is stirring in the shadows.',
+    durationSeconds: 18 * 60,
+    id: METRU_KAPURA_MORBUZAKH_QUEST_ID,
+    name: 'Morbuzakh',
+    requirements: { matoran: ['Kapura'], minLevel: 26 },
+    rewards: {
+      currency: 6000,
+      cutscene: { cutsceneId: 'metru_kapura_morbuzakh', type: 'visual_novel' },
+      xpPerMatoran: 5000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_NUI_SAGA_BEGIN_QUEST_ID],
   },
   {
     description:
