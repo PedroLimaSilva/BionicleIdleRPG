@@ -776,6 +776,281 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
+  metru_vakama_great_disk: {
+    background: { from: '#1a0a08', to: '#ff6b35', type: 'gradient' },
+    id: 'metru_vakama_great_disk',
+    steps: [
+      {
+        text: 'Ask a Ga-Matoran or a Ko-Matoran, and they would say Ta-Metru was the harshest, least hospitable spot in all of Metru Nui. The searing heat of the forges and the Great Furnace, the heavy smell of molten protodermis, the constant sound of crafters hammering away – to Matoran from the quieter districts, Ta-Metru was a nightmare.',
+        type: 'narration',
+      },
+      {
+        text: 'Vakama, Toa of Fire, would have agreed with that opinion right now, if he’d had a moment to think. Instead, he was diving and rolling to avoid white-hot protodermis flowing from a vat high above. An accidental overflow or leak was always bad news, but in this case, it was far worse than that. Vakama glanced up. Yes, the Morbuzakh vines were still there, trying hard to rip the protodermis vat off its chain and hurl it to the ground. If they succeeded, there might not be much left of this section of Ta-Metru.',
+        type: 'narration',
+      },
+      {
+        text: 'The Toa’s mind raced. Morbuzakh vines had never been this far inside a Metru. Protodermis vats on their way to a forge should never stall long enough for anything to grab hold of them. But both had happened, and just when Vakama arrived in search of a missing mask maker. Ta-Matoran workers were running for cover. But if enough hot protodermis hit the ground, there would be no place to hide. It would burn through anything in its path unless Vakama found a way to stop it.',
+        type: 'narration',
+      },
+      {
+        text: 'Right. Sounds easy, thought the new Toa Metru. Only how do I do it? I can’t keep ducking and dodging. The vat is too high up to reach by climbing. Not that the Morbuzakh will let me get close enough anyway. Unless…',
+        type: 'narration',
+      },
+      {
+        text: 'Matau had made fun of his choice of a disk launcher for a Toa tool. But right now, Vakama felt like it was the wisest decision he had ever made. He looked at the three-digit code on one of his disks. The first digit identified where it was made, the second its power, the third its power level. This was a level 5 freeze disk. Better still, the disk had been made in Ko-Metru, which meant it carried an extra surprise for the Morbuzakh vines.',
+        type: 'narration',
+      },
+      {
+        text: 'Vakama rolled, came up in a crouch, aimed, and let the disk fly. As he expected, the Morbuzakh vines reacted instantly, swiping at the spinning object. But Ko-Metru disks were made to swerve at high speed to avoid any obstacle. The Morbuzakh grasped only empty air as the disk flew onto its target. Impact! The disk hit the gears above the vat head on, freezing them solid and stopping the tilt. The vines snaked back up to the vat but recoiled violently when they touched the ice.',
+        type: 'narration',
+      },
+      {
+        text: 'Vakama took the hint. He launched another disk at one of the vines. When it struck, veins of frost began to travel the length of the blackened tendril. The other vines writhed frantically in the air, then all of them retreated back through a crack in the ground. The Toa Metru of Fire let out a long sigh of relief. The forge was safe, and more importantly, he had learned that Morbuzakh hated the cold. He was puzzling over what that might mean when the control room attendant came rushing over.',
+        type: 'narration',
+      },
+      {
+        text: '“That was… amazing!” said the Ta-Matoran. “I thought we had seen the last of the Toa when Lhikan disappeared. If you hadn’t been here –”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Vakama',
+        text: 'I did what I had to do. What happened? I thought that the vats never stopped moving.',
+        type: 'dialogue',
+      },
+      {
+        text: '“Come and see,” said the attendant grimly. Vakama followed him into the forge control center. The foreman pointed to an ugly burn on one of the panels. “That’s what happened. Some four-legged monster broke in and fried the controls with a burst of energy.”',
+        type: 'narration',
+      },
+      {
+        text: 'Vakama knelt down for a closer look. Some components had been damaged, but they could be repaired. That was not half as interesting as the scattered protodermis dust he saw on the floor near the damaged portion. He had seen dust like that once before, on a visit to Po-Metru, but this glittered in the light. It was only upon closer examination that he spotted the crushed Ko-Metru knowledge crystals mixed with the dust.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Vakama',
+        text: 'I think I can fix this, if you can do a favor for me. I’m looking for a mask maker named Nuhrii. He wasn’t at his home or at his forge. Have you seen him?',
+        type: 'dialogue',
+      },
+      {
+        text: '“Yes. He was here this morning,” the attendant replied. “He was looking for a Great Mask he made. It was tossed as flawed, but he said someone told him the mask was fine. He wanted to retrieve it before it went into the furnace for meltdown.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Vakama',
+        text: 'Did he find it?',
+        type: 'dialogue',
+      },
+      {
+        text: '“It’s not here. Must still be on the reject pile, so I sent him over there. Nuhrii was talking pretty crazy, though. Said if he couldn’t find the mask, he knew where there was a Kanoka disk that could make the greatest mask anyone had ever worn. I guess he’s been working a little too hard.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Vakama',
+        text: 'Yes, I guess so.',
+        type: 'dialogue',
+      },
+      {
+        text: 'The Toa of Fire thought hard as he walked. The walls of Nuhrii’s home had been lined with tablets, souvenirs of his work. Each tablet showed an image of a Kanohi mask and the Kanoka disk from which it had been made. One of the tablets had been smashed on the floor, and a failed attempt made to put it back together. The forge attendant had said Nuhrii had made a flawed mask. Vakama guessed it was the tablet featuring that mask that had been broken in anger. When Nuhrii heard the mask was in fact perfect, he tried to put the tablet back together before rushing off to find the Kanohi.',
+        type: 'narration',
+      },
+      {
+        text: 'That still left a few questions. Who had discovered the mask was still a good one and notified Nuhrii? And was the note the Matoran had received the truth or simply bait to lure him into a trap? Vakama hoped to find the answer at the huge, fenced-in lot just ahead. Its official name was Protodermis Reclamation Center, but to every mask maker in Ta-Metru, it was a graveyard.',
+        type: 'narration',
+      },
+      {
+        text: 'No matter how many hours of work had gone into a mask, a single, tiny flaw could ruin it. Then it would be transported here, to sit on top of a pile of other broken, useless masks until it could be fed to the furnace and melted down. It was the one place no mask maker ever wanted to visit. A single guard stood at the gate. The bored look on his face disappeared when he saw a Toa coming toward him.',
+        type: 'narration',
+      },
+      {
+        text: '“Who are you?” he asked.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Vakama',
+        text: 'I am Toa Vakama. Toa Metru of Fire. I need to get inside.',
+        type: 'dialogue',
+      },
+      {
+        text: '“I’m sorry, but I have orders from Turaga Dume. No one is allowed in. I don’t want trouble with the Vahki.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Vakama',
+        text: 'But you let Nuhrii in, didn’t you? He’s in danger, and I have to find him. Please open the gate.',
+        type: 'dialogue',
+      },
+      {
+        text: '“I can’t! I could lose my job!”',
+        type: 'narration',
+      },
+      {
+        text: 'Vakama frowned. This argument was taking too much time. The guard was obviously more afraid of the Vahki than he was of making a Toa angry. And why wouldn’t he be? No Toa would ever harm an innocent.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Vakama',
+        text: 'Then I will open it for you.',
+        type: 'dialogue',
+      },
+      {
+        text: 'Concentrating harder than he ever had in his life, Vakama willed a narrow jet of flame from his hand. In an instant it had melted the lock into slag. “You did your job. Now I have to try and do mine.”',
+        type: 'narration',
+      },
+      {
+        text: 'The yard was quiet. Vakama walked past piles of Kanohi masks and other artifacts, all waiting behind the fences for their time in the Great Furnace. Some looked perfect to the naked eye, their flaws visible only to a truly skilled crafter. Others were badly mangled. So focused was he on scanning the damaged items that he almost tripped over something in his path. When he regained his footing, he saw it was a Mask of Shielding someone had left lying in the path.',
+        type: 'narration',
+      },
+      {
+        text: 'Vakama bent down and picked it up. It looked familiar somehow, but he couldn’t quite place it. Then it struck him. The angle of the mask, the ridges around the eyepieces… these were marks of Nuhrii’s work. Was this the mask the Matoran had been seeking, now cast aside as if it were worthless?',
+        type: 'narration',
+      },
+      {
+        text: '“Everyone seems to want that Kanohi today,” said a Matoran behind him. Vakama turned to see the reclamation center caretaker approaching. “Nuhrii was here looking for it just a short while ago.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Vakama',
+        text: 'But he didn’t take it with him? Why not?',
+        type: 'dialogue',
+      },
+      {
+        text: '“Look for yourself. That mask has a hairline crack in the base,” the caretaker replied, pointing to a barely visible flaw. “I’ve been doing this so long I can spot a bad one from a long way away. Mask maker must have cooled it too fast. Anyway, Nuhrii took one look at it, threw it down, and left. He was muttering something about forging the most powerful Kanohi ever made and showing up some other crafter. Vakama, I think his name was.”',
+        type: 'narration',
+      },
+      {
+        text: 'Me? Why would he want to outdo me? Vakama thought. Sure, I had fewer masks wind up here, and Turaga Dume did ask me to craft a special Kanohi for him. But I never knew Nuhrii would be so jealous of that. After all, I learned so much from him.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Vakama',
+        text: 'I guess masks aren’t the only things that can hide their flaws. Do you have any idea where he’s gone?',
+        type: 'dialogue',
+      },
+      {
+        text: 'The caretaker handed over a tablet. “He dropped this on his way out.” Vakama’s eyes flew across the stone. There was no signature on the note, just some smudges of liquid protodermis. It read:',
+        type: 'narration',
+      },
+      {
+        text: 'Nuhrii, Come to the abandoned mask maker’s house in the northern reaches. You’ll learn a valuable secret there – how to turn a Great Disk into a Kanohi mask that will live in legend. Come alone. Tell no one.',
+        type: 'narration',
+      },
+      {
+        text: 'Vakama’s mind reeled for a moment. He could see Nuhrii surrounded by shadowy tentacles that were reaching for him, grabbing him, squeezing the breath from the Matoran. Somehow, the Toa knew this danger was real, and it was happening now!',
+        type: 'narration',
+      },
+      {
+        text: 'The Toa of Fire scanned his surroundings. He couldn’t believe anything could make Nuhrii come here. This was a place no Ta-Matoran ever wandered, not if they hoped to see the twin suns rise again. This had once been one of the most active sections of Ta-Metru. Vakama could remember riding the chutes here to see friends just a short time ago, but it seemed like ages had passed. Now the whole neighborhood was desolate and abandoned, surrendered to the power of the Morbuzakh.',
+        type: 'narration',
+      },
+      {
+        text: 'Half the buildings were reduced to rubble and the rest did not look much better. Vakama walked carefully, avoiding the chunks of solid protodermis that littered the street. Only the skittering of little Rahi among the wreckage broke the silence. Most of the Matoran who had lived here had fled, finding refuge with friends in the heart of the Metru. Those who had chosen to stay were never seen or heard from again. Turaga Dume had declared the whole area off-limits, but soon found he did not need to dispatch Vahki to guard the place. No Matoran wanted to travel here.',
+        type: 'narration',
+      },
+      {
+        text: 'Except Nuhrii, Vakama reminded himself. But even if he is here, I may be too late to save him.',
+        type: 'narration',
+      },
+      {
+        text: 'As if in answer, a voice shouted: “Help!” It came from an abandoned crafter’s home farther down the street. Vakama broke into a run, then stopped short when he saw the twin Morbuzakh vines slithering toward the same building. They were moving too quickly. He could never hope to outrace them.',
+        type: 'narration',
+      },
+      {
+        text: '“Help!”',
+        type: 'narration',
+      },
+      {
+        text: 'Vakama loaded his last disk into the launcher and hoped he was making the right decision. He had never used this particular kind of disk before or even forged a mask from one. Its power was the least predictable and might make a bad situation worse. But there wasn’t any other choice. The disk shot through the air and struck the first vine, then began a sweeping arc that would bring it back to Vakama. On its way, it clipped the second vine, just as the Toa Metru had hoped it would. Before his eyes, both vines began to shimmer and fade. Then they were gone, teleported somewhere else in Metru Nui. Vakama hoped he had not just created a greater danger for someone else to deal with.',
+        type: 'narration',
+      },
+      {
+        text: 'The door to the house was unlocked. As soon as it was opened, a cloud of protodermis dust flew out, blinding and choking Vakama. When he could see again, he discovered the way in was blocked by rubble.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Nuhrii',
+        text: 'Who’s there? Help me! I’m trapped back here!',
+        type: 'dialogue',
+      },
+      {
+        text: 'It was Nuhrii’s voice, coming from somewhere beyond the pile of protodermis. The Morbuzakh vines had brought down the roof and were no doubt getting ready to start on the walls when the Toa Metru showed up. For a moment, Vakama considered using his elemental power to melt through the obstacle. But his powers were so new, he had too little control over them. Make a mistake and the whole district might burn. No, he would have to do it the hard way, block by block.',
+        type: 'narration',
+      },
+      {
+        text: 'Vakama removed one chunk of protodermis, but when he took out a second, the rubble shifted and more fell from the roof. “Hey, watch it!” Nuhrii shouted. “What are you trying to do?” Vakama began again, proceeding more carefully. He shifted a block, paused, shifted it some more, until he was certain it wouldn’t cause a collapse. It took a lot of careful work, but he finally managed to create a big enough opening for Nuhrii to crawl through. The Matoran was coated in dust but did not seem hurt.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Nuhrii',
+        text: 'I thought I would never get out of there. Vakama! You!',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Vakama',
+        text: 'Are you all right? What were you doing here?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Nuhrii',
+        text: 'Okay, why shouldn’t I tell you? I came here to learn how to turn a Great Disk into a Mask of Power you could never dream of making. Then I would be the one others came to for the important Kanohi.',
+        type: 'dialogue',
+      },
+      {
+        text: 'In all the time Vakama had worked as a mask maker, he had never once raised his voice. It had been Nuhrii who first hired him as a mask-making apprentice and Nuhrii who had taught him the basic skills. But now, as Vakama thought of all he had been through to find the Matoran, he felt anger rise in him.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Vakama',
+        text: 'Look around you, Nuhrii. Look at what the Morbuzakh has done to our city! This is no time to be thinking of personal glory. Everyone has to work together to stop this menace. That Great Disk you have is the key to saving Metru Nui. I don’t know how, but it is. You have to tell me where to find it!',
+        type: 'dialogue',
+      },
+      {
+        text: 'Nuhrii looked shocked. It took him a moment before he could speak, but when he did, his tone was that of a Matoran ashamed.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Nuhrii',
+        text: 'The Great Disk? I – I didn’t know. Yes, I will gladly help you find it.',
+        type: 'dialogue',
+      },
+      {
+        text: 'The two left the house and started walking out of the abandoned zone. Although Nuhrii spoke under his breath, Vakama could hear him saying: “We’ll get the disk. We’ll stop the Morbuzakh. And everyone will know that I saved Metru Nui!”',
+        type: 'narration',
+      },
+      {
+        text: 'The Toa Metru of Fire shook his head.',
+        type: 'narration',
+      },
+    ],
+  },
   metru_vakama_lhikan_story: {
     background: { from: '#0d1f2d', to: '#ffe28e', type: 'gradient' },
     id: 'metru_vakama_lhikan_story',

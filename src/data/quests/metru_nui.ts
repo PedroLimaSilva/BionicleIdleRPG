@@ -15,6 +15,9 @@ export const METRU_SEEK_GREAT_DISKS_QUEST_ID = 'metru_seek_the_great_disks';
 /** Toa Nokama tracks down Vhisola and the Ga-Metru Great Disk. */
 export const METRU_NOKAMA_GREAT_DISK_QUEST_ID = 'metru_nokama_great_disk';
 
+/** Toa Vakama tracks down Nuhrii and the Ta-Metru Great Disk. */
+export const METRU_VAKAMA_GREAT_DISK_QUEST_ID = 'metru_vakama_great_disk';
+
 /** Unlocks Ta-, Ga-, Le-, and Po-Metru day jobs (mask maker, teacher, chute test driver, carver). */
 export const SETTLE_METRU_NUI_QUEST_ID = 'settle_metru_nui';
 
@@ -170,6 +173,22 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
       currency: 8000,
       cutscene: { cutsceneId: 'metru_nokama_great_disk', type: 'visual_novel' },
       unlockCharacters: [{ cost: 1200, id: 'Vhisola' }],
+      xpPerMatoran: 7000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
+  },
+  {
+    description:
+      'Toa Vakama returns to Ta-Metru searching for the mask maker Nuhrii—one of six Matoran who can lead the Toa to the Great Disks. Morbuzakh vines attack a protodermis vat, a four-legged hunter has sabotaged the forges, and Nuhrii has vanished into the abandoned northern reaches.',
+    durationSeconds: 25 * 60,
+    id: METRU_VAKAMA_GREAT_DISK_QUEST_ID,
+    name: 'The Ta-Metru Great Disk',
+    requirements: { matoran: ['Toa_Vakama'], minLevel: 28 },
+    rewards: {
+      currency: 8000,
+      cutscene: { cutsceneId: 'metru_vakama_great_disk', type: 'visual_novel' },
+      unlockCharacters: [{ cost: 1200, id: 'Nuhrii' }],
       xpPerMatoran: 7000,
     },
     section: 'Metru Nui',
