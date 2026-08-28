@@ -14,6 +14,10 @@ import {
   type WeatheredMetalOptions,
 } from '../CharacterScene/WeatheredMetalMaterial';
 import { hasMaskPbrMaps } from './maskMaterial';
+import {
+  buildTransmissiveKitMaterial,
+  isTransmissiveKitMaterialName,
+} from './transmissiveKitMaterial';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -141,8 +145,18 @@ export function buildKitMeshMaterials(
   const next = mats.map((mat) => {
     if (!isStandardMat(mat)) return mat;
     const spec = resolveKitMaterialSlotSpec(mat.name, slotLookup);
-    // Baked / mapped materials keep GLB maps. A matching slot may still tint
-    // diffuse + emissive (Vahki visor); otherwise the authored look is preserved.
+    if (isTransmissiveKitMaterialName(mat.name)) {
+      if (!spec || (!spec.color && !spec.emissive && spec.emissiveIntensity === undefined)) {
+        return mat;
+      }
+      const color = spec.color ? resolveKitColorSource(spec.color, palette) : mat.color.getStyle();
+      const emissive = spec.emissive ? resolveKitColorSource(spec.emissive, palette) : color;
+      const emissiveIntensity =
+        spec.emissiveIntensity ??
+        (spec.emissive ? (mat.emissiveIntensity > 0 ? mat.emissiveIntensity : 1) : 0);
+      return buildTransmissiveKitMaterial(mat.name, color, emissive, emissiveIntensity);
+    }
+    // Baked / mapped materials keep GLB maps (Kanoka disk, etc.).
     if (isPreservedBakedMaterial(mat)) {
       if (!spec || (!spec.color && !spec.emissive && spec.emissiveIntensity === undefined)) {
         return mat;

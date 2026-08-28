@@ -1,6 +1,7 @@
-import { Mesh, MeshStandardMaterial } from 'three';
+import { Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { buildKitMaterialSlotLookup, buildKitMeshMaterials } from './kitMaterialApplication';
 import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
+import { TRANSMISSIVE_KIT_IOR, TRANSMISSIVE_KIT_TRANSMISSION } from './transmissiveKitMaterial';
 import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
@@ -87,12 +88,10 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(next.metalness).toBe(0.5);
   });
 
-  test('a matching slot tints baked Mata brain diffuse and emission while cloning maps', () => {
+  test('a matching slot builds uniform transmission for Mata brain (no baked maps)', () => {
     const mesh = meshWithMaterialNamed('MataBrain_baked');
     const baked = mesh.material as MeshStandardMaterial;
     baked.normalMap = {} as MeshStandardMaterial['normalMap'];
-    baked.emissive.set('#ff5500');
-    baked.emissiveIntensity = 1;
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({
@@ -105,37 +104,39 @@ describe('buildKitMeshMaterials metallic colors', () => {
       }),
       COLORS,
       PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
+    ) as MeshPhysicalMaterial;
     expect(next).not.toBe(baked);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
     expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
     expect(next.emissiveIntensity).toBe(0.1);
-    expect(next.normalMap).toBe(baked.normalMap);
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_TRANSMISSION);
+    expect(next.ior).toBe(TRANSMISSIVE_KIT_IOR);
+    expect(next.normalMap).toBeNull();
   });
 
-  test('a matching slot tints baked diffuse and emission while cloning maps', () => {
+  test('a matching slot builds uniform transmission for Vahki hood (no baked maps)', () => {
     const mesh = meshWithMaterialNamed('VahkiHood_baked');
     const baked = mesh.material as MeshStandardMaterial;
     baked.normalMap = {} as MeshStandardMaterial['normalMap'];
-    baked.emissive.set('#ff5500');
-    baked.emissiveIntensity = 1;
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({
         VahkiHood_baked: {
           color: { key: 'eyes', kind: 'palette' },
           emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 0.1,
           weathered: false,
         },
       }),
       COLORS,
       PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
+    ) as MeshPhysicalMaterial;
     expect(next).not.toBe(baked);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
     expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.emissiveIntensity).toBe(1);
-    expect(next.normalMap).toBe(baked.normalMap);
+    expect(next.emissiveIntensity).toBe(0.1);
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_TRANSMISSION);
+    expect(next.normalMap).toBeNull();
   });
 
   test('opacity below 1 enables transparent blending on the cloned material', () => {
