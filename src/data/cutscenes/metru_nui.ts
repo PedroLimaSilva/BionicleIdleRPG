@@ -1,6 +1,101 @@
 import type { VisualNovelCutscene } from '../../types/Cutscenes';
 
 export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
+  metru_great_disks_interlude: {
+    background: { from: '#0d1f2d', to: '#ffe28e', type: 'gradient' },
+    id: 'metru_great_disks_interlude',
+    steps: [
+      {
+        text: 'Turaga Vakama paused. The memories of his days as a Toa Metru were powerful ones. There were many times he thought he might never get the chance to tell the tales of Metru Nui and the struggle to save it. Now the words spilled from him like a flood, and he found it almost too much to bear. Toa Lhikan… the forges of Ta-Metru… his life as a Toa… all so long ago.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Takanuva',
+        text: 'That can’t be the end of the story. I mean, there is more, isn’t there?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Turaga_Vakama',
+        text: 'You were the Chronicler before you were a Toa, Takanuva, and that questioning spirit still lives on in you. Always you seek to know what is hidden. But you are right, that is only the beginning of my tale.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Tahu_Nuva',
+        text: 'Did you find the Great Disks? Did you defeat the Morbuzakh? We must know!',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Turaga_Vakama',
+        text: 'And so you shall. But I am weary, and there is much work still to be done. I will continue my tale tomorrow. Before I am done, you will know why we fought so hard for Metru Nui – and why we were forced to leave. Mata Nui, in his wisdom, brought us to this beautiful island that bears his name. But home will always be Metru Nui.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Gali_Nuva',
+        text: 'Very well, then. We will leave you for now, wise one. I know I feel the need for a long talk with Turaga Nokama, and I am sure my brothers have similar ideas.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Kopaka_Nuva',
+        text: 'Indeed. There have been far too many secrets kept on this island.',
+        type: 'dialogue',
+      },
+      {
+        text: 'The Toa Nuva filed away, heading in different directions. Only Takanuva remained behind with the Turaga of Fire.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Turaga_Vakama',
+        text: 'What troubles you, Toa? Was my tale not what you expected?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Takanuva',
+        text: 'It’s not that. I have been a Matoran and now I am a Toa, and yet I still do not remember this city of Metru Nui! Why?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Turaga_Vakama',
+        text: 'You will learn all, in time. Perhaps we should have shared all of this with you long ago, but we felt it would be cruel to remind you of a home you might never see again.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Takanuva',
+        text: 'Perhaps that was wise, Turaga. But tell me, when you lived in Metru Nui – was it wonderful?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Turaga_Vakama',
+        text: 'Wonderful… and terrible. I fear that when I have finished my tale, the Toa will have learned the true meaning of darkness.',
+        type: 'dialogue',
+      },
+      {
+        text: 'The wind over Kini-Nui stirred the sand of the Amaja Circle. Vakama’s tale would wait for another night—but the shadows of Metru Nui were only beginning to lengthen.',
+        type: 'narration',
+      },
+    ],
+  },
   metru_great_temple_transformation: {
     background: { from: '#1a2840', to: '#c9a84c', type: 'gradient' },
     id: 'metru_great_temple_transformation',

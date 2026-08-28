@@ -33,6 +33,9 @@ export const METRU_VAKAMA_GREAT_DISK_QUEST_ID = 'metru_vakama_great_disk';
 /** Toa Whenua tracks down Tehutti and the Onu-Metru Great Disk. */
 export const METRU_WHENUA_GREAT_DISK_QUEST_ID = 'metru_whenua_great_disk';
 
+/** Present-day interlude at Kini-Nui after the six Great Disk hunts. */
+export const METRU_GREAT_DISKS_INTERLUDE_QUEST_ID = 'metru_great_disks_interlude';
+
 /** Future Toa Metru Matoran — no Kanoka disk launcher on the rig. */
 const METRU_TOA_CANDIDATE_RECRUIT_IDS = [
   'Matau',
@@ -237,5 +240,30 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
     },
     section: 'Metru Nui',
     unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
+  },
+  {
+    description:
+      'At Kini-Nui, Turaga Vakama pauses his tale after the six Great Disk hunts. The Toa Nuva demand to know what comes next—but the Turaga is weary, and Takanuva alone stays behind to ask why he still cannot remember the lost city of Metru Nui.',
+    durationSeconds: 12 * 60,
+    id: METRU_GREAT_DISKS_INTERLUDE_QUEST_ID,
+    name: 'A Tale for Another Night',
+    requirements: {
+      matoran: ['Takanuva', 'Toa_Tahu_Nuva', 'Toa_Gali_Nuva', 'Toa_Kopaka_Nuva'],
+      minLevel: 28,
+    },
+    rewards: {
+      currency: 6000,
+      cutscene: { cutsceneId: 'metru_great_disks_interlude', type: 'visual_novel' },
+      xpPerMatoran: 5500,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [
+      METRU_NOKAMA_GREAT_DISK_QUEST_ID,
+      METRU_NUJU_GREAT_DISK_QUEST_ID,
+      METRU_ONEWA_GREAT_DISK_QUEST_ID,
+      METRU_MATAU_GREAT_DISK_QUEST_ID,
+      METRU_VAKAMA_GREAT_DISK_QUEST_ID,
+      METRU_WHENUA_GREAT_DISK_QUEST_ID,
+    ],
   },
 ];
