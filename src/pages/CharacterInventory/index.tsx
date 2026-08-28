@@ -13,7 +13,7 @@ import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
 import { QUESTS } from '../../data/quests';
 import { getEffectiveMatoran } from '../../services/matoranUtils';
-import { isBohrokOrKal, isMatoran, isToa } from '../../game/characters/matoranStage';
+import { isBohrokOrKal, isMatoran, isToa, isVahki } from '../../game/characters/matoranStage';
 import { useMemo, useState, useCallback, useLayoutEffect } from 'react';
 import {
   consumeCharactersReturnScrollId,
@@ -65,7 +65,12 @@ export const CharacterInventory: React.FC = () => {
     if (hasCollectedKraata || rahkshi.length > 0) {
       base.push('rahkshi');
     }
-    if (recruitedCharacters.some((m) => isBohrokOrKal(getEffectiveMatoran(m)))) {
+    if (
+      recruitedCharacters.some((m) => {
+        const effective = getEffectiveMatoran(m);
+        return isBohrokOrKal(effective) || isVahki(effective);
+      })
+    ) {
       base.push('other');
     }
     return base;

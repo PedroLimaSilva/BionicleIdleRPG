@@ -36,6 +36,7 @@ export const KIT_2003_NODES = {
   PohatuClaw: 'PohatuClaw',
   Propeller: 'Propeller',
   QuakeBreaker: 'QuakeBreaker',
+  RahkshiBody: 'RahkshiBody',
   TechnicTorsoPivot: 'TechnicTorsoPivot',
 } as const;
 

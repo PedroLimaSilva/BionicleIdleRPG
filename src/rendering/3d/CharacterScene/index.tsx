@@ -25,6 +25,7 @@ import { TahuMataModel } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { BohrokModel } from './BohrokModel';
+import { VahkiModel } from './VahkiModel';
 import { useCharacterBloomMeshes } from './selectiveBloom';
 import { StableSelectiveBloom } from './StableSelectiveBloom';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
@@ -116,6 +117,13 @@ function CharacterModel({
       return (
         <group scale={4.5}>
           <BohrokModel key={matoran.id} id={matoran.id} />
+        </group>
+      );
+    case MatoranStage.Vahki:
+      // Bind pose faces +Z (battle forward). Character-sheet camera looks from +Z, so yaw 180°.
+      return (
+        <group rotation={[0, Math.PI, 0]}>
+          <VahkiModel key={matoran.id} id={matoran.id} onKitMeshesAttached={onModelReady} />
         </group>
       );
     case MatoranStage.Diminished:

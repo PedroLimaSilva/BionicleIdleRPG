@@ -55,4 +55,11 @@ export const RECRUITMENT_REGISTRY: RecruitmentEntry[] = [
   { cost: 1500, id: 'Onewa', unlockedByQuest: 'story_metru_nui_saga_begin' },
   { cost: 1500, id: 'Matau', unlockedByQuest: 'story_metru_nui_saga_begin' },
   { cost: 1500, id: 'Whenua', unlockedByQuest: 'story_metru_nui_saga_begin' },
+  // Vahki — unlock after Vakama’s encounter with Turaga Dume
+  { cost: 500, id: 'bordakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  { cost: 500, id: 'nuurakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  { cost: 500, id: 'vorzakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  { cost: 500, id: 'zadakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  { cost: 500, id: 'rorzakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  { cost: 500, id: 'keerakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
 ];

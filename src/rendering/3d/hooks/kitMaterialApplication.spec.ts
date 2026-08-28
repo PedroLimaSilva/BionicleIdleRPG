@@ -87,6 +87,31 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(next.metalness).toBe(0.5);
   });
 
+  test('a matching slot tints baked diffuse and emission while cloning maps', () => {
+    const mesh = meshWithMaterialNamed('VahkiHood_baked');
+    const baked = mesh.material as MeshStandardMaterial;
+    baked.normalMap = {} as MeshStandardMaterial['normalMap'];
+    baked.emissive.set('#ff5500');
+    baked.emissiveIntensity = 1;
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        VahkiHood_baked: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+          weathered: false,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(next).not.toBe(baked);
+    expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
+    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
+    expect(next.emissiveIntensity).toBe(1);
+    expect(next.normalMap).toBe(baked.normalMap);
+  });
+
   test('opacity below 1 enables transparent blending on the cloned material', () => {
     const mat = buildSingle('Secondary', {
       Secondary: {

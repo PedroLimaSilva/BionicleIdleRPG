@@ -1,0 +1,54 @@
+import { LegoColor } from '../../../../types/Colors';
+import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
+import { METRU_WEATHERED } from './metruKitPlayerPalette';
+import { kitPartGlow, kitPartSlots } from './partSlots';
+
+/** Metru-era Vahki — same weathering pass as Toa / Matoran Metru. */
+export const VAHKI_WEATHERED = METRU_WEATHERED;
+
+export const VAHKI_KIT_PALETTE_BODY = kitPartSlots('body', 'nuva');
+export const VAHKI_KIT_PALETTE_ARMS = kitPartSlots('arms', 'mata');
+export const VAHKI_KIT_PALETTE_LEGS = kitPartSlots('legs', 'nuva');
+export const VAHKI_KIT_PALETTE_FEET = kitPartSlots('feet', 'mata');
+
+export const VAHKI_KIT_PALETTE_WEAPON: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...kitPartSlots('weapon', 'nuva'),
+  ...kitPartGlow('weapon', 8),
+};
+
+export const VAHKI_KIT_PALETTE_EYES: Partial<Record<string, KitMaterialSlotEntry>> = {
+  ...kitPartGlow('body', 35),
+};
+
+/**
+ * Baked transmissive visor (`VahkiHood_baked`): keep maps / transmission, tint
+ * diffuse and emission from the hive eye color. The kit GLB has no
+ * `KHR_materials_emissive_strength`, so Three.js defaults to 1 — too hot once
+ * emissive is replaced with a full eye color and selective bloom. Use a modest
+ * visor glow instead of the 35× eye / 50× mask intensities.
+ */
+export const VAHKI_HOOD_EMISSIVE_INTENSITY = 0.1;
+
+export const VAHKI_KIT_PALETTE_HOOD: Partial<Record<string, KitMaterialSlotEntry>> = {
+  VahkiHood_baked: {
+    color: { key: 'eyes', kind: 'palette' },
+    emissive: { key: 'eyes', kind: 'palette' },
+    emissiveIntensity: VAHKI_HOOD_EMISSIVE_INTENSITY,
+    weathered: false,
+  },
+};
+
+/** Technic pins / axles / gears on the Vahki chassis. */
+export const VAHKI_KIT_PALETTE_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
+  Main: { kind: 'lego', value: LegoColor.Black },
+  Metal: { kind: 'lego', value: LegoColor.Black },
+  Solid_Black: { kind: 'lego', value: LegoColor.Black },
+};
+
+/** Shoulder sockets and double sockets — always DarkBluishGray, not hive body. */
+export const VAHKI_KIT_PALETTE_SOCKET: Partial<Record<string, KitMaterialSlotEntry>> = {
+  Main: { kind: 'lego', value: LegoColor.DarkBluishGray },
+  Metal: { kind: 'lego', value: LegoColor.DarkBluishGray },
+  Solid_Black: { kind: 'lego', value: LegoColor.DarkBluishGray },
+  'Solid_Black.002': { kind: 'lego', value: LegoColor.DarkBluishGray },
+};
