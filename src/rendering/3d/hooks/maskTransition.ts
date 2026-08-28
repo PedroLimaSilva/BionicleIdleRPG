@@ -89,6 +89,15 @@ export function startMaskTransition(
     masksParent.remove(tr.oldMask);
   }
 
+  // Fade-out requires alpha blending even on normally opaque Kanohi.
+  prevMask.traverse((child) => {
+    if (!(child as Mesh).isMesh) return;
+    const mat = (child as Mesh).material;
+    if (isStandardMat(mat)) {
+      mat.transparent = true;
+    }
+  });
+
   const oldOpacities = collectOpacities(prevMask);
   const oldScale = prevMask.scale.clone();
 
