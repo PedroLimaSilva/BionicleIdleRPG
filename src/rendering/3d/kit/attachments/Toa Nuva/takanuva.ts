@@ -5,6 +5,7 @@ import { KIT_2003_NODES } from '../../nodes/kit2003Nodes';
 import type { Kit2003SocketAttachment } from '../../nodes/kit2003Nodes';
 import type { KitMaterialSlotEntry } from '../../../../../types/KitParts';
 import { MATA_KIT_PLAYER_PALETTE_BRAIN } from '../../palettes/mataKitPlayerPalette';
+import { KIT_BRAIN_SOCKET_MATERIAL_COLORS } from '../../palettes/brainKitPalette';
 import { kitPartGlow, kitPartMainAsMetal, kitPartSlots } from '../../palettes/partSlots';
 
 const TAKANUVA_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -74,12 +75,7 @@ export const TAKANUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachme
   MataAbdomen: { kitNodeName: KIT_2001_NODES.MataAbdomen, materialColors: TAKANUVA_PALETTE_COLORS },
   MataBrain: {
     kitNodeName: KIT_2001_NODES.MataBrain,
-    materialColors: {
-      Brain: {
-        color: { key: 'eyes', kind: 'palette' },
-        weathered: false,
-      },
-    },
+    materialColors: KIT_BRAIN_SOCKET_MATERIAL_COLORS,
   },
   MataChest: { kitNodeName: KIT_2001_NODES.MataChest, materialColors: TAKANUVA_PALETTE_COLORS },
   MataFace: { kitNodeName: KIT_2001_NODES.MataFace, materialColors: TAKANUVA_PALETTE_COLORS },

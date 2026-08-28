@@ -135,7 +135,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(next.normalMap).toBeNull();
   });
 
-  test('VahkiHood slot is less clear than Brain', () => {
+  test('VahkiHood slot uses the vahkiHood transmissive preset', () => {
     const mesh = meshWithMaterialNamed('VahkiHood');
     const next = buildKitMeshMaterials(
       mesh,
@@ -152,7 +152,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
       PLASTIC_WEATHERED
     ) as MeshPhysicalMaterial;
     expect(next.transmission).toBe(TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION);
-    expect(next.transmission).toBeLessThan(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
+    expect(next.depthWrite).toBe(false);
     expect(next.normalMap).toBeNull();
   });
 

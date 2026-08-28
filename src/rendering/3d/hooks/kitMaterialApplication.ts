@@ -16,7 +16,9 @@ import {
 import { hasMaskPbrMaps } from './maskMaterial';
 import {
   buildTransmissiveKitMaterial,
+  isTransmissiveKitMaterial,
   resolveTransmissiveKitKind,
+  TRANSMISSIVE_KIT_RENDER_ORDER,
 } from './transmissiveKitMaterial';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
@@ -200,5 +202,10 @@ export function applyKitMaterialsToObject(
     const mesh = child as Mesh;
     const next = buildKitMeshMaterials(mesh, slotLookup, palette, weatheredBase);
     if (next !== undefined) mesh.material = next as Mesh['material'];
+    const applied = mesh.material;
+    const appliedMats = Array.isArray(applied) ? applied : [applied];
+    if (appliedMats.some(isTransmissiveKitMaterial)) {
+      mesh.renderOrder = TRANSMISSIVE_KIT_RENDER_ORDER;
+    }
   });
 }

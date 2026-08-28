@@ -39,11 +39,8 @@ describe('transmissiveKitMaterial', () => {
     ).toBe(undefined);
   });
 
-  test('McToran face brain is clearer than Toa brain; hood is murkiest', () => {
+  test('McToran face brain is clearer than Toa brain', () => {
     expect(TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION).toBeGreaterThan(
-      TRANSMISSIVE_KIT_BRAIN_TRANSMISSION
-    );
-    expect(TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION).toBeLessThan(
       TRANSMISSIVE_KIT_BRAIN_TRANSMISSION
     );
   });
@@ -57,6 +54,7 @@ describe('transmissiveKitMaterial', () => {
     expect(mctoran.transmission).toBe(TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION);
     expect(hood.transmission).toBe(TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION);
     expect(brain.ior).toBe(TRANSMISSIVE_KIT_IOR);
+    expect(brain.depthWrite).toBe(false);
     expect(brain.normalMap).toBeNull();
     expect(hood.transmissionMap).toBeNull();
   });

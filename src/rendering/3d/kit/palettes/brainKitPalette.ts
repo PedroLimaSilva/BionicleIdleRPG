@@ -29,3 +29,6 @@ const BRAIN_TRANSMISSIVE_SLOT = brainTransmissiveSlot();
 export const KIT_PALETTE_BRAIN: Partial<Record<string, KitMaterialSlotEntry>> = {
   Brain: BRAIN_TRANSMISSIVE_SLOT,
 };
+
+/** MataBrain socket on Toa Nuva rigs — transmissive `Brain` slot only. */
+export const KIT_BRAIN_SOCKET_MATERIAL_COLORS = KIT_PALETTE_BRAIN;

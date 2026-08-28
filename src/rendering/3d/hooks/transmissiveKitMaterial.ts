@@ -1,4 +1,4 @@
-import { Color, DoubleSide, MeshPhysicalMaterial } from 'three';
+import { Color, FrontSide, MeshPhysicalMaterial } from 'three';
 import type { KitTransmissivePreset } from '../../../types/KitParts';
 import type { KitMaterialSlotOverride } from '../../../types/KitParts';
 
@@ -21,6 +21,9 @@ export const TRANSMISSIVE_KIT_MCTORAN_FACE_ROUGHNESS = 0.15;
 export const TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS = 0.3;
 
 export const TRANSMISSIVE_KIT_THICKNESS = 0.15;
+
+/** Draw transmissive kit gel before opaque Kanohi masks (see `KANOHI_RENDER_ORDER`). */
+export const TRANSMISSIVE_KIT_RENDER_ORDER = 0;
 
 export type TransmissiveKitKind = KitTransmissivePreset;
 
@@ -78,16 +81,24 @@ export function buildTransmissiveKitMaterial(
   const preset = presetForKind(kind);
   return new MeshPhysicalMaterial({
     color: new Color(color),
+    depthWrite: false,
     emissive: new Color(emissiveColor),
     emissiveIntensity,
     ior: preset.ior,
     metalness: 0,
     name: materialName,
     opacity: 1,
+    polygonOffset: true,
+    polygonOffsetFactor: -0.75,
+    polygonOffsetUnits: -0.75,
     roughness: preset.roughness,
-    side: DoubleSide,
+    side: FrontSide,
     thickness: preset.thickness,
     transmission: preset.transmission,
     transparent: true,
   });
+}
+
+export function isTransmissiveKitMaterial(mat: unknown): boolean {
+  return mat instanceof MeshPhysicalMaterial && mat.transmission > 0;
 }
