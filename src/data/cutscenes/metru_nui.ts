@@ -1276,4 +1276,312 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
+  metru_whenua_great_disk: {
+    background: { from: '#1a1208', to: '#8b6914', type: 'gradient' },
+    id: 'metru_whenua_great_disk',
+    steps: [
+      {
+        text: 'Whenua stood before the south gate of the Onu-Metru Archives, about at the end of his patience.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'All right. For the fourth time, I am Whenua. I worked here my whole life. I need to get inside and find Tehutti before he does something we are all going to regret a whole lot.',
+        type: 'dialogue',
+      },
+      {
+        text: 'He waited for an answer from the gate guard, who did not look impressed by the sight of a Toa Metru of Earth. Whenua considered finding another access to the Archives, but given that they covered almost the entire Metru, it could be a long chute ride to another gateway. And there was no guarantee the guard there would be any more cooperative.',
+        type: 'narration',
+      },
+      {
+        text: '“Okay, you look like a Toa,” said the guard. “But not any Toa I’ve ever seen. And Whenua? Whenua is an archivist and he sure doesn’t carry twin drills like yours. If you don’t want to give me your real name, fine, but I can’t let just anyone in here.”',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua did his best to hold his temper. It would take too long to explain about how artifacts called Toa Stones transformed six Matoran into Toa Metru, even assuming the guard would believe that. Even more frustrating was the fact that his Great Mask of Power might prove a help here, but he didn’t even know what that power might be yet.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Whenua',
+        text: 'Can you at least tell me if Tehutti is here?',
+        type: 'dialogue',
+      },
+      {
+        text: 'The guard chuckled. “Tehutti’s always here, Toa ‘Whenua’. He spends his whole life down with the exhibits. He showed up here all excited about some shipment or another, probably another Rahi only its mother could love. But there’s nothing on the ship schedule for today.”',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua frowned. When he had first found out Tehutti was missing, he went to the archivist’s home. There he found a note offering an exotic Rahi for the Archives in exchange for a Great Disk. The note featured a crude drawing of the Rahi and was signed by a Ga-Metru Matoran named Vhisola. From the sound of things, Tehutti had rushed right over to make the exchange.',
+        type: 'narration',
+      },
+      {
+        text: 'The Toa Metru of Earth made his decision. He rushed past the guard and went to the doorway. “Call the Vahki if you want to, I have to get in there. Now where did they hide those levers today?”',
+        type: 'narration',
+      },
+      {
+        text: 'While the guard protested, Whenua ran his hands over the surface of the doorway. The Archives boasted a unique security system. Each door had three hidden levers whose location was changed every day. They had to be thrown in the right combination for the door to open and that changed every day, too. Every Onu-Matoran believed it to be the perfect protection against intruders.',
+        type: 'narration',
+      },
+      {
+        text: '“Go ahead,” said the guard. “No one has ever made it past that door. You won’t stand a –” Whenua threw the levers, one, two, three. The great door opened with a hiss. The Toa of Earth turned toward the guard and said:',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'What was that? Couldn’t hear you over the door opening.',
+        type: 'dialogue',
+      },
+      {
+        text: 'To Whenua, the Onu-Metru Archives were more than a storehouse or a museum. In his eyes, they were more magnificent than the crystal Knowledge Towers of Ko-Metru, the Great Temple and the sculpture fields of Po-Metru all put together. The main floors extended for a great distance in every direction and when they had taken up most of the space in the metru, work had begun on the lower levels and subbasements. The Archives now occupied the subterranean depths of the city, extending far beyond the boundaries of Onu-Metru.',
+        type: 'narration',
+      },
+      {
+        text: 'On the outside, the Archives looked grim and imposing. Inside, it was a vast treasure trove of every creation that had ever walked Metru Nui. Rather than the dry historical records and prophecies of Ko-Metru, this was a living museum. Every Rahi beast, every insectlike Bohrok, every creature in the Archives was part of a living record. Inside their protodermis stasis tubes, they were alive but suspended in time forever.',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua walked into the first of the Rahi wings, enjoying the familiar scents of the Archives. He nodded a greeting to one of the oldest exhibits, a Nui-Rama captured in flight whose stasis chamber hung from the ceiling high above. All around, archivists scurried back and forth pushing their transport carts.',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua turned and headed for Tehutti’s pride and joy, an exhibit of a Kane-Ra bull. Before he had even walked through the archway, he could see something was wrong. The section looked like a live Rahi had passed through, shattering the display case and scattering artifacts. Fortunately, only the outer shell had been broken. Had the inner casing been cracked, the Rahi inside might well have come to life again and rampaged through the Archives.',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua spotted Tehutti’s transport cart in a corner, empty. Lying near it was a hammer, the kind used in Ta-Metru forges. The archivist in Whenua was dismayed. Ta-Metru artifacts belonged on one of the sublevels, not in a Rahi section. It was only when he looked again at all the damage that he realized why the hammer was there.',
+        type: 'narration',
+      },
+      {
+        text: 'Who would want to sabotage these relics? he wondered. Someone from Ta-Metru? Why?',
+        type: 'narration',
+      },
+      {
+        text: 'Shrugging, Whenua moved on to the next exhibit hall. Here were more Rahi, even larger ones, and carvings of those that had either eluded capture or whose displays had been moved into storage. The Toa Metru of Earth was looking for anything out of place, when one carving caught his eye. It depicted a massive Rahi with six legs and a long, muscular tail, ideal for striking out at opponents. Carved underneath the picture were the words: “Nui-Jaga. Found in Po-Metru, near the sculpture fields.” Beside that was the name of the carver, Ahkmou.',
+        type: 'narration',
+      },
+      {
+        text: 'A Nui-Jaga, he thought. A Po-Metru Rahi. But this is the same beast Vhisola offered in trade for the Great Disk!',
+        type: 'narration',
+      },
+      {
+        text: 'As an archivist, Whenua was skilled at starting from the present and working back. No Ga-Matoran would even know what a Nui-Jaga was, most likely, let alone have one captive to trade. The offer to Tehutti had been a fake, probably written by someone other than this Vhisola. It was bait to get Tehutti to the Archives so the Great Disk could be stolen from him!',
+        type: 'narration',
+      },
+      {
+        text: 'That thought made him realize something even worse. Whoever was trying to get the Great Disks – possibly that four-legged hunter Vakama talked about – might be right here in the Archives, planning an ambush. For a moment, he wondered if he should try to find help. Maybe a Toa, or even a Vahki…',
+        type: 'narration',
+      },
+      {
+        text: 'Then he remembered – he was a Toa. It was his job to face danger and overcome it. And nothing – nothing! – would make him risk the safety of his Archives or his city. He ran for the nearest exit to the outer dock.',
+        type: 'narration',
+      },
+      {
+        text: 'When Whenua arrived on the dock, a four Matoran crew was trying to subdue a Gukko bird long enough for it to be put in stasis and archived. The powerful winged beast was objecting. There was about a fifty-fifty chance it would break away and head for the sky, carrying a Matoran or two with it. Whenua went over to help, but the dock leader got in the way.',
+        type: 'narration',
+      },
+      {
+        text: '“We have to do it ourselves,” said the Matoran. “Understand? If we start depending on a Toa, what happens when you’re not around?”',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua looked from the dock leader to the crew and back again. Then he nodded.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Whenua',
+        text: 'Okay then – for now. Have you seen Tehutti?',
+        type: 'dialogue',
+      },
+      {
+        text: '“He was headed for the next dock over. I told him not to waste his time. This Rahi was a last-minute find, but there aren’t any others on the schedule. And nothing from any Vhisola.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'I know. I’m pretty sure he knows, too. Make sure that Gukko’s fast asleep. Last time one got loose, it brought down half the exhibits in sublevel three.',
+        type: 'dialogue',
+      },
+      {
+        text: '“How did you know about that?” the dock leader asked. But the Toa of Earth was already gone.',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua pounded around the corner. All he could think about was finding Tehutti in time and stopping him from doing something the whole city would regret later. He scanned for any sign of the Matoran or for signs of a trap. What he found was a well-concealed hole with a narrow ladder leading down into darkness. On a hunch, he began to climb down. He had made it about halfway when a rung gave way beneath his foot. The next thing he knew, he was falling. And falling. Down, down, into the sublevels and sublevels of the Archives, and then farther still, thinking all the while: Stupid. Stupid, stupid, stupid!',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua found out an instant later, when he came to a crashing halt far below the lowest levels of the Archives. Despite spending a lifetime working here, even he had never been this far down before. But he had heard rumors of a level far below the surface, where exhibits that had proven potentially dangerous were placed for safekeeping.',
+        type: 'narration',
+      },
+      {
+        text: 'The Toa Metru of Earth sat up and groaned. His bruises had bruises and his head was pounding. With a great deal of effort, he rose. The hallways down here were even darker and more narrow than the ones above. Lightstones were few and far between.',
+        type: 'narration',
+      },
+      {
+        text: 'He had only taken three steps when he heard the sound every archivist dreads. It was a unique crunch, the sound of stasis tube fragments being crushed underfoot. Whenua forced himself to remain calm. So one of the cases was broken, so what? Maybe it’s only the outer shell that was damaged, and there’s nothing to worry about.',
+        type: 'narration',
+      },
+      {
+        text: 'The answer came with twin beams of pure, blazing heat that creased the side of his Kanohi mask. The wall of the corridor sizzled where they struck, and the hallway was suddenly filled with the smell of charred protodermis. Whenua whirled to see a Rahkshi heading right toward him, red eyes gleaming in its hideous yellow face.',
+        type: 'narration',
+      },
+      {
+        text: 'Startled, he found he could not remember the creature’s exact name. But he didn’t have to strain to recall its power – heat vision, capable of burning a hole through anything, including newly created Toa. No one was quite certain just where Rahkshi came from, but everyone wished they had stayed there.',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua ducked another heat blast and darted into another corridor. He needed time to think and space to maneuver, neither of which the Rahkshi was likely to give him. This would be a great time to use his Kanohi Mask of Power, if only he knew what it did. The twin earthshock drills he carried could punch their way through almost anything, and his elemental power… Yes, that was it.',
+        type: 'narration',
+      },
+      {
+        text: 'When he reached the far end of the hall, he activated the drills and began tearing up the flooring. His elemental power would affect the earth underneath, but there was no harm giving it a little help. The Rahkshi turned the corner and started toward him, its powerful body gleaming in the dim light. He could hear the horrible screech of the Kraata it carried inside.',
+        type: 'narration',
+      },
+      {
+        text: 'Twin shafts of red shot toward him from the Rahkshi’s eyes, Whenua barely moving aside in time. Then it was the moment to go to work. The Toa Metru looked down and did his best to ignore the advancing creature. He willed the earth to rise, to form an impenetrable wall between him and the Rahkshi. He could see the soil beginning to shift, running together and then swirling as if mini cyclones had taken hold.',
+        type: 'narration',
+      },
+      {
+        text: 'It was a toss-up who was more shocked by what happened next, the Rahkshi or Whenua. A mound of earth suddenly rose from the floor, hardening rapidly and blocking the creature from coming closer. Whenua took a step back and smiled, imagining how the other Toa would feel when he told them about this.',
+        type: 'narration',
+      },
+      {
+        text: 'The celebration came to an abrupt end. Twin red spots appeared on the earth wall, glowing brighter and brighter every moment. While Whenua had been patting himself on the back, the Rahkshi was focusing its power to melt the obstacle in its path. Okay, maybe I won’t tell the others about this, Whenua decided. He ducked into a doorway just as the wall crumbled.',
+        type: 'narration',
+      },
+      {
+        text: 'There was something Tehutti had said about yellow Rahkshi once, if only he could remember. What was it? Tehutti was always on about one piece of exhibit trivia or another. Then it came to him. Right after it uses its heat beams, the Rahkshi’s eyesight is weakened temporarily. Tehutti had been right, too, for the creature walked right past Whenua’s hiding place without spotting him.',
+        type: 'narration',
+      },
+      {
+        text: 'Once the Rahkshi was gone, Whenua fought a strong urge to get out of the Archives. Then he remembered that Tehutti might well be down here, and if he was, the Rahkshi would find him. Like it or not, he had to go on. But maybe I don’t have to fight the Rahkshi, he realized. Not if I can get something else to do it for me.',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua raced down the hallway, stopping only long enough to pry a lightstone out of the wall. By its beam, he was able to spot the shattered Rahkshi stasis tube. He scooped up as many of the inner casing fragments as he could find, then went back on the trail of the creature.',
+        type: 'narration',
+      },
+      {
+        text: 'It took a lot of walking, numerous twists and turns, and a few potentially dangerous mistakes before Whenua spotted the door he wanted. It was one of the few down here that had a sign, which read DANGER: MUAKA PEN. He could hear the great Rahi cat pacing and growling behind the door. Food was sent down to it once a day from upper levels through a small chute, but Muaka were notorious for always being hungry. Better still, they did not get along with Rahkshi at all.',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua took a deep breath. This was going to be tricky. First, he scattered the protodermis fragments on the floor in front of the door. Then he used his earthshock drill to punch a hole through the lock. He waited until he could hear the Muaka charging before he dove for cover.',
+        type: 'narration',
+      },
+      {
+        text: 'The door crashed open. The huge Rahi snarled, sniffing the air and snapping its massive jaws together. Whenua watched anxiously as the Muaka lowered its head and picked up the scent off the fragments. The beast’s eyes narrowed at the smell of Rahkshi, and it took off at a run.',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua followed. Letting another creature loose down here went against his nature as an archivist, but it would be easier to cage the Muaka again than a Rahkshi. He just had to hope the Muaka found the Rahkshi before either found Tehutti.',
+        type: 'narration',
+      },
+      {
+        text: 'He was deep in the heart of the storage level when he heard the snarls up ahead. The sounds were followed by red flashes of heat vision, then an impact that shook the entire section. The Muaka had tracked down his prey.',
+        type: 'narration',
+      },
+      {
+        text: 'Whenua rounded the corner to see Rahi and Rahkshi locked in a mighty struggle. Ordinarily, the Rahkshi would be the clear favorite, but the Muaka’s bulk reduced his foe’s room to maneuver. Beyond them, the Toa could see an open chamber where Tehutti strained to get out from under a pile of artifacts.',
+        type: 'narration',
+      },
+      {
+        text: 'The Toa forced himself to wait for the right moment. When the Muaka lifted his right forepaw to strike, Whenua dove, slid across the floor past the two creatures, and ended up in the same chamber as the Matoran.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Tehutti',
+        text: 'Get me out of here! I’ll do anything!',
+        type: 'dialogue',
+      },
+      {
+        text: 'Whenua worked quickly and carefully, pushing the debris aside and hoping the struggle outside would go on a little longer.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'Anything? Then how about giving me that Great Disk you have while there’s still a city up above to save.',
+        type: 'dialogue',
+      },
+      {
+        text: 'Tehutti shrugged off the last few pieces of Metru Nui history and nodded.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Tehutti',
+        text: 'I never thought I would be glad to see you. I fell down here, and some four-legged Rahi bait demanded I give him the disk. When I wouldn’t do it, he brought this stuff down on me and left me here. You want the disk? You can have it. I’d rather be trapped in a broken chute with a horde of Vahki than hold on to it now!',
+        type: 'dialogue',
+      },
+      {
+        text: 'Whenua glanced out into the hall, made sure Rahi and Rahkshi were still busy, then slammed the door and locked it.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'We’ll have to dig a new tunnel to get out of here. In the meantime, you can explain why you ever thought a Ga-Matoran would have a Nui-Jaga to trade for the disk.',
+        type: 'dialogue',
+      },
+      {
+        text: 'Tehutti watched in awe as Whenua’s earthshock drills went to work on the wall.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Tehutti',
+        text: 'I – I knew she wouldn’t. My friend Ahkmou told me all about Nui-Jaga long ago, so I knew they didn’t come from Ga-Metru. I wanted to see why someone wanted the Great Disk… and if they really did have a Nui-Jaga, well…',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'You would’ve traded the city’s safety for a new exhibit to put your name on.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Tehutti',
+        text: 'With you for a Toa Metru, Whenua, how safe is the city now? Besides, nothing very bad is going to happen to Metru Nui. Turaga Dume will figure out some way to deal with the Morbuzakh and everything will be fine.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'I hope so.',
+        type: 'dialogue',
+      },
+      {
+        text: 'Whenua powered down his drills. He had managed to punch a good-size hole in the wall. On the other side was another darkened corridor with a distinct upward slope. Hopefully, it led to the main floors.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'Let’s go. We have a long journey ahead. If we run into the Morbuzakh, make sure to tell it that it’s not a threat. I’ve never seen a plant laugh before.',
+        type: 'dialogue',
+      },
+    ],
+  },
 };

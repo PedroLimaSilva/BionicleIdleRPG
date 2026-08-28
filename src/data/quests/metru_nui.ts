@@ -21,6 +21,9 @@ export const METRU_NOKAMA_GREAT_DISK_QUEST_ID = 'metru_nokama_great_disk';
 /** Toa Vakama tracks down Nuhrii and the Ta-Metru Great Disk. */
 export const METRU_VAKAMA_GREAT_DISK_QUEST_ID = 'metru_vakama_great_disk';
 
+/** Toa Whenua tracks down Tehutti and the Onu-Metru Great Disk. */
+export const METRU_WHENUA_GREAT_DISK_QUEST_ID = 'metru_whenua_great_disk';
+
 /** Future Toa Metru Matoran — no Kanoka disk launcher on the rig. */
 const METRU_TOA_CANDIDATE_RECRUIT_IDS = [
   'Matau',
@@ -157,6 +160,22 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
       currency: 8000,
       cutscene: { cutsceneId: 'metru_vakama_great_disk', type: 'visual_novel' },
       unlockCharacters: [{ cost: 1200, id: 'Nuhrii' }],
+      xpPerMatoran: 7000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
+  },
+  {
+    description:
+      'Toa Whenua returns to the Onu-Metru Archives searching for Tehutti—one of six Matoran who can lead the Toa to the Great Disks. A forged Nui-Jaga trade lured the archivist underground, a Rahkshi stalks the deepest levels, and a four-legged hunter waits in the shadows.',
+    durationSeconds: 25 * 60,
+    id: METRU_WHENUA_GREAT_DISK_QUEST_ID,
+    name: 'The Onu-Metru Great Disk',
+    requirements: { matoran: ['Toa_Whenua'], minLevel: 28 },
+    rewards: {
+      currency: 8000,
+      cutscene: { cutsceneId: 'metru_whenua_great_disk', type: 'visual_novel' },
+      unlockCharacters: [{ cost: 1200, id: 'Tehutti' }],
       xpPerMatoran: 7000,
     },
     section: 'Metru Nui',
