@@ -24,6 +24,9 @@ export const METRU_NOKAMA_GREAT_DISK_QUEST_ID = 'metru_nokama_great_disk';
 /** Toa Nuju tracks down Ehrye and the Ko-Metru Great Disk. */
 export const METRU_NUJU_GREAT_DISK_QUEST_ID = 'metru_nuju_great_disk';
 
+/** Toa Onewa tracks down Ahkmou and the Po-Metru Great Disk. */
+export const METRU_ONEWA_GREAT_DISK_QUEST_ID = 'metru_onewa_great_disk';
+
 /** Toa Vakama tracks down Nuhrii and the Ta-Metru Great Disk. */
 export const METRU_VAKAMA_GREAT_DISK_QUEST_ID = 'metru_vakama_great_disk';
 
@@ -166,6 +169,22 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
       currency: 8000,
       cutscene: { cutsceneId: 'metru_nuju_great_disk', type: 'visual_novel' },
       unlockCharacters: [{ cost: 1200, id: 'Ehrye' }],
+      xpPerMatoran: 7000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
+  },
+  {
+    description:
+      'Toa Onewa returns to Po-Metru searching for the carver Ahkmou—one of six Matoran who can lead the Toa to the Great Disks. Ahkmou waits atop a sculpture in the fields, Nidhiki stalks the shadows, and the Toa Metru soon suspect the Po-Matoran of betraying them all.',
+    durationSeconds: 25 * 60,
+    id: METRU_ONEWA_GREAT_DISK_QUEST_ID,
+    name: 'The Po-Metru Great Disk',
+    requirements: { matoran: ['Toa_Onewa'], minLevel: 28 },
+    rewards: {
+      currency: 8000,
+      cutscene: { cutsceneId: 'metru_onewa_great_disk', type: 'visual_novel' },
+      unlockCharacters: [{ cost: 1200, id: 'Ahkmou' }],
       xpPerMatoran: 7000,
     },
     section: 'Metru Nui',

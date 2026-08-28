@@ -386,6 +386,11 @@ XP: 7000"]
 Unlock: Ehrye
 Currency: 8000
 XP: 7000"]
+  metru_onewa_great_disk["The Po-Metru Great Disk
+(25m)
+Unlock: Ahkmou
+Currency: 8000
+XP: 7000"]
   metru_matau_great_disk["The Le-Metru Great Disk
 (25m)
 Unlock: Orkahm
@@ -505,6 +510,7 @@ XP: 7000"]
   metru_great_temple_transformation --> metru_seek_the_great_disks
   metru_seek_the_great_disks --> metru_nokama_great_disk
   metru_seek_the_great_disks --> metru_nuju_great_disk
+  metru_seek_the_great_disks --> metru_onewa_great_disk
   metru_seek_the_great_disks --> metru_matau_great_disk
   metru_seek_the_great_disks --> metru_vakama_great_disk
   metru_seek_the_great_disks --> metru_whenua_great_disk
