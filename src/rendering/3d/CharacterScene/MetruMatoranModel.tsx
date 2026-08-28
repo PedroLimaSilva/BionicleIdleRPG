@@ -30,7 +30,7 @@ export function MetruMatoranModel({
   matoran,
   onKitMeshesAttached,
 }: {
-  matoran: BaseMatoran & { maskOverride?: Mask };
+  matoran: BaseMatoran & { maskOverride?: Mask; maskPowerActive?: boolean };
   onKitMeshesAttached?: () => void;
 }) {
   const group = useRef<Group>(null);
@@ -135,7 +135,7 @@ export function MetruMatoranModel({
   });
 
   const glowColor = matoran.colors.eyes;
-  useMask(nodes.Masks, matoran, glowColor, undefined, true, METRU_MASK_DISCOLORATION);
+  useMask(nodes.Masks, matoran, glowColor, matoran.maskPowerActive, true, METRU_MASK_DISCOLORATION);
 
   return (
     <group ref={group} dispose={null}>

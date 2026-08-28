@@ -4,6 +4,7 @@ import { resolve } from 'path';
 import { CHARACTER_DEX } from './dex';
 import {
   ALL_MASKS,
+  getDexPreviewMasks,
   getSelectableMasksForStage,
   isMaskSelectableForStage,
   isTransparentMask,
@@ -97,6 +98,26 @@ describe('getSelectableMasksForStage', () => {
         expect(selectable).not.toContain(storyMask);
       }
     }
+  });
+});
+
+describe('getDexPreviewMasks', () => {
+  test('includes the worn story mask ahead of the stage picker list', () => {
+    expect(getDexPreviewMasks(MatoranStage.ToaNuva, Mask.Avohkii)[0]).toBe(Mask.Avohkii);
+    expect(getDexPreviewMasks(MatoranStage.ToaNuva, Mask.Avohkii)).toEqual(
+      expect.arrayContaining(NUVA_MASKS)
+    );
+  });
+
+  test('does not duplicate the worn mask when it is already selectable', () => {
+    const masks = getDexPreviewMasks(MatoranStage.ToaMata, Mask.Hau);
+    expect(masks.filter((mask) => mask === Mask.Hau)).toHaveLength(1);
+    expect(masks).toEqual(MATAN_MASKS);
+  });
+
+  test('returns no Kanohi for Bohrok and Vahki', () => {
+    expect(getDexPreviewMasks(MatoranStage.Bohrok, Mask.Pakari)).toEqual([]);
+    expect(getDexPreviewMasks(MatoranStage.Vahki, Mask.Pakari)).toEqual([]);
   });
 });
 
