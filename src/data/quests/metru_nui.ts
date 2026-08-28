@@ -15,6 +15,18 @@ export const METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID = 'metru_great_temple_tr
 /** The Toa Metru claim their tools, learn of the Great Disks, and set out to find six Matoran. */
 export const METRU_SEEK_GREAT_DISKS_QUEST_ID = 'metru_seek_the_great_disks';
 
+/** Toa Nokama tracks down Vhisola and the Ga-Metru Great Disk. */
+export const METRU_NOKAMA_GREAT_DISK_QUEST_ID = 'metru_nokama_great_disk';
+
+/** Toa Nuju tracks down Ehrye and the Ko-Metru Great Disk. */
+export const METRU_NUJU_GREAT_DISK_QUEST_ID = 'metru_nuju_great_disk';
+
+/** Toa Vakama tracks down Nuhrii and the Ta-Metru Great Disk. */
+export const METRU_VAKAMA_GREAT_DISK_QUEST_ID = 'metru_vakama_great_disk';
+
+/** Toa Whenua tracks down Tehutti and the Onu-Metru Great Disk. */
+export const METRU_WHENUA_GREAT_DISK_QUEST_ID = 'metru_whenua_great_disk';
+
 /** Future Toa Metru Matoran — no Kanoka disk launcher on the rig. */
 const METRU_TOA_CANDIDATE_RECRUIT_IDS = [
   'Matau',
@@ -123,5 +135,69 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
     },
     section: 'Metru Nui',
     unlockedAfter: [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID],
+  },
+  {
+    description:
+      'Toa Nokama returns to Ga-Metru to find her old student Vhisola—one of six Matoran who can lead the Toa to the Great Disks. But Vhisola has vanished, Vahki patrol the canals, and a four-legged hunter has already struck the Archives lab.',
+    durationSeconds: 25 * 60,
+    id: METRU_NOKAMA_GREAT_DISK_QUEST_ID,
+    name: 'The Ga-Metru Great Disk',
+    requirements: { matoran: ['Toa_Nokama'], minLevel: 28 },
+    rewards: {
+      currency: 8000,
+      cutscene: { cutsceneId: 'metru_nokama_great_disk', type: 'visual_novel' },
+      unlockCharacters: [{ cost: 1200, id: 'Vhisola' }],
+      xpPerMatoran: 7000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
+  },
+  {
+    description:
+      'Toa Nuju returns to Ko-Metru searching for the errand-runner Ehrye—one of six Matoran who can lead the Toa to the Great Disks. Ehrye has vanished into the Knowledge Towers chasing glory, a tower cracks under sabotage, and Ahkmou’s trail leads to a four-legged hunter.',
+    durationSeconds: 25 * 60,
+    id: METRU_NUJU_GREAT_DISK_QUEST_ID,
+    name: 'The Ko-Metru Great Disk',
+    requirements: { matoran: ['Toa_Nuju'], minLevel: 28 },
+    rewards: {
+      currency: 8000,
+      cutscene: { cutsceneId: 'metru_nuju_great_disk', type: 'visual_novel' },
+      unlockCharacters: [{ cost: 1200, id: 'Ehrye' }],
+      xpPerMatoran: 7000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
+  },
+  {
+    description:
+      'Toa Vakama returns to Ta-Metru searching for the mask maker Nuhrii—one of six Matoran who can lead the Toa to the Great Disks. Morbuzakh vines attack a protodermis vat, a four-legged hunter has sabotaged the forges, and Nuhrii has vanished into the abandoned northern reaches.',
+    durationSeconds: 25 * 60,
+    id: METRU_VAKAMA_GREAT_DISK_QUEST_ID,
+    name: 'The Ta-Metru Great Disk',
+    requirements: { matoran: ['Toa_Vakama'], minLevel: 28 },
+    rewards: {
+      currency: 8000,
+      cutscene: { cutsceneId: 'metru_vakama_great_disk', type: 'visual_novel' },
+      unlockCharacters: [{ cost: 1200, id: 'Nuhrii' }],
+      xpPerMatoran: 7000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
+  },
+  {
+    description:
+      'Toa Whenua returns to the Onu-Metru Archives searching for Tehutti—one of six Matoran who can lead the Toa to the Great Disks. A forged Nui-Jaga trade lured the archivist underground, a Rahkshi stalks the deepest levels, and a four-legged hunter waits in the shadows.',
+    durationSeconds: 25 * 60,
+    id: METRU_WHENUA_GREAT_DISK_QUEST_ID,
+    name: 'The Onu-Metru Great Disk',
+    requirements: { matoran: ['Toa_Whenua'], minLevel: 28 },
+    rewards: {
+      currency: 8000,
+      cutscene: { cutsceneId: 'metru_whenua_great_disk', type: 'visual_novel' },
+      unlockCharacters: [{ cost: 1200, id: 'Tehutti' }],
+      xpPerMatoran: 7000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
   },
 ];
