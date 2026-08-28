@@ -1,50 +1,88 @@
 import { Color, DoubleSide, MeshPhysicalMaterial } from 'three';
 
-/** Matches kit GLB `KHR_materials_ior` — glass / trans-neon plastic. */
+/** Kit GLB `KHR_materials_ior` export (~1.45 glass / trans-plastic). */
 export const TRANSMISSIVE_KIT_IOR = 1.45;
 
-/** Full transmission; spatial masks were uniform in bakes so we use a scalar. */
-export const TRANSMISSIVE_KIT_TRANSMISSION = 1;
-
-/** Slight haze on the gel / visor (baked roughness maps were flat). */
-export const TRANSMISSIVE_KIT_ROUGHNESS = 0.35;
-
-/** Thin shell — reads as clear gel without a thickness map. */
-export const TRANSMISSIVE_KIT_THICKNESS = 0.25;
-
-const TRANSMISSIVE_KIT_MATERIAL_NAMES = new Set([
-  'matabrain_baked',
-  'metrubrain_baked',
-  'metrubrain',
-  'vahkihood_baked',
-]);
-
-export function isTransmissiveKitMaterialName(name: string): boolean {
-  return TRANSMISSIVE_KIT_MATERIAL_NAMES.has(name.trim().toLowerCase());
-}
+/** Brain gel — kit export transmission 0.35. */
+export const TRANSMISSIVE_KIT_BRAIN_TRANSMISSION = 0.35;
 
 /**
- * Uniform transmissive plastic (brains, Vahki visor): no baked maps — transmission
- * + IOR handle see-through without `alphaMode: BLEND` fighting Kanohi masks.
+ * Vahki visor — dialed less clear than brain in-game (kit export is 0.75; we override).
  */
+export const TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION = 0.15;
+
+export const TRANSMISSIVE_KIT_BRAIN_ROUGHNESS = 0.2;
+export const TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS = 0.3;
+
+export const TRANSMISSIVE_KIT_THICKNESS = 0.25;
+
+export type TransmissiveKitKind = 'brain' | 'vahkiHood';
+
+const LEGACY_TRANSMISSIVE_NAMES: Record<string, TransmissiveKitKind> = {
+  brain: 'brain',
+  matabrain: 'brain',
+  metrubrain: 'brain',
+  matabrain_baked: 'brain',
+  metrubrain_baked: 'brain',
+  vahkihood: 'vahkiHood',
+  vahkihood_baked: 'vahkiHood',
+};
+
+/**
+ * Brains / Vahki visor use runtime transmission when the slot tints emissive (Bohrok
+ * `Brain` is color-only and stays on the normal plastic path).
+ */
+export function resolveTransmissiveKitKind(
+  materialName: string,
+  spec: { emissive?: unknown } | undefined
+): TransmissiveKitKind | undefined {
+  if (!spec?.emissive) return undefined;
+  return LEGACY_TRANSMISSIVE_NAMES[materialName.trim().toLowerCase()];
+}
+
+function presetForKind(kind: TransmissiveKitKind): {
+  ior: number;
+  transmission: number;
+  roughness: number;
+  thickness: number;
+} {
+  if (kind === 'brain') {
+    return {
+      ior: TRANSMISSIVE_KIT_IOR,
+      transmission: TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
+      roughness: TRANSMISSIVE_KIT_BRAIN_ROUGHNESS,
+      thickness: TRANSMISSIVE_KIT_THICKNESS,
+    };
+  }
+  return {
+    ior: TRANSMISSIVE_KIT_IOR,
+    transmission: TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
+    roughness: TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS,
+    thickness: TRANSMISSIVE_KIT_THICKNESS,
+  };
+}
+
+/** Uniform transmissive plastic — no baked maps; avoids `alphaMode: BLEND` vs Kanohi masks. */
 export function buildTransmissiveKitMaterial(
   materialName: string,
+  kind: TransmissiveKitKind,
   color: string,
   emissiveColor: string,
   emissiveIntensity: number
 ): MeshPhysicalMaterial {
+  const preset = presetForKind(kind);
   return new MeshPhysicalMaterial({
     color: new Color(color),
     emissive: new Color(emissiveColor),
     emissiveIntensity,
-    ior: TRANSMISSIVE_KIT_IOR,
+    ior: preset.ior,
     metalness: 0,
     name: materialName,
     opacity: 1,
-    roughness: TRANSMISSIVE_KIT_ROUGHNESS,
+    roughness: preset.roughness,
     side: DoubleSide,
-    thickness: TRANSMISSIVE_KIT_THICKNESS,
-    transmission: TRANSMISSIVE_KIT_TRANSMISSION,
+    thickness: preset.thickness,
+    transmission: preset.transmission,
     transparent: true,
   });
 }

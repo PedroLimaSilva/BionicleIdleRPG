@@ -22,7 +22,7 @@ import {
  * to `_`). Duplicate kit pieces on the head use a `_Head` suffix. Staff mounts are
  * `Tool_L` / `Tool_R` — the only hive tool in `kit_2004.glb` so far is Bordakh's.
  * `RahkshiBody` and `TechnicTorsoPivot` are the kit_2003 pieces named on the rig.
- * The visor socket is `VahkiHood_Baked` (same name as the kit_2004 node).
+ * The visor socket is `VahkiHood_Baked` on the rig; it clones kit node `VahkiHood`.
  */
 
 const VAHKI_HEAD_COLORS = {
@@ -61,7 +61,7 @@ export const VAHKI_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
     materialColors: VAHKI_KIT_PALETTE_BODY,
   },
   VahkiHood_Baked: {
-    kitNodeName: KIT_2004_NODES.VahkiHoodBaked,
+    kitNodeName: KIT_2004_NODES.VahkiHood,
     materialColors: VAHKI_KIT_PALETTE_HOOD,
   },
   VahkiLauncher: {

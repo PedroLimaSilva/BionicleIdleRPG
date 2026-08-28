@@ -16,7 +16,7 @@ import {
 import { hasMaskPbrMaps } from './maskMaterial';
 import {
   buildTransmissiveKitMaterial,
-  isTransmissiveKitMaterialName,
+  resolveTransmissiveKitKind,
 } from './transmissiveKitMaterial';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
@@ -145,16 +145,20 @@ export function buildKitMeshMaterials(
   const next = mats.map((mat) => {
     if (!isStandardMat(mat)) return mat;
     const spec = resolveKitMaterialSlotSpec(mat.name, slotLookup);
-    if (isTransmissiveKitMaterialName(mat.name)) {
-      if (!spec || (!spec.color && !spec.emissive && spec.emissiveIntensity === undefined)) {
-        return mat;
-      }
-      const color = spec.color ? resolveKitColorSource(spec.color, palette) : mat.color.getStyle();
-      const emissive = spec.emissive ? resolveKitColorSource(spec.emissive, palette) : color;
+    const transmissiveKind = resolveTransmissiveKitKind(mat.name, spec);
+    if (transmissiveKind) {
+      const color = spec?.color ? resolveKitColorSource(spec.color, palette) : mat.color.getStyle();
+      const emissive = spec?.emissive ? resolveKitColorSource(spec.emissive, palette) : color;
       const emissiveIntensity =
-        spec.emissiveIntensity ??
-        (spec.emissive ? (mat.emissiveIntensity > 0 ? mat.emissiveIntensity : 1) : 0);
-      return buildTransmissiveKitMaterial(mat.name, color, emissive, emissiveIntensity);
+        spec?.emissiveIntensity ??
+        (spec?.emissive ? (mat.emissiveIntensity > 0 ? mat.emissiveIntensity : 1) : 0);
+      return buildTransmissiveKitMaterial(
+        mat.name,
+        transmissiveKind,
+        color,
+        emissive,
+        emissiveIntensity
+      );
     }
     // Baked / mapped materials keep GLB maps (Kanoka disk, etc.).
     if (isPreservedBakedMaterial(mat)) {

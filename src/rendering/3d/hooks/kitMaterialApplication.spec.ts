@@ -1,7 +1,11 @@
 import { Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { buildKitMaterialSlotLookup, buildKitMeshMaterials } from './kitMaterialApplication';
 import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
-import { TRANSMISSIVE_KIT_IOR, TRANSMISSIVE_KIT_TRANSMISSION } from './transmissiveKitMaterial';
+import {
+  TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
+  TRANSMISSIVE_KIT_IOR,
+  TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
+} from './transmissiveKitMaterial';
 import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
@@ -88,14 +92,12 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(next.metalness).toBe(0.5);
   });
 
-  test('a matching slot builds uniform transmission for Mata brain (no baked maps)', () => {
-    const mesh = meshWithMaterialNamed('MataBrain_baked');
-    const baked = mesh.material as MeshStandardMaterial;
-    baked.normalMap = {} as MeshStandardMaterial['normalMap'];
+  test('Brain slot builds transmissive gel (clearer than Vahki hood)', () => {
+    const mesh = meshWithMaterialNamed('Brain');
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({
-        MataBrain_baked: {
+        Brain: {
           color: { key: 'eyes', kind: 'palette' },
           emissive: { key: 'eyes', kind: 'palette' },
           emissiveIntensity: 0.1,
@@ -105,23 +107,18 @@ describe('buildKitMeshMaterials metallic colors', () => {
       COLORS,
       PLASTIC_WEATHERED
     ) as MeshPhysicalMaterial;
-    expect(next).not.toBe(baked);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.emissiveIntensity).toBe(0.1);
-    expect(next.transmission).toBe(TRANSMISSIVE_KIT_TRANSMISSION);
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
     expect(next.ior).toBe(TRANSMISSIVE_KIT_IOR);
     expect(next.normalMap).toBeNull();
   });
 
-  test('a matching slot builds uniform transmission for Vahki hood (no baked maps)', () => {
-    const mesh = meshWithMaterialNamed('VahkiHood_baked');
-    const baked = mesh.material as MeshStandardMaterial;
-    baked.normalMap = {} as MeshStandardMaterial['normalMap'];
+  test('VahkiHood slot is less clear than Brain', () => {
+    const mesh = meshWithMaterialNamed('VahkiHood');
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({
-        VahkiHood_baked: {
+        VahkiHood: {
           color: { key: 'eyes', kind: 'palette' },
           emissive: { key: 'eyes', kind: 'palette' },
           emissiveIntensity: 0.1,
@@ -131,12 +128,17 @@ describe('buildKitMeshMaterials metallic colors', () => {
       COLORS,
       PLASTIC_WEATHERED
     ) as MeshPhysicalMaterial;
-    expect(next).not.toBe(baked);
-    expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.emissiveIntensity).toBe(0.1);
-    expect(next.transmission).toBe(TRANSMISSIVE_KIT_TRANSMISSION);
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION);
+    expect(next.transmission).toBeLessThan(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
     expect(next.normalMap).toBeNull();
+  });
+
+  test('Brain with color-only slot (Bohrok eyes) stays on the plastic path', () => {
+    const mat = buildSingle('Brain', {
+      Brain: { color: { key: 'eyes', kind: 'palette' }, weathered: false },
+    });
+    expect(mat).not.toBeInstanceOf(MeshPhysicalMaterial);
+    expect(mat.metalness).toBe(0.5);
   });
 
   test('opacity below 1 enables transparent blending on the cloned material', () => {

@@ -90,14 +90,12 @@ describe('Vahki kit attachments', () => {
     expect(sockets.has('Bordakh')).toBe(false);
   });
 
-  test('hood socket clones the baked visor kit node', () => {
-    expect(VAHKI_KIT_2004_ATTACHMENTS.VahkiHood_Baked.kitNodeName).toBe(
-      KIT_2004_NODES.VahkiHoodBaked
-    );
+  test('hood socket clones the VahkiHood kit node', () => {
+    expect(VAHKI_KIT_2004_ATTACHMENTS.VahkiHood_Baked.kitNodeName).toBe(KIT_2004_NODES.VahkiHood);
   });
 
   test('hood visor uses a modest emissive intensity instead of the baked default of 1', () => {
-    expect(VAHKI_KIT_PALETTE_HOOD.VahkiHood_baked).toEqual(
+    expect(VAHKI_KIT_PALETTE_HOOD.VahkiHood).toEqual(
       expect.objectContaining({
         emissiveIntensity: VAHKI_HOOD_EMISSIVE_INTENSITY,
       })

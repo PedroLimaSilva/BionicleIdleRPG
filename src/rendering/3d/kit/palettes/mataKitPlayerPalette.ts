@@ -12,7 +12,7 @@ import { kitPartSlots } from './partSlots';
 export const MATA_KIT_PLAYER_PALETTE_PLASTICS: Partial<Record<string, KitMaterialSlotEntry>> =
   kitPartSlots('body', 'mata');
 
-/** Baked transmissive Mata / Metru brains — tint eyes only (see `brainKitPalette`). */
+/** Baked transmissive Mata / Metru brains — `Brain` material slot (see `brainKitPalette`). */
 export const MATA_KIT_PLAYER_PALETTE_BRAIN: Partial<Record<string, KitMaterialSlotEntry>> =
   KIT_PALETTE_BRAIN_BAKED;
 

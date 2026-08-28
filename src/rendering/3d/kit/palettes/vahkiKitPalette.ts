@@ -21,14 +21,13 @@ export const VAHKI_KIT_PALETTE_EYES: Partial<Record<string, KitMaterialSlotEntry
 };
 
 /**
- * Transmissive visor (`VahkiHood_baked`): runtime transmission + IOR, tint
- * diffuse and emission from the hive eye color. Modest emissive (not 35× eye /
- * 50× mask) — same pipeline as Mata / Metru brains (`transmissiveKitMaterial`).
+ * Transmissive visor (`VahkiHood` kit material): runtime transmission + IOR, less clear
+ * than brain gel. Tint diffuse / emission from hive eye color (`transmissiveKitMaterial`).
  */
 export const VAHKI_HOOD_EMISSIVE_INTENSITY = 0.1;
 
 export const VAHKI_KIT_PALETTE_HOOD: Partial<Record<string, KitMaterialSlotEntry>> = {
-  VahkiHood_baked: {
+  VahkiHood: {
     color: { key: 'eyes', kind: 'palette' },
     emissive: { key: 'eyes', kind: 'palette' },
     emissiveIntensity: VAHKI_HOOD_EMISSIVE_INTENSITY,

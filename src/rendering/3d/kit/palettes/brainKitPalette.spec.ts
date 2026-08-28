@@ -1,32 +1,18 @@
-import {
-  BRAIN_BAKED_EMISSIVE_INTENSITY,
-  KIT_PALETTE_BRAIN_BAKED,
-  MATA_KIT_PALETTE_BRAIN_BAKED,
-  METRU_KIT_PALETTE_BRAIN_BAKED,
-} from './brainKitPalette';
+import { BRAIN_BAKED_EMISSIVE_INTENSITY, KIT_PALETTE_BRAIN_BAKED } from './brainKitPalette';
 import { MATA_KIT_PLAYER_PALETTE_BRAIN } from './mataKitPlayerPalette';
 
 describe('brainKitPalette', () => {
-  test('baked brains use a modest emissive intensity instead of the GLB default of 1', () => {
+  test('brains use Brain slot with modest emissive intensity', () => {
     expect(BRAIN_BAKED_EMISSIVE_INTENSITY).toBe(0.1);
-    expect(MATA_KIT_PALETTE_BRAIN_BAKED.MataBrain_baked).toEqual(
+    expect(KIT_PALETTE_BRAIN_BAKED.Brain).toEqual(
       expect.objectContaining({
         emissiveIntensity: BRAIN_BAKED_EMISSIVE_INTENSITY,
         weathered: false,
       })
-    );
-    expect(METRU_KIT_PALETTE_BRAIN_BAKED.MetruBrain_baked).toEqual(
-      expect.objectContaining({
-        emissiveIntensity: BRAIN_BAKED_EMISSIVE_INTENSITY,
-        weathered: false,
-      })
-    );
-    expect(METRU_KIT_PALETTE_BRAIN_BAKED.MetruBrain).toBe(
-      METRU_KIT_PALETTE_BRAIN_BAKED.MetruBrain_baked
     );
   });
 
-  test('MATA_KIT_PLAYER_PALETTE_BRAIN re-exports the combined baked brain slots', () => {
+  test('MATA_KIT_PLAYER_PALETTE_BRAIN re-exports the transmissive brain slot', () => {
     expect(MATA_KIT_PLAYER_PALETTE_BRAIN).toBe(KIT_PALETTE_BRAIN_BAKED);
   });
 });
