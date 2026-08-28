@@ -69,7 +69,7 @@ export function useCharactersState(
   };
 
   const assignJobToMatoran = (id: RecruitedCharacterData['id'], job: MatoranJob) => {
-    setRecruitedCharacters((prev) => assignJob(id, job, prev));
+    setRecruitedCharacters((prev) => assignJob(id, job, prev, completedQuests));
   };
 
   const removeJobFromMatoran = (id: RecruitedCharacterData['id']) => {

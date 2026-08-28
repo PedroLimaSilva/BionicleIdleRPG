@@ -121,7 +121,8 @@ describe('Jobs', () => {
     });
 
     test('returns false when required progress is not met', () => {
-      expect(isJobUnlocked(MatoranJob.ProtodermisSmelter, mockGameState)).toBe(false);
+      const lockedState = { completedQuests: [] } as unknown as GameState;
+      expect(isJobUnlocked(MatoranJob.AlgaeHarvester, lockedState)).toBe(false);
     });
   });
 
@@ -135,8 +136,8 @@ describe('Jobs', () => {
 
       // CharcoalMaker has no requirements
       expect(available).toContain(MatoranJob.CharcoalMaker);
-      // ProtodermisSmelter requires 'settle_metru_nui'
-      expect(available).not.toContain(MatoranJob.ProtodermisSmelter);
+      // AlgaeHarvester requires quest progress
+      expect(available).not.toContain(MatoranJob.AlgaeHarvester);
     });
 
     test('includes jobs when requirements are met', () => {
@@ -180,10 +181,10 @@ describe('Jobs', () => {
       expect(bohrokJobs).not.toContain(MatoranJob.StoneMason);
     });
 
-    test('Metru Matoran only see their canonical profession when unlocked', () => {
-      const mockGameState: GameState = {
-        completedQuests: ['settle_metru_nui'],
-      } as GameState;
+    test('Metru Matoran only see their canonical profession', () => {
+      const mockGameState = {
+        completedQuests: [],
+      } as unknown as GameState;
 
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
       const nokama = { exp: 0, id: 'Nokama' } as RecruitedCharacterData;
@@ -194,29 +195,21 @@ describe('Jobs', () => {
       expect(getAvailableJobs(mockGameState, matau)).toEqual([MatoranJob.ChuteController]);
     });
 
-    test('Metru Matoran with district-specific unlocks only see profession when quest met', () => {
-      const settledOnly: GameState = {
-        completedQuests: ['settle_metru_nui'],
-      } as GameState;
-      const withTowers: GameState = {
-        completedQuests: ['settle_metru_nui', 'activate_knowledge_towers'],
-      } as GameState;
-      const withArchives: GameState = {
-        completedQuests: ['settle_metru_nui', 'unlock_archives'],
-      } as GameState;
+    test('Metru Matoran with district-specific professions see them without quest progress', () => {
+      const mockGameState = {
+        completedQuests: [],
+      } as unknown as GameState;
 
       const nuju = { exp: 0, id: 'Nuju' } as RecruitedCharacterData;
       const whenua = { exp: 0, id: 'Whenua' } as RecruitedCharacterData;
 
-      expect(getAvailableJobs(settledOnly, nuju)).toEqual([]);
-      expect(getAvailableJobs(withTowers, nuju)).toEqual([MatoranJob.KnowledgeScribe]);
-      expect(getAvailableJobs(settledOnly, whenua)).toEqual([]);
-      expect(getAvailableJobs(withArchives, whenua)).toEqual([MatoranJob.StasisTechnician]);
+      expect(getAvailableJobs(mockGameState, nuju)).toEqual([MatoranJob.KnowledgeScribe]);
+      expect(getAvailableJobs(mockGameState, whenua)).toEqual([MatoranJob.StasisTechnician]);
     });
 
     test('Metru Matoran do not see Mata Nui jobs even when unlocked', () => {
       const mockGameState: GameState = {
-        completedQuests: ['settle_metru_nui', 'mnog_ga_koro_sos'],
+        completedQuests: ['mnog_ga_koro_sos'],
       } as GameState;
 
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
@@ -224,12 +217,26 @@ describe('Jobs', () => {
 
       expect(jobs).not.toContain(MatoranJob.CharcoalMaker);
       expect(jobs).not.toContain(MatoranJob.AlgaeHarvester);
+      expect(jobs).not.toContain(MatoranJob.StoneMason);
+    });
+
+    test('Mata Nui Matoran do not see Metru jobs', () => {
+      const mockGameState = {
+        completedQuests: [],
+      } as unknown as GameState;
+
+      const jala = { exp: 0, id: 'Jala' } as RecruitedCharacterData;
+      const jobs = getAvailableJobs(mockGameState, jala);
+
+      expect(jobs).not.toContain(MatoranJob.MaskMaker);
+      expect(jobs).not.toContain(MatoranJob.Teacher);
+      expect(jobs).not.toContain(MatoranJob.ChuteController);
     });
 
     test('Metru Matoran do not see Metru jobs without an allowedCharacters entry', () => {
-      const mockGameState: GameState = {
-        completedQuests: ['settle_metru_nui'],
-      } as GameState;
+      const mockGameState = {
+        completedQuests: [],
+      } as unknown as GameState;
 
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
       const jobs = getAvailableJobs(mockGameState, vakama);
