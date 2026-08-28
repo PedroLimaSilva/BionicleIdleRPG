@@ -6,21 +6,21 @@ import type { KitMaterialSlotOverride } from '../../../types/KitParts';
 export const TRANSMISSIVE_KIT_IOR = 1.45;
 
 /** Toa / Metru brain gel (`MataBrain` / `MetruBrain` kit nodes) — kit transmission 0.35. */
-export const TRANSMISSIVE_KIT_BRAIN_TRANSMISSION = 0.35;
+export const TRANSMISSIVE_KIT_BRAIN_TRANSMISSION = 0.5;
 
 /** McToran face brain — clearer than Toa brain gel. */
-export const TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION = 0.55;
+export const TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION = 1;
 
 /**
  * Vahki visor — murkier than brain in-game (kit export is 0.75; we override down).
  */
-export const TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION = 0.15;
+export const TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION = 0.5;
 
 export const TRANSMISSIVE_KIT_BRAIN_ROUGHNESS = 0.2;
 export const TRANSMISSIVE_KIT_MCTORAN_FACE_ROUGHNESS = 0.15;
 export const TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS = 0.3;
 
-export const TRANSMISSIVE_KIT_THICKNESS = 0.25;
+export const TRANSMISSIVE_KIT_THICKNESS = 0.15;
 
 export type TransmissiveKitKind = KitTransmissivePreset;
 
@@ -46,23 +46,23 @@ function presetForKind(kind: TransmissiveKitKind): {
     case 'brain':
       return {
         ior: TRANSMISSIVE_KIT_IOR,
-        transmission: TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
         roughness: TRANSMISSIVE_KIT_BRAIN_ROUGHNESS,
         thickness: TRANSMISSIVE_KIT_THICKNESS,
+        transmission: TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
       };
     case 'mctoranFace':
       return {
         ior: TRANSMISSIVE_KIT_IOR,
-        transmission: TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
         roughness: TRANSMISSIVE_KIT_MCTORAN_FACE_ROUGHNESS,
         thickness: TRANSMISSIVE_KIT_THICKNESS,
+        transmission: TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
       };
     case 'vahkiHood':
       return {
         ior: TRANSMISSIVE_KIT_IOR,
-        transmission: TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
         roughness: TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS,
         thickness: TRANSMISSIVE_KIT_THICKNESS,
+        transmission: TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
       };
   }
 }
