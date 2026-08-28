@@ -356,9 +356,13 @@ Currency: 5000
 XP: 4000"]
   story_metru_nui_saga_begin["Tales of the Lost City
 (15m)
-Unlock: Toa_Lhikan, Matau, Nokama, Nuju, Onewa, Vakama, Whenua
+Unlock: Toa_Lhikan, Matau, Nokama, Nuju, Onewa, Vakama, Whenua, Kapura
 Currency: 5500
 XP: 4500"]
+  metru_kapura_morbuzakh["Morbuzakh
+(18m)
+Currency: 6000
+XP: 5000"]
   metru_vakama_dume_and_the_great_temple["The Turaga’s Visit
 (20m)
 Unlock: bordakh, nuurakh, vorzakh, zadakh, rorzakh, keerakh
@@ -470,6 +474,7 @@ XP: 6500"]
   mol_takanuva_rises --> mol_defeat_of_makuta
   mol_defeat_of_makuta --> mol_rediscovery_of_metru_nui
   mol_rediscovery_of_metru_nui --> story_metru_nui_saga_begin
+  story_metru_nui_saga_begin --> metru_kapura_morbuzakh
   story_metru_nui_saga_begin --> metru_vakama_dume_and_the_great_temple
   metru_vakama_dume_and_the_great_temple --> metru_great_temple_transformation
   metru_great_temple_transformation --> metru_seek_the_great_disks

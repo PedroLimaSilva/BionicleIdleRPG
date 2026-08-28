@@ -33,7 +33,7 @@ export const KIT_2004_NODES = {
   VahkiGlowingEyes: 'VahkiGlowingEyes',
   VahkiHead: 'VahkiHead',
   VahkiHip: 'VahkiHip',
-  VahkiHoodBaked: 'VahkiHood_Baked',
+  VahkiHood: 'VahkiHood',
   VahkiLauncher: 'VahkiLauncher',
   VahkiLeg: 'VahkiLeg',
   VahkiSpine: 'VahkiSpine',

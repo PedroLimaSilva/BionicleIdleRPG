@@ -2,6 +2,10 @@ import { ListedCharacterData, RecruitedCharacterData } from '../../types/Matoran
 import { RECRUITMENT_REGISTRY } from '../../data/recruitment';
 import { EVOLUTION_PATHS } from '../evolution/CharacterEvolution';
 
+function getUnlockQuestIds(entry: (typeof RECRUITMENT_REGISTRY)[number]): string[] {
+  return Array.isArray(entry.unlockedByQuest) ? entry.unlockedByQuest : [entry.unlockedByQuest];
+}
+
 /** Ids that belong to the same "recruitment line" (e.g. Jala and Jaller). Built from EVOLUTION_PATHS. */
 const recruitmentLineCache = new Map<string, string[]>();
 
@@ -83,7 +87,7 @@ export function getBuyableCharacters(
   const result: ListedCharacterData[] = [];
 
   for (const entry of RECRUITMENT_REGISTRY) {
-    if (!completedSet.has(entry.unlockedByQuest)) continue;
+    if (!getUnlockQuestIds(entry).some((questId) => completedSet.has(questId))) continue;
     if (isCharacterRecruited(entry.id, recruitedCharacters)) continue;
     result.push({ cost: entry.cost, id: entry.id });
   }
@@ -95,7 +99,7 @@ export function getBuyableCharacters(
  * Returns recruitment entries unlocked by a given quest (for UI: "Unlock: X, Y").
  */
 export function getCharactersUnlockedByQuest(questId: string): ListedCharacterData[] {
-  return RECRUITMENT_REGISTRY.filter((e) => e.unlockedByQuest === questId).map((e) => ({
+  return RECRUITMENT_REGISTRY.filter((e) => getUnlockQuestIds(e).includes(questId)).map((e) => ({
     cost: e.cost,
     id: e.id,
   }));
