@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { Environment, PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { EffectComposer, SSAO } from '@react-three/postprocessing';
@@ -11,6 +11,8 @@ import { shouldEnableSelectiveBloom, shouldEnableShadows } from '../../../utils/
 import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../../types/Matoran';
+import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
+import { registerCharacterPreviewPlay } from '../utils/characterPreviewControls';
 import { resolveToaMataBuildId } from '../customMataBuild';
 import { usesNujuToaMetruRig } from '../metruMatoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
@@ -54,23 +56,29 @@ function EnvironmentIntensity({ value }: { value: number }) {
   return null;
 }
 
-function CharacterModel({
-  matoran,
-  onModelReady,
-}: {
-  matoran: BaseMatoran & RecruitedCharacterData;
-  /**
-   * Fires once after the concrete model has mounted (and again when the
-   * character identity changes in place). CharacterModel lives inside the
-   * `<Suspense>` boundary, so this `useEffect` only runs after the model's
-   * GLB has resolved and its own children's effects (e.g. weathered-metal
-   * material application) have fired — children-first ordering guarantees
-   * materials are up to date before we ask for a bloom rescan. Gali also
-   * fires this from `useKitAttachments`'s `onAttached` so the post-kit
-   * glow meshes are picked up.
-   */
-  onModelReady?: () => void;
-}) {
+export type CharacterSceneMatoran = BaseMatoran &
+  RecruitedCharacterData & {
+    maskPowerActive?: boolean;
+    unlockAllMasks?: boolean;
+  };
+
+const CharacterModel = forwardRef<
+  CombatantModelHandle,
+  {
+    matoran: CharacterSceneMatoran;
+    /**
+     * Fires once after the concrete model has mounted (and again when the
+     * character identity changes in place). CharacterModel lives inside the
+     * `<Suspense>` boundary, so this `useEffect` only runs after the model's
+     * GLB has resolved and its own children's effects (e.g. weathered-metal
+     * material application) have fired — children-first ordering guarantees
+     * materials are up to date before we ask for a bloom rescan. Gali also
+     * fires this from `useKitAttachments`'s `onAttached` so the post-kit
+     * glow meshes are picked up.
+     */
+    onModelReady?: () => void;
+  }
+>(function CharacterModel({ matoran, onModelReady }, ref) {
   useEffect(() => {
     onModelReady?.();
   }, [matoran.customMataModelId, matoran.id, matoran.stage, onModelReady]);
@@ -80,50 +88,55 @@ function CharacterModel({
       const buildId = resolveToaMataBuildId(matoran);
       switch (buildId) {
         case 'Toa_Gali':
-          return <GaliMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <GaliMataModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Pohatu':
-          return <PohatuMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <PohatuMataModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Kopaka':
-          return <KopakaMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <KopakaMataModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Onua':
-          return <OnuaMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <OnuaMataModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Lewa':
-          return <LewaMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <LewaMataModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         default:
-          return <TahuMataModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <TahuMataModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
     }
     case MatoranStage.ToaNuva:
       switch (matoran.id) {
         case 'Takanuva':
-          return <TakanuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <TakanuvaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Kopaka_Nuva':
-          return <KopakaNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <KopakaNuvaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Lewa_Nuva':
-          return <LewaNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <LewaNuvaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Pohatu_Nuva':
-          return <PohatuNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <PohatuNuvaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Onua_Nuva':
-          return <OnuaNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <OnuaNuvaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Gali_Nuva':
-          return <GaliNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <GaliNuvaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Tahu_Nuva':
-          return <TahuNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <TahuNuvaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         default:
-          return <TahuNuvaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <TahuNuvaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
     case MatoranStage.Bohrok:
     case MatoranStage.BohrokKal:
       return (
         <group scale={4.5}>
-          <BohrokModel key={matoran.id} id={matoran.id} />
+          <BohrokModel ref={ref} key={matoran.id} id={matoran.id} />
         </group>
       );
     case MatoranStage.Vahki:
       // Bind pose faces +Z (battle forward). Character-sheet camera looks from +Z, so yaw 180°.
       return (
         <group rotation={[0, Math.PI, 0]}>
-          <VahkiModel key={matoran.id} id={matoran.id} onKitMeshesAttached={onModelReady} />
+          <VahkiModel
+            ref={ref}
+            key={matoran.id}
+            id={matoran.id}
+            onKitMeshesAttached={onModelReady}
+          />
         </group>
       );
     case MatoranStage.Diminished:
@@ -132,25 +145,25 @@ function CharacterModel({
       return <RebuiltMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.ToaMetru:
       if (usesNujuToaMetruRig(matoran.id)) {
-        return <NujuModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+        return <NujuModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
       switch (matoran.id) {
         case 'Toa_Matau':
-          return <MatauModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <MatauModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Nuju':
-          return <NujuModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <NujuModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Nokama':
-          return <NokamaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <NokamaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Onewa':
-          return <OnewaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <OnewaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Vakama':
-          return <VakamaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <VakamaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Whenua':
-          return <WhenuaModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <WhenuaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Lhikan':
-          return <LhikanModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <LhikanModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         default:
-          return <LhikanModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <LhikanModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
     case MatoranStage.Metru:
       return (
@@ -159,7 +172,7 @@ function CharacterModel({
     default:
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
   }
-}
+});
 
 /**
  * Positions the shared orthographic camera so it looks head-on at the
@@ -195,8 +208,15 @@ function CharacterFraming() {
   return null;
 }
 
-export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCharacterData }) {
+export function CharacterScene({
+  enablePreviewControls = false,
+  matoran,
+}: {
+  enablePreviewControls?: boolean;
+  matoran: CharacterSceneMatoran;
+}) {
   const characterRootRef = useRef<Object3D>(null);
+  const modelRef = useRef<CombatantModelHandle>(null);
   const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
   // Bumped by CharacterModel's post-mount effect (all models) and by
   // useKitAttachments.onAttached (Gali specifically). Each bump triggers a
@@ -223,6 +243,15 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
     const t = setTimeout(applyShadowProps, 500);
     return () => clearTimeout(t);
   }, [effectiveShadows, matoran]);
+
+  useEffect(() => {
+    if (!enablePreviewControls) return;
+    registerCharacterPreviewPlay(async (name, options) => {
+      const play = modelRef.current?.playAnimation;
+      if (play) return play(name, options);
+    });
+    return () => registerCharacterPreviewPlay(null);
+  }, [enablePreviewControls, matoran.id]);
 
   const setMainLightRef = (el: DirectionalLight | null) => {
     if (el) {
@@ -271,7 +300,7 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
       <group ref={characterRootRef}>
         <PresentationControls global={true} snap={false} speed={2} zoom={1} polar={[0, 0]}>
           <Suspense fallback={null}>
-            <CharacterModel matoran={matoran} onModelReady={bumpBloomRecollection} />
+            <CharacterModel ref={modelRef} matoran={matoran} onModelReady={bumpBloomRecollection} />
           </Suspense>
         </PresentationControls>
       </group>

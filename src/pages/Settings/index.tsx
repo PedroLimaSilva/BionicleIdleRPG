@@ -220,6 +220,15 @@ export default function SettingsPage() {
             Edit Game State
           </Link>
         </label>
+        <label className="settings-option">
+          <p>
+            Preview every dex character in 3D, with combat animations and mask controls. Recruitment
+            is not required.
+          </p>
+          <Link to="/test/dex" className="button cancel-button">
+            Character Dex
+          </Link>
+        </label>
 
         <label className="settings-option">
           <p>Want a fresh start? You'll lose all your progress</p>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { Color, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
+import { resolveWornMask } from '../../../game/masks/wornMask';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../../types/Matoran';
 import { useGame } from '../../../context/Game';
 import { useSettings } from '../../../context/useSettings';
@@ -86,16 +87,14 @@ function applyNuvaMaskColors(
  */
 export function useNuvaMask(
   masksParent: Object3D | undefined,
-  matoran: BaseMatoran & RecruitedCharacterData,
+  matoran: BaseMatoran & RecruitedCharacterData & { unlockAllMasks?: boolean },
   maskPowerActive?: boolean
 ) {
   const { completedQuests } = useGame();
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
-  const collected = masksCollected(matoran, completedQuests);
-  const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
-  const override = matoran.maskOverride;
-  const maskName = override && collected.includes(override) ? override : effectiveMask;
+  const collected = matoran.unlockAllMasks ? [] : masksCollected(matoran, completedQuests);
+  const maskName = resolveWornMask(matoran, collected);
   const maskNodeName = getMaskNodeName(maskName);
   const maskColor = getEffectiveNuvaMaskColor(matoran, completedQuests);
 
