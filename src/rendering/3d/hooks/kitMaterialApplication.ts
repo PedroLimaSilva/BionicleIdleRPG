@@ -40,6 +40,19 @@ function isGlowMaterialName(name: string | undefined): boolean {
   return !!name && name.toLowerCase().includes('glow');
 }
 
+/** When a kit mesh adds a Secondary slot but attachments only tint Main, mirror Main. */
+function resolveKitMaterialSlotSpec(
+  materialName: string,
+  slotLookup: Map<string, KitMaterialSlotOverride>
+): KitMaterialSlotOverride | undefined {
+  const direct = slotLookup.get(normalizeSlotName(materialName));
+  if (direct) return direct;
+  if (normalizeSlotName(materialName) === 'secondary' && slotLookup.has('main')) {
+    return slotLookup.get('main');
+  }
+  return undefined;
+}
+
 /** Rig meshes with baked PBR (masks, Vakama's Kanoka disk, etc.) keep GLB-authored look. */
 function isPreservedBakedMaterial(mat: StandardMat): boolean {
   if (hasMaskPbrMaps(mat)) return true;
@@ -127,7 +140,7 @@ export function buildKitMeshMaterials(
   const mats = Array.isArray(raw) ? raw : [raw];
   const next = mats.map((mat) => {
     if (!isStandardMat(mat)) return mat;
-    const spec = slotLookup.get(normalizeSlotName(mat.name));
+    const spec = resolveKitMaterialSlotSpec(mat.name, slotLookup);
     // Baked / mapped materials keep GLB maps. A matching slot may still tint
     // diffuse + emissive (Vahki visor); otherwise the authored look is preserved.
     if (isPreservedBakedMaterial(mat)) {
