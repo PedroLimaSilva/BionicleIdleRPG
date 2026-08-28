@@ -3,16 +3,31 @@ import { LegoColor } from '../../../types/Colors';
 import {
   applyMaskMetallicPbr,
   cloneGreatMaskMaterial,
+  maskNeedsAlphaBlend,
   prepareClonedMaskMaterial,
 } from './maskMaterial';
 
+describe('maskNeedsAlphaBlend', () => {
+  it('detects Kaukau and sub-1 opacity masks', () => {
+    expect(
+      maskNeedsAlphaBlend(new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 1 }))
+    ).toBe(true);
+    expect(maskNeedsAlphaBlend(new MeshStandardMaterial({ name: 'Hau_baked', opacity: 0.5 }))).toBe(
+      true
+    );
+    expect(maskNeedsAlphaBlend(new MeshStandardMaterial({ name: 'Hau_baked', opacity: 1 }))).toBe(
+      false
+    );
+  });
+});
+
 describe('prepareClonedMaskMaterial', () => {
-  it('forces dielectric shading on non-glow mask materials without PBR maps', () => {
+  it('keeps opaque Hau in the opaque pass with FrontSide', () => {
     const mat = new MeshStandardMaterial({ metalness: 1, name: 'Hau_baked', roughness: 0.1 });
     prepareClonedMaskMaterial(mat);
-    expect(mat.transparent).toBe(true);
+    expect(mat.transparent).toBe(false);
     expect(mat.side).toBe(FrontSide);
-    expect(mat.polygonOffset).toBe(true);
+    expect(mat.depthWrite).toBe(true);
     expect(mat.metalness).toBe(0);
     expect(mat.roughness).toBe(0.55);
   });
@@ -26,13 +41,18 @@ describe('prepareClonedMaskMaterial', () => {
       roughnessMap: new Texture(),
     });
     prepareClonedMaskMaterial(mat);
-    expect(mat.transparent).toBe(true);
+    expect(mat.transparent).toBe(false);
     expect(mat.side).toBe(FrontSide);
-    expect(mat.polygonOffset).toBe(true);
     expect(mat.metalness).toBe(0.85);
     expect(mat.roughness).toBe(0.12);
     expect(mat.normalMap).toBeDefined();
     expect(mat.roughnessMap).toBeDefined();
+  });
+
+  it('uses alpha blending for Kaukau', () => {
+    const mat = new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 1, roughness: 0.5 });
+    prepareClonedMaskMaterial(mat);
+    expect(mat.transparent).toBe(true);
   });
 
   it('leaves glow materials metallic for emissive lenses', () => {
@@ -72,7 +92,7 @@ describe('cloneGreatMaskMaterial', () => {
       roughnessMap: new Texture(),
     });
     const mat = cloneGreatMaskMaterial(original, LegoColor.FlatDarkGold);
-    expect(mat.transparent).toBe(true);
+    expect(mat.transparent).toBe(false);
     expect(mat.side).toBe(FrontSide);
     expect(mat.metalness).toBe(0.2);
     expect(mat.normalMap).toBeDefined();
@@ -88,7 +108,7 @@ describe('cloneGreatMaskMaterial', () => {
   it('clones non-gold materials with dielectric fallbacks', () => {
     const original = new MeshStandardMaterial({ metalness: 1, name: 'Huna_baked', roughness: 0.1 });
     const mat = cloneGreatMaskMaterial(original, LegoColor.Red);
-    expect(mat.transparent).toBe(true);
+    expect(mat.transparent).toBe(false);
     expect(mat.metalness).toBe(0);
     expect(mat.roughness).toBe(0.55);
   });

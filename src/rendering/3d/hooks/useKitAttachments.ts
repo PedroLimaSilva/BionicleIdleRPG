@@ -3,7 +3,6 @@ import { Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../../../types/Matoran';
 import type { KitSocketAttachment } from '../../../types/KitParts';
-import { KIT_2001_NODES } from '../kit/nodes/kit2001Nodes';
 import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
 import { normalizeMatoranColors } from '../../../game/characters/matoranColors';
 import { applyKitMaterialsToObject, buildKitMaterialSlotLookup } from './kitMaterialApplication';
@@ -89,10 +88,6 @@ export function useKitAttachments({
       clone.position.set(0, 0, 0);
       clone.rotation.set(0, 0, 0);
       clone.scale.set(1, 1, 1);
-      if (row.kitNodeName === KIT_2001_NODES.MataBrain) {
-        // Slightly inset brain gel so it stays inside the Kanohi cavity (avoids forehead z-fight).
-        clone.scale.multiplyScalar(0.96);
-      }
 
       const slotLookup = buildKitMaterialSlotLookup(row.materialColors);
       applyKitMaterialsToObject(clone, slotLookup, resolvedColors, weathered);

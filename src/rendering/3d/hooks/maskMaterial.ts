@@ -16,24 +16,36 @@ export function hasMaskPbrMaps(mat: MaskStandardMat): boolean {
   return !!(mat.normalMap || mat.roughnessMap || mat.metalnessMap);
 }
 
+/** Kaukau and similar Kanohi need alpha blending (GLB `alphaMode: BLEND`). */
+export function maskNeedsAlphaBlend(mat: MaskStandardMat): boolean {
+  if (mat.opacity < 0.999) return true;
+  const name = mat.name.toLowerCase();
+  return name.includes('kaukau') || name.includes('trans');
+}
+
 /**
  * Configure a cloned mask material for runtime tinting and arena lighting.
  * Mata/Nuva mask GLBs ship metallic PBR defaults; without scene IBL (e.g. cavern
  * arenas) those surfaces read nearly black while HDRI-lit deserts look fine.
  *
- * Materials with authored PBR maps keep GLB scalars and textures; only transparency
- * is forced. Unmapped slots get dielectric fallbacks for low-IBL arenas.
+ * Opaque Kanohi stay in the opaque render pass (`transparent: false`) so they
+ * depth-occlude transmissive brain gel. Only translucent masks and exit fades
+ * use alpha blending. Closed shells use `FrontSide` so interior back-faces do
+ * not z-fight with brain gel in the mask cavity.
  */
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
-  mat.transparent = true;
-  if (isMaskGlowMaterialName(mat.name)) return;
+  if (isMaskGlowMaterialName(mat.name)) {
+    mat.transparent = true;
+    return;
+  }
 
-  // Closed Kanohi shells are only viewed from outside — interior back-faces z-fight
-  // with transmissive brain gel inside the mask cavity (including baked PBR Hau / Avohkii).
-  mat.side = FrontSide;
-  mat.polygonOffset = true;
-  mat.polygonOffsetFactor = 1;
-  mat.polygonOffsetUnits = 1;
+  const alphaBlend = maskNeedsAlphaBlend(mat);
+  mat.transparent = alphaBlend;
+
+  if (!alphaBlend) {
+    mat.side = FrontSide;
+    mat.depthWrite = true;
+  }
 
   if (hasMaskPbrMaps(mat)) return;
 
