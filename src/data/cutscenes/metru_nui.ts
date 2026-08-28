@@ -168,6 +168,322 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
+  metru_matau_great_disk: {
+    background: { from: '#1a2810', to: '#7cb342', type: 'gradient' },
+    id: 'metru_matau_great_disk',
+    steps: [
+      {
+        text: 'Matau, Toa Metru of Air, knew all about chutes. He had been riding the transparent, magnetized protodermis tubes from place to place all his life, as had most Matoran. Living in Le-Metru, transport hub for the entire city, he had even had the chance to repair a chute or three in his time. He was quite proud of the fact that no one outside of his metru knew more about chutes than he did.',
+        type: 'narration',
+      },
+      {
+        text: 'All of which made it even stranger that he was now hurtling out of control through a chute at a ridiculously high speed, heading for what would probably be a very dead end.',
+        type: 'narration',
+      },
+      {
+        text: 'Outside the chute, the green-and-brown structures of Le-Metru were nothing but a blur. Matau whipped around a corner, heading for a busy junction and hoping he was not about to collide with some poor Matoran. For at least the tenth time, he tried to jump through the walls of the chute and exit. But he was thrown back yet again, slamming into the opposite wall and then picking up speed again.',
+        type: 'narration',
+      },
+      {
+        text: 'I wanted to get there quick-fast, but not this quick-fast, he thought. He wasn’t sure how anyone could manage to seal off the walls of a chute, or whether this affected the entire metru system or just the tube he was rocketing through.',
+        type: 'narration',
+      },
+      {
+        text: 'But I can take a smart-guess. Fire-spitter was right. These disks must be important, and someone doesn’t want me to find mine.',
+        type: 'narration',
+      },
+      {
+        text: 'Matau’s mind raced almost as fast as his body through the chute. The chutes ran throughout the city, but the densest concentration was in Le-Metru. They all fed into one another. If it was only this chute that had been tampered with, then it should be possible to steer into another at the junction.',
+        type: 'narration',
+      },
+      {
+        text: '“Possible. Not healthy-safe, but possible,” he muttered.',
+        type: 'narration',
+      },
+      {
+        text: 'First thing Matau had to do was slow down. He unhooked his aero slicers from his back and tried digging them into the walls of the chute to act as brakes. But whatever had made the chute resist exits also made it too tough for the slicers to pierce.',
+        type: 'narration',
+      },
+      {
+        text: 'I’m thought-planning like a Matoran still, Matau told himself. The tools aren’t the power. I’m a Toa-hero. I’m the power!',
+        type: 'narration',
+      },
+      {
+        text: 'The Toa Metru of Air glanced ahead. The junction was rushing up toward him, and a transport cart was heading for it from a side chute. At the rate he was moving, he would slam right into the cart. But if he could use his power to slow just a little…',
+        type: 'narration',
+      },
+      {
+        text: 'Matau was not famous for deep thought and concentration, but he managed some now. He forced his will on the air in the chute, making it form a thick cushion to lower his speed. Little by little, he could feel himself slowing, but would it be enough?',
+        type: 'narration',
+      },
+      {
+        text: 'The transport cart shot through the junction. A split second later, Matau went through. Straining, he reached out and grabbed the back of the cart, letting it pull him down the side chute. The abrupt stop and change of direction almost ripped his arm out of the socket, but somehow he found the strength to hang on. It was only when he had traveled some way from his original chute that he let go and exited out the wall. Then he waited until the world around him stopped going in circles.',
+        type: 'narration',
+      },
+      {
+        text: 'Toa Matau found himself not far from his original destination: the Ussal crab pen of the Le-Matoran named Orkahm. He decided to skip a chute and instead take the sky route via the cables that hung everywhere in Le-Metru.',
+        type: 'narration',
+      },
+      {
+        text: 'Ussal pens could be found all over the metru. The carts they pulled transported goods too large or fragile for the chutes or carried Matoran who preferred to travel a little more slowly. The large crabs were specifically trained to obey the commands of their riders, although they had been known to get temperamental at times. Even from high above, it was easy to locate an Ussal crab pen by the aroma – they were not the sweetest-smelling Rahi around.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'Don’t worry-fear! It’s me, Matau. I am a Toa-hero now!',
+        type: 'dialogue',
+      },
+      {
+        text: 'The keeper dropped his tools in surprise. “Wow! You’ve pulled some great jokes before, Matau, but this – this tops them all.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Matau',
+        text: 'This isn’t a joke. I was given this Toa stone, and I brought it to the Great Temple, and… There isn’t time for this. I am looking to seek-find Orkahm. Have you seen him?',
+        type: 'dialogue',
+      },
+      {
+        text: '“No,” the keeper said. “And I would just as soon he stays away. He’s been acting crazy. Said he found something on his route-path, but wouldn’t show it to anyone. He was going to bury-hide it. Orkahm always seemed like such a good rider. Who knew the pressure would get to him?”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'So he’s gone?',
+        type: 'dialogue',
+      },
+      {
+        text: '“He is, but his cart’s here. Why are you so interested, Matau? Planning a trick-joke on him?” the keeper said, laughing. “He already doesn’t like you. I don’t think you want to make it worse.”',
+        type: 'narration',
+      },
+      {
+        text: 'Matau spotted Orkahm’s cart, sitting alone off to the side of the pens. Each rider kept a logbook of his travels during the day, and Orkahm was no exception. Matau fished it out from under the seat and flipped it open, only to discover the careful rider had written the whole thing in code.',
+        type: 'narration',
+      },
+      {
+        text: 'Matau was tempted to give up. Then he reminded himself that the other Toa Metru had probably made contact with their Matoran and were waiting for him. He couldn’t show up empty-handed. Besides, finding Orkahm and the disk would prove to everyone in Le-Metru that he was a Toa-hero.',
+        type: 'narration',
+      },
+      {
+        text: 'He sat down on the cart and began studying the code. Matau had known Orkahm for a long time. The Matoran was thorough, cautious, and meticulous, which made him a slow rider. Matau, on the other hand, had always been fast and reckless, which was why the two never got along. But the most important thing Matau remembered about Orkahm was that he had little imagination.',
+        type: 'narration',
+      },
+      {
+        text: 'Once the Toa realized that, breaking the code was simple. Orkahm had substituted numbers for letters, but it wasn’t done in a particularly clever way. Deciphered, there were three entries, all dated the day before: Disk hidden. A. wants disk. Moto-hub sector 3.',
+        type: 'narration',
+      },
+      {
+        text: 'He’s deephiding in sector 3, Matau realized. He’s either a fool or very, very scared. Probably both.',
+        type: 'narration',
+      },
+      {
+        text: 'Matau jumped in a chute headed northeast. Sector 3 was just across one of the major protodermis canals from Ta-Metru. It had long been known for the sheer number of chute malfunctions that took place there. These were blamed on everything from poor construction to just bad luck, until repair crews sent to the area started disappearing. That was when rumors began to spread that the Morbuzakh was behind all the troubles.',
+        type: 'narration',
+      },
+      {
+        text: 'If Orkahm wanted a place to hide, he chose a dangerous one, Matau thought. Unless he thinks-knows something I don’t?',
+        type: 'narration',
+      },
+      {
+        text: 'Matau leaped out of the chute at a station on the outskirts of the sector. The area had not been abandoned. There were still plenty of riders and other Matoran to be seen, hard at work. But everyone seemed to be moving very quickly and looking over their shoulders every few seconds. This part of Metru Nui wasn’t ruled by Turaga Dume or the Vahki. It was ruled by fear.',
+        type: 'narration',
+      },
+      {
+        text: 'The sudden appearance of a Toa in their midst drew a lot of attention from the Le-Matoran. They crowded around, asking questions, admiring his armor, and saying that now they were sure everything would be all right. Matau was having such a good time he almost forgot why he was there.',
+        type: 'narration',
+      },
+      {
+        text: 'He was reminded abruptly when a transport manager came up to him and said: “Are you looking for Orkahm?”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Matau',
+        text: 'Yes. How did you know?',
+        type: 'dialogue',
+      },
+      {
+        text: '“He came hurry-running through here a little while ago. He said someone might be following him, and if anyone asked, not to tell them where he had gone.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'Then why are you telling me? Not that I am sad-complaining.',
+        type: 'dialogue',
+      },
+      {
+        text: '“Because you are a Toa,” the transport manager replied. “I have seen Toa before, a long time ago, but never met one. I know the legends though – how Toa are here to protect us and keep us safe. Whatever Orkahm is doing, I don’t think he’s safe right now. Do you?”',
+        type: 'narration',
+      },
+      {
+        text: 'Orkahm had made straight for a long-unused chute that went even deeper into sector 3. Matau was about to follow when he noticed something on the support struts beneath the chute. Something had been scratched into the solid protodermis.',
+        type: 'narration',
+      },
+      {
+        text: 'Matau knelt down to take a closer look. The carving was relatively fresh, made with a short, sharp instrument. It had left behind protodermis dust in the scratchings, but not dust from the strut. This looked more like dust from Po-Metru. Carved into the strut was a single word: PUKU.',
+        type: 'narration',
+      },
+      {
+        text: 'Matau read it once more to make sure he wasn’t mistaken. Under ordinary circumstances, he would have dismissed this as some Matoran’s idea of fun, leaving a mark behind on a chute. Matau had done that sort of prank himself in the past, along with hundreds of others.',
+        type: 'narration',
+      },
+      {
+        text: 'But this was no joke – this was a message. Puku was the name of Orkahm’s favourite Ussal crab, the one he had been riding for as long as Matau could remember. The Toa doubted Orkahm would have taken the time to scratch this in the strut. Someone else, then. As a code-sign?',
+        type: 'narration',
+      },
+      {
+        text: 'Without hesitating even for a moment, Matau jumped into the chute and began to follow the trail of the missing Matoran.',
+        type: 'narration',
+      },
+      {
+        text: 'The further one traveled into this portion of Le-Metru, the more buildings, chutes and cables seemed to crowd in. The residents were fighting a losing battle with the Morbuzakh here. It was obvious that even the Vahki were not venturing this far, because Matau spotted at least two nests of insectoid Nui-Rama on rooftops. Normally, they would have been netted and shipped off to the Archives long ago.',
+        type: 'narration',
+      },
+      {
+        text: 'Matau could see the chute change direction sharply up ahead. To his trained eye, it was obvious that the chute had not been built that way. Someone had rerouted it and not done a very good job. Still, the cylinder of energy held as he tore around the corner and went flying into the air.',
+        type: 'narration',
+      },
+      {
+        text: 'Of course. Badly fix-patched chute, cut-severed end… why am I surprised?',
+        type: 'narration',
+      },
+      {
+        text: 'He landed hard amid a tangled nest of transport cables. These cables helped feed energized protodermis into the chutes and chute stations, not to mention being great fun to swing from. Matau was puzzling over how he would ever untangle them when he noticed something in the center of the tangle, looking like it had been caught in a Fikou web.',
+        type: 'narration',
+      },
+      {
+        text: 'It was Orkahm!',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'Rider! How did you get yourself in this trap-snare?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Orkahm',
+        text: 'I didn’t! Someone put me here! Now, please get me out!',
+        type: 'dialogue',
+      },
+      {
+        text: 'Matau worked as quickly as he could, unknotting the cables but being careful not to tighten them around Orkahm in the process. When he was done, the Matoran practically fell into his arms.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'What happened? Where is the Great Disk?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Orkahm',
+        text: 'Not here. I wish it was! I could give it away right now, with all the trouble it has caused me. Ever since I found it, I’ve been followed by two beings, one huge, one with four legs, not to mention having Ahkmou on my back about it. Then I got this message.',
+        type: 'dialogue',
+      },
+      {
+        text: 'He handed Matau a small tablet. It read: The disk you found is vital to the security of the city. Bring it to Moto-Hub sector 3 and take the marked chute.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'But you didn’t bring the disk.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Orkahm',
+        text: 'I thought it might be a trick. Maybe they wanted to follow me to where it was hidden. No sooner did I get here than these cables snapped tight around me. I heard a voice say that someone would be along soon to talk to me. But no one came until you, Matau.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'You know who I am?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Orkahm',
+        text: 'Of course! Only you would be foolish enough, reckless enough, to come after me here. You were a danger to everyone on the road as a rider, and you will probably be a danger as a Toa, too. But thank you.',
+        type: 'dialogue',
+      },
+      {
+        text: 'For the first time in his life, Matau found he had nothing to say. It was just as well, too, for if he had spoken, he would never have heard the slithering sound coming from among the cables. He shot a look at the web only long enough to see three Morbuzakh vines working their way toward them.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'We have to get out of here!',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Orkahm',
+        text: 'How? The chute only goes in one direction, and it’s too high up to jump to anyway. We’re trapped!',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'Toa-heroes are never trapped. Hang on!',
+        type: 'dialogue',
+      },
+      {
+        text: 'He grabbed Orkahm as the twin aero slicers on his back began to whirl. It wasn’t easy getting off the ground with the extra weight of Orkahm, but they managed it with barely an inch to spare. The vines wrapped themselves around the chute struts and snaked their way after the two, but by now Matau was flying too high and too fast for them to catch.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Orkahm',
+        text: 'How did you know this would work?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'I’m a Toa-hero. This is what we do.',
+        type: 'dialogue',
+      },
+      {
+        text: 'He decided it was best to keep to himself the fact that he’d had absolutely no idea whether the stunt would work and just took the chance.',
+        type: 'narration',
+      },
+      {
+        text: 'Maybe that is what being a Toa-hero is really about in the end, he thought as he flew over Le-Metru. Taking the chances you have to take. Doing the things no one else is able to do.',
+        type: 'narration',
+      },
+      {
+        text: 'Matau banked sharply and headed for the center of the metru. I think I could get to like this, he said to himself with a smile.',
+        type: 'narration',
+      },
+    ],
+  },
   metru_nokama_great_disk: {
     background: { from: '#0a1628', to: '#5eb3d9', type: 'gradient' },
     id: 'metru_nokama_great_disk',

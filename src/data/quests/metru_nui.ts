@@ -6,6 +6,9 @@ export const METRU_NUI_SAGA_BEGIN_QUEST_ID = 'story_metru_nui_saga_begin';
 /** Kapura witnesses the Morbuzakh vines destroy an abandoned Ta-Metru forge. */
 export const METRU_KAPURA_MORBUZAKH_QUEST_ID = 'metru_kapura_morbuzakh';
 
+/** Toa Matau tracks down Orkahm and the Le-Metru Great Disk. */
+export const METRU_MATAU_GREAT_DISK_QUEST_ID = 'metru_matau_great_disk';
+
 /** Vakama's encounter with Turaga Dume and the map to the Great Temple. */
 export const METRU_VAKAMA_DUME_QUEST_ID = 'metru_vakama_dume_and_the_great_temple';
 
@@ -163,6 +166,22 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
       currency: 8000,
       cutscene: { cutsceneId: 'metru_nuju_great_disk', type: 'visual_novel' },
       unlockCharacters: [{ cost: 1200, id: 'Ehrye' }],
+      xpPerMatoran: 7000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
+  },
+  {
+    description:
+      'Toa Matau returns to Le-Metru searching for the Ussal rider Orkahm—one of six Matoran who can lead the Toa to the Great Disks. A sabotaged chute sends him hurtling out of control, Morbuzakh vines close in on sector 3, and Ahkmou’s trail leads deeper into the moto-hub.',
+    durationSeconds: 25 * 60,
+    id: METRU_MATAU_GREAT_DISK_QUEST_ID,
+    name: 'The Le-Metru Great Disk',
+    requirements: { matoran: ['Toa_Matau'], minLevel: 28 },
+    rewards: {
+      currency: 8000,
+      cutscene: { cutsceneId: 'metru_matau_great_disk', type: 'visual_novel' },
+      unlockCharacters: [{ cost: 1200, id: 'Orkahm' }],
       xpPerMatoran: 7000,
     },
     section: 'Metru Nui',

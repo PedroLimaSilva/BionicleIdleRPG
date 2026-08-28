@@ -70,6 +70,7 @@ export const RECRUITMENT_REGISTRY: RecruitmentEntry[] = [
   // Great Disk guides — unlocked by each Toa Metru's disk quest
   { cost: 1200, id: 'Vhisola', unlockedByQuest: 'metru_nokama_great_disk' },
   { cost: 1200, id: 'Ehrye', unlockedByQuest: 'metru_nuju_great_disk' },
+  { cost: 1200, id: 'Orkahm', unlockedByQuest: 'metru_matau_great_disk' },
   { cost: 1200, id: 'Nuhrii', unlockedByQuest: 'metru_vakama_great_disk' },
   { cost: 1200, id: 'Tehutti', unlockedByQuest: 'metru_whenua_great_disk' },
 ];
