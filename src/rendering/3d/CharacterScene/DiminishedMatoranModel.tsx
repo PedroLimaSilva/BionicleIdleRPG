@@ -28,7 +28,7 @@ export function DiminishedMatoranModel({
   matoran,
   onKitMeshesAttached,
 }: {
-  matoran: BaseMatoran & { maskOverride?: Mask };
+  matoran: BaseMatoran & { maskOverride?: Mask; maskPowerActive?: boolean };
   onKitMeshesAttached?: () => void;
 }) {
   const group = useRef<Group>(null);
@@ -67,7 +67,7 @@ export function DiminishedMatoranModel({
   });
 
   const glowColor = matoran.colors.eyes;
-  useMask(nodes.Masks, matoran, glowColor);
+  useMask(nodes.Masks, matoran, glowColor, matoran.maskPowerActive);
 
   return (
     <group ref={group} dispose={null}>

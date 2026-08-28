@@ -6,6 +6,7 @@ import { useSettings } from '../../../context/useSettings';
 import { shouldEnableShadows } from '../../../utils/testMode';
 import { getEffectiveMataMaskColor } from '../../../game/characters/maskColor';
 import { masksCollected } from '../../../services/matoranUtils';
+import { resolveWornMask } from '../../../game/masks/wornMask';
 import { BaseMatoran, Mask, MatoranStage } from '../../../types/Matoran';
 import {
   createMaskTransitionState,
@@ -115,7 +116,7 @@ function applyMaskColors(
  */
 export function useMask(
   masksParent: Object3D | undefined,
-  matoran: BaseMatoran & { maskOverride?: Mask },
+  matoran: BaseMatoran & { maskOverride?: Mask; unlockAllMasks?: boolean },
   glowColor?: string,
   maskPowerActive?: boolean,
   applyMataSlotScale?: boolean,
@@ -128,14 +129,10 @@ export function useMask(
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
 
   const collected = useMemo(
-    () => masksCollected(matoran, completedQuests),
+    () => (matoran.unlockAllMasks ? [] : masksCollected(matoran, completedQuests)),
     [matoran, completedQuests]
   );
-  const maskName = useMemo(() => {
-    const effectiveMask = collected.includes(matoran.mask) ? matoran.mask : collected[0];
-    const override = matoran.maskOverride;
-    return override && collected.includes(override) ? override : effectiveMask;
-  }, [collected, matoran.mask, matoran.maskOverride]);
+  const maskName = useMemo(() => resolveWornMask(matoran, collected), [collected, matoran]);
 
   const maskColor =
     matoran.stage === MatoranStage.ToaMata

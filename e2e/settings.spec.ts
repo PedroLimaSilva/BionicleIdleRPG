@@ -8,6 +8,7 @@ test.describe('Settings', () => {
 
     // Wait for the page to load
     await expect(page.locator('h1').first()).toContainText('ABOUT THIS APP');
+    await expect(page.getByRole('link', { name: 'Character Dex' })).toBeVisible();
 
     // Take a screenshot for visual regression
     await expect(page).toHaveScreenshot({
