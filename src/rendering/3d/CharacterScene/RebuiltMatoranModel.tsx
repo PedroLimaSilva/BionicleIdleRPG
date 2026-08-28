@@ -4,6 +4,7 @@ import { Group, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../hooks/useAnimationController';
 import { useIdleAnimation } from '../hooks/useIdleAnimation';
+import { REBUILT_IDLE_SWITCH } from './idleSwitchConfigs';
 import { useMask } from '../hooks/useMask';
 import { useKitAttachments } from '../hooks/useKitAttachments';
 import { KIT_2001_GLB_PATH } from '../kit/kit2001';
@@ -40,11 +41,13 @@ export function RebuiltMatoranModel({
 }) {
   const group = useRef<Group>(null);
   const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + 'rebuilt.glb');
-  const { actions, mixer } = useIdleAnimation(animations, group);
+  const { actions, idleActionName, mixer } = useIdleAnimation(animations, group, {
+    idleSwitch: REBUILT_IDLE_SWITCH,
+  });
 
   useAnimationController({
     flavors: [actions['Tilt Head']].filter(Boolean),
-    idle: actions['Idle'],
+    idle: actions[idleActionName],
     mixer,
   });
 

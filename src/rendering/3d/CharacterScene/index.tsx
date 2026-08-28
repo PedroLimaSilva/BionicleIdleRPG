@@ -1,5 +1,6 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Environment, PresentationControls } from '@react-three/drei';
+import { ModelInteractionDetector, ModelInteractionProvider } from '../ModelInteractionContext';
 import { useThree } from '@react-three/fiber';
 import { EffectComposer, SSAO } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
@@ -261,11 +262,14 @@ export function CharacterScene({ matoran }: { matoran: BaseMatoran & RecruitedCh
         </mesh>
       )}
       <group ref={characterRootRef}>
-        <PresentationControls global={true} snap={false} speed={2} zoom={1} polar={[0, 0]}>
-          <Suspense fallback={null}>
-            <CharacterModel matoran={matoran} onModelReady={bumpBloomRecollection} />
-          </Suspense>
-        </PresentationControls>
+        <ModelInteractionProvider>
+          <ModelInteractionDetector />
+          <PresentationControls global={true} snap={false} speed={2} zoom={1} polar={[0, 0]}>
+            <Suspense fallback={null}>
+              <CharacterModel matoran={matoran} onModelReady={bumpBloomRecollection} />
+            </Suspense>
+          </PresentationControls>
+        </ModelInteractionProvider>
       </group>
       <EffectComposer multisampling={0} enableNormalPass resolutionScale={0.5}>
         <SSAO
