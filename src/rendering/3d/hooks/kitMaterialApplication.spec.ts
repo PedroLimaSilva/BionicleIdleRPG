@@ -123,4 +123,37 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(mat.opacity).toBe(0.5);
     expect(mat.transparent).toBe(true);
   });
+
+  test('unmapped Secondary inherits Main tint on the same mesh', () => {
+    const mesh = new Mesh(undefined, [
+      new MeshStandardMaterial({ color: '#ffffff', name: 'Main' }),
+      new MeshStandardMaterial({ color: '#000000', name: 'Secondary' }),
+    ]);
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({ Main: { kind: 'part', part: 'arms', slot: 'main' } }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial[];
+    expect(next[0].color.getHexString().toUpperCase()).toBe('B48455');
+    expect(next[1].color.getHexString().toUpperCase()).toBe('B48455');
+  });
+
+  test('explicit Secondary slot is not replaced by Main mirror', () => {
+    const mesh = new Mesh(undefined, [
+      new MeshStandardMaterial({ color: '#ffffff', name: 'Main' }),
+      new MeshStandardMaterial({ color: '#000000', name: 'Secondary' }),
+    ]);
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'arms', slot: 'main' },
+        Secondary: { kind: 'part', part: 'arms', slot: 'secondary' },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial[];
+    expect(next[0].color.getHexString().toUpperCase()).toBe('B48455');
+    expect(next[1].color.getHexString().toUpperCase()).toBe('720E0F');
+  });
 });
