@@ -384,6 +384,11 @@ XP: 6000"]
 (20m)
 Currency: 7500
 XP: 6500"]
+  metru_nokama_great_disk["The Ga-Metru Great Disk
+(25m)
+Unlock: Vhisola
+Currency: 8000
+XP: 7000"]
   story_toa_arrival --> maskhunt_kopaka_matoro_icecliff
   maskhunt_kopaka_matoro_icecliff --> maskhunt_kopaka_pohatu_icecliff
   mnog_tahu_unlock_01 --> story_toa_council
@@ -488,6 +493,7 @@ XP: 6500"]
   settle_metru_nui --> unlock_archives
   settle_metru_nui --> metru_great_temple_transformation
   metru_great_temple_transformation --> metru_seek_the_great_disks
+  metru_seek_the_great_disks --> metru_nokama_great_disk
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff

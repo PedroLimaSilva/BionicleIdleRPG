@@ -12,6 +12,9 @@ export const METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID = 'metru_great_temple_tr
 /** The Toa Metru claim their tools, learn of the Great Disks, and set out to find six Matoran. */
 export const METRU_SEEK_GREAT_DISKS_QUEST_ID = 'metru_seek_the_great_disks';
 
+/** Toa Nokama tracks down Vhisola and the Ga-Metru Great Disk. */
+export const METRU_NOKAMA_GREAT_DISK_QUEST_ID = 'metru_nokama_great_disk';
+
 /** Unlocks Ta-, Ga-, Le-, and Po-Metru day jobs (mask maker, teacher, chute test driver, carver). */
 export const SETTLE_METRU_NUI_QUEST_ID = 'settle_metru_nui';
 
@@ -155,5 +158,21 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
     },
     section: 'Metru Nui',
     unlockedAfter: [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID],
+  },
+  {
+    description:
+      'Toa Nokama returns to Ga-Metru to find her old student Vhisola—one of six Matoran who can lead the Toa to the Great Disks. But Vhisola has vanished, Vahki patrol the canals, and a four-legged hunter has already struck the Archives lab.',
+    durationSeconds: 25 * 60,
+    id: METRU_NOKAMA_GREAT_DISK_QUEST_ID,
+    name: 'The Ga-Metru Great Disk',
+    requirements: { matoran: ['Toa_Nokama'], minLevel: 28 },
+    rewards: {
+      currency: 8000,
+      cutscene: { cutsceneId: 'metru_nokama_great_disk', type: 'visual_novel' },
+      unlockCharacters: [{ cost: 1200, id: 'Vhisola' }],
+      xpPerMatoran: 7000,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_SEEK_GREAT_DISKS_QUEST_ID],
   },
 ];

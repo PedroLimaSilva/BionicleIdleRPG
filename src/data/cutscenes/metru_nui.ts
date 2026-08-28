@@ -119,6 +119,325 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
+  metru_nokama_great_disk: {
+    background: { from: '#0a1628', to: '#5eb3d9', type: 'gradient' },
+    id: 'metru_nokama_great_disk',
+    steps: [
+      {
+        text: 'Toa Nokama turned and began walking farther into Ga-Metru. All was quiet. This was traditionally the most peaceful section of Metru Nui, home to scholars and scientists. Often the only sound that could be heard was the rush of the protodermis falls.',
+        type: 'narration',
+      },
+      {
+        text: 'Ga-Matoran passed her on the street, looking up with awe and wonder. Some were old friends, but no one seemed to recognize her. When she did stop someone and say hello, the Matoran shied away from her and scurried off.',
+        type: 'narration',
+      },
+      {
+        text: 'Nokama frowned. She had never nursed any dreams of becoming a Toa. She enjoyed her life as a teacher in Ga-Metru, gaining new wisdom each day and passing it on to others. Her happiest moments had been spent in a classroom or showing her students the ancient carvings at the protodermis fountains. Now that she was a “hero,” she was starting to realize what a lonely role it could be.',
+        type: 'narration',
+      },
+      {
+        text: 'At least my first task will not be a hard one, she thought. Vhisola will gladly help me.',
+        type: 'narration',
+      },
+      {
+        text: 'As she walked along the canals past the beautiful temples of Ga-Metru, she remembered when she had first met her friend. Vhisola had been a student in one of Nokama’s classes. The Ga-Matoran had been eager to learn, almost too eager. In her enthusiasm, she always seemed to make some mistake or other. Then she would get flustered and make another and another, until her project was a mess.',
+        type: 'narration',
+      },
+      {
+        text: 'Eventually, Nokama realized that if she spent extra time with Vhisola, the Matoran did better work. They became friends and still were, even if sometimes it was a stormy friendship. The more time they spent together, the more time Vhisola wanted to spend. If Nokama said she was too busy to practice akilini or explore the canals that day, Vhisola would sulk.',
+        type: 'narration',
+      },
+      {
+        text: 'Their last argument had been a bad one, but Nokama was certain they had patched things up. Certainly Vhisola would not hesitate to help if she knew the fate of the city depended upon it.',
+        type: 'narration',
+      },
+      {
+        text: 'Nokama rapped on the door of Vhisola’s small home. No one answered. When she rapped again, one of the neighbors emerged.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Nokama',
+        text: 'I’m the Toa of Water. Have you seen Vhisola?',
+        type: 'dialogue',
+      },
+      {
+        text: '“A Toa? Here?” said the Ga-Matoran excitedly. “I know of Toa Lhikan, of course, but I have never met a Toa up close. Where did you come from? Are you here to stay?”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'Please, just answer my question. Have you seen Vhisola today?',
+        type: 'dialogue',
+      },
+      {
+        text: 'The Ga-Matoran shook her head. “No, not lately. Is she in some trouble?”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Nokama',
+        text: 'I hope not.',
+        type: 'dialogue',
+      },
+      {
+        text: 'She tried the door, but it was locked. Still, she was now a Toa, and much stronger than before. A little bit of force and the door flew open.',
+        type: 'narration',
+      },
+      {
+        text: 'Although they had known each other a long time, Nokama had never been inside Vhisola’s home. Now she saw why. Every inch of the walls was covered with carvings of Nokama, records of her achievements, copies of awards she had won. There was nothing in the room to say that Vhisola even lived there.',
+        type: 'narration',
+      },
+      {
+        text: 'Once the shock had passed, Nokama began to look around for any sign of where Vhisola might have gone. Her eye was caught by lights flashing on a table. Coming closer, she saw that the lights were part of a map of Ga-Metru. Certain sections lit up, flashed for an instant, then went dark again. With no better idea, Nokama moved her hand from section to section as they lit, hoping to find a pattern.',
+        type: 'narration',
+      },
+      {
+        text: 'There was a sound of stone grinding against stone. Then the center of the map opened up and a tablet rose from inside the table. Nokama picked it up and saw it was Vhisola’s journal. She almost put it back—then she remembered the real fear in Vakama’s face when he spoke of his visions. If Metru Nui was in danger, Nokama could not afford to ignore any possible clue.',
+        type: 'narration',
+      },
+      {
+        text: 'She scanned the last few entries and found nothing of note. But the last left her numb with fear. It read: “At first, I couldn’t believe it when I heard Nokama was a Toa. Now that she is a hero, she will never have any time for me. I’ve spent so much time practicing my akilini and trying to do better schoolwork, all to impress her… and now she will just want to spend time with her new Toa friends. Well, I’ll show her. Once I get my hands on that Great Disk, I’ll be the one people have to look up to. She will be the one they ignore!”',
+        type: 'narration',
+      },
+      {
+        text: 'She knows I’m a Toa? How…? Oh, Vhisola, Nokama said to herself. I never meant to ignore you. You don’t know the danger you could be in.',
+        type: 'narration',
+      },
+      {
+        text: 'There was no time to worry or regret. There were only two other places Vhisola spent time at, the school and the akilini practice field. There was no practice scheduled for today, so maybe she was in class. If she wasn’t, it might already be too late.',
+        type: 'narration',
+      },
+      {
+        text: 'Nokama turned to leave, then stopped. Out the window, she could see the familiar, spiderlike shapes of Vahki moving down the avenue. They enforced the law and kept order in Metru Nui, but even so, the sight of them had always filled Nokama with an unnamed dread. Vhisola’s neighbor was talking to the squad leader.',
+        type: 'narration',
+      },
+      {
+        text: 'Maybe she sent for them, Nokama thought. Maybe she doesn’t believe I am a Toa—especially since I can hardly believe it myself. The Vahki would want to bring her to Turaga Dume for questioning, and there was no time for that. She would have to get away from them.',
+        type: 'narration',
+      },
+      {
+        text: 'Outside the house, the Ga-Matoran neighbor was doing her best to make the Vahki understand. “She said she was a Toa. Well, how do I know that’s what she is? Maybe it’s some trick of the Morbuzakh. Anyway, I know my duty, so I sent for you.”',
+        type: 'narration',
+      },
+      {
+        text: 'The Vahki nodded and signaled to the others in its squad to surround the house. Once certain that its stun staff was fully charged, it headed for Vhisola’s home.',
+        type: 'narration',
+      },
+      {
+        text: 'Nokama chose that moment to burst out of the door. Before the Vahki could react, she rushed past them and dove into the protodermis canal. Extending her hydro blades in front of her, she knifed through the liquid. The Vahki wasted no time in pursuing, taking to the sky to follow her course.',
+        type: 'narration',
+      },
+      {
+        text: 'No Matoran could hope to outdistance a Vahki, but a Toa was another matter. Her Toa tools gave her an edge in speed, though she knew it would not be enough. She would have to rely on her most powerful advantage—her knowledge of Ga-Metru.',
+        type: 'narration',
+      },
+      {
+        text: 'Up ahead, the canal continued toward the Great Temple, but there was a narrow branch to the left that fed protodermis into a central reservoir. Nokama glanced over her shoulder. The Vahki were temporarily out of sight. She whipped around the corner and down the feeder branch, plunging into the reservoir far below.',
+        type: 'narration',
+      },
+      {
+        text: 'Nokama dove deep into the cool protodermis, then kicked hard and broke the surface. The reservoir was a huge, circular chamber, lit by lightstones embedded in the ceiling. Every sound echoed and re-echoed in the chamber, from the lapping of the waves to Nokama’s breathing. But the one sound she did not hear was Vahki up above.',
+        type: 'narration',
+      },
+      {
+        text: 'Satisfied that they had given up, Nokama dove down to the bottom of the tank and swam into another feeder branch. The other Toa have probably already found their Matoran, she thought. How they will laugh when they hear of the difficulty I had!',
+        type: 'narration',
+      },
+      {
+        text: 'Vhisola’s classes were held in one of the many ornate domes that dotted Ga-Metru. Her instructor was little help but did suggest that perhaps the Matoran had closeted herself in the lab to finish some overdue work.',
+        type: 'narration',
+      },
+      {
+        text: 'It was only a short walk to the lab, but for some reason Nokama felt she had to run. The sight of the door blown off its hinges told her she was already too late. The inside of the lab looked worse. Furniture was overturned, tablets scattered and smashed as if a windstorm had torn through the place. A lab worker was doing her best to straighten up when Nokama entered.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'What happened here?',
+        type: 'dialogue',
+      },
+      {
+        text: 'The Matoran jumped. “Don’t do that! You startled me! I thought that… thing had come back here again.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Nokama',
+        text: 'I’m sorry. What “thing” are you talking about?',
+        type: 'dialogue',
+      },
+      {
+        text: '“I don’t know. Four legs, some kind of claw tool—ripped the place apart. He stole all of Vhisola’s research notes, all except one.” The Matoran pointed to a shattered tablet on the ground. Nokama knelt down and began sifting through the fragments, matching the carvings on them together like a puzzle.',
+        type: 'narration',
+      },
+      {
+        text: 'When she was done, there was an image of a huge Morbuzakh root and six Great Disks bringing it down. Beneath each disk was written the Metru it came from and a three-digit code.',
+        type: 'narration',
+      },
+      {
+        text: 'Vakama was right! There is a connection between the Great Disks and the Morbuzakh. But why would anyone want to stop us from ending that threat?',
+        type: 'narration',
+      },
+      {
+        text: 'Then she caught sight of something else, half hidden by an overturned bench. It was a map of the Le-Metru chute system, stamped with the name Orkahm. What would this be doing here? Nokama wondered.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'The rest of her notes—have you seen them?',
+        type: 'dialogue',
+      },
+      {
+        text: '“Hey, I just take care of the lab. I never—”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Nokama',
+        text: 'Have you seen them?',
+        type: 'dialogue',
+      },
+      {
+        text: 'The Matoran’s gaze dropped to the floor. “All right. She showed them to me once. Said something about a Great Disk making her somebody. Her notes were all about the Morbuzakh, but they didn’t make any sense to me. She made copies of everything and said she was taking them home.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'For the sake of Ga-Metru and the whole city, I hope they are still there.',
+        type: 'dialogue',
+      },
+      {
+        text: 'She returned to Vhisola’s home through the canals. As she feared, there was still a Vahki patrolling the area. Reasoning with it would be a waste of time. Vahki didn’t listen. They were trained to see movement and to react. She needed a distraction.',
+        type: 'narration',
+      },
+      {
+        text: 'Well, I am supposed to be the Toa of Water, she said to herself. Let us see if that is only a name.',
+        type: 'narration',
+      },
+      {
+        text: 'It was the hardest thing Nokama had ever attempted. Extending her twin tools, she strained to draw moisture from the air. At one point, she thought for sure she would black out and drift away on the canal. But finally, she could feel one of the most powerful of elements coming under her control. Two narrow streams of water were all she could manage at first, but they were enough. She targeted a bit of ornamentation on a house down the avenue. The water struck head-on, knocking it from its perch with a resounding crash. The Vahki paused, turned and moved off to investigate.',
+        type: 'narration',
+      },
+      {
+        text: 'Nokama bolted for the house. Inside, she searched frantically for any possible hiding place. The four-legged creature had obviously not been here, unless he had suddenly grown neater. But where had Vhisola hidden the notes? What would be the one place that would be special to her?',
+        type: 'narration',
+      },
+      {
+        text: 'Then her eyes settled on the largest picture of herself. Nokama almost dreaded being proven right, but she was—behind the picture was a safe with three dials. There was no time to try to guess the combination. It had to be one of the codes that had been on the tablet, or her search would end in failure.',
+        type: 'narration',
+      },
+      {
+        text: 'At first, she considered using the Ga-Metru code, but that almost seemed too obvious. She tried the Ta-Metru code, the Onu-Metru code, the Po-Metru code, and the others, all to no end. But when she spun the dial to the three digits of the Ga-Metru code, the door swung open. Inside was a pile of tablets, all with Vhisola’s distinctive carvings on them.',
+        type: 'narration',
+      },
+      {
+        text: 'Nokama glanced at each one until she found the crucial piece of information. It was a carving of the Great Temple with a powerful disk pictured beside it. It had been there all the time!',
+        type: 'narration',
+      },
+      {
+        text: 'Vhisola must have gone there to retrieve the Great Disk, thought Nokama. But if she doesn’t know about that four-legged monster…',
+        type: 'narration',
+      },
+      {
+        text: 'Nokama turned and raced out of the house. She didn’t even worry that the Vahki might pursue her again. Let it follow me! I could use the help!',
+        type: 'narration',
+      },
+      {
+        text: 'As she sped through the canals heading for the Great Temple, Nokama remembered one of her first conversations with Vhisola. “Everyone has a special talent,” she had told the Matoran. “You simply have to discover the one that is yours.” Now that she knew Vhisola’s plan had been to take the Great Disk for herself and use it for personal gain, she wondered if the Matoran’s “special talent” was deception.',
+        type: 'narration',
+      },
+      {
+        text: 'She emerged from the canals near the temple but was stopped short by the sight of a crowd of Matoran some distance away. They were craning their necks to look up at one of the tall buildings, pointing and shouting.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'What is it? What’s happening?',
+        type: 'dialogue',
+      },
+      {
+        text: '“It’s Vhisola!” one shouted. “On top of that building! She’s going to fall!”',
+        type: 'narration',
+      },
+      {
+        text: 'The Toa of Water looked up. There was Vhisola, teetering on the edge of a roof. The Matoran wasn’t going to be able to maintain her balance for long. Nokama felt helpless. She wasn’t a climber, she could never scale the building in time.',
+        type: 'narration',
+      },
+      {
+        text: 'She turned and leaped into the canal, extending her hydro blades in front of her. Her momentum carried her forward, skiing across the surface of the canal. Just before reaching a bridge, Nokama dove beneath the surface. She sped through the winding protodermis pipe, down a grade, and back up at incredible velocity. Powered by her fear for Vhisola’s life, she flew out of the end of the pipe and soared high into the air, angling her body so she would land on the same roof as the Matoran.',
+        type: 'narration',
+      },
+      {
+        text: 'Vhisola saw her coming, rocked a little and started to fall. Nokama swooped down, caught the Matoran with one arm and the edge of the roof with the other and hauled them both to safety.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Vhisola',
+        text: 'You. I knew it would be you. Now that you’re a Toa Metru, you’ll just cast an even longer shadow over me.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'Vhisola, whatever you think, we can deal with it later. I need that Great Disk!',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Vhisola',
+        text: 'Everyone wants my disk. Some four-legged thing—not a Rahi, I don’t know what it was—chased me through the streets. I had to hide up here to get away from him. I never should have paid attention to that note.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'What note?',
+        type: 'dialogue',
+      },
+      {
+        text: 'Vhisola produced two small tablets. On the first was a jumble of Matoran numbers, on the second a code key.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Vhisola',
+        text: 'Here. Let’s see if you can decode it faster than I did.',
+        type: 'dialogue',
+      },
+      {
+        text: 'It took Nokama a few long moments, but finally she was able to read the message. It said: “Beware. The Toa serve the Morbuzakh. They must not find the Great Disks. Meet me at the protodermis falls with your disk and I will keep it safe. Ahkmou.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'Come on, Vhisola. We need to have a long talk with some friends of mine.',
+        type: 'dialogue',
+      },
+    ],
+  },
   metru_seek_the_great_disks: {
     background: { from: '#1a2840', to: '#c9a84c', type: 'gradient' },
     id: 'metru_seek_the_great_disks',
