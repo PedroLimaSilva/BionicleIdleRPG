@@ -27,16 +27,10 @@ export function maskNeedsAlphaBlend(mat: MaskStandardMat): boolean {
 }
 
 /**
- * Configure a cloned mask material for runtime tinting and arena lighting.
- * Mata/Nuva mask GLBs ship metallic PBR defaults; without scene IBL (e.g. cavern
- * arenas) those surfaces read nearly black while HDRI-lit deserts look fine.
- *
- * Opaque Kanohi stay in the opaque render pass (`transparent: false`) so they
- * depth-occlude transmissive brain gel. Only translucent masks and exit fades
- * use alpha blending. Closed shells use `FrontSide` so interior back-faces do
- * not z-fight with brain gel in the mask cavity.
+ * Sync transparent-pass vs opaque-pass state from the material's current opacity.
+ * Call after runtime opacity overrides (e.g. Great Rau at 0.75).
  */
-export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
+export function syncMaskTransparencyState(mat: MaskStandardMat): void {
   if (isMaskGlowMaterialName(mat.name)) {
     mat.transparent = true;
     return;
@@ -49,6 +43,21 @@ export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
     mat.side = FrontSide;
     mat.depthWrite = true;
   }
+}
+
+/**
+ * Configure a cloned mask material for runtime tinting and arena lighting.
+ * Mata/Nuva mask GLBs ship metallic PBR defaults; without scene IBL (e.g. cavern
+ * arenas) those surfaces read nearly black while HDRI-lit deserts look fine.
+ *
+ * Opaque Kanohi stay in the opaque render pass (`transparent: false`) so they
+ * depth-occlude transmissive brain gel. Only translucent masks and exit fades
+ * use alpha blending. Closed shells use `FrontSide` so interior back-faces do
+ * not z-fight with brain gel in the mask cavity.
+ */
+export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
+  syncMaskTransparencyState(mat);
+  if (isMaskGlowMaterialName(mat.name)) return;
 
   if (hasMaskPbrMaps(mat)) return;
 

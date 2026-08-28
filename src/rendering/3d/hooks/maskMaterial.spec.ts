@@ -5,6 +5,7 @@ import {
   cloneGreatMaskMaterial,
   maskNeedsAlphaBlend,
   prepareClonedMaskMaterial,
+  syncMaskTransparencyState,
 } from './maskMaterial';
 
 describe('maskNeedsAlphaBlend', () => {
@@ -90,6 +91,18 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.roughness).toBe(0.18);
     expect(mat.envMapIntensity).toBe(0.9);
     expect(mat.roughnessMap).toBeDefined();
+  });
+});
+
+describe('syncMaskTransparencyState', () => {
+  it('enables alpha blending after runtime opacity override (Great Rau)', () => {
+    const mat = new MeshStandardMaterial({ name: 'Rau_baked.001', opacity: 1, roughness: 0.5 });
+    prepareClonedMaskMaterial(mat);
+    expect(mat.transparent).toBe(false);
+
+    mat.opacity = 0.75;
+    syncMaskTransparencyState(mat);
+    expect(mat.transparent).toBe(true);
   });
 });
 
