@@ -89,6 +89,37 @@ describe('gamePersistence', () => {
       expect(state.recruitedCharacters[0].assignment).toBeUndefined();
       expect(state.recruitedCharacters[0].exp).toBeGreaterThanOrEqual(200);
     });
+
+    test('clears Mata Nui job assignments from Metru Matoran on load', async () => {
+      const saved = {
+        activeQuests: [],
+        collectedKrana: {},
+        completedQuests: [],
+        customCharacters: [],
+        kraataCollection: {},
+        protodermis: 100,
+        protodermisCap: 2000,
+        recruitedCharacters: [
+          {
+            assignment: {
+              assignedAt: Date.now() - 5000,
+              expRatePerSecond: 1.0,
+              job: MatoranJob.CharcoalMaker,
+            },
+            exp: 200,
+            id: 'Vakama',
+          },
+        ],
+        version: CURRENT_GAME_STATE_VERSION,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      localStorage.setItem(E2E_FORCE_GAME_STATE_IMPORT_KEY, 'true');
+      localStorage.setItem('TEST_MODE', 'true');
+
+      const state = await loadGameStateAsync();
+
+      expect(state.recruitedCharacters[0].assignment).toBeUndefined();
+    });
   });
 
   describe('loadGameStateAsync – sanitizeOrphanedCustomCharacters', () => {

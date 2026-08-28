@@ -4,8 +4,16 @@ import { MatoranStage } from '../types/Matoran';
 
 export const PROTODERMIS_RATE = 0.1;
 
+/** Mata Nui island Matoran stages eligible for Koro-era jobs. */
+export const MATA_NUI_MATORAN_STAGES = [
+  MatoranStage.Diminished,
+  MatoranStage.Rebuilt,
+  MatoranStage.Turaga,
+] as const satisfies readonly MatoranStage[];
+
 export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   [MatoranJob.AlgaeHarvester]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Collects medicinal algae and aquatic plants in Ga-Koro.',
     elementAffinity: {
       favored: [ElementTribe.Water],
@@ -18,6 +26,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
   },
   [MatoranJob.CharcoalMaker]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Produces charcoal from wood and volcanic matter in Ta-Koro.',
     elementAffinity: {
       favored: [ElementTribe.Fire],
@@ -96,6 +105,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: { requiredProgress: ['bohrok_assistants'] },
   },
   [MatoranJob.LightStoneMiner]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Mines Light Stone crystals for illumination in Onu-Koro caves.',
     elementAffinity: {
       favored: [ElementTribe.Earth],
@@ -151,6 +161,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {},
   },
   [MatoranJob.RahiNestWatcher]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Observes and documents flying Rahi behavior in Le-Wahi.',
     elementAffinity: {
       favored: [ElementTribe.Air],
@@ -163,6 +174,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
   },
   [MatoranJob.SanctumGuard]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Patrols the drifts and guards the Sanctum of Ko-Koro.',
     elementAffinity: {
       favored: [ElementTribe.Ice],
@@ -199,6 +211,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {},
   },
   [MatoranJob.StoneMason]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Builds stone structures and sculputres in Po-Wahi.',
     elementAffinity: {
       favored: [ElementTribe.Stone],

@@ -216,6 +216,22 @@ describe('matoranUtils', () => {
 
       expect(result[1]).toEqual({ exp: 200, id: 'Hahli' });
     });
+
+    test('rejects Mata Nui jobs for Metru Matoran', () => {
+      const matoran: RecruitedCharacterData[] = [{ exp: 0, id: 'Vakama' }];
+
+      const result = assignJob('Vakama', MatoranJob.CharcoalMaker, matoran);
+
+      expect(result[0].assignment).toBeUndefined();
+    });
+
+    test('rejects Metru jobs for Mata Nui Matoran', () => {
+      const matoran: RecruitedCharacterData[] = [{ exp: 0, id: 'Jala' }];
+
+      const result = assignJob('Jala', MatoranJob.MaskMaker, matoran);
+
+      expect(result[0].assignment).toBeUndefined();
+    });
   });
 
   describe('removeJob', () => {

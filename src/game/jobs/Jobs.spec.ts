@@ -217,6 +217,20 @@ describe('Jobs', () => {
 
       expect(jobs).not.toContain(MatoranJob.CharcoalMaker);
       expect(jobs).not.toContain(MatoranJob.AlgaeHarvester);
+      expect(jobs).not.toContain(MatoranJob.StoneMason);
+    });
+
+    test('Mata Nui Matoran do not see Metru jobs', () => {
+      const mockGameState = {
+        completedQuests: [],
+      } as unknown as GameState;
+
+      const jala = { exp: 0, id: 'Jala' } as RecruitedCharacterData;
+      const jobs = getAvailableJobs(mockGameState, jala);
+
+      expect(jobs).not.toContain(MatoranJob.MaskMaker);
+      expect(jobs).not.toContain(MatoranJob.Teacher);
+      expect(jobs).not.toContain(MatoranJob.ChuteController);
     });
 
     test('Metru Matoran do not see Metru jobs without an allowedCharacters entry', () => {
