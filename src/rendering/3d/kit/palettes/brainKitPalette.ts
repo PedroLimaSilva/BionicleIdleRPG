@@ -24,6 +24,8 @@ export const MATA_KIT_PALETTE_BRAIN_BAKED: Partial<Record<string, KitMaterialSlo
 /** Metru (2004) brain — `MetruBrain` kit node material slot. */
 export const METRU_KIT_PALETTE_BRAIN_BAKED: Partial<Record<string, KitMaterialSlotEntry>> = {
   MetruBrain_baked: brainBakedSlot(),
+  /** GLB material name before `_baked` rename on export. */
+  MetruBrain: brainBakedSlot(),
 };
 
 /** Spread into rig palettes wherever brain sockets clone kit parts. */
