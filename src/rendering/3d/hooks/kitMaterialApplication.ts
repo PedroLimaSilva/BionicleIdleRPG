@@ -1,4 +1,12 @@
-import { Color, Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
+import {
+  Color,
+  FrontSide,
+  Material,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Object3D,
+} from 'three';
 import type { BaseMatoran } from '../../../types/Matoran';
 import {
   KIT_MATERIAL_WEATHERED_OPTION_KEYS,
@@ -14,6 +22,12 @@ import {
   type WeatheredMetalOptions,
 } from '../CharacterScene/WeatheredMetalMaterial';
 import { hasMaskPbrMaps } from './maskMaterial';
+import {
+  buildTransmissiveKitMaterial,
+  isTransmissiveKitMaterial,
+  resolveTransmissiveKitKind,
+  TRANSMISSIVE_KIT_RENDER_ORDER,
+} from './transmissiveKitMaterial';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -53,10 +67,9 @@ function resolveKitMaterialSlotSpec(
   return undefined;
 }
 
-/** Rig meshes with baked PBR (masks, Vakama's Kanoka disk, etc.) keep GLB-authored look. */
-function isPreservedBakedMaterial(mat: StandardMat): boolean {
-  if (hasMaskPbrMaps(mat)) return true;
-  return mat.name.toLowerCase().includes('_baked');
+/** Rig meshes with authored PBR maps (Kanoka disk, Great Kanohi masks, etc.) keep GLB look. */
+function isPreservedMappedMaterial(mat: StandardMat): boolean {
+  return hasMaskPbrMaps(mat);
 }
 
 export function buildKitMaterialSlotLookup(
@@ -141,14 +154,28 @@ export function buildKitMeshMaterials(
   const next = mats.map((mat) => {
     if (!isStandardMat(mat)) return mat;
     const spec = resolveKitMaterialSlotSpec(mat.name, slotLookup);
-    // Baked / mapped materials keep GLB maps. A matching slot may still tint
-    // diffuse + emissive (Vahki visor); otherwise the authored look is preserved.
-    if (isPreservedBakedMaterial(mat)) {
+    const transmissiveKind = resolveTransmissiveKitKind(mat.name, spec);
+    if (transmissiveKind) {
+      const color = spec?.color ? resolveKitColorSource(spec.color, palette) : mat.color.getStyle();
+      const emissive = spec?.emissive ? resolveKitColorSource(spec.emissive, palette) : color;
+      const emissiveIntensity =
+        spec?.emissiveIntensity ??
+        (spec?.emissive ? (mat.emissiveIntensity > 0 ? mat.emissiveIntensity : 1) : 0);
+      return buildTransmissiveKitMaterial(
+        mat.name,
+        transmissiveKind,
+        color,
+        emissive,
+        emissiveIntensity
+      );
+    }
+    // Mapped materials keep GLB textures (Kanoka disk, etc.).
+    if (isPreservedMappedMaterial(mat)) {
       if (!spec || (!spec.color && !spec.emissive && spec.emissiveIntensity === undefined)) {
         return mat;
       }
-      const bakedColor = spec.color ? resolveKitColorSource(spec.color, palette) : undefined;
-      return buildStandardSlotMaterial(mat, spec, palette, bakedColor, undefined);
+      const mappedColor = spec.color ? resolveKitColorSource(spec.color, palette) : undefined;
+      return buildStandardSlotMaterial(mat, spec, palette, mappedColor, undefined);
     }
     const slotColor = spec?.color ? resolveKitColorSource(spec.color, palette) : undefined;
     // Metallic plastics (gold) shine on any slot, not just Metal; the slot's own
@@ -163,7 +190,14 @@ export function buildKitMeshMaterials(
         ...metalPbr,
         ...mergeSlotWeatheredOpts(spec),
       };
-      return getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
+      const weathered = getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
+      // MataFace stalk shares a plane with brain gel — DoubleSide back-faces z-fight the gel.
+      if (normalizeSlotName(mat.name) === 'face') {
+        const faceMat = weathered.clone();
+        faceMat.side = FrontSide;
+        return faceMat;
+      }
+      return weathered;
     }
 
     return buildStandardSlotMaterial(mat, spec, palette, slotColor, metalPbr);
@@ -183,5 +217,10 @@ export function applyKitMaterialsToObject(
     const mesh = child as Mesh;
     const next = buildKitMeshMaterials(mesh, slotLookup, palette, weatheredBase);
     if (next !== undefined) mesh.material = next as Mesh['material'];
+    const applied = mesh.material;
+    const appliedMats = Array.isArray(applied) ? applied : [applied];
+    if (appliedMats.some(isTransmissiveKitMaterial)) {
+      mesh.renderOrder = TRANSMISSIVE_KIT_RENDER_ORDER;
+    }
   });
 }

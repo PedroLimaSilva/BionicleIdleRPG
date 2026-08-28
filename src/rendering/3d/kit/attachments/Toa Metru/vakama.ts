@@ -14,8 +14,8 @@ import { kitPartGlow, kitPartSlots } from '../../palettes/partSlots';
  * (`AxleMod2L.ShoulderPivot.R` → `AxleMod2L_ShoulderPivotR`).
  *
  * The disk launcher frame attaches at `VakamaDiskLauncher` (the kit socket empty).
- * `Weapon_Handle` is the arm bone; `Disk_Baked` is a child mesh with authored PBR
- * textures — kit tinting skips `_baked` / mapped materials like Great Kanohi masks.
+ * `Weapon_Handle` is the arm bone; the Kanoka disk mesh has authored PBR textures —
+ * kit tinting skips mapped materials like Great Kanohi masks.
  */
 
 const VAKAMA_BODY_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {

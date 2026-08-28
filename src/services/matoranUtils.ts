@@ -7,7 +7,7 @@ import {
 } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { JOB_DETAILS } from '../data/jobs';
-import { getProductivityModifier } from '../game/jobs/Jobs';
+import { canMatoranTakeJob, getProductivityModifier } from '../game/jobs/Jobs';
 import { isToaMata, isToaNuva } from '../game/characters/matoranStage';
 import { isTahuNuvaInfectedMaskPeriod } from '../game/masks/masks';
 import { CHARACTER_DEX } from '../data/dex/index';
@@ -201,8 +201,14 @@ export function recruitMatoran(
 export function assignJob(
   id: RecruitedCharacterData['id'],
   job: MatoranJob,
-  matoran: RecruitedCharacterData[]
+  matoran: RecruitedCharacterData[],
+  completedQuests: string[] = []
 ): RecruitedCharacterData[] {
+  const target = matoran.find((m) => m.id === id);
+  if (!target || !canMatoranTakeJob(target, job, completedQuests)) {
+    return matoran;
+  }
+
   const baseRate = JOB_DETAILS[job].rate;
   const now = Date.now();
 

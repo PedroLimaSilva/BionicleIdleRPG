@@ -14,6 +14,7 @@ import {
   useMaskTransitionFrame,
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
+import { applyKanohiRenderOrder } from './kanohiRenderOrder';
 import { applyMaskMetallicPbr, isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
 import {
   applyMaskDiscolorationToObject,
@@ -191,6 +192,8 @@ export function useMask(
         }
       }
     });
+
+    applyKanohiRenderOrder(clone);
 
     if (discolorationRef.current) {
       setupMaskDiscolorationShader(clone);

@@ -1,4 +1,4 @@
-import { MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
+import { FrontSide, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { metallicColorPbr } from '../kit/palettes/metalPbr';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
@@ -17,16 +17,48 @@ export function hasMaskPbrMaps(mat: MaskStandardMat): boolean {
 }
 
 /**
+ * Kanohi that need alpha blending (GLB `alphaMode: BLEND` or sub-1 opacity).
+ * Do not infer from sculpt name — Nuva `Kaukau` is opacity 1 with vent holes only;
+ * Mata `Kaukau` ships at 0.5 opacity and still blends correctly via the opacity check.
+ */
+export function maskNeedsAlphaBlend(mat: MaskStandardMat): boolean {
+  if (mat.opacity < 0.999) return true;
+  return mat.name.toLowerCase().includes('trans');
+}
+
+/**
+ * Sync transparent-pass vs opaque-pass state from the material's current opacity.
+ * Call after runtime opacity overrides (e.g. Great Rau at 0.75).
+ */
+export function syncMaskTransparencyState(mat: MaskStandardMat): void {
+  if (isMaskGlowMaterialName(mat.name)) {
+    mat.transparent = true;
+    return;
+  }
+
+  const alphaBlend = maskNeedsAlphaBlend(mat);
+  mat.transparent = alphaBlend;
+
+  if (!alphaBlend) {
+    mat.side = FrontSide;
+    mat.depthWrite = true;
+  }
+}
+
+/**
  * Configure a cloned mask material for runtime tinting and arena lighting.
  * Mata/Nuva mask GLBs ship metallic PBR defaults; without scene IBL (e.g. cavern
  * arenas) those surfaces read nearly black while HDRI-lit deserts look fine.
  *
- * Materials with authored PBR maps keep GLB scalars and textures; only transparency
- * is forced. Unmapped slots get dielectric fallbacks for low-IBL arenas.
+ * Opaque Kanohi stay in the opaque render pass (`transparent: false`) so they
+ * depth-occlude transmissive brain gel. Only translucent masks and exit fades
+ * use alpha blending. Closed shells use `FrontSide` so interior back-faces do
+ * not z-fight with brain gel in the mask cavity.
  */
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
-  mat.transparent = true;
+  syncMaskTransparencyState(mat);
   if (isMaskGlowMaterialName(mat.name)) return;
+
   if (hasMaskPbrMaps(mat)) return;
 
   mat.metalness = 0;

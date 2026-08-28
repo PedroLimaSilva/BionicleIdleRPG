@@ -1,6 +1,12 @@
-import { Mesh, MeshStandardMaterial } from 'three';
+import { Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { buildKitMaterialSlotLookup, buildKitMeshMaterials } from './kitMaterialApplication';
 import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
+import {
+  TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
+  TRANSMISSIVE_KIT_IOR,
+  TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
+  TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
+} from './transmissiveKitMaterial';
 import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
@@ -72,44 +78,90 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(mat.roughness).toBe(0.5);
   });
 
-  test('baked PBR rig materials stay untouched even when a slot would match', () => {
-    const mesh = meshWithMaterialNamed('Disk_Baked');
-    const baked = mesh.material as MeshStandardMaterial;
-    baked.normalMap = {} as MeshStandardMaterial['normalMap'];
-    baked.metalnessMap = {} as MeshStandardMaterial['metalnessMap'];
+  test('mapped PBR rig materials stay untouched even when a slot would match', () => {
+    const mesh = meshWithMaterialNamed('Disk');
+    const mapped = mesh.material as MeshStandardMaterial;
+    mapped.normalMap = {} as MeshStandardMaterial['normalMap'];
+    mapped.metalnessMap = {} as MeshStandardMaterial['metalnessMap'];
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({ Main: { kind: 'part', part: 'weapon', slot: 'main' } }),
       COLORS,
       PLASTIC_WEATHERED
     ) as MeshStandardMaterial;
-    expect(next).toBe(baked);
+    expect(next).toBe(mapped);
     expect(next.metalness).toBe(0.5);
   });
 
-  test('a matching slot tints baked diffuse and emission while cloning maps', () => {
-    const mesh = meshWithMaterialNamed('VahkiHood_baked');
-    const baked = mesh.material as MeshStandardMaterial;
-    baked.normalMap = {} as MeshStandardMaterial['normalMap'];
-    baked.emissive.set('#ff5500');
-    baked.emissiveIntensity = 1;
+  test('McToran Face Brain slot is clearer than Toa brain', () => {
+    const mesh = meshWithMaterialNamed('Brain');
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({
-        VahkiHood_baked: {
+        Brain: {
           color: { key: 'eyes', kind: 'palette' },
           emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 0.1,
+          transmissive: 'mctoranFace',
           weathered: false,
         },
       }),
       COLORS,
       PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
-    expect(next).not.toBe(baked);
+    ) as MeshPhysicalMaterial;
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION);
+    expect(next.transmission).toBeGreaterThan(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
+  });
+
+  test('Brain slot gets runtime transmission when slot tints emissive', () => {
+    const mesh = meshWithMaterialNamed('Brain');
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Brain: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 0.1,
+          transmissive: 'brain',
+          weathered: false,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshPhysicalMaterial;
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.emissiveIntensity).toBe(1);
-    expect(next.normalMap).toBe(baked.normalMap);
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
+    expect(next.ior).toBe(TRANSMISSIVE_KIT_IOR);
+    expect(next.normalMap).toBeNull();
+  });
+
+  test('VahkiHood slot uses the vahkiHood transmissive preset', () => {
+    const mesh = meshWithMaterialNamed('VahkiHood');
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        VahkiHood: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 0.1,
+          transmissive: 'vahkiHood',
+          weathered: false,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshPhysicalMaterial;
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION);
+    expect(next.depthWrite).toBe(false);
+    expect(next.normalMap).toBeNull();
+  });
+
+  test('Brain with color-only slot (Bohrok eyes) stays on the plastic path', () => {
+    const mat = buildSingle('Brain', {
+      Brain: { color: { key: 'eyes', kind: 'palette' }, weathered: false },
+    });
+    expect(mat).not.toBeInstanceOf(MeshPhysicalMaterial);
+    expect(mat.metalness).toBe(0.5);
   });
 
   test('opacity below 1 enables transparent blending on the cloned material', () => {

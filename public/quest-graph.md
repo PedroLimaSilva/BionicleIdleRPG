@@ -356,26 +356,18 @@ Currency: 5000
 XP: 4000"]
   story_metru_nui_saga_begin["Tales of the Lost City
 (15m)
-Unlock: Toa_Lhikan, Matau, Nokama, Nuju, Onewa, Vakama, Whenua
+Unlock: Toa_Lhikan, Matau, Nokama, Nuju, Onewa, Vakama, Whenua, Kapura
 Currency: 5500
 XP: 4500"]
+  metru_kapura_morbuzakh["Morbuzakh
+(18m)
+Currency: 6000
+XP: 5000"]
   metru_vakama_dume_and_the_great_temple["The Turaga’s Visit
 (20m)
 Unlock: bordakh, nuurakh, vorzakh, zadakh, rorzakh, keerakh
 Currency: 6500
 XP: 5500"]
-  settle_metru_nui["Settling Back Into Metru Nui
-(20m)
-Currency: 6500
-XP: 5500"]
-  activate_knowledge_towers["Knowledge Towers Reopened
-(22m)
-Currency: 7000
-XP: 6000"]
-  unlock_archives["Archives Reopened
-(22m)
-Currency: 7000
-XP: 6000"]
   metru_great_temple_transformation["Destiny at the Great Temple
 (22m)
 Currency: 7000
@@ -492,11 +484,9 @@ XP: 7000"]
   mol_takanuva_rises --> mol_defeat_of_makuta
   mol_defeat_of_makuta --> mol_rediscovery_of_metru_nui
   mol_rediscovery_of_metru_nui --> story_metru_nui_saga_begin
+  story_metru_nui_saga_begin --> metru_kapura_morbuzakh
   story_metru_nui_saga_begin --> metru_vakama_dume_and_the_great_temple
-  metru_vakama_dume_and_the_great_temple --> settle_metru_nui
-  settle_metru_nui --> activate_knowledge_towers
-  settle_metru_nui --> unlock_archives
-  settle_metru_nui --> metru_great_temple_transformation
+  metru_vakama_dume_and_the_great_temple --> metru_great_temple_transformation
   metru_great_temple_transformation --> metru_seek_the_great_disks
   metru_seek_the_great_disks --> metru_nokama_great_disk
   metru_seek_the_great_disks --> metru_vakama_great_disk

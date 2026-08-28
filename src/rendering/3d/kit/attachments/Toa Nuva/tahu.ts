@@ -9,6 +9,7 @@ import {
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
   mataKitPlayerPaletteGlow,
 } from '../../palettes/mataKitPlayerPalette';
+import { KIT_BRAIN_SOCKET_MATERIAL_COLORS } from '../../palettes/brainKitPalette';
 import { NUVA_KIT_METAL } from '../../palettes/nuvaKitPlayerPalette';
 
 const TAHU_NUVA_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -75,12 +76,7 @@ export const TAHU_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
   },
   MataBrain: {
     kitNodeName: KIT_2001_NODES.MataBrain,
-    materialColors: {
-      Brain: {
-        color: { key: 'eyes', kind: 'palette' },
-        weathered: false,
-      },
-    },
+    materialColors: KIT_BRAIN_SOCKET_MATERIAL_COLORS,
   },
   MataChest: { kitNodeName: KIT_2001_NODES.MataChest, materialColors: TAHU_NUVA_PALETTE_COLORS },
   MataFace: { kitNodeName: KIT_2001_NODES.MataFace, materialColors: TAHU_NUVA_PALETTE_COLORS },

@@ -20,6 +20,7 @@ import {
   cloneGreatMaskMaterial,
   isMaskGlowMaterialName,
   isMaskStandardMat,
+  syncMaskTransparencyState,
 } from './maskMaterial';
 import { masksCollected } from '../../../services/matoranUtils';
 
@@ -64,6 +65,7 @@ function applyGreatMaskColors(
     if (maskOpacity !== undefined) {
       mat.opacity = maskOpacity;
     }
+    syncMaskTransparencyState(mat);
     if (mat.emissive) {
       if (maskPowerActive) {
         mat.emissive = new Color(maskColor);

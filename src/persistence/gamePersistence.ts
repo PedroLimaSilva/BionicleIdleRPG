@@ -1,5 +1,5 @@
 import { CURRENT_GAME_STATE_VERSION, INITIAL_GAME_STATE } from '../data/gameState';
-import { applyOfflineJobExp } from '../game/jobs/Jobs';
+import { applyOfflineJobExp, sanitizeMatoranJobAssignments } from '../game/jobs/Jobs';
 import { migrateCustomCharacters } from '../game/characters/matoranColors';
 import { PartialGameState } from '../types/GameState';
 import { MatoranJob } from '../types/Jobs';
@@ -182,6 +182,17 @@ function sanitizeOrphanedCustomCharacters(parsed: Record<string, unknown>): void
     .filter((quest) => quest.assignedMatoran.length > 0);
 }
 
+function sanitizeInvalidJobAssignments(parsed: Record<string, unknown>): void {
+  const characters = parsed.recruitedCharacters as RecruitedCharacterData[] | undefined;
+  if (!Array.isArray(characters)) return;
+
+  const completedQuests = Array.isArray(parsed.completedQuests)
+    ? (parsed.completedQuests as string[])
+    : [];
+
+  parsed.recruitedCharacters = sanitizeMatoranJobAssignments(characters, completedQuests);
+}
+
 function isValidLoadedGameState(data: PartialGameState): boolean {
   return (
     typeof data.version === 'number' &&
@@ -194,6 +205,7 @@ function isValidLoadedGameState(data: PartialGameState): boolean {
 export function processLoadedGameDocument(parsed: Record<string, unknown>): LoadedGameState {
   applyOptionalDefaults(parsed);
   sanitizeUnrecognizedJobs(parsed);
+  sanitizeInvalidJobAssignments(parsed);
   sanitizeCustomCharacterPalettes(parsed);
   sanitizeOrphanedCustomCharacters(parsed);
 

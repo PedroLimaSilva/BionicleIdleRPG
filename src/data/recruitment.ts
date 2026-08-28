@@ -10,7 +10,8 @@
 export interface RecruitmentEntry {
   id: string;
   cost: number;
-  unlockedByQuest: string;
+  /** Quest id, or any one of several quests that unlock this recruit. */
+  unlockedByQuest: string | string[];
 }
 
 /** Characters that can be recruited, keyed by character id. */
@@ -25,7 +26,11 @@ export const RECRUITMENT_REGISTRY: RecruitmentEntry[] = [
   // MNOG – Chronicler's Journey
   // Costs kept at or below default protodermisCap (2000) so recruits stay affordable
   // without raising the cap first.
-  { cost: 750, id: 'Kapura', unlockedByQuest: 'mnog_takua_meets_kapura' },
+  {
+    cost: 750,
+    id: 'Kapura',
+    unlockedByQuest: ['mnog_takua_meets_kapura', 'story_metru_nui_saga_begin'],
+  },
   { cost: 2000, id: 'Jala', unlockedByQuest: 'mnog_tahu_unlock_01' },
   { cost: 1000, id: 'Hahli', unlockedByQuest: 'mnog_restore_ga_koro' },
   { cost: 500, id: 'Hafu', unlockedByQuest: 'mnog_po_wahi_desert' },

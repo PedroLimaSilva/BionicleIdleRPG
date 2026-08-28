@@ -55,6 +55,28 @@ export function getAvailableJobs(
   return jobs;
 }
 
+export function canMatoranTakeJob(
+  matoran: RecruitedCharacterData,
+  job: MatoranJob,
+  completedQuests: string[]
+): boolean {
+  const gameState = { completedQuests } as GameState;
+  return getAvailableJobs(gameState, matoran).includes(job);
+}
+
+export function sanitizeMatoranJobAssignments(
+  characters: RecruitedCharacterData[],
+  completedQuests: string[]
+): RecruitedCharacterData[] {
+  return characters.map((matoran) => {
+    if (!matoran.assignment) return matoran;
+    if (!canMatoranTakeJob(matoran, matoran.assignment.job, completedQuests)) {
+      return { ...matoran, assignment: undefined };
+    }
+    return matoran;
+  });
+}
+
 export function getJobStatus(matoran: RecruitedCharacterData): ProductivityEffect {
   if (!matoran.assignment?.job) return ProductivityEffect.Idle;
 
