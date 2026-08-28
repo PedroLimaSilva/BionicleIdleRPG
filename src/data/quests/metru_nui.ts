@@ -9,6 +9,9 @@ export const METRU_VAKAMA_DUME_QUEST_ID = 'metru_vakama_dume_and_the_great_templ
 /** The six Matoran answer Lhikan's call at the Great Temple and become Toa Metru. */
 export const METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID = 'metru_great_temple_transformation';
 
+/** The Toa Metru claim their tools, learn of the Great Disks, and set out to find six Matoran. */
+export const METRU_SEEK_GREAT_DISKS_QUEST_ID = 'metru_seek_the_great_disks';
+
 /** Future Toa Metru Matoran — no Kanoka disk launcher on the rig. */
 const METRU_TOA_CANDIDATE_RECRUIT_IDS = [
   'Matau',
@@ -17,6 +20,16 @@ const METRU_TOA_CANDIDATE_RECRUIT_IDS = [
   'Onewa',
   'Vakama',
   'Whenua',
+] as const;
+
+/** Evolved Toa Metru — required for the Great Disks quest line. */
+const METRU_TOA_RECRUIT_IDS = [
+  'Toa_Matau',
+  'Toa_Nokama',
+  'Toa_Nuju',
+  'Toa_Onewa',
+  'Toa_Vakama',
+  'Toa_Whenua',
 ] as const;
 
 export const METRU_NUI_QUEST_LINE: Quest[] = [
@@ -76,5 +89,20 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
     },
     section: 'Metru Nui',
     unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
+  },
+  {
+    description:
+      'Newly transformed at the Great Temple, the Toa Metru claim their tools from the Toa Suva and discover six Kanoka disks bearing their own masks. Vakama’s vision of Metru Nui in ruin points to the Great Disks—and six Matoran who can help find them before a four-legged Dark Hunter strikes.',
+    durationSeconds: 20 * 60,
+    id: METRU_SEEK_GREAT_DISKS_QUEST_ID,
+    name: 'Search for the Great Disks',
+    requirements: { matoran: [...METRU_TOA_RECRUIT_IDS], minLevel: 28 },
+    rewards: {
+      currency: 7500,
+      cutscene: { cutsceneId: 'metru_seek_the_great_disks', type: 'visual_novel' },
+      xpPerMatoran: 6500,
+    },
+    section: 'Metru Nui',
+    unlockedAfter: [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID],
   },
 ];
