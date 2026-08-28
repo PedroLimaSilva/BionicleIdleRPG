@@ -364,10 +364,6 @@ XP: 4500"]
 Unlock: bordakh, nuurakh, vorzakh, zadakh, rorzakh, keerakh
 Currency: 6500
 XP: 5500"]
-  settle_metru_nui["Settling Back Into Metru Nui
-(20m)
-Currency: 6500
-XP: 5500"]
   activate_knowledge_towers["Knowledge Towers Reopened
 (22m)
 Currency: 7000
@@ -483,10 +479,9 @@ XP: 6500"]
   mol_defeat_of_makuta --> mol_rediscovery_of_metru_nui
   mol_rediscovery_of_metru_nui --> story_metru_nui_saga_begin
   story_metru_nui_saga_begin --> metru_vakama_dume_and_the_great_temple
-  metru_vakama_dume_and_the_great_temple --> settle_metru_nui
-  settle_metru_nui --> activate_knowledge_towers
-  settle_metru_nui --> unlock_archives
-  settle_metru_nui --> metru_great_temple_transformation
+  metru_vakama_dume_and_the_great_temple --> activate_knowledge_towers
+  metru_vakama_dume_and_the_great_temple --> unlock_archives
+  metru_vakama_dume_and_the_great_temple --> metru_great_temple_transformation
   metru_great_temple_transformation --> metru_seek_the_great_disks
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000

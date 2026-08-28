@@ -12,9 +12,6 @@ export const METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID = 'metru_great_temple_tr
 /** The Toa Metru claim their tools, learn of the Great Disks, and set out to find six Matoran. */
 export const METRU_SEEK_GREAT_DISKS_QUEST_ID = 'metru_seek_the_great_disks';
 
-/** Unlocks Ta-, Ga-, Le-, and Po-Metru day jobs (mask maker, teacher, chute test driver, carver). */
-export const SETTLE_METRU_NUI_QUEST_ID = 'settle_metru_nui';
-
 /** Unlocks Ko-Metru knowledge tower jobs. */
 export const ACTIVATE_KNOWLEDGE_TOWERS_QUEST_ID = 'activate_knowledge_towers';
 
@@ -86,20 +83,6 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
   },
   {
     description:
-      'The future Toa Metru Matoran return to their districts and resume the work they knew before the stones found them—mask forging in Ta-Metru, teaching in Ga-Metru, chute testing in Le-Metru, and carving in Po-Metru.',
-    durationSeconds: 20 * 60,
-    id: SETTLE_METRU_NUI_QUEST_ID,
-    name: 'Settling Back Into Metru Nui',
-    requirements: { matoran: ['Vakama', 'Nokama', 'Matau', 'Onewa'], minLevel: 26 },
-    rewards: {
-      currency: 6500,
-      xpPerMatoran: 5500,
-    },
-    section: 'Metru Nui',
-    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
-  },
-  {
-    description:
       'Nuju reports to the Knowledge Towers of Ko-Metru, resuming his work transcribing prophecies and cataloguing research alongside the city’s scholars.',
     durationSeconds: 22 * 60,
     id: ACTIVATE_KNOWLEDGE_TOWERS_QUEST_ID,
@@ -110,7 +93,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
       xpPerMatoran: 6000,
     },
     section: 'Metru Nui',
-    unlockedAfter: [SETTLE_METRU_NUI_QUEST_ID],
+    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
   },
   {
     description:
@@ -124,7 +107,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
       xpPerMatoran: 6000,
     },
     section: 'Metru Nui',
-    unlockedAfter: [SETTLE_METRU_NUI_QUEST_ID],
+    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
   },
   {
     description:
@@ -139,7 +122,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
       xpPerMatoran: 6000,
     },
     section: 'Metru Nui',
-    unlockedAfter: [SETTLE_METRU_NUI_QUEST_ID],
+    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
   },
   {
     description:

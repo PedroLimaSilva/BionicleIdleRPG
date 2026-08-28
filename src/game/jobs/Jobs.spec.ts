@@ -135,7 +135,7 @@ describe('Jobs', () => {
 
       // CharcoalMaker has no requirements
       expect(available).toContain(MatoranJob.CharcoalMaker);
-      // ProtodermisSmelter requires 'settle_metru_nui'
+      // ProtodermisSmelter requires 'metru_vakama_dume_and_the_great_temple'
       expect(available).not.toContain(MatoranJob.ProtodermisSmelter);
     });
 
@@ -182,7 +182,7 @@ describe('Jobs', () => {
 
     test('Metru Matoran only see their canonical profession when unlocked', () => {
       const mockGameState: GameState = {
-        completedQuests: ['settle_metru_nui'],
+        completedQuests: ['metru_vakama_dume_and_the_great_temple'],
       } as GameState;
 
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
@@ -196,13 +196,13 @@ describe('Jobs', () => {
 
     test('Metru Matoran with district-specific unlocks only see profession when quest met', () => {
       const settledOnly: GameState = {
-        completedQuests: ['settle_metru_nui'],
+        completedQuests: ['metru_vakama_dume_and_the_great_temple'],
       } as GameState;
       const withTowers: GameState = {
-        completedQuests: ['settle_metru_nui', 'activate_knowledge_towers'],
+        completedQuests: ['metru_vakama_dume_and_the_great_temple', 'activate_knowledge_towers'],
       } as GameState;
       const withArchives: GameState = {
-        completedQuests: ['settle_metru_nui', 'unlock_archives'],
+        completedQuests: ['metru_vakama_dume_and_the_great_temple', 'unlock_archives'],
       } as GameState;
 
       const nuju = { exp: 0, id: 'Nuju' } as RecruitedCharacterData;
@@ -216,7 +216,7 @@ describe('Jobs', () => {
 
     test('Metru Matoran do not see Mata Nui jobs even when unlocked', () => {
       const mockGameState: GameState = {
-        completedQuests: ['settle_metru_nui', 'mnog_ga_koro_sos'],
+        completedQuests: ['metru_vakama_dume_and_the_great_temple', 'mnog_ga_koro_sos'],
       } as GameState;
 
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
@@ -228,7 +228,7 @@ describe('Jobs', () => {
 
     test('Metru Matoran do not see Metru jobs without an allowedCharacters entry', () => {
       const mockGameState: GameState = {
-        completedQuests: ['settle_metru_nui'],
+        completedQuests: ['metru_vakama_dume_and_the_great_temple'],
       } as GameState;
 
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;

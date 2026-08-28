@@ -38,7 +38,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     label: '🚀 Chute Test Driver',
     rate: 2,
     unlock: {
-      requiredProgress: ['settle_metru_nui'],
+      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
     },
   },
   [MatoranJob.GaKoroRebuilder]: {
@@ -62,7 +62,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     label: '💧 Hydro Technician',
     rate: 2,
     unlock: {
-      requiredProgress: ['settle_metru_nui'],
+      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
     },
   },
   [MatoranJob.KnowledgeScribe]: {
@@ -122,7 +122,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     label: '🎭 Mask Maker',
     rate: 2,
     unlock: {
-      requiredProgress: ['settle_metru_nui'],
+      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
     },
   },
   [MatoranJob.OnuKoroRebuilder]: {
@@ -157,7 +157,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     label: '⚙️ Protodermis Smelter',
     rate: 2,
     unlock: {
-      requiredProgress: ['settle_metru_nui'],
+      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
     },
   },
   [MatoranJob.RahiNestWatcher]: {
@@ -195,7 +195,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     label: '🗿 Sculpture Operator',
     rate: 2,
     unlock: {
-      requiredProgress: ['settle_metru_nui'],
+      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
     },
   },
   [MatoranJob.StasisTechnician]: {
@@ -247,7 +247,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     label: '📖 Teacher',
     rate: 2,
     unlock: {
-      requiredProgress: ['settle_metru_nui'],
+      requiredProgress: ['metru_vakama_dume_and_the_great_temple'],
     },
   },
 };
