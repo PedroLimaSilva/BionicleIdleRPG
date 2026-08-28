@@ -119,6 +119,55 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
+  metru_kapura_morbuzakh: {
+    background: { from: '#0d1f2d', to: '#ffe28e', type: 'gradient' },
+    id: 'metru_kapura_morbuzakh',
+    steps: [
+      {
+        text: 'Kapura walked slowly along the outskirts of the district of Ta-Metru, his eyes scanning the ground. Most of the homes and factories in this part of the metru had been abandoned lately, with the residents moving closer to the heart of the district. It was Kapura’s job to make sure nothing of importance had been left behind.',
+        type: 'narration',
+      },
+      {
+        text: 'He paused in front of a massive, blackened building that had once housed a forge. Here, construction tools and other equipment had been cast from molten protodermis before being sent on to Po-Metru for finishing. Now, in the interest of safety, that work had been transferred away from the outskirts by order of the city’s elder, Turaga Dume. Kapura spotted a disk launcher used in the sport of akilini on the ground and bent down to pick it up, only to discover the handle was cracked. He walked on. This was an important task, his fellow workers had told him, and important tasks were best done slowly and carefully.',
+        type: 'narration',
+      },
+      {
+        text: 'Had Kapura looked up, he would have seen the skyline of Ta-Metru, “home of the makers.” Cone-shaped factories, scorched by ages of use, stood next to the homes of smiths and crafters. These were the Matoran who molded protodermis, the substance of which everything on Metru Nui was made, into thousands of shapes and forms. A molten river of raw protodermis ran through the center of the district, drawn from below the city and fed into the Great Furnace. From there, it traveled to each factory to be turned into masks, tools, and anything else that might be needed.',
+        type: 'narration',
+      },
+      {
+        text: 'Dominating the skyline was the Coliseum, home to Turaga Dume and the tallest building in all of Metru Nui. For as long as anyone could remember, the sight of the Coliseum had brought a feeling of safety and security to Matoran. But now…',
+        type: 'narration',
+      },
+      {
+        text: 'Kapura counted slowly as he walked. Six, seven, eight – at least eight of the workers at his factory had vanished lately. Where they disappeared to, and why, no one knew. But there were plenty of rumors.',
+        type: 'narration',
+      },
+      {
+        text: 'The Matoran stopped. Something had moved off to the right. It didn’t sound like another Matoran, or even a wild Rahi beast. It was a soft, slithering sound, as if something was dragging itself across the ground. The sound grew louder and seemed to multiply. Kapura felt the urge to run, but his feet would not move.',
+        type: 'narration',
+      },
+      {
+        text: 'He forced himself to turn around and look. Four thick, blackened, twisted vines were snaking their way out of cracks in the ground, weaving in the air as if momentarily unsure of what to do. Then they wrapped themselves around the empty factory and began to climb, winding around again and again until they covered the building from top to bottom.',
+        type: 'narration',
+      },
+      {
+        text: 'Kapura’s eyes widened as the vines started to squeeze. Solid protodermis crumbled before their strength. The building groaned and cracked, collapsing in on itself in a matter of seconds. As if satisfied, the vines pulled away and began to move toward another structure.',
+        type: 'narration',
+      },
+      {
+        text: 'It was then that Kapura found his voice. But he could speak only one word, and that in a horrified whisper:',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Kapura',
+        text: 'Morbuzakh.',
+        type: 'dialogue',
+      },
+    ],
+  },
   metru_seek_the_great_disks: {
     background: { from: '#1a2840', to: '#c9a84c', type: 'gradient' },
     id: 'metru_seek_the_great_disks',
