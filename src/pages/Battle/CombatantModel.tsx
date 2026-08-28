@@ -1,6 +1,7 @@
 import { Combatant } from '../../types/Combat';
 import { BohrokModel } from '../../rendering/3d/CharacterScene/BohrokModel';
 import { RahkshiModel } from '../../rendering/3d/CharacterScene/Rahkshi';
+import { VahkiModel } from '../../rendering/3d/CharacterScene/VahkiModel';
 import { KopakaMataModel } from '../../rendering/3d/CharacterScene/Mata/KopakaMataModel';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { Euler } from '@react-three/fiber';
@@ -44,7 +45,8 @@ function canDisposeBattleModelGeometry(model: string): boolean {
     model === 'bohrok' ||
     model === 'rahkshi' ||
     model === 'rahi_placeholder' ||
-    model === 'nui_rama'
+    model === 'nui_rama' ||
+    model === 'vahki'
   );
 }
 
@@ -59,6 +61,8 @@ function hpBarYOffset(model: string): number {
       return 0.35;
     case 'nui_rama':
       return 0.38;
+    case 'vahki':
+      return 0.25;
     default:
       return -0.1;
   }
@@ -299,6 +303,12 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.04} position={[0, 0, 0]}>
               <RahkshiModel ref={childRef} kraata={combatant.id.split('-')[0] as KraataPower} />
+            </group>
+          );
+        case 'vahki':
+          return (
+            <group scale={0.04}>
+              <VahkiModel ref={childRef} id={combatant.id.split('-')[0]} />
             </group>
           );
         case 'Toa_Kopaka':

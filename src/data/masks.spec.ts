@@ -88,6 +88,7 @@ describe('getSelectableMasksForStage', () => {
       MatoranStage.Turaga,
       MatoranStage.Bohrok,
       MatoranStage.BohrokKal,
+      MatoranStage.Vahki,
       MatoranStage.Makuta,
     ];
     for (const stage of stages) {

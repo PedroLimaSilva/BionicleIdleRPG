@@ -170,6 +170,15 @@ test.describe('Character Model Rendering', () => {
   defineSerialCharacterModelSuite({
     buildGameState: (ids) => ({
       ...INITIAL_GAME_STATE,
+      recruitedCharacters: recruited(ids),
+    }),
+    characterIds: ['bordakh', 'nuurakh', 'vorzakh', 'zadakh', 'rorzakh', 'keerakh'],
+    suiteName: 'Vahki Characters',
+  });
+
+  defineSerialCharacterModelSuite({
+    buildGameState: (ids) => ({
+      ...INITIAL_GAME_STATE,
       rahkshi: ids.map((id) => ({
         id,
         kraata: { power: id, stage: 6 },
