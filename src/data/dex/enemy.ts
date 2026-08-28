@@ -3,7 +3,8 @@ import { ElementTribe, Mask, MatoranColors, MatoranStage } from '../../types/Mat
 
 /**
  * One Vahki chassis, six hive palettes. Plastics follow the matching Toa Metru:
- * main = secondary = that Toa's tribal color; glow / visor / eyes = that Toa's eyes.
+ * main = secondary = that Toa's tribal color; glow / visor / eyes = the hive's
+ * LEGO eye piece (x1190), which usually matches the Toa but not for Fire / Earth.
  * Feet stay DarkBluishGray (same as sockets).
  */
 function vahkiHiveColors(tribal: LegoColor, eyes: LegoColor): MatoranColors {
@@ -182,7 +183,7 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   nuurakh: {
-    colors: vahkiHiveColors(LegoColor.DarkRed, LegoColor.TransNeonGreen),
+    colors: vahkiHiveColors(LegoColor.DarkRed, LegoColor.TransGreen),
     element: ElementTribe.Fire,
     id: 'nuurakh',
     mask: Mask.Pakari,
@@ -220,7 +221,7 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   rorzakh: {
-    colors: vahkiHiveColors(LegoColor.Black, LegoColor.TransGreen),
+    colors: vahkiHiveColors(LegoColor.Black, LegoColor.TransNeonGreen),
     element: ElementTribe.Earth,
     id: 'rorzakh',
     mask: Mask.Pakari,
