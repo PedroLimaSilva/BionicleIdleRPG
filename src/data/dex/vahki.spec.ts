@@ -1,3 +1,4 @@
+import { LegoColor } from '../../types/Colors';
 import { MatoranStage } from '../../types/Matoran';
 import { COMBATANT_DEX, ENCOUNTERS } from '../combat';
 import {
@@ -18,6 +19,16 @@ const VAHKI_TOA_METRU = {
   rorzakh: 'Toa_Whenua',
   vorzakh: 'Toa_Matau',
   zadakh: 'Toa_Onewa',
+} as const;
+
+/** LEGO x1190 eye / visor color per hive (8614–8619). */
+const VAHKI_EYE_COLORS = {
+  bordakh: LegoColor.TransNeonOrange,
+  keerakh: LegoColor.TransLightBlue,
+  nuurakh: LegoColor.TransGreen,
+  rorzakh: LegoColor.TransNeonGreen,
+  vorzakh: LegoColor.Red,
+  zadakh: LegoColor.TransDarkBlue,
 } as const;
 
 describe('Vahki opponents', () => {
@@ -56,12 +67,12 @@ describe('Vahki opponents', () => {
     );
   });
 
-  test('main and secondary match the Toa Metru tribal color; glow and eyes match that Toa', () => {
+  test('main and secondary match the Toa Metru tribal color; glow and eyes use hive visor colors', () => {
     for (const [hiveId, toaId] of Object.entries(VAHKI_TOA_METRU)) {
       const hive = CHARACTER_DEX[hiveId];
       const toa = TOA_DEX[toaId];
       const tribal = toa.colors.body.main;
-      const eyes = toa.colors.eyes;
+      const eyes = VAHKI_EYE_COLORS[hiveId as keyof typeof VAHKI_EYE_COLORS];
 
       expect(hive.colors.body.main).toBe(tribal);
       expect(hive.colors.body.secondary).toBe(tribal);
