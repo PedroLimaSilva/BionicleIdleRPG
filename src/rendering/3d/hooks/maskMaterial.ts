@@ -16,6 +16,13 @@ export function hasMaskPbrMaps(mat: MaskStandardMat): boolean {
   return !!(mat.normalMap || mat.roughnessMap || mat.metalnessMap);
 }
 
+/** glTF alpha/transmission baked into PBR maps (e.g. Great Rau in `Masks.glb`). */
+export function maskHasBakedPbrAlpha(mat: MaskStandardMat): boolean {
+  if (isMaskGlowMaterialName(mat.name)) return false;
+  const physical = mat as MeshPhysicalMaterial;
+  return !!(physical.transmissionMap || (physical.transmission ?? 0) > 0);
+}
+
 /**
  * Kanohi that need alpha blending (GLB `alphaMode: BLEND` or sub-1 opacity).
  * Do not infer from sculpt name — Nuva `Kaukau` is opacity 1 with vent holes only;
@@ -23,12 +30,12 @@ export function hasMaskPbrMaps(mat: MaskStandardMat): boolean {
  */
 export function maskNeedsAlphaBlend(mat: MaskStandardMat): boolean {
   if (mat.opacity < 0.999) return true;
-  return mat.name.toLowerCase().includes('trans');
+  if (mat.name.toLowerCase().includes('trans')) return true;
+  return maskHasBakedPbrAlpha(mat);
 }
 
 /**
  * Sync transparent-pass vs opaque-pass state from the material's current opacity.
- * Call after runtime opacity overrides (e.g. Great Rau at 0.75).
  */
 export function syncMaskTransparencyState(mat: MaskStandardMat): void {
   if (isMaskGlowMaterialName(mat.name)) {

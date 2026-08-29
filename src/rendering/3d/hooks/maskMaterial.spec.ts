@@ -3,9 +3,9 @@ import { LegoColor } from '../../../types/Colors';
 import {
   applyMaskMetallicPbr,
   cloneGreatMaskMaterial,
+  maskHasBakedPbrAlpha,
   maskNeedsAlphaBlend,
   prepareClonedMaskMaterial,
-  syncMaskTransparencyState,
 } from './maskMaterial';
 
 describe('maskNeedsAlphaBlend', () => {
@@ -94,15 +94,30 @@ describe('prepareClonedMaskMaterial', () => {
   });
 });
 
-describe('syncMaskTransparencyState', () => {
-  it('enables alpha blending after runtime opacity override (Great Rau)', () => {
-    const mat = new MeshStandardMaterial({ name: 'Rau_baked.001', opacity: 1, roughness: 0.5 });
-    prepareClonedMaskMaterial(mat);
-    expect(mat.transparent).toBe(false);
+describe('maskHasBakedPbrAlpha', () => {
+  it('detects baked transmission maps on Great Rau', () => {
+    const mat = new MeshStandardMaterial({
+      name: 'Rau_baked',
+      opacity: 1,
+      roughness: 0.5,
+    }) as MeshStandardMaterial & { transmissionMap: Texture | null };
+    mat.transmissionMap = new Texture();
+    expect(maskHasBakedPbrAlpha(mat)).toBe(true);
+    expect(maskNeedsAlphaBlend(mat)).toBe(true);
+  });
+});
 
-    mat.opacity = 0.75;
-    syncMaskTransparencyState(mat);
+describe('syncMaskTransparencyState', () => {
+  it('keeps baked-alpha Great Rau in the transparent pass at full opacity', () => {
+    const mat = new MeshStandardMaterial({
+      name: 'Rau_baked',
+      opacity: 1,
+      roughness: 0.5,
+    }) as MeshStandardMaterial & { transmissionMap: Texture | null };
+    mat.transmissionMap = new Texture();
+    prepareClonedMaskMaterial(mat);
     expect(mat.transparent).toBe(true);
+    expect(mat.opacity).toBe(1);
   });
 });
 
