@@ -22,7 +22,8 @@ The schedule anchor is **2026-08-29** (every 14 days after that). The kickoff re
 ## Automation
 
 - **Config:** [`release.config.json`](../release.config.json) — anchor date, interval, kickoff version, baseline for the first changelog.
-- **Script:** [`scripts/release.mts`](../scripts/release.mts) — computes the version, lists merged PRs since the last release, and updates `package.json` + `CHANGELOG.md`.
+- **Categories:** [`release.categories.json`](../release.categories.json) — keyword rules used to group merged PRs under themed headings in `CHANGELOG.md`. Edit this file when new areas of the game need their own section.
+- **Script:** [`scripts/release.mts`](../scripts/release.mts) — computes the version, lists merged PRs since the last release, groups them by category, and updates `package.json` + `CHANGELOG.md`.
 - **Workflow:** [`.github/workflows/release.yml`](../.github/workflows/release.yml) — runs every Saturday at 12:00 UTC; on biweekly release Saturdays it bumps the version, commits, tags, and publishes a GitHub Release with notes from `CHANGELOG.md`.
 
 ### Local commands
@@ -36,10 +37,15 @@ yarn release:notes --date 2026-09-12
 
 # Bump package.json and prepend CHANGELOG.md (uses last GitHub Release as baseline)
 yarn release:bump --date 2026-09-12
+
+# Reformat an existing changelog section (e.g. after editing release.categories.json)
+yarn release:refresh --version 0.8.2 --date 2026-08-29 --since 0.1.0
 ```
 
 After the kickoff PR merges on a release Saturday, run **Actions → Biweekly Release → Run workflow** with date `2026-08-29` to publish the `v0.8.2` tag and GitHub Release (the version and changelog are already in `master`; the workflow skips the bump when unchanged and only publishes the tag).
 
 ## Changelog format
 
-[`CHANGELOG.md`](../CHANGELOG.md) is the source of truth. Each section lists merged pull requests since the previous release (or since `0.1.0` for the kickoff). The GitHub Release body is extracted from the matching section.
+[`CHANGELOG.md`](../CHANGELOG.md) is the source of truth. Each section lists merged pull requests since the previous release (or since `0.1.0` for the kickoff), grouped automatically into categories such as **Quests & Story**, **Combat & Encounters**, and **Characters & Models**. The GitHub Release body is extracted from the matching section.
+
+To tune grouping for future releases, edit [`release.categories.json`](../release.categories.json). Categories are matched top-to-bottom; the first matching pattern wins.

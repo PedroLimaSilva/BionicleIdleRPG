@@ -44,6 +44,7 @@
     "release:plan": "tsx scripts/release.mts plan",
     "release:notes": "tsx scripts/release.mts notes",
     "release:bump": "tsx scripts/release.mts bump",
+    "release:refresh": "tsx scripts/release.mts refresh",
     "prepare": "husky && yarn vendor-draco && yarn vendor-fonts"
   },
   "dependencies": {

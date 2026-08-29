@@ -25,8 +25,19 @@ interface MergedPullRequest {
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const CONFIG_PATH = `${ROOT}/release.config.json`;
+const CATEGORIES_PATH = `${ROOT}/release.categories.json`;
 const PACKAGE_PATH = `${ROOT}/package.json`;
 const CHANGELOG_PATH = `${ROOT}/CHANGELOG.md`;
+
+interface ReleaseCategoryRule {
+  name: string;
+  patterns: string[];
+}
+
+interface ReleaseCategoryCompiled {
+  name: string;
+  patterns: RegExp[];
+}
 
 function readConfig(): ReleaseConfig {
   return JSON.parse(readFileSync(CONFIG_PATH, 'utf8')) as ReleaseConfig;
@@ -161,21 +172,63 @@ function mergedPullRequestsSince(sinceRef: string | null): MergedPullRequest[] {
   return filtered.sort((a, b) => b.mergedAt.localeCompare(a.mergedAt));
 }
 
+function readCategories(): ReleaseCategoryCompiled[] {
+  const categories = JSON.parse(readFileSync(CATEGORIES_PATH, 'utf8')) as ReleaseCategoryRule[];
+  return categories.map((category) => ({
+    name: category.name,
+    patterns: category.patterns.map((pattern) => new RegExp(pattern, 'i')),
+  }));
+}
+
+export function categorizePullRequest(
+  title: string,
+  categories: ReleaseCategoryCompiled[]
+): string {
+  for (const category of categories) {
+    if (category.patterns.some((pattern) => pattern.test(title))) {
+      return category.name;
+    }
+  }
+  return 'Other';
+}
+
+function groupPullRequestsByCategory(prs: MergedPullRequest[]): Map<string, MergedPullRequest[]> {
+  const categories = readCategories();
+  const groups = new Map<string, MergedPullRequest[]>();
+  for (const category of categories) {
+    groups.set(category.name, []);
+  }
+  groups.set('Other', []);
+
+  for (const pr of prs) {
+    const category = categorizePullRequest(pr.title, categories);
+    groups.get(category)!.push(pr);
+  }
+
+  return groups;
+}
+
+function formatPullRequestLine(pr: MergedPullRequest): string {
+  return `- #${pr.number} ${pr.title}`;
+}
+
 function formatChangelogSection(
   version: string,
   date: string,
   sinceLabel: string,
   prs: MergedPullRequest[]
 ): string {
-  const lines = [
-    `## [${version}] - ${date}`,
-    '',
-    `Merged since ${sinceLabel}:`,
-    '',
-    ...prs.map((pr) => `- #${pr.number} ${pr.title}`),
-    '',
-  ];
-  return lines.join('\n');
+  const groups = groupPullRequestsByCategory(prs);
+  const categoryOrder = [...readCategories().map((category) => category.name), 'Other'];
+  const lines = [`## [${version}] - ${date}`, '', `Merged since ${sinceLabel}:`, ''];
+
+  for (const category of categoryOrder) {
+    const entries = groups.get(category) ?? [];
+    if (entries.length === 0) continue;
+    lines.push(`### ${category}`, '', ...entries.map(formatPullRequestLine), '');
+  }
+
+  return `${lines.join('\n').trimEnd()}\n`;
 }
 
 function readPackageVersion(): string {
@@ -187,6 +240,24 @@ function writePackageVersion(version: string): void {
   const raw = readFileSync(PACKAGE_PATH, 'utf8');
   const updated = raw.replace(/("version"\s*:\s*")[^"]+(")/, `$1${version}$2`);
   writeFileSync(PACKAGE_PATH, updated);
+}
+
+function replaceChangelogSection(version: string, section: string): void {
+  const header =
+    '# Changelog\n\nBiweekly releases land every other Saturday. See [docs/RELEASES.md](docs/RELEASES.md).\n\n';
+  const existing = readFileSync(CHANGELOG_PATH, 'utf8');
+  const sectionPattern = new RegExp(
+    `## \\[${version.replace(/\./g, '\\.')}\\][\\s\\S]*?(?=\\n## \\[|$)`
+  );
+  if (!sectionPattern.test(existing)) {
+    throw new Error(`Could not find changelog section for ${version}`);
+  }
+  const updated = existing.replace(sectionPattern, section.trimEnd());
+  if (!updated.startsWith('# Changelog')) {
+    writeFileSync(CHANGELOG_PATH, `${header}${updated}`);
+    return;
+  }
+  writeFileSync(CHANGELOG_PATH, updated.endsWith('\n') ? updated : `${updated}\n`);
 }
 
 function prependChangelog(section: string): void {
@@ -260,7 +331,23 @@ if (command === 'bump') {
   process.exit(0);
 }
 
+if (command === 'refresh') {
+  const config = readConfig();
+  const versionIdx = process.argv.indexOf('--version');
+  const version = versionIdx >= 0 ? process.argv[versionIdx + 1] : readPackageVersion();
+  const sinceIdx = process.argv.indexOf('--since');
+  const sinceRef = resolveSinceRef(sinceIdx >= 0 ? process.argv[sinceIdx + 1] : undefined, config);
+  const dateIdx = process.argv.indexOf('--date');
+  const date =
+    dateIdx >= 0 ? process.argv[dateIdx + 1] : formatUtcDate(parseUtcDate(config.anchorDate));
+  const prs = mergedPullRequestsSince(sinceRef === config.baselineVersion ? null : sinceRef);
+  const section = formatChangelogSection(version, date, sinceRef, prs);
+  replaceChangelogSection(version, section);
+  console.log(`Refreshed CHANGELOG.md section for ${version} (${prs.length} entries)`);
+  process.exit(0);
+}
+
 console.error(
-  'Usage: tsx scripts/release.mts <plan|notes|bump> [--date YYYY-MM-DD] [--since vX.Y.Z]'
+  'Usage: tsx scripts/release.mts <plan|notes|bump|refresh> [--date YYYY-MM-DD] [--since vX.Y.Z] [--version X.Y.Z]'
 );
 process.exit(1);
