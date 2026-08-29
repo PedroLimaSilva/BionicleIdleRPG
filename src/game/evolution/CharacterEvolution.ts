@@ -7,30 +7,32 @@ import {
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { getLevelFromExp } from '../characters/Levelling';
 import { MOL_TAKANUVA_RISES_QUEST_ID } from '../../data/quests/mask_of_light';
-import {
-  METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID,
-  METRU_NUI_SAGA_BEGIN_QUEST_ID,
-} from '../../data/quests/metru_nui';
+import { METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID } from '../../data/quests/metru_nui';
 import { METRU_TOA_EVOLUTION_MAP } from '../../rendering/3d/metruMatoran';
-import { DEFAULT_CUSTOM_MATA_MODEL_ID } from '../../rendering/3d/customMataBuild';
+import { getDefaultCustomToaModelIdForStage } from '../../rendering/3d/customToaBuild';
 
 export const EVOLUTION_LEVEL_REQUIREMENT = 40;
 export const BOHROK_KAL_LEVEL_REQUIREMENT = 100;
 export const TAKANUVA_LEVEL_REQUIREMENT = 100;
-export const CUSTOM_TOA_LEVEL_REQUIREMENT = 60;
 export const METRU_TOA_METRU_LEVEL_REQUIREMENT = 27;
 export const METRU_TOA_METRU_COST = 3000;
 
 /** Cost for upgrading a custom matoran to Rebuilt form (matches the standard Rebuilt cost). */
 export const CUSTOM_REBUILT_COST = 1000;
-/** Cost for evolving a custom matoran to Toa Mata form. */
-export const CUSTOM_TOA_COST = 3000;
+/** Cost for upgrading a custom matoran to Metru form. */
+export const CUSTOM_METRU_COST = 1000;
+/** Cost for evolving a custom Metru matoran to Toa form. */
+export const CUSTOM_TOA_COST = METRU_TOA_METRU_COST;
+
+export const CUSTOM_METRU_LEVEL_REQUIREMENT = EVOLUTION_LEVEL_REQUIREMENT;
+export const CUSTOM_TOA_LEVEL_REQUIREMENT = METRU_TOA_METRU_LEVEL_REQUIREMENT;
 
 /**
- * Special quest id used to gate custom-character Toa evolution. Completing the Metru Nui
- * saga opener unlocks custom Toa evolution for player-created characters.
+ * After the Metru team transforms at the Great Temple, custom characters can evolve
+ * Rebuilt → Metru → Toa along the same story beat.
  */
-export const CUSTOM_TOA_UNLOCK_QUEST_ID = METRU_NUI_SAGA_BEGIN_QUEST_ID;
+export const CUSTOM_METRU_UNLOCK_QUEST_ID = METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID;
+export const CUSTOM_TOA_UNLOCK_QUEST_ID = METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID;
 
 export interface EvolutionPath {
   unlockedByQuest: string;
@@ -142,6 +144,17 @@ export function getAvailableEvolution(
     }
     if (
       currentStage === MatoranStage.Rebuilt &&
+      completedQuests.includes(CUSTOM_METRU_UNLOCK_QUEST_ID)
+    ) {
+      return {
+        label: `Upgrade to ${MatoranStage.Metru} form`,
+        levelRequired: CUSTOM_METRU_LEVEL_REQUIREMENT,
+        protodermisCost: CUSTOM_METRU_COST,
+        stageOverride: MatoranStage.Metru,
+      };
+    }
+    if (
+      currentStage === MatoranStage.Metru &&
       completedQuests.includes(CUSTOM_TOA_UNLOCK_QUEST_ID)
     ) {
       return {
@@ -213,12 +226,14 @@ export function applyCharacterEvolution(
       ...character,
       stage: evolution.stageOverride,
     };
-    if (
-      isCustomCharacterId(character.id) &&
-      evolution.stageOverride === MatoranStage.ToaMata &&
-      character.customMataModelId === undefined
-    ) {
-      next.customMataModelId = DEFAULT_CUSTOM_MATA_MODEL_ID;
+    if (isCustomCharacterId(character.id) && character.customMataModelId === undefined) {
+      const toaStage =
+        evolution.stageOverride === MatoranStage.ToaMata ||
+        evolution.stageOverride === MatoranStage.ToaNuva ||
+        evolution.stageOverride === MatoranStage.ToaMetru;
+      if (toaStage && evolution.stageOverride !== undefined) {
+        next.customMataModelId = getDefaultCustomToaModelIdForStage(evolution.stageOverride);
+      }
     }
     return next;
   }

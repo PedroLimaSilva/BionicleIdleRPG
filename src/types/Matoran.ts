@@ -67,6 +67,9 @@ export const CREATE_CUSTOM_CHARACTER_ID = 'create_custom_matoran';
 /** Protodermis cost to create or recruit a custom matoran. */
 export const CUSTOM_CHARACTER_COST = 500;
 
+/** Protodermis cost to re-open the character editor for a recruited custom Toa. */
+export const CUSTOM_CHARACTER_EDIT_COST = 500;
+
 export const enum MatoranStage {
   Turaga = 'Turaga',
   ToaMata = 'Toa Mata',
@@ -136,7 +139,8 @@ export type RecruitedCharacterData = {
   /** Overrides stage from CHARACTER_DEX when present (e.g. Rebuilt after Naming Day). */
   stage?: MatoranStage;
   /**
-   * For custom characters at Toa Mata: which Mata dex rig/kit GLB to render (`Toa_Tahu`, `Toa_Gali`, …).
+   * For custom characters at Toa stages: which Toa dex rig/kit GLB to render
+   * (`Toa_Tahu`, `Toa_Tahu_Nuva`, `Toa_Vakama`, …).
    */
   customMataModelId?: string;
 };

@@ -100,7 +100,8 @@ export const INITIAL_GAME_STATE: GameState = {
   updateCustomCharacter: function (
     _id: string,
     _base: Omit<BaseMatoran, 'id'>,
-    _extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+    _extras?: Pick<RecruitedCharacterData, 'customMataModelId'>,
+    _options?: { protodermisCost?: number }
   ): boolean {
     throw new Error('Function not implemented.');
   },
