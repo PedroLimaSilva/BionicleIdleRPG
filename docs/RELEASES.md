@@ -24,7 +24,7 @@ The schedule anchor is **2026-08-29** (every 14 days after that). The kickoff re
 - **Config:** [`release.config.json`](../release.config.json) — anchor date, interval, kickoff version, baseline for the first changelog.
 - **Categories:** [`release.categories.json`](../release.categories.json) — maps `release/*` PR labels (preferred) and keyword fallbacks to changelog sections. See [PR label guidelines](PR_LABELS.md).
 - **Script:** [`scripts/release.mts`](../scripts/release.mts) — computes the version, lists merged PRs since the last release, groups them by category, and updates `package.json` + `CHANGELOG.md`.
-- **Workflow:** [`.github/workflows/release.yml`](../.github/workflows/release.yml) — runs every Saturday at 12:00 UTC; on biweekly release Saturdays it bumps the version, commits, tags, and publishes a GitHub Release with notes from `CHANGELOG.md`.
+- **Workflow:** [`.github/workflows/release.yml`](../.github/workflows/release.yml) — on release Saturdays, bumps version and pushes to `master`; every push to `master` publishes a GitHub Release when `CHANGELOG.md` has a section for the current `package.json` version but the `vX.Y.Z` tag is still missing.
 
 ### Local commands
 
@@ -42,7 +42,9 @@ yarn release:bump --date 2026-09-12
 yarn release:refresh --version 0.8.2 --date 2026-08-29 --since 0.1.0
 ```
 
-After the kickoff PR merges on a release Saturday, run **Actions → Biweekly Release → Run workflow** with date `2026-08-29` to publish the `v0.8.2` tag and GitHub Release (the version and changelog are already in `master`; the workflow skips the bump when unchanged and only publishes the tag).
+After a release PR merges to `master`, the workflow publishes the GitHub Release automatically when `package.json` and `CHANGELOG.md` are updated but the matching `vX.Y.Z` tag does not exist yet.
+
+For a scheduled release Saturday where the version was already bumped in a merged PR, the workflow skips the bump and only publishes the tag/release.
 
 ## Changelog format
 

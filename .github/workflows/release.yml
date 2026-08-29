@@ -1,6 +1,9 @@
 name: Biweekly Release
 
 on:
+  push:
+    branches:
+      - master
   schedule:
     # Every Saturday at 12:00 UTC; the script exits unless it is a release Saturday.
     - cron: '0 12 * * 6'
@@ -34,69 +37,135 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Plan release
-        id: plan
+      - name: Resolve release context
+        id: context
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_DATE: ${{ github.event.inputs.date }}
         run: |
           set -euo pipefail
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          TAG="v${PACKAGE_VERSION}"
+          TAG_EXISTS=false
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            TAG_EXISTS=true
+          fi
+          CHANGELOG_HAS=false
+          if grep -q "^## \\[${PACKAGE_VERSION}\\]" CHANGELOG.md; then
+            CHANGELOG_HAS=true
+          fi
+
+          echo "package_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag_exists=$TAG_EXISTS" >> "$GITHUB_OUTPUT"
+          echo "changelog_has=$CHANGELOG_HAS" >> "$GITHUB_OUTPUT"
+
+          if [ "${{ github.event_name }}" = "push" ]; then
+            if [ "$TAG_EXISTS" = "true" ]; then
+              echo "should_run=false" >> "$GITHUB_OUTPUT"
+              echo "Publish skipped: ${TAG} already exists."
+              exit 0
+            fi
+            if [ "$CHANGELOG_HAS" != "true" ]; then
+              echo "should_run=false" >> "$GITHUB_OUTPUT"
+              echo "Publish skipped: no CHANGELOG section for ${PACKAGE_VERSION}."
+              exit 0
+            fi
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "mode=publish" >> "$GITHUB_OUTPUT"
+            echo "version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+            echo "date=$(git log -1 --format=%cs)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           DATE="${RELEASE_DATE:-$(date -u +%F)}"
           PLAN="$(yarn -s tsx scripts/release.mts plan --date "$DATE")"
           echo "$PLAN"
           IS_RELEASE="$(echo "$PLAN" | node -e "const p=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(String(p.isReleaseDay));")"
           VERSION="$(echo "$PLAN" | node -e "const p=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(p.version ?? '');")"
+          echo "should_run=$IS_RELEASE" >> "$GITHUB_OUTPUT"
+          echo "mode=bump" >> "$GITHUB_OUTPUT"
           echo "date=$DATE" >> "$GITHUB_OUTPUT"
-          echo "is_release=$IS_RELEASE" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Skip non-release Saturdays
-        if: steps.plan.outputs.is_release != 'true'
-        run: |
-          echo "Not a biweekly release Saturday; skipping."
-          exit 0
+      - name: Skip when nothing to do
+        if: steps.context.outputs.should_run != 'true'
+        run: echo "No release work needed for this event."
 
       - name: Bump version and update changelog
-        if: steps.plan.outputs.is_release == 'true'
+        if: steps.context.outputs.should_run == 'true' && steps.context.outputs.mode == 'bump'
         id: bump
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          yarn tsx scripts/release.mts bump --date "${{ steps.plan.outputs.date }}" | tee bump.log
+          yarn tsx scripts/release.mts bump --date "${{ steps.context.outputs.date }}" | tee bump.log
           if grep -q 'already at' bump.log; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit release
-        if: steps.plan.outputs.is_release == 'true' && steps.bump.outputs.changed == 'true'
+      - name: Commit and push release
+        if: >-
+          steps.context.outputs.should_run == 'true' &&
+          steps.context.outputs.mode == 'bump' &&
+          steps.bump.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package.json CHANGELOG.md
           git diff --staged --quiet && echo "No changes to commit" && exit 0
-          git commit -m "Release v${{ steps.plan.outputs.version }}"
+          git commit -m "Release v${{ steps.context.outputs.version }}"
+          git push origin HEAD:master
 
-      - name: Push release commit
-        if: steps.plan.outputs.is_release == 'true' && steps.bump.outputs.changed == 'true'
-        run: git push origin HEAD:master
-
-      - name: Tag and publish GitHub Release
-        if: steps.plan.outputs.is_release == 'true'
+      - name: Publish when tag still missing after scheduled bump
+        if: >-
+          steps.context.outputs.should_run == 'true' &&
+          steps.context.outputs.mode == 'bump' &&
+          (steps.bump.outputs.changed != 'true' || steps.bump.outputs.changed == 'true')
+        id: publish_scheduled
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          VERSION="${{ steps.plan.outputs.version }}"
-          DATE="${{ steps.plan.outputs.date }}"
+          VERSION="${{ steps.context.outputs.version }}"
+          DATE="${{ steps.context.outputs.date }}"
           TAG="v${VERSION}"
 
           if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "Tag ${TAG} already exists; skipping publish."
             exit 0
           fi
+          if ! grep -q "^## \\[${VERSION}\\]" CHANGELOG.md; then
+            echo "No CHANGELOG section for ${VERSION}; skipping publish."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release ${TAG}"
+          git push origin "$TAG"
+
+          NOTES="$(awk -v ver="$VERSION" '
+            $0 ~ "^## \\[" ver "\\]" { found=1; next }
+            found && /^## \\[/ { exit }
+            found { print }
+          ' CHANGELOG.md)"
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes "## ${TAG} (${DATE})
+
+          ${NOTES}"
+
+      - name: Publish pending release on push
+        if: steps.context.outputs.should_run == 'true' && steps.context.outputs.mode == 'publish'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.context.outputs.version }}"
+          DATE="${{ steps.context.outputs.date }}"
+          TAG="v${VERSION}"
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
