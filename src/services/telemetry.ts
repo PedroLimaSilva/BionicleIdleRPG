@@ -1,3 +1,4 @@
+import posthog from 'posthog-js';
 import { PartialGameState } from '../types/GameState';
 import {
   getTelemetryEnabled,
@@ -22,8 +23,25 @@ export interface TelemetryPayload {
   error?: TelemetryError;
 }
 
+let analyticsInitialized = false;
+
+function getPostHogKey(): string {
+  return typeof __POSTHOG_KEY__ !== 'undefined' ? __POSTHOG_KEY__ : '';
+}
+
+function getPostHogHost(): string {
+  return typeof __POSTHOG_HOST__ !== 'undefined' && __POSTHOG_HOST__
+    ? __POSTHOG_HOST__
+    : 'https://us.i.posthog.com';
+}
+
+export function isAnalyticsConfigured(): boolean {
+  return getPostHogKey().length > 0;
+}
+
+/** @deprecated Use isAnalyticsConfigured() instead. */
 export function getTelemetryUrl(): string {
-  return typeof __TELEMETRY_URL__ !== 'undefined' ? __TELEMETRY_URL__ : '';
+  return isAnalyticsConfigured() ? getPostHogHost() : '';
 }
 
 function getAppVersion(): string {
@@ -40,38 +58,90 @@ export function buildPayload(state: PartialGameState): TelemetryPayload {
   };
 }
 
-function sendBeacon(url: string, body: string): void {
-  if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
-    navigator.sendBeacon(url, new Blob([body], { type: 'text/plain' }));
-  } else {
-    fetch(url, {
-      body,
-      headers: { 'Content-Type': 'text/plain' },
-      keepalive: true,
-      method: 'POST',
-    }).catch(() => {});
+function buildEventProperties(state: PartialGameState, error?: TelemetryError) {
+  const payload = buildPayload(state);
+  return {
+    app_version: payload.appVersion,
+    client_id: payload.clientId,
+    game_state: payload.gameState,
+    game_state_version: payload.gameStateVersion,
+    timestamp: payload.timestamp,
+    ...(error
+      ? {
+          error_message: error.message,
+          error_stack: error.stack,
+        }
+      : {}),
+  };
+}
+
+function ensureAnalyticsInitialized(): boolean {
+  const key = getPostHogKey();
+  if (!key) return false;
+
+  if (!analyticsInitialized) {
+    posthog.init(key, {
+      api_host: getPostHogHost(),
+      capture_exceptions: true,
+      capture_pageleave: false,
+      capture_pageview: false,
+      defaults: '2026-01-30',
+      opt_out_capturing_by_default: true,
+      persistence: 'localStorage',
+    });
+    analyticsInitialized = true;
   }
+
+  return true;
 }
 
 /**
- * Sends a single telemetry beacon per browser session.
+ * Applies the user's telemetry consent choice to PostHog.
+ * Call after init and whenever the Settings toggle changes.
+ */
+export function syncAnalyticsConsent(): void {
+  if (!ensureAnalyticsInitialized()) return;
+
+  if (getTelemetryEnabled()) {
+    posthog.opt_in_capturing();
+    const clientId = getTelemetryId();
+    if (clientId) {
+      posthog.identify(clientId);
+    }
+    return;
+  }
+
+  posthog.opt_out_capturing();
+}
+
+/**
+ * Initializes PostHog when configured and syncs the stored consent preference.
+ * Safe to call at app startup before React renders.
+ */
+export function initAnalytics(): void {
+  if (!ensureAnalyticsInitialized()) return;
+  syncAnalyticsConsent();
+}
+
+/**
+ * Sends a single telemetry event per browser session.
  *
  * No-ops when:
- * - __TELEMETRY_URL__ is empty (not configured at build time)
+ * - PostHog is not configured at build time
  * - The user has opted out via Settings
- * - A beacon was already sent this session (tracked via sessionStorage)
+ * - An event was already sent this session (tracked via sessionStorage)
  *
  * Failures are silently swallowed so telemetry never affects gameplay.
  */
 export function sendSessionTelemetry(state: PartialGameState): void {
   try {
-    const url = getTelemetryUrl();
-    if (!url) return;
+    if (!isAnalyticsConfigured()) return;
     if (!getTelemetryEnabled()) return;
     if (sessionStorage.getItem(SESSION_KEY)) return;
 
+    initAnalytics();
     sessionStorage.setItem(SESSION_KEY, '1');
-    sendBeacon(url, JSON.stringify(buildPayload(state)));
+    posthog.capture('game_session_snapshot', buildEventProperties(state));
   } catch {
     // Telemetry must never break the app
   }
@@ -92,33 +162,32 @@ function loadGameStateFromStorage(): PartialGameState | null {
  */
 export function sendErrorReport(error: TelemetryError): void {
   try {
-    const url = getTelemetryUrl();
-    if (!url) return;
+    if (!isAnalyticsConfigured()) return;
     if (!getTelemetryEnabled()) return;
 
-    const gameState = loadGameStateFromStorage();
-    const payload: TelemetryPayload = {
-      appVersion: getAppVersion(),
-      clientId: getTelemetryId(),
-      error,
-      gameState: gameState ?? ({} as PartialGameState),
-      gameStateVersion: gameState?.version ?? 0,
-      timestamp: new Date().toISOString(),
-    };
+    initAnalytics();
 
-    sendBeacon(url, JSON.stringify(payload));
+    const gameState = loadGameStateFromStorage();
+    const properties = buildEventProperties(gameState ?? ({} as PartialGameState), error);
+    const exception = new Error(error.message);
+    if (error.stack) {
+      exception.stack = error.stack;
+    }
+
+    posthog.captureException(exception, properties);
   } catch {
     // Must never make a crash worse
   }
 }
 
 /**
- * Installs global error handlers that send error reports via telemetry.
+ * Installs global error handlers that send error reports via PostHog.
  * Call once at app startup, before React renders.
  */
 export function setupErrorReporting(): void {
-  const url = getTelemetryUrl();
-  if (!url) return;
+  if (!isAnalyticsConfigured()) return;
+
+  initAnalytics();
 
   window.addEventListener('error', (event) => {
     sendErrorReport({

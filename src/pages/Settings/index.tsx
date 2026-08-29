@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { resetGameData } from '../../persistence/gamePersistence';
-import { getTelemetryUrl } from '../../services/telemetry';
+import { isAnalyticsConfigured } from '../../services/telemetry';
 import { useSettings } from '../../context/useSettings';
 import './index.scss';
 
-const showTelemetryOption = !!getTelemetryUrl();
+const showTelemetryOption = isAnalyticsConfigured();
 
 export default function SettingsPage() {
   const {

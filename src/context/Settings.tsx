@@ -12,6 +12,7 @@ import {
   saveTelemetryEnabled,
 } from '../persistence/gamePersistence';
 
+import { syncAnalyticsConsent } from '../services/telemetry';
 import { SettingsContext } from './SettingsContext';
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
@@ -43,6 +44,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const setTelemetryEnabled = (value: boolean) => {
     setTelemetryEnabledState(value);
     saveTelemetryEnabled(value);
+    syncAnalyticsConsent();
   };
 
   return (
