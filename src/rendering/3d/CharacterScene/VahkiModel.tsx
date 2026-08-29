@@ -3,6 +3,7 @@ import { Group, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../hooks/useCombatAnimations';
+import { VAHKI_IDLE_SWITCH } from './idleSwitchConfigs';
 import { useKitAttachments } from '../hooks/useKitAttachments';
 import { CHARACTER_DEX } from '../../../data/dex/index';
 import { MatoranStage } from '../../../types/Matoran';
@@ -45,8 +46,8 @@ function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
 /**
  * One Vahki chassis for all six hives. `Vahki.glb` is a socket-only rig; every
  * visible piece (including Bordakh staffs) is cloned from kit_2004 / kit_2003 /
- * kit_2001. There is no Idle clip yet — combat uses procedural Attack / Hit /
- * Defeat.
+ * kit_2001. Idle clips use {@link VAHKI_IDLE_SWITCH}; combat still falls back to
+ * procedural Attack / Hit / Defeat when those clips are absent.
  */
 export const VahkiModel = forwardRef<
   CombatantModelHandle,
@@ -85,6 +86,7 @@ export const VahkiModel = forwardRef<
   const { playAnimation } = useCombatAnimations(animations, group, {
     actionTimeScale: 1,
     attackResolveAtFraction: 0.1,
+    idleSwitch: VAHKI_IDLE_SWITCH,
     modelId: id,
     transitionMode: 'stopAll',
   });

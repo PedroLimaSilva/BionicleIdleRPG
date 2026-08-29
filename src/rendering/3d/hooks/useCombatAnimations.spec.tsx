@@ -20,7 +20,7 @@ const mixer = {
 let actions: Record<string, unknown> = {};
 
 jest.mock('./useIdleAnimation', () => ({
-  useIdleAnimation: () => ({ actions, mixer }),
+  useIdleAnimation: () => ({ actions, idleActionName: 'Idle', mixer }),
 }));
 
 jest.mock('./usePlayAnimation', () => ({

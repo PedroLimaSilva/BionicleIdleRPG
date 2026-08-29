@@ -3,12 +3,20 @@ import type { AnimationAction } from 'three';
 import { type AnimationClip, type Group } from 'three';
 import { useAnimations } from '@react-three/drei';
 import { getAnimationTimeScale, setupAnimationForTestMode } from '../../../utils/testMode';
+import type { IdleSwitchConfig } from './idleSwitchTypes';
+import { useIdleSwitchController } from './useIdleSwitchController';
 
 const CROSSFADE_DURATION = 0.3;
 
 export type UseIdleAnimationOptions = {
   /** Name of the clip to use as idle. Default: 'Idle'. When this changes, crossfades to the new action. */
   idleActionName?: string;
+  /**
+   * When set, cycles through multiple idle clips on character-sheet interaction.
+   * Uses transition clips from the config when present; otherwise crossfades.
+   * Ignores `idleActionName` while active.
+   */
+  idleSwitch?: IdleSwitchConfig | null;
 };
 
 /**
@@ -21,8 +29,10 @@ export function useIdleAnimation(
   groupRef: RefObject<Group | null>,
   options: UseIdleAnimationOptions = {}
 ) {
-  const { idleActionName = 'Idle' } = options;
+  const { idleActionName: idleActionNameOption = 'Idle', idleSwitch } = options;
   const { actions, mixer } = useAnimations(animations, groupRef);
+  const switchedIdleActionName = useIdleSwitchController(actions, mixer, { config: idleSwitch });
+  const idleActionName = idleSwitch ? switchedIdleActionName : idleActionNameOption;
   const currentIdleRef = useRef<AnimationAction | null>(null);
 
   useEffect(() => {
@@ -34,18 +44,22 @@ export function useIdleAnimation(
     if (!nextIdle) return;
 
     const prevIdle = currentIdleRef.current;
-    const isCrossfade = prevIdle && prevIdle !== nextIdle && prevIdle.isRunning();
+    const handedOffFromTransition = nextIdle.isRunning();
+    const isCrossfade =
+      !handedOffFromTransition && prevIdle && prevIdle !== nextIdle && prevIdle.isRunning();
     if (isCrossfade) {
       prevIdle.fadeOut(CROSSFADE_DURATION);
     }
 
     currentIdleRef.current = nextIdle;
-    nextIdle.reset();
-    if (isCrossfade) {
-      nextIdle.fadeIn(CROSSFADE_DURATION);
+    if (!handedOffFromTransition) {
+      nextIdle.reset();
+      if (isCrossfade) {
+        nextIdle.fadeIn(CROSSFADE_DURATION);
+      }
+      nextIdle.play();
+      setupAnimationForTestMode(nextIdle);
     }
-    nextIdle.play();
-    setupAnimationForTestMode(nextIdle);
 
     return () => {
       nextIdle.fadeOut(0.2);
@@ -55,5 +69,5 @@ export function useIdleAnimation(
     };
   }, [actions, idleActionName]);
 
-  return { actions, mixer };
+  return { actions, idleActionName, mixer };
 }
