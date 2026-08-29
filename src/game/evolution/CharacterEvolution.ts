@@ -24,8 +24,8 @@ export const CUSTOM_METRU_COST = 1000;
 /** Cost for evolving a custom Metru matoran to Toa form. */
 export const CUSTOM_TOA_COST = METRU_TOA_METRU_COST;
 
-export const CUSTOM_METRU_LEVEL_REQUIREMENT = EVOLUTION_LEVEL_REQUIREMENT;
-export const CUSTOM_TOA_LEVEL_REQUIREMENT = METRU_TOA_METRU_LEVEL_REQUIREMENT;
+export const CUSTOM_METRU_LEVEL_REQUIREMENT = 50;
+export const CUSTOM_TOA_LEVEL_REQUIREMENT = 60;
 
 /**
  * After the Metru team transforms at the Great Temple, custom characters can evolve

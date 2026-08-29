@@ -27,13 +27,14 @@ const expFor100 = expForLevel(100);
 const expFor27 = expForLevel(27);
 const expFor28 = expForLevel(28);
 
+const expFor50 = expForLevel(50);
 const expFor60 = expForLevel(60);
 
 describe('CharacterEvolution', () => {
   describe('getAvailableEvolution - custom characters', () => {
     test('Rebuilt → Metru requires Great Temple quest', () => {
       const char: RecruitedCharacterData = {
-        exp: expFor40,
+        exp: expFor50,
         id: 'custom_0',
         stage: MatoranStage.Rebuilt,
       };
@@ -47,7 +48,7 @@ describe('CharacterEvolution', () => {
 
     test('Metru → Toa requires Great Temple quest', () => {
       const char: RecruitedCharacterData = {
-        exp: expFor27,
+        exp: expFor60,
         id: 'custom_0',
         stage: MatoranStage.Metru,
       };
@@ -67,6 +68,31 @@ describe('CharacterEvolution', () => {
       };
       const result = getAvailableEvolution(char, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID]);
       expect(result?.stageOverride).toBe(MatoranStage.Metru);
+    });
+
+    test('custom Metru and Toa evolutions require levels 50 and 60', () => {
+      expect(CUSTOM_METRU_LEVEL_REQUIREMENT).toBe(50);
+      expect(CUSTOM_TOA_LEVEL_REQUIREMENT).toBe(60);
+
+      const rebuiltAt40: RecruitedCharacterData = {
+        exp: expFor40,
+        id: 'custom_0',
+        stage: MatoranStage.Rebuilt,
+      };
+      const metruEvo = getAvailableEvolution(rebuiltAt40, [
+        METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID,
+      ]);
+      expect(metruEvo?.levelRequired).toBe(50);
+      expect(meetsEvolutionLevel(rebuiltAt40, metruEvo!)).toBe(false);
+
+      const metruAt50: RecruitedCharacterData = {
+        exp: expFor50,
+        id: 'custom_0',
+        stage: MatoranStage.Metru,
+      };
+      const toaEvo = getAvailableEvolution(metruAt50, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID]);
+      expect(toaEvo?.levelRequired).toBe(60);
+      expect(meetsEvolutionLevel(metruAt50, toaEvo!)).toBe(false);
     });
   });
 
