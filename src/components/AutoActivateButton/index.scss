@@ -1,0 +1,16 @@
+.auto-activate-button {
+  &__label {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__fill {
+    position: absolute;
+    inset: 0;
+    transform-origin: left center;
+    background: rgba(0, 0, 0, 0.22);
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
+  }
+}
