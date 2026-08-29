@@ -1,6 +1,7 @@
 [
   {
     "name": "Documentation",
+    "label": "release/documentation",
     "patterns": [
       "^docs:",
       "\\bdocumentation\\b",
@@ -13,10 +14,12 @@
   },
   {
     "name": "Telemetry & Analytics",
+    "label": "release/telemetry",
     "patterns": ["\\btelemetry\\b", "\\bposthog\\b", "\\bsupabase\\b", "\\banalytics\\b"]
   },
   {
     "name": "Infrastructure, CI & Tooling",
+    "label": "release/infrastructure",
     "patterns": [
       "^ci:",
       "\\bgithub actions\\b",
@@ -43,6 +46,7 @@
   },
   {
     "name": "Testing",
+    "label": "release/testing",
     "patterns": [
       "\\bplaywright\\b",
       "\\be2e\\b",
@@ -56,6 +60,7 @@
   },
   {
     "name": "Persistence & Save",
+    "label": "release/persistence",
     "patterns": [
       "\\bpersistence\\b",
       "\\bindexeddb\\b",
@@ -67,6 +72,7 @@
   },
   {
     "name": "PWA & Notifications",
+    "label": "release/pwa",
     "patterns": [
       "\\bpwa\\b",
       "service worker",
@@ -80,6 +86,7 @@
   },
   {
     "name": "Custom Characters & Sharing",
+    "label": "release/custom-characters",
     "patterns": [
       "custom character",
       "custom toa",
@@ -91,6 +98,7 @@
   },
   {
     "name": "Quests & Story",
+    "label": "release/quests-story",
     "patterns": [
       "\\bquest",
       "cutscene",
@@ -126,6 +134,7 @@
   },
   {
     "name": "Combat & Encounters",
+    "label": "release/combat",
     "patterns": [
       "\\bbattle\\b",
       "\\bcombat\\b",
@@ -167,6 +176,7 @@
   },
   {
     "name": "Jobs, Economy & Progression",
+    "label": "release/jobs-economy",
     "patterns": [
       "\\bjob\\b",
       "protodermis",
@@ -191,6 +201,7 @@
   },
   {
     "name": "UI & UX",
+    "label": "release/ui-ux",
     "patterns": [
       "\\bui\\b",
       "layout",
@@ -232,6 +243,7 @@
   },
   {
     "name": "Rendering & Materials",
+    "label": "release/rendering",
     "patterns": [
       "shader",
       "\\bpbr\\b",
@@ -267,6 +279,7 @@
   },
   {
     "name": "Characters & Models",
+    "label": "release/characters-models",
     "patterns": [
       "\\bmodel",
       "\\brig\\b",

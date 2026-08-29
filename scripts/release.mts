@@ -21,6 +21,7 @@ interface MergedPullRequest {
   number: number;
   title: string;
   mergedAt: string;
+  labels: { name: string }[];
 }
 
 const ROOT = new URL('..', import.meta.url).pathname;
@@ -30,11 +31,13 @@ const PACKAGE_PATH = `${ROOT}/package.json`;
 const CHANGELOG_PATH = `${ROOT}/CHANGELOG.md`;
 
 interface ReleaseCategoryRule {
+  label: string;
   name: string;
   patterns: string[];
 }
 
 interface ReleaseCategoryCompiled {
+  label: string;
   name: string;
   patterns: RegExp[];
 }
@@ -141,7 +144,7 @@ function mergedPullRequestsSince(sinceRef: string | null): MergedPullRequest[] {
     '--limit',
     '500',
     '--json',
-    'number,title,mergedAt',
+    'number,title,mergedAt,labels',
   ]);
   const prs = JSON.parse(json) as MergedPullRequest[];
   if (!sinceRef) {
@@ -172,18 +175,44 @@ function mergedPullRequestsSince(sinceRef: string | null): MergedPullRequest[] {
   return filtered.sort((a, b) => b.mergedAt.localeCompare(a.mergedAt));
 }
 
+function readCategoryRules(): ReleaseCategoryRule[] {
+  return JSON.parse(readFileSync(CATEGORIES_PATH, 'utf8')) as ReleaseCategoryRule[];
+}
+
 function readCategories(): ReleaseCategoryCompiled[] {
-  const categories = JSON.parse(readFileSync(CATEGORIES_PATH, 'utf8')) as ReleaseCategoryRule[];
+  const categories = readCategoryRules();
   return categories.map((category) => ({
+    label: category.label,
     name: category.name,
     patterns: category.patterns.map((pattern) => new RegExp(pattern, 'i')),
   }));
 }
 
+function releaseLabelToCategory(): Map<string, string> {
+  const map = new Map<string, string>();
+  for (const category of readCategoryRules()) {
+    map.set(category.label, category.name);
+  }
+  return map;
+}
+
 export function categorizePullRequest(
   title: string,
-  categories: ReleaseCategoryCompiled[]
+  categories: ReleaseCategoryCompiled[],
+  prLabels: string[] = []
 ): string {
+  const labelMap = releaseLabelToCategory();
+  const releaseLabels = prLabels.filter((name) => name.startsWith('release/'));
+  for (const category of categories) {
+    if (releaseLabels.includes(category.label)) {
+      return category.name;
+    }
+  }
+  if (releaseLabels.length > 0) {
+    const mapped = labelMap.get(releaseLabels[0]);
+    if (mapped) return mapped;
+  }
+
   for (const category of categories) {
     if (category.patterns.some((pattern) => pattern.test(title))) {
       return category.name;
@@ -201,7 +230,8 @@ function groupPullRequestsByCategory(prs: MergedPullRequest[]): Map<string, Merg
   groups.set('Other', []);
 
   for (const pr of prs) {
-    const category = categorizePullRequest(pr.title, categories);
+    const labelNames = pr.labels.map((label) => label.name);
+    const category = categorizePullRequest(pr.title, categories, labelNames);
     groups.get(category)!.push(pr);
   }
 

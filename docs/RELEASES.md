@@ -22,7 +22,7 @@ The schedule anchor is **2026-08-29** (every 14 days after that). The kickoff re
 ## Automation
 
 - **Config:** [`release.config.json`](../release.config.json) — anchor date, interval, kickoff version, baseline for the first changelog.
-- **Categories:** [`release.categories.json`](../release.categories.json) — keyword rules used to group merged PRs under themed headings in `CHANGELOG.md`. Edit this file when new areas of the game need their own section.
+- **Categories:** [`release.categories.json`](../release.categories.json) — maps `release/*` PR labels (preferred) and keyword fallbacks to changelog sections. See [PR label guidelines](PR_LABELS.md).
 - **Script:** [`scripts/release.mts`](../scripts/release.mts) — computes the version, lists merged PRs since the last release, groups them by category, and updates `package.json` + `CHANGELOG.md`.
 - **Workflow:** [`.github/workflows/release.yml`](../.github/workflows/release.yml) — runs every Saturday at 12:00 UTC; on biweekly release Saturdays it bumps the version, commits, tags, and publishes a GitHub Release with notes from `CHANGELOG.md`.
 
@@ -46,6 +46,6 @@ After the kickoff PR merges on a release Saturday, run **Actions → Biweekly Re
 
 ## Changelog format
 
-[`CHANGELOG.md`](../CHANGELOG.md) is the source of truth. Each section lists merged pull requests since the previous release (or since `0.1.0` for the kickoff), grouped automatically into categories such as **Quests & Story**, **Combat & Encounters**, and **Characters & Models**. The GitHub Release body is extracted from the matching section.
+[`CHANGELOG.md`](../CHANGELOG.md) is the source of truth. Each section lists merged pull requests since the previous release (or since `0.1.0` for the kickoff), grouped into categories such as **Quests & Story**, **Combat & Encounters**, and **Characters & Models**. The GitHub Release body is extracted from the matching section.
 
-To tune grouping for future releases, edit [`release.categories.json`](../release.categories.json). Categories are matched top-to-bottom; the first matching pattern wins.
+**Categorization order:** (1) `release/*` label on the PR ([guidelines](PR_LABELS.md)), (2) keyword rules in [`release.categories.json`](../release.categories.json) when no release label is present. Add exactly one release label to every PR before merge for accurate notes.

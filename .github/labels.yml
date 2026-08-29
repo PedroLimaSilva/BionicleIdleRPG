@@ -1,0 +1,54 @@
+# Release-note category labels. Sync with: gh label sync --file .github/labels.yml
+# See docs/PR_LABELS.md for when to apply each label.
+
+- name: release/documentation
+  color: '0075ca'
+  description: 'Changelog: Documentation — README, agent docs, roadmap, markdown guides'
+
+- name: release/telemetry
+  color: '5319e7'
+  description: 'Changelog: Telemetry & Analytics — PostHog, usage snapshots, consent'
+
+- name: release/infrastructure
+  color: '666666'
+  description: 'Changelog: Infrastructure, CI & Tooling — CI/CD, lint, deps, dev environment'
+
+- name: release/testing
+  color: '0366d6'
+  description: 'Changelog: Testing — unit/E2E tests, Playwright, snapshots'
+
+- name: release/persistence
+  color: '0e8a16'
+  description: 'Changelog: Persistence & Save — IndexedDB, migrations, save/load'
+
+- name: release/pwa
+  color: '1d76db'
+  description: 'Changelog: PWA & Notifications — service worker, icons, offline, notifications'
+
+- name: release/custom-characters
+  color: 'e99695'
+  description: 'Changelog: Custom Characters & Sharing — creation, share/redeem codes'
+
+- name: release/quests-story
+  color: 'd93f0b'
+  description: 'Changelog: Quests & Story — quests, cutscenes, visual novel, chronicles'
+
+- name: release/combat
+  color: 'b60205'
+  description: 'Changelog: Combat & Encounters — battles, mask powers, arenas, enemies'
+
+- name: release/jobs-economy
+  color: 'fbca04'
+  description: 'Changelog: Jobs, Economy & Progression — jobs, protodermis, recruitment, XP'
+
+- name: release/ui-ux
+  color: '006b75'
+  description: 'Changelog: UI & UX — layouts, nav, modals, settings, motion'
+
+- name: release/rendering
+  color: 'f9d0c4'
+  description: 'Changelog: Rendering & Materials — shaders, PBR, lighting, bloom, canvas'
+
+- name: release/characters-models
+  color: 'c2e0c6'
+  description: 'Changelog: Characters & Models — GLBs, rigs, kits, animations, avatars'
