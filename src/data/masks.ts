@@ -97,13 +97,8 @@ export function getDexPreviewMasks(stage: MatoranStage, wornMask: Mask): Mask[] 
   }
 }
 
-/** Kanohi rendered with a transparent lens (Kaukau and its Nuva sculpt, Great Rau). */
-export const TRANSPARENT_MASKS: Mask[] = [Mask.Kaukau, Mask.KaukauNuva, Mask.RauGreat];
-
-/** Runtime opacity for transparent Kanohi when the GLB does not bake alpha. */
-export const TRANSPARENT_MASK_OPACITY: Partial<Record<Mask, number>> = {
-  [Mask.RauGreat]: 0.75,
-};
+/** Kanohi that need runtime transparency (Kaukau sculpts). Great Rau bakes alpha in the GLB. */
+export const TRANSPARENT_MASKS: Mask[] = [Mask.Kaukau, Mask.KaukauNuva];
 
 export function isTransparentMask(mask: Mask): boolean {
   return TRANSPARENT_MASKS.includes(mask);

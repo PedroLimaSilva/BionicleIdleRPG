@@ -56,8 +56,11 @@ export default function PrivacyPolicyPage() {
         </p>
         <ul>
           <li>Names, email addresses, or any personally identifiable information</li>
-          <li>IP addresses (not stored by our telemetry endpoint)</li>
-          <li>Browser fingerprints or cookies</li>
+          <li>
+            IP addresses (PostHog may receive IP addresses as part of standard HTTP requests; see
+            PostHog's privacy policy for how they handle this)
+          </li>
+          <li>Browser fingerprints beyond the anonymous client ID described above</li>
           <li>Browsing history or activity outside this app</li>
         </ul>
         <p>
@@ -85,13 +88,9 @@ export default function PrivacyPolicyPage() {
       <h1 className="title">How it works</h1>
       <div className="about-section">
         <p>
-          The report is sent using your browser's <code>sendBeacon</code> API (or a standard{' '}
-          <code>fetch</code> request as a fallback). It is a single fire-and-forget POST request —
-          no tracking pixels, no cookies, no third-party scripts.
-        </p>
-        <p>
-          The data is sent to a server-side endpoint that stores it in a database. No other services
-          or third parties receive the data.
+          The report is sent to <strong>PostHog</strong>, our analytics and error monitoring
+          provider. PostHog stores event data on their servers (US or EU, depending on project
+          configuration). No other services receive the data.
         </p>
       </div>
 
