@@ -7,6 +7,7 @@ import {
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { getLevelFromExp } from '../characters/Levelling';
 import { MOL_TAKANUVA_RISES_QUEST_ID } from '../../data/quests/mask_of_light';
+import { MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID } from '../../data/quests/mask_of_light';
 import { METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID } from '../../data/quests/metru_nui';
 import { METRU_TOA_EVOLUTION_MAP } from '../../rendering/3d/metruMatoran';
 import { getDefaultCustomToaModelIdForStage } from '../../rendering/3d/customToaBuild';
@@ -28,10 +29,10 @@ export const CUSTOM_METRU_LEVEL_REQUIREMENT = 50;
 export const CUSTOM_TOA_LEVEL_REQUIREMENT = 60;
 
 /**
- * After the Metru team transforms at the Great Temple, custom characters can evolve
- * Rebuilt → Metru → Toa along the same story beat.
+ * Custom Metru form unlocks once Metru Nui is revealed; Toa form unlocks when the
+ * canon Metru team transforms at the Great Temple.
  */
-export const CUSTOM_METRU_UNLOCK_QUEST_ID = METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID;
+export const CUSTOM_METRU_UNLOCK_QUEST_ID = MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID;
 export const CUSTOM_TOA_UNLOCK_QUEST_ID = METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID;
 
 export interface EvolutionPath {

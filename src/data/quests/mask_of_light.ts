@@ -2,6 +2,8 @@ import { Quest } from '../../types/Quests';
 
 export const MOL_TAKANUVA_RISES_QUEST_ID = 'mol_takanuva_rises';
 export const MOL_DEFEAT_OF_MAKUTA_QUEST_ID = 'mol_defeat_of_makuta';
+/** Turaga reveal Metru Nui in the chasm — opens the Metru Nui saga. */
+export const MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID = 'mol_rediscovery_of_metru_nui';
 
 export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   // ---------------------------------------------------------------------------
@@ -313,7 +315,7 @@ export const MASK_OF_LIGHT_QUEST_LINE: Quest[] = [
   {
     description: 'Turaga Vakama gives a lesson on the Three Virtues.',
     durationSeconds: 12 * 60,
-    id: 'mol_rediscovery_of_metru_nui',
+    id: MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID,
     name: 'The City of Legends',
     requirements: { matoran: ['Takanuva', 'Hahli', 'Jaller'], minLevel: 24 },
     rewards: {

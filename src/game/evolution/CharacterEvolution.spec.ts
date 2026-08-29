@@ -9,6 +9,7 @@ import {
   AvailableEvolution,
 } from './CharacterEvolution';
 import { METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID } from '../../data/quests/metru_nui';
+import { MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID } from '../../data/quests/mask_of_light';
 import { RecruitedCharacterData, MatoranStage, Mask } from '../../types/Matoran';
 import { getLevelFromExp } from '../characters/Levelling';
 import {
@@ -32,14 +33,15 @@ const expFor60 = expForLevel(60);
 
 describe('CharacterEvolution', () => {
   describe('getAvailableEvolution - custom characters', () => {
-    test('Rebuilt → Metru requires Great Temple quest', () => {
+    test('Rebuilt → Metru requires Metru Nui reveal quest', () => {
       const char: RecruitedCharacterData = {
         exp: expFor50,
         id: 'custom_0',
         stage: MatoranStage.Rebuilt,
       };
       expect(getAvailableEvolution(char, [])).toBeNull();
-      const result = getAvailableEvolution(char, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID]);
+      expect(getAvailableEvolution(char, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID])).toBeNull();
+      const result = getAvailableEvolution(char, [MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID]);
       expect(result).not.toBeNull();
       expect(result!.stageOverride).toBe(MatoranStage.Metru);
       expect(result!.levelRequired).toBe(CUSTOM_METRU_LEVEL_REQUIREMENT);
@@ -66,7 +68,7 @@ describe('CharacterEvolution', () => {
         id: 'custom_0',
         stage: MatoranStage.Rebuilt,
       };
-      const result = getAvailableEvolution(char, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID]);
+      const result = getAvailableEvolution(char, [MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID]);
       expect(result?.stageOverride).toBe(MatoranStage.Metru);
     });
 
@@ -79,9 +81,7 @@ describe('CharacterEvolution', () => {
         id: 'custom_0',
         stage: MatoranStage.Rebuilt,
       };
-      const metruEvo = getAvailableEvolution(rebuiltAt40, [
-        METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID,
-      ]);
+      const metruEvo = getAvailableEvolution(rebuiltAt40, [MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID]);
       expect(metruEvo?.levelRequired).toBe(50);
       expect(meetsEvolutionLevel(rebuiltAt40, metruEvo!)).toBe(false);
 
