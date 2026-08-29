@@ -2025,6 +2025,11 @@
   dependencies:
     "@posthog/types" "^1.405.0"
 
+"@posthog/react@^1.10.5":
+  version "1.10.5"
+  resolved "https://registry.yarnpkg.com/@posthog/react/-/react-1.10.5.tgz#08729ca42c1c9408503efd1dd4a897c49b14d258"
+  integrity sha512-lehh9+mJwb6iEjRBkIvh8olnJ6RV+YgQgdgJ6fdTr+T7EMoml/G1k+q92Oil8vZPcA9Dzg+2n0xaLY5yZrY3YA==
+
 "@posthog/types@^1.402.2", "@posthog/types@^1.405.0":
   version "1.405.0"
   resolved "https://registry.yarnpkg.com/@posthog/types/-/types-1.405.0.tgz#8b29988122663efd1ba3b44b3a8fc928fb7e4a9f"

@@ -56,6 +56,26 @@ Error reports respect the same guards as session reports: they are only sent whe
 
 ## Configuring PostHog
 
+### Quick setup with the PostHog wizard
+
+PostHog provides an interactive setup wizard that can create a project, write env vars, and configure source map uploads:
+
+```bash
+npx -y @posthog/wizard@latest
+```
+
+The wizard requires **Node.js ≥ 22.22**. If your project uses Node 20 (see `.nvmrc`), run the wizard from a separate shell with a newer Node version, or temporarily switch with `nvm install 22 && nvm use 22`.
+
+This repo already has PostHog wired up in `src/services/telemetry.ts` with an **opt-in consent flow**. The wizard is mainly useful for:
+
+- Creating a PostHog project and obtaining API credentials
+- Writing `.env.local` / `.env.production` values
+- Configuring source map uploads for Error Tracking (`wizard upload-source-maps`)
+
+After the wizard runs, ensure env var names match this project's convention (below). The wizard may write `VITE_POSTHOG_PROJECT_TOKEN` — rename it to `VITE_PUBLIC_POSTHOG_KEY` if needed.
+
+### Manual configuration
+
 Vite reads `VITE_PUBLIC_POSTHOG_KEY` and `VITE_PUBLIC_POSTHOG_HOST` from `.env` files or the shell environment at build time using `loadEnv()` in `vite.config.ts`.
 
 | File / method                            | Scope                                      |

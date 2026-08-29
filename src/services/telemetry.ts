@@ -85,6 +85,7 @@ function ensureAnalyticsInitialized(): boolean {
       capture_exceptions: true,
       capture_pageleave: false,
       capture_pageview: false,
+      defaults: '2026-01-30',
       opt_out_capturing_by_default: true,
       persistence: 'localStorage',
     });

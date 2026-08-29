@@ -39,6 +39,7 @@
     "prepare": "husky && yarn vendor-draco && yarn vendor-fonts"
   },
   "dependencies": {
+    "@posthog/react": "^1.10.5",
     "@react-three/drei": "9.92.7",
     "@react-three/fiber": "9.5.0",
     "@react-three/postprocessing": "3.0.4",
