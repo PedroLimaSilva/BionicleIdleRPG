@@ -2,13 +2,12 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Color, Mesh, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { resolveWornMask } from '../../../game/masks/wornMask';
-import { BaseMatoran, Mask, RecruitedCharacterData } from '../../../types/Matoran';
+import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { useGame } from '../../../context/Game';
 import { useSettings } from '../../../context/useSettings';
 import { shouldEnableShadows } from '../../../utils/testMode';
 import { getEffectiveMaskColor } from '../../../game/characters/maskColor';
 import { getGreatMaskNodeName } from '../greatMasks';
-import { TRANSPARENT_MASK_OPACITY } from '../../../data/masks';
 import {
   createMaskTransitionState,
   startMaskTransition,
@@ -37,12 +36,9 @@ function buildGreatMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D
 function applyGreatMaskColors(
   root: Object3D,
   maskColor: string,
-  maskName: Mask,
   glowColor?: string,
   maskPowerActive?: boolean
 ): void {
-  const maskOpacity = TRANSPARENT_MASK_OPACITY[maskName];
-
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;
@@ -62,9 +58,6 @@ function applyGreatMaskColors(
 
     mat.color.copy(new Color(maskColor));
     applyMaskMetallicPbr(mat, maskColor);
-    if (maskOpacity !== undefined) {
-      mat.opacity = maskOpacity;
-    }
     syncMaskTransparencyState(mat);
     if (mat.emissive) {
       if (maskPowerActive) {
@@ -143,7 +136,6 @@ export function useGreatMask(
     applyGreatMaskColors(
       clone,
       maskColorRef.current,
-      maskName,
       glowColorRef.current,
       maskPowerActiveRef.current
     );
@@ -183,8 +175,8 @@ export function useGreatMask(
   useEffect(() => {
     const mask = maskRef.current;
     if (!mask) return;
-    applyGreatMaskColors(mask, maskColor, maskName, glowColor, maskPowerActive);
-  }, [maskColor, glowColor, maskName, maskPowerActive]);
+    applyGreatMaskColors(mask, maskColor, glowColor, maskPowerActive);
+  }, [maskColor, glowColor, maskPowerActive]);
 }
 
 useGreatMask.preload = () => {
