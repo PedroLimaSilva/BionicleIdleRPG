@@ -67,7 +67,8 @@ export type GameState = {
   updateCustomCharacter: (
     id: string,
     base: Omit<BaseMatoran, 'id'>,
-    extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+    extras?: Pick<RecruitedCharacterData, 'customMataModelId'>,
+    options?: { protodermisCost?: number }
   ) => boolean;
   setMaskOverride: (id: RecruitedCharacterData['id'], mask: Mask) => void;
   collectKrana: (element: KranaElement, id: KranaId) => void;

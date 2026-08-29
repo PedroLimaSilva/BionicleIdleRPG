@@ -16,7 +16,7 @@ import { KopakaNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/KopakaNu
 import { LewaNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/LewaNuvaModel';
 import { OnuaNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/OnuaNuvaModel';
 import { PohatuNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/PohatuNuvaModel';
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Group, Material, Mesh } from 'three';
 import { disposeObject3DResources } from '../../rendering/3d/utils/disposeThreeObject';
@@ -39,8 +39,11 @@ import { battleSpeedProgress } from '../../utils/battleSpeed';
 const ROTATION_RESTORE_DURATION = 0.25;
 const DEFEAT_SINK_DEPTH = 0.55;
 
-/** `useGLTF` template meshes (Toa, etc.) must not dispose shared geometry; clones (enemies) may. */
-function canDisposeBattleModelGeometry(model: string): boolean {
+/**
+ * Enemy GLB clones (Rahkshi, Bohrok, …) own their geometry and per-instance materials
+ * (weathered-metal shader clones, eye clones). Toa templates share cached GLTF assets.
+ */
+function shouldDisposeBattleModelResources(model: string): boolean {
   return (
     model === 'bohrok' ||
     model === 'rahkshi' ||
@@ -48,6 +51,10 @@ function canDisposeBattleModelGeometry(model: string): boolean {
     model === 'nui_rama' ||
     model === 'vahki'
   );
+}
+
+function disposeBattleModelResources(root: Group): void {
+  disposeObject3DResources(root, { disposeMaterials: true });
 }
 
 /** World-space Y offset for the floating HP bar, tuned per model family. */
@@ -119,6 +126,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     const [overrideRotationY, setOverrideRotationY] = useState<number | null>(null);
     const restoreRef = useRef<{ from: number; startTimeMs: number } | null>(null);
     const [modelDisposed, setModelDisposed] = useState(false);
+    const modelResourcesDisposedRef = useRef(false);
 
     const defeatSinkRef = useRef<{
       active: boolean;
@@ -126,6 +134,20 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
       onDone: (() => void) | null;
     }>({ active: false, onDone: null, startMs: 0 });
     const defeatFadeMaterialsRef = useRef<Material[]>([]);
+
+    const freeModelResources = useCallback(() => {
+      if (modelResourcesDisposedRef.current) return;
+      const g = modelGroup.current;
+      if (!g || !shouldDisposeBattleModelResources(combatant.model)) return;
+      disposeBattleModelResources(g);
+      modelResourcesDisposedRef.current = true;
+    }, [combatant.model]);
+
+    useEffect(() => {
+      return () => {
+        freeModelResources();
+      };
+    }, [freeModelResources]);
 
     useFrame(() => {
       const restore = restoreRef.current;
@@ -164,9 +186,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
         mat.dispose();
       }
       defeatFadeMaterialsRef.current = [];
-      if (canDisposeBattleModelGeometry(combatant.model)) {
-        disposeObject3DResources(g);
-      }
+      freeModelResources();
       setModelDisposed(true);
       const done = sink.onDone;
       sink.onDone = null;

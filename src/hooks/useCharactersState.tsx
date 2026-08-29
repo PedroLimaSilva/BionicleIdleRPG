@@ -9,7 +9,7 @@ import {
   RecruitedCharacterData,
   isCustomCharacterId,
 } from '../types/Matoran';
-import { DEFAULT_CUSTOM_MATA_MODEL_ID } from '../rendering/3d/customMataBuild';
+import { getDefaultCustomToaModelIdForStage } from '../rendering/3d/customToaBuild';
 import { MatoranJob } from '../types/Jobs';
 import { recruitMatoran, assignJob, removeJob } from '../services/matoranUtils';
 import { areEquivalentSharedCustomMatoran } from '../services/customCharacterShare';
@@ -114,8 +114,13 @@ export function useCharactersState(
     const recruitEntry: RecruitedCharacterData = {
       exp: 0,
       id,
-      ...(base.stage === MatoranStage.ToaMata
-        ? { customMataModelId: extras?.customMataModelId ?? DEFAULT_CUSTOM_MATA_MODEL_ID }
+      ...(base.stage === MatoranStage.ToaMata ||
+      base.stage === MatoranStage.ToaNuva ||
+      base.stage === MatoranStage.ToaMetru
+        ? {
+            customMataModelId:
+              extras?.customMataModelId ?? getDefaultCustomToaModelIdForStage(base.stage),
+          }
         : {}),
     };
     setRecruitedCharacters((prev) => [...prev, recruitEntry]);
@@ -157,12 +162,16 @@ export function useCharactersState(
   const updateCustomCharacter = (
     id: string,
     base: Omit<BaseMatoran, 'id'>,
-    extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+    extras?: Pick<RecruitedCharacterData, 'customMataModelId'>,
+    options?: { protodermisCost?: number }
   ): boolean => {
     if (!isCustomCharacterId(id)) return false;
     const existing = customCharacters.find((c) => c.id === id);
     if (!existing) return false;
     if (!recruitedCharacters.some((m) => m.id === id)) return false;
+
+    const cost = options?.protodermisCost;
+    if (cost !== undefined && protodermis < cost) return false;
 
     const updated: BaseMatoran = {
       ...existing,
@@ -183,6 +192,9 @@ export function useCharactersState(
         return next;
       })
     );
+    if (cost !== undefined) {
+      setProtodermis(protodermis - cost);
+    }
     return true;
   };
 

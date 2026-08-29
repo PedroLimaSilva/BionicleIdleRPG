@@ -30,6 +30,7 @@ import { isKranaCollectionActive } from '../../game/krana/Krana';
 import { MASK_POWERS } from '../../data/combat';
 import {
   BaseMatoran,
+  CUSTOM_CHARACTER_EDIT_COST,
   isCustomCharacterId,
   Mask,
   RecruitedCharacterData,
@@ -144,8 +145,9 @@ export const CharacterDetail: React.FC = () => {
                   if (isCustomCharacterId(evolvedId)) {
                     navigate('/character-create', {
                       state: {
-                        customizeAfterEvolution: evolvedId,
+                        customizeCharacterId: evolvedId,
                         evolutionFromStage,
+                        freeCustomize: true,
                       },
                     });
                     return;
@@ -153,6 +155,17 @@ export const CharacterDetail: React.FC = () => {
                   navigate(`/characters/${evolvedId}`, { replace: true });
                 });
               }}
+              onCustomizeAppearance={
+                isCustom && isToa(matoran)
+                  ? () =>
+                      navigate('/character-create', {
+                        state: {
+                          customizeCharacterId: matoran.id,
+                          freeCustomize: false,
+                        },
+                      })
+                  : undefined
+              }
             />
           )}
           {activeTab === 'inventory' && (
@@ -197,6 +210,7 @@ function StatsTab({
   convertProtodermisToExp,
   maskDescription,
   matoran,
+  onCustomizeAppearance,
   onEvolveCharacter,
   protodermis,
 }: {
@@ -206,6 +220,7 @@ function StatsTab({
   convertProtodermisToExp: (matoranId: string, protodermisSpent: number) => boolean;
   activeMask: Mask | undefined;
   maskDescription: string;
+  onCustomizeAppearance?: () => void;
   onEvolveCharacter: (id: string) => void;
 }) {
   const evolution = getAvailableEvolution(matoran, completedQuests);
@@ -242,6 +257,33 @@ function StatsTab({
               onClick={() => canEvolve && onEvolveCharacter(matoran.id)}
             >
               {evolution.label}
+            </button>
+          </div>
+        </div>
+      )}
+      {onCustomizeAppearance && (
+        <div className="customize-section">
+          <div className="requirement-list">
+            <h4>Customize Toa appearance</h4>
+            <ul>
+              <li
+                className={protodermis >= CUSTOM_CHARACTER_EDIT_COST ? 'has-enough' : 'not-enough'}
+              >
+                {protodermis >= CUSTOM_CHARACTER_EDIT_COST ? '✅' : '❌'}{' '}
+                {CUSTOM_CHARACTER_EDIT_COST} protodermis
+              </li>
+            </ul>
+            <p className="customize-section__hint">
+              Change your color palette and Toa armor (Mata, Nuva, or Metru rigs).
+            </p>
+            <button
+              type="button"
+              className={`elemental-btn element-${matoran.element}${
+                protodermis >= CUSTOM_CHARACTER_EDIT_COST ? '' : ' disabled'
+              }`}
+              onClick={() => protodermis >= CUSTOM_CHARACTER_EDIT_COST && onCustomizeAppearance()}
+            >
+              Open character editor
             </button>
           </div>
         </div>

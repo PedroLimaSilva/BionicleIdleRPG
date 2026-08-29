@@ -9,8 +9,15 @@ import {
   AvailableEvolution,
 } from './CharacterEvolution';
 import { METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID } from '../../data/quests/metru_nui';
+import { MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID } from '../../data/quests/mask_of_light';
 import { RecruitedCharacterData, MatoranStage, Mask } from '../../types/Matoran';
 import { getLevelFromExp } from '../characters/Levelling';
+import {
+  CUSTOM_METRU_COST,
+  CUSTOM_METRU_LEVEL_REQUIREMENT,
+  CUSTOM_TOA_COST,
+  CUSTOM_TOA_LEVEL_REQUIREMENT,
+} from './CharacterEvolution';
 
 function expForLevel(level: number): number {
   return Math.floor(100 * Math.pow(level - 1, 1.5));
@@ -21,7 +28,74 @@ const expFor100 = expForLevel(100);
 const expFor27 = expForLevel(27);
 const expFor28 = expForLevel(28);
 
+const expFor50 = expForLevel(50);
+const expFor60 = expForLevel(60);
+
 describe('CharacterEvolution', () => {
+  describe('getAvailableEvolution - custom characters', () => {
+    test('Rebuilt → Metru requires Metru Nui reveal quest', () => {
+      const char: RecruitedCharacterData = {
+        exp: expFor50,
+        id: 'custom_0',
+        stage: MatoranStage.Rebuilt,
+      };
+      expect(getAvailableEvolution(char, [])).toBeNull();
+      expect(getAvailableEvolution(char, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID])).toBeNull();
+      const result = getAvailableEvolution(char, [MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID]);
+      expect(result).not.toBeNull();
+      expect(result!.stageOverride).toBe(MatoranStage.Metru);
+      expect(result!.levelRequired).toBe(CUSTOM_METRU_LEVEL_REQUIREMENT);
+      expect(result!.protodermisCost).toBe(CUSTOM_METRU_COST);
+    });
+
+    test('Metru → Toa requires Great Temple quest', () => {
+      const char: RecruitedCharacterData = {
+        exp: expFor60,
+        id: 'custom_0',
+        stage: MatoranStage.Metru,
+      };
+      expect(getAvailableEvolution(char, [])).toBeNull();
+      const result = getAvailableEvolution(char, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID]);
+      expect(result).not.toBeNull();
+      expect(result!.stageOverride).toBe(MatoranStage.ToaMata);
+      expect(result!.levelRequired).toBe(CUSTOM_TOA_LEVEL_REQUIREMENT);
+      expect(result!.protodermisCost).toBe(CUSTOM_TOA_COST);
+    });
+
+    test('does not skip Metru step by evolving Rebuilt directly to Toa', () => {
+      const char: RecruitedCharacterData = {
+        exp: expFor60,
+        id: 'custom_0',
+        stage: MatoranStage.Rebuilt,
+      };
+      const result = getAvailableEvolution(char, [MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID]);
+      expect(result?.stageOverride).toBe(MatoranStage.Metru);
+    });
+
+    test('custom Metru and Toa evolutions require levels 50 and 60', () => {
+      expect(CUSTOM_METRU_LEVEL_REQUIREMENT).toBe(50);
+      expect(CUSTOM_TOA_LEVEL_REQUIREMENT).toBe(60);
+
+      const rebuiltAt40: RecruitedCharacterData = {
+        exp: expFor40,
+        id: 'custom_0',
+        stage: MatoranStage.Rebuilt,
+      };
+      const metruEvo = getAvailableEvolution(rebuiltAt40, [MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID]);
+      expect(metruEvo?.levelRequired).toBe(50);
+      expect(meetsEvolutionLevel(rebuiltAt40, metruEvo!)).toBe(false);
+
+      const metruAt50: RecruitedCharacterData = {
+        exp: expFor50,
+        id: 'custom_0',
+        stage: MatoranStage.Metru,
+      };
+      const toaEvo = getAvailableEvolution(metruAt50, [METRU_GREAT_TEMPLE_TRANSFORMATION_QUEST_ID]);
+      expect(toaEvo?.levelRequired).toBe(60);
+      expect(meetsEvolutionLevel(metruAt50, toaEvo!)).toBe(false);
+    });
+  });
+
   describe('getAvailableEvolution - Toa Nuva', () => {
     test('returns null when quest is not completed', () => {
       const char: RecruitedCharacterData = { exp: 100000, id: 'Toa_Tahu' };
