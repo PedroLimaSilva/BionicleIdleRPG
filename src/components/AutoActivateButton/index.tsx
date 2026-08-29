@@ -3,7 +3,7 @@ import { isTestMode } from '../../utils/testMode';
 import './index.scss';
 
 /** Idle time before Run Round / Next Wave auto-fires when the player does not interact. */
-export const BATTLE_AUTO_ACTIVATE_MS = 5000;
+export const BATTLE_AUTO_ACTIVATE_MS = 3000;
 
 export interface AutoActivateButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
