@@ -104,11 +104,22 @@ For local development, a `.env.local` with a dummy key makes the consent prompt 
 
 ### 2. Build with the key
 
+**Local / one-off builds:**
+
 ```bash
 VITE_PUBLIC_POSTHOG_KEY=phc_your_project_api_key yarn build
 ```
 
-Or add the key to `.env.production` for persistent configuration.
+**GitHub Pages (CI):** add repository secrets under Settings → Secrets and variables → Actions:
+
+| Secret                     | Required | Value                                                              |
+| -------------------------- | -------- | ------------------------------------------------------------------ |
+| `VITE_PUBLIC_POSTHOG_KEY`  | Yes      | Your `phc_...` project API key                                     |
+| `VITE_PUBLIC_POSTHOG_HOST` | No       | `https://us.i.posthog.com` (default) or `https://eu.i.posthog.com` |
+
+Do **not** commit the key to `.env.production` in git — CI injects it at build time. The key still appears in the deployed JS bundle (it is a public client key), but keeping it out of the repo avoids scrapers and makes rotation easier.
+
+Or add the key to `.env.production` for persistent local-only configuration (leave the value empty in the committed file).
 
 ### 3. Enable Error Tracking (optional but recommended)
 
