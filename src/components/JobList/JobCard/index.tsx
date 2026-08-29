@@ -36,18 +36,23 @@ interface JobCardProps {
   classNames: string;
   baseRate: number;
   modifier: number;
+  isProfession?: boolean;
 }
 
 export const JobCard: React.FC<JobCardProps> = ({
   baseRate,
   classNames,
   description,
+  isProfession,
   modifier,
   title,
 }) => {
   return (
     <div className={`job-card ${classNames}`}>
-      <h3 className="job-title">{title}</h3>
+      <h3 className="job-title">
+        {title}
+        {isProfession && <span className="profession-badge">Metru profession</span>}
+      </h3>
       <ProductivityBadge modifier={modifier} />
       <p className="job-description">{description}</p>
       <div className="job-rates">

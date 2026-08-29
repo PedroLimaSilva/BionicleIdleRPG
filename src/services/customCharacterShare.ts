@@ -35,6 +35,7 @@ const VALID_STAGES = new Set<string>([
   'Metru',
   'Bohrok',
   'BohrokKal',
+  'Vahki',
   'Makuta',
 ]);
 

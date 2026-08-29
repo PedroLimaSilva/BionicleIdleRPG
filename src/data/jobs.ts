@@ -4,8 +4,16 @@ import { MatoranStage } from '../types/Matoran';
 
 export const PROTODERMIS_RATE = 0.1;
 
+/** Mata Nui island Matoran stages eligible for Koro-era jobs. */
+export const MATA_NUI_MATORAN_STAGES = [
+  MatoranStage.Diminished,
+  MatoranStage.Rebuilt,
+  MatoranStage.Turaga,
+] as const satisfies readonly MatoranStage[];
+
 export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
   [MatoranJob.AlgaeHarvester]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Collects medicinal algae and aquatic plants in Ga-Koro.',
     elementAffinity: {
       favored: [ElementTribe.Water],
@@ -18,6 +26,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
   },
   [MatoranJob.CharcoalMaker]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Produces charcoal from wood and volcanic matter in Ta-Koro.',
     elementAffinity: {
       favored: [ElementTribe.Fire],
@@ -28,16 +37,16 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: {},
   },
   [MatoranJob.ChuteController]: {
-    description: 'Manages Le-Metru’s high-speed chute transport systems.',
+    allowedCharacters: ['Ehrye', 'Matau', 'Orkahm'],
+    allowedStages: [MatoranStage.Metru],
+    description: 'Tests and monitors Le-Metru’s high-speed chute transport systems.',
     elementAffinity: {
       favored: [ElementTribe.Air],
       opposed: [],
     },
-    label: '🚀 Chute Controller',
+    label: '🚀 Chute Test Driver',
     rate: 2,
-    unlock: {
-      requiredProgress: ['settle_metru_nui'],
-    },
+    unlock: {},
   },
   [MatoranJob.GaKoroRebuilder]: {
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
@@ -51,6 +60,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: { requiredProgress: ['bohrok_assistants'] },
   },
   [MatoranJob.HydroTechnician]: {
+    allowedStages: [MatoranStage.Metru],
     description: 'Manages purified protodermis flow in Ga-Metru research systems.',
     elementAffinity: {
       favored: [ElementTribe.Water],
@@ -58,11 +68,11 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '💧 Hydro Technician',
     rate: 2,
-    unlock: {
-      requiredProgress: ['settle_metru_nui'],
-    },
+    unlock: {},
   },
   [MatoranJob.KnowledgeScribe]: {
+    allowedCharacters: ['Nuju'],
+    allowedStages: [MatoranStage.Metru],
     description: 'Records prophecies and research in Ko-Metru knowledge towers.',
     elementAffinity: {
       favored: [ElementTribe.Ice],
@@ -70,9 +80,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '📚 Knowledge Scribe',
     rate: 2,
-    unlock: {
-      requiredProgress: ['activate_knowledge_towers'],
-    },
+    unlock: {},
   },
   [MatoranJob.KoKoroRebuilder]: {
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
@@ -97,6 +105,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: { requiredProgress: ['bohrok_assistants'] },
   },
   [MatoranJob.LightStoneMiner]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Mines Light Stone crystals for illumination in Onu-Koro caves.',
     elementAffinity: {
       favored: [ElementTribe.Earth],
@@ -105,6 +114,18 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     label: '💡 Light Stone Miner',
     rate: 1,
     unlock: { requiredProgress: ['mnog_arrive_onu_koro'] },
+  },
+  [MatoranJob.MaskMaker]: {
+    allowedCharacters: ['Nuhrii', 'Vakama'],
+    allowedStages: [MatoranStage.Metru],
+    description: 'Forges Kanohi masks in the foundries of Ta-Metru.',
+    elementAffinity: {
+      favored: [ElementTribe.Fire],
+      opposed: [ElementTribe.Ice],
+    },
+    label: '🎭 Mask Maker',
+    rate: 2,
+    unlock: {},
   },
   [MatoranJob.OnuKoroRebuilder]: {
     allowedStages: [MatoranStage.Bohrok, MatoranStage.BohrokKal],
@@ -129,6 +150,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     unlock: { requiredProgress: ['bohrok_assistants'] },
   },
   [MatoranJob.ProtodermisSmelter]: {
+    allowedStages: [MatoranStage.Metru],
     description: 'Operates high-temperature smelting units in Ta-Metru.',
     elementAffinity: {
       favored: [ElementTribe.Fire],
@@ -136,11 +158,10 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '⚙️ Protodermis Smelter',
     rate: 2,
-    unlock: {
-      requiredProgress: ['settle_metru_nui'],
-    },
+    unlock: {},
   },
   [MatoranJob.RahiNestWatcher]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Observes and documents flying Rahi behavior in Le-Wahi.',
     elementAffinity: {
       favored: [ElementTribe.Air],
@@ -153,6 +174,7 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
   },
   [MatoranJob.SanctumGuard]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Patrols the drifts and guards the Sanctum of Ko-Koro.',
     elementAffinity: {
       favored: [ElementTribe.Ice],
@@ -165,6 +187,8 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
   },
   [MatoranJob.SculptureOperator]: {
+    allowedCharacters: ['Ahkmou', 'Onewa'],
+    allowedStages: [MatoranStage.Metru],
     description: 'Builds large-scale statues and carvings in Po-Metru.',
     elementAffinity: {
       favored: [ElementTribe.Stone],
@@ -172,23 +196,22 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     },
     label: '🗿 Sculpture Operator',
     rate: 2,
-    unlock: {
-      requiredProgress: ['settle_metru_nui'],
-    },
+    unlock: {},
   },
   [MatoranJob.StasisTechnician]: {
-    description: 'Maintains Rahi stasis chambers in Metru Nui Archives.',
+    allowedCharacters: ['Tehutti', 'Whenua'],
+    allowedStages: [MatoranStage.Metru],
+    description: 'Catalogues artifacts and maintains stasis chambers in the Metru Nui Archives.',
     elementAffinity: {
       favored: [ElementTribe.Earth],
       opposed: [],
     },
     label: '🔒 Stasis Technician',
     rate: 2,
-    unlock: {
-      requiredProgress: ['unlock_archives'],
-    },
+    unlock: {},
   },
   [MatoranJob.StoneMason]: {
+    allowedStages: [...MATA_NUI_MATORAN_STAGES],
     description: 'Builds stone structures and sculputres in Po-Wahi.',
     elementAffinity: {
       favored: [ElementTribe.Stone],
@@ -211,5 +234,17 @@ export const JOB_DETAILS: Record<MatoranJob, JobDetails> = {
     label: '🏠 Ta-Koro Rebuilder',
     rate: 1.5,
     unlock: { requiredProgress: ['bohrok_assistants'] },
+  },
+  [MatoranJob.Teacher]: {
+    allowedCharacters: ['Nokama', 'Vhisola'],
+    allowedStages: [MatoranStage.Metru],
+    description: 'Instructs students in the schools and labs of Ga-Metru.',
+    elementAffinity: {
+      favored: [ElementTribe.Water],
+      opposed: [],
+    },
+    label: '📖 Teacher',
+    rate: 2,
+    unlock: {},
   },
 };

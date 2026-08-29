@@ -70,6 +70,7 @@ const CANVAS_ROUTE_PREFIXES = [
   '/characters/',
   '/rahkshi/',
   '/battle',
+  '/test/dex/',
   '/test/model/',
 ];
 

@@ -404,7 +404,6 @@ export const TOA_DEX = {
     },
     element: ElementTribe.Water,
     id: 'Toa_Nokama',
-    isMaskTransparent: true,
     mask: Mask.RauGreat,
     name: 'Toa Nokama',
     stage: MatoranStage.ToaMetru,

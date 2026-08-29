@@ -157,6 +157,9 @@ jobs:
 
       - name: Build production bundle
         run: yarn build
+        env:
+          VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com' }}
+          VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
@@ -208,6 +211,9 @@ jobs:
 
       - name: Build project
         run: yarn build
+        env:
+          VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com' }}
+          VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
 
       - name: Check for unused CSS
         run: yarn check:unused-css

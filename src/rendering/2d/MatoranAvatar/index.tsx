@@ -65,6 +65,17 @@ export function MatoranAvatar({
     );
   }
 
+  if (matoran.stage === MatoranStage.Vahki) {
+    return (
+      <img
+        className={`composited-avatar ${styles}`}
+        style={glowStyle}
+        src={`${import.meta.env.BASE_URL}/avatar/Vahki/${matoran.name}.webp`}
+        alt={matoran.name}
+      />
+    );
+  }
+
   return (
     <CompositedImage
       key={matoran.name}

@@ -1,0 +1,115 @@
+name: Biweekly Release
+
+on:
+  schedule:
+    # Every Saturday at 12:00 UTC; the script exits unless it is a release Saturday.
+    - cron: '0 12 * * 6'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Release date (YYYY-MM-DD). Defaults to today.'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  release:
+    name: Bump version and publish release notes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Plan release
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_DATE: ${{ github.event.inputs.date }}
+        run: |
+          set -euo pipefail
+          DATE="${RELEASE_DATE:-$(date -u +%F)}"
+          PLAN="$(yarn -s tsx scripts/release.mts plan --date "$DATE")"
+          echo "$PLAN"
+          IS_RELEASE="$(echo "$PLAN" | node -e "const p=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(String(p.isReleaseDay));")"
+          VERSION="$(echo "$PLAN" | node -e "const p=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(p.version ?? '');")"
+          echo "date=$DATE" >> "$GITHUB_OUTPUT"
+          echo "is_release=$IS_RELEASE" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Skip non-release Saturdays
+        if: steps.plan.outputs.is_release != 'true'
+        run: |
+          echo "Not a biweekly release Saturday; skipping."
+          exit 0
+
+      - name: Bump version and update changelog
+        if: steps.plan.outputs.is_release == 'true'
+        id: bump
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          yarn tsx scripts/release.mts bump --date "${{ steps.plan.outputs.date }}" | tee bump.log
+          if grep -q 'already at' bump.log; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit release
+        if: steps.plan.outputs.is_release == 'true' && steps.bump.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json CHANGELOG.md
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          git commit -m "Release v${{ steps.plan.outputs.version }}"
+
+      - name: Push release commit
+        if: steps.plan.outputs.is_release == 'true' && steps.bump.outputs.changed == 'true'
+        run: git push origin HEAD:master
+
+      - name: Tag and publish GitHub Release
+        if: steps.plan.outputs.is_release == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.plan.outputs.version }}"
+          DATE="${{ steps.plan.outputs.date }}"
+          TAG="v${VERSION}"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag ${TAG} already exists; skipping publish."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release ${TAG}"
+          git push origin "$TAG"
+
+          NOTES="$(awk -v ver="$VERSION" '
+            $0 ~ "^## \\[" ver "\\]" { found=1; next }
+            found && /^## \\[/ { exit }
+            found { print }
+          ' CHANGELOG.md)"
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes "## ${TAG} (${DATE})
+
+          ${NOTES}"

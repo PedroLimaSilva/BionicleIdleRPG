@@ -1,7 +1,7 @@
 {
   "name": "bionicle-idle-rpg",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.8.2",
   "license": "MIT",
   "engines": {
     "node": ">=20.19.0"
@@ -41,9 +41,14 @@
     "kit-node-usage-report": "tsx scripts/kit-node-usage-report.mts",
     "audit:prod": "tsx scripts/audit-prod.mts high",
     "audit:prod:critical": "tsx scripts/audit-prod.mts critical",
+    "release:plan": "tsx scripts/release.mts plan",
+    "release:notes": "tsx scripts/release.mts notes",
+    "release:bump": "tsx scripts/release.mts bump",
+    "release:refresh": "tsx scripts/release.mts refresh",
     "prepare": "husky && yarn vendor-draco && yarn vendor-fonts"
   },
   "dependencies": {
+    "@posthog/react": "^1.10.5",
     "@react-three/drei": "10.7.8",
     "@react-three/fiber": "9.5.0",
     "@react-three/postprocessing": "3.0.4",
@@ -52,6 +57,7 @@
     "lucide-react": "^0.487.0",
     "mermaid": "^11.15.0",
     "motion": "^12.34.3",
+    "posthog-js": "^1.418.6",
     "r3f-perf": "^7.2.3",
     "react": "19",
     "react-dom": "19",

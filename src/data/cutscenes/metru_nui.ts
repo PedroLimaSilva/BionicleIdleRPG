@@ -1,6 +1,101 @@
 import type { VisualNovelCutscene } from '../../types/Cutscenes';
 
 export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
+  metru_great_disks_interlude: {
+    background: { from: '#0d1f2d', to: '#ffe28e', type: 'gradient' },
+    id: 'metru_great_disks_interlude',
+    steps: [
+      {
+        text: 'Turaga Vakama paused. The memories of his days as a Toa Metru were powerful ones. There were many times he thought he might never get the chance to tell the tales of Metru Nui and the struggle to save it. Now the words spilled from him like a flood, and he found it almost too much to bear. Toa Lhikan… the forges of Ta-Metru… his life as a Toa… all so long ago.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Takanuva',
+        text: 'That can’t be the end of the story. I mean, there is more, isn’t there?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Turaga_Vakama',
+        text: 'You were the Chronicler before you were a Toa, Takanuva, and that questioning spirit still lives on in you. Always you seek to know what is hidden. But you are right, that is only the beginning of my tale.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Tahu_Nuva',
+        text: 'Did you find the Great Disks? Did you defeat the Morbuzakh? We must know!',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Turaga_Vakama',
+        text: 'And so you shall. But I am weary, and there is much work still to be done. I will continue my tale tomorrow. Before I am done, you will know why we fought so hard for Metru Nui – and why we were forced to leave. Mata Nui, in his wisdom, brought us to this beautiful island that bears his name. But home will always be Metru Nui.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Gali_Nuva',
+        text: 'Very well, then. We will leave you for now, wise one. I know I feel the need for a long talk with Turaga Nokama, and I am sure my brothers have similar ideas.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Kopaka_Nuva',
+        text: 'Indeed. There have been far too many secrets kept on this island.',
+        type: 'dialogue',
+      },
+      {
+        text: 'The Toa Nuva filed away, heading in different directions. Only Takanuva remained behind with the Turaga of Fire.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Turaga_Vakama',
+        text: 'What troubles you, Toa? Was my tale not what you expected?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Takanuva',
+        text: 'It’s not that. I have been a Matoran and now I am a Toa, and yet I still do not remember this city of Metru Nui! Why?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Turaga_Vakama',
+        text: 'You will learn all, in time. Perhaps we should have shared all of this with you long ago, but we felt it would be cruel to remind you of a home you might never see again.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Takanuva',
+        text: 'Perhaps that was wise, Turaga. But tell me, when you lived in Metru Nui – was it wonderful?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Turaga_Vakama',
+        text: 'Wonderful… and terrible. I fear that when I have finished my tale, the Toa will have learned the true meaning of darkness.',
+        type: 'dialogue',
+      },
+      {
+        text: 'The wind over Kini-Nui stirred the sand of the Amaja Circle. Vakama’s tale would wait for another night—but the shadows of Metru Nui were only beginning to lengthen.',
+        type: 'narration',
+      },
+    ],
+  },
   metru_great_temple_transformation: {
     background: { from: '#1a2840', to: '#c9a84c', type: 'gradient' },
     id: 'metru_great_temple_transformation',
@@ -116,6 +211,317 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
       {
         text: 'The hovering mask winked out—no sign of it or the Toa Stones remained. Six armored Toa Metru looked at themselves and each other in awe.',
         type: 'narration',
+      },
+    ],
+  },
+  metru_kapura_morbuzakh: {
+    background: { from: '#0d1f2d', to: '#ffe28e', type: 'gradient' },
+    id: 'metru_kapura_morbuzakh',
+    steps: [
+      {
+        text: 'Kapura walked slowly along the outskirts of the district of Ta-Metru, his eyes scanning the ground. Most of the homes and factories in this part of the metru had been abandoned lately, with the residents moving closer to the heart of the district. It was Kapura’s job to make sure nothing of importance had been left behind.',
+        type: 'narration',
+      },
+      {
+        text: 'He paused in front of a massive, blackened building that had once housed a forge. Here, construction tools and other equipment had been cast from molten protodermis before being sent on to Po-Metru for finishing. Now, in the interest of safety, that work had been transferred away from the outskirts by order of the city’s elder, Turaga Dume. Kapura spotted a disk launcher used in the sport of akilini on the ground and bent down to pick it up, only to discover the handle was cracked. He walked on. This was an important task, his fellow workers had told him, and important tasks were best done slowly and carefully.',
+        type: 'narration',
+      },
+      {
+        text: 'Had Kapura looked up, he would have seen the skyline of Ta-Metru, “home of the makers.” Cone-shaped factories, scorched by ages of use, stood next to the homes of smiths and crafters. These were the Matoran who molded protodermis, the substance of which everything on Metru Nui was made, into thousands of shapes and forms. A molten river of raw protodermis ran through the center of the district, drawn from below the city and fed into the Great Furnace. From there, it traveled to each factory to be turned into masks, tools, and anything else that might be needed.',
+        type: 'narration',
+      },
+      {
+        text: 'Dominating the skyline was the Coliseum, home to Turaga Dume and the tallest building in all of Metru Nui. For as long as anyone could remember, the sight of the Coliseum had brought a feeling of safety and security to Matoran. But now…',
+        type: 'narration',
+      },
+      {
+        text: 'Kapura counted slowly as he walked. Six, seven, eight – at least eight of the workers at his factory had vanished lately. Where they disappeared to, and why, no one knew. But there were plenty of rumors.',
+        type: 'narration',
+      },
+      {
+        text: 'The Matoran stopped. Something had moved off to the right. It didn’t sound like another Matoran, or even a wild Rahi beast. It was a soft, slithering sound, as if something was dragging itself across the ground. The sound grew louder and seemed to multiply. Kapura felt the urge to run, but his feet would not move.',
+        type: 'narration',
+      },
+      {
+        text: 'He forced himself to turn around and look. Four thick, blackened, twisted vines were snaking their way out of cracks in the ground, weaving in the air as if momentarily unsure of what to do. Then they wrapped themselves around the empty factory and began to climb, winding around again and again until they covered the building from top to bottom.',
+        type: 'narration',
+      },
+      {
+        text: 'Kapura’s eyes widened as the vines started to squeeze. Solid protodermis crumbled before their strength. The building groaned and cracked, collapsing in on itself in a matter of seconds. As if satisfied, the vines pulled away and began to move toward another structure.',
+        type: 'narration',
+      },
+      {
+        text: 'It was then that Kapura found his voice. But he could speak only one word, and that in a horrified whisper:',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Kapura',
+        text: 'Morbuzakh.',
+        type: 'dialogue',
+      },
+    ],
+  },
+  metru_matau_great_disk: {
+    background: { from: '#1a2810', to: '#7cb342', type: 'gradient' },
+    id: 'metru_matau_great_disk',
+    steps: [
+      {
+        text: 'Toa Matau hurtled out of control through a sabotaged chute—someone had sealed the walls to keep him from escaping. Using his air power, he slowed enough to grab a passing transport cart and bail out near Orkahm’s Ussal pen.',
+        type: 'narration',
+      },
+      {
+        text: 'Orkahm was gone. His coded logbook read: Disk hidden. A. wants disk. Moto-hub sector 3.',
+        type: 'narration',
+      },
+      {
+        text: 'In sector 3—where Morbuzakh vines had made the moto-hub a place of fear—Matau found “PUKU” scratched into a chute strut: a message pointing to Orkahm’s favorite crab.',
+        type: 'narration',
+      },
+      {
+        text: 'Orkahm was trapped in a tangle of transport cables at the end of a severed chute. Morbuzakh vines were closing in.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Orkahm',
+        text: 'Ever since I found the disk, I’ve been followed—Ahkmou, a giant, and a four-legged hunter. Then I got this message.',
+        type: 'dialogue',
+      },
+      {
+        text: 'The tablet read: The disk you found is vital to the security of the city. Bring it to Moto-Hub sector 3 and take the marked chute.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'Toa-heroes are never trapped. Hang on!',
+        type: 'dialogue',
+      },
+      {
+        text: 'Matau lifted Orkahm with his whirling aero slicers and flew clear of the vines—barely an inch to spare.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Matau',
+        text: 'I’m a Toa-hero. This is what we do.',
+        type: 'dialogue',
+      },
+    ],
+  },
+  metru_nokama_great_disk: {
+    background: { from: '#0a1628', to: '#5eb3d9', type: 'gradient' },
+    id: 'metru_nokama_great_disk',
+    steps: [
+      {
+        text: 'Toa Nokama returned to Ga-Metru seeking her old student Vhisola—one of six Matoran who could lead the Toa to the Great Disks. But Vhisola had vanished.',
+        type: 'narration',
+      },
+      {
+        text: 'Inside Vhisola’s home, every wall was covered with carvings of Nokama. Her journal revealed the truth: jealous of Nokama’s new life as a Toa, Vhisola planned to seize the Great Disk for herself.',
+        type: 'narration',
+      },
+      {
+        text: 'Vahki pursued Nokama through the canals. She escaped using a hidden reservoir branch—then found Vhisola’s lab wrecked by a four-legged hunter. A shattered tablet showed the Morbuzakh king root and six Great Disks that could destroy it. A map stamped with Orkahm’s name was left behind.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'The rest of her notes—have you seen them?',
+        type: 'dialogue',
+      },
+      {
+        text: 'The lab worker admitted Vhisola had copied everything and taken it home. Behind a portrait of Nokama, a safe opened to the Ga-Metru code—and notes proving the Great Disk had been at the Great Temple all along.',
+        type: 'narration',
+      },
+      {
+        text: 'A crowd pointed to Vhisola teetering on a rooftop. Nokama launched herself through a protodermis pipe and caught the Matoran just before she fell.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Vhisola',
+        text: 'Now that you’re a Toa Metru, you’ll just cast an even longer shadow over me.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'Whatever you think, we can deal with it later. I need that Great Disk!',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Vhisola',
+        text: 'Some four-legged thing chased me through the streets. I never should have paid attention to that note.',
+        type: 'dialogue',
+      },
+      {
+        text: 'Vhisola produced the coded note. When Nokama deciphered it, the message read: “Beware. The Toa serve the Morbuzakh. They must not find the Great Disks. Meet me at the protodermis falls with your disk and I will keep it safe. Ahkmou.”',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'Come on, Vhisola. We need to have a long talk with some friends of mine.',
+        type: 'dialogue',
+      },
+    ],
+  },
+  metru_nuju_great_disk: {
+    background: { from: '#0a1628', to: '#a8d8ea', type: 'gradient' },
+    id: 'metru_nuju_great_disk',
+    steps: [
+      {
+        text: 'Toa Nuju searched Ko-Metru for Ehrye, the errand-runner who knew where the Great Disk was hidden. Ehrye had vanished after writing in his journal about turning over the disk to earn a place in a Knowledge Tower.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nuju',
+        text: 'I am Nuju, Toa Metru of Ice. I am looking for a runner named Ehrye. Have you seen him?',
+        type: 'dialogue',
+      },
+      {
+        text: 'A chute attendant had seen Ehrye talking to a Matoran from another metru, then riding a chute to a Knowledge Tower—where scholars reported he had broken the rules and climbed to the forbidden top level.',
+        type: 'narration',
+      },
+      {
+        text: 'Nuju planted a knowledge crystal to grow a new tower, then spotted Ehrye trapped atop another tower as a crack split the crystal structure. He swung across the metru and sealed the fracture with ice before climbing up.',
+        type: 'narration',
+      },
+      {
+        text: 'Ehrye was walled in by protodermis blocks arranged like a puzzle. Nuju studied the pattern and freed him piece by piece.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Ehrye',
+        text: 'Why should I give you the disk? That disk could be my ticket to a Knowledge Tower position.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nuju',
+        text: 'It was almost your ticket to a tomb. Think about the future, Ehrye.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Ehrye',
+        text: 'The Morbuzakh has a king root. Stop the root, you stop the plant—but you need all six disks to do it.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Ehrye',
+        text: 'I’ll tell you where it is. But you’re going to have to retrieve it. No one but a Toa Metru has a chance of getting that disk from its hiding place.',
+        type: 'dialogue',
+      },
+    ],
+  },
+  metru_onewa_great_disk: {
+    background: { from: '#2a1f14', to: '#c4a574', type: 'gradient' },
+    id: 'metru_onewa_great_disk',
+    steps: [
+      {
+        text: 'Toa Onewa raced through Po-Metru’s Sculpture Fields toward Ahkmou—perched atop a massive statue and waiting nervously.',
+        type: 'narration',
+      },
+      {
+        text: 'Ahkmou’s home and workshop had been ransacked. Coworkers said two strangers had visited—a giant and a four-legged hunter. A hidden map marked this very statue.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Ahkmou',
+        text: 'Hurry up and get me down from here! You can, can’t you?',
+        type: 'dialogue',
+      },
+      {
+        text: 'As Onewa climbed, Ahkmou denied knowing anything about a Great Disk—then spotted Nidhiki below and fled down spikes wedged in the stone. Carved at the top: PO-METRU CHUTE 445.',
+        type: 'narration',
+      },
+      {
+        text: 'Onewa swung between statues with his proto pitons and caught Ahkmou at the crowded chute station. Nidhiki watched from the shadows.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Onewa',
+        text: 'Where are you going? And where is the Great Disk?',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Ahkmou',
+        text: 'Okay—I’ll help you find the Great Disk, but we have to go now. Now!',
+        type: 'dialogue',
+      },
+      {
+        text: 'Later, the six Toa Metru gathered at the Great Temple and compared their hunts. Every Matoran had been lured away, sabotage had dogged their steps—and the clues were piling up.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Vakama',
+        text: 'One of them is lying.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Nokama',
+        text: 'Ahkmou’s name was on the note to Vhisola.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Vakama',
+        text: 'There was protodermis dust from Po-Metru near the sabotaged vat controls.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'Ahkmou knew about Nui-Jaga—enough to lure Tehutti to the Archives with a fake trade.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Toa_Onewa',
+        text: 'I say we ask him. And then we haul him to the Vahki.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Vakama',
+        text: 'No! We mustn’t!',
+        type: 'dialogue',
       },
     ],
   },
@@ -457,6 +863,46 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
       },
     ],
   },
+  metru_vakama_great_disk: {
+    background: { from: '#1a0a08', to: '#ff6b35', type: 'gradient' },
+    id: 'metru_vakama_great_disk',
+    steps: [
+      {
+        text: 'In Ta-Metru, Toa Vakama dodged molten protodermis as Morbuzakh vines tried to tip a vat from its chains. He fired a Ko-Metru freeze disk into the gears, halting the spill and driving the vines back with frost.',
+        type: 'narration',
+      },
+      {
+        text: 'A four-legged hunter had fried the forge controls. Protodermis dust from Po-Metru littered the floor. Nuhrii had been here searching for a rejected mask—then left for the reclamation yard, muttering about a Kanoka disk that could forge the greatest mask ever worn.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Vakama',
+        text: 'I am Toa Vakama. Nuhrii is in danger—I need to get inside.',
+        type: 'dialogue',
+      },
+      {
+        text: 'The guard refused until Vakama’s mask power let him see through the gate—and through the guard’s fear. Beyond the fence lay mountains of flawed masks and, deeper in the abandoned northern zone, Nuhrii’s home.',
+        type: 'narration',
+      },
+      {
+        text: 'Half the buildings were rubble. Morbuzakh had claimed the outskirts. Vakama found Nuhrii inside, clutching a tablet that showed the Ta-Metru Great Disk code.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Nuhrii',
+        text: 'The Great Disk? I didn’t know. Yes, I will gladly help you find it.',
+        type: 'dialogue',
+      },
+      {
+        text: 'As they left, Nuhrii whispered under his breath: “We’ll get the disk. We’ll stop the Morbuzakh. And everyone will know that I saved Metru Nui!” Vakama shook his head.',
+        type: 'narration',
+      },
+    ],
+  },
   metru_vakama_lhikan_story: {
     background: { from: '#0d1f2d', to: '#ffe28e', type: 'gradient' },
     id: 'metru_vakama_lhikan_story',
@@ -629,6 +1075,56 @@ export const METRU_NUI_CUTSCENES: Record<string, VisualNovelCutscene> = {
         position: 'left',
         speakerId: 'Turaga_Vakama',
         text: 'When we return to Metru Nui, we may learn the answer. Until then, remember what he said: Unity. Duty. Destiny. The city will need all three.',
+        type: 'dialogue',
+      },
+    ],
+  },
+  metru_whenua_great_disk: {
+    background: { from: '#1a1208', to: '#8b6914', type: 'gradient' },
+    id: 'metru_whenua_great_disk',
+    steps: [
+      {
+        text: 'Toa Whenua forced his way into the Onu-Metru Archives seeking Tehutti. A forged note—supposedly from Vhisola offering a Nui-Jaga trade—had lured the archivist underground.',
+        type: 'narration',
+      },
+      {
+        text: 'A sabotaged ladder sent Whenua plunging into the deepest storage levels. A Rahkshi stalked the corridors, heat vision scorching the walls. Whenua raised an earth wall—but the creature melted through it.',
+        type: 'narration',
+      },
+      {
+        text: 'Remembering Tehutti’s trivia, Whenua waited until the Rahkshi’s eyesight weakened after each blast. He scattered stasis-tube fragments outside the Muaka pen and freed the great cat—setting Rahi against Rahkshi.',
+        type: 'narration',
+      },
+      {
+        text: 'While the beasts fought, Whenua slid past and found Tehutti buried under fallen artifacts.',
+        type: 'narration',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'Then how about giving me that Great Disk you have while there’s still a city up above to save.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Tehutti',
+        text: 'Some four-legged Rahi demanded the disk, then buried me here. You want it? Take it!',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'right',
+        speakerId: 'Tehutti',
+        text: 'My friend Ahkmou told me all about Nui-Jaga. I wanted to see why someone wanted the Great Disk so badly.',
+        type: 'dialogue',
+      },
+      {
+        portraitType: 'avatar',
+        position: 'left',
+        speakerId: 'Toa_Whenua',
+        text: 'You would’ve traded the city’s safety for a new exhibit to put your name on.',
         type: 'dialogue',
       },
     ],

@@ -161,7 +161,14 @@ export const NOKAMA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment
     kitNodeName: KIT_2001_NODES.AxleMod2L,
     materialColors: NOKAMA_BODY_COLORS,
   },
-  Gear_Shoulder_R001: { kitNodeName: KIT_2001_NODES.GearM, materialColors: NOKAMA_BLACK },
+  AxleSocket3L_L: {
+    kitNodeName: KIT_2001_NODES.AxleSocket3L,
+    materialColors: NOKAMA_SOCKET_COLORS,
+  },
+  AxleSocket3L_R: {
+    kitNodeName: KIT_2001_NODES.AxleSocket3L,
+    materialColors: NOKAMA_SOCKET_COLORS,
+  },
   Gear_Shoulder_R002: { kitNodeName: KIT_2001_NODES.GearM, materialColors: NOKAMA_BLACK },
   GearM_B: { kitNodeName: KIT_2001_NODES.GearM, materialColors: NOKAMA_AXLE_COLORS },
   GearM_ShoulderL: { kitNodeName: KIT_2001_NODES.GearM, materialColors: NOKAMA_BLACK },

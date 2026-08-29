@@ -1,7 +1,8 @@
 module.exports = {
   globals: {
     __APP_VERSION__: 'test',
-    __TELEMETRY_URL__: '',
+    __POSTHOG_HOST__: 'https://us.i.posthog.com',
+    __POSTHOG_KEY__: '',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   roots: ['<rootDir>/src'],

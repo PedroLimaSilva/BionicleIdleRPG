@@ -77,6 +77,7 @@ export const enum MatoranStage {
   Metru = 'Metru',
   Bohrok = 'Bohrok',
   BohrokKal = 'BohrokKal',
+  Vahki = 'Vahki',
   Makuta = 'Makuta',
 }
 

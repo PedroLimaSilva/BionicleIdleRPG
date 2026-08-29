@@ -356,11 +356,16 @@ Currency: 5000
 XP: 4000"]
   story_metru_nui_saga_begin["Tales of the Lost City
 (15m)
-Unlock: Toa_Lhikan, Matau, Nokama, Nuju, Onewa, Vakama, Whenua
+Unlock: Toa_Lhikan, Matau, Nokama, Nuju, Onewa, Vakama, Whenua, Kapura
 Currency: 5500
 XP: 4500"]
+  metru_kapura_morbuzakh["Morbuzakh
+(18m)
+Currency: 6000
+XP: 5000"]
   metru_vakama_dume_and_the_great_temple["The Turaga’s Visit
 (20m)
+Unlock: bordakh, nuurakh, vorzakh, zadakh, rorzakh, keerakh
 Currency: 6500
 XP: 5500"]
   metru_great_temple_transformation["Destiny at the Great Temple
@@ -371,6 +376,40 @@ XP: 6000"]
 (20m)
 Currency: 7500
 XP: 6500"]
+  metru_nokama_great_disk["The Ga-Metru Great Disk
+(25m)
+Unlock: Vhisola
+Currency: 8000
+XP: 7000"]
+  metru_nuju_great_disk["The Ko-Metru Great Disk
+(25m)
+Unlock: Ehrye
+Currency: 8000
+XP: 7000"]
+  metru_onewa_great_disk["The Po-Metru Great Disk
+(25m)
+Unlock: Ahkmou
+Currency: 8000
+XP: 7000"]
+  metru_matau_great_disk["The Le-Metru Great Disk
+(25m)
+Unlock: Orkahm
+Currency: 8000
+XP: 7000"]
+  metru_vakama_great_disk["The Ta-Metru Great Disk
+(25m)
+Unlock: Nuhrii
+Currency: 8000
+XP: 7000"]
+  metru_whenua_great_disk["The Onu-Metru Great Disk
+(25m)
+Unlock: Tehutti
+Currency: 8000
+XP: 7000"]
+  metru_great_disks_interlude["A Tale for Another Night
+(12m)
+Currency: 6000
+XP: 5500"]
   story_toa_arrival --> maskhunt_kopaka_matoro_icecliff
   maskhunt_kopaka_matoro_icecliff --> maskhunt_kopaka_pohatu_icecliff
   mnog_tahu_unlock_01 --> story_toa_council
@@ -469,9 +508,22 @@ XP: 6500"]
   mol_takanuva_rises --> mol_defeat_of_makuta
   mol_defeat_of_makuta --> mol_rediscovery_of_metru_nui
   mol_rediscovery_of_metru_nui --> story_metru_nui_saga_begin
+  story_metru_nui_saga_begin --> metru_kapura_morbuzakh
   story_metru_nui_saga_begin --> metru_vakama_dume_and_the_great_temple
   metru_vakama_dume_and_the_great_temple --> metru_great_temple_transformation
   metru_great_temple_transformation --> metru_seek_the_great_disks
+  metru_seek_the_great_disks --> metru_nokama_great_disk
+  metru_seek_the_great_disks --> metru_nuju_great_disk
+  metru_seek_the_great_disks --> metru_onewa_great_disk
+  metru_seek_the_great_disks --> metru_matau_great_disk
+  metru_seek_the_great_disks --> metru_vakama_great_disk
+  metru_seek_the_great_disks --> metru_whenua_great_disk
+  metru_nokama_great_disk --> metru_great_disks_interlude
+  metru_nuju_great_disk --> metru_great_disks_interlude
+  metru_onewa_great_disk --> metru_great_disks_interlude
+  metru_matau_great_disk --> metru_great_disks_interlude
+  metru_vakama_great_disk --> metru_great_disks_interlude
+  metru_whenua_great_disk --> metru_great_disks_interlude
 classDef completed fill:#22c55e,stroke:#16a34a,stroke-width:3px,color:#fff
 classDef active fill:#eab308,stroke:#ca8a04,stroke-width:3px,color:#000
 classDef available fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff

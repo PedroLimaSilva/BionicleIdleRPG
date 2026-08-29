@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { resetGameData } from '../../persistence/gamePersistence';
-import { getTelemetryUrl } from '../../services/telemetry';
+import { isAnalyticsConfigured } from '../../services/telemetry';
 import { useSettings } from '../../context/useSettings';
 import './index.scss';
 
-const showTelemetryOption = !!getTelemetryUrl();
+const showTelemetryOption = isAnalyticsConfigured();
 
 export default function SettingsPage() {
   const {
@@ -218,6 +218,15 @@ export default function SettingsPage() {
           </p>
           <Link to="/settings/game-state" className="button cancel-button">
             Edit Game State
+          </Link>
+        </label>
+        <label className="settings-option">
+          <p>
+            Preview every dex character in 3D, with combat animations and mask controls. Recruitment
+            is not required.
+          </p>
+          <Link to="/test/dex" className="button cancel-button">
+            Character Dex
           </Link>
         </label>
 

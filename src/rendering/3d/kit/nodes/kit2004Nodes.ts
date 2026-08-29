@@ -6,6 +6,7 @@
 export const KIT_2004_NODES = {
   AeroSlicer: 'AeroSlicer',
   AxleArm3L: 'AxleArm3L',
+  BordakhTool: 'BordakhTool',
   CrystalSpike: 'CrystalSpike',
   DiskLauncher: 'Disk_Launcher',
   DoubleSocketArmor: 'DoubleSocketArmor',
@@ -29,6 +30,13 @@ export const KIT_2004_NODES = {
   ProtoPiton: 'ProtoPiton',
   SocketDouble1L: 'SocketDouble1L',
   TechnicPinBush: 'TechnicPinBush',
+  VahkiGlowingEyes: 'VahkiGlowingEyes',
+  VahkiHead: 'VahkiHead',
+  VahkiHip: 'VahkiHip',
+  VahkiHood: 'VahkiHood',
+  VahkiLauncher: 'VahkiLauncher',
+  VahkiLeg: 'VahkiLeg',
+  VahkiSpine: 'VahkiSpine',
   VakamaDiskLauncher: 'VakamaDiskLauncher',
 } as const;
 

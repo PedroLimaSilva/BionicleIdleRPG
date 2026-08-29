@@ -62,7 +62,8 @@ function getEncounterAvatarSrc(encounter: EnemyEncounter): string | null {
   if (
     template.model === 'rahkshi' ||
     template.model === 'rahi_placeholder' ||
-    template.model === 'nui_rama'
+    template.model === 'nui_rama' ||
+    template.model === 'vahki'
   ) {
     return null;
   }
