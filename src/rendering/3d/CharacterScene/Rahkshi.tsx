@@ -7,6 +7,7 @@ import { useCombatAnimations } from '../hooks/useCombatAnimations';
 import { getRahkshiArmorColors } from '../../../data/rahkshiArmorColors';
 import { KraataPower } from '../../../types/Kraata';
 import { applyWeatheredMetalToObject, WeatheredMetalOptions } from './WeatheredMetalMaterial';
+import { disposeObject3DResources } from '../utils/disposeThreeObject';
 
 const BLACK = new ThreeColor('#000000');
 const GLOW_LERP_SPEED = 5;
@@ -203,6 +204,13 @@ export const RahkshiModel = forwardRef<
 
     glowEntries.current = entries;
   }, [bodyInstance, kraata, hasKraata]);
+
+  useEffect(() => {
+    const instance = bodyInstance;
+    return () => {
+      disposeObject3DResources(instance, { disposeMaterials: true });
+    };
+  }, [bodyInstance]);
 
   useFrame((_, delta) => {
     const entries = glowEntries.current;
