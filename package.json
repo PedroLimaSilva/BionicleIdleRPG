@@ -1,7 +1,7 @@
 {
   "name": "bionicle-idle-rpg",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.8.2",
   "license": "MIT",
   "engines": {
     "node": ">=20.19.0"
@@ -41,6 +41,9 @@
     "kit-node-usage-report": "tsx scripts/kit-node-usage-report.mts",
     "audit:prod": "tsx scripts/audit-prod.mts high",
     "audit:prod:critical": "tsx scripts/audit-prod.mts critical",
+    "release:plan": "tsx scripts/release.mts plan",
+    "release:notes": "tsx scripts/release.mts notes",
+    "release:bump": "tsx scripts/release.mts bump",
     "prepare": "husky && yarn vendor-draco && yarn vendor-fonts"
   },
   "dependencies": {
