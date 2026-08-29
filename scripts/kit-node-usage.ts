@@ -6,16 +6,16 @@ import {
   parseAttachmentKitNodeCounts,
   parseKitNodeRegistry,
   type KitUsageSnapshot,
-} from '../src/game/kit/nodes/kitNodeUsageReport';
+} from '../src/rendering/3d/kit/nodes/kitNodeUsageReport';
 
 export {
   buildMarkdownReport,
   usageSnapshotFromWorkspace,
-} from '../src/game/kit/nodes/kitNodeUsageReport';
+} from '../src/rendering/3d/kit/nodes/kitNodeUsageReport';
 
-const ATTACHMENTS_PREFIX = 'src/game/kit/attachments/';
-const KIT_2001_NODES_PATH = 'src/game/kit/nodes/kit2001Nodes.ts';
-const KIT_2003_NODES_PATH = 'src/game/kit/nodes/kit2003Nodes.ts';
+const ATTACHMENTS_PREFIX = 'src/rendering/3d/kit/attachments/';
+const KIT_2001_NODES_PATH = 'src/rendering/3d/kit/nodes/kit2001Nodes.ts';
+const KIT_2003_NODES_PATH = 'src/rendering/3d/kit/nodes/kit2003Nodes.ts';
 
 function gitRefExists(ref: string): boolean {
   try {

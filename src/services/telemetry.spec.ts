@@ -38,7 +38,7 @@ jest.mock('posthog-js', () => ({
   },
 }));
 
-jest.mock('./gamePersistence', () => ({
+jest.mock('../persistence/gamePersistence', () => ({
   getLastPersistedGameState: () => null,
   getTelemetryEnabled: () => mockTelemetryEnabled,
   getTelemetryId: () => 'test-uuid-1234',

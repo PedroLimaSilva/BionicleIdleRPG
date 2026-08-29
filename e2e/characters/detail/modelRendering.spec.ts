@@ -30,7 +30,7 @@ test.describe('Character Model Rendering', () => {
         ],
       });
 
-      const modelReady = waitForCharacterModelReady(page);
+      const modelReady = waitForCharacterModelReady(page, { urlIncludes: 'Takua' });
       await goto(page, '/test/model/characters/Takua');
       await disableCSSAnimations(page);
       await waitForCharacterModelScene(page, modelReady);
@@ -45,7 +45,7 @@ test.describe('Character Model Rendering', () => {
     test('should render correct matoran character detail after switching to another character', async ({
       page,
     }) => {
-      const modelReady = waitForCharacterModelReady(page);
+      const modelReady = waitForCharacterModelReady(page, { urlIncludes: 'Hahli' });
       await navigateToModelPreview(page, 'Hahli');
       await waitForCharacterModelScene(page, modelReady);
 
@@ -115,21 +115,25 @@ test.describe('Character Model Rendering', () => {
       ...INITIAL_GAME_STATE,
       recruitedCharacters: recruited(ids),
     }),
-    characterIds: [
-      'Vakama',
-      'Nokama',
-      'Matau',
-      'Onewa',
-      'Whenua',
-      'Nuju',
-      'Nuhrii',
-      'Vhisola',
-      'Orkahm',
-      'Ahkmou',
-      'Tehutti',
-      'Ehrye',
-    ],
+    characterIds: ['Matau', 'Nuhrii'],
     suiteName: 'Metru Matoran Characters',
+  });
+
+  defineSerialCharacterModelSuite({
+    buildGameState: (ids) => ({
+      ...INITIAL_GAME_STATE,
+      recruitedCharacters: recruited(ids),
+    }),
+    characterIds: [
+      'Toa_Lhikan',
+      'Toa_Matau',
+      'Toa_Nokama',
+      'Toa_Nuju',
+      'Toa_Onewa',
+      'Toa_Vakama',
+      'Toa_Whenua',
+    ],
+    suiteName: 'Toa Metru Characters',
   });
 
   test.describe('Rebuilt Matoran', () => {
@@ -161,6 +165,15 @@ test.describe('Character Model Rendering', () => {
       'gahlok_kal',
     ],
     suiteName: 'Bohrok Characters',
+  });
+
+  defineSerialCharacterModelSuite({
+    buildGameState: (ids) => ({
+      ...INITIAL_GAME_STATE,
+      recruitedCharacters: recruited(ids),
+    }),
+    characterIds: ['bordakh', 'nuurakh', 'vorzakh', 'zadakh', 'rorzakh', 'keerakh'],
+    suiteName: 'Vahki Characters',
   });
 
   defineSerialCharacterModelSuite({

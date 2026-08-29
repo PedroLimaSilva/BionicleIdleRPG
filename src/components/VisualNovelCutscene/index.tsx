@@ -7,7 +7,7 @@ import type {
 } from '../../types/Cutscenes';
 import { isDialogueStep } from '../../types/Cutscenes';
 import './index.scss';
-import { MatoranAvatar } from '../MatoranAvatar';
+import { MatoranAvatar } from '../../rendering/2d/MatoranAvatar';
 import { useTypewriter } from './TypewriterText';
 
 type Props = {

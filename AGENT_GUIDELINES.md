@@ -16,23 +16,42 @@ The game runs entirely in the browser. All game logic must support offline progr
 
 ## Non-Negotiable Architectural Rules
 
+### Folder Map (by concern)
+
+Code is grouped by what it is, not dumped into `src/game/`:
+
+| Concern          | Location             | What belongs here                                                                                         |
+| ---------------- | -------------------- | --------------------------------------------------------------------------------------------------------- |
+| Game mechanics   | `src/game/<domain>/` | Pure rules: jobs, quests, recruitment, evolution, combat rewards, levelling, krana/kraata, masks, economy |
+| 3D rendering     | `src/rendering/3d/`  | Kit catalogs, CharacterScene models, battle arenas, 3D hooks, canvas portal                               |
+| 2D rendering     | `src/rendering/2d/`  | Composited avatars, image stacking, 2D mask discoloration                                                 |
+| UI layouts       | `src/components/`    | Screen chrome: nav, modals, lists, banners, tooltips                                                      |
+| Game-state hooks | `src/hooks/`         | React state hooks composed by `useGameLogic`                                                              |
+| Persistence      | `src/persistence/`   | IndexedDB, save/load, `useGamePersistence`                                                                |
+
+Static content stays in `src/data/`. Shared types stay in `src/types/`. Route screens stay in `src/pages/`. Remaining bridges (combat simulation, telemetry, share codes) stay in `src/services/`.
+
 ### Layer Separation
 
 **DO NOT** violate these layer boundaries:
 
 1. **Types (`src/types/`)** → May import nothing except other types
 2. **Data (`src/data/`)** → May import types only
-3. **Game Logic (`src/game/`)** → May import types and data only. Must remain pure functions.
-4. **Services (`src/services/`)** → May import types, data, and game logic. Must not import hooks or components.
-5. **Hooks (`src/hooks/`)** → May import anything except other hooks, with two exceptions: `useGameLogic` composes state hooks, and animation hooks (e.g. `useCombatAnimations`) may compose other animation hooks (e.g. `useIdleAnimation`, `usePlayAnimation`)
-6. **Context (`src/context/`)** → May import hooks and types only
-7. **Components/Pages** → May import anything
+3. **Game Logic (`src/game/`)** → May import types and data only. Must remain pure functions. Organized by domain (`jobs/`, `quests/`, `combat/`, …).
+4. **Rendering (`src/rendering/`)** → May import types, data, and game logic. Kit catalogs and 2D/3D helpers must not import pages or UI layout components. 3D kit palettes may import rendering materials/hooks. React 3D/2D components live here, not in `src/components/`.
+5. **Persistence (`src/persistence/`)** → May import types, data, and game logic. Must not import UI components. Includes `useGamePersistence`.
+6. **Services (`src/services/`)** → May import types, data, game logic, and persistence. Must not import hooks or components.
+7. **Hooks (`src/hooks/`)** → Game-state hooks only. May import anything except other hooks, with one exception: `useGameLogic` composes state hooks. 3D animation/material hooks live under `src/rendering/3d/hooks/` and may compose each other (e.g. `useCombatAnimations` → `useIdleAnimation` / `usePlayAnimation`).
+8. **Context (`src/context/`)** → Game and settings providers. May import hooks, persistence, and types. The 3D canvas provider lives at `src/rendering/3d/Canvas.tsx`.
+9. **Components/Pages (`src/components/`, `src/pages/`)** → May import anything. `src/components/` is UI layouts only.
 
 **NEVER** make game logic functions depend on React hooks or component state.
 
 **NEVER** import hooks into services or game logic.
 
 **NEVER** create circular dependencies between hooks.
+
+**NEVER** put 3D kit catalogs, model components, or avatar compositing in `src/game/` or `src/components/`.
 
 ### State Management Architecture
 
@@ -144,7 +163,7 @@ Kraata are tracked separately from the generic inventory via `kraataCollection` 
 
 **MUST ENFORCE:**
 
-1. Only these fields are persisted (see `PartialGameState` / `useGamePersistence`): `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `customCharacters`, `activeQuests`, `completedQuests`. (`buyableCharacters` is derived at runtime from `completedQuests` and `recruitedCharacters` via the recruitment registry.) Game data is stored in IndexedDB split stores (`src/services/gameDatabase.ts`); settings remain in `localStorage`.
+1. Only these fields are persisted (see `PartialGameState` / `useGamePersistence`): `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `customCharacters`, `activeQuests`, `completedQuests`. (`buyableCharacters` is derived at runtime from `completedQuests` and `recruitedCharacters` via the recruitment registry.) Game data is stored in IndexedDB split stores (`src/persistence/gameDatabase.ts`); settings remain in `localStorage`.
 2. Battle state is NOT persisted (battles reset on page refresh)
 3. Save `version` must exactly match `CURRENT_GAME_STATE_VERSION` (9); older or newer saves are rejected and load `INITIAL_GAME_STATE`
 4. `saveGameStateAsync` (called from debounced `useGamePersistence`) catches `QuotaExceededError` and surfaces it via `SaveErrorBanner`
@@ -232,7 +251,7 @@ The `useJobTickEffect` hook runs on an interval and processes all assigned jobs.
 
 ### Before Making Changes
 
-1. **Identify the layer** the code belongs to (types, data, game logic, services, hooks, context, components)
+1. **Identify the layer** the code belongs to (types, data, game logic, rendering, persistence, services, hooks, context, components)
 2. **Check dependencies** - ensure you're not violating layer boundaries
 3. **Identify invariants** - what assumptions does this code make? What assumptions does other code make about it?
 4. **Search for usages** - use codebase-retrieval to find all places that depend on what you're changing
@@ -240,7 +259,7 @@ The `useJobTickEffect` hook runs on an interval and processes all assigned jobs.
 ### When Modifying Game Logic
 
 1. Game logic functions in `src/game/` must remain pure (no side effects, no React dependencies)
-2. If you need to add side effects, put them in services or hooks, not game logic
+2. If you need to add side effects, put them in services, persistence, or hooks — not game logic
 3. Ensure offline progress calculations still work (test by simulating time passage)
 4. Verify that the function signature matches what hooks/services expect
 
@@ -260,10 +279,12 @@ The `useJobTickEffect` hook runs on an interval and processes all assigned jobs.
 
 ### When Adding New Features
 
-1. **New game mechanic?** → Add pure logic to `src/game/`, wire it up in a hook
+1. **New game mechanic?** → Add pure logic under `src/game/<domain>/`, wire it up in a hook
 2. **New content?** → Add static data to `src/data/`, reference by ID in state
-3. **New state?** → Create a new hook, compose it in `useGameLogic`, add to persistence if needed
-4. **New UI?** → Create component, consume `useGame()`, call mutation functions
+3. **New state?** → Create a new hook in `src/hooks/`, compose it in `useGameLogic`, add to `src/persistence/` if it should be saved
+4. **New 3D model / kit / arena?** → Add it under `src/rendering/3d/`
+5. **New 2D avatar / compositing?** → Add it under `src/rendering/2d/`
+6. **New UI?** → Create a layout component in `src/components/`, consume `useGame()`, call mutation functions
 
 ### Testing Changes
 
@@ -322,7 +343,7 @@ The `INITIAL_GAME_STATE` in `src/data/gameState.ts` contains stub functions that
 
 ### The Canvas Portal Pattern
 
-The 3D canvas uses React portals to render into `#canvas-mount`.
+The 3D canvas uses React portals to render into `#canvas-mount` (`src/rendering/3d/Canvas.tsx`).
 
 **NEVER** remove or rename the `#canvas-mount` element.
 
@@ -358,7 +379,7 @@ Characters exist as:
 
 This project has a clear architecture with well-defined layers and patterns. The most important rules are:
 
-1. **Respect layer boundaries** - game logic stays pure, hooks manage state, components consume context
+1. **Respect layer boundaries** - game logic stays pure, rendering stays out of `src/game/`, hooks manage state, UI components consume context
 2. **Maintain invariants** - single assignment, ID-based references, immutable updates, time flows forward
 3. **Follow the dictionary pattern** - static data in records, runtime state stores IDs only
 4. **Preserve offline progress** - all time-based mechanics must support offline calculation

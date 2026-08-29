@@ -28,10 +28,12 @@ Guidance for keeping the test suite fast, stable, and meaningful. Complements [e
 
 ### Scope
 
-- `src/game/` — combat, quests, leveling, masks, kit nodes, evolution rules
-- `src/services/` — persistence, battle simulation, utilities
-- `src/hooks/*.spec.ts` — material prep, animation helpers (Three objects, no WebGL context)
-- `src/pages/Battle/arenas/*.spec.ts` — arena recolor/GLB utilities
+- `src/game/` — combat, quests, leveling, masks, evolution rules
+- `src/rendering/3d/` — kit nodes, material prep, animation helpers, arena recolor/GLB utilities
+- `src/rendering/2d/` — avatar layer compositing
+- `src/persistence/` — IndexedDB save/load
+- `src/services/` — battle simulation, combat utilities
+- `src/hooks/*.spec.ts` — game-state hooks (job ticks, characters)
 
 ### Patterns
 

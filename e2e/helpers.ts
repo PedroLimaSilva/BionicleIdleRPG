@@ -2,9 +2,9 @@ import { Page, TestInfo } from '@playwright/test';
 import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
 import type { E2ePwaBannerState } from '../src/utils/testMode';
-import { E2E_MODEL_PREVIEW_NAV_KEY } from '../src/utils/e2eModelPreview';
+import { E2E_MODEL_PREVIEW_NAV_KEY } from '../src/rendering/3d/utils/e2eModelPreview';
 
-import { E2E_FORCE_GAME_STATE_IMPORT_KEY, GAME_DB_NAME } from '../src/services/gameDatabase';
+import { E2E_FORCE_GAME_STATE_IMPORT_KEY, GAME_DB_NAME } from '../src/persistence/gameDatabase';
 
 type TestModeOptions = {
   pwaBanner?: E2ePwaBannerState;
@@ -421,7 +421,16 @@ export function waitForModelLoad(page: Page, timeout = modelLoadTimeout): Promis
  * then kit attach); this settles after the last signal so weathered kit materials
  * are applied before capture. Fails after `timeout` ms if the model never becomes ready.
  */
-export function waitForCharacterModelReady(page: Page, timeout = modelLoadTimeout): Promise<void> {
+export function waitForCharacterModelReady(
+  page: Page,
+  options?: { timeout?: number; urlIncludes?: string }
+): Promise<void> {
+  const timeout = options?.timeout ?? modelLoadTimeout;
+  const urlIncludes = options?.urlIncludes;
+  // Software WebGL attaches kit layers more slowly; a short settle after the
+  // last ready still captured mid-attach on serial hops (e.g. Kopaka Nuva).
+  const settleMs = process.env.CI || process.env.PLAYWRIGHT_DOCKER ? 800 : 250;
+
   return new Promise((resolve, reject) => {
     let settleId: ReturnType<typeof setTimeout> | undefined;
 
@@ -438,15 +447,19 @@ export function waitForCharacterModelReady(page: Page, timeout = modelLoadTimeou
 
     const handler = (msg: { text: () => string }) => {
       if (!msg.text().includes('[TEST_MODE] model ready')) return;
+      if (urlIncludes && !page.url().includes(urlIncludes)) return;
       if (settleId) clearTimeout(settleId);
       settleId = setTimeout(() => {
         void page
-          .evaluate(
-            () =>
-              new Promise<void>((resolve) => {
-                requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-              })
-          )
+          .evaluate(() => {
+            const invalidate = (window as Window & { __R3F_INVALIDATE__?: () => void })
+              .__R3F_INVALIDATE__;
+            invalidate?.();
+            invalidate?.();
+            return new Promise<void>((resolve) => {
+              requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+            });
+          })
           .then(() => {
             cleanup();
             resolve();
@@ -455,7 +468,7 @@ export function waitForCharacterModelReady(page: Page, timeout = modelLoadTimeou
             cleanup();
             resolve();
           });
-      }, 250);
+      }, settleMs);
     };
 
     page.on('console', handler);

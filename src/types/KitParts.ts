@@ -1,13 +1,23 @@
 import type { LegoColor } from './Colors';
-import { BaseMatoran } from './Matoran';
 
-/** Keys on `BaseMatoran.colors` used to tint kit materials at runtime */
-export type MatoranPaletteKey = keyof BaseMatoran['colors'];
+/** Body parts that carry a Main / Secondary / Metal / Glow palette in the dex. */
+export const BODY_PART_IDS = ['body', 'arms', 'legs', 'feet', 'weapon'] as const;
+export type BodyPartId = (typeof BODY_PART_IDS)[number];
+
+export const BODY_PART_SLOTS = ['main', 'secondary', 'metal', 'glow'] as const;
+export type BodyPartSlot = (typeof BODY_PART_SLOTS)[number];
+
+/** Flat palette keys that are not per-part kit slots (avatar / Kanohi / brain). */
+export type FlatPaletteKey = 'mask' | 'eyes' | 'face';
+
+/** Runtime transmission presets for kit gel / visor slots (`transmissiveKitMaterial`). */
+export type KitTransmissivePreset = 'brain' | 'mctoranFace' | 'vahkiHood';
 
 /** How to resolve a hex color for a named material slot on a kit mesh */
 export type KitMaterialColorSource =
   | { kind: 'lego'; value: LegoColor }
-  | { kind: 'palette'; key: MatoranPaletteKey };
+  | { kind: 'palette'; key: FlatPaletteKey }
+  | { kind: 'part'; part: BodyPartId; slot: BodyPartSlot };
 
 /**
  * Optional per-slot fields merged into the character's weathered-metal shader when
@@ -60,6 +70,10 @@ export type KitMaterialSlotOverride = {
    * shouldn't be weathered (e.g. translucent brain plastic).
    */
   weathered?: boolean;
+  /** When below 1, enables alpha blending on the cloned kit material. */
+  opacity?: number;
+  /** Overrides material-name defaults for runtime transmission gel / visor. */
+  transmissive?: KitTransmissivePreset;
 } & KitMaterialWeatheredTuning;
 
 export type KitMaterialSlotEntry = KitMaterialColorSource | KitMaterialSlotOverride;

@@ -11,10 +11,10 @@ import {
   Mask,
   MatoranStage,
 } from '../../types/Matoran';
-import { LegoColor } from '../../types/Colors';
+import { DEFAULT_CUSTOM_COLORS } from '../../data/dex/partPalettes';
 import { useGame } from '../../context/Game';
-import { CharacterScene } from '../../components/CharacterScene';
-import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { CharacterScene } from '../../rendering/3d/CharacterScene';
+import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { ChevronLeft, ChevronRight, Link2, X } from 'lucide-react';
 import { RecruitmentCelebration } from '../../components/RecruitmentCelebration';
@@ -30,14 +30,7 @@ import {
  * Made of light-gray clear parts to convey it's a blank template.
  */
 const CREATE_PLACEHOLDER: BaseMatoran = {
-  colors: {
-    arms: LegoColor.LightGray,
-    body: LegoColor.LightGray,
-    eyes: LegoColor.TransNeonOrange,
-    face: LegoColor.DarkGray,
-    feet: LegoColor.LightGray,
-    mask: LegoColor.LightGray,
-  },
+  colors: DEFAULT_CUSTOM_COLORS,
   element: ElementTribe.Light,
   id: CREATE_CUSTOM_CHARACTER_ID,
   isMaskTransparent: true,

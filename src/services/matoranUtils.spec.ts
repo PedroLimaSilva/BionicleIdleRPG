@@ -1,4 +1,4 @@
-import { isMatoran, isToa, isToaMata } from '../game/matoranStage';
+import { isMatoran, isToa, isToaMata } from '../game/characters/matoranStage';
 import { recruitMatoran, assignJob, removeJob, masksCollected } from './matoranUtils';
 import {
   BaseMatoran,
@@ -10,15 +10,16 @@ import {
 } from '../types/Matoran';
 import { MatoranJob } from '../types/Jobs';
 import { LegoColor } from '../types/Colors';
+import { simpleLimbColors } from '../data/dex/partPalettes';
 
-const MOCK_COLORS = {
+const MOCK_COLORS = simpleLimbColors({
   arms: LegoColor.Black,
   body: LegoColor.Black,
   eyes: LegoColor.Black,
   face: LegoColor.LightGray,
   feet: LegoColor.Black,
   mask: LegoColor.Black,
-};
+});
 
 describe('matoranUtils', () => {
   describe('isMatoran', () => {
@@ -215,6 +216,22 @@ describe('matoranUtils', () => {
 
       expect(result[1]).toEqual({ exp: 200, id: 'Hahli' });
     });
+
+    test('rejects Mata Nui jobs for Metru Matoran', () => {
+      const matoran: RecruitedCharacterData[] = [{ exp: 0, id: 'Vakama' }];
+
+      const result = assignJob('Vakama', MatoranJob.CharcoalMaker, matoran);
+
+      expect(result[0].assignment).toBeUndefined();
+    });
+
+    test('rejects Metru jobs for Mata Nui Matoran', () => {
+      const matoran: RecruitedCharacterData[] = [{ exp: 0, id: 'Jala' }];
+
+      const result = assignJob('Jala', MatoranJob.MaskMaker, matoran);
+
+      expect(result[0].assignment).toBeUndefined();
+    });
   });
 
   describe('removeJob', () => {
@@ -370,6 +387,20 @@ describe('matoranUtils', () => {
           'mol_tahu_poisoned',
         ]);
         expect(masks).toEqual([Mask.HauNuva, Mask.Vahi]);
+      });
+    });
+
+    describe('Toa Metru', () => {
+      test('Lhikan only has his Great Hau', () => {
+        const lhikan: BaseMatoran = {
+          colors: MOCK_COLORS,
+          element: ElementTribe.Fire,
+          id: 'Toa_Lhikan',
+          mask: Mask.HauGreat,
+          name: 'Toa Lhikan',
+          stage: MatoranStage.ToaMetru,
+        };
+        expect(masksCollected(lhikan, [])).toEqual([Mask.HauGreat]);
       });
     });
   });

@@ -1,9 +1,15 @@
 import { test, expect } from '@playwright/test';
-import { goto, INITIAL_GAME_STATE, setupGameState, VIEWPORTS } from './helpers';
+import { goto, INITIAL_GAME_STATE, setupGameState, VIEWPORTS, waitForAvatars } from './helpers';
 
 const COMPLETED_QUEST_WITH_CUTSCENE = {
   ...INITIAL_GAME_STATE,
   completedQuests: ['mnog_ga_koro_sos'],
+};
+
+const COMPLETED_METRU_TEMPLE_CUTSCENE = {
+  ...INITIAL_GAME_STATE,
+  completedQuests: ['metru_great_temple_transformation'],
+  recruitedCharacters: [{ exp: 0, id: 'Vakama' }],
 };
 
 async function openDialogueCutscene(page: import('@playwright/test').Page) {
@@ -36,6 +42,43 @@ async function openVideoCutscene(page: import('@playwright/test').Page) {
   });
 }
 
+async function advanceCutsceneStep(page: import('@playwright/test').Page) {
+  const narration = page.locator('.visual-novel-cutscene__narration-box');
+  if (await narration.isVisible()) {
+    await narration.click();
+    return;
+  }
+  await page.locator('.visual-novel-cutscene__dialogue-box').click();
+}
+
+async function openMetruVakamaToaSuvaCutscene(page: import('@playwright/test').Page) {
+  await setupGameState(page, COMPLETED_METRU_TEMPLE_CUTSCENE);
+  await goto(page, '/quests', { hideCanvasBeforeNav: true });
+  await page.locator('h2.quests-page__title').first().waitFor({ state: 'visible', timeout: 10000 });
+  await page.locator('.quests-page__section-title:has-text("Metru Nui")').click();
+  await page.locator('.quests-page__item-title:has-text("Destiny at the Great Temple")').click();
+  await page.locator('button:has-text("Replay Cutscene")').click();
+  await page.locator('.visual-novel-cutscene__text').waitFor({ state: 'visible', timeout: 5000 });
+
+  for (let i = 0; i < 30; i++) {
+    const speakerVisible = await page
+      .locator('.visual-novel-cutscene__speaker-name')
+      .isVisible()
+      .catch(() => false);
+    const speaker = speakerVisible
+      ? ((await page.locator('.visual-novel-cutscene__speaker-name').textContent()) ?? '')
+      : '';
+    const text = (await page.locator('.visual-novel-cutscene__text').textContent()) ?? '';
+    if (speaker.includes('Vakama') && text.includes('Toa Suva')) {
+      await waitForAvatars(page);
+      return;
+    }
+    await advanceCutsceneStep(page);
+  }
+
+  throw new Error('Did not reach Vakama "The Toa Suva!" cutscene step');
+}
+
 test.describe('Visual Novel Cutscene', () => {
   // TODO: Test portraits
   test.skip('should display dialogue cutscene via Replay button on completed quest', async ({
@@ -53,6 +96,23 @@ test.describe('Visual Novel Cutscene', () => {
       maxDiffPixels: 200,
     });
   });
+});
+
+test.describe('Visual Novel Cutscene - Metru avatar', () => {
+  for (const [name, size] of Object.entries(VIEWPORTS)) {
+    test(`${name} (${size.width}x${size.height}): Metru Matoran portrait crown discoloration`, async ({
+      page,
+    }) => {
+      await page.setViewportSize(size);
+      await openMetruVakamaToaSuvaCutscene(page);
+      await expect(page.locator('.visual-novel-cutscene__speaker-name')).toContainText('Vakama');
+      await expect(page.locator('.visual-novel-cutscene__text')).toContainText('Toa Suva');
+      await expect(page.locator('.visual-novel-cutscene__portrait-avatar')).toHaveScreenshot(
+        `cutscene-metru-vakama-avatar-${name}.png`,
+        { maxDiffPixels: 200 }
+      );
+    });
+  }
 });
 
 test.describe('Visual Novel Cutscene - Responsiveness', () => {

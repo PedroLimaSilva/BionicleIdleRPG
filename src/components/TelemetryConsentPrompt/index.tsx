@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { hasTelemetryConsent } from '../../services/gamePersistence';
+import { hasTelemetryConsent } from '../../persistence/gamePersistence';
 import { isAnalyticsConfigured } from '../../services/telemetry';
 import { useSettings } from '../../context/useSettings';
 import './index.scss';

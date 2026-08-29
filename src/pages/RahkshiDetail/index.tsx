@@ -6,11 +6,11 @@ import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { getKraataPowerDescription } from '../../data/kraataPowerDescriptions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
-import { CompositedImage } from '../../components/CompositedImage';
-import { isForgeComplete } from '../../game/KraataActions';
+import { CompositedImage } from '../../rendering/2d/CompositedImage';
+import { isForgeComplete } from '../../game/kraata/KraataActions';
 import { useMemo, useState, useEffect } from 'react';
-import { useSceneCanvas } from '../../hooks/useSceneCanvas';
-import { RahkshiScene } from '../../components/CharacterScene/RahkshiScene';
+import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
+import { RahkshiScene } from '../../rendering/3d/CharacterScene/RahkshiScene';
 import { isTestMode } from '../../utils/testMode';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
 

@@ -3,6 +3,7 @@ import { ElementTribe, Mask } from '../types/Matoran';
 import { KraataPower } from '../types/Kraata';
 import { MOL_DEFEAT_OF_MAKUTA_QUEST_ID, MOL_TAKANUVA_RISES_QUEST_ID } from './quests/mask_of_light';
 import { BOHROK_KRANA_LEGEND_QUEST_ID } from './quests/bohrok_swarm';
+import { METRU_VAKAMA_DUME_QUEST_ID } from './quests/metru_nui';
 
 export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
   [Mask.Akaku]: {
@@ -59,6 +60,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     shortName: Mask.Hau,
     target: 'self',
   },
+  [Mask.HauGreat]: {
+    cooldown: {
+      amount: 1,
+      unit: 'wave',
+    },
+    description: 'Grants full immunity to all damage for 1 round',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'round',
+      },
+      multiplier: 0,
+      type: 'DMG_MITIGATOR',
+    },
+    longName: 'Great Mask of Shielding',
+    shortName: Mask.HauGreat,
+    target: 'self',
+  },
   // Nuva masks - team-wide effects
   [Mask.HauNuva]: {
     cooldown: { amount: 2, unit: 'wave' },
@@ -99,6 +118,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     },
     longName: 'Mask of Concealment',
     shortName: Mask.Huna,
+    target: 'self',
+  },
+  [Mask.HunaGreat]: {
+    cooldown: {
+      amount: 3,
+      unit: 'turn',
+    },
+    description: 'Becomes untargetable for 1 turn',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'turn',
+      },
+      multiplier: 0,
+      type: 'AGGRO',
+    },
+    longName: 'Great Mask of Concealment',
+    shortName: Mask.HunaGreat,
     target: 'self',
   },
   [Mask.Kakama]: {
@@ -172,6 +209,17 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     shortName: Mask.Komau,
     target: 'enemy',
   },
+  [Mask.KomauGreat]: {
+    cooldown: { amount: 4, unit: 'turn' },
+    description: 'Forces one enemy to attack their own team for 3 turns',
+    effect: {
+      duration: { amount: 3, unit: 'turn' },
+      type: 'CONFUSION',
+    },
+    longName: 'Great Mask of Mind Control',
+    shortName: Mask.KomauGreat,
+    target: 'enemy',
+  },
   [Mask.Mahiki]: {
     cooldown: {
       amount: 2,
@@ -188,6 +236,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     },
     longName: 'Mask of Illusion',
     shortName: Mask.Mahiki,
+    target: 'self',
+  },
+  [Mask.MahikiGreat]: {
+    cooldown: {
+      amount: 2,
+      unit: 'turn',
+    },
+    description: 'Summons a clone to absorb 1 hit',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'hit',
+      },
+      multiplier: 0,
+      type: 'DMG_MITIGATOR',
+    },
+    longName: 'Great Mask of Illusion',
+    shortName: Mask.MahikiGreat,
     target: 'self',
   },
 
@@ -207,6 +273,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     },
     longName: 'Mask of Telekinesis',
     shortName: Mask.Matatu,
+    target: 'enemy',
+  },
+  [Mask.MatatuGreat]: {
+    cooldown: {
+      amount: 2,
+      unit: 'turn',
+    },
+    description: 'Immobilizes enemy, preventing them from attacking for 1 wave',
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'wave',
+      },
+      multiplier: -1,
+      type: 'SPEED',
+    },
+    longName: 'Great Mask of Telekinesis',
+    shortName: Mask.MatatuGreat,
     target: 'enemy',
   },
   [Mask.Miru]: {
@@ -287,6 +371,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     shortName: Mask.Rau,
     target: 'self',
   },
+  [Mask.RauGreat]: {
+    cooldown: {
+      amount: 2,
+      unit: 'wave',
+    },
+    description: `Changes the user's Element so the all attacks are super effective on any enemy. Lasts until the end of the current wave.`,
+    effect: {
+      duration: {
+        amount: 1,
+        unit: 'wave',
+      },
+      multiplier: 1.5,
+      type: 'ATK_MULT',
+    },
+    longName: 'Great Mask of Translation',
+    shortName: Mask.RauGreat,
+    target: 'self',
+  },
   [Mask.Ruru]: {
     cooldown: {
       amount: 4,
@@ -303,6 +405,24 @@ export const MASK_POWERS: Partial<Record<Mask, MaskPower>> = {
     },
     longName: 'Mask of Night Vision',
     shortName: Mask.Ruru,
+    target: 'allEnemies',
+  },
+  [Mask.RuruGreat]: {
+    cooldown: {
+      amount: 4,
+      unit: 'turn',
+    },
+    description: 'Blinds all enemies, reducing hit chance for 2 turns',
+    effect: {
+      duration: {
+        amount: 2,
+        unit: 'turn',
+      },
+      multiplier: 0.5,
+      type: 'ACCURACY_MULT',
+    },
+    longName: 'Great Mask of Night Vision',
+    shortName: Mask.RuruGreat,
     target: 'allEnemies',
   },
   [Mask.Vahi]: {
@@ -342,6 +462,17 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Bohrok Kal',
   },
+  // Vahki — one chassis, six hive palettes. Staff of Suggestion until hive tools exist.
+  bordakh: {
+    baseAttack: 16,
+    baseDefense: 14,
+    baseHp: 90,
+    baseSpeed: 11,
+    element: ElementTribe.Water,
+    id: 'bordakh',
+    model: 'vahki',
+    name: 'Bordakh',
+  },
   gahlok: {
     baseAttack: 18,
     baseDefense: 12,
@@ -362,6 +493,17 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Gahlok Kal',
   },
+  keerakh: {
+    baseAttack: 18,
+    baseDefense: 13,
+    baseHp: 85,
+    baseSpeed: 15,
+    element: ElementTribe.Ice,
+    id: 'keerakh',
+    model: 'vahki',
+    name: 'Keerakh',
+  },
+
   kohrak: {
     baseAttack: 19,
     baseDefense: 11,
@@ -382,7 +524,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Kohrak Kal',
   },
-
   [KraataPower.Anger]: {
     baseAttack: 30,
     baseDefense: 18,
@@ -393,6 +534,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'rahkshi',
     name: 'Kurahk',
   },
+
   [KraataPower.Disintegration]: {
     baseAttack: 32,
     baseDefense: 16,
@@ -414,7 +556,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'rahkshi',
     name: 'Turahk',
   },
-
   [KraataPower.Fragmentation]: {
     baseAttack: 30,
     baseDefense: 20,
@@ -465,6 +606,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Lehvak Kal',
   },
+
   muaka: {
     baseAttack: 14,
     baseDefense: 11,
@@ -485,7 +627,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Nuhvok',
   },
-
   nuhvok_kal: {
     baseAttack: 55,
     baseDefense: 46,
@@ -517,6 +658,17 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'nui_rama',
     name: 'Nui-Rama',
   },
+  nuurakh: {
+    baseAttack: 20,
+    baseDefense: 12,
+    baseHp: 85,
+    baseSpeed: 10,
+    element: ElementTribe.Fire,
+    id: 'nuurakh',
+    model: 'vahki',
+    name: 'Nuurakh',
+  },
+
   pahrak: {
     baseAttack: 20,
     baseDefense: 14,
@@ -547,7 +699,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'rahkshi',
     name: 'Rahkshi',
   },
-
   rahkshi_kraata_gauntlet: {
     baseAttack: 28,
     baseDefense: 18,
@@ -578,6 +729,16 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     id: 'rahkshi_trio_ta_koro',
     model: 'rahkshi',
     name: 'Rahkshi',
+  },
+  rorzakh: {
+    baseAttack: 16,
+    baseDefense: 15,
+    baseHp: 100,
+    baseSpeed: 8,
+    element: ElementTribe.Earth,
+    id: 'rorzakh',
+    model: 'vahki',
+    name: 'Rorzakh',
   },
   // Bohrok - Differentiated by swarm behavior
   tahnok: {
@@ -636,7 +797,6 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'Toa_Gali_Nuva',
     name: 'Toa Gali Nuva',
   },
-
   Toa_Kopaka: {
     baseAttack: 16,
     baseDefense: 14,
@@ -670,6 +830,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'Toa_Lewa',
     name: 'Toa Lewa',
   },
+
   Toa_Lewa_Nuva: {
     baseAttack: 21,
     baseDefense: 12,
@@ -680,6 +841,61 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     mask: Mask.MiruNuva,
     model: 'Toa_Lewa_Nuva',
     name: 'Toa Lewa Nuva',
+  },
+  Toa_Lhikan: {
+    baseAttack: 18,
+    baseDefense: 10,
+    baseHp: 90,
+    baseSpeed: 9,
+    element: ElementTribe.Fire,
+    id: 'Toa_Lhikan',
+    mask: Mask.HauGreat,
+    model: 'Toa_Lhikan',
+    name: 'Toa Lhikan',
+  },
+  Toa_Matau: {
+    baseAttack: 14,
+    baseDefense: 9,
+    baseHp: 88,
+    baseSpeed: 15,
+    element: ElementTribe.Air,
+    id: 'Toa_Matau',
+    mask: Mask.MahikiGreat,
+    model: 'Toa_Matau',
+    name: 'Toa Matau',
+  },
+  Toa_Nokama: {
+    baseAttack: 14,
+    baseDefense: 11,
+    baseHp: 92,
+    baseSpeed: 12,
+    element: ElementTribe.Water,
+    id: 'Toa_Nokama',
+    mask: Mask.RauGreat,
+    model: 'Toa_Nokama',
+    name: 'Toa Nokama',
+  },
+  Toa_Nuju: {
+    baseAttack: 16,
+    baseDefense: 10,
+    baseHp: 86,
+    baseSpeed: 11,
+    element: ElementTribe.Ice,
+    id: 'Toa_Nuju',
+    mask: Mask.MatatuGreat,
+    model: 'Toa_Nuju',
+    name: 'Toa Nuju',
+  },
+  Toa_Onewa: {
+    baseAttack: 15,
+    baseDefense: 12,
+    baseHp: 90,
+    baseSpeed: 10,
+    element: ElementTribe.Stone,
+    id: 'Toa_Onewa',
+    mask: Mask.KomauGreat,
+    model: 'Toa_Onewa',
+    name: 'Toa Onewa',
   },
   Toa_Onua: {
     baseAttack: 15,
@@ -747,6 +963,58 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     mask: Mask.HauNuva,
     model: 'Toa_Tahu_Nuva',
     name: 'Toa Tahu Nuva',
+  },
+  Toa_Vakama: {
+    baseAttack: 17,
+    baseDefense: 9,
+    baseHp: 88,
+    baseSpeed: 11,
+    element: ElementTribe.Fire,
+    id: 'Toa_Vakama',
+    mask: Mask.HunaGreat,
+    model: 'Toa_Vakama',
+    name: 'Toa Vakama',
+  },
+  Toa_Whenua: {
+    baseAttack: 13,
+    baseDefense: 14,
+    baseHp: 96,
+    baseSpeed: 8,
+    element: ElementTribe.Earth,
+    id: 'Toa_Whenua',
+    mask: Mask.RuruGreat,
+    model: 'Toa_Whenua',
+    name: 'Toa Whenua',
+  },
+  vahki_squad: {
+    baseAttack: 18,
+    baseDefense: 14,
+    baseHp: 90,
+    baseSpeed: 11,
+    element: ElementTribe.Water,
+    id: 'vahki_squad',
+    model: 'vahki',
+    name: 'Vahki',
+  },
+  vorzakh: {
+    baseAttack: 18,
+    baseDefense: 11,
+    baseHp: 80,
+    baseSpeed: 14,
+    element: ElementTribe.Air,
+    id: 'vorzakh',
+    model: 'vahki',
+    name: 'Vorzakh',
+  },
+  zadakh: {
+    baseAttack: 17,
+    baseDefense: 16,
+    baseHp: 95,
+    baseSpeed: 9,
+    element: ElementTribe.Stone,
+    id: 'zadakh',
+    model: 'vahki',
+    name: 'Zadakh',
   },
 };
 
@@ -828,6 +1096,10 @@ function makeBohrokWave(
   count: number
 ): { id: string; lvl: number }[] {
   return Array.from({ length: count }, () => ({ id: bohrokId, lvl }));
+}
+
+function makeVahkiWave(vahkiId: string, lvl: number, count: number): { id: string; lvl: number }[] {
+  return Array.from({ length: count }, () => ({ id: vahkiId, lvl }));
 }
 
 function makeKraataLoot(powers: KraataPower[]): { id: string; chance: number }[] {
@@ -1605,5 +1877,46 @@ export const ENCOUNTERS: EnemyEncounter[] = [
     scalesWithParty: true,
     unlockedAfter: [MOL_DEFEAT_OF_MAKUTA_QUEST_ID],
     waves: makeRahkshiKraataGauntletWaves(),
+  },
+
+  // Vahki — Metru Nui order enforcement, after Turaga Dume's visit to Vakama.
+  {
+    arenaId: 'metru',
+    description:
+      'Ga-Metru Bordakh sweep the canals with Staffs of Suggestion, herding Matoran who stray from their tasks.',
+    difficulty: 4,
+    headliner: 'bordakh',
+    id: 'bordakh-1',
+    loot: [],
+    name: 'Bordakh Patrol',
+    scalesWithParty: true,
+    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
+    waves: [[...makeVahkiWave('bordakh', 26, 2)], [...makeVahkiWave('bordakh', 26, 3)]],
+  },
+  {
+    arenaId: 'metru',
+    description:
+      'All six Vahki hives take to the streets. One chassis, six palettes — every squad still carries Bordakh staffs until hive tools are kitted.',
+    difficulty: 5,
+    headliner: 'vahki_squad',
+    id: 'vahki_six_hives',
+    loot: [],
+    name: 'Six Hives',
+    scalesWithParty: true,
+    unlockedAfter: [METRU_VAKAMA_DUME_QUEST_ID],
+    waves: [
+      [
+        { id: 'bordakh', lvl: 26 },
+        { id: 'nuurakh', lvl: 26 },
+      ],
+      [
+        { id: 'vorzakh', lvl: 26 },
+        { id: 'zadakh', lvl: 26 },
+      ],
+      [
+        { id: 'rorzakh', lvl: 26 },
+        { id: 'keerakh', lvl: 26 },
+      ],
+    ],
   },
 ];

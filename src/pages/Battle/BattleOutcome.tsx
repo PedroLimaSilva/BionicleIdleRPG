@@ -14,15 +14,15 @@ import { KRAATA_POWER_NAMES, KraataReward } from '../../types/Kraata';
 import { KranaReward } from '../../types/GameState';
 import type { Combatant } from '../../types/Combat';
 import type { BaseMatoran, RecruitedCharacterData } from '../../types/Matoran';
-import { ELEMENT_TO_KRANA_COLOR, ELEMENT_TO_KRANA_COLOR_HEX } from '../../game/Krana';
-import { computeBattleExpPerParticipant } from '../../game/BattleRewards';
+import { ELEMENT_TO_KRANA_COLOR, ELEMENT_TO_KRANA_COLOR_HEX } from '../../game/krana/Krana';
+import { computeBattleExpPerParticipant } from '../../game/combat/BattleRewards';
 import { getKraataCompositedColors } from '../../data/kraataColors';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
 import { isTestMode } from '../../utils/testMode';
-import { CompositedImage } from '../../components/CompositedImage';
+import { CompositedImage } from '../../rendering/2d/CompositedImage';
 import { CHARACTER_DEX } from '../../data/dex/index';
-import { MatoranAvatar } from '../../components/MatoranAvatar';
-import { getExpProgress, getLevelFromExp } from '../../game/Levelling';
+import { MatoranAvatar } from '../../rendering/2d/MatoranAvatar';
+import { getExpProgress, getLevelFromExp } from '../../game/characters/Levelling';
 
 import './BattleOutcome.scss';
 

@@ -82,6 +82,10 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
    yarn install
    ```
 
+   The `prepare` hook copies vendored assets into `public/` (Draco decoder from `three`, UI fonts from `@fontsource/*`). Those files are committed so GitHub Pages and CI builds do not depend on CDN fetches; after install, `git status` should stay clean unless `three` or font packages were upgraded—in that case run `yarn vendor-draco` / `yarn vendor-fonts` and commit the updated `public/` files.
+
+   **Dependency audit:** Run `yarn audit:prod:critical` (CI gate) or `yarn audit:prod` for high-severity production issues. One known unpatched advisory remains: `lodash.pick` via `@react-three/drei@9` (no fix available upstream; removed in drei v10).
+
 3. **Start the development server**
 
    ```bash
@@ -105,6 +109,8 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - `yarn format` - Format code with Prettier
 - `yarn format:check` - Check code formatting (also enforced locally via the Husky pre-commit hook)
 - `yarn check:unused-css` - Report unused CSS class selectors (dev hygiene)
+- `yarn audit:prod` - Audit production dependencies for high-severity vulnerabilities (see note below)
+- `yarn audit:prod:critical` - Audit production dependencies for critical vulnerabilities (used in CI)
 - `yarn deploy` - Build and deploy to GitHub Pages
 
 ## 📁 Project Structure
@@ -113,13 +119,17 @@ High-level layout of `src/` (not exhaustive):
 
 ```
 src/
-├── components/          # UI (quests, jobs, 3D CharacterScene, modals, TelemetryConsentPrompt, …)
-├── context/             # GameProvider, Canvas, Settings (see AGENT_GUIDELINES.md for layer rules)
+├── components/          # UI layouts (nav, modals, lists, banners, tooltips)
+├── context/             # GameProvider, Settings (see AGENT_GUIDELINES.md for layer rules)
 ├── data/                # Static content: dex/, quests/, cutscenes/, combat, jobs, gameState, recruitment, …
-├── game/                # Pure domain logic (jobs, quests, combat rewards, krana/kraata, levelling, …)
-├── hooks/               # React hooks; useGameLogic composes feature hooks (battle, characters, quests, …)
+├── game/                # Pure mechanics by domain: jobs/, quests/, recruitment/, evolution/, combat/, …
+├── hooks/               # Game-state React hooks; useGameLogic composes feature hooks
 ├── pages/               # Route-level screens (Battle, Recruitment, Settings, QuestTree, …)
-├── services/            # Bridges: persistence, combat helpers, matoranUtils, optional telemetry, …
+├── persistence/         # IndexedDB save/load and useGamePersistence
+├── rendering/
+│   ├── 2d/              # Composited avatars and 2D image stacking
+│   └── 3d/              # Kit catalogs, CharacterScene, battle arenas, 3D hooks, canvas
+├── services/            # Bridges: combat helpers, matoranUtils, optional telemetry, …
 ├── types/               # Shared TypeScript types
 ├── utils/               # Small shared helpers (e.g. math)
 ├── App.tsx              # Routes and shell (includes #canvas-mount for 3D)

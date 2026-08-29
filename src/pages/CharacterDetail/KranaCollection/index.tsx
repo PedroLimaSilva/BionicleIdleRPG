@@ -4,7 +4,7 @@ import {
   ALL_KRANA_IDS,
   ELEMENT_TO_KRANA_COLOR,
   getElementKranaProgress,
-} from '../../../game/Krana';
+} from '../../../game/krana/Krana';
 import type { KranaElement } from '../../../types/Krana';
 import { BaseMatoran, RecruitedCharacterData } from '../../../types/Matoran';
 import { Tooltip } from '../../../components/Tooltip';

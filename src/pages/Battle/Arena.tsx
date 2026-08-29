@@ -11,14 +11,14 @@ import { subscribeBattleCameraEmphasis } from '../../utils/battleCameraEmphasis'
 import {
   CAMERA_EMPHASIS_HOLD_MS,
   CAMERA_EMPHASIS_OUT_MS,
-} from '../../game/battleOutcomeVisualDelay';
+} from '../../rendering/3d/battleOutcomeVisualDelay';
 import { scaleBattleDurationMs } from '../../utils/battleSpeed';
 import * as THREE from 'three';
-import { ARENA_MARGIN } from './arenaLayout';
+import { ARENA_MARGIN } from '../../rendering/3d/arenaLayout';
 import { ArenaEnvironment } from './ArenaEnvironment';
-import { shouldSkipArenaShadow } from './arenas/arenaGlbUtils';
-import { getArenaDefinition } from './arenas/registry';
-import type { ArenaId, ArenaLayout } from './arenas/types';
+import { shouldSkipArenaShadow } from '../../rendering/3d/arenas/arenaGlbUtils';
+import { getArenaDefinition } from '../../rendering/3d/arenas/registry';
+import type { ArenaId, ArenaLayout } from '../../rendering/3d/arenas/types';
 import type { ElementTribe } from '../../types/Matoran';
 
 interface ArenaProps {
@@ -349,7 +349,6 @@ export function Arena({ arenaId, currentWave, enemies, team, tribe }: ArenaProps
         speed={2}
         zoom={1}
         polar={[-Math.PI / 2, 0]}
-        config={{ friction: 26, mass: 0.5, tension: 170 }}
       >
         <group dispose={null} name="Scene" ref={sceneGroupRef}>
           <HitImpactParticles />

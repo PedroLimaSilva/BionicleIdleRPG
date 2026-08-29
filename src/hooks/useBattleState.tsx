@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
 import { Combatant, EnemyEncounter } from '../types/Combat';
 import { RecruitedCharacterData, isCustomCharacterId, MatoranStage } from '../types/Matoran';
-import { getLevelFromExp } from '../game/Levelling';
+import { getLevelFromExp } from '../game/characters/Levelling';
 import {
   generateCombatantStats,
   getScaledEnemyLevelForEncounter,
@@ -10,10 +10,10 @@ import {
   decrementWaveCounters,
   hasReadyMaskPowers,
 } from '../services/combatUtils';
-import { getBattleOutcomePhaseDelayMs } from '../game/battleOutcomeVisualDelay';
+import { getBattleOutcomePhaseDelayMs } from '../rendering/3d/battleOutcomeVisualDelay';
 import { scaleBattleDurationMs } from '../utils/battleSpeed';
 import { getEffectiveMatoran } from '../services/matoranUtils';
-import { resolveToaMataBuildId } from '../game/customMataBuild';
+import { resolveToaMataBuildId } from '../rendering/3d/customMataBuild';
 
 export const enum BattlePhase {
   Idle = 'idle',
@@ -53,7 +53,6 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   advanceWave: function (): void {
     throw new Error('Function not implemented.');
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   confirmTeam: function (_team: RecruitedCharacterData[]): void {
     throw new Error('Function not implemented.');
   },
@@ -75,12 +74,10 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   runRound: function (): void {
     throw new Error('Function not implemented.');
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   startBattle: function (_encounter: EnemyEncounter): void {
     throw new Error('Function not implemented.');
   },
   team: [],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   toggleAbility: function (_toa: Combatant): boolean {
     throw new Error('Function not implemented.');
   },

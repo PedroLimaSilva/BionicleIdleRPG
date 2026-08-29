@@ -1,5 +1,6 @@
 import { LegoColor } from './Colors';
 import { JobAssignment } from './Jobs';
+import type { BodyPartId, BodyPartSlot } from './KitParts';
 import { Quest } from './Quests';
 
 export const enum Mask {
@@ -23,6 +24,13 @@ export const enum Mask {
   Rau = 'Rau',
   Matatu = 'Matatu',
   Mahiki = 'Mahiki',
+  HauGreat = 'Hau_Great',
+  HunaGreat = 'Huna_Great',
+  KomauGreat = 'Komau_Great',
+  MahikiGreat = 'Mahiki_Great',
+  MatatuGreat = 'Matatu_Great',
+  RauGreat = 'Rau_Great',
+  RuruGreat = 'Ruru_Great',
   Vahi = 'Vahi',
   Kraahkan = 'Kraahkan',
   Krana = 'Krana',
@@ -69,8 +77,36 @@ export const enum MatoranStage {
   Metru = 'Metru',
   Bohrok = 'Bohrok',
   BohrokKal = 'BohrokKal',
+  Vahki = 'Vahki',
   Makuta = 'Makuta',
 }
+
+/** Kit material slots a body part can author in the dex. */
+export type BodyPartPalette = {
+  main: LegoColor;
+  secondary?: LegoColor;
+  metal?: LegoColor;
+  glow?: LegoColor;
+};
+
+/**
+ * Character colors. Mask / eyes / face stay flat (avatar + Kanohi). Limb and armor
+ * pieces use per-part palettes so kit Main/Secondary/Metal/Glow map 1:1.
+ */
+export type MatoranColors = {
+  mask: LegoColor;
+  eyes: LegoColor;
+  face: LegoColor;
+  body: BodyPartPalette;
+  arms: BodyPartPalette;
+  feet: BodyPartPalette;
+  legs?: BodyPartPalette;
+  weapon?: BodyPartPalette;
+};
+
+export type ColorTabId = 'mask' | 'eyes' | 'face' | BodyPartId;
+
+export type BodyPartSlotName = BodyPartSlot;
 
 // Static data for any Matoran
 export type BaseMatoran = {
@@ -80,16 +116,7 @@ export type BaseMatoran = {
   element: ElementTribe;
   isMaskTransparent?: boolean;
   stage: MatoranStage;
-  colors: {
-    mask: LegoColor;
-    body: LegoColor;
-    feet: LegoColor;
-    arms: LegoColor;
-    eyes: LegoColor;
-    face: LegoColor;
-    /** Toa kit weapon accents (e.g. Gali hooks); when unset, kit code uses a neutral default. */
-    weaponGlow?: LegoColor;
-  };
+  colors: MatoranColors;
   tags?: MatoranTag[];
   /** Reference to shared chronicle set - multiple matoran entries can share the same chronicle ID */
   chronicleId?: string;
