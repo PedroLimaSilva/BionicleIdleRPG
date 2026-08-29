@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { VAHKI_IDLE_SWITCH_CLIP_NAMES } from './idleSwitchConfigs';
 import { join } from 'node:path';
 
 /**
@@ -32,6 +33,7 @@ const REQUIRED_IDLE_CLIPS: Record<string, string> = {
   'Toa_Nuva/pohatu.glb': 'Idle',
   'Toa_Nuva/tahu.glb': 'Idle',
   'Toa_Nuva/takanuva.glb': 'Idle',
+  'Vahki.glb': 'Idle_Biped',
 };
 
 const GLB_HEADER_BYTES = 12;
@@ -53,5 +55,12 @@ describe('character rig idle clips', () => {
 
   test('Toa Lhikan drives his idle through the shared pipeline, not a bespoke clip name', () => {
     expect(readClipNames('Toa_Metru/Lhikan.glb')).toEqual(['Idle']);
+  });
+
+  test('Vahki.glb exposes every idle-switch clip', () => {
+    const clips = readClipNames('Vahki.glb');
+    for (const name of VAHKI_IDLE_SWITCH_CLIP_NAMES) {
+      expect(clips).toContain(name);
+    }
   });
 });

@@ -9,8 +9,11 @@ import {
   type UsePlayAnimationOptions,
 } from './usePlayAnimation';
 import { useModelProceduralCombatMotion } from './useModelProceduralCombatMotion';
+import type { IdleSwitchConfig } from './idleSwitchTypes';
 
-export type UseCombatAnimationsOptions = UsePlayAnimationOptions;
+export type UseCombatAnimationsOptions = UsePlayAnimationOptions & {
+  idleSwitch?: IdleSwitchConfig | null;
+};
 
 /**
  * Convenience hook that composes useIdleAnimation + usePlayAnimation.
@@ -23,10 +26,11 @@ export function useCombatAnimations(
   groupRef: RefObject<Group | null>,
   options: UseCombatAnimationsOptions = {}
 ) {
-  const { idleActionName = 'Idle', transitionMode = 'fadeIdle' } = options;
+  const { idleSwitch, transitionMode = 'fadeIdle' } = options;
 
-  const { actions, mixer } = useIdleAnimation(animations, groupRef, {
+  const { actions, idleActionName, mixer } = useIdleAnimation(animations, groupRef, {
     idleActionName: options.idleActionName,
+    idleSwitch,
   });
 
   useEffect(() => {
@@ -37,7 +41,7 @@ export function useCombatAnimations(
     return subscribeBattleSpeed(syncMixerTimeScale);
   }, [mixer]);
 
-  const basePlay = usePlayAnimation(actions, mixer, options);
+  const basePlay = usePlayAnimation(actions, mixer, { ...options, idleActionName });
   const { playProceduralCombatAnimation } = useModelProceduralCombatMotion(groupRef);
 
   const playAnimation = useCallback(

@@ -5,14 +5,19 @@ export const REBUILT_IDLE_SWITCH: IdleSwitchConfig = {
   idles: [{ clip: 'Idle' }, { clip: 'Idle.001' }],
 };
 
-/**
- * Vahki rigs: biped patrol idle ↔ quadruped pursuit idle with limb reconfiguration clips.
- * Wire into `VahkiModel` once `vahki.glb` lands with these clip names.
- */
+/** Vahki: biped patrol idle ↔ quadruped pursuit idle with limb reconfiguration clips. */
 export const VAHKI_IDLE_SWITCH: IdleSwitchConfig = {
-  idles: [{ clip: 'Idle Biped' }, { clip: 'Idle Quadruped' }],
+  idles: [{ clip: 'Idle_Biped' }, { clip: 'Idle_Quadruped' }],
   transitions: {
-    [idleTransitionKey('Idle Biped', 'Idle Quadruped')]: 'Biped To Quadruped',
-    [idleTransitionKey('Idle Quadruped', 'Idle Biped')]: 'Quadruped To Biped',
+    [idleTransitionKey('Idle_Biped', 'Idle_Quadruped')]: 'Switch_BQ',
+    [idleTransitionKey('Idle_Quadruped', 'Idle_Biped')]: 'Switch_QB',
   },
 };
+
+/** Every clip name referenced by {@link VAHKI_IDLE_SWITCH}. */
+export const VAHKI_IDLE_SWITCH_CLIP_NAMES = [
+  'Idle_Biped',
+  'Idle_Quadruped',
+  'Switch_BQ',
+  'Switch_QB',
+] as const;
