@@ -377,32 +377,32 @@ XP: 6000"]
 Currency: 7500
 XP: 6500"]
   metru_nokama_great_disk["The Ga-Metru Great Disk
-(25m)
+(8m)
 Unlock: Vhisola
 Currency: 8000
 XP: 7000"]
   metru_nuju_great_disk["The Ko-Metru Great Disk
-(25m)
+(8m)
 Unlock: Ehrye
 Currency: 8000
 XP: 7000"]
   metru_onewa_great_disk["The Po-Metru Great Disk
-(25m)
+(8m)
 Unlock: Ahkmou
 Currency: 8000
 XP: 7000"]
   metru_matau_great_disk["The Le-Metru Great Disk
-(25m)
+(8m)
 Unlock: Orkahm
 Currency: 8000
 XP: 7000"]
   metru_vakama_great_disk["The Ta-Metru Great Disk
-(25m)
+(8m)
 Unlock: Nuhrii
 Currency: 8000
 XP: 7000"]
   metru_whenua_great_disk["The Onu-Metru Great Disk
-(25m)
+(8m)
 Unlock: Tehutti
 Currency: 8000
 XP: 7000"]
