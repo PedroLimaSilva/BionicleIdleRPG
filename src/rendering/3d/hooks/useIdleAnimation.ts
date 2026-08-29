@@ -44,18 +44,22 @@ export function useIdleAnimation(
     if (!nextIdle) return;
 
     const prevIdle = currentIdleRef.current;
-    const isCrossfade = prevIdle && prevIdle !== nextIdle && prevIdle.isRunning();
+    const handedOffFromTransition = nextIdle.isRunning();
+    const isCrossfade =
+      !handedOffFromTransition && prevIdle && prevIdle !== nextIdle && prevIdle.isRunning();
     if (isCrossfade) {
       prevIdle.fadeOut(CROSSFADE_DURATION);
     }
 
     currentIdleRef.current = nextIdle;
-    nextIdle.reset();
-    if (isCrossfade) {
-      nextIdle.fadeIn(CROSSFADE_DURATION);
+    if (!handedOffFromTransition) {
+      nextIdle.reset();
+      if (isCrossfade) {
+        nextIdle.fadeIn(CROSSFADE_DURATION);
+      }
+      nextIdle.play();
+      setupAnimationForTestMode(nextIdle);
     }
-    nextIdle.play();
-    setupAnimationForTestMode(nextIdle);
 
     return () => {
       nextIdle.fadeOut(0.2);

@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import type { AnimationAction, AnimationMixer } from 'three';
-import { LoopOnce } from 'three';
+import { LoopOnce, LoopRepeat } from 'three';
 import { useModelInteractionEpoch } from '../modelInteractionState';
 import { resolveIdleTransitionClip, type IdleSwitchConfig } from './idleSwitchTypes';
 import { shouldDisableAnimations } from '../../../utils/testMode';
 
 const TRANSITION_FADE_OUT = 0.1;
+/** Crossfade from a finished transition clip into the target idle loop. */
+const TRANSITION_HANDOFF_CROSSFADE = 0.3;
 
 type UseIdleSwitchControllerOptions = {
   config?: IdleSwitchConfig | null;
@@ -73,7 +75,16 @@ export function useIdleSwitchController(
       const onFinished = (event: { action: AnimationAction }) => {
         if (event.action !== transitionAction) return;
         mixer.removeEventListener('finished', onFinished);
-        transitionAction.fadeOut(0);
+
+        const toIdle = actions[toClip];
+        if (toIdle) {
+          toIdle.reset();
+          toIdle.setLoop(LoopRepeat, Infinity);
+          toIdle.clampWhenFinished = false;
+          toIdle.play();
+          transitionAction.crossFadeTo(toIdle, TRANSITION_HANDOFF_CROSSFADE, false);
+        }
+
         currentIndexRef.current = toIndex;
         isTransitioningRef.current = false;
         setIdleActionName(toClip);

@@ -3,7 +3,7 @@
  */
 import { act, renderHook } from '@testing-library/react';
 import type { AnimationAction, AnimationMixer } from 'three';
-import { LoopOnce } from 'three';
+import { LoopOnce, LoopRepeat } from 'three';
 import { useIdleSwitchController } from './useIdleSwitchController';
 import type { IdleSwitchConfig } from './idleSwitchTypes';
 
@@ -20,7 +20,9 @@ jest.mock('../../../utils/testMode', () => ({
 function fakeAction(overrides: Partial<AnimationAction> = {}): AnimationAction {
   const action = {
     clampWhenFinished: false,
+    crossFadeTo: jest.fn(),
     fadeOut: jest.fn(),
+    isRunning: jest.fn().mockReturnValue(false),
     play: jest.fn(),
     reset: jest.fn().mockReturnThis(),
     setEffectiveWeight: jest.fn(),
@@ -82,6 +84,7 @@ describe('useIdleSwitchController', () => {
 
   it('plays a one-shot transition clip before switching idles', () => {
     const transition = fakeAction();
+    const toIdle = fakeAction({ isRunning: jest.fn().mockReturnValue(true) });
     const config: IdleSwitchConfig = {
       cooldownMs: 0,
       idles: [{ clip: 'Idle Biped' }, { clip: 'Idle Quadruped' }],
@@ -92,7 +95,7 @@ describe('useIdleSwitchController', () => {
     const actions = {
       'Biped To Quadruped': transition,
       'Idle Biped': fakeAction(),
-      'Idle Quadruped': fakeAction(),
+      'Idle Quadruped': toIdle,
     };
 
     const { rerender, result } = renderHook(() =>
@@ -114,6 +117,8 @@ describe('useIdleSwitchController', () => {
       finishedHandler({ action: transition });
     });
 
+    expect(transition.crossFadeTo).toHaveBeenCalledWith(toIdle, 0.3, false);
+    expect(toIdle.setLoop).toHaveBeenCalledWith(LoopRepeat, Infinity);
     expect(result.current).toBe('Idle Quadruped');
   });
 
