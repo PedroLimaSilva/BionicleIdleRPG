@@ -20,16 +20,23 @@ import {
   setColorTabValue,
   slotLabel,
 } from '../../game/characters/customCharacterColorSlots';
+import { DEFAULT_CUSTOM_MATA_MODEL_ID } from '../../rendering/3d/customMataBuild';
 import {
-  CUSTOM_SELECTABLE_MATA_MODEL_IDS,
-  DEFAULT_CUSTOM_MATA_MODEL_ID,
-} from '../../rendering/3d/customMataBuild';
+  CUSTOM_SELECTABLE_METRU_MODEL_IDS,
+  CUSTOM_SELECTABLE_NUVA_MODEL_IDS,
+  getDefaultCustomToaModelIdForStage,
+  getStageForCustomToaModelId,
+  type CustomToaArmorFamily,
+} from '../../rendering/3d/customToaBuild';
+import { CUSTOM_SELECTABLE_MATA_MODEL_IDS } from '../../rendering/3d/customMataBuild';
+import { isToa } from '../../game/characters/matoranStage';
 import { DEFAULT_CUSTOM_COLORS } from '../../data/dex/partPalettes';
 import { CHARACTER_DEX } from '../../data/dex';
 import { getSelectableMasksForStage, isTransparentMask } from '../../data/masks';
 import {
   BaseMatoran,
   CUSTOM_CHARACTER_COST,
+  CUSTOM_CHARACTER_EDIT_COST,
   ElementTribe,
   isCustomCharacterId,
   Mask,
@@ -111,9 +118,26 @@ function readableTextColor(hex: string): string {
 }
 
 type CharacterCreateLocationState = {
-  customizeAfterEvolution?: string;
+  customizeCharacterId?: string;
   evolutionFromStage?: MatoranStage;
+  /** Post-evolution editor visit is free; returning from the detail page costs protodermis. */
+  freeCustomize?: boolean;
 };
+
+const TOA_ARMOR_GROUPS: { family: CustomToaArmorFamily; label: string; ids: readonly string[] }[] =
+  [
+    { family: 'mata', ids: CUSTOM_SELECTABLE_MATA_MODEL_IDS, label: 'Toa Mata' },
+    { family: 'nuva', ids: CUSTOM_SELECTABLE_NUVA_MODEL_IDS, label: 'Toa Nuva' },
+    { family: 'metru', ids: CUSTOM_SELECTABLE_METRU_MODEL_IDS, label: 'Toa Metru' },
+  ];
+
+function isToaCustomizationStage(stage: MatoranStage): boolean {
+  return (
+    stage === MatoranStage.ToaMata ||
+    stage === MatoranStage.ToaNuva ||
+    stage === MatoranStage.ToaMetru
+  );
+}
 
 export const CharacterCreation: React.FC = () => {
   const {
@@ -129,8 +153,9 @@ export const CharacterCreation: React.FC = () => {
   const navigate = useNavigate();
 
   const locationState = location.state as CharacterCreateLocationState | null;
-  const customizeId = locationState?.customizeAfterEvolution;
+  const customizeId = locationState?.customizeCharacterId;
   const evolutionFromStage = locationState?.evolutionFromStage;
+  const freeCustomize = locationState?.freeCustomize ?? false;
 
   const isEditMode = useMemo(
     () =>
@@ -166,9 +191,31 @@ export const CharacterCreation: React.FC = () => {
   }));
   const [activePart, setActivePart] = useState<ColorTabId>('mask');
   const [activeSlot, setActiveSlot] = useState<BodyPartSlot>('main');
-  const [mataBuildId, setMataBuildId] = useState<string>(DEFAULT_CUSTOM_MATA_MODEL_ID);
+  const [toaBuildId, setToaBuildId] = useState<string>(DEFAULT_CUSTOM_MATA_MODEL_ID);
 
-  const selectableMasks = useMemo(() => getSelectableMasksForStage(creationStage), [creationStage]);
+  const recruitedCustom = useMemo(
+    () =>
+      customizeId && isCustomCharacterId(customizeId)
+        ? getRecruitedMatoran(customizeId, recruitedCharacters)
+        : null,
+    [customizeId, recruitedCharacters]
+  );
+
+  const paidToaCustomize = Boolean(
+    isEditMode && recruitedCustom && isToa(recruitedCustom) && !freeCustomize
+  );
+
+  const previewStage = useMemo(() => {
+    if (isEditMode && isToaCustomizationStage(creationStage)) {
+      return getStageForCustomToaModelId(toaBuildId) ?? creationStage;
+    }
+    if (debugCharacterCreation && isToaCustomizationStage(creationStage)) {
+      return getStageForCustomToaModelId(toaBuildId) ?? creationStage;
+    }
+    return creationStage;
+  }, [creationStage, debugCharacterCreation, isEditMode, toaBuildId]);
+
+  const selectableMasks = useMemo(() => getSelectableMasksForStage(previewStage), [previewStage]);
 
   useEffect(() => {
     if (!selectableMasks.includes(mask)) {
@@ -179,10 +226,10 @@ export const CharacterCreation: React.FC = () => {
   const colorTabs = useMemo(
     () =>
       getOrderedEditableColorTabs(
-        creationStage,
-        creationStage === MatoranStage.ToaMata ? mataBuildId : undefined
+        previewStage,
+        isToaCustomizationStage(previewStage) ? toaBuildId : undefined
       ),
-    [creationStage, mataBuildId]
+    [previewStage, toaBuildId]
   );
 
   const lastFormInitKeyRef = useRef('');
@@ -226,7 +273,7 @@ export const CharacterCreation: React.FC = () => {
       nextColors = prefillColorsAfterEvolution(evolutionFromStage, full.stage, nextColors);
     }
     setColors(normalizeCustomCharacterColorsForStage(full.stage, nextColors));
-    setMataBuildId(full.customMataModelId ?? DEFAULT_CUSTOM_MATA_MODEL_ID);
+    setToaBuildId(full.customMataModelId ?? getDefaultCustomToaModelIdForStage(full.stage));
   }, [customizeId, evolutionFromStage, isEditMode, recruitedCharacters]);
 
   // Mirror the dex, where only the Kaukau sculpts are flagged as transparent.
@@ -234,16 +281,25 @@ export const CharacterCreation: React.FC = () => {
 
   const trimmedName = name.trim();
   const nameAllowed = trimmedName.length > 0 && trimmedName !== DEFAULT_CUSTOM_MATORAN_NAME;
-  const canAfford = protodermis >= CUSTOM_CHARACTER_COST;
-  const canCreate = isEditMode ? nameAllowed : canAfford && nameAllowed;
+  const editCost = paidToaCustomize ? CUSTOM_CHARACTER_EDIT_COST : 0;
+  const canAfford = isEditMode
+    ? paidToaCustomize
+      ? protodermis >= editCost
+      : true
+    : protodermis >= CUSTOM_CHARACTER_COST;
+  const canCreate = isEditMode
+    ? paidToaCustomize
+      ? canAfford
+      : nameAllowed
+    : canAfford && nameAllowed;
   const displayColors = useMemo(
-    () => normalizeCustomCharacterColorsForStage(creationStage, colors),
-    [colors, creationStage]
+    () => normalizeCustomCharacterColorsForStage(previewStage, colors),
+    [colors, previewStage]
   );
 
   const partSlots = useMemo(
-    () => getEditableSlotsForTab(creationStage, activePart),
-    [activePart, creationStage]
+    () => getEditableSlotsForTab(previewStage, activePart),
+    [activePart, previewStage]
   );
 
   useEffect(() => {
@@ -261,10 +317,10 @@ export const CharacterCreation: React.FC = () => {
       isMaskTransparent,
       mask,
       name: name.trim() || DEFAULT_CUSTOM_MATORAN_NAME,
-      stage: creationStage,
+      stage: previewStage,
       tags: [MatoranTag.Custom],
     }),
-    [creationStage, displayColors, element, isMaskTransparent, mask, name]
+    [element, isMaskTransparent, mask, name, previewStage, displayColors]
   );
 
   // Debounced preview matoran. The 3D `CharacterScene` recreates Three.js materials whenever
@@ -305,11 +361,22 @@ export const CharacterCreation: React.FC = () => {
         matoran={{
           ...livePreview,
           exp: 0,
-          ...(creationStage === MatoranStage.ToaMata ? { customMataModelId: mataBuildId } : {}),
+          ...(isToaCustomizationStage(previewStage)
+            ? { customMataModelId: toaBuildId, stage: previewStage }
+            : {}),
         }}
       />
     );
-  }, [creationStage, livePreview, mataBuildId, setScene]);
+  }, [livePreview, previewStage, setScene, toaBuildId]);
+
+  const handleToaBuildChange = (nextBuildId: string) => {
+    const prevStage = getStageForCustomToaModelId(toaBuildId) ?? previewStage;
+    const nextStage = getStageForCustomToaModelId(nextBuildId);
+    setToaBuildId(nextBuildId);
+    if (nextStage && nextStage !== prevStage) {
+      setColors((prev) => prefillColorsAfterEvolution(prevStage, nextStage, prev));
+    }
+  };
 
   const editingGlow = !isFlatColorTab(activePart) && activeSlot === 'glow';
   const palette = activePart === 'eyes' || editingGlow ? EYE_COLOR_PALETTE : BODY_COLOR_PALETTE;
@@ -325,27 +392,31 @@ export const CharacterCreation: React.FC = () => {
   const performCreate = () => {
     if (!canCreate) return;
     if (isEditMode && customizeId) {
-      const stage = getRecruitedMatoran(customizeId, recruitedCharacters).stage;
-      const resolvedColors = colorsForSave(stage, colors);
+      const recruited = getRecruitedMatoran(customizeId, recruitedCharacters);
+      const saveStage = isToaCustomizationStage(previewStage)
+        ? (getStageForCustomToaModelId(toaBuildId) ?? recruited.stage)
+        : recruited.stage;
+      const resolvedColors = colorsForSave(saveStage, colors);
       const ok = updateCustomCharacter(
         customizeId,
         {
           colors: resolvedColors,
-          element,
-          isMaskTransparent,
-          mask,
-          name: trimmedName,
-          stage,
+          element: paidToaCustomize ? recruited.element : element,
+          isMaskTransparent: paidToaCustomize ? recruited.isMaskTransparent : isMaskTransparent,
+          mask: paidToaCustomize ? (recruited.maskOverride ?? recruited.mask) : mask,
+          name: paidToaCustomize ? recruited.name : trimmedName,
+          stage: saveStage,
           tags: [MatoranTag.Custom],
         },
-        stage === MatoranStage.ToaMata ? { customMataModelId: mataBuildId } : undefined
+        isToaCustomizationStage(saveStage) ? { customMataModelId: toaBuildId } : undefined,
+        paidToaCustomize ? { protodermisCost: CUSTOM_CHARACTER_EDIT_COST } : undefined
       );
       if (ok) {
         navigate(`/characters/${customizeId}`);
       }
       return;
     }
-    const resolvedColors = colorsForSave(creationStage, colors);
+    const resolvedColors = colorsForSave(previewStage, colors);
     const id = createCustomCharacter(
       {
         colors: resolvedColors,
@@ -353,10 +424,10 @@ export const CharacterCreation: React.FC = () => {
         isMaskTransparent,
         mask,
         name: trimmedName,
-        stage: creationStage,
+        stage: previewStage,
         tags: [MatoranTag.Custom],
       },
-      creationStage === MatoranStage.ToaMata ? { customMataModelId: mataBuildId } : undefined
+      isToaCustomizationStage(previewStage) ? { customMataModelId: toaBuildId } : undefined
     );
     if (id) {
       setShowCreateConfirm(false);
@@ -394,63 +465,71 @@ export const CharacterCreation: React.FC = () => {
           </label>
         )}
 
-        <label className="field">
-          <span className="field-label">Name</span>
-          <input
-            className="field-input"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            maxLength={32}
-            aria-invalid={!nameAllowed}
-          />
-        </label>
+        {!paidToaCustomize && (
+          <>
+            <label className="field">
+              <span className="field-label">Name</span>
+              <input
+                className="field-input"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                maxLength={32}
+                aria-invalid={!nameAllowed}
+              />
+            </label>
 
-        <div className="field">
-          <span className="field-label">Element</span>
-          <div className="chip-row">
-            {SELECTABLE_ELEMENTS.map((el) => (
-              <button
-                type="button"
-                key={el}
-                className={`chip element-${el}${element === el ? ' chip--selected' : ''}`}
-                onClick={() => setElement(el)}
-              >
-                {el}
-              </button>
-            ))}
-          </div>
-        </div>
+            <div className="field">
+              <span className="field-label">Element</span>
+              <div className="chip-row">
+                {SELECTABLE_ELEMENTS.map((el) => (
+                  <button
+                    type="button"
+                    key={el}
+                    className={`chip element-${el}${element === el ? ' chip--selected' : ''}`}
+                    onClick={() => setElement(el)}
+                  >
+                    {el}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        <div className="field">
-          <span className="field-label">Kanohi (Mask)</span>
-          <div className="mask-grid">
-            {selectableMasks.map((m) => (
-              <button
-                type="button"
-                key={m}
-                className={`mask-tile${mask === m ? ' mask-tile--selected' : ''}`}
-                onClick={() => setMask(m)}
-                title={m}
-              >
-                <img src={`${import.meta.env.BASE_URL}/avatar/Kanohi/${m}.webp`} alt={m} />
-              </button>
-            ))}
-          </div>
-        </div>
+            <div className="field">
+              <span className="field-label">Kanohi (Mask)</span>
+              <div className="mask-grid">
+                {selectableMasks.map((m) => (
+                  <button
+                    type="button"
+                    key={m}
+                    className={`mask-tile${mask === m ? ' mask-tile--selected' : ''}`}
+                    onClick={() => setMask(m)}
+                    title={m}
+                  >
+                    <img src={`${import.meta.env.BASE_URL}/avatar/Kanohi/${m}.webp`} alt={m} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
-        {(isEditMode || debugCharacterCreation) && creationStage === MatoranStage.ToaMata && (
+        {(isEditMode || debugCharacterCreation) && isToaCustomizationStage(previewStage) && (
           <label className="field">
-            <span className="field-label">Toa build (model)</span>
+            <span className="field-label">Toa armor</span>
             <select
               className="field-input"
-              value={mataBuildId}
-              onChange={(e) => setMataBuildId(e.target.value)}
+              value={toaBuildId}
+              onChange={(e) => handleToaBuildChange(e.target.value)}
             >
-              {CUSTOM_SELECTABLE_MATA_MODEL_IDS.map((mid) => (
-                <option key={mid} value={mid}>
-                  {CHARACTER_DEX[mid]?.name ?? mid}
-                </option>
+              {TOA_ARMOR_GROUPS.map((group) => (
+                <optgroup key={group.family} label={group.label}>
+                  {group.ids.map((mid) => (
+                    <option key={mid} value={mid}>
+                      {CHARACTER_DEX[mid]?.name ?? mid}
+                    </option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </label>
@@ -471,7 +550,7 @@ export const CharacterCreation: React.FC = () => {
                   style={{ backgroundColor: getColorTabSwatch(displayColors, p) }}
                   aria-hidden
                 />
-                <span>{colorPartLabel(p, creationStage)}</span>
+                <span>{colorPartLabel(p, previewStage)}</span>
               </button>
             ))}
           </div>
@@ -505,7 +584,7 @@ export const CharacterCreation: React.FC = () => {
                 onClick={() =>
                   setColors((prev) =>
                     setColorTabValue(
-                      normalizeCustomCharacterColorsForStage(creationStage, prev),
+                      normalizeCustomCharacterColorsForStage(previewStage, prev),
                       activePart,
                       c,
                       isFlatColorTab(activePart) ? 'main' : activeSlot
@@ -524,12 +603,21 @@ export const CharacterCreation: React.FC = () => {
               {canAfford ? '✅' : '❌'} {CUSTOM_CHARACTER_COST} protodermis
             </div>
           )}
+          {paidToaCustomize && (
+            <div className={`creation-cost ${canAfford ? 'has-enough' : 'not-enough'}`}>
+              {canAfford ? '✅' : '❌'} {CUSTOM_CHARACTER_EDIT_COST} protodermis
+            </div>
+          )}
           <button
             type="button"
             className={`elemental-btn element-${element}${canCreate ? '' : ' disabled'}`}
             onClick={onCreateClick}
           >
-            {isEditMode ? `Save ${trimmedName || 'Matoran'}` : `Create ${trimmedName || 'Matoran'}`}
+            {isEditMode
+              ? paidToaCustomize
+                ? 'Save appearance'
+                : `Save ${trimmedName || 'Matoran'}`
+              : `Create ${trimmedName || 'Matoran'}`}
           </button>
           <button
             type="button"

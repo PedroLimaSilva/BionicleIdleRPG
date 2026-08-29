@@ -13,7 +13,7 @@ import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCyl
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../../types/Matoran';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { registerCharacterPreviewPlay } from '../utils/characterPreviewControls';
-import { resolveToaMataBuildId } from '../customMataBuild';
+import { resolveCustomToaBuildId } from '../customToaBuild';
 import { usesNujuToaMetruRig } from '../metruMatoran';
 import { DiminishedMatoranModel } from './DiminishedMatoranModel';
 import { RebuiltMatoranModel } from './RebuiltMatoranModel';
@@ -85,7 +85,7 @@ const CharacterModel = forwardRef<
 
   switch (matoran.stage) {
     case MatoranStage.ToaMata: {
-      const buildId = resolveToaMataBuildId(matoran);
+      const buildId = resolveCustomToaBuildId(matoran);
       switch (buildId) {
         case 'Toa_Gali':
           return <GaliMataModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
@@ -101,8 +101,9 @@ const CharacterModel = forwardRef<
           return <TahuMataModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
     }
-    case MatoranStage.ToaNuva:
-      switch (matoran.id) {
+    case MatoranStage.ToaNuva: {
+      const buildId = resolveCustomToaBuildId(matoran);
+      switch (buildId) {
         case 'Takanuva':
           return <TakanuvaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Kopaka_Nuva':
@@ -120,6 +121,7 @@ const CharacterModel = forwardRef<
         default:
           return <TahuNuvaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
+    }
     case MatoranStage.Bohrok:
     case MatoranStage.BohrokKal:
       return (
@@ -143,11 +145,12 @@ const CharacterModel = forwardRef<
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Rebuilt:
       return <RebuiltMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
-    case MatoranStage.ToaMetru:
-      if (usesNujuToaMetruRig(matoran.id)) {
+    case MatoranStage.ToaMetru: {
+      const buildId = resolveCustomToaBuildId(matoran);
+      if (usesNujuToaMetruRig(buildId)) {
         return <NujuModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
-      switch (matoran.id) {
+      switch (buildId) {
         case 'Toa_Matau':
           return <MatauModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         case 'Toa_Nuju':
@@ -163,8 +166,9 @@ const CharacterModel = forwardRef<
         case 'Toa_Lhikan':
           return <LhikanModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         default:
-          return <LhikanModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return <VakamaModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
       }
+    }
     case MatoranStage.Metru:
       return (
         <MetruMatoranModel key={matoran.id} matoran={matoran} onKitMeshesAttached={onModelReady} />

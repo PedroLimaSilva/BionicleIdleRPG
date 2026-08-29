@@ -468,6 +468,41 @@ describe('useCharactersState', () => {
       expect(result.current.recruitedCharacters[0].customMataModelId).toBe('Toa_Pohatu');
     });
 
+    test('deducts protodermis when paid re-edit cost is provided', () => {
+      const initialRecruited: RecruitedCharacterData[] = [
+        { customMataModelId: 'Toa_Tahu', exp: 50, id: 'custom_0', stage: MatoranStage.ToaMata },
+      ];
+      const toaBase: BaseMatoran = {
+        ...customBase,
+        stage: MatoranStage.ToaMata,
+      };
+      const { result } = renderHook(() =>
+        useCharactersState(initialRecruited, [toaBase], [], 1000, mockSetProtodermis)
+      );
+
+      let ok = false;
+      act(() => {
+        ok = result.current.updateCustomCharacter(
+          'custom_0',
+          {
+            colors: toaBase.colors,
+            element: ElementTribe.Fire,
+            mask: Mask.Hau,
+            name: 'Toa Hero',
+            stage: MatoranStage.ToaNuva,
+            tags: [MatoranTag.Custom],
+          },
+          { customMataModelId: 'Toa_Tahu_Nuva' },
+          { protodermisCost: 500 }
+        );
+      });
+
+      expect(ok).toBe(true);
+      expect(mockSetProtodermis).toHaveBeenCalledWith(500);
+      expect(result.current.recruitedCharacters[0].stage).toBe(MatoranStage.ToaNuva);
+      expect(result.current.recruitedCharacters[0].customMataModelId).toBe('Toa_Tahu_Nuva');
+    });
+
     test('returns false for non-custom id', () => {
       const { result } = renderHook(() =>
         useCharactersState([{ exp: 0, id: 'Jala' }], [], [], mockProtodermis, mockSetProtodermis)

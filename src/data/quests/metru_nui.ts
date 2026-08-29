@@ -1,6 +1,7 @@
 import { Quest } from '../../types/Quests';
+import { MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID } from './mask_of_light';
 
-/** Gates custom-character Toa evolution and unlocks the Metru Nui saga. */
+/** Unlocks the Metru Nui saga (flashback quest line). */
 export const METRU_NUI_SAGA_BEGIN_QUEST_ID = 'story_metru_nui_saga_begin';
 
 /** Kapura witnesses the Morbuzakh vines destroy an abandoned Ta-Metru forge. */
@@ -75,7 +76,7 @@ export const METRU_NUI_QUEST_LINE: Quest[] = [
       xpPerMatoran: 4500,
     },
     section: 'Metru Nui',
-    unlockedAfter: ['mol_rediscovery_of_metru_nui'],
+    unlockedAfter: [MOL_REDISCOVERY_OF_METRU_NUI_QUEST_ID],
   },
   {
     description:
