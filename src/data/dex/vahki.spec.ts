@@ -26,7 +26,7 @@ const VAHKI_EYE_COLORS = {
   bordakh: LegoColor.TransNeonOrange,
   keerakh: LegoColor.TransLightBlue,
   nuurakh: LegoColor.TransGreen,
-  rorzakh: LegoColor.TransNeonGreen,
+  rorzakh: LegoColor.TransYellow,
   vorzakh: LegoColor.Red,
   zadakh: LegoColor.TransDarkBlue,
 } as const;
