@@ -8,6 +8,15 @@ import { QuestProgress } from '../types/Quests';
 import { clamp } from '../utils/math';
 import { isTestMode } from '../utils/testMode';
 import {
+  buildTelemetryConsentValue,
+  CURRENT_TELEMETRY_POLICY_VERSION,
+  LEGACY_TELEMETRY_ENABLED_KEY,
+  TELEMETRY_CONSENT_KEY,
+  TELEMETRY_CONSENT_POLICY_ACK_KEY,
+  TELEMETRY_CONSENT_RECONSENT_SESSION_KEY,
+  TelemetryConsentValue,
+} from '../constants/telemetryConsent';
+import {
   clearGameDatabase,
   E2E_FORCE_GAME_STATE_IMPORT_KEY,
   isGameDatabasePopulated,
@@ -444,28 +453,72 @@ export function saveDebugCharacterCreation(value: boolean) {
 
 let telemetryEnabled: boolean | undefined;
 
-/** Returns true only if the user has explicitly chosen a telemetry preference. */
+function readTelemetryConsentValue(): TelemetryConsentValue | null {
+  syncTelemetryConsentPolicyEpoch();
+
+  const raw = localStorage.getItem(TELEMETRY_CONSENT_KEY);
+  if (raw === null) return null;
+
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (parsed === false) return false;
+    if (typeof parsed === 'string') return parsed;
+  } catch {
+    // Corrupt consent blob — treat as absent so the user is re-prompted.
+  }
+
+  return null;
+}
+
+/** Clears stored consent when the policy version changes; migrates legacy boolean storage. */
+function syncTelemetryConsentPolicyEpoch(): void {
+  const ack = localStorage.getItem(TELEMETRY_CONSENT_POLICY_ACK_KEY);
+  const hasLegacyConsent = localStorage.getItem(LEGACY_TELEMETRY_ENABLED_KEY) !== null;
+  const hasStoredConsent = localStorage.getItem(TELEMETRY_CONSENT_KEY) !== null;
+
+  if (hasLegacyConsent) {
+    sessionStorage.setItem(TELEMETRY_CONSENT_RECONSENT_SESSION_KEY, '1');
+    localStorage.removeItem(LEGACY_TELEMETRY_ENABLED_KEY);
+    localStorage.removeItem(TELEMETRY_CONSENT_KEY);
+    telemetryEnabled = undefined;
+  } else if (ack !== null && ack !== CURRENT_TELEMETRY_POLICY_VERSION && hasStoredConsent) {
+    sessionStorage.setItem(TELEMETRY_CONSENT_RECONSENT_SESSION_KEY, '1');
+    localStorage.removeItem(TELEMETRY_CONSENT_KEY);
+    telemetryEnabled = undefined;
+  }
+
+  if (ack !== CURRENT_TELEMETRY_POLICY_VERSION) {
+    localStorage.setItem(TELEMETRY_CONSENT_POLICY_ACK_KEY, CURRENT_TELEMETRY_POLICY_VERSION);
+  }
+}
+
+/** True when the user should see the updated-policy consent copy. */
+export function isTelemetryConsentStale(): boolean {
+  syncTelemetryConsentPolicyEpoch();
+  return sessionStorage.getItem(TELEMETRY_CONSENT_RECONSENT_SESSION_KEY) === '1';
+}
+
+/** Returns true when the user has accepted or declined for the current policy version. */
 export function hasTelemetryConsent(): boolean {
-  return localStorage.getItem('TELEMETRY_ENABLED') !== null;
+  const value = readTelemetryConsentValue();
+  return value === false || value === CURRENT_TELEMETRY_POLICY_VERSION;
 }
 
 export function getTelemetryEnabled() {
   if (telemetryEnabled !== undefined) {
     return telemetryEnabled;
   }
-  const stored = localStorage.getItem('TELEMETRY_ENABLED');
-  if (stored !== null) {
-    const parsed = JSON.parse(stored) as boolean;
-    telemetryEnabled = parsed;
-    return parsed;
-  }
-  telemetryEnabled = false;
-  return false;
+
+  const value = readTelemetryConsentValue();
+  telemetryEnabled = value === CURRENT_TELEMETRY_POLICY_VERSION;
+  return telemetryEnabled;
 }
 
 export function saveTelemetryEnabled(value: boolean) {
   telemetryEnabled = value;
-  localStorage.setItem('TELEMETRY_ENABLED', JSON.stringify(telemetryEnabled));
+  localStorage.setItem(TELEMETRY_CONSENT_KEY, JSON.stringify(buildTelemetryConsentValue(value)));
+  localStorage.removeItem(LEGACY_TELEMETRY_ENABLED_KEY);
+  sessionStorage.removeItem(TELEMETRY_CONSENT_RECONSENT_SESSION_KEY);
 
   if (value && !localStorage.getItem('TELEMETRY_ID')) {
     localStorage.setItem('TELEMETRY_ID', crypto.randomUUID());

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { CURRENT_TELEMETRY_POLICY_VERSION } from '../../constants/telemetryConsent';
 import '../Settings/index.scss';
 
 export default function PrivacyPolicyPage() {
@@ -6,6 +7,9 @@ export default function PrivacyPolicyPage() {
     <div className="page-container">
       <h1 className="title">Privacy Policy</h1>
       <div className="about-section">
+        <p>
+          <strong>Policy version:</strong> {CURRENT_TELEMETRY_POLICY_VERSION}
+        </p>
         <p>
           <strong>Last updated:</strong> August 2026
         </p>
@@ -204,6 +208,11 @@ export default function PrivacyPolicyPage() {
           <li>
             On your first visit, you are asked whether to allow anonymous usage data. If you
             decline, no client ID is generated and nothing is ever sent.
+          </li>
+          <li>
+            Declining stores <code>false</code>; accepting stores the policy version string (e.g.{' '}
+            <code>{CURRENT_TELEMETRY_POLICY_VERSION}</code>). When the policy changes, you are asked
+            again even if you previously opted in or out.
           </li>
           <li>
             You can change your choice at any time from the{' '}

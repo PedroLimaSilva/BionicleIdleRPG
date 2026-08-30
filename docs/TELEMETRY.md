@@ -13,9 +13,9 @@ Telemetry is **completely inert** until `VITE_PUBLIC_POSTHOG_KEY` is set at buil
 
 ## Client-side behaviour
 
-- On first visit (no `TELEMETRY_ENABLED` in localStorage) a consent prompt asks for permission
+- On first visit (no `TELEMETRY_CONSENT` in localStorage) a consent prompt asks for permission
 - The prompt links to `/privacy-policy` and is suppressed on that page so users can read it before deciding
-- The user's choice is stored in localStorage and the prompt never reappears
+- The user's choice is stored in `TELEMETRY_CONSENT` as either `false` (declined) or the accepted policy version string (e.g. `"2026-08-30"`). When the policy version bumps, prior choices are cleared and the prompt reappears
 - The Settings page has a "Send anonymous usage data" toggle (with privacy policy link) that reads/writes the same key
 - PostHog is initialized with `opt_out_capturing_by_default: true` and only starts sending data after opt-in
 - PostHog autocapture is enabled (clicks and similar DOM interactions). In-app page views are tracked via `capture_pageview: 'history_change'` for SPA navigation. Rage clicks, heatmaps (`capture_heatmaps: true`), and session recordings (`disable_session_recording: false`, started on opt-in via `startSessionRecording()`) are enabled
@@ -171,13 +171,13 @@ Run with `yarn test:ci`.
 
 ### E2E tests (Playwright)
 
-The E2E helpers (`e2e/helpers.ts`) automatically dismiss the telemetry consent prompt by setting `TELEMETRY_ENABLED=false` in localStorage. Both `enableTestMode()` and `setupGameState()` do this, so no existing test is blocked by the consent modal.
+The E2E helpers (`e2e/helpers.ts`) automatically dismiss the telemetry consent prompt by setting `TELEMETRY_CONSENT` to `false` for the current policy version. Both `enableTestMode()` and `setupGameState()` do this, so no existing test is blocked by the consent modal.
 
 To write a test that **explicitly verifies the consent flow**, skip the helpers and navigate directly:
 
 ```typescript
 test('should show consent prompt on fresh state', async ({ page }) => {
-  // Don't call enableTestMode() — leave TELEMETRY_ENABLED absent
+  // Don't call enableTestMode() — leave TELEMETRY_CONSENT absent
   await page.goto('/BionicleIdleRPG/');
   await expect(page.locator('.consent-panel')).toBeVisible();
 });
