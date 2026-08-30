@@ -105,11 +105,21 @@ export default function PrivacyPolicyPage() {
           your save data (for example, a custom character name).
         </p>
         <p>
+          <strong>Browser interaction events:</strong> PostHog's SDK can automatically capture
+          clicks, form changes, and other DOM interactions as <code>$autocapture</code> events
+          (including element tags and visible button/link text). We have <strong>disabled</strong>{' '}
+          automatic interaction capture, session replay, heatmaps, and rage-click detection in our
+          configuration. When opted in, only the explicit events described above are sent — not
+          individual button clicks or in-app navigation. Earlier app builds did not disable
+          PostHog's default click capture; sessions from those builds may include autocaptured
+          interaction events.
+        </p>
+        <p>
           <strong>PostHog SDK metadata:</strong> when events are sent, PostHog automatically
           attaches standard technical properties such as browser type, operating system, device
           type, screen dimensions, and a session identifier. Page views and page-leave events are{' '}
-          <strong>disabled</strong> in our configuration — we do not track which in-app pages you
-          visit. PostHog may also receive your IP address as part of standard HTTP requests; see{' '}
+          <strong>disabled</strong> in our configuration. PostHog may also receive your IP address
+          as part of standard HTTP requests; see{' '}
           <a
             href="https://posthog.com/privacy"
             target="_blank"

@@ -118,8 +118,11 @@ describe('syncAnalyticsConsent', () => {
       'phc_test',
       expect.objectContaining({
         api_host: 'https://us.i.posthog.com',
+        autocapture: false,
         defaults: '2026-01-30',
+        disable_session_recording: true,
         opt_out_capturing_by_default: true,
+        rageclick: false,
       })
     );
     expect(mockOptInCapturing).toHaveBeenCalled();
