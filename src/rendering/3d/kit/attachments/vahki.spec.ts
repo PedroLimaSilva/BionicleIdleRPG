@@ -11,9 +11,12 @@ import {
   VAHKI_KIT_PALETTE_SOCKET,
 } from '../palettes/vahkiKitPalette';
 import {
+  VAHKI_HIVE_TOOL_NODES,
   VAHKI_KIT_2001_ATTACHMENTS,
   VAHKI_KIT_2003_ATTACHMENTS,
   VAHKI_KIT_2004_ATTACHMENTS,
+  VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE,
+  getVahkiKit2004Attachments,
 } from './vahki';
 
 const GLB_HEADER_BYTES = 12;
@@ -37,9 +40,26 @@ function readGlbNodeNames(relativePath: string): Set<string> {
 }
 
 describe('Vahki kit attachments', () => {
-  test('staff sockets clone BordakhTool until hive-specific tools exist', () => {
-    expect(VAHKI_KIT_2004_ATTACHMENTS.Tool_L.kitNodeName).toBe(KIT_2004_NODES.BordakhTool);
-    expect(VAHKI_KIT_2004_ATTACHMENTS.Tool_R.kitNodeName).toBe(KIT_2004_NODES.BordakhTool);
+  test('each hive staff socket clones that hive tool from kit_2004.glb', () => {
+    for (const [hiveId, toolNode] of Object.entries(VAHKI_HIVE_TOOL_NODES)) {
+      const attachments =
+        VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE[hiveId as keyof typeof VAHKI_HIVE_TOOL_NODES];
+      expect(attachments.Tool_L.kitNodeName).toBe(toolNode);
+      expect(attachments.Tool_R.kitNodeName).toBe(toolNode);
+    }
+  });
+
+  test('getVahkiKit2004Attachments falls back to Bordakh for unknown ids', () => {
+    expect(getVahkiKit2004Attachments('vahki_squad')).toBe(
+      VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE.bordakh
+    );
+    expect(getVahkiKit2004Attachments('keerakh').Tool_L.kitNodeName).toBe(
+      KIT_2004_NODES.KeerakhTool
+    );
+  });
+
+  test('default attachment map remains the Bordakh hive map', () => {
+    expect(VAHKI_KIT_2004_ATTACHMENTS).toBe(VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE.bordakh);
   });
 
   test('every attachment socket exists on Vahki.glb after Three.js name sanitization', () => {
@@ -57,7 +77,9 @@ describe('Vahki kit attachments', () => {
     const kit2004 = readGlbNodeNames('kit_2004.glb');
     const kit2003 = readGlbNodeNames('kit_2003.glb');
     const kit2001 = readGlbNodeNames('kit_2001.glb');
-    for (const row of Object.values(VAHKI_KIT_2004_ATTACHMENTS)) {
+    for (const row of Object.values(VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE).flatMap((map) =>
+      Object.values(map)
+    )) {
       expect(kit2004.has(row.kitNodeName)).toBe(true);
     }
     for (const row of Object.values(VAHKI_KIT_2003_ATTACHMENTS)) {

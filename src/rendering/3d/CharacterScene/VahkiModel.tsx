@@ -11,9 +11,9 @@ import { KIT_2001_GLB_PATH } from '../kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../kit/kit2003';
 import { KIT_2004_GLB_PATH } from '../kit/kit2004';
 import {
+  getVahkiKit2004Attachments,
   VAHKI_KIT_2001_ATTACHMENTS,
   VAHKI_KIT_2003_ATTACHMENTS,
-  VAHKI_KIT_2004_ATTACHMENTS,
 } from '../kit/attachments/vahki';
 import { VAHKI_WEATHERED } from '../kit/palettes/vahkiKitPalette';
 
@@ -29,6 +29,7 @@ const VAHKI_GLB = import.meta.env.BASE_URL + 'Vahki.glb';
  * CharacterScene applies another 180° for the sheet camera.
  */
 const VAHKI_BIND_POSE_Y = 10;
+const VAHKI_BIND_POSE_Z = -6;
 const VAHKI_BIND_POSE_YAW = Math.PI;
 
 /** Must match how many `useKitAttachments` calls this component makes. */
@@ -45,7 +46,7 @@ function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
 
 /**
  * One Vahki chassis for all six hives. `Vahki.glb` is a socket-only rig; every
- * visible piece (including Bordakh staffs) is cloned from kit_2004 / kit_2003 /
+ * visible piece (including hive staffs) is cloned from kit_2004 / kit_2003 /
  * kit_2001. Idle clips use {@link VAHKI_IDLE_SWITCH}; combat still falls back to
  * procedural Attack / Hit / Defeat when those clips are absent.
  */
@@ -93,8 +94,10 @@ export const VahkiModel = forwardRef<
 
   useImperativeHandle(ref, () => ({ playAnimation }));
 
+  const kit2004Attachments = useMemo(() => getVahkiKit2004Attachments(id), [id]);
+
   useKitAttachments({
-    attachments: VAHKI_KIT_2004_ATTACHMENTS,
+    attachments: kit2004Attachments,
     characterNodes: kitCharacterNodes,
     colors: colorScheme,
     kitUrl: KIT_2004_GLB_PATH,
@@ -125,7 +128,11 @@ export const VahkiModel = forwardRef<
 
   return (
     <group ref={group} dispose={null} rotation={[0, VAHKI_BIND_POSE_YAW, 0]}>
-      <primitive object={vahkiInstance} scale={1} position={[0, VAHKI_BIND_POSE_Y, 0]} />
+      <primitive
+        object={vahkiInstance}
+        scale={1}
+        position={[0, VAHKI_BIND_POSE_Y, VAHKI_BIND_POSE_Z]}
+      />
     </group>
   );
 });

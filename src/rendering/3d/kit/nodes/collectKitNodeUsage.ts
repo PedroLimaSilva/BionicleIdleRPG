@@ -78,7 +78,7 @@ import {
 import {
   VAHKI_KIT_2001_ATTACHMENTS,
   VAHKI_KIT_2003_ATTACHMENTS,
-  VAHKI_KIT_2004_ATTACHMENTS,
+  VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE,
 } from '../attachments/vahki';
 import { KIT_2001_NODES, type Kit2001NodeName } from './kit2001Nodes';
 import { KIT_2003_NODES, type Kit2003NodeName } from './kit2003Nodes';
@@ -222,7 +222,7 @@ export const KIT_2004_ATTACHMENT_MAPS = [
   WHENUA_KIT_2004_ATTACHMENTS,
   METRU_KIT_2004_ATTACHMENTS,
   METRU_KIT_2004_DISK_LAUNCHER_ATTACHMENTS,
-  VAHKI_KIT_2004_ATTACHMENTS,
+  ...Object.values(VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE),
 ] as const;
 
 export function getUsedKit2001NodeNames(): Set<Kit2001NodeName> {
