@@ -29,6 +29,7 @@ const VAHKI_GLB = import.meta.env.BASE_URL + 'Vahki.glb';
  * CharacterScene applies another 180° for the sheet camera.
  */
 const VAHKI_BIND_POSE_Y = 10;
+const VAHKI_BIND_POSE_Z = -6;
 const VAHKI_BIND_POSE_YAW = Math.PI;
 
 /** Must match how many `useKitAttachments` calls this component makes. */
@@ -127,7 +128,11 @@ export const VahkiModel = forwardRef<
 
   return (
     <group ref={group} dispose={null} rotation={[0, VAHKI_BIND_POSE_YAW, 0]}>
-      <primitive object={vahkiInstance} scale={1} position={[0, VAHKI_BIND_POSE_Y, 0]} />
+      <primitive
+        object={vahkiInstance}
+        scale={1}
+        position={[0, VAHKI_BIND_POSE_Y, VAHKI_BIND_POSE_Z]}
+      />
     </group>
   );
 });
