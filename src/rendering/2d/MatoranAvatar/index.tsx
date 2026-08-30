@@ -76,6 +76,22 @@ export function MatoranAvatar({
     );
   }
 
+  if (matoran.stage === MatoranStage.Rahi) {
+    return (
+      <div
+        className={`composited-avatar rahi-avatar-placeholder ${styles}`}
+        style={
+          {
+            '--rahi-body': colors.body.main,
+            '--rahi-accent': colors.eyes,
+            ...glowStyle,
+          } as React.CSSProperties
+        }
+        aria-label={matoran.name}
+      />
+    );
+  }
+
   return (
     <CompositedImage
       key={matoran.name}

@@ -10,7 +10,9 @@ import {
 describe('character dex entries', () => {
   test('lists every dex character including un-recruited Toa', () => {
     const ids = getCharacterDexEntries().map((entry) => entry.id);
-    expect(ids).toEqual(expect.arrayContaining(['Takua', 'Toa_Tahu', 'gahlok', 'bordakh']));
+    expect(ids).toEqual(
+      expect.arrayContaining(['Takua', 'Toa_Tahu', 'gahlok', 'bordakh', 'nui_rama'])
+    );
     expect(ids).toHaveLength(Object.keys(CHARACTER_DEX).length);
   });
 
