@@ -467,3 +467,33 @@ export function getOpenEpics(): AnimationEpic[] {
     .filter((id) => RIG_INVENTORY.some((rig) => rig.epicId === id))
     .map((id) => ANIMATION_EPICS[id]);
 }
+
+/** Resolve a rig inventory row from a `public/` relative GLB path (tolerant of prefixes). */
+export function findRigByGlb(glbPath: string): RigInventoryEntry | undefined {
+  const normalized = glbPath
+    .replace(/\\/g, '/')
+    .replace(/^public\//, '')
+    .replace(/^\.\//, '')
+    .replace(/^\/+/, '');
+
+  return RIG_INVENTORY.find((rig) => rig.glb === normalized);
+}
+
+/** True when every required clip is marked complete (or optional clips are absent). */
+export function isRigAnimationComplete(
+  rig: RigInventoryEntry,
+  shippedClipNames: string[]
+): boolean {
+  return rig.expectedClips
+    .filter((clip) => clip.required)
+    .every((clip) => shippedClipNames.includes(clip.name));
+}
+
+/** Clips present in the GLB that are not listed in the rig's expected inventory. */
+export function getUnexpectedShippedClips(
+  rig: RigInventoryEntry,
+  shippedClipNames: string[]
+): string[] {
+  const expected = new Set(rig.expectedClips.map((clip) => clip.name));
+  return shippedClipNames.filter((name) => !expected.has(name));
+}

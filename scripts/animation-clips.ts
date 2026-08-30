@@ -1,17 +1,32 @@
+import { readFileSync } from 'node:fs';
 import {
   ANIMATION_EPICS,
   type AnimationEpicId,
   type ClipBacklog,
   type ExpectedClip,
+  findRigByGlb,
+  getUnexpectedShippedClips,
+  isRigAnimationComplete,
   type RigInventoryEntry,
   RIG_INVENTORY,
 } from '../src/rendering/3d/CharacterScene/characterAnimationInventory';
-import { readGlbClipNames } from '../src/rendering/3d/CharacterScene/glbClipUtils';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const PUBLIC_DIR = join(repoRoot, 'public');
+
+const GLB_HEADER_BYTES = 12;
+const CHUNK_HEADER_BYTES = 8;
+
+/** Reads clip names out of a GLB JSON chunk (scripts copy — avoids importing Jest-only glbClipUtils). */
+function readGlbClipNames(relativePath: string, publicDir: string = PUBLIC_DIR): string[] {
+  const buffer = readFileSync(join(publicDir, relativePath));
+  const jsonChunkLength = buffer.readUInt32LE(GLB_HEADER_BYTES);
+  const jsonStart = GLB_HEADER_BYTES + CHUNK_HEADER_BYTES;
+  const gltf = JSON.parse(buffer.subarray(jsonStart, jsonStart + jsonChunkLength).toString());
+  return (gltf.animations ?? []).map((animation: { name: string }) => animation.name);
+}
 
 export type ClipPresence = 'shipped' | 'procedural' | 'na';
 
@@ -190,4 +205,144 @@ export function countMissingClips(publicDir: string = PUBLIC_DIR): number {
   return buildRigReports(publicDir)
     .flatMap((row) => row.clips)
     .filter((clip) => clip.status === 'missing').length;
+}
+
+export interface GlbInspectResult {
+  glb: string;
+  rig: RigInventoryEntry | null;
+  shippedClips: string[];
+  report: RigReportRow | null;
+  /** Required clips expected by inventory but absent from the GLB. */
+  stillMissing: ExpectedClip[];
+  /** Clips now in the GLB that inventory still marks missing (update backlog → complete). */
+  newlyComplete: ExpectedClip[];
+  /** Clips in the GLB with no inventory row (add as unused or wire in code). */
+  unexpectedClips: string[];
+  /** All required clips present — candidate to move rig epicId to `complete`. */
+  rigComplete: boolean;
+}
+
+export function inspectGlb(glbPath: string, publicDir: string = PUBLIC_DIR): GlbInspectResult {
+  const glb = glbPath
+    .replace(/\\/g, '/')
+    .replace(/^public\//, '')
+    .replace(/^\.\//, '');
+  const rig = findRigByGlb(glb) ?? null;
+  const shippedClips = readGlbClipNames(glb, publicDir);
+  const report = rig
+    ? (buildRigReports(publicDir).find((row) => row.rig.id === rig.id) ?? null)
+    : null;
+
+  if (!rig) {
+    return {
+      glb,
+      newlyComplete: [],
+      report: null,
+      rig: null,
+      rigComplete: false,
+      shippedClips,
+      stillMissing: [],
+      unexpectedClips: shippedClips,
+    };
+  }
+
+  const stillMissing = rig.expectedClips.filter(
+    (clip) => clip.required && !shippedClips.includes(clip.name)
+  );
+  const newlyComplete = rig.expectedClips.filter(
+    (clip) => shippedClips.includes(clip.name) && clip.backlog === 'missing'
+  );
+
+  return {
+    glb,
+    newlyComplete,
+    report,
+    rig,
+    rigComplete: isRigAnimationComplete(rig, shippedClips),
+    shippedClips,
+    stillMissing,
+    unexpectedClips: getUnexpectedShippedClips(rig, shippedClips),
+  };
+}
+
+export function buildGlbInspectMarkdown(result: GlbInspectResult): string {
+  const lines: string[] = [`## GLB inspect: \`${result.glb}\``, ''];
+
+  if (!result.rig) {
+    lines.push(
+      '⚠️ **Not in animation inventory.** Add a row to `characterAnimationInventory.ts` before merging.',
+      '',
+      '**Shipped clips:**',
+      result.shippedClips.length > 0
+        ? result.shippedClips.map((c) => `- \`${c}\``).join('\n')
+        : '- _(none)_'
+    );
+    return lines.join('\n');
+  }
+
+  lines.push(
+    `**Rig:** ${result.rig.displayName} (\`${result.rig.reactComponent}\`)`,
+    `**Epic:** \`${result.rig.epicId}\`${result.rig.epicId !== 'complete' ? ` — ${ANIMATION_EPICS[result.rig.epicId as AnimationEpicId]?.title ?? ''}` : ''}`,
+    `**Role:** ${result.rig.role}`,
+    '',
+    '**Shipped clips:**',
+    result.shippedClips.length > 0
+      ? result.shippedClips.map((c) => `- \`${c}\``).join('\n')
+      : '- _(none)_',
+    ''
+  );
+
+  if (result.newlyComplete.length > 0) {
+    lines.push(
+      '### ✅ Newly shipped (update inventory `backlog` → `complete`)',
+      '',
+      ...result.newlyComplete.map(
+        (clip) => `- \`${clip.name}\` (${clip.kind}) — was \`backlog: 'missing'\` in inventory`
+      ),
+      ''
+    );
+  }
+
+  if (result.stillMissing.length > 0) {
+    lines.push(
+      '### ❌ Still missing from GLB',
+      '',
+      ...result.stillMissing.map((clip) => `- \`${clip.name}\` (${clip.kind}, required)`),
+      ''
+    );
+  }
+
+  if (result.unexpectedClips.length > 0) {
+    lines.push(
+      '### 💤 Unexpected clips (in GLB, not in inventory)',
+      '',
+      ...result.unexpectedClips.map(
+        (name) => `- \`${name}\` — add to inventory as \`backlog: 'unused'\` or wire in code`
+      ),
+      ''
+    );
+  }
+
+  if (result.rigComplete && result.rig.epicId !== 'complete') {
+    lines.push(
+      '### Epic graduation',
+      '',
+      `All **required** clips are present. Consider moving this rig's \`epicId\` to \`'complete'\` and updating epic rig counts in \`docs/CHARACTER_ANIMATIONS.md\`.`,
+      ''
+    );
+  }
+
+  if (
+    result.newlyComplete.length === 0 &&
+    result.stillMissing.length === 0 &&
+    result.unexpectedClips.length === 0
+  ) {
+    lines.push('_Inventory already matches shipped clips._', '');
+  }
+
+  lines.push(
+    '**Next:** edit `characterAnimationInventory.ts` → run `yarn test:ci --testPathPatterns=characterIdleClips` → `yarn animation-clip-report`'
+  );
+
+  return lines.join('\n');
 }

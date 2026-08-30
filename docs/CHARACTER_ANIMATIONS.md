@@ -4,7 +4,9 @@ Technical reference and **animation epic backlog** for 3D character rigs: which 
 
 **Machine-readable source:** [`src/rendering/3d/CharacterScene/characterAnimationInventory.ts`](../src/rendering/3d/CharacterScene/characterAnimationInventory.ts)
 
-**Regenerate tables:** `yarn animation-clip-report`
+**Agent skill (updated GLBs):** [`.cursor/skills/update-character-glb/SKILL.md`](../.cursor/skills/update-character-glb/SKILL.md) — run when a rig is added or re-exported.
+
+**Regenerate tables:** `yarn animation-clip-report` · **Inspect one GLB:** `yarn animation-clip-inspect Toa_Metru/Vakama.glb`
 
 **Related:** [`docs/UI_UX_STRATEGY.md`](UI_UX_STRATEGY.md) §7 (animation strategy), [`docs/ARENA_ENVIRONMENTS.md`](ARENA_ENVIRONMENTS.md) (environment GLB workflow), [#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) (Phase 3 combat feedback & ambient life).
 
@@ -12,11 +14,11 @@ Technical reference and **animation epic backlog** for 3D character rigs: which 
 
 ## How to use this doc
 
-| Audience          | Workflow                                                                                                                                                                              |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Art / rigging** | Pick an epic below → author clips in Blender → export GLB → run `yarn animation-clip-report` to verify → open PR with `release/characters-models`.                                    |
-| **Engineering**   | When code starts playing a new clip name, add it to `characterAnimationInventory.ts` first so CI and this report stay accurate.                                                       |
-| **PM / triage**   | Epics group related rigs. Open a GitHub issue per epic (or per rig) for discussion and acceptance criteria — same pattern as [`ARCHITECTURE_ROADMAP.md`](../ARCHITECTURE_ROADMAP.md). |
+| Audience          | Workflow                                                                                                                                                                                                                               |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Art / rigging** | Pick an epic below → author clips in Blender → export GLB → run `yarn animation-clip-inspect <glb>` → follow [update-character-glb skill](../.cursor/skills/update-character-glb/SKILL.md) → open PR with `release/characters-models`. |
+| **Engineering**   | When code starts playing a new clip name, add it to `characterAnimationInventory.ts` first so CI and this report stay accurate.                                                                                                        |
+| **PM / triage**   | Epics group related rigs. Open a GitHub issue per epic (or per rig) for discussion and acceptance criteria — same pattern as [`ARCHITECTURE_ROADMAP.md`](../ARCHITECTURE_ROADMAP.md).                                                  |
 
 ### Status legend
 
@@ -239,6 +241,7 @@ Rebuilt Matoran crossfade between `Idle` and `Idle.001` (`REBUILT_IDLE_SWITCH`).
 | Required idle clips per GLB | `characterIdleClips.spec.ts`                                   |
 | Inventory completeness      | `characterAnimationInventory.ts`                               |
 | Markdown report             | `yarn animation-clip-report`                                   |
+| Single-GLB inspect          | `yarn animation-clip-inspect <glb>`                            |
 | E2E model snapshots         | `e2e/modelRendering.spec.ts` (mixers paused via `testMode.ts`) |
 
 When adding a new playable rig:
