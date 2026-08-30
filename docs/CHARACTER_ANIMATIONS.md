@@ -32,22 +32,42 @@ Technical reference and **animation epic backlog** for 3D character rigs: which 
 
 ---
 
+## Story progression priority
+
+Epics are **prioritized by when the player meets each rig**, not by how many clips are missing. Work top-to-bottom in the table below — early-game Mask Hunt and MNOG content before Metru Nui flashback rigs.
+
+Macro arc order (see `src/data/quests/index.ts`): **Mask Hunt → MNOG → Bohrok Swarm → Bohrok Kal → Mask of Light → Metru Nui**.
+
+| Order | Rig family (first appearance)   | Story arc                                        |
+| ----: | ------------------------------- | ------------------------------------------------ |
+|     1 | Diminished Matoran              | Game start                                       |
+|     2 | Toa Mata                        | Mask Hunt — `story_toa_arrival`                  |
+|     3 | Nui-Rama, generic Rahi          | MNOG / early combat                              |
+|     4 | Toa Nuva                        | Bohrok Swarm — `bohrok_evolve_toa_nuva`          |
+|     5 | Rebuilt Matoran                 | Bohrok Kal — `bohrok_kal_naming_day`             |
+|     6 | Rahkshi                         | Mask of Light                                    |
+|     7 | Metru Matoran, Vahki, Toa Metru | Metru Nui flashback (latest implemented content) |
+
+Set `storyOrder` and `storyArc` on new epics in `characterAnimationInventory.ts` to match quest unlock order. Lower `storyOrder` = animate sooner.
+
+---
+
 ## Epic backlog (summary)
 
-| Epic                                                           | Priority | Rigs | Goal                                                          |
-| -------------------------------------------------------------- | -------- | ---: | ------------------------------------------------------------- |
-| [Toa Metru — skeletal combat clips](#epic-toa-metru-combat)    | `high`   |    7 | Add Attack / Hit / Defeat to all Toa Metru GLBs               |
-| [Toa Nuva — combat clip rollout](#epic-toa-nuva-combat)        | `high`   |    5 | Extend Tahu/Pohatu-quality combat clips to remaining Nuva     |
-| [Toa Mata — Hit clip gaps](#epic-toa-mata-polish)              | `medium` |    2 | Author Hit for Tahu and Pohatu Mata                           |
-| [Vahki — combat clips](#epic-vahki-combat)                     | `medium` |    1 | Add combat clips while preserving biped/quadruped idle switch |
-| [Nui-Rama — combat clips](#epic-rahi-nui-rama)                 | `medium` |    1 | Skeletal combat beyond Wings ambient loop                     |
-| [Rahkshi — Defeat clip](#epic-rahkshi-defeat)                  | `low`    |    1 | Optional authored knockdown (procedural works today)          |
-| [Village Matoran — flavor overlays](#epic-village-flavor)      | `low`    |    2 | Add Tilt Head to Metru + Rebuilt GLBs                         |
-| [Rebuilt Matoran — idle transition](#epic-rebuilt-idle-switch) | `low`    |    1 | One-shot transition clip between Idle ↔ Idle.001              |
-| [Generic Rahi — GLB-backed rig](#epic-rahi-placeholder)        | `future` |    1 | Replace procedural capsule placeholder                        |
-| [Bohrok — unused authored clips](#epic-bohrok-extras)          | `future` |    1 | Wire or remove Ball / Flying / Flying Pose                    |
+Sorted by story progression. Run `yarn animation-clip-report` for the live matrix parsed from shipped GLBs.
 
-Run `yarn animation-clip-report` for the live rig matrix (parsed from shipped GLBs).
+|   # | Epic                                                         | Story arc        | Rigs | Goal                                                          |
+| --: | ------------------------------------------------------------ | ---------------- | ---: | ------------------------------------------------------------- |
+|   1 | [Toa Mata — Hit clip gaps](#epic-toa-mata-polish)            | Mask Hunt        |    2 | Author Hit for Tahu and Pohatu Mata                           |
+|   2 | [Nui-Rama — combat clips](#epic-rahi-nui-rama)               | MNOG             |    1 | Skeletal combat beyond Wings ambient loop                     |
+|   3 | [Generic Rahi — GLB-backed rig](#epic-rahi-placeholder)      | Mask Hunt / MNOG |    1 | Replace procedural capsule placeholder                        |
+|   4 | [Toa Nuva — combat clip rollout](#epic-toa-nuva-combat)      | Bohrok Swarm     |    5 | Extend Tahu/Pohatu-quality combat clips to remaining Nuva     |
+|   5 | [Rebuilt Matoran — idle & flavor](#epic-rebuilt-idle-switch) | Bohrok Kal       |    1 | Idle transition + Tilt Head flavor                            |
+|   6 | [Rahkshi — Defeat clip](#epic-rahkshi-defeat)                | Mask of Light    |    1 | Optional authored knockdown (procedural works today)          |
+|   7 | [Metru Matoran — flavor overlays](#epic-village-flavor)      | Metru Nui        |    1 | Add Tilt Head to Metru village GLB                            |
+|   8 | [Vahki — combat clips](#epic-vahki-combat)                   | Metru Nui        |    1 | Add combat clips while preserving biped/quadruped idle switch |
+|   9 | [Toa Metru — skeletal combat clips](#epic-toa-metru-combat)  | Metru Nui        |    7 | Add Attack / Hit / Defeat to all Toa Metru GLBs               |
+|  10 | [Bohrok — unused authored clips](#epic-bohrok-extras)        | Stretch          |    1 | Wire or remove Ball / Flying / Flying Pose                    |
 
 ---
 
@@ -100,11 +120,106 @@ Kit libraries (`kit_2001.glb`, `kit_2003.glb`, `kit_2004.glb`) and mask/armor pr
 
 ---
 
-## Epics (detailed)
+## Epics (detailed, story order)
+
+### Epic: Toa Mata — Hit clip gaps {#epic-toa-mata-polish}
+
+**Story:** Mask Hunt · `story_toa_arrival` · **Rigs:** 2 · **Epic id:** `toa-mata-polish`
+
+| Rig             | GLB                   | Idle | Attack | Hit           | Defeat                |
+| --------------- | --------------------- | ---- | ------ | ------------- | --------------------- |
+| Toa Tahu Mata   | `Toa_Mata/tahu.glb`   | ✅   | ✅     | ❌ procedural | ✅ _(via Attack set)_ |
+| Toa Pohatu Mata | `Toa_Mata/pohatu.glb` | ✅   | ✅     | ❌ procedural | ✅ _(via Attack set)_ |
+
+Other Mata Toa (Gali, Kopaka, Lewa, Onua) ship full Attack + Hit. Extra clips in Mata GLBs (Gear, Hand, Leg, etc.) are 💤 unused export artifacts.
+
+---
+
+### Epic: Nui-Rama — combat clips {#epic-rahi-nui-rama}
+
+**Story:** MNOG · `early_rahi_nui_rama` · **Rigs:** 1 · **Epic id:** `rahi-nui-rama`
+
+| Rig      | GLB                | Ambient  | Attack        | Hit           | Defeat        |
+| -------- | ------------------ | -------- | ------------- | ------------- | ------------- |
+| Nui-Rama | `Rahi/NuiRama.glb` | ✅ Wings | ❌ procedural | ❌ procedural | ❌ procedural |
+
+---
+
+### Epic: Generic Rahi — GLB-backed rig {#epic-rahi-placeholder}
+
+**Story:** Mask Hunt / MNOG · `early_rahi_muaka` · **Rigs:** 1 · **Epic id:** `rahi-placeholder`
+
+`RahiPlaceholderModel` is a procedural capsule for generic Rahi encounters (Muaka, Nui-Jaga). Replace with a shared low-poly GLB when art bandwidth allows.
+
+---
+
+### Epic: Toa Nuva — combat clip rollout {#epic-toa-nuva-combat}
+
+**Story:** Bohrok Swarm · `bohrok_evolve_toa_nuva` · **Rigs:** 5 · **Epic id:** `toa-nuva-combat`
+
+| Rig             | GLB                     | Idle | Attack | Hit | Defeat | Notes                |
+| --------------- | ----------------------- | ---- | ------ | --- | ------ | -------------------- |
+| Toa Gali Nuva   | `Toa_Nuva/gali.glb`     | ✅   | ❌     | ❌  | ❌     |                      |
+| Toa Kopaka Nuva | `Toa_Nuva/kopaka.glb`   | ✅   | ❌     | ❌  | ❌     |                      |
+| Toa Lewa Nuva   | `Toa_Nuva/lewa.glb`     | ✅   | ❌     | ❌  | ❌     | 💤 `Idle.001` unused |
+| Toa Onua Nuva   | `Toa_Nuva/onua.glb`     | ✅   | ❌     | ❌  | ❌     |                      |
+| Toa Takanuva    | `Toa_Nuva/takanuva.glb` | ✅   | ❌     | ❌  | ❌     | MOL unlock           |
+
+**Reference:** Toa Tahu Nuva and Toa Pohatu Nuva already ship full combat clips.
+
+---
+
+### Epic: Rebuilt Matoran — idle & flavor {#epic-rebuilt-idle-switch}
+
+**Story:** Bohrok Kal · `bohrok_kal_naming_day` · **Rigs:** 1 · **Epic id:** `rebuilt-idle-switch`
+
+Rebuilt Matoran crossfade between `Idle` and `Idle.001` (`REBUILT_IDLE_SWITCH`). Vahki uses dedicated `Switch_*` transition clips — same pattern recommended here. Also missing `Tilt Head` flavor (Diminished Matoran reference).
+
+| Rig             | GLB           | Idle switch | Tilt Head |
+| --------------- | ------------- | ----------- | --------- |
+| Rebuilt Matoran | `rebuilt.glb` | ✅ / ✅     | ❌        |
+
+---
+
+### Epic: Rahkshi — Defeat clip {#epic-rahkshi-defeat}
+
+**Story:** Mask of Light · `mol_fall_of_ta_koro` · **Rigs:** 1 · **Epic id:** `rahkshi-defeat`
+
+| Rig     | GLB           | Idle                 | Attack | Hit | Defeat        |
+| ------- | ------------- | -------------------- | ------ | --- | ------------- |
+| Rahkshi | `rahkshi.glb` | ✅ Empty → Idle swap | ✅     | ✅  | ❌ procedural |
+
+Defeat is intentionally procedural today so knockdown timing stays aligned with sink/fade VFX.
+
+---
+
+### Epic: Metru Matoran — flavor overlays {#epic-village-flavor}
+
+**Story:** Metru Nui · `story_metru_nui_saga_begin` · **Rigs:** 1 · **Epic id:** `village-flavor`
+
+Metru-stage village Matoran call `useAnimationController` with `Tilt Head`; Diminished Matoran already ship this clip on `matoran_master.glb`.
+
+| Rig           | GLB                 | Idle | Tilt Head |
+| ------------- | ------------------- | ---- | --------- |
+| Metru Matoran | `matoran_metru.glb` | ✅   | ❌        |
+
+---
+
+### Epic: Vahki — combat clips {#epic-vahki-combat}
+
+**Story:** Metru Nui · `metru_vakama_dume_and_the_great_temple` · **Rigs:** 1 · **Epic id:** `vahki-combat`
+
+| Rig               | GLB         | Idle switch                         | Attack | Hit | Defeat |
+| ----------------- | ----------- | ----------------------------------- | ------ | --- | ------ |
+| Vahki (all hives) | `Vahki.glb` | ✅ Biped / Quadruped + Switch_BQ/QB | ❌     | ❌  | ❌     |
+
+Preserve existing idle-switch clips when adding combat — see `idleSwitchConfigs.ts`.
+
+---
 
 ### Epic: Toa Metru — skeletal combat clips {#epic-toa-metru-combat}
 
-**Priority:** high · **Rigs:** 7 · **Epic id:** `toa-metru-combat`
+**Story:** Metru Nui · `metru_great_temple_transformation` · **Rigs:** 7 · **Epic id:** `toa-metru-combat`
 
 All Toa Metru share the same gap: `Idle` is authored; `Attack`, `Hit`, and `Defeat` fall back to procedural root motion (`useCombatAnimations.spec.tsx` documents the Lhikan pattern).
 
@@ -122,104 +237,11 @@ All Toa Metru share the same gap: `Idle` is authored; `Attack`, `Hit`, and `Defe
 
 ---
 
-### Epic: Toa Nuva — combat clip rollout {#epic-toa-nuva-combat}
-
-**Priority:** high · **Rigs:** 5 · **Epic id:** `toa-nuva-combat`
-
-| Rig             | GLB                     | Idle | Attack | Hit | Defeat | Notes                |
-| --------------- | ----------------------- | ---- | ------ | --- | ------ | -------------------- |
-| Toa Gali Nuva   | `Toa_Nuva/gali.glb`     | ✅   | ❌     | ❌  | ❌     |                      |
-| Toa Kopaka Nuva | `Toa_Nuva/kopaka.glb`   | ✅   | ❌     | ❌  | ❌     |                      |
-| Toa Lewa Nuva   | `Toa_Nuva/lewa.glb`     | ✅   | ❌     | ❌  | ❌     | 💤 `Idle.001` unused |
-| Toa Onua Nuva   | `Toa_Nuva/onua.glb`     | ✅   | ❌     | ❌  | ❌     |                      |
-| Toa Takanuva    | `Toa_Nuva/takanuva.glb` | ✅   | ❌     | ❌  | ❌     |                      |
-
-**Reference:** Toa Tahu Nuva and Toa Pohatu Nuva already ship full combat clips.
-
----
-
-### Epic: Toa Mata — Hit clip gaps {#epic-toa-mata-polish}
-
-**Priority:** medium · **Rigs:** 2 · **Epic id:** `toa-mata-polish`
-
-| Rig             | GLB                   | Idle | Attack | Hit           | Defeat                |
-| --------------- | --------------------- | ---- | ------ | ------------- | --------------------- |
-| Toa Tahu Mata   | `Toa_Mata/tahu.glb`   | ✅   | ✅     | ❌ procedural | ✅ _(via Attack set)_ |
-| Toa Pohatu Mata | `Toa_Mata/pohatu.glb` | ✅   | ✅     | ❌ procedural | ✅ _(via Attack set)_ |
-
-Other Mata Toa (Gali, Kopaka, Lewa, Onua) ship full Attack + Hit. Extra clips in Mata GLBs (Gear, Hand, Leg, etc.) are 💤 unused export artifacts.
-
----
-
-### Epic: Vahki — combat clips {#epic-vahki-combat}
-
-**Priority:** medium · **Rigs:** 1 · **Epic id:** `vahki-combat`
-
-| Rig               | GLB         | Idle switch                         | Attack | Hit | Defeat |
-| ----------------- | ----------- | ----------------------------------- | ------ | --- | ------ |
-| Vahki (all hives) | `Vahki.glb` | ✅ Biped / Quadruped + Switch_BQ/QB | ❌     | ❌  | ❌     |
-
-Preserve existing idle-switch clips when adding combat — see `idleSwitchConfigs.ts`.
-
----
-
-### Epic: Nui-Rama — combat clips {#epic-rahi-nui-rama}
-
-**Priority:** medium · **Rigs:** 1 · **Epic id:** `rahi-nui-rama`
-
-| Rig      | GLB                | Ambient  | Attack        | Hit           | Defeat        |
-| -------- | ------------------ | -------- | ------------- | ------------- | ------------- |
-| Nui-Rama | `Rahi/NuiRama.glb` | ✅ Wings | ❌ procedural | ❌ procedural | ❌ procedural |
-
----
-
-### Epic: Rahkshi — Defeat clip {#epic-rahkshi-defeat}
-
-**Priority:** low · **Rigs:** 1 · **Epic id:** `rahkshi-defeat`
-
-| Rig     | GLB           | Idle                 | Attack | Hit | Defeat        |
-| ------- | ------------- | -------------------- | ------ | --- | ------------- |
-| Rahkshi | `rahkshi.glb` | ✅ Empty → Idle swap | ✅     | ✅  | ❌ procedural |
-
-Defeat is intentionally procedural today so knockdown timing stays aligned with sink/fade VFX.
-
----
-
-### Epic: Village Matoran — flavor overlays {#epic-village-flavor}
-
-**Priority:** low · **Rigs:** 2 · **Epic id:** `village-flavor`
-
-All three village stages call `useAnimationController` with `Tilt Head`, but only Diminished Matoran ship the clip.
-
-| Rig                | GLB                  | Idle                   | Tilt Head |
-| ------------------ | -------------------- | ---------------------- | --------- |
-| Diminished Matoran | `matoran_master.glb` | ✅                     | ✅        |
-| Metru Matoran      | `matoran_metru.glb`  | ✅                     | ❌        |
-| Rebuilt Matoran    | `rebuilt.glb`        | ✅ (+ Idle.001 switch) | ❌        |
-
----
-
-### Epic: Rebuilt Matoran — idle transition {#epic-rebuilt-idle-switch}
-
-**Priority:** low · **Rigs:** 1 · **Epic id:** `rebuilt-idle-switch`
-
-Rebuilt Matoran crossfade between `Idle` and `Idle.001` (`REBUILT_IDLE_SWITCH`). Vahki uses dedicated `Switch_*` transition clips — same pattern recommended here.
-
----
-
-### Epic: Generic Rahi — GLB-backed rig {#epic-rahi-placeholder}
-
-**Priority:** future · **Rigs:** 1 · **Epic id:** `rahi-placeholder`
-
-`RahiPlaceholderModel` is a procedural capsule for generic Rahi encounters. Replace with a shared low-poly GLB when art bandwidth allows.
-
----
-
 ### Epic: Bohrok — unused authored clips {#epic-bohrok-extras}
 
-**Priority:** future · **Rigs:** 1 · **Epic id:** `bohrok-extras`
+**Story:** Stretch / polish · **Rigs:** 1 · **Epic id:** `bohrok-extras`
 
-`bohrok_master.glb` is the **reference-complete** combat rig. It also ships `Ball`, `Flying`, and `Flying Pose` — 💤 unused. Either wire these for flying enemies / ball mode or strip on next export pass.
+`bohrok_master.glb` is the **reference-complete** combat rig (Bohrok Swarm arc). It also ships `Ball`, `Flying`, and `Flying Pose` — 💤 unused. Either wire these for flying enemies / ball mode or strip on next export pass.
 
 ---
 
@@ -257,4 +279,5 @@ When adding a new playable rig:
 
 - **New missing clip discovered in code** → update inventory + run report in the same PR.
 - **Clip shipped** → set `backlog: 'complete'` on the clip entry; epic moves toward done.
+- **New rig or epic** → set `storyOrder` / `storyArc` / `storyBeat` from quest unlock order in `src/data/quests/`.
 - **Per-epic GitHub issues** → open from this doc when scheduling art sprints (do not duplicate status in `ARCHITECTURE_ROADMAP.md`).

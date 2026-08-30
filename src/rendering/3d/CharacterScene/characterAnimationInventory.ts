@@ -13,7 +13,24 @@ export type AnimationEpicId =
   | 'rahi-placeholder'
   | 'bohrok-extras';
 
-export type AnimationEpicPriority = 'high' | 'medium' | 'low' | 'future';
+export type StoryArcId =
+  | 'mask-hunt'
+  | 'mnog'
+  | 'bohrok-swarm'
+  | 'bohrok-kal'
+  | 'mask-of-light'
+  | 'metru-nui'
+  | 'stretch';
+
+export const STORY_ARC_LABELS: Record<StoryArcId, string> = {
+  'bohrok-kal': 'Bohrok Kal',
+  'bohrok-swarm': 'Bohrok Swarm',
+  'mask-hunt': 'Mask Hunt',
+  'mask-of-light': 'Mask of Light',
+  'metru-nui': 'Metru Nui',
+  mnog: 'MNOG',
+  stretch: 'Stretch / polish',
+};
 
 export type RigRole = 'combat' | 'village' | 'enemy' | 'placeholder';
 
@@ -25,7 +42,14 @@ export type ClipBacklog = 'missing' | 'revision' | 'unused' | 'complete';
 export interface AnimationEpic {
   id: AnimationEpicId;
   title: string;
-  priority: AnimationEpicPriority;
+  /**
+   * Authoring priority by story progression — lower numbers appear earlier in the
+   * game and should be animated first. See `docs/CHARACTER_ANIMATIONS.md`.
+   */
+  storyOrder: number;
+  storyArc: StoryArcId;
+  /** First quest or beat where this rig matters (for traceability). */
+  storyBeat: string;
   summary: string;
 }
 
@@ -53,73 +77,93 @@ export interface RigInventoryEntry {
 export const ANIMATION_EPICS: Record<AnimationEpicId, AnimationEpic> = {
   'bohrok-extras': {
     id: 'bohrok-extras',
-    priority: 'future',
+    storyArc: 'stretch',
+    storyBeat: 'bohrok_swarm_intro',
+    storyOrder: 100,
     summary:
       'bohrok_master.glb includes Ball, Flying, and Flying Pose clips that no code path plays yet. Wire or trim on next Bohrok polish pass.',
     title: 'Bohrok — unused authored clips',
   },
   'rahi-nui-rama': {
     id: 'rahi-nui-rama',
-    priority: 'medium',
+    storyArc: 'mnog',
+    storyBeat: 'early_rahi_nui_rama',
+    storyOrder: 20,
     summary:
       'Nui-Rama loops the Wings ambient clip during combat. Attack, Hit, and Defeat are procedural on the root group.',
     title: 'Nui-Rama — combat clips',
   },
   'rahi-placeholder': {
     id: 'rahi-placeholder',
-    priority: 'future',
+    storyArc: 'mask-hunt',
+    storyBeat: 'early_rahi_muaka',
+    storyOrder: 25,
     summary:
       'RahiPlaceholderModel is a procedural capsule with no GLB. Replace with a shared low-poly Rahi rig when art bandwidth allows.',
     title: 'Generic Rahi — GLB-backed rig',
   },
   'rahkshi-defeat': {
     id: 'rahkshi-defeat',
-    priority: 'low',
+    storyArc: 'mask-of-light',
+    storyBeat: 'mol_fall_of_ta_koro',
+    storyOrder: 60,
     summary:
       'Rahkshi Attack and Hit are authored. Defeat uses procedural knockdown so Kraata glow and sink timing stay reliable.',
     title: 'Rahkshi — Defeat clip',
   },
   'rebuilt-idle-switch': {
     id: 'rebuilt-idle-switch',
-    priority: 'low',
+    storyArc: 'bohrok-kal',
+    storyBeat: 'bohrok_kal_naming_day',
+    storyOrder: 50,
     summary:
-      'Rebuilt Matoran crossfade between Idle and Idle.001. A dedicated transition clip (like Vahki Switch_BQ) would polish the swap.',
-    title: 'Rebuilt Matoran — idle transition clip',
+      'Rebuilt Matoran crossfade between Idle and Idle.001 (plus missing Tilt Head flavor). A dedicated transition clip (like Vahki Switch_BQ) would polish the swap.',
+    title: 'Rebuilt Matoran — idle & flavor',
   },
   'toa-mata-polish': {
     id: 'toa-mata-polish',
-    priority: 'medium',
+    storyArc: 'mask-hunt',
+    storyBeat: 'story_toa_arrival',
+    storyOrder: 10,
     summary:
       'Tahu and Pohatu Mata lack Hit clips. Attack and Idle are present; Hit currently uses procedural shake.',
     title: 'Toa Mata — Hit clip gaps',
   },
   'toa-metru-combat': {
     id: 'toa-metru-combat',
-    priority: 'high',
+    storyArc: 'metru-nui',
+    storyBeat: 'metru_great_temple_transformation',
+    storyOrder: 90,
     summary:
       'All seven Toa Metru GLBs ship Idle only. Combat uses procedural root motion today; authored Attack / Hit / Defeat clips would match Toa Mata quality.',
     title: 'Toa Metru — skeletal combat clips',
   },
   'toa-nuva-combat': {
     id: 'toa-nuva-combat',
-    priority: 'high',
+    storyArc: 'bohrok-swarm',
+    storyBeat: 'bohrok_evolve_toa_nuva',
+    storyOrder: 40,
     summary:
       'Only Tahu and Pohatu Nuva include Attack / Hit. Gali, Kopaka, Lewa, Onua, and Takanuva still fall back to procedural combat motion.',
     title: 'Toa Nuva — combat clip rollout',
   },
   'vahki-combat': {
     id: 'vahki-combat',
-    priority: 'medium',
+    storyArc: 'metru-nui',
+    storyBeat: 'metru_vakama_dume_and_the_great_temple',
+    storyOrder: 80,
     summary:
       'Vahki idle-switch clips (biped / quadruped + Switch_BQ / Switch_QB) are complete. Attack, Hit, and Defeat are procedural.',
     title: 'Vahki — combat clips',
   },
   'village-flavor': {
     id: 'village-flavor',
-    priority: 'low',
+    storyArc: 'metru-nui',
+    storyBeat: 'story_metru_nui_saga_begin',
+    storyOrder: 75,
     summary:
-      'Diminished Matoran ship Tilt Head. Metru and Rebuilt models request the same overlay but their GLBs do not include the clip yet.',
-    title: 'Village Matoran — flavor overlays',
+      'Metru-stage village Matoran request Tilt Head flavor overlays; Diminished Matoran already ship this clip.',
+    title: 'Metru Matoran — flavor overlays',
   },
 };
 
@@ -463,9 +507,16 @@ export function getRigsByEpic(epicId: AnimationEpicId): RigInventoryEntry[] {
 }
 
 export function getOpenEpics(): AnimationEpic[] {
-  return (Object.keys(ANIMATION_EPICS) as AnimationEpicId[])
-    .filter((id) => RIG_INVENTORY.some((rig) => rig.epicId === id))
-    .map((id) => ANIMATION_EPICS[id]);
+  return sortEpicIdsByStory(
+    (Object.keys(ANIMATION_EPICS) as AnimationEpicId[]).filter((id) =>
+      RIG_INVENTORY.some((rig) => rig.epicId === id)
+    )
+  ).map((id) => ANIMATION_EPICS[id]);
+}
+
+/** Sort epic ids by `storyOrder` (earlier game content first). */
+export function sortEpicIdsByStory(ids: readonly AnimationEpicId[]): AnimationEpicId[] {
+  return [...ids].sort((a, b) => ANIMATION_EPICS[a].storyOrder - ANIMATION_EPICS[b].storyOrder);
 }
 
 /** Resolve a rig inventory row from a `public/` relative GLB path (tolerant of prefixes). */

@@ -69,7 +69,7 @@ For each affected rig:
 2. **New clips** — add `ExpectedClip` entries for unexpected shipped clips (`backlog: 'unused'` until code plays them).
 3. **Epic assignment** — when all **required** clips for a combat rig are shipped, set `epicId: 'complete'`.
 4. **Revision** — if the user says a clip needs re-timing or weight fixes but is present, use `backlog: 'revision'`.
-5. **New rig** — add a `RigInventoryEntry` with correct `reactComponent`, `role`, `epicId`, and `expectedClips`. Mirror a similar rig in the same family.
+5. **New rig** — add a `RigInventoryEntry` with correct `reactComponent`, `role`, `epicId`, and `expectedClips`. Mirror a similar rig in the same family. If creating a **new epic**, set `storyOrder`, `storyArc`, and `storyBeat` from quest unlock order (see `docs/CHARACTER_ANIMATIONS.md` § Story progression priority — early Mask Hunt / MNOG before Metru Nui).
 
 Do **not** hand-edit status emoji tables in the doc when the inventory change is sufficient — the report script derives live status from GLBs.
 
@@ -77,8 +77,8 @@ Do **not** hand-edit status emoji tables in the doc when the inventory change is
 
 | Change                      | Update                                                                                           |
 | --------------------------- | ------------------------------------------------------------------------------------------------ |
-| Rig graduated to `complete` | Adjust epic rig **counts** in the summary table in `docs/CHARACTER_ANIMATIONS.md`                |
-| New rig family or epic      | Add epic section + row in summary table                                                          |
+| Rig graduated to `complete` | Adjust epic rig **counts** in the summary table (keep story order)                               |
+| New rig family or epic      | Add `ANIMATION_EPICS` entry with `storyOrder` / `storyArc` / `storyBeat`; add doc section        |
 | New clip wired in code      | Document in the Animation pipeline table if it is a new contract (e.g. new transition clip name) |
 
 Keep edits minimal — prefer inventory + report over duplicating per-rig tables in markdown.
