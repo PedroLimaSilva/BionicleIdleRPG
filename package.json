@@ -38,6 +38,7 @@
     "vendor-fonts": "tsx scripts/vendor-fonts.mts",
     "sum-glb-sizes": "tsx scripts/sum-glb-sizes.mts",
     "glb-size-report": "tsx scripts/glb-size-report.mts",
+    "animation-clip-report": "tsx scripts/animation-clip-report.mts",
     "kit-node-usage-report": "tsx scripts/kit-node-usage-report.mts",
     "audit:prod": "tsx scripts/audit-prod.mts high",
     "audit:prod:critical": "tsx scripts/audit-prod.mts critical",
