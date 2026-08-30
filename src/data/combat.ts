@@ -462,7 +462,7 @@ export const COMBATANT_DEX: Record<string, CombatantTemplate> = {
     model: 'bohrok',
     name: 'Bohrok Kal',
   },
-  // Vahki — one chassis, six hive palettes. Staff of Suggestion until hive tools exist.
+  // Vahki — one chassis, six hive palettes and hive-specific tools.
   bordakh: {
     baseAttack: 16,
     baseDefense: 14,
@@ -1896,7 +1896,7 @@ export const ENCOUNTERS: EnemyEncounter[] = [
   {
     arenaId: 'metru',
     description:
-      'All six Vahki hives take to the streets. One chassis, six palettes — every squad still carries Bordakh staffs until hive tools are kitted.',
+      'All six Vahki hives take to the streets. One chassis, six palettes — each squad carries its hive tool.',
     difficulty: 5,
     headliner: 'vahki_squad',
     id: 'vahki_six_hives',
