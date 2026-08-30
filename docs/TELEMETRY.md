@@ -1,10 +1,12 @@
 # Telemetry
 
-The app includes a lightweight telemetry system powered by [PostHog](https://posthog.com) that sends a single session snapshot per browser session and captures uncaught errors. It tracks:
+The app includes a telemetry system powered by [PostHog](https://posthog.com). When opted in, it tracks:
 
 1. Which app version each user is running
-2. A snapshot of their game state (progress, characters, quests, etc.)
-3. Uncaught errors with stack traces (via PostHog Error Tracking)
+2. A snapshot of their game state (progress, characters, quests, etc.) once per session
+3. In-app page views as the player navigates between screens
+4. Browser interaction events (clicks and similar UI actions via PostHog autocapture)
+5. Uncaught errors with stack traces (via PostHog Error Tracking)
 
 Telemetry is **completely inert** until `VITE_PUBLIC_POSTHOG_KEY` is set at build time, and requires **explicit user consent** on first visit. When no key is configured, the consent prompt, Settings toggle, and privacy policy link are all hidden.
 
@@ -15,7 +17,7 @@ Telemetry is **completely inert** until `VITE_PUBLIC_POSTHOG_KEY` is set at buil
 - The user's choice is stored in localStorage and the prompt never reappears
 - The Settings page has a "Send anonymous usage data" toggle (with privacy policy link) that reads/writes the same key
 - PostHog is initialized with `opt_out_capturing_by_default: true` and only starts sending data after opt-in
-- PostHog automatic interaction capture is **disabled** (`autocapture: false`, `rageclick: false`); session replay, heatmaps, and pageview tracking are also off. Only explicit events below are sent
+- PostHog autocapture is enabled (clicks and similar DOM interactions). In-app page views are tracked via `capture_pageview: 'history_change'` for SPA navigation. Session replay and heatmaps are disabled
 - When enabled, one `game_session_snapshot` event is sent per browser session (tracked via `sessionStorage`)
 - Uncaught errors are reported immediately (not limited to once per session) with the error message, stack trace, and game state snapshot
 - Failures are silently swallowed — telemetry never affects gameplay

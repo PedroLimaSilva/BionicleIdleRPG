@@ -82,16 +82,12 @@ function ensureAnalyticsInitialized(): boolean {
   if (!analyticsInitialized) {
     posthog.init(key, {
       api_host: getPostHogHost(),
-      autocapture: false,
       capture_exceptions: true,
-      capture_heatmaps: false,
-      capture_pageleave: false,
-      capture_pageview: false,
+      capture_pageview: 'history_change',
       defaults: '2026-01-30',
       disable_session_recording: true,
       opt_out_capturing_by_default: true,
       persistence: 'localStorage',
-      rageclick: false,
     });
     analyticsInitialized = true;
   }

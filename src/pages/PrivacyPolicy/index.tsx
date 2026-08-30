@@ -59,8 +59,8 @@ export default function PrivacyPolicyPage() {
       <h1 className="title">What we collect when you opt in</h1>
       <div className="about-section">
         <p>
-          When you opt in to anonymous usage data, the app sends a <strong>single report</strong>{' '}
-          per browser session containing:
+          When you opt in to anonymous usage data, the app sends telemetry to PostHog throughout
+          your session, including:
         </p>
         <ul>
           <li>
@@ -78,10 +78,11 @@ export default function PrivacyPolicyPage() {
             <strong>Game state version</strong> — the internal schema version of your save data
           </li>
           <li>
-            <strong>Timestamp</strong> — when the report was sent (ISO 8601)
+            <strong>Timestamp</strong> — when each event was sent (ISO 8601)
           </li>
           <li>
-            <strong>Game progress snapshot</strong> — the same fields persisted locally:
+            <strong>Game progress snapshot</strong> (once per session) — the same fields persisted
+            locally:
             <ul>
               <li>Protodermis balance and cap</li>
               <li>
@@ -95,6 +96,16 @@ export default function PrivacyPolicyPage() {
               <li>Collected Krana, Kraata collection, and Rahkshi armor</li>
             </ul>
           </li>
+          <li>
+            <strong>Page views</strong> — when you navigate between in-app screens (e.g. battle,
+            inventory, settings), sent as <code>$pageview</code> events with the in-app path
+          </li>
+          <li>
+            <strong>Browser interaction events</strong> — PostHog automatically captures clicks,
+            form changes, and similar DOM interactions as <code>$autocapture</code> events. These
+            may include element tags, CSS selectors, and visible button or link text (but not text
+            you type into inputs unless you submit a form)
+          </li>
         </ul>
         <p>
           <strong>Error reports:</strong> if the app encounters an uncaught error while telemetry is
@@ -105,21 +116,10 @@ export default function PrivacyPolicyPage() {
           your save data (for example, a custom character name).
         </p>
         <p>
-          <strong>Browser interaction events:</strong> PostHog's SDK can automatically capture
-          clicks, form changes, and other DOM interactions as <code>$autocapture</code> events
-          (including element tags and visible button/link text). We have <strong>disabled</strong>{' '}
-          automatic interaction capture, session replay, heatmaps, and rage-click detection in our
-          configuration. When opted in, only the explicit events described above are sent — not
-          individual button clicks or in-app navigation. Earlier app builds did not disable
-          PostHog's default click capture; sessions from those builds may include autocaptured
-          interaction events.
-        </p>
-        <p>
           <strong>PostHog SDK metadata:</strong> when events are sent, PostHog automatically
           attaches standard technical properties such as browser type, operating system, device
-          type, screen dimensions, and a session identifier. Page views and page-leave events are{' '}
-          <strong>disabled</strong> in our configuration. PostHog may also receive your IP address
-          as part of standard HTTP requests; see{' '}
+          type, screen dimensions, referrer (if any), and a session identifier. PostHog may also
+          receive your IP address as part of standard HTTP requests; see{' '}
           <a
             href="https://posthog.com/privacy"
             target="_blank"
@@ -128,7 +128,8 @@ export default function PrivacyPolicyPage() {
           >
             PostHog's privacy policy
           </a>{' '}
-          for how they handle this.
+          for how they handle this. Session replay and heatmaps are <strong>not enabled</strong> in
+          our configuration.
         </p>
         <p>
           We do <strong>not</strong> intentionally collect:
@@ -136,7 +137,7 @@ export default function PrivacyPolicyPage() {
         <ul>
           <li>Email addresses, real names, or other contact information</li>
           <li>Payment or financial data (the game has no purchases)</li>
-          <li>Browsing history or activity outside this app</li>
+          <li>Browsing history or activity outside this app (only in-app navigation is tracked)</li>
           <li>Location data beyond what your IP address may imply</li>
         </ul>
         <p>
@@ -153,6 +154,8 @@ export default function PrivacyPolicyPage() {
           <li>Understand which app versions are in use so we can prioritize updates</li>
           <li>See how players progress through the game to improve balance and content</li>
           <li>Identify common issues or stuck points in quest progression</li>
+          <li>Understand which screens and features players use to improve navigation and UX</li>
+          <li>See how players interact with buttons and UI elements during a session</li>
           <li>Track progression over time for the same anonymous browser</li>
           <li>Diagnose and fix crashes and errors using the error reports</li>
         </ul>
