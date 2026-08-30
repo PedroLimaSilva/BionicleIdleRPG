@@ -23,10 +23,11 @@ export function TelemetryConsentPrompt() {
         <h2 className="consent-title">Help improve this game?</h2>
         <p className="consent-body">
           We'd like to receive anonymous usage data to help improve the game — including an app
-          version and game progress snapshot once per session, which screens you visit, and how you
-          interact with buttons and UI elements. No personal information is collected. You can learn
-          more about how we use this data in our <Link to="/privacy-policy">privacy policy</Link>.
-          You can change your choice anytime in Settings.
+          version and game progress snapshot once per session, which screens you visit, how you
+          interact with the UI, session recordings, and heatmaps. No personal information is
+          collected. You can learn more about how we use this data in our{' '}
+          <Link to="/privacy-policy">privacy policy</Link>. You can change your choice anytime in
+          Settings.
         </p>
         <div className="consent-actions">
           <button className="button confirm-button" onClick={() => handleChoice(true)}>

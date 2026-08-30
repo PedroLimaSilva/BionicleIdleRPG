@@ -26,6 +26,8 @@ const mockInit = jest.fn();
 const mockOptInCapturing = jest.fn();
 const mockOptOutCapturing = jest.fn();
 
+const mockStartSessionRecording = jest.fn();
+
 jest.mock('posthog-js', () => ({
   __esModule: true,
   default: {
@@ -35,6 +37,7 @@ jest.mock('posthog-js', () => ({
     init: (...args: unknown[]) => mockInit(...args),
     opt_in_capturing: (...args: unknown[]) => mockOptInCapturing(...args),
     opt_out_capturing: (...args: unknown[]) => mockOptOutCapturing(...args),
+    startSessionRecording: (...args: unknown[]) => mockStartSessionRecording(...args),
   },
 }));
 
@@ -60,6 +63,7 @@ beforeEach(() => {
   mockInit.mockClear();
   mockOptInCapturing.mockClear();
   mockOptOutCapturing.mockClear();
+  mockStartSessionRecording.mockClear();
 
   (globalThis as Record<string, unknown>).__APP_VERSION__ = '1.2.3';
   (globalThis as Record<string, unknown>).__POSTHOG_HOST__ = 'https://us.i.posthog.com';
@@ -118,14 +122,17 @@ describe('syncAnalyticsConsent', () => {
       'phc_test',
       expect.objectContaining({
         api_host: 'https://us.i.posthog.com',
+        capture_heatmaps: true,
         capture_pageview: 'history_change',
         defaults: '2026-01-30',
-        disable_session_recording: true,
+        disable_session_recording: false,
         opt_out_capturing_by_default: true,
+        rageclick: true,
       })
     );
     expect(mockOptInCapturing).toHaveBeenCalled();
     expect(mockIdentify).toHaveBeenCalledWith('test-uuid-1234');
+    expect(mockStartSessionRecording).toHaveBeenCalled();
   });
 
   it('opts out when telemetry is disabled', () => {
@@ -137,6 +144,7 @@ describe('syncAnalyticsConsent', () => {
 
     expect(mockOptOutCapturing).toHaveBeenCalled();
     expect(mockIdentify).not.toHaveBeenCalled();
+    expect(mockStartSessionRecording).not.toHaveBeenCalled();
   });
 });
 

@@ -106,6 +106,21 @@ export default function PrivacyPolicyPage() {
             may include element tags, CSS selectors, and visible button or link text (but not text
             you type into inputs unless you submit a form)
           </li>
+          <li>
+            <strong>Rage clicks</strong> — when you repeatedly click the same area in frustration,
+            PostHog may record a <code>$rageclick</code> event to help identify broken or confusing
+            UI
+          </li>
+          <li>
+            <strong>Heatmaps</strong> — aggregated click and pointer data (where on the screen you
+            click or move) to understand which parts of the UI get the most use
+          </li>
+          <li>
+            <strong>Session recordings</strong> — a replay of your in-app session (DOM changes,
+            clicks, and scrolling) stored by PostHog so we can watch how players navigate the game
+            and reproduce UX issues. This may include visible on-screen text and game UI during the
+            session
+          </li>
         </ul>
         <p>
           <strong>Error reports:</strong> if the app encounters an uncaught error while telemetry is
@@ -128,8 +143,7 @@ export default function PrivacyPolicyPage() {
           >
             PostHog's privacy policy
           </a>{' '}
-          for how they handle this. Session replay and heatmaps are <strong>not enabled</strong> in
-          our configuration.
+          for how they handle this.
         </p>
         <p>
           We do <strong>not</strong> intentionally collect:
@@ -155,7 +169,10 @@ export default function PrivacyPolicyPage() {
           <li>See how players progress through the game to improve balance and content</li>
           <li>Identify common issues or stuck points in quest progression</li>
           <li>Understand which screens and features players use to improve navigation and UX</li>
-          <li>See how players interact with buttons and UI elements during a session</li>
+          <li>
+            Watch session replays and heatmaps to find confusing UI and fix usability problems
+          </li>
+          <li>Spot rage clicks that indicate broken buttons or frustrating interactions</li>
           <li>Track progression over time for the same anonymous browser</li>
           <li>Diagnose and fix crashes and errors using the error reports</li>
         </ul>
