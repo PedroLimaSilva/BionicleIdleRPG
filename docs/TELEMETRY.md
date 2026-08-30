@@ -41,7 +41,9 @@ Session and error events share the same property shape:
 
 `client_id` is a random UUID generated via `crypto.randomUUID()` when the user opts in. It is stored in localStorage under `TELEMETRY_ID`, passed to PostHog via `identify()`, and included in every event to correlate sessions from the same browser. It is not linked to any personal information. Clearing site data removes it; a new one is generated only if the user opts in again.
 
-`PartialGameState` includes: `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `activeQuests`, `completedQuests`.
+`PartialGameState` includes: `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `customCharacters`, `activeQuests`, `completedQuests`.
+
+`customCharacters` contains player-created Matoran/Toa base data (id, name, colors, mask, element, stage, and related appearance fields). Names are game content chosen by the player, not account credentials — the privacy policy advises against using real names.
 
 ## Error reporting
 
