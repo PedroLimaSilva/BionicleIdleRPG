@@ -6,7 +6,6 @@ import {
   CURRENT_TELEMETRY_POLICY_VERSION,
   LEGACY_TELEMETRY_ENABLED_KEY,
   TELEMETRY_CONSENT_KEY,
-  TELEMETRY_CONSENT_POLICY_ACK_KEY,
   TELEMETRY_CONSENT_RECONSENT_SESSION_KEY,
 } from '../constants/telemetryConsent';
 import {
@@ -45,8 +44,16 @@ describe('telemetry consent versioning', () => {
     expect(hasTelemetryConsent()).toBe(true);
   });
 
+  it('does not re-prompt when the user previously declined', () => {
+    localStorage.setItem(TELEMETRY_CONSENT_KEY, JSON.stringify(false));
+
+    expect(hasTelemetryConsent()).toBe(true);
+    expect(isTelemetryConsentStale()).toBe(false);
+    expect(getTelemetryEnabled()).toBe(false);
+    expect(localStorage.getItem(TELEMETRY_CONSENT_KEY)).toBe('false');
+  });
+
   it('re-prompts when consent was an older accepted policy version', () => {
-    localStorage.setItem(TELEMETRY_CONSENT_POLICY_ACK_KEY, '2025-01-01');
     localStorage.setItem(TELEMETRY_CONSENT_KEY, JSON.stringify('2025-01-01'));
 
     expect(hasTelemetryConsent()).toBe(false);
@@ -55,7 +62,7 @@ describe('telemetry consent versioning', () => {
     expect(localStorage.getItem(TELEMETRY_CONSENT_KEY)).toBeNull();
   });
 
-  it('re-prompts when legacy boolean storage is present', () => {
+  it('re-prompts when legacy opt-in storage is present', () => {
     localStorage.setItem(LEGACY_TELEMETRY_ENABLED_KEY, 'true');
 
     expect(hasTelemetryConsent()).toBe(false);
@@ -64,7 +71,17 @@ describe('telemetry consent versioning', () => {
     expect(localStorage.getItem(LEGACY_TELEMETRY_ENABLED_KEY)).toBeNull();
   });
 
-  it('migrates legacy storage when the user chooses again', () => {
+  it('migrates legacy decline without re-prompting', () => {
+    localStorage.setItem(LEGACY_TELEMETRY_ENABLED_KEY, 'false');
+
+    expect(hasTelemetryConsent()).toBe(true);
+    expect(isTelemetryConsentStale()).toBe(false);
+    expect(getTelemetryEnabled()).toBe(false);
+    expect(localStorage.getItem(TELEMETRY_CONSENT_KEY)).toBe('false');
+    expect(localStorage.getItem(LEGACY_TELEMETRY_ENABLED_KEY)).toBeNull();
+  });
+
+  it('migrates legacy opt-in when the user accepts again', () => {
     localStorage.setItem(LEGACY_TELEMETRY_ENABLED_KEY, 'true');
 
     saveTelemetryEnabled(true);
@@ -76,7 +93,7 @@ describe('telemetry consent versioning', () => {
     expect(getTelemetryEnabled()).toBe(true);
   });
 
-  it('clears the re-consent flag after the user responds', () => {
+  it('clears the re-consent flag after a prior opt-in responds', () => {
     localStorage.setItem(LEGACY_TELEMETRY_ENABLED_KEY, 'true');
     isTelemetryConsentStale();
 

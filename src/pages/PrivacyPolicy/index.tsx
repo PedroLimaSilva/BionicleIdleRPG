@@ -210,9 +210,10 @@ export default function PrivacyPolicyPage() {
             decline, no client ID is generated and nothing is ever sent.
           </li>
           <li>
-            Declining stores <code>false</code>; accepting stores the policy version string (e.g.{' '}
-            <code>{CURRENT_TELEMETRY_POLICY_VERSION}</code>). When the policy changes, you are asked
-            again even if you previously opted in or out.
+            Declining stores <code>false</code> permanently — you will not be asked again unless you
+            change your mind in Settings. Accepting stores the policy version string (e.g.{' '}
+            <code>{CURRENT_TELEMETRY_POLICY_VERSION}</code>). When the policy changes, only prior
+            opt-ins are asked to consent again.
           </li>
           <li>
             You can change your choice at any time from the{' '}

@@ -12,7 +12,6 @@ import {
   CURRENT_TELEMETRY_POLICY_VERSION,
   LEGACY_TELEMETRY_ENABLED_KEY,
   TELEMETRY_CONSENT_KEY,
-  TELEMETRY_CONSENT_POLICY_ACK_KEY,
   TELEMETRY_CONSENT_RECONSENT_SESSION_KEY,
   TelemetryConsentValue,
 } from '../constants/telemetryConsent';
@@ -470,25 +469,43 @@ function readTelemetryConsentValue(): TelemetryConsentValue | null {
   return null;
 }
 
-/** Clears stored consent when the policy version changes; migrates legacy boolean storage. */
+/** Migrates legacy storage and clears outdated opt-ins when the policy version changes. */
 function syncTelemetryConsentPolicyEpoch(): void {
-  const ack = localStorage.getItem(TELEMETRY_CONSENT_POLICY_ACK_KEY);
-  const hasLegacyConsent = localStorage.getItem(LEGACY_TELEMETRY_ENABLED_KEY) !== null;
-  const hasStoredConsent = localStorage.getItem(TELEMETRY_CONSENT_KEY) !== null;
-
-  if (hasLegacyConsent) {
-    sessionStorage.setItem(TELEMETRY_CONSENT_RECONSENT_SESSION_KEY, '1');
+  const legacyRaw = localStorage.getItem(LEGACY_TELEMETRY_ENABLED_KEY);
+  if (legacyRaw !== null) {
     localStorage.removeItem(LEGACY_TELEMETRY_ENABLED_KEY);
-    localStorage.removeItem(TELEMETRY_CONSENT_KEY);
-    telemetryEnabled = undefined;
-  } else if (ack !== null && ack !== CURRENT_TELEMETRY_POLICY_VERSION && hasStoredConsent) {
+
+    try {
+      if (JSON.parse(legacyRaw) === false) {
+        if (localStorage.getItem(TELEMETRY_CONSENT_KEY) === null) {
+          localStorage.setItem(TELEMETRY_CONSENT_KEY, JSON.stringify(false));
+        }
+        return;
+      }
+    } catch {
+      // Legacy value was corrupt — fall through to re-prompt.
+    }
+
     sessionStorage.setItem(TELEMETRY_CONSENT_RECONSENT_SESSION_KEY, '1');
     localStorage.removeItem(TELEMETRY_CONSENT_KEY);
     telemetryEnabled = undefined;
+    return;
   }
 
-  if (ack !== CURRENT_TELEMETRY_POLICY_VERSION) {
-    localStorage.setItem(TELEMETRY_CONSENT_POLICY_ACK_KEY, CURRENT_TELEMETRY_POLICY_VERSION);
+  const raw = localStorage.getItem(TELEMETRY_CONSENT_KEY);
+  if (raw === null) return;
+
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (parsed === false) return;
+    if (typeof parsed === 'string' && parsed !== CURRENT_TELEMETRY_POLICY_VERSION) {
+      sessionStorage.setItem(TELEMETRY_CONSENT_RECONSENT_SESSION_KEY, '1');
+      localStorage.removeItem(TELEMETRY_CONSENT_KEY);
+      telemetryEnabled = undefined;
+    }
+  } catch {
+    localStorage.removeItem(TELEMETRY_CONSENT_KEY);
+    telemetryEnabled = undefined;
   }
 }
 
@@ -505,10 +522,6 @@ export function hasTelemetryConsent(): boolean {
 }
 
 export function getTelemetryEnabled() {
-  if (telemetryEnabled !== undefined) {
-    return telemetryEnabled;
-  }
-
   const value = readTelemetryConsentValue();
   telemetryEnabled = value === CURRENT_TELEMETRY_POLICY_VERSION;
   return telemetryEnabled;

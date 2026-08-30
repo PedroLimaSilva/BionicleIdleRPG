@@ -15,7 +15,7 @@ Telemetry is **completely inert** until `VITE_PUBLIC_POSTHOG_KEY` is set at buil
 
 - On first visit (no `TELEMETRY_CONSENT` in localStorage) a consent prompt asks for permission
 - The prompt links to `/privacy-policy` and is suppressed on that page so users can read it before deciding
-- The user's choice is stored in `TELEMETRY_CONSENT` as either `false` (declined) or the accepted policy version string (e.g. `"2026-08-30"`). When the policy version bumps, prior choices are cleared and the prompt reappears
+- The user's choice is stored in `TELEMETRY_CONSENT` as either `false` (declined — not re-prompted on policy updates) or the accepted policy version string (e.g. `"2026-08-30"`). When the policy version bumps, only outdated opt-ins are cleared and re-prompted
 - The Settings page has a "Send anonymous usage data" toggle (with privacy policy link) that reads/writes the same key
 - PostHog is initialized with `opt_out_capturing_by_default: true` and only starts sending data after opt-in
 - PostHog autocapture is enabled (clicks and similar DOM interactions). In-app page views are tracked via `capture_pageview: 'history_change'` for SPA navigation. Rage clicks, heatmaps (`capture_heatmaps: true`), and session recordings (`disable_session_recording: false`, started on opt-in via `startSessionRecording()`) are enabled
