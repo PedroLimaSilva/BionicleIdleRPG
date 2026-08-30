@@ -6,11 +6,14 @@
 }
 
 .character-inventory-tabs {
-  width: 100%;
-  max-width: calc(100vw - 4rem);
   position: relative;
-  display: flex;
-  justify-content: center;
+  margin-inline: -2rem;
+  width: calc(100% + 4rem);
+}
+
+.landscape .character-inventory-tabs {
+  margin-right: -180px;
+  width: calc(100% + 2rem + 180px);
 }
 
 .character-card {
