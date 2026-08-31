@@ -8,6 +8,7 @@ import { getRahkshiArmorColors } from '../../../data/rahkshiArmorColors';
 import { KraataPower } from '../../../types/Kraata';
 import { applyWeatheredMetalToObject, WeatheredMetalOptions } from './WeatheredMetalMaterial';
 import { disposeObject3DResources } from '../utils/disposeThreeObject';
+import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
 
 const BLACK = new ThreeColor('#000000');
 const GLOW_LERP_SPEED = 5;
@@ -89,37 +90,13 @@ export const RahkshiModel = forwardRef<
     const dex = getRahkshiArmorColors(kraata);
     const entries: GlowEntry[] = [];
 
-    const hiddenMeshes: string[] = [];
-    hiddenMeshes.push(
-      ...[
-        'GuurahkL',
-        'GuurahkR',
-        'GuurahkS',
-        'TurahkL',
-        'TurahkR',
-        'TurahkS',
-        'KurahkL',
-        'KurahkR',
-        'KurahkS',
-        'LerahkL',
-        'LerahkR',
-        'LerahkS',
-        'PanrahkL',
-        'PanrahkR',
-        'PanrahkS',
-        'VorahkL',
-        'VorahkR',
-        'VorahkS',
-      ].filter((e) => !e.includes(dex.staff))
-    );
-
     bodyInstance.traverse((child) => {
       if (!(child instanceof Mesh)) return;
       const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
 
-      if (hiddenMeshes.includes(child.name)) {
-        child.visible = false;
-        return;
+      if (isRahkshiVariantMesh(child.name)) {
+        child.visible = shouldShowRahkshiVariantMesh(child.name, dex.staff);
+        if (!child.visible) return;
       }
 
       const mat = child.material as MeshStandardMaterial;
