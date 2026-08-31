@@ -1,66 +1,50 @@
-import { readFileSync } from 'node:fs';
+import {
+  getRequiredIdleClips,
+  RIG_INVENTORY,
+  COMBAT_PREVIEW_CLIPS,
+} from './characterAnimationInventory';
 import { VAHKI_IDLE_SWITCH_CLIP_NAMES } from './idleSwitchConfigs';
-import { join } from 'node:path';
-
-/**
- * `useIdleAnimation` looks its idle action up by clip name and silently returns
- * when the name is absent, so a re-export that renames (or drops) the idle clip
- * leaves the rig frozen in its bind pose with no console warning. These are the
- * names each CharacterScene model asks for, checked against the shipped GLBs.
- */
-const REQUIRED_IDLE_CLIPS: Record<string, string> = {
-  'bohrok_master.glb': 'Idle',
-  'matoran_master.glb': 'Idle',
-  'matoran_metru.glb': 'Idle',
-  // RahkshiModel swaps between 'Empty' (no Kraata) and 'Idle' (glow complete).
-  'rahkshi.glb': 'Empty',
-  'rebuilt.glb': 'Idle',
-  'Toa_Mata/gali.glb': 'Idle',
-  'Toa_Mata/kopaka.glb': 'Idle',
-  'Toa_Mata/lewa.glb': 'Idle',
-  'Toa_Mata/onua.glb': 'Idle',
-  'Toa_Mata/pohatu.glb': 'Idle',
-  'Toa_Mata/tahu.glb': 'Idle',
-  'Toa_Metru/Lhikan.glb': 'Idle',
-  'Toa_Metru/Nokama.glb': 'Idle',
-  'Toa_Metru/Onewa.glb': 'Idle',
-  'Toa_Metru/Vakama.glb': 'Idle',
-  'Toa_Metru/Whenua.glb': 'Idle',
-  'Toa_Nuva/gali.glb': 'Idle',
-  'Toa_Nuva/kopaka.glb': 'Idle',
-  'Toa_Nuva/lewa.glb': 'Idle',
-  'Toa_Nuva/onua.glb': 'Idle',
-  'Toa_Nuva/pohatu.glb': 'Idle',
-  'Toa_Nuva/tahu.glb': 'Idle',
-  'Toa_Nuva/takanuva.glb': 'Idle',
-  'Vahki.glb': 'Idle_Biped',
-};
-
-const GLB_HEADER_BYTES = 12;
-const CHUNK_HEADER_BYTES = 8;
-
-/** Reads clip names out of a GLB's JSON chunk without decoding any geometry. */
-function readClipNames(relativePath: string): string[] {
-  const buffer = readFileSync(join(__dirname, '../../../../public', relativePath));
-  const jsonChunkLength = buffer.readUInt32LE(GLB_HEADER_BYTES);
-  const jsonStart = GLB_HEADER_BYTES + CHUNK_HEADER_BYTES;
-  const gltf = JSON.parse(buffer.subarray(jsonStart, jsonStart + jsonChunkLength).toString());
-  return (gltf.animations ?? []).map((animation: { name: string }) => animation.name);
-}
+import { readGlbClipNames } from './glbClipUtils';
 
 describe('character rig idle clips', () => {
-  test.each(Object.entries(REQUIRED_IDLE_CLIPS))('%s exposes a "%s" clip', (glb, clipName) => {
-    expect(readClipNames(glb)).toContain(clipName);
+  test.each(Object.entries(getRequiredIdleClips()))('%s exposes a "%s" clip', (glb, clipName) => {
+    expect(readGlbClipNames(glb)).toContain(clipName);
   });
 
   test('Toa Lhikan drives his idle through the shared pipeline, not a bespoke clip name', () => {
-    expect(readClipNames('Toa_Metru/Lhikan.glb')).toEqual(['Idle']);
+    expect(readGlbClipNames('Toa_Metru/Lhikan.glb')).toEqual(['Idle']);
   });
 
   test('Vahki.glb exposes every idle-switch clip', () => {
-    const clips = readClipNames('Vahki.glb');
+    const clips = readGlbClipNames('Vahki.glb');
     for (const name of VAHKI_IDLE_SWITCH_CLIP_NAMES) {
       expect(clips).toContain(name);
     }
+  });
+});
+
+describe('character animation inventory', () => {
+  test('inventory includes every shipped combat GLB used in CharacterScene', () => {
+    const glbs = RIG_INVENTORY.map((rig) => rig.glb).filter(Boolean);
+    expect(glbs).toContain('Toa_Metru/Matau.glb');
+    expect(glbs).toContain('Toa_Metru/Nuju.glb');
+  });
+
+  test('combat rigs with shipped Attack also ship Hit when marked complete in inventory', () => {
+    for (const rig of RIG_INVENTORY) {
+      if (!rig.glb || rig.role === 'village' || rig.role === 'placeholder') continue;
+
+      const shipped = readGlbClipNames(rig.glb);
+      const attack = rig.expectedClips.find((clip) => clip.name === 'Attack');
+      const hit = rig.expectedClips.find((clip) => clip.name === 'Hit');
+
+      if (attack?.backlog === 'complete' && hit?.backlog === 'complete') {
+        expect(shipped).toEqual(expect.arrayContaining(['Attack', 'Hit']));
+      }
+    }
+  });
+
+  test('Character Dex preview contract lists combat clips', () => {
+    expect(COMBAT_PREVIEW_CLIPS).toEqual(['Attack', 'Hit', 'Defeat']);
   });
 });
