@@ -119,8 +119,8 @@ export const RahkshiDetail: React.FC = () => {
     const prev = byId.get(neighbors.prevId);
     const next = byId.get(neighbors.nextId);
     return {
-      prev: prev ? (KRAATA_POWER_NAMES[prev.power] ?? prev.power) : neighbors.prevId,
       next: next ? (KRAATA_POWER_NAMES[next.power] ?? next.power) : neighbors.nextId,
+      prev: prev ? (KRAATA_POWER_NAMES[prev.power] ?? prev.power) : neighbors.prevId,
     };
   }, [neighbors, rahkshi]);
 
