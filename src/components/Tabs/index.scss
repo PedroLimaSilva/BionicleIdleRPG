@@ -25,11 +25,11 @@
     flex-wrap: nowrap;
     width: 100%;
     gap: 0.5rem;
+    justify-content: flex-start;
   }
 
   .tab-btn {
-    flex: 1 1 0;
-    min-width: 0;
+    flex: 0 0 auto;
     padding: 0.5rem 0.75rem;
     text-align: center;
     white-space: nowrap;
