@@ -221,7 +221,7 @@ export const ENEMY_DEX = {
     stage: MatoranStage.BohrokKal,
   },
   rorzakh: {
-    colors: vahkiHiveColors(LegoColor.Black, LegoColor.TransNeonGreen),
+    colors: vahkiHiveColors(LegoColor.Black, LegoColor.TransYellow),
     element: ElementTribe.Earth,
     id: 'rorzakh',
     mask: Mask.Pakari,

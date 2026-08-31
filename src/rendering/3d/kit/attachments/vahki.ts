@@ -20,18 +20,37 @@ import {
 /**
  * `Vahki.glb` sockets are kit node names (Three.js-sanitized: `.` stripped, spaces
  * to `_`). Duplicate kit pieces on the head use a `_Head` suffix. Staff mounts are
- * `Tool_L` / `Tool_R` — the only hive tool in `kit_2004.glb` so far is Bordakh's.
+ * `Tool_L` / `Tool_R` — each hive clones its matching tool from `kit_2004.glb`.
  * `RahkshiBody` and `TechnicTorsoPivot` are the kit_2003 pieces named on the rig.
  * The visor socket is `VahkiHood` on the rig; it clones kit node `VahkiHood`.
  */
+
+export const VAHKI_HIVE_IDS = [
+  'bordakh',
+  'keerakh',
+  'nuurakh',
+  'rorzakh',
+  'vorzakh',
+  'zadakh',
+] as const;
+
+export type VahkiHiveId = (typeof VAHKI_HIVE_IDS)[number];
+
+export const VAHKI_HIVE_TOOL_NODES = {
+  bordakh: KIT_2004_NODES.BordakhTool,
+  keerakh: KIT_2004_NODES.KeerakhTool,
+  nuurakh: KIT_2004_NODES.NuurakhTool,
+  rorzakh: KIT_2004_NODES.RorzakhTool,
+  vorzakh: KIT_2004_NODES.VorzakhTool,
+  zadakh: KIT_2004_NODES.ZadakhTool,
+} as const satisfies Record<VahkiHiveId, string>;
 
 const VAHKI_HEAD_COLORS = {
   ...VAHKI_KIT_PALETTE_BODY,
   ...VAHKI_KIT_PALETTE_EYES,
 };
 
-/** Vahki-specific shells, visor, launcher, legs, and Bordakh staffs from `kit_2004.glb`. */
-export const VAHKI_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment> = {
+const VAHKI_KIT_2004_BASE: Record<string, Kit2004SocketAttachment> = {
   SocketDouble1L_L: {
     kitNodeName: KIT_2004_NODES.SocketDouble1L,
     materialColors: VAHKI_KIT_PALETTE_SOCKET,
@@ -39,14 +58,6 @@ export const VAHKI_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
   SocketDouble1L_R: {
     kitNodeName: KIT_2004_NODES.SocketDouble1L,
     materialColors: VAHKI_KIT_PALETTE_SOCKET,
-  },
-  Tool_L: {
-    kitNodeName: KIT_2004_NODES.BordakhTool,
-    materialColors: VAHKI_KIT_PALETTE_WEAPON,
-  },
-  Tool_R: {
-    kitNodeName: KIT_2004_NODES.BordakhTool,
-    materialColors: VAHKI_KIT_PALETTE_WEAPON,
   },
   VahkiGlowingEyes: {
     kitNodeName: KIT_2004_NODES.VahkiGlowingEyes,
@@ -81,6 +92,38 @@ export const VAHKI_KIT_2004_ATTACHMENTS: Record<string, Kit2004SocketAttachment>
     materialColors: VAHKI_KIT_PALETTE_BODY,
   },
 };
+
+function withVahkiHiveTools(
+  toolNodeName: (typeof VAHKI_HIVE_TOOL_NODES)[VahkiHiveId]
+): Record<string, Kit2004SocketAttachment> {
+  return {
+    ...VAHKI_KIT_2004_BASE,
+    Tool_L: { kitNodeName: toolNodeName, materialColors: VAHKI_KIT_PALETTE_WEAPON },
+    Tool_R: { kitNodeName: toolNodeName, materialColors: VAHKI_KIT_PALETTE_WEAPON },
+  };
+}
+
+/** One attachment map per hive so every tool node is referenced for kit audits. */
+export const VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE = {
+  bordakh: withVahkiHiveTools(VAHKI_HIVE_TOOL_NODES.bordakh),
+  keerakh: withVahkiHiveTools(VAHKI_HIVE_TOOL_NODES.keerakh),
+  nuurakh: withVahkiHiveTools(VAHKI_HIVE_TOOL_NODES.nuurakh),
+  rorzakh: withVahkiHiveTools(VAHKI_HIVE_TOOL_NODES.rorzakh),
+  vorzakh: withVahkiHiveTools(VAHKI_HIVE_TOOL_NODES.vorzakh),
+  zadakh: withVahkiHiveTools(VAHKI_HIVE_TOOL_NODES.zadakh),
+} as const satisfies Record<VahkiHiveId, Record<string, Kit2004SocketAttachment>>;
+
+/** Default map for tests and tooling; runtime uses {@link getVahkiKit2004Attachments}. */
+export const VAHKI_KIT_2004_ATTACHMENTS = VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE.bordakh;
+
+export function getVahkiKit2004Attachments(
+  vahkiId: string
+): Record<string, Kit2004SocketAttachment> {
+  if (vahkiId in VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE) {
+    return VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE[vahkiId as VahkiHiveId];
+  }
+  return VAHKI_KIT_2004_ATTACHMENTS_BY_HIVE.bordakh;
+}
 
 /** Rahkshi torso shell (socket gray) and technic pivot (hive body) from `kit_2003.glb`. */
 export const VAHKI_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment> = {

@@ -1,20 +1,24 @@
 # Telemetry
 
-The app includes a lightweight telemetry system powered by [PostHog](https://posthog.com) that sends a single session snapshot per browser session and captures uncaught errors. It tracks:
+The app includes a telemetry system powered by [PostHog](https://posthog.com). When opted in, it tracks:
 
 1. Which app version each user is running
-2. A snapshot of their game state (progress, characters, quests, etc.)
-3. Uncaught errors with stack traces (via PostHog Error Tracking)
+2. A snapshot of their game state (progress, characters, quests, etc.) once per session
+3. In-app page views as the player navigates between screens
+4. Browser interaction events (clicks and similar UI actions via PostHog autocapture)
+5. Rage clicks, heatmaps, and session recordings (via PostHog)
+6. Uncaught errors with stack traces (via PostHog Error Tracking)
 
 Telemetry is **completely inert** until `VITE_PUBLIC_POSTHOG_KEY` is set at build time, and requires **explicit user consent** on first visit. When no key is configured, the consent prompt, Settings toggle, and privacy policy link are all hidden.
 
 ## Client-side behaviour
 
-- On first visit (no `TELEMETRY_ENABLED` in localStorage) a consent prompt asks for permission
+- On first visit (no `TELEMETRY_CONSENT` in localStorage) a consent prompt asks for permission
 - The prompt links to `/privacy-policy` and is suppressed on that page so users can read it before deciding
-- The user's choice is stored in localStorage and the prompt never reappears
+- The user's choice is stored in `TELEMETRY_CONSENT` as either `false` (declined — not re-prompted on policy updates) or the accepted policy version string (e.g. `"2026-08-30"`). When the policy version bumps, only outdated opt-ins are cleared and re-prompted
 - The Settings page has a "Send anonymous usage data" toggle (with privacy policy link) that reads/writes the same key
 - PostHog is initialized with `opt_out_capturing_by_default: true` and only starts sending data after opt-in
+- PostHog autocapture is enabled (clicks and similar DOM interactions). In-app page views are tracked via `capture_pageview: 'history_change'` for SPA navigation. Rage clicks, heatmaps (`capture_heatmaps: true`), and session recordings (`disable_session_recording: false`, started on opt-in via `startSessionRecording()`) are enabled
 - When enabled, one `game_session_snapshot` event is sent per browser session (tracked via `sessionStorage`)
 - Uncaught errors are reported immediately (not limited to once per session) with the error message, stack trace, and game state snapshot
 - Failures are silently swallowed — telemetry never affects gameplay
@@ -41,7 +45,9 @@ Session and error events share the same property shape:
 
 `client_id` is a random UUID generated via `crypto.randomUUID()` when the user opts in. It is stored in localStorage under `TELEMETRY_ID`, passed to PostHog via `identify()`, and included in every event to correlate sessions from the same browser. It is not linked to any personal information. Clearing site data removes it; a new one is generated only if the user opts in again.
 
-`PartialGameState` includes: `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `activeQuests`, `completedQuests`.
+`PartialGameState` includes: `version`, `protodermis`, `protodermisCap`, `collectedKrana`, `kraataCollection`, `rahkshi`, `recruitedCharacters`, `customCharacters`, `activeQuests`, `completedQuests`.
+
+`customCharacters` contains player-created Matoran/Toa base data (id, name, colors, mask, element, stage, and related appearance fields). Names are game content chosen by the player, not account credentials — the privacy policy advises against using real names.
 
 ## Error reporting
 
@@ -165,13 +171,13 @@ Run with `yarn test:ci`.
 
 ### E2E tests (Playwright)
 
-The E2E helpers (`e2e/helpers.ts`) automatically dismiss the telemetry consent prompt by setting `TELEMETRY_ENABLED=false` in localStorage. Both `enableTestMode()` and `setupGameState()` do this, so no existing test is blocked by the consent modal.
+The E2E helpers (`e2e/helpers.ts`) automatically dismiss the telemetry consent prompt by setting `TELEMETRY_CONSENT` to `false` for the current policy version. Both `enableTestMode()` and `setupGameState()` do this, so no existing test is blocked by the consent modal.
 
 To write a test that **explicitly verifies the consent flow**, skip the helpers and navigate directly:
 
 ```typescript
 test('should show consent prompt on fresh state', async ({ page }) => {
-  // Don't call enableTestMode() — leave TELEMETRY_ENABLED absent
+  // Don't call enableTestMode() — leave TELEMETRY_CONSENT absent
   await page.goto('/BionicleIdleRPG/');
   await expect(page.locator('.consent-panel')).toBeVisible();
 });

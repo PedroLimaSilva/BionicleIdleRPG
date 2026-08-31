@@ -24,13 +24,16 @@ import { CHARACTER_DEX } from '../../data/dex/index';
 import {
   canMergeAnyKraata,
   canStartRahkshiForge,
+  getRahkshiPowerCoverage,
   hasRahkshiArmorForPower,
+  ACTIVE_RAHKSHI_KRAATA_STAGE,
   RAHKSHI_FORGE_COST,
 } from '../../game/kraata/KraataActions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
 import { KraataPower, KRAATA_POWER_NAMES, KraataCollection } from '../../types/Kraata';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { CompositedImage } from '../../rendering/2d/CompositedImage';
+import { Tooltip } from '../../components/Tooltip';
 import { RahkshiArmor } from '../../types/Rahkshi';
 import { LegoColor } from '../../types/Colors';
 import { CREATE_CUSTOM_CHARACTER_ID } from '../../types/Matoran';
@@ -235,6 +238,7 @@ function RahkshiTabContent({
   shouldReduceMotion: boolean;
 }) {
   const canMergeAny = useMemo(() => canMergeAnyKraata(kraataCollection), [kraataCollection]);
+  const rahkshiCoverage = useMemo(() => getRahkshiPowerCoverage(rahkshi), [rahkshi]);
   const [forgeModalPower, setForgeModalPower] = useState<KraataPower | null>(null);
 
   const canForgeSelected = useMemo(() => {
@@ -252,7 +256,16 @@ function RahkshiTabContent({
     <>
       {rahkshi.length > 0 && (
         <>
-          <h3 className="rahkshi-section__title">Rahkshi</h3>
+          <h3 className="rahkshi-section__title">
+            Rahkshi{' '}
+            <Tooltip
+              content={`Unique Rahkshi Powers with ready Armor and a stage ${ACTIVE_RAHKSHI_KRAATA_STAGE}+ kraata installed.`}
+            >
+              <span className="rahkshi-section__counter">
+                {rahkshiCoverage.covered}/{rahkshiCoverage.total}
+              </span>
+            </Tooltip>
+          </h3>
           <div className="rahkshi-grid">
             {rahkshi
               .sort((a, b) => a.power.localeCompare(b.power))

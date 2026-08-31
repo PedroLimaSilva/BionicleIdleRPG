@@ -6,8 +6,10 @@ on:
       - master
       - main
     paths:
+      - 'public/Vahki.glb'
       - 'public/kit_2001.glb'
       - 'public/kit_2003.glb'
+      - 'public/kit_2004.glb'
       - 'src/rendering/3d/kit/attachments/**'
       - 'src/rendering/3d/kit/nodes/**'
 
