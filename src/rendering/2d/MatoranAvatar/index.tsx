@@ -82,8 +82,8 @@ export function MatoranAvatar({
         className={`composited-avatar rahi-avatar-placeholder ${styles}`}
         style={
           {
-            '--rahi-body': colors.body.main,
             '--rahi-accent': colors.eyes,
+            '--rahi-body': colors.body.main,
             ...glowStyle,
           } as React.CSSProperties
         }
