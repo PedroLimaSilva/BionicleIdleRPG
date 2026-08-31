@@ -83,11 +83,13 @@ function ensureAnalyticsInitialized(): boolean {
     posthog.init(key, {
       api_host: getPostHogHost(),
       capture_exceptions: true,
-      capture_pageleave: false,
-      capture_pageview: false,
+      capture_heatmaps: true,
+      capture_pageview: 'history_change',
       defaults: '2026-01-30',
+      disable_session_recording: false,
       opt_out_capturing_by_default: true,
       persistence: 'localStorage',
+      rageclick: true,
     });
     analyticsInitialized = true;
   }
@@ -108,6 +110,7 @@ export function syncAnalyticsConsent(): void {
     if (clientId) {
       posthog.identify(clientId);
     }
+    posthog.startSessionRecording();
     return;
   }
 
