@@ -33,6 +33,7 @@ import { getKraataCompositedColors } from '../../data/kraataColors';
 import { KraataPower, KRAATA_POWER_NAMES, KraataCollection } from '../../types/Kraata';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { CompositedImage } from '../../rendering/2d/CompositedImage';
+import { Tooltip } from '../../components/Tooltip';
 import { RahkshiArmor } from '../../types/Rahkshi';
 import { LegoColor } from '../../types/Colors';
 import { CREATE_CUSTOM_CHARACTER_ID } from '../../types/Matoran';
@@ -257,12 +258,13 @@ function RahkshiTabContent({
         <>
           <h3 className="rahkshi-section__title">
             Rahkshi{' '}
-            <span
-              className="rahkshi-section__counter"
-              title={`Ready armor with a stage ${ACTIVE_RAHKSHI_KRAATA_STAGE}+ kraata installed`}
+            <Tooltip
+              content={`Powers with ready Rahkshi armor and a stage ${ACTIVE_RAHKSHI_KRAATA_STAGE}+ kraata installed.`}
             >
-              {rahkshiCoverage.covered}/{rahkshiCoverage.total}
-            </span>
+              <span className="rahkshi-section__counter">
+                {rahkshiCoverage.covered}/{rahkshiCoverage.total}
+              </span>
+            </Tooltip>
           </h3>
           <div className="rahkshi-grid">
             {rahkshi
