@@ -1,7 +1,7 @@
 import { LegoColor } from '../../types/Colors';
 import { ElementTribe, Mask, MatoranColors, MatoranStage } from '../../types/Matoran';
 
-/** Muted body / accent tints aligned with RahiPlaceholderModel until dedicated avatars ship. */
+/** Minimal dex colors for element-themed card chrome; rahi have no 2D avatar yet. */
 function rahiColors(body: LegoColor, accent: LegoColor): MatoranColors {
   const colored = { main: body, secondary: accent };
   return {

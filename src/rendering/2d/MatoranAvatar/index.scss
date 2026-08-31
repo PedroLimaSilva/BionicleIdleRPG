@@ -9,13 +9,3 @@
     height: 100%;
   }
 }
-
-.rahi-avatar-placeholder {
-  width: 100%;
-  height: 100%;
-  background:
-    radial-gradient(circle at 50% 28%, var(--rahi-accent) 0 18%, transparent 19%),
-    linear-gradient(var(--rahi-body), var(--rahi-body));
-  border-radius: 12% 12% 8% 8%;
-  box-shadow: inset 0 -12% 0 rgb(0 0 0 / 18%);
-}
