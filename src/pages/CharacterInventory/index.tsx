@@ -259,7 +259,7 @@ function RahkshiTabContent({
           <h3 className="rahkshi-section__title">
             Rahkshi{' '}
             <Tooltip
-              content={`Powers with ready Rahkshi armor and a stage ${ACTIVE_RAHKSHI_KRAATA_STAGE}+ kraata installed.`}
+              content={`Unique Rahkshi Powers with ready Armor and a stage ${ACTIVE_RAHKSHI_KRAATA_STAGE}+ kraata installed.`}
             >
               <span className="rahkshi-section__counter">
                 {rahkshiCoverage.covered}/{rahkshiCoverage.total}
