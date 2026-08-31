@@ -1,6 +1,5 @@
-import { PWABadge } from './components/CacheManagement/PWABadge.tsx';
 import { SaveErrorBanner } from './components/SaveErrorBanner/index.tsx';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import { LayoutGroup } from 'motion/react';
 
 import { CharacterInventory } from './pages/CharacterInventory/index.tsx';
@@ -30,6 +29,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicy/index.tsx';
 import { ModelPreview } from './pages/ModelPreview/index.tsx';
 import { CharacterDex } from './pages/CharacterDex/index.tsx';
 import { CharacterDexPreview } from './pages/CharacterDex/Preview.tsx';
+import { PWABadge } from './components/CacheManagement/PWABadge.tsx';
 
 const NotFound: React.FC = () => (
   <div className="page-container">
@@ -38,38 +38,7 @@ const NotFound: React.FC = () => (
   </div>
 );
 
-function AnimatedRoutes() {
-  return (
-    <LayoutGroup>
-      <Routes>
-        <Route path="/" element={<QuestsPage />} />
-        <Route path="/battle/selector" element={<BattleSelector />} />
-        <Route path="/battle" element={<BattlePage />} />
-        <Route path="/characters" element={<CharacterInventory />} />
-        <Route path="/characters/:id" element={<CharacterDetail />} />
-        <Route path="/rahkshi/:id" element={<RahkshiDetail />} />
-        <Route path="/recruitment" element={<Recruitment />} />
-        <Route path="/character-create" element={<CharacterCreation />} />
-        <Route path="/quests" element={<QuestsPage />} />
-        <Route path="/quest-tree" element={<QuestTreePage />} />
-        <Route path="/type-effectiveness" element={<TypeEffectivenessPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/settings/game-state" element={<GameStateEditorPage />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-        <Route path="/test/dex" element={<CharacterDex />} />
-        <Route path="/test/dex/:id" element={<CharacterDexPreview />} />
-        <Route path="/test/model/:kind/:id" element={<ModelPreview />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </LayoutGroup>
-  );
-}
-
-export function App() {
-  useEffect(() => {
-    preloadAssets();
-  }, []);
-
+function AppShell() {
   const [isPortrait, setIsPortrait] = useState(window.innerHeight > window.innerWidth);
 
   useEffect(() => {
@@ -99,25 +68,64 @@ export function App() {
   }, []);
 
   return (
+    <GameProvider>
+      <SettingsProvider>
+        <SceneCanvasProvider>
+          <div className="app-container">
+            <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
+              <div id="canvas-mount"></div>
+              <LayoutGroup>
+                <Outlet />
+              </LayoutGroup>
+            </main>
+            <NavBar isPortrait={isPortrait} />
+          </div>
+          <SaveErrorBanner />
+          <TelemetryConsentPrompt />
+          <SharedCharacterPrompt />
+        </SceneCanvasProvider>
+      </SettingsProvider>
+    </GameProvider>
+  );
+}
+
+const router = createBrowserRouter(
+  [
+    {
+      children: [
+        { element: <QuestsPage />, path: '/' },
+        { element: <BattleSelector />, path: '/battle/selector' },
+        { element: <BattlePage />, path: '/battle' },
+        { element: <CharacterInventory />, path: '/characters' },
+        { element: <CharacterDetail />, path: '/characters/:id' },
+        { element: <RahkshiDetail />, path: '/rahkshi/:id' },
+        { element: <Recruitment />, path: '/recruitment' },
+        { element: <CharacterCreation />, path: '/character-create' },
+        { element: <QuestsPage />, path: '/quests' },
+        { element: <QuestTreePage />, path: '/quest-tree' },
+        { element: <TypeEffectivenessPage />, path: '/type-effectiveness' },
+        { element: <SettingsPage />, path: '/settings' },
+        { element: <GameStateEditorPage />, path: '/settings/game-state' },
+        { element: <PrivacyPolicyPage />, path: '/privacy-policy' },
+        { element: <CharacterDex />, path: '/test/dex' },
+        { element: <CharacterDexPreview />, path: '/test/dex/:id' },
+        { element: <ModelPreview />, path: '/test/model/:kind/:id' },
+        { element: <NotFound />, path: '*' },
+      ],
+      element: <AppShell />,
+    },
+  ],
+  { basename: '/BionicleIdleRPG/' }
+);
+
+export function App() {
+  useEffect(() => {
+    preloadAssets();
+  }, []);
+
+  return (
     <>
-      <GameProvider>
-        <SettingsProvider>
-          <Router basename="/BionicleIdleRPG/">
-            <SceneCanvasProvider>
-              <div className="app-container">
-                <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
-                  <div id="canvas-mount"></div>
-                  <AnimatedRoutes />
-                </main>
-                <NavBar isPortrait={isPortrait} />
-              </div>
-              <SaveErrorBanner />
-              <TelemetryConsentPrompt />
-              <SharedCharacterPrompt />
-            </SceneCanvasProvider>
-          </Router>
-        </SettingsProvider>
-      </GameProvider>
+      <RouterProvider router={router} />
       <PWABadge />
     </>
   );
