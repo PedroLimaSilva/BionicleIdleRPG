@@ -1,7 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { motion, useReducedMotion } from 'motion/react';
 import { useGame } from '../../context/Game';
-import { isTestMode } from '../../utils/testMode';
 
 import './index.scss';
 import { CharacterScene } from '../../rendering/3d/CharacterScene';
@@ -47,8 +45,6 @@ export const CharacterDetail: React.FC = () => {
     protodermis,
     recruitedCharacters,
   } = useGame();
-  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
-
   const { setScene } = useSceneCanvas();
 
   const matoran = useMemo(
@@ -111,12 +107,7 @@ export const CharacterDetail: React.FC = () => {
 
   return (
     <div className={`page-container character-detail element-${matoran.element}`}>
-      <motion.div
-        className="character-detail-visualization"
-        layoutId={shouldReduceMotion ? undefined : `character-${matoran.id}`}
-        layout
-        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
-      >
+      <div className="character-detail-visualization">
         <div className="character-header">
           <h1 className="character-name">{matoran.name}</h1>
           {isCustom && <CustomCharacterShareButton matoran={matoran} />}
@@ -125,7 +116,7 @@ export const CharacterDetail: React.FC = () => {
         <div id="model-frame">
           <div className="divider"></div>
         </div>
-      </motion.div>
+      </div>
       <div className="character-detail-tabs">
         <Tabs tabs={tabs} activeTab={activeTab} onTabChange={(tab: string) => setActiveTab(tab)} />
       </div>

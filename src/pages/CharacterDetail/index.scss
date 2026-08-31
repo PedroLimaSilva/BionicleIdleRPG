@@ -128,13 +128,13 @@
 .character-detail-tabs {
   grid-area: tabs;
   position: relative;
-  margin-inline: -2rem;
-  width: calc(100% + 4rem);
-}
+  width: 100%;
+  min-width: 0;
 
-.landscape .character-detail-tabs {
-  margin-right: -180px;
-  width: calc(100% + 2rem + 180px);
+  .tabs-container {
+    margin-top: 0;
+    --tabs-inline-padding: 0;
+  }
 }
 
 .character-detail-section {

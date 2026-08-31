@@ -8,6 +8,8 @@
   padding: 0.5rem var(--tabs-inline-padding);
   padding-bottom: calc(1rem + 2px);
   scroll-behavior: smooth;
+  scroll-padding-inline: var(--tabs-inline-padding);
+  -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   top: 0;
@@ -23,9 +25,12 @@
   .tabs-inner {
     display: flex;
     flex-wrap: nowrap;
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
     gap: 0.5rem;
-    justify-content: flex-start;
+    justify-content: center;
+    margin: 0 1.75rem;
+    box-sizing: border-box;
   }
 
   .tab-btn {
