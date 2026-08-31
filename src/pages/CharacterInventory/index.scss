@@ -287,6 +287,13 @@ button.kraata-card.kraata-card--forgeable {
   margin-bottom: 0;
 }
 
+.rahkshi-section__counter {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.04em;
+}
+
 .rahkshi-section__kraata-header {
   display: flex;
   align-items: center;
