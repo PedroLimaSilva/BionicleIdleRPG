@@ -265,11 +265,7 @@ function RahkshiTabContent({
             {rahkshi
               .sort((a, b) => a.power.localeCompare(b.power))
               .map((armor) => (
-                <RahkshiArmorCard
-                  key={armor.id}
-                  armor={armor}
-                  shouldReduceMotion={shouldReduceMotion}
-                />
+                <RahkshiArmorCard key={armor.id} armor={armor} />
               ))}
           </div>
         </>
@@ -397,13 +393,7 @@ function RahkshiTabContent({
   );
 }
 
-function RahkshiArmorCard({
-  armor,
-  shouldReduceMotion,
-}: {
-  armor: RahkshiArmor;
-  shouldReduceMotion: boolean;
-}) {
+function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
   const { armor: armorColor, joint: jointColor } = getRahkshiArmorColors(armor.power);
   const powerName = KRAATA_POWER_NAMES[armor.power] ?? armor.power;
   const isPreparing = armor.status === 'preparing';
@@ -413,11 +403,8 @@ function RahkshiArmorCard({
 
   return (
     <Link to={`/rahkshi/${armor.id}`}>
-      <motion.div
+      <div
         className={`rahkshi-card rahkshi-card--${armor.status}`}
-        layoutId={shouldReduceMotion ? undefined : `rahkshi-${armor.id}`}
-        layout
-        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
         style={
           {
             '--rahkshi-head-color': armorColor,
@@ -441,7 +428,7 @@ function RahkshiArmorCard({
         >
           {statusLabel}
         </div>
-      </motion.div>
+      </div>
     </Link>
   );
 }

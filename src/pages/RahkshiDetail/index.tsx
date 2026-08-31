@@ -98,11 +98,8 @@ export const RahkshiDetail: React.FC = () => {
 
   return (
     <div className="page-container rahkshi-detail">
-      <motion.div
+      <div
         className="rahkshi-detail-visualization"
-        layoutId={shouldReduceMotion ? undefined : `rahkshi-${armor.id}`}
-        layout
-        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
         style={
           {
             '--kraata-head-color': armorColors.armor,
@@ -148,7 +145,7 @@ export const RahkshiDetail: React.FC = () => {
               )}
           </AnimatePresence>
         </div>
-      </motion.div>
+      </div>
 
       <div className="rahkshi-detail-content">
         {isPreparing && armor.startedAt != null && armor.endsAt != null && (
