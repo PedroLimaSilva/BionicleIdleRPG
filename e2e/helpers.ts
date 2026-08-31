@@ -5,6 +5,10 @@ import type { E2ePwaBannerState } from '../src/utils/testMode';
 import { E2E_MODEL_PREVIEW_NAV_KEY } from '../src/rendering/3d/utils/e2eModelPreview';
 
 import { E2E_FORCE_GAME_STATE_IMPORT_KEY, GAME_DB_NAME } from '../src/persistence/gameDatabase';
+import {
+  buildTelemetryConsentValue,
+  TELEMETRY_CONSENT_KEY,
+} from '../src/constants/telemetryConsent';
 
 type TestModeOptions = {
   pwaBanner?: E2ePwaBannerState;
@@ -29,10 +33,16 @@ export const INITIAL_GAME_STATE: PartialGameState = {
  * Also dismisses the telemetry consent prompt so it doesn't block tests.
  */
 export async function enableTestMode(page: Page, options?: TestModeOptions) {
-  await page.addInitScript(() => {
-    localStorage.setItem('TEST_MODE', 'true');
-    localStorage.setItem('TELEMETRY_ENABLED', 'false');
-  });
+  await page.addInitScript(
+    ({ consentKey, consentValue }: { consentKey: string; consentValue: string }) => {
+      localStorage.setItem('TEST_MODE', 'true');
+      localStorage.setItem(consentKey, consentValue);
+    },
+    {
+      consentKey: TELEMETRY_CONSENT_KEY,
+      consentValue: JSON.stringify(buildTelemetryConsentValue(false)),
+    }
+  );
 
   if (options?.pwaBanner) {
     await page.addInitScript((banner: E2ePwaBannerState) => {
@@ -69,10 +79,14 @@ export async function setupGameState(
 ) {
   await page.addInitScript(
     async ({
+      consentKey,
+      consentValue,
       dbName,
       forceImportKey,
       state,
     }: {
+      consentKey: string;
+      consentValue: string;
       dbName: string;
       forceImportKey: string;
       state: PartialGameState;
@@ -87,10 +101,12 @@ export async function setupGameState(
 
       localStorage.setItem('GAME_STATE', JSON.stringify(state));
       localStorage.setItem('TEST_MODE', 'true');
-      localStorage.setItem('TELEMETRY_ENABLED', 'false');
+      localStorage.setItem(consentKey, consentValue);
       localStorage.setItem(forceImportKey, 'true');
     },
     {
+      consentKey: TELEMETRY_CONSENT_KEY,
+      consentValue: JSON.stringify(buildTelemetryConsentValue(false)),
       dbName: GAME_DB_NAME,
       forceImportKey: E2E_FORCE_GAME_STATE_IMPORT_KEY,
       state: gameState,
