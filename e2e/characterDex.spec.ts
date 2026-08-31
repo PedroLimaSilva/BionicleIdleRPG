@@ -19,6 +19,10 @@ test.describe('Character Dex', () => {
     await expect(tahuCard).toBeVisible();
     await expect(tahuCard).toContainText('Toa Tahu');
 
+    await page.getByLabel('Search characters').fill('nui');
+    await expect(page.locator('[data-character-id="nui_rama"]')).toBeVisible();
+    await expect(page.locator('[data-character-id="Toa_Tahu"]')).toHaveCount(0);
+
     await page.getByLabel('Search characters').fill('tahu');
     await expect(page.locator('[data-character-id="Toa_Tahu"]')).toBeVisible();
     await expect(page.locator('[data-character-id="Takua"]')).toHaveCount(0);
