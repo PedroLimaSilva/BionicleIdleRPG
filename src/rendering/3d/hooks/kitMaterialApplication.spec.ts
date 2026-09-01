@@ -237,15 +237,15 @@ describe('buildKitMeshMaterials metallic colors', () => {
   });
 });
 
-describe('buildKitMeshMaterials bevel atlas', () => {
-  const atlas = bevelTex();
-  const weatheredWithAtlas: WeatheredMetalOptions = {
-    bevelMap: atlas,
+describe('buildKitMeshMaterials bevel map', () => {
+  const partMap = bevelTex();
+  const weatheredWithMap: WeatheredMetalOptions = {
+    bevelMap: partMap,
     metalness: 0.05,
     roughness: 0.45,
   };
 
-  test('Main and Secondary on one UV mesh share the kit atlas and keep different colors', () => {
+  test('Main and Secondary on one UV mesh share the part map and keep different colors', () => {
     const mesh = meshWithUvAndSlots(['Main', 'Secondary']);
     const next = buildKitMeshMaterials(
       mesh,
@@ -254,17 +254,17 @@ describe('buildKitMeshMaterials bevel atlas', () => {
         Secondary: { kind: 'part', part: 'arms', slot: 'secondary' },
       }),
       COLORS,
-      weatheredWithAtlas
+      weatheredWithMap
     ) as MeshStandardMaterial[];
-    expect(getWeatheredBevelMap(next[0])).toBe(atlas);
-    expect(getWeatheredBevelMap(next[1])).toBe(atlas);
+    expect(getWeatheredBevelMap(next[0])).toBe(partMap);
+    expect(getWeatheredBevelMap(next[1])).toBe(partMap);
     expect(next[0].color.getHexString().toUpperCase()).toBe('B48455');
     expect(next[1].color.getHexString().toUpperCase()).toBe('720E0F');
     expect(next[0].metalness).toBe(NUVA_METAL_PBR.metalness);
-    expect(next[1].metalness).toBe(weatheredWithAtlas.metalness);
+    expect(next[1].metalness).toBe(weatheredWithMap.metalness);
   });
 
-  test('glow slots skip weathering even when an atlas is present', () => {
+  test('glow slots skip weathering even when a part map is present', () => {
     const mesh = meshWithUvAndSlots(['Glow']);
     const next = buildKitMeshMaterials(
       mesh,
@@ -275,7 +275,7 @@ describe('buildKitMeshMaterials bevel atlas', () => {
         },
       }),
       COLORS,
-      weatheredWithAtlas
+      weatheredWithMap
     ) as MeshStandardMaterial;
     expect(getWeatheredBevelMap(next)).toBeNull();
     expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
@@ -285,9 +285,9 @@ describe('buildKitMeshMaterials bevel atlas', () => {
     const mat = buildSingle(
       'Main',
       { Main: { kind: 'part', part: 'body', slot: 'main' } },
-      weatheredWithAtlas
+      weatheredWithMap
     );
     expect(getWeatheredBevelMap(mat)).toBeNull();
-    expect(mat.metalness).toBe(weatheredWithAtlas.metalness);
+    expect(mat.metalness).toBe(weatheredWithMap.metalness);
   });
 });

@@ -5,8 +5,8 @@ function mapTex(): DataTexture {
   return new DataTexture(new Uint8Array([255, 0, 0, 255]), 1, 1);
 }
 
-describe('getWeatheredMetalMaterial bevel atlas cache', () => {
-  test('the same color with different atlases does not share a material', () => {
+describe('getWeatheredMetalMaterial bevel map cache', () => {
+  test('the same color with different maps does not share a material', () => {
     const a = mapTex();
     const b = mapTex();
     const withA = getWeatheredMetalMaterial('#ffffff', { bevelMap: a, metalness: 0.05 });
@@ -20,7 +20,7 @@ describe('getWeatheredMetalMaterial bevel atlas cache', () => {
     expect(getWeatheredMetalMaterial('#ffffff', { bevelMap: a, metalness: 0.05 })).toBe(withA);
   });
 
-  test('non-weathered materials report no atlas', () => {
+  test('non-weathered materials report no map', () => {
     expect(getWeatheredBevelMap(new MeshStandardMaterial())).toBeNull();
   });
 });

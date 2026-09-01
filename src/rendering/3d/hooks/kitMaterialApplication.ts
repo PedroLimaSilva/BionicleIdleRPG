@@ -190,7 +190,7 @@ export function buildKitMeshMaterials(
         ...weatheredBase,
         ...metalPbr,
         ...mergeSlotWeatheredOpts(spec),
-        // Atlas is kit-level; drop it on meshes that still have no UVs.
+        // Map is per kit part (clone); drop it on meshes that still have no UVs.
         bevelMap:
           weatheredBase.bevelMap && meshHasBevelUv(mesh) ? weatheredBase.bevelMap : undefined,
       };

@@ -1,11 +1,12 @@
 /**
- * Weathered metal: object-space FBM grime, optional baked bevel atlas, and a
+ * Weathered metal: object-space FBM grime, optional baked bevel map, and a
  * screen-space curvature fallback when no map/UVs exist.
  *
- * Kit bevel atlases (`kit_2001_bevel.webp`) are geometric — R = convex wear,
- * G = concave cavity. Slot color / emission / roughness / metalness still come
- * from `useKitAttachments`; the atlas is sampled on every weathered slot that
- * shares the mesh UVs. Glow, emissive, and transmissive slots skip this pass.
+ * Bevel maps are geometric — R = convex wear, G = concave cavity. Lookup is
+ * part-level (`kit_2001/MataChest_bevel.webp`) with an optional leftover kit
+ * atlas. Slot color / emission / roughness / metalness still come from
+ * `useKitAttachments`; the map is sampled on every weathered slot that shares
+ * the mesh UVs. Glow, emissive, and transmissive slots skip this pass.
  *
  * applyWeatheredMetalToObject skips: meshes with authored PBR maps (normal /
  * roughness / metalness), meshes under a node named "Masks" (useMask-injected
@@ -51,8 +52,9 @@ export type WeatheredMetalOptions = {
   /** Curvature threshold for the screen-space fallback. Lower = more edges detected. */
   edgeCurvatureScale?: number;
   /**
-   * Optional packed bevel atlas (R = convex wear, G = concave cavity).
-   * Kit-level, not per slot. Ignored on meshes with no UVs.
+   * Optional packed bevel map (R = convex wear, G = concave cavity).
+   * Per kit part (mesh clone), not per Main/Secondary/Glow slot. Ignored
+   * on meshes with no UVs.
    */
   bevelMap?: Texture;
   /** Environment map intensity. */
@@ -61,7 +63,7 @@ export type WeatheredMetalOptions = {
   transparent?: boolean;
   /** Debug mode: render grime mask directly as grayscale color. */
   debugGrimeAsColor?: boolean;
-  /** Debug mode: render packed bevel atlas as red=wear / green=cavity. */
+  /** Debug mode: render packed bevel map as red=wear / green=cavity. */
   debugBevelAsColor?: boolean;
 };
 
@@ -229,7 +231,7 @@ export function meshHasBevelUv(mesh: Mesh): boolean {
   return !!uv && uv.count > 0;
 }
 
-/** Bevel atlas attached to a weathered material, if any. */
+/** Bevel map attached to a weathered material, if any. */
 export function getWeatheredBevelMap(mat: unknown): Texture | null {
   if (!isWeatheredMetalMaterial(mat)) return null;
   return (mat.userData[BEVEL_MAP_USERDATA_KEY] as Texture | null | undefined) ?? null;
@@ -237,7 +239,7 @@ export function getWeatheredBevelMap(mat: unknown): Texture | null {
 
 /**
  * Creates a weathered metal material. Object-space procedural noise, plus a
- * baked bevel atlas when `bevelMap` is set.
+ * baked bevel map when `bevelMap` is set.
  */
 export function createWeatheredMetalMaterial(
   opts: WeatheredMetalOptions = {}
