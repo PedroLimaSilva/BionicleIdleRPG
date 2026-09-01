@@ -1,5 +1,6 @@
 import './index.scss';
 import { useLayoutEffect, useRef } from 'react';
+import { isTestMode } from '../../utils/testMode';
 
 export const Tabs = ({
   activeTab,
@@ -22,7 +23,7 @@ export const Tabs = ({
 
     const targetScrollLeft = active.offsetLeft - (container.clientWidth - active.offsetWidth) / 2;
     container.scrollTo({
-      behavior: 'smooth',
+      behavior: isTestMode() ? 'auto' : 'smooth',
       left: Math.max(0, targetScrollLeft),
     });
   }, [activeTab]);
