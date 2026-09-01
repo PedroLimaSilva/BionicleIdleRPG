@@ -38,7 +38,7 @@ export interface JobDetails {
   };
   /** If set, only characters with these stages can be assigned this job. */
   allowedStages?: MatoranStage[];
-  /** If set with allowedStages, only these character IDs can be assigned this job. */
+  /** Metru-era canonical profession holders for this job (40% productivity boost when assigned). */
   allowedCharacters?: string[];
 }
 

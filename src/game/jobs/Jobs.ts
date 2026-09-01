@@ -4,6 +4,7 @@ import { MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { GameState } from '../../types/GameState';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { hasStageRestrictedJobPool, isMetruStage } from '../characters/matoranStage';
+import { getMetruProfession } from './metruProfessions';
 
 function jobMatchesCharacter(job: MatoranJob, matoranId: string, stage: MatoranStage): boolean {
   const { allowedCharacters, allowedStages } = JOB_DETAILS[job];
@@ -11,7 +12,7 @@ function jobMatchesCharacter(job: MatoranJob, matoranId: string, stage: MatoranS
   if (hasStageRestrictedJobPool(stage)) {
     if (!allowedStages?.includes(stage)) return false;
     if (isMetruStage(stage)) {
-      return allowedCharacters?.includes(matoranId) ?? false;
+      return true;
     }
     return allowedCharacters?.includes(matoranId) ?? true;
   }
@@ -80,18 +81,19 @@ export function sanitizeMatoranJobAssignments(
 export function getJobStatus(matoran: RecruitedCharacterData): ProductivityEffect {
   if (!matoran.assignment?.job) return ProductivityEffect.Idle;
 
-  const characterDex = CHARACTER_DEX[matoran.id];
-
-  const affinity = JOB_DETAILS[matoran.assignment.job].elementAffinity;
-  if (affinity.favored.includes(characterDex.element)) return ProductivityEffect.Boosted;
-  if (affinity.opposed.includes(characterDex.element)) return ProductivityEffect.Penalized;
-
+  const modifier = getProductivityModifier(matoran.assignment.job, matoran);
+  if (modifier > 1) return ProductivityEffect.Boosted;
+  if (modifier < 1) return ProductivityEffect.Penalized;
   return ProductivityEffect.Neutral;
 }
 
 export function getProductivityModifier(job: MatoranJob, matoran: RecruitedCharacterData): number {
-  const { elementAffinity } = JOB_DETAILS[job];
+  const profession = getMetruProfession(matoran.id);
+  if (profession === job) {
+    return 1.4; // +40% productivity for canonical Metru profession (does not stack with element)
+  }
 
+  const { elementAffinity } = JOB_DETAILS[job];
   const characterDex = CHARACTER_DEX[matoran.id];
 
   if (elementAffinity.favored.includes(characterDex.element)) {

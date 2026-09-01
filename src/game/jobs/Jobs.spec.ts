@@ -7,8 +7,31 @@ import {
   applyOfflineJobExp,
 } from './Jobs';
 import { MatoranJob, ProductivityEffect } from '../../types/Jobs';
-import { RecruitedCharacterData } from '../../types/Matoran';
+import { ElementTribe, Mask, MatoranStage, RecruitedCharacterData } from '../../types/Matoran';
 import { GameState } from '../../types/GameState';
+import { registerCustomCharacterInDex } from '../../data/dex/index';
+import { simpleLimbColors } from '../../data/dex/partPalettes';
+import { LegoColor } from '../../types/Colors';
+
+const MOCK_COLORS = simpleLimbColors({
+  arms: LegoColor.Black,
+  body: LegoColor.Black,
+  eyes: LegoColor.Black,
+  face: LegoColor.LightGray,
+  feet: LegoColor.Black,
+  mask: LegoColor.Black,
+});
+
+const METRU_JOBS = [
+  MatoranJob.ChuteController,
+  MatoranJob.HydroTechnician,
+  MatoranJob.KnowledgeScribe,
+  MatoranJob.MaskMaker,
+  MatoranJob.ProtodermisSmelter,
+  MatoranJob.SculptureOperator,
+  MatoranJob.StasisTechnician,
+  MatoranJob.Teacher,
+] as const;
 
 describe('Jobs', () => {
   describe('getProductivityModifier', () => {
@@ -55,6 +78,29 @@ describe('Jobs', () => {
     test('returns 0.8 for Fire matoran on SanctumGuard (opposed)', () => {
       const modifier = getProductivityModifier(MatoranJob.SanctumGuard, mockFireMatoran);
       expect(modifier).toBe(0.8);
+    });
+
+    test('returns 1.4 for canonical Metru profession instead of element boost', () => {
+      const vakama: RecruitedCharacterData = { exp: 0, id: 'Vakama' };
+      expect(getProductivityModifier(MatoranJob.MaskMaker, vakama)).toBe(1.4);
+    });
+
+    test('returns 1.2 for Metru Matoran on non-profession job with favored element', () => {
+      const vakama: RecruitedCharacterData = { exp: 0, id: 'Vakama' };
+      expect(getProductivityModifier(MatoranJob.ProtodermisSmelter, vakama)).toBe(1.2);
+    });
+
+    test('returns 1.2 for custom Metru Matoran on favored element job', () => {
+      registerCustomCharacterInDex({
+        colors: MOCK_COLORS,
+        element: ElementTribe.Water,
+        id: 'custom_metru_test',
+        mask: Mask.Hau,
+        name: 'Custom Metru',
+        stage: MatoranStage.Metru,
+      });
+      const custom: RecruitedCharacterData = { exp: 0, id: 'custom_metru_test' };
+      expect(getProductivityModifier(MatoranJob.Teacher, custom)).toBe(1.2);
     });
   });
 
@@ -181,30 +227,36 @@ describe('Jobs', () => {
       expect(bohrokJobs).not.toContain(MatoranJob.StoneMason);
     });
 
-    test('Metru Matoran only see their canonical profession', () => {
+    test('Metru Matoran see all Metru-era jobs', () => {
       const mockGameState = {
         completedQuests: [],
       } as unknown as GameState;
 
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
       const nokama = { exp: 0, id: 'Nokama' } as RecruitedCharacterData;
-      const matau = { exp: 0, id: 'Matau' } as RecruitedCharacterData;
+      const nuju = { exp: 0, id: 'Nuju' } as RecruitedCharacterData;
 
-      expect(getAvailableJobs(mockGameState, vakama)).toEqual([MatoranJob.MaskMaker]);
-      expect(getAvailableJobs(mockGameState, nokama)).toEqual([MatoranJob.Teacher]);
-      expect(getAvailableJobs(mockGameState, matau)).toEqual([MatoranJob.ChuteController]);
+      for (const matoran of [vakama, nokama, nuju]) {
+        expect(getAvailableJobs(mockGameState, matoran)).toEqual([...METRU_JOBS]);
+      }
     });
 
-    test('Metru Matoran with district-specific professions see them without quest progress', () => {
+    test('custom Metru Matoran see all Metru-era jobs', () => {
+      registerCustomCharacterInDex({
+        colors: MOCK_COLORS,
+        element: ElementTribe.Fire,
+        id: 'custom_metru_jobs',
+        mask: Mask.Hau,
+        name: 'Custom Metru',
+        stage: MatoranStage.Metru,
+      });
+
       const mockGameState = {
         completedQuests: [],
       } as unknown as GameState;
+      const custom = { exp: 0, id: 'custom_metru_jobs' } as RecruitedCharacterData;
 
-      const nuju = { exp: 0, id: 'Nuju' } as RecruitedCharacterData;
-      const whenua = { exp: 0, id: 'Whenua' } as RecruitedCharacterData;
-
-      expect(getAvailableJobs(mockGameState, nuju)).toEqual([MatoranJob.KnowledgeScribe]);
-      expect(getAvailableJobs(mockGameState, whenua)).toEqual([MatoranJob.StasisTechnician]);
+      expect(getAvailableJobs(mockGameState, custom)).toEqual([...METRU_JOBS]);
     });
 
     test('Metru Matoran do not see Mata Nui jobs even when unlocked', () => {
@@ -233,7 +285,7 @@ describe('Jobs', () => {
       expect(jobs).not.toContain(MatoranJob.ChuteController);
     });
 
-    test('Metru Matoran do not see Metru jobs without an allowedCharacters entry', () => {
+    test('Metru Matoran see district jobs without quest progress', () => {
       const mockGameState = {
         completedQuests: [],
       } as unknown as GameState;
@@ -241,8 +293,8 @@ describe('Jobs', () => {
       const vakama = { exp: 0, id: 'Vakama' } as RecruitedCharacterData;
       const jobs = getAvailableJobs(mockGameState, vakama);
 
-      expect(jobs).not.toContain(MatoranJob.HydroTechnician);
-      expect(jobs).not.toContain(MatoranJob.ProtodermisSmelter);
+      expect(jobs).toContain(MatoranJob.HydroTechnician);
+      expect(jobs).toContain(MatoranJob.ProtodermisSmelter);
     });
   });
 
