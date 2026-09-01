@@ -16,7 +16,9 @@ export type KitBevelNodeAllowlist<T extends string> = Partial<Record<T, true>>;
  *
  * Add a node when its bake lands, e.g. `MataChest: true`.
  */
-export const KIT_2001_BEVEL_NODES: KitBevelNodeAllowlist<Kit2001NodeName> = {};
+export const KIT_2001_BEVEL_NODES: KitBevelNodeAllowlist<Kit2001NodeName> = {
+  MataChest: true,
+};
 
 export const KIT_2003_BEVEL_NODES: KitBevelNodeAllowlist<Kit2003NodeName> = {};
 

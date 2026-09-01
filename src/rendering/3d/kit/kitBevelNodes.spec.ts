@@ -54,11 +54,7 @@ describe('kit bevel allowlists', () => {
       KIT_2001_NODES.MataFoot,
     ];
     const filtered = filterDeclaredKitBevelNodes('kit_2001', mixed);
-    expect(filtered.every((name) => KIT_2001_BEVEL_NODES[name as Kit2001NodeName] === true)).toBe(
-      true
-    );
-    expect(filtered).toEqual([...new Set(filtered)]);
-    expect(filtered.includes(KIT_2001_NODES.Axle2L)).toBe(false);
+    expect(filtered).toEqual([KIT_2001_NODES.MataChest]);
   });
 
   test('declared names match the record keys', () => {

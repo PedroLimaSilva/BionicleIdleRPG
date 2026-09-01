@@ -24,6 +24,7 @@ dev-dist
 *.sln
 *.sw?
 *.blend1
+.work/
 coverage
 
 # Playwright
