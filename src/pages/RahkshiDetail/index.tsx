@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useGame } from '../../context/Game';
@@ -8,8 +8,12 @@ import { getKraataCompositedColors } from '../../data/kraataColors';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { CompositedImage } from '../../rendering/2d/CompositedImage';
 import { isForgeComplete } from '../../game/kraata/KraataActions';
-import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { getAdjacentRahkshiIds } from './rahkshiEntries';
+import {
+  RAHKSHI_DETAIL_VISUALIZATION_LAYOUT_ID,
+  RAHKSHI_DETAIL_VISUALIZATION_TRANSITION,
+} from './motion';
 import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { RahkshiScene } from '../../rendering/3d/CharacterScene/RahkshiScene';
 import { isTestMode } from '../../utils/testMode';
@@ -28,13 +32,9 @@ function formatTimeRemaining(ms: number): string {
   return `${seconds}s`;
 }
 
-const SWIPE_THRESHOLD_PX = 50;
-
 export const RahkshiDetail: React.FC = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { setScene } = useSceneCanvas();
-  const swipeStartX = useRef<number | null>(null);
   const {
     completeRahkshiForge,
     insertKraataIntoRahkshi,
@@ -48,29 +48,6 @@ export const RahkshiDetail: React.FC = () => {
   const hasKraata = !!armor?.kraata;
 
   const neighbors = useMemo(() => (id ? getAdjacentRahkshiIds(rahkshi, id) : null), [rahkshi, id]);
-
-  const navigateToNeighbor = useCallback(
-    (targetId: string) => {
-      navigate(`/rahkshi/${targetId}`);
-    },
-    [navigate]
-  );
-
-  const handleSwipeStart = useCallback((clientX: number) => {
-    swipeStartX.current = clientX;
-  }, []);
-
-  const handleSwipeEnd = useCallback(
-    (clientX: number) => {
-      if (swipeStartX.current === null || !neighbors) return;
-      const deltaX = clientX - swipeStartX.current;
-      if (Math.abs(deltaX) >= SWIPE_THRESHOLD_PX) {
-        navigateToNeighbor(deltaX > 0 ? neighbors.prevId : neighbors.nextId);
-      }
-      swipeStartX.current = null;
-    },
-    [neighbors, navigateToNeighbor]
-  );
 
   useEffect(() => {
     if (armor && armorPower !== undefined) {
@@ -165,16 +142,17 @@ export const RahkshiDetail: React.FC = () => {
         )}
       </div>
 
-      <div
+      <motion.div
         className="rahkshi-detail-visualization"
+        layoutId={shouldReduceMotion ? undefined : RAHKSHI_DETAIL_VISUALIZATION_LAYOUT_ID}
+        layout
+        transition={RAHKSHI_DETAIL_VISUALIZATION_TRANSITION}
         style={
           {
             '--kraata-head-color': armorColors.armor,
             '--kraata-tail-color': armorColors.joint,
           } as React.CSSProperties
         }
-        onTouchStart={(event) => handleSwipeStart(event.touches[0]?.clientX ?? 0)}
-        onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0]?.clientX ?? 0)}
       >
         {neighbors && neighborNames && (
           <>
@@ -229,7 +207,7 @@ export const RahkshiDetail: React.FC = () => {
               )}
           </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
 
       <div className="rahkshi-detail-content">
         {isPreparing && armor.startedAt != null && armor.endsAt != null && (
