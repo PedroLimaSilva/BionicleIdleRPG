@@ -11,8 +11,6 @@ import { RahkshiArmor } from '../../types/Rahkshi';
 
 export const KRAATA_ARMOR_DURATION_MS = 24 * 60 * 60 * 1000;
 export const RAHKSHI_FORGE_COST = 5000;
-/** Minimum kraata stage installed in ready Rahkshi armor to count a power as covered. */
-export const ACTIVE_RAHKSHI_KRAATA_STAGE = 5;
 export const KRAATA_POWER_COUNT = KRAATA_POWERS.length;
 
 export function getKraataCount(
@@ -111,12 +109,12 @@ export function isForgeComplete(armor: RahkshiArmor): boolean {
   return Date.now() >= armor.endsAt;
 }
 
-/** True when ready armor has a stage-{@link ACTIVE_RAHKSHI_KRAATA_STAGE}+ kraata installed. */
+/** True when ready armor has a kraata installed at {@link MAX_KRAATA_STAGE}. */
 export function isRahkshiPowerCovered(armor: RahkshiArmor): boolean {
   return (
     armor.status === 'ready' &&
     armor.kraata !== undefined &&
-    armor.kraata.stage >= ACTIVE_RAHKSHI_KRAATA_STAGE
+    armor.kraata.stage === MAX_KRAATA_STAGE
   );
 }
 

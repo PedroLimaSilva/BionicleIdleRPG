@@ -1,7 +1,6 @@
-import { KraataPower } from '../../types/Kraata';
+import { KraataPower, MAX_KRAATA_STAGE } from '../../types/Kraata';
 import { RahkshiArmor } from '../../types/Rahkshi';
 import {
-  ACTIVE_RAHKSHI_KRAATA_STAGE,
   getRahkshiPowerCoverage,
   isRahkshiPowerCovered,
   KRAATA_POWER_COUNT,
@@ -20,11 +19,11 @@ describe('rahkshi power coverage', () => {
     expect(KRAATA_POWER_COUNT).toBe(42);
   });
 
-  test('isRahkshiPowerCovered requires ready armor and stage 5+ kraata', () => {
+  test('isRahkshiPowerCovered requires ready armor and a max-stage kraata', () => {
     expect(
       isRahkshiPowerCovered(
         makeArmor({
-          kraata: { power: KraataPower.Accuracy, stage: ACTIVE_RAHKSHI_KRAATA_STAGE },
+          kraata: { power: KraataPower.Accuracy, stage: MAX_KRAATA_STAGE },
           power: KraataPower.Accuracy,
         })
       )
@@ -33,7 +32,16 @@ describe('rahkshi power coverage', () => {
     expect(
       isRahkshiPowerCovered(
         makeArmor({
-          kraata: { power: KraataPower.Accuracy, stage: ACTIVE_RAHKSHI_KRAATA_STAGE - 1 },
+          kraata: { power: KraataPower.Accuracy, stage: MAX_KRAATA_STAGE - 1 },
+          power: KraataPower.Accuracy,
+        })
+      )
+    ).toBe(false);
+
+    expect(
+      isRahkshiPowerCovered(
+        makeArmor({
+          kraata: { power: KraataPower.Accuracy, stage: MAX_KRAATA_STAGE + 1 },
           power: KraataPower.Accuracy,
         })
       )
@@ -55,15 +63,15 @@ describe('rahkshi power coverage', () => {
   test('getRahkshiPowerCoverage counts unique covered powers only', () => {
     const rahkshi: RahkshiArmor[] = [
       makeArmor({
-        kraata: { power: KraataPower.Accuracy, stage: 5 },
+        kraata: { power: KraataPower.Accuracy, stage: MAX_KRAATA_STAGE },
         power: KraataPower.Accuracy,
       }),
       makeArmor({
-        kraata: { power: KraataPower.Anger, stage: 6 },
+        kraata: { power: KraataPower.Anger, stage: MAX_KRAATA_STAGE },
         power: KraataPower.Anger,
       }),
       makeArmor({
-        kraata: { power: KraataPower.ChainLightning, stage: 4 },
+        kraata: { power: KraataPower.ChainLightning, stage: MAX_KRAATA_STAGE - 1 },
         power: KraataPower.ChainLightning,
       }),
       makeArmor({ endsAt: Date.now() + 60_000, power: KraataPower.Chameleon, status: 'preparing' }),

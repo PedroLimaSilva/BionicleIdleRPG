@@ -24,11 +24,15 @@ import {
   canStartRahkshiForge,
   getRahkshiPowerCoverage,
   hasRahkshiArmorForPower,
-  ACTIVE_RAHKSHI_KRAATA_STAGE,
   RAHKSHI_FORGE_COST,
 } from '../../game/kraata/KraataActions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
-import { KraataPower, KRAATA_POWER_NAMES, KraataCollection } from '../../types/Kraata';
+import {
+  KraataPower,
+  KRAATA_POWER_NAMES,
+  KraataCollection,
+  MAX_KRAATA_STAGE,
+} from '../../types/Kraata';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { CompositedImage } from '../../rendering/2d/CompositedImage';
 import { Tooltip } from '../../components/Tooltip';
@@ -254,7 +258,7 @@ function RahkshiTabContent({
           <h3 className="rahkshi-section__title">
             Rahkshi{' '}
             <Tooltip
-              content={`Unique Rahkshi Powers with ready Armor and a stage ${ACTIVE_RAHKSHI_KRAATA_STAGE}+ kraata installed.`}
+              content={`Unique Rahkshi Powers with ready Armor and a stage ${MAX_KRAATA_STAGE} kraata installed.`}
             >
               <span className="rahkshi-section__counter">
                 {rahkshiCoverage.covered}/{rahkshiCoverage.total}
