@@ -22,7 +22,7 @@ export const Tabs = ({
 
     const targetScrollLeft = active.offsetLeft - (container.clientWidth - active.offsetWidth) / 2;
     container.scrollTo({
-      behavior: 'smooth',
+      behavior: 'auto',
       left: Math.max(0, targetScrollLeft),
     });
   }, [activeTab]);
