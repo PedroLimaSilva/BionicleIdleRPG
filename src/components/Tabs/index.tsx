@@ -12,19 +12,24 @@ export const Tabs = ({
   activeTab: string;
   onTabChange: (tab: string) => void;
 }) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const activeTabRef = useRef<HTMLButtonElement | null>(null);
 
   useLayoutEffect(() => {
-    activeTabRef.current?.scrollIntoView({
+    const container = containerRef.current;
+    const active = activeTabRef.current;
+    if (!container || !active) return;
+
+    const targetScrollLeft = active.offsetLeft - (container.clientWidth - active.offsetWidth) / 2;
+    container.scrollTo({
       behavior: 'smooth',
-      block: 'nearest',
-      inline: 'center',
+      left: Math.max(0, targetScrollLeft),
     });
-  }, [activeTab, tabs]);
+  }, [activeTab]);
 
   return (
     <>
-      <div className={`tabs-container ${classNames ?? ''}`}>
+      <div ref={containerRef} className={`tabs-container ${classNames ?? ''}`}>
         <div className="tabs-inner">
           {tabs.map((tab) => (
             <button
