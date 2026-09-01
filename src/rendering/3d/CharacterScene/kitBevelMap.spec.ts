@@ -42,12 +42,11 @@ describe('kitBevelMapCandidates', () => {
   });
 
   test('allowlisted nodes resolve to part sidecar URLs', () => {
+    const nodes = Object.keys(KIT_2001_BEVEL_NODES);
     expect(
-      KIT_2001_BEVEL_NODES.map((node) =>
-        kitBevelMapCandidates('/BionicleIdleRPG/kit_2001.glb', node)
-      )
+      nodes.map((node) => kitBevelMapCandidates('/BionicleIdleRPG/kit_2001.glb', node))
     ).toEqual(
-      KIT_2001_BEVEL_NODES.map((node) => [
+      nodes.map((node) => [
         `/BionicleIdleRPG/kit_2001/${node}_bevel.webp`,
         `/BionicleIdleRPG/kit_2001/${node}_bevel.png`,
       ])
@@ -75,8 +74,8 @@ describe('loadKitBevelMap', () => {
   });
 
   test('reuses the in-flight promise for the same declared part', () => {
-    if (KIT_2001_BEVEL_NODES.length === 0) return;
-    const node = KIT_2001_BEVEL_NODES[0];
+    const node = Object.keys(KIT_2001_BEVEL_NODES)[0];
+    if (!node) return;
     globalThis.fetch = jest.fn().mockReturnValue(new Promise(() => undefined));
     const first = loadKitBevelMap('/kit_2001.glb', node);
     const second = loadKitBevelMap('/kit_2001.glb?v=2', node);
@@ -115,9 +114,9 @@ describe('loadKitBevelMapsForNodes', () => {
     ]);
     expect(maps.has(KIT_2001_NODES.Axle2L)).toBe(false);
     for (const name of maps.keys()) {
-      expect(KIT_2001_BEVEL_NODES).toContain(name);
+      expect(KIT_2001_BEVEL_NODES[name as keyof typeof KIT_2001_BEVEL_NODES]).toBe(true);
     }
-    if (KIT_2001_BEVEL_NODES.length === 0) {
+    if (Object.keys(KIT_2001_BEVEL_NODES).length === 0) {
       expect(maps.size).toBe(0);
       expect(globalThis.fetch).not.toHaveBeenCalled();
     }
@@ -126,8 +125,8 @@ describe('loadKitBevelMapsForNodes', () => {
   test('preload with no name list only loads the allowlist', async () => {
     globalThis.fetch = jest.fn().mockResolvedValue({ blob: async () => new Blob(), ok: false });
     const maps = await loadKitBevelMapsForNodes('/kit_2001.glb');
-    expect([...maps.keys()].sort()).toEqual([...KIT_2001_BEVEL_NODES].sort());
-    if (KIT_2001_BEVEL_NODES.length === 0) {
+    expect([...maps.keys()].sort()).toEqual(Object.keys(KIT_2001_BEVEL_NODES).sort());
+    if (Object.keys(KIT_2001_BEVEL_NODES).length === 0) {
       expect(globalThis.fetch).not.toHaveBeenCalled();
     }
   });

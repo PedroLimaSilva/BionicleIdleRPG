@@ -23,7 +23,7 @@ import {
   TextureLoader,
 } from 'three';
 import {
-  declaredKitBevelNodesForStem,
+  declaredKitBevelNodeNames,
   filterDeclaredKitBevelNodes,
   kitNodeHasDeclaredBevelMap,
 } from '../kit/kitBevelNodes';
@@ -153,7 +153,7 @@ export async function loadKitBevelMapsForNodes(
 
   const unique = kitNodeNames
     ? filterDeclaredKitBevelNodes(stem, kitNodeNames)
-    : [...declaredKitBevelNodesForStem(stem)];
+    : declaredKitBevelNodeNames(stem);
 
   const entries = await Promise.all(
     unique.map(async (name) => [name, await loadKitBevelMap(kitUrl, name)] as const)
