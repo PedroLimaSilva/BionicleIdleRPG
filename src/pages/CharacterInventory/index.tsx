@@ -257,7 +257,7 @@ function RahkshiTabContent({
         <>
           <h3 className="rahkshi-section__title">
             Rahkshi{' '}
-            <Tooltip content="Unique Rahkshi Powers with ready Armor and a fully evolved kraata installed.">
+            <Tooltip content="Unique Rahkshi Powers with ready Armor and a max-stage kraata installed.">
               <span className="rahkshi-section__counter">
                 {rahkshiCoverage.covered}/{rahkshiCoverage.total}
               </span>

@@ -19,7 +19,7 @@ describe('rahkshi power coverage', () => {
     expect(KRAATA_POWER_COUNT).toBe(42);
   });
 
-  test('isRahkshiPowerCovered requires ready armor and a fully evolved kraata', () => {
+  test('isRahkshiPowerCovered requires ready armor and a max-stage kraata', () => {
     expect(
       isRahkshiPowerCovered(
         makeArmor({

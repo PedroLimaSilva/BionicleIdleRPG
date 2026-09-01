@@ -109,7 +109,7 @@ export function isForgeComplete(armor: RahkshiArmor): boolean {
   return Date.now() >= armor.endsAt;
 }
 
-/** True when ready armor has a fully evolved (max-stage) kraata installed. */
+/** True when ready armor has a kraata installed at {@link MAX_KRAATA_STAGE}. */
 export function isRahkshiPowerCovered(armor: RahkshiArmor): boolean {
   return (
     armor.status === 'ready' &&

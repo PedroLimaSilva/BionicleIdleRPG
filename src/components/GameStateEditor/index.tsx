@@ -271,7 +271,7 @@ export function GameStateEditor({ onApplied }: GameStateEditorProps) {
           <h3>Kraata Collection</h3>
           <p className="game-state-section-hint game-state-section-hint--with-icons">
             Power <ArrowRight className="game-state-section-hint-icon" size={12} aria-hidden />{' '}
-            stage (1–5){' '}
+            stage (1–{MAX_KRAATA_STAGE}){' '}
             <ArrowRight className="game-state-section-hint-icon" size={12} aria-hidden /> count
           </p>
           <div className="game-state-kraata-grid">
