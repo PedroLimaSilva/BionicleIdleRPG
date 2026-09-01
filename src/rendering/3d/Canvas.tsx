@@ -1,12 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Canvas, useThree } from '@react-three/fiber';
-import { useLocation } from 'react-router-dom';
+import { useBlocker, useLocation } from 'react-router-dom';
+import { useReducedMotion } from 'motion/react';
 import { PCFSoftShadowMap, SRGBColorSpace } from 'three';
 import { SceneCanvasContext } from './hooks/useSceneCanvas';
 import { Perf } from 'r3f-perf';
 import { shouldEnableShadows, isTestMode } from '../../utils/testMode';
 import { useSettings } from '../../context/useSettings';
+import { isCanvasRoute, shouldFadeCanvasOnExit } from './canvasRoutes';
+import { MOTION_DURATION } from '../../motion/transitions';
+
+const CANVAS_EXIT_FADE_MS = MOTION_DURATION.base * 1000;
 
 /** Clears the WebGL buffer when there is no scene. Prevents stale content from showing if the canvas is revealed. */
 function ClearCanvas() {
@@ -53,29 +58,60 @@ function ShadowMapConfig() {
   return null;
 }
 
-/**
- * Routes that own a shared 3D scene. The set is used to decide whether to clear the scene
- * on navigation; pages NOT in this set get a cleared scene (so e.g. the Quests page doesn't
- * inherit a leftover character preview).
- *
- * Listing the prefixes here lets canvas-using pages drop the `setScene(null)` cleanup from
- * their own effects, which is what enables the same `CharacterScene` instance (and its
- * postprocessing EffectComposer) to survive the /character-create → /characters/:id
- * transition. Tearing the scene down + recreating it during that transition was racing with
- * WebGL context setup and surfaced as "Cannot read properties of null (alpha)".
- */
-const CANVAS_ROUTE_PREFIXES = [
-  '/recruitment',
-  '/character-create',
-  '/characters/',
-  '/rahkshi/',
-  '/battle',
-  '/test/dex/',
-  '/test/model/',
-];
+function useCanvasExitBlocker(setScene: (node: React.ReactNode) => void) {
+  const shouldReduceMotion = useReducedMotion() ?? false;
+  const skipFade = shouldReduceMotion || isTestMode();
+  const exitInProgressRef = useRef(false);
 
-function isCanvasRoute(pathname: string): boolean {
-  return CANVAS_ROUTE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p));
+  const blocker = useBlocker(({ currentLocation, nextLocation }) =>
+    shouldFadeCanvasOnExit(currentLocation.pathname, nextLocation.pathname)
+  );
+
+  useEffect(() => {
+    if (blocker.state !== 'blocked' || exitInProgressRef.current) return;
+
+    const el = document.getElementById('canvas-mount');
+
+    exitInProgressRef.current = true;
+
+    if (!el || skipFade) {
+      exitInProgressRef.current = false;
+      setScene(null);
+      blocker.proceed?.();
+      return;
+    }
+
+    let completed = false;
+
+    const complete = () => {
+      if (completed) return;
+      completed = true;
+      window.clearTimeout(fallbackTimer);
+      el.removeEventListener('transitionend', onTransitionEnd);
+      exitInProgressRef.current = false;
+      setScene(null);
+      blocker.proceed?.();
+    };
+
+    const onTransitionEnd = (event: TransitionEvent) => {
+      if (event.target === el && event.propertyName === 'opacity') {
+        complete();
+      }
+    };
+
+    const fallbackTimer = window.setTimeout(complete, CANVAS_EXIT_FADE_MS + 50);
+
+    el.addEventListener('transitionend', onTransitionEnd);
+    requestAnimationFrame(() => {
+      el.classList.add('canvas-mount--exiting');
+    });
+
+    return () => {
+      completed = true;
+      window.clearTimeout(fallbackTimer);
+      el.removeEventListener('transitionend', onTransitionEnd);
+    };
+  }, [blocker, setScene, skipFade]);
 }
 
 export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -86,15 +122,14 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const location = useLocation();
 
+  useCanvasExitBlocker(setScene);
+
   useEffect(() => {
     const el = document.getElementById('canvas-mount');
     if (el) {
       setTarget(el);
 
-      // Optional: dynamically assign a route-based class
       el.className = `canvas-mount route-${location.pathname.replace(/\//g, '-')}`;
-
-      setTimeout(() => {}, 0);
     }
   }, [location.pathname]);
 
