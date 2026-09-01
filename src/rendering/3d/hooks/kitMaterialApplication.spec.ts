@@ -1,4 +1,11 @@
-import { Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
+import {
+  BufferAttribute,
+  BufferGeometry,
+  DataTexture,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+} from 'three';
 import { buildKitMaterialSlotLookup, buildKitMeshMaterials } from './kitMaterialApplication';
 import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
 import {
@@ -7,7 +14,10 @@ import {
   TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
   TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
 } from './transmissiveKitMaterial';
-import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
+import {
+  getWeatheredBevelMap,
+  type WeatheredMetalOptions,
+} from '../CharacterScene/WeatheredMetalMaterial';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
 
@@ -24,6 +34,23 @@ const COLORS: MatoranColors = {
 
 function meshWithMaterialNamed(name: string): Mesh {
   return new Mesh(undefined, new MeshStandardMaterial({ metalness: 0.5, name, roughness: 0.5 }));
+}
+
+function meshWithUvAndSlots(names: string[]): Mesh {
+  const geom = new BufferGeometry();
+  geom.setAttribute(
+    'position',
+    new BufferAttribute(new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]), 3)
+  );
+  geom.setAttribute('uv', new BufferAttribute(new Float32Array([0, 0, 1, 0, 0, 1]), 2));
+  const mats = names.map(
+    (name) => new MeshStandardMaterial({ color: '#ffffff', metalness: 0.5, name, roughness: 0.5 })
+  );
+  return new Mesh(geom, mats.length === 1 ? mats[0] : mats);
+}
+
+function bevelTex(): DataTexture {
+  return new DataTexture(new Uint8Array([255, 128, 0, 255]), 1, 1);
 }
 
 function buildSingle(
@@ -207,5 +234,60 @@ describe('buildKitMeshMaterials metallic colors', () => {
     ) as MeshStandardMaterial[];
     expect(next[0].color.getHexString().toUpperCase()).toBe('B48455');
     expect(next[1].color.getHexString().toUpperCase()).toBe('720E0F');
+  });
+});
+
+describe('buildKitMeshMaterials bevel atlas', () => {
+  const atlas = bevelTex();
+  const weatheredWithAtlas: WeatheredMetalOptions = {
+    bevelMap: atlas,
+    metalness: 0.05,
+    roughness: 0.45,
+  };
+
+  test('Main and Secondary on one UV mesh share the kit atlas and keep different colors', () => {
+    const mesh = meshWithUvAndSlots(['Main', 'Secondary']);
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'arms', slot: 'main' },
+        Secondary: { kind: 'part', part: 'arms', slot: 'secondary' },
+      }),
+      COLORS,
+      weatheredWithAtlas
+    ) as MeshStandardMaterial[];
+    expect(getWeatheredBevelMap(next[0])).toBe(atlas);
+    expect(getWeatheredBevelMap(next[1])).toBe(atlas);
+    expect(next[0].color.getHexString().toUpperCase()).toBe('B48455');
+    expect(next[1].color.getHexString().toUpperCase()).toBe('720E0F');
+    expect(next[0].metalness).toBe(NUVA_METAL_PBR.metalness);
+    expect(next[1].metalness).toBe(weatheredWithAtlas.metalness);
+  });
+
+  test('glow slots skip weathering even when an atlas is present', () => {
+    const mesh = meshWithUvAndSlots(['Glow']);
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Glow: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+        },
+      }),
+      COLORS,
+      weatheredWithAtlas
+    ) as MeshStandardMaterial;
+    expect(getWeatheredBevelMap(next)).toBeNull();
+    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
+  });
+
+  test('meshes without UVs keep the procedural weathered path', () => {
+    const mat = buildSingle(
+      'Main',
+      { Main: { kind: 'part', part: 'body', slot: 'main' } },
+      weatheredWithAtlas
+    );
+    expect(getWeatheredBevelMap(mat)).toBeNull();
+    expect(mat.metalness).toBe(weatheredWithAtlas.metalness);
   });
 });

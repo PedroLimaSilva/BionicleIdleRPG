@@ -23,6 +23,10 @@ export type KitMaterialColorSource =
  * Optional per-slot fields merged into the character's weathered-metal shader when
  * that slot participates in the pass (`useKitAttachments` + `weathered` on the model).
  * Omitted keys keep the character-level `WeatheredMetalOptions` defaults.
+ *
+ * Baked bevel atlases are kit-level (one map + UVs on the mesh), not listed here.
+ * Weathered slots on the same mesh share that atlas; glow / emissive / transmissive
+ * slots still opt out via `weathered: false`.
  */
 export type KitMaterialWeatheredTuning = {
   grimeDarken?: number;
