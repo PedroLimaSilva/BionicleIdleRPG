@@ -1,20 +1,17 @@
 /**
- * Baked bevel maps for kit parts.
+ * Baked bevel maps for kit parts that are explicitly listed in
+ * `KIT_*_BEVEL_NODES`.
  *
- * Detailed pieces get their own files (texel density is not uniform — MataChest
- * needs more than Axle2L). Lookup is part-level first, then an optional kit atlas:
- *
- *   public/kit_2001.glb
+ *   public/kit_2001.glb + MataChest (when listed)
  *     → public/kit_2001/MataChest_bevel.webp   (or .png)
- *     → public/kit_2001_bevel.webp             (leftover kit atlas, or .png)
  *
- * Names match `KIT_*_NODES` / `row.kitNodeName` (`MataChest`, `Axle2L`), not inner
- * mesh names like `Part-32554_dot_dat.002`. Packed non-color: R = convex edge wear,
+ * Unlisted parts are not fetched. Names match `KIT_*_NODES` / `row.kitNodeName`
+ * (`MataChest`), not inner mesh names. Packed non-color: R = convex edge wear,
  * G = concave cavity. Not an albedo.
  *
  * Slot colors / emission / roughness / metalness stay on the weathered material.
  * The map is geometric and shared by every weathered slot on that part's meshes
- * that have UVs. Missing files are not an error — axles can omit bakes.
+ * that have UVs.
  */
 
 import {
@@ -25,6 +22,11 @@ import {
   Texture,
   TextureLoader,
 } from 'three';
+import {
+  declaredKitBevelNodesForStem,
+  filterDeclaredKitBevelNodes,
+  kitNodeHasDeclaredBevelMap,
+} from '../kit/kitBevelNodes';
 
 const loadCache = new Map<string, Promise<Texture | undefined>>();
 
@@ -34,8 +36,11 @@ function kitGlbBase(kitUrl: string): string | undefined {
   return path.replace(/\.glb$/i, '');
 }
 
-function kitAtlasCacheKey(base: string): string {
-  return `${base}::atlas`;
+export function kitGlbStem(kitUrl: string): string | undefined {
+  const base = kitGlbBase(kitUrl);
+  if (!base) return undefined;
+  const slash = Math.max(base.lastIndexOf('/'), base.lastIndexOf('\\'));
+  return slash >= 0 ? base.slice(slash + 1) : base;
 }
 
 function kitPartCacheKey(base: string, node: string): string {
@@ -52,27 +57,22 @@ export function sanitizeKitBevelNodeName(kitNodeName: string): string | undefine
   return safe;
 }
 
-function kitAtlasCandidates(base: string): string[] {
-  return [`${base}_bevel.webp`, `${base}_bevel.png`];
-}
-
-function kitPartCandidates(base: string, node: string): string[] {
+function kitPartBevelUrls(base: string, node: string): string[] {
   return [`${base}/${node}_bevel.webp`, `${base}/${node}_bevel.png`];
 }
 
 /**
- * Candidate URLs for a kit bevel map (webp first, then png).
- * With `kitNodeName`: part file, then leftover kit atlas.
- * Without: kit atlas only (preload).
+ * Candidate URLs for a declared part bevel map (webp first, then png).
+ * Empty when the kit URL is not a GLB, the node name is unsafe, or the node
+ * is not on that kit's bevel allowlist.
  */
-export function kitBevelMapCandidates(kitUrl: string, kitNodeName?: string): string[] {
+export function kitBevelMapCandidates(kitUrl: string, kitNodeName: string): string[] {
   const base = kitGlbBase(kitUrl);
-  if (!base) return [];
-  const atlas = kitAtlasCandidates(base);
-  if (kitNodeName === undefined) return atlas;
+  const stem = kitGlbStem(kitUrl);
+  if (!base || !stem) return [];
   const node = sanitizeKitBevelNodeName(kitNodeName);
-  if (!node) return atlas;
-  return [...kitPartCandidates(base, node), ...atlas];
+  if (!node || !kitNodeHasDeclaredBevelMap(stem, node)) return [];
+  return kitPartBevelUrls(base, node);
 }
 
 export function configureBevelMapTexture(texture: Texture): Texture {
@@ -117,57 +117,44 @@ async function loadTextureFromCandidates(candidates: string[]): Promise<Texture 
   return undefined;
 }
 
-function cachedLoad(cacheKey: string, candidates: string[]): Promise<Texture | undefined> {
-  const cached = loadCache.get(cacheKey);
-  if (cached) return cached;
-  const pending = loadTextureFromCandidates(candidates);
-  loadCache.set(cacheKey, pending);
-  return pending;
-}
-
-function loadKitAtlas(base: string): Promise<Texture | undefined> {
-  return cachedLoad(kitAtlasCacheKey(base), kitAtlasCandidates(base));
-}
-
 /**
- * Loads the bevel map for one kit node (or the leftover kit atlas when
- * `kitNodeName` is omitted). Missing files are not an error — weathered metal
- * keeps its procedural / screen-space fallback. Successful loads are cached
- * for the lifetime of the page. Several parts falling back to the kit atlas
- * share one GPU texture.
+ * Loads the bevel map for one declared kit node. Undeclared names and missing
+ * files are not an error — weathered metal keeps its procedural / screen-space
+ * fallback. Successful loads are cached for the lifetime of the page.
  */
-export function loadKitBevelMap(
-  kitUrl: string,
-  kitNodeName?: string
-): Promise<Texture | undefined> {
+export function loadKitBevelMap(kitUrl: string, kitNodeName: string): Promise<Texture | undefined> {
+  const candidates = kitBevelMapCandidates(kitUrl, kitNodeName);
+  if (candidates.length === 0) return Promise.resolve(undefined);
+
   const base = kitGlbBase(kitUrl);
-  if (!base) return Promise.resolve(undefined);
-
-  if (kitNodeName === undefined) return loadKitAtlas(base);
-
   const node = sanitizeKitBevelNodeName(kitNodeName);
-  if (!node) return loadKitAtlas(base);
+  if (!base || !node) return Promise.resolve(undefined);
 
   const partKey = kitPartCacheKey(base, node);
   const cached = loadCache.get(partKey);
   if (cached) return cached;
 
-  const pending = (async () => {
-    const part = await loadTextureFromCandidates(kitPartCandidates(base, node));
-    if (part) return part;
-    return loadKitAtlas(base);
-  })();
-
+  const pending = loadTextureFromCandidates(candidates);
   loadCache.set(partKey, pending);
   return pending;
 }
 
-/** Load maps for the unique node names on a character (one fetch plan per name). */
+/**
+ * Load maps for declared nodes. When `kitNodeNames` is omitted, loads every
+ * node on that kit's allowlist (preload). Attached names are intersected with
+ * the allowlist so axles never hit the network.
+ */
 export async function loadKitBevelMapsForNodes(
   kitUrl: string,
-  kitNodeNames: readonly string[]
+  kitNodeNames?: readonly string[]
 ): Promise<ReadonlyMap<string, Texture | undefined>> {
-  const unique = [...new Set(kitNodeNames)];
+  const stem = kitGlbStem(kitUrl);
+  if (!stem) return new Map();
+
+  const unique = kitNodeNames
+    ? filterDeclaredKitBevelNodes(stem, kitNodeNames)
+    : [...declaredKitBevelNodesForStem(stem)];
+
   const entries = await Promise.all(
     unique.map(async (name) => [name, await loadKitBevelMap(kitUrl, name)] as const)
   );

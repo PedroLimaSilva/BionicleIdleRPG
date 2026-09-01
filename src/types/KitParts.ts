@@ -24,9 +24,10 @@ export type KitMaterialColorSource =
  * that slot participates in the pass (`useKitAttachments` + `weathered` on the model).
  * Omitted keys keep the character-level `WeatheredMetalOptions` defaults.
  *
- * Baked bevel maps are per kit part (`kitNodeName`), not listed here. Weathered
- * slots on the same mesh share that map; glow / emissive / transmissive slots
- * still opt out via `weathered: false`. Axles can omit a bake.
+ * Baked bevel maps are opted in per kit node via `KIT_*_BEVEL_NODES`, not here.
+ * Weathered slots on the same mesh share that map; glow / emissive / transmissive
+ * slots still opt out via `weathered: false`. Unlisted parts (axles, pins) stay
+ * on the procedural path.
  */
 export type KitMaterialWeatheredTuning = {
   grimeDarken?: number;

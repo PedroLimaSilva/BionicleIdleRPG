@@ -2,11 +2,12 @@
  * Weathered metal: object-space FBM grime, optional baked bevel map, and a
  * screen-space curvature fallback when no map/UVs exist.
  *
- * Bevel maps are geometric — R = convex wear, G = concave cavity. Lookup is
- * part-level (`kit_2001/MataChest_bevel.webp`) with an optional leftover kit
- * atlas. Slot color / emission / roughness / metalness still come from
- * `useKitAttachments`; the map is sampled on every weathered slot that shares
- * the mesh UVs. Glow, emissive, and transmissive slots skip this pass.
+ * Bevel maps are geometric — R = convex wear, G = concave cavity. Only kit
+ * nodes listed in `KIT_*_BEVEL_NODES` load a part map
+ * (`kit_2001/MataChest_bevel.webp`). Slot color / emission / roughness /
+ * metalness still come from `useKitAttachments`; the map is sampled on every
+ * weathered slot that shares the mesh UVs. Glow, emissive, and transmissive
+ * slots skip this pass.
  *
  * applyWeatheredMetalToObject skips: meshes with authored PBR maps (normal /
  * roughness / metalness), meshes under a node named "Masks" (useMask-injected
@@ -53,8 +54,8 @@ export type WeatheredMetalOptions = {
   edgeCurvatureScale?: number;
   /**
    * Optional packed bevel map (R = convex wear, G = concave cavity).
-   * Per kit part (mesh clone), not per Main/Secondary/Glow slot. Ignored
-   * on meshes with no UVs.
+   * Per declared kit part (mesh clone), not per Main/Secondary/Glow slot.
+   * Ignored on meshes with no UVs.
    */
   bevelMap?: Texture;
   /** Environment map intensity. */

@@ -4,7 +4,7 @@ import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../../../types/Matoran';
 import type { KitSocketAttachment } from '../../../types/KitParts';
 import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
-import { loadKitBevelMap, loadKitBevelMapsForNodes } from '../CharacterScene/kitBevelMap';
+import { loadKitBevelMapsForNodes } from '../CharacterScene/kitBevelMap';
 import { normalizeMatoranColors } from '../../../game/characters/matoranColors';
 import { applyKitMaterialsToObject, buildKitMaterialSlotLookup } from './kitMaterialApplication';
 import { notifyModelReadyForTestMode } from '../../../utils/testMode';
@@ -41,7 +41,8 @@ export type UseKitAttachmentsParams = {
  * character, and finalizes their materials in a single traversal:
  *   - glow / opt-out slots get cloned `MeshStandardMaterial`s with per-slot overrides;
  *   - everything else (when `weathered` is provided) gets a cached weathered metal
- *     material keyed by color + effective PBR options + optional per-part bevel map.
+ *     material keyed by color + effective PBR options + optional per-part bevel
+ *     map (only nodes listed in `KIT_*_BEVEL_NODES`).
  *
  * No post-hoc tree walk is needed — materials are decided once here, and the
  * weathered shared cache is reused across instances with the same spec.
@@ -137,7 +138,6 @@ export function useKitAttachments({
 useKitAttachments.preload = (...kitUrls: string[]) => {
   for (const url of kitUrls) {
     useGLTF.preload(url);
-    // Leftover kit atlas only; part maps load once attachments are known.
-    void loadKitBevelMap(url);
+    void loadKitBevelMapsForNodes(url);
   }
 };

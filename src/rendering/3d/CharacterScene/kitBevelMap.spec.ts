@@ -1,11 +1,14 @@
 import { Texture } from 'three';
+import { KIT_2001_NODES } from '../kit/nodes/kit2001Nodes';
 import {
   clearKitBevelMapCache,
   kitBevelMapCandidates,
+  kitGlbStem,
   loadKitBevelMap,
   loadKitBevelMapsForNodes,
   sanitizeKitBevelNodeName,
 } from './kitBevelMap';
+import { KIT_2001_BEVEL_NODES } from '../kit/kitBevelNodes';
 
 describe('sanitizeKitBevelNodeName', () => {
   test('keeps catalog node names', () => {
@@ -21,38 +24,34 @@ describe('sanitizeKitBevelNodeName', () => {
   });
 });
 
+describe('kitGlbStem', () => {
+  test('strips the path down to the kit filename stem', () => {
+    expect(kitGlbStem('/BionicleIdleRPG/kit_2001.glb')).toBe('kit_2001');
+    expect(kitGlbStem('https://example.test/kit_2003.glb?v=2')).toBe('kit_2003');
+    expect(kitGlbStem('/BionicleIdleRPG/kit_2001_bevel.webp')).toBeUndefined();
+  });
+});
+
 describe('kitBevelMapCandidates', () => {
-  test('maps a kit GLB URL to the leftover kit atlas', () => {
-    expect(kitBevelMapCandidates('/BionicleIdleRPG/kit_2001.glb')).toEqual([
-      '/BionicleIdleRPG/kit_2001_bevel.webp',
-      '/BionicleIdleRPG/kit_2001_bevel.png',
-    ]);
+  test('undeclared parts (including axles) have no candidate URLs', () => {
+    expect(kitBevelMapCandidates('/BionicleIdleRPG/kit_2001.glb', KIT_2001_NODES.Axle2L)).toEqual(
+      []
+    );
+    expect(kitBevelMapCandidates('/BionicleIdleRPG/kit_2001.glb', '../x')).toEqual([]);
+    expect(kitBevelMapCandidates('/BionicleIdleRPG/kit_2001_bevel.webp', 'MataChest')).toEqual([]);
   });
 
-  test('puts the part file before the leftover kit atlas', () => {
-    expect(kitBevelMapCandidates('/BionicleIdleRPG/kit_2001.glb', 'MataChest')).toEqual([
-      '/BionicleIdleRPG/kit_2001/MataChest_bevel.webp',
-      '/BionicleIdleRPG/kit_2001/MataChest_bevel.png',
-      '/BionicleIdleRPG/kit_2001_bevel.webp',
-      '/BionicleIdleRPG/kit_2001_bevel.png',
-    ]);
-  });
-
-  test('strips query strings and ignores non-GLB URLs', () => {
-    expect(kitBevelMapCandidates('https://example.test/kit_2003.glb?v=2', 'Axle2L')).toEqual([
-      'https://example.test/kit_2003/Axle2L_bevel.webp',
-      'https://example.test/kit_2003/Axle2L_bevel.png',
-      'https://example.test/kit_2003_bevel.webp',
-      'https://example.test/kit_2003_bevel.png',
-    ]);
-    expect(kitBevelMapCandidates('/BionicleIdleRPG/kit_2001_bevel.webp')).toEqual([]);
-  });
-
-  test('unsafe node names skip the part path and keep the kit atlas', () => {
-    expect(kitBevelMapCandidates('/BionicleIdleRPG/kit_2001.glb', '../x')).toEqual([
-      '/BionicleIdleRPG/kit_2001_bevel.webp',
-      '/BionicleIdleRPG/kit_2001_bevel.png',
-    ]);
+  test('allowlisted nodes resolve to part sidecar URLs', () => {
+    expect(
+      KIT_2001_BEVEL_NODES.map((node) =>
+        kitBevelMapCandidates('/BionicleIdleRPG/kit_2001.glb', node)
+      )
+    ).toEqual(
+      KIT_2001_BEVEL_NODES.map((node) => [
+        `/BionicleIdleRPG/kit_2001/${node}_bevel.webp`,
+        `/BionicleIdleRPG/kit_2001/${node}_bevel.png`,
+      ])
+    );
   });
 });
 
@@ -69,53 +68,27 @@ describe('loadKitBevelMap', () => {
     }
   });
 
-  test('returns undefined when no sidecar exists', async () => {
+  test('does not fetch undeclared parts', async () => {
     globalThis.fetch = jest.fn().mockResolvedValue({ blob: async () => new Blob(), ok: false });
-    await expect(loadKitBevelMap('/kit_2001.glb')).resolves.toBeUndefined();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    await expect(loadKitBevelMap('/kit_2001.glb', KIT_2001_NODES.Axle2L)).resolves.toBeUndefined();
+    expect(globalThis.fetch).not.toHaveBeenCalled();
   });
 
-  test('tries the part file before the leftover kit atlas', async () => {
-    globalThis.fetch = jest.fn().mockResolvedValue({ blob: async () => new Blob(), ok: false });
-    await expect(loadKitBevelMap('/kit_2001.glb', 'MataChest')).resolves.toBeUndefined();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(4);
-    expect(globalThis.fetch).toHaveBeenNthCalledWith(1, '/kit_2001/MataChest_bevel.webp');
-    expect(globalThis.fetch).toHaveBeenNthCalledWith(2, '/kit_2001/MataChest_bevel.png');
-    expect(globalThis.fetch).toHaveBeenNthCalledWith(3, '/kit_2001_bevel.webp');
-    expect(globalThis.fetch).toHaveBeenNthCalledWith(4, '/kit_2001_bevel.png');
-  });
-
-  test('reuses the in-flight promise for the same kit URL', () => {
+  test('reuses the in-flight promise for the same declared part', () => {
+    if (KIT_2001_BEVEL_NODES.length === 0) return;
+    const node = KIT_2001_BEVEL_NODES[0];
     globalThis.fetch = jest.fn().mockReturnValue(new Promise(() => undefined));
-    const first = loadKitBevelMap('/kit_2004.glb');
-    const second = loadKitBevelMap('/kit_2004.glb?cache=1');
+    const first = loadKitBevelMap('/kit_2001.glb', node);
+    const second = loadKitBevelMap('/kit_2001.glb?v=2', node);
     expect(second).toBe(first);
-  });
-
-  test('reuses the in-flight promise for the same part', () => {
-    globalThis.fetch = jest.fn().mockReturnValue(new Promise(() => undefined));
-    const first = loadKitBevelMap('/kit_2001.glb', 'MataChest');
-    const second = loadKitBevelMap('/kit_2001.glb?v=2', 'MataChest');
-    expect(second).toBe(first);
-  });
-
-  test('shares one leftover atlas fetch across parts that miss their own file', async () => {
-    globalThis.fetch = jest.fn().mockResolvedValue({ blob: async () => new Blob(), ok: false });
-    await Promise.all([
-      loadKitBevelMap('/kit_2001.glb', 'Axle2L'),
-      loadKitBevelMap('/kit_2001.glb', 'Axle3L'),
-    ]);
-    const urls = (globalThis.fetch as jest.Mock).mock.calls.map((call) => call[0] as string);
-    expect(urls.filter((url) => url.includes('Axle2L')).length).toBe(2);
-    expect(urls.filter((url) => url.includes('Axle3L')).length).toBe(2);
-    expect(urls.filter((url) => url === '/kit_2001_bevel.webp').length).toBe(1);
-    expect(urls.filter((url) => url === '/kit_2001_bevel.png').length).toBe(1);
   });
 
   test('is a no-op without fetch (unit tests)', async () => {
     // @ts-expect-error simulate non-browser
     delete globalThis.fetch;
-    await expect(loadKitBevelMap('/kit_2001.glb')).resolves.toBeUndefined();
+    await expect(
+      loadKitBevelMap('/kit_2001.glb', KIT_2001_NODES.MataChest)
+    ).resolves.toBeUndefined();
     expect(Texture).toBeDefined();
   });
 });
@@ -133,15 +106,29 @@ describe('loadKitBevelMapsForNodes', () => {
     }
   });
 
-  test('dedupes node names and returns a map keyed by kitNodeName', async () => {
+  test('does not fetch attached parts that are off the allowlist', async () => {
     globalThis.fetch = jest.fn().mockResolvedValue({ blob: async () => new Blob(), ok: false });
     const maps = await loadKitBevelMapsForNodes('/kit_2001.glb', [
-      'MataChest',
-      'Axle2L',
-      'MataChest',
+      KIT_2001_NODES.MataChest,
+      KIT_2001_NODES.Axle2L,
+      KIT_2001_NODES.MataChest,
     ]);
-    expect([...maps.keys()].sort()).toEqual(['Axle2L', 'MataChest']);
-    expect(maps.get('MataChest')).toBeUndefined();
-    expect(maps.get('Axle2L')).toBeUndefined();
+    expect(maps.has(KIT_2001_NODES.Axle2L)).toBe(false);
+    for (const name of maps.keys()) {
+      expect(KIT_2001_BEVEL_NODES).toContain(name);
+    }
+    if (KIT_2001_BEVEL_NODES.length === 0) {
+      expect(maps.size).toBe(0);
+      expect(globalThis.fetch).not.toHaveBeenCalled();
+    }
+  });
+
+  test('preload with no name list only loads the allowlist', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValue({ blob: async () => new Blob(), ok: false });
+    const maps = await loadKitBevelMapsForNodes('/kit_2001.glb');
+    expect([...maps.keys()].sort()).toEqual([...KIT_2001_BEVEL_NODES].sort());
+    if (KIT_2001_BEVEL_NODES.length === 0) {
+      expect(globalThis.fetch).not.toHaveBeenCalled();
+    }
   });
 });
