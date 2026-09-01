@@ -181,7 +181,7 @@ test.describe('Character Model Rendering', () => {
       ...INITIAL_GAME_STATE,
       rahkshi: ids.map((id) => ({
         id,
-        kraata: { power: id, stage: 6 },
+        kraata: { power: id, stage: 5 },
         power: id,
         status: 'ready' as const,
       })),

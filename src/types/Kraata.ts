@@ -70,7 +70,7 @@ export function addKraataToCollection(
   };
 }
 
-export const MAX_KRAATA_STAGE = 6;
+export const MAX_KRAATA_STAGE = 5;
 
 export function removeKraataFromCollection(
   collection: KraataCollection,

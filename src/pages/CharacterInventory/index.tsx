@@ -26,7 +26,6 @@ import {
   canStartRahkshiForge,
   getRahkshiPowerCoverage,
   hasRahkshiArmorForPower,
-  ACTIVE_RAHKSHI_KRAATA_STAGE,
   RAHKSHI_FORGE_COST,
 } from '../../game/kraata/KraataActions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
@@ -258,9 +257,7 @@ function RahkshiTabContent({
         <>
           <h3 className="rahkshi-section__title">
             Rahkshi{' '}
-            <Tooltip
-              content={`Unique Rahkshi Powers with ready Armor and a stage ${ACTIVE_RAHKSHI_KRAATA_STAGE}+ kraata installed.`}
-            >
+            <Tooltip content="Unique Rahkshi Powers with ready Armor and a fully evolved kraata installed.">
               <span className="rahkshi-section__counter">
                 {rahkshiCoverage.covered}/{rahkshiCoverage.total}
               </span>
