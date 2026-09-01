@@ -1,8 +1,78 @@
 .rahkshi-detail {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: center;
+}
+
+.rahkshi-detail-nav {
+  width: 100%;
+  max-width: min(max(640px, 100%), 100vw - 4rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rahkshi-detail-siblings {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.rahkshi-detail-sibling {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+  min-width: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 14ch;
+  }
+}
+
+.rahkshi-detail-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--kraata-head-color) 40%, var(--color-border-muted));
+  background: color-mix(in srgb, var(--color-surface-high) 85%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition:
+    border-color var(--transition-base),
+    color var(--transition-base),
+    transform var(--transition-base);
+
+  &:hover {
+    border-color: var(--kraata-head-color);
+    color: var(--kraata-head-color);
+  }
+
+  &--left {
+    left: 0.75rem;
+  }
+
+  &--right {
+    right: 0.75rem;
+  }
 }
 
 $rahkshi-visualization-radius: 12px;
@@ -81,13 +151,10 @@ $rahkshi-visualization-border: 2px;
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  position: absolute;
-  top: 0.75rem;
-  left: 1rem;
   color: var(--color-text-muted);
   text-decoration: none;
   font-size: 0.9rem;
-  z-index: 1;
+  width: fit-content;
 
   &:hover {
     color: var(--color-text);

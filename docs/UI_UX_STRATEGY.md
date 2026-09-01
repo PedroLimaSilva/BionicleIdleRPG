@@ -207,6 +207,8 @@ Tracked in [#348](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/348) 
 
 The codebase uses **GLTF animation clips** stored in the model GLBs. `useCombatAnimations` composes `useIdleAnimation` (looping) and `usePlayAnimation` (one-shot Attack/Hit/Defeat). This is a solid pattern.
 
+**Rig & clip backlog:** see [`docs/CHARACTER_ANIMATIONS.md`](CHARACTER_ANIMATIONS.md) for the epic-style inventory (which rigs ship which clips, procedural fallbacks, and authoring priorities). Regenerate the live matrix with `yarn animation-clip-report`.
+
 ### Getting more life without a full pipeline
 
 | Technique                               | Effort | Impact    | Details                                                                                                                                                                                                                                          |

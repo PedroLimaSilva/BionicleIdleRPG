@@ -16,6 +16,13 @@
     right: anchor(right);
     bottom: anchor(bottom);
     display: none;
+    opacity: 1;
+    transition: opacity var(--transition-base);
+    pointer-events: none;
+
+    &.canvas-mount--exiting {
+      opacity: 0;
+    }
     &.route--recruitment {
       display: block;
       z-index: 0;

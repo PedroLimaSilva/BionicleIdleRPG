@@ -1,10 +1,8 @@
 import './index.scss';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { MatoranAvatar } from '../../rendering/2d/MatoranAvatar';
 import { Link } from 'react-router-dom';
-import { AnimatePresence } from 'motion/react';
 import { Modal } from '../../components/Modal';
-import { useReducedMotion } from 'motion/react';
 import { isTestMode } from '../../utils/testMode';
 import { getLevelFromExp } from '../../game/characters/Levelling';
 import { JobStatusBadge } from '../../components/JobStatusBadge';
@@ -181,12 +179,9 @@ export const CharacterInventory: React.FC = () => {
 
             return (
               <Link key={matoran.id} to={`/characters/${matoran.id}`}>
-                <motion.div
+                <div
                   data-character-id={matoran.id}
                   className={`character-card element-${effective.element}`}
-                  layoutId={shouldReduceMotion ? undefined : `character-${matoran.id}`}
-                  layout
-                  transition={{ damping: 30, stiffness: 400, type: 'spring' }}
                 >
                   <MatoranAvatar matoran={effective} styles={'matoran-avatar model-preview'} />
                   <div className="card-header">
@@ -201,7 +196,7 @@ export const CharacterInventory: React.FC = () => {
                       status={jobStatus}
                     />
                   </div>
-                </motion.div>
+                </div>
               </Link>
             );
           })}
@@ -274,11 +269,7 @@ function RahkshiTabContent({
             {rahkshi
               .sort((a, b) => a.power.localeCompare(b.power))
               .map((armor) => (
-                <RahkshiArmorCard
-                  key={armor.id}
-                  armor={armor}
-                  shouldReduceMotion={shouldReduceMotion}
-                />
+                <RahkshiArmorCard key={armor.id} armor={armor} />
               ))}
           </div>
         </>
@@ -406,13 +397,7 @@ function RahkshiTabContent({
   );
 }
 
-function RahkshiArmorCard({
-  armor,
-  shouldReduceMotion,
-}: {
-  armor: RahkshiArmor;
-  shouldReduceMotion: boolean;
-}) {
+function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
   const { armor: armorColor, joint: jointColor } = getRahkshiArmorColors(armor.power);
   const powerName = KRAATA_POWER_NAMES[armor.power] ?? armor.power;
   const isPreparing = armor.status === 'preparing';
@@ -422,11 +407,8 @@ function RahkshiArmorCard({
 
   return (
     <Link to={`/rahkshi/${armor.id}`}>
-      <motion.div
+      <div
         className={`rahkshi-card rahkshi-card--${armor.status}`}
-        layoutId={shouldReduceMotion ? undefined : `rahkshi-${armor.id}`}
-        layout
-        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
         style={
           {
             '--rahkshi-head-color': armorColor,
@@ -450,7 +432,7 @@ function RahkshiArmorCard({
         >
           {statusLabel}
         </div>
-      </motion.div>
+      </div>
     </Link>
   );
 }

@@ -127,11 +127,14 @@
 
 .character-detail-tabs {
   grid-area: tabs;
-  width: 100%;
-  max-width: calc(100vw - 4rem);
   position: relative;
-  display: flex;
-  justify-content: center;
+  width: 100%;
+  min-width: 0;
+
+  .tabs-container {
+    margin-top: 0;
+    --tabs-inline-padding: 0;
+  }
 }
 
 .character-detail-section {

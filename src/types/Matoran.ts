@@ -82,6 +82,7 @@ export const enum MatoranStage {
   BohrokKal = 'BohrokKal',
   Vahki = 'Vahki',
   Makuta = 'Makuta',
+  Rahi = 'Rahi',
 }
 
 /** Kit material slots a body part can author in the dex. */

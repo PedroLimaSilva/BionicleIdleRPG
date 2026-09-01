@@ -29,6 +29,8 @@ import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { BohrokModel } from './BohrokModel';
 import { VahkiModel } from './VahkiModel';
+import { RahiPlaceholderModel } from './RahiPlaceholderModel';
+import { NuiRamaModel } from './NuiRamaModel';
 import { useCharacterBloomMeshes } from './selectiveBloom';
 import { StableSelectiveBloom } from './StableSelectiveBloom';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
@@ -140,6 +142,19 @@ const CharacterModel = forwardRef<
             id={matoran.id}
             onKitMeshesAttached={onModelReady}
           />
+        </group>
+      );
+    case MatoranStage.Rahi:
+      if (matoran.id === 'nui_rama') {
+        return (
+          <group scale={1}>
+            <NuiRamaModel ref={ref} variant="orange" />
+          </group>
+        );
+      }
+      return (
+        <group scale={4.5}>
+          <RahiPlaceholderModel ref={ref} element={matoran.element} />
         </group>
       );
     case MatoranStage.Diminished:

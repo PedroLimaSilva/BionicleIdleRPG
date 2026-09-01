@@ -1,18 +1,23 @@
 // recreate the tabs component from the character detail page
 .tabs-container {
-  justify-self: center;
+  --tabs-inline-padding: 2rem;
+
+  width: 100%;
   max-width: 100%;
-  width: fit-content;
-  overflow-x: scroll;
-  padding: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem var(--tabs-inline-padding);
   padding-bottom: calc(1rem + 2px);
   scroll-behavior: smooth;
+  scroll-padding-inline: var(--tabs-inline-padding);
+  -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   top: 0;
   position: sticky;
   z-index: 100;
   margin-top: 0.5rem;
+  box-sizing: border-box;
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -20,8 +25,26 @@
   .tabs-inner {
     display: flex;
     flex-wrap: nowrap;
-    width: fit-content;
+    width: max-content;
+    min-width: 100%;
     gap: 0.5rem;
+    justify-content: center;
+    margin: 0 1.75rem;
+    box-sizing: border-box;
+  }
+
+  .tab-btn {
+    flex: 0 0 auto;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+    white-space: nowrap;
+
+    &.active {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      outline: none;
+      box-shadow: 0 0 12px var(--color-accent-hover);
+    }
   }
 }
 

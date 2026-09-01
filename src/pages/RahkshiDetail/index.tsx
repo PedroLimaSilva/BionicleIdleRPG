@@ -1,6 +1,6 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useGame } from '../../context/Game';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { getKraataPowerDescription } from '../../data/kraataPowerDescriptions';
@@ -8,7 +8,8 @@ import { getKraataCompositedColors } from '../../data/kraataColors';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
 import { CompositedImage } from '../../rendering/2d/CompositedImage';
 import { isForgeComplete } from '../../game/kraata/KraataActions';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
+import { getAdjacentRahkshiIds } from './rahkshiEntries';
 import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { RahkshiScene } from '../../rendering/3d/CharacterScene/RahkshiScene';
 import { isTestMode } from '../../utils/testMode';
@@ -27,9 +28,13 @@ function formatTimeRemaining(ms: number): string {
   return `${seconds}s`;
 }
 
+const SWIPE_THRESHOLD_PX = 50;
+
 export const RahkshiDetail: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { setScene } = useSceneCanvas();
+  const swipeStartX = useRef<number | null>(null);
   const {
     completeRahkshiForge,
     insertKraataIntoRahkshi,
@@ -41,6 +46,31 @@ export const RahkshiDetail: React.FC = () => {
   const armor = useMemo(() => rahkshi.find((r) => r.id === id), [rahkshi, id]);
   const armorPower = armor?.power;
   const hasKraata = !!armor?.kraata;
+
+  const neighbors = useMemo(() => (id ? getAdjacentRahkshiIds(rahkshi, id) : null), [rahkshi, id]);
+
+  const navigateToNeighbor = useCallback(
+    (targetId: string) => {
+      navigate(`/rahkshi/${targetId}`);
+    },
+    [navigate]
+  );
+
+  const handleSwipeStart = useCallback((clientX: number) => {
+    swipeStartX.current = clientX;
+  }, []);
+
+  const handleSwipeEnd = useCallback(
+    (clientX: number) => {
+      if (swipeStartX.current === null || !neighbors) return;
+      const deltaX = clientX - swipeStartX.current;
+      if (Math.abs(deltaX) >= SWIPE_THRESHOLD_PX) {
+        navigateToNeighbor(deltaX > 0 ? neighbors.prevId : neighbors.nextId);
+      }
+      swipeStartX.current = null;
+    },
+    [neighbors, navigateToNeighbor]
+  );
 
   useEffect(() => {
     if (armor && armorPower !== undefined) {
@@ -83,6 +113,17 @@ export const RahkshiDetail: React.FC = () => {
 
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
+  const neighborNames = useMemo(() => {
+    if (!neighbors) return null;
+    const byId = new Map(rahkshi.map((entry) => [entry.id, entry]));
+    const prev = byId.get(neighbors.prevId);
+    const next = byId.get(neighbors.nextId);
+    return {
+      next: next ? (KRAATA_POWER_NAMES[next.power] ?? next.power) : neighbors.nextId,
+      prev: prev ? (KRAATA_POWER_NAMES[prev.power] ?? prev.power) : neighbors.prevId,
+    };
+  }, [neighbors, rahkshi]);
+
   if (!armor) {
     return (
       <div className="page-container">
@@ -98,21 +139,61 @@ export const RahkshiDetail: React.FC = () => {
 
   return (
     <div className="page-container rahkshi-detail">
-      <motion.div
+      <div className="rahkshi-detail-nav">
+        <Link to="/characters" className="rahkshi-detail__back">
+          <ArrowLeft size={18} aria-hidden /> Back
+        </Link>
+        {neighbors && neighborNames && (
+          <div className="rahkshi-detail-siblings">
+            <Link
+              to={`/rahkshi/${neighbors.prevId}`}
+              className="rahkshi-detail-sibling"
+              aria-label={`Previous Rahkshi armor: ${neighborNames.prev}`}
+            >
+              <ChevronLeft size={18} aria-hidden />
+              <span className="rahkshi-detail-sibling__label">{neighborNames.prev}</span>
+            </Link>
+            <Link
+              to={`/rahkshi/${neighbors.nextId}`}
+              className="rahkshi-detail-sibling"
+              aria-label={`Next Rahkshi armor: ${neighborNames.next}`}
+            >
+              <span className="rahkshi-detail-sibling__label">{neighborNames.next}</span>
+              <ChevronRight size={18} aria-hidden />
+            </Link>
+          </div>
+        )}
+      </div>
+
+      <div
         className="rahkshi-detail-visualization"
-        layoutId={shouldReduceMotion ? undefined : `rahkshi-${armor.id}`}
-        layout
-        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
         style={
           {
             '--kraata-head-color': armorColors.armor,
             '--kraata-tail-color': armorColors.joint,
           } as React.CSSProperties
         }
+        onTouchStart={(event) => handleSwipeStart(event.touches[0]?.clientX ?? 0)}
+        onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0]?.clientX ?? 0)}
       >
-        <Link to="/characters" className="rahkshi-detail__back">
-          <ArrowLeft size={18} aria-hidden /> Back
-        </Link>
+        {neighbors && neighborNames && (
+          <>
+            <Link
+              to={`/rahkshi/${neighbors.prevId}`}
+              className="rahkshi-detail-arrow rahkshi-detail-arrow--left"
+              aria-label={`Previous Rahkshi armor: ${neighborNames.prev}`}
+            >
+              <ChevronLeft size={24} aria-hidden />
+            </Link>
+            <Link
+              to={`/rahkshi/${neighbors.nextId}`}
+              className="rahkshi-detail-arrow rahkshi-detail-arrow--right"
+              aria-label={`Next Rahkshi armor: ${neighborNames.next}`}
+            >
+              <ChevronRight size={24} aria-hidden />
+            </Link>
+          </>
+        )}
         <div id="rahkshi-model-frame" className="rahkshi-detail__model-frame" />
         <div className="rahkshi-detail-header">
           <h1 className="rahkshi-detail-header__name">
@@ -148,7 +229,7 @@ export const RahkshiDetail: React.FC = () => {
               )}
           </AnimatePresence>
         </div>
-      </motion.div>
+      </div>
 
       <div className="rahkshi-detail-content">
         {isPreparing && armor.startedAt != null && armor.endsAt != null && (

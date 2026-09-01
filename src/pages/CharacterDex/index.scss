@@ -36,11 +36,18 @@
 }
 
 .character-dex-tabs {
-  width: 100%;
-  max-width: calc(100vw - 4rem);
   position: relative;
-  display: flex;
-  justify-content: center;
+  margin-inline: -2rem;
+  width: calc(100% + 4rem);
+
+  .tabs-container {
+    margin-top: 0;
+  }
+}
+
+.landscape .character-dex-tabs {
+  margin-right: -180px;
+  width: calc(100% + 2rem + 180px);
 }
 
 .character-dex-count {
@@ -51,57 +58,79 @@
 
 .character-dex-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  gap: 0.5rem;
   margin: 1rem 0;
 }
 
 .character-dex-card {
   border: 2px solid var(--color-border-muted);
   border-radius: var(--border-radius-md);
-  padding: 1rem 1rem 1.25rem;
+  padding: 0.5rem;
+  padding-bottom: 1.25rem;
   text-align: center;
   background: linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-mid) 100%);
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%;
   text-decoration: none;
   color: inherit;
   transition: all var(--transition-base);
   overflow: hidden;
+  cursor: pointer;
 
   &:hover {
     transform: translateY(-4px);
     border-color: var(--theme-element-primary);
     box-shadow: var(--shadow-glow);
+
+    .character-dex-card-name {
+      text-shadow: 0 0 12px var(--theme-element-glow);
+    }
+
+    .model-preview {
+      filter: drop-shadow(0 0 12px var(--theme-element-glow-transparent));
+    }
   }
 
   .model-preview {
-    height: 120px;
+    height: 72px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: var(--border-radius-sm);
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
     position: relative;
     z-index: 1;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: filter var(--transition-base);
   }
 }
 
 .character-dex-card-meta {
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
+  z-index: 1;
 }
 
 .character-dex-card-name {
   font-weight: 700;
+  font-size: 0.75rem;
+  font-family: var(--font-display);
   color: var(--theme-element-primary);
+  text-shadow: 0 0 8px var(--theme-element-glow-transparent);
+  line-height: 1;
 }
 
 .character-dex-card-stage {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   color: var(--color-text-muted);
+  margin-top: 0.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
 }
 
 .visually-hidden {

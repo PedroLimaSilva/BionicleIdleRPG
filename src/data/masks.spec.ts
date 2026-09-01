@@ -91,6 +91,7 @@ describe('getSelectableMasksForStage', () => {
       MatoranStage.BohrokKal,
       MatoranStage.Vahki,
       MatoranStage.Makuta,
+      MatoranStage.Rahi,
     ];
     for (const stage of stages) {
       const selectable = getSelectableMasksForStage(stage);
@@ -115,9 +116,10 @@ describe('getDexPreviewMasks', () => {
     expect(masks).toEqual(MATAN_MASKS);
   });
 
-  test('returns no Kanohi for Bohrok and Vahki', () => {
+  test('returns no Kanohi for Bohrok, Vahki, and Rahi', () => {
     expect(getDexPreviewMasks(MatoranStage.Bohrok, Mask.Pakari)).toEqual([]);
     expect(getDexPreviewMasks(MatoranStage.Vahki, Mask.Pakari)).toEqual([]);
+    expect(getDexPreviewMasks(MatoranStage.Rahi, Mask.Pakari)).toEqual([]);
   });
 });
 
