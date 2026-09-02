@@ -10,11 +10,13 @@ type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 export const TRANSMISSIVE_MASK_KAUKAU_OPACITY = 0.85;
 
 /**
- * Runtime transmission for Kaukau only. The GLB has alpha (transparency) but no
- * KHR_materials_transmission — this scalar lets light pass through the plastic shell
- * (brain gel visible behind) in addition to the alpha fade.
+ * Runtime transmission for Kaukau — matches Vahki hood clarity (0.7) with lower
+ * roughness so the water mask reads less frosted than the murky visor.
  */
-export const TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION = 0.15;
+export const TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION = 0.7;
+
+/** Clearer than Vahki hood (0.3) while keeping baked roughnessMap. */
+export const TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS = 0.15;
 
 function normalizeMaterialName(name: string): string {
   return name.trim().toLowerCase();
@@ -64,6 +66,7 @@ export function applyTransmissiveMaskMaterial(
   physical.transmission = TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION;
   physical.ior = TRANSMISSIVE_KIT_IOR;
   physical.thickness = TRANSMISSIVE_KIT_THICKNESS;
+  physical.roughness = TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS;
   physical.opacity = TRANSMISSIVE_MASK_KAUKAU_OPACITY;
   physical.transparent = true;
   physical.depthWrite = false;
