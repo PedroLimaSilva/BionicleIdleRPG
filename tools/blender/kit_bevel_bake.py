@@ -1,10 +1,10 @@
 bl_info = {
-    "name": "Bionicle Kit Bevel Bake",
+    "name": "Bionicle Kit Bevel Bake (module)",
     "author": "Bionicle Idle RPG contributors",
     "version": (0, 1, 0),
     "blender": (3, 6, 0),
-    "location": "View3D > Sidebar > Bionicle Kit",
-    "description": "Bake packed RG bevel maps for shared kit parts (weathered metal).",
+    "location": "View3D > Sidebar > Bionicle Kit > Kit Parts",
+    "description": "Kit-part bevel bake module — install kit_socket_helper.py instead.",
     "category": "Object",
 }
 
@@ -1039,12 +1039,30 @@ class BIONICLE_OT_bake_bevel_maps(Operator):
         return self.invoke(context, None)
 
 
+class BIONICLE_PT_kit_parts(Panel):
+    bl_label = "Kit Parts"
+    bl_idname = "BIONICLE_PT_kit_parts"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Bionicle Kit"
+    bl_order = 10
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text="Work on shared kit meshes in the kit .blend:", icon="MESH_DATA")
+        layout.label(text="bake bevel sidecars, export kit GLBs.")
+        coll = context.view_layer.active_layer_collection.collection.name
+        layout.label(text=f"Active collection: {coll}", icon="OUTLINER_COLLECTION")
+
+
 class BIONICLE_PT_bevel_bake(Panel):
     bl_label = "Bevel Maps"
     bl_idname = "BIONICLE_PT_bevel_bake"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Bionicle Kit"
+    bl_parent_id = "BIONICLE_PT_kit_parts"
+    bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
         layout = self.layout
@@ -1085,6 +1103,7 @@ classes = (
     BIONICLE_OT_list_target_parts,
     BIONICLE_OT_bake_bevel_maps,
     BIONICLE_OT_export_kit_glb,
+    BIONICLE_PT_kit_parts,
     BIONICLE_PT_bevel_bake,
 )
 

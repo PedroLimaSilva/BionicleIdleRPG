@@ -1,6 +1,11 @@
 # Blender Kit Bevel Bake
 
-`tools/blender/kit_bevel_bake.py` bakes **packed geometric bevel maps** for shared kit
+Part of the unified **Bionicle Kit** addon (`tools/blender/kit_socket_helper.py`).
+The **Kit Parts → Bevel Maps** subpanel lives in the sibling module
+`tools/blender/kit_bevel_bake.py`, loaded automatically at enable time.
+See [BLENDER_KIT_ADDON.md](./BLENDER_KIT_ADDON.md).
+
+`kit_bevel_bake.py` bakes **packed geometric bevel maps** for shared kit
 parts used by weathered metal in the game.
 
 ## Runtime contract
@@ -42,10 +47,10 @@ tree. Use the same collection when batching bevel bakes.
 1. Open the kit `.blend` (keep a working copy — do not bake directly into iCloud
    unless you intend to save UV layers there).
 2. `Edit > Preferences > Add-ons > Install...`
-3. Pick `tools/blender/kit_bevel_bake.py`
-4. Enable **Bionicle Kit Bevel Bake**
+3. Pick `tools/blender/kit_socket_helper.py`
+4. Enable **Bionicle Kit**
 
-Panel: `View3D > Sidebar > Bionicle Kit > Bevel Maps`
+Panel: `View3D > Sidebar > Bionicle Kit > Kit Parts > Bevel Maps`
 
 ## Typical workflow (single part)
 
