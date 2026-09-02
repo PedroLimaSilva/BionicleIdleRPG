@@ -117,12 +117,13 @@ describe('maskHasBakedPbrAlpha', () => {
 });
 
 describe('syncMaskTransparencyState', () => {
-  it('keeps baked-alpha Great Rau in the transparent pass with runtime transmission', () => {
+  it('keeps baked-alpha Great Rau in the transparent pass with scaled transmission', () => {
+    const transmissionMap = new Texture();
     const mat = new MeshPhysicalMaterial({
       name: 'Rau_baked',
       opacity: 1,
       roughness: 0.5,
-      transmissionMap: new Texture(),
+      transmissionMap,
     });
     const prepared = prepareClonedMaskMaterial(mat);
     expect(prepared.transparent).toBe(true);
@@ -130,7 +131,7 @@ describe('syncMaskTransparencyState', () => {
     expect((prepared as MeshPhysicalMaterial).transmission).toBe(
       TRANSMISSIVE_MASK_RAU_TRANSMISSION
     );
-    expect((prepared as MeshPhysicalMaterial).transmissionMap).toBeNull();
+    expect((prepared as MeshPhysicalMaterial).transmissionMap).toBe(transmissionMap);
   });
 });
 

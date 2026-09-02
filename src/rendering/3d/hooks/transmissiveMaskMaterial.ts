@@ -3,16 +3,13 @@ import { TRANSMISSIVE_KIT_IOR, TRANSMISSIVE_KIT_THICKNESS } from './transmissive
 
 type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
-/** Mata Kaukau — overrides GLB opacity 0.5; less see-through than raw alpha blend. */
-export const TRANSMISSIVE_MASK_KAUKAU_OPACITY = 0.75;
+/** Mata Kaukau — overrides GLB opacity 0.5 for a less clear water mask. */
+export const TRANSMISSIVE_MASK_KAUKAU_OPACITY = 0.85;
 
-export const TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION = 0.3;
+export const TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION = 0.15;
 
-/** Great Rau — softer than baked transmissionFactor 1 to avoid mirror-like refraction. */
-export const TRANSMISSIVE_MASK_RAU_TRANSMISSION = 0.6;
-
-export const TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS = 0.5;
-export const TRANSMISSIVE_MASK_RAU_ROUGHNESS = 0.45;
+/** Great Rau — scales baked transmission; lower = less clear. */
+export const TRANSMISSIVE_MASK_RAU_TRANSMISSION = 0.35;
 
 export type TransmissiveMaskKind = 'kaukau' | 'rau';
 
@@ -34,7 +31,6 @@ function presetForKind(kind: TransmissiveMaskKind): {
   ior: number;
   opacity: number | undefined;
   transmission: number;
-  roughness: number;
   thickness: number;
 } {
   switch (kind) {
@@ -42,7 +38,6 @@ function presetForKind(kind: TransmissiveMaskKind): {
       return {
         ior: TRANSMISSIVE_KIT_IOR,
         opacity: TRANSMISSIVE_MASK_KAUKAU_OPACITY,
-        roughness: TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS,
         thickness: TRANSMISSIVE_KIT_THICKNESS,
         transmission: TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION,
       };
@@ -50,7 +45,6 @@ function presetForKind(kind: TransmissiveMaskKind): {
       return {
         ior: TRANSMISSIVE_KIT_IOR,
         opacity: undefined,
-        roughness: TRANSMISSIVE_MASK_RAU_ROUGHNESS,
         thickness: TRANSMISSIVE_KIT_THICKNESS,
         transmission: TRANSMISSIVE_MASK_RAU_TRANSMISSION,
       };
@@ -81,8 +75,8 @@ function upgradeToPhysicalMaterial(mat: MaskStandardMat): MeshPhysicalMaterial {
 
 /**
  * Apply runtime transmission + IOR to translucent Kanohi (Kaukau, Great Rau).
- * Keeps existing alpha / PBR maps; drops baked transmission maps in favor of scalars
- * (same approach as transmissive kit gel).
+ * Keeps GLB alpha and PBR maps intact; only overrides transmission scalars (and
+ * Kaukau opacity) so the masks stay less clear than raw GLB defaults.
  */
 export function applyTransmissiveMaskMaterial(
   mat: MaskStandardMat
@@ -96,12 +90,6 @@ export function applyTransmissiveMaskMaterial(
   physical.transmission = preset.transmission;
   physical.ior = preset.ior;
   physical.thickness = preset.thickness;
-  physical.roughness = preset.roughness;
-  physical.metalness = 0;
-  physical.metalnessMap = null;
-  physical.roughnessMap = null;
-  physical.envMapIntensity = 0.35;
-  physical.transmissionMap = null;
   if (preset.opacity !== undefined) {
     physical.opacity = preset.opacity;
   }
