@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Bionicle Kit Socket Helper",
     "author": "Bionicle Idle RPG contributors",
-    "version": (0, 3, 3),
+    "version": (0, 3, 4),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Bionicle Kit",
     "description": "Automate shared-kit socket empties, kit preview attachment, and export prep.",
@@ -478,18 +478,24 @@ def _zero_all_local_transforms(context, obj):
     bpy.ops.object.scale_clear(clear_delta=True)
 
 
-def _parent_preview_with_identity_local(context, preview, socket):
+def _clear_parent_inverse(context, obj):
     view_layer = context.view_layer
-    if preview.parent != socket:
-        bpy.ops.object.select_all(action="DESELECT")
-        preview.select_set(True)
-        socket.select_set(True)
-        view_layer.objects.active = socket
-        bpy.ops.object.parent_set(type="OBJECT", keep_transform=False)
     bpy.ops.object.select_all(action="DESELECT")
-    preview.select_set(True)
-    view_layer.objects.active = preview
+    obj.select_set(True)
+    view_layer.objects.active = obj
+    if obj.parent is not None:
+        bpy.ops.object.parent_clear(type="CLEAR_INVERSE")
+    obj.matrix_parent_inverse = Matrix.Identity(4)
+
+
+def _parent_preview_with_identity_local(context, preview, socket):
+    preview.parent = socket
+    preview.parent_type = "OBJECT"
+    preview.matrix_parent_inverse = Matrix.Identity(4)
     _zero_all_local_transforms(context, preview)
+    _clear_parent_inverse(context, preview)
+    _zero_all_local_transforms(context, preview)
+    preview.matrix_parent_inverse = Matrix.Identity(4)
 
 
 def _acquire_kit_preview_object(context, kit_path, kit_node_name):
