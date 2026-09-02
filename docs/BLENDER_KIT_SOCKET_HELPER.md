@@ -51,7 +51,9 @@ This step:
   kit library (`Axle2L_Head` → `Axle2L`);
 - **resets kit preview local transforms** to identity in parent space (matches runtime);
 - **preserves socket empty transforms** unless **Reset Socket Transforms On Sync** is enabled;
-- **links** kit pieces from the library with overrides (does not append copies);
+- **links** kit pieces from the library with overrides into a **`Kit` collection**
+  (created automatically). Reuses an unparented match from `Kit` instead of linking
+  again; duplicates when the stash copy is already parented to a socket;
 - **skips** sockets whose kit node is not in the library yet (logged to the console).
 
 Optional: paste attachment-map `materialColors` into **Attachment Map JSON** for

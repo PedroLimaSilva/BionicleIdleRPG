@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Bionicle Kit Socket Helper",
     "author": "Bionicle Idle RPG contributors",
-    "version": (0, 3, 1),
+    "version": (0, 3, 2),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Bionicle Kit",
     "description": "Automate shared-kit socket empties, kit preview attachment, and export prep.",
@@ -53,6 +53,7 @@ SOCKET_PROP = "bionicle_socket"
 KIT_NODE_PROP = "bionicle_kit_node"
 SOURCE_OBJECT_PROP = "bionicle_source_object"
 KIT_PREVIEW_PROP = "bionicle_kit_preview"
+KIT_COLLECTION_NAME = "Kit"
 
 LEGO_COLORS = {
     "Black": (0.0196, 0.0745, 0.1137, 1.0),
@@ -376,6 +377,25 @@ def _kit_library_filepath(kit_path):
     return bpy.path.abspath(kit_path)
 
 
+def _matches_kit_node_name(obj, kit_node_name):
+    return strip_numeric_suffix(obj.name) == kit_node_name
+
+
+def _get_or_create_kit_collection(context):
+    kit_collection = bpy.data.collections.get(KIT_COLLECTION_NAME)
+    if kit_collection is None:
+        kit_collection = bpy.data.collections.new(KIT_COLLECTION_NAME)
+    if kit_collection.name not in context.scene.collection.children:
+        context.scene.collection.children.link(kit_collection)
+    return kit_collection
+
+
+def _move_object_to_collection(obj, target_collection):
+    for collection in obj.users_collection:
+        collection.objects.unlink(obj)
+    target_collection.objects.link(obj)
+
+
 def _is_from_kit_library(obj, kit_path):
     if obj.library is None:
         return False
@@ -396,19 +416,35 @@ def _link_kit_object(kit_path, kit_node_name):
     return data_to.objects[0]
 
 
-def _find_linked_kit_prototype(kit_path, kit_node_name):
-    for obj in bpy.data.objects:
-        if not _is_from_kit_library(obj, kit_path):
+def _find_kit_collection_part(kit_collection, kit_path, kit_node_name):
+    """Return (object, action) where action is reuse, duplicate, or link."""
+    matches = []
+    for obj in kit_collection.objects:
+        if not _matches_kit_node_name(obj, kit_node_name):
             continue
-        if strip_numeric_suffix(obj.name) != kit_node_name:
+        if kit_path and obj.library is not None and not _is_from_kit_library(obj, kit_path):
             continue
-        if obj.get(KIT_PREVIEW_PROP):
-            continue
-        return obj
-    return None
+        matches.append(obj)
+
+    if not matches:
+        return None, "link"
+
+    unparented = [obj for obj in matches if obj.parent is None]
+    if unparented:
+        return unparented[0], "reuse"
+
+    return matches[0], "duplicate"
 
 
-def _duplicate_linked_instance(context, source):
+def _link_kit_object_to_collection(context, kit_path, kit_node_name, kit_collection):
+    linked = _link_kit_object(kit_path, kit_node_name)
+    if linked is None:
+        return None
+    _move_object_to_collection(linked, kit_collection)
+    return linked
+
+
+def _duplicate_linked_instance(context, source, kit_collection):
     view_layer = context.view_layer
     bpy.ops.object.select_all(action="DESELECT")
     source.select_set(True)
@@ -416,12 +452,16 @@ def _duplicate_linked_instance(context, source):
     bpy.ops.object.duplicate()
     duplicate = view_layer.objects.active
     duplicate[KIT_PREVIEW_PROP] = True
+    _move_object_to_collection(duplicate, kit_collection)
     return duplicate
 
 
-def _ensure_object_in_scene(context, obj):
-    if obj.name not in context.scene.collection.objects:
-        context.scene.collection.objects.link(obj)
+def _ensure_object_in_view(context, obj):
+    kit_collection = _get_or_create_kit_collection(context)
+    if not obj.users_collection:
+        kit_collection.objects.link(obj)
+    elif kit_collection.name not in {coll.name for coll in obj.users_collection}:
+        _move_object_to_collection(obj, kit_collection)
 
 
 def _parent_preview_with_identity_local(preview, socket):
@@ -430,15 +470,14 @@ def _parent_preview_with_identity_local(preview, socket):
 
 
 def _acquire_kit_preview_object(context, kit_path, kit_node_name):
-    linked = _find_linked_kit_prototype(kit_path, kit_node_name)
-    if linked is None:
-        linked = _link_kit_object(kit_path, kit_node_name)
-    if linked is None:
-        return None
-    if linked.parent is not None:
-        linked = _duplicate_linked_instance(context, linked)
-        _ensure_object_in_scene(context, linked)
-    return linked
+    kit_collection = _get_or_create_kit_collection(context)
+    source, action = _find_kit_collection_part(kit_collection, kit_path, kit_node_name)
+
+    if action == "reuse":
+        return source
+    if action == "duplicate":
+        return _duplicate_linked_instance(context, source, kit_collection)
+    return _link_kit_object_to_collection(context, kit_path, kit_node_name, kit_collection)
 
 
 def _attach_kit_preview(context, socket, kit_path, kit_node_name, material_colors, palette):
@@ -452,7 +491,7 @@ def _attach_kit_preview(context, socket, kit_path, kit_node_name, material_color
     preview[KIT_PREVIEW_PROP] = True
     preview.hide_viewport = False
     preview.hide_render = False
-    _ensure_object_in_scene(context, preview)
+    _ensure_object_in_view(context, preview)
     _parent_preview_with_identity_local(preview, socket)
     _apply_material_colors_to_object(preview, material_colors, palette)
     return preview
