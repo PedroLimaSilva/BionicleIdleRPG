@@ -3,52 +3,28 @@ import { TRANSMISSIVE_KIT_IOR, TRANSMISSIVE_KIT_THICKNESS } from './transmissive
 
 type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
-/** Mata Kaukau — overrides GLB opacity 0.5 for a less clear water mask. */
+/**
+ * Mata Kaukau opacity override — the GLB ships uniform alpha 0.5 with no transmission
+ * map; raise opacity so the water mask reads less clear than raw BLEND.
+ */
 export const TRANSMISSIVE_MASK_KAUKAU_OPACITY = 0.85;
 
+/**
+ * Runtime transmission for Kaukau only. The GLB has alpha (transparency) but no
+ * KHR_materials_transmission — this scalar lets light pass through the plastic shell
+ * (brain gel visible behind) in addition to the alpha fade.
+ */
 export const TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION = 0.15;
-
-/** Great Rau — scales baked transmission; lower = less clear. */
-export const TRANSMISSIVE_MASK_RAU_TRANSMISSION = 0.35;
-
-export type TransmissiveMaskKind = 'kaukau' | 'rau';
 
 function normalizeMaterialName(name: string): string {
   return name.trim().toLowerCase();
 }
 
-export function resolveTransmissiveMaskKind(
-  mat: MaskStandardMat
-): TransmissiveMaskKind | undefined {
+/** Great Rau bakes transmission + alpha in `Toa_Metru/Masks.glb` — leave GLB values intact. */
+export function isKaukauTransmissiveMask(mat: MaskStandardMat): boolean {
   const name = normalizeMaterialName(mat.name);
-  if (name.includes('rau_baked')) return 'rau';
   // Mata Kaukau ships at 0.5 opacity; Nuva Kaukau is opaque with vent holes only.
-  if (name.includes('kaukau_baked') && mat.opacity < 0.999) return 'kaukau';
-  return undefined;
-}
-
-function presetForKind(kind: TransmissiveMaskKind): {
-  ior: number;
-  opacity: number | undefined;
-  transmission: number;
-  thickness: number;
-} {
-  switch (kind) {
-    case 'kaukau':
-      return {
-        ior: TRANSMISSIVE_KIT_IOR,
-        opacity: TRANSMISSIVE_MASK_KAUKAU_OPACITY,
-        thickness: TRANSMISSIVE_KIT_THICKNESS,
-        transmission: TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION,
-      };
-    case 'rau':
-      return {
-        ior: TRANSMISSIVE_KIT_IOR,
-        opacity: undefined,
-        thickness: TRANSMISSIVE_KIT_THICKNESS,
-        transmission: TRANSMISSIVE_MASK_RAU_TRANSMISSION,
-      };
-  }
+  return name.includes('kaukau_baked') && mat.opacity < 0.999;
 }
 
 function upgradeToPhysicalMaterial(mat: MaskStandardMat): MeshPhysicalMaterial {
@@ -74,25 +50,21 @@ function upgradeToPhysicalMaterial(mat: MaskStandardMat): MeshPhysicalMaterial {
 }
 
 /**
- * Apply runtime transmission + IOR to translucent Kanohi (Kaukau, Great Rau).
- * Keeps GLB alpha and PBR maps intact; only overrides transmission scalars (and
- * Kaukau opacity) so the masks stay less clear than raw GLB defaults.
+ * Add runtime transmission to Mata Kaukau. Great Rau is excluded — its GLB already
+ * ships `alphaMode: BLEND` (alpha in baseColorTexture) plus `KHR_materials_transmission`
+ * (transmissionTexture); `prepareClonedMaskMaterial` keeps those maps untouched.
  */
 export function applyTransmissiveMaskMaterial(
   mat: MaskStandardMat
 ): MeshPhysicalMaterial | undefined {
-  const kind = resolveTransmissiveMaskKind(mat);
-  if (!kind) return undefined;
+  if (!isKaukauTransmissiveMask(mat)) return undefined;
 
-  const preset = presetForKind(kind);
   const physical = upgradeToPhysicalMaterial(mat);
 
-  physical.transmission = preset.transmission;
-  physical.ior = preset.ior;
-  physical.thickness = preset.thickness;
-  if (preset.opacity !== undefined) {
-    physical.opacity = preset.opacity;
-  }
+  physical.transmission = TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION;
+  physical.ior = TRANSMISSIVE_KIT_IOR;
+  physical.thickness = TRANSMISSIVE_KIT_THICKNESS;
+  physical.opacity = TRANSMISSIVE_MASK_KAUKAU_OPACITY;
   physical.transparent = true;
   physical.depthWrite = false;
   physical.side = FrontSide;
@@ -102,8 +74,6 @@ export function applyTransmissiveMaskMaterial(
 
 export function isTransmissiveMaskMaterial(mat: unknown): boolean {
   return (
-    mat instanceof MeshPhysicalMaterial &&
-    mat.transmission > 0 &&
-    resolveTransmissiveMaskKind(mat) !== undefined
+    mat instanceof MeshPhysicalMaterial && mat.transmission > 0 && isKaukauTransmissiveMask(mat)
   );
 }

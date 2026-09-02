@@ -7,10 +7,7 @@ import {
   maskNeedsAlphaBlend,
   prepareClonedMaskMaterial,
 } from './maskMaterial';
-import {
-  TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION,
-  TRANSMISSIVE_MASK_RAU_TRANSMISSION,
-} from './transmissiveMaskMaterial';
+import { TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION } from './transmissiveMaskMaterial';
 
 describe('maskNeedsAlphaBlend', () => {
   it('detects sub-1 opacity and trans-named masks', () => {
@@ -117,20 +114,19 @@ describe('maskHasBakedPbrAlpha', () => {
 });
 
 describe('syncMaskTransparencyState', () => {
-  it('keeps baked-alpha Great Rau in the transparent pass with scaled transmission', () => {
+  it('keeps baked Great Rau transmission and alpha maps from the GLB', () => {
     const transmissionMap = new Texture();
     const mat = new MeshPhysicalMaterial({
       name: 'Rau_baked',
       opacity: 1,
       roughness: 0.5,
+      transmission: 1,
       transmissionMap,
     });
     const prepared = prepareClonedMaskMaterial(mat);
     expect(prepared.transparent).toBe(true);
     expect(prepared.opacity).toBe(1);
-    expect((prepared as MeshPhysicalMaterial).transmission).toBe(
-      TRANSMISSIVE_MASK_RAU_TRANSMISSION
-    );
+    expect((prepared as MeshPhysicalMaterial).transmission).toBe(1);
     expect((prepared as MeshPhysicalMaterial).transmissionMap).toBe(transmissionMap);
   });
 });
