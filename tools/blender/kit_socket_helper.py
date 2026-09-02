@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Bionicle Kit Socket Helper",
     "author": "Bionicle Idle RPG contributors",
-    "version": (0, 4, 0),
+    "version": (0, 4, 1),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Bionicle Kit",
     "description": "Automate shared-kit socket empties, kit preview attachment, and export prep.",
@@ -904,12 +904,16 @@ class BIONICLE_PT_kit_socket_helper(bpy.types.Panel):
         scene = _active_scene(context)
 
         box = layout.box()
-        box.label(text="1. Create placeholders")
+        box.label(text="1. Create socket empties")
         box.operator("bionicle.create_socket_empties", icon="EMPTY_AXIS")
 
         box = layout.box()
-        box.label(text="2. After manual rename")
-        box.label(text="Rename empties (e.g. Axle2L_Head), then:")
+        box.label(text="2. Manually rename")
+        box.label(text="Match kit parts visually, then rename")
+        box.label(text="each empty (e.g. Axle2L_Head).")
+
+        box = layout.box()
+        box.label(text="3. Sync to kit library")
         box.prop(scene, "bionicle_kit_library_path", text="Kit Library")
         row = box.row(align=True)
         op = row.operator("bionicle.sync_and_attach_kit_previews", text="Sync Selected")

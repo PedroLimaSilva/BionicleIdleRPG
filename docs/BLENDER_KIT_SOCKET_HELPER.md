@@ -7,24 +7,17 @@ The panel is in `View3D → Sidebar → Bionicle Kit`.
 
 ## Workflow
 
-### 1. Create placeholders
+### 1. Create socket empties
 
 Select embedded kit meshes → **Create Socket Empties**.
 
-Defaults (not shown in the panel):
+### 2. Manually rename
 
-- Parent empties to the same bone/object as the source mesh
-- Local-identity rotation, keep source world location
-- Do not hide or skip source meshes
+Match kit parts visually, then rename each empty (`Axle2L_Head`, `MataHip`, …).
 
-### 2. Manual rename (visual matching)
+### 3. Sync to kit library
 
-Rename each empty to the standardized socket name (`Axle2L_Head`, `MataHip`, …).
-See `src/rendering/3d/kit/attachments/` for examples.
-
-### 3. Sync kit previews
-
-Set **Kit Library** to your shared `kit.blend` → **Sync Selected** or **Sync Scene**.
+Set **Kit Library** → **Sync Selected** or **Sync Scene**.
 
 This syncs socket names, infers kit nodes (`Axle2L_Head` → `Axle2L`), links kit
 parts into a **`Kit`** collection (reusing unparented matches), parents previews to
