@@ -94,8 +94,15 @@ Keep **Skip Low-Detail Connectors** enabled to ignore axles/pins that stay
 procedural (`KIT_2001_BEVEL_SKIP_CONNECTORS`).
 
 Bake time scales with part count × resolution × samples. Long runs are normal.
-Progress appears in the Blender status bar (UI) and in the console / terminal
-(`Sample 4/16` lines during each Cycles pass).
+
+**Progress:** The bake operator runs as a **modal** job so Blender stays responsive.
+The status bar shows part name + stage; during each Cycles pass it advances on
+`Sample N/M` lines. Open **Window → Toggle System Console** (macOS: launch Blender
+from Terminal) to see the same log — required when driving bakes through MCP, since
+the MCP host may not stream Blender’s UI progress.
+
+Smart UV Project on a new part can sit at “preparing UVs” for a while with no
+sample lines yet; that step runs before the first Cycles pass.
 
 ## What the bake does
 
@@ -112,7 +119,11 @@ Original materials are restored; only the UV layer persists on the source object
 ## MCP / headless (optional)
 
 With Blender MCP connected you can install/reload the addon and trigger bakes via
-`execute_blender_code`. For unattended runs:
+`execute_blender_code`. **Watch the System Console** for `[Bionicle Kit Bevel]`
+lines — MCP does not mirror the status bar. Prefer invoking
+`bpy.ops.bionicle.bake_bevel_maps('INVOKE_DEFAULT')` (not a blocking custom loop).
+
+For unattended runs:
 
 ```bash
 /Applications/Blender.app/Contents/MacOS/Blender \

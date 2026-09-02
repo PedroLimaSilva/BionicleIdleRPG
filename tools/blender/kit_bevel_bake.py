@@ -23,6 +23,7 @@ Kit .blend collections map to export stems:
 
 import json
 import os
+import re
 from typing import Iterable, List, Optional, Sequence, Tuple
 
 import bpy
@@ -49,6 +50,26 @@ DEFAULT_SKIP_PARTS = {
     "Pin2L",
 }
 
+_SAMPLE_RE = re.compile(r"Sample\s+(\d+)/(\d+)", re.I)
+
+
+def _is_object_bake_running() -> bool:
+    if hasattr(bpy.app, "is_job_running"):
+        try:
+            return bool(bpy.app.is_job_running("OBJECT_BAKE"))
+        except TypeError:
+            pass
+    return False
+
+
+def _redraw_all_areas() -> None:
+    try:
+        for window in bpy.context.window_manager.windows:
+            for area in window.screen.areas:
+                area.tag_redraw()
+    except Exception:
+        pass
+
 
 class BakeProgressReporter:
     """UI + console progress for long Cycles bakes."""
@@ -70,35 +91,63 @@ class BakeProgressReporter:
         self.base_fraction = base_fraction
         self.span_fraction = span_fraction
         self._stats_handler = None
+        self._pass_local_start = 0.0
+        self._pass_local_end = 1.0
+        self._last_pct = -1
 
     def _fraction(self, local: float) -> float:
         part_span = self.span_fraction / max(self.part_count, 1)
         return self.base_fraction + (self.part_index + local) * part_span
 
     @staticmethod
-    def _wm_progress_update(wm: Optional[bpy.types.WindowManager], value: int) -> None:
+    def _wm_progress_update(
+        wm: Optional[bpy.types.WindowManager], value: int, text: str = ""
+    ) -> None:
         if wm is None:
             return
         try:
-            wm.progress_update(value)
+            wm.progress_update(value, text)
         except TypeError:
-            # Blender < 5.0 accepted an optional status string.
-            wm.progress_update(value, "")
+            wm.progress_update(value)
+        _redraw_all_areas()
+
+    def set_pass_range(self, local_start: float, local_end: float) -> None:
+        self._pass_local_start = local_start
+        self._pass_local_end = local_end
 
     def stage(self, local: float, message: str) -> None:
         frac = self._fraction(local)
         label = f"{self.part_name}: {message}" if self.part_name else message
         pct = int(frac * 100)
+        self._last_pct = pct
         print(f"[Bionicle Kit Bevel] {label} ({pct}%)", flush=True)
-        self._wm_progress_update(self.wm, pct)
+        self._wm_progress_update(self.wm, pct, label)
 
-    def begin_cycles_watch(self) -> None:
+    def update_pass_sample(self, done: int, total: int, label: str) -> None:
+        total = max(total, 1)
+        t = done / total
+        local = self._pass_local_start + t * (self._pass_local_end - self._pass_local_start)
+        frac = self._fraction(local)
+        pct = int(frac * 100)
+        if pct == self._last_pct:
+            return
+        self._last_pct = pct
+        msg = f"{self.part_name}: {label} {done}/{total}" if self.part_name else f"{label} {done}/{total}"
+        print(f"[Bionicle Kit Bevel]   {msg} ({pct}%)", flush=True)
+        self._wm_progress_update(self.wm, pct, msg)
+
+    def begin_cycles_watch(self, local_start: float = 0.0, local_end: float = 1.0) -> None:
         if self._stats_handler is not None:
             return
+        self.set_pass_range(local_start, local_end)
 
         def on_stats(_scene, stats: str) -> None:
-            if "Sample" in stats:
-                print(f"[Bionicle Kit Bevel]   {stats.strip()}", flush=True)
+            text = stats.strip()
+            if text and "Sample" not in text:
+                print(f"[Bionicle Kit Bevel]   {text}", flush=True)
+            match = _SAMPLE_RE.search(stats)
+            if match:
+                self.update_pass_sample(int(match.group(1)), int(match.group(2)), "Cycles")
 
         self._stats_handler = on_stats
         bpy.app.handlers.render_stats.append(on_stats)
@@ -153,6 +202,16 @@ def _normalize_channel(values: Sequence[float], invert: bool = False) -> List[fl
     return out
 
 
+def _mesh_edit_context(obj: bpy.types.Object) -> dict:
+    ctx = bpy.context.copy()
+    ctx["active_object"] = obj
+    ctx["object"] = obj
+    ctx["selected_objects"] = [obj]
+    ctx["selected_editable_objects"] = [obj]
+    ctx["editable_objects"] = [obj]
+    return ctx
+
+
 def _ensure_bevel_uv(obj: bpy.types.Object, uv_name: str = UV_LAYER_NAME) -> None:
     mesh = obj.data
     if uv_name not in mesh.uv_layers:
@@ -160,14 +219,17 @@ def _ensure_bevel_uv(obj: bpy.types.Object, uv_name: str = UV_LAYER_NAME) -> Non
     mesh.uv_layers.active = mesh.uv_layers[uv_name]
     mesh.uv_layers[uv_name].active_render = True
 
+    print(f"[Bionicle Kit Bevel] Smart UV Project on {obj.name}…", flush=True)
     bpy.ops.object.select_all(action="DESELECT")
     obj.select_set(True)
     bpy.context.view_layer.objects.active = obj
 
-    bpy.ops.object.mode_set(mode="EDIT")
-    bpy.ops.mesh.select_all(action="SELECT")
-    bpy.ops.uv.smart_project(angle_limit=66, island_margin=0.03)
-    bpy.ops.object.mode_set(mode="OBJECT")
+    with bpy.context.temp_override(**_mesh_edit_context(obj)):
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_all(action="SELECT")
+        bpy.ops.uv.smart_project(angle_limit=66, island_margin=0.03)
+        bpy.ops.object.mode_set(mode="OBJECT")
+    print(f"[Bionicle Kit Bevel] UV ready on {obj.name}", flush=True)
 
 
 def _prep_bake_material(
@@ -315,7 +377,7 @@ def bake_bevel_map_for_object(
     )
     _assign_single_material(work, mat_c)
     if progress:
-        progress.begin_cycles_watch()
+        progress.begin_cycles_watch(0.12, 0.48)
     try:
         bpy.ops.object.bake(type="EMIT")
     finally:
@@ -324,7 +386,7 @@ def bake_bevel_map_for_object(
     cavity_src = _pixel_channel(img_c)
 
     if progress:
-        progress.stage(0.55, "baking wear pass")
+        progress.stage(0.5, "baking wear pass")
 
     mat_w, img_w = _prep_bake_material(
         f"{obj.name}_TMP_WEAR",
@@ -334,7 +396,7 @@ def bake_bevel_map_for_object(
     )
     work.data.materials[0] = mat_w
     if progress:
-        progress.begin_cycles_watch()
+        progress.begin_cycles_watch(0.52, 0.88)
     try:
         bpy.ops.object.bake(type="EMIT")
     finally:
@@ -392,6 +454,306 @@ def save_bevel_image(
     image.file_format = file_format
     image.save()
     return path
+
+
+def _invoke_emit_bake() -> bool:
+    """Start an EMIT bake without blocking the UI when supported."""
+    try:
+        result = bpy.ops.object.bake({"INVOKE_DEFAULT"}, type="EMIT")
+    except Exception:
+        bpy.ops.object.bake(type="EMIT")
+        return False
+    return "RUNNING_MODAL" in result or "FINISHED" in result
+
+
+class PartBevelAsyncRunner:
+    """Drives one part through prep + two Cycles EMIT passes without freezing Blender."""
+
+    def __init__(
+        self,
+        obj: bpy.types.Object,
+        *,
+        resolution: int,
+        samples: int,
+        ensure_uv: bool,
+        uv_name: str = UV_LAYER_NAME,
+        edge_split_angle_deg: float = 45.0,
+        progress: Optional[BakeProgressReporter] = None,
+    ) -> None:
+        self.obj = obj
+        self.resolution = resolution
+        self.samples = samples
+        self.ensure_uv = ensure_uv
+        self.uv_name = uv_name
+        self.edge_split_angle_deg = edge_split_angle_deg
+        self.progress = progress
+        self.state = "prep"
+        self.work: Optional[bpy.types.Object] = None
+        self.img_c: Optional[bpy.types.Image] = None
+        self.img_w: Optional[bpy.types.Image] = None
+        self.cavity_src: Optional[List[float]] = None
+        self.combined: Optional[bpy.types.Image] = None
+        self._async_bake = False
+
+    def tick(self, context) -> None:
+        scene = context.scene
+        obj = self.obj
+        progress = self.progress
+
+        if self.state == "prep":
+            if progress:
+                progress.stage(0.0, "preparing UVs")
+            _configure_scene_for_bake(scene, self.samples)
+            if self.ensure_uv:
+                _ensure_bevel_uv(obj, self.uv_name)
+            else:
+                mesh = obj.data
+                if self.uv_name not in mesh.uv_layers:
+                    raise ValueError(f"{obj.name} is missing UV layer {self.uv_name}")
+                mesh.uv_layers.active = mesh.uv_layers[self.uv_name]
+                mesh.uv_layers[self.uv_name].active_render = True
+
+            _hide_all_except(scene, obj.name)
+            bpy.ops.object.select_all(action="DESELECT")
+            obj.select_set(True)
+            scene.view_layers[0].objects.active = obj
+
+            bpy.ops.object.duplicate()
+            self.work = context.active_object
+            self.work.name = f"{obj.name}_BEVEL_BAKE_TMP"
+            split = self.work.modifiers.new("EdgeSplit", "EDGE_SPLIT")
+            split.split_angle = self.edge_split_angle_deg * 3.14159265 / 180.0
+            bpy.ops.object.modifier_apply(modifier=split.name)
+
+            if progress:
+                progress.stage(0.08, "baking cavity pass")
+            _mat_c, self.img_c = _prep_bake_material(
+                f"{obj.name}_TMP_CAVITY",
+                f"{obj.name}_TMP_CAVITY_IMG",
+                self.resolution,
+                _link_cavity_emit,
+            )
+            _assign_single_material(self.work, _mat_c)
+            self.state = "cavity_bake"
+            return
+
+        if self.state == "cavity_bake":
+            if progress:
+                progress.begin_cycles_watch(0.12, 0.48)
+            self._async_bake = _invoke_emit_bake()
+            if not self._async_bake and progress:
+                progress.end_cycles_watch()
+            self.state = "cavity_wait" if self._async_bake else "cavity_capture"
+            return
+
+        if self.state == "cavity_wait":
+            if _is_object_bake_running():
+                return
+            if progress:
+                progress.end_cycles_watch()
+            self.state = "cavity_capture"
+            return
+
+        if self.state == "cavity_capture":
+            self.cavity_src = _pixel_channel(self.img_c)
+            if progress:
+                progress.stage(0.5, "baking wear pass")
+            _mat_w, self.img_w = _prep_bake_material(
+                f"{obj.name}_TMP_WEAR",
+                f"{obj.name}_TMP_WEAR_IMG",
+                self.resolution,
+                _link_wear_emit,
+            )
+            self.work.data.materials[0] = _mat_w
+            self.state = "wear_bake"
+            return
+
+        if self.state == "wear_bake":
+            if progress:
+                progress.begin_cycles_watch(0.52, 0.88)
+            self._async_bake = _invoke_emit_bake()
+            if not self._async_bake and progress:
+                progress.end_cycles_watch()
+            self.state = "wear_wait" if self._async_bake else "wear_capture"
+            return
+
+        if self.state == "wear_wait":
+            if _is_object_bake_running():
+                return
+            if progress:
+                progress.end_cycles_watch()
+            self.state = "wear_capture"
+            return
+
+        if self.state == "wear_capture":
+            wear_src = _pixel_channel(self.img_w)
+            if progress:
+                progress.stage(0.9, "packing RG channels")
+            wear = _normalize_channel(wear_src, invert=False)
+            cavity = _normalize_channel(self.cavity_src or [], invert=True)
+
+            combined_name = f"{obj.name}_bevel"
+            existing = bpy.data.images.get(combined_name)
+            if existing:
+                bpy.data.images.remove(existing)
+            combined = bpy.data.images.new(
+                combined_name, self.resolution, self.resolution, alpha=True, float_buffer=False
+            )
+            pixels = [0.0] * (self.resolution * self.resolution * 4)
+            for i in range(self.resolution * self.resolution):
+                pixels[i * 4] = wear[i]
+                pixels[i * 4 + 1] = cavity[i]
+                pixels[i * 4 + 2] = 0.0
+                pixels[i * 4 + 3] = 1.0
+            combined.pixels = pixels
+            combined.update()
+            self.combined = combined
+            self._cleanup_temp()
+            _restore_visibility(scene)
+            if progress:
+                progress.stage(1.0, "done")
+            self.state = "done"
+            return
+
+    def _cleanup_temp(self) -> None:
+        obj = self.obj
+        if self.work:
+            bpy.data.objects.remove(self.work, do_unlink=True)
+            self.work = None
+        for mat_name in (f"{obj.name}_TMP_CAVITY", f"{obj.name}_TMP_WEAR"):
+            mat = bpy.data.materials.get(mat_name)
+            if mat:
+                bpy.data.materials.remove(mat)
+        for img_name in (f"{obj.name}_TMP_CAVITY_IMG", f"{obj.name}_TMP_WEAR_IMG"):
+            img = bpy.data.images.get(img_name)
+            if img:
+                bpy.data.images.remove(img)
+
+    @property
+    def done(self) -> bool:
+        return self.state == "done"
+
+
+class BakeBatchRunner:
+    """Modal batch: one part per timer tick, async Cycles bakes keep the UI alive."""
+
+    def __init__(self, context, settings, targets: Sequence[bpy.types.Object]) -> None:
+        self.context = context
+        self.settings = settings
+        self.targets = list(targets)
+        self.output_dir = resolve_output_dir(settings)
+        self.part_index = 0
+        self.part_runner: Optional[PartBevelAsyncRunner] = None
+        self.baked: List[dict] = []
+        self.errors: List[str] = []
+        self.export_after = settings.export_after_bake
+        self.export_pending = False
+        self.finished = False
+        self.wm = context.window_manager
+        bake_span = 0.9 if self.export_after else 1.0
+        self._progress = BakeProgressReporter(
+            wm=self.wm,
+            part_index=0,
+            part_count=len(targets),
+            span_fraction=bake_span,
+        )
+
+    def tick(self) -> str:
+        if self.finished:
+            return "FINISHED"
+
+        if self.export_pending:
+            return self._run_export()
+
+        if self.part_runner is None:
+            if self.part_index >= len(self.targets):
+                return self._finish_batch()
+            obj = self.targets[self.part_index]
+            self._progress.part_index = self.part_index
+            self._progress.part_name = obj.name
+            print(
+                f"[Bionicle Kit Bevel] Part {self.part_index + 1}/{len(self.targets)}: {obj.name}",
+                flush=True,
+            )
+            self.part_runner = PartBevelAsyncRunner(
+                obj,
+                resolution=self.settings.resolution,
+                samples=self.settings.samples,
+                ensure_uv=self.settings.ensure_uv,
+                progress=self._progress,
+            )
+
+        try:
+            self.part_runner.tick(self.context)
+        except Exception as exc:  # noqa: BLE001
+            self.errors.append(f"{self.targets[self.part_index].name}: {exc}")
+            self.part_runner = None
+            self.part_index += 1
+            return "RUNNING"
+
+        if not self.part_runner.done:
+            return "RUNNING"
+
+        obj = self.targets[self.part_index]
+        try:
+            path = save_bevel_image(
+                self.part_runner.combined,
+                self.output_dir,
+                obj.name,
+                file_format=self.settings.file_format,
+            )
+            self.baked.append({"part": obj.name, "path": path})
+            print(f"[Bionicle Kit Bevel] SAVED {path}", flush=True)
+        except Exception as exc:  # noqa: BLE001
+            self.errors.append(f"{obj.name}: {exc}")
+
+        self.part_runner = None
+        self.part_index += 1
+        return "RUNNING"
+
+    def _finish_batch(self) -> str:
+        if self.baked:
+            manifest = os.path.join(self.output_dir, "bevel_manifest.json")
+            with open(manifest, "w", encoding="utf-8") as handle:
+                json.dump(
+                    {"kit_stem": self.settings.kit_stem, "files": self.baked},
+                    handle,
+                    indent=2,
+                )
+        if self.baked and self.export_after:
+            self.export_pending = True
+            return self._run_export()
+        self.finished = True
+        return "FINISHED" if not self.errors else "FINISHED_WITH_ERRORS"
+
+    def _run_export(self) -> str:
+        settings = self.settings
+        context = self.context
+        coll_name = settings.source_collection
+        if settings.target_mode == "ACTIVE_COLLECTION":
+            coll_name = context.view_layer.active_layer_collection.collection.name
+        export_path = bpy.path.abspath(settings.export_glb_path.strip())
+        if not export_path:
+            blend_dir = os.path.dirname(bpy.data.filepath) if bpy.data.filepath else "//"
+            export_path = os.path.join(bpy.path.abspath(blend_dir), f"{settings.kit_stem}.glb")
+        try:
+            BakeProgressReporter._wm_progress_update(self.wm, 92, "Exporting kit GLB…")
+            print("[Bionicle Kit Bevel] Exporting kit GLB…", flush=True)
+            count = export_kit_collection_glb(coll_name, export_path)
+            BakeProgressReporter._wm_progress_update(self.wm, 100, f"Exported {count} object(s)")
+            print(f"[Bionicle Kit Bevel] EXPORTED {count} object(s) -> {export_path}", flush=True)
+        except Exception as exc:  # noqa: BLE001
+            self.errors.append(f"GLB export: {exc}")
+        self.export_pending = False
+        self.finished = True
+        return "FINISHED" if not self.errors else "FINISHED_WITH_ERRORS"
+
+    def summary(self) -> str:
+        if self.baked and not self.errors:
+            return f"Baked {len(self.baked)} map(s) to {self.output_dir}"
+        if self.baked:
+            return f"Baked {len(self.baked)}; {len(self.errors)} error(s). See console."
+        return "No maps baked."
 
 
 def _objects_in_collection_tree(collection: bpy.types.Collection) -> List[bpy.types.Object]:
@@ -620,91 +982,61 @@ class BIONICLE_OT_bake_bevel_maps(Operator):
     bl_label = "Bake Bevel Maps"
     bl_options = {"REGISTER", "UNDO"}
 
-    def execute(self, context):
+    _timer = None
+    _runner: Optional[BakeBatchRunner] = None
+
+    def invoke(self, context, _event):
         settings = context.scene.bionicle_bevel
         targets = resolve_target_objects(settings, context)
         if not targets:
             self.report({"WARNING"}, "No target mesh objects found")
             return {"CANCELLED"}
 
-        output_dir = resolve_output_dir(settings)
-        baked = []
-        errors = []
+        self._runner = BakeBatchRunner(context, settings, targets)
         wm = context.window_manager
-        export_after = settings.export_after_bake
-        bake_span = 0.9 if export_after else 1.0
-
         wm.progress_begin(0, 100)
-        try:
-            for index, obj in enumerate(targets):
-                progress = BakeProgressReporter(
-                    wm=wm,
-                    part_index=index,
-                    part_count=len(targets),
-                    part_name=obj.name,
-                    span_fraction=bake_span,
-                )
-                try:
-                    image = bake_bevel_map_for_object(
-                        obj,
-                        resolution=settings.resolution,
-                        samples=settings.samples,
-                        ensure_uv=settings.ensure_uv,
-                        progress=progress,
-                    )
-                    path = save_bevel_image(
-                        image,
-                        output_dir,
-                        obj.name,
-                        file_format=settings.file_format,
-                    )
-                    baked.append({"part": obj.name, "path": path})
-                except Exception as exc:  # noqa: BLE001 - report per-part bake failures in UI
-                    errors.append(f"{obj.name}: {exc}")
-        finally:
-            if not (baked and export_after):
-                wm.progress_end()
+        BakeProgressReporter._wm_progress_update(wm, 0, "Starting bevel bake…")
+        self._timer = wm.event_timer_add(0.1, window=context.window)
+        wm.modal_handler_add(self)
+        print(f"[Bionicle Kit Bevel] Baking {len(targets)} part(s)…", flush=True)
+        return {"RUNNING_MODAL"}
 
-        if baked:
-            manifest = os.path.join(output_dir, "bevel_manifest.json")
-            with open(manifest, "w", encoding="utf-8") as handle:
-                json.dump(
-                    {
-                        "kit_stem": settings.kit_stem,
-                        "files": baked,
-                    },
-                    handle,
-                    indent=2,
-                )
+    def modal(self, context, event):
+        if event.type != "TIMER":
+            return {"PASS_THROUGH"}
 
-        if baked and settings.export_after_bake:
-            coll_name = settings.source_collection
-            if settings.target_mode == "ACTIVE_COLLECTION":
-                coll_name = context.view_layer.active_layer_collection.collection.name
-            export_path = bpy.path.abspath(settings.export_glb_path.strip())
-            if not export_path:
-                blend_dir = os.path.dirname(bpy.data.filepath) if bpy.data.filepath else "//"
-                export_path = os.path.join(bpy.path.abspath(blend_dir), f"{settings.kit_stem}.glb")
-            try:
-                BakeProgressReporter._wm_progress_update(wm, 92)
-                print("[Bionicle Kit Bevel] Exporting kit GLB…", flush=True)
-                count = export_kit_collection_glb(coll_name, export_path)
-                BakeProgressReporter._wm_progress_update(wm, 100)
-                self.report({"INFO"}, f"Baked {len(baked)} map(s); exported {count} object(s)")
-            except Exception as exc:  # noqa: BLE001
-                self.report({"WARNING"}, f"Baked {len(baked)} map(s); GLB export failed: {exc}")
-                return {"FINISHED"}
-            finally:
-                wm.progress_end()
+        runner = self._runner
+        if runner is None:
+            return self._finish(context, {"CANCELLED"})
 
-        if errors:
-            self.report({"ERROR"}, f"Baked {len(baked)}; failed {len(errors)}. See console.")
-            for line in errors:
-                print("[Bionicle Kit Bevel Bake]", line)
-            return {"CANCELLED"} if not baked else {"FINISHED"}
+        status = runner.tick()
+        if status == "RUNNING":
+            return {"RUNNING_MODAL"}
 
-        self.report({"INFO"}, f"Baked {len(baked)} map(s) to {output_dir}")
-        return {"FINISHED"}
+        for line in runner.errors:
+            print("[Bionicle Kit Bevel Bake]", line, flush=True)
+
+        if status == "FINISHED_WITH_ERRORS" and not runner.baked:
+            self.report({"ERROR"}, runner.summary())
+            return self._finish(context, {"CANCELLED"})
+
+        if runner.errors:
+            self.report({"WARNING"}, runner.summary())
+        else:
+            self.report({"INFO"}, runner.summary())
+        return self._finish(context, {"FINISHED"})
+
+    def _finish(self, context, result):
+        wm = context.window_manager
+        if self._timer is not None:
+            wm.event_timer_remove(self._timer)
+            self._timer = None
+        wm.progress_end()
+        self._runner = None
+        return result
+
+    def execute(self, context):
+        return self.invoke(context, None)
 
 
 class BIONICLE_PT_bevel_bake(Panel):
