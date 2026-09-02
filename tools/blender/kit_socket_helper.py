@@ -381,11 +381,15 @@ def _matches_kit_node_name(obj, kit_node_name):
     return strip_numeric_suffix(obj.name) == kit_node_name
 
 
+def _collection_is_linked(parent, child):
+    return any(existing == child or existing.name == child.name for existing in parent.children)
+
+
 def _get_or_create_kit_collection(context):
     kit_collection = bpy.data.collections.get(KIT_COLLECTION_NAME)
     if kit_collection is None:
         kit_collection = bpy.data.collections.new(KIT_COLLECTION_NAME)
-    if kit_collection.name not in context.scene.collection.children:
+    if not _collection_is_linked(context.scene.collection, kit_collection):
         context.scene.collection.children.link(kit_collection)
     return kit_collection
 
