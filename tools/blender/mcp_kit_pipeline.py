@@ -113,6 +113,11 @@ def load_attachment_map_from_file(path: str):
     return addon._parse_attachment_map(text)
 
 
+def sync_and_attach(context, scope: str = "SELECTED"):
+    bpy, addon = _ensure_addon_loaded()
+    return addon.sync_and_attach_kit_previews(bpy.context, scope=scope)
+
+
 def summarize_scene():
     bpy, addon = _ensure_addon_loaded()
     scene = bpy.context.scene

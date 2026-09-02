@@ -4,9 +4,60 @@
 per-character kit objects with named socket empties, optionally previewing shared kit
 pieces in Blender, and exporting attachment maps for the game runtime.
 
+Install **`kit_socket_helper.py`** (required). Keep **`kit_socket_infer.py`** in the
+same folder when installing from the repo so kit-name inference stays in sync with
+unit tests; the addon falls back to an embedded copy if the sibling file is missing.
+
+## Recommended workflow (visual matching + automated attach)
+
+The step that **cannot** be automated is identifying which embedded mesh corresponds
+to which shared kit piece — that still requires visually comparing the character mesh
+to kit library objects (and sometimes the kit piece is not in the library yet).
+
+Everything **after** you rename socket empties can be automated:
+
+### Phase 1 — Create placeholders
+
+1. Select embedded kit meshes on the character.
+2. Click **Create Socket Empties** (parent to bone, hide sources).
+
+### Phase 2 — Manual rename (visual matching)
+
+Rename each empty to the standardized socket name used in attachment maps. Examples
+from `src/rendering/3d/kit/attachments/`:
+
+| Rig socket (empty name) | Shared kit node |
+| ----------------------- | --------------- |
+| `Axle2L_Head`           | `Axle2L`        |
+| `Axle2L_Chest`          | `Axle2L`        |
+| `Pin2L_Head_B`          | `Pin2L`         |
+| `GearM_ShoulderL`       | `GearM`         |
+| `AxleMod2L_ArmUpperL`   | `AxleMod2L`     |
+
+Pattern: `{KitNodeName}` when unique on the rig, or `{KitNodeName}_{Location}` /
+`{KitNodeName}{Location}` when the same kit piece appears more than once.
+
+### Phase 3 — Sync & attach (automated)
+
+1. Set **Kit Library Path** to your shared kit `.blend` (e.g. `kit_2001.blend`).
+2. Select the renamed empties (or use **Sync Scene** for all tagged sockets).
+3. Click **Sync Renamed Sockets & Attach Kit**.
+
+This step:
+
+- copies each empty's **object name** into `bionicle_socket`;
+- **infers** `bionicle_kit_node` by longest-prefix match against object names in the
+  kit library (`Axle2L_Head` → `Axle2L`);
+- **resets socket local transforms** to identity in parent space (matches runtime);
+- **appends kit previews**, parents them to each socket, and resets preview transforms;
+- **skips** sockets whose kit node is not in the library yet (logged to the console).
+
+Optional: paste attachment-map `materialColors` into **Attachment Map JSON** for
+preview tinting. Use **Copy Scene** to export the TypeScript snippet when done.
+
 ## What it does
 
-### Socket creation (existing)
+### Socket creation
 
 For every selected non-empty object, the addon can:
 
@@ -14,99 +65,47 @@ For every selected non-empty object, the addon can:
 - parent the empty to the same object or armature bone as the source object;
 - name the empty from the source object's parent bone/object, source object name,
   source object base name, or a custom value;
-- store the source kit object name on the empty;
-- optionally hide the original source object so it does not export with the
-  character GLB; and
+- store metadata on the empty for export tooling;
+- optionally hide the original source object; and
 - copy a TypeScript attachment map snippet.
 
-### Full pipeline (v0.2)
+### Full pipeline (optional)
 
-**Process Selected (Full Pipeline)** runs the steps you were doing manually:
-
-1. **Rename / socket naming** — uses Socket Name + Kit Node Name modes (default: parent
-   bone name + shared kit object base name).
-2. **Reparent** — copies the source object's bone/object parenting onto each empty.
-3. **Fix empty orientation** — default **Local Identity** rotation (zero rotation in
-   parent space, same as runtime `useKitAttachments`); optional **Match Source**.
-4. **Delete original meshes** — optional `Delete Source Meshes After` (with
-   `Only Delete Hidden Sources` safety).
-5. **Add kit parts** — optional append from a shared kit `.blend`, parent to each
-   socket, reset local transform to identity.
-6. **Material preview** — optional `materialColors` from Attachment Map JSON (Lego hex
-   or palette keys) applied to preview meshes.
-
-Individual operators are also available under **Kit preview tools** in the panel.
+**Process Selected (Full Pipeline)** combines socket creation with optional source
+deletion and kit preview attachment in one step — useful when names are already known.
+When you need visual matching first, prefer the two-phase workflow above.
 
 ## Install
 
 1. Open Blender.
 2. Go to `Edit > Preferences > Add-ons > Install...`.
-3. Pick `tools/blender/kit_socket_helper.py`.
+3. Pick `tools/blender/kit_socket_helper.py` (keep `kit_socket_infer.py` alongside it).
 4. Enable `Bionicle Kit Socket Helper`.
 
 The panel appears in `View3D > Sidebar > Bionicle Kit`.
 
-## Typical character GLB workflow
+## Export
 
-### One-click export prep
-
-1. Open the character `.blend`.
-2. Select the kit mesh objects that should come from `kit_2001.glb`.
-3. In `Bionicle Kit`:
-   - **Socket Name** → `Parent Bone/Object` (empty named after the rig bone).
-   - **Kit Node Name** → `Object Name (No .001)` for shared kit assets.
-   - **Empty Rotation** → `Local Identity` (matches runtime attachment).
-   - **Parent** → `Same Parent`.
-   - Enable **Delete Source Meshes After** if you want originals removed (not just hidden).
-   - Enable **Attach Kit Previews After** only for in-Blender validation (do not export previews).
-   - Set **Kit Library Path** to your shared `kit_2001.blend` when using previews.
-   - Paste character `*MataKitAttach.ts` contents (or JSON) into **Attachment Map JSON** for
-     material preview and kit node overrides.
-4. Click **Process Selected (Full Pipeline)**.
-
-### Manual step-by-step
-
-Same settings as above, but use:
-
-- **Create Socket Empties** — sockets only;
-- **Delete Tagged Source Meshes** — remove replaced originals;
-- **Attach Kit Previews** — append kit pieces and reset transforms;
-- **Apply Material Preview** — tint preview meshes from the attachment map;
-- **Copy Scene** — paste the TypeScript snippet into `*MataKitAttach.ts`, adding
-  `materialColors` where needed.
-
-5. Export the character GLB with empties included. Exclude kit preview objects and
-   deleted/hidden source meshes from export.
+Export the character GLB with socket empties included. Exclude kit preview objects
+(`bionicle_kit_preview`) and deleted/hidden source meshes from export.
 
 ## Kit GLB workflow
 
 For the shared kit file itself, keep one visible mesh per reusable asset and name
 it to match `kitNodeName` values from the attachment map (`MataFoot`,
-`MataLegModThigh`, `Axle3L`, and so on). The runtime walks the kit GLB scene by
-object name, clones the matching node, and attaches it to the exported character
-socket.
+`MataLegModThigh`, `Axle3L`, and so on).
 
 ## Cursor / Blender MCP
 
-You can drive the same operators from Cursor via [Blender MCP](https://github.com/ahujasid/blender-mcp).
+Drive the post-rename step from Cursor via [Blender MCP](https://github.com/ahujasid/blender-mcp).
 
 ### Setup
 
-1. **Cursor** — this repo includes `.cursor/mcp.json` with the `blender-mcp` server.
-   Enable it in Cursor Settings → MCP (requires [uv](https://docs.astral.sh/uv/) installed locally).
-2. **Blender** — install the Blender MCP bridge add-on (`uvx blender-mcp install-addon`)
-   and click **Start MCP Server** in the 3D View sidebar.
-3. **Re-install** `tools/blender/kit_socket_helper.py` in Blender after pulling updates.
+1. **Cursor** — `.cursor/mcp.json` includes the `blender-mcp` server (requires [uv](https://docs.astral.sh/uv/)).
+2. **Blender** — `uvx blender-mcp install-addon`, then **Start MCP Server**.
+3. Re-install the addon after pulling updates.
 
-### Example prompts
-
-Ask Cursor (with Blender open and MCP connected):
-
-> Run the Bionicle kit socket full pipeline on my current selection. Kit library is
-> `/path/to/kit_2001.blend`. Use parent bone names for sockets, object base names for kit
-> nodes, local identity rotation, delete hidden sources after, and attach kit previews.
-
-Cursor can execute:
+### Example (after manual rename)
 
 ```python
 import bpy
@@ -116,51 +115,32 @@ from tools.blender import mcp_kit_pipeline as kit
 
 kit.configure_scene(
     kit_library_path="/path/to/kit_2001.blend",
-    socket_name_mode="PARENT",
-    kit_name_mode="OBJECT_BASE",
-    empty_rotation_mode="LOCAL_IDENTITY",
-    delete_sources_after=True,
-    attach_kit_preview_after=True,
+    attach_kit_preview_after=False,
 )
-kit.process_selected()
-print(kit.summarize_scene())
+bpy.context.scene.bionicle_reset_socket_transforms_on_sync = True
+bpy.context.scene.bionicle_infer_kit_from_socket_name = True
+print(kit.sync_and_attach(scope="SELECTED"))
 ```
 
-Or call operators directly:
+Or: `bpy.ops.bionicle.sync_and_attach_kit_previews(scope='SELECTED')`
 
-```python
-bpy.ops.bionicle.process_kit_sockets()
-bpy.ops.bionicle.attach_kit_previews(scope='SCENE')
-bpy.ops.bionicle.apply_material_preview()
-bpy.ops.bionicle.delete_tagged_sources()
-```
-
-See `tools/blender/mcp_kit_pipeline.py` for helper functions MCP can import.
+See `tools/blender/mcp_kit_pipeline.py`.
 
 ## Attachment map JSON
 
-The **Attachment Map JSON** field accepts:
+Accepts strict JSON or a pasted TypeScript snippet (`kitNodeName` lines are parsed).
+**Palette JSON** supports `{ kind: "palette", key: "mask" }` entries during preview.
 
-- strict JSON (`{"Ankle_L": {"kitNodeName": "MataLegModThigh", "materialColors": {...}}}`), or
-- a pasted TypeScript snippet from **Copy Scene** (kitNodeName lines are parsed).
+## Inference tests
 
-**Palette JSON** is optional for preview tinting when using `{ kind: "palette", key: "mask" }`
-entries, e.g. `{"mask":"#FFFFFF","body":"#C91A09","arms":"#FE8A18"}`.
-
-Lego color names in `materialColors` match `src/types/Colors.ts` (`Red`, `LightGray`, etc.).
+```bash
+python3 tools/blender/test_kit_socket_infer.py
+```
 
 ## Notes
 
-- Custom properties on generated empties:
-  - `bionicle_socket`
-  - `bionicle_kit_node`
-  - `bionicle_source_object`
-- Kit preview children are tagged with `bionicle_kit_preview` and are meant for
-  viewport validation only — exclude them from character GLB export.
-- `Copy Selected` and `Copy Scene` only include empties with socket properties.
-- Blender may still display duplicate object names with `.001` suffixes. Use
-  `Object Name (No .001)` for kit node names when multiple character instances
-  point to the same shared kit asset.
-- Default **Empty Rotation** changed to **Local Identity** in v0.2 to match runtime
-  behavior (`position/rotation/scale` reset on attach). Use **Match Source** when
-  a socket must preserve the original mesh orientation.
+- Custom properties: `bionicle_socket`, `bionicle_kit_node`, `bionicle_source_object`,
+  `bionicle_kit_preview` (preview meshes only).
+- When a kit node is missing from the library, fix the library or rename the socket
+  after adding the asset — re-run **Sync & Attach**.
+- Default **Empty Rotation** on create is **Local Identity** (matches runtime attach).

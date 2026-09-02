@@ -1,18 +1,53 @@
 bl_info = {
     "name": "Bionicle Kit Socket Helper",
     "author": "Bionicle Idle RPG contributors",
-    "version": (0, 2, 0),
+    "version": (0, 3, 0),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Bionicle Kit",
     "description": "Automate shared-kit socket empties, kit preview attachment, and export prep.",
     "category": "Object",
 }
 
+import importlib.util
 import json
 import re
+from pathlib import Path
 
 import bpy
 from mathutils import Matrix, Vector
+
+
+def _load_infer_helpers():
+    infer_path = Path(__file__).with_name("kit_socket_infer.py")
+    if infer_path.exists():
+        spec = importlib.util.spec_from_file_location("kit_socket_infer", infer_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.infer_kit_node_name, module.strip_numeric_suffix
+
+    def strip_numeric_suffix(name):
+        base, dot, suffix = name.rpartition(".")
+        if dot and len(suffix) == 3 and suffix.isdigit():
+            return base
+        return name
+
+    def infer_kit_node_name(socket_name, kit_node_names):
+        socket_name = strip_numeric_suffix(socket_name)
+        kit_set = set(kit_node_names)
+        if socket_name in kit_set:
+            return socket_name
+        for kit_name in sorted(kit_set, key=len, reverse=True):
+            if not socket_name.startswith(kit_name):
+                continue
+            suffix = socket_name[len(kit_name) :]
+            if suffix == "" or suffix[0] == "_" or suffix[0].isupper():
+                return kit_name
+        return None
+
+    return infer_kit_node_name, strip_numeric_suffix
+
+
+infer_kit_node_name, strip_numeric_suffix = _load_infer_helpers()
 
 SOCKET_PROP = "bionicle_socket"
 KIT_NODE_PROP = "bionicle_kit_node"
@@ -51,10 +86,7 @@ LEGO_COLORS = {
 
 
 def _strip_numeric_suffix(name):
-    base, dot, suffix = name.rpartition(".")
-    if dot and len(suffix) == 3 and suffix.isdigit():
-        return base
-    return name
+    return strip_numeric_suffix(name)
 
 
 def _active_scene(context):
@@ -150,6 +182,107 @@ def _tagged_source_objects(scene):
 
 def _kit_preview_children(socket):
     return [child for child in socket.children if child.get(KIT_PREVIEW_PROP)]
+
+
+def _runtime_socket_name(obj):
+    return strip_numeric_suffix(obj.name)
+
+
+def _list_kit_library_objects(kit_path):
+    kit_path = bpy.path.abspath(kit_path)
+    with bpy.data.libraries.load(kit_path, link=False) as (data_from, _data_to):
+        return list(data_from.objects)
+
+
+def _reset_socket_local_transform(socket):
+    if socket.parent:
+        socket.matrix_parent_inverse = socket.parent.matrix_world.inverted()
+    socket.location = Vector((0.0, 0.0, 0.0))
+    socket.rotation_euler = (0.0, 0.0, 0.0)
+    socket.scale = (1.0, 1.0, 1.0)
+
+
+def _candidate_socket_empties(objects, scope="SELECTED"):
+    if scope == "SELECTED":
+        return [obj for obj in objects if obj.type == "EMPTY"]
+    return [
+        obj
+        for obj in objects
+        if obj.type == "EMPTY"
+        and (SOCKET_PROP in obj or KIT_NODE_PROP in obj or SOURCE_OBJECT_PROP in obj)
+    ]
+
+
+def sync_renamed_socket_properties(context, sockets, scene=None):
+    scene = scene or _active_scene(context)
+    kit_path = scene.bionicle_kit_library_path.strip()
+    kit_catalog = _list_kit_library_objects(kit_path) if kit_path else []
+
+    synced = []
+    unresolved = []
+    for socket in sockets:
+        socket_name = _runtime_socket_name(socket)
+        socket[SOCKET_PROP] = socket_name
+
+        kit_node_name = None
+        if scene.bionicle_infer_kit_from_socket_name and kit_catalog:
+            kit_node_name = infer_kit_node_name(socket_name, kit_catalog)
+        if not kit_node_name and KIT_NODE_PROP in socket:
+            kit_node_name = socket[KIT_NODE_PROP]
+        if kit_node_name:
+            socket[KIT_NODE_PROP] = kit_node_name
+            synced.append({"socket": socket_name, "kitNodeName": kit_node_name})
+        else:
+            unresolved.append(socket_name)
+
+        if scene.bionicle_reset_socket_transforms_on_sync:
+            _reset_socket_local_transform(socket)
+
+    return {"synced": synced, "unresolved": unresolved, "kit_catalog": kit_catalog}
+
+
+def sync_and_attach_kit_previews(context, sockets=None, scene=None, scope="SELECTED"):
+    scene = scene or _active_scene(context)
+    kit_path = scene.bionicle_kit_library_path.strip()
+    if not kit_path:
+        raise ValueError("Set Kit Library Path to a .blend file with shared kit objects")
+
+    candidates = sockets
+    if candidates is None:
+        pool = context.selected_objects if scope == "SELECTED" else context.scene.objects
+        candidates = _candidate_socket_empties(pool, scope=scope)
+    if not candidates:
+        raise ValueError("Select socket empties (or tag them with the addon) before syncing")
+
+    sync_result = sync_renamed_socket_properties(context, candidates, scene)
+    attached = []
+    missing = list(sync_result["unresolved"])
+
+    attachment_map = _load_attachment_map(scene)
+    palette = json.loads(scene.bionicle_palette_json) if scene.bionicle_palette_json.strip() else {}
+
+    for socket in candidates:
+        kit_node_name = socket.get(KIT_NODE_PROP)
+        row = attachment_map.get(socket[SOCKET_PROP], {})
+        if isinstance(row, dict) and row.get("kitNodeName"):
+            kit_node_name = row["kitNodeName"]
+        if not kit_node_name:
+            continue
+        if kit_node_name not in sync_result["kit_catalog"]:
+            missing.append(f"{socket[SOCKET_PROP]} → {kit_node_name} (not in kit library)")
+            continue
+        material_colors = row.get("materialColors") if isinstance(row, dict) else None
+        preview = _attach_kit_preview(
+            context, socket, kit_path, kit_node_name, material_colors, palette
+        )
+        if preview:
+            attached.append(preview)
+
+    return {
+        "synced": sync_result["synced"],
+        "attached": attached,
+        "missing": missing,
+    }
 
 
 def _parse_attachment_map(raw):
@@ -333,22 +466,38 @@ def attach_kit_previews(context, sockets=None, scene=None):
     if not kit_path:
         raise ValueError("Set Kit Library Path to a .blend file with shared kit objects")
 
+    kit_catalog = _list_kit_library_objects(kit_path)
     attachment_map = _load_attachment_map(scene)
     palette = json.loads(scene.bionicle_palette_json) if scene.bionicle_palette_json.strip() else {}
     sockets = sockets or _socket_empties(context.scene.objects)
     attached = []
+    missing = []
 
     for socket in sockets:
-        kit_node_name = socket[KIT_NODE_PROP]
-        row = attachment_map.get(socket[SOCKET_PROP], {})
+        socket_name = socket.get(SOCKET_PROP) or _runtime_socket_name(socket)
+        kit_node_name = socket.get(KIT_NODE_PROP)
+        if scene.bionicle_infer_kit_from_socket_name:
+            inferred = infer_kit_node_name(socket_name, kit_catalog)
+            if inferred:
+                kit_node_name = inferred
+                socket[KIT_NODE_PROP] = kit_node_name
+        row = attachment_map.get(socket_name, {})
         if isinstance(row, dict) and row.get("kitNodeName"):
             kit_node_name = row["kitNodeName"]
+        if not kit_node_name:
+            missing.append(socket_name)
+            continue
+        if kit_node_name not in kit_catalog:
+            missing.append(f"{socket_name} → {kit_node_name}")
+            continue
         material_colors = row.get("materialColors") if isinstance(row, dict) else None
         preview = _attach_kit_preview(
             context, socket, kit_path, kit_node_name, material_colors, palette
         )
         if preview:
             attached.append(preview)
+    if missing and not attached:
+        raise ValueError("No kit previews attached; missing kit nodes: " + ", ".join(missing[:5]))
     return attached
 
 
@@ -466,6 +615,43 @@ class BIONICLE_OT_delete_tagged_sources(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class BIONICLE_OT_sync_and_attach_kit_previews(bpy.types.Operator):
+    """After manual renames: sync socket props, infer kit nodes, reset socket transforms, attach kit previews."""
+
+    bl_idname = "bionicle.sync_and_attach_kit_previews"
+    bl_label = "Sync Renamed Sockets & Attach Kit"
+    bl_options = {"REGISTER", "UNDO"}
+
+    scope: bpy.props.EnumProperty(
+        name="Scope",
+        items=(
+            ("SELECTED", "Selected Empties", "Sync every selected empty object"),
+            ("SCENE", "Scene Sockets", "Sync all addon-tagged socket empties in the scene"),
+        ),
+        default="SELECTED",
+    )
+
+    def execute(self, context):
+        try:
+            result = sync_and_attach_kit_previews(context, scope=self.scope)
+        except ValueError as exc:
+            self.report({"WARNING"}, str(exc))
+            return {"CANCELLED"}
+
+        message = (
+            f"Synced {len(result['synced'])} socket(s); "
+            f"attached {len(result['attached'])} kit preview(s)"
+        )
+        if result["missing"]:
+            message += f"; skipped {len(result['missing'])} missing kit node(s)"
+            self.report({"WARNING"}, message + " — see Blender system console")
+            for entry in result["missing"]:
+                print(f"[Bionicle Kit Sockets] missing kit node: {entry}")
+        else:
+            self.report({"INFO"}, message)
+        return {"FINISHED"}
+
+
 class BIONICLE_OT_attach_kit_previews(bpy.types.Operator):
     """Append kit pieces from the library .blend, parent to sockets, and reset transforms."""
 
@@ -577,6 +763,8 @@ class BIONICLE_OT_copy_attachment_map(bpy.types.Operator):
             self.report({"WARNING"}, "No socket empties found")
             return {"CANCELLED"}
 
+        sync_renamed_socket_properties(context, sockets)
+
         socket_names = [obj[SOCKET_PROP] for obj in sockets]
         duplicate_names = sorted(
             {name for name in socket_names if socket_names.count(name) > 1}
@@ -589,9 +777,9 @@ class BIONICLE_OT_copy_attachment_map(bpy.types.Operator):
             return {"CANCELLED"}
 
         entries = []
-        for obj in sorted(sockets, key=lambda item: item[SOCKET_PROP]):
+        for obj in sorted(sockets, key=lambda item: _runtime_socket_name(item)):
             socket_name = obj[SOCKET_PROP]
-            kit_node_name = obj[KIT_NODE_PROP]
+            kit_node_name = obj.get(KIT_NODE_PROP) or socket_name
             entries.append(
                 f"  {_json_string(socket_name)}: {{ kitNodeName: {_json_string(kit_node_name)} }},"
             )
@@ -612,6 +800,21 @@ class BIONICLE_PT_kit_socket_helper(bpy.types.Panel):
         layout = self.layout
         scene = _active_scene(context)
 
+        layout.separator()
+        layout.label(text="After manual rename")
+        layout.label(text="Rename empties (e.g. Axle2L_Head), then:")
+        layout.prop(scene, "bionicle_kit_library_path")
+        layout.prop(scene, "bionicle_infer_kit_from_socket_name")
+        layout.prop(scene, "bionicle_reset_socket_transforms_on_sync")
+        layout.prop(scene, "bionicle_attachment_map_json")
+        layout.prop(scene, "bionicle_palette_json")
+        row = layout.row(align=True)
+        op = row.operator("bionicle.sync_and_attach_kit_previews", text="Sync Selected")
+        op.scope = "SELECTED"
+        op = row.operator("bionicle.sync_and_attach_kit_previews", text="Sync Scene")
+        op.scope = "SCENE"
+
+        layout.separator()
         layout.label(text="Create sockets from selected objects")
         layout.prop(scene, "bionicle_socket_name_mode")
         if scene.bionicle_socket_name_mode == "CUSTOM":
@@ -639,13 +842,10 @@ class BIONICLE_PT_kit_socket_helper(bpy.types.Panel):
         if scene.bionicle_delete_sources_after:
             layout.prop(scene, "bionicle_delete_only_hidden_sources")
         layout.prop(scene, "bionicle_attach_kit_preview_after")
-        layout.prop(scene, "bionicle_kit_library_path")
-        layout.prop(scene, "bionicle_attachment_map_json")
-        layout.prop(scene, "bionicle_palette_json")
         layout.operator("bionicle.process_kit_sockets", icon="AUTO")
 
         layout.separator()
-        layout.label(text="Kit preview tools")
+        layout.label(text="Kit preview tools (advanced)")
         row = layout.row(align=True)
         op = row.operator("bionicle.attach_kit_previews", text="Attach Selected")
         op.scope = "SELECTED"
@@ -758,6 +958,16 @@ def _register_scene_props():
         description="Append kit pieces from the library .blend and parent them to new sockets",
         default=False,
     )
+    bpy.types.Scene.bionicle_infer_kit_from_socket_name = bpy.props.BoolProperty(
+        name="Infer Kit Node From Socket Name",
+        description="Map Axle2L_Head → Axle2L using object names listed in the kit library .blend",
+        default=True,
+    )
+    bpy.types.Scene.bionicle_reset_socket_transforms_on_sync = bpy.props.BoolProperty(
+        name="Reset Socket Transforms On Sync",
+        description="Zero each socket empty's local location/rotation/scale in parent space before attaching kit previews",
+        default=True,
+    )
     bpy.types.Scene.bionicle_kit_library_path = bpy.props.StringProperty(
         name="Kit Library Path",
         description="Path to the shared kit .blend file (for preview attachment)",
@@ -793,6 +1003,8 @@ def _unregister_scene_props():
     del bpy.types.Scene.bionicle_delete_sources_after
     del bpy.types.Scene.bionicle_delete_only_hidden_sources
     del bpy.types.Scene.bionicle_attach_kit_preview_after
+    del bpy.types.Scene.bionicle_infer_kit_from_socket_name
+    del bpy.types.Scene.bionicle_reset_socket_transforms_on_sync
     del bpy.types.Scene.bionicle_kit_library_path
     del bpy.types.Scene.bionicle_attachment_map_json
     del bpy.types.Scene.bionicle_palette_json
@@ -802,6 +1014,7 @@ classes = (
     BIONICLE_OT_create_socket_empties,
     BIONICLE_OT_process_kit_sockets,
     BIONICLE_OT_delete_tagged_sources,
+    BIONICLE_OT_sync_and_attach_kit_previews,
     BIONICLE_OT_attach_kit_previews,
     BIONICLE_OT_reset_kit_preview_transforms,
     BIONICLE_OT_apply_material_preview,
