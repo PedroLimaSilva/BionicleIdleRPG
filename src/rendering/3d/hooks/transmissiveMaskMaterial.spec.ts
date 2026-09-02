@@ -1,6 +1,9 @@
 import { FrontSide, MeshPhysicalMaterial, MeshStandardMaterial, Texture } from 'three';
 import {
+  TRANSMISSIVE_MASK_KAUKAU_OPACITY,
+  TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS,
   TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION,
+  TRANSMISSIVE_MASK_RAU_ROUGHNESS,
   TRANSMISSIVE_MASK_RAU_TRANSMISSION,
   applyTransmissiveMaskMaterial,
   resolveTransmissiveMaskKind,
@@ -25,8 +28,10 @@ describe('resolveTransmissiveMaskKind', () => {
 });
 
 describe('applyTransmissiveMaskMaterial', () => {
-  it('upgrades Mata Kaukau to runtime transmission while keeping opacity', () => {
+  it('upgrades Mata Kaukau with softer transmission and less alpha', () => {
     const mat = new MeshStandardMaterial({
+      metalness: 0.4,
+      metalnessMap: new Texture(),
       name: 'Kaukau_baked',
       normalMap: new Texture(),
       opacity: 0.5,
@@ -37,7 +42,12 @@ describe('applyTransmissiveMaskMaterial', () => {
     expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next!.transmission).toBe(TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION);
     expect(next!.ior).toBe(TRANSMISSIVE_KIT_IOR);
-    expect(next!.opacity).toBe(0.5);
+    expect(next!.opacity).toBe(TRANSMISSIVE_MASK_KAUKAU_OPACITY);
+    expect(next!.roughness).toBe(TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS);
+    expect(next!.metalness).toBe(0);
+    expect(next!.metalnessMap).toBeNull();
+    expect(next!.roughnessMap).toBeNull();
+    expect(next!.envMapIntensity).toBe(0.35);
     expect(next!.transparent).toBe(true);
     expect(next!.depthWrite).toBe(false);
     expect(next!.side).toBe(FrontSide);
@@ -45,18 +55,24 @@ describe('applyTransmissiveMaskMaterial', () => {
     expect(next!.transmissionMap).toBeNull();
   });
 
-  it('upgrades Great Rau and drops baked transmission maps', () => {
+  it('upgrades Great Rau with matte dielectric transmission', () => {
     const mat = new MeshPhysicalMaterial({
+      metalnessMap: new Texture(),
       name: 'Rau_baked',
       normalMap: new Texture(),
       opacity: 1,
-      roughness: 0.5,
+      roughness: 0.1,
+      roughnessMap: new Texture(),
       transmission: 0,
       transmissionMap: new Texture(),
     });
     const next = applyTransmissiveMaskMaterial(mat);
     expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next!.transmission).toBe(TRANSMISSIVE_MASK_RAU_TRANSMISSION);
+    expect(next!.roughness).toBe(TRANSMISSIVE_MASK_RAU_ROUGHNESS);
+    expect(next!.metalness).toBe(0);
+    expect(next!.metalnessMap).toBeNull();
+    expect(next!.roughnessMap).toBeNull();
     expect(next!.transmissionMap).toBeNull();
     expect(next!.transparent).toBe(true);
     expect(next!.depthWrite).toBe(false);

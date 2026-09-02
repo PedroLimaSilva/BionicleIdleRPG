@@ -3,13 +3,16 @@ import { TRANSMISSIVE_KIT_IOR, TRANSMISSIVE_KIT_THICKNESS } from './transmissive
 
 type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
-/** Mata Kaukau — semi-transparent water mask; pairs with GLB opacity 0.5. */
-export const TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION = 0.5;
+/** Mata Kaukau — overrides GLB opacity 0.5; less see-through than raw alpha blend. */
+export const TRANSMISSIVE_MASK_KAUKAU_OPACITY = 0.75;
 
-/** Great Rau — matches `KHR_materials_transmission.transmissionFactor` in `Toa_Metru/Masks.glb`. */
-export const TRANSMISSIVE_MASK_RAU_TRANSMISSION = 1;
+export const TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION = 0.3;
 
-export const TRANSMISSIVE_MASK_ROUGHNESS = 0.2;
+/** Great Rau — softer than baked transmissionFactor 1 to avoid mirror-like refraction. */
+export const TRANSMISSIVE_MASK_RAU_TRANSMISSION = 0.6;
+
+export const TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS = 0.5;
+export const TRANSMISSIVE_MASK_RAU_ROUGHNESS = 0.45;
 
 export type TransmissiveMaskKind = 'kaukau' | 'rau';
 
@@ -29,6 +32,7 @@ export function resolveTransmissiveMaskKind(
 
 function presetForKind(kind: TransmissiveMaskKind): {
   ior: number;
+  opacity: number | undefined;
   transmission: number;
   roughness: number;
   thickness: number;
@@ -37,14 +41,16 @@ function presetForKind(kind: TransmissiveMaskKind): {
     case 'kaukau':
       return {
         ior: TRANSMISSIVE_KIT_IOR,
-        roughness: TRANSMISSIVE_MASK_ROUGHNESS,
+        opacity: TRANSMISSIVE_MASK_KAUKAU_OPACITY,
+        roughness: TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS,
         thickness: TRANSMISSIVE_KIT_THICKNESS,
         transmission: TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION,
       };
     case 'rau':
       return {
         ior: TRANSMISSIVE_KIT_IOR,
-        roughness: TRANSMISSIVE_MASK_ROUGHNESS,
+        opacity: undefined,
+        roughness: TRANSMISSIVE_MASK_RAU_ROUGHNESS,
         thickness: TRANSMISSIVE_KIT_THICKNESS,
         transmission: TRANSMISSIVE_MASK_RAU_TRANSMISSION,
       };
@@ -91,7 +97,14 @@ export function applyTransmissiveMaskMaterial(
   physical.ior = preset.ior;
   physical.thickness = preset.thickness;
   physical.roughness = preset.roughness;
+  physical.metalness = 0;
+  physical.metalnessMap = null;
+  physical.roughnessMap = null;
+  physical.envMapIntensity = 0.35;
   physical.transmissionMap = null;
+  if (preset.opacity !== undefined) {
+    physical.opacity = preset.opacity;
+  }
   physical.transparent = true;
   physical.depthWrite = false;
   physical.side = FrontSide;
