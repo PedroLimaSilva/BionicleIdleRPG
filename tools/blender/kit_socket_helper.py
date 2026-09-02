@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Bionicle Kit Socket Helper",
     "author": "Bionicle Idle RPG contributors",
-    "version": (0, 3, 4),
+    "version": (0, 4, 0),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Bionicle Kit",
     "description": "Automate shared-kit socket empties, kit preview attachment, and export prep.",
@@ -903,64 +903,24 @@ class BIONICLE_PT_kit_socket_helper(bpy.types.Panel):
         layout = self.layout
         scene = _active_scene(context)
 
-        layout.separator()
-        layout.label(text="After manual rename")
-        layout.label(text="Rename empties (e.g. Axle2L_Head), then:")
-        layout.prop(scene, "bionicle_kit_library_path")
-        layout.prop(scene, "bionicle_infer_kit_from_socket_name")
-        layout.prop(scene, "bionicle_reset_socket_transforms_on_sync")
-        layout.prop(scene, "bionicle_attachment_map_json")
-        layout.prop(scene, "bionicle_palette_json")
-        row = layout.row(align=True)
+        box = layout.box()
+        box.label(text="1. Create placeholders")
+        box.operator("bionicle.create_socket_empties", icon="EMPTY_AXIS")
+
+        box = layout.box()
+        box.label(text="2. After manual rename")
+        box.label(text="Rename empties (e.g. Axle2L_Head), then:")
+        box.prop(scene, "bionicle_kit_library_path", text="Kit Library")
+        row = box.row(align=True)
         op = row.operator("bionicle.sync_and_attach_kit_previews", text="Sync Selected")
         op.scope = "SELECTED"
         op = row.operator("bionicle.sync_and_attach_kit_previews", text="Sync Scene")
         op.scope = "SCENE"
 
-        layout.separator()
-        layout.label(text="Create sockets from selected objects")
-        layout.prop(scene, "bionicle_socket_name_mode")
-        if scene.bionicle_socket_name_mode == "CUSTOM":
-            layout.prop(scene, "bionicle_custom_socket_name")
-        layout.prop(scene, "bionicle_kit_name_mode")
-        if scene.bionicle_kit_name_mode == "CUSTOM":
-            layout.prop(scene, "bionicle_custom_kit_node_name")
-
-        layout.separator()
-        layout.prop(scene, "bionicle_parent_mode")
-        layout.prop(scene, "bionicle_empty_rotation_mode")
-        if scene.bionicle_empty_rotation_mode == "LOCAL_IDENTITY":
-            layout.prop(scene, "bionicle_local_identity_keep_world_location")
-        layout.prop(scene, "bionicle_preserve_source_transform")
-        layout.prop(scene, "bionicle_empty_display_type")
-        layout.prop(scene, "bionicle_empty_size")
-        layout.prop(scene, "bionicle_hide_source")
-        layout.prop(scene, "bionicle_skip_existing")
-        layout.prop(scene, "bionicle_select_created")
-        layout.operator("bionicle.create_socket_empties", icon="EMPTY_AXIS")
-
-        layout.separator()
-        layout.label(text="Full pipeline")
-        layout.prop(scene, "bionicle_delete_sources_after")
-        if scene.bionicle_delete_sources_after:
-            layout.prop(scene, "bionicle_delete_only_hidden_sources")
-        layout.prop(scene, "bionicle_attach_kit_preview_after")
-        layout.operator("bionicle.process_kit_sockets", icon="AUTO")
-
-        layout.separator()
-        layout.label(text="Kit preview tools (advanced)")
-        row = layout.row(align=True)
-        op = row.operator("bionicle.attach_kit_previews", text="Attach Selected")
-        op.scope = "SELECTED"
-        op = row.operator("bionicle.attach_kit_previews", text="Attach Scene")
-        op.scope = "SCENE"
-        layout.operator("bionicle.reset_kit_preview_transforms", icon="OBJECT_ORIGIN")
-        layout.operator("bionicle.apply_material_preview", icon="MATERIAL")
-        layout.operator("bionicle.delete_tagged_sources", icon="TRASH")
-
-        layout.separator()
-        layout.label(text="Attachment map")
-        row = layout.row(align=True)
+        box = layout.box()
+        box.label(text="Attachment map (optional)")
+        box.prop(scene, "bionicle_attachment_map_json", text="JSON")
+        row = box.row(align=True)
         op = row.operator("bionicle.copy_attachment_map", text="Copy Selected")
         op.scope = "SELECTED"
         op = row.operator("bionicle.copy_attachment_map", text="Copy Scene")
@@ -1037,12 +997,12 @@ def _register_scene_props():
         name="Empty Size", default=0.08, min=0.001, soft_max=1.0
     )
     bpy.types.Scene.bionicle_hide_source = bpy.props.BoolProperty(
-        name="Hide Source Objects", default=True
+        name="Hide Source Objects", default=False
     )
     bpy.types.Scene.bionicle_skip_existing = bpy.props.BoolProperty(
         name="Skip Already Tagged Objects",
         description="Do not create another empty for an object processed by this addon",
-        default=True,
+        default=False,
     )
     bpy.types.Scene.bionicle_select_created = bpy.props.BoolProperty(
         name="Select Created Empties", default=True
