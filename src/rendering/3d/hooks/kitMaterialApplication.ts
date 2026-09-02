@@ -22,6 +22,7 @@ import {
   meshHasBevelUv,
   type WeatheredMetalOptions,
 } from '../CharacterScene/WeatheredMetalMaterial';
+import { applyRuntimeGeometricBevelToObject } from '../CharacterScene/runtimeGeometricBevel';
 import { hasMaskPbrMaps } from './maskMaterial';
 import {
   buildTransmissiveKitMaterial,
@@ -192,7 +193,9 @@ export function buildKitMeshMaterials(
         ...mergeSlotWeatheredOpts(spec),
         // Map is per kit part (clone); drop it on meshes that still have no UVs.
         bevelMap:
-          weatheredBase.bevelMap && meshHasBevelUv(mesh) ? weatheredBase.bevelMap : undefined,
+          weatheredBase.runtimeBevel || !weatheredBase.bevelMap || !meshHasBevelUv(mesh)
+            ? undefined
+            : weatheredBase.bevelMap,
       };
       const weathered = getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
       // MataFace stalk shares a plane with brain gel — DoubleSide back-faces z-fight the gel.
@@ -216,6 +219,9 @@ export function applyKitMaterialsToObject(
   palette: BaseMatoran['colors'],
   weatheredBase: WeatheredMetalOptions | undefined
 ): void {
+  if (weatheredBase?.runtimeBevel) {
+    applyRuntimeGeometricBevelToObject(root);
+  }
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;

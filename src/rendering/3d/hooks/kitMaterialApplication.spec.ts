@@ -290,4 +290,18 @@ describe('buildKitMeshMaterials bevel map', () => {
     expect(getWeatheredBevelMap(mat)).toBeNull();
     expect(mat.metalness).toBe(weatheredWithMap.metalness);
   });
+
+  test('runtime bevel skips the baked map even when UVs exist', () => {
+    const mesh = meshWithUvAndSlots(['Main']);
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'body', slot: 'main' },
+      }),
+      COLORS,
+      { ...weatheredWithMap, runtimeBevel: true }
+    ) as MeshStandardMaterial;
+    expect(getWeatheredBevelMap(next)).toBeNull();
+    expect(next.metalness).toBe(weatheredWithMap.metalness);
+  });
 });

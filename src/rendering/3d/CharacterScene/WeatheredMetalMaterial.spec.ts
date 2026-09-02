@@ -20,6 +20,14 @@ describe('getWeatheredMetalMaterial bevel map cache', () => {
     expect(getWeatheredMetalMaterial('#ffffff', { bevelMap: a, metalness: 0.05 })).toBe(withA);
   });
 
+  test('runtime bevel does not share a cache entry with the baked-map material', () => {
+    const a = mapTex();
+    const baked = getWeatheredMetalMaterial('#ffffff', { bevelMap: a, metalness: 0.05 });
+    const runtime = getWeatheredMetalMaterial('#ffffff', { metalness: 0.05, runtimeBevel: true });
+    expect(runtime).not.toBe(baked);
+    expect(getWeatheredBevelMap(runtime)).toBeNull();
+  });
+
   test('non-weathered materials report no map', () => {
     expect(getWeatheredBevelMap(new MeshStandardMaterial())).toBeNull();
   });

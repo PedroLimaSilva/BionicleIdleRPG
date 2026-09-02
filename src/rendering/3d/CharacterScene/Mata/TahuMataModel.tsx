@@ -12,7 +12,7 @@ import type { WeatheredMetalOptions } from '../WeatheredMetalMaterial';
 
 const TAHU_WEATHERED: WeatheredMetalOptions = {
   cavityStrength: 1,
-  debugBevelAsColor: true, // TODO: remove after MataChest bevel map verification
+  debugBevelAsColor: true,
   edgeColor: '#ffffff',
   edgeCurvatureScale: 2,
   edgeStrength: 0.15,
@@ -23,6 +23,8 @@ const TAHU_WEATHERED: WeatheredMetalOptions = {
   largeScale: 3.5,
   metalness: 0.05,
   roughness: 0.55,
+  runtimeBevel: true,
+  runtimeBevelRadius: 0.12,
 };
 
 export const TahuMataModel = forwardRef<

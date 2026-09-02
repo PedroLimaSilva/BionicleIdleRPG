@@ -28,6 +28,22 @@ See also:
 
 - `src/rendering/3d/CharacterScene/kitBevelMap.ts`
 - `src/rendering/3d/kit/kitBevelNodes.ts`
+- Runtime visual target (no bake): `src/rendering/3d/CharacterScene/runtimeGeometricBevel.ts`
+
+## Runtime spike (visual target)
+
+Blender bakes have not yet matched the intended look. Tahu Mata currently draws a
+**runtime geometric bevel** so we can judge the RG target in-game first:
+
+1. CPU dihedrals on position-welded edges (convex vs concave)
+2. Vertex varyings: barycentric, per-edge sharpness, triangle altitude
+3. Fragment: object-space distance to sharp edges → R wear / G cavity
+
+Enable on a model with `runtimeBevel: true` and `debugBevelAsColor: true` (red =
+convex wear, green = concave). TSL graph (not wired to the WebGL canvas):
+`runtimeGeometricBevelTsl.ts` (`three/nodes` / `tslFn` in three r160).
+
+Do not expand the Blender bake allowlist until this debug view looks right.
 
 ## Kit `.blend` collections
 

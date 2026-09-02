@@ -5,6 +5,7 @@ import type { BaseMatoran } from '../../../types/Matoran';
 import type { KitSocketAttachment } from '../../../types/KitParts';
 import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
 import { loadKitBevelMapsForNodes } from '../CharacterScene/kitBevelMap';
+import { applyRuntimeGeometricBevelToObject } from '../CharacterScene/runtimeGeometricBevel';
 import { normalizeMatoranColors } from '../../../game/characters/matoranColors';
 import { applyKitMaterialsToObject, buildKitMaterialSlotLookup } from './kitMaterialApplication';
 import { notifyModelReadyForTestMode } from '../../../utils/testMode';
@@ -76,7 +77,7 @@ export function useKitAttachments({
   onAttachedRef.current = onAttached;
 
   useEffect(() => {
-    if (!weathered) {
+    if (!weathered || weathered.runtimeBevel) {
       setBevelByNode(new Map());
       return;
     }
@@ -111,6 +112,10 @@ export function useKitAttachments({
       clone.position.set(0, 0, 0);
       clone.rotation.set(0, 0, 0);
       clone.scale.set(1, 1, 1);
+
+      if (weathered?.runtimeBevel) {
+        applyRuntimeGeometricBevelToObject(clone);
+      }
 
       const slotLookup = buildKitMaterialSlotLookup(row.materialColors);
       const partBevel = bevelByNode.get(row.kitNodeName);
