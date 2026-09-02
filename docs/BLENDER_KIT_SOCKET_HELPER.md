@@ -33,10 +33,11 @@ Paste a `*KitAttach.ts` snippet into **JSON** for material preview during sync.
 Export the character GLB with socket empties. Exclude `Kit` collection preview
 meshes and original source meshes from export.
 
-## MCP
+## Cursor / Blender MCP (optional)
 
-See `.cursor/mcp.json` and `tools/blender/mcp_kit_pipeline.py`. Operators remain
-available via `bpy.ops.bionicle.*` even though they are not in the simplified panel.
+`.cursor/mcp.json` is kept for future Cursor + Blender MCP work. It is not required
+for the addon panel workflow. When set up, you can drive `bpy.ops.bionicle.*`
+operators from Cursor against a live Blender session.
 
 ## Tests
 
