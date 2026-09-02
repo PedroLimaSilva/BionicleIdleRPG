@@ -6,15 +6,18 @@ import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
 import { BattleOutcome } from './BattleOutcome';
 import { useBattlePageHitFeedback } from './useBattlePageHitFeedback';
-import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { Arena } from './Arena';
 import {
   getEnemiesDefeatedCount,
   computeBattleExpTotal,
   computeKranaRewardsForBattle,
   computeKraataRewardsForBattle,
-} from '../../game/BattleRewards';
+} from '../../game/combat/BattleRewards';
 import { KraataReward } from '../../types/Kraata';
+import { BattleSpeedControl } from './BattleSpeedControl';
+import { setBattleSpeedMultiplier } from '../../utils/battleSpeed';
+import { getEncounterArenaId, getEncounterTribe } from '../../game/combat/arena';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
@@ -67,10 +70,24 @@ export const BattlePage: React.FC = () => {
   }, [navigate, currentEncounter]);
 
   useEffect(() => {
-    if (currentEncounter) {
-      setScene(<Arena team={battle.team} enemies={battle.enemies} currentWave={currentWave} />);
+    return () => setBattleSpeedMultiplier(1);
+  }, []);
+
+  useEffect(() => {
+    // Defer heavy arena GLB/atmosphere until combat starts — prep is DOM-only and E2E
+    // must stay responsive while selecting the team.
+    if (currentEncounter && phase !== BattlePhase.Preparing) {
+      setScene(
+        <Arena
+          team={battle.team}
+          enemies={battle.enemies}
+          currentWave={currentWave}
+          arenaId={getEncounterArenaId(currentEncounter)}
+          tribe={getEncounterTribe(currentEncounter)}
+        />
+      );
     } else {
-      setScene(null); // or show something else
+      setScene(null);
     }
   }, [setScene, currentEncounter, battle.team, battle.enemies, currentWave, phase]);
 
@@ -80,7 +97,8 @@ export const BattlePage: React.FC = () => {
 
   if (phase === BattlePhase.Preparing) {
     return (
-      <div className={battlePageRootClass}>
+      <div className={`${battlePageRootClass} battle-page-with-speed`}>
+        <BattleSpeedControl />
         <BattlePrep />
       </div>
     );
@@ -88,7 +106,8 @@ export const BattlePage: React.FC = () => {
 
   if (phase === BattlePhase.Inprogress) {
     return (
-      <div className={battlePageRootClass}>
+      <div className={`${battlePageRootClass} battle-page-with-speed`}>
+        <BattleSpeedControl />
         <BattleInProgress />
       </div>
     );
@@ -104,7 +123,8 @@ export const BattlePage: React.FC = () => {
 
     if (waitingOnOutcomePresentation) {
       return (
-        <div className={battlePageRootClass}>
+        <div className={`${battlePageRootClass} battle-page-with-speed`}>
+          <BattleSpeedControl />
           <BattleInProgress exitPresentation />
         </div>
       );

@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
-import { loadGameState } from '../services/gamePersistence';
+import { getDebugMode } from '../persistence/gamePersistence';
+import type { LoadedGameState } from '../persistence/gamePersistence';
 import { sendSessionTelemetry } from '../services/telemetry';
 import { useCharactersState } from './useCharactersState';
 import { useJobTickEffect } from './useJobTickEffect';
-import { useGamePersistence } from './useGamePersistence';
+import { useGamePersistence } from '../persistence/useGamePersistence';
 import { GameState, GameStateEditorApi } from '../types/GameState';
 import { useQuestState } from './useQuestState';
 import { useQuestNotifications } from './useQuestNotifications';
-import { useBattleState } from './useBattleState';
+import { BattlePhase, useBattleState } from './useBattleState';
 import { clamp } from '../utils/math';
 import { KranaCollection, KranaElement, KranaId } from '../types/Krana';
 import { BattleRewardParams, KranaReward } from '../types/GameState';
@@ -19,14 +20,14 @@ import {
   computeKranaRewardsForBattle,
   computeKraataRewardsForBattle,
   getParticipantIds,
-} from '../game/BattleRewards';
-import { isKranaCollectionActive } from '../game/Krana';
+} from '../game/combat/BattleRewards';
+import { isKranaCollectionActive } from '../game/krana/Krana';
 import {
   getAvailableEvolution,
   meetsEvolutionLevel,
   applyCharacterEvolution,
-} from '../game/CharacterEvolution';
-import { isNuvaSymbolsSequestered } from '../game/nuvaSymbols';
+} from '../game/evolution/CharacterEvolution';
+import { isNuvaSymbolsSequestered } from '../game/masks/nuvaSymbols';
 import {
   KraataCollection,
   KraataPower,
@@ -42,13 +43,10 @@ import {
   canStartRahkshiForge,
   KRAATA_ARMOR_DURATION_MS,
   RAHKSHI_FORGE_COST,
-} from '../game/KraataActions';
-import { getDebugMode } from '../services/gamePersistence';
-import { expGainedFromProtodermisSpend } from '../game/ProtodermisConversion';
+} from '../game/kraata/KraataActions';
+import { expGainedFromProtodermisSpend } from '../game/economy/ProtodermisConversion';
 
-export const useGameLogic = (): GameState & GameStateEditorApi => {
-  const [initialState] = useState(() => loadGameState());
-
+export const useGameLogic = (initialState: LoadedGameState): GameState & GameStateEditorApi => {
   const [version] = useState(initialState.version);
 
   const [collectedKrana, setCollectedKrana] = useState<KranaCollection>(
@@ -96,13 +94,19 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
   const {
     assignJobToMatoran,
     buyableCharacters,
+    createCustomCharacter,
+    customCharacters,
+    dismissCustomCharacter,
     recruitCharacter,
     recruitedCharacters,
+    registerSharedCustomCharacter,
     removeJobFromMatoran,
     setMaskOverride,
     setRecruitedCharacters,
+    updateCustomCharacter,
   } = useCharactersState(
     initialState.recruitedCharacters,
+    initialState.customCharacters ?? [],
     completedQuests,
     protodermis,
     setProtodermis
@@ -111,19 +115,22 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
   recruitedCharactersRef.current = recruitedCharacters;
   setRecruitedCharactersRef.current = setRecruitedCharacters;
 
-  useJobTickEffect(setRecruitedCharacters, (amount) =>
-    setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap))
+  const battle = useBattleState(isNuvaSymbolsSequestered(completedQuests));
+
+  useJobTickEffect(
+    setRecruitedCharacters,
+    (amount) => setProtodermis((prev) => clamp(prev + amount, 0, protodermisCap)),
+    battle.phase !== BattlePhase.Idle
   );
 
   useQuestNotifications(activeQuests);
-
-  const battle = useBattleState(isNuvaSymbolsSequestered(completedQuests));
 
   // Auto-save when critical state changes (buyableCharacters is derived, not persisted)
   useGamePersistence({
     activeQuests,
     collectedKrana,
     completedQuests,
+    customCharacters,
     kraataCollection,
     protodermis,
     protodermisCap,
@@ -137,6 +144,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
       activeQuests,
       collectedKrana,
       completedQuests,
+      customCharacters,
       kraataCollection,
       protodermis,
       protodermisCap,
@@ -260,6 +268,9 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
       );
       return true;
     },
+    createCustomCharacter,
+    customCharacters,
+    dismissCustomCharacter,
     evolveCharacter: (
       matoranId: RecruitedCharacterData['id'],
       onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
@@ -310,6 +321,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
     rahkshi,
     recruitCharacter,
     recruitedCharacters,
+    registerSharedCustomCharacter,
     removeJobFromMatoran,
     removeKraataFromRahkshi: (rahkshiId: string) => {
       const armor = rahkshi.find((r) => r.id === rahkshiId);
@@ -354,6 +366,7 @@ export const useGameLogic = (): GameState & GameStateEditorApi => {
         return prevProto - RAHKSHI_FORGE_COST;
       });
     },
+    updateCustomCharacter,
     version,
   };
 };

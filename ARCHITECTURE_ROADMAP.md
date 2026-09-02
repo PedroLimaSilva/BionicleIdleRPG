@@ -2,360 +2,95 @@
 
 ## Purpose
 
-This document identifies technical debt, inconsistencies, and architectural improvements for the Bionicle Idle RPG project. It is organized by priority and impact, with clear acceptance criteria for each item.
+This document indexes known technical debt, inconsistencies, and architectural improvements for the Bionicle Idle RPG project.
 
-**Important:** This roadmap describes _potential_ improvements. Items should only be implemented when explicitly prioritized and approved.
+**Tracking:** Open work is tracked as [GitHub issues](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues). Use issues for status, discussion, and acceptance criteria — not this file.
 
----
-
-## Priority 2: Consistency Improvements (Low Risk)
-
-### 2.1 Standardize User Feedback Mechanism
-
-**Issue:** Mixed use of `alert()` and activity log for user feedback.
-
-**Current locations:**
-
-- `src/services/matoranUtils.ts` - uses `alert()` for insufficient protodermis
-- `src/pages/Recruitment/index.tsx` - uses `alert()` for successful recruitment
-
-**Recommendation:** Replace `alert()` calls with proper UI feedback (toast notifications or activity log).
-
-**Acceptance Criteria:**
-
-- No `alert()` calls remain in codebase
-- User feedback is visible and non-blocking
-- Feedback is consistent across all actions
+**Important:** Items describe _potential_ improvements. Implement only when explicitly prioritized and approved.
 
 ---
 
-### 2.2 Standardize Variable Naming Conventions
+## Open backlog
 
-**Issue:** Inconsistent use of `CHARACTER_DEX` (snake_case) vs `matoranDex` (camelCase) for local variables.
+| Area         | Issue                                                                | Summary                                                         |
+| ------------ | -------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Consistency  | [#334](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/334) | Standardize variable naming conventions (camelCase for locals)  |
+| Consistency  | [#337](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/337) | Unified non-blocking feedback component (toast/activity log)    |
+| Game logic   | [#332](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/332) | Quest prerequisite cycle detection                              |
+| Testing      | [#338](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/338) | Expand unit test coverage for game logic                        |
+| Code quality | [#341](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/341) | Item system (deferred) — design before reintroduction           |
+| Code quality | [#336](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/336) | Clarify character tags system (implement or remove unused tags) |
+| Code quality | [#340](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/340) | Standardize timestamp units to milliseconds                     |
+| Performance  | [#335](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/335) | Lazy loading for 3D character models                            |
+| Performance  | [#339](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/339) | Memoization for expensive derived-state computations            |
 
-**Locations:** Multiple files in `src/game/` and `src/services/`
+### UI/UX and motion
 
-**Recommendation:** Use camelCase consistently for local variables.
+| Area        | Issue                                                                | Summary                                                          |
+| ----------- | -------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 3D / canvas | [#366](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/366) | Battle arena environments — desert GLB and multi-biome framework |
+| 3D / canvas | [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343) | Phase 1 — persistent canvas and remaining battle 3D polish       |
+| 3D / canvas | [#346](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/346) | Phase 2 — environmental 3D backdrops per route                   |
+| 3D / canvas | [#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) | Phase 3 — advanced combat feedback and idle ambient life         |
+| Portrait UX | [#345](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/345) | Nav label size and orientation lock                              |
+| Stretch     | [#348](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/348) | Phase 4+ — explorable world and advanced 3D features             |
+| Motion      | [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347) | UI motion Phase 2 — interactive panel animations                 |
+| Motion      | [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350) | UI motion Phase 3 — navigation and list choreography             |
 
-**Acceptance Criteria:**
+### Related design docs
 
-- All local variables use camelCase
-- No functional changes
-- TypeScript compiles without errors
-
----
-
-## Priority 3: Technical Debt (Medium Risk)
-
-### 3.1 Add Save Migration System
-
-**Issue:** Changing `CURRENT_GAME_STATE_VERSION` invalidates all saves with no migration path.
-
-**Current behavior:** Version mismatch → reject save → load `INITIAL_GAME_STATE`
-
-**Recommendation:** Implement migration functions for version upgrades.
-
-**Proposed approach:**
-
-```typescript
-type Migration = (oldState: any) => any;
-
-const MIGRATIONS: Record<number, Migration> = {
-  9: (state) => state, // v8 → v9
-  10: (state) => ({ ...state, newField: defaultValue }), // v9 → v10
-};
-
-function migrateState(state: any, targetVersion: number): any {
-  let current = state;
-  for (let v = state.version + 1; v <= targetVersion; v++) {
-    if (MIGRATIONS[v]) {
-      current = MIGRATIONS[v](current);
-      current.version = v;
-    }
-  }
-  return current;
-}
-```
-
-**Acceptance Criteria:**
-
-- Old saves are migrated instead of discarded
-- Migration failures fall back to initial state
-- Each version bump includes a migration function
+| Document                                                               | Purpose                                                                                                                                                                                       |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`docs/SAVE_PERSISTENCE_PLAN.md`](docs/SAVE_PERSISTENCE_PLAN.md)       | Technical design for [#333](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/333) and [#331](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/331)                            |
+| [`docs/ARENA_ENVIRONMENTS.md`](docs/ARENA_ENVIRONMENTS.md)             | Battle arena GLB workflow and per-arena atmosphere system — [#366](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/366)                                                              |
+| [`docs/CHARACTER_ANIMATIONS.md`](docs/CHARACTER_ANIMATIONS.md)         | Character rig & animation clip inventory (epic backlog for GLB authoring)                                                                                                                     |
+| [`docs/UI_UX_STRATEGY.md`](docs/UI_UX_STRATEGY.md)                     | Portrait-first UI/UX direction — tracked via issues [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343)–[#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) |
+| [`docs/DESIGN_UI_MOTION_ROLLOUT.md`](docs/DESIGN_UI_MOTION_ROLLOUT.md) | UI motion rollout — tracked via [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347), [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350)                    |
+| [`docs/BATTLE_SYSTEM_SPEC.md`](docs/BATTLE_SYSTEM_SPEC.md)             | Combat system reference                                                                                                                                                                       |
+| [`docs/COMBAT_TEST_COVERAGE.md`](docs/COMBAT_TEST_COVERAGE.md)         | Combat test reference                                                                                                                                                                         |
 
 ---
 
-### 3.2 Add Quest Prerequisite Cycle Detection
+## Implementation guidelines
 
-**Issue:** No validation prevents circular quest dependencies.
+### Before starting any item
 
-**Current:** Assumes quest designers don't create cycles.
+1. **Get explicit approval** — pick up a GitHub issue; do not implement roadmap ideas without authorization
+2. **Review dependencies** — check whether the issue depends on other open work
+3. **Check AGENT_GUIDELINES.md** — ensure changes do not violate architectural rules
+4. **Create a plan** — outline specific files and changes in the issue or a linked comment
+5. **Consider backward compatibility** — will this break existing saves or features?
 
-**Recommendation:** Add validation function that detects cycles in `unlockedAfter` chains.
+### During implementation
 
-**Proposed approach:**
+1. **Make incremental changes** — small PRs are easier to review and safer to merge
+2. **Test thoroughly** — verify both new functionality and existing features
+3. **Update documentation** — keep `AGENT_GUIDELINES.md` in sync with changes
+4. **Add tests** — especially for bug fixes and new game logic
 
-```typescript
-function detectQuestCycles(quests: Quest[]): string[] {
-  // Implement topological sort or DFS cycle detection
-  // Return array of quest IDs involved in cycles
-}
-```
+### After implementation
 
-**Acceptance Criteria:**
-
-- Cycles are detected at build time or app initialization
-- Error is logged with cycle details
-- Development build fails if cycles exist
-
----
-
-## Priority 4: Testing & Observability (Medium Risk)
-
-### 4.1 Add Unit Tests for Game Logic
-
-**Issue:** Minimal test coverage, especially for pure game logic functions.
-
-**Current:** Tests exist for `combatUtils`, `Levelling`, `Jobs`, `Quests`, `BattleRewards`, `Krana`, `encounterVisibility`, and various hooks/services. Coverage is improved but not yet comprehensive.
-
-**Recommendation:** Continue adding tests for critical game logic in `src/game/`:
-
-- `Levelling.ts` - exp calculations
-- `Jobs.ts` - productivity modifiers, offline progress, reward rolling
-- `Quests.ts` - quest availability filtering
-
-**Acceptance Criteria:**
-
-- Core game logic has >80% test coverage
-- Tests run in CI/CD pipeline
-- Tests verify invariants (e.g., exp never decreases, time flows forward)
+1. **Close the GitHub issue** — link the PR in the issue
+2. **Document decisions** — if you deviate from the plan, explain why in the issue or PR
+3. **File new issues** — add newly discovered technical debt as GitHub issues instead of expanding this file
 
 ---
 
-## Priority 5: Code Quality (Low Risk)
-
-### 5.1 Remove Commented Code
-
-**Issue:** Commented code suggests incomplete features or abandoned approaches.
-
-**Locations:**
-
-- `src/pages/CharacterDetail/index.tsx` (combatant stats in stats tab)
-
-**Recommendation:** Either implement the feature or remove the comment.
-
-**Acceptance Criteria:**
-
-- No commented-out code remains
-- If feature is needed, create a task to implement it properly
-
----
-
-### 5.2 Populate Missing Item Metadata
-
-**Issue:** Item fields like `rarity`, `value`, `description`, `icon` are mostly unpopulated.
-
-**Current:** Items have been removed from the active economy. The `ITEM_DICTIONARY` and `GameItemId` enum still exist for future quest-item mechanics. Fields remain undefined in most entries.
-
-**Recommendation:** Defer until items are reintroduced as quest items. At that point, either populate the fields or pare down the type.
-
-**Decision needed:**
-
-- What item types will be needed for quest-item mechanics?
-- Should the existing item definitions be repurposed or replaced?
-
-**Acceptance Criteria:**
-
-- All items have complete metadata, OR
-- Unused fields are removed from type definition
-
----
-
-### 5.3 Clarify Character Tags System
-
-**Issue:** `MatoranTag` enum exists with only one value (`ChroniclersCompany`), but tags aren't used in game logic.
-
-**Current:** Tags are defined but not referenced in quests, jobs, or combat.
-
-**Recommendation:** Either implement tag-based mechanics or remove the system.
-
-**Decision needed:**
-
-- Are tags planned for quest requirements or special abilities?
-- Should the system be removed as premature abstraction?
-
-**Acceptance Criteria:**
-
-- Tags are used in at least one game mechanic, OR
-- Tag system is removed from types and data
-
----
-
-### 5.4 Standardize Timestamp Units
-
-**Issue:** Mixed use of seconds and milliseconds creates conversion overhead.
-
-**Current:**
-
-- State stores milliseconds
-- Quest durations defined in seconds
-- `getCurrentTimestamp()` returns seconds
-
-**Recommendation:** Standardize on milliseconds everywhere, convert only at display time.
-
-**Acceptance Criteria:**
-
-- All stored timestamps use milliseconds
-- Quest durations stored in milliseconds
-- Conversion to human-readable units happens only in UI
-
----
-
-## Priority 6: Feature Completeness (High Risk)
-
-### 6.1 Implement Cutscene System ✅ Implemented
-
-**Status:** Cutscenes are implemented as a visual novel–style system. The `VisualNovelCutscene` component renders scripted dialogue sequences. Cutscene data lives in `src/data/cutscenes/` with scripts for MNOG, Bohrok Swarm, Bohrok Kal, Mask Hunt, and Mask of Light arcs.
-
----
-
-### 6.2 Character Stage Transformation ✅ Implemented
-
-**Status:** Evolution is implemented.
-
-**Implementation:** Quest rewards can include an `evolution` field that maps participant dex IDs to evolved forms (e.g., Toa Mata → Toa Nuva). The `bohrok_evolve_toa_nuva` quest triggers this. Evolution replaces the character ID, drops mask overrides, and preserves EXP/assignment/quest.
-
----
-
-### 6.3 Complete Mask Hunt Quest Line
-
-**Issue:** `masksCollected` function has hardcoded quest IDs but not all masks have individual unlock quests.
-
-**Current:** Some masks unlock via specific quests, others only via `maskhunt_final_collection`.
-
-**Recommendation:** Either complete individual mask hunt quests or document the intended unlock pattern.
-
-**Acceptance Criteria:**
-
-- All masks have individual unlock quests, OR
-- Documentation clarifies which masks are only available via final collection
-
----
-
-## Priority 7: Performance & Scalability (Low Priority)
-
-### 7.1 Optimize Job Tick Interval
-
-**Issue:** 5-second tick interval may cause performance issues with many characters.
-
-**Current:** All characters processed every 5 seconds regardless of assignment status.
-
-**Recommendation:** Only process characters with active assignments.
-
-**Proposed approach:**
-
-```typescript
-setRecruitedCharacters((prev) =>
-  prev.map((matoran) => {
-    if (!matoran.assignment) return matoran; // Skip idle characters
-    // ... process job tick
-  })
-);
-```
-
-**Acceptance Criteria:**
-
-- Idle characters are skipped during tick processing
-- No functional changes to job mechanics
-- Performance improvement measurable with 20+ characters
-
----
-
-### 7.2 Implement Lazy Loading for 3D Models
-
-**Issue:** All character models loaded upfront, increasing initial load time.
-
-**Current:** Models are preloaded in `preload.ts`.
-
-**Recommendation:** Load models on-demand when character is viewed.
-
-**Acceptance Criteria:**
-
-- Models load only when needed
-- Loading states are shown to user
-- No regression in 3D rendering quality
-
----
-
-### 7.3 Add Memoization for Expensive Computations
-
-**Issue:** Some computations (quest availability, job unlocks) recalculate on every render.
-
-**Current:** Functions are called directly in components without memoization.
-
-**Recommendation:** Use `useMemo` for expensive derived state.
-
-**Examples:**
-
-- Quest availability filtering
-- Job unlock status
-- Mask collection status
-
-**Acceptance Criteria:**
-
-- Expensive computations are memoized
-- Dependencies are correctly specified
-- No stale data issues
-
----
-
-## Implementation Guidelines
-
-### Before Starting Any Item:
-
-1. **Get explicit approval** - Don't implement items from this roadmap without authorization
-2. **Review dependencies** - Check if item depends on other roadmap items
-3. **Check AGENT_GUIDELINES.md** - Ensure changes don't violate architectural rules
-4. **Create a plan** - Outline specific files and changes needed
-5. **Consider backward compatibility** - Will this break existing saves or features?
-
-### During Implementation:
-
-1. **Make incremental changes** - Small PRs are easier to review and safer to merge
-2. **Test thoroughly** - Verify both new functionality and existing features
-3. **Update documentation** - Keep AGENT_GUIDELINES.md in sync with changes
-4. **Add tests** - Especially for bug fixes and new game logic
-
-### After Implementation:
-
-1. **Update this roadmap** - Mark items as complete or blocked
-2. **Document decisions** - If you deviate from the plan, explain why
-3. **Identify new issues** - Add newly discovered technical debt to roadmap
-
----
-
-## Non-Goals
+## Non-goals
 
 This roadmap does NOT include:
 
-- **Major architectural rewrites** - The current architecture is sound
-- **Framework migrations** - React, Vite, TypeScript are appropriate choices
-- **State management library adoption** - Custom hooks pattern works well
-- **Database integration** - localStorage is sufficient for this use case
-- **Multiplayer features** - Out of scope for idle game
-- **Mobile app conversion** - PWA support is adequate
+- **Major architectural rewrites** — the current architecture is sound
+- **Framework migrations** — React, Vite, TypeScript are appropriate choices
+- **State management library adoption** — custom hooks pattern works well
+- **Backend / cloud database** — client-side IndexedDB for saves is planned (see `docs/SAVE_PERSISTENCE_PLAN.md`); no server-side persistence
+- **Multiplayer features** — out of scope for idle game
+- **Mobile app conversion** — PWA support is adequate
 
 ---
 
-## Maintenance Notes
+## Maintenance
 
-**This document should be updated when:**
-
-- New technical debt is discovered
-- Roadmap items are completed
-- Priorities change based on user feedback or business needs
-- Architectural decisions are made that affect future work
-
-**Review frequency:** Quarterly or after major feature releases
-
-**Owner:** Project maintainer (update as needed)
+- **New technical debt** → open a GitHub issue
+- **Completed work** → close the issue; remove it from the table above when the PR merges
+- **Priorities** → use GitHub labels, milestones, or project boards — not status fields in this file

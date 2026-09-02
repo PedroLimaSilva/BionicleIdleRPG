@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom';
-import { resetGameData } from '../../services/gamePersistence';
-import { getTelemetryUrl } from '../../services/telemetry';
+import { resetGameData } from '../../persistence/gamePersistence';
+import { isAnalyticsConfigured } from '../../services/telemetry';
 import { useSettings } from '../../context/useSettings';
 import './index.scss';
 
-const showTelemetryOption = !!getTelemetryUrl();
+const showTelemetryOption = isAnalyticsConfigured();
 
 export default function SettingsPage() {
   const {
+    debugCharacterCreation,
     debugMode,
     performanceMonitorEnabled,
+    setDebugCharacterCreation,
     setDebugMode,
     setPerformanceMonitorEnabled,
     setShadowsEnabled,
@@ -218,6 +220,15 @@ export default function SettingsPage() {
             Edit Game State
           </Link>
         </label>
+        <label className="settings-option">
+          <p>
+            Preview every dex character in 3D, with combat animations and mask controls. Recruitment
+            is not required.
+          </p>
+          <Link to="/test/dex" className="button cancel-button">
+            Character Dex
+          </Link>
+        </label>
 
         <label className="settings-option">
           <p>Want a fresh start? You'll lose all your progress</p>
@@ -240,6 +251,13 @@ export default function SettingsPage() {
           <div
             className={`toggle-placeholder ${debugMode ? 'on' : ''}`}
             onClick={() => setDebugMode(!debugMode)}
+          />
+        </label>
+        <label className="settings-option">
+          <span>Debug character creation</span>
+          <div
+            className={`toggle-placeholder ${debugCharacterCreation ? 'on' : ''}`}
+            onClick={() => setDebugCharacterCreation(!debugCharacterCreation)}
           />
         </label>
         <label className="settings-option">

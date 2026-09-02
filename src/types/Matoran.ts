@@ -1,5 +1,6 @@
 import { LegoColor } from './Colors';
 import { JobAssignment } from './Jobs';
+import type { BodyPartId, BodyPartSlot } from './KitParts';
 import { Quest } from './Quests';
 
 export const enum Mask {
@@ -23,6 +24,13 @@ export const enum Mask {
   Rau = 'Rau',
   Matatu = 'Matatu',
   Mahiki = 'Mahiki',
+  HauGreat = 'Hau_Great',
+  HunaGreat = 'Huna_Great',
+  KomauGreat = 'Komau_Great',
+  MahikiGreat = 'Mahiki_Great',
+  MatatuGreat = 'Matatu_Great',
+  RauGreat = 'Rau_Great',
+  RuruGreat = 'Ruru_Great',
   Vahi = 'Vahi',
   Kraahkan = 'Kraahkan',
   Krana = 'Krana',
@@ -41,19 +49,68 @@ export enum ElementTribe {
 
 export const enum MatoranTag {
   ChroniclersCompany = 'ChroniclersCompany',
+  Custom = 'Custom',
+  /** Metru-era matoran carrying a Great Disk (disk launcher + Kanoka on the rig). */
+  MetruGreatDisk = 'MetruGreatDisk',
 }
+
+/** ID prefix for player-created custom characters (e.g. "custom_0"). */
+export const CUSTOM_CHARACTER_ID_PREFIX = 'custom_';
+
+export function isCustomCharacterId(id: string): boolean {
+  return id.startsWith(CUSTOM_CHARACTER_ID_PREFIX);
+}
+
+/** Special sentinel id used in the buyable list to represent the "create a new matoran" slot. */
+export const CREATE_CUSTOM_CHARACTER_ID = 'create_custom_matoran';
+
+/** Protodermis cost to create or recruit a custom matoran. */
+export const CUSTOM_CHARACTER_COST = 500;
+
+/** Protodermis cost to re-open the character editor for a recruited custom Toa. */
+export const CUSTOM_CHARACTER_EDIT_COST = 500;
 
 export const enum MatoranStage {
   Turaga = 'Turaga',
   ToaMata = 'Toa Mata',
   ToaNuva = 'Toa Nuva',
+  ToaMetru = 'Toa Metru',
   Diminished = 'Diminished',
   Rebuilt = 'Rebuilt',
   Metru = 'Metru',
   Bohrok = 'Bohrok',
   BohrokKal = 'BohrokKal',
+  Vahki = 'Vahki',
   Makuta = 'Makuta',
+  Rahi = 'Rahi',
 }
+
+/** Kit material slots a body part can author in the dex. */
+export type BodyPartPalette = {
+  main: LegoColor;
+  secondary?: LegoColor;
+  metal?: LegoColor;
+  glow?: LegoColor;
+};
+
+/**
+ * Character colors. Mask / eyes / face stay flat (avatar + Kanohi). Limb and armor
+ * pieces use per-part palettes so kit Main/Secondary/Metal/Glow map 1:1.
+ */
+export type MatoranColors = {
+  mask: LegoColor;
+  eyes: LegoColor;
+  face: LegoColor;
+  body: BodyPartPalette;
+  arms: BodyPartPalette;
+  feet: BodyPartPalette;
+  legs?: BodyPartPalette;
+  weapon?: BodyPartPalette;
+};
+
+export type ColorTabId = 'mask' | 'eyes' | 'face' | BodyPartId;
+
+export type BodyPartSlotName = BodyPartSlot;
 
 // Static data for any Matoran
 export type BaseMatoran = {
@@ -63,14 +120,7 @@ export type BaseMatoran = {
   element: ElementTribe;
   isMaskTransparent?: boolean;
   stage: MatoranStage;
-  colors: {
-    mask: LegoColor;
-    body: LegoColor;
-    feet: LegoColor;
-    arms: LegoColor;
-    eyes: LegoColor;
-    face: LegoColor;
-  };
+  colors: MatoranColors;
   tags?: MatoranTag[];
   /** Reference to shared chronicle set - multiple matoran entries can share the same chronicle ID */
   chronicleId?: string;
@@ -89,4 +139,9 @@ export type RecruitedCharacterData = {
   maskOverride?: Mask;
   /** Overrides stage from CHARACTER_DEX when present (e.g. Rebuilt after Naming Day). */
   stage?: MatoranStage;
+  /**
+   * For custom characters at Toa stages: which Toa dex rig/kit GLB to render
+   * (`Toa_Tahu`, `Toa_Tahu_Nuva`, `Toa_Vakama`, …).
+   */
+  customMataModelId?: string;
 };

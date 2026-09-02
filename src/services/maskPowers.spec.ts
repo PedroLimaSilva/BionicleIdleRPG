@@ -6,6 +6,9 @@ import {
   applyDamage,
   applyHealing,
   chooseTarget,
+  getAccuracyMultiplier,
+  isImmobilized,
+  rollAttackHits,
 } from './combatUtils';
 
 describe('Mask Powers - Combat Mechanics', () => {
@@ -252,6 +255,71 @@ describe('Mask Powers - Combat Mechanics', () => {
     });
   });
 
+  describe('ACCURACY_MULT - Ruru (Mask of Night Vision)', () => {
+    test('getAccuracyMultiplier returns 1 with no effects', () => {
+      const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+      expect(getAccuracyMultiplier(attacker)).toBe(1);
+    });
+
+    test('getAccuracyMultiplier applies active ACCURACY_MULT multiplicatively', () => {
+      const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+      attacker.effects = [
+        {
+          durationRemaining: 2,
+          durationUnit: 'turn',
+          multiplier: 0.5,
+          sourceId: 'caster',
+          type: 'ACCURACY_MULT',
+        },
+      ];
+      expect(getAccuracyMultiplier(attacker)).toBe(0.5);
+    });
+
+    test('getAccuracyMultiplier stacks multiple ACCURACY_MULT effects', () => {
+      const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+      attacker.effects = [
+        {
+          durationRemaining: 2,
+          durationUnit: 'turn',
+          multiplier: 0.5,
+          sourceId: 'caster-a',
+          type: 'ACCURACY_MULT',
+        },
+        {
+          durationRemaining: 1,
+          durationUnit: 'turn',
+          multiplier: 0.5,
+          sourceId: 'caster-b',
+          type: 'ACCURACY_MULT',
+        },
+      ];
+      expect(getAccuracyMultiplier(attacker)).toBe(0.25);
+    });
+
+    test('rollAttackHits always succeeds without accuracy debuffs', () => {
+      const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+      jest.spyOn(Math, 'random').mockReturnValue(0.99);
+      expect(rollAttackHits(attacker)).toBe(true);
+    });
+
+    test('rollAttackHits can miss when ACCURACY_MULT halves hit chance', () => {
+      const attacker = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+      attacker.effects = [
+        {
+          durationRemaining: 2,
+          durationUnit: 'turn',
+          multiplier: 0.5,
+          sourceId: 'caster',
+          type: 'ACCURACY_MULT',
+        },
+      ];
+      jest.spyOn(Math, 'random').mockReturnValue(0.6);
+      expect(rollAttackHits(attacker)).toBe(false);
+      jest.spyOn(Math, 'random').mockReturnValue(0.4);
+      expect(rollAttackHits(attacker)).toBe(true);
+    });
+  });
+
   describe('ATK_MULT - Rau (wave duration)', () => {
     test('multiplies attack damage by 1.5x when effect active', () => {
       const attacker = generateCombatantStats('kopaka', 'Toa_Kopaka', 1, Mask.Rau);
@@ -336,6 +404,45 @@ describe('Mask Powers - Combat Mechanics', () => {
         // Should cap at max HP
         expect(healed.hp).toBe(maxHp);
       });
+    });
+  });
+
+  describe('SPEED - Matatu (immobilize / skip turn)', () => {
+    test('isImmobilized returns true for negative SPEED effect', () => {
+      const enemy = generateCombatantStats('enemy', 'tahnok', 1);
+      enemy.effects = [
+        {
+          durationRemaining: 1,
+          durationUnit: 'wave',
+          multiplier: -1,
+          sourceId: 'caster',
+          type: 'SPEED',
+        },
+      ];
+
+      expect(isImmobilized(enemy)).toBe(true);
+    });
+
+    test('isImmobilized returns false without negative SPEED effect', () => {
+      const enemy = generateCombatantStats('enemy', 'tahnok', 1);
+      enemy.effects = [];
+
+      expect(isImmobilized(enemy)).toBe(false);
+    });
+
+    test('positive SPEED effect does not immobilize', () => {
+      const combatant = generateCombatantStats('pohatu', 'Toa_Pohatu', 1, Mask.Kakama);
+      combatant.effects = [
+        {
+          durationRemaining: 1,
+          durationUnit: 'round',
+          multiplier: 2,
+          sourceId: combatant.id,
+          type: 'SPEED',
+        },
+      ];
+
+      expect(isImmobilized(combatant)).toBe(false);
     });
   });
 

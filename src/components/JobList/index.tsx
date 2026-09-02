@@ -2,10 +2,11 @@ import './index.scss';
 import { useMemo, useState } from 'react';
 import { MatoranJob } from '../../types/Jobs';
 import { useGame } from '../../context/Game';
-import { getAvailableJobs, getProductivityModifier } from '../../game/Jobs';
+import { getAvailableJobs, getProductivityModifier } from '../../game/jobs/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { JobCard } from './JobCard';
 import { RecruitedCharacterData } from '../../types/Matoran';
+import { getMetruProfession } from '../../game/jobs/metruProfessions';
 
 type JobListProps = {
   matoran: RecruitedCharacterData;
@@ -16,6 +17,7 @@ type JobListProps = {
 export function JobList({ matoran, onCancel }: JobListProps) {
   const [selectedJob, setSelectedJob] = useState<MatoranJob | null>(null);
   const game = useGame();
+  const metruProfession = getMetruProfession(matoran.id);
 
   const jobs = useMemo(() => {
     return getAvailableJobs(game, matoran);
@@ -35,13 +37,19 @@ export function JobList({ matoran, onCancel }: JobListProps) {
   return (
     <div className="assign-job-container">
       <h2 className="assign-job-title">Select a Job</h2>
+      {metruProfession && (
+        <p className="metru-profession-hint">
+          This Matoran&apos;s Metru-era profession is{' '}
+          <strong>{JOB_DETAILS[metruProfession].label}</strong>.
+        </p>
+      )}
 
       <div className="job-grid">
         {jobs.map((job) => {
           const { description, label, rate } = JOB_DETAILS[job];
           const modifier = getProductivityModifier(job, matoran);
           return (
-            <div onClick={() => setSelectedJob(job)}>
+            <div key={job} onClick={() => setSelectedJob(job)}>
               <JobCard
                 classNames={`${selectedJob === job ? 'selected' : ''} ${
                   matoran.assignment?.job === job ? 'assigned' : ''
@@ -50,6 +58,7 @@ export function JobList({ matoran, onCancel }: JobListProps) {
                 description={description}
                 baseRate={rate}
                 modifier={modifier}
+                isProfession={job === metruProfession}
               />
             </div>
           );

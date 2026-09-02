@@ -1,17 +1,22 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { motion, useReducedMotion } from 'motion/react';
 import { useGame } from '../../context/Game';
-import { isTestMode } from '../../utils/testMode';
 
 import './index.scss';
-import { CharacterScene } from '../../components/CharacterScene';
+import { CharacterScene } from '../../rendering/3d/CharacterScene';
 import { ElementTag } from '../../components/ElementTag';
-import { useEffect, useMemo, useState } from 'react';
-import { useSceneCanvas } from '../../hooks/useSceneCanvas';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  rememberCharactersReturnScrollId,
+  scrollMainContentToTop,
+} from '../../utils/mainContentScroll';
+import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { QUESTS } from '../../data/quests';
 import { getRecruitedMatoran, masksCollected } from '../../services/matoranUtils';
-import { isBohrokOrKal, isMatoran, isToa, isToaMata } from '../../game/matoranStage';
-import { getAvailableEvolution, meetsEvolutionLevel } from '../../game/CharacterEvolution';
+import { isBohrokOrKal, isMatoran, isToa, isToaMata } from '../../game/characters/matoranStage';
+import {
+  getAvailableEvolution,
+  meetsEvolutionLevel,
+} from '../../game/evolution/CharacterEvolution';
 import { LevelProgress } from './LevelProgress';
 import { MaskCollection } from './MaskCollection';
 import { KranaCollection } from './KranaCollection';
@@ -19,9 +24,16 @@ import { JobAssignment } from './JobAssignment';
 import { Tabs } from '../../components/Tabs';
 import { CharacterChronicle } from './Chronicle';
 import { ProtodermisTraining } from '../../components/ProtodermisTraining';
-import { isKranaCollectionActive } from '../../game/Krana';
+import { isKranaCollectionActive } from '../../game/krana/Krana';
 import { MASK_POWERS } from '../../data/combat';
-import { BaseMatoran, Mask, RecruitedCharacterData } from '../../types/Matoran';
+import {
+  BaseMatoran,
+  CUSTOM_CHARACTER_EDIT_COST,
+  isCustomCharacterId,
+  Mask,
+  RecruitedCharacterData,
+} from '../../types/Matoran';
+import { CustomCharacterShareButton } from './CustomCharacterShareButton';
 
 export const CharacterDetail: React.FC = () => {
   const { id } = useParams();
@@ -33,8 +45,6 @@ export const CharacterDetail: React.FC = () => {
     protodermis,
     recruitedCharacters,
   } = useGame();
-  const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
-
   const { setScene } = useSceneCanvas();
 
   const matoran = useMemo(
@@ -43,6 +53,12 @@ export const CharacterDetail: React.FC = () => {
   );
 
   const [activeTab, setActiveTab] = useState('stats');
+
+  useLayoutEffect(() => {
+    if (!id) return;
+    rememberCharactersReturnScrollId(String(id));
+    scrollMainContentToTop();
+  }, [id]);
 
   const tabs = useMemo(() => {
     const base = ['stats'];
@@ -60,11 +76,18 @@ export const CharacterDetail: React.FC = () => {
 
   useEffect(() => {
     if (matoran) {
-      setScene(<CharacterScene matoran={matoran}></CharacterScene>);
+      // Use the stable "character-preview" key that CharacterCreation also uses. When the user
+      // navigates from /character-create to /characters/:id, React reuses the same scene
+      // instance (and its postprocessing EffectComposer) instead of unmounting + remounting,
+      // which avoids a "Cannot read properties of null (alpha)" crash if the WebGL context
+      // was in the middle of a re-init when the new EffectComposer was constructed.
+      //
+      // We intentionally do not null the scene on unmount; global route-aware cleanup in
+      // `SceneCanvasProvider` clears the scene whenever the user navigates to a non-canvas
+      // route. Letting the next canvas page (or the current page itself) replace the scene
+      // directly avoids a transient null state that would tear down the EffectComposer.
+      setScene(<CharacterScene key="character-preview" matoran={matoran}></CharacterScene>);
     }
-    return () => {
-      setScene(null);
-    };
   }, [matoran, setScene]);
 
   const { activeMask, maskDescription } = useMemo(() => {
@@ -80,22 +103,20 @@ export const CharacterDetail: React.FC = () => {
     return <p>Something is wrong, this matoran does not exist</p>;
   }
 
+  const isCustom = isCustomCharacterId(matoran.id);
+
   return (
     <div className={`page-container character-detail element-${matoran.element}`}>
-      <motion.div
-        className="character-detail-visualization"
-        layoutId={shouldReduceMotion ? undefined : `character-${matoran.id}`}
-        layout
-        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
-      >
+      <div className="character-detail-visualization">
         <div className="character-header">
           <h1 className="character-name">{matoran.name}</h1>
+          {isCustom && <CustomCharacterShareButton matoran={matoran} />}
         </div>
 
         <div id="model-frame">
           <div className="divider"></div>
         </div>
-      </motion.div>
+      </div>
       <div className="character-detail-tabs">
         <Tabs tabs={tabs} activeTab={activeTab} onTabChange={(tab: string) => setActiveTab(tab)} />
       </div>
@@ -109,10 +130,32 @@ export const CharacterDetail: React.FC = () => {
               convertProtodermisToExp={convertProtodermisToExp}
               activeMask={activeMask}
               maskDescription={maskDescription}
-              onEvolveCharacter={(id) =>
-                evolveCharacter(id, (evolvedId) =>
-                  navigate(`/characters/${evolvedId}`, { replace: true })
-                )
+              onEvolveCharacter={(charId) => {
+                const evolutionFromStage = matoran.stage;
+                evolveCharacter(charId, (evolvedId) => {
+                  if (isCustomCharacterId(evolvedId)) {
+                    navigate('/character-create', {
+                      state: {
+                        customizeCharacterId: evolvedId,
+                        evolutionFromStage,
+                        freeCustomize: true,
+                      },
+                    });
+                    return;
+                  }
+                  navigate(`/characters/${evolvedId}`, { replace: true });
+                });
+              }}
+              onCustomizeAppearance={
+                isCustom && isToa(matoran)
+                  ? () =>
+                      navigate('/character-create', {
+                        state: {
+                          customizeCharacterId: matoran.id,
+                          freeCustomize: false,
+                        },
+                      })
+                  : undefined
               }
             />
           )}
@@ -158,6 +201,7 @@ function StatsTab({
   convertProtodermisToExp,
   maskDescription,
   matoran,
+  onCustomizeAppearance,
   onEvolveCharacter,
   protodermis,
 }: {
@@ -167,6 +211,7 @@ function StatsTab({
   convertProtodermisToExp: (matoranId: string, protodermisSpent: number) => boolean;
   activeMask: Mask | undefined;
   maskDescription: string;
+  onCustomizeAppearance?: () => void;
   onEvolveCharacter: (id: string) => void;
 }) {
   const evolution = getAvailableEvolution(matoran, completedQuests);
@@ -207,8 +252,36 @@ function StatsTab({
           </div>
         </div>
       )}
+      {onCustomizeAppearance && (
+        <div className="customize-section">
+          <div className="requirement-list">
+            <h4>Customize Toa appearance</h4>
+            <ul>
+              <li
+                className={protodermis >= CUSTOM_CHARACTER_EDIT_COST ? 'has-enough' : 'not-enough'}
+              >
+                {protodermis >= CUSTOM_CHARACTER_EDIT_COST ? '✅' : '❌'}{' '}
+                {CUSTOM_CHARACTER_EDIT_COST} protodermis
+              </li>
+            </ul>
+            <p className="customize-section__hint">
+              Change your color palette and Toa armor (Mata, Nuva, or Metru rigs).
+            </p>
+            <button
+              type="button"
+              className={`elemental-btn element-${matoran.element}${
+                protodermis >= CUSTOM_CHARACTER_EDIT_COST ? '' : ' disabled'
+              }`}
+              onClick={() => protodermis >= CUSTOM_CHARACTER_EDIT_COST && onCustomizeAppearance()}
+            >
+              Open character editor
+            </button>
+          </div>
+        </div>
+      )}
       <ProtodermisTraining
         characterId={matoran.id}
+        currentExp={matoran.exp}
         element={matoran.element}
         protodermis={protodermis}
         convertProtodermisToExp={convertProtodermisToExp}

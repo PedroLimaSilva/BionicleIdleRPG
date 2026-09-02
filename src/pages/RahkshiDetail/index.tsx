@@ -1,165 +1,25 @@
 import { useParams, Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useGame } from '../../context/Game';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { getKraataPowerDescription } from '../../data/kraataPowerDescriptions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
-import { CompositedImage } from '../../components/CompositedImage';
-import { isForgeComplete } from '../../game/KraataActions';
-import { useMemo, useState, useEffect, Suspense, useRef } from 'react';
-import { useThree } from '@react-three/fiber';
-import { Environment, PresentationControls } from '@react-three/drei';
-import { EffectComposer, SSAO } from '@react-three/postprocessing';
-import { BlendFunction } from 'postprocessing';
-import { DirectionalLight, Mesh, Object3D } from 'three';
-import { useSceneCanvas } from '../../hooks/useSceneCanvas';
-import { RahkshiModel } from '../../components/CharacterScene/Rahkshi';
-import { CYLINDER_HEIGHT, CYLINDER_RADIUS } from '../../components/CharacterScene/BoundsCylinder';
-import { useEmissiveMeshes } from '../../components/CharacterScene/selectiveBloom';
-import { StableSelectiveBloom } from '../../components/CharacterScene/StableSelectiveBloom';
-import { useSettings } from '../../context/useSettings';
-import { isTestMode, shouldEnableSelectiveBloom, shouldEnableShadows } from '../../utils/testMode';
+import { CompositedImage } from '../../rendering/2d/CompositedImage';
+import { isForgeComplete } from '../../game/kraata/KraataActions';
+import { useMemo, useState, useEffect } from 'react';
+import { getAdjacentRahkshiIds } from './rahkshiEntries';
+import {
+  RAHKSHI_DETAIL_VISUALIZATION_LAYOUT_ID,
+  RAHKSHI_DETAIL_VISUALIZATION_TRANSITION,
+} from './motion';
+import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
+import { RahkshiScene } from '../../rendering/3d/CharacterScene/RahkshiScene';
+import { isTestMode } from '../../utils/testMode';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
 
 import './index.scss';
-
-const CENTER_Y = CYLINDER_HEIGHT / 2;
-
-/** Scale down environment map contribution so IBL doesn't wash out shadows. */
-function EnvironmentIntensity({ value }: { value: number }) {
-  const scene = useThree((s) => s.scene);
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (scene as any).environmentIntensity = value;
-  }, [scene, value]);
-  return null;
-}
-
-function RahkshiFraming() {
-  const camera = useThree((s) => s.camera);
-  const size = useThree((s) => s.size);
-  useEffect(() => {
-    if (camera.type !== 'OrthographicCamera') return;
-    if (size.width <= 0 || size.height <= 0) return;
-    camera.position.set(0, CENTER_Y, 100);
-    camera.lookAt(0, CENTER_Y, 0);
-    camera.near = 0.1;
-    camera.far = 1000;
-    camera.zoom = Math.min(size.width / (CYLINDER_RADIUS * 2), size.height / CYLINDER_HEIGHT);
-    camera.updateProjectionMatrix();
-  }, [camera, size]);
-  return null;
-}
-
-function RahkshiDetailScene({ hasKraata, kraata }: { kraata: KraataPower; hasKraata: boolean }) {
-  const sceneRootRef = useRef<Object3D>(null);
-  const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
-  const bloomMeshes = useEmissiveMeshes(sceneRootRef, [kraata, hasKraata]);
-  const { shadowsEnabled } = useSettings();
-  const effectiveShadows = shadowsEnabled && shouldEnableShadows();
-
-  useEffect(() => {
-    if (!effectiveShadows || !sceneRootRef.current) return;
-    const applyShadowProps = () => {
-      sceneRootRef.current?.traverse((child) => {
-        if ((child as Mesh).isMesh) {
-          const mesh = child as Mesh;
-          mesh.castShadow = true;
-          mesh.receiveShadow = true;
-        }
-      });
-    };
-    applyShadowProps();
-    const t = setTimeout(applyShadowProps, 500);
-    return () => clearTimeout(t);
-  }, [effectiveShadows, kraata, hasKraata]);
-
-  const setMainLightRef = (el: DirectionalLight | null) => {
-    if (el) {
-      setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
-      el.target.position.set(0, CENTER_Y, 0);
-      if (el.parent && !el.target.parent) {
-        el.parent.add(el.target);
-      }
-    }
-  };
-
-  return (
-    <>
-      <RahkshiFraming />
-      <Environment preset="city" />
-      <EnvironmentIntensity value={0.01} />
-      <ambientLight intensity={0.005} />
-      <directionalLight
-        ref={setMainLightRef}
-        position={[3, CENTER_Y + 8, 10]}
-        intensity={1.2}
-        castShadow={effectiveShadows}
-        shadow-mapSize={[2048, 2048]}
-        shadow-camera-near={0.5}
-        shadow-camera-far={50}
-        shadow-camera-left={-CYLINDER_RADIUS * 2}
-        shadow-camera-right={CYLINDER_RADIUS * 2}
-        shadow-camera-top={CYLINDER_HEIGHT * 0.75}
-        shadow-camera-bottom={-CYLINDER_HEIGHT * 0.75}
-        shadow-bias={-0.0005}
-        shadow-normalBias={0.01}
-      />
-      <directionalLight
-        ref={(el) => {
-          if (el) setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
-        }}
-        position={[-3, CENTER_Y + 2, -2]}
-        intensity={0.015}
-      />
-      {effectiveShadows && (
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-          <planeGeometry args={[CYLINDER_RADIUS * 3, CYLINDER_RADIUS * 3]} />
-          <meshStandardMaterial color="#1a1a1a" />
-        </mesh>
-      )}
-      <group ref={sceneRootRef}>
-        <PresentationControls
-          global
-          snap={false}
-          speed={2}
-          zoom={1}
-          polar={[0, 0]}
-          config={{ friction: 26, mass: 0.5, tension: 170 }}
-        >
-          <Suspense fallback={null}>
-            <RahkshiModel kraata={kraata} hasKraata={hasKraata} />
-          </Suspense>
-        </PresentationControls>
-      </group>
-      <EffectComposer multisampling={0} enableNormalPass resolutionScale={0.5}>
-        <SSAO
-          blendFunction={BlendFunction.MULTIPLY}
-          samples={24}
-          rings={4}
-          intensity={1.0}
-          radius={6}
-          bias={0.5}
-          luminanceInfluence={0.35}
-        />
-        {lightsForBloom.length > 0 && shouldEnableSelectiveBloom() ? (
-          <StableSelectiveBloom
-            selection={bloomMeshes}
-            lights={lightsForBloom}
-            luminanceThreshold={0.25}
-            luminanceSmoothing={0.5}
-            intensity={0.28}
-            mipmapBlur
-          />
-        ) : (
-          <></>
-        )}
-      </EffectComposer>
-    </>
-  );
-}
 
 function formatTimeRemaining(ms: number): string {
   if (ms <= 0) return 'Ready!';
@@ -187,9 +47,11 @@ export const RahkshiDetail: React.FC = () => {
   const armorPower = armor?.power;
   const hasKraata = !!armor?.kraata;
 
+  const neighbors = useMemo(() => (id ? getAdjacentRahkshiIds(rahkshi, id) : null), [rahkshi, id]);
+
   useEffect(() => {
     if (armor && armorPower !== undefined) {
-      setScene(<RahkshiDetailScene kraata={armorPower} hasKraata={hasKraata} />);
+      setScene(<RahkshiScene kraata={armorPower} hasKraata={hasKraata} />);
     }
     return () => setScene(null);
   }, [armor, armorPower, hasKraata, setScene]);
@@ -228,6 +90,17 @@ export const RahkshiDetail: React.FC = () => {
 
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
 
+  const neighborNames = useMemo(() => {
+    if (!neighbors) return null;
+    const byId = new Map(rahkshi.map((entry) => [entry.id, entry]));
+    const prev = byId.get(neighbors.prevId);
+    const next = byId.get(neighbors.nextId);
+    return {
+      next: next ? (KRAATA_POWER_NAMES[next.power] ?? next.power) : neighbors.nextId,
+      prev: prev ? (KRAATA_POWER_NAMES[prev.power] ?? prev.power) : neighbors.prevId,
+    };
+  }, [neighbors, rahkshi]);
+
   if (!armor) {
     return (
       <div className="page-container">
@@ -243,11 +116,37 @@ export const RahkshiDetail: React.FC = () => {
 
   return (
     <div className="page-container rahkshi-detail">
+      <div className="rahkshi-detail-nav">
+        <Link to="/characters" className="rahkshi-detail__back">
+          <ArrowLeft size={18} aria-hidden /> Back
+        </Link>
+        {neighbors && neighborNames && (
+          <div className="rahkshi-detail-siblings">
+            <Link
+              to={`/rahkshi/${neighbors.prevId}`}
+              className="rahkshi-detail-sibling"
+              aria-label={`Previous Rahkshi armor: ${neighborNames.prev}`}
+            >
+              <ChevronLeft size={18} aria-hidden />
+              <span className="rahkshi-detail-sibling__label">{neighborNames.prev}</span>
+            </Link>
+            <Link
+              to={`/rahkshi/${neighbors.nextId}`}
+              className="rahkshi-detail-sibling"
+              aria-label={`Next Rahkshi armor: ${neighborNames.next}`}
+            >
+              <span className="rahkshi-detail-sibling__label">{neighborNames.next}</span>
+              <ChevronRight size={18} aria-hidden />
+            </Link>
+          </div>
+        )}
+      </div>
+
       <motion.div
         className="rahkshi-detail-visualization"
-        layoutId={shouldReduceMotion ? undefined : `rahkshi-${armor.id}`}
+        layoutId={shouldReduceMotion ? undefined : RAHKSHI_DETAIL_VISUALIZATION_LAYOUT_ID}
         layout
-        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
+        transition={RAHKSHI_DETAIL_VISUALIZATION_TRANSITION}
         style={
           {
             '--kraata-head-color': armorColors.armor,
@@ -255,9 +154,24 @@ export const RahkshiDetail: React.FC = () => {
           } as React.CSSProperties
         }
       >
-        <Link to="/characters" className="rahkshi-detail__back">
-          <ArrowLeft size={18} aria-hidden /> Back
-        </Link>
+        {neighbors && neighborNames && (
+          <>
+            <Link
+              to={`/rahkshi/${neighbors.prevId}`}
+              className="rahkshi-detail-arrow rahkshi-detail-arrow--left"
+              aria-label={`Previous Rahkshi armor: ${neighborNames.prev}`}
+            >
+              <ChevronLeft size={24} aria-hidden />
+            </Link>
+            <Link
+              to={`/rahkshi/${neighbors.nextId}`}
+              className="rahkshi-detail-arrow rahkshi-detail-arrow--right"
+              aria-label={`Next Rahkshi armor: ${neighborNames.next}`}
+            >
+              <ChevronRight size={24} aria-hidden />
+            </Link>
+          </>
+        )}
         <div id="rahkshi-model-frame" className="rahkshi-detail__model-frame" />
         <div className="rahkshi-detail-header">
           <h1 className="rahkshi-detail-header__name">

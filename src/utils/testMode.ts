@@ -15,6 +15,19 @@ export function isTestMode(): boolean {
   return localStorage.getItem('TEST_MODE') === 'true';
 }
 
+export type E2ePwaBannerState = 'needRefresh' | 'offlineReady';
+
+/**
+ * Playwright-only override to force the PWA update banner visible for visual regression tests.
+ * Set via localStorage: E2E_PWA_BANNER=needRefresh|offlineReady (requires TEST_MODE=true).
+ * When TEST_MODE is on and this key is unset, the banner stays hidden.
+ */
+export function getE2ePwaBannerState(): E2ePwaBannerState | null {
+  const value = localStorage.getItem('E2E_PWA_BANNER');
+  if (value === 'needRefresh' || value === 'offlineReady') return value;
+  return null;
+}
+
 /**
  * Get animation time scale based on test mode
  * Returns 0 in test mode to pause animations, 1 otherwise
@@ -56,5 +69,14 @@ export function setupAnimationForTestMode(action: AnimationAction): void {
     action.time = 0;
     action.paused = true;
     console.log('[TEST_MODE] animation loaded');
+    notifyModelReadyForTestMode();
   }
+}
+
+/** Playwright listens for this once kit meshes and idle pose are ready. */
+export const TEST_MODE_MODEL_READY_MESSAGE = '[TEST_MODE] model ready';
+
+export function notifyModelReadyForTestMode(): void {
+  if (!isTestMode()) return;
+  console.log(TEST_MODE_MODEL_READY_MESSAGE);
 }

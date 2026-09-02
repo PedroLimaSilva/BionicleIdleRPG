@@ -2,11 +2,13 @@
 
 ## Summary
 
-This document proposes an incremental rollout of `motion.dev` for UI transitions in the React app.
+This document describes the incremental rollout of `motion.dev` for UI transitions in the React app.
 The goal is to improve perceived polish and readability of UI state changes without touching 3D model
 animation behavior.
 
 Scope is limited to 2D UI interactions in `src/components/` and `src/pages/`.
+
+**Tracking:** [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347) (Phase 2), [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350) (Phase 3).
 
 ---
 
@@ -51,86 +53,39 @@ Motion provides:
 - Import from:
   - `motion/react`
 
-Optional (future): add a small wrapper module for shared transition presets.
+Optional: add a small wrapper module for shared transition presets (`src/motion/transitions.ts`).
 
 ---
 
-## Rollout Plan
+## Rollout phases
 
-## Phase 0: Baseline and guardrails
+### Phase 0: Baseline and guardrails
 
-1. Add the dependency.
-2. Define shared transition presets (durations/easing) aligned with existing CSS tokens.
-3. Add reduced-motion handling for Motion components (`useReducedMotion` + graceful fallbacks).
-4. Ensure test strategy can disable/neutralize UI motion where screenshots are taken.
+- `motion` dependency, shared transition presets, reduced-motion handling, test-mode neutralization.
 
-### Exit criteria
+### Phase 1 (Pilot): High-impact, low-risk UI surfaces
 
-- `motion` is installed and builds cleanly.
-- Shared presets exist and are reused by pilot components.
-- Screenshot tests remain stable.
+- Modal enter/exit (`src/components/Modal/index.tsx`)
+- Quests accordion transitions (`src/pages/Quests/index.tsx`)
+- Battle damage popup (`src/pages/Battle/Cards/DamagePopup.tsx`)
 
----
+Motion is also adopted more broadly (e.g. `RecruitmentCelebration`, `BattleOutcome`, `CharacterInventory`, `NavBar`, `RahkshiDetail`, Chronicle accordion).
 
-## Phase 1 (Pilot): High-impact, low-risk UI surfaces
+### Phase 2: Expand to interactive panels
 
-### Pilot scope
+Tracked in [#347](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/347):
 
-1. **Modal enter/exit**
-   - Backdrop fade
-   - Panel fade/scale
-   - Proper unmount animation on close
-
-2. **Quests accordion transitions**
-   - Replace `max-height` accordion animation with Motion `height`/`opacity`.
-   - Keep section toggle behavior unchanged.
-
-3. **Battle damage popup**
-   - Replace class-reflow keyframe restart with keyed Motion animation.
-   - Keep timing and direction semantics (`up`/`down`) equivalent.
-
-### Why this pilot
-
-- High user-visible value
-- Localized component changes
-- Minimal coupling with game logic/state invariants
-
-### Exit criteria
-
-- Behavior unchanged except smoother transitions.
-- No regressions in quest flow, modal close behavior, or battle action readability.
-- Existing unit/E2E tests pass or are updated intentionally.
-
----
-
-## Phase 2: Expand to interactive panels
-
-Candidate surfaces:
-
-- Chronicle accordion sections/entries
 - Battle prep team selector reveal
 - Recruitment requirement drawer
 - Tooltip entrance/exit polish
 
-### Exit criteria
+### Phase 3: Navigation and list choreography
 
-- Animation patterns are reused (not copied ad-hoc).
-- All updated pages maintain responsive behavior.
-
----
-
-## Phase 3: Navigation and list choreography
-
-Candidate surfaces:
+Tracked in [#350](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/350):
 
 - Nav visibility transition refinement
 - Tab content transitions
 - Character list item enter/layout transitions
-
-### Exit criteria
-
-- Animation remains subtle and readable.
-- No interaction latency introduced on low-end devices.
 
 ---
 
@@ -148,13 +103,13 @@ Candidate surfaces:
 
 ## Testing strategy
 
-## Automated checks per phase
+### Automated checks per phase
 
 - `yarn lint`
 - `yarn test:ci` (targeted suites when possible)
 - E2E snapshots relevant to touched pages/components
 
-## Visual regression stability
+### Visual regression stability
 
 Because many E2E tests use screenshots:
 
@@ -174,15 +129,3 @@ Because many E2E tests use screenshots:
 
 3. **Risk:** Inconsistent patterns if Motion is introduced ad-hoc.
    - **Mitigation:** shared transition presets and phased adoption.
-
----
-
-## First pilot implementation checklist
-
-- [ ] Install `motion` dependency.
-- [ ] Add shared transition presets module.
-- [ ] Animate `Modal` open/close with `AnimatePresence`.
-- [ ] Animate Quests accordion content with Motion.
-- [ ] Migrate battle damage popups to Motion.
-- [ ] Run lint/tests and update snapshots if needed.
-- [ ] Verify reduced-motion behavior for pilot components.

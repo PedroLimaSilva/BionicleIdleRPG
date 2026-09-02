@@ -41,7 +41,8 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       __APP_VERSION__: JSON.stringify(appVersion),
-      __TELEMETRY_URL__: JSON.stringify(env.VITE_TELEMETRY_URL ?? ''),
+      __POSTHOG_HOST__: JSON.stringify(env.VITE_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'),
+      __POSTHOG_KEY__: JSON.stringify(env.VITE_PUBLIC_POSTHOG_KEY ?? ''),
     },
     plugins: [
       react(),
@@ -58,7 +59,7 @@ export default defineConfig(({ mode }) => {
         includeAssets: ['favicon-32-light.png', 'favicon-32-dark.png', 'apple-touch-icon.png'],
 
         injectManifest: {
-          globPatterns: ['**/*.{js,css,html,svg,png,ico,glb,woff2,ttf}'],
+          globPatterns: ['**/*.{js,css,html,svg,png,ico,glb,woff2,ttf,wasm}'],
           maximumFileSizeToCacheInBytes: 10485760,
         },
 

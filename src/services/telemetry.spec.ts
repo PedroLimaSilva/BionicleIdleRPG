@@ -8,6 +8,7 @@ const MOCK_STATE: PartialGameState = {
   activeQuests: [],
   collectedKrana: {},
   completedQuests: [],
+  customCharacters: [],
   kraataCollection: {},
   protodermis: 100,
   protodermisCap: 2000,
@@ -18,7 +19,30 @@ const MOCK_STATE: PartialGameState = {
 
 let mockTelemetryEnabled: boolean;
 
-jest.mock('./gamePersistence', () => ({
+const mockCapture = jest.fn();
+const mockCaptureException = jest.fn();
+const mockIdentify = jest.fn();
+const mockInit = jest.fn();
+const mockOptInCapturing = jest.fn();
+const mockOptOutCapturing = jest.fn();
+
+const mockStartSessionRecording = jest.fn();
+
+jest.mock('posthog-js', () => ({
+  __esModule: true,
+  default: {
+    capture: (...args: unknown[]) => mockCapture(...args),
+    captureException: (...args: unknown[]) => mockCaptureException(...args),
+    identify: (...args: unknown[]) => mockIdentify(...args),
+    init: (...args: unknown[]) => mockInit(...args),
+    opt_in_capturing: (...args: unknown[]) => mockOptInCapturing(...args),
+    opt_out_capturing: (...args: unknown[]) => mockOptOutCapturing(...args),
+    startSessionRecording: (...args: unknown[]) => mockStartSessionRecording(...args),
+  },
+}));
+
+jest.mock('../persistence/gamePersistence', () => ({
+  getLastPersistedGameState: () => null,
   getTelemetryEnabled: () => mockTelemetryEnabled,
   getTelemetryId: () => 'test-uuid-1234',
   loadRawGameState: () => null,
@@ -29,32 +53,28 @@ function loadModule() {
   return require('./telemetry') as typeof import('./telemetry');
 }
 
-const mockSendBeacon = jest.fn().mockReturnValue(true);
-const mockFetch = jest.fn().mockResolvedValue({ ok: true });
-
 beforeEach(() => {
   jest.resetModules();
   sessionStorage.clear();
   mockTelemetryEnabled = true;
-  mockSendBeacon.mockClear();
-  mockFetch.mockClear();
+  mockCapture.mockClear();
+  mockCaptureException.mockClear();
+  mockIdentify.mockClear();
+  mockInit.mockClear();
+  mockOptInCapturing.mockClear();
+  mockOptOutCapturing.mockClear();
+  mockStartSessionRecording.mockClear();
 
   (globalThis as Record<string, unknown>).__APP_VERSION__ = '1.2.3';
-  (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = '';
-
-  Object.defineProperty(navigator, 'sendBeacon', {
-    configurable: true,
-    value: mockSendBeacon,
-    writable: true,
-  });
-
-  globalThis.fetch = mockFetch as unknown as typeof fetch;
+  (globalThis as Record<string, unknown>).__POSTHOG_HOST__ = 'https://us.i.posthog.com';
+  (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = '';
 });
 
 afterEach(() => {
   jest.restoreAllMocks();
   (globalThis as Record<string, unknown>).__APP_VERSION__ = 'test';
-  (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = '';
+  (globalThis as Record<string, unknown>).__POSTHOG_HOST__ = 'https://us.i.posthog.com';
+  (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = '';
 });
 
 describe('buildPayload', () => {
@@ -78,72 +98,107 @@ describe('buildPayload', () => {
   });
 });
 
+describe('isAnalyticsConfigured', () => {
+  it('returns false when PostHog key is empty', () => {
+    const { isAnalyticsConfigured } = loadModule();
+    expect(isAnalyticsConfigured()).toBe(false);
+  });
+
+  it('returns true when PostHog key is set', () => {
+    (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = 'phc_test';
+    const { isAnalyticsConfigured } = loadModule();
+    expect(isAnalyticsConfigured()).toBe(true);
+  });
+});
+
+describe('syncAnalyticsConsent', () => {
+  it('opts in and identifies the client when telemetry is enabled', () => {
+    (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = 'phc_test';
+    const { syncAnalyticsConsent } = loadModule();
+
+    syncAnalyticsConsent();
+
+    expect(mockInit).toHaveBeenCalledWith(
+      'phc_test',
+      expect.objectContaining({
+        api_host: 'https://us.i.posthog.com',
+        capture_heatmaps: true,
+        capture_pageview: 'history_change',
+        defaults: '2026-01-30',
+        disable_session_recording: false,
+        opt_out_capturing_by_default: true,
+        rageclick: true,
+      })
+    );
+    expect(mockOptInCapturing).toHaveBeenCalled();
+    expect(mockIdentify).toHaveBeenCalledWith('test-uuid-1234');
+    expect(mockStartSessionRecording).toHaveBeenCalled();
+  });
+
+  it('opts out when telemetry is disabled', () => {
+    mockTelemetryEnabled = false;
+    (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = 'phc_test';
+    const { syncAnalyticsConsent } = loadModule();
+
+    syncAnalyticsConsent();
+
+    expect(mockOptOutCapturing).toHaveBeenCalled();
+    expect(mockIdentify).not.toHaveBeenCalled();
+    expect(mockStartSessionRecording).not.toHaveBeenCalled();
+  });
+});
+
 describe('sendSessionTelemetry', () => {
-  it('does nothing when __TELEMETRY_URL__ is empty', () => {
+  it('does nothing when PostHog is not configured', () => {
     const { sendSessionTelemetry } = loadModule();
 
     sendSessionTelemetry(MOCK_STATE);
 
-    expect(mockSendBeacon).not.toHaveBeenCalled();
-    expect(mockFetch).not.toHaveBeenCalled();
+    expect(mockCapture).not.toHaveBeenCalled();
   });
 
   it('does nothing when telemetry is opted out', () => {
     mockTelemetryEnabled = false;
-    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
+    (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = 'phc_test';
     const { sendSessionTelemetry } = loadModule();
 
     sendSessionTelemetry(MOCK_STATE);
 
-    expect(mockSendBeacon).not.toHaveBeenCalled();
+    expect(mockCapture).not.toHaveBeenCalled();
   });
 
   it('sends exactly once per session', () => {
-    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
+    (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = 'phc_test';
     const { sendSessionTelemetry } = loadModule();
 
     sendSessionTelemetry(MOCK_STATE);
     sendSessionTelemetry(MOCK_STATE);
     sendSessionTelemetry(MOCK_STATE);
 
-    expect(mockSendBeacon).toHaveBeenCalledTimes(1);
+    expect(mockCapture).toHaveBeenCalledTimes(1);
   });
 
-  it('sends beacon with correct URL', () => {
-    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
+  it('captures a game_session_snapshot event with game state properties', () => {
+    (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = 'phc_test';
     const { sendSessionTelemetry } = loadModule();
 
     sendSessionTelemetry(MOCK_STATE);
 
-    expect(mockSendBeacon).toHaveBeenCalledWith('https://example.com/telemetry', expect.any(Blob));
-  });
-
-  it('falls back to fetch when sendBeacon is unavailable', () => {
-    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
-
-    Object.defineProperty(navigator, 'sendBeacon', {
-      configurable: true,
-      value: undefined,
-      writable: true,
-    });
-
-    const { sendSessionTelemetry } = loadModule();
-
-    sendSessionTelemetry(MOCK_STATE);
-
-    expect(mockFetch).toHaveBeenCalledWith(
-      'https://example.com/telemetry',
+    expect(mockCapture).toHaveBeenCalledWith(
+      'game_session_snapshot',
       expect.objectContaining({
-        keepalive: true,
-        method: 'POST',
+        app_version: '1.2.3',
+        client_id: 'test-uuid-1234',
+        game_state: MOCK_STATE,
+        game_state_version: CURRENT_GAME_STATE_VERSION,
       })
     );
   });
 
-  it('never throws even if sendBeacon throws', () => {
-    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
+  it('never throws even if capture throws', () => {
+    (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = 'phc_test';
 
-    mockSendBeacon.mockImplementation(() => {
+    mockCapture.mockImplementation(() => {
       throw new Error('Network error');
     });
 
@@ -155,42 +210,49 @@ describe('sendSessionTelemetry', () => {
 
 describe('sendErrorReport', () => {
   it('sends immediately with error details', () => {
-    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
+    (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = 'phc_test';
     const { sendErrorReport } = loadModule();
 
     sendErrorReport({ message: 'Something broke', stack: 'Error: Something broke\n    at foo' });
 
-    expect(mockSendBeacon).toHaveBeenCalledTimes(1);
-    const blob = mockSendBeacon.mock.calls[0][1] as Blob;
-    expect(blob).toBeInstanceOf(Blob);
+    expect(mockCaptureException).toHaveBeenCalledTimes(1);
+    const [error, properties] = mockCaptureException.mock.calls[0];
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toBe('Something broke');
+    expect(properties).toEqual(
+      expect.objectContaining({
+        error_message: 'Something broke',
+        error_stack: 'Error: Something broke\n    at foo',
+      })
+    );
   });
 
   it('does not deduplicate — sends on every call', () => {
-    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
+    (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = 'phc_test';
     const { sendErrorReport } = loadModule();
 
     sendErrorReport({ message: 'error 1' });
     sendErrorReport({ message: 'error 2' });
     sendErrorReport({ message: 'error 3' });
 
-    expect(mockSendBeacon).toHaveBeenCalledTimes(3);
+    expect(mockCaptureException).toHaveBeenCalledTimes(3);
   });
 
   it('does nothing when telemetry is opted out', () => {
     mockTelemetryEnabled = false;
-    (globalThis as Record<string, unknown>).__TELEMETRY_URL__ = 'https://example.com/telemetry';
+    (globalThis as Record<string, unknown>).__POSTHOG_KEY__ = 'phc_test';
     const { sendErrorReport } = loadModule();
 
     sendErrorReport({ message: 'crash' });
 
-    expect(mockSendBeacon).not.toHaveBeenCalled();
+    expect(mockCaptureException).not.toHaveBeenCalled();
   });
 
-  it('does nothing when URL is empty', () => {
+  it('does nothing when PostHog is not configured', () => {
     const { sendErrorReport } = loadModule();
 
     sendErrorReport({ message: 'crash' });
 
-    expect(mockSendBeacon).not.toHaveBeenCalled();
+    expect(mockCaptureException).not.toHaveBeenCalled();
   });
 });

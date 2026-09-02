@@ -1,42 +1,60 @@
 import { Combatant } from '../../types/Combat';
-import { BohrokModel } from '../../components/CharacterScene/BohrokModel';
-import { RahkshiModel } from '../../components/CharacterScene/Rahkshi';
-import { KopakaMataModel } from '../../components/CharacterScene/Mata/KopakaMataModel';
+import { BohrokModel } from '../../rendering/3d/CharacterScene/BohrokModel';
+import { RahkshiModel } from '../../rendering/3d/CharacterScene/Rahkshi';
+import { VahkiModel } from '../../rendering/3d/CharacterScene/VahkiModel';
+import { KopakaMataModel } from '../../rendering/3d/CharacterScene/Mata/KopakaMataModel';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { Euler } from '@react-three/fiber';
-import { TahuMataModel } from '../../components/CharacterScene/Mata/TahuMataModel';
-import { PohatuMataModel } from '../../components/CharacterScene/Mata/PohatuMataModel';
-import { OnuaMataModel } from '../../components/CharacterScene/Mata/OnuaMataModel';
-import { LewaMataModel } from '../../components/CharacterScene/Mata/LewaMataModel';
-import { GaliMataModel } from '../../components/CharacterScene/Mata/GaliMataModel';
-import { TahuNuvaModel } from '../../components/CharacterScene/Nuva/TahuNuvaModel';
-import { GaliNuvaModel } from '../../components/CharacterScene/Nuva/GaliNuvaModel';
-import { KopakaNuvaModel } from '../../components/CharacterScene/Nuva/KopakaNuvaModel';
-import { LewaNuvaModel } from '../../components/CharacterScene/Nuva/LewaNuvaModel';
-import { OnuaNuvaModel } from '../../components/CharacterScene/Nuva/OnuaNuvaModel';
-import { PohatuNuvaModel } from '../../components/CharacterScene/Nuva/PohatuNuvaModel';
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { TahuMataModel } from '../../rendering/3d/CharacterScene/Mata/TahuMataModel';
+import { PohatuMataModel } from '../../rendering/3d/CharacterScene/Mata/PohatuMataModel';
+import { OnuaMataModel } from '../../rendering/3d/CharacterScene/Mata/OnuaMataModel';
+import { LewaMataModel } from '../../rendering/3d/CharacterScene/Mata/LewaMataModel';
+import { GaliMataModel } from '../../rendering/3d/CharacterScene/Mata/GaliMataModel';
+import { TahuNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/TahuNuvaModel';
+import { GaliNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/GaliNuvaModel';
+import { KopakaNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/KopakaNuvaModel';
+import { LewaNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/LewaNuvaModel';
+import { OnuaNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/OnuaNuvaModel';
+import { PohatuNuvaModel } from '../../rendering/3d/CharacterScene/Nuva/PohatuNuvaModel';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Group, Material, Mesh } from 'three';
-import { disposeObject3DResources } from '../../utils/disposeThreeObject';
+import { disposeObject3DResources } from '../../rendering/3d/utils/disposeThreeObject';
 import { KraataPower } from '../../types/Kraata';
-import { TakanuvaModel } from '../../components/CharacterScene/Nuva/TakanuvaModel';
-import { RahiPlaceholderModel } from '../../components/CharacterScene/RahiPlaceholderModel';
-import { NuiRamaModel } from '../../components/CharacterScene/NuiRamaModel';
+import { TakanuvaModel } from '../../rendering/3d/CharacterScene/Nuva/TakanuvaModel';
+import { LhikanModel } from '../../rendering/3d/CharacterScene/Metru/LhikanModel';
+import { MatauModel } from '../../rendering/3d/CharacterScene/Metru/MatauModel';
+import { NujuModel } from '../../rendering/3d/CharacterScene/Metru/NujuModel';
+import { NokamaModel } from '../../rendering/3d/CharacterScene/Metru/NokamaModel';
+import { OnewaModel } from '../../rendering/3d/CharacterScene/Metru/OnewaModel';
+import { VakamaModel } from '../../rendering/3d/CharacterScene/Metru/VakamaModel';
+import { WhenuaModel } from '../../rendering/3d/CharacterScene/Metru/WhenuaModel';
+import { usesNujuToaMetruRig } from '../../rendering/3d/metruMatoran';
+import { RahiPlaceholderModel } from '../../rendering/3d/CharacterScene/RahiPlaceholderModel';
+import { NuiRamaModel } from '../../rendering/3d/CharacterScene/NuiRamaModel';
 import { WorldSpaceHpBar } from './WorldSpaceHpBar';
-import { DEFEAT_SINK_DURATION_SEC } from '../../game/battleOutcomeVisualDelay';
+import { DEFEAT_SINK_DURATION_SEC } from '../../rendering/3d/battleOutcomeVisualDelay';
+import { battleSpeedProgress } from '../../utils/battleSpeed';
 
 const ROTATION_RESTORE_DURATION = 0.25;
 const DEFEAT_SINK_DEPTH = 0.55;
 
-/** `useGLTF` template meshes (Toa, etc.) must not dispose shared geometry; clones (enemies) may. */
-function canDisposeBattleModelGeometry(model: string): boolean {
+/**
+ * Enemy GLB clones (Rahkshi, Bohrok, …) own their geometry and per-instance materials
+ * (weathered-metal shader clones, eye clones). Toa templates share cached GLTF assets.
+ */
+function shouldDisposeBattleModelResources(model: string): boolean {
   return (
     model === 'bohrok' ||
     model === 'rahkshi' ||
     model === 'rahi_placeholder' ||
-    model === 'nui_rama'
+    model === 'nui_rama' ||
+    model === 'vahki'
   );
+}
+
+function disposeBattleModelResources(root: Group): void {
+  disposeObject3DResources(root, { disposeMaterials: true });
 }
 
 /** World-space Y offset for the floating HP bar, tuned per model family. */
@@ -50,6 +68,8 @@ function hpBarYOffset(model: string): number {
       return 0.35;
     case 'nui_rama':
       return 0.38;
+    case 'vahki':
+      return 0.25;
     default:
       return -0.1;
   }
@@ -106,6 +126,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     const [overrideRotationY, setOverrideRotationY] = useState<number | null>(null);
     const restoreRef = useRef<{ from: number; startTimeMs: number } | null>(null);
     const [modelDisposed, setModelDisposed] = useState(false);
+    const modelResourcesDisposedRef = useRef(false);
 
     const defeatSinkRef = useRef<{
       active: boolean;
@@ -114,11 +135,25 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     }>({ active: false, onDone: null, startMs: 0 });
     const defeatFadeMaterialsRef = useRef<Material[]>([]);
 
+    const freeModelResources = useCallback(() => {
+      if (modelResourcesDisposedRef.current) return;
+      const g = modelGroup.current;
+      if (!g || !shouldDisposeBattleModelResources(combatant.model)) return;
+      disposeBattleModelResources(g);
+      modelResourcesDisposedRef.current = true;
+    }, [combatant.model]);
+
+    useEffect(() => {
+      return () => {
+        freeModelResources();
+      };
+    }, [freeModelResources]);
+
     useFrame(() => {
       const restore = restoreRef.current;
       if (restore) {
         const elapsedSec = (performance.now() - restore.startTimeMs) / 1000;
-        const t = Math.min(1, elapsedSec / ROTATION_RESTORE_DURATION);
+        const t = battleSpeedProgress(elapsedSec, ROTATION_RESTORE_DURATION);
         setOverrideRotationY(lerpAngle(restore.from, baseRotationY, t));
         if (t >= 1) {
           restoreRef.current = null;
@@ -137,7 +172,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
       }
 
       const elapsedSec = (performance.now() - sink.startMs) / 1000;
-      const t = Math.min(1, elapsedSec / DEFEAT_SINK_DURATION_SEC);
+      const t = battleSpeedProgress(elapsedSec, DEFEAT_SINK_DURATION_SEC);
       g.position.y = -t * DEFEAT_SINK_DEPTH;
       const fade = 1 - t;
       for (const mat of defeatFadeMaterialsRef.current) {
@@ -151,9 +186,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
         mat.dispose();
       }
       defeatFadeMaterialsRef.current = [];
-      if (canDisposeBattleModelGeometry(combatant.model)) {
-        disposeObject3DResources(g);
-      }
+      freeModelResources();
       setModelDisposed(true);
       const done = sink.onDone;
       sink.onDone = null;
@@ -266,7 +299,8 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     const rotation: Euler = [0, rotationY, 0];
 
     const model = (() => {
-      switch (combatant.model) {
+      const displayModel = combatant.mataRenderModelId ?? combatant.model;
+      switch (displayModel) {
         case 'bohrok':
           return (
             <group scale={0.175}>
@@ -289,6 +323,12 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
           return (
             <group scale={0.04} position={[0, 0, 0]}>
               <RahkshiModel ref={childRef} kraata={combatant.id.split('-')[0] as KraataPower} />
+            </group>
+          );
+        case 'vahki':
+          return (
+            <group scale={0.04}>
+              <VahkiModel ref={childRef} id={combatant.id.split('-')[0]} />
             </group>
           );
         case 'Toa_Kopaka':
@@ -486,7 +526,128 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
               />
             </group>
           );
+        case 'Toa_Lhikan':
+          return (
+            <group scale={0.04}>
+              <LhikanModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Matau':
+          return (
+            <group scale={0.04}>
+              <MatauModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Nuju':
+          return (
+            <group scale={0.04}>
+              <NujuModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Nokama':
+          return (
+            <group scale={0.04}>
+              <NokamaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Onewa':
+          return (
+            <group scale={0.04}>
+              <OnewaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Vakama':
+          return (
+            <group scale={0.04}>
+              <VakamaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
+        case 'Toa_Whenua':
+          return (
+            <group scale={0.04}>
+              <WhenuaModel
+                ref={childRef}
+                matoran={{
+                  maskOverride: combatant.maskPower?.shortName,
+                  ...CHARACTER_DEX[combatant.id],
+                  ...combatant,
+                  exp: 0,
+                  maskPowerActive,
+                }}
+              />
+            </group>
+          );
         default:
+          if (usesNujuToaMetruRig(displayModel)) {
+            return (
+              <group scale={0.04}>
+                <NujuModel
+                  ref={childRef}
+                  matoran={{
+                    maskOverride: combatant.maskPower?.shortName,
+                    ...CHARACTER_DEX[combatant.id],
+                    ...combatant,
+                    exp: 0,
+                    maskPowerActive,
+                  }}
+                />
+              </group>
+            );
+          }
           return null;
       }
     })();

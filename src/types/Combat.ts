@@ -1,3 +1,4 @@
+import { ArenaId } from './Arena';
 import { GameState } from './GameState';
 import { ElementTribe, Mask } from './Matoran';
 
@@ -50,11 +51,18 @@ export type TargetEffect =
       type: 'SPEED';
       multiplier: number;
       durationRemaining: number;
-      durationUnit: 'round';
+      durationUnit: 'round' | 'wave';
       sourceId: string;
     }
   | {
       type: 'DEFENSE';
+      multiplier: number;
+      durationRemaining: number;
+      durationUnit: 'turn' | 'round';
+      sourceId: string;
+    }
+  | {
+      type: 'ACCURACY_MULT';
       multiplier: number;
       durationRemaining: number;
       durationUnit: 'turn' | 'round';
@@ -73,6 +81,11 @@ export interface Combatant {
   id: string;
   name: string;
   model: string;
+  /**
+   * When set (e.g. custom Toa Mata), which Mata `CombatantModel` branch to render; `model`
+   * stays the COMBATANT_DEX template key for stats lookup.
+   */
+  mataRenderModelId?: string;
   /** Set for `nui_rama` template: jaw hook (orange) vs teeth (lime). */
   nuiRamaVariant?: NuiRamaVariant;
   lvl: number;
@@ -153,4 +166,10 @@ export interface EnemyEncounter {
    * Solo Rahkshi waves add a small level bonus so one enemy is not overwhelmed by the full team.
    */
   scalesWithParty?: boolean;
+  /**
+   * 3D battle arena biome this encounter is fought in. Resolved against the
+   * arena registry in `src/rendering/3d/arenas/`. Defaults to the desert arena
+   * when omitted. See `docs/ARENA_ENVIRONMENTS.md`.
+   */
+  arenaId?: ArenaId;
 }

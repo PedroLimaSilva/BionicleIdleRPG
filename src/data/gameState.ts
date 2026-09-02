@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { MatoranJob } from '../types/Jobs';
 import { ListedCharacterData, BaseMatoran, Mask, RecruitedCharacterData } from '../types/Matoran';
 import { BattleRewardParams, GameState } from '../types/GameState';
@@ -44,6 +42,16 @@ export const INITIAL_GAME_STATE: GameState = {
   ): boolean {
     throw new Error('Function not implemented.');
   },
+  createCustomCharacter: function (
+    _base: Omit<BaseMatoran, 'id'>,
+    _extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+  ): string | null {
+    throw new Error('Function not implemented.');
+  },
+  customCharacters: [],
+  dismissCustomCharacter: function (_id: string): void {
+    throw new Error('Function not implemented.');
+  },
   evolveCharacter: function (
     _matoranId: RecruitedCharacterData['id'],
     _onSuccess?: (evolvedId: RecruitedCharacterData['id']) => void
@@ -71,6 +79,9 @@ export const INITIAL_GAME_STATE: GameState = {
     throw new Error('Function not implemented.');
   },
   recruitedCharacters: RECRUITED_MATORAN_DATA,
+  registerSharedCustomCharacter: function (_base: BaseMatoran): BaseMatoran {
+    throw new Error('Function not implemented.');
+  },
   removeJobFromMatoran: function (_id: BaseMatoran['id']): void {
     throw new Error('Function not implemented.');
   },
@@ -84,6 +95,14 @@ export const INITIAL_GAME_STATE: GameState = {
     throw new Error('Function not implemented.');
   },
   startRahkshiForge: function (_power: KraataPower, _stage: number): void {
+    throw new Error('Function not implemented.');
+  },
+  updateCustomCharacter: function (
+    _id: string,
+    _base: Omit<BaseMatoran, 'id'>,
+    _extras?: Pick<RecruitedCharacterData, 'customMataModelId'>,
+    _options?: { protodermisCost?: number }
+  ): boolean {
     throw new Error('Function not implemented.');
   },
   version: CURRENT_GAME_STATE_VERSION,

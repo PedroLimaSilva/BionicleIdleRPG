@@ -11,21 +11,21 @@ const RAHKSHI_INVENTORY_GAME_STATE = {
   },
   recruitedCharacters: [
     {
+      exp: 20000, // High exp so job gains during E2E tests don't cause level-up
+      id: 'Jala',
+    },
+    {
       exp: 0,
       id: 'Takua',
       quest: 'mnog_find_canister_beach',
     },
     {
       exp: 0,
-      id: 'Toa_Tahu',
-    },
-    {
-      exp: 20000, // High exp so job gains during E2E tests don't cause level-up
-      id: 'Jala',
+      id: 'Toa_Gali',
     },
     {
       exp: 0,
-      id: 'Toa_Gali',
+      id: 'Toa_Tahu',
     },
   ],
 };

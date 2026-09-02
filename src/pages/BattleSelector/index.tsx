@@ -4,8 +4,8 @@ import { ElementTag } from '../../components/ElementTag';
 import { Tooltip } from '../../components/Tooltip';
 import { useGame } from '../../context/Game';
 import { COMBATANT_DEX, ENCOUNTERS } from '../../data/combat';
-import { getVisibleEncounters } from '../../game/encounterVisibility';
-import { ELEMENT_TO_KRANA_COLOR, isKranaCollected, parseKranaDropId } from '../../game/Krana';
+import { getVisibleEncounters } from '../../game/combat/encounterVisibility';
+import { ELEMENT_TO_KRANA_COLOR, isKranaCollected, parseKranaDropId } from '../../game/krana/Krana';
 import type { KranaCollection } from '../../types/Krana';
 import type { EnemyEncounter } from '../../types/Combat';
 import { isKraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
@@ -62,7 +62,8 @@ function getEncounterAvatarSrc(encounter: EnemyEncounter): string | null {
   if (
     template.model === 'rahkshi' ||
     template.model === 'rahi_placeholder' ||
-    template.model === 'nui_rama'
+    template.model === 'nui_rama' ||
+    template.model === 'vahki'
   ) {
     return null;
   }

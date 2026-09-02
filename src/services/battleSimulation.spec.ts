@@ -13,7 +13,7 @@ import {
   hasReadyMaskPowers,
   hasActiveEffectFromSource,
 } from './combatUtils';
-import { getLevelFromExp } from '../game/Levelling';
+import { getLevelFromExp } from '../game/characters/Levelling';
 import type { RecruitedCharacterData } from '../types/Matoran';
 
 /** Deep clone combatants to avoid cross-test pollution */
@@ -377,6 +377,137 @@ describe('Battle Simulation', () => {
       expect(lewa.maskPower?.effect.type).toBe('AGGRO');
       // Huna makes Lewa untargetable; round completes
       expect(sim.team.length).toBe(2);
+    });
+
+    test('Ruru applies ACCURACY_MULT to every living enemy on activation', async () => {
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Onua', maskOverride: Mask.Ruru }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [
+          [
+            { id: 'tahnok', lvl: 1 },
+            { id: 'tahnok', lvl: 1 },
+          ],
+        ],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Onua'], true);
+
+      await sim.runRound();
+
+      expect(
+        sim.enemies.every((enemy) =>
+          enemy.effects?.some(
+            (effect) => effect.type === 'ACCURACY_MULT' && effect.multiplier === 0.5
+          )
+        )
+      ).toBe(true);
+      const onua = sim.team.find((t) => t.id === 'Toa_Onua')!;
+      expect(onua.maskPower?.active).toBe(true);
+      expect(hasActiveEffectFromSource(sim.team, sim.enemies, 'Toa_Onua')).toBe(true);
+    });
+
+    test('Ruru blinded enemy misses their attack', async () => {
+      jest.spyOn(Math, 'random').mockReturnValue(0.6);
+
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Onua', maskOverride: Mask.Ruru }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      const hpBefore = sim.team[0].hp;
+      sim.team = setAbilities(sim.team, ['Toa_Onua'], true);
+
+      await sim.runRound();
+
+      expect(sim.team[0].hp).toBe(hpBefore);
+      expect(sim.enemies[0].effects?.some((effect) => effect.type === 'ACCURACY_MULT')).toBe(true);
+    });
+
+    test('Ruru ACCURACY_MULT lasts exactly 2 enemy turns', async () => {
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Onua', maskOverride: Mask.Ruru }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Onua'], true);
+      await sim.runRound();
+
+      const blindEffectAfterR1 = sim.enemies[0].effects?.find(
+        (effect) => effect.type === 'ACCURACY_MULT'
+      );
+      expect(blindEffectAfterR1?.durationRemaining).toBe(1);
+
+      sim.team = setAbilities(sim.team, [], false);
+      await sim.runRound();
+
+      expect(
+        sim.enemies[0].effects?.some((effect) => effect.type === 'ACCURACY_MULT') ?? false
+      ).toBe(false);
+    });
+
+    test('Matatu immobilizes enemy preventing them from attacking', async () => {
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const teamWithout = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu' }]);
+      const simWithout = new BattleSimulator(teamWithout, customEncounter);
+      const hpBeforeWithout = simWithout.team[0].hp;
+      await simWithout.runRound();
+      const damageWithout = hpBeforeWithout - simWithout.team[0].hp;
+
+      const teamWith = createTeamFromRecruited([
+        { exp: 0, id: 'Toa_Tahu', maskOverride: Mask.Matatu },
+      ]);
+      const simWith = new BattleSimulator(teamWith, customEncounter);
+      simWith.team = setAbilities(simWith.team, ['Toa_Tahu'], true);
+      const hpBeforeWith = simWith.team[0].hp;
+      await simWith.runRound();
+      const damageWith = hpBeforeWith - simWith.team[0].hp;
+
+      const immobilizedEnemy = simWith.enemies[0];
+      expect(
+        immobilizedEnemy.effects?.some(
+          (e) => e.type === 'SPEED' && (e.multiplier ?? 0) < 0 && e.durationRemaining > 0
+        )
+      ).toBe(true);
+      expect(damageWith).toBe(0);
+      expect(damageWith).toBeLessThan(damageWithout);
+    });
+
+    test('Matatu (wave 1 duration) stays active until wave ends then enters turn cooldown', async () => {
+      const team = createTeamFromRecruited([{ exp: 0, id: 'Toa_Tahu', maskOverride: Mask.Matatu }]);
+      const encounter = ENCOUNTERS.find((e) => e.id === 'tahnok-1')!;
+      const customEncounter: EnemyEncounter = {
+        ...encounter,
+        waves: [[{ id: 'tahnok', lvl: 1 }], [{ id: 'tahnok', lvl: 1 }]],
+      };
+
+      const sim = new BattleSimulator(team, customEncounter);
+      sim.team = setAbilities(sim.team, ['Toa_Tahu'], true);
+      await sim.runRound();
+
+      const tahuAfterRound = sim.team.find((t) => t.id === 'Toa_Tahu')!;
+      expect(tahuAfterRound.maskPower?.active).toBe(true);
+      expect(tahuAfterRound.maskPower?.effect.duration.unit).toBe('wave');
+
+      sim.advanceWave();
+
+      const tahuAfterWave = sim.team.find((t) => t.id === 'Toa_Tahu')!;
+      expect(tahuAfterWave.maskPower?.active).toBe(false);
+      expect(tahuAfterWave.maskPower?.cooldown.amount).toBe(2);
+      expect(tahuAfterWave.maskPower?.cooldown.unit).toBe('turn');
     });
 
     test('Komau CONFUSION makes enemy attack their own team', async () => {

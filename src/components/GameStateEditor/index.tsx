@@ -7,9 +7,14 @@ import { MATORAN_DEX } from '../../data/dex/matoran';
 import { CHARACTER_DEX } from '../../data/dex';
 import { RecruitedCharacterData } from '../../types/Matoran';
 import { KranaCollection, KranaElement, KranaId } from '../../types/Krana';
-import { KraataCollection, KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
+import {
+  KraataCollection,
+  KraataPower,
+  KRAATA_POWER_NAMES,
+  MAX_KRAATA_STAGE,
+} from '../../types/Kraata';
 import { ElementTribe } from '../../types/Matoran';
-import { getLevelFromExp } from '../../game/Levelling';
+import { getLevelFromExp } from '../../game/characters/Levelling';
 import './index.scss';
 
 const RECRUITABLE_IDS = [...Object.keys(TOA_DEX), ...Object.keys(MATORAN_DEX)];
@@ -25,7 +30,7 @@ const KranaElementValues: KranaElement[] = [
 
 const KranaIds: KranaId[] = ['Xa', 'Bo', 'Su', 'Za', 'Vu', 'Ja', 'Yo', 'Ca'];
 
-const KRAATA_STAGES = [1, 2, 3, 4, 5, 6] as const;
+const KRAATA_STAGES = Array.from({ length: MAX_KRAATA_STAGE }, (_, index) => index + 1);
 
 interface GameStateEditorProps {
   onApplied?: () => void;
@@ -266,7 +271,7 @@ export function GameStateEditor({ onApplied }: GameStateEditorProps) {
           <h3>Kraata Collection</h3>
           <p className="game-state-section-hint game-state-section-hint--with-icons">
             Power <ArrowRight className="game-state-section-hint-icon" size={12} aria-hidden />{' '}
-            stage (1–6){' '}
+            stage (1–{MAX_KRAATA_STAGE}){' '}
             <ArrowRight className="game-state-section-hint-icon" size={12} aria-hidden /> count
           </p>
           <div className="game-state-kraata-grid">

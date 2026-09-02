@@ -29,6 +29,7 @@ const SECTION_ORDER: Record<string, number> = {
   'Bohrok Swarms': 3,
   [DEFAULT_SECTION_LABEL]: 6,
   'Mask of Light': 0,
+  'Metru Nui': -1,
   'Tales of the Masks': 1,
   "The Chronicler's Journey": 4,
 };

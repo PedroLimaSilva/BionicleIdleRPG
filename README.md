@@ -9,6 +9,7 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - **Recruitment System**: Recruit Matoran and Toa characters using protodermis (currency)
 - **Character Progression**: Characters gain XP from jobs and quests, leveling up to become more powerful
 - **Character Customization**: Override mask colors and appearances
+- **Custom Matoran**: Design and recruit your own Matoran; share them via import codes
 - **3D Character Rendering**: View your characters in 3D using React Three Fiber
 
 ### Idle Gameplay
@@ -81,6 +82,10 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
    yarn install
    ```
 
+   The `prepare` hook copies vendored assets into `public/` (Draco decoder from `three`, UI fonts from `@fontsource/*`). Those files are committed so GitHub Pages and CI builds do not depend on CDN fetches; after install, `git status` should stay clean unless `three` or font packages were upgraded—in that case run `yarn vendor-draco` / `yarn vendor-fonts` and commit the updated `public/` files.
+
+   **Dependency audit:** Run `yarn audit:prod:critical` (CI gate) or `yarn audit:prod` for high-severity production issues. One known unpatched advisory remains: `lodash.pick` via `@react-three/drei@9` (no fix available upstream; removed in drei v10).
+
 3. **Start the development server**
 
    ```bash
@@ -102,8 +107,10 @@ A web-based idle RPG game set in the Bionicle universe, where you recruit Matora
 - `yarn test:e2e` - Run E2E visual regression tests (Playwright)
 - `yarn test:e2e:docker` - Run E2E tests in Docker for deterministic snapshots
 - `yarn format` - Format code with Prettier
-- `yarn format:check` - Check code formatting
+- `yarn format:check` - Check code formatting (also enforced locally via the Husky pre-commit hook)
 - `yarn check:unused-css` - Report unused CSS class selectors (dev hygiene)
+- `yarn audit:prod` - Audit production dependencies for high-severity vulnerabilities (see note below)
+- `yarn audit:prod:critical` - Audit production dependencies for critical vulnerabilities (used in CI)
 - `yarn deploy` - Build and deploy to GitHub Pages
 
 ## 📁 Project Structure
@@ -112,13 +119,17 @@ High-level layout of `src/` (not exhaustive):
 
 ```
 src/
-├── components/          # UI (quests, jobs, 3D CharacterScene, modals, TelemetryConsentPrompt, …)
-├── context/             # GameProvider, Canvas, Settings (see AGENT_GUIDELINES.md for layer rules)
+├── components/          # UI layouts (nav, modals, lists, banners, tooltips)
+├── context/             # GameProvider, Settings (see AGENT_GUIDELINES.md for layer rules)
 ├── data/                # Static content: dex/, quests/, cutscenes/, combat, jobs, gameState, recruitment, …
-├── game/                # Pure domain logic (jobs, quests, combat rewards, krana/kraata, levelling, …)
-├── hooks/               # React hooks; useGameLogic composes feature hooks (battle, characters, quests, …)
+├── game/                # Pure mechanics by domain: jobs/, quests/, recruitment/, evolution/, combat/, …
+├── hooks/               # Game-state React hooks; useGameLogic composes feature hooks
 ├── pages/               # Route-level screens (Battle, Recruitment, Settings, QuestTree, …)
-├── services/            # Bridges: persistence, combat helpers, matoranUtils, optional telemetry, …
+├── persistence/         # IndexedDB save/load and useGamePersistence
+├── rendering/
+│   ├── 2d/              # Composited avatars and 2D image stacking
+│   └── 3d/              # Kit catalogs, CharacterScene, battle arenas, 3D hooks, canvas
+├── services/            # Bridges: combat helpers, matoranUtils, optional telemetry, …
 ├── types/               # Shared TypeScript types
 ├── utils/               # Small shared helpers (e.g. math)
 ├── App.tsx              # Routes and shell (includes #canvas-mount for 3D)
@@ -218,6 +229,17 @@ The game automatically saves to localStorage:
 - Save data includes versioning for compatibility
 - You can reset your game data from the Settings page
 
+## 📲 PWA & app updates
+
+The app is installable as a progressive web app (Vite PWA plugin + Workbox). Assets and GLBs are cached for offline play.
+
+When a new deployment is available, `PWABadge` (`src/components/CacheManagement/PWABadge.tsx`) shows a **bottom banner** over the navigation bar:
+
+- **Update available** — Reload applies the new service worker; Later dismisses until the next detection
+- **Ready for offline play** — Shown after the service worker is first activated; Got it dismisses
+
+The banner uses the same dark glass styling, Orbitron headings, and button classes as the rest of the UI. Playwright visual tests force banner visibility via `E2E_PWA_BANNER` in test mode — see `e2e/pwaUpdateBanner.spec.ts` and `e2e/README.md`.
+
 ## 🐛 Debug & Performance
 
 - **Quest Debug mode** (Settings): Shortens quest durations to 1 second for testing
@@ -232,13 +254,15 @@ The game automatically saves to localStorage:
 
 ## 📚 Additional documentation
 
-| Document                                           | Purpose                                                                    |
-| -------------------------------------------------- | -------------------------------------------------------------------------- |
-| [AGENT_GUIDELINES.md](AGENT_GUIDELINES.md)         | Architecture, layers, and invariants for contributors and automation       |
-| [AGENTS.md](AGENTS.md)                             | Cursor Cloud / agent quick reference (commands and caveats)                |
-| [docs/TELEMETRY.md](docs/TELEMETRY.md)             | Optional build-time telemetry (`VITE_TELEMETRY_URL`) and privacy behaviour |
-| [e2e/README.md](e2e/README.md)                     | Playwright E2E tests and snapshot workflow                                 |
-| [ARCHITECTURE_ROADMAP.md](ARCHITECTURE_ROADMAP.md) | Backlog of possible technical improvements (not a commitment)              |
+| Document                                                     | Purpose                                                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| [AGENT_GUIDELINES.md](AGENT_GUIDELINES.md)                   | Architecture, layers, and invariants for contributors and automation            |
+| [AGENTS.md](AGENTS.md)                                       | Cursor Cloud / agent quick reference (commands and caveats)                     |
+| [docs/TELEMETRY.md](docs/TELEMETRY.md)                       | Optional build-time telemetry (`VITE_PUBLIC_POSTHOG_KEY`) and privacy behaviour |
+| [e2e/README.md](e2e/README.md)                               | Playwright E2E tests and snapshot workflow (incl. PWA banner overrides)         |
+| [ARCHITECTURE_ROADMAP.md](ARCHITECTURE_ROADMAP.md)           | Index of technical debt and improvements (tracked via GitHub issues)            |
+| [docs/UI_UX_STRATEGY.md](docs/UI_UX_STRATEGY.md)             | Portrait-first UI/UX direction (tracked via GitHub issues)                      |
+| [docs/COMBAT_TEST_COVERAGE.md](docs/COMBAT_TEST_COVERAGE.md) | Combat and mask power test reference                                            |
 
 ## 🤝 Contributing
 

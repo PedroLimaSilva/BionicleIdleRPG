@@ -1,0 +1,11 @@
+{
+  "name": "Bionicle Idle RPG",
+  "install": "set -euo pipefail && export NVM_DIR=\"$HOME/.nvm\" && [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && nvm install && nvm use && corepack enable 2>/dev/null || true && yarn install",
+  "terminals": [
+    {
+      "name": "dev-server",
+      "command": "yarn dev",
+      "description": "Vite dev server at http://localhost:5173/BionicleIdleRPG/"
+    }
+  ]
+}

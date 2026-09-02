@@ -20,8 +20,8 @@ Use Docker to run Playwright tests in the same Linux environment as CI, ensuring
 
 ### Prerequisites
 
-- Docker installed on your machine
-- Docker Compose installed (usually comes with Docker Desktop)
+- Docker installed on your machine (Docker Desktop or Docker Engine)
+- **Docker Compose V2** (`docker compose` CLI plugin; included with current Docker installs)
 
 ### Quick Start
 
@@ -121,7 +121,7 @@ yarn test:e2e:docker
 
 1. Downloads Playwright base image (~1GB)
 2. Installs all node dependencies
-3. Installs Playwright browsers (chromium, webkit)
+3. Installs the **Chromium** browser for Playwright (matches CI; WebKit is not used in this image)
 
 **First build can take 5-10 minutes.** Subsequent builds are much faster due to Docker layer caching.
 
@@ -129,7 +129,7 @@ yarn test:e2e:docker
 
 ```bash
 # Build with verbose output
-docker-compose -f docker-compose.playwright.yml build --progress=plain
+docker compose -f docker-compose.playwright.yml build --progress=plain
 
 # Or build separately to see all output
 docker build -f Dockerfile.playwright -t bionicle-playwright .
@@ -156,7 +156,7 @@ The Docker container uses `host.docker.internal` to access the host's localhost.
 
 ```bash
 # Clean rebuild
-docker-compose -f docker-compose.playwright.yml build --no-cache
+docker compose -f docker-compose.playwright.yml build --no-cache
 ```
 
 ### Snapshots still differ in CI

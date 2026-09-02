@@ -26,6 +26,53 @@
   }
 }
 
+.battle-page-with-speed {
+  position: relative;
+}
+
+.battle-speed-control {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border-muted);
+  background: var(--color-surface-high);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+
+  &__icon {
+    flex-shrink: 0;
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--color-surface-low);
+    border-color: var(--color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 .battle-page-root {
   width: 100%;
   min-height: 100%;
@@ -283,8 +330,8 @@
       pointer-events: none;
       touch-action: none;
       background: #000;
-      /* Duration must match WAVE_CLEAR_TOTAL_MS in InProgress.tsx */
-      animation: battle-arena-wave-clear 1s ease-in-out forwards;
+      /* Duration: --battle-wave-clear-ms set in InProgress.tsx (scaled by battle speed) */
+      animation: battle-arena-wave-clear var(--battle-wave-clear-ms, 1s) ease-in-out forwards;
     }
   }
 

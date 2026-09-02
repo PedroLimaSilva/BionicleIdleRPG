@@ -9,12 +9,12 @@ const gotoBattleSelector = (page: Parameters<typeof goto>[0]) =>
   });
 
 const TOA_WITH_EXP = [
-  { exp: 50000, id: 'Toa_Tahu' },
   { exp: 50000, id: 'Toa_Gali' },
   { exp: 50000, id: 'Toa_Kopaka' },
   { exp: 50000, id: 'Toa_Lewa' },
   { exp: 50000, id: 'Toa_Onua' },
   { exp: 50000, id: 'Toa_Pohatu' },
+  { exp: 50000, id: 'Toa_Tahu' },
 ];
 
 test.describe('Battle Flow', () => {
@@ -53,11 +53,11 @@ test.describe('Battle Flow', () => {
 
     const selectedTeam = await page.locator('.battle-prep__selected-team .character-card');
     await teamSelector.nth(0).click();
-    await expect(selectedTeam.nth(0)).toContainText('Tahu');
+    await expect(selectedTeam.nth(0)).toContainText('Gali');
     await teamSelector.nth(1).click();
-    await expect(selectedTeam.nth(1)).toContainText('Gali');
+    await expect(selectedTeam.nth(1)).toContainText('Kopaka');
     await teamSelector.nth(2).click();
-    await expect(selectedTeam.nth(2)).toContainText('Kopaka');
+    await expect(selectedTeam.nth(2)).toContainText('Lewa');
 
     const beginButton = page
       .locator('button.confirm-button')

@@ -10,7 +10,8 @@
 export interface RecruitmentEntry {
   id: string;
   cost: number;
-  unlockedByQuest: string;
+  /** Quest id, or any one of several quests that unlock this recruit. */
+  unlockedByQuest: string | string[];
 }
 
 /** Characters that can be recruited, keyed by character id. */
@@ -25,7 +26,11 @@ export const RECRUITMENT_REGISTRY: RecruitmentEntry[] = [
   // MNOG – Chronicler's Journey
   // Costs kept at or below default protodermisCap (2000) so recruits stay affordable
   // without raising the cap first.
-  { cost: 750, id: 'Kapura', unlockedByQuest: 'mnog_takua_meets_kapura' },
+  {
+    cost: 750,
+    id: 'Kapura',
+    unlockedByQuest: ['mnog_takua_meets_kapura', 'story_metru_nui_saga_begin'],
+  },
   { cost: 2000, id: 'Jala', unlockedByQuest: 'mnog_tahu_unlock_01' },
   { cost: 1000, id: 'Hahli', unlockedByQuest: 'mnog_restore_ga_koro' },
   { cost: 500, id: 'Hafu', unlockedByQuest: 'mnog_po_wahi_desert' },
@@ -47,4 +52,26 @@ export const RECRUITMENT_REGISTRY: RecruitmentEntry[] = [
   { cost: 500, id: 'pahrak', unlockedByQuest: 'bohrok_assistants' },
   { cost: 500, id: 'nuhvok', unlockedByQuest: 'bohrok_assistants' },
   { cost: 500, id: 'kohrak', unlockedByQuest: 'bohrok_assistants' },
+  // Metru Nui
+  { cost: 3000, id: 'Toa_Lhikan', unlockedByQuest: 'story_metru_nui_saga_begin' },
+  { cost: 1500, id: 'Vakama', unlockedByQuest: 'story_metru_nui_saga_begin' },
+  { cost: 1500, id: 'Nokama', unlockedByQuest: 'story_metru_nui_saga_begin' },
+  { cost: 1500, id: 'Nuju', unlockedByQuest: 'story_metru_nui_saga_begin' },
+  { cost: 1500, id: 'Onewa', unlockedByQuest: 'story_metru_nui_saga_begin' },
+  { cost: 1500, id: 'Matau', unlockedByQuest: 'story_metru_nui_saga_begin' },
+  { cost: 1500, id: 'Whenua', unlockedByQuest: 'story_metru_nui_saga_begin' },
+  // Vahki — unlock after Vakama’s encounter with Turaga Dume
+  { cost: 500, id: 'bordakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  { cost: 500, id: 'nuurakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  { cost: 500, id: 'vorzakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  { cost: 500, id: 'zadakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  { cost: 500, id: 'rorzakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  { cost: 500, id: 'keerakh', unlockedByQuest: 'metru_vakama_dume_and_the_great_temple' },
+  // Great Disk guides — unlocked by each Toa Metru's disk quest
+  { cost: 1200, id: 'Vhisola', unlockedByQuest: 'metru_nokama_great_disk' },
+  { cost: 1200, id: 'Ahkmou', unlockedByQuest: 'metru_onewa_great_disk' },
+  { cost: 1200, id: 'Ehrye', unlockedByQuest: 'metru_nuju_great_disk' },
+  { cost: 1200, id: 'Orkahm', unlockedByQuest: 'metru_matau_great_disk' },
+  { cost: 1200, id: 'Nuhrii', unlockedByQuest: 'metru_vakama_great_disk' },
+  { cost: 1200, id: 'Tehutti', unlockedByQuest: 'metru_whenua_great_disk' },
 ];

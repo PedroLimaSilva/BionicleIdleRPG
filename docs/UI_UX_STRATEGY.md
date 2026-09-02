@@ -1,5 +1,7 @@
 # UI/UX Strategy: Immersive Portrait-First Idle RPG
 
+**Tracking:** [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343) (Phase 1), [#346](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/346) (Phase 2), [#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) (Phase 3), [#345](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/345) (portrait polish), [#348](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/348) (Phase 4+ stretch).
+
 ## Executive Summary
 
 **Primary recommendation: Hybrid 2D UI + 3D Stage ("Diorama" model)**
@@ -20,7 +22,7 @@ This direction maximizes immersion-per-engineering-hour, stays performant on mid
 6. [Performance Budget & Patterns](#6-performance-budget--patterns)
 7. [Animation & Art Strategy](#7-animation--art-strategy)
 8. [Portrait-Specific UX](#8-portrait-specific-ux)
-9. [Concrete Next Steps](#9-concrete-next-steps)
+9. [Metrics to track](#9-metrics-to-track)
 10. [Kill Criteria](#10-kill-criteria)
 
 ---
@@ -46,8 +48,7 @@ This direction maximizes immersion-per-engineering-hour, stays performant on mid
 2. **Battle feedback is split-brain** — The 3D arena sits behind the UI (`z-index: -1`) with models animating, but the player reads combat primarily from 2D cards. The two layers don't reinforce each other; they compete for attention.
 3. **No environmental storytelling** — Every screen has the same dark gradient background. There's no sense of _place_ (Mata Nui, Kini-Nui, Ta-Koro) despite the rich lore.
 4. **Idle progression is invisible** — The only idle indicator is a protodermis counter and job badges. There's no visual heartbeat showing the game is alive when you're on the quests or characters screen.
-5. **Recruitment uses `alert()`** — The most exciting moment (getting a new character) has the worst feedback.
-6. **Text-heavy quest flow** — Available quests are a card list with requirement chips. No visual hook to the world the quest describes.
+5. **Text-heavy quest flow** — Available quests are a card list with requirement chips. No visual hook to the world the quest describes.
 
 ---
 
@@ -63,7 +64,7 @@ This direction maximizes immersion-per-engineering-hour, stays performant on mid
 | **Loot anticipation**         | Krana/kraata drops shown as text rewards                                                   | 3D loot reveal, glow, physical drop from enemy                           |
 | **Sense of place**            | None — every screen is same dark void                                                      | Route-specific 3D backdrops                                              |
 | **Juicy feedback**            | `motion` for layout transitions; damage popups float                                       | Screen shake, particle bursts on crits, elemental VFX on mask powers     |
-| **One-hand reachability**     | Bottom nav is good; battle "Run Round" button is not always thumb-reachable                | Action buttons must live in bottom 40% of viewport                       |
+| **One-hand reachability**     | Bottom nav and battle action bar are thumb-friendly; some secondary actions remain higher  | Keep primary actions in the bottom 40% of the viewport                   |
 
 ---
 
@@ -133,53 +134,27 @@ Keep the current flat UI, invest in motion design, illustration, and polish. Bet
 
 ### Phase 0: 2D Polish & Battle UX (no new 3D)
 
-**Goal**: Make the existing app feel better before adding scope.
-
-- [x] Replace `alert()` in recruitment with an animated modal + 3D reveal
-- [x] Move battle action buttons ("Run Round", "Retreat") into a fixed bottom bar within thumb reach
-- [x] Add screen shake (CSS transform on `.main-content`) on critical hits
-- [x] Add elemental particle burst on mask power activation (CSS or canvas 2D overlay)
-- [x] Improve damage popup with size scaling by damage magnitude, crit styling
-- [x] Add a brief "wave transition" animation between waves (fade or wipe)
-- [x] Add haptic feedback (`navigator.vibrate`) on hits and rewards
-- [x] Style the battle outcome screen — animated loot cards, exp bar fill
+**Goal**: Make the existing app feel better before adding scope. Complete — recruitment celebration, battle bottom bar, screen shake, mask power particles, damage popups, wave transitions, haptics, and outcome screen polish.
 
 ### Phase 1: Persistent Canvas & Battle Enhancement
 
 **Goal**: The canvas is always visible; battle 3D gets meaningfully better.
 
-- [ ] `#canvas-mount` becomes always-on at `z-index: -1` with a simple default backdrop (dark gradient with subtle floating particles — "void of Mata Nui")
-- [ ] Per-route backdrop: simple colored lighting shifts + particle density changes (no new geometry yet)
-- [x] **Battle camera work**: On attack, camera briefly tightens on the attacker/target pair (orthographic zoom shift + position lerp over ~300ms, then restore). This connects the 3D animation to the damage popup.
-- [x] **Hit impact effects**: Simple instanced particle burst at the target's position on Hit animation. Particle color = attacker's element.
-- [ ] **Defeat effect**: Target model plays Defeat clip + fades to silhouette + dissolves (opacity tween on the mesh material).
-- [x] Battle HP bars move from 2D cards to **floating world-space HP bars** above each combatant (drei `<Html>` or `<Billboard>` with a DOM HP bar). Cards become a compact sidebar/bottom strip.
+**Done:** Battle camera emphasis on attack, hit impact particles, world-space HP bars.
+
+**Remaining:** [#343](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/343) — always-on `#canvas-mount` with default backdrop, per-route lighting shifts, defeat dissolve effect.
 
 ### Phase 2: Environmental Backdrops
 
-**Goal**: Each major route feels like a different location.
-
-- [ ] **Island overview** (Quests): Low-poly Mata Nui island (single mesh, baked AO texture, < 2k tris). Camera orbits slowly. Quest markers as glowing points on the island. Clicking a marker scrolls the DOM to that quest.
-- [ ] **Village** (Characters): Ground plane with 2–3 hut props. Recruited characters stand in a row with idle animations. Tapping a character in the DOM grid triggers a camera fly-to.
-- [ ] **Shrine** (Recruitment): Dramatic pedestal with volumetric-style light cone (spotlight + fog plane). Character rotates on the pedestal. On recruit, light flares, particles burst.
-- [ ] **Arena environment**: Replace the current flat `circleGeometry` ground with a simple arena mesh (the `arena.glb` that's already preloaded but unused). Add ambient dust particles.
+**Goal**: Each major route feels like a different location. Tracked in [#346](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/346) — island overview (Quests), village (Characters), shrine (Recruitment), arena mesh.
 
 ### Phase 3: Advanced Feedback & Polish
 
-**Goal**: Combat is a visual spectacle; the idle loop has ambient life.
-
-- [ ] **Mask power VFX**: Per-element shader effects (fire: heat distortion + embers; ice: frost overlay + snowflakes; etc.) using `@react-three/postprocessing` custom effects or instanced particles.
-- [ ] **Idle ambient activity**: On the Characters page, assigned characters show job-specific idle loops (mining = pickaxe swing; guarding = stance shift). Protodermis particles drift from workers to a pile.
-- [ ] **Battle entry transition**: Camera swoops from the current backdrop into the arena. On victory, camera pulls back out.
-- [ ] **Loot drop**: Defeated enemies drop a glowing krana/kraata model that floats toward the camera before the 2D reward card appears.
-- [ ] **Day/night cycle**: Backdrop lighting shifts over real time or quest-progress milestones. Dawn = early game, dusk = late game. Purely cosmetic.
+**Goal**: Combat is a visual spectacle; the idle loop has ambient life. Tracked in [#349](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/349) — mask power VFX, idle ambient activity, battle transitions, loot drop, day/night cycle.
 
 ### Phase 4+ (Stretch / Future)
 
-- Explorable island map (tap-to-navigate, quest zones)
-- Character housing / customization
-- Multiplayer arena spectating (WebRTC or WebSocket peer)
-- Full skeletal animation pipeline with Mixamo retargeting
+Tracked in [#348](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/348) — explorable island map, character housing, multiplayer spectating, skeletal animation pipeline.
 
 ---
 
@@ -231,6 +206,8 @@ Keep the current flat UI, invest in motion design, illustration, and polish. Bet
 ### Current animation state
 
 The codebase uses **GLTF animation clips** stored in the model GLBs. `useCombatAnimations` composes `useIdleAnimation` (looping) and `usePlayAnimation` (one-shot Attack/Hit/Defeat). This is a solid pattern.
+
+**Rig & clip backlog:** see [`docs/CHARACTER_ANIMATIONS.md`](CHARACTER_ANIMATIONS.md) for the epic-style inventory (which rigs ship which clips, procedural fallbacks, and authoring priorities). Regenerate the live matrix with `yarn animation-clip-report`.
 
 ### Getting more life without a full pipeline
 
@@ -285,14 +262,14 @@ The codebase uses **GLTF animation clips** stored in the model GLBs. `useCombatA
 
 | Concern                     | Guideline                                                                                                                                                                                                                                       |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Thumb reach**             | Primary action buttons (Run Round, Recruit, Start Quest) must be in the bottom 40% of viewport height. Current "Run Round" is mid-screen — needs to move down.                                                                                  |
+| **Thumb reach**             | Primary action buttons (Run Round, Recruit, Start Quest) must stay in the bottom 40% of viewport height. Battle actions use a fixed bottom bar above the nav; audit new screens against the same rule.                                          |
 | **Safe areas**              | Use `env(safe-area-inset-top)` and `env(safe-area-inset-bottom)` in CSS. The nav is already 24px from bottom; add `+ env(safe-area-inset-bottom)` for iPhone home indicator.                                                                    |
-| **Text size**               | Minimum 14px for body text, 12px for secondary labels. Current `0.7rem` nav labels (~11.2px) are borderline — consider bumping to `0.75rem`.                                                                                                    |
+| **Text size**               | Minimum 14px for body text, 12px for secondary labels. Nav label size bump tracked in [#345](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/345).                                                                                     |
 | **Touch targets**           | Minimum 44x44px for all interactive elements (WCAG 2.5.8). Current nav items are fine (64px tall); check quest/battle card buttons.                                                                                                             |
 | **3D interaction**          | Do not require precision taps on 3D models for gameplay-critical actions. 3D is for viewing; DOM handles interaction. `PresentationControls` for spin/zoom is fine (exploration, not action).                                                   |
 | **When 3D should recede**   | Modals, full-page settings, privacy policy, quest tree diagram: dim/blur the canvas or set `visible={false}` on backdrop group. Prevents visual competition with dense text/UI.                                                                 |
 | **Scroll behavior**         | Vertical scroll only. No horizontal swipe navigation (conflicts with system back gesture on Android and iOS edge swipe). Horizontal scroll rows (existing roster scroll) are fine as explicit carousels.                                        |
-| **Orientation lock**        | Consider adding `<meta name="screen-orientation" content="portrait">` and `screen.orientation.lock('portrait')` (progressive enhancement — fails silently on desktop). Landscape layout can remain as a secondary mode.                         |
+| **Orientation lock**        | Portrait lock tracked in [#345](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/345). Landscape layout can remain as a secondary mode.                                                                                                 |
 | **Canvas height in battle** | Currently full-bleed. In portrait, the 3D arena should occupy the top ~50-60% of the viewport, with the compact combat HUD in the bottom 40-50%. The current `z-index: -1` full-bleed approach works if the HUD is opaque in the lower portion. |
 
 ### Battle HUD redesign for portrait
@@ -326,33 +303,7 @@ This puts all interactive elements in the bottom thumb zone while maximizing the
 
 ---
 
-## 9. Concrete Next Steps
-
-### Prototype sprint (Phase 0 — immediate)
-
-These changes are self-contained, low-risk, and immediately improve feel:
-
-1. ✅ **Recruitment celebration** — Replace `alert()` with an animated modal showing the character's 3D model with a burst of element-colored particles and a "Welcome, Tahu!" message.
-
-2. ✅ **Battle button repositioning** — Move "Run Round" / "Next Wave" / "Retreat" into a fixed bottom bar (`position: fixed; bottom: calc(24px + 64px + env(safe-area-inset-bottom))`), above the nav. Ensure buttons are ≥ 44px tall.
-
-3. ✅ **Hit feedback juice** — Add CSS `@keyframes shake` on `.main-content` triggered via a class toggle on critical hits. Add a brief `navigator.vibrate(50)` on damage dealt. Scale damage popup font size by `min(1 + damage/maxHp, 2)` for proportional feedback.
-
-4. ✅ **Wave transition** — On wave clear, brief 400ms CSS fade-to-black-and-back on `.battle-arena` before next wave spawns.
-
-5. ✅ **Outcome screen polish** — Animate reward items appearing one by one (staggered `motion.div` with spring physics). Show exp gain as an animated bar fill.
-
-### First 3D expansion (Phase 1)
-
-6. **Always-on canvas** — Change `#canvas-mount` CSS to `display: block` always, `z-index: -1`, full viewport. Create a `<DefaultBackdrop>` component: dark void + 20 instanced floating particles (small glowing cubes, slow random drift). Set as fallback when no route-specific scene is active.
-
-7. ✅ **Battle camera emphasis** — In `ArenaFraming`, add a transient zoom-in on the attacker/target during `playAnimation('Attack')`. Use a `useSpring` (drei) or manual lerp in `useFrame` to smoothly shift camera position toward the action, then restore. ~300ms in, ~200ms out.
-
-8. ✅ **World-space HP** — Add `<Html>` from drei above each `CombatantModel` position with a mini HP bar component. Keep the 2D card HP bars for detailed info, but now the player can read combat from the 3D view alone.
-
-9. ✅ **Hit particles** — On `playAnimation('Hit')`, spawn a burst of 8–12 instanced quads at the target's world position, colored by the attacker's element. Quads expand outward + fade over 400ms, then dispose. Use a shared `InstancedMesh` pool (max 64 particles) to avoid allocation.
-
-### Metrics to track
+## 9. Metrics to track
 
 | Metric                 | Tool                                                | Target                              |
 | ---------------------- | --------------------------------------------------- | ----------------------------------- |

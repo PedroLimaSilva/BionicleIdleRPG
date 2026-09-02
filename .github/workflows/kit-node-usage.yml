@@ -1,0 +1,56 @@
+name: Kit node usage report
+
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+    paths:
+      - 'public/Vahki.glb'
+      - 'public/kit_2001.glb'
+      - 'public/kit_2003.glb'
+      - 'public/kit_2004.glb'
+      - 'src/rendering/3d/kit/attachments/**'
+      - 'src/rendering/3d/kit/nodes/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  report:
+    name: Comment kit node usage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Generate kit node usage report
+        id: report
+        run: |
+          {
+            echo 'body<<EOF'
+            yarn kit-node-usage-report --markdown
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+        env:
+          KIT_NODE_BASE_REF: origin/${{ github.base_ref }}
+
+      - name: Comment on pull request
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-tag: kit-node-usage-report
+          body: ${{ steps.report.outputs.body }}

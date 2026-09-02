@@ -1,10 +1,12 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
+import { AutoActivateButton } from '../../components/AutoActivateButton';
 import { useGame } from '../../context/Game';
 import { BattlePhase } from '../../hooks/useBattleState';
 import { isTestMode } from '../../utils/testMode';
 import { AllyCard } from './Cards/Ally';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
+import { scaleBattleDurationMs } from '../../utils/battleSpeed';
 
 /** Total fade in + fade out; keep in sync with `battle-arena-wave-clear` duration in `battle.scss`. */
 const WAVE_CLEAR_TOTAL_MS = 1000;
@@ -30,8 +32,11 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
     team,
   } = battle;
   const [waveClearPlaying, setWaveClearPlaying] = useState(false);
+  const [timerResetToken, setTimerResetToken] = useState(0);
   const waveClearTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
+
+  const bumpTimerReset = () => setTimerResetToken((token) => token + 1);
 
   useEffect(() => {
     if (phase !== BattlePhase.Inprogress) return;
@@ -55,18 +60,21 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
     waveClearTimersRef.current.forEach(clearTimeout);
     waveClearTimersRef.current = [];
     setWaveClearPlaying(true);
+    const waveClearMs = scaleBattleDurationMs(WAVE_CLEAR_TOTAL_MS);
     waveClearTimersRef.current.push(
       setTimeout(() => {
         battle.advanceWave();
-      }, WAVE_CLEAR_TOTAL_MS / 2),
+      }, waveClearMs / 2),
       setTimeout(() => {
         setWaveClearPlaying(false);
         waveClearTimersRef.current = [];
-      }, WAVE_CLEAR_TOTAL_MS)
+      }, waveClearMs)
     );
   };
 
   const buttonsLocked = isRunningRound || waveClearPlaying || exitPresentation;
+  const enemiesAlive = battle.enemies.length > 0 && battle.enemies.some((e) => e.hp > 0);
+  const timerResetKey = `${timerResetToken}-${currentWave}-${enemiesAlive ? 'round' : 'wave'}`;
 
   const exitTransition = buildTransition(
     {
@@ -88,7 +96,16 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
       >
         <h1 className="title">Wave {currentWave + 1}</h1>
 
-        <div className={`battle-arena${waveClearPlaying ? ' battle-arena--wave-clear' : ''}`}>
+        <div
+          className={`battle-arena${waveClearPlaying ? ' battle-arena--wave-clear' : ''}`}
+          style={
+            waveClearPlaying
+              ? {
+                  ['--battle-wave-clear-ms' as string]: `${scaleBattleDurationMs(WAVE_CLEAR_TOTAL_MS)}ms`,
+                }
+              : undefined
+          }
+        >
           <div className="enemy-side"></div>
 
           <div className="ally-side">
@@ -97,7 +114,10 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
                 <AllyCard
                   key={i}
                   combatant={toa}
-                  onClick={() => battle.toggleAbility(toa)}
+                  onClick={() => {
+                    battle.toggleAbility(toa);
+                    bumpTimerReset();
+                  }}
                   team={team}
                   enemies={enemies}
                 />
@@ -107,24 +127,39 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
         </div>
 
         <div className="battle-buttons">
-          <button className="cancel-button" disabled={buttonsLocked} onClick={() => retreat()}>
+          <button
+            className="cancel-button"
+            disabled={buttonsLocked}
+            onClick={() => {
+              bumpTimerReset();
+              retreat();
+            }}
+          >
             Retreat
           </button>
 
-          {battle.enemies.length && battle.enemies.some((e) => e.hp > 0) ? (
-            <button
+          {enemiesAlive ? (
+            <AutoActivateButton
               className="confirm-button"
               disabled={buttonsLocked}
+              resetToken={timerResetKey}
+              showTimer={!shouldReduceMotion}
               onClick={() => {
                 battle.runRound();
               }}
             >
               Run Round
-            </button>
+            </AutoActivateButton>
           ) : (
-            <button className="confirm-button" disabled={buttonsLocked} onClick={runAfterWaveClear}>
+            <AutoActivateButton
+              className="confirm-button"
+              disabled={buttonsLocked}
+              resetToken={timerResetKey}
+              showTimer={!shouldReduceMotion}
+              onClick={runAfterWaveClear}
+            >
               Next Wave
-            </button>
+            </AutoActivateButton>
           )}
         </div>
       </motion.div>

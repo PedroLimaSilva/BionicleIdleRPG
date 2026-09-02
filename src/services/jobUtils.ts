@@ -1,4 +1,4 @@
-import { applyJobExp } from '../game/Jobs';
+import { applyJobExp } from '../game/jobs/Jobs';
 import { PROTODERMIS_RATE } from '../data/jobs';
 import { RecruitedCharacterData } from '../types/Matoran';
 
@@ -17,4 +17,27 @@ export function tickMatoranJobExp(matoran: RecruitedCharacterData, now: number):
     expGained: exp,
     updatedMatoran: updated,
   };
+}
+
+type TickRosterResult = {
+  updated: RecruitedCharacterData[];
+  protodermisGain: number;
+};
+
+/** Applies one online job tick to every assigned character; idle roster members are unchanged. */
+export function tickRecruitedCharactersJobExp(
+  characters: RecruitedCharacterData[],
+  now: number
+): TickRosterResult {
+  let protodermisGain = 0;
+
+  const updated = characters.map((matoran) => {
+    if (!matoran.assignment) return matoran;
+
+    const { earnedProtodermis, updatedMatoran } = tickMatoranJobExp(matoran, now);
+    protodermisGain += earnedProtodermis;
+    return updatedMatoran;
+  });
+
+  return { protodermisGain, updated };
 }

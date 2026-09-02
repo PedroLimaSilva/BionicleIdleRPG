@@ -1,23 +1,26 @@
 .character-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 2fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  gap: 0.5rem;
   margin: 1rem 0;
 }
 
 .character-inventory-tabs {
-  width: 100%;
-  max-width: calc(100vw - 4rem);
   position: relative;
-  display: flex;
-  justify-content: center;
+  margin-inline: -2rem;
+  width: calc(100% + 4rem);
+}
+
+.landscape .character-inventory-tabs {
+  margin-right: -180px;
+  width: calc(100% + 2rem + 180px);
 }
 
 .character-card {
   border: 2px solid var(--color-border-muted);
   border-radius: var(--border-radius-md);
-  padding: 1.25rem;
-  padding-bottom: 2rem;
+  padding: 0.5rem;
+  padding-bottom: 1.25rem;
   text-align: center;
   background: linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-mid) 100%);
   box-shadow: var(--shadow-md);
@@ -92,20 +95,20 @@
 
   .card-header {
     font-weight: 700;
-    font-size: 1.75rem;
+    font-size: 0.75rem;
     font-family: var(--font-display);
     color: var(--theme-element-primary);
     text-shadow: 0 0 8px var(--theme-element-glow-transparent);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     transition: all var(--transition-base);
     z-index: 1;
     line-height: 1;
   }
 
   .level-label {
-    font-size: 0.8rem;
+    font-size: 0.6rem;
     color: var(--color-text-muted);
-    margin: 0.25rem 0;
+    margin: 0.15rem 0;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     font-weight: 600;
@@ -114,12 +117,12 @@
   }
 
   .model-preview {
-    height: 120px;
+    height: 72px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: var(--border-radius-sm);
-    margin-top: 0.75rem;
+    margin-top: 0.25rem;
     position: relative;
     z-index: 1;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
@@ -133,13 +136,15 @@
     right: 50%;
     transform: translateX(50%);
     border-radius: 0;
+    font-size: 0.55rem;
+    padding: 1px 4px;
   }
 }
 
 .kraata-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  gap: 0.5rem;
   margin: 1rem 0;
 }
 
@@ -147,11 +152,11 @@
   height: 100%;
   border: 2px solid var(--color-border-muted);
   border-radius: var(--border-radius-md);
-  padding: 1.25rem;
+  padding: 0.5rem;
   text-align: center;
   background: linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-mid) 100%);
   box-shadow: var(--shadow-md);
-  min-height: 150px;
+  min-height: 100px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -167,20 +172,20 @@
   }
 
   &__image {
-    height: 120px;
+    height: 72px;
   }
 
   &__name {
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.7rem;
     font-family: var(--font-display);
     color: var(--color-text);
-    line-height: 1.2;
+    line-height: 1.1;
   }
 
   &__armor-badge {
-    margin-top: 0.35rem;
-    font-size: 0.65rem;
+    margin-top: 0.2rem;
+    font-size: 0.5rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -192,21 +197,20 @@
   }
 
   &__stage {
-    font-size: 0.85rem;
     color: var(--color-text-muted);
     position: absolute;
-    top: 0.75rem;
-    left: 1.25rem;
-    font-size: 2rem;
+    top: 0.35rem;
+    left: 0.5rem;
+    font-size: 1rem;
   }
 
   &__count {
-    font-size: 1rem;
+    font-size: 0.65rem;
     font-weight: 600;
     color: var(--color-accent);
     position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
+    top: 0.5rem;
+    right: 0.5rem;
   }
 }
 
@@ -286,6 +290,13 @@ button.kraata-card.kraata-card--forgeable {
   margin-bottom: 0;
 }
 
+.rahkshi-section__counter {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.04em;
+}
+
 .rahkshi-section__kraata-header {
   display: flex;
   align-items: center;
@@ -319,8 +330,8 @@ button.kraata-card.kraata-card--forgeable {
 
 .rahkshi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  gap: 0.5rem;
   margin: 1rem 0;
 }
 $rahkshi-card-radius: 8px;
@@ -329,14 +340,14 @@ $rahkshi-card-border: 2px;
 .rahkshi-card {
   height: 100%;
   border-radius: $rahkshi-card-radius;
-  padding: 1.25rem;
+  padding: 0.5rem;
   text-align: center;
   background:
     linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-mid) 100%),
     linear-gradient(to top, var(--rahkshi-head-color), var(--rahkshi-tail-color)) bottom / 100% 3px
       no-repeat;
   box-shadow: var(--shadow-md);
-  min-height: 150px;
+  min-height: 100px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -388,25 +399,25 @@ $rahkshi-card-border: 2px;
   }
 
   &__image {
-    height: 120px;
+    height: 72px;
   }
 
   &__name {
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.7rem;
     font-family: var(--font-display);
     color: var(--color-text);
-    line-height: 1.2;
+    line-height: 1.1;
   }
 
   &__status {
-    font-size: 0.8rem;
+    font-size: 0.55rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    margin-top: 0.25rem;
+    letter-spacing: 0.03em;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    margin-top: 0.15rem;
 
     &--preparing {
       color: var(--color-text-muted);

@@ -244,6 +244,14 @@ describe('chooseTarget', () => {
       expect(withFlag.maxHp).toBe(normal.maxHp);
       expect(withFlag.attack).toBe(normal.attack);
     });
+
+    test('includes mataRenderModelId when provided', () => {
+      const c = generateCombatantStats('ally', 'Toa_Tahu', 10, {
+        mataRenderModelId: 'Toa_Gali',
+      });
+      expect(c.model).toBe('Toa_Tahu');
+      expect(c.mataRenderModelId).toBe('Toa_Gali');
+    });
   });
 
   describe('getScaledEnemyLevelForEncounter', () => {
@@ -411,6 +419,15 @@ describe('chooseTarget', () => {
 
       expect(matoran.maskPower).toBeDefined();
       expect(matoran.maskPower?.effect.type).toBe('AGGRO');
+    });
+
+    test('generates combatant with Ruru mask (ACCURACY_MULT)', () => {
+      const onua = generateCombatantStats('onua', 'Toa_Onua', 1, Mask.Ruru);
+
+      expect(onua.maskPower).toBeDefined();
+      expect(onua.maskPower?.effect.type).toBe('ACCURACY_MULT');
+      expect(onua.maskPower?.target).toBe('allEnemies');
+      expect(onua.maskPower?.effect.multiplier).toBe(0.5);
     });
 
     test('mask power has duration and cooldown properties', () => {

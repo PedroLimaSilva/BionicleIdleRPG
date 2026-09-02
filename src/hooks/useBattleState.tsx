@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
 import { Combatant, EnemyEncounter } from '../types/Combat';
-import { RecruitedCharacterData } from '../types/Matoran';
-import { getLevelFromExp } from '../game/Levelling';
+import { RecruitedCharacterData, isCustomCharacterId, MatoranStage } from '../types/Matoran';
+import { getLevelFromExp } from '../game/characters/Levelling';
 import {
   generateCombatantStats,
   getScaledEnemyLevelForEncounter,
@@ -10,7 +10,10 @@ import {
   decrementWaveCounters,
   hasReadyMaskPowers,
 } from '../services/combatUtils';
-import { getBattleOutcomePhaseDelayMs } from '../game/battleOutcomeVisualDelay';
+import { getBattleOutcomePhaseDelayMs } from '../rendering/3d/battleOutcomeVisualDelay';
+import { scaleBattleDurationMs } from '../utils/battleSpeed';
+import { getEffectiveMatoran } from '../services/matoranUtils';
+import { resolveToaMataBuildId } from '../rendering/3d/customMataBuild';
 
 export const enum BattlePhase {
   Idle = 'idle',
@@ -50,7 +53,6 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   advanceWave: function (): void {
     throw new Error('Function not implemented.');
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   confirmTeam: function (_team: RecruitedCharacterData[]): void {
     throw new Error('Function not implemented.');
   },
@@ -72,12 +74,10 @@ export const INITIAL_BATTLE_STATE: BattleState = {
   runRound: function (): void {
     throw new Error('Function not implemented.');
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   startBattle: function (_encounter: EnemyEncounter): void {
     throw new Error('Function not implemented.');
   },
   team: [],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   toggleAbility: function (_toa: Combatant): boolean {
     throw new Error('Function not implemented.');
   },
@@ -165,7 +165,7 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
       setOutcomePresentationReady(true);
       return;
     }
-    const delayMs = getBattleOutcomePhaseDelayMs(reduceMotion);
+    const delayMs = scaleBattleDurationMs(getBattleOutcomePhaseDelayMs(reduceMotion));
     if (delayMs === 0) {
       setOutcomePresentationReady(true);
       return;
@@ -256,13 +256,18 @@ export const useBattleState = (nuvaSymbolsSequestered = false): BattleState => {
     );
 
     setTeam(
-      team.map(({ exp, id, maskOverride }) =>
-        generateCombatantStats(id, id, getLevelFromExp(exp), {
+      team.map((rec) => {
+        const { exp, id, maskOverride } = rec;
+        const effective = getEffectiveMatoran(rec);
+        return generateCombatantStats(id, id, getLevelFromExp(exp), {
           maskOverride,
           nuvaSymbolsSequestered:
             nuvaSymbolsSequestered && TOA_NUVA_IDS.includes(id as (typeof TOA_NUVA_IDS)[number]),
-        })
-      )
+          ...(isCustomCharacterId(id) && effective.stage === MatoranStage.ToaMata
+            ? { mataRenderModelId: resolveToaMataBuildId(rec) }
+            : {}),
+        });
+      })
     );
     setCurrentWave(0);
 

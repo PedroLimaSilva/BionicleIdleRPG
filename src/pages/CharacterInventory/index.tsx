@@ -1,34 +1,44 @@
 import './index.scss';
-import { motion } from 'motion/react';
-import { MatoranAvatar } from '../../components/MatoranAvatar';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { MatoranAvatar } from '../../rendering/2d/MatoranAvatar';
 import { Link } from 'react-router-dom';
-import { AnimatePresence } from 'motion/react';
 import { Modal } from '../../components/Modal';
-import { useReducedMotion } from 'motion/react';
 import { isTestMode } from '../../utils/testMode';
-import { getLevelFromExp } from '../../game/Levelling';
+import { getLevelFromExp } from '../../game/characters/Levelling';
 import { JobStatusBadge } from '../../components/JobStatusBadge';
-import { getJobStatus } from '../../game/Jobs';
+import { getJobStatus } from '../../game/jobs/Jobs';
 import { JOB_DETAILS } from '../../data/jobs';
 import { useGame } from '../../context/Game';
 import { QUESTS } from '../../data/quests';
 import { getEffectiveMatoran } from '../../services/matoranUtils';
-import { isBohrokOrKal, isMatoran, isToa } from '../../game/matoranStage';
-import { useMemo, useState, useCallback } from 'react';
+import { isBohrokOrKal, isMatoran, isToa, isVahki } from '../../game/characters/matoranStage';
+import { useMemo, useState, useCallback, useLayoutEffect } from 'react';
+import {
+  consumeCharactersReturnScrollId,
+  scrollMainContentElementIntoView,
+} from '../../utils/mainContentScroll';
 import { Tabs } from '../../components/Tabs';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import {
   canMergeAnyKraata,
   canStartRahkshiForge,
+  getRahkshiPowerCoverage,
   hasRahkshiArmorForPower,
   RAHKSHI_FORGE_COST,
-} from '../../game/KraataActions';
+} from '../../game/kraata/KraataActions';
 import { getKraataCompositedColors } from '../../data/kraataColors';
-import { KraataPower, KRAATA_POWER_NAMES, KraataCollection } from '../../types/Kraata';
+import {
+  KraataPower,
+  KRAATA_POWER_NAMES,
+  KraataCollection,
+  MAX_KRAATA_STAGE,
+} from '../../types/Kraata';
 import { getRahkshiArmorColors } from '../../data/rahkshiArmorColors';
-import { CompositedImage } from '../../components/CompositedImage';
+import { CompositedImage } from '../../rendering/2d/CompositedImage';
+import { Tooltip } from '../../components/Tooltip';
 import { RahkshiArmor } from '../../types/Rahkshi';
 import { LegoColor } from '../../types/Colors';
+import { CREATE_CUSTOM_CHARACTER_ID } from '../../types/Matoran';
 
 const CHARACTERS_TAB_KEY = 'characters-tab';
 
@@ -60,7 +70,12 @@ export const CharacterInventory: React.FC = () => {
     if (hasCollectedKraata || rahkshi.length > 0) {
       base.push('rahkshi');
     }
-    if (recruitedCharacters.some((m) => isBohrokOrKal(getEffectiveMatoran(m)))) {
+    if (
+      recruitedCharacters.some((m) => {
+        const effective = getEffectiveMatoran(m);
+        return isBohrokOrKal(effective) || isVahki(effective);
+      })
+    ) {
       base.push('other');
     }
     return base;
@@ -110,6 +125,18 @@ export const CharacterInventory: React.FC = () => {
     });
   }, [recruitedCharacters, effectiveTab]);
 
+  useLayoutEffect(() => {
+    const returnScrollId = consumeCharactersReturnScrollId();
+    if (!returnScrollId) return;
+
+    const card = document.querySelector<HTMLElement>(
+      `[data-character-id="${CSS.escape(returnScrollId)}"]`
+    );
+    if (!card) return;
+
+    scrollMainContentElementIntoView(card);
+  }, [effectiveTab, characters]);
+
   const collectedKraata = useMemo(() => {
     const groups: { power: KraataPower; stage: number; name: string; count: number }[] = [];
     for (const [power, stages] of Object.entries(kraataCollection)) {
@@ -152,11 +179,9 @@ export const CharacterInventory: React.FC = () => {
 
             return (
               <Link key={matoran.id} to={`/characters/${matoran.id}`}>
-                <motion.div
+                <div
+                  data-character-id={matoran.id}
                   className={`character-card element-${effective.element}`}
-                  layoutId={shouldReduceMotion ? undefined : `character-${matoran.id}`}
-                  layout
-                  transition={{ damping: 30, stiffness: 400, type: 'spring' }}
                 >
                   <MatoranAvatar matoran={effective} styles={'matoran-avatar model-preview'} />
                   <div className="card-header">
@@ -171,17 +196,19 @@ export const CharacterInventory: React.FC = () => {
                       status={jobStatus}
                     />
                   </div>
-                </motion.div>
+                </div>
               </Link>
             );
           })}
         </div>
       )}
-      {buyableCharacters.length !== 0 && effectiveTab !== 'rahkshi' && (
+      {effectiveTab !== 'rahkshi' && (
         <div className="recruit-button">
           <Link to="/recruitment">
             <button type="button" className="recruitment-button">
-              Recruit More
+              {buyableCharacters.some((c) => c.id !== CREATE_CUSTOM_CHARACTER_ID)
+                ? 'Recruit More'
+                : 'Create Matoran'}
             </button>
           </Link>
         </div>
@@ -210,6 +237,7 @@ function RahkshiTabContent({
   shouldReduceMotion: boolean;
 }) {
   const canMergeAny = useMemo(() => canMergeAnyKraata(kraataCollection), [kraataCollection]);
+  const rahkshiCoverage = useMemo(() => getRahkshiPowerCoverage(rahkshi), [rahkshi]);
   const [forgeModalPower, setForgeModalPower] = useState<KraataPower | null>(null);
 
   const canForgeSelected = useMemo(() => {
@@ -227,16 +255,21 @@ function RahkshiTabContent({
     <>
       {rahkshi.length > 0 && (
         <>
-          <h3 className="rahkshi-section__title">Rahkshi</h3>
+          <h3 className="rahkshi-section__title">
+            Rahkshi{' '}
+            <Tooltip
+              content={`Unique Rahkshi Powers with ready Armor and a stage ${MAX_KRAATA_STAGE} kraata installed.`}
+            >
+              <span className="rahkshi-section__counter">
+                {rahkshiCoverage.covered}/{rahkshiCoverage.total}
+              </span>
+            </Tooltip>
+          </h3>
           <div className="rahkshi-grid">
             {rahkshi
               .sort((a, b) => a.power.localeCompare(b.power))
               .map((armor) => (
-                <RahkshiArmorCard
-                  key={armor.id}
-                  armor={armor}
-                  shouldReduceMotion={shouldReduceMotion}
-                />
+                <RahkshiArmorCard key={armor.id} armor={armor} />
               ))}
           </div>
         </>
@@ -364,13 +397,7 @@ function RahkshiTabContent({
   );
 }
 
-function RahkshiArmorCard({
-  armor,
-  shouldReduceMotion,
-}: {
-  armor: RahkshiArmor;
-  shouldReduceMotion: boolean;
-}) {
+function RahkshiArmorCard({ armor }: { armor: RahkshiArmor }) {
   const { armor: armorColor, joint: jointColor } = getRahkshiArmorColors(armor.power);
   const powerName = KRAATA_POWER_NAMES[armor.power] ?? armor.power;
   const isPreparing = armor.status === 'preparing';
@@ -380,11 +407,8 @@ function RahkshiArmorCard({
 
   return (
     <Link to={`/rahkshi/${armor.id}`}>
-      <motion.div
+      <div
         className={`rahkshi-card rahkshi-card--${armor.status}`}
-        layoutId={shouldReduceMotion ? undefined : `rahkshi-${armor.id}`}
-        layout
-        transition={{ damping: 30, stiffness: 400, type: 'spring' }}
         style={
           {
             '--rahkshi-head-color': armorColor,
@@ -408,7 +432,7 @@ function RahkshiArmorCard({
         >
           {statusLabel}
         </div>
-      </motion.div>
+      </div>
     </Link>
   );
 }

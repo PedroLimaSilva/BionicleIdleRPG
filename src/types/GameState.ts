@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { BattleState, BattlePhase } from '../hooks/useBattleState';
 import { MatoranJob } from './Jobs';
-import { ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
+import { BaseMatoran, ListedCharacterData, Mask, RecruitedCharacterData } from './Matoran';
 import { Quest, QuestProgress } from './Quests';
 import { KranaCollection, KranaElement, KranaId } from './Krana';
 import { KraataCollection, KraataPower, KraataReward } from './Kraata';
@@ -31,10 +31,45 @@ export type GameState = {
   rahkshi: RahkshiArmor[];
   buyableCharacters: ListedCharacterData[];
   recruitedCharacters: RecruitedCharacterData[];
+  /**
+   * Player-created and player-received custom characters. Their `BaseMatoran` data lives
+   * here (not in `CHARACTER_DEX`) so we can persist it across loads. At runtime each entry
+   * is registered into `CHARACTER_DEX` so the rest of the codebase can look them up by id.
+   */
+  customCharacters: BaseMatoran[];
   activeQuests: QuestProgress[];
   completedQuests: string[];
   battle: BattleState;
   recruitCharacter: (character: ListedCharacterData) => void;
+  /**
+   * Adds a freshly designed custom character: registers it in `CHARACTER_DEX`,
+   * stores its base data in `customCharacters`, deducts the cost, and adds it to
+   * `recruitedCharacters`. Returns the created id, or null if it could not be created.
+   */
+  createCustomCharacter: (
+    base: Omit<BaseMatoran, 'id'>,
+    extras?: Pick<RecruitedCharacterData, 'customMataModelId'>
+  ) => string | null;
+  /**
+   * Registers a custom character base entry received from a share link, without
+   * recruiting it. Appears in the buyable list until recruited or dismissed.
+   * Dedupes by share identity (appearance, not `custom_*` id). Remaps to a fresh id when the
+   * incoming id is taken by a different design. Returns the stored `BaseMatoran`.
+   */
+  registerSharedCustomCharacter: (base: BaseMatoran) => BaseMatoran;
+  /** Removes a custom character from the recruitment list (only valid before recruitment). */
+  dismissCustomCharacter: (id: string) => void;
+  /**
+   * Updates an existing recruited custom character's appearance and name, and syncs their
+   * `stage` on the recruited slice (used when confirming the character-creation form after
+   * evolution). Returns false if the id is invalid or the character is not found.
+   */
+  updateCustomCharacter: (
+    id: string,
+    base: Omit<BaseMatoran, 'id'>,
+    extras?: Pick<RecruitedCharacterData, 'customMataModelId'>,
+    options?: { protodermisCost?: number }
+  ) => boolean;
   setMaskOverride: (id: RecruitedCharacterData['id'], mask: Mask) => void;
   collectKrana: (element: KranaElement, id: KranaId) => void;
   addKraata: (power: KraataPower, stage: number, count: number) => void;
@@ -70,6 +105,7 @@ export type PartialGameState = Pick<
   | 'kraataCollection'
   | 'rahkshi'
   | 'recruitedCharacters'
+  | 'customCharacters'
   | 'activeQuests'
   | 'completedQuests'
 >;

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { hasTelemetryConsent } from '../../services/gamePersistence';
-import { getTelemetryUrl } from '../../services/telemetry';
+import { hasTelemetryConsent, isTelemetryConsentStale } from '../../persistence/gamePersistence';
+import { isAnalyticsConfigured } from '../../services/telemetry';
 import { useSettings } from '../../context/useSettings';
 import './index.scss';
 
 export function TelemetryConsentPrompt() {
-  const [visible, setVisible] = useState(() => !hasTelemetryConsent() && !!getTelemetryUrl());
+  const [visible, setVisible] = useState(() => !hasTelemetryConsent() && isAnalyticsConfigured());
+  const isReconsent = isTelemetryConsentStale();
   const { setTelemetryEnabled } = useSettings();
   const { pathname } = useLocation();
 
@@ -20,12 +21,25 @@ export function TelemetryConsentPrompt() {
   return (
     <div className="consent-backdrop">
       <div className="consent-panel" role="dialog" aria-modal="true">
-        <h2 className="consent-title">Help improve this game?</h2>
+        <h2 className="consent-title">
+          {isReconsent ? 'Privacy policy updated' : 'Help improve this game?'}
+        </h2>
         <p className="consent-body">
-          We'd like to receive anonymous usage data (app version and game progress snapshot) once
-          per session. No personal information is collected. You can learn more about how we use
-          this data in our <Link to="/privacy-policy">privacy policy</Link>. You can change your
-          choice anytime in Settings.
+          {isReconsent ? (
+            <>
+              We've updated our <Link to="/privacy-policy">privacy policy</Link> and expanded what
+              anonymous usage data may include (such as session recordings and heatmaps). Please
+              review the policy and choose whether to continue sharing usage data.
+            </>
+          ) : (
+            <>
+              We'd like to receive anonymous usage data to help improve the game — including an app
+              version and game progress snapshot once per session, which screens you visit, how you
+              interact with the UI, session recordings, and heatmaps. No personal information is
+              collected. You can learn more in our <Link to="/privacy-policy">privacy policy</Link>.
+              You can change your choice anytime in Settings.
+            </>
+          )}
         </p>
         <div className="consent-actions">
           <button className="button confirm-button" onClick={() => handleChoice(true)}>
