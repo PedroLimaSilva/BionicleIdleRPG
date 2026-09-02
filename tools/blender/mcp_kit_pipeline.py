@@ -68,6 +68,8 @@ def configure_scene(
     delete_sources_after: bool = False,
     delete_only_hidden_sources: bool = True,
     attach_kit_preview_after: bool = False,
+    infer_kit_from_socket_name: bool = True,
+    reset_socket_transforms_on_sync: bool = True,
     skip_existing: bool = True,
 ):
     bpy, _addon = _ensure_addon_loaded()
@@ -85,6 +87,8 @@ def configure_scene(
     scene.bionicle_delete_sources_after = delete_sources_after
     scene.bionicle_delete_only_hidden_sources = delete_only_hidden_sources
     scene.bionicle_attach_kit_preview_after = attach_kit_preview_after
+    scene.bionicle_infer_kit_from_socket_name = infer_kit_from_socket_name
+    scene.bionicle_reset_socket_transforms_on_sync = reset_socket_transforms_on_sync
     scene.bionicle_skip_existing = skip_existing
 
 
