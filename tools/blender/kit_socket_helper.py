@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Bionicle Kit Socket Helper",
     "author": "Bionicle Idle RPG contributors",
-    "version": (0, 3, 2),
+    "version": (0, 3, 3),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Bionicle Kit",
     "description": "Automate shared-kit socket empties, kit preview attachment, and export prep.",
@@ -468,9 +468,28 @@ def _ensure_object_in_view(context, obj):
         _move_object_to_collection(obj, kit_collection)
 
 
-def _parent_preview_with_identity_local(preview, socket):
-    preview.parent = socket
-    preview.matrix_local = Matrix.Identity(4)
+def _zero_all_local_transforms(context, obj):
+    view_layer = context.view_layer
+    bpy.ops.object.select_all(action="DESELECT")
+    obj.select_set(True)
+    view_layer.objects.active = obj
+    bpy.ops.object.location_clear(clear_delta=True)
+    bpy.ops.object.rotation_clear(clear_delta=True)
+    bpy.ops.object.scale_clear(clear_delta=True)
+
+
+def _parent_preview_with_identity_local(context, preview, socket):
+    view_layer = context.view_layer
+    if preview.parent != socket:
+        bpy.ops.object.select_all(action="DESELECT")
+        preview.select_set(True)
+        socket.select_set(True)
+        view_layer.objects.active = socket
+        bpy.ops.object.parent_set(type="OBJECT", keep_transform=False)
+    bpy.ops.object.select_all(action="DESELECT")
+    preview.select_set(True)
+    view_layer.objects.active = preview
+    _zero_all_local_transforms(context, preview)
 
 
 def _acquire_kit_preview_object(context, kit_path, kit_node_name):
@@ -496,7 +515,7 @@ def _attach_kit_preview(context, socket, kit_path, kit_node_name, material_color
     preview.hide_viewport = False
     preview.hide_render = False
     _ensure_object_in_view(context, preview)
-    _parent_preview_with_identity_local(preview, socket)
+    _parent_preview_with_identity_local(context, preview, socket)
     _apply_material_colors_to_object(preview, material_colors, palette)
     return preview
 
@@ -775,7 +794,7 @@ class BIONICLE_OT_reset_kit_preview_transforms(bpy.types.Operator):
         reset = 0
         for socket in sockets:
             for child in _kit_preview_children(socket):
-                _parent_preview_with_identity_local(child, socket)
+                _parent_preview_with_identity_local(context, child, socket)
                 reset += 1
         if not reset:
             self.report({"WARNING"}, "No kit preview children found")
