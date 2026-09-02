@@ -1,4 +1,4 @@
-import { FrontSide, MeshStandardMaterial, Texture } from 'three';
+import { FrontSide, MeshPhysicalMaterial, MeshStandardMaterial, Texture } from 'three';
 import { LegoColor } from '../../../types/Colors';
 import {
   applyMaskMetallicPbr,
@@ -7,6 +7,10 @@ import {
   maskNeedsAlphaBlend,
   prepareClonedMaskMaterial,
 } from './maskMaterial';
+import {
+  TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION,
+  TRANSMISSIVE_MASK_RAU_TRANSMISSION,
+} from './transmissiveMaskMaterial';
 
 describe('maskNeedsAlphaBlend', () => {
   it('detects sub-1 opacity and trans-named masks', () => {
@@ -56,16 +60,21 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.roughnessMap).toBeDefined();
   });
 
-  it('keeps Nuva Kaukau opaque while Mata Kaukau blends', () => {
+  it('keeps Nuva Kaukau opaque while Mata Kaukau blends with transmission', () => {
     const nuva = new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 1, roughness: 0.5 });
-    prepareClonedMaskMaterial(nuva);
-    expect(nuva.transparent).toBe(false);
-    expect(nuva.side).toBe(FrontSide);
-    expect(nuva.depthWrite).toBe(true);
+    const nuvaPrepared = prepareClonedMaskMaterial(nuva);
+    expect(nuvaPrepared.transparent).toBe(false);
+    expect(nuvaPrepared.side).toBe(FrontSide);
+    expect(nuvaPrepared.depthWrite).toBe(true);
 
     const mata = new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 0.5, roughness: 0.5 });
-    prepareClonedMaskMaterial(mata);
-    expect(mata.transparent).toBe(true);
+    const mataPrepared = prepareClonedMaskMaterial(mata);
+    expect(mataPrepared).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(mataPrepared.transparent).toBe(true);
+    expect((mataPrepared as MeshPhysicalMaterial).transmission).toBe(
+      TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION
+    );
+    expect(mataPrepared.depthWrite).toBe(false);
   });
 
   it('leaves glow materials metallic for emissive lenses', () => {
@@ -108,16 +117,20 @@ describe('maskHasBakedPbrAlpha', () => {
 });
 
 describe('syncMaskTransparencyState', () => {
-  it('keeps baked-alpha Great Rau in the transparent pass at full opacity', () => {
-    const mat = new MeshStandardMaterial({
+  it('keeps baked-alpha Great Rau in the transparent pass with runtime transmission', () => {
+    const mat = new MeshPhysicalMaterial({
       name: 'Rau_baked',
       opacity: 1,
       roughness: 0.5,
-    }) as MeshStandardMaterial & { transmissionMap: Texture | null };
-    mat.transmissionMap = new Texture();
-    prepareClonedMaskMaterial(mat);
-    expect(mat.transparent).toBe(true);
-    expect(mat.opacity).toBe(1);
+      transmissionMap: new Texture(),
+    });
+    const prepared = prepareClonedMaskMaterial(mat);
+    expect(prepared.transparent).toBe(true);
+    expect(prepared.opacity).toBe(1);
+    expect((prepared as MeshPhysicalMaterial).transmission).toBe(
+      TRANSMISSIVE_MASK_RAU_TRANSMISSION
+    );
+    expect((prepared as MeshPhysicalMaterial).transmissionMap).toBeNull();
   });
 });
 

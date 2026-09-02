@@ -186,9 +186,7 @@ export function useMask(
         mesh.receiveShadow = effectiveShadows;
         const originalMat = mesh.material;
         if (isMaskStandardMat(originalMat)) {
-          const mat = originalMat.clone();
-          prepareClonedMaskMaterial(mat);
-          mesh.material = mat;
+          mesh.material = prepareClonedMaskMaterial(originalMat.clone());
         }
       }
     });

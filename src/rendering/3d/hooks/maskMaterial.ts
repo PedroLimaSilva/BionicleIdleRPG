@@ -1,5 +1,6 @@
 import { FrontSide, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { metallicColorPbr } from '../kit/palettes/metalPbr';
+import { applyTransmissiveMaskMaterial } from './transmissiveMaskMaterial';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -62,14 +63,18 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
  * use alpha blending. Closed shells use `FrontSide` so interior back-faces do
  * not z-fight with brain gel in the mask cavity.
  */
-export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
+export function prepareClonedMaskMaterial(mat: MaskStandardMat): MaskStandardMat {
   syncMaskTransparencyState(mat);
-  if (isMaskGlowMaterialName(mat.name)) return;
+  if (isMaskGlowMaterialName(mat.name)) return mat;
 
-  if (hasMaskPbrMaps(mat)) return;
+  const transmissive = applyTransmissiveMaskMaterial(mat);
+  if (transmissive) return transmissive;
+
+  if (hasMaskPbrMaps(mat)) return mat;
 
   mat.metalness = 0;
   mat.roughness = 0.55;
+  return mat;
 }
 
 /**
@@ -96,6 +101,5 @@ export function cloneGreatMaskMaterial(
   _maskColor: string
 ): MaskStandardMat {
   const mat = originalMat.clone();
-  prepareClonedMaskMaterial(mat);
-  return mat;
+  return prepareClonedMaskMaterial(mat);
 }
