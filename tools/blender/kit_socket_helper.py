@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Bionicle Kit Socket Helper",
     "author": "Bionicle Idle RPG contributors",
-    "version": (0, 3, 0),
+    "version": (0, 3, 1),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Bionicle Kit",
     "description": "Automate shared-kit socket empties, kit preview attachment, and export prep.",
@@ -372,51 +372,88 @@ def _load_attachment_map(scene):
     return _parse_attachment_map(scene.bionicle_attachment_map_json)
 
 
-def _append_kit_object(context, kit_path, kit_node_name):
-    kit_path = bpy.path.abspath(kit_path)
-    with bpy.data.libraries.load(kit_path, link=False) as (data_from, data_to):
+def _kit_library_filepath(kit_path):
+    return bpy.path.abspath(kit_path)
+
+
+def _is_from_kit_library(obj, kit_path):
+    if obj.library is None:
+        return False
+    return bpy.path.abspath(obj.library.filepath) == _kit_library_filepath(kit_path)
+
+
+def _link_kit_object(kit_path, kit_node_name):
+    abs_path = _kit_library_filepath(kit_path)
+    with bpy.data.libraries.load(
+        abs_path, link=True, create_liboverrides=True, relative=False
+    ) as (data_from, data_to):
         if kit_node_name not in data_from.objects:
             return None
         data_to.objects = [kit_node_name]
 
     if not data_to.objects:
         return None
+    return data_to.objects[0]
 
-    appended = data_to.objects[0]
-    if appended.name != kit_node_name:
-        appended.name = kit_node_name
-    for collection in context.scene.collection.children_recursive:
-        if appended.name in collection.objects:
-            collection.objects.unlink(appended)
-    context.scene.collection.objects.link(appended)
-    appended.hide_viewport = True
-    appended.hide_render = True
-    return appended
+
+def _find_linked_kit_prototype(kit_path, kit_node_name):
+    for obj in bpy.data.objects:
+        if not _is_from_kit_library(obj, kit_path):
+            continue
+        if strip_numeric_suffix(obj.name) != kit_node_name:
+            continue
+        if obj.get(KIT_PREVIEW_PROP):
+            continue
+        return obj
+    return None
+
+
+def _duplicate_linked_instance(context, source):
+    view_layer = context.view_layer
+    bpy.ops.object.select_all(action="DESELECT")
+    source.select_set(True)
+    view_layer.objects.active = source
+    bpy.ops.object.duplicate()
+    duplicate = view_layer.objects.active
+    duplicate[KIT_PREVIEW_PROP] = True
+    return duplicate
+
+
+def _ensure_object_in_scene(context, obj):
+    if obj.name not in context.scene.collection.objects:
+        context.scene.collection.objects.link(obj)
+
+
+def _parent_preview_with_identity_local(preview, socket):
+    preview.parent = socket
+    preview.matrix_local = Matrix.Identity(4)
+
+
+def _acquire_kit_preview_object(context, kit_path, kit_node_name):
+    linked = _find_linked_kit_prototype(kit_path, kit_node_name)
+    if linked is None:
+        linked = _link_kit_object(kit_path, kit_node_name)
+    if linked is None:
+        return None
+    if linked.parent is not None:
+        linked = _duplicate_linked_instance(context, linked)
+        _ensure_object_in_scene(context, linked)
+    return linked
 
 
 def _attach_kit_preview(context, socket, kit_path, kit_node_name, material_colors, palette):
     for child in _kit_preview_children(socket):
         bpy.data.objects.remove(child, do_unlink=True)
 
-    template = _append_kit_object(context, kit_path, kit_node_name)
-    if not template:
+    preview = _acquire_kit_preview_object(context, kit_path, kit_node_name)
+    if not preview:
         return None
 
-    preview = template.copy()
-    if template.data:
-        preview.data = template.data.copy()
-    preview.name = f"{kit_node_name}@{socket[SOCKET_PROP]}"
     preview[KIT_PREVIEW_PROP] = True
     preview.hide_viewport = False
     preview.hide_render = False
-    context.scene.collection.objects.link(preview)
-
-    preview.parent = socket
-    preview.matrix_parent_inverse = socket.matrix_world.inverted()
-    preview.location = (0.0, 0.0, 0.0)
-    preview.rotation_euler = (0.0, 0.0, 0.0)
-    preview.scale = (1.0, 1.0, 1.0)
-
+    _ensure_object_in_scene(context, preview)
+    _parent_preview_with_identity_local(preview, socket)
     _apply_material_colors_to_object(preview, material_colors, palette)
     return preview
 
@@ -695,9 +732,7 @@ class BIONICLE_OT_reset_kit_preview_transforms(bpy.types.Operator):
         reset = 0
         for socket in sockets:
             for child in _kit_preview_children(socket):
-                child.location = (0.0, 0.0, 0.0)
-                child.rotation_euler = (0.0, 0.0, 0.0)
-                child.scale = (1.0, 1.0, 1.0)
+                _parent_preview_with_identity_local(child, socket)
                 reset += 1
         if not reset:
             self.report({"WARNING"}, "No kit preview children found")
@@ -965,8 +1000,8 @@ def _register_scene_props():
     )
     bpy.types.Scene.bionicle_reset_socket_transforms_on_sync = bpy.props.BoolProperty(
         name="Reset Socket Transforms On Sync",
-        description="Zero each socket empty's local location/rotation/scale in parent space before attaching kit previews",
-        default=True,
+        description="Zero each socket empty's local transform during sync (usually leave off after manual placement)",
+        default=False,
     )
     bpy.types.Scene.bionicle_kit_library_path = bpy.props.StringProperty(
         name="Kit Library Path",

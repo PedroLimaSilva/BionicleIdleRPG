@@ -41,15 +41,17 @@ Pattern: `{KitNodeName}` when unique on the rig, or `{KitNodeName}_{Location}` /
 
 1. Set **Kit Library Path** to your shared kit `.blend` (e.g. `kit_2001.blend`).
 2. Select the renamed empties (or use **Sync Scene** for all tagged sockets).
-3. Click **Sync Renamed Sockets & Attach Kit**.
+3. Click **Sync Renamed Sockets & Attach Kit** (socket empties keep their transforms;
+   only the linked kit preview gets identity local transform).
 
 This step:
 
 - copies each empty's **object name** into `bionicle_socket`;
 - **infers** `bionicle_kit_node` by longest-prefix match against object names in the
   kit library (`Axle2L_Head` → `Axle2L`);
-- **resets socket local transforms** to identity in parent space (matches runtime);
-- **appends kit previews**, parents them to each socket, and resets preview transforms;
+- **resets kit preview local transforms** to identity in parent space (matches runtime);
+- **preserves socket empty transforms** unless **Reset Socket Transforms On Sync** is enabled;
+- **links** kit pieces from the library with overrides (does not append copies);
 - **skips** sockets whose kit node is not in the library yet (logged to the console).
 
 Optional: paste attachment-map `materialColors` into **Attachment Map JSON** for

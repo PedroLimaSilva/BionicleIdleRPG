@@ -69,7 +69,7 @@ def configure_scene(
     delete_only_hidden_sources: bool = True,
     attach_kit_preview_after: bool = False,
     infer_kit_from_socket_name: bool = True,
-    reset_socket_transforms_on_sync: bool = True,
+    reset_socket_transforms_on_sync: bool = False,
     skip_existing: bool = True,
 ):
     bpy, _addon = _ensure_addon_loaded()
