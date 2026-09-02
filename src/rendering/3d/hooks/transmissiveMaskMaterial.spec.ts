@@ -1,15 +1,10 @@
 import { FrontSide, MeshPhysicalMaterial, MeshStandardMaterial, Texture } from 'three';
 import {
-  TRANSMISSIVE_MASK_KAUKAU_OPACITY,
-  TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS,
   TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION,
   applyTransmissiveMaskMaterial,
   isKaukauTransmissiveMask,
 } from './transmissiveMaskMaterial';
-import {
-  TRANSMISSIVE_KIT_IOR,
-  TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS,
-} from './transmissiveKitMaterial';
+import { TRANSMISSIVE_KIT_IOR } from './transmissiveKitMaterial';
 
 describe('isKaukauTransmissiveMask', () => {
   it('detects Mata Kaukau by material name and sub-1 opacity', () => {
@@ -29,10 +24,12 @@ describe('isKaukauTransmissiveMask', () => {
 });
 
 describe('applyTransmissiveMaskMaterial', () => {
-  it('upgrades Mata Kaukau while keeping baked PBR maps', () => {
+  it('upgrades Mata Kaukau while keeping baked PBR maps and scalars', () => {
     const metalnessMap = new Texture();
     const roughnessMap = new Texture();
+    const map = new Texture();
     const mat = new MeshStandardMaterial({
+      map,
       metalness: 0.4,
       metalnessMap,
       name: 'Kaukau_baked',
@@ -45,9 +42,10 @@ describe('applyTransmissiveMaskMaterial', () => {
     expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next!.transmission).toBe(TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION);
     expect(next!.ior).toBe(TRANSMISSIVE_KIT_IOR);
-    expect(next!.opacity).toBe(TRANSMISSIVE_MASK_KAUKAU_OPACITY);
-    expect(next!.roughness).toBe(TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS);
-    expect(next!.roughness).toBeLessThan(TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS);
+    expect(next!.opacity).toBe(0.5);
+    expect(next!.roughness).toBe(0.8);
+    expect(next!.metalness).toBe(0.4);
+    expect(next!.map).toBe(map);
     expect(next!.metalnessMap).toBe(metalnessMap);
     expect(next!.roughnessMap).toBe(roughnessMap);
     expect(next!.transparent).toBe(true);

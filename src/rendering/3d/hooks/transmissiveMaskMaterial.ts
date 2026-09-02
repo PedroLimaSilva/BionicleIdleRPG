@@ -4,19 +4,11 @@ import { TRANSMISSIVE_KIT_IOR, TRANSMISSIVE_KIT_THICKNESS } from './transmissive
 type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
 /**
- * Mata Kaukau opacity override — the GLB ships uniform alpha 0.5 with no transmission
- * map; raise opacity so the water mask reads less clear than raw BLEND.
- */
-export const TRANSMISSIVE_MASK_KAUKAU_OPACITY = 0.85;
-
-/**
- * Runtime transmission for Kaukau — matches Vahki hood clarity (0.7) with lower
- * roughness so the water mask reads less frosted than the murky visor.
+ * Runtime transmission for Kaukau — matches Vahki hood clarity (0.7). GLB PBR maps
+ * (baseColor, normal, metalness/roughness) and opacity stay intact; only scalars
+ * below are added.
  */
 export const TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION = 0.7;
-
-/** Clearer than Vahki hood (0.3) while keeping baked roughnessMap. */
-export const TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS = 0.15;
 
 function normalizeMaterialName(name: string): string {
   return name.trim().toLowerCase();
@@ -40,14 +32,26 @@ function upgradeToPhysicalMaterial(mat: MaskStandardMat): MeshPhysicalMaterial {
   physical.roughness = mat.roughness;
   physical.opacity = mat.opacity;
   physical.transparent = mat.transparent;
+  physical.alphaTest = mat.alphaTest;
+  physical.side = mat.side;
+  physical.depthWrite = mat.depthWrite;
+  physical.depthTest = mat.depthTest;
+  physical.envMapIntensity = mat.envMapIntensity;
+  physical.normalScale.copy(mat.normalScale);
   physical.map = mat.map;
   physical.normalMap = mat.normalMap;
   physical.metalnessMap = mat.metalnessMap;
   physical.roughnessMap = mat.roughnessMap;
   physical.alphaMap = mat.alphaMap;
-  physical.side = mat.side;
-  physical.depthWrite = mat.depthWrite;
-  physical.envMapIntensity = mat.envMapIntensity;
+  physical.aoMap = mat.aoMap;
+  physical.aoMapIntensity = mat.aoMapIntensity;
+  physical.lightMap = mat.lightMap;
+  physical.lightMapIntensity = mat.lightMapIntensity;
+  physical.bumpMap = mat.bumpMap;
+  physical.bumpScale = mat.bumpScale;
+  physical.displacementMap = mat.displacementMap;
+  physical.displacementScale = mat.displacementScale;
+  physical.displacementBias = mat.displacementBias;
   return physical;
 }
 
@@ -66,8 +70,6 @@ export function applyTransmissiveMaskMaterial(
   physical.transmission = TRANSMISSIVE_MASK_KAUKAU_TRANSMISSION;
   physical.ior = TRANSMISSIVE_KIT_IOR;
   physical.thickness = TRANSMISSIVE_KIT_THICKNESS;
-  physical.roughness = TRANSMISSIVE_MASK_KAUKAU_ROUGHNESS;
-  physical.opacity = TRANSMISSIVE_MASK_KAUKAU_OPACITY;
   physical.transparent = true;
   physical.depthWrite = false;
   physical.side = FrontSide;
