@@ -1,6 +1,7 @@
 import type { MutableRefObject } from 'react';
-import { Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { Mesh, Object3D, Vector3 } from 'three';
 import { useFrame } from '@react-three/fiber';
+import { forEachMaskMaterial } from './maskMaterial';
 
 /** Duration of the mask swap transition in seconds */
 export const TRANSITION_DURATION = 0.35;
@@ -8,50 +9,46 @@ export const TRANSITION_DURATION = 0.35;
 /** How much the old mask scales up during the exit animation (multiplied on top of the original scale) */
 export const EXIT_SCALE_AMOUNT = 0.5;
 
-type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
-
-function isStandardMat(mat: unknown): mat is StandardMat {
-  return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
-}
-
 /** Cubic ease-out: fast start, gentle deceleration */
 export function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3);
 }
 
+function forEachMaskMeshMaterial(
+  root: Object3D,
+  fn: Parameters<typeof forEachMaskMaterial>[1]
+): void {
+  root.traverse((child) => {
+    if (!(child as Mesh).isMesh) return;
+    forEachMaskMaterial(child as Mesh, fn);
+  });
+}
+
 /** Collect material uuid → its resting opacity for every mesh under an Object3D */
 export function collectOpacities(root: Object3D): Map<string, number> {
   const map = new Map<string, number>();
-  root.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mat = (child as Mesh).material;
-      if (isStandardMat(mat)) {
-        map.set(mat.uuid, mat.opacity);
-      }
-    }
+  forEachMaskMeshMaterial(root, (mat) => {
+    map.set(mat.uuid, mat.opacity);
   });
   return map;
 }
 
 /**
  * Set every standard material's opacity to `baseOpacity * factor`.
- * Also disables depthWrite so the fading-out mask doesn't depth-clip
- * the new mask that sits behind it in the same parent bone.
+ * Forces the transparent render pass (opaque Kanohi normally use `transparent:
+ * false` so they depth-occlude brain gel). Also disables depthWrite so the
+ * fading-out mask doesn't depth-clip the new mask behind it.
  */
 export function setAnimatedOpacity(
   root: Object3D,
   opacities: Map<string, number>,
   factor: number
 ): void {
-  root.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mat = (child as Mesh).material;
-      if (isStandardMat(mat)) {
-        const base = opacities.get(mat.uuid) ?? 1;
-        mat.opacity = base * factor;
-        mat.depthWrite = false;
-      }
-    }
+  forEachMaskMeshMaterial(root, (mat) => {
+    const base = opacities.get(mat.uuid) ?? 1;
+    mat.transparent = true;
+    mat.opacity = base * factor;
+    mat.depthWrite = false;
   });
 }
 
@@ -89,12 +86,12 @@ export function startMaskTransition(
     masksParent.remove(tr.oldMask);
   }
 
-  // Fade-out requires alpha blending even on normally opaque Kanohi.
-  prevMask.traverse((child) => {
-    if (!(child as Mesh).isMesh) return;
-    const mat = (child as Mesh).material;
-    if (isStandardMat(mat)) {
+  // Fade-out requires alpha blending even on normally opaque Kanohi. Recompile
+  // patched materials (discoloration onBeforeCompile) in the transparent pass.
+  forEachMaskMeshMaterial(prevMask, (mat) => {
+    if (!mat.transparent) {
       mat.transparent = true;
+      mat.needsUpdate = true;
     }
   });
 
