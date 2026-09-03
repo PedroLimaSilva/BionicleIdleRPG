@@ -26,6 +26,8 @@ dev-dist
 *.blend1
 .work/
 coverage
+# RG bevel sidecar bakes. Wear lives in the glTF emissive slot.
+public/**/*_bevel.webp
 __pycache__/
 *.py[cod]
 
