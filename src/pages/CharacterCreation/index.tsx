@@ -276,7 +276,7 @@ export const CharacterCreation: React.FC = () => {
     setToaBuildId(full.customMataModelId ?? getDefaultCustomToaModelIdForStage(full.stage));
   }, [customizeId, evolutionFromStage, isEditMode, recruitedCharacters]);
 
-  // Mirror the dex, where only the Kaukau sculpts are flagged as transparent.
+  // Mirror the dex, where only Mata Kaukau is flagged as transparent.
   const isMaskTransparent = isTransparentMask(mask);
 
   const trimmedName = name.trim();
