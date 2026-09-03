@@ -15,7 +15,15 @@ import {
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import { applyKanohiRenderOrder } from './kanohiRenderOrder';
-import { applyMaskMetallicPbr, isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import {
+  applyMaskGlowTint,
+  applyMaskMetallicPbr,
+  cloneMaskMeshMaterials,
+  forEachMaskMaterial,
+  isMaskGlowMaterialName,
+  isMaskStandardMat,
+} from './maskMaterial';
+import { normalizeMaskSocketScale } from './normalizeMaskSocketScale';
 import {
   applyMaskDiscolorationToObject,
   setupMaskDiscolorationShader,
@@ -25,15 +33,6 @@ import {
 export type { MaskDiscoloration } from './maskDiscoloration';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
-
-/** Scale on Toa Mata `Masks` sockets so Kanohi from `masks.glb` fit the face. */
-export const MATA_MASK_SLOT_SCALE: [number, number, number] = [
-  37.19623565673828, 37.19623565673828, 37.1963005065918,
-];
-
-function applyMataMaskSlotScale(masksParent: Object3D): void {
-  masksParent.scale.set(...MATA_MASK_SLOT_SCALE);
-}
 
 function buildMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
   const nodes: Record<string, Object3D> = {};
@@ -55,38 +54,35 @@ function applyMaskColors(
   const shouldKeepOriginalColor = maskName === Mask.Avohkii;
 
   root.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mat = (child as Mesh).material;
-      if (!isMaskStandardMat(mat)) return;
-      if (shouldKeepOriginalColor) return;
+    if (!(child as Mesh).isMesh) return;
+    const mesh = child as Mesh;
+    if (shouldKeepOriginalColor) return;
 
-      if (isMaskStandardMat(mat)) {
-        const isGlow = mat.name.toLowerCase().includes('glow');
+    forEachMaskMaterial(mesh, (mat) => {
+      if (isMaskGlowMaterialName(mat.name)) {
+        if (glowColor) applyMaskGlowTint(mat, glowColor);
+        return;
+      }
 
-        if (isGlow && glowColor) {
-          const col = new Color(glowColor);
-          mat.color = col;
-          if (mat.emissive) {
-            mat.emissive = col.clone();
-          }
+      mat.color = new Color(maskColor);
+      applyMaskMetallicPbr(mat, maskColor);
+      if (mat.emissive) {
+        if (maskPowerActive) {
+          mat.emissive = new Color(maskColor);
+          mat.emissiveIntensity = 2.5;
         } else {
-          mat.color = new Color(maskColor);
-          applyMaskMetallicPbr(mat, maskColor);
-          if (mat.emissive) {
-            if (maskPowerActive) {
-              mat.emissive = new Color(maskColor);
-              mat.emissiveIntensity = 2.5;
-            } else {
-              mat.emissive = new Color(0x000000);
-              mat.emissiveIntensity = 0;
-            }
-          }
+          mat.emissive = new Color(0x000000);
+          mat.emissiveIntensity = 0;
         }
       }
-    }
+    });
   });
 
-  applyMaskDiscolorationToObject(root, discoloration);
+  applyMaskDiscolorationToObject(
+    root,
+    discoloration,
+    shouldKeepOriginalColor ? undefined : maskColor
+  );
 }
 
 /**
@@ -111,16 +107,15 @@ function applyMaskColors(
  *                      When provided, materials whose names include "glow" (case-insensitive) will use
  *                      this color for both their base color and emissive color instead of maskColor.
  * @param maskPowerActive - When true, non-glow materials emit the mask color at intensity 5.
- * @param applyMataSlotScale - When true, scale the parent socket to match Toa Mata rigs (needed
- *                             when using `masks.glb` on a character whose GLB omits that scale).
  * @param discoloration - Optional vertical crown tint (Metru double-injected Kanohi).
+ *                        Baked emissive discoloration is applied whenever the GLB
+ *                        ships an emissiveMap, independent of this prop.
  */
 export function useMask(
   masksParent: Object3D | undefined,
   matoran: BaseMatoran & { maskOverride?: Mask; unlockAllMasks?: boolean },
   glowColor?: string,
   maskPowerActive?: boolean,
-  applyMataSlotScale?: boolean,
   discoloration?: MaskDiscoloration
 ) {
   const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
@@ -161,10 +156,7 @@ export function useMask(
   useEffect(() => {
     if (!masksNodes || !masksParent) return;
 
-    if (applyMataSlotScale) {
-      applyMataMaskSlotScale(masksParent);
-    }
-
+    normalizeMaskSocketScale(masksParent);
     ensureMaskSlotPlaceholderHidden(masksParent);
 
     const source = masksNodes[maskName];
@@ -184,20 +176,19 @@ export function useMask(
         const mesh = child as Mesh;
         mesh.castShadow = effectiveShadows;
         mesh.receiveShadow = effectiveShadows;
-        const originalMat = mesh.material;
-        if (isMaskStandardMat(originalMat)) {
-          const mat = originalMat.clone();
-          prepareClonedMaskMaterial(mat);
-          mesh.material = mat;
+        const raw = mesh.material;
+        const hasTintable =
+          isMaskStandardMat(raw) ||
+          (Array.isArray(raw) && raw.some((mat) => isMaskStandardMat(mat)));
+        if (hasTintable) {
+          cloneMaskMeshMaterials(mesh, maskName);
         }
       }
     });
 
     applyKanohiRenderOrder(clone);
 
-    if (discolorationRef.current) {
-      setupMaskDiscolorationShader(clone);
-    }
+    setupMaskDiscolorationShader(clone, maskColorRef.current);
 
     // Apply colors eagerly so they're correct before the first animation frame.
     // (useEffect runs asynchronously after paint, and useFrame/rAF can fire
@@ -231,7 +222,7 @@ export function useMask(
     // Mask lifecycle is managed imperatively at the top of each effect run and
     // in the unmount-only effect below, so the old mask can remain in the scene
     // during the exit animation.
-  }, [masksNodes, masksParent, maskName, effectiveShadows, applyMataSlotScale, discoloration]);
+  }, [masksNodes, masksParent, maskName, effectiveShadows, discoloration]);
 
   // Unmount-only cleanup: remove any lingering masks from the scene
   useEffect(() => {

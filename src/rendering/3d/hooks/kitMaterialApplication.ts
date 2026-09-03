@@ -19,6 +19,7 @@ import { normalizeKitMaterialSlotEntry } from '../kit/kitMaterialUtils';
 import { metallicColorPbr, type KitMetalPbr } from '../kit/palettes/metalPbr';
 import {
   getWeatheredMetalMaterial,
+  meshHasUv,
   type WeatheredMetalOptions,
 } from '../CharacterScene/WeatheredMetalMaterial';
 import { hasMaskPbrMaps } from './maskMaterial';
@@ -189,6 +190,7 @@ export function buildKitMeshMaterials(
         ...weatheredBase,
         ...metalPbr,
         ...mergeSlotWeatheredOpts(spec),
+        discolorationMap: mat.emissiveMap && meshHasUv(mesh) ? mat.emissiveMap : undefined,
       };
       const weathered = getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
       // MataFace stalk shares a plane with brain gel — DoubleSide back-faces z-fight the gel.

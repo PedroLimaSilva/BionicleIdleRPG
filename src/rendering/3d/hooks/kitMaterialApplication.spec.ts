@@ -1,4 +1,11 @@
-import { Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
+import {
+  BufferAttribute,
+  BufferGeometry,
+  DataTexture,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+} from 'three';
 import { buildKitMaterialSlotLookup, buildKitMeshMaterials } from './kitMaterialApplication';
 import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
 import {
@@ -7,7 +14,8 @@ import {
   TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
   TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
 } from './transmissiveKitMaterial';
-import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
+import { type WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
+import { getBakedDiscolorationMap } from './bakedDiscoloration';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
 
@@ -24,6 +32,23 @@ const COLORS: MatoranColors = {
 
 function meshWithMaterialNamed(name: string): Mesh {
   return new Mesh(undefined, new MeshStandardMaterial({ metalness: 0.5, name, roughness: 0.5 }));
+}
+
+function meshWithUvAndSlots(names: string[]): Mesh {
+  const geom = new BufferGeometry();
+  geom.setAttribute(
+    'position',
+    new BufferAttribute(new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]), 3)
+  );
+  geom.setAttribute('uv', new BufferAttribute(new Float32Array([0, 0, 1, 0, 0, 1]), 2));
+  const mats = names.map(
+    (name) => new MeshStandardMaterial({ color: '#ffffff', metalness: 0.5, name, roughness: 0.5 })
+  );
+  return new Mesh(geom, mats.length === 1 ? mats[0] : mats);
+}
+
+function discolorTex(): DataTexture {
+  return new DataTexture(new Uint8Array([255, 128, 0, 255]), 1, 1);
 }
 
 function buildSingle(
@@ -207,5 +232,56 @@ describe('buildKitMeshMaterials metallic colors', () => {
     ) as MeshStandardMaterial[];
     expect(next[0].color.getHexString().toUpperCase()).toBe('B48455');
     expect(next[1].color.getHexString().toUpperCase()).toBe('720E0F');
+  });
+});
+
+describe('buildKitMeshMaterials discoloration map', () => {
+  test('kit emissiveMap becomes discoloration on weathered slots and is not emission', () => {
+    const mesh = meshWithUvAndSlots(['Main']);
+    const bake = discolorTex();
+    (mesh.material as MeshStandardMaterial).emissiveMap = bake;
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'body', slot: 'main' },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(getBakedDiscolorationMap(next)).toBe(bake);
+    expect(next.emissiveMap).toBeNull();
+  });
+
+  test('meshes without UVs do not attach discoloration', () => {
+    const mesh = meshWithMaterialNamed('Main');
+    const bake = discolorTex();
+    (mesh.material as MeshStandardMaterial).emissiveMap = bake;
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'body', slot: 'main' },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(getBakedDiscolorationMap(next)).toBeNull();
+    expect(next.metalness).toBe(PLASTIC_WEATHERED.metalness);
+  });
+
+  test('glow slots skip weathering', () => {
+    const mesh = meshWithUvAndSlots(['Glow']);
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Glow: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(next.name).not.toBe('WeatheredMetal');
+    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
   });
 });

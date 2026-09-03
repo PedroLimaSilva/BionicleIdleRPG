@@ -135,7 +135,7 @@ export function MetruMatoranModel({
   });
 
   const glowColor = matoran.colors.eyes;
-  useMask(nodes.Masks, matoran, glowColor, matoran.maskPowerActive, true, METRU_MASK_DISCOLORATION);
+  useMask(nodes.Masks, matoran, glowColor, matoran.maskPowerActive, METRU_MASK_DISCOLORATION);
 
   return (
     <group ref={group} dispose={null}>

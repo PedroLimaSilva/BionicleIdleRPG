@@ -14,7 +14,8 @@ import {
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import { applyKanohiRenderOrder } from './kanohiRenderOrder';
-import { isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import { applyMaskMetallicPbr, isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import { applyMaskDiscolorationToObject, setupMaskDiscolorationShader } from './maskDiscoloration';
 import { masksCollected } from '../../../services/matoranUtils';
 
 const NUVA_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/masks.glb';
@@ -69,6 +70,7 @@ function applyNuvaMaskColors(
     if (shouldKeepOriginalColor) return;
 
     mat.color.copy(new Color(maskColor));
+    applyMaskMetallicPbr(mat, maskColor);
     if (mat.emissive) {
       if (maskPowerActive) {
         mat.emissive = new Color(maskColor);
@@ -79,6 +81,10 @@ function applyNuvaMaskColors(
       }
     }
   });
+
+  if (!shouldKeepOriginalColor) {
+    applyMaskDiscolorationToObject(root, undefined, maskColor);
+  }
 }
 
 /**
@@ -143,6 +149,8 @@ export function useNuvaMask(
     });
 
     applyKanohiRenderOrder(clone);
+
+    setupMaskDiscolorationShader(clone, maskColorRef.current);
 
     applyNuvaMaskColors(
       clone,

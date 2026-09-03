@@ -34,6 +34,14 @@ export const NUVA_METAL_PBR: KitMetalPbr = {
   roughness: 0.18,
 };
 
+/**
+ * Painted Kanohi (non-gold). glTF `metallicFactor` defaults to 1, so a weak
+ * metalness bake (edge-only / near-black flats) reads as dielectric plastic and
+ * washes the LEGO color. Use this scalar instead and keep the roughness map.
+ * Matches the previous `masks.glb` metalness medians (~0.7–0.9).
+ */
+export const KANOHI_PAINT_METALNESS = 0.8;
+
 export type MetalStyle = 'mata' | 'nuva';
 
 export function metalPbrForStyle(style: MetalStyle): KitMetalPbr {

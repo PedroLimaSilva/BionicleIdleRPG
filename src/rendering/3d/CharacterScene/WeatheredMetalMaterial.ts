@@ -1,9 +1,11 @@
 /**
- * Weathered metal material using object-space procedural noise only.
+ * Weathered metal: object-space FBM grime, optional baked discoloration
+ * (glTF emissiveMap, color from `discolorationForColor`), and a screen-space
+ * curvature fallback when no bake exists.
  *
- * Multi-scale FBM creates large grime splotches and fine micro-roughness,
- * emulating a Blender baked look. Grime = darker, less metallic, rougher.
- * No UVs or textures—works globally across all meshes.
+ * Kit parts bake only the grayscale discoloration; roughness / metalness stay
+ * on this noise path. Masks use `maskDiscoloration.ts` instead (they keep
+ * baked normal / roughness / metalness maps).
  *
  * applyWeatheredMetalToObject skips: meshes with authored PBR maps (normal /
  * roughness / metalness), meshes under a node named "Masks" (useMask-injected
@@ -16,8 +18,17 @@ import {
   DoubleSide,
   Mesh,
   MeshStandardMaterial,
+  NoColorSpace,
   Object3D,
+  Texture,
 } from 'three';
+import {
+  BAKED_DISCOLORATION_FRAGMENT_GLSL,
+  DISCOLORATION_MAP_USERDATA_KEY,
+  EMPTY_DISCOLORATION_MAP,
+  glslUvAttributeForTextureChannel,
+} from '../hooks/bakedDiscoloration';
+import { discolorationForColor } from '../kit/palettes/legoColorDiscoloration';
 
 export type WeatheredMetalOptions = {
   /** Base metal color (e.g. gold for Avohkii). */
@@ -38,12 +49,17 @@ export type WeatheredMetalOptions = {
   fineScale?: number;
   /** Bias grime toward recessed areas (surfaces facing away from up). 0 = uniform. */
   cavityStrength?: number;
-  /** Edge wear discoloration at convex edges (screen-space curvature). Color to blend toward. */
+  /** Edge wear discoloration at convex edges. Color to blend toward. */
   edgeColor?: ColorRepresentation;
   /** Strength of edge wear (0–1). */
   edgeStrength?: number;
-  /** Curvature threshold for edge detection. Lower = more edges detected. */
+  /** Curvature threshold for the screen-space fallback. Lower = more edges detected. */
   edgeCurvatureScale?: number;
+  /**
+   * Baked grayscale discoloration (glTF `emissiveMap`). Kit parts bake this only;
+   * roughness / metalness stay on the procedural weathered path. Ignored without UVs.
+   */
+  discolorationMap?: Texture;
   /** Environment map intensity. */
   envMapIntensity?: number;
   /** Enable transparency (for mask fade-out animations). */
@@ -85,6 +101,8 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
     ec,
     opts.edgeStrength ?? DEFAULT_EDGE_STRENGTH,
     opts.edgeCurvatureScale ?? DEFAULT_EDGE_CURVATURE_SCALE,
+    opts.discolorationMap?.uuid ?? '',
+    opts.discolorationMap?.channel ?? 0,
     opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
     opts.transparent ? 't' : '',
     opts.debugGrimeAsColor ? 'd' : '',
@@ -92,7 +110,7 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
   return parts.join('|');
 }
 
-/** Injects multi-scale procedural grime and edge discoloration into MeshStandardMaterial. */
+/** Injects multi-scale procedural grime and optional baked discoloration into MeshStandardMaterial. */
 function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredMetalOptions): void {
   const grimeDarken = opts.grimeDarken ?? DEFAULT_GRIME_DARKEN;
   const grimeRoughness = opts.grimeRoughness ?? DEFAULT_GRIME_ROUGHNESS;
@@ -103,17 +121,37 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
   const edgeColor = new Color(opts.edgeColor ?? DEFAULT_EDGE_COLOR);
   const edgeStrength = opts.edgeStrength ?? DEFAULT_EDGE_STRENGTH;
   const edgeCurvatureScale = opts.edgeCurvatureScale ?? DEFAULT_EDGE_CURVATURE_SCALE;
+  const discolorationMap = opts.discolorationMap ?? EMPTY_DISCOLORATION_MAP;
+  const hasDiscolorationMap = opts.discolorationMap ? 1 : 0;
+  if (opts.discolorationMap) {
+    opts.discolorationMap.colorSpace = NoColorSpace;
+  }
+  const discolorSpec = discolorationForColor(
+    `#${new Color(opts.color ?? '#d4a84b').getHexString()}`
+  );
   const debugGrimeAsColor = opts.debugGrimeAsColor ?? false;
 
+  mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = opts.discolorationMap ?? null;
+  const discolorUvAttr = glslUvAttributeForTextureChannel(opts.discolorationMap?.channel);
+  mat.customProgramCacheKey = () =>
+    `WeatheredMetal|dc${hasDiscolorationMap}|uv${discolorUvAttr}|wear2`;
+
   mat.onBeforeCompile = (shader) => {
+    shader.uniforms.discolorationMap = { value: discolorationMap };
+    shader.uniforms.uHasDiscolorationMap = { value: hasDiscolorationMap };
+    shader.uniforms.uDiscolorationColor = { value: new Color(discolorSpec.color) };
+    shader.uniforms.uDiscolorationIntensity = { value: discolorSpec.intensity };
+
     shader.vertexShader = shader.vertexShader.replace(
       '#include <common>',
       `varying vec3 vObjectPosition;
+      varying vec2 vDiscolorUv;
       #include <common>`
     );
     shader.vertexShader = shader.vertexShader.replace(
       '#include <begin_vertex>',
       `vObjectPosition = position;
+      vDiscolorUv = ${discolorUvAttr};
       #include <begin_vertex>`
     );
 
@@ -143,15 +181,20 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
     `;
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <common>',
-      `varying vec3 vObjectPosition;
+      `uniform sampler2D discolorationMap;
+      uniform float uHasDiscolorationMap;
+      uniform vec3 uDiscolorationColor;
+      uniform float uDiscolorationIntensity;
+      varying vec3 vObjectPosition;
+      varying vec2 vDiscolorUv;
       ${noiseFunctions}
       #include <common>`
     );
 
     const modifierCode = `
       vec3 worldNormal = inverseTransformDirection( normal, viewMatrix );
-      float cavity = 1.0 - max( worldNormal.y, 0.0 );
-      float cavityBias = 1.0 + cavity * ${cavityStrength.toFixed(2)};
+      float downCavity = 1.0 - max( worldNormal.y, 0.0 );
+      float cavityBias = 1.0 + downCavity * ${cavityStrength.toFixed(2)};
       float largeCloud = fbm(vObjectPosition + 50.0, ${largeScale.toFixed(2)}, 3);
       float fineGrain = fbm(vObjectPosition + 80.0, ${fineScale.toFixed(2)}, 3);
       float grime = clamp((largeCloud - 0.35) * 2.0 * cavityBias, 0.0, 1.0);
@@ -161,9 +204,11 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
       roughnessFactor = clamp(roughnessFactor, 0.04, 1.0);
       metalnessFactor = clamp(metalnessFactor, 0.0, 1.0);
       float curvature = length(dFdx(normal)) + length(dFdy(normal));
-      float edgeMask = smoothstep(0.0, 1.0, curvature * ${edgeCurvatureScale.toFixed(2)});
+      float screenEdge = smoothstep(0.0, 1.0, curvature * ${edgeCurvatureScale.toFixed(2)});
+      float edgeMask = screenEdge * (1.0 - uHasDiscolorationMap);
       vec3 edgeTint = vec3(${edgeColor.r.toFixed(3)}, ${edgeColor.g.toFixed(3)}, ${edgeColor.b.toFixed(3)});
       diffuseColor.rgb = mix(diffuseColor.rgb, edgeTint, edgeMask * ${edgeStrength.toFixed(3)});
+      ${BAKED_DISCOLORATION_FRAGMENT_GLSL}
       ${debugGrimeAsColor ? 'diffuseColor.rgb = vec3(grime);' : ''}
     `;
 
@@ -175,9 +220,14 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
   };
 }
 
+export function meshHasUv(mesh: Mesh): boolean {
+  const uv = mesh.geometry?.getAttribute('uv');
+  return !!uv && uv.count > 0;
+}
+
 /**
- * Creates a weathered metal material. Object-space procedural noise only—no UVs.
- * Grime splotches darken, roughen, and reduce metalness.
+ * Creates a weathered metal material. Object-space procedural noise, plus a
+ * baked discoloration map when `discolorationMap` is set.
  */
 export function createWeatheredMetalMaterial(
   opts: WeatheredMetalOptions = {}
@@ -288,6 +338,14 @@ export function applyWeatheredMetalToObject(
     if (isUnderMasks(mesh)) return;
     const rawMaterial = mesh.material;
     const rawMaterials = Array.isArray(rawMaterial) ? rawMaterial : [rawMaterial];
+    const sourceDiscoloration =
+      rawMaterials.find(
+        (raw): raw is MeshStandardMaterial =>
+          raw instanceof MeshStandardMaterial && !!raw.emissiveMap
+      )?.emissiveMap ?? opts.discolorationMap;
+    const meshOpts: typeof opts = meshHasUv(mesh)
+      ? { ...opts, discolorationMap: sourceDiscoloration ?? opts.discolorationMap }
+      : { ...opts, discolorationMap: undefined };
     const meshName = mesh.name ?? '';
     const meshWithUserData = mesh as Mesh & { userData?: { originalMaterialName?: string } };
     let changed = false;
@@ -325,22 +383,31 @@ export function applyWeatheredMetalToObject(
       if (preserveExistingMaps && raw instanceof MeshStandardMaterial) {
         const clone = raw.clone();
         clone.name = MATERIAL_NAME;
-        clone.roughness = opts.roughness ?? DEFAULT_ROUGHNESS;
-        clone.metalness = opts.metalness ?? DEFAULT_METALNESS;
-        clone.envMapIntensity = opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY;
+        clone.roughness = meshOpts.roughness ?? DEFAULT_ROUGHNESS;
+        clone.metalness = meshOpts.metalness ?? DEFAULT_METALNESS;
+        clone.envMapIntensity = meshOpts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY;
         clone.side = DoubleSide;
-        clone.transparent = opts.transparent ?? false;
+        clone.transparent = meshOpts.transparent ?? false;
         clone.color = new Color((color ?? '#ffffff') as ColorRepresentation);
         (clone as MeshStandardMaterial & { extensions?: { derivatives?: boolean } }).extensions = {
           derivatives: true,
         };
-        applyWeatheredMetalModifier(clone, opts);
+        applyWeatheredMetalModifier(clone, {
+          ...meshOpts,
+          discolorationMap: raw.emissiveMap ?? meshOpts.discolorationMap,
+        });
         changed = true;
         return clone;
       }
 
       changed = true;
-      return getWeatheredMetalMaterial((color ?? '#ffffff') as ColorRepresentation, opts);
+      return getWeatheredMetalMaterial((color ?? '#ffffff') as ColorRepresentation, {
+        ...meshOpts,
+        discolorationMap:
+          raw instanceof MeshStandardMaterial
+            ? (raw.emissiveMap ?? meshOpts.discolorationMap)
+            : meshOpts.discolorationMap,
+      });
     });
 
     if (!changed) return;

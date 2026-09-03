@@ -24,7 +24,10 @@ dev-dist
 *.sln
 *.sw?
 *.blend1
+.work/
 coverage
+__pycache__/
+*.py[cod]
 
 # Playwright
 test-results/

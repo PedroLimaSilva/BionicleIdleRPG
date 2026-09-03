@@ -23,6 +23,12 @@ export type KitMaterialColorSource =
  * Optional per-slot fields merged into the character's weathered-metal shader when
  * that slot participates in the pass (`useKitAttachments` + `weathered` on the model).
  * Omitted keys keep the character-level `WeatheredMetalOptions` defaults.
+ *
+ * Baked discoloration maps are the glTF `emissive` slot (grayscale wear mask,
+ * black on flats). Kit parts bake that only; roughness / metalness stay on the
+ * weathered noise path. Masks keep baked normal / roughness; metalness maps are
+ * ignored in favor of a painted-metal scalar. The mix *color* comes from
+ * `discolorationForColor` for the chosen LEGO slot, not from the bake.
  */
 export type KitMaterialWeatheredTuning = {
   grimeDarken?: number;
