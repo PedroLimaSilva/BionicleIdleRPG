@@ -54,7 +54,8 @@ describe('transmissiveKitMaterial', () => {
     expect(mctoran.transmission).toBe(TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION);
     expect(hood.transmission).toBe(TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION);
     expect(brain.ior).toBe(TRANSMISSIVE_KIT_IOR);
-    expect(brain.depthWrite).toBe(false);
+    expect(brain.depthWrite).toBe(true);
+    expect(brain.transparent).toBe(false);
     expect(brain.normalMap).toBeNull();
     expect(hood.transmissionMap).toBeNull();
   });

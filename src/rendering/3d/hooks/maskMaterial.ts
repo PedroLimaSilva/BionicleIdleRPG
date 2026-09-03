@@ -220,9 +220,11 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
  * arenas) those surfaces read nearly black while HDRI-lit deserts look fine.
  *
  * Opaque Kanohi stay in the opaque render pass (`transparent: false`) so they
- * depth-occlude transmissive brain gel. Translucent masks (Mata Kaukau transmission,
- * Great Rau baked alpha, exit fades) use the transparent pass. Closed shells use
- * `FrontSide` so interior back-faces do not z-fight with brain gel in the mask cavity.
+ * depth-occlude head geometry behind the shell. Mata Kaukau uses uniform transmission in
+ * the transmissive pass with depthWrite on so the hollow shell self-occludes in profile;
+ * brain gel draws after the mask in the same pass and wins depth where it sits in front.
+ * Great Rau baked alpha and exit fades use the transparent pass. Closed shells use
+ * `FrontSide` so interior back-faces do not z-fight with brain gel in the cavity.
  */
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
   syncMaskTransparencyState(mat);
