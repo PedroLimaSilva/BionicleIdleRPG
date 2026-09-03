@@ -4,8 +4,12 @@ import {
   Mesh,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
+  RGBAFormat,
   Texture,
 } from 'three';
+
+/** Legacy three.js `RGBFormat` (1022) — matches maskMaterial stripBaseColorMapAlpha. */
+const RGB_FORMAT = 1022 as typeof RGBAFormat;
 import { LegoColor } from '../../../types/Colors';
 import { KANOHI_PAINT_METALNESS } from '../kit/palettes/metalPbr';
 import {
@@ -244,16 +248,30 @@ describe('maskHasBakedPbrAlpha', () => {
 });
 
 describe('syncMaskTransparencyState', () => {
-  it('keeps baked-alpha Great Rau in the transparent pass at full opacity', () => {
-    const mat = new MeshStandardMaterial({
+  it('promotes Great Rau to transmission-only rendering at full opacity', () => {
+    const baseColorMap = new Texture();
+    baseColorMap.format = RGBAFormat;
+    const transmissionMap = new Texture();
+    const mat = new MeshPhysicalMaterial({
+      ior: 1.45,
+      map: baseColorMap,
       name: 'Rau_baked',
       opacity: 1,
       roughness: 0.5,
-    }) as MeshStandardMaterial & { transmissionMap: Texture | null };
-    mat.transmissionMap = new Texture();
+      transmission: 1,
+      transmissionMap,
+    });
     prepareClonedMaskMaterial(mat);
     expect(mat.transparent).toBe(true);
     expect(mat.opacity).toBe(1);
+    expect(mat.transmission).toBe(1);
+    expect(mat.transmissionMap).toBe(transmissionMap);
+    expect(mat.ior).toBe(KAUKAU_IOR);
+    expect(mat.thickness).toBe(TRANSMISSIVE_KANOHI_SHELL_THICKNESS);
+    expect(mat.depthWrite).toBe(false);
+    expect(mat.side).toBe(FrontSide);
+    expect(mat.map?.format).toBe(RGB_FORMAT);
+    expect(mat.map).not.toBe(baseColorMap);
   });
 });
 
@@ -287,6 +305,29 @@ describe('cloneGreatMaskMaterial', () => {
     expect(mat.transparent).toBe(false);
     expect(mat.metalness).toBe(0);
     expect(mat.roughness).toBe(0.55);
+  });
+
+  it('clones Great Rau with transmission maps intact', () => {
+    const transmissionMap = new Texture();
+    const original = new MeshPhysicalMaterial({
+      ior: 1.45,
+      metalness: 0.2,
+      metalnessMap: new Texture(),
+      name: 'Rau_baked',
+      normalMap: new Texture(),
+      roughness: 0.8,
+      roughnessMap: new Texture(),
+      transmission: 1,
+      transmissionMap,
+    });
+    const mat = cloneGreatMaskMaterial(original, LegoColor.DarkBlue) as MeshPhysicalMaterial;
+    expect(mat.transparent).toBe(true);
+    expect(mat.opacity).toBe(1);
+    expect(mat.transmission).toBe(1);
+    expect(mat.transmissionMap).toBe(transmissionMap);
+    expect(mat.depthWrite).toBe(false);
+    expect(mat.normalMap).toBeDefined();
+    expect(mat.roughnessMap).toBeDefined();
   });
 
   it('clones glow materials without dielectric fallback', () => {
