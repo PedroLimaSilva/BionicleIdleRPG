@@ -16,6 +16,7 @@ import {
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import { applyKanohiRenderOrder } from './kanohiRenderOrder';
 import { applyMaskMetallicPbr, isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import { normalizeMaskSocketScale } from './normalizeMaskSocketScale';
 import {
   applyMaskDiscolorationToObject,
   setupMaskDiscolorationShader,
@@ -25,15 +26,6 @@ import {
 export type { MaskDiscoloration } from './maskDiscoloration';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
-
-/**
- * `masks.glb` is authored at final size. Older Mata / Turaga / rebuilt /
- * diminished rigs still ship a ~37× `Masks` socket from when the Kanohi GLB
- * was tiny — neutralize that so attached masks are not scaled up twice.
- */
-function normalizeMaskSocketScale(masksParent: Object3D): void {
-  masksParent.scale.set(1, 1, 1);
-}
 
 function buildMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
   const nodes: Record<string, Object3D> = {};
