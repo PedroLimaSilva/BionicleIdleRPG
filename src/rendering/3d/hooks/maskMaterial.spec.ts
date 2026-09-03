@@ -87,12 +87,12 @@ describe('prepareClonedMaskMaterial', () => {
       transmission: 0.75,
     });
     prepareClonedMaskMaterial(mata);
-    expect(mata.transparent).toBe(true);
+    expect(mata.transparent).toBe(false);
     expect(mata.opacity).toBe(1);
     expect(mata.transmission).toBe(KAUKAU_TRANSMISSION);
     expect(mata.ior).toBe(KAUKAU_IOR);
     expect(mata.thickness).toBe(TRANSMISSIVE_KANOHI_SHELL_THICKNESS);
-    expect(mata.depthWrite).toBe(false);
+    expect(mata.depthWrite).toBe(true);
     expect(mata.side).toBe(FrontSide);
   });
 
@@ -103,11 +103,26 @@ describe('prepareClonedMaskMaterial', () => {
     const mesh = new Mesh(geometry, body);
     cloneMaskMeshMaterials(mesh, 'Kaukau');
     const mat = mesh.material as MeshPhysicalMaterial;
-    expect(mat.transparent).toBe(true);
+    expect(mat.transparent).toBe(false);
     expect(mat.opacity).toBe(1);
     expect(mat.transmission).toBe(KAUKAU_TRANSMISSION);
     expect(mat.ior).toBe(KAUKAU_IOR);
     expect(mat.thickness).toBe(TRANSMISSIVE_KANOHI_SHELL_THICKNESS);
+    expect(mat.depthWrite).toBe(true);
+    expect(mat.side).toBe(FrontSide);
+  });
+
+  it('keeps transmission-only Kaukau out of alpha blend (hollow shell depth occlusion)', () => {
+    const mata = new MeshPhysicalMaterial({
+      name: 'Kaukau_baked',
+      opacity: 1,
+      roughness: 0.5,
+      transmission: KAUKAU_TRANSMISSION,
+    });
+    expect(maskNeedsAlphaBlend(mata)).toBe(false);
+    prepareClonedMaskMaterial(mata);
+    expect(mata.transparent).toBe(false);
+    expect(mata.depthWrite).toBe(true);
   });
 
   it('configureKaukauTransmission keeps authored transmission when present', () => {

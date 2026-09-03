@@ -177,7 +177,8 @@ describe('buildKitMeshMaterials metallic colors', () => {
       PLASTIC_WEATHERED
     ) as MeshPhysicalMaterial;
     expect(next.transmission).toBe(TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION);
-    expect(next.depthWrite).toBe(false);
+    expect(next.depthWrite).toBe(true);
+    expect(next.transparent).toBe(false);
     expect(next.normalMap).toBeNull();
   });
 

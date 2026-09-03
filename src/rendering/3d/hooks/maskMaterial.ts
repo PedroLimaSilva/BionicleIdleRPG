@@ -134,6 +134,9 @@ export function maskHasBakedPbrAlpha(mat: MaskStandardMat): boolean {
  * Mata `Kaukau` uses physical transmission via {@link configureKaukauTransmission}.
  */
 export function maskNeedsAlphaBlend(mat: MaskStandardMat): boolean {
+  // Uniform transmission (Mata Kaukau) uses the transmissive pass at opacity 1 — not alpha blend.
+  // Alpha blend + depthWrite false lets interior shell tris draw over the outer surface in profile.
+  if (maskUsesTransmissionRendering(mat)) return false;
   if (mat.opacity < 0.999) return true;
   if (mat.name.toLowerCase().includes('trans')) return true;
   return maskHasBakedPbrAlpha(mat);
@@ -201,7 +204,7 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
   mat.transparent = alphaBlend;
 
   if (alphaBlend) {
-    // Transmission Kanohi (Kaukau, Great Rau): avoid back-faces and depth fighting with brain gel.
+    // Great Rau (transmissionMap / opacity blend): avoid back-faces and depth fighting with brain gel.
     mat.depthWrite = false;
     mat.side = FrontSide;
     return;
@@ -217,9 +220,11 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
  * arenas) those surfaces read nearly black while HDRI-lit deserts look fine.
  *
  * Opaque Kanohi stay in the opaque render pass (`transparent: false`) so they
- * depth-occlude transmissive brain gel. Translucent masks (Mata Kaukau transmission,
- * Great Rau baked alpha, exit fades) use the transparent pass. Closed shells use
- * `FrontSide` so interior back-faces do not z-fight with brain gel in the mask cavity.
+ * depth-occlude head geometry behind the shell. Mata Kaukau uses uniform transmission in
+ * the transmissive pass with depthWrite on so the hollow shell self-occludes in profile;
+ * brain gel draws after the mask in the same pass and wins depth where it sits in front.
+ * Great Rau baked alpha and exit fades use the transparent pass. Closed shells use
+ * `FrontSide` so interior back-faces do not z-fight with brain gel in the cavity.
  */
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
   syncMaskTransparencyState(mat);
