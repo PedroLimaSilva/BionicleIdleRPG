@@ -13,15 +13,13 @@ describe('discolorationForColor', () => {
     expect(DEFAULT_LEGO_DISCOLORATION.color).toBe(LegoColor.LightGray);
   });
 
-  test('white is the only listed exception: darker gray, stronger mix', () => {
+  test('white is the only listed exception: darker gray tint at full mix', () => {
     expect(Object.keys(LEGO_COLOR_DISCOLORATION)).toEqual([LegoColor.White]);
     expect(discolorationForColor(LegoColor.White)).toEqual({
       color: LegoColor.DarkGray,
-      intensity: 0.55,
+      intensity: 1,
     });
-    expect(discolorationForColor(LegoColor.White).intensity).toBeGreaterThan(
-      DEFAULT_LEGO_DISCOLORATION.intensity
-    );
+    expect(discolorationForColor(LegoColor.White).color).not.toBe(DEFAULT_LEGO_DISCOLORATION.color);
   });
 
   test('hex matching is case-insensitive', () => {
