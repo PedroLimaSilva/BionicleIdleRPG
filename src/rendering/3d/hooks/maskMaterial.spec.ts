@@ -1,9 +1,18 @@
-import { FrontSide, MeshStandardMaterial, Texture } from 'three';
+import {
+  BufferGeometry,
+  FrontSide,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Texture,
+} from 'three';
 import { LegoColor } from '../../../types/Colors';
 import { KANOHI_PAINT_METALNESS } from '../kit/palettes/metalPbr';
 import {
   applyMaskMetallicPbr,
   cloneGreatMaskMaterial,
+  cloneMaskMeshMaterials,
+  isMaskGlowMaterialName,
   maskHasBakedPbrAlpha,
   maskNeedsAlphaBlend,
   prepareClonedMaskMaterial,
@@ -68,6 +77,43 @@ describe('prepareClonedMaskMaterial', () => {
     const mata = new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 0.5, roughness: 0.5 });
     prepareClonedMaskMaterial(mata);
     expect(mata.transparent).toBe(true);
+    expect(mata.depthWrite).toBe(false);
+    expect(mata.side).toBe(FrontSide);
+  });
+
+  it('strips physical transmission on opacity-blended Kaukau', () => {
+    const mata = new MeshPhysicalMaterial({
+      name: 'Kaukau_baked',
+      opacity: 0.75,
+      roughness: 0.5,
+      transmission: 0.75,
+    });
+    prepareClonedMaskMaterial(mata);
+    expect(mata.transparent).toBe(true);
+    expect(mata.depthWrite).toBe(false);
+    expect(mata.transmission).toBe(0);
+    expect(mata.side).toBe(FrontSide);
+  });
+
+  it('treats lens material slots as glow', () => {
+    expect(isMaskGlowMaterialName('Lens')).toBe(true);
+    expect(isMaskGlowMaterialName('Akaku_Lens')).toBe(true);
+  });
+
+  it('splits Akaku scope lenses into a glow material slot', () => {
+    const body = new MeshStandardMaterial({ name: 'Akaku_baked.001', roughness: 0.5 });
+    const geometry = new BufferGeometry();
+    geometry.groups = [
+      { count: 10, materialIndex: 0, start: 0 },
+      { count: 5, materialIndex: 0, start: 10 },
+    ];
+    const mesh = new Mesh(geometry, body);
+    cloneMaskMeshMaterials(mesh, 'Akaku');
+    expect(Array.isArray(mesh.material)).toBe(true);
+    const mats = mesh.material as unknown as MeshStandardMaterial[];
+    expect(mats).toHaveLength(2);
+    expect(isMaskGlowMaterialName(mats[1].name)).toBe(true);
+    expect(geometry.groups[1].materialIndex).toBe(1);
   });
 
   it('leaves glow materials metallic for emissive lenses', () => {

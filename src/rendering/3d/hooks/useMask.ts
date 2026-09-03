@@ -15,7 +15,14 @@ import {
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import { applyKanohiRenderOrder } from './kanohiRenderOrder';
-import { applyMaskMetallicPbr, isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import {
+  applyMaskGlowTint,
+  applyMaskMetallicPbr,
+  cloneMaskMeshMaterials,
+  forEachMaskMaterial,
+  isMaskGlowMaterialName,
+  isMaskStandardMat,
+} from './maskMaterial';
 import { normalizeMaskSocketScale } from './normalizeMaskSocketScale';
 import {
   applyMaskDiscolorationToObject,
@@ -47,35 +54,28 @@ function applyMaskColors(
   const shouldKeepOriginalColor = maskName === Mask.Avohkii;
 
   root.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mat = (child as Mesh).material;
-      if (!isMaskStandardMat(mat)) return;
-      if (shouldKeepOriginalColor) return;
+    if (!(child as Mesh).isMesh) return;
+    const mesh = child as Mesh;
+    if (shouldKeepOriginalColor) return;
 
-      if (isMaskStandardMat(mat)) {
-        const isGlow = mat.name.toLowerCase().includes('glow');
+    forEachMaskMaterial(mesh, (mat) => {
+      if (isMaskGlowMaterialName(mat.name)) {
+        if (glowColor) applyMaskGlowTint(mat, glowColor);
+        return;
+      }
 
-        if (isGlow && glowColor) {
-          const col = new Color(glowColor);
-          mat.color = col;
-          if (mat.emissive) {
-            mat.emissive = col.clone();
-          }
+      mat.color = new Color(maskColor);
+      applyMaskMetallicPbr(mat, maskColor);
+      if (mat.emissive) {
+        if (maskPowerActive) {
+          mat.emissive = new Color(maskColor);
+          mat.emissiveIntensity = 2.5;
         } else {
-          mat.color = new Color(maskColor);
-          applyMaskMetallicPbr(mat, maskColor);
-          if (mat.emissive) {
-            if (maskPowerActive) {
-              mat.emissive = new Color(maskColor);
-              mat.emissiveIntensity = 2.5;
-            } else {
-              mat.emissive = new Color(0x000000);
-              mat.emissiveIntensity = 0;
-            }
-          }
+          mat.emissive = new Color(0x000000);
+          mat.emissiveIntensity = 0;
         }
       }
-    }
+    });
   });
 
   applyMaskDiscolorationToObject(
@@ -176,11 +176,12 @@ export function useMask(
         const mesh = child as Mesh;
         mesh.castShadow = effectiveShadows;
         mesh.receiveShadow = effectiveShadows;
-        const originalMat = mesh.material;
-        if (isMaskStandardMat(originalMat)) {
-          const mat = originalMat.clone();
-          prepareClonedMaskMaterial(mat);
-          mesh.material = mat;
+        const raw = mesh.material;
+        const hasTintable =
+          isMaskStandardMat(raw) ||
+          (Array.isArray(raw) && raw.some((mat) => isMaskStandardMat(mat)));
+        if (hasTintable) {
+          cloneMaskMeshMaterials(mesh, maskName);
         }
       }
     });

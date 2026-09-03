@@ -9,7 +9,7 @@ import {
   glslUvAttributeForTextureChannel,
   type BakedDiscolorationUniforms,
 } from './bakedDiscoloration';
-import { isMaskGlowMaterialName, isMaskStandardMat, type MaskStandardMat } from './maskMaterial';
+import { forEachMaskMaterial, isMaskGlowMaterialName, type MaskStandardMat } from './maskMaterial';
 
 /** Vertical crown tint for Metru double-injected Kanohi (silver-gray top → mask color bottom). */
 export type MaskDiscoloration = {
@@ -64,11 +64,10 @@ export function setupMaskDiscolorationShader(root: Object3D, baseColor = '#fffff
 
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
-    const mat = (child as Mesh).material;
-    if (!isMaskStandardMat(mat)) return;
-    if (isMaskGlowMaterialName(mat.name)) return;
-
-    attachDiscolorationShader(mat, minY, maxY, baseColor);
+    forEachMaskMaterial(child as Mesh, (mat) => {
+      if (isMaskGlowMaterialName(mat.name)) return;
+      attachDiscolorationShader(mat, minY, maxY, baseColor);
+    });
   });
 }
 
@@ -190,8 +189,9 @@ export function applyMaskDiscolorationToObject(
 ): void {
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
-    const mat = (child as Mesh).material;
-    if (!isMaskStandardMat(mat) || isMaskGlowMaterialName(mat.name)) return;
-    applyMaskDiscolorationUniforms(mat, discoloration, baseColor);
+    forEachMaskMaterial(child as Mesh, (mat) => {
+      if (isMaskGlowMaterialName(mat.name)) return;
+      applyMaskDiscolorationUniforms(mat, discoloration, baseColor);
+    });
   });
 }
