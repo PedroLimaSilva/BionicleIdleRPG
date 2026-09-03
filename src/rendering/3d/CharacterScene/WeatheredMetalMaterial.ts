@@ -22,11 +22,12 @@ import {
   Object3D,
   Texture,
 } from 'three';
-import { discolorationForColor } from '../kit/palettes/legoColorDiscoloration';
 import {
   DISCOLORATION_MAP_USERDATA_KEY,
   EMPTY_DISCOLORATION_MAP,
+  glslUvAttributeForTextureChannel,
 } from '../hooks/bakedDiscoloration';
+import { discolorationForColor } from '../kit/palettes/legoColorDiscoloration';
 
 export type WeatheredMetalOptions = {
   /** Base metal color (e.g. gold for Avohkii). */
@@ -100,6 +101,7 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
     opts.edgeStrength ?? DEFAULT_EDGE_STRENGTH,
     opts.edgeCurvatureScale ?? DEFAULT_EDGE_CURVATURE_SCALE,
     opts.discolorationMap?.uuid ?? '',
+    opts.discolorationMap?.channel ?? 0,
     opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
     opts.transparent ? 't' : '',
     opts.debugGrimeAsColor ? 'd' : '',
@@ -129,7 +131,8 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
   const debugGrimeAsColor = opts.debugGrimeAsColor ?? false;
 
   mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = opts.discolorationMap ?? null;
-  mat.customProgramCacheKey = () => `WeatheredMetal|dc${hasDiscolorationMap}`;
+  const discolorUvAttr = glslUvAttributeForTextureChannel(opts.discolorationMap?.channel);
+  mat.customProgramCacheKey = () => `WeatheredMetal|dc${hasDiscolorationMap}|uv${discolorUvAttr}`;
 
   mat.onBeforeCompile = (shader) => {
     shader.uniforms.discolorationMap = { value: discolorationMap };
@@ -146,7 +149,7 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
     shader.vertexShader = shader.vertexShader.replace(
       '#include <begin_vertex>',
       `vObjectPosition = position;
-      vDiscolorUv = uv;
+      vDiscolorUv = ${discolorUvAttr};
       #include <begin_vertex>`
     );
 

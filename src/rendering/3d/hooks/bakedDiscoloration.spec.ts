@@ -1,5 +1,9 @@
-import { MeshStandardMaterial, Texture } from 'three';
-import { adoptBakedDiscolorationMap, getBakedDiscolorationMap } from './bakedDiscoloration';
+import { ClampToEdgeWrapping, MeshStandardMaterial, Texture } from 'three';
+import {
+  adoptBakedDiscolorationMap,
+  getBakedDiscolorationMap,
+  glslUvAttributeForTextureChannel,
+} from './bakedDiscoloration';
 
 describe('adoptBakedDiscolorationMap', () => {
   test('steals emissiveMap so it cannot glow, and is idempotent', () => {
@@ -22,5 +26,31 @@ describe('adoptBakedDiscolorationMap', () => {
     const mat = new MeshStandardMaterial({ name: 'Hau_baked' });
     expect(adoptBakedDiscolorationMap(mat)).toBeNull();
     expect(getBakedDiscolorationMap(mat)).toBeNull();
+  });
+
+  test('zeros emission and clamps atlas wrapping', () => {
+    const map = new Texture();
+    map.channel = 1;
+    const mat = new MeshStandardMaterial({
+      emissive: 0xffffff,
+      emissiveIntensity: 1,
+      emissiveMap: map,
+      name: 'Avohkii_baked',
+    });
+    adoptBakedDiscolorationMap(mat);
+    expect(mat.emissive.getHex()).toBe(0);
+    expect(mat.emissiveIntensity).toBe(0);
+    expect(map.wrapS).toBe(ClampToEdgeWrapping);
+    expect(map.wrapT).toBe(ClampToEdgeWrapping);
+    expect(map.channel).toBe(1);
+  });
+});
+
+describe('glslUvAttributeForTextureChannel', () => {
+  test('maps glTF texCoord / Three channel to the GLSL attribute', () => {
+    expect(glslUvAttributeForTextureChannel(undefined)).toBe('uv');
+    expect(glslUvAttributeForTextureChannel(0)).toBe('uv');
+    expect(glslUvAttributeForTextureChannel(1)).toBe('uv1');
+    expect(glslUvAttributeForTextureChannel(2)).toBe('uv2');
   });
 });

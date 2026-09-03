@@ -6,6 +6,7 @@ import {
   createBakedDiscolorationUniforms,
   DISCOLORATION_UNIFORMS_KEY,
   getBakedDiscolorationMap,
+  glslUvAttributeForTextureChannel,
   type BakedDiscolorationUniforms,
 } from './bakedDiscoloration';
 import { isMaskGlowMaterialName, isMaskStandardMat, type MaskStandardMat } from './maskMaterial';
@@ -91,6 +92,9 @@ function attachDiscolorationShader(
   mat.userData[DISCOLOR_UNIFORMS_KEY] = crown;
   mat.userData[DISCOLORATION_UNIFORMS_KEY] = baked;
 
+  // SimpleBake often lands on TEXCOORD_1 while `uv` is still the older unwrap.
+  const discolorUvAttr = glslUvAttributeForTextureChannel(map?.channel);
+
   mat.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, crown, baked);
 
@@ -100,7 +104,7 @@ function attachDiscolorationShader(
     );
     shader.vertexShader = shader.vertexShader.replace(
       '#include <begin_vertex>',
-      '#include <begin_vertex>\nvDiscolorY = transformed.y;\nvDiscolorUv = uv;'
+      `#include <begin_vertex>\nvDiscolorY = transformed.y;\nvDiscolorUv = ${discolorUvAttr};`
     );
 
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -151,7 +155,7 @@ function attachDiscolorationShader(
     );
   };
 
-  mat.customProgramCacheKey = () => 'mask_discoloration_v3_baked';
+  mat.customProgramCacheKey = () => `mask_discoloration_v4_uv_${discolorUvAttr}`;
   mat.needsUpdate = true;
 }
 

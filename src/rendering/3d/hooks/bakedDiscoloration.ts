@@ -5,6 +5,7 @@
  */
 
 import {
+  ClampToEdgeWrapping,
   Color,
   DataTexture,
   LinearFilter,
@@ -29,9 +30,17 @@ export const EMPTY_DISCOLORATION_MAP = (() => {
   tex.colorSpace = NoColorSpace;
   tex.magFilter = LinearFilter;
   tex.minFilter = LinearFilter;
+  tex.wrapS = ClampToEdgeWrapping;
+  tex.wrapT = ClampToEdgeWrapping;
   tex.needsUpdate = true;
   return tex;
 })();
+
+/** GLSL attribute for a glTF `texCoord` / Three.js `texture.channel` (0 → `uv`, 1 → `uv1`, …). */
+export function glslUvAttributeForTextureChannel(channel: number | undefined): string {
+  const c = channel ?? 0;
+  return c <= 0 ? 'uv' : `uv${c}`;
+}
 
 export function getBakedDiscolorationMap(mat: unknown): Texture | null {
   const fromUserData = (mat as { userData?: Record<string, unknown> }).userData?.[
@@ -57,8 +66,13 @@ export function adoptBakedDiscolorationMap(
   const map = mat.emissiveMap;
   if (!map) return null;
   map.colorSpace = NoColorSpace;
+  // Bakes are atlas-packed; REPEAT shows island outlines when UVs skim edges.
+  map.wrapS = ClampToEdgeWrapping;
+  map.wrapT = ClampToEdgeWrapping;
   mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = map;
   mat.emissiveMap = null;
+  mat.emissive.set(0, 0, 0);
+  mat.emissiveIntensity = 0;
   return map;
 }
 
@@ -87,7 +101,7 @@ export function applyBakedDiscolorationUniforms(
   uniforms.uHasDiscolorationMap.value = map ? 1 : 0;
 }
 
-/** Mix albedo toward the color-specific tint using a grayscale bake (`uv`). */
+/** Mix albedo toward the color-specific tint using a grayscale bake. */
 export const BAKED_DISCOLORATION_FRAGMENT_GLSL = `
       float bakedDiscolorAmt = uHasDiscolorationMap * clamp(texture2D(discolorationMap, vDiscolorUv).r, 0.0, 1.0);
       diffuseColor.rgb = mix(diffuseColor.rgb, uDiscolorationColor, clamp(bakedDiscolorAmt * uDiscolorationIntensity, 0.0, 1.0));

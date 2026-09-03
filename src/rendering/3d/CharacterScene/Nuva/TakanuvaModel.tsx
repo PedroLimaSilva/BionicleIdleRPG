@@ -90,7 +90,7 @@ export const TakanuvaModel = forwardRef<
   useArmor(nodes['PlateHolderR'], 'Shoulder', armorColor);
 
   const glowColor = matoran.colors.eyes;
-  useMask(nodes.Masks, matoran, glowColor, matoran.maskPowerActive, true);
+  useMask(nodes.Masks, matoran, glowColor, matoran.maskPowerActive);
 
   return (
     <group ref={group} dispose={null}>

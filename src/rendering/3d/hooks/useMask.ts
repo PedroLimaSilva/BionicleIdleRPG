@@ -26,13 +26,13 @@ export type { MaskDiscoloration } from './maskDiscoloration';
 
 const MASKS_GLB_PATH = import.meta.env.BASE_URL + 'masks.glb';
 
-/** Scale on Toa Mata `Masks` sockets so Kanohi from `masks.glb` fit the face. */
-export const MATA_MASK_SLOT_SCALE: [number, number, number] = [
-  37.19623565673828, 37.19623565673828, 37.1963005065918,
-];
-
-function applyMataMaskSlotScale(masksParent: Object3D): void {
-  masksParent.scale.set(...MATA_MASK_SLOT_SCALE);
+/**
+ * `masks.glb` is authored at final size. Older Mata / Turaga / rebuilt /
+ * diminished rigs still ship a ~37× `Masks` socket from when the Kanohi GLB
+ * was tiny — neutralize that so attached masks are not scaled up twice.
+ */
+function normalizeMaskSocketScale(masksParent: Object3D): void {
+  masksParent.scale.set(1, 1, 1);
 }
 
 function buildMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D> {
@@ -115,8 +115,6 @@ function applyMaskColors(
  *                      When provided, materials whose names include "glow" (case-insensitive) will use
  *                      this color for both their base color and emissive color instead of maskColor.
  * @param maskPowerActive - When true, non-glow materials emit the mask color at intensity 5.
- * @param applyMataSlotScale - When true, scale the parent socket to match Toa Mata rigs (needed
- *                             when using `masks.glb` on a character whose GLB omits that scale).
  * @param discoloration - Optional vertical crown tint (Metru double-injected Kanohi).
  *                        Baked emissive discoloration is applied whenever the GLB
  *                        ships an emissiveMap, independent of this prop.
@@ -126,7 +124,6 @@ export function useMask(
   matoran: BaseMatoran & { maskOverride?: Mask; unlockAllMasks?: boolean },
   glowColor?: string,
   maskPowerActive?: boolean,
-  applyMataSlotScale?: boolean,
   discoloration?: MaskDiscoloration
 ) {
   const gltf = useGLTF(MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
@@ -167,10 +164,7 @@ export function useMask(
   useEffect(() => {
     if (!masksNodes || !masksParent) return;
 
-    if (applyMataSlotScale) {
-      applyMataMaskSlotScale(masksParent);
-    }
-
+    normalizeMaskSocketScale(masksParent);
     ensureMaskSlotPlaceholderHidden(masksParent);
 
     const source = masksNodes[maskName];
@@ -235,7 +229,7 @@ export function useMask(
     // Mask lifecycle is managed imperatively at the top of each effect run and
     // in the unmount-only effect below, so the old mask can remain in the scene
     // during the exit animation.
-  }, [masksNodes, masksParent, maskName, effectiveShadows, applyMataSlotScale, discoloration]);
+  }, [masksNodes, masksParent, maskName, effectiveShadows, discoloration]);
 
   // Unmount-only cleanup: remove any lingering masks from the scene
   useEffect(() => {
