@@ -48,9 +48,21 @@ jobs:
         env:
           KIT_NODE_BASE_REF: origin/${{ github.base_ref }}
 
+      - name: Find existing comment
+        uses: peter-evans/find-comment@v4
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '## Kit node usage report'
+          direction: last
+
       - name: Comment on pull request
         uses: peter-evans/create-or-update-comment@v4
         with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
-          comment-tag: kit-node-usage-report
-          body: ${{ steps.report.outputs.body }}
+          edit-mode: replace
+          body: |
+            <!-- kit-node-usage-report -->
+            ${{ steps.report.outputs.body }}
