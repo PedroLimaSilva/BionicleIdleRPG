@@ -1,11 +1,23 @@
-import { BoxGeometry, Group, Mesh, MeshStandardMaterial, Object3D } from 'three';
+import {
+  BoxGeometry,
+  Group,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Object3D,
+} from 'three';
 import {
   collectOpacities,
+  collectTransmissions,
   createMaskTransitionState,
   setAnimatedOpacity,
   startMaskTransition,
 } from './maskTransition';
-import { prepareClonedMaskMaterial } from './maskMaterial';
+import {
+  configureKaukauTransmission,
+  KAUKAU_TRANSMISSION,
+  prepareClonedMaskMaterial,
+} from './maskMaterial';
 
 function makeOpaqueMaterial(name: string): MeshStandardMaterial {
   const mat = new MeshStandardMaterial({ name, opacity: 1 });
@@ -24,6 +36,15 @@ function makeOpaqueMaskRoot(): Object3D {
   ] as unknown as MeshStandardMaterial;
   root.add(multiSlot);
 
+  return root;
+}
+
+function makeKaukauMaskRoot(): Object3D {
+  const root = new Group();
+  const mat = new MeshPhysicalMaterial({ name: 'Kaukau_baked', opacity: 1, roughness: 0.5 });
+  configureKaukauTransmission(mat);
+  prepareClonedMaskMaterial(mat);
+  root.add(new Mesh(new BoxGeometry(), mat));
   return root;
 }
 
@@ -57,5 +78,26 @@ describe('mask transition opacity', () => {
     expect(bodyMat.transparent).toBe(true);
     expect(bodyMat.opacity).toBeCloseTo(0.4);
     expect(bodyMat.depthWrite).toBe(false);
+  });
+
+  it('collectTransmissions captures Mata Kaukau transmission materials', () => {
+    const root = makeKaukauMaskRoot();
+    const transmissions = collectTransmissions(root);
+    expect(transmissions.size).toBe(1);
+    expect(transmissions.values().next().value).toBe(KAUKAU_TRANSMISSION);
+  });
+
+  it('setAnimatedOpacity fades Mata Kaukau via transmission, not opacity', () => {
+    const root = makeKaukauMaskRoot();
+    const mat = (root.children[0] as Mesh).material as MeshPhysicalMaterial;
+    const opacities = collectOpacities(root);
+    const transmissions = collectTransmissions(root);
+
+    setAnimatedOpacity(root, opacities, 0.5, transmissions);
+
+    expect(mat.transparent).toBe(true);
+    expect(mat.depthWrite).toBe(false);
+    expect(mat.transmission).toBeCloseTo(KAUKAU_TRANSMISSION * 0.5);
+    expect(mat.opacity).toBe(1);
   });
 });

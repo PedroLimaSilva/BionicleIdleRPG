@@ -22,8 +22,8 @@ export const TRANSMISSIVE_KIT_VAHKI_HOOD_ROUGHNESS = 0.3;
 
 export const TRANSMISSIVE_KIT_THICKNESS = 0.15;
 
-/** Draw transmissive kit gel before opaque head stalk + Kanohi masks. */
-export const TRANSMISSIVE_KIT_RENDER_ORDER = -1;
+/** Draw transmissive kit gel after Kanohi so in-front gel wins depth over mask back-faces. */
+export const TRANSMISSIVE_KIT_RENDER_ORDER = 11;
 
 export type TransmissiveKitKind = KitTransmissivePreset;
 
@@ -70,7 +70,7 @@ function presetForKind(kind: TransmissiveKitKind): {
   }
 }
 
-/** Uniform transmissive plastic — no baked maps; avoids `alphaMode: BLEND` vs Kanohi masks. */
+/** Uniform transmissive plastic — transmissive pass; draws after Kanohi with depthWrite. */
 export function buildTransmissiveKitMaterial(
   materialName: string,
   kind: TransmissiveKitKind,
@@ -81,7 +81,7 @@ export function buildTransmissiveKitMaterial(
   const preset = presetForKind(kind);
   return new MeshPhysicalMaterial({
     color: new Color(color),
-    depthWrite: false,
+    depthWrite: true,
     emissive: new Color(emissiveColor),
     emissiveIntensity,
     ior: preset.ior,
@@ -92,7 +92,7 @@ export function buildTransmissiveKitMaterial(
     side: FrontSide,
     thickness: preset.thickness,
     transmission: preset.transmission,
-    transparent: true,
+    transparent: false,
   });
 }
 
