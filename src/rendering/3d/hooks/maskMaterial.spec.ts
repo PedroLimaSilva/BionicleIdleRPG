@@ -69,21 +69,13 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.roughnessMap).toBeDefined();
   });
 
-  it('keeps Nuva Kaukau opaque while Mata Kaukau blends', () => {
+  it('promotes dual-mode Mata Kaukau to transmission-only rendering', () => {
     const nuva = new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 1, roughness: 0.5 });
     prepareClonedMaskMaterial(nuva);
     expect(nuva.transparent).toBe(false);
     expect(nuva.side).toBe(FrontSide);
     expect(nuva.depthWrite).toBe(true);
 
-    const mata = new MeshStandardMaterial({ name: 'Kaukau_baked', opacity: 0.5, roughness: 0.5 });
-    prepareClonedMaskMaterial(mata);
-    expect(mata.transparent).toBe(true);
-    expect(mata.depthWrite).toBe(false);
-    expect(mata.side).toBe(FrontSide);
-  });
-
-  it('strips physical transmission on opacity-blended Kaukau', () => {
     const mata = new MeshPhysicalMaterial({
       name: 'Kaukau_baked',
       opacity: 0.75,
@@ -92,9 +84,25 @@ describe('prepareClonedMaskMaterial', () => {
     });
     prepareClonedMaskMaterial(mata);
     expect(mata.transparent).toBe(true);
+    expect(mata.opacity).toBe(1);
+    expect(mata.transmission).toBe(0.75);
+    expect(mata.thickness).toBeGreaterThan(0);
     expect(mata.depthWrite).toBe(false);
-    expect(mata.transmission).toBe(0);
     expect(mata.side).toBe(FrontSide);
+  });
+
+  it('strips physical transmission on opacity-only blended masks', () => {
+    const faded = new MeshPhysicalMaterial({
+      name: 'Hau_baked',
+      opacity: 0.75,
+      roughness: 0.5,
+      transmission: 0,
+    });
+    prepareClonedMaskMaterial(faded);
+    expect(faded.transparent).toBe(true);
+    expect(faded.depthWrite).toBe(false);
+    expect(faded.transmission).toBe(0);
+    expect(faded.side).toBe(FrontSide);
   });
 
   it('treats lens material slots as glow', () => {

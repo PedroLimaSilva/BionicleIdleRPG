@@ -135,12 +135,32 @@ export function maskNeedsAlphaBlend(mat: MaskStandardMat): boolean {
 /**
  * Sync transparent-pass vs opaque-pass state from the material's current opacity.
  */
-/** Opacity-blended Kanohi (Mata Kaukau) — not physical transmission vs brain gel. */
-function stripMaskPhysicalTransmission(mat: MaskStandardMat): void {
+/** Thin-shell transmission depth for Kanohi authored with KHR_materials_transmission (Mata Kaukau). */
+export const TRANSMISSIVE_KANOHI_SHELL_THICKNESS = 0.15;
+
+/**
+ * Resolve GLB materials that ship both BLEND alpha and KHR_materials_transmission.
+ * Mata Kaukau is authored this way; opacity blend with depthWrite disabled causes
+ * self-sorting artifacts on the mask shell. Prefer transmission-only rendering.
+ */
+function normalizeMaskPhysicalTransparency(mat: MaskStandardMat): void {
   if (!(mat instanceof MeshPhysicalMaterial)) return;
-  if (mat.opacity >= 0.999) return;
-  mat.transmission = 0;
-  mat.transmissionMap = null;
+  const transmission = mat.transmission ?? 0;
+  if (mat.opacity < 0.999 && transmission > 0) {
+    mat.opacity = 1;
+    if (mat.thickness <= 0) {
+      mat.thickness = TRANSMISSIVE_KANOHI_SHELL_THICKNESS;
+    }
+    return;
+  }
+  if (mat.opacity < 0.999) {
+    mat.transmission = 0;
+    mat.transmissionMap = null;
+  }
+}
+
+export function maskUsesTransmissionRendering(mat: MaskStandardMat): boolean {
+  return mat instanceof MeshPhysicalMaterial && (mat.transmission ?? 0) > 0 && mat.opacity >= 0.999;
 }
 
 export function syncMaskTransparencyState(mat: MaskStandardMat): void {
@@ -150,7 +170,7 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
     return;
   }
 
-  stripMaskPhysicalTransmission(mat);
+  normalizeMaskPhysicalTransparency(mat);
 
   const alphaBlend = maskNeedsAlphaBlend(mat);
   mat.transparent = alphaBlend;
