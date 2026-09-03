@@ -21,6 +21,7 @@ import {
   isMaskStandardMat,
   syncMaskTransparencyState,
 } from './maskMaterial';
+import { applyMaskDiscolorationToObject, setupMaskDiscolorationShader } from './maskDiscoloration';
 import { masksCollected } from '../../../services/matoranUtils';
 
 const GREAT_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Metru/Masks.glb';
@@ -69,6 +70,8 @@ function applyGreatMaskColors(
       }
     }
   });
+
+  applyMaskDiscolorationToObject(root, undefined, maskColor);
 }
 
 /**
@@ -132,6 +135,8 @@ export function useGreatMask(
         }
       }
     });
+
+    setupMaskDiscolorationShader(clone, maskColorRef.current);
 
     applyGreatMaskColors(
       clone,

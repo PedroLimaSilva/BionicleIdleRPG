@@ -7,6 +7,7 @@ import {
   maskNeedsAlphaBlend,
   prepareClonedMaskMaterial,
 } from './maskMaterial';
+import { getBakedDiscolorationMap } from './bakedDiscoloration';
 
 describe('maskNeedsAlphaBlend', () => {
   it('detects sub-1 opacity and trans-named masks', () => {
@@ -74,6 +75,25 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.transparent).toBe(true);
     expect(mat.metalness).toBe(0.8);
     expect(mat.roughness).toBe(0.2);
+  });
+
+  it('adopts a baked emissiveMap as discoloration and keeps other PBR maps', () => {
+    const bake = new Texture();
+    const mat = new MeshStandardMaterial({
+      emissiveMap: bake,
+      metalness: 0.4,
+      name: 'Hau_baked',
+      normalMap: new Texture(),
+      roughness: 0.3,
+      roughnessMap: new Texture(),
+    });
+    prepareClonedMaskMaterial(mat);
+    expect(mat.emissiveMap).toBeNull();
+    expect(getBakedDiscolorationMap(mat)).toBe(bake);
+    expect(mat.normalMap).toBeDefined();
+    expect(mat.roughnessMap).toBeDefined();
+    expect(mat.metalness).toBe(0.4);
+    expect(mat.roughness).toBe(0.3);
   });
 
   it('boosts gold mask colors beyond baked PBR map metalness', () => {

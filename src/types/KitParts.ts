@@ -24,10 +24,12 @@ export type KitMaterialColorSource =
  * that slot participates in the pass (`useKitAttachments` + `weathered` on the model).
  * Omitted keys keep the character-level `WeatheredMetalOptions` defaults.
  *
- * Baked bevel maps are opted in per kit node via `KIT_*_BEVEL_NODES`, not here.
- * Weathered slots on the same mesh share that map; glow / emissive / transmissive
- * slots still opt out via `weathered: false`. Unlisted parts (axles, pins) stay
- * on the procedural path.
+ * Baked discoloration maps are the glTF `emissive` slot (grayscale). Kit parts
+ * bake that only; roughness / metalness stay on the weathered noise path.
+ * Masks may also bake normal / roughness / metalness. The mix *color* comes from
+ * `discolorationForColor` for the chosen LEGO slot, not from the bake.
+ *
+ * Packed RG bevel sidecars (`KIT_*_BEVEL_NODES`) are a separate opt-in.
  */
 export type KitMaterialWeatheredTuning = {
   grimeDarken?: number;

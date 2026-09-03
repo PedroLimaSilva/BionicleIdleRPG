@@ -1,4 +1,13 @@
 import { Box3, Color, Mesh, Object3D } from 'three';
+import {
+  adoptBakedDiscolorationMap,
+  applyBakedDiscolorationUniforms,
+  BAKED_DISCOLORATION_FRAGMENT_GLSL,
+  createBakedDiscolorationUniforms,
+  DISCOLORATION_UNIFORMS_KEY,
+  getBakedDiscolorationMap,
+  type BakedDiscolorationUniforms,
+} from './bakedDiscoloration';
 import { isMaskGlowMaterialName, isMaskStandardMat, type MaskStandardMat } from './maskMaterial';
 
 /** Vertical crown tint for Metru double-injected Kanohi (silver-gray top → mask color bottom). */
@@ -12,7 +21,7 @@ export type MaskDiscoloration = {
   roughness?: number;
 };
 
-type DiscolorationUniforms = {
+type CrownDiscolorationUniforms = {
   uDiscolorColor: { value: Color };
   uDiscolorIntensity: { value: number };
   uDiscolorMinY: { value: number };
@@ -35,10 +44,11 @@ function discolorBlendGlsl(suffix: string): string {
 }
 
 /**
- * Patch non-glow mask materials with an object-space vertical gradient: base mask
- * color at the bottom, discoloration color + higher metalness at the crown.
+ * Patch non-glow mask materials:
+ * - baked grayscale `emissiveMap` → color-specific edge discoloration
+ * - optional object-space vertical gradient for Metru double-injected Kanohi
  */
-export function setupMaskDiscolorationShader(root: Object3D): void {
+export function setupMaskDiscolorationShader(root: Object3D, baseColor = '#ffffff'): void {
   const box = new Box3();
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
@@ -48,10 +58,8 @@ export function setupMaskDiscolorationShader(root: Object3D): void {
     }
   });
 
-  if (box.isEmpty()) return;
-
-  const minY = box.min.y;
-  const maxY = box.max.y;
+  const minY = box.isEmpty() ? 0 : box.min.y;
+  const maxY = box.isEmpty() ? 1 : box.max.y;
 
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
@@ -59,12 +67,19 @@ export function setupMaskDiscolorationShader(root: Object3D): void {
     if (!isMaskStandardMat(mat)) return;
     if (isMaskGlowMaterialName(mat.name)) return;
 
-    attachDiscolorationShader(mat, minY, maxY);
+    attachDiscolorationShader(mat, minY, maxY, baseColor);
   });
 }
 
-function attachDiscolorationShader(mat: MaskStandardMat, minY: number, maxY: number): void {
-  const uniforms: DiscolorationUniforms = {
+function attachDiscolorationShader(
+  mat: MaskStandardMat,
+  minY: number,
+  maxY: number,
+  baseColor: string
+): void {
+  const map = adoptBakedDiscolorationMap(mat);
+  const baked: BakedDiscolorationUniforms = createBakedDiscolorationUniforms(map, baseColor);
+  const crown: CrownDiscolorationUniforms = {
     uDiscolorColor: { value: new Color(0xffffff) },
     uDiscolorIntensity: { value: 0 },
     uDiscolorMaxY: { value: maxY },
@@ -73,23 +88,28 @@ function attachDiscolorationShader(mat: MaskStandardMat, minY: number, maxY: num
     uDiscolorRoughness: { value: DEFAULT_DISCOLOR_ROUGHNESS },
   };
 
-  mat.userData[DISCOLOR_UNIFORMS_KEY] = uniforms;
+  mat.userData[DISCOLOR_UNIFORMS_KEY] = crown;
+  mat.userData[DISCOLORATION_UNIFORMS_KEY] = baked;
 
   mat.onBeforeCompile = (shader) => {
-    Object.assign(shader.uniforms, uniforms);
+    Object.assign(shader.uniforms, crown, baked);
 
     shader.vertexShader = shader.vertexShader.replace(
       'void main() {',
-      'varying float vDiscolorY;\nvoid main() {'
+      'varying float vDiscolorY;\nvarying vec2 vDiscolorUv;\nvoid main() {'
     );
     shader.vertexShader = shader.vertexShader.replace(
       '#include <begin_vertex>',
-      '#include <begin_vertex>\nvDiscolorY = transformed.y;'
+      '#include <begin_vertex>\nvDiscolorY = transformed.y;\nvDiscolorUv = uv;'
     );
 
     shader.fragmentShader = shader.fragmentShader.replace(
       'void main() {',
       [
+        'uniform sampler2D discolorationMap;',
+        'uniform vec3 uDiscolorationColor;',
+        'uniform float uDiscolorationIntensity;',
+        'uniform float uHasDiscolorationMap;',
         'uniform vec3 uDiscolorColor;',
         'uniform float uDiscolorIntensity;',
         'uniform float uDiscolorMinY;',
@@ -97,6 +117,7 @@ function attachDiscolorationShader(mat: MaskStandardMat, minY: number, maxY: num
         'uniform float uDiscolorMetalness;',
         'uniform float uDiscolorRoughness;',
         'varying float vDiscolorY;',
+        'varying vec2 vDiscolorUv;',
         'void main() {',
       ].join('\n')
     );
@@ -105,6 +126,7 @@ function attachDiscolorationShader(mat: MaskStandardMat, minY: number, maxY: num
       '#include <color_fragment>',
       [
         '#include <color_fragment>',
+        BAKED_DISCOLORATION_FRAGMENT_GLSL,
         discolorBlendGlsl('Color'),
         'diffuseColor.rgb = mix(diffuseColor.rgb, uDiscolorColor, discolorAmtColor);',
       ].join('\n')
@@ -129,36 +151,43 @@ function attachDiscolorationShader(mat: MaskStandardMat, minY: number, maxY: num
     );
   };
 
-  mat.customProgramCacheKey = () => 'mask_discoloration_v2';
+  mat.customProgramCacheKey = () => 'mask_discoloration_v3_baked';
   mat.needsUpdate = true;
 }
 
 /** Push runtime discoloration settings into patched mask materials. */
 export function applyMaskDiscolorationUniforms(
   mat: MaskStandardMat,
-  discoloration: MaskDiscoloration | undefined
+  discoloration: MaskDiscoloration | undefined,
+  baseColor?: string
 ): void {
-  const uniforms = mat.userData[DISCOLOR_UNIFORMS_KEY] as DiscolorationUniforms | undefined;
-  if (!uniforms) return;
+  const crown = mat.userData[DISCOLOR_UNIFORMS_KEY] as CrownDiscolorationUniforms | undefined;
+  if (crown) {
+    if (discoloration && discoloration.intensity > 0) {
+      crown.uDiscolorColor.value.set(discoloration.color);
+      crown.uDiscolorIntensity.value = discoloration.intensity;
+      crown.uDiscolorMetalness.value = discoloration.metalness ?? DEFAULT_DISCOLOR_METALNESS;
+      crown.uDiscolorRoughness.value = discoloration.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS;
+    } else {
+      crown.uDiscolorIntensity.value = 0;
+    }
+  }
 
-  if (discoloration && discoloration.intensity > 0) {
-    uniforms.uDiscolorColor.value.set(discoloration.color);
-    uniforms.uDiscolorIntensity.value = discoloration.intensity;
-    uniforms.uDiscolorMetalness.value = discoloration.metalness ?? DEFAULT_DISCOLOR_METALNESS;
-    uniforms.uDiscolorRoughness.value = discoloration.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS;
-  } else {
-    uniforms.uDiscolorIntensity.value = 0;
+  const baked = mat.userData[DISCOLORATION_UNIFORMS_KEY] as BakedDiscolorationUniforms | undefined;
+  if (baked && baseColor) {
+    applyBakedDiscolorationUniforms(baked, baseColor, getBakedDiscolorationMap(mat));
   }
 }
 
 export function applyMaskDiscolorationToObject(
   root: Object3D,
-  discoloration: MaskDiscoloration | undefined
+  discoloration: MaskDiscoloration | undefined,
+  baseColor?: string
 ): void {
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mat = (child as Mesh).material;
     if (!isMaskStandardMat(mat) || isMaskGlowMaterialName(mat.name)) return;
-    applyMaskDiscolorationUniforms(mat, discoloration);
+    applyMaskDiscolorationUniforms(mat, discoloration, baseColor);
   });
 }

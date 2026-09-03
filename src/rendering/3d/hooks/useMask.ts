@@ -86,7 +86,11 @@ function applyMaskColors(
     }
   });
 
-  applyMaskDiscolorationToObject(root, discoloration);
+  applyMaskDiscolorationToObject(
+    root,
+    discoloration,
+    shouldKeepOriginalColor ? undefined : maskColor
+  );
 }
 
 /**
@@ -114,6 +118,8 @@ function applyMaskColors(
  * @param applyMataSlotScale - When true, scale the parent socket to match Toa Mata rigs (needed
  *                             when using `masks.glb` on a character whose GLB omits that scale).
  * @param discoloration - Optional vertical crown tint (Metru double-injected Kanohi).
+ *                        Baked emissive discoloration is applied whenever the GLB
+ *                        ships an emissiveMap, independent of this prop.
  */
 export function useMask(
   masksParent: Object3D | undefined,
@@ -195,9 +201,7 @@ export function useMask(
 
     applyKanohiRenderOrder(clone);
 
-    if (discolorationRef.current) {
-      setupMaskDiscolorationShader(clone);
-    }
+    setupMaskDiscolorationShader(clone, maskColorRef.current);
 
     // Apply colors eagerly so they're correct before the first animation frame.
     // (useEffect runs asynchronously after paint, and useFrame/rAF can fire

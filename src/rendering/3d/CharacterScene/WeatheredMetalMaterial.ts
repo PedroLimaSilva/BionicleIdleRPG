@@ -1,18 +1,12 @@
 /**
- * Weathered metal: object-space FBM grime, optional baked bevel map, optional
- * runtime geometric bevel (CPU dihedrals + vertex varyings), and a
- * screen-space curvature fallback when neither source exists.
+ * Weathered metal: object-space FBM grime, optional baked discoloration
+ * (glTF emissiveMap, color from `discolorationForColor`), optional packed
+ * RG bevel map, optional runtime geometric bevel, and a screen-space
+ * curvature fallback when no bake exists.
  *
- * Bevel is geometric — R = convex wear, G = concave cavity.
- *
- * Baked maps (`KIT_*_BEVEL_NODES` → `kit_2001/MataChest_bevel.webp`) need UVs.
- * Runtime bevel (`runtimeBevel`) is UV-free: `runtimeGeometricBevel.ts`
- * stores per-corner barycentric / altitude / edge weights; the vertex shader
- * interpolates them; the fragment shader turns distance-to-sharp-edge into
- * a wear band. That is the visual target a Blender bake should match.
- *
- * TSL equivalent: `runtimeGeometricBevelTsl.ts` (`three/nodes` in r160).
- * The live canvas is still GLSL `onBeforeCompile` (WebGLRenderer).
+ * Kit parts bake only the grayscale discoloration; roughness / metalness stay
+ * on this noise path. Masks use `maskDiscoloration.ts` instead (they keep
+ * baked normal / roughness / metalness maps).
  *
  * applyWeatheredMetalToObject skips: meshes with authored PBR maps (normal /
  * roughness / metalness), meshes under a node named "Masks" (useMask-injected
@@ -32,6 +26,11 @@ import {
   Texture,
 } from 'three';
 import { applyRuntimeGeometricBevelToObject } from './runtimeGeometricBevel';
+import { discolorationForColor } from '../kit/palettes/legoColorDiscoloration';
+import {
+  DISCOLORATION_MAP_USERDATA_KEY,
+  EMPTY_DISCOLORATION_MAP,
+} from '../hooks/bakedDiscoloration';
 
 export type WeatheredMetalOptions = {
   /** Base metal color (e.g. gold for Avohkii). */
@@ -71,6 +70,11 @@ export type WeatheredMetalOptions = {
   runtimeBevel?: boolean;
   /** Object-space wear band width along sharp edges when `runtimeBevel` is on. */
   runtimeBevelRadius?: number;
+  /**
+   * Baked grayscale discoloration (glTF `emissiveMap`). Kit parts bake this only;
+   * roughness / metalness stay on the procedural weathered path. Ignored without UVs.
+   */
+  discolorationMap?: Texture;
   /** Environment map intensity. */
   envMapIntensity?: number;
   /** Enable transparency (for mask fade-out animations). */
@@ -128,6 +132,7 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
     opts.bevelMap?.uuid ?? '',
     opts.runtimeBevel ? 'rt' : '',
     opts.runtimeBevelRadius ?? DEFAULT_RUNTIME_BEVEL_RADIUS,
+    opts.discolorationMap?.uuid ?? '',
     opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
     opts.transparent ? 't' : '',
     opts.debugGrimeAsColor ? 'd' : '',
@@ -151,18 +156,31 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
   const hasBevelMap = opts.runtimeBevel ? 0 : opts.bevelMap ? 1 : 0;
   const hasRuntimeBevel = opts.runtimeBevel ? 1 : 0;
   const runtimeBevelRadius = opts.runtimeBevelRadius ?? DEFAULT_RUNTIME_BEVEL_RADIUS;
+  const discolorationMap = opts.discolorationMap ?? EMPTY_DISCOLORATION_MAP;
+  const hasDiscolorationMap = opts.discolorationMap ? 1 : 0;
+  if (opts.discolorationMap) {
+    opts.discolorationMap.colorSpace = NoColorSpace;
+  }
+  const discolorSpec = discolorationForColor(
+    `#${new Color(opts.color ?? '#d4a84b').getHexString()}`
+  );
   const debugGrimeAsColor = opts.debugGrimeAsColor ?? false;
   const debugBevelAsColor = opts.debugBevelAsColor ?? false;
 
   mat.userData[BEVEL_MAP_USERDATA_KEY] = opts.runtimeBevel ? null : (opts.bevelMap ?? null);
+  mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = opts.discolorationMap ?? null;
   mat.customProgramCacheKey = () =>
-    `WeatheredMetal|bevelAtlas|rt${hasRuntimeBevel}|dbg${debugBevelAsColor ? 1 : 0}`;
+    `WeatheredMetal|bevelAtlas|rt${hasRuntimeBevel}|dc${hasDiscolorationMap}|dbg${debugBevelAsColor ? 1 : 0}`;
 
   mat.onBeforeCompile = (shader) => {
     shader.uniforms.bevelMap = { value: bevelMap };
     shader.uniforms.uHasBevelMap = { value: hasBevelMap };
     shader.uniforms.uHasRuntimeBevel = { value: hasRuntimeBevel };
     shader.uniforms.uRuntimeBevelRadius = { value: runtimeBevelRadius };
+    shader.uniforms.discolorationMap = { value: discolorationMap };
+    shader.uniforms.uHasDiscolorationMap = { value: hasDiscolorationMap };
+    shader.uniforms.uDiscolorationColor = { value: new Color(discolorSpec.color) };
+    shader.uniforms.uDiscolorationIntensity = { value: discolorSpec.intensity };
 
     shader.vertexShader = shader.vertexShader.replace(
       '#include <common>',
@@ -227,6 +245,10 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
       uniform float uHasBevelMap;
       uniform float uHasRuntimeBevel;
       uniform float uRuntimeBevelRadius;
+      uniform sampler2D discolorationMap;
+      uniform float uHasDiscolorationMap;
+      uniform vec3 uDiscolorationColor;
+      uniform float uDiscolorationIntensity;
       varying vec3 vObjectPosition;
       varying vec2 vBevelUv;
       ${
@@ -293,8 +315,11 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
       float bakedEdge = bakedWear * mix(1.0, wearNoise, 0.45);
       float runtimeEdge = runtimeWear * mix(1.0, wearNoise, 0.45);
       float edgeMask = mix(mix(screenEdge, bakedEdge, hasMap), runtimeEdge, hasRuntime);
+      edgeMask *= (1.0 - uHasDiscolorationMap);
       vec3 edgeTint = vec3(${edgeColor.r.toFixed(3)}, ${edgeColor.g.toFixed(3)}, ${edgeColor.b.toFixed(3)});
       diffuseColor.rgb = mix(diffuseColor.rgb, edgeTint, edgeMask * ${edgeStrength.toFixed(3)});
+      float bakedDiscolorAmt = uHasDiscolorationMap * clamp(texture2D(discolorationMap, vBevelUv).r, 0.0, 1.0);
+      diffuseColor.rgb = mix(diffuseColor.rgb, uDiscolorationColor, clamp(bakedDiscolorAmt * uDiscolorationIntensity, 0.0, 1.0));
       ${debugGrimeAsColor ? 'diffuseColor.rgb = vec3(grime);' : ''}
       ${
         debugBevelAsColor
@@ -436,9 +461,16 @@ export function applyWeatheredMetalToObject(
     if (opts.runtimeBevel) {
       applyRuntimeGeometricBevelToObject(mesh);
     }
-    const meshOpts: typeof opts = meshHasBevelUv(mesh) ? opts : { ...opts, bevelMap: undefined };
     const rawMaterial = mesh.material;
     const rawMaterials = Array.isArray(rawMaterial) ? rawMaterial : [rawMaterial];
+    const sourceDiscoloration =
+      rawMaterials.find(
+        (raw): raw is MeshStandardMaterial =>
+          raw instanceof MeshStandardMaterial && !!raw.emissiveMap
+      )?.emissiveMap ?? opts.discolorationMap;
+    const meshOpts: typeof opts = meshHasBevelUv(mesh)
+      ? { ...opts, discolorationMap: sourceDiscoloration ?? opts.discolorationMap }
+      : { ...opts, bevelMap: undefined, discolorationMap: undefined };
     const meshName = mesh.name ?? '';
     const meshWithUserData = mesh as Mesh & { userData?: { originalMaterialName?: string } };
     let changed = false;
@@ -485,13 +517,22 @@ export function applyWeatheredMetalToObject(
         (clone as MeshStandardMaterial & { extensions?: { derivatives?: boolean } }).extensions = {
           derivatives: true,
         };
-        applyWeatheredMetalModifier(clone, meshOpts);
+        applyWeatheredMetalModifier(clone, {
+          ...meshOpts,
+          discolorationMap: raw.emissiveMap ?? meshOpts.discolorationMap,
+        });
         changed = true;
         return clone;
       }
 
       changed = true;
-      return getWeatheredMetalMaterial((color ?? '#ffffff') as ColorRepresentation, meshOpts);
+      return getWeatheredMetalMaterial((color ?? '#ffffff') as ColorRepresentation, {
+        ...meshOpts,
+        discolorationMap:
+          raw instanceof MeshStandardMaterial
+            ? (raw.emissiveMap ?? meshOpts.discolorationMap)
+            : meshOpts.discolorationMap,
+      });
     });
 
     if (!changed) return;

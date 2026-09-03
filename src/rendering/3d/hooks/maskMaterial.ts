@@ -1,5 +1,6 @@
 import { FrontSide, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { metallicColorPbr } from '../kit/palettes/metalPbr';
+import { adoptBakedDiscolorationMap } from './bakedDiscoloration';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -65,6 +66,8 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
   syncMaskTransparencyState(mat);
   if (isMaskGlowMaterialName(mat.name)) return;
+
+  adoptBakedDiscolorationMap(mat);
 
   if (hasMaskPbrMaps(mat)) return;
 

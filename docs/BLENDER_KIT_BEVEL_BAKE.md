@@ -29,6 +29,19 @@ See also:
 - `src/rendering/3d/CharacterScene/kitBevelMap.ts`
 - `src/rendering/3d/kit/kitBevelNodes.ts`
 - Runtime visual target (no bake): `src/rendering/3d/CharacterScene/runtimeGeometricBevel.ts`
+- Color-specific mix: `src/rendering/3d/kit/palettes/legoColorDiscoloration.ts`
+
+## Baked emissive discoloration (current pipeline)
+
+Blender Simple Bake writes a **grayscale discoloration** into the glTF **emissive** slot
+(bevel + noise on sharp angles). The game does **not** emit that as light:
+
+| Asset      | Bake                                    | Runtime                                                        |
+| ---------- | --------------------------------------- | -------------------------------------------------------------- |
+| Mata masks | roughness, metalness, normals, emissive | Keep PBR maps; mix albedo toward `discolorationForColor(mask)` |
+| Kit parts  | emissive only                           | Weathered noise for roughness/metalness; same albedo mix       |
+
+Tune tints in `LEGO_COLOR_DISCOLORATION`. Unknown hexes get a derived scuff.
 
 ## Runtime spike (visual target)
 

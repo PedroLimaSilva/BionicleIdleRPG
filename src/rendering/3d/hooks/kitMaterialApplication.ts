@@ -196,6 +196,7 @@ export function buildKitMeshMaterials(
           weatheredBase.runtimeBevel || !weatheredBase.bevelMap || !meshHasBevelUv(mesh)
             ? undefined
             : weatheredBase.bevelMap,
+        discolorationMap: mat.emissiveMap && meshHasBevelUv(mesh) ? mat.emissiveMap : undefined,
       };
       const weathered = getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
       // MataFace stalk shares a plane with brain gel — DoubleSide back-faces z-fight the gel.

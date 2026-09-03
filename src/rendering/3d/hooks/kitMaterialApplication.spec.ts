@@ -18,6 +18,7 @@ import {
   getWeatheredBevelMap,
   type WeatheredMetalOptions,
 } from '../CharacterScene/WeatheredMetalMaterial';
+import { getBakedDiscolorationMap } from './bakedDiscoloration';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
 
@@ -303,5 +304,21 @@ describe('buildKitMeshMaterials bevel map', () => {
     ) as MeshStandardMaterial;
     expect(getWeatheredBevelMap(next)).toBeNull();
     expect(next.metalness).toBe(weatheredWithMap.metalness);
+  });
+
+  test('kit emissiveMap becomes discoloration on weathered slots and is not emission', () => {
+    const mesh = meshWithUvAndSlots(['Main']);
+    const bake = bevelTex();
+    (mesh.material as MeshStandardMaterial).emissiveMap = bake;
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'body', slot: 'main' },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(getBakedDiscolorationMap(next)).toBe(bake);
+    expect(next.emissiveMap).toBeNull();
   });
 });
