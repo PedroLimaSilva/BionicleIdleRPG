@@ -33,26 +33,47 @@ type GltfJson = {
   buffers?: { byteLength: number }[];
   materials?: unknown[];
   meshes?: { name?: string; primitives: Primitive[] }[];
-  nodes?: { name?: string; mesh?: number; children?: number[]; translation?: number[]; rotation?: number[]; scale?: number[] }[];
+  nodes?: {
+    name?: string;
+    mesh?: number;
+    children?: number[];
+    translation?: number[];
+    rotation?: number[];
+    scale?: number[];
+  }[];
   scenes?: { nodes?: number[] }[];
 };
 
 type GlbParts = { json: GltfJson; bin: Buffer };
 
 const COMPONENT_BYTES: Record<number, number> = {
-  5120: 1, 5121: 1, 5122: 2, 5123: 2, 5125: 4, 5126: 4,
+  5120: 1,
+  5121: 1,
+  5122: 2,
+  5123: 2,
+  5125: 4,
+  5126: 4,
 };
 const TYPE_COMPONENTS: Record<string, number> = {
-  SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4, MAT2: 4, MAT3: 9, MAT4: 16,
+  MAT2: 4,
+  MAT3: 9,
+  MAT4: 16,
+  SCALAR: 1,
+  VEC2: 2,
+  VEC3: 3,
+  VEC4: 4,
 };
 
 function readGlb(path: string): GlbParts {
   const file = readFileSync(path);
   const jsonLen = file.readUInt32LE(12);
-  const jsonText = file.slice(20, 20 + jsonLen).toString('utf8').replace(/\0+$/, '');
+  const jsonText = file
+    .slice(20, 20 + jsonLen)
+    .toString('utf8')
+    .replace(/\0+$/, '');
   const json = JSON.parse(jsonText) as GltfJson;
   const bin = file.slice(20 + jsonLen + 8);
-  return { json, bin };
+  return { bin, json };
 }
 
 function writeGlb(path: string, json: GltfJson, bin: Buffer): void {
@@ -63,14 +84,22 @@ function writeGlb(path: string, json: GltfJson, bin: Buffer): void {
   const totalLen = 12 + 8 + jsonChunk.length + 8 + bin.length + binPad;
   const out = Buffer.alloc(totalLen);
   let o = 0;
-  out.writeUInt32LE(0x46546c67, o); o += 4;
-  out.writeUInt32LE(2, o); o += 4;
-  out.writeUInt32LE(totalLen, o); o += 4;
-  out.writeUInt32LE(jsonChunk.length, o); o += 4;
-  out.writeUInt32LE(0x4e4f534a, o); o += 4;
-  jsonChunk.copy(out, o); o += jsonChunk.length;
-  out.writeUInt32LE(bin.length + binPad, o); o += 4;
-  out.writeUInt32LE(0x004e4942, o); o += 4;
+  out.writeUInt32LE(0x46546c67, o);
+  o += 4;
+  out.writeUInt32LE(2, o);
+  o += 4;
+  out.writeUInt32LE(totalLen, o);
+  o += 4;
+  out.writeUInt32LE(jsonChunk.length, o);
+  o += 4;
+  out.writeUInt32LE(0x4e4f534a, o);
+  o += 4;
+  jsonChunk.copy(out, o);
+  o += jsonChunk.length;
+  out.writeUInt32LE(bin.length + binPad, o);
+  o += 4;
+  out.writeUInt32LE(0x004e4942, o);
+  o += 4;
   bin.copy(out, o);
   writeFileSync(path, out);
 }
@@ -90,7 +119,7 @@ function copyAccessor(donor: GlbParts, target: GlbParts, donorAccessorIdx: numbe
   const paddedLen = byteLength + ((4 - (byteLength % 4)) % 4);
   target.bin = Buffer.concat([target.bin, slice, Buffer.alloc(paddedLen - byteLength)]);
   const bufferViewIdx = target.json.bufferViews!.length;
-  target.json.bufferViews!.push({ buffer: 0, byteOffset: targetBinOffset, byteLength });
+  target.json.bufferViews!.push({ buffer: 0, byteLength, byteOffset: targetBinOffset });
   const accessorIdx = target.json.accessors!.length;
   const next: Accessor = {
     bufferView: bufferViewIdx,
@@ -137,7 +166,7 @@ function mergeNode(donor: GlbParts, target: GlbParts, nodeName: string): void {
   }
   const donorNodeIdx = nodeIndexByName(donor.json, nodeName);
   const donorNode = donor.json.nodes![donorNodeIdx];
-  const nextNode: (typeof donorNode) = { name: nodeName };
+  const nextNode: typeof donorNode = { name: nodeName };
   if (donorNode.translation) nextNode.translation = [...donorNode.translation];
   if (donorNode.rotation) nextNode.rotation = [...donorNode.rotation];
   if (donorNode.scale) nextNode.scale = [...donorNode.scale];
