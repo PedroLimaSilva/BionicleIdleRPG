@@ -14,7 +14,7 @@ export type LegoDiscolorationSpec = {
 /** Protodermis gray under the paint. Same mix for every color unless listed below. */
 export const DEFAULT_LEGO_DISCOLORATION: LegoDiscolorationSpec = {
   color: LegoColor.LightGray,
-  intensity: 0.4,
+  intensity: 1,
 };
 
 /**
@@ -22,7 +22,7 @@ export const DEFAULT_LEGO_DISCOLORATION: LegoDiscolorationSpec = {
  * {@link DEFAULT_LEGO_DISCOLORATION}.
  */
 export const LEGO_COLOR_DISCOLORATION: Partial<Record<LegoColor, LegoDiscolorationSpec>> = {
-  [LegoColor.White]: { color: LegoColor.DarkGray, intensity: 0.55 },
+  [LegoColor.White]: { color: LegoColor.DarkGray, intensity: 1 },
 };
 
 function normalizeHex(hex: string): string {
