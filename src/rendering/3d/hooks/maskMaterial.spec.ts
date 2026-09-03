@@ -92,7 +92,7 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mata.transmission).toBe(KAUKAU_TRANSMISSION);
     expect(mata.ior).toBe(KAUKAU_IOR);
     expect(mata.thickness).toBe(TRANSMISSIVE_KANOHI_SHELL_THICKNESS);
-    expect(mata.depthWrite).toBe(true);
+    expect(mata.depthWrite).toBe(false);
     expect(mata.side).toBe(FrontSide);
   });
 
@@ -108,7 +108,7 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.transmission).toBe(KAUKAU_TRANSMISSION);
     expect(mat.ior).toBe(KAUKAU_IOR);
     expect(mat.thickness).toBe(TRANSMISSIVE_KANOHI_SHELL_THICKNESS);
-    expect(mat.depthWrite).toBe(true);
+    expect(mat.depthWrite).toBe(false);
     expect(mat.side).toBe(FrontSide);
   });
 
@@ -122,7 +122,7 @@ describe('prepareClonedMaskMaterial', () => {
     expect(maskNeedsAlphaBlend(mata)).toBe(false);
     prepareClonedMaskMaterial(mata);
     expect(mata.transparent).toBe(false);
-    expect(mata.depthWrite).toBe(true);
+    expect(mata.depthWrite).toBe(false);
   });
 
   it('configureKaukauTransmission keeps authored transmission when present', () => {

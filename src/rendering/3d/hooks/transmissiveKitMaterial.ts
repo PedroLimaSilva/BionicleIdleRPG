@@ -92,7 +92,7 @@ export function buildTransmissiveKitMaterial(
     side: FrontSide,
     thickness: preset.thickness,
     transmission: preset.transmission,
-    transparent: true,
+    transparent: false,
   });
 }
 
