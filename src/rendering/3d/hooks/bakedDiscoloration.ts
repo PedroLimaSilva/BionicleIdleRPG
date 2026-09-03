@@ -101,8 +101,12 @@ export function applyBakedDiscolorationUniforms(
   uniforms.uHasDiscolorationMap.value = map ? 1 : 0;
 }
 
-/** Mix albedo toward the color-specific tint using a grayscale bake. */
+/**
+ * Mix albedo toward the color-specific tint using a grayscale wear bake.
+ * `smoothstep` crushes mid-gray floors so only true edge/highlight texels mix.
+ */
 export const BAKED_DISCOLORATION_FRAGMENT_GLSL = `
-      float bakedDiscolorAmt = uHasDiscolorationMap * clamp(texture2D(discolorationMap, vDiscolorUv).r, 0.0, 1.0);
+      float bakedDiscolorSample = clamp(texture2D(discolorationMap, vDiscolorUv).r, 0.0, 1.0);
+      float bakedDiscolorAmt = uHasDiscolorationMap * smoothstep(0.2, 0.75, bakedDiscolorSample);
       diffuseColor.rgb = mix(diffuseColor.rgb, uDiscolorationColor, clamp(bakedDiscolorAmt * uDiscolorationIntensity, 0.0, 1.0));
 `;

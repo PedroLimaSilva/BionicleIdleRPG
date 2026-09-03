@@ -1,5 +1,5 @@
 import { FrontSide, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
-import { metallicColorPbr } from '../kit/palettes/metalPbr';
+import { KANOHI_PAINT_METALNESS, metallicColorPbr } from '../kit/palettes/metalPbr';
 import { adoptBakedDiscolorationMap } from './bakedDiscoloration';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
@@ -12,7 +12,11 @@ export function isMaskGlowMaterialName(name: string): boolean {
   return name.toLowerCase().includes('glow');
 }
 
-/** Mask GLBs may ship baked normal / roughness / metalness maps — keep them intact. */
+/**
+ * Mask GLBs may ship baked normal / roughness / metalness maps. Normal and
+ * roughness stay on the material; metalness maps are dropped in
+ * {@link applyMaskMetallicPbr}.
+ */
 export function hasMaskPbrMaps(mat: MaskStandardMat): boolean {
   return !!(mat.normalMap || mat.roughnessMap || mat.metalnessMap);
 }
@@ -76,21 +80,27 @@ export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
 }
 
 /**
- * Boost metallic LEGO mask colors (gold) beyond baked PBR map metalness.
- * Great/Mata Kanohi keep normal/roughness maps; the metalness map is dropped
- * so scalar metalness applies fully (baked maps usually encode dielectric plastic).
+ * Kanohi keep baked normal / roughness maps. Metalness maps are dropped: current
+ * bakes are edge-only (near-black on flats), and glTF `metallicFactor` defaults
+ * to 1, so those maps make painted Kanohi read as bright dielectric plastic.
+ * Gold uses {@link metallicColorPbr}; every other color uses painted-metal
+ * {@link KANOHI_PAINT_METALNESS} so albedo stays rich while roughness maps
+ * still supply micro-detail.
  */
 export function applyMaskMetallicPbr(mat: MaskStandardMat, maskColor: string): void {
   if (isMaskGlowMaterialName(mat.name)) return;
 
-  const metalPbr = metallicColorPbr(maskColor);
-  if (!metalPbr) return;
-
   if (mat.metalnessMap) mat.metalnessMap = null;
 
-  if (metalPbr.metalness !== undefined) mat.metalness = metalPbr.metalness;
-  if (metalPbr.roughness !== undefined) mat.roughness = metalPbr.roughness;
-  if (metalPbr.envMapIntensity !== undefined) mat.envMapIntensity = metalPbr.envMapIntensity;
+  const metalPbr = metallicColorPbr(maskColor);
+  if (metalPbr) {
+    if (metalPbr.metalness !== undefined) mat.metalness = metalPbr.metalness;
+    if (metalPbr.roughness !== undefined) mat.roughness = metalPbr.roughness;
+    if (metalPbr.envMapIntensity !== undefined) mat.envMapIntensity = metalPbr.envMapIntensity;
+    return;
+  }
+
+  mat.metalness = KANOHI_PAINT_METALNESS;
 }
 
 /** Clone a Great Kanohi material for per-instance tinting (same path as Mata masks). */

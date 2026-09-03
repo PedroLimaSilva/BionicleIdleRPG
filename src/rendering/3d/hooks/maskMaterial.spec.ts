@@ -1,5 +1,6 @@
 import { FrontSide, MeshStandardMaterial, Texture } from 'three';
 import { LegoColor } from '../../../types/Colors';
+import { KANOHI_PAINT_METALNESS } from '../kit/palettes/metalPbr';
 import {
   applyMaskMetallicPbr,
   cloneGreatMaskMaterial,
@@ -111,6 +112,23 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.roughness).toBe(0.18);
     expect(mat.envMapIntensity).toBe(0.9);
     expect(mat.roughnessMap).toBeDefined();
+  });
+
+  it('drops weak metalness maps on painted Kanohi and keeps roughness maps', () => {
+    const metalnessMap = new Texture();
+    const roughnessMap = new Texture();
+    const mat = new MeshStandardMaterial({
+      metalness: 1,
+      metalnessMap,
+      name: 'Hau_baked',
+      roughness: 1,
+      roughnessMap,
+    });
+    applyMaskMetallicPbr(mat, LegoColor.Red);
+    expect(mat.metalnessMap).toBeNull();
+    expect(mat.metalness).toBe(KANOHI_PAINT_METALNESS);
+    expect(mat.roughness).toBe(1);
+    expect(mat.roughnessMap).toBe(roughnessMap);
   });
 });
 

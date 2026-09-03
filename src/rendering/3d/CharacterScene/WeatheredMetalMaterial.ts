@@ -23,6 +23,7 @@ import {
   Texture,
 } from 'three';
 import {
+  BAKED_DISCOLORATION_FRAGMENT_GLSL,
   DISCOLORATION_MAP_USERDATA_KEY,
   EMPTY_DISCOLORATION_MAP,
   glslUvAttributeForTextureChannel,
@@ -132,7 +133,8 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
 
   mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = opts.discolorationMap ?? null;
   const discolorUvAttr = glslUvAttributeForTextureChannel(opts.discolorationMap?.channel);
-  mat.customProgramCacheKey = () => `WeatheredMetal|dc${hasDiscolorationMap}|uv${discolorUvAttr}`;
+  mat.customProgramCacheKey = () =>
+    `WeatheredMetal|dc${hasDiscolorationMap}|uv${discolorUvAttr}|wear2`;
 
   mat.onBeforeCompile = (shader) => {
     shader.uniforms.discolorationMap = { value: discolorationMap };
@@ -206,8 +208,7 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
       float edgeMask = screenEdge * (1.0 - uHasDiscolorationMap);
       vec3 edgeTint = vec3(${edgeColor.r.toFixed(3)}, ${edgeColor.g.toFixed(3)}, ${edgeColor.b.toFixed(3)});
       diffuseColor.rgb = mix(diffuseColor.rgb, edgeTint, edgeMask * ${edgeStrength.toFixed(3)});
-      float bakedDiscolorAmt = uHasDiscolorationMap * clamp(texture2D(discolorationMap, vDiscolorUv).r, 0.0, 1.0);
-      diffuseColor.rgb = mix(diffuseColor.rgb, uDiscolorationColor, clamp(bakedDiscolorAmt * uDiscolorationIntensity, 0.0, 1.0));
+      ${BAKED_DISCOLORATION_FRAGMENT_GLSL}
       ${debugGrimeAsColor ? 'diffuseColor.rgb = vec3(grime);' : ''}
     `;
 

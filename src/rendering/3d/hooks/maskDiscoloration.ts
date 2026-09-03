@@ -155,7 +155,7 @@ function attachDiscolorationShader(
     );
   };
 
-  mat.customProgramCacheKey = () => `mask_discoloration_v4_uv_${discolorUvAttr}`;
+  mat.customProgramCacheKey = () => `mask_discoloration_v5_uv_${discolorUvAttr}`;
   mat.needsUpdate = true;
 }
 

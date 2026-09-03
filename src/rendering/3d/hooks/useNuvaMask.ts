@@ -14,7 +14,7 @@ import {
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import { applyKanohiRenderOrder } from './kanohiRenderOrder';
-import { isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import { applyMaskMetallicPbr, isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
 import { applyMaskDiscolorationToObject, setupMaskDiscolorationShader } from './maskDiscoloration';
 import { masksCollected } from '../../../services/matoranUtils';
 
@@ -70,6 +70,7 @@ function applyNuvaMaskColors(
     if (shouldKeepOriginalColor) return;
 
     mat.color.copy(new Color(maskColor));
+    applyMaskMetallicPbr(mat, maskColor);
     if (mat.emissive) {
       if (maskPowerActive) {
         mat.emissive = new Color(maskColor);
