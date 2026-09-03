@@ -153,9 +153,9 @@ describe('CHARACTER_DEX Kanohi', () => {
 });
 
 describe('isTransparentMask', () => {
-  test('matches the Kaukau sculpts flagged transparent in the dex', () => {
+  test('matches Mata Kaukau only', () => {
     expect(isTransparentMask(Mask.Kaukau)).toBe(true);
-    expect(isTransparentMask(Mask.KaukauNuva)).toBe(true);
+    expect(isTransparentMask(Mask.KaukauNuva)).toBe(false);
   });
 
   test('is false for opaque Kanohi and baked-alpha Great Rau', () => {

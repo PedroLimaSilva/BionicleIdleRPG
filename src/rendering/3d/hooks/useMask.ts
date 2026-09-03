@@ -93,9 +93,8 @@ function applyMaskColors(
  *
  * The mask is cloned so each character gets its own geometry instance and
  * material, allowing per-character color overrides without affecting others.
- * All cloned materials are marked `transparent` so that alpha blending is
- * always available (needed for the exit animation and for masks like Kaukau
- * that have sub-1 opacity).
+ * All cloned materials are marked `transparent` when needed so alpha blending or
+ * transmission is available (needed for the exit animation and for masks like Kaukau).
  *
  * When the mask changes (e.g. selecting a different mask in the character inventory tab),
  * the new mask appears immediately while the old mask scales up and fades out.
@@ -168,8 +167,7 @@ export function useMask(
     const clone = source.clone(true);
 
     // Clone materials so color changes are per-instance.
-    // Mark transparent so alpha blending is always available (needed for
-    // cross-fade and for masks like Kaukau that have opacity < 1).
+    // Mark transparent when needed for cross-fades and transmission masks (Kaukau).
     // Enable castShadow so masks cast shadows onto the face behind them.
     clone.traverse((child) => {
       if ((child as Mesh).isMesh) {

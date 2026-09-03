@@ -125,7 +125,6 @@ export const TOA_DEX = {
     },
     element: ElementTribe.Water,
     id: 'Toa_Gali_Nuva',
-    isMaskTransparent: true,
     mask: Mask.KaukauNuva,
     name: 'Toa Gali Nuva',
     stage: MatoranStage.ToaNuva,
