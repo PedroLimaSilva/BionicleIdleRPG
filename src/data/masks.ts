@@ -98,7 +98,11 @@ export function getDexPreviewMasks(stage: MatoranStage, wornMask: Mask): Mask[] 
   }
 }
 
-/** Kanohi that need runtime transparency (Kaukau sculpts). Great Rau bakes alpha in the GLB. */
+/**
+ * Kanohi that need the transparent render pass (transmission or alpha blend).
+ * Mata Kaukau uses physical transmission; Nuva Kaukau is opaque with vent holes.
+ * Great Rau bakes alpha in the GLB.
+ */
 export const TRANSPARENT_MASKS: Mask[] = [Mask.Kaukau, Mask.KaukauNuva];
 
 export function isTransparentMask(mask: Mask): boolean {

@@ -103,6 +103,13 @@ export function cloneMaskMeshMaterials(mesh: Mesh, maskSculptName: string): void
   if (maskSculptName === 'Akaku') {
     ensureAkakuLensMaterialSlot(mesh);
   }
+
+  if (isMataKaukauSculpt(maskSculptName)) {
+    forEachMaskMaterial(mesh, (mat) => {
+      configureKaukauTransmission(mat);
+      syncMaskTransparencyState(mat);
+    });
+  }
 }
 
 /**
@@ -124,7 +131,7 @@ export function maskHasBakedPbrAlpha(mat: MaskStandardMat): boolean {
 /**
  * Kanohi that need alpha blending (GLB `alphaMode: BLEND` or sub-1 opacity).
  * Do not infer from sculpt name — Nuva `Kaukau` is opacity 1 with vent holes only;
- * Mata `Kaukau` ships at 0.5 opacity and still blends correctly via the opacity check.
+ * Mata `Kaukau` uses physical transmission via {@link configureKaukauTransmission}.
  */
 export function maskNeedsAlphaBlend(mat: MaskStandardMat): boolean {
   if (mat.opacity < 0.999) return true;
@@ -138,19 +145,37 @@ export function maskNeedsAlphaBlend(mat: MaskStandardMat): boolean {
 /** Thin-shell transmission depth for Kanohi authored with KHR_materials_transmission (Mata Kaukau). */
 export const TRANSMISSIVE_KANOHI_SHELL_THICKNESS = 0.15;
 
+/** Mata Kaukau GLB defaults (`KHR_materials_transmission` + `KHR_materials_ior`). */
+export const KAUKAU_TRANSMISSION = 0.75;
+export const KAUKAU_IOR = 1.45;
+
+export function isMataKaukauSculpt(maskSculptName: string): boolean {
+  return maskSculptName === 'Kaukau';
+}
+
+/** Keep Mata Kaukau on physical transmission (not opacity blend). */
+export function configureKaukauTransmission(mat: MaskStandardMat): void {
+  if (!(mat instanceof MeshPhysicalMaterial)) return;
+  mat.opacity = 1;
+  if ((mat.transmission ?? 0) <= 0) {
+    mat.transmission = KAUKAU_TRANSMISSION;
+  }
+  mat.ior = KAUKAU_IOR;
+  if (mat.thickness <= 0) {
+    mat.thickness = TRANSMISSIVE_KANOHI_SHELL_THICKNESS;
+  }
+}
+
 /**
  * Resolve GLB materials that ship both BLEND alpha and KHR_materials_transmission.
  * Mata Kaukau is authored this way; opacity blend with depthWrite disabled causes
- * self-sorting artifacts on the mask shell. Prefer transmission-only rendering.
+ * self-sorting artifacts on the mask shell. Use transmission-only rendering instead.
  */
 function normalizeMaskPhysicalTransparency(mat: MaskStandardMat): void {
   if (!(mat instanceof MeshPhysicalMaterial)) return;
   const transmission = mat.transmission ?? 0;
   if (mat.opacity < 0.999 && transmission > 0) {
-    mat.opacity = 1;
-    if (mat.thickness <= 0) {
-      mat.thickness = TRANSMISSIVE_KANOHI_SHELL_THICKNESS;
-    }
+    configureKaukauTransmission(mat);
     return;
   }
   if (mat.opacity < 0.999) {
@@ -176,7 +201,7 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
   mat.transparent = alphaBlend;
 
   if (alphaBlend) {
-    // Kaukau / Great Rau: avoid back-faces and depth fighting with brain gel.
+    // Transmission Kanohi (Kaukau, Great Rau): avoid back-faces and depth fighting with brain gel.
     mat.depthWrite = false;
     mat.side = FrontSide;
     return;
@@ -192,9 +217,9 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
  * arenas) those surfaces read nearly black while HDRI-lit deserts look fine.
  *
  * Opaque Kanohi stay in the opaque render pass (`transparent: false`) so they
- * depth-occlude transmissive brain gel. Only translucent masks and exit fades
- * use alpha blending. Closed shells use `FrontSide` so interior back-faces do
- * not z-fight with brain gel in the mask cavity.
+ * depth-occlude transmissive brain gel. Translucent masks (Mata Kaukau transmission,
+ * Great Rau baked alpha, exit fades) use the transparent pass. Closed shells use
+ * `FrontSide` so interior back-faces do not z-fight with brain gel in the mask cavity.
  */
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
   syncMaskTransparencyState(mat);
