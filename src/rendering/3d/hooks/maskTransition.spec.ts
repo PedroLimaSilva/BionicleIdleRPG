@@ -87,7 +87,7 @@ describe('mask transition opacity', () => {
     expect(transmissions.values().next().value).toBe(KAUKAU_TRANSMISSION);
   });
 
-  it('setAnimatedOpacity fades Mata Kaukau via transmission, not opacity', () => {
+  it('setAnimatedOpacity fades Mata Kaukau via opacity and transmission', () => {
     const root = makeKaukauMaskRoot();
     const mat = (root.children[0] as Mesh).material as MeshPhysicalMaterial;
     const opacities = collectOpacities(root);
@@ -97,7 +97,7 @@ describe('mask transition opacity', () => {
 
     expect(mat.transparent).toBe(true);
     expect(mat.depthWrite).toBe(false);
+    expect(mat.opacity).toBeCloseTo(0.5);
     expect(mat.transmission).toBeCloseTo(KAUKAU_TRANSMISSION * 0.5);
-    expect(mat.opacity).toBe(1);
   });
 });

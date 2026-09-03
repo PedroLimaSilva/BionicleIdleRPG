@@ -47,11 +47,12 @@ export function collectTransmissions(root: Object3D): Map<string, number> {
 /**
  * Animate exit fade on the outgoing mask.
  *
- * - Mata Kaukau (transmission-only): fade `transmission` and use the transparent pass
- *   with depthWrite off for the swap only — resting state keeps transmissive pass +
- *   depthWrite on so the hollow shell self-occludes in profile.
- * - Opaque Kanohi: force the transparent pass (`transparent: false` at rest so they
- *   depth-occlude brain gel) and fade `opacity`.
+ * Always fade `opacity` — that is what makes the outgoing sculpt disappear. Mata
+ * Kaukau reads at full alpha while `transmission` alone is reduced (opacity stays 1
+ * at rest), so transmission masks also scale `transmission` during the swap.
+ *
+ * Resting Kaukau keeps `transparent: false` + depthWrite on for hollow-shell
+ * occlusion (#454); only this short exit animation uses the transparent pass.
  */
 export function setAnimatedOpacity(
   root: Object3D,
@@ -60,18 +61,15 @@ export function setAnimatedOpacity(
   transmissions?: Map<string, number>
 ): void {
   forEachMaskMeshMaterial(root, (mat) => {
-    const baseTransmission = transmissions?.get(mat.uuid);
-    if (mat instanceof MeshPhysicalMaterial && baseTransmission !== undefined) {
-      mat.transmission = baseTransmission * factor;
-      mat.transparent = true;
-      mat.depthWrite = false;
-      return;
-    }
-
     const base = opacities.get(mat.uuid) ?? 1;
     mat.transparent = true;
     mat.opacity = base * factor;
     mat.depthWrite = false;
+
+    const baseTransmission = transmissions?.get(mat.uuid);
+    if (mat instanceof MeshPhysicalMaterial && baseTransmission !== undefined) {
+      mat.transmission = baseTransmission * factor;
+    }
   });
 }
 
