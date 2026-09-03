@@ -1,6 +1,7 @@
 import type { MutableRefObject } from 'react';
-import { Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { Mesh, MeshPhysicalMaterial, Object3D, Vector3 } from 'three';
 import { useFrame } from '@react-three/fiber';
+import { forEachMaskMaterial } from './maskMaterial';
 
 /** Duration of the mask swap transition in seconds */
 export const TRANSITION_DURATION = 0.35;
@@ -8,27 +9,26 @@ export const TRANSITION_DURATION = 0.35;
 /** How much the old mask scales up during the exit animation (multiplied on top of the original scale) */
 export const EXIT_SCALE_AMOUNT = 0.5;
 
-type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
-
-function isStandardMat(mat: unknown): mat is StandardMat {
-  return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
-}
-
 /** Cubic ease-out: fast start, gentle deceleration */
 export function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3);
 }
 
+function forEachMaskMeshMaterial(
+  root: Object3D,
+  fn: Parameters<typeof forEachMaskMaterial>[1]
+): void {
+  root.traverse((child) => {
+    if (!(child as Mesh).isMesh) return;
+    forEachMaskMaterial(child as Mesh, fn);
+  });
+}
+
 /** Collect material uuid → its resting opacity for every mesh under an Object3D */
 export function collectOpacities(root: Object3D): Map<string, number> {
   const map = new Map<string, number>();
-  root.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mat = (child as Mesh).material;
-      if (isStandardMat(mat)) {
-        map.set(mat.uuid, mat.opacity);
-      }
-    }
+  forEachMaskMeshMaterial(root, (mat) => {
+    map.set(mat.uuid, mat.opacity);
   });
   return map;
 }
@@ -36,21 +36,23 @@ export function collectOpacities(root: Object3D): Map<string, number> {
 /** Collect transmission-based mask materials for exit fades (Mata Kaukau). */
 export function collectTransmissions(root: Object3D): Map<string, number> {
   const map = new Map<string, number>();
-  root.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mat = (child as Mesh).material;
-      if (mat instanceof MeshPhysicalMaterial && (mat.transmission ?? 0) > 0) {
-        map.set(mat.uuid, mat.transmission);
-      }
+  forEachMaskMeshMaterial(root, (mat) => {
+    if (mat instanceof MeshPhysicalMaterial && (mat.transmission ?? 0) > 0) {
+      map.set(mat.uuid, mat.transmission);
     }
   });
   return map;
 }
 
 /**
- * Set every standard material's opacity to `baseOpacity * factor`.
- * Also disables depthWrite so the fading-out mask doesn't depth-clip
- * the new mask that sits behind it in the same parent bone.
+ * Animate exit fade on the outgoing mask.
+ *
+ * Always fade `opacity` — that is what makes the outgoing sculpt disappear. Mata
+ * Kaukau reads at full alpha while `transmission` alone is reduced (opacity stays 1
+ * at rest), so transmission masks also scale `transmission` during the swap.
+ *
+ * Resting Kaukau keeps `transparent: false` + depthWrite on for hollow-shell
+ * occlusion (#454); only this short exit animation uses the transparent pass.
  */
 export function setAnimatedOpacity(
   root: Object3D,
@@ -58,21 +60,15 @@ export function setAnimatedOpacity(
   factor: number,
   transmissions?: Map<string, number>
 ): void {
-  root.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mat = (child as Mesh).material;
-      if (isStandardMat(mat)) {
-        const baseTransmission = transmissions?.get(mat.uuid);
-        if (mat instanceof MeshPhysicalMaterial && baseTransmission !== undefined) {
-          mat.transmission = baseTransmission * factor;
-          mat.transparent = true;
-          mat.depthWrite = false;
-          return;
-        }
-        const base = opacities.get(mat.uuid) ?? 1;
-        mat.opacity = base * factor;
-        mat.depthWrite = false;
-      }
+  forEachMaskMeshMaterial(root, (mat) => {
+    const base = opacities.get(mat.uuid) ?? 1;
+    mat.transparent = true;
+    mat.opacity = base * factor;
+    mat.depthWrite = false;
+
+    const baseTransmission = transmissions?.get(mat.uuid);
+    if (mat instanceof MeshPhysicalMaterial && baseTransmission !== undefined) {
+      mat.transmission = baseTransmission * factor;
     }
   });
 }
@@ -114,12 +110,12 @@ export function startMaskTransition(
     masksParent.remove(tr.oldMask);
   }
 
-  // Fade-out requires alpha blending even on normally opaque Kanohi.
-  prevMask.traverse((child) => {
-    if (!(child as Mesh).isMesh) return;
-    const mat = (child as Mesh).material;
-    if (isStandardMat(mat)) {
+  // Fade-out requires alpha blending even on normally opaque Kanohi. Recompile
+  // patched materials (discoloration onBeforeCompile) in the transparent pass.
+  forEachMaskMeshMaterial(prevMask, (mat) => {
+    if (!mat.transparent) {
       mat.transparent = true;
+      mat.needsUpdate = true;
     }
   });
 
