@@ -17,7 +17,7 @@ describe('adoptBakedDiscolorationMap', () => {
 
   test('leaves glow materials untouched', () => {
     const map = new Texture();
-    const mat = new MeshStandardMaterial({ emissiveMap: map, name: 'Kopaka Glow' });
+    const mat = new MeshStandardMaterial({ emissiveMap: map, name: 'Glow' });
     expect(adoptBakedDiscolorationMap(mat, { isGlow: true })).toBeNull();
     expect(mat.emissiveMap).toBe(map);
   });

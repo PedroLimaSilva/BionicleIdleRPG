@@ -141,11 +141,11 @@ describe('prepareClonedMaskMaterial', () => {
   it('treats lens material slots as glow', () => {
     expect(isMaskGlowMaterialName('Lens')).toBe(true);
     expect(isMaskGlowMaterialName('Akaku_Lens')).toBe(true);
-    expect(isMaskGlowMaterialName('Kopaka Glow')).toBe(true);
+    expect(isMaskGlowMaterialName('Glow')).toBe(true);
   });
 
   it('tints glow slots from eye color at Nuva lens intensity without white albedo', () => {
-    const lens = new MeshStandardMaterial({ name: 'Kopaka Glow', roughness: 0.5 });
+    const lens = new MeshStandardMaterial({ name: 'Glow', roughness: 0.5 });
     applyMaskGlowTint(lens, '#00aaff');
     expect(lens.emissive.getHexString()).toBe('00aaff');
     expect(lens.emissiveIntensity).toBe(MASK_LENS_GLOW_EMISSIVE_INTENSITY);
@@ -164,12 +164,13 @@ describe('prepareClonedMaskMaterial', () => {
     expect(Array.isArray(mesh.material)).toBe(true);
     const mats = mesh.material as unknown as MeshStandardMaterial[];
     expect(mats).toHaveLength(2);
+    expect(mats[1].name).toBe('Glow');
     expect(isMaskGlowMaterialName(mats[1].name)).toBe(true);
     expect(geometry.groups[1].materialIndex).toBe(1);
   });
 
   it('leaves glow materials metallic for emissive lenses', () => {
-    const mat = new MeshStandardMaterial({ metalness: 0.8, name: 'Kopaka Glow', roughness: 0.2 });
+    const mat = new MeshStandardMaterial({ metalness: 0.8, name: 'Glow', roughness: 0.2 });
     prepareClonedMaskMaterial(mat);
     expect(mat.transparent).toBe(true);
     expect(mat.metalness).toBe(0.8);
