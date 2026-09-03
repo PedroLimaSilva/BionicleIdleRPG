@@ -83,10 +83,10 @@ export interface MaskTransitionState {
   oldMask: Object3D | null;
   /** Resting opacities of the OLD mask's materials (fade from these → 0) */
   oldOpacities: Map<string, number>;
-  /** Resting transmission for transmission-rendered masks (Mata Kaukau). */
-  oldTransmissions: Map<string, number>;
   /** Original scale of the OLD mask before the exit animation began */
   oldScale: Vector3;
+  /** Resting transmission for transmission-rendered masks (Mata Kaukau). */
+  oldTransmissions: Map<string, number>;
 }
 
 export function createMaskTransitionState(): MaskTransitionState {
@@ -94,8 +94,8 @@ export function createMaskTransitionState(): MaskTransitionState {
     active: false,
     oldMask: null,
     oldOpacities: new Map(),
-    oldTransmissions: new Map(),
     oldScale: new Vector3(1, 1, 1),
+    oldTransmissions: new Map(),
     progress: 0,
   };
 }
@@ -131,8 +131,8 @@ export function startMaskTransition(
     active: true,
     oldMask: prevMask,
     oldOpacities,
-    oldTransmissions,
     oldScale,
+    oldTransmissions,
     progress: 0,
   };
 }
