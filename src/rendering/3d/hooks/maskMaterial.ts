@@ -46,8 +46,8 @@ export function applyMaskGlowTint(
 
 /**
  * Akaku ships two material slots (body + scope lenses). Older `masks.glb`
- * exports used a dedicated glow material on slot 2 (`Kopaka Glow`); newer
- * bakes may duplicate the body material name — split slot 2 at runtime.
+ * exports used a dedicated glow material on slot 2 (`Glow`); older bakes may
+ * duplicate the body material name — split slot 2 at runtime.
  */
 export function ensureAkakuLensMaterialSlot(mesh: Mesh): void {
   const { groups } = mesh.geometry;
@@ -71,7 +71,7 @@ export function ensureAkakuLensMaterialSlot(mesh: Mesh): void {
   if (!lensMat || !isMaskGlowMaterialName(lensMat.name)) {
     lensMat = bodySource.clone();
     if (!isMaskGlowMaterialName(lensMat.name)) {
-      lensMat.name = 'Lens';
+      lensMat.name = 'Glow';
     }
     prepareClonedMaskMaterial(lensMat);
   } else {
