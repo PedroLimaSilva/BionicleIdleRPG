@@ -33,6 +33,20 @@ export function collectOpacities(root: Object3D): Map<string, number> {
   return map;
 }
 
+/** Collect transmission-based mask materials for exit fades (Mata Kaukau). */
+export function collectTransmissions(root: Object3D): Map<string, number> {
+  const map = new Map<string, number>();
+  root.traverse((child) => {
+    if ((child as Mesh).isMesh) {
+      const mat = (child as Mesh).material;
+      if (mat instanceof MeshPhysicalMaterial && (mat.transmission ?? 0) > 0) {
+        map.set(mat.uuid, mat.transmission);
+      }
+    }
+  });
+  return map;
+}
+
 /**
  * Set every standard material's opacity to `baseOpacity * factor`.
  * Also disables depthWrite so the fading-out mask doesn't depth-clip
@@ -41,12 +55,20 @@ export function collectOpacities(root: Object3D): Map<string, number> {
 export function setAnimatedOpacity(
   root: Object3D,
   opacities: Map<string, number>,
-  factor: number
+  factor: number,
+  transmissions?: Map<string, number>
 ): void {
   root.traverse((child) => {
     if ((child as Mesh).isMesh) {
       const mat = (child as Mesh).material;
       if (isStandardMat(mat)) {
+        const baseTransmission = transmissions?.get(mat.uuid);
+        if (mat instanceof MeshPhysicalMaterial && baseTransmission !== undefined) {
+          mat.transmission = baseTransmission * factor;
+          mat.transparent = true;
+          mat.depthWrite = false;
+          return;
+        }
         const base = opacities.get(mat.uuid) ?? 1;
         mat.opacity = base * factor;
         mat.depthWrite = false;
@@ -63,6 +85,8 @@ export interface MaskTransitionState {
   oldOpacities: Map<string, number>;
   /** Original scale of the OLD mask before the exit animation began */
   oldScale: Vector3;
+  /** Resting transmission for transmission-rendered masks (Mata Kaukau). */
+  oldTransmissions: Map<string, number>;
 }
 
 export function createMaskTransitionState(): MaskTransitionState {
@@ -71,6 +95,7 @@ export function createMaskTransitionState(): MaskTransitionState {
     oldMask: null,
     oldOpacities: new Map(),
     oldScale: new Vector3(1, 1, 1),
+    oldTransmissions: new Map(),
     progress: 0,
   };
 }
@@ -99,6 +124,7 @@ export function startMaskTransition(
   });
 
   const oldOpacities = collectOpacities(prevMask);
+  const oldTransmissions = collectTransmissions(prevMask);
   const oldScale = prevMask.scale.clone();
 
   transitionRef.current = {
@@ -106,6 +132,7 @@ export function startMaskTransition(
     oldMask: prevMask,
     oldOpacities,
     oldScale,
+    oldTransmissions,
     progress: 0,
   };
 }
@@ -129,7 +156,7 @@ export function useMaskTransitionFrame(
     if (tr.oldMask) {
       const factor = 1 + t * EXIT_SCALE_AMOUNT;
       tr.oldMask.scale.set(tr.oldScale.x * factor, tr.oldScale.y * factor, tr.oldScale.z * factor);
-      setAnimatedOpacity(tr.oldMask, tr.oldOpacities, 1 - t);
+      setAnimatedOpacity(tr.oldMask, tr.oldOpacities, 1 - t, tr.oldTransmissions);
     }
 
     // Finished — remove the old mask from the scene
