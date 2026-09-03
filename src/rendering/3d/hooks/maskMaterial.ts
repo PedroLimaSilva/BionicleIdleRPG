@@ -4,8 +4,8 @@ import { adoptBakedDiscolorationMap } from './bakedDiscoloration';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
-/** Emissive lenses (Akaku scope, Matatu glow slots) — matches Great Kanohi path. */
-export const MASK_LENS_GLOW_EMISSIVE_INTENSITY = 50;
+/** Emissive lenses (Akaku scope) — same scale as Nuva {@link useNuvaMask} Lens slots. */
+export const MASK_LENS_GLOW_EMISSIVE_INTENSITY = 5;
 
 export function isMaskStandardMat(mat: unknown): mat is MaskStandardMat {
   return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
@@ -36,11 +36,12 @@ export function applyMaskGlowTint(
   intensity = MASK_LENS_GLOW_EMISSIVE_INTENSITY
 ): void {
   const col = new Color(glowColor);
-  mat.color.copy(col);
   if (mat.emissive) {
     mat.emissive.copy(col);
     mat.emissiveIntensity = intensity;
   }
+  // Emissive-only read — full-strength albedo + high emissive blows lenses white in bloom.
+  mat.color.set(0x000000);
 }
 
 /**

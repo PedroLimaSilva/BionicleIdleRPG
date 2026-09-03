@@ -9,10 +9,12 @@ import {
 import { LegoColor } from '../../../types/Colors';
 import { KANOHI_PAINT_METALNESS } from '../kit/palettes/metalPbr';
 import {
+  applyMaskGlowTint,
   applyMaskMetallicPbr,
   cloneGreatMaskMaterial,
   cloneMaskMeshMaterials,
   isMaskGlowMaterialName,
+  MASK_LENS_GLOW_EMISSIVE_INTENSITY,
   maskHasBakedPbrAlpha,
   maskNeedsAlphaBlend,
   prepareClonedMaskMaterial,
@@ -98,6 +100,15 @@ describe('prepareClonedMaskMaterial', () => {
   it('treats lens material slots as glow', () => {
     expect(isMaskGlowMaterialName('Lens')).toBe(true);
     expect(isMaskGlowMaterialName('Akaku_Lens')).toBe(true);
+    expect(isMaskGlowMaterialName('Kopaka Glow')).toBe(true);
+  });
+
+  it('tints glow slots from eye color at Nuva lens intensity without white albedo', () => {
+    const lens = new MeshStandardMaterial({ name: 'Kopaka Glow', roughness: 0.5 });
+    applyMaskGlowTint(lens, '#00aaff');
+    expect(lens.emissive.getHexString()).toBe('00aaff');
+    expect(lens.emissiveIntensity).toBe(MASK_LENS_GLOW_EMISSIVE_INTENSITY);
+    expect(lens.color.getHexString()).toBe('000000');
   });
 
   it('splits Akaku scope lenses into a glow material slot', () => {
