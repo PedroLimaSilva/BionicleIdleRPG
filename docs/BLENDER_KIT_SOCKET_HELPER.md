@@ -1,10 +1,9 @@
 # Blender Kit Socket Helper
 
-Part of the unified **Bionicle Kit** addon. Install **`kit_socket_helper.py`** only
-(via `Edit → Preferences → Add-ons → Install`). See [BLENDER_KIT_ADDON.md](./BLENDER_KIT_ADDON.md).
+`tools/blender/kit_socket_helper.py` automates the shared-mesh model refactor.
 
-Use this **Character Sockets** panel when authoring character rigs that attach shared kit
-meshes at runtime.
+Install **`kit_socket_helper.py`** only (via `Edit → Preferences → Add-ons → Install`).
+The panel is in `View3D → Sidebar → Bionicle Kit`.
 
 ## Workflow
 

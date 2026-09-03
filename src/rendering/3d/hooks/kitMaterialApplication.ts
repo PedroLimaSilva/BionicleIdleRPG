@@ -19,10 +19,9 @@ import { normalizeKitMaterialSlotEntry } from '../kit/kitMaterialUtils';
 import { metallicColorPbr, type KitMetalPbr } from '../kit/palettes/metalPbr';
 import {
   getWeatheredMetalMaterial,
-  meshHasBevelUv,
+  meshHasUv,
   type WeatheredMetalOptions,
 } from '../CharacterScene/WeatheredMetalMaterial';
-import { applyRuntimeGeometricBevelToObject } from '../CharacterScene/runtimeGeometricBevel';
 import { hasMaskPbrMaps } from './maskMaterial';
 import {
   buildTransmissiveKitMaterial,
@@ -191,12 +190,7 @@ export function buildKitMeshMaterials(
         ...weatheredBase,
         ...metalPbr,
         ...mergeSlotWeatheredOpts(spec),
-        // Map is per kit part (clone); drop it on meshes that still have no UVs.
-        bevelMap:
-          weatheredBase.runtimeBevel || !weatheredBase.bevelMap || !meshHasBevelUv(mesh)
-            ? undefined
-            : weatheredBase.bevelMap,
-        discolorationMap: mat.emissiveMap && meshHasBevelUv(mesh) ? mat.emissiveMap : undefined,
+        discolorationMap: mat.emissiveMap && meshHasUv(mesh) ? mat.emissiveMap : undefined,
       };
       const weathered = getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
       // MataFace stalk shares a plane with brain gel — DoubleSide back-faces z-fight the gel.
@@ -220,9 +214,6 @@ export function applyKitMaterialsToObject(
   palette: BaseMatoran['colors'],
   weatheredBase: WeatheredMetalOptions | undefined
 ): void {
-  if (weatheredBase?.runtimeBevel) {
-    applyRuntimeGeometricBevelToObject(root);
-  }
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;

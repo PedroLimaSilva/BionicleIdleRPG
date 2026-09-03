@@ -1,11 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Object3D, Texture } from 'three';
+import { useEffect, useMemo, useRef } from 'react';
+import { Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../../../types/Matoran';
 import type { KitSocketAttachment } from '../../../types/KitParts';
 import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
-import { loadKitBevelMapsForNodes } from '../CharacterScene/kitBevelMap';
-import { applyRuntimeGeometricBevelToObject } from '../CharacterScene/runtimeGeometricBevel';
 import { normalizeMatoranColors } from '../../../game/characters/matoranColors';
 import { applyKitMaterialsToObject, buildKitMaterialSlotLookup } from './kitMaterialApplication';
 import { notifyModelReadyForTestMode } from '../../../utils/testMode';
@@ -42,8 +40,8 @@ export type UseKitAttachmentsParams = {
  * character, and finalizes their materials in a single traversal:
  *   - glow / opt-out slots get cloned `MeshStandardMaterial`s with per-slot overrides;
  *   - everything else (when `weathered` is provided) gets a cached weathered metal
- *     material keyed by color + effective PBR options + optional per-part bevel
- *     map (only nodes listed in `KIT_*_BEVEL_NODES`).
+ *     material keyed by color + effective PBR options. Kit-part discoloration
+ *     comes from the clone's glTF `emissiveMap` (not mutated on the shared template).
  *
  * No post-hoc tree walk is needed — materials are decided once here, and the
  * weathered shared cache is reused across instances with the same spec.
@@ -66,29 +64,8 @@ export function useKitAttachments({
     () => (stage !== undefined ? normalizeMatoranColors(colors, stage) : colors),
     [colors, stage]
   );
-  const bevelNodeNames = useMemo(
-    () => [...new Set(Object.values(attachments).map((row) => row.kitNodeName))],
-    [attachments]
-  );
-  const [bevelByNode, setBevelByNode] = useState<ReadonlyMap<string, Texture | undefined>>(
-    () => new Map()
-  );
   const onAttachedRef = useRef(onAttached);
   onAttachedRef.current = onAttached;
-
-  useEffect(() => {
-    if (!weathered || weathered.runtimeBevel) {
-      setBevelByNode(new Map());
-      return;
-    }
-    let alive = true;
-    void loadKitBevelMapsForNodes(kitUrl, bevelNodeNames).then((maps) => {
-      if (alive) setBevelByNode(maps);
-    });
-    return () => {
-      alive = false;
-    };
-  }, [bevelNodeNames, kitUrl, weathered]);
 
   useEffect(() => {
     if (!characterNodes) return;
@@ -113,16 +90,8 @@ export function useKitAttachments({
       clone.rotation.set(0, 0, 0);
       clone.scale.set(1, 1, 1);
 
-      if (weathered?.runtimeBevel) {
-        applyRuntimeGeometricBevelToObject(clone);
-      }
-
       const slotLookup = buildKitMaterialSlotLookup(row.materialColors);
-      const partBevel = bevelByNode.get(row.kitNodeName);
-      const weatheredForPart = weathered
-        ? { ...weathered, bevelMap: partBevel ?? weathered.bevelMap }
-        : undefined;
-      applyKitMaterialsToObject(clone, slotLookup, resolvedColors, weatheredForPart);
+      applyKitMaterialsToObject(clone, slotLookup, resolvedColors, weathered);
 
       socket.add(clone);
       clones.push(clone);
@@ -137,12 +106,11 @@ export function useKitAttachments({
         if (p) p.remove(clone);
       }
     };
-  }, [attachments, bevelByNode, characterNodes, kitUrl, resolvedColors, kitNodes, weathered]);
+  }, [attachments, characterNodes, kitUrl, resolvedColors, kitNodes, weathered]);
 }
 
 useKitAttachments.preload = (...kitUrls: string[]) => {
   for (const url of kitUrls) {
     useGLTF.preload(url);
-    void loadKitBevelMapsForNodes(url);
   }
 };

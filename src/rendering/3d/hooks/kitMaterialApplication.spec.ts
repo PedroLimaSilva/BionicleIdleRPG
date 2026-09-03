@@ -14,10 +14,7 @@ import {
   TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
   TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
 } from './transmissiveKitMaterial';
-import {
-  getWeatheredBevelMap,
-  type WeatheredMetalOptions,
-} from '../CharacterScene/WeatheredMetalMaterial';
+import { type WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
 import { getBakedDiscolorationMap } from './bakedDiscoloration';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
@@ -50,7 +47,7 @@ function meshWithUvAndSlots(names: string[]): Mesh {
   return new Mesh(geom, mats.length === 1 ? mats[0] : mats);
 }
 
-function bevelTex(): DataTexture {
+function discolorTex(): DataTexture {
   return new DataTexture(new Uint8Array([255, 128, 0, 255]), 1, 1);
 }
 
@@ -238,77 +235,10 @@ describe('buildKitMeshMaterials metallic colors', () => {
   });
 });
 
-describe('buildKitMeshMaterials bevel map', () => {
-  const partMap = bevelTex();
-  const weatheredWithMap: WeatheredMetalOptions = {
-    bevelMap: partMap,
-    metalness: 0.05,
-    roughness: 0.45,
-  };
-
-  test('Main and Secondary on one UV mesh share the part map and keep different colors', () => {
-    const mesh = meshWithUvAndSlots(['Main', 'Secondary']);
-    const next = buildKitMeshMaterials(
-      mesh,
-      buildKitMaterialSlotLookup({
-        Main: { kind: 'part', part: 'arms', slot: 'main' },
-        Secondary: { kind: 'part', part: 'arms', slot: 'secondary' },
-      }),
-      COLORS,
-      weatheredWithMap
-    ) as MeshStandardMaterial[];
-    expect(getWeatheredBevelMap(next[0])).toBe(partMap);
-    expect(getWeatheredBevelMap(next[1])).toBe(partMap);
-    expect(next[0].color.getHexString().toUpperCase()).toBe('B48455');
-    expect(next[1].color.getHexString().toUpperCase()).toBe('720E0F');
-    expect(next[0].metalness).toBe(NUVA_METAL_PBR.metalness);
-    expect(next[1].metalness).toBe(weatheredWithMap.metalness);
-  });
-
-  test('glow slots skip weathering even when a part map is present', () => {
-    const mesh = meshWithUvAndSlots(['Glow']);
-    const next = buildKitMeshMaterials(
-      mesh,
-      buildKitMaterialSlotLookup({
-        Glow: {
-          color: { key: 'eyes', kind: 'palette' },
-          emissive: { key: 'eyes', kind: 'palette' },
-        },
-      }),
-      COLORS,
-      weatheredWithMap
-    ) as MeshStandardMaterial;
-    expect(getWeatheredBevelMap(next)).toBeNull();
-    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
-  });
-
-  test('meshes without UVs keep the procedural weathered path', () => {
-    const mat = buildSingle(
-      'Main',
-      { Main: { kind: 'part', part: 'body', slot: 'main' } },
-      weatheredWithMap
-    );
-    expect(getWeatheredBevelMap(mat)).toBeNull();
-    expect(mat.metalness).toBe(weatheredWithMap.metalness);
-  });
-
-  test('runtime bevel skips the baked map even when UVs exist', () => {
-    const mesh = meshWithUvAndSlots(['Main']);
-    const next = buildKitMeshMaterials(
-      mesh,
-      buildKitMaterialSlotLookup({
-        Main: { kind: 'part', part: 'body', slot: 'main' },
-      }),
-      COLORS,
-      { ...weatheredWithMap, runtimeBevel: true }
-    ) as MeshStandardMaterial;
-    expect(getWeatheredBevelMap(next)).toBeNull();
-    expect(next.metalness).toBe(weatheredWithMap.metalness);
-  });
-
+describe('buildKitMeshMaterials discoloration map', () => {
   test('kit emissiveMap becomes discoloration on weathered slots and is not emission', () => {
     const mesh = meshWithUvAndSlots(['Main']);
-    const bake = bevelTex();
+    const bake = discolorTex();
     (mesh.material as MeshStandardMaterial).emissiveMap = bake;
     const next = buildKitMeshMaterials(
       mesh,
@@ -320,5 +250,38 @@ describe('buildKitMeshMaterials bevel map', () => {
     ) as MeshStandardMaterial;
     expect(getBakedDiscolorationMap(next)).toBe(bake);
     expect(next.emissiveMap).toBeNull();
+  });
+
+  test('meshes without UVs do not attach discoloration', () => {
+    const mesh = meshWithMaterialNamed('Main');
+    const bake = discolorTex();
+    (mesh.material as MeshStandardMaterial).emissiveMap = bake;
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'body', slot: 'main' },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(getBakedDiscolorationMap(next)).toBeNull();
+    expect(next.metalness).toBe(PLASTIC_WEATHERED.metalness);
+  });
+
+  test('glow slots skip weathering', () => {
+    const mesh = meshWithUvAndSlots(['Glow']);
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Glow: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(next.name).not.toBe('WeatheredMetal');
+    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
   });
 });

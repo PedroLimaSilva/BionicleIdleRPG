@@ -1,12 +1,10 @@
 bl_info = {
-    "name": "Bionicle Kit",
+    "name": "Bionicle Kit Socket Helper",
     "author": "Bionicle Idle RPG contributors",
-    "version": (0, 5, 0),
+    "version": (0, 4, 1),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Bionicle Kit",
-    "description": (
-        "Shared-kit authoring: character socket empties, kit part bevel bakes, and GLB export."
-    ),
+    "description": "Automate shared-kit socket empties, kit preview attachment, and export prep.",
     "category": "Object",
 }
 
@@ -894,24 +892,12 @@ class BIONICLE_OT_copy_attachment_map(bpy.types.Operator):
         return {"FINISHED"}
 
 
-def _load_kit_parts_bevel_module():
-    """Sibling kit_bevel_bake.py — kit-part UV/bevel bake and GLB export."""
-    bevel_path = Path(__file__).with_name("kit_bevel_bake.py")
-    if not bevel_path.exists():
-        return None
-    spec = importlib.util.spec_from_file_location("kit_bevel_bake", bevel_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
 class BIONICLE_PT_kit_socket_helper(bpy.types.Panel):
     bl_idname = "BIONICLE_PT_kit_socket_helper"
-    bl_label = "Character Sockets"
+    bl_label = "Bionicle Kit Sockets"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Bionicle Kit"
-    bl_order = 0
 
     def draw(self, context):
         layout = self.layout
@@ -1104,24 +1090,13 @@ classes = (
 )
 
 
-_kit_parts_bevel_module = None
-
-
 def register():
-    global _kit_parts_bevel_module
     for cls in classes:
         bpy.utils.register_class(cls)
     _register_scene_props()
-    _kit_parts_bevel_module = _load_kit_parts_bevel_module()
-    if _kit_parts_bevel_module is not None:
-        _kit_parts_bevel_module.register()
 
 
 def unregister():
-    global _kit_parts_bevel_module
-    if _kit_parts_bevel_module is not None:
-        _kit_parts_bevel_module.unregister()
-        _kit_parts_bevel_module = None
     _unregister_scene_props()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

@@ -28,8 +28,6 @@ export type KitMaterialColorSource =
  * bake that only; roughness / metalness stay on the weathered noise path.
  * Masks may also bake normal / roughness / metalness. The mix *color* comes from
  * `discolorationForColor` for the chosen LEGO slot, not from the bake.
- *
- * Packed RG bevel sidecars (`KIT_*_BEVEL_NODES`) are a separate opt-in.
  */
 export type KitMaterialWeatheredTuning = {
   grimeDarken?: number;
