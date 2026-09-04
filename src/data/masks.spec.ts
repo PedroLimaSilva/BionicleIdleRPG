@@ -103,6 +103,15 @@ describe('getSelectableMasksForStage', () => {
 });
 
 describe('getDexPreviewMasks', () => {
+  test('includes Vahi and infected Hau on Toa Nuva dex rigs, not Takanuva', () => {
+    const nuva = getDexPreviewMasks(MatoranStage.ToaNuva, Mask.HauNuva);
+    expect(nuva).toEqual(expect.arrayContaining([Mask.Vahi, Mask.HauNuvaInfected, ...NUVA_MASKS]));
+    expect(getDexPreviewMasks(MatoranStage.ToaNuva, Mask.Avohkii)).not.toContain(Mask.Vahi);
+    expect(getDexPreviewMasks(MatoranStage.ToaNuva, Mask.Avohkii)).not.toContain(
+      Mask.HauNuvaInfected
+    );
+  });
+
   test('includes the worn story mask ahead of the stage picker list', () => {
     expect(getDexPreviewMasks(MatoranStage.ToaNuva, Mask.Avohkii)[0]).toBe(Mask.Avohkii);
     expect(getDexPreviewMasks(MatoranStage.ToaNuva, Mask.Avohkii)).toEqual(
