@@ -13,12 +13,16 @@ describe('discolorationForColor', () => {
     expect(DEFAULT_LEGO_DISCOLORATION.color).toBe(LegoColor.LightGray);
   });
 
-  test('white is the only listed exception: darker gray tint at full mix', () => {
-    expect(Object.keys(LEGO_COLOR_DISCOLORATION)).toEqual([LegoColor.White]);
-    expect(discolorationForColor(LegoColor.White)).toEqual({
-      color: LegoColor.DarkGray,
-      intensity: 1,
-    });
+  test('light colors use black tint at reduced mix instead of the default', () => {
+    const blackTint = { color: LegoColor.Black, intensity: 0.75 };
+    expect(Object.keys(LEGO_COLOR_DISCOLORATION).sort()).toEqual(
+      [LegoColor.LightGray, LegoColor.Lime, LegoColor.Orange, LegoColor.Tan, LegoColor.White].sort()
+    );
+    expect(discolorationForColor(LegoColor.White)).toEqual(blackTint);
+    expect(discolorationForColor(LegoColor.LightGray)).toEqual(blackTint);
+    expect(discolorationForColor(LegoColor.Lime)).toEqual(blackTint);
+    expect(discolorationForColor(LegoColor.Orange)).toEqual(blackTint);
+    expect(discolorationForColor(LegoColor.Tan)).toEqual(blackTint);
     expect(discolorationForColor(LegoColor.White).color).not.toBe(DEFAULT_LEGO_DISCOLORATION.color);
   });
 
