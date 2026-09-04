@@ -12,6 +12,7 @@ import {
 } from '../../palettes/mataKitPlayerPalette';
 import { KIT_BRAIN_SOCKET_MATERIAL_COLORS } from '../../palettes/brainKitPalette';
 import { NUVA_KIT_METAL } from '../../palettes/nuvaKitPlayerPalette';
+import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from '../../palettes/technicKitPalette';
 
 const GALI_NUVA_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -50,33 +51,33 @@ const GALI_NUVA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
  * Gali Nuva — sockets on `Toa_Nuva/gali.glb` filled from `kit_2001.glb`.
  */
 export const GALI_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
-  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: GALI_NUVA_PALETTE_COLORS },
+  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleConPin2: { kitNodeName: KIT_2001_NODES.AxleConPin2, materialColors: GALI_NUVA_BLACK },
-  AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: GALI_NUVA_PALETTE_COLORS },
+  AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleModHips: {
     kitNodeName: KIT_2001_NODES.AxleModHips,
-    materialColors: GALI_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
-  AxlePinL: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: GALI_NUVA_PALETTE_COLORS },
-  AxlePinR: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: GALI_NUVA_PALETTE_COLORS },
+  AxlePinL: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  AxlePinR: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleSocket1L: {
     kitNodeName: KIT_2001_NODES.AxleSocket1L,
-    materialColors: GALI_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
   AxleSpacer1LB: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: GALI_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
   AxleSpacer1LF: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: GALI_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
   FootL: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: GALI_NUVA_PALETTE_COLORS },
   FootR: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: GALI_NUVA_PALETTE_COLORS },
-  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: GALI_NUVA_PALETTE_COLORS },
-  GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_NUVA_PALETTE_COLORS },
-  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_NUVA_PALETTE_COLORS },
-  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_NUVA_PALETTE_COLORS },
+  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
   HandL: { kitNodeName: KIT_2001_NODES.Socket, materialColors: GALI_NUVA_PALETTE_COLORS },
   HandR: { kitNodeName: KIT_2001_NODES.Socket, materialColors: GALI_NUVA_PALETTE_COLORS },
   HipL: { kitNodeName: KIT_2001_NODES.SocketModTop, materialColors: GALI_NUVA_BLACK },

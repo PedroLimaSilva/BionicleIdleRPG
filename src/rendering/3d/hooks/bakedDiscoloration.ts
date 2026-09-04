@@ -42,6 +42,17 @@ export function glslUvAttributeForTextureChannel(channel: number | undefined): s
   return c <= 0 ? 'uv' : `uv${c}`;
 }
 
+/**
+ * Kit / mask bakes are atlas-packed. glTF samplers default to REPEAT, which
+ * bleeds neighboring islands (and other socket regions on a shared atlas)
+ * when UVs skim 0–1. Linear + clamp matches Blender's bake layout.
+ */
+export function configureBakedAtlasMap(map: Texture): void {
+  map.colorSpace = NoColorSpace;
+  map.wrapS = ClampToEdgeWrapping;
+  map.wrapT = ClampToEdgeWrapping;
+}
+
 export function getBakedDiscolorationMap(mat: unknown): Texture | null {
   const fromUserData = (mat as { userData?: Record<string, unknown> }).userData?.[
     DISCOLORATION_MAP_USERDATA_KEY
@@ -65,10 +76,7 @@ export function adoptBakedDiscolorationMap(
   if (existing instanceof Texture) return existing;
   const map = mat.emissiveMap;
   if (!map) return null;
-  map.colorSpace = NoColorSpace;
-  // Bakes are atlas-packed; REPEAT shows island outlines when UVs skim edges.
-  map.wrapS = ClampToEdgeWrapping;
-  map.wrapT = ClampToEdgeWrapping;
+  configureBakedAtlasMap(map);
   mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = map;
   mat.emissiveMap = null;
   mat.emissive.set(0, 0, 0);

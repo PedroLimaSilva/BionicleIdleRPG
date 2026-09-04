@@ -7,6 +7,7 @@ import type { KitMaterialSlotEntry } from '../../../../../types/KitParts';
 import { MATA_KIT_PLAYER_PALETTE_BRAIN } from '../../palettes/mataKitPlayerPalette';
 import { KIT_BRAIN_SOCKET_MATERIAL_COLORS } from '../../palettes/brainKitPalette';
 import { kitPartGlow, kitPartMainAsMetal, kitPartSlots } from '../../palettes/partSlots';
+import { KIT_TECHNIC_MAIN_BLACK } from '../../palettes/technicKitPalette';
 
 const TAKANUVA_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -55,7 +56,7 @@ const TAKANUVA_LEG_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>>
  */
 export const TAKANUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
   Axle3L: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: TAKANUVA_BLACK },
-  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: TAKANUVA_PALETTE_COLORS },
+  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleConnRidged: { kitNodeName: KIT_2001_NODES.AxleConnRidged, materialColors: TAKANUVA_GRAY },
   AxleConPin2: { kitNodeName: KIT_2001_NODES.AxleConPin2, materialColors: TAKANUVA_GRAY },
   AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: TAKANUVA_GRAY },
@@ -65,10 +66,10 @@ export const TAKANUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachme
   },
   AxleMod3L: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: TAKANUVA_GRAY },
   AxleModHips: { kitNodeName: KIT_2001_NODES.AxleModHips, materialColors: TAKANUVA_GRAY },
-  AxlePin: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: TAKANUVA_PALETTE_COLORS },
+  AxlePin: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleSocket1L: { kitNodeName: KIT_2001_NODES.AxleSocket1L, materialColors: TAKANUVA_GRAY },
   AxleSpacer1L: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: TAKANUVA_GRAY },
-  BallJoint: { kitNodeName: KIT_2001_NODES.BallJoint, materialColors: TAKANUVA_PALETTE_COLORS },
+  BallJoint: { kitNodeName: KIT_2001_NODES.BallJoint, materialColors: KIT_TECHNIC_MAIN_BLACK },
   GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: TAKANUVA_GRAY },
   GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: TAKANUVA_GRAY },
   GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: TAKANUVA_GRAY },

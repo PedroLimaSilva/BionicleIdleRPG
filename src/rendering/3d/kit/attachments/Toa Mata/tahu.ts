@@ -8,6 +8,7 @@ import {
   mataKitPlayerPaletteGlow,
   mataKitPlayerPaletteWeaponGlow,
 } from '../../palettes/mataKitPlayerPalette';
+import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from '../../palettes/technicKitPalette';
 
 const TAHU_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -80,11 +81,14 @@ export const TAHU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
     kitNodeName: KIT_2001_NODES.PerpendicularAxleJoint,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
-  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: TAHU_PALETTE_COLORS },
-  AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: TAHU_PALETTE_COLORS },
-  AxleModHips: { kitNodeName: KIT_2001_NODES.AxleModHips, materialColors: TAHU_PALETTE_COLORS },
-  AxleSocket1L: { kitNodeName: KIT_2001_NODES.AxleSocket1L, materialColors: TAHU_PALETTE_COLORS },
-  BallJoint: { kitNodeName: KIT_2001_NODES.BallJoint, materialColors: TAHU_PALETTE_COLORS },
+  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  AxleModHips: { kitNodeName: KIT_2001_NODES.AxleModHips, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  AxleSocket1L: {
+    kitNodeName: KIT_2001_NODES.AxleSocket1L,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
+  },
+  BallJoint: { kitNodeName: KIT_2001_NODES.BallJoint, materialColors: KIT_TECHNIC_MAIN_BLACK },
   Brain: {
     kitNodeName: KIT_2001_NODES.MataBrain,
     materialColors: TAHU_PALETTE_COLORS,
@@ -110,9 +114,9 @@ export const TAHU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
     kitNodeName: KIT_2001_NODES.MataFoot,
     materialColors: TAHU_PALETTE_COLORS,
   },
-  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: TAHU_PALETTE_COLORS },
-  GearMM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: TAHU_PALETTE_COLORS },
-  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: TAHU_PALETTE_COLORS },
+  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
   Glowing_Eyes: {
     kitNodeName: KIT_2001_NODES.MataGlowingEyes,
     materialColors: TAHU_PALETTE_COLORS,
@@ -181,14 +185,10 @@ export const TAHU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
     kitNodeName: KIT_2001_NODES.AxleMod3L,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
-  Spacer1LB: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: TAHU_PALETTE_COLORS },
-  Spacer1LF: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: TAHU_PALETTE_COLORS },
+  Spacer1LB: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: KIT_TECHNIC_MAIN_METAL },
+  Spacer1LF: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: KIT_TECHNIC_MAIN_METAL },
   TahuSword: {
     kitNodeName: KIT_2001_NODES.TahuSword,
-    materialColors: TAHU_WEAPON_PALETTE_COLORS,
-  },
-  TahuSwordFlame: {
-    kitNodeName: KIT_2001_NODES.TahuSwordFlame,
     materialColors: TAHU_WEAPON_PALETTE_COLORS,
   },
   Waist_1_1: {

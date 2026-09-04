@@ -9,6 +9,7 @@ import { KIT_2004_NODES } from '../../nodes/kit2004Nodes';
 import { MATA_KIT_PLAYER_PALETTE_BRAIN } from '../../palettes/mataKitPlayerPalette';
 import { NUVA_KIT_METAL } from '../../palettes/nuvaKitPlayerPalette';
 import { kitPartGlow, kitPartSlots } from '../../palettes/partSlots';
+import { KIT_TECHNIC_MAIN_AXLE_GRAY } from '../../palettes/technicKitPalette';
 
 /**
  * Lhikan sockets on `Toa_Metru/Lhikan.glb` are `{KitPart}(.{qualifier})*`.
@@ -58,7 +59,7 @@ const LHIKAN_SOCKET_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 };
 
 const LHIKAN_AXLE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...LHIKAN_BODY_COLORS,
+  ...KIT_TECHNIC_MAIN_AXLE_GRAY,
   Solid_Black: { kind: 'lego', value: LegoColor.LightGray },
 };
 

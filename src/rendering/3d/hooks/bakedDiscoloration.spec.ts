@@ -1,6 +1,7 @@
-import { ClampToEdgeWrapping, MeshStandardMaterial, Texture } from 'three';
+import { ClampToEdgeWrapping, MeshStandardMaterial, RepeatWrapping, Texture } from 'three';
 import {
   adoptBakedDiscolorationMap,
+  configureBakedAtlasMap,
   getBakedDiscolorationMap,
   glslUvAttributeForTextureChannel,
 } from './bakedDiscoloration';
@@ -43,6 +44,17 @@ describe('adoptBakedDiscolorationMap', () => {
     expect(map.wrapS).toBe(ClampToEdgeWrapping);
     expect(map.wrapT).toBe(ClampToEdgeWrapping);
     expect(map.channel).toBe(1);
+  });
+});
+
+describe('configureBakedAtlasMap', () => {
+  test('clamps wrap so atlas islands do not repeat', () => {
+    const map = new Texture();
+    map.wrapS = RepeatWrapping;
+    map.wrapT = RepeatWrapping;
+    configureBakedAtlasMap(map);
+    expect(map.wrapS).toBe(ClampToEdgeWrapping);
+    expect(map.wrapT).toBe(ClampToEdgeWrapping);
   });
 });
 

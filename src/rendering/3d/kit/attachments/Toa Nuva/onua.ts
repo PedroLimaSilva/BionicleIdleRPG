@@ -11,6 +11,7 @@ import {
 } from '../../palettes/mataKitPlayerPalette';
 import { KIT_BRAIN_SOCKET_MATERIAL_COLORS } from '../../palettes/brainKitPalette';
 import { NUVA_KIT_METAL } from '../../palettes/nuvaKitPlayerPalette';
+import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from '../../palettes/technicKitPalette';
 
 const ONUA_NUVA_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -37,26 +38,26 @@ const ONUA_NUVA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
  * Part 6553 (`Object.539`) remains a unique mesh on the character GLB (not a kit part).
  */
 export const ONUA_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
-  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: ONUA_NUVA_PALETTE_COLORS },
+  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleMod3LL: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: ONUA_NUVA_BLACK },
   AxleMod3LR: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: ONUA_NUVA_BLACK },
   AxleModHips: {
     kitNodeName: KIT_2001_NODES.AxleModHips,
-    materialColors: ONUA_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
-  AxlePin: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: { Metal: ONUA_NUVA_BLACK.Main } },
+  AxlePin: { kitNodeName: KIT_2001_NODES.AxlePin, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleSpacer1LB: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: ONUA_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
   AxleSpacer1LF: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: ONUA_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
-  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: ONUA_NUVA_PALETTE_COLORS },
-  GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: ONUA_NUVA_PALETTE_COLORS },
-  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: ONUA_NUVA_PALETTE_COLORS },
-  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: ONUA_NUVA_PALETTE_COLORS },
+  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
   MataAbdomen: {
     kitNodeName: KIT_2001_NODES.MataAbdomen,
     materialColors: ONUA_NUVA_PALETTE_COLORS,

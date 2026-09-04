@@ -6,6 +6,7 @@ import type { Kit2004SocketAttachment } from '../../nodes/kit2004Nodes';
 import { KIT_2004_NODES } from '../../nodes/kit2004Nodes';
 import { MATA_KIT_PLAYER_PALETTE_BRAIN } from '../../palettes/mataKitPlayerPalette';
 import { kitPartGlow, kitPartSlots } from '../../palettes/partSlots';
+import { KIT_TECHNIC_MAIN_AXLE_GRAY } from '../../palettes/technicKitPalette';
 
 /**
  * Onewa sockets on `Toa_Metru/Onewa.glb` are `{KitPart}_{qualifier}`.
@@ -49,7 +50,7 @@ const ONEWA_SOCKET_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 };
 
 const ONEWA_AXLE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...ONEWA_BODY_COLORS,
+  ...KIT_TECHNIC_MAIN_AXLE_GRAY,
   Solid_Black: { kind: 'lego', value: LegoColor.LightGray },
 };
 

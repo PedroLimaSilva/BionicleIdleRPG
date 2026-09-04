@@ -3,9 +3,9 @@
  * (glTF emissiveMap, color from `discolorationForColor`), and a screen-space
  * curvature fallback when no bake exists.
  *
- * Kit parts bake only the grayscale discoloration; roughness / metalness stay
- * on this noise path. Masks use `maskDiscoloration.ts` instead (they keep
- * baked normal / roughness / metalness maps).
+ * Kit parts bake grayscale discoloration (glTF emissive) and optional normals;
+ * roughness / metalness stay on this noise path. Masks use `maskDiscoloration.ts`
+ * instead (they keep baked normal / roughness / metalness maps).
  *
  * applyWeatheredMetalToObject skips: meshes with authored PBR maps (normal /
  * roughness / metalness), meshes under a node named "Masks" (useMask-injected
@@ -18,12 +18,14 @@ import {
   DoubleSide,
   Mesh,
   MeshStandardMaterial,
-  NoColorSpace,
   Object3D,
+  Side,
   Texture,
+  Vector2,
 } from 'three';
 import {
   BAKED_DISCOLORATION_FRAGMENT_GLSL,
+  configureBakedAtlasMap,
   DISCOLORATION_MAP_USERDATA_KEY,
   EMPTY_DISCOLORATION_MAP,
   glslUvAttributeForTextureChannel,
@@ -60,12 +62,18 @@ export type WeatheredMetalOptions = {
    * roughness / metalness stay on the procedural weathered path. Ignored without UVs.
    */
   discolorationMap?: Texture;
+  /** Baked tangent-space normal from the kit GLB. Roughness / metalness maps are not adopted. */
+  normalMap?: Texture;
+  /** glTF `normalTexture.scale`; ignored unless `normalMap` is set. */
+  normalScale?: Vector2;
   /** Environment map intensity. */
   envMapIntensity?: number;
   /** Enable transparency (for mask fade-out animations). */
   transparent?: boolean;
   /** Debug mode: render grime mask directly as grayscale color. */
   debugGrimeAsColor?: boolean;
+  /** Face stalks use FrontSide to avoid z-fighting brain gel behind the mesh. */
+  side?: Side;
 };
 
 const DEFAULT_ROUGHNESS = 0.4;
@@ -103,9 +111,14 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
     opts.edgeCurvatureScale ?? DEFAULT_EDGE_CURVATURE_SCALE,
     opts.discolorationMap?.uuid ?? '',
     opts.discolorationMap?.channel ?? 0,
+    opts.normalMap?.uuid ?? '',
+    opts.normalMap?.channel ?? 0,
+    opts.normalScale?.x ?? 1,
+    opts.normalScale?.y ?? 1,
     opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
     opts.transparent ? 't' : '',
     opts.debugGrimeAsColor ? 'd' : '',
+    opts.side ?? DoubleSide,
   ];
   return parts.join('|');
 }
@@ -124,7 +137,7 @@ function applyWeatheredMetalModifier(mat: MeshStandardMaterial, opts: WeatheredM
   const discolorationMap = opts.discolorationMap ?? EMPTY_DISCOLORATION_MAP;
   const hasDiscolorationMap = opts.discolorationMap ? 1 : 0;
   if (opts.discolorationMap) {
-    opts.discolorationMap.colorSpace = NoColorSpace;
+    configureBakedAtlasMap(opts.discolorationMap);
   }
   const discolorSpec = discolorationForColor(
     `#${new Color(opts.color ?? '#d4a84b').getHexString()}`
@@ -238,9 +251,16 @@ export function createWeatheredMetalMaterial(
     envMapIntensity: opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
     metalness: opts.metalness ?? DEFAULT_METALNESS,
     roughness: opts.roughness ?? DEFAULT_ROUGHNESS,
-    side: DoubleSide,
+    side: opts.side ?? DoubleSide,
     transparent: opts.transparent ?? false,
   });
+  if (opts.normalMap) {
+    configureBakedAtlasMap(opts.normalMap);
+    mat.normalMap = opts.normalMap;
+    if (opts.normalScale) mat.normalScale.copy(opts.normalScale);
+  }
+  mat.metalnessMap = null;
+  mat.roughnessMap = null;
   mat.name = MATERIAL_NAME;
   (mat as MeshStandardMaterial & { extensions?: { derivatives?: boolean } }).extensions = {
     derivatives: true,

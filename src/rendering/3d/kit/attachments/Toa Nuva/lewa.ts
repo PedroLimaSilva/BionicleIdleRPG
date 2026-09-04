@@ -12,6 +12,7 @@ import {
 } from '../../palettes/mataKitPlayerPalette';
 import { KIT_BRAIN_SOCKET_MATERIAL_COLORS } from '../../palettes/brainKitPalette';
 import { NUVA_KIT_METAL } from '../../palettes/nuvaKitPlayerPalette';
+import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from '../../palettes/technicKitPalette';
 
 const LEWA_NUVA_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -42,31 +43,31 @@ const LEWA_NUVA_BLACK: Partial<Record<string, KitMaterialSlotEntry>> = {
  * Socket names match kit nodes or kit base + L/R (and related) suffixes.
  */
 export const LEWA_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
-  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: LEWA_NUVA_PALETTE_COLORS },
+  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleConPin2: { kitNodeName: KIT_2001_NODES.AxleConPin2, materialColors: LEWA_NUVA_BLACK },
-  AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: LEWA_NUVA_PALETTE_COLORS },
+  AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleMod3LL: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: LEWA_NUVA_BLACK },
   AxleMod3LR: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: LEWA_NUVA_BLACK },
   AxleModHips: {
     kitNodeName: KIT_2001_NODES.AxleModHips,
-    materialColors: LEWA_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
   AxleSocket1L: {
     kitNodeName: KIT_2001_NODES.AxleSocket1L,
-    materialColors: LEWA_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
   AxleSpacer1LB: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: LEWA_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
   AxleSpacer1LF: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: LEWA_NUVA_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
-  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: LEWA_NUVA_PALETTE_COLORS },
-  GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LEWA_NUVA_PALETTE_COLORS },
-  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LEWA_NUVA_PALETTE_COLORS },
-  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: LEWA_NUVA_PALETTE_COLORS },
+  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
   MataAbdomen: {
     kitNodeName: KIT_2001_NODES.MataAbdomen,
     materialColors: LEWA_NUVA_PALETTE_COLORS,

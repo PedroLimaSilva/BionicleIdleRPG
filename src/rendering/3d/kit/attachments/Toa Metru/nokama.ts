@@ -8,6 +8,7 @@ import type { Kit2004SocketAttachment } from '../../nodes/kit2004Nodes';
 import { KIT_2004_NODES } from '../../nodes/kit2004Nodes';
 import { MATA_KIT_PLAYER_PALETTE_BRAIN } from '../../palettes/mataKitPlayerPalette';
 import { kitPartGlow, kitPartSlots } from '../../palettes/partSlots';
+import { KIT_TECHNIC_MAIN_AXLE_GRAY } from '../../palettes/technicKitPalette';
 
 /**
  * Nokama sockets on `Toa_Metru/Nokama.glb` are `{KitPart}_{qualifier}`.
@@ -51,7 +52,7 @@ const NOKAMA_SOCKET_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
 };
 
 const NOKAMA_AXLE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...NOKAMA_BODY_COLORS,
+  ...KIT_TECHNIC_MAIN_AXLE_GRAY,
   Solid_Black: { kind: 'lego', value: LegoColor.LightGray },
 };
 
