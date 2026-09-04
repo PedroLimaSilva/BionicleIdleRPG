@@ -16,7 +16,9 @@ import {
   cloneGreatMaskMaterial,
   cloneMaskMeshMaterials,
   configureKaukauTransmission,
+  ensurePhysicalMaskMaterial,
   isMaskGlowMaterialName,
+  isTransmissiveKanohiSculpt,
   KAUKAU_IOR,
   KAUKAU_TRANSMISSION,
   MASK_LENS_GLOW_EMISSIVE_INTENSITY,
@@ -111,6 +113,33 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.thickness).toBe(TRANSMISSIVE_KANOHI_SHELL_THICKNESS);
     expect(mat.depthWrite).toBe(true);
     expect(mat.side).toBe(FrontSide);
+  });
+
+  it('forces Great Rau onto scalar transmission without a transmission map', () => {
+    const body = new MeshStandardMaterial({ name: 'Rau_Great_baked', opacity: 1, roughness: 0.5 });
+    const geometry = new BufferGeometry();
+    geometry.groups = [{ count: 10, materialIndex: 0, start: 0 }];
+    const mesh = new Mesh(geometry, body);
+    cloneMaskMeshMaterials(mesh, 'Rau_Great');
+    const mat = mesh.material as MeshPhysicalMaterial;
+    expect(isTransmissiveKanohiSculpt('Rau_Great')).toBe(true);
+    expect(mat).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(mat.transparent).toBe(false);
+    expect(mat.opacity).toBe(1);
+    expect(mat.transmission).toBe(KAUKAU_TRANSMISSION);
+    expect(mat.ior).toBe(KAUKAU_IOR);
+    expect(mat.thickness).toBe(TRANSMISSIVE_KANOHI_SHELL_THICKNESS);
+    expect(mat.depthWrite).toBe(true);
+    expect(mat.side).toBe(FrontSide);
+    expect(maskNeedsAlphaBlend(mat)).toBe(false);
+  });
+
+  it('upgrades standard mask materials for transmission sculpts', () => {
+    const standard = new MeshStandardMaterial({ name: 'Rau_Great_baked', roughness: 0.4 });
+    const physical = ensurePhysicalMaskMaterial(standard);
+    expect(physical).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(physical.name).toBe('Rau_Great_baked');
+    expect(physical.roughness).toBe(0.4);
   });
 
   it('keeps transmission-only Kaukau out of alpha blend (hollow shell depth occlusion)', () => {
@@ -263,7 +292,7 @@ describe('prepareClonedMaskMaterial', () => {
 });
 
 describe('maskHasBakedPbrAlpha', () => {
-  it('detects baked transmission maps on Great Rau', () => {
+  it('detects legacy baked transmission maps', () => {
     const mat = new MeshStandardMaterial({
       name: 'Rau_baked',
       opacity: 1,
@@ -276,7 +305,7 @@ describe('maskHasBakedPbrAlpha', () => {
 });
 
 describe('syncMaskTransparencyState', () => {
-  it('keeps baked-alpha Great Rau in the transparent pass at full opacity', () => {
+  it('keeps legacy baked transmissionMap masks in the transparent pass at full opacity', () => {
     const mat = new MeshStandardMaterial({
       name: 'Rau_baked',
       opacity: 1,
