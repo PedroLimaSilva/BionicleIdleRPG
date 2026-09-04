@@ -21,6 +21,7 @@ import {
   isTransmissiveKanohiSculpt,
   KAUKAU_IOR,
   KAUKAU_TRANSMISSION,
+  RAU_TRANSMISSION,
   MASK_LENS_GLOW_EMISSIVE_INTENSITY,
   maskHasBakedPbrAlpha,
   maskNeedsAlphaBlend,
@@ -126,7 +127,8 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat).toBeInstanceOf(MeshPhysicalMaterial);
     expect(mat.transparent).toBe(false);
     expect(mat.opacity).toBe(1);
-    expect(mat.transmission).toBe(KAUKAU_TRANSMISSION);
+    expect(mat.transmission).toBe(RAU_TRANSMISSION);
+    expect(mat.transmission).toBeGreaterThan(KAUKAU_TRANSMISSION);
     expect(mat.ior).toBe(KAUKAU_IOR);
     expect(mat.thickness).toBe(TRANSMISSIVE_KANOHI_SHELL_THICKNESS);
     expect(mat.depthWrite).toBe(true);

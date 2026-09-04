@@ -108,7 +108,7 @@ export function cloneMaskMeshMaterials(mesh: Mesh, maskSculptName: string): void
     const applyTransmission = (mat: MaskStandardMat): MaskStandardMat => {
       if (isMaskGlowMaterialName(mat.name)) return mat;
       const physical = ensurePhysicalMaskMaterial(mat);
-      configureKaukauTransmission(physical);
+      configureTransmissiveKanohiTransmission(maskSculptName, physical);
       syncMaskTransparencyState(physical);
       return physical;
     };
@@ -160,6 +160,8 @@ export const TRANSMISSIVE_KANOHI_SHELL_THICKNESS = 0.15;
 
 /** Mata Kaukau GLB defaults (`KHR_materials_transmission` + `KHR_materials_ior`). */
 export const KAUKAU_TRANSMISSION = 0.75;
+/** Great Rau — more see-through than Kaukau (no transmission map; scalar only). */
+export const RAU_TRANSMISSION = 0.88;
 export const KAUKAU_IOR = 1.45;
 
 const GREAT_MASK_SUFFIX = '_Great';
@@ -210,17 +212,30 @@ export function ensurePhysicalMaskMaterial(mat: MaskStandardMat): MeshPhysicalMa
   return physical;
 }
 
+/** Scalar transmission for uniform-transmission Kanohi sculpts. */
+export function transmissionForKanohiSculpt(maskSculptName: string): number {
+  return getKanohiSculptBaseName(maskSculptName) === 'Rau' ? RAU_TRANSMISSION : KAUKAU_TRANSMISSION;
+}
+
 /** Keep transmissive Kanohi on physical transmission (not opacity blend). */
-export function configureKaukauTransmission(mat: MaskStandardMat): void {
+export function configureTransmissiveKanohiTransmission(
+  maskSculptName: string,
+  mat: MaskStandardMat
+): void {
   if (!(mat instanceof MeshPhysicalMaterial)) return;
   mat.opacity = 1;
   if ((mat.transmission ?? 0) <= 0) {
-    mat.transmission = KAUKAU_TRANSMISSION;
+    mat.transmission = transmissionForKanohiSculpt(maskSculptName);
   }
   mat.ior = KAUKAU_IOR;
   if (mat.thickness <= 0) {
     mat.thickness = TRANSMISSIVE_KANOHI_SHELL_THICKNESS;
   }
+}
+
+/** Kaukau-only helper; Rau uses {@link configureTransmissiveKanohiTransmission}. */
+export function configureKaukauTransmission(mat: MaskStandardMat): void {
+  configureTransmissiveKanohiTransmission('Kaukau', mat);
 }
 
 /**
