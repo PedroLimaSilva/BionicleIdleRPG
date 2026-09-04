@@ -8,6 +8,7 @@ import {
   mataKitPlayerPaletteGlow,
   mataKitPlayerPaletteWeaponGlow,
 } from '../../palettes/mataKitPlayerPalette';
+import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from '../../palettes/technicKitPalette';
 
 const KOPAKA_MATA_KIT_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -32,7 +33,7 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     kitNodeName: KIT_2001_NODES.TechnicArmPistonT,
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
-  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleConPin2: {
     kitNodeName: KIT_2001_NODES.AxleConPin2,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
@@ -43,27 +44,27 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
   },
   AxleModHips: {
     kitNodeName: KIT_2001_NODES.AxleModHips,
-    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
   AxlePin: {
     kitNodeName: KIT_2001_NODES.AxlePin,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
   AxleSocket1L: {
     kitNodeName: KIT_2001_NODES.AxleSocket1L,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
   AxleSpacer1LB: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
   AxleSpacer1LF: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
   BallJoint: {
     kitNodeName: KIT_2001_NODES.BallJoint,
-    materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
   Body_1: { kitNodeName: KIT_2001_NODES.MataHip, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   Foot_L_1: {
@@ -74,9 +75,9 @@ export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     kitNodeName: KIT_2001_NODES.MataFoot,
     materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS,
   },
-  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  GearMM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
-  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
+  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
   Hand_L_1: { kitNodeName: KIT_2001_NODES.Socket, materialColors: KOPAKA_MATA_KIT_PALETTE_COLORS },
   Hip_Joint_L_1: {
     kitNodeName: KIT_2001_NODES.SocketModTop,

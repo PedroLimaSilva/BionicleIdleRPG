@@ -15,14 +15,17 @@ import {
   type KitMaterialSlotOverride,
 } from '../../../types/KitParts';
 import { getBodyPartSlotColor } from '../../../game/characters/matoranColors';
-import { normalizeKitMaterialSlotEntry } from '../kit/kitMaterialUtils';
+import {
+  canonicalKitSlotName,
+  normalizeKitMaterialSlotEntry,
+  normalizeKitSlotName,
+} from '../kit/kitMaterialUtils';
 import { metallicColorPbr, type KitMetalPbr } from '../kit/palettes/metalPbr';
 import {
   getWeatheredMetalMaterial,
   meshHasUv,
   type WeatheredMetalOptions,
 } from '../CharacterScene/WeatheredMetalMaterial';
-import { hasMaskPbrMaps } from './maskMaterial';
 import {
   buildTransmissiveKitMaterial,
   isTransmissiveKitMaterial,
@@ -47,10 +50,6 @@ export function resolveKitColorSource(
   return palette[source.key];
 }
 
-function normalizeSlotName(name: string): string {
-  return name.trim().toLowerCase();
-}
-
 function isGlowMaterialName(name: string | undefined): boolean {
   return !!name && name.toLowerCase().includes('glow');
 }
@@ -60,17 +59,23 @@ function resolveKitMaterialSlotSpec(
   materialName: string,
   slotLookup: Map<string, KitMaterialSlotOverride>
 ): KitMaterialSlotOverride | undefined {
-  const direct = slotLookup.get(normalizeSlotName(materialName));
+  const normalized = normalizeKitSlotName(materialName);
+  const direct = slotLookup.get(normalized);
   if (direct) return direct;
-  if (normalizeSlotName(materialName) === 'secondary' && slotLookup.has('main')) {
+  const canonical = canonicalKitSlotName(materialName);
+  if (canonical !== normalized) {
+    const aliased = slotLookup.get(canonical);
+    if (aliased) return aliased;
+  }
+  if (canonical === 'secondary' && slotLookup.has('main')) {
     return slotLookup.get('main');
   }
   return undefined;
 }
 
-/** Rig meshes with authored PBR maps (Kanoka disk, Great Kanohi masks, etc.) keep GLB look. */
+/** Printed albedo (Kanoka disk, etc.) keeps the GLB look. Normal-only kit bakes still weather. */
 function isPreservedMappedMaterial(mat: StandardMat): boolean {
-  return hasMaskPbrMaps(mat);
+  return !!mat.map;
 }
 
 export function buildKitMaterialSlotLookup(
@@ -80,7 +85,7 @@ export function buildKitMaterialSlotLookup(
   if (!materialColors) return lookup;
   for (const [slotName, entry] of Object.entries(materialColors)) {
     if (!entry) continue;
-    lookup.set(normalizeSlotName(slotName), normalizeKitMaterialSlotEntry(entry));
+    lookup.set(normalizeKitSlotName(slotName), normalizeKitMaterialSlotEntry(entry));
   }
   return lookup;
 }
@@ -170,7 +175,7 @@ export function buildKitMeshMaterials(
         emissiveIntensity
       );
     }
-    // Mapped materials keep GLB textures (Kanoka disk, etc.).
+    // Albedo-mapped materials keep GLB textures (Kanoka disk, etc.).
     if (isPreservedMappedMaterial(mat)) {
       if (!spec || (!spec.color && !spec.emissive && spec.emissiveIntensity === undefined)) {
         return mat;
@@ -191,15 +196,16 @@ export function buildKitMeshMaterials(
         ...metalPbr,
         ...mergeSlotWeatheredOpts(spec),
         discolorationMap: mat.emissiveMap && meshHasUv(mesh) ? mat.emissiveMap : undefined,
+        normalMap: mat.normalMap ?? undefined,
+        normalScale: mat.normalMap ? mat.normalScale : undefined,
       };
-      const weathered = getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
-      // MataFace stalk shares a plane with brain gel — DoubleSide back-faces z-fight the gel.
-      if (normalizeSlotName(mat.name) === 'face') {
-        const faceMat = weathered.clone();
-        faceMat.side = FrontSide;
-        return faceMat;
+      // MataFace stalk shares a plane with brain gel — FrontSide avoids z-fighting the gel.
+      // Do not clone weathered materials: Three's Material.copy drops onBeforeCompile,
+      // which removes baked discoloration while normalMap (a copied property) still works.
+      if (canonicalKitSlotName(mat.name) === 'face') {
+        opts.side = FrontSide;
       }
-      return weathered;
+      return getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
     }
 
     return buildStandardSlotMaterial(mat, spec, palette, slotColor, metalPbr);

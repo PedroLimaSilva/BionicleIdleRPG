@@ -47,6 +47,7 @@ const METRU_LEG_SHIN_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] 
 };
 
 const PIN_MATERIAL_COLORS: Kit2004SocketAttachment['materialColors'] = {
+  Main: { color: { kind: 'lego', value: LegoColor.Blue } },
   Metal: { color: { kind: 'lego', value: LegoColor.Blue } },
 };
 

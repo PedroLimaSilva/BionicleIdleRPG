@@ -1,4 +1,4 @@
-import { DataTexture } from 'three';
+import { ClampToEdgeWrapping, DataTexture, RepeatWrapping } from 'three';
 import { getBakedDiscolorationMap } from '../hooks/bakedDiscoloration';
 import { getWeatheredMetalMaterial } from './WeatheredMetalMaterial';
 
@@ -7,6 +7,52 @@ function mapTex(): DataTexture {
 }
 
 describe('getWeatheredMetalMaterial discoloration map cache', () => {
+  test('clamps atlas wrap on discoloration and normal maps', () => {
+    const discolor = mapTex();
+    const normal = mapTex();
+    discolor.wrapS = RepeatWrapping;
+    discolor.wrapT = RepeatWrapping;
+    normal.wrapS = RepeatWrapping;
+    normal.wrapT = RepeatWrapping;
+    const mat = getWeatheredMetalMaterial('#c91a09', {
+      discolorationMap: discolor,
+      metalness: 0.05,
+      normalMap: normal,
+    });
+    expect(mat.normalMap).toBe(normal);
+    expect(discolor.wrapS).toBe(ClampToEdgeWrapping);
+    expect(discolor.wrapT).toBe(ClampToEdgeWrapping);
+    expect(normal.wrapS).toBe(ClampToEdgeWrapping);
+    expect(normal.wrapT).toBe(ClampToEdgeWrapping);
+  });
+
+  test('the same atlas maps share a weathered material across kit clones', () => {
+    const atlas = mapTex();
+    const a = getWeatheredMetalMaterial('#000000', {
+      discolorationMap: atlas,
+      metalness: 0.05,
+      normalMap: atlas,
+    });
+    const b = getWeatheredMetalMaterial('#000000', {
+      discolorationMap: atlas,
+      metalness: 0.05,
+      normalMap: atlas,
+    });
+    expect(a).toBe(b);
+  });
+
+  test('the same color with different normal maps does not share a material', () => {
+    const a = mapTex();
+    const b = mapTex();
+    const withA = getWeatheredMetalMaterial('#c91a09', { metalness: 0.05, normalMap: a });
+    const withB = getWeatheredMetalMaterial('#c91a09', { metalness: 0.05, normalMap: b });
+    expect(withA).not.toBe(withB);
+    expect(withA.normalMap).toBe(a);
+    expect(withB.normalMap).toBe(b);
+    expect(withA.roughnessMap).toBeNull();
+    expect(withA.metalnessMap).toBeNull();
+  });
+
   test('the same color with different discoloration maps does not share a material', () => {
     const a = mapTex();
     const b = mapTex();

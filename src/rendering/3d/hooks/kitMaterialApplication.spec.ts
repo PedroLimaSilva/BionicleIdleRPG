@@ -2,6 +2,7 @@ import {
   BufferAttribute,
   BufferGeometry,
   DataTexture,
+  FrontSide,
   Mesh,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
@@ -103,18 +104,20 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(mat.roughness).toBe(0.5);
   });
 
-  test('mapped PBR rig materials stay untouched even when a slot would match', () => {
-    const mesh = meshWithMaterialNamed('Disk');
+  test('albedo-mapped materials stay untouched even when a slot would match', () => {
+    const mesh = meshWithMaterialNamed('Main');
     const mapped = mesh.material as MeshStandardMaterial;
-    mapped.normalMap = {} as MeshStandardMaterial['normalMap'];
-    mapped.metalnessMap = {} as MeshStandardMaterial['metalnessMap'];
+    mapped.map = discolorTex();
+    mapped.normalMap = discolorTex();
+    mapped.metalnessMap = discolorTex();
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({ Main: { kind: 'part', part: 'weapon', slot: 'main' } }),
       COLORS,
       PLASTIC_WEATHERED
     ) as MeshStandardMaterial;
-    expect(next).toBe(mapped);
+    expect(next.map).toBe(mapped.map);
+    expect(next.metalnessMap).toBe(mapped.metalnessMap);
     expect(next.metalness).toBe(0.5);
   });
 
@@ -237,6 +240,67 @@ describe('buildKitMeshMaterials metallic colors', () => {
 });
 
 describe('buildKitMeshMaterials discoloration map', () => {
+  test('baked kit slots weather with emissive discoloration and keep normals', () => {
+    const mesh = meshWithUvAndSlots(['Main_MataChest_baked']);
+    const bake = discolorTex();
+    const normal = discolorTex();
+    const roughness = discolorTex();
+    const metalness = discolorTex();
+    const source = mesh.material as MeshStandardMaterial;
+    source.emissiveMap = bake;
+    source.normalMap = normal;
+    source.roughnessMap = roughness;
+    source.metalnessMap = metalness;
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'body', slot: 'main' },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(next.name).toBe('WeatheredMetal');
+    expect(getBakedDiscolorationMap(next)).toBe(bake);
+    expect(next.emissiveMap).toBeNull();
+    expect(next.normalMap).toBe(normal);
+    expect(next.roughnessMap).toBeNull();
+    expect(next.metalnessMap).toBeNull();
+    expect(next.metalness).toBe(PLASTIC_WEATHERED.metalness);
+    expect(next.roughness).toBe(PLASTIC_WEATHERED.roughness);
+  });
+
+  test('Blender duplicate Main.001 still takes the Main slot', () => {
+    const mat = buildSingle('Main.001', { Main: { kind: 'part', part: 'body', slot: 'main' } });
+    expect(mat.name).toBe('WeatheredMetal');
+    expect(mat.color.getHexString().toUpperCase()).toBe('720E0F');
+  });
+
+  test('Main_MataChest_baked tints Main, Secondary_MataLegModShin_baked tints Secondary', () => {
+    const mesh = new Mesh(undefined, [
+      new MeshStandardMaterial({ color: '#ffffff', name: 'Main_MataChest_baked' }),
+      new MeshStandardMaterial({ color: '#ffffff', name: 'Secondary_MataLegModShin_baked' }),
+    ]);
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'arms', slot: 'main' },
+        Secondary: { kind: 'part', part: 'arms', slot: 'secondary' },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial[];
+    expect(next[0].color.getHexString().toUpperCase()).toBe('B48455');
+    expect(next[1].color.getHexString().toUpperCase()).toBe('720E0F');
+  });
+
+  test('unprefixed MataChest_baked does not guess Main', () => {
+    const mat = buildSingle('MataChest_baked', {
+      Main: { kind: 'part', part: 'body', slot: 'main' },
+    });
+    expect(mat.metalness).toBe(0.5);
+    expect(mat.name).not.toBe('WeatheredMetal');
+  });
+
   test('kit emissiveMap becomes discoloration on weathered slots and is not emission', () => {
     const mesh = meshWithUvAndSlots(['Main']);
     const bake = discolorTex();
@@ -267,6 +331,28 @@ describe('buildKitMeshMaterials discoloration map', () => {
     ) as MeshStandardMaterial;
     expect(getBakedDiscolorationMap(next)).toBeNull();
     expect(next.metalness).toBe(PLASTIC_WEATHERED.metalness);
+  });
+
+  test('Face_MataFace_baked keeps discoloration shader and FrontSide without cloning', () => {
+    const mesh = meshWithUvAndSlots(['Face_MataFace_baked']);
+    const bake = discolorTex();
+    const normal = discolorTex();
+    const source = mesh.material as MeshStandardMaterial;
+    source.emissiveMap = bake;
+    source.normalMap = normal;
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Face: { color: { key: 'face', kind: 'palette' }, weathered: true },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(next.name).toBe('WeatheredMetal');
+    expect(next.side).toBe(FrontSide);
+    expect(getBakedDiscolorationMap(next)).toBe(bake);
+    expect(next.normalMap).toBe(normal);
+    expect(next.customProgramCacheKey()).toContain('WeatheredMetal');
   });
 
   test('glow slots skip weathering', () => {

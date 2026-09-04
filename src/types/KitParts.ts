@@ -25,10 +25,14 @@ export type KitMaterialColorSource =
  * Omitted keys keep the character-level `WeatheredMetalOptions` defaults.
  *
  * Baked discoloration maps are the glTF `emissive` slot (grayscale wear mask,
- * black on flats). Kit parts bake that only; roughness / metalness stay on the
- * weathered noise path. Masks keep baked normal / roughness; metalness maps are
- * ignored in favor of a painted-metal scalar. The mix *color* comes from
- * `discolorationForColor` for the chosen LEGO slot, not from the bake.
+ * black on flats). Kit parts may also ship a tangent-space `normal` map.
+ * Roughness / metalness stay on the weathered noise path — those GLB maps are
+ * dropped. Bake material names are `{Slot}_{KitNode}_baked` (e.g.
+ * `Main_MataChest_baked`, `Secondary_MataLegModShin_baked`); Blender `.001`
+ * duplicates still match. Unprefixed names like `MataChest_baked` do not guess
+ * a slot. Masks keep baked normal / roughness;
+ * metalness maps are ignored in favor of a painted-metal scalar. The mix *color*
+ * comes from `discolorationForColor` for the chosen LEGO slot, not from the bake.
  */
 export type KitMaterialWeatheredTuning = {
   grimeDarken?: number;

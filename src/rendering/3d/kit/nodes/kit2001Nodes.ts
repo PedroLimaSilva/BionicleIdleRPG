@@ -59,7 +59,6 @@ export const KIT_2001_NODES = {
   SocketModSide: 'SocketModSide',
   SocketModTop: 'SocketModTop',
   TahuSword: 'TahuSword',
-  TahuSwordFlame: 'TahuSwordFlame',
   TechnicArmJoint: 'TechnicArmJoint',
   TechnicArmMain: 'TechnicArmMain',
   TechnicArmPistonN: 'TechnicArmPistonN',

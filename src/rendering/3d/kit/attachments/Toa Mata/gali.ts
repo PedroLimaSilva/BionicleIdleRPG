@@ -8,6 +8,7 @@ import {
   mataKitPlayerPaletteGlow,
   mataKitPlayerPaletteWeaponGlow,
 } from '../../palettes/mataKitPlayerPalette';
+import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from '../../palettes/technicKitPalette';
 
 const GALI_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -81,31 +82,37 @@ export const GALI_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
       Main: GALI_PALETTE_COLORS.Secondary,
     },
   },
-  Axle2L: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: GALI_PALETTE_COLORS },
-  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: GALI_PALETTE_COLORS },
+  Axle2L: { kitNodeName: KIT_2001_NODES.Axle2L, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleConPin2: {
     kitNodeName: KIT_2001_NODES.AxleConPin2,
     materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
   },
-  AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: GALI_PALETTE_COLORS },
-  AxleModHips: { kitNodeName: KIT_2001_NODES.AxleModHips, materialColors: GALI_PALETTE_COLORS },
-  AxleShoulderL: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: GALI_PALETTE_COLORS },
-  AxleShoulderR: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: GALI_PALETTE_COLORS },
-  AxleSocket1L: { kitNodeName: KIT_2001_NODES.AxleSocket1L, materialColors: GALI_PALETTE_COLORS },
-  AxleSpacer1L: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: GALI_PALETTE_COLORS },
+  AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  AxleModHips: { kitNodeName: KIT_2001_NODES.AxleModHips, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  AxleShoulderL: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  AxleShoulderR: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  AxleSocket1L: {
+    kitNodeName: KIT_2001_NODES.AxleSocket1L,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
+  },
+  AxleSpacer1L: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
+  },
   AxleSpacer1L001: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: GALI_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
   Brain: {
     kitNodeName: KIT_2001_NODES.MataBrain,
     materialColors: GALI_PALETTE_COLORS,
   },
   Face: { kitNodeName: KIT_2001_NODES.MataFace, materialColors: GALI_PALETTE_COLORS },
-  Gear_Big: { kitNodeName: KIT_2001_NODES.GearB, materialColors: GALI_PALETTE_COLORS },
-  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_PALETTE_COLORS },
-  GearMM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_PALETTE_COLORS },
-  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: GALI_PALETTE_COLORS },
+  Gear_Big: { kitNodeName: KIT_2001_NODES.GearB, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
   Glowing_Eyes: {
     kitNodeName: KIT_2001_NODES.MataGlowingEyes,
     materialColors: GALI_PALETTE_COLORS,

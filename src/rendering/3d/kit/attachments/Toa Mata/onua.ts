@@ -7,6 +7,7 @@ import {
   MATA_KIT_PLAYER_PALETTE_PLASTICS,
   mataKitPlayerPaletteGlow,
 } from '../../palettes/mataKitPlayerPalette';
+import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from '../../palettes/technicKitPalette';
 
 const ONUA_MATA_KIT_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...MATA_KIT_PLAYER_PALETTE_BRAIN,
@@ -67,36 +68,36 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
     kitNodeName: KIT_2001_NODES.MataSingleArmUpper,
     materialColors: { Main: ONUA_MATA_KIT_PALETTE_COLORS.Secondary },
   },
-  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleConPin1: {
     kitNodeName: KIT_2001_NODES.AxleConPin1,
     materialColors: { Main: { kind: 'lego', value: LegoColor.LightGray } },
   },
   AxleMod2L: {
     kitNodeName: KIT_2001_NODES.AxleMod2L,
-    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
   AxleModHips: {
     kitNodeName: KIT_2001_NODES.AxleModHips,
-    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
   AxleSpacer1LB: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
   AxleSpacer1LF: {
     kitNodeName: KIT_2001_NODES.AxleSpacer1L,
-    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
   },
   Body_1: { kitNodeName: KIT_2001_NODES.MataHip, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   ClawL: { kitNodeName: KIT_2001_NODES.Claw, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   ClawR: { kitNodeName: KIT_2001_NODES.Claw, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   Foot_L_1: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
   Foot_R_1: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
-  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: ONUA_MATA_KIT_PALETTE_COLORS },
+  GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMB: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearML: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
   Hand_L_1: {
     kitNodeName: KIT_2001_NODES.MataSingleArmHand,
     materialColors: { Main: ONUA_MATA_KIT_PALETTE_COLORS.Secondary },
@@ -107,7 +108,7 @@ export const ONUA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachm
   },
   Head_1: {
     kitNodeName: KIT_2001_NODES.AxleSocket3L,
-    materialColors: ONUA_MATA_KIT_PALETTE_COLORS,
+    materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
   Hip_Joint_L_1: {
     kitNodeName: KIT_2001_NODES.SocketModTop,
