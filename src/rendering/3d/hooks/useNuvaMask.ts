@@ -51,7 +51,7 @@ function nuvaMaskTintColor(maskName: string, maskColor: string): string | undefi
   return maskColor;
 }
 
-/** Apply mask color to materials; infected Hau keeps baked diffuse but gets painted-metal PBR. */
+/** Apply mask color to materials; skip infected Hau's baked diffuse. */
 function applyNuvaMaskColors(
   root: Object3D,
   maskColor: string,
@@ -59,7 +59,6 @@ function applyNuvaMaskColors(
   maskPowerActive?: boolean
 ): void {
   const tintColor = nuvaMaskTintColor(maskName, maskColor);
-  const bakedAlbedo = isNuvaBakedAlbedoMask(maskName);
 
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
@@ -70,11 +69,6 @@ function applyNuvaMaskColors(
         if (isMaskGlowMaterialName(mat.name) && mat.emissive) {
           mat.emissiveIntensity = MASK_LENS_GLOW_EMISSIVE_INTENSITY;
         }
-        return;
-      }
-
-      if (bakedAlbedo) {
-        applyMaskMetallicPbr(mat, maskColor);
         return;
       }
 
@@ -102,8 +96,7 @@ function applyNuvaMaskColors(
 /**
  * Loads a mask from Toa_Nuva/masks.glb, attaches it to the parent, and applies color.
  * Mask selection: matoran.maskOverride || matoran.mask (from matoran dex).
- * Vahi tints gold (PearlGold). Infected Hau keeps its baked diffuse but uses
- * {@link applyMaskMetallicPbr} like other Kanohi (no emissive wear).
+ * Vahi tints gold (PearlGold). Infected Hau keeps its baked diffuse (no emissive wear).
  * Other Kanohi use baked emissive discoloration the same way as Mata/Turaga
  * {@link useMask} whenever the GLB ships an emissiveMap.
  */
