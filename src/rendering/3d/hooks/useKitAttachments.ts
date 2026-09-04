@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { Object3D } from 'three';
-import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../../../types/Matoran';
 import type { KitSocketAttachment } from '../../../types/KitParts';
 import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
 import { normalizeMatoranColors } from '../../../game/characters/matoranColors';
 import { applyKitMaterialsToObject, buildKitMaterialSlotLookup } from './kitMaterialApplication';
 import { notifyModelReadyForTestMode } from '../../../utils/testMode';
+import { useSelectiveKitGltf } from './useSelectiveKitGltf';
 
 function buildKitNodeIndex(scene: Object3D): Record<string, Object3D> {
   const map: Record<string, Object3D> = {};
@@ -58,7 +58,7 @@ export function useKitAttachments({
   stage,
   weathered,
 }: UseKitAttachmentsParams): void {
-  const gltf = useGLTF(kitUrl);
+  const gltf = useSelectiveKitGltf(kitUrl, attachments);
   const kitNodes = useMemo(() => buildKitNodeIndex(gltf.scene), [gltf]);
   const resolvedColors = useMemo(
     () => (stage !== undefined ? normalizeMatoranColors(colors, stage) : colors),
@@ -109,8 +109,6 @@ export function useKitAttachments({
   }, [attachments, characterNodes, kitUrl, resolvedColors, kitNodes, weathered]);
 }
 
-useKitAttachments.preload = (...kitUrls: string[]) => {
-  for (const url of kitUrls) {
-    useGLTF.preload(url);
-  }
+useKitAttachments.preload = (..._kitUrls: string[]) => {
+  // Kit GLBs are loaded on demand per character with selective textures.
 };
