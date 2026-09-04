@@ -1,4 +1,3 @@
-import { LegoColor } from '../../../../../types/Colors';
 import type { KitMaterialSlotEntry } from '../../../../../types/KitParts';
 import type { Kit2001SocketAttachment } from '../../nodes/kit2001Nodes';
 import { KIT_2001_NODES } from '../../nodes/kit2001Nodes';
