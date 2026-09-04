@@ -7,6 +7,7 @@ import {
   Texture,
 } from 'three';
 import { LegoColor } from '../../../types/Colors';
+import { getBakedDiscolorationMap } from './bakedDiscoloration';
 import { KANOHI_PAINT_METALNESS } from '../kit/palettes/metalPbr';
 import {
   applyMaskGlowTint,
@@ -15,16 +16,18 @@ import {
   cloneGreatMaskMaterial,
   cloneMaskMeshMaterials,
   configureKaukauTransmission,
+  ensurePhysicalMaskMaterial,
   isMaskGlowMaterialName,
+  isTransmissiveKanohiSculpt,
   KAUKAU_IOR,
   KAUKAU_TRANSMISSION,
+  RAU_TRANSMISSION,
   MASK_LENS_GLOW_EMISSIVE_INTENSITY,
   maskHasBakedPbrAlpha,
   maskNeedsAlphaBlend,
   prepareClonedMaskMaterial,
   TRANSMISSIVE_KANOHI_SHELL_THICKNESS,
 } from './maskMaterial';
-import { getBakedDiscolorationMap } from './bakedDiscoloration';
 
 describe('maskNeedsAlphaBlend', () => {
   it('detects sub-1 opacity and trans-named masks', () => {
@@ -111,6 +114,34 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.thickness).toBe(TRANSMISSIVE_KANOHI_SHELL_THICKNESS);
     expect(mat.depthWrite).toBe(true);
     expect(mat.side).toBe(FrontSide);
+  });
+
+  it('forces Great Rau onto scalar transmission without a transmission map', () => {
+    const body = new MeshStandardMaterial({ name: 'Rau_Great_baked', opacity: 1, roughness: 0.5 });
+    const geometry = new BufferGeometry();
+    geometry.groups = [{ count: 10, materialIndex: 0, start: 0 }];
+    const mesh = new Mesh(geometry, body);
+    cloneMaskMeshMaterials(mesh, 'Rau_Great');
+    const mat = mesh.material as MeshPhysicalMaterial;
+    expect(isTransmissiveKanohiSculpt('Rau_Great')).toBe(true);
+    expect(mat).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(mat.transparent).toBe(false);
+    expect(mat.opacity).toBe(1);
+    expect(mat.transmission).toBe(RAU_TRANSMISSION);
+    expect(mat.transmission).toBeGreaterThan(KAUKAU_TRANSMISSION);
+    expect(mat.ior).toBe(KAUKAU_IOR);
+    expect(mat.thickness).toBe(TRANSMISSIVE_KANOHI_SHELL_THICKNESS);
+    expect(mat.depthWrite).toBe(true);
+    expect(mat.side).toBe(FrontSide);
+    expect(maskNeedsAlphaBlend(mat)).toBe(false);
+  });
+
+  it('upgrades standard mask materials for transmission sculpts', () => {
+    const standard = new MeshStandardMaterial({ name: 'Rau_Great_baked', roughness: 0.4 });
+    const physical = ensurePhysicalMaskMaterial(standard);
+    expect(physical).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(physical.name).toBe('Rau_Great_baked');
+    expect(physical.roughness).toBe(0.4);
   });
 
   it('keeps transmission-only Kaukau out of alpha blend (hollow shell depth occlusion)', () => {
@@ -263,7 +294,7 @@ describe('prepareClonedMaskMaterial', () => {
 });
 
 describe('maskHasBakedPbrAlpha', () => {
-  it('detects baked transmission maps on Great Rau', () => {
+  it('detects legacy baked transmission maps', () => {
     const mat = new MeshStandardMaterial({
       name: 'Rau_baked',
       opacity: 1,
@@ -276,7 +307,7 @@ describe('maskHasBakedPbrAlpha', () => {
 });
 
 describe('syncMaskTransparencyState', () => {
-  it('keeps baked-alpha Great Rau in the transparent pass at full opacity', () => {
+  it('keeps legacy baked transmissionMap masks in the transparent pass at full opacity', () => {
     const mat = new MeshStandardMaterial({
       name: 'Rau_baked',
       opacity: 1,
@@ -286,6 +317,27 @@ describe('syncMaskTransparencyState', () => {
     prepareClonedMaskMaterial(mat);
     expect(mat.transparent).toBe(true);
     expect(mat.opacity).toBe(1);
+  });
+});
+
+describe('cloneMaskMeshMaterials for Great Kanohi', () => {
+  it('adopts baked emissive discoloration on each body slot in multi-material meshes', () => {
+    const bake = new Texture();
+    const body = new MeshStandardMaterial({ emissiveMap: bake, name: 'Matatu_Great_baked' });
+    const glow = new MeshStandardMaterial({ emissiveMap: new Texture(), name: 'Glow' });
+    const geometry = new BufferGeometry();
+    geometry.groups = [
+      { count: 10, materialIndex: 0, start: 0 },
+      { count: 6, materialIndex: 1, start: 10 },
+    ];
+    const mesh = new Mesh(geometry, [body, glow]);
+
+    cloneMaskMeshMaterials(mesh, 'Matatu');
+
+    const mats = mesh.material as MeshStandardMaterial[];
+    expect(getBakedDiscolorationMap(mats[0])).toBe(bake);
+    expect(mats[0].emissiveMap).toBeNull();
+    expect(mats[1].emissiveMap).not.toBeNull();
   });
 });
 

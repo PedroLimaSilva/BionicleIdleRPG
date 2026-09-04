@@ -104,11 +104,21 @@ export function cloneMaskMeshMaterials(mesh: Mesh, maskSculptName: string): void
     ensureAkakuLensMaterialSlot(mesh);
   }
 
-  if (isMataKaukauSculpt(maskSculptName)) {
-    forEachMaskMaterial(mesh, (mat) => {
-      configureKaukauTransmission(mat);
-      syncMaskTransparencyState(mat);
-    });
+  if (isTransmissiveKanohiSculpt(maskSculptName)) {
+    const applyTransmission = (mat: MaskStandardMat): MaskStandardMat => {
+      if (isMaskGlowMaterialName(mat.name)) return mat;
+      const physical = ensurePhysicalMaskMaterial(mat);
+      configureTransmissiveKanohiTransmission(maskSculptName, physical);
+      syncMaskTransparencyState(physical);
+      return physical;
+    };
+
+    const raw = mesh.material;
+    if (Array.isArray(raw)) {
+      mesh.material = raw.map((mat) => (isMaskStandardMat(mat) ? applyTransmission(mat) : mat));
+    } else if (isMaskStandardMat(raw)) {
+      mesh.material = applyTransmission(raw);
+    }
   }
 }
 
@@ -121,7 +131,7 @@ export function hasMaskPbrMaps(mat: MaskStandardMat): boolean {
   return !!(mat.normalMap || mat.roughnessMap || mat.metalnessMap);
 }
 
-/** glTF alpha/transmission baked into PBR maps (e.g. Great Rau in `Masks.glb`). */
+/** glTF transmission map or scalar factor baked into the material. */
 export function maskHasBakedPbrAlpha(mat: MaskStandardMat): boolean {
   if (isMaskGlowMaterialName(mat.name)) return false;
   const physical = mat as MeshPhysicalMaterial;
@@ -150,23 +160,82 @@ export const TRANSMISSIVE_KANOHI_SHELL_THICKNESS = 0.15;
 
 /** Mata Kaukau GLB defaults (`KHR_materials_transmission` + `KHR_materials_ior`). */
 export const KAUKAU_TRANSMISSION = 0.75;
+/** Great Rau — more see-through than Kaukau (no transmission map; scalar only). */
+export const RAU_TRANSMISSION = 0.88;
 export const KAUKAU_IOR = 1.45;
 
-export function isMataKaukauSculpt(maskSculptName: string): boolean {
-  return maskSculptName === 'Kaukau';
+const GREAT_MASK_SUFFIX = '_Great';
+
+/** Strip `_Great` so `Rau_Great` and `Rau` share sculpt-specific material rules. */
+export function getKanohiSculptBaseName(maskSculptName: string): string {
+  return maskSculptName.endsWith(GREAT_MASK_SUFFIX)
+    ? maskSculptName.slice(0, -GREAT_MASK_SUFFIX.length)
+    : maskSculptName;
 }
 
-/** Keep Mata Kaukau on physical transmission (not opacity blend). */
-export function configureKaukauTransmission(mat: MaskStandardMat): void {
+export function isMataKaukauSculpt(maskSculptName: string): boolean {
+  return getKanohiSculptBaseName(maskSculptName) === 'Kaukau';
+}
+
+/** Kanohi that use uniform scalar transmission (not a transmission map or alpha blend). */
+export function isTransmissiveKanohiSculpt(maskSculptName: string): boolean {
+  const base = getKanohiSculptBaseName(maskSculptName);
+  return base === 'Kaukau' || base === 'Rau';
+}
+
+/** Upgrade standard mask materials so transmission / IOR can be configured at runtime. */
+export function ensurePhysicalMaskMaterial(mat: MaskStandardMat): MeshPhysicalMaterial {
+  if (mat instanceof MeshPhysicalMaterial) return mat;
+  const physical = new MeshPhysicalMaterial({
+    alphaMap: mat.alphaMap,
+    aoMap: mat.aoMap,
+    color: mat.color.clone(),
+    envMap: mat.envMap,
+    envMapIntensity: mat.envMapIntensity,
+    map: mat.map,
+    metalness: mat.metalness,
+    metalnessMap: mat.metalnessMap,
+    name: mat.name,
+    normalMap: mat.normalMap,
+    opacity: mat.opacity,
+    roughness: mat.roughness,
+    roughnessMap: mat.roughnessMap,
+    side: mat.side,
+    transparent: mat.transparent,
+  });
+  if (mat.emissive) {
+    physical.emissive.copy(mat.emissive);
+    physical.emissiveIntensity = mat.emissiveIntensity;
+    physical.emissiveMap = mat.emissiveMap;
+  }
+  physical.userData = { ...mat.userData };
+  return physical;
+}
+
+/** Scalar transmission for uniform-transmission Kanohi sculpts. */
+export function transmissionForKanohiSculpt(maskSculptName: string): number {
+  return getKanohiSculptBaseName(maskSculptName) === 'Rau' ? RAU_TRANSMISSION : KAUKAU_TRANSMISSION;
+}
+
+/** Keep transmissive Kanohi on physical transmission (not opacity blend). */
+export function configureTransmissiveKanohiTransmission(
+  maskSculptName: string,
+  mat: MaskStandardMat
+): void {
   if (!(mat instanceof MeshPhysicalMaterial)) return;
   mat.opacity = 1;
   if ((mat.transmission ?? 0) <= 0) {
-    mat.transmission = KAUKAU_TRANSMISSION;
+    mat.transmission = transmissionForKanohiSculpt(maskSculptName);
   }
   mat.ior = KAUKAU_IOR;
   if (mat.thickness <= 0) {
     mat.thickness = TRANSMISSIVE_KANOHI_SHELL_THICKNESS;
   }
+}
+
+/** Kaukau-only helper; Rau uses {@link configureTransmissiveKanohiTransmission}. */
+export function configureKaukauTransmission(mat: MaskStandardMat): void {
+  configureTransmissiveKanohiTransmission('Kaukau', mat);
 }
 
 /**
@@ -204,7 +273,7 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
   mat.transparent = alphaBlend;
 
   if (alphaBlend) {
-    // Great Rau (transmissionMap / opacity blend): avoid back-faces and depth fighting with brain gel.
+    // Legacy baked transmissionMap masks: avoid back-faces and depth fighting with brain gel.
     mat.depthWrite = false;
     mat.side = FrontSide;
     return;
@@ -220,10 +289,10 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
  * arenas) those surfaces read nearly black while HDRI-lit deserts look fine.
  *
  * Opaque Kanohi stay in the opaque render pass (`transparent: false`) so they
- * depth-occlude head geometry behind the shell. Mata Kaukau uses uniform transmission in
+ * depth-occlude head geometry behind the shell. Kaukau and Rau use uniform transmission in
  * the transmissive pass with depthWrite on so the hollow shell self-occludes in profile;
  * brain gel draws after the mask in the same pass and wins depth where it sits in front.
- * Great Rau baked alpha and exit fades use the transparent pass. Closed shells use
+ * Legacy baked-alpha masks and exit fades use the transparent pass. Closed shells use
  * `FrontSide` so interior back-faces do not z-fight with brain gel in the cavity.
  */
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
