@@ -14,12 +14,15 @@ import {
   useMaskTransitionFrame,
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
+import { applyKanohiRenderOrder } from './kanohiRenderOrder';
 import {
+  applyMaskGlowTint,
   applyMaskMetallicPbr,
-  cloneGreatMaskMaterial,
+  cloneMaskMeshMaterials,
+  forEachMaskMaterial,
   isMaskGlowMaterialName,
   isMaskStandardMat,
-  syncMaskTransparencyState,
+  MASK_LENS_GLOW_EMISSIVE_INTENSITY,
 } from './maskMaterial';
 import { applyMaskDiscolorationToObject, setupMaskDiscolorationShader } from './maskDiscoloration';
 import { masksCollected } from '../../../services/matoranUtils';
@@ -43,32 +46,26 @@ function applyGreatMaskColors(
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;
-    const mat = mesh.material;
-    if (!isMaskStandardMat(mat)) return;
 
-    if (isMaskGlowMaterialName(mat.name)) {
-      if (!glowColor) return;
-      const col = new Color(glowColor);
-      mat.color.copy(col);
+    forEachMaskMaterial(mesh, (mat) => {
+      if (isMaskGlowMaterialName(mat.name)) {
+        if (!glowColor) return;
+        applyMaskGlowTint(mat, glowColor, MASK_LENS_GLOW_EMISSIVE_INTENSITY);
+        return;
+      }
+
+      mat.color.copy(new Color(maskColor));
+      applyMaskMetallicPbr(mat, maskColor);
       if (mat.emissive) {
-        mat.emissive.copy(col);
-        mat.emissiveIntensity = 50;
+        if (maskPowerActive) {
+          mat.emissive = new Color(maskColor);
+          mat.emissiveIntensity = 2.5;
+        } else {
+          mat.emissive = new Color(0x000000);
+          mat.emissiveIntensity = 0;
+        }
       }
-      return;
-    }
-
-    mat.color.copy(new Color(maskColor));
-    applyMaskMetallicPbr(mat, maskColor);
-    syncMaskTransparencyState(mat);
-    if (mat.emissive) {
-      if (maskPowerActive) {
-        mat.emissive = new Color(maskColor);
-        mat.emissiveIntensity = 2.5;
-      } else {
-        mat.emissive = new Color(0x000000);
-        mat.emissiveIntensity = 0;
-      }
-    }
+    });
   });
 
   applyMaskDiscolorationToObject(root, undefined, maskColor);
@@ -77,7 +74,10 @@ function applyGreatMaskColors(
 /**
  * Loads a Great Kanohi from `Toa_Metru/Masks.glb` and attaches it to the parent.
  * Mask selection: `matoran.maskOverride || matoran.mask` among collected masks.
- * Avatar ids use the `_Great` suffix (`Hau_Great`); GLB nodes stay `Hau`, `Huna`, …
+ * Avatar ids and GLB nodes both use the `_Great` suffix (`Hau_Great`).
+ *
+ * Baked emissive discoloration is applied whenever the GLB ships an emissiveMap,
+ * the same path as Mata/Turaga {@link useMask} and Nuva {@link useNuvaMask}.
  *
  * @param glowColor - Optional color for emissive `Glow` materials (e.g. Matatu scope lens).
  */
@@ -129,12 +129,17 @@ export function useGreatMask(
         const mesh = child as Mesh;
         mesh.castShadow = effectiveShadows;
         mesh.receiveShadow = effectiveShadows;
-        const originalMat = mesh.material;
-        if (isMaskStandardMat(originalMat)) {
-          mesh.material = cloneGreatMaskMaterial(originalMat, maskColorRef.current);
+        const raw = mesh.material;
+        const hasTintable =
+          isMaskStandardMat(raw) ||
+          (Array.isArray(raw) && raw.some((mat) => isMaskStandardMat(mat)));
+        if (hasTintable) {
+          cloneMaskMeshMaterials(mesh, maskNodeName);
         }
       }
     });
+
+    applyKanohiRenderOrder(clone);
 
     setupMaskDiscolorationShader(clone, maskColorRef.current);
 

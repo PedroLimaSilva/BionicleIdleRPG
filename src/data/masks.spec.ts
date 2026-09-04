@@ -167,7 +167,7 @@ describe('isTransparentMask', () => {
     expect(isTransparentMask(Mask.KaukauNuva)).toBe(false);
   });
 
-  test('is false for opaque Kanohi and baked-alpha Great Rau', () => {
+  test('is false for opaque Kanohi and scalar-transmission Great Rau', () => {
     expect(isTransparentMask(Mask.Hau)).toBe(false);
     expect(isTransparentMask(Mask.HauGreat)).toBe(false);
     expect(isTransparentMask(Mask.RauGreat)).toBe(false);
