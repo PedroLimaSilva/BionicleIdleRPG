@@ -28,11 +28,11 @@ function registerSelectiveKitPlugin(loader: GLTFLoader): void {
     const allowed = collectAllowedTextureIndices(parser.json, requiredNodes);
     const originalLoadTexture = parser.loadTexture.bind(parser);
     const plugin: GLTFLoaderPlugin & { name: string } = {
-      name: PLUGIN_NAME,
       loadTexture(textureIndex: number) {
         if (!allowed.has(textureIndex)) return null;
         return originalLoadTexture(textureIndex);
       },
+      name: PLUGIN_NAME,
     };
     return plugin;
   });
