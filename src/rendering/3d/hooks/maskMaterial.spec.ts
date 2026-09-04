@@ -11,6 +11,7 @@ import { KANOHI_PAINT_METALNESS } from '../kit/palettes/metalPbr';
 import {
   applyMaskGlowTint,
   applyMaskMetallicPbr,
+  applyNuvaBakedKanohiPbr,
   cloneGreatMaskMaterial,
   cloneMaskMeshMaterials,
   configureKaukauTransmission,
@@ -243,6 +244,21 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.metalness).toBe(KANOHI_PAINT_METALNESS);
     expect(mat.roughness).toBe(1);
     expect(mat.roughnessMap).toBe(roughnessMap);
+  });
+
+  it('keeps baked metalness maps on fully baked Nuva Kanohi', () => {
+    const metalnessMap = new Texture();
+    const mat = new MeshStandardMaterial({
+      metalness: 0,
+      metalnessMap,
+      name: 'Hau_Nuva_Infected_baked',
+      roughness: 0.4,
+      roughnessMap: new Texture(),
+    });
+    applyNuvaBakedKanohiPbr(mat);
+    expect(mat.metalnessMap).toBe(metalnessMap);
+    expect(mat.metalness).toBe(1);
+    expect(mat.roughnessMap).toBeDefined();
   });
 });
 
