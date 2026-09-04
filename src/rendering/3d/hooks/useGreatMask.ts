@@ -74,7 +74,7 @@ function applyGreatMaskColors(
 /**
  * Loads a Great Kanohi from `Toa_Metru/Masks.glb` and attaches it to the parent.
  * Mask selection: `matoran.maskOverride || matoran.mask` among collected masks.
- * Avatar ids use the `_Great` suffix (`Hau_Great`); GLB nodes stay `Hau`, `Huna`, …
+ * Avatar ids and GLB nodes both use the `_Great` suffix (`Hau_Great`).
  *
  * Baked emissive discoloration is applied whenever the GLB ships an emissiveMap,
  * the same path as Mata/Turaga {@link useMask} and Nuva {@link useNuvaMask}.
