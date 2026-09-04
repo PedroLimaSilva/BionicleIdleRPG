@@ -7,6 +7,7 @@ import {
   Texture,
 } from 'three';
 import { LegoColor } from '../../../types/Colors';
+import { getBakedDiscolorationMap } from './bakedDiscoloration';
 import { KANOHI_PAINT_METALNESS } from '../kit/palettes/metalPbr';
 import {
   applyMaskGlowTint,
@@ -24,7 +25,6 @@ import {
   prepareClonedMaskMaterial,
   TRANSMISSIVE_KANOHI_SHELL_THICKNESS,
 } from './maskMaterial';
-import { getBakedDiscolorationMap } from './bakedDiscoloration';
 
 describe('maskNeedsAlphaBlend', () => {
   it('detects sub-1 opacity and trans-named masks', () => {
@@ -286,6 +286,27 @@ describe('syncMaskTransparencyState', () => {
     prepareClonedMaskMaterial(mat);
     expect(mat.transparent).toBe(true);
     expect(mat.opacity).toBe(1);
+  });
+});
+
+describe('cloneMaskMeshMaterials for Great Kanohi', () => {
+  it('adopts baked emissive discoloration on each body slot in multi-material meshes', () => {
+    const bake = new Texture();
+    const body = new MeshStandardMaterial({ emissiveMap: bake, name: 'Matatu_Great_baked' });
+    const glow = new MeshStandardMaterial({ emissiveMap: new Texture(), name: 'Glow' });
+    const geometry = new BufferGeometry();
+    geometry.groups = [
+      { count: 10, materialIndex: 0, start: 0 },
+      { count: 6, materialIndex: 1, start: 10 },
+    ];
+    const mesh = new Mesh(geometry, [body, glow]);
+
+    cloneMaskMeshMaterials(mesh, 'Matatu');
+
+    const mats = mesh.material as MeshStandardMaterial[];
+    expect(getBakedDiscolorationMap(mats[0])).toBe(bake);
+    expect(mats[0].emissiveMap).toBeNull();
+    expect(mats[1].emissiveMap).not.toBeNull();
   });
 });
 
