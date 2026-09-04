@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Color, Mesh, MeshStandardMaterial, Object3D } from 'three';
+import { Color, Mesh, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { resolveWornMask } from '../../../game/masks/wornMask';
+import { LegoColor } from '../../../types/Colors';
 import { BaseMatoran, Mask, RecruitedCharacterData } from '../../../types/Matoran';
 import { useGame } from '../../../context/Game';
 import { useSettings } from '../../../context/useSettings';
@@ -14,7 +15,15 @@ import {
 } from './maskTransition';
 import { ensureMaskSlotPlaceholderHidden } from './ensureMaskSlotPlaceholderHidden';
 import { applyKanohiRenderOrder } from './kanohiRenderOrder';
-import { applyMaskMetallicPbr, isMaskStandardMat, prepareClonedMaskMaterial } from './maskMaterial';
+import {
+  applyMaskMetallicPbr,
+  applyNuvaBakedKanohiPbr,
+  cloneMaskMeshMaterials,
+  forEachMaskMaterial,
+  isMaskGlowMaterialName,
+  isMaskStandardMat,
+  MASK_LENS_GLOW_EMISSIVE_INTENSITY,
+} from './maskMaterial';
 import { applyMaskDiscolorationToObject, setupMaskDiscolorationShader } from './maskDiscoloration';
 import { masksCollected } from '../../../services/matoranUtils';
 
@@ -28,69 +37,76 @@ function buildNuvaMaskNodes(gltf: { scene: Object3D }): Record<string, Object3D>
   return nodes;
 }
 
-/** Map Mask enum to node name in Toa_Nuva/masks.glb (user said masks are named Hau, Miru, etc) */
-const NUVA_MASK_TO_NODE_NAME: Record<string, string> = {
-  Akaku_Nuva: 'Akaku',
-  Hau_Nuva: 'Hau',
-  Hau_Nuva_Infected: 'HauInfected',
-  Kakama_Nuva: 'Kakama',
-  Kaukau_Nuva: 'Kaukau',
-  Miru_Nuva: 'Miru',
-  Pakari_Nuva: 'Pakari',
-  Vahi: 'Vahi',
-};
-
-function getMaskNodeName(maskName: string): string {
-  return NUVA_MASK_TO_NODE_NAME[maskName] ?? maskName;
+function isNuvaLensMesh(mesh: Mesh): boolean {
+  return mesh.name.includes('Lens');
 }
 
-/** Apply mask color to materials; skip Vahi (keeps original color) */
+/** Infected Hau ships fully baked albedo + PBR maps; no runtime tint or wear shader. */
+function isNuvaFullyBakedMask(maskName: string): boolean {
+  return maskName === Mask.HauNuvaInfected;
+}
+
+function nuvaMaskTintColor(maskName: string, maskColor: string): string | undefined {
+  if (isNuvaFullyBakedMask(maskName)) return undefined;
+  if (maskName === Mask.Vahi) return LegoColor.PearlGold;
+  return maskColor;
+}
+
+/** Apply mask color to materials; fully baked infected Hau keeps GLB PBR maps. */
 function applyNuvaMaskColors(
   root: Object3D,
   maskColor: string,
   maskName: string,
   maskPowerActive?: boolean
 ): void {
-  const shouldKeepOriginalColor =
-    maskName === 'Vahi' || maskName === Mask.Vahi || maskName === Mask.HauNuvaInfected;
+  const tintColor = nuvaMaskTintColor(maskName, maskColor);
+  const fullyBaked = isNuvaFullyBakedMask(maskName);
 
   root.traverse((child) => {
     if (!(child as Mesh).isMesh) return;
     const mesh = child as Mesh;
-    const mat = mesh.material;
-    if (mesh.name.includes('Lens')) {
-      if ((mat as MeshStandardMaterial).emissive) {
-        (mat as MeshStandardMaterial).emissiveIntensity = 5;
+
+    forEachMaskMaterial(mesh, (mat) => {
+      if (isMaskGlowMaterialName(mat.name) || isNuvaLensMesh(mesh)) {
+        if (isMaskGlowMaterialName(mat.name) && mat.emissive) {
+          mat.emissiveIntensity = MASK_LENS_GLOW_EMISSIVE_INTENSITY;
+        }
+        return;
       }
-      return;
-    }
 
-    if (!isMaskStandardMat(mat)) return;
-
-    if (shouldKeepOriginalColor) return;
-
-    mat.color.copy(new Color(maskColor));
-    applyMaskMetallicPbr(mat, maskColor);
-    if (mat.emissive) {
-      if (maskPowerActive) {
-        mat.emissive = new Color(maskColor);
-        mat.emissiveIntensity = 2.5;
-      } else {
-        mat.emissive = new Color(0x000000);
-        mat.emissiveIntensity = 0;
+      if (fullyBaked) {
+        applyNuvaBakedKanohiPbr(mat);
+        return;
       }
-    }
+
+      if (!tintColor) return;
+
+      mat.color.copy(new Color(tintColor));
+      applyMaskMetallicPbr(mat, tintColor);
+      if (mat.emissive) {
+        if (maskPowerActive) {
+          mat.emissive = new Color(tintColor);
+          mat.emissiveIntensity = 2.5;
+        } else {
+          mat.emissive = new Color(0x000000);
+          mat.emissiveIntensity = 0;
+        }
+      }
+    });
   });
 
-  if (!shouldKeepOriginalColor) {
-    applyMaskDiscolorationToObject(root, undefined, maskColor);
+  if (tintColor) {
+    applyMaskDiscolorationToObject(root, undefined, tintColor);
   }
 }
 
 /**
  * Loads a mask from Toa_Nuva/masks.glb, attaches it to the parent, and applies color.
  * Mask selection: matoran.maskOverride || matoran.mask (from matoran dex).
- * Vahi mask does not change color.
+ * Vahi tints gold (PearlGold). Infected Hau keeps baked albedo + metalness/roughness
+ * maps from the GLB ({@link applyNuvaBakedKanohiPbr}), not {@link applyMaskMetallicPbr}.
+ * Other Kanohi use baked emissive discoloration the same way as Mata/Turaga
+ * {@link useMask} whenever the GLB ships an emissiveMap.
  */
 export function useNuvaMask(
   masksParent: Object3D | undefined,
@@ -102,7 +118,6 @@ export function useNuvaMask(
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
   const collected = matoran.unlockAllMasks ? [] : masksCollected(matoran, completedQuests);
   const maskName = resolveWornMask(matoran, collected);
-  const maskNodeName = getMaskNodeName(maskName);
   const maskColor = getEffectiveNuvaMaskColor(matoran, completedQuests);
 
   const gltf = useGLTF(NUVA_MASKS_GLB_PATH); // useDraco=true by default for Draco-compressed GLB
@@ -126,9 +141,9 @@ export function useNuvaMask(
 
     ensureMaskSlotPlaceholderHidden(masksParent);
 
-    const source = masksNodes[maskNodeName];
+    const source = masksNodes[maskName];
     if (!source) {
-      console.warn(`[useNuvaMask] Mask '${maskNodeName}' not found in Toa_Nuva/masks.glb`);
+      console.warn(`[useNuvaMask] Mask '${maskName}' not found in Toa_Nuva/masks.glb`);
       return;
     }
 
@@ -139,18 +154,23 @@ export function useNuvaMask(
         const mesh = child as Mesh;
         mesh.castShadow = effectiveShadows;
         mesh.receiveShadow = effectiveShadows;
-        const originalMat = mesh.material;
-        if (isMaskStandardMat(originalMat)) {
-          const mat = originalMat.clone();
-          prepareClonedMaskMaterial(mat);
-          mesh.material = mat;
+        const raw = mesh.material;
+        const hasTintable =
+          isMaskStandardMat(raw) ||
+          (Array.isArray(raw) && raw.some((mat) => isMaskStandardMat(mat)));
+        if (hasTintable) {
+          cloneMaskMeshMaterials(mesh, maskName);
         }
       }
     });
 
     applyKanohiRenderOrder(clone);
 
-    setupMaskDiscolorationShader(clone, maskColorRef.current);
+    if (!isNuvaFullyBakedMask(maskNameRef.current)) {
+      const tint =
+        nuvaMaskTintColor(maskNameRef.current, maskColorRef.current) ?? maskColorRef.current;
+      setupMaskDiscolorationShader(clone, tint);
+    }
 
     applyNuvaMaskColors(
       clone,
@@ -162,7 +182,7 @@ export function useNuvaMask(
     const prevMask = maskRef.current;
     const isChange =
       prevMaskFileNameRef.current !== null &&
-      prevMaskFileNameRef.current !== maskNodeName &&
+      prevMaskFileNameRef.current !== maskName &&
       prevMask !== null;
 
     if (isChange && prevMask) {
@@ -173,8 +193,8 @@ export function useNuvaMask(
 
     masksParent.add(clone);
     maskRef.current = clone;
-    prevMaskFileNameRef.current = maskNodeName;
-  }, [masksNodes, masksParent, maskNodeName, effectiveShadows]);
+    prevMaskFileNameRef.current = maskName;
+  }, [masksNodes, masksParent, maskName, effectiveShadows]);
 
   useEffect(() => {
     const transition = transitionRef.current;

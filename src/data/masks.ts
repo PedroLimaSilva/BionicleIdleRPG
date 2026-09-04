@@ -90,6 +90,10 @@ export function getDexPreviewMasks(stage: MatoranStage, wornMask: Mask): Mask[] 
       return [];
     default: {
       const masks = [...getSelectableMasksForStage(stage)];
+      if (stage === MatoranStage.ToaNuva && wornMask !== Mask.Avohkii) {
+        if (!masks.includes(Mask.Vahi)) masks.push(Mask.Vahi);
+        if (!masks.includes(Mask.HauNuvaInfected)) masks.push(Mask.HauNuvaInfected);
+      }
       if (!masks.includes(wornMask)) {
         masks.unshift(wornMask);
       }

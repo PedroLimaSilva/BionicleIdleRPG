@@ -262,6 +262,17 @@ export function applyMaskMetallicPbr(mat: MaskStandardMat, maskColor: string): v
   mat.metalness = KANOHI_PAINT_METALNESS;
 }
 
+/**
+ * Infected Hau ships full albedo + normal + metalness/roughness bakes. Keep the
+ * authored metalness map (unlike {@link applyMaskMetallicPbr}) and use glTF
+ * factor 1 so the blue channel drives metalness.
+ */
+export function applyNuvaBakedKanohiPbr(mat: MaskStandardMat): void {
+  if (isMaskGlowMaterialName(mat.name)) return;
+  if (!mat.metalnessMap) return;
+  mat.metalness = 1;
+}
+
 /** Clone a Great Kanohi material for per-instance tinting (same path as Mata masks). */
 export function cloneGreatMaskMaterial(
   originalMat: MaskStandardMat,
