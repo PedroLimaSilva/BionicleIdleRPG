@@ -2,6 +2,10 @@ import { Color, FrontSide, MeshPhysicalMaterial } from 'three';
 import { float } from 'three/tsl';
 import type { KitTransmissivePreset } from '../../../types/KitParts';
 import type { KitMaterialSlotOverride } from '../../../types/KitParts';
+import {
+  applySelectiveBloomMrt,
+  shouldSelectiveBloomTransmissiveKind,
+} from '../CharacterScene/selectiveBloom';
 
 /** Kit GLB `KHR_materials_ior` export (~1.45 glass / trans-plastic). */
 export const TRANSMISSIVE_KIT_IOR = 1.45;
@@ -99,6 +103,9 @@ export function buildTransmissiveKitMaterial(
   (mat as MeshPhysicalMaterial & { transmissionNode?: unknown }).transmissionNode = float(
     preset.transmission
   );
+  if (shouldSelectiveBloomTransmissiveKind(kind)) {
+    applySelectiveBloomMrt(mat);
+  }
   return mat;
 }
 

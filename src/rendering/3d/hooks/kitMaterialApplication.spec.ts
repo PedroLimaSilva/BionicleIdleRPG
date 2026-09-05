@@ -148,6 +148,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(next.metalness).toBe(0);
     expect(next.emissiveIntensity).toBe(0.1);
     expect(next.transparent).toBe(false);
+    expect((next as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
   });
 
   test('McToran Face Brain slot is clearer transmissive gel', () => {
@@ -169,6 +170,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
     expect(next.transmission).toBe(TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION);
+    expect((next as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
   });
 
   test('VahkiHood slot uses transmissive visor gel', () => {
@@ -190,6 +192,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
     expect(next.transmission).toBe(TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION);
+    expect((next as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
   });
 
   test('transmissive Brain meshes draw after Kanohi', () => {
@@ -364,5 +367,24 @@ describe('buildKitMeshMaterials untextured slots', () => {
     expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
     expect(next.emissiveIntensity).toBe(1);
     expect(next.emissiveMap).toBeNull();
+    expect((next as MeshStandardMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
+  });
+
+  test('Glowing Eyes stay emissive without joining the bloom MRT', () => {
+    const mesh = meshWithUvAndSlots(['Glowing Eyes']);
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        'Glowing Eyes': {
+          emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 50,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
+    expect(next.emissiveIntensity).toBe(50);
+    expect((next as MeshStandardMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
   });
 });

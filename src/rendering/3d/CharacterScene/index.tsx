@@ -8,6 +8,7 @@ import { useSettings } from '../../../context/useSettings';
 import { SceneHdriEnvironment } from '../SceneHdriEnvironment';
 import { CITY_ENVIRONMENT_PROPS } from '../utils/cityEnvironmentHdri';
 import { shouldEnableShadows } from '../../../utils/testMode';
+import { CharacterSelectiveBloom } from './CharacterSelectiveBloom';
 import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../../types/Matoran';
@@ -270,6 +271,7 @@ export function CharacterScene({
 
   return (
     <>
+      <CharacterSelectiveBloom />
       <CharacterFraming />
       <SceneHdriEnvironment {...CITY_ENVIRONMENT_PROPS} intensity={SHEET_ENV_INTENSITY} />
       <directionalLight

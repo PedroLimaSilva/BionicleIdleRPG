@@ -1,0 +1,33 @@
+import { mrt, uniform } from 'three/tsl';
+import type { KitTransmissivePreset } from '../../../types/KitParts';
+
+/** Shared MRT mask written by kit materials that should bloom. */
+const BLOOM_INTENSITY_ON = uniform(1);
+
+export type SelectiveBloomMrtMaterial = {
+  mrtNode?: unknown;
+  name: string;
+};
+
+/**
+ * Kit `Glow` (hooks, weapons, visor lines) blooms. `Glowing Eyes` stay emissive-only
+ * so the face doesn't blow out behind the Kanohi.
+ */
+export function isSelectiveBloomKitGlowName(name: string | undefined): boolean {
+  if (!name) return false;
+  const lower = name.toLowerCase();
+  if (lower.includes('glowing eyes')) return false;
+  return lower.includes('glow');
+}
+
+/** Toa / Metru brain gel is on the bloom pass; McToran faces and Vahki visors are not. */
+export function shouldSelectiveBloomTransmissiveKind(
+  kind: KitTransmissivePreset | undefined
+): boolean {
+  return kind === 'brain';
+}
+
+/** Marks a material so the character bloom MRT picks it up (Three.js selective-bloom pattern). */
+export function applySelectiveBloomMrt(mat: SelectiveBloomMrtMaterial): void {
+  mat.mrtNode = mrt({ bloomIntensity: BLOOM_INTENSITY_ON });
+}

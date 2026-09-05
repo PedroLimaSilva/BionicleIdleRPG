@@ -61,5 +61,8 @@ describe('transmissiveKitMaterial', () => {
     expect(
       (brain as MeshPhysicalMaterial & { transmissionNode?: unknown }).transmissionNode
     ).toBeDefined();
+    expect((brain as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
+    expect((mctoran as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
+    expect((hood as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
   });
 });

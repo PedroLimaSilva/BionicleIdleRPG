@@ -32,7 +32,7 @@ const TAHU_NUVA_MAGMA_BLADE_PALETTE_COLORS: Partial<Record<string, KitMaterialSl
   ...TAHU_NUVA_PALETTE_COLORS,
   Glow: {
     emissive: { kind: 'part', part: 'weapon', slot: 'glow' },
-    emissiveIntensity: 10,
+    emissiveIntensity: 3,
     weathered: false,
   },
 };

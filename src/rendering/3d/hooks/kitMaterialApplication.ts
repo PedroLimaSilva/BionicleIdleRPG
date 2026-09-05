@@ -30,6 +30,10 @@ import {
   resolveTransmissiveKitKind,
   TRANSMISSIVE_KIT_RENDER_ORDER,
 } from './transmissiveKitMaterial';
+import {
+  applySelectiveBloomMrt,
+  isSelectiveBloomKitGlowName,
+} from '../CharacterScene/selectiveBloom';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -71,6 +75,9 @@ function buildEmissiveKitMaterial(
   if (spec.opacity !== undefined) {
     cloned.opacity = spec.opacity;
     cloned.transparent = spec.opacity < 1;
+  }
+  if (isSelectiveBloomKitGlowName(cloned.name)) {
+    applySelectiveBloomMrt(cloned);
   }
   return cloned;
 }

@@ -4,6 +4,8 @@
 class BlendMode {}
 
 class RenderPipeline {
+  outputColorTransform = true;
+  outputNode = null;
   dispose() {}
   render() {}
 }
