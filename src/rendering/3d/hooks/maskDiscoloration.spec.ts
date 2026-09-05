@@ -1,6 +1,7 @@
-import { BoxGeometry, Mesh, MeshStandardMaterial, Texture } from 'three';
+import { BoxGeometry, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Texture } from 'three';
 import { LegoColor } from '../../../types/Colors';
 import { METRU_MASK_DISCOLORATION } from '../kit/palettes/metruKitPlayerPalette';
+import { KAUKAU_TRANSMISSION } from './maskMaterial';
 import {
   applyMaskDiscolorationUniforms,
   applyMaskPowerEmissive,
@@ -65,5 +66,17 @@ describe('setupMaskDiscolorationShader', () => {
     expect(mat.emissiveIntensity).toBe(0);
     const crown = mat.userData.discolorationUniforms as { intensity: { value: number } };
     expect(crown.intensity.value).toBe(1);
+  });
+
+  test('keeps frosted Kaukau on scalar metalness instead of a metalnessNode', () => {
+    const mat = new MeshPhysicalMaterial({
+      name: 'Kaukau_baked',
+      opacity: 1,
+      transmission: KAUKAU_TRANSMISSION,
+    }) as MaskTslMaterial;
+    setupMaskDiscolorationShader(new Mesh(new BoxGeometry(1, 1, 1), mat), LegoColor.Blue);
+    expect(mat.colorNode).toBeDefined();
+    expect(mat.metalnessNode).toBeUndefined();
+    expect(mat.roughnessNode).toBeUndefined();
   });
 });

@@ -16,7 +16,12 @@ import {
   getBakedDiscolorationMap,
   type BakedDiscolorationUniforms,
 } from './bakedDiscoloration';
-import { forEachMaskMaterial, isMaskGlowMaterialName, type MaskStandardMat } from './maskMaterial';
+import {
+  forEachMaskMaterial,
+  isMaskGlowMaterialName,
+  maskUsesTransmissionRendering,
+  type MaskStandardMat,
+} from './maskMaterial';
 
 /** Vertical crown tint for Metru double-injected Kanohi (silver-gray top → mask color bottom). */
 export type MaskDiscoloration = {
@@ -113,8 +118,12 @@ function attachDiscolorationShader(
 
   const tslMat = mat as MaskTslMaterial;
   tslMat.colorNode = mix(afterBake, crown.color, crownAmt);
-  tslMat.metalnessNode = mix(materialMetalness, crown.metalness, crownAmt);
-  tslMat.roughnessNode = mix(materialRoughness, crown.roughness, crownAmt);
+  if (!maskUsesTransmissionRendering(mat)) {
+    // Frosted Kaukau / Rau must keep scalar metalness 0. A metalnessNode graph
+    // that doesn't stay at 0 makes WebGPU skip the transmission lobe.
+    tslMat.metalnessNode = mix(materialMetalness, crown.metalness, crownAmt);
+    tslMat.roughnessNode = mix(materialRoughness, crown.roughness, crownAmt);
+  }
   // WebGPU copies this onto MeshStandardNodeMaterial and uses it as the
   // pipeline key. A constant suffix made every Kanohi share the first
   // compiled program (Tahu Hau, Pohatu Kakama). Close over this clone’s

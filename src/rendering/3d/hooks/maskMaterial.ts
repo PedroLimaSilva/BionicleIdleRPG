@@ -1,4 +1,5 @@
-import { FrontSide, Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
+import { Color, FrontSide, Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
+import { float } from 'three/tsl';
 import { KANOHI_PAINT_METALNESS, metallicColorPbr } from '../kit/palettes/metalPbr';
 import { adoptBakedDiscolorationMap } from './bakedDiscoloration';
 
@@ -109,6 +110,8 @@ export function cloneMaskMeshMaterials(mesh: Mesh, maskSculptName: string): void
     const applyTransmission = (mat: MaskStandardMat): MaskStandardMat => {
       if (isMaskGlowMaterialName(mat.name)) return mat;
       const physical = ensurePhysicalMaskMaterial(mat);
+      physical.metalness = 0;
+      physical.metalnessMap = null;
       configureTransmissiveKanohiTransmission(maskSculptName, physical);
       syncMaskTransparencyState(physical);
       return physical;
@@ -164,6 +167,30 @@ export const KAUKAU_TRANSMISSION = 0.75;
 /** Great Rau — more see-through than Kaukau (no transmission map; scalar only). */
 export const RAU_TRANSMISSION = 0.88;
 export const KAUKAU_IOR = 1.45;
+/** Uniform frost so Kaukau / Rau read as cloudy glass, not painted metal. */
+export const FROSTED_KANOHI_ROUGHNESS = 0.35;
+/**
+ * Transmission spends most of the albedo as volume tint. Dark LEGO blues
+ * (`DarkBlue` `#0A3463`) then have almost no leftover diffuse and read as black
+ * glass. Boost darker tints more, from the original hex, so Great Rau stays
+ * navy instead of collapsing, while Gali’s Blue Kaukau only lifts a little.
+ */
+export const FROSTED_KANOHI_LIGHTNESS_BOOST = 0.18;
+export const FROSTED_KANOHI_DARK_LIFT = 0.22;
+export const FROSTED_KANOHI_MAX_LIGHTNESS = 0.48;
+
+const _frostedKanohiHsl = { h: 0, l: 0, s: 0 };
+
+/** Raise HSL lightness from the Kanohi tint so transmissive sculpts stay readable. */
+export function liftFrostedKanohiColor(color: Color): void {
+  color.getHSL(_frostedKanohiHsl);
+  const { h, l, s } = _frostedKanohiHsl;
+  const lifted = Math.min(
+    FROSTED_KANOHI_MAX_LIGHTNESS,
+    l + FROSTED_KANOHI_LIGHTNESS_BOOST + (1 - l) * FROSTED_KANOHI_DARK_LIFT
+  );
+  color.setHSL(h, s, lifted);
+}
 
 const GREAT_MASK_SUFFIX = '_Great';
 
@@ -216,6 +243,23 @@ export function transmissionForKanohiSculpt(maskSculptName: string): number {
   return getKanohiSculptBaseName(maskSculptName) === 'Rau' ? RAU_TRANSMISSION : KAUKAU_TRANSMISSION;
 }
 
+/** Dielectric frost: painted Kanohi metalness would make transmission look opaque. */
+export function applyFrostedKanohiPbr(mat: MaskStandardMat, tintHex?: string): void {
+  if (!(mat instanceof MeshPhysicalMaterial) || (mat.transmission ?? 0) <= 0) return;
+  mat.metalness = 0;
+  mat.metalnessMap = null;
+  mat.roughness = FROSTED_KANOHI_ROUGHNESS;
+  mat.roughnessMap = null;
+  if (tintHex) {
+    mat.color.set(tintHex);
+    liftFrostedKanohiColor(mat.color);
+  }
+  // WebGPU MeshPhysicalNodeMaterial.useTransmission also keys off this node.
+  (mat as MeshPhysicalMaterial & { transmissionNode?: unknown }).transmissionNode = float(
+    mat.transmission
+  );
+}
+
 /** Keep transmissive Kanohi on physical transmission (not opacity blend). */
 export function configureTransmissiveKanohiTransmission(
   maskSculptName: string,
@@ -230,6 +274,7 @@ export function configureTransmissiveKanohiTransmission(
   if (mat.thickness <= 0) {
     mat.thickness = TRANSMISSIVE_KANOHI_SHELL_THICKNESS;
   }
+  applyFrostedKanohiPbr(mat);
 }
 
 /** Kaukau-only helper; Rau uses {@link configureTransmissiveKanohiTransmission}. */
@@ -300,6 +345,11 @@ export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
 
   adoptBakedDiscolorationMap(mat);
 
+  if (maskUsesTransmissionRendering(mat)) {
+    applyFrostedKanohiPbr(mat);
+    return;
+  }
+
   if (hasMaskPbrMaps(mat)) return;
 
   mat.metalness = 0;
@@ -316,6 +366,10 @@ export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
  */
 export function applyMaskMetallicPbr(mat: MaskStandardMat, maskColor: string): void {
   if (isMaskGlowMaterialName(mat.name)) return;
+  if (maskUsesTransmissionRendering(mat)) {
+    applyFrostedKanohiPbr(mat, maskColor);
+    return;
+  }
 
   if (mat.metalnessMap) mat.metalnessMap = null;
 
