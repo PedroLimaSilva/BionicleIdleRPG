@@ -1,5 +1,6 @@
 import { FrontSide, Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { KANOHI_PAINT_METALNESS, metallicColorPbr } from '../kit/palettes/metalPbr';
+import { adoptBakedDiscolorationMap } from './bakedDiscoloration';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -84,6 +85,8 @@ export function ensureAkakuLensMaterialSlot(mesh: Mesh): void {
 }
 
 export function cloneMaskMeshMaterials(mesh: Mesh, maskSculptName: string): void {
+  mesh.geometry = mesh.geometry.clone();
+
   const raw = mesh.material;
   if (Array.isArray(raw)) {
     mesh.material = raw.map((mat) => {
@@ -201,9 +204,9 @@ export function ensurePhysicalMaskMaterial(mat: MaskStandardMat): MeshPhysicalMa
     side: mat.side,
     transparent: mat.transparent,
   });
-  physical.emissive.set(0, 0, 0);
-  physical.emissiveIntensity = 0;
-  physical.emissiveMap = null;
+  physical.emissive.copy(mat.emissive);
+  physical.emissiveIntensity = mat.emissiveIntensity;
+  physical.emissiveMap = mat.emissiveMap;
   physical.userData = { ...mat.userData };
   return physical;
 }
@@ -256,20 +259,6 @@ export function maskUsesTransmissionRendering(mat: MaskStandardMat): boolean {
   return mat instanceof MeshPhysicalMaterial && (mat.transmission ?? 0) > 0 && mat.opacity >= 0.999;
 }
 
-function stripMaskPbrMaps(mat: MaskStandardMat): void {
-  mat.aoMap = null;
-  mat.bumpMap = null;
-  mat.emissiveMap = null;
-  mat.lightMap = null;
-  mat.metalnessMap = null;
-  mat.normalMap = null;
-  mat.roughnessMap = null;
-  if (mat.emissive) {
-    mat.emissive.set(0, 0, 0);
-    mat.emissiveIntensity = 0;
-  }
-}
-
 export function syncMaskTransparencyState(mat: MaskStandardMat): void {
   if (isMaskGlowMaterialName(mat.name)) {
     mat.transparent = false;
@@ -296,25 +285,39 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
 
 /**
  * Configure a cloned mask material for runtime tinting.
- * Bake maps and emission are stripped so Kanohi read as slot-colored plastic.
+ * Keep baked normal / roughness / metalness / albedo maps (same path as Toa Nuva
+ * `armor.glb`). Steal the emissive bake for discoloration so it cannot glow.
+ *
+ * Kanohi without PBR maps fall back to dielectric plastic scalars.
  */
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
-  stripMaskPbrMaps(mat);
   syncMaskTransparencyState(mat);
-  if (isMaskGlowMaterialName(mat.name)) return;
+  if (isMaskGlowMaterialName(mat.name)) {
+    mat.emissive.set(0, 0, 0);
+    mat.emissiveIntensity = 0;
+    return;
+  }
+
+  adoptBakedDiscolorationMap(mat);
+
+  if (hasMaskPbrMaps(mat)) return;
 
   mat.metalness = 0;
   mat.roughness = 0.55;
 }
 
 /**
+ * Kanohi keep baked normal / roughness maps. Metalness maps are dropped: current
+ * bakes are edge-only (near-black on flats), and glTF `metallicFactor` defaults
+ * to 1, so those maps make painted Kanohi read as bright dielectric plastic.
  * Gold uses {@link metallicColorPbr}; every other color uses painted-metal
- * {@link KANOHI_PAINT_METALNESS}. Bake maps are dropped.
+ * {@link KANOHI_PAINT_METALNESS} so albedo stays rich while roughness maps
+ * still supply micro-detail.
  */
 export function applyMaskMetallicPbr(mat: MaskStandardMat, maskColor: string): void {
   if (isMaskGlowMaterialName(mat.name)) return;
 
-  stripMaskPbrMaps(mat);
+  if (mat.metalnessMap) mat.metalnessMap = null;
 
   const metalPbr = metallicColorPbr(maskColor);
   if (metalPbr) {
@@ -334,7 +337,8 @@ export function applyMaskMetallicPbr(mat: MaskStandardMat, maskColor: string): v
  */
 export function applyNuvaBakedKanohiPbr(mat: MaskStandardMat): void {
   if (isMaskGlowMaterialName(mat.name)) return;
-  stripMaskPbrMaps(mat);
+  if (!mat.metalnessMap) return;
+  mat.metalness = 1;
 }
 
 /** Clone a Great Kanohi material for per-instance tinting (same path as Mata masks). */

@@ -8,6 +8,7 @@ import {
 } from 'three';
 import { LegoColor } from '../../../types/Colors';
 import { KANOHI_PAINT_METALNESS } from '../kit/palettes/metalPbr';
+import { getBakedDiscolorationMap } from './bakedDiscoloration';
 import {
   applyMaskGlowTint,
   applyMaskMetallicPbr,
@@ -58,7 +59,7 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.roughness).toBe(0.55);
   });
 
-  it('drops GLB PBR maps and uses painted plastic defaults', () => {
+  it('keeps GLB PBR scalars and maps when normal/roughness/metalness maps are present', () => {
     const mat = new MeshStandardMaterial({
       metalness: 0.85,
       name: 'Akaku_baked',
@@ -69,10 +70,10 @@ describe('prepareClonedMaskMaterial', () => {
     prepareClonedMaskMaterial(mat);
     expect(mat.transparent).toBe(false);
     expect(mat.side).toBe(FrontSide);
-    expect(mat.metalness).toBe(0);
-    expect(mat.roughness).toBe(0.55);
-    expect(mat.normalMap).toBeNull();
-    expect(mat.roughnessMap).toBeNull();
+    expect(mat.metalness).toBe(0.85);
+    expect(mat.roughness).toBe(0.12);
+    expect(mat.normalMap).toBeDefined();
+    expect(mat.roughnessMap).toBeDefined();
   });
 
   it('promotes dual-mode Mata Kaukau to transmission-only rendering', () => {
@@ -214,7 +215,7 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mats).toHaveLength(2);
     expect(mats[1].name).toBe('Glow');
     expect(isMaskGlowMaterialName(mats[1].name)).toBe(true);
-    expect(geometry.groups[1].materialIndex).toBe(1);
+    expect(mesh.geometry.groups[1].materialIndex).toBe(1);
   });
 
   it('leaves glow materials opaque colored plastic', () => {
@@ -226,7 +227,7 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.emissiveIntensity).toBe(0);
   });
 
-  it('drops baked PBR maps on cloned mask materials', () => {
+  it('adopts a baked emissiveMap as discoloration and keeps other PBR maps', () => {
     const bake = new Texture();
     const mat = new MeshStandardMaterial({
       emissiveMap: bake,
@@ -238,10 +239,11 @@ describe('prepareClonedMaskMaterial', () => {
     });
     prepareClonedMaskMaterial(mat);
     expect(mat.emissiveMap).toBeNull();
-    expect(mat.normalMap).toBeNull();
-    expect(mat.roughnessMap).toBeNull();
-    expect(mat.metalness).toBe(0);
-    expect(mat.roughness).toBe(0.55);
+    expect(getBakedDiscolorationMap(mat)).toBe(bake);
+    expect(mat.normalMap).toBeDefined();
+    expect(mat.roughnessMap).toBeDefined();
+    expect(mat.metalness).toBe(0.4);
+    expect(mat.roughness).toBe(0.3);
   });
 
   it('boosts gold mask colors beyond baked PBR map metalness', () => {
@@ -258,10 +260,10 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.metalness).toBe(0.95);
     expect(mat.roughness).toBe(0.18);
     expect(mat.envMapIntensity).toBe(0.9);
-    expect(mat.roughnessMap).toBeNull();
+    expect(mat.roughnessMap).toBeDefined();
   });
 
-  it('drops weak metalness maps on painted Kanohi', () => {
+  it('drops weak metalness maps on painted Kanohi and keeps roughness maps', () => {
     const metalnessMap = new Texture();
     const roughnessMap = new Texture();
     const mat = new MeshStandardMaterial({
@@ -275,21 +277,23 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mat.metalnessMap).toBeNull();
     expect(mat.metalness).toBe(KANOHI_PAINT_METALNESS);
     expect(mat.roughness).toBe(1);
-    expect(mat.roughnessMap).toBeNull();
+    expect(mat.roughnessMap).toBe(roughnessMap);
   });
 
-  it('strips baked maps on fully baked Nuva Kanohi', () => {
+  it('keeps metalness maps on fully baked Nuva Kanohi', () => {
     const metalnessMap = new Texture();
+    const roughnessMap = new Texture();
     const mat = new MeshStandardMaterial({
       metalness: 0,
       metalnessMap,
       name: 'Hau_Nuva_Infected_baked',
       roughness: 0.4,
-      roughnessMap: new Texture(),
+      roughnessMap,
     });
     applyNuvaBakedKanohiPbr(mat);
-    expect(mat.metalnessMap).toBeNull();
-    expect(mat.roughnessMap).toBeNull();
+    expect(mat.metalnessMap).toBe(metalnessMap);
+    expect(mat.roughnessMap).toBe(roughnessMap);
+    expect(mat.metalness).toBe(1);
   });
 });
 
@@ -321,10 +325,11 @@ describe('syncMaskTransparencyState', () => {
 });
 
 describe('cloneMaskMeshMaterials for Great Kanohi', () => {
-  it('strips baked maps on each body slot in multi-material meshes', () => {
+  it('adopts body bake maps and leaves glow emission maps alone', () => {
     const bake = new Texture();
+    const glowBake = new Texture();
     const body = new MeshStandardMaterial({ emissiveMap: bake, name: 'Matatu_Great_baked' });
-    const glow = new MeshStandardMaterial({ emissiveMap: new Texture(), name: 'Glow' });
+    const glow = new MeshStandardMaterial({ emissiveMap: glowBake, name: 'Glow' });
     const geometry = new BufferGeometry();
     geometry.groups = [
       { count: 10, materialIndex: 0, start: 0 },
@@ -334,9 +339,11 @@ describe('cloneMaskMeshMaterials for Great Kanohi', () => {
 
     cloneMaskMeshMaterials(mesh, 'Matatu');
 
+    expect(mesh.geometry).not.toBe(geometry);
     const mats = mesh.material as MeshStandardMaterial[];
     expect(mats[0].emissiveMap).toBeNull();
-    expect(mats[1].emissiveMap).toBeNull();
+    expect(getBakedDiscolorationMap(mats[0])).toBe(bake);
+    expect(mats[1].emissiveMap).toBe(glowBake);
     expect(mats[1].emissiveIntensity).toBe(0);
   });
 });
@@ -354,10 +361,10 @@ describe('cloneGreatMaskMaterial', () => {
     const mat = cloneGreatMaskMaterial(original, LegoColor.FlatDarkGold);
     expect(mat.transparent).toBe(false);
     expect(mat.side).toBe(FrontSide);
-    expect(mat.metalness).toBe(0);
-    expect(mat.normalMap).toBeNull();
-    expect(mat.roughnessMap).toBeNull();
-    expect(mat.metalnessMap).toBeNull();
+    expect(mat.metalness).toBe(0.2);
+    expect(mat.normalMap).toBeDefined();
+    expect(mat.roughnessMap).toBeDefined();
+    expect(mat.metalnessMap).toBeDefined();
     applyMaskMetallicPbr(mat, LegoColor.FlatDarkGold);
     expect(mat.metalnessMap).toBeNull();
     expect(mat.metalness).toBe(0.95);
