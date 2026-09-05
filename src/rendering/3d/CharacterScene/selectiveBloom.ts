@@ -20,11 +20,11 @@ export function isSelectiveBloomKitGlowName(name: string | undefined): boolean {
   return lower.includes('glow');
 }
 
-/** Toa / Metru brain gel is on the bloom pass; McToran faces and Vahki visors are not. */
+/** Toa / Metru brain gel and Bohrok crystal brains bloom; colorless viewports and visors do not. */
 export function shouldSelectiveBloomTransmissiveKind(
   kind: KitTransmissivePreset | undefined
 ): boolean {
-  return kind === 'brain';
+  return kind === 'brain' || kind === 'crystal';
 }
 
 /** Marks a material so the character bloom MRT picks it up (Three.js selective-bloom pattern). */

@@ -182,8 +182,8 @@ export function buildKitMeshMaterials(
     const spec = resolveKitMaterialSlotSpec(mat.name, slotLookup);
     const transmissiveKind = resolveTransmissiveKitKind(mat.name, spec);
     if (transmissiveKind) {
-      const color = spec?.color ? resolveKitColorSource(spec.color, palette) : mat.color.getStyle();
-      const emissive = spec?.emissive ? resolveKitColorSource(spec.emissive, palette) : color;
+      const color = spec?.color ? resolveKitColorSource(spec.color, palette) : '#ffffff';
+      const emissive = spec?.emissive ? resolveKitColorSource(spec.emissive, palette) : '#000000';
       const emissiveIntensity = spec?.emissiveIntensity ?? 0;
       return buildTransmissiveKitMaterial(
         mat.name,

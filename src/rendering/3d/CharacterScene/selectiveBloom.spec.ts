@@ -12,8 +12,10 @@ describe('selectiveBloom selection', () => {
     expect(isSelectiveBloomKitGlowName('Main')).toBe(false);
   });
 
-  test('only transmissive brain gel is selected, not visors', () => {
+  test('only transmissive brain gel and crystal are selected, not visors', () => {
     expect(shouldSelectiveBloomTransmissiveKind('brain')).toBe(true);
+    expect(shouldSelectiveBloomTransmissiveKind('crystal')).toBe(true);
+    expect(shouldSelectiveBloomTransmissiveKind('clear')).toBe(false);
     expect(shouldSelectiveBloomTransmissiveKind('mctoranFace')).toBe(false);
     expect(shouldSelectiveBloomTransmissiveKind('vahkiHood')).toBe(false);
     expect(shouldSelectiveBloomTransmissiveKind(undefined)).toBe(false);

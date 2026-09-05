@@ -18,6 +18,8 @@ import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
 import {
   TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
+  TRANSMISSIVE_KIT_CLEAR_TRANSMISSION,
+  TRANSMISSIVE_KIT_CRYSTAL_TRANSMISSION,
   TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
   TRANSMISSIVE_KIT_RENDER_ORDER,
   TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
@@ -214,13 +216,53 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(mesh.renderOrder).toBe(TRANSMISSIVE_KIT_RENDER_ORDER);
   });
 
-  test('Brain with color-only slot (Bohrok eyes) stays on the plastic path', () => {
+  test('color-only Brain without a transmissive preset stays on the plastic path', () => {
     const mat = buildSingle('Brain', {
       Brain: { color: { key: 'eyes', kind: 'palette' }, weathered: false },
     });
     expect(mat).not.toBeInstanceOf(MeshPhysicalMaterial);
     expect(mat.name).toBe('WeatheredMetal');
     expect(mat.metalness).toBe(PLASTIC_WEATHERED.metalness);
+  });
+
+  test('crystal Brain is transmissive and joins the bloom MRT', () => {
+    const mesh = meshWithMaterialNamed('Brain');
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Brain: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 0.1,
+          transmissive: 'crystal',
+          weathered: false,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshPhysicalMaterial;
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_CRYSTAL_TRANSMISSION);
+    expect((next as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
+  });
+
+  test('colorless Clear viewport is frosted trans-clear without tint or bloom', () => {
+    const mesh = meshWithMaterialNamed('CLEAR');
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        CLEAR: { transmissive: 'clear', weathered: false },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshPhysicalMaterial;
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(next.color.getHexString().toUpperCase()).toBe('FFFFFF');
+    expect(next.emissive.getHexString().toUpperCase()).toBe('000000');
+    expect(next.emissiveIntensity).toBe(0);
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_CLEAR_TRANSMISSION);
+    expect((next as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
   });
 
   test('opacity below 1 enables transparent blending on the cloned material', () => {

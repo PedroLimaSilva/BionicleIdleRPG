@@ -14,6 +14,15 @@ const brainTransmissiveSlot = (): KitMaterialSlotEntry => ({
   weathered: false,
 });
 
+/** Bohrok eye shell (`Brain` on `BohrokEye`) — clear crystal, still on selective bloom. */
+export const CRYSTAL_BRAIN_SLOT: KitMaterialSlotEntry = {
+  color: { key: 'eyes', kind: 'palette' },
+  emissive: { key: 'eyes', kind: 'palette' },
+  emissiveIntensity: BRAIN_EMISSIVE_INTENSITY,
+  transmissive: 'crystal',
+  weathered: false,
+};
+
 /** McToran face (`McToranFace` kit node) — clearer brain gel than Toa `MataBrain`. */
 export const MCTORAN_FACE_BRAIN_SLOT: KitMaterialSlotEntry = {
   color: { key: 'eyes', kind: 'palette' },
