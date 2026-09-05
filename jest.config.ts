@@ -5,6 +5,11 @@ module.exports = {
     __POSTHOG_KEY__: '',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  moduleNameMapper: {
+    '^three/addons/(.*)$': '<rootDir>/src/test/mocks/threeTsl.cjs',
+    '^three/tsl$': '<rootDir>/src/test/mocks/threeTsl.cjs',
+    '^three/webgpu$': '<rootDir>/src/test/mocks/threeWebgpu.cjs',
+  },
   roots: ['<rootDir>/src'],
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   testEnvironment: 'node',
@@ -17,4 +22,5 @@ module.exports = {
       },
     ],
   },
+  transformIgnorePatterns: ['/node_modules/(?!three/)'],
 };

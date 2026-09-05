@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Color as ThreeColor, Group, MathUtils, Mesh, MeshStandardMaterial, Color } from 'three';
+import { Color as ThreeColor, Group, Mesh, MeshStandardMaterial, Color } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
@@ -18,21 +18,9 @@ const GLOW_COMPLETE_THRESHOLD = 0.98;
 interface GlowEntry {
   material: MeshStandardMaterial;
   onColor: ThreeColor;
-  onEmissive: ThreeColor;
-  onEmissiveIntensity: number;
 }
 
 const WEATHERED_METAL_OPTIONS: WeatheredMetalOptions = {
-  cavityStrength: 1,
-  debugGrimeAsColor: false,
-  edgeColor: '#ffffff',
-  edgeCurvatureScale: 2,
-  edgeStrength: 0.15,
-  fineScale: 18.0,
-  grimeDarken: 0.4,
-  grimeMetalnessReduce: 0.5,
-  grimeRoughness: 0.2,
-  largeScale: 3.5,
   metalness: 0.05,
   roughness: 0.55,
 };
@@ -47,8 +35,6 @@ export const RahkshiModel = forwardRef<
   /** Original eye material values from the GLTF, captured once before any modifications. */
   const originalEyeValuesRef = useRef<{
     onColor: ThreeColor;
-    onEmissive: ThreeColor;
-    onEmissiveIntensity: number;
   } | null>(null);
   /** When hasKraata becomes true, stay on Empty until eyes finish lighting up, then switch to Idle. */
   const [glowCompleteForIdle, setGlowCompleteForIdle] = useState(hasKraata);
@@ -108,37 +94,26 @@ export const RahkshiModel = forwardRef<
       if (mat.name === 'Eyes') {
         // Use stored original values if we've already replaced child.material (mat is our previous clone)
         let onColor: ThreeColor;
-        let onEmissive: ThreeColor;
-        let onEmissiveIntensity: number;
         const stored = originalEyeValuesRef.current;
         if (stored) {
           onColor = stored.onColor;
-          onEmissive = stored.onEmissive;
-          onEmissiveIntensity = stored.onEmissiveIntensity;
-          // Reuse existing material; let useFrame lerp to target (no snap)
           entries.push({
             material: mat,
             onColor,
-            onEmissive,
-            onEmissiveIntensity,
           });
         } else {
           const clone = mat.clone();
           onColor = mat.color.clone();
-          onEmissive = mat.emissive.clone();
-          onEmissiveIntensity = mat.emissiveIntensity;
-          originalEyeValuesRef.current = { onColor, onEmissive, onEmissiveIntensity };
+          originalEyeValuesRef.current = { onColor };
           if (!glowTarget.current) {
             clone.color.set('#000000');
-            clone.emissive.set('#000000');
-            clone.emissiveIntensity = 0;
           }
+          clone.emissive.set('#000000');
+          clone.emissiveIntensity = 0;
           child.material = clone;
           entries.push({
             material: clone,
             onColor,
-            onEmissive,
-            onEmissiveIntensity,
           });
         }
         return;
@@ -160,8 +135,6 @@ export const RahkshiModel = forwardRef<
     applyWeatheredMetalToObject(bodyInstance, {
       ...WEATHERED_METAL_OPTIONS,
       excludeMaterialNames: ['Eyes', 'Head', 'SOLID-SILVER', 'SOLID-SILVER.001'],
-      includeNormalMappedMaterials: true,
-      preserveExistingMaps: true,
     });
 
     // Then apply Rahkshi color scheme while preserving weathered material/shader.
@@ -196,21 +169,17 @@ export const RahkshiModel = forwardRef<
 
     const alpha = 1 - Math.exp(-GLOW_LERP_SPEED * delta);
     let allGlowComplete = active;
-    for (const { material, onColor, onEmissive, onEmissiveIntensity } of entries) {
+    for (const { material, onColor } of entries) {
       material.color.lerp(active ? onColor : BLACK, alpha);
-      material.emissive.lerp(active ? onEmissive : BLACK, alpha);
-      material.emissiveIntensity = MathUtils.lerp(
-        material.emissiveIntensity,
-        active ? onEmissiveIntensity : 0,
-        alpha
-      );
-      if (active && onEmissiveIntensity > 0) {
-        const ratio = material.emissiveIntensity / onEmissiveIntensity;
+      material.emissive.set(0, 0, 0);
+      material.emissiveIntensity = 0;
+      if (active) {
+        const ratio = material.color.r / Math.max(onColor.r, 0.001);
         if (ratio < GLOW_COMPLETE_THRESHOLD) allGlowComplete = false;
       }
     }
     if (active && allGlowComplete) setGlowCompleteForIdle(true);
-    if (allGlowComplete || (!active && entries.every((e) => e.material.emissiveIntensity < 0.01))) {
+    if (allGlowComplete || (!active && entries.every((e) => e.material.color.r < 0.01))) {
       lerpCompleteRef.current = true;
     }
   });

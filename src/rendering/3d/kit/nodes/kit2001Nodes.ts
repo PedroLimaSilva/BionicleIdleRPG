@@ -2,6 +2,14 @@
  * Canonical attachable nodes in `kit_2001.glb`.
  * Values must match `Object3D.name` at runtime (see `useKitAttachments`).
  * When adding a node here, wire it in an attachment map or add to `KIT_NODE_EXEMPT`.
+ *
+ * Do not flag “atlas vs dedicated bake” on these keys. Bake layout is a
+ * property of the glTF material / emissive image, not the attach name. One
+ * node often mixes both: MataHip is its own bake, Socket packs UV islands,
+ * MataSingleArmUpper Main+Secondary share one emission image, MataFoot mixes
+ * a dedicated Main bake with UV1 heel/toe. Hand-flags would drift across
+ * kit_2003 / masks and would not fix sampling — every bake still uses that
+ * texture’s mesh UV (`texture.channel`).
  */
 export const KIT_2001_NODES = {
   Axle2L: 'Axle2L',

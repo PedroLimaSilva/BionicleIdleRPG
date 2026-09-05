@@ -52,9 +52,8 @@
   "dependencies": {
     "@posthog/react": "^1.10.5",
     "@react-three/drei": "10.7.8",
-    "@react-three/fiber": "9.5.0",
-    "@react-three/postprocessing": "3.0.4",
-    "@types/three": "0.160.0",
+    "@react-three/fiber": "9.7.0",
+    "@types/three": "0.185.0",
     "dexie": "^4.4.3",
     "lucide-react": "^0.487.0",
     "mermaid": "^11.15.0",
@@ -64,7 +63,7 @@
     "react": "19",
     "react-dom": "19",
     "react-router-dom": "^7.18.2",
-    "three": "0.160.0"
+    "three": "0.185.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
@@ -79,7 +78,7 @@
     "@types/jest": "^30.0.0",
     "@types/react": "18",
     "@types/react-dom": "18",
-    "@types/three": "0.160.0",
+    "@types/three": "0.185.0",
     "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^9.18.0",
     "eslint-plugin-perfectionist": "^5.9.0",

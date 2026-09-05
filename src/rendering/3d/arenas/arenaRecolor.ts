@@ -77,8 +77,8 @@ export function applyArenaRecolor(root: THREE.Object3D, recolor: ArenaRecolor): 
       const clone = mat.clone();
       if (isAccentMaterial(clone.name)) {
         clone.color.copy(accent);
-        clone.emissive = accent.clone();
-        clone.emissiveIntensity = Math.max(clone.emissiveIntensity ?? 1, 1.2);
+        clone.emissive.set(0, 0, 0);
+        clone.emissiveIntensity = 0;
       } else {
         tintColor(clone.color);
       }
