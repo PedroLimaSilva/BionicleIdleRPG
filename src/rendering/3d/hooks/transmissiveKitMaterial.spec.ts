@@ -58,5 +58,8 @@ describe('transmissiveKitMaterial', () => {
     expect(brain.transparent).toBe(false);
     expect(brain.normalMap).toBeNull();
     expect(hood.transmissionMap).toBeNull();
+    expect(
+      (brain as MeshPhysicalMaterial & { transmissionNode?: unknown }).transmissionNode
+    ).toBeDefined();
   });
 });

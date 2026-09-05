@@ -7,11 +7,21 @@ import {
   MeshPhysicalMaterial,
   MeshStandardMaterial,
 } from 'three';
-import { buildKitMaterialSlotLookup, buildKitMeshMaterials } from './kitMaterialApplication';
+import {
+  buildKitMaterialSlotLookup,
+  buildKitMeshMaterials,
+  applyKitMaterialsToObject,
+} from './kitMaterialApplication';
 import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
 import { type WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
+import {
+  TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
+  TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
+  TRANSMISSIVE_KIT_RENDER_ORDER,
+  TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
+} from './transmissiveKitMaterial';
 
 const PLASTIC_WEATHERED: WeatheredMetalOptions = { metalness: 0.05, roughness: 0.45 };
 
@@ -115,7 +125,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(next.emissiveIntensity).toBe(0);
   });
 
-  test('Brain slot uses opaque eye color instead of transmission', () => {
+  test('Brain slot uses transmissive eye gel', () => {
     const mesh = meshWithMaterialNamed('Brain');
     const next = buildKitMeshMaterials(
       mesh,
@@ -130,14 +140,17 @@ describe('buildKitMeshMaterials metallic colors', () => {
       }),
       COLORS,
       PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
+    ) as MeshPhysicalMaterial;
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.name).toBe('WeatheredMetal');
-    expect(next.emissiveIntensity).toBe(0);
-    expect(next).not.toBeInstanceOf(MeshPhysicalMaterial);
+    expect(next.name).toBe('Brain');
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
+    expect(next.metalness).toBe(0);
+    expect(next.emissiveIntensity).toBe(0.1);
+    expect(next.transparent).toBe(false);
   });
 
-  test('McToran Face Brain slot is also opaque colored plastic', () => {
+  test('McToran Face Brain slot is clearer transmissive gel', () => {
     const mesh = meshWithMaterialNamed('Brain');
     const next = buildKitMeshMaterials(
       mesh,
@@ -152,12 +165,13 @@ describe('buildKitMeshMaterials metallic colors', () => {
       }),
       COLORS,
       PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
+    ) as MeshPhysicalMaterial;
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next).not.toBeInstanceOf(MeshPhysicalMaterial);
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION);
   });
 
-  test('VahkiHood slot uses opaque eye color', () => {
+  test('VahkiHood slot uses transmissive visor gel', () => {
     const mesh = meshWithMaterialNamed('VahkiHood');
     const next = buildKitMeshMaterials(
       mesh,
@@ -172,9 +186,29 @@ describe('buildKitMeshMaterials metallic colors', () => {
       }),
       COLORS,
       PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
+    ) as MeshPhysicalMaterial;
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next).not.toBeInstanceOf(MeshPhysicalMaterial);
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION);
+  });
+
+  test('transmissive Brain meshes draw after Kanohi', () => {
+    const mesh = meshWithMaterialNamed('Brain');
+    applyKitMaterialsToObject(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Brain: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 0.1,
+          transmissive: 'brain',
+          weathered: false,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    );
+    expect(mesh.renderOrder).toBe(TRANSMISSIVE_KIT_RENDER_ORDER);
   });
 
   test('Brain with color-only slot (Bohrok eyes) stays on the plastic path', () => {

@@ -1,4 +1,5 @@
 import { Color, FrontSide, MeshPhysicalMaterial } from 'three';
+import { float } from 'three/tsl';
 import type { KitTransmissivePreset } from '../../../types/KitParts';
 import type { KitMaterialSlotOverride } from '../../../types/KitParts';
 
@@ -79,7 +80,7 @@ export function buildTransmissiveKitMaterial(
   emissiveIntensity: number
 ): MeshPhysicalMaterial {
   const preset = presetForKind(kind);
-  return new MeshPhysicalMaterial({
+  const mat = new MeshPhysicalMaterial({
     color: new Color(color),
     depthWrite: true,
     emissive: new Color(emissiveColor),
@@ -94,6 +95,11 @@ export function buildTransmissiveKitMaterial(
     transmission: preset.transmission,
     transparent: false,
   });
+  // WebGPU MeshPhysicalNodeMaterial.useTransmission also keys off this node.
+  (mat as MeshPhysicalMaterial & { transmissionNode?: unknown }).transmissionNode = float(
+    preset.transmission
+  );
+  return mat;
 }
 
 export function isTransmissiveKitMaterial(mat: unknown): boolean {

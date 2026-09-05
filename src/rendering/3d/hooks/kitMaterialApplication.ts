@@ -24,6 +24,12 @@ import {
   getWeatheredMetalMaterial,
   type WeatheredMetalOptions,
 } from '../CharacterScene/WeatheredMetalMaterial';
+import {
+  buildTransmissiveKitMaterial,
+  isTransmissiveKitMaterial,
+  resolveTransmissiveKitKind,
+  TRANSMISSIVE_KIT_RENDER_ORDER,
+} from './transmissiveKitMaterial';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -144,6 +150,19 @@ export function buildKitMeshMaterials(
   const next = mats.map((mat) => {
     if (!isStandardMat(mat)) return mat;
     const spec = resolveKitMaterialSlotSpec(mat.name, slotLookup);
+    const transmissiveKind = resolveTransmissiveKitKind(mat.name, spec);
+    if (transmissiveKind) {
+      const color = spec?.color ? resolveKitColorSource(spec.color, palette) : mat.color.getStyle();
+      const emissive = spec?.emissive ? resolveKitColorSource(spec.emissive, palette) : color;
+      const emissiveIntensity = spec?.emissiveIntensity ?? 0;
+      return buildTransmissiveKitMaterial(
+        mat.name,
+        transmissiveKind,
+        color,
+        emissive,
+        emissiveIntensity
+      );
+    }
 
     if (isPreservedMappedMaterial(mat) || !spec) {
       if (!spec || (!spec.color && !spec.emissive && spec.opacity === undefined)) {
@@ -186,5 +205,10 @@ export function applyKitMaterialsToObject(
     const mesh = child as Mesh;
     const next = buildKitMeshMaterials(mesh, slotLookup, palette, weatheredBase);
     if (next !== undefined) mesh.material = next as Mesh['material'];
+    const applied = mesh.material;
+    const appliedMats = Array.isArray(applied) ? applied : [applied];
+    if (appliedMats.some(isTransmissiveKitMaterial)) {
+      mesh.renderOrder = TRANSMISSIVE_KIT_RENDER_ORDER;
+    }
   });
 }
