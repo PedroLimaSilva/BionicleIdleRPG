@@ -44,6 +44,9 @@ export default defineConfig(({ mode }) => {
       __POSTHOG_HOST__: JSON.stringify(env.VITE_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'),
       __POSTHOG_KEY__: JSON.stringify(env.VITE_PUBLIC_POSTHOG_KEY ?? ''),
     },
+    optimizeDeps: {
+      include: ['three', 'three/tsl', 'three/webgpu'],
+    },
     plugins: [
       react(),
       VitePWA({

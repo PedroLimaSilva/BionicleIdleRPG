@@ -1,14 +1,13 @@
-import { Suspense, forwardRef, useCallback, useEffect, useRef, useState } from 'react';
-import { Environment, PresentationControls } from '@react-three/drei';
+import { Suspense, forwardRef, useEffect, useRef } from 'react';
+import { PresentationControls } from '@react-three/drei';
 import { ModelInteractionDetector, ModelInteractionProvider } from '../ModelInteractionContext';
 import { useThree } from '@react-three/fiber';
-import { EffectComposer, SSAO } from '@react-three/postprocessing';
-import { BlendFunction } from 'postprocessing';
 import { DirectionalLight, Mesh, Object3D } from 'three';
 
 import { useSettings } from '../../../context/useSettings';
+import { SceneHdriEnvironment } from '../SceneHdriEnvironment';
 import { CITY_ENVIRONMENT_PROPS } from '../utils/cityEnvironmentHdri';
-import { shouldEnableSelectiveBloom, shouldEnableShadows } from '../../../utils/testMode';
+import { shouldEnableShadows } from '../../../utils/testMode';
 import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../../types/Matoran';
@@ -31,8 +30,6 @@ import { BohrokModel } from './BohrokModel';
 import { VahkiModel } from './VahkiModel';
 import { RahiPlaceholderModel } from './RahiPlaceholderModel';
 import { NuiRamaModel } from './NuiRamaModel';
-import { useCharacterBloomMeshes } from './selectiveBloom';
-import { StableSelectiveBloom } from './StableSelectiveBloom';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
 import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
 import { LewaNuvaModel } from './Nuva/LewaNuvaModel';
@@ -49,15 +46,11 @@ import { WhenuaModel } from './Metru/WhenuaModel';
 /** Vertical center of the character framing volume. */
 const CHARACTER_CENTER_Y = CYLINDER_CENTER_Y;
 
-/** Scale down environment map contribution so IBL doesn't wash out shadows. */
-function EnvironmentIntensity({ value }: { value: number }) {
-  const scene = useThree((s) => s.scene);
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (scene as any).environmentIntensity = value;
-  }, [scene, value]);
-  return null;
-}
+/** Key / fill / ambient match master. Env is master's 0.4 — working CubeUV IBL is already stronger than drei's raw RGBE was, so 0.7 crushed recesses. */
+const SHEET_KEY_INTENSITY = 1.2;
+const SHEET_FILL_INTENSITY = 0.15;
+const SHEET_AMBIENT_INTENSITY = 0.05;
+const SHEET_ENV_INTENSITY = 0.4;
 
 export type CharacterSceneMatoran = BaseMatoran &
   RecruitedCharacterData & {
@@ -205,6 +198,7 @@ const CharacterModel = forwardRef<
 function CharacterFraming() {
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
+  const invalidate = useThree((s) => s.invalidate);
 
   useEffect(() => {
     if (camera.type !== 'OrthographicCamera') return;
@@ -223,7 +217,8 @@ function CharacterFraming() {
     // Zoom so the cylinder just fits the viewport
     camera.zoom = Math.min(size.width / (CYLINDER_RADIUS * 2), size.height / CYLINDER_HEIGHT);
     camera.updateProjectionMatrix();
-  }, [camera, size]);
+    invalidate();
+  }, [camera, invalidate, size]);
 
   return null;
 }
@@ -237,15 +232,6 @@ export function CharacterScene({
 }) {
   const characterRootRef = useRef<Object3D>(null);
   const modelRef = useRef<CombatantModelHandle>(null);
-  const [lightsForBloom, setLightsForBloom] = useState<Object3D[]>([]);
-  // Bumped by CharacterModel's post-mount effect (all models) and by
-  // useKitAttachments.onAttached (Gali specifically). Each bump triggers a
-  // fresh bloom-mesh collection; the initial collection on mount may see an
-  // empty tree while Suspense resolves, so a deterministic post-mount bump is
-  // required for non-kit models.
-  const [bloomRecollectionRevision, setBloomRecollectionRevision] = useState(0);
-  const bumpBloomRecollection = useCallback(() => setBloomRecollectionRevision((n) => n + 1), []);
-  const bloomMeshes = useCharacterBloomMeshes(characterRootRef, matoran, bloomRecollectionRevision);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
   useEffect(() => {
@@ -275,7 +261,6 @@ export function CharacterScene({
 
   const setMainLightRef = (el: DirectionalLight | null) => {
     if (el) {
-      setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
       el.target.position.set(0, CHARACTER_CENTER_Y, 0);
       if (el.parent && !el.target.parent) {
         el.parent.add(el.target);
@@ -286,12 +271,11 @@ export function CharacterScene({
   return (
     <>
       <CharacterFraming />
-      <Environment {...CITY_ENVIRONMENT_PROPS} />
-      <EnvironmentIntensity value={0.4} />
+      <SceneHdriEnvironment {...CITY_ENVIRONMENT_PROPS} intensity={SHEET_ENV_INTENSITY} />
       <directionalLight
         ref={setMainLightRef}
         position={[3, CHARACTER_CENTER_Y + 8, 10]}
-        intensity={1.2}
+        intensity={SHEET_KEY_INTENSITY}
         castShadow={effectiveShadows}
         shadow-mapSize={[2048, 2048]}
         shadow-camera-near={0.5}
@@ -304,13 +288,10 @@ export function CharacterScene({
         shadow-normalBias={0.01}
       />
       <directionalLight
-        ref={(el) => {
-          if (el) setLightsForBloom((prev) => (prev.includes(el) ? prev : [...prev, el]));
-        }}
         position={[-3, CHARACTER_CENTER_Y + 2, -2]}
-        intensity={0.15}
+        intensity={SHEET_FILL_INTENSITY}
       />
-      <ambientLight intensity={0.05} />
+      <ambientLight intensity={SHEET_AMBIENT_INTENSITY} />
       {effectiveShadows && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
           <planeGeometry args={[CYLINDER_RADIUS * 3, CYLINDER_RADIUS * 3]} />
@@ -322,38 +303,11 @@ export function CharacterScene({
           <ModelInteractionDetector />
           <PresentationControls global={true} snap={false} speed={2} zoom={1} polar={[0, 0]}>
             <Suspense fallback={null}>
-              <CharacterModel
-                ref={modelRef}
-                matoran={matoran}
-                onModelReady={bumpBloomRecollection}
-              />
+              <CharacterModel ref={modelRef} matoran={matoran} />
             </Suspense>
           </PresentationControls>
         </ModelInteractionProvider>
       </group>
-      <EffectComposer multisampling={0} enableNormalPass resolutionScale={0.5}>
-        <SSAO
-          blendFunction={BlendFunction.MULTIPLY}
-          samples={24}
-          rings={4}
-          intensity={1.0}
-          radius={6}
-          bias={0.5}
-          luminanceInfluence={0.35}
-        />
-        {lightsForBloom.length > 0 && shouldEnableSelectiveBloom() ? (
-          <StableSelectiveBloom
-            selection={bloomMeshes}
-            lights={lightsForBloom}
-            luminanceThreshold={0.25}
-            luminanceSmoothing={0.5}
-            intensity={0.28}
-            mipmapBlur
-          />
-        ) : (
-          <></>
-        )}
-      </EffectComposer>
     </>
   );
 }

@@ -1,11 +1,10 @@
-import { Color, FrontSide, Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
+import { FrontSide, Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { KANOHI_PAINT_METALNESS, metallicColorPbr } from '../kit/palettes/metalPbr';
-import { adoptBakedDiscolorationMap } from './bakedDiscoloration';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
-/** Emissive lenses (Akaku scope) — same scale as Nuva {@link useNuvaMask} Lens slots. */
-export const MASK_LENS_GLOW_EMISSIVE_INTENSITY = 5;
+/** Legacy constant kept so lens tints stay a single call site; emission is unused. */
+export const MASK_LENS_GLOW_EMISSIVE_INTENSITY = 0;
 
 export function isMaskStandardMat(mat: unknown): mat is MaskStandardMat {
   return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
@@ -33,15 +32,14 @@ export function forEachMaskMaterial(
 export function applyMaskGlowTint(
   mat: MaskStandardMat,
   glowColor: string,
-  intensity = MASK_LENS_GLOW_EMISSIVE_INTENSITY
+  _intensity = MASK_LENS_GLOW_EMISSIVE_INTENSITY
 ): void {
-  const col = new Color(glowColor);
+  mat.color.set(glowColor);
   if (mat.emissive) {
-    mat.emissive.copy(col);
-    mat.emissiveIntensity = intensity;
+    mat.emissive.set(0, 0, 0);
+    mat.emissiveIntensity = 0;
   }
-  // Emissive-only read — full-strength albedo + high emissive blows lenses white in bloom.
-  mat.color.set(0x000000);
+  mat.emissiveMap = null;
 }
 
 /**
@@ -203,11 +201,9 @@ export function ensurePhysicalMaskMaterial(mat: MaskStandardMat): MeshPhysicalMa
     side: mat.side,
     transparent: mat.transparent,
   });
-  if (mat.emissive) {
-    physical.emissive.copy(mat.emissive);
-    physical.emissiveIntensity = mat.emissiveIntensity;
-    physical.emissiveMap = mat.emissiveMap;
-  }
+  physical.emissive.set(0, 0, 0);
+  physical.emissiveIntensity = 0;
+  physical.emissiveMap = null;
   physical.userData = { ...mat.userData };
   return physical;
 }
@@ -260,10 +256,25 @@ export function maskUsesTransmissionRendering(mat: MaskStandardMat): boolean {
   return mat instanceof MeshPhysicalMaterial && (mat.transmission ?? 0) > 0 && mat.opacity >= 0.999;
 }
 
+function stripMaskPbrMaps(mat: MaskStandardMat): void {
+  mat.aoMap = null;
+  mat.bumpMap = null;
+  mat.emissiveMap = null;
+  mat.lightMap = null;
+  mat.metalnessMap = null;
+  mat.normalMap = null;
+  mat.roughnessMap = null;
+  if (mat.emissive) {
+    mat.emissive.set(0, 0, 0);
+    mat.emissiveIntensity = 0;
+  }
+}
+
 export function syncMaskTransparencyState(mat: MaskStandardMat): void {
   if (isMaskGlowMaterialName(mat.name)) {
-    mat.transparent = true;
-    mat.depthWrite = false;
+    mat.transparent = false;
+    mat.depthWrite = true;
+    mat.side = FrontSide;
     return;
   }
 
@@ -284,41 +295,26 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
 }
 
 /**
- * Configure a cloned mask material for runtime tinting and arena lighting.
- * Mata/Nuva mask GLBs ship metallic PBR defaults; without scene IBL (e.g. cavern
- * arenas) those surfaces read nearly black while HDRI-lit deserts look fine.
- *
- * Opaque Kanohi stay in the opaque render pass (`transparent: false`) so they
- * depth-occlude head geometry behind the shell. Kaukau and Rau use uniform transmission in
- * the transmissive pass with depthWrite on so the hollow shell self-occludes in profile;
- * brain gel draws after the mask in the same pass and wins depth where it sits in front.
- * Legacy baked-alpha masks and exit fades use the transparent pass. Closed shells use
- * `FrontSide` so interior back-faces do not z-fight with brain gel in the cavity.
+ * Configure a cloned mask material for runtime tinting.
+ * Bake maps and emission are stripped so Kanohi read as slot-colored plastic.
  */
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
+  stripMaskPbrMaps(mat);
   syncMaskTransparencyState(mat);
   if (isMaskGlowMaterialName(mat.name)) return;
-
-  adoptBakedDiscolorationMap(mat);
-
-  if (hasMaskPbrMaps(mat)) return;
 
   mat.metalness = 0;
   mat.roughness = 0.55;
 }
 
 /**
- * Kanohi keep baked normal / roughness maps. Metalness maps are dropped: current
- * bakes are edge-only (near-black on flats), and glTF `metallicFactor` defaults
- * to 1, so those maps make painted Kanohi read as bright dielectric plastic.
  * Gold uses {@link metallicColorPbr}; every other color uses painted-metal
- * {@link KANOHI_PAINT_METALNESS} so albedo stays rich while roughness maps
- * still supply micro-detail.
+ * {@link KANOHI_PAINT_METALNESS}. Bake maps are dropped.
  */
 export function applyMaskMetallicPbr(mat: MaskStandardMat, maskColor: string): void {
   if (isMaskGlowMaterialName(mat.name)) return;
 
-  if (mat.metalnessMap) mat.metalnessMap = null;
+  stripMaskPbrMaps(mat);
 
   const metalPbr = metallicColorPbr(maskColor);
   if (metalPbr) {
@@ -338,8 +334,7 @@ export function applyMaskMetallicPbr(mat: MaskStandardMat, maskColor: string): v
  */
 export function applyNuvaBakedKanohiPbr(mat: MaskStandardMat): void {
   if (isMaskGlowMaterialName(mat.name)) return;
-  if (!mat.metalnessMap) return;
-  mat.metalness = 1;
+  stripMaskPbrMaps(mat);
 }
 
 /** Clone a Great Kanohi material for per-instance tinting (same path as Mata masks). */

@@ -26,6 +26,7 @@ import {
 import { normalizeMaskSocketScale } from './normalizeMaskSocketScale';
 import {
   applyMaskDiscolorationToObject,
+  applyMaskPowerEmissive,
   setupMaskDiscolorationShader,
   type MaskDiscoloration,
 } from './maskDiscoloration';
@@ -66,15 +67,7 @@ function applyMaskColors(
 
       mat.color = new Color(maskColor);
       applyMaskMetallicPbr(mat, maskColor);
-      if (mat.emissive) {
-        if (maskPowerActive) {
-          mat.emissive = new Color(maskColor);
-          mat.emissiveIntensity = 2.5;
-        } else {
-          mat.emissive = new Color(0x000000);
-          mat.emissiveIntensity = 0;
-        }
-      }
+      applyMaskPowerEmissive(mat, maskColor, maskPowerActive);
     });
   });
 

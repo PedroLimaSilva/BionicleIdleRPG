@@ -1,20 +1,12 @@
-import { Environment } from '@react-three/drei';
 import { useEffect } from 'react';
 import { useThree } from '@react-three/fiber';
+
+import { SceneHdriEnvironment } from '../../SceneHdriEnvironment';
 
 export interface ArenaHdriProps {
   files: string;
   path: string;
   intensity: number;
-}
-
-function EnvironmentIntensity({ value }: { value: number }) {
-  const scene = useThree((s) => s.scene);
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (scene as any).environmentIntensity = value;
-  }, [scene, value]);
-  return null;
 }
 
 /** HDRI image-based lighting without a visible skybox. */
@@ -34,8 +26,7 @@ function ClearSceneBackground() {
 export function ArenaHdriIbl({ files, intensity, path }: ArenaHdriProps) {
   return (
     <>
-      <Environment files={files} path={path} />
-      <EnvironmentIntensity value={intensity} />
+      <SceneHdriEnvironment files={files} intensity={intensity} path={path} />
       <ClearSceneBackground />
     </>
   );

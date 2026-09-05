@@ -110,8 +110,7 @@ export function startMaskTransition(
     masksParent.remove(tr.oldMask);
   }
 
-  // Fade-out requires alpha blending even on normally opaque Kanohi. Recompile
-  // patched materials (discoloration onBeforeCompile) in the transparent pass.
+  // Fade-out requires alpha blending even on normally opaque Kanohi.
   forEachMaskMeshMaterial(prevMask, (mat) => {
     if (!mat.transparent) {
       mat.transparent = true;
