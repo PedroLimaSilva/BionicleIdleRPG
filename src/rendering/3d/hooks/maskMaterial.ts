@@ -195,7 +195,7 @@ export function liftFrostedKanohiColor(color: Color): void {
 
 const GREAT_MASK_SUFFIX = '_Great';
 
-/** Strip `_Great` so `Rau_Great` and `Rau` share sculpt-specific material rules. */
+/** Strip `_Great` so Mata / Great Kaukau share the same sculpt family name. */
 export function getKanohiSculptBaseName(maskSculptName: string): string {
   return maskSculptName.endsWith(GREAT_MASK_SUFFIX)
     ? maskSculptName.slice(0, -GREAT_MASK_SUFFIX.length)
@@ -208,8 +208,7 @@ export function isMataKaukauSculpt(maskSculptName: string): boolean {
 
 /** Kanohi that use uniform scalar transmission (not a transmission map or alpha blend). */
 export function isTransmissiveKanohiSculpt(maskSculptName: string): boolean {
-  const base = getKanohiSculptBaseName(maskSculptName);
-  return base === 'Kaukau' || base === 'Rau';
+  return isMataKaukauSculpt(maskSculptName) || maskSculptName === 'Rau_Great';
 }
 
 /** Upgrade standard mask materials so transmission / IOR can be configured at runtime. */
@@ -241,7 +240,7 @@ export function ensurePhysicalMaskMaterial(mat: MaskStandardMat): MeshPhysicalMa
 
 /** Scalar transmission for uniform-transmission Kanohi sculpts. */
 export function transmissionForKanohiSculpt(maskSculptName: string): number {
-  return getKanohiSculptBaseName(maskSculptName) === 'Rau' ? RAU_TRANSMISSION : KAUKAU_TRANSMISSION;
+  return maskSculptName === 'Rau_Great' ? RAU_TRANSMISSION : KAUKAU_TRANSMISSION;
 }
 
 /** Dielectric frost: painted Kanohi metalness would make transmission look opaque. */

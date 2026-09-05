@@ -180,6 +180,21 @@ describe('prepareClonedMaskMaterial', () => {
     expect(maskNeedsAlphaBlend(mat)).toBe(false);
   });
 
+  it('keeps noble Rau as opaque plastic', () => {
+    const body = new MeshStandardMaterial({ name: 'Rau_baked', opacity: 1, roughness: 0.5 });
+    const geometry = new BufferGeometry();
+    geometry.groups = [{ count: 10, materialIndex: 0, start: 0 }];
+    const mesh = new Mesh(geometry, body);
+    cloneMaskMeshMaterials(mesh, 'Rau');
+    const mat = mesh.material as MeshStandardMaterial;
+    expect(isTransmissiveKanohiSculpt('Rau')).toBe(false);
+    expect(mat).toBeInstanceOf(MeshStandardMaterial);
+    expect(mat).not.toBeInstanceOf(MeshPhysicalMaterial);
+    expect((mat as MeshStandardMaterial & { transmission?: number }).transmission ?? 0).toBe(0);
+    expect(mat.transparent).toBe(false);
+    expect(mat.depthWrite).toBe(true);
+  });
+
   it('upgrades standard mask materials for transmission sculpts', () => {
     const standard = new MeshStandardMaterial({ name: 'Rau_Great_baked', roughness: 0.4 });
     const physical = ensurePhysicalMaskMaterial(standard);
