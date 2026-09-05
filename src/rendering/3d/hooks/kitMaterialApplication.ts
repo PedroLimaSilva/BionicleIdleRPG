@@ -52,6 +52,29 @@ function isGlowMaterialName(name: string | undefined): boolean {
   return !!name && name.toLowerCase().includes('glow');
 }
 
+function buildEmissiveKitMaterial(
+  mat: StandardMat,
+  spec: KitMaterialSlotOverride,
+  palette: BaseMatoran['colors']
+): StandardMat {
+  const cloned = mat.clone();
+  cloned.emissiveMap = null;
+  if (spec.color) cloned.color = new Color(resolveKitColorSource(spec.color, palette));
+  if (spec.emissive) {
+    cloned.emissive = new Color(resolveKitColorSource(spec.emissive, palette));
+  }
+  cloned.emissiveIntensity =
+    spec.emissiveIntensity ?? (mat.emissiveIntensity > 0 ? mat.emissiveIntensity : 1);
+  if (spec.metalness !== undefined) cloned.metalness = spec.metalness;
+  if (spec.roughness !== undefined) cloned.roughness = spec.roughness;
+  if (spec.envMapIntensity !== undefined) cloned.envMapIntensity = spec.envMapIntensity;
+  if (spec.opacity !== undefined) {
+    cloned.opacity = spec.opacity;
+    cloned.transparent = spec.opacity < 1;
+  }
+  return cloned;
+}
+
 /** When a kit mesh adds a Secondary slot but attachments only tint Main, mirror Main. */
 function resolveKitMaterialSlotSpec(
   materialName: string,
@@ -164,6 +187,10 @@ export function buildKitMeshMaterials(
       );
     }
 
+    if (spec?.emissive) {
+      return buildEmissiveKitMaterial(mat, spec, palette);
+    }
+
     if (isPreservedMappedMaterial(mat) || !spec) {
       if (!spec || (!spec.color && !spec.emissive && spec.opacity === undefined)) {
         return stripPreservedMappedMaterial(mat, undefined, palette);
@@ -180,7 +207,7 @@ export function buildKitMeshMaterials(
     if (canonicalKitSlotName(mat.name) === 'face') {
       opts.side = FrontSide;
     }
-    if (isGlowMaterialName(mat.name) || spec?.emissive) {
+    if (isGlowMaterialName(mat.name)) {
       opts.metalness = spec?.metalness ?? 0.05;
       opts.roughness = spec?.roughness ?? 0.45;
     }

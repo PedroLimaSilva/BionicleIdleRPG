@@ -38,8 +38,8 @@ describe('applyArenaRecolor', () => {
 
     const result = mesh.material as THREE.MeshStandardMaterial;
     const expected = new THREE.Color('#00ff00').getHexString();
-    expect(result.emissive.getHex()).toBe(0);
-    expect(result.emissiveIntensity).toBe(0);
+    expect(result.emissive.getHexString()).toBe(expected);
+    expect(result.emissiveIntensity).toBe(1.2);
     expect(result.color.getHexString()).toBe(expected);
   });
 });

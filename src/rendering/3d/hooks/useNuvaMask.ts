@@ -22,6 +22,7 @@ import {
   forEachMaskMaterial,
   isMaskGlowMaterialName,
   isMaskStandardMat,
+  MASK_LENS_GLOW_EMISSIVE_INTENSITY,
 } from './maskMaterial';
 import {
   applyMaskDiscolorationToObject,
@@ -71,6 +72,7 @@ function applyNuvaMaskColors(
 
     forEachMaskMaterial(mesh, (mat) => {
       if (isMaskGlowMaterialName(mat.name) || isNuvaLensMesh(mesh)) {
+        if (mat.emissive) mat.emissiveIntensity = MASK_LENS_GLOW_EMISSIVE_INTENSITY;
         return;
       }
 

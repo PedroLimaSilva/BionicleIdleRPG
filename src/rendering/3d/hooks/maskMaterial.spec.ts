@@ -235,12 +235,12 @@ describe('prepareClonedMaskMaterial', () => {
     expect(isMaskGlowMaterialName('Glow')).toBe(true);
   });
 
-  it('tints glow slots from eye color with no emission', () => {
+  it('tints glow slots as emissive-only from eye color', () => {
     const lens = new MeshStandardMaterial({ name: 'Glow', roughness: 0.5 });
     applyMaskGlowTint(lens, '#00aaff');
-    expect(lens.color.getHexString()).toBe('00aaff');
-    expect(lens.emissive.getHex()).toBe(0);
-    expect(lens.emissiveIntensity).toBe(0);
+    expect(lens.color.getHexString()).toBe('000000');
+    expect(lens.emissive.getHexString()).toBe('00aaff');
+    expect(lens.emissiveIntensity).toBe(5);
     expect(
       (lens as MeshStandardMaterial & { emissiveNode?: unknown }).emissiveNode
     ).toBeUndefined();
@@ -263,13 +263,13 @@ describe('prepareClonedMaskMaterial', () => {
     expect(mesh.geometry.groups[1].materialIndex).toBe(1);
   });
 
-  it('leaves glow materials opaque colored plastic', () => {
+  it('leaves glow materials opaque without stripping emission', () => {
     const mat = new MeshStandardMaterial({ metalness: 0.8, name: 'Glow', roughness: 0.2 });
     prepareClonedMaskMaterial(mat);
     expect(mat.transparent).toBe(false);
     expect(mat.metalness).toBe(0.8);
     expect(mat.roughness).toBe(0.2);
-    expect(mat.emissiveIntensity).toBe(0);
+    expect(mat.emissiveIntensity).toBe(1);
   });
 
   it('adopts a baked emissiveMap as discoloration and keeps other PBR maps', () => {
@@ -435,7 +435,7 @@ describe('cloneMaskMeshMaterials for Great Kanohi', () => {
     expect(mats[0].emissiveMap).toBeNull();
     expect(getBakedDiscolorationMap(mats[0])).toBe(bake);
     expect(mats[1].emissiveMap).toBe(glowBake);
-    expect(mats[1].emissiveIntensity).toBe(0);
+    expect(mats[1].emissiveIntensity).toBe(1);
   });
 });
 

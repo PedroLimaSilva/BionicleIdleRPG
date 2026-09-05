@@ -91,10 +91,10 @@ export function useArmor(
           const isGlow = mat.name.toLowerCase().includes('glow');
 
           if (isGlow && glowColor) {
-            mat.color = new Color(glowColor);
+            const col = new Color(glowColor);
+            mat.color = col;
             if (mat.emissive) {
-              mat.emissive.set(0, 0, 0);
-              mat.emissiveIntensity = 0;
+              mat.emissive = col.clone();
             }
           } else if (armorColor) {
             mat.color = new Color(armorColor);

@@ -346,7 +346,7 @@ describe('buildKitMeshMaterials untextured slots', () => {
     expect(next.colorNode).toBeUndefined();
   });
 
-  test('glow slots become colored plastic with no emission', () => {
+  test('glow slots skip weathering and keep emission', () => {
     const mesh = meshWithUvAndSlots(['Glow']);
     const next = buildKitMeshMaterials(
       mesh,
@@ -359,9 +359,10 @@ describe('buildKitMeshMaterials untextured slots', () => {
       COLORS,
       PLASTIC_WEATHERED
     ) as MeshStandardMaterial;
-    expect(next.name).toBe('WeatheredMetal');
+    expect(next.name).not.toBe('WeatheredMetal');
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.emissiveIntensity).toBe(0);
+    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
+    expect(next.emissiveIntensity).toBe(1);
     expect(next.emissiveMap).toBeNull();
   });
 });

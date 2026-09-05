@@ -5,8 +5,8 @@ import { adoptBakedDiscolorationMap } from './bakedDiscoloration';
 
 export type MaskStandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
-/** Legacy constant kept so lens tints stay a single call site; emission is unused. */
-export const MASK_LENS_GLOW_EMISSIVE_INTENSITY = 0;
+/** Emissive lenses (Akaku scope) — same scale as Nuva {@link useNuvaMask} Lens slots. */
+export const MASK_LENS_GLOW_EMISSIVE_INTENSITY = 5;
 
 export function isMaskStandardMat(mat: unknown): mat is MaskStandardMat {
   return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
@@ -34,14 +34,15 @@ export function forEachMaskMaterial(
 export function applyMaskGlowTint(
   mat: MaskStandardMat,
   glowColor: string,
-  _intensity = MASK_LENS_GLOW_EMISSIVE_INTENSITY
+  intensity = MASK_LENS_GLOW_EMISSIVE_INTENSITY
 ): void {
-  mat.color.set(glowColor);
+  const col = new Color(glowColor);
   if (mat.emissive) {
-    mat.emissive.set(0, 0, 0);
-    mat.emissiveIntensity = 0;
+    mat.emissive.copy(col);
+    mat.emissiveIntensity = intensity;
   }
-  mat.emissiveMap = null;
+  // Emissive-only read — full-strength albedo + high emissive blows lenses white in bloom.
+  mat.color.set(0x000000);
 }
 
 /**
@@ -337,11 +338,7 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
  */
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
   syncMaskTransparencyState(mat);
-  if (isMaskGlowMaterialName(mat.name)) {
-    mat.emissive.set(0, 0, 0);
-    mat.emissiveIntensity = 0;
-    return;
-  }
+  if (isMaskGlowMaterialName(mat.name)) return;
 
   adoptBakedDiscolorationMap(mat);
 
