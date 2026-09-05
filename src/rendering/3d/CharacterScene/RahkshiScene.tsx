@@ -9,6 +9,7 @@ import { CITY_ENVIRONMENT_PROPS } from '../utils/cityEnvironmentHdri';
 import { shouldEnableShadows } from '../../../utils/testMode';
 import { KraataPower } from '../../../types/Kraata';
 import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
+import { CharacterSelectiveBloom } from './CharacterSelectiveBloom';
 import { RahkshiModel } from './Rahkshi';
 
 const CENTER_Y = CYLINDER_CENTER_Y;
@@ -69,6 +70,7 @@ export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKr
 
   return (
     <>
+      <CharacterSelectiveBloom />
       <RahkshiFraming />
       <SceneHdriEnvironment {...CITY_ENVIRONMENT_PROPS} intensity={SHEET_ENV_INTENSITY} />
       <ambientLight intensity={SHEET_AMBIENT_INTENSITY} />

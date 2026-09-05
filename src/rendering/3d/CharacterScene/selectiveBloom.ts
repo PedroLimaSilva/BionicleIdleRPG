@@ -11,13 +11,18 @@ export type SelectiveBloomMrtMaterial = {
 
 /**
  * Kit `Glow` (hooks, weapons, visor lines) blooms. `Glowing Eyes` stay emissive-only
- * so the face doesn't blow out behind the Kanohi.
+ * so the face doesn't blow out behind the Kanohi. Rahkshi `Eyes` bloom on the sheet.
  */
 export function isSelectiveBloomKitGlowName(name: string | undefined): boolean {
   if (!name) return false;
   const lower = name.toLowerCase();
   if (lower.includes('glowing eyes')) return false;
   return lower.includes('glow');
+}
+
+/** Rahkshi GLB eye slots (`Eyes`) join the bloom MRT; Kanohi Glowing Eyes do not. */
+export function isSelectiveBloomRahkshiEyeName(name: string | undefined): boolean {
+  return !!name && name.toLowerCase() === 'eyes';
 }
 
 /** Toa / Metru brain gel and Bohrok crystal brains bloom; colorless viewports and visors do not. */

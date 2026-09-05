@@ -1,6 +1,7 @@
 import {
   applySelectiveBloomMrt,
   isSelectiveBloomKitGlowName,
+  isSelectiveBloomRahkshiEyeName,
   shouldSelectiveBloomTransmissiveKind,
 } from './selectiveBloom';
 
@@ -10,6 +11,14 @@ describe('selectiveBloom selection', () => {
     expect(isSelectiveBloomKitGlowName('Matatu Glow')).toBe(true);
     expect(isSelectiveBloomKitGlowName('Glowing Eyes')).toBe(false);
     expect(isSelectiveBloomKitGlowName('Main')).toBe(false);
+  });
+
+  test('Rahkshi Eyes bloom and Kanohi Glowing Eyes do not', () => {
+    expect(isSelectiveBloomRahkshiEyeName('Eyes')).toBe(true);
+    expect(isSelectiveBloomRahkshiEyeName('eyes')).toBe(true);
+    expect(isSelectiveBloomRahkshiEyeName('Glowing Eyes')).toBe(false);
+    expect(isSelectiveBloomRahkshiEyeName('Glow')).toBe(false);
+    expect(isSelectiveBloomRahkshiEyeName(undefined)).toBe(false);
   });
 
   test('only transmissive brain gel and crystal are selected, not visors', () => {

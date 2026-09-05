@@ -8,6 +8,7 @@ import { getRahkshiArmorColors } from '../../../data/rahkshiArmorColors';
 import { KraataPower } from '../../../types/Kraata';
 import { applyWeatheredMetalToObject, WeatheredMetalOptions } from './WeatheredMetalMaterial';
 import { disposeObject3DResources } from '../utils/disposeThreeObject';
+import { applySelectiveBloomMrt, isSelectiveBloomRahkshiEyeName } from './selectiveBloom';
 import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
 
 const BLACK = new ThreeColor('#000000');
@@ -95,7 +96,7 @@ export const RahkshiModel = forwardRef<
         mesh.userData.originalMaterialName = mat.name;
       }
 
-      if (mat.name === 'Eyes') {
+      if (isSelectiveBloomRahkshiEyeName(mat.name)) {
         // Use stored original values if we've already replaced child.material (mat is our previous clone)
         let onColor: ThreeColor;
         let onEmissive: ThreeColor;
@@ -105,6 +106,7 @@ export const RahkshiModel = forwardRef<
           onColor = stored.onColor;
           onEmissive = stored.onEmissive;
           onEmissiveIntensity = stored.onEmissiveIntensity;
+          applySelectiveBloomMrt(mat);
           entries.push({
             material: mat,
             onColor,
@@ -122,6 +124,7 @@ export const RahkshiModel = forwardRef<
             clone.emissive.set('#000000');
             clone.emissiveIntensity = 0;
           }
+          applySelectiveBloomMrt(clone);
           child.material = clone;
           entries.push({
             material: clone,
