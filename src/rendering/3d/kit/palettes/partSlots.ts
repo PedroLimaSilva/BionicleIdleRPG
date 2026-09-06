@@ -1,11 +1,12 @@
 import type { BodyPartId, KitMaterialSlotEntry } from '../../../../types/KitParts';
+import type { KitMaterialSlotName } from '../nodes/kitMaterialSlots';
 import { metalPbrForStyle, type MetalStyle } from './metalPbr';
 
 /** Kit Main / Secondary / Metal / Face → that body part's dex palette. */
 export function kitPartSlots(
   part: BodyPartId,
   metalStyle: MetalStyle = 'mata'
-): Partial<Record<string, KitMaterialSlotEntry>> {
+): Partial<Record<KitMaterialSlotName, KitMaterialSlotEntry>> {
   const metalPbr = metalPbrForStyle(metalStyle);
   return {
     Face: { color: { key: 'face', kind: 'palette' }, weathered: true },
@@ -22,7 +23,7 @@ export function kitPartSlots(
 export function kitPartGlow(
   part: BodyPartId,
   glowIntensity = 50
-): Partial<Record<string, KitMaterialSlotEntry>> {
+): Partial<Record<KitMaterialSlotName, KitMaterialSlotEntry>> {
   return {
     Glow: {
       emissive: { kind: 'part', part, slot: 'glow' },

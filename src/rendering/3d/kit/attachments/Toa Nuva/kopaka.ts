@@ -134,7 +134,7 @@ export const KOPAKA_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     materialColors: KOPAKA_NUVA_PALETTE_COLORS,
   },
   MataSingleArmPistonLowerR: {
-    kitNodeName: KIT_2001_NODES.MataSingleArmPistonLowerR,
+    kitNodeName: KIT_2001_NODES.MataSingleArmPistonLowerL,
     materialColors: KOPAKA_NUVA_PALETTE_COLORS,
   },
   MataSingleArmPistonUpperL: {
@@ -142,7 +142,7 @@ export const KOPAKA_NUVA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttac
     materialColors: KOPAKA_NUVA_PALETTE_COLORS,
   },
   MataSingleArmPistonUpperR: {
-    kitNodeName: KIT_2001_NODES.MataSingleArmPistonUpperR,
+    kitNodeName: KIT_2001_NODES.MataSingleArmPistonUpperL,
     materialColors: KOPAKA_NUVA_PALETTE_COLORS,
   },
   MataSingleArmUpper: {

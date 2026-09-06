@@ -1,4 +1,8 @@
-import { canonicalKitSlotName, normalizeKitMaterialSlotEntry } from './kitMaterialUtils';
+import {
+  canonicalKitSlotName,
+  deriveKitConfigSlotNames,
+  normalizeKitMaterialSlotEntry,
+} from './kitMaterialUtils';
 import { LegoColor } from '../../../types/Colors';
 
 describe('canonicalKitSlotName', () => {
@@ -23,6 +27,23 @@ describe('canonicalKitSlotName', () => {
   test('leaves non-slot kit materials unchanged', () => {
     expect(canonicalKitSlotName('Solid_Black')).toBe('solid_black');
     expect(canonicalKitSlotName('Lewa Green02')).toBe('lewa green02');
+  });
+});
+
+describe('deriveKitConfigSlotNames', () => {
+  test('maps bake names to palette config keys', () => {
+    expect(deriveKitConfigSlotNames(['Main_MataChest_baked'])).toEqual(['Main']);
+  });
+
+  test('allows Main on secondary-only meshes', () => {
+    expect(deriveKitConfigSlotNames(['Secondary_MataSingleArmLower_baked'])).toEqual([
+      'Main',
+      'Secondary',
+    ]);
+  });
+
+  test('keeps non-palette material names verbatim', () => {
+    expect(deriveKitConfigSlotNames(['Brain', 'Glowing Eyes'])).toEqual(['Brain', 'Glowing Eyes']);
   });
 });
 

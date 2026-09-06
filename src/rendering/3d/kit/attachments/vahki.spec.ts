@@ -10,6 +10,7 @@ import {
   VAHKI_KIT_PALETTE_HOOD,
   VAHKI_KIT_PALETTE_SOCKET,
 } from '../palettes/vahkiKitPalette';
+import { sanitizeKitNodeName } from '../nodes/sanitizeKitNodeName';
 import {
   VAHKI_HIVE_TOOL_NODES,
   VAHKI_KIT_2001_ATTACHMENTS,
@@ -22,11 +23,6 @@ import {
 const GLB_HEADER_BYTES = 12;
 const CHUNK_HEADER_BYTES = 8;
 
-/** Three.js GLTFLoader: strip `.`, spaces become `_`. */
-function sanitizeNodeName(name: string): string {
-  return name.replace(/\./g, '').replace(/ /g, '_');
-}
-
 function readGlbNodeNames(relativePath: string): Set<string> {
   const buffer = readFileSync(join(__dirname, '../../../../../public', relativePath));
   const jsonChunkLength = buffer.readUInt32LE(GLB_HEADER_BYTES);
@@ -35,7 +31,7 @@ function readGlbNodeNames(relativePath: string): Set<string> {
     nodes?: { name?: string }[];
   };
   return new Set(
-    (gltf.nodes ?? []).map((node) => sanitizeNodeName(node.name ?? '')).filter(Boolean)
+    (gltf.nodes ?? []).map((node) => sanitizeKitNodeName(node.name ?? '')).filter(Boolean)
   );
 }
 
