@@ -70,23 +70,25 @@ export function CharacterSelectiveBloom() {
     const outputPass = scenePass.getTextureNode();
     const bloomIntensityPass = scenePass.getTextureNode('bloomIntensity');
     const bloomPass = bloom(
-      outputPass.mul(bloomIntensityPass),
+      outputPass.mul(bloomIntensityPass) as never,
       BLOOM_STRENGTH,
       BLOOM_RADIUS,
       BLOOM_THRESHOLD
     ) as unknown as TslTextureNode;
-    const haloMix = float(1).sub(outputPass.a);
+    const haloMix = float(1).sub(outputPass.a as never);
     const bloomCover = bloomPass.r.max(bloomPass.g).max(bloomPass.b).saturate();
     const linearRgb = outputPass.rgb
       .mul(outputPass.a)
       .add(bloomPass.rgb)
-      .add(CARD_BACKDROP.mul(haloMix).mul(bloomCover));
-    const converted = (vec4(linearRgb, float(1)) as unknown as TslTextureNode).renderOutput();
+      .add(CARD_BACKDROP.mul(haloMix).mul(bloomCover as never));
+    const converted = (
+      vec4(linearRgb as never, float(1)) as unknown as TslTextureNode
+    ).renderOutput();
     const cover = outputPass.a.max(bloomCover);
 
-    const rp = new RenderPipeline(gl);
+    const rp = new RenderPipeline(gl as never);
     rp.outputColorTransform = false;
-    rp.outputNode = vec4(converted.rgb, cover);
+    rp.outputNode = vec4(converted.rgb as never, cover as never);
 
     const renderer = gl as { setClearColor?: (color: number, alpha: number) => void };
     renderer.setClearColor?.(0x000000, 0);
