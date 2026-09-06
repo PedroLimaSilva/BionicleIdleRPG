@@ -87,6 +87,7 @@ export function getDexPreviewMasks(stage: MatoranStage, wornMask: Mask): Mask[] 
     case MatoranStage.Vahki:
     case MatoranStage.Makuta:
     case MatoranStage.Rahi:
+    case MatoranStage.Rahkshi:
       return [];
     default: {
       const masks = [...getSelectableMasksForStage(stage)];

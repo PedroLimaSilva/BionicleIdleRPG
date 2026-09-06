@@ -1,12 +1,14 @@
 import { MATORAN_DEX } from './matoran';
 import { ENEMY_DEX } from './enemy';
 import { RAHI_DEX } from './rahi';
+import { RAHKSHI_DEX } from './rahkshi';
 import { TOA_DEX } from './toa';
 import { BaseMatoran, isCustomCharacterId, RecruitedCharacterData } from '../../types/Matoran';
 
 const dex = {
   ...ENEMY_DEX,
   ...RAHI_DEX,
+  ...RAHKSHI_DEX,
   ...TOA_DEX,
   ...MATORAN_DEX,
 };
