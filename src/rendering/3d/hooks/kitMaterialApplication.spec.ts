@@ -110,7 +110,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(mat.roughness).toBe(0.5);
   });
 
-  test('albedo-mapped materials keep the printed map and drop other PBR maps', () => {
+  test('albedo-mapped materials keep the printed map and authored PBR maps', () => {
     const mesh = meshWithMaterialNamed('Main');
     const mapped = mesh.material as MeshStandardMaterial;
     mapped.map = discolorTex();
@@ -123,8 +123,8 @@ describe('buildKitMeshMaterials metallic colors', () => {
       PLASTIC_WEATHERED
     ) as MeshStandardMaterial;
     expect(next.map).toBe(mapped.map);
-    expect(next.metalnessMap).toBeNull();
-    expect(next.normalMap).toBeNull();
+    expect(next.metalnessMap).toBe(mapped.metalnessMap);
+    expect(next.normalMap).toBe(mapped.normalMap);
     expect(next.emissiveIntensity).toBe(0);
   });
 
@@ -313,15 +313,16 @@ describe('buildKitMeshMaterials metallic colors', () => {
 });
 
 describe('buildKitMeshMaterials untextured slots', () => {
-  test('baked kit slots drop maps and tint with the slot color', () => {
+  test('baked kit slots keep authored PBR maps and steal emissive into discoloration', () => {
     const mesh = meshWithUvAndSlots(['Main_MataChest_baked']);
     const bake = discolorTex();
     const normal = discolorTex();
+    const mr = discolorTex();
     const source = mesh.material as MeshStandardMaterial;
     source.emissiveMap = bake;
     source.normalMap = normal;
-    source.roughnessMap = discolorTex();
-    source.metalnessMap = discolorTex();
+    source.roughnessMap = mr;
+    source.metalnessMap = mr;
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({
@@ -329,16 +330,21 @@ describe('buildKitMeshMaterials untextured slots', () => {
       }),
       COLORS,
       PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
+    ) as MeshStandardMaterial & {
+      metalnessNode?: unknown;
+      normalNode?: unknown;
+      roughnessNode?: unknown;
+    };
     expect(next.name).toBe('WeatheredMetal');
     expect(next.emissiveMap).toBeNull();
     expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
     expect((next as MeshStandardMaterial & { colorNode?: unknown }).colorNode).toBeDefined();
-    expect(next.normalMap).toBeNull();
-    expect(next.roughnessMap).toBeNull();
-    expect(next.metalnessMap).toBeNull();
-    expect(next.metalness).toBe(PLASTIC_WEATHERED.metalness);
-    expect(next.roughness).toBe(PLASTIC_WEATHERED.roughness);
+    expect(next.normalMap).toBe(normal);
+    expect(next.roughnessMap).toBe(mr);
+    expect(next.metalnessMap).toBe(mr);
+    expect(next.normalNode).toBeUndefined();
+    expect(next.roughnessNode).toBeUndefined();
+    expect(next.metalnessNode).toBeUndefined();
   });
 
   test('Blender duplicate Main.001 still takes the Main slot', () => {
@@ -394,12 +400,12 @@ describe('buildKitMeshMaterials untextured slots', () => {
     };
     expect(next.name).toBe('WeatheredMetal');
     expect(next.side).toBe(FrontSide);
-    expect(next.normalMap).toBeNull();
+    expect(next.normalMap).toBe(source.normalMap);
     expect(Object.hasOwn(next, 'onBeforeCompile')).toBe(false);
     expect(next.colorNode).toBeDefined();
     expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
     expect(next.metalnessNode).toBeDefined();
-    expect(next.normalNode).toBeDefined();
+    expect(next.normalNode).toBeUndefined();
     expect(next.roughnessNode).toBeDefined();
   });
 

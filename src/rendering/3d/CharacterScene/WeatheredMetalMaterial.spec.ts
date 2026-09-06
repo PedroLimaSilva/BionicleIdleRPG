@@ -22,12 +22,10 @@ describe('getWeatheredMetalMaterial', () => {
     const a = getWeatheredMetalMaterial('#c91a09', {
       discolorationMap: discolor,
       metalness: 0.05,
-      normalMap: discolor,
     });
     const b = getWeatheredMetalMaterial('#c91a09', {
       discolorationMap: discolor,
       metalness: 0.05,
-      normalMap: discolor,
     });
     expect(a).toBe(b);
     expect(a.color.getHexString()).toBe('c91a09');
@@ -51,13 +49,15 @@ describe('getWeatheredMetalMaterial', () => {
     expect(mat.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBeDefined();
   });
 
-  test('the same color with unused normal maps still shares a material', () => {
+  test('authored normal maps are kept and do not share a material', () => {
     const a = mapTex();
     const b = mapTex();
     const withA = getWeatheredMetalMaterial('#c91a09', { metalness: 0.05, normalMap: a });
     const withB = getWeatheredMetalMaterial('#c91a09', { metalness: 0.05, normalMap: b });
-    expect(withA).toBe(withB);
-    expect(withA.normalMap).toBeNull();
+    expect(withA).not.toBe(withB);
+    expect(withA.normalMap).toBe(a);
+    expect(withB.normalMap).toBe(b);
+    expect((withA as MeshStandardMaterial & { normalNode?: unknown }).normalNode).toBeUndefined();
   });
 
   test('red and gold do not share a material', () => {
@@ -176,5 +176,46 @@ describe('applyWeatheredMetalToObject uniqueMaterials', () => {
     expect(((a.children[0] as Mesh).material as MeshStandardMaterial).color.getHexString()).toBe(
       'c91a09'
     );
+  });
+});
+
+describe('applyWeatheredMetalToObject PBR map preservation', () => {
+  test('weathers mapped materials and keeps albedo, normal, and MR maps', () => {
+    const albedo = mapTex();
+    const normal = mapTex();
+    const mr = mapTex();
+    const source = new MeshStandardMaterial({
+      color: '#ffffff',
+      map: albedo,
+      metalness: 1,
+      metalnessMap: mr,
+      name: 'Back_baked',
+      normalMap: normal,
+      roughness: 1,
+      roughnessMap: mr,
+    });
+    const mesh = new Mesh(new BoxGeometry(), source);
+    applyWeatheredMetalToObject(new Group().add(mesh), {
+      materialColorMap: { Back_baked: '#c91a09' },
+      metalness: 0.05,
+      roughness: 0.55,
+      uniqueMaterials: true,
+    });
+    const next = mesh.material as MeshStandardMaterial & {
+      colorNode?: unknown;
+      metalnessNode?: unknown;
+      normalNode?: unknown;
+      roughnessNode?: unknown;
+    };
+    expect(next).not.toBe(source);
+    expect(next.color.getHexString()).toBe('c91a09');
+    expect(next.map).toBe(albedo);
+    expect(next.normalMap).toBe(normal);
+    expect(next.roughnessMap).toBe(mr);
+    expect(next.metalnessMap).toBe(mr);
+    expect(next.colorNode).toBeDefined();
+    expect(next.normalNode).toBeUndefined();
+    expect(next.roughnessNode).toBeUndefined();
+    expect(next.metalnessNode).toBeUndefined();
   });
 });

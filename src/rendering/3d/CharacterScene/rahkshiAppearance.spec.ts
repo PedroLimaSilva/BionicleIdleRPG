@@ -1,4 +1,4 @@
-import { BoxGeometry, Group, Mesh, MeshStandardMaterial } from 'three';
+import { BoxGeometry, DataTexture, Group, Mesh, MeshStandardMaterial } from 'three';
 import { getRahkshiArmorColors } from '../../../data/rahkshiArmorColors';
 import { KraataPower } from '../../../types/Kraata';
 import { cloneGltfInstance } from '../utils/cloneGltfInstance';
@@ -80,5 +80,38 @@ describe('Rahkshi gauntlet instance coloring', () => {
     expect(meshColor(second, 0)).toBe(
       getRahkshiArmorColors(KraataPower.Anger).armor.replace('#', '').toLowerCase()
     );
+  });
+
+  it('keeps Face_baked and Back_baked PBR maps while tinting armor color', () => {
+    const albedo = new DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1);
+    const normal = new DataTexture(new Uint8Array([128, 128, 255, 255]), 1, 1);
+    const face = new MeshStandardMaterial({
+      color: '#ffffff',
+      map: albedo,
+      name: 'Face_baked',
+      normalMap: normal,
+      roughnessMap: albedo,
+    });
+    const back = new MeshStandardMaterial({
+      color: '#ffffff',
+      map: albedo,
+      name: 'Back_baked',
+      normalMap: normal,
+      roughnessMap: albedo,
+    });
+    const root = new Group();
+    root.add(new Mesh(new BoxGeometry(), face), new Mesh(new BoxGeometry(), back));
+    applyGauntletColors(root, KraataPower.Fear);
+    const armor = getRahkshiArmorColors(KraataPower.Fear).armor.replace('#', '').toLowerCase();
+    const faceNext = (root.children[0] as Mesh).material as MeshStandardMaterial;
+    const backNext = (root.children[1] as Mesh).material as MeshStandardMaterial;
+    expect(faceNext.color.getHexString()).toBe(armor);
+    expect(backNext.color.getHexString()).toBe(armor);
+    expect(faceNext.map).toBe(albedo);
+    expect(backNext.map).toBe(albedo);
+    expect(faceNext.normalMap).toBe(normal);
+    expect(backNext.normalMap).toBe(normal);
+    expect(faceNext.roughnessMap).toBe(albedo);
+    expect(backNext.roughnessMap).toBe(albedo);
   });
 });

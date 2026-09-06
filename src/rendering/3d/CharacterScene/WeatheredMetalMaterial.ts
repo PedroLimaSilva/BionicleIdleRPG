@@ -1,7 +1,8 @@
 /**
  * Weathered kit plastic/metal: object-space FBM that darkens albedo, raises
  * roughness, lowers metalness, and bumps the shading normal in the same
- * local-space patches. Optional baked emissive discoloration (glTF `emissiveMap`)
+ * local-space patches. Authored normal / roughness / metalness maps replace the
+ * matching FBM channel. Optional baked emissive discoloration (glTF `emissiveMap`)
  * mixes on top. Edgewear stays off.
  */
 
@@ -28,6 +29,8 @@ import {
   normalView,
   positionLocal,
   positionView,
+  texture,
+  uv,
   vec2,
 } from 'three/tsl';
 import {
@@ -52,8 +55,11 @@ export type WeatheredMetalOptions = {
   edgeStrength?: number;
   edgeCurvatureScale?: number;
   discolorationMap?: Texture;
+  map?: Texture;
+  metalnessMap?: Texture;
   normalMap?: Texture;
   normalScale?: Vector2;
+  roughnessMap?: Texture;
   envMapIntensity?: number;
   opacity?: number;
   transparent?: boolean;
@@ -104,6 +110,10 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
     opts.dentStrength ?? DEFAULT_DENT_STRENGTH,
     opts.discolorationMap?.uuid ?? '',
     opts.discolorationMap?.channel ?? 0,
+    opts.map?.uuid ?? '',
+    opts.metalnessMap?.uuid ?? '',
+    opts.normalMap?.uuid ?? '',
+    opts.roughnessMap?.uuid ?? '',
     opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
     opts.opacity ?? 1,
     opts.transparent ? 't' : '',
@@ -175,44 +185,56 @@ function applyObjectSpaceWeathering(mat: WeatheredTslMaterial, opts: WeatheredMe
 
   const colorHex = `#${new Color(opts.color ?? mat.color).getHexString()}`;
   const bakeUniforms = createBakedDiscolorationUniforms(discolorMap, colorHex);
-  const grimyAlbedo =
-    grimeDarken > 0 ? materialColor.mul(grime.mul(grimeDarken).oneMinus()) : materialColor;
+  const albedo = mat.map ? materialColor.mul(texture(mat.map, uv())) : materialColor;
+  const grimyAlbedo = grimeDarken > 0 ? albedo.mul(grime.mul(grimeDarken).oneMinus()) : albedo;
   if (discolorMap) {
     mat.colorNode = mix(
       grimyAlbedo,
       bakeUniforms.color,
       bakedDiscolorationAmountNode(discolorMap, bakeUniforms)
     );
-  } else if (grimeDarken > 0) {
+  } else if (grimeDarken > 0 || mat.map) {
     mat.colorNode = grimyAlbedo;
   }
-  mat.roughnessNode = materialRoughness
-    .add(grime.mul(grimeRoughness))
-    .add(fineGrain.sub(0.5).mul(FINE_ROUGHNESS_VARIATION))
-    .clamp(0.04, 1);
-  mat.metalnessNode = materialMetalness.mul(grime.mul(grimeMetalnessReduce).oneMinus()).clamp(0, 1);
-  if (dentStrength > 0) {
+  if (!mat.roughnessMap) {
+    mat.roughnessNode = materialRoughness
+      .add(grime.mul(grimeRoughness))
+      .add(fineGrain.sub(0.5).mul(FINE_ROUGHNESS_VARIATION))
+      .clamp(0.04, 1);
+  }
+  if (!mat.metalnessMap) {
+    mat.metalnessNode = materialMetalness
+      .mul(grime.mul(grimeMetalnessReduce).oneMinus())
+      .clamp(0, 1);
+  }
+  // Authored normals stay on the material. Procedural dent would replace them.
+  if (dentStrength > 0 && !mat.normalMap) {
     mat.normalNode = perturbViewNormalFromHeight(
       objectSpaceDentHeight(50, largeScale),
       dentStrength
     );
   }
   mat.customProgramCacheKey = () =>
-    `WeatheredMetal|d${grimeDarken}|r${grimeRoughness}|m${grimeMetalnessReduce}|n${dentStrength}|L${largeScale}|F${fineScale}|dc${discolorMap?.uuid ?? 'none'}`;
+    `WeatheredMetal|d${grimeDarken}|r${grimeRoughness}|m${grimeMetalnessReduce}|n${dentStrength}|L${largeScale}|F${fineScale}|dc${discolorMap?.uuid ?? 'none'}|alb${mat.map?.uuid ?? 'none'}|nm${mat.normalMap?.uuid ?? 'none'}|rgh${mat.roughnessMap?.uuid ?? 'none'}|met${mat.metalnessMap?.uuid ?? 'none'}`;
 }
 
 export function stripPbrMapsAndEmission(
   mat: MeshStandardMaterial,
-  opts: { keepAlbedo?: boolean } = {}
+  opts: {
+    keepAlbedo?: boolean;
+    keepMetalness?: boolean;
+    keepNormal?: boolean;
+    keepRoughness?: boolean;
+  } = {}
 ): void {
   if (!opts.keepAlbedo) mat.map = null;
   mat.aoMap = null;
   mat.bumpMap = null;
   mat.emissiveMap = null;
   mat.lightMap = null;
-  mat.metalnessMap = null;
-  mat.normalMap = null;
-  mat.roughnessMap = null;
+  if (!opts.keepMetalness) mat.metalnessMap = null;
+  if (!opts.keepNormal) mat.normalMap = null;
+  if (!opts.keepRoughness) mat.roughnessMap = null;
   mat.emissive.set(0, 0, 0);
   mat.emissiveIntensity = 0;
 }
@@ -222,16 +244,27 @@ export function createWeatheredMetalMaterial(
 ): MeshStandardMaterial {
   const color = opts.color ?? '#d4a84b';
   const opacity = opts.opacity ?? 1;
+  const hasMetalnessMap = !!opts.metalnessMap;
+  const hasRoughnessMap = !!opts.roughnessMap;
   const mat = new MeshStandardMaterial({
     color: new Color(color),
     envMapIntensity: opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
-    metalness: opts.metalness ?? DEFAULT_METALNESS,
+    map: opts.map,
+    metalness: hasMetalnessMap ? (opts.metalness ?? 1) : (opts.metalness ?? DEFAULT_METALNESS),
+    metalnessMap: opts.metalnessMap,
+    normalMap: opts.normalMap,
     opacity,
-    roughness: opts.roughness ?? DEFAULT_ROUGHNESS,
+    roughness: hasRoughnessMap ? (opts.roughness ?? 1) : (opts.roughness ?? DEFAULT_ROUGHNESS),
+    roughnessMap: opts.roughnessMap,
     side: opts.side ?? DoubleSide,
     transparent: opts.transparent ?? opacity < 1,
   });
-  stripPbrMapsAndEmission(mat);
+  stripPbrMapsAndEmission(mat, {
+    keepAlbedo: !!opts.map,
+    keepMetalness: hasMetalnessMap,
+    keepNormal: !!opts.normalMap,
+    keepRoughness: hasRoughnessMap,
+  });
   applyObjectSpaceWeathering(mat, opts);
   mat.name = MATERIAL_NAME;
   return mat;
@@ -264,6 +297,20 @@ function isUnderMasks(obj: Object3D): boolean {
   return false;
 }
 
+function mapsFromSource(
+  mat: MeshStandardMaterial
+): Pick<
+  WeatheredMetalOptions,
+  'map' | 'metalness' | 'metalnessMap' | 'normalMap' | 'roughness' | 'roughnessMap'
+> {
+  return {
+    ...(mat.map ? { map: mat.map } : {}),
+    ...(mat.normalMap ? { normalMap: mat.normalMap } : {}),
+    ...(mat.roughnessMap ? { roughness: mat.roughness, roughnessMap: mat.roughnessMap } : {}),
+    ...(mat.metalnessMap ? { metalness: mat.metalness, metalnessMap: mat.metalnessMap } : {}),
+  };
+}
+
 function isExcludedMaterial(mat: unknown, excludeNames: string[]): boolean {
   const name = (mat as { name?: string }).name ?? '';
   return excludeNames.some((n) => name === n);
@@ -277,8 +324,10 @@ function isExcludedMaterialBySubstring(mat: unknown, substrings: string[]): bool
 
 /**
  * Replaces mesh materials with slot-colored weathered plastic. Skips Masks
- * subtrees and excluded material names (Brain, GlowingEyes, …). Samples baked
- * emissive discoloration maps when the mesh has UVs.
+ * subtrees and excluded material names (Brain, GlowingEyes, …). Authored
+ * albedo / normal / roughness / metalness maps stay on the material and replace
+ * the matching procedural FBM channel. Samples baked emissive discoloration
+ * maps when the mesh has UVs.
  */
 export function applyWeatheredMetalToObject(
   object: Object3D | null | undefined,
@@ -287,8 +336,6 @@ export function applyWeatheredMetalToObject(
     excludeMaterialNameSubstrings?: string[];
     excludeMaterialNamesNormalized?: Set<string>;
     materialColorMap?: Record<string, string>;
-    includeNormalMappedMaterials?: boolean;
-    preserveExistingMaps?: boolean;
     /**
      * Battle enemies that share a GLB (Rahkshi gauntlet) must not reuse the
      * weathered-material cache. Defeat dispose would otherwise poison later waves.
@@ -354,9 +401,11 @@ export function applyWeatheredMetalToObject(
           ? (raw.emissiveMap ?? undefined)
           : undefined;
       const nextColor = (color ?? '#ffffff') as ColorRepresentation;
+      const sourceMaps = raw instanceof MeshStandardMaterial ? mapsFromSource(raw) : {};
+      const nextOpts = { ...opts, ...sourceMaps, color: nextColor, discolorationMap };
       return opts.uniqueMaterials
-        ? createWeatheredMetalMaterial({ ...opts, color: nextColor, discolorationMap })
-        : getWeatheredMetalMaterial(nextColor, { ...opts, discolorationMap });
+        ? createWeatheredMetalMaterial(nextOpts)
+        : getWeatheredMetalMaterial(nextColor, nextOpts);
     });
 
     if (!changed) return;

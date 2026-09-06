@@ -164,9 +164,6 @@ function stripPreservedMappedMaterial(
   palette: BaseMatoran['colors']
 ): StandardMat {
   const cloned = mat.clone();
-  cloned.normalMap = null;
-  cloned.roughnessMap = null;
-  cloned.metalnessMap = null;
   cloned.aoMap = null;
   cloned.emissiveMap = null;
   cloned.emissive.set(0, 0, 0);
@@ -229,6 +226,16 @@ export function buildKitMeshMaterials(
       ...weatheredBase,
       ...mergeSlotPbr(spec, metalPbr),
     };
+    if (mat.map) opts.map = mat.map;
+    if (mat.normalMap) opts.normalMap = mat.normalMap;
+    if (mat.roughnessMap) {
+      opts.roughness = mat.roughness;
+      opts.roughnessMap = mat.roughnessMap;
+    }
+    if (mat.metalnessMap) {
+      opts.metalness = mat.metalness;
+      opts.metalnessMap = mat.metalnessMap;
+    }
     if (mat.emissiveMap && meshHasUv(mesh)) {
       opts.discolorationMap = mat.emissiveMap;
     }
