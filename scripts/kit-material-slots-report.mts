@@ -43,10 +43,7 @@ const KITS = [
 export function buildKitMaterialSlotReports(repoRootPath = repoRoot) {
   return KITS.map((kit) => {
     const registry = parseKitNodeRegistry(readFileSync(join(repoRootPath, kit.nodesPath), 'utf8'));
-    const slots = buildKitMaterialSlotRegistry(
-      registry,
-      join(repoRootPath, kit.glbPath)
-    );
+    const slots = buildKitMaterialSlotRegistry(registry, join(repoRootPath, kit.glbPath));
     const unresolved = Object.entries(slots)
       .filter(([, values]) => values.length === 0)
       .map(([key]) => key);
