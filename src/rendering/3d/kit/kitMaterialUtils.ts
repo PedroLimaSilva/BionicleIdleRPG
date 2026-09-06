@@ -11,6 +11,46 @@ import type {
  */
 export const KIT_PALETTE_SLOT_NAMES = ['main', 'secondary', 'metal', 'glow', 'face'] as const;
 
+/** Title-case keys attachments use for palette slots (`Main`, `Secondary`, …). */
+export const KIT_PALETTE_SLOT_DISPLAY: Record<(typeof KIT_PALETTE_SLOT_NAMES)[number], string> = {
+  face: 'Face',
+  glow: 'Glow',
+  main: 'Main',
+  metal: 'Metal',
+  secondary: 'Secondary',
+};
+
+/**
+ * Config keys allowed in `materialColors` for a kit node, derived from its GLB
+ * material names and the runtime aliasing rules in `resolveKitMaterialSlotSpec`.
+ */
+export function deriveKitConfigSlotNames(materialNames: readonly string[]): readonly string[] {
+  const slots = new Set<string>();
+  const canonicals = new Set<string>();
+
+  for (const materialName of materialNames) {
+    const canonical = canonicalKitSlotName(materialName);
+    canonicals.add(canonical);
+    if ((KIT_PALETTE_SLOT_NAMES as readonly string[]).includes(canonical)) {
+      slots.add(KIT_PALETTE_SLOT_DISPLAY[canonical as (typeof KIT_PALETTE_SLOT_NAMES)[number]]);
+      continue;
+    }
+
+    const withoutIndex = materialName.replace(/\.\d+$/, '');
+    slots.add(withoutIndex);
+    if (withoutIndex === 'CLEAR') {
+      slots.add('Clear');
+    }
+  }
+
+  // Secondary-only meshes still accept `Main` (see `resolveKitMaterialSlotSpec`).
+  if (canonicals.has('secondary')) {
+    slots.add(KIT_PALETTE_SLOT_DISPLAY.main);
+  }
+
+  return [...slots].sort();
+}
+
 export function normalizeKitSlotName(name: string): string {
   return name.trim().toLowerCase();
 }

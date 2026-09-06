@@ -94,11 +94,15 @@ export type KitMaterialSlotEntry = KitMaterialColorSource | KitMaterialSlotOverr
  * `kitNodeName` must match the object name in the kit GLB — use `KIT_2001_NODES` /
  * `KIT_2003_NODES` constants rather than raw strings.
  */
-export type KitSocketAttachment<TKitNodeName extends string = string> = {
+export type KitSocketAttachment<
+  TKitNodeName extends string = string,
+  TMaterialSlot extends string = string,
+> = {
   kitNodeName: TKitNodeName;
   /**
    * Map from kit **material** name (e.g. Main, Metal, Glow) to color and/or PBR overrides.
    * Omitted entries keep the kit GLB’s defaults for that slot.
+   * Slot names are bound per node via `KIT_*_MATERIAL_SLOTS`.
    */
-  materialColors?: Partial<Record<string, KitMaterialSlotEntry>>;
+  materialColors?: Partial<Record<TMaterialSlot, KitMaterialSlotEntry>>;
 };

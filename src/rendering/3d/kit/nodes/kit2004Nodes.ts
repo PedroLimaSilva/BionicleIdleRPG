@@ -8,12 +8,12 @@ export const KIT_2004_NODES = {
   AxleArm3L: 'AxleArm3L',
   BordakhTool: 'BordakhTool',
   CrystalSpike: 'CrystalSpike',
-  DiskLauncher: 'Disk_Launcher',
+  DiskLauncher: 'Disk Launcher',
   DoubleSocketArmor: 'DoubleSocketArmor',
   EarthshockDrill: 'EarthshockDrill',
   Hydroblade: 'Hydroblade',
   KeerakhTool: 'KeerakhTool',
-  LhikanSword: 'Lhikan_Sword',
+  LhikanSword: 'Lhikan Sword',
   MetruArm: 'MetruArm',
   MetruBrain: 'MetruBrain',
   MetruChestLid: 'MetruChestLid',
@@ -46,5 +46,4 @@ export const KIT_2004_NODES = {
 } as const;
 
 export type Kit2004NodeName = (typeof KIT_2004_NODES)[keyof typeof KIT_2004_NODES];
-export type Kit2004SocketAttachment =
-  import('../../../../types/KitParts').KitSocketAttachment<Kit2004NodeName>;
+export type { Kit2004SocketAttachment } from './kitMaterialSlots';

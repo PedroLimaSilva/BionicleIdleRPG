@@ -41,6 +41,7 @@
     "animation-clip-report": "tsx scripts/animation-clip-report.mts",
     "animation-clip-inspect": "tsx scripts/animation-clip-inspect.mts",
     "kit-node-usage-report": "tsx scripts/kit-node-usage-report.mts",
+    "kit-material-slots-report": "tsx scripts/kit-material-slots-report.mts",
     "audit:prod": "tsx scripts/audit-prod.mts high",
     "audit:prod:critical": "tsx scripts/audit-prod.mts critical",
     "release:plan": "tsx scripts/release.mts plan",
