@@ -3,21 +3,26 @@ import { createPortal } from 'react-dom';
 import { Canvas, useThree } from '@react-three/fiber';
 import { useBlocker, useLocation } from 'react-router-dom';
 import { useReducedMotion } from 'motion/react';
-import { PCFSoftShadowMap, SRGBColorSpace } from 'three';
+import { PCFShadowMap, SRGBColorSpace } from 'three';
 import { SceneCanvasContext } from './hooks/useSceneCanvas';
 import { Perf } from 'r3f-perf';
 import { shouldEnableShadows, isTestMode } from '../../utils/testMode';
 import { useSettings } from '../../context/useSettings';
 import { isCanvasRoute, shouldFadeCanvasOnExit } from './canvasRoutes';
 import { MOTION_DURATION } from '../../motion/transitions';
+import { createSceneWebGPURenderer, isWebGLBackend } from './webgpuRenderer';
 
 const CANVAS_EXIT_FADE_MS = MOTION_DURATION.base * 1000;
 
-/** Clears the WebGL buffer when there is no scene. Prevents stale content from showing if the canvas is revealed. */
+/** Clears the color/depth/stencil buffers when there is no scene. Prevents stale content from showing if the canvas is revealed. */
 function ClearCanvas() {
   const gl = useThree((s) => s.gl);
   useEffect(() => {
-    gl.clear(true, true, true);
+    try {
+      gl.clear(true, true, true);
+    } catch (error: unknown) {
+      console.warn('[ClearCanvas] gl.clear failed', error);
+    }
   }, [gl]);
   return null;
 }
@@ -29,6 +34,12 @@ function SetSRGBColorSpace() {
     gl.outputColorSpace = SRGBColorSpace;
   }, [gl]);
   return null;
+}
+
+function PerfOverlay() {
+  const gl = useThree((s) => s.gl);
+  if (!isWebGLBackend(gl)) return null;
+  return <Perf position="top-left" />;
 }
 
 /** Lets Playwright request a painted frame after a serial model hop. */
@@ -52,8 +63,7 @@ function ShadowMapConfig() {
   const shadowMapsOn = shadowsEnabled && shouldEnableShadows();
   useEffect(() => {
     gl.shadowMap.enabled = shadowMapsOn;
-    gl.shadowMap.type = PCFSoftShadowMap;
-    gl.shadowMap.needsUpdate = true;
+    gl.shadowMap.type = PCFShadowMap;
   }, [gl, shadowMapsOn]);
   return null;
 }
@@ -147,14 +157,14 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
           <Canvas
             className="shared-canvas"
             frameloop={isTestMode() ? 'demand' : 'always'}
-            gl={{ antialias: true }}
+            gl={createSceneWebGPURenderer as never}
             orthographic
             shadows
           >
             <SetSRGBColorSpace />
             <ShadowMapConfig />
             <TestModeInvalidateBridge />
-            {performanceMonitorEnabled && !isTestMode() && <Perf position="top-left" />}
+            {performanceMonitorEnabled && !isTestMode() && <PerfOverlay />}
             {scene ?? <ClearCanvas />}
           </Canvas>,
           target

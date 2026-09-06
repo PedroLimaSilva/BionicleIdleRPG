@@ -88,7 +88,7 @@ Tests render on the test-only route `/test/model/:kind/:id` (`ModelPreview` page
 | **Canvas-only screenshots** (`#canvas-mount`)      | Avoids font/layout noise; only capture when the canvas is visible        |
 | **Serial suites** (`serialCharacterModelSuite.ts`) | One cold boot per group; client-side preview navigation between models   |
 | **`waitForCharacterModelReady`**                   | Gates on `[TEST_MODE] model ready` console signal, not fixed sleeps      |
-| **`TEST_MODE` disables bloom/shadows**             | Reduces post-processing timing variance (`src/utils/testMode.ts`)        |
+| **`TEST_MODE` disables shadows**                   | Reduces shadow-map timing variance (`src/utils/testMode.ts`)             |
 | **Reduced viewport (960×540)**                     | Smaller canvas snapshots; full 1920×1080 is unnecessary for model checks |
 | **SwiftShader in CI**                              | Software WebGL for consistent headless Chromium (`playwright.config.ts`) |
 | **Production preview in models job**               | Pre-bundled assets; faster per-test load than Vite dev server            |
@@ -129,7 +129,7 @@ Enabled via `localStorage` before navigation (`setupGameState`, `enableTestMode`
 | Behavior                                     | Purpose                                              |
 | -------------------------------------------- | ---------------------------------------------------- |
 | Animation `timeScale = 0`, paused at frame 0 | Same pose every screenshot                           |
-| Bloom / selective post-processing off        | No frame-to-frame glow variance                      |
+| Selective bloom on                           | Goldens include kit Glow / brain / Rahkshi eye bloom |
 | Real-time shadows off                        | Stable lighting                                      |
 | `[TEST_MODE] model ready` console log        | Playwright sync point after kit/mask materials apply |
 

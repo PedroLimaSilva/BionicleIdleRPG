@@ -9,7 +9,6 @@ import {
 } from 'three';
 import type { BaseMatoran } from '../../../types/Matoran';
 import {
-  KIT_MATERIAL_WEATHERED_OPTION_KEYS,
   type KitMaterialColorSource,
   type KitMaterialSlotEntry,
   type KitMaterialSlotOverride,
@@ -32,6 +31,10 @@ import {
   resolveTransmissiveKitKind,
   TRANSMISSIVE_KIT_RENDER_ORDER,
 } from './transmissiveKitMaterial';
+import {
+  applySelectiveBloomMrt,
+  isSelectiveBloomKitGlowName,
+} from '../CharacterScene/selectiveBloom';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -54,6 +57,32 @@ function isGlowMaterialName(name: string | undefined): boolean {
   return !!name && name.toLowerCase().includes('glow');
 }
 
+function buildEmissiveKitMaterial(
+  mat: StandardMat,
+  spec: KitMaterialSlotOverride,
+  palette: BaseMatoran['colors']
+): StandardMat {
+  const cloned = mat.clone();
+  cloned.emissiveMap = null;
+  if (spec.color) cloned.color = new Color(resolveKitColorSource(spec.color, palette));
+  if (spec.emissive) {
+    cloned.emissive = new Color(resolveKitColorSource(spec.emissive, palette));
+  }
+  cloned.emissiveIntensity =
+    spec.emissiveIntensity ?? (mat.emissiveIntensity > 0 ? mat.emissiveIntensity : 1);
+  if (spec.metalness !== undefined) cloned.metalness = spec.metalness;
+  if (spec.roughness !== undefined) cloned.roughness = spec.roughness;
+  if (spec.envMapIntensity !== undefined) cloned.envMapIntensity = spec.envMapIntensity;
+  if (spec.opacity !== undefined) {
+    cloned.opacity = spec.opacity;
+    cloned.transparent = spec.opacity < 1;
+  }
+  if (isSelectiveBloomKitGlowName(cloned.name)) {
+    applySelectiveBloomMrt(cloned);
+  }
+  return cloned;
+}
+
 /** When a kit mesh adds a Secondary slot but attachments only tint Main, mirror Main. */
 function resolveKitMaterialSlotSpec(
   materialName: string,
@@ -73,7 +102,7 @@ function resolveKitMaterialSlotSpec(
   return undefined;
 }
 
-/** Printed albedo (Kanoka disk, etc.) keeps the GLB look. Normal-only kit bakes still weather. */
+/** Printed albedo (Kanoka disk, etc.) keeps the GLB look. */
 function isPreservedMappedMaterial(mat: StandardMat): boolean {
   return !!mat.map;
 }
@@ -90,62 +119,68 @@ export function buildKitMaterialSlotLookup(
   return lookup;
 }
 
-function shouldApplyWeathered(
-  spec: KitMaterialSlotOverride | undefined,
-  materialName: string
-): boolean {
-  if (spec?.weathered !== undefined) return spec.weathered;
-  if (spec?.emissive) return false;
-  if (isGlowMaterialName(materialName)) return false;
-  return true;
-}
-
-function buildStandardSlotMaterial(
-  base: StandardMat,
+function resolveSlotAlbedo(
   spec: KitMaterialSlotOverride | undefined,
   palette: BaseMatoran['colors'],
-  slotColor: string | undefined,
+  fallback: string
+): string {
+  if (spec?.color) return resolveKitColorSource(spec.color, palette);
+  if (spec?.emissive) return resolveKitColorSource(spec.emissive, palette);
+  return fallback;
+}
+
+function mergeSlotPbr(
+  spec: KitMaterialSlotOverride | undefined,
   metalPbr: KitMetalPbr | undefined
+): Pick<
+  WeatheredMetalOptions,
+  | 'envMapIntensity'
+  | 'fineScale'
+  | 'grimeDarken'
+  | 'grimeMetalnessReduce'
+  | 'grimeRoughness'
+  | 'largeScale'
+  | 'metalness'
+  | 'roughness'
+> {
+  return {
+    ...metalPbr,
+    ...(spec?.roughness !== undefined ? { roughness: spec.roughness } : {}),
+    ...(spec?.metalness !== undefined ? { metalness: spec.metalness } : {}),
+    ...(spec?.envMapIntensity !== undefined ? { envMapIntensity: spec.envMapIntensity } : {}),
+    ...(spec?.grimeDarken !== undefined ? { grimeDarken: spec.grimeDarken } : {}),
+    ...(spec?.grimeRoughness !== undefined ? { grimeRoughness: spec.grimeRoughness } : {}),
+    ...(spec?.grimeMetalnessReduce !== undefined
+      ? { grimeMetalnessReduce: spec.grimeMetalnessReduce }
+      : {}),
+    ...(spec?.fineScale !== undefined ? { fineScale: spec.fineScale } : {}),
+    ...(spec?.largeScale !== undefined ? { largeScale: spec.largeScale } : {}),
+  };
+}
+
+function stripPreservedMappedMaterial(
+  mat: StandardMat,
+  spec: KitMaterialSlotOverride | undefined,
+  palette: BaseMatoran['colors']
 ): StandardMat {
-  if (!spec) return base;
-  const cloned = base.clone();
-  if (slotColor) cloned.color = new Color(slotColor);
-  if (metalPbr) {
-    if (metalPbr.roughness !== undefined) cloned.roughness = metalPbr.roughness;
-    if (metalPbr.metalness !== undefined) cloned.metalness = metalPbr.metalness;
-    if (metalPbr.envMapIntensity !== undefined) cloned.envMapIntensity = metalPbr.envMapIntensity;
+  const cloned = mat.clone();
+  cloned.aoMap = null;
+  cloned.emissiveMap = null;
+  cloned.emissive.set(0, 0, 0);
+  cloned.emissiveIntensity = 0;
+  if (cloned instanceof MeshPhysicalMaterial) {
+    cloned.transmissionMap = null;
+    cloned.sheenColorMap = null;
+    cloned.clearcoatMap = null;
+    cloned.clearcoatNormalMap = null;
+    cloned.clearcoatRoughnessMap = null;
   }
-  if (spec.roughness !== undefined) cloned.roughness = spec.roughness;
-  if (spec.metalness !== undefined) cloned.metalness = spec.metalness;
-  if (spec.envMapIntensity !== undefined) cloned.envMapIntensity = spec.envMapIntensity;
-  if (spec.emissive) {
-    cloned.emissive = new Color(resolveKitColorSource(spec.emissive, palette));
-    cloned.emissiveIntensity =
-      spec.emissiveIntensity ?? (base.emissiveIntensity > 0 ? base.emissiveIntensity : 1);
-  } else if (spec.emissiveIntensity !== undefined) {
-    cloned.emissiveIntensity = spec.emissiveIntensity;
-  }
-  if (spec.opacity !== undefined) {
+  if (spec?.color) cloned.color = new Color(resolveKitColorSource(spec.color, palette));
+  if (spec?.opacity !== undefined) {
     cloned.opacity = spec.opacity;
     cloned.transparent = spec.opacity < 1;
   }
   return cloned;
-}
-
-function mergeSlotWeatheredOpts(
-  spec: KitMaterialSlotOverride | undefined
-): Partial<WeatheredMetalOptions> {
-  if (!spec) return {};
-  const out: Partial<WeatheredMetalOptions> = {};
-  if (spec.roughness !== undefined) out.roughness = spec.roughness;
-  if (spec.metalness !== undefined) out.metalness = spec.metalness;
-  for (const key of KIT_MATERIAL_WEATHERED_OPTION_KEYS) {
-    const v = spec[key];
-    if (v !== undefined) {
-      (out as Record<string, string | number>)[key] = v;
-    }
-  }
-  return out;
 }
 
 export function buildKitMeshMaterials(
@@ -162,11 +197,9 @@ export function buildKitMeshMaterials(
     const spec = resolveKitMaterialSlotSpec(mat.name, slotLookup);
     const transmissiveKind = resolveTransmissiveKitKind(mat.name, spec);
     if (transmissiveKind) {
-      const color = spec?.color ? resolveKitColorSource(spec.color, palette) : mat.color.getStyle();
-      const emissive = spec?.emissive ? resolveKitColorSource(spec.emissive, palette) : color;
-      const emissiveIntensity =
-        spec?.emissiveIntensity ??
-        (spec?.emissive ? (mat.emissiveIntensity > 0 ? mat.emissiveIntensity : 1) : 0);
+      const color = spec?.color ? resolveKitColorSource(spec.color, palette) : '#ffffff';
+      const emissive = spec?.emissive ? resolveKitColorSource(spec.emissive, palette) : '#000000';
+      const emissiveIntensity = spec?.emissiveIntensity ?? 0;
       return buildTransmissiveKitMaterial(
         mat.name,
         transmissiveKind,
@@ -175,40 +208,49 @@ export function buildKitMeshMaterials(
         emissiveIntensity
       );
     }
-    // Albedo-mapped materials keep GLB textures (Kanoka disk, etc.).
-    if (isPreservedMappedMaterial(mat)) {
-      if (!spec || (!spec.color && !spec.emissive && spec.emissiveIntensity === undefined)) {
-        return mat;
-      }
-      const mappedColor = spec.color ? resolveKitColorSource(spec.color, palette) : undefined;
-      return buildStandardSlotMaterial(mat, spec, palette, mappedColor, undefined);
-    }
-    const slotColor = spec?.color ? resolveKitColorSource(spec.color, palette) : undefined;
-    // Metallic plastics (gold) shine on any slot, not just Metal; the slot's own
-    // PBR still wins so a Metal entry can tune its own look.
-    const metalPbr = slotColor ? metallicColorPbr(slotColor) : undefined;
 
-    // Only tint configured slots — unmapped materials keep their GLB look instead of
-    // re-weathering from stale mesh.material.color (character-switch bug on rig meshes).
-    if (weatheredBase && spec && shouldApplyWeathered(spec, mat.name)) {
-      const opts: WeatheredMetalOptions = {
-        ...weatheredBase,
-        ...metalPbr,
-        ...mergeSlotWeatheredOpts(spec),
-        discolorationMap: mat.emissiveMap && meshHasUv(mesh) ? mat.emissiveMap : undefined,
-        normalMap: mat.normalMap ?? undefined,
-        normalScale: mat.normalMap ? mat.normalScale : undefined,
-      };
-      // MataFace stalk shares a plane with brain gel — FrontSide avoids z-fighting the gel.
-      // Do not clone weathered materials: Three's Material.copy drops onBeforeCompile,
-      // which removes baked discoloration while normalMap (a copied property) still works.
-      if (canonicalKitSlotName(mat.name) === 'face') {
-        opts.side = FrontSide;
-      }
-      return getWeatheredMetalMaterial(slotColor ?? mat.color.getStyle(), opts);
+    if (spec?.emissive) {
+      return buildEmissiveKitMaterial(mat, spec, palette);
     }
 
-    return buildStandardSlotMaterial(mat, spec, palette, slotColor, metalPbr);
+    if (isPreservedMappedMaterial(mat) || !spec) {
+      if (!spec || (!spec.color && !spec.emissive && spec.opacity === undefined)) {
+        return stripPreservedMappedMaterial(mat, undefined, palette);
+      }
+      return stripPreservedMappedMaterial(mat, spec, palette);
+    }
+
+    const slotColor = resolveSlotAlbedo(spec, palette, mat.color.getStyle());
+    const metalPbr = metallicColorPbr(slotColor);
+    const opts: WeatheredMetalOptions = {
+      ...weatheredBase,
+      ...mergeSlotPbr(spec, metalPbr),
+    };
+    if (mat.map) opts.map = mat.map;
+    if (mat.normalMap) opts.normalMap = mat.normalMap;
+    if (mat.roughnessMap) {
+      opts.roughness = mat.roughness;
+      opts.roughnessMap = mat.roughnessMap;
+    }
+    if (mat.metalnessMap) {
+      opts.metalness = mat.metalness;
+      opts.metalnessMap = mat.metalnessMap;
+    }
+    if (mat.emissiveMap && meshHasUv(mesh)) {
+      opts.discolorationMap = mat.emissiveMap;
+    }
+    if (canonicalKitSlotName(mat.name) === 'face') {
+      opts.side = FrontSide;
+    }
+    if (isGlowMaterialName(mat.name)) {
+      opts.metalness = spec?.metalness ?? 0.05;
+      opts.roughness = spec?.roughness ?? 0.45;
+    }
+    if (spec?.opacity !== undefined) {
+      opts.opacity = spec.opacity;
+      opts.transparent = spec.opacity < 1;
+    }
+    return getWeatheredMetalMaterial(slotColor, opts);
   });
   return Array.isArray(raw) ? next : next[0];
 }

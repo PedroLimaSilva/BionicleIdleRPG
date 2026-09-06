@@ -45,10 +45,10 @@ export function shouldDisableAnimations(): boolean {
 
 /**
  * Check if selective bloom should be enabled
- * Disabled in test mode to avoid flaky screenshots from post-processing timing
+ * Kept on in test mode so Playwright goldens include kit Glow / brain / Rahkshi eye bloom
  */
 export function shouldEnableSelectiveBloom(): boolean {
-  return !isTestMode();
+  return true;
 }
 
 /**

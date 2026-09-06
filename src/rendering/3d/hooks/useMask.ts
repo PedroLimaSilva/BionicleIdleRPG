@@ -26,6 +26,7 @@ import {
 import { normalizeMaskSocketScale } from './normalizeMaskSocketScale';
 import {
   applyMaskDiscolorationToObject,
+  applyMaskPowerEmissive,
   setupMaskDiscolorationShader,
   type MaskDiscoloration,
 } from './maskDiscoloration';
@@ -66,15 +67,7 @@ function applyMaskColors(
 
       mat.color = new Color(maskColor);
       applyMaskMetallicPbr(mat, maskColor);
-      if (mat.emissive) {
-        if (maskPowerActive) {
-          mat.emissive = new Color(maskColor);
-          mat.emissiveIntensity = 2.5;
-        } else {
-          mat.emissive = new Color(0x000000);
-          mat.emissiveIntensity = 0;
-        }
-      }
+      applyMaskPowerEmissive(mat, maskColor, maskPowerActive);
     });
   });
 
@@ -105,7 +98,8 @@ function applyMaskColors(
  * @param glowColor   - Optional color for emissive "glow" materials (e.g. lens glow matching eye color).
  *                      When provided, materials whose names include "glow" (case-insensitive) will use
  *                      this color for both their base color and emissive color instead of maskColor.
- * @param maskPowerActive - When true, non-glow materials emit the mask color at intensity 5.
+ * @param maskPowerActive - When true, non-glow materials emit the mask color
+ *                          and join selective bloom.
  * @param discoloration - Optional vertical crown tint (Metru double-injected Kanohi).
  *                        Baked emissive discoloration is applied whenever the GLB
  *                        ships an emissiveMap, independent of this prop.

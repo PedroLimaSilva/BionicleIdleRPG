@@ -22,6 +22,8 @@ export const DEFAULT_LEGO_DISCOLORATION: LegoDiscolorationSpec = {
  * {@link DEFAULT_LEGO_DISCOLORATION}.
  */
 export const LEGO_COLOR_DISCOLORATION: Partial<Record<LegoColor, LegoDiscolorationSpec>> = {
+  [LegoColor.Black]: { color: LegoColor.LightGray, intensity: 0.5 },
+  [LegoColor.DarkGray]: { color: LegoColor.LightGray, intensity: 1 },
   [LegoColor.LightGray]: { color: LegoColor.Black, intensity: 0.75 },
   [LegoColor.Lime]: { color: LegoColor.Black, intensity: 0.75 },
   [LegoColor.Orange]: { color: LegoColor.Black, intensity: 0.75 },

@@ -2,56 +2,28 @@
  * Baked grayscale discoloration lives in the glTF emissive slot (Blender Simple Bake).
  * It is *not* light: we steal `emissiveMap`, zero real emission, and mix albedo
  * toward {@link discolorationForColor} where the bake is bright.
+ *
+ * WebGPU compiles MeshStandardMaterial through TSL, so the mix is a `colorNode`
+ * rather than a GLSL `onBeforeCompile` patch.
  */
 
-import {
-  ClampToEdgeWrapping,
-  Color,
-  DataTexture,
-  LinearFilter,
-  MeshStandardMaterial,
-  NoColorSpace,
-  Texture,
-} from 'three';
+import { ClampToEdgeWrapping, Color, MeshStandardMaterial, NoColorSpace, Texture } from 'three';
+import { float, smoothstep, texture, uniform, uv } from 'three/tsl';
 import { discolorationForColor } from '../kit/palettes/legoColorDiscoloration';
 
 export const DISCOLORATION_MAP_USERDATA_KEY = 'bakedDiscolorationMap';
 export const DISCOLORATION_UNIFORMS_KEY = 'bakedDiscolorationUniforms';
 
-export type BakedDiscolorationUniforms = {
-  discolorationMap: { value: Texture };
-  uDiscolorationColor: { value: Color };
-  uDiscolorationIntensity: { value: number };
-  uHasDiscolorationMap: { value: number };
-};
-
-export const EMPTY_DISCOLORATION_MAP = (() => {
-  const tex = new DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
-  tex.colorSpace = NoColorSpace;
-  tex.magFilter = LinearFilter;
-  tex.minFilter = LinearFilter;
-  tex.wrapS = ClampToEdgeWrapping;
-  tex.wrapT = ClampToEdgeWrapping;
-  tex.needsUpdate = true;
-  return tex;
-})();
-
-/** GLSL attribute for a glTF `texCoord` / Three.js `texture.channel` (0 → `uv`, 1 → `uv1`, …). */
-export function glslUvAttributeForTextureChannel(channel: number | undefined): string {
-  const c = channel ?? 0;
-  return c <= 0 ? 'uv' : `uv${c}`;
+export function createBakedDiscolorationUniforms(map: Texture | null, colorHex: string) {
+  const spec = discolorationForColor(colorHex);
+  return {
+    color: uniform(new Color(spec.color)),
+    hasMap: uniform(map ? 1 : 0),
+    intensity: uniform(map ? spec.intensity : 0),
+  };
 }
 
-/**
- * Kit / mask bakes are atlas-packed. glTF samplers default to REPEAT, which
- * bleeds neighboring islands (and other socket regions on a shared atlas)
- * when UVs skim 0–1. Linear + clamp matches Blender's bake layout.
- */
-export function configureBakedAtlasMap(map: Texture): void {
-  map.colorSpace = NoColorSpace;
-  map.wrapS = ClampToEdgeWrapping;
-  map.wrapT = ClampToEdgeWrapping;
-}
+export type BakedDiscolorationUniforms = ReturnType<typeof createBakedDiscolorationUniforms>;
 
 export function getBakedDiscolorationMap(mat: unknown): Texture | null {
   const fromUserData = (mat as { userData?: Record<string, unknown> }).userData?.[
@@ -76,7 +48,10 @@ export function adoptBakedDiscolorationMap(
   if (existing instanceof Texture) return existing;
   const map = mat.emissiveMap;
   if (!map) return null;
-  configureBakedAtlasMap(map);
+  map.colorSpace = NoColorSpace;
+  // Bakes are atlas-packed; REPEAT shows island outlines when UVs skim edges.
+  map.wrapS = ClampToEdgeWrapping;
+  map.wrapT = ClampToEdgeWrapping;
   mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = map;
   mat.emissiveMap = null;
   mat.emissive.set(0, 0, 0);
@@ -84,17 +59,12 @@ export function adoptBakedDiscolorationMap(
   return map;
 }
 
-export function createBakedDiscolorationUniforms(
-  map: Texture | null,
-  colorHex: string
-): BakedDiscolorationUniforms {
-  const spec = discolorationForColor(colorHex);
-  return {
-    discolorationMap: { value: map ?? EMPTY_DISCOLORATION_MAP },
-    uDiscolorationColor: { value: new Color(spec.color) },
-    uDiscolorationIntensity: { value: map ? spec.intensity : 0 },
-    uHasDiscolorationMap: { value: map ? 1 : 0 },
-  };
+function uniformNumber(node: { value: unknown }): { value: number } {
+  return node as unknown as { value: number };
+}
+
+function uniformColor(node: { value: unknown }): { value: Color } {
+  return node as unknown as { value: Color };
 }
 
 export function applyBakedDiscolorationUniforms(
@@ -103,18 +73,23 @@ export function applyBakedDiscolorationUniforms(
   map: Texture | null
 ): void {
   const spec = discolorationForColor(colorHex);
-  uniforms.discolorationMap.value = map ?? EMPTY_DISCOLORATION_MAP;
-  uniforms.uDiscolorationColor.value.set(spec.color);
-  uniforms.uDiscolorationIntensity.value = map ? spec.intensity : 0;
-  uniforms.uHasDiscolorationMap.value = map ? 1 : 0;
+  uniformColor(uniforms.color).value.set(spec.color);
+  uniformNumber(uniforms.intensity).value = map ? spec.intensity : 0;
+  uniformNumber(uniforms.hasMap).value = map ? 1 : 0;
 }
 
 /**
- * Mix albedo toward the color-specific tint using a grayscale wear bake.
- * `smoothstep` crushes mid-gray floors so only true edge/highlight texels mix.
+ * Mix amount for the baked wear mask. `smoothstep` crushes mid-gray floors so
+ * only true edge/highlight texels mix. Pass explicit `uv()` so TSL cannot
+ * steal another map’s `getUV` (normal/roughness) when the bake has no uvNode.
  */
-export const BAKED_DISCOLORATION_FRAGMENT_GLSL = `
-      float bakedDiscolorSample = clamp(texture2D(discolorationMap, vDiscolorUv).r, 0.0, 1.0);
-      float bakedDiscolorAmt = uHasDiscolorationMap * smoothstep(0.2, 0.75, bakedDiscolorSample);
-      diffuseColor.rgb = mix(diffuseColor.rgb, uDiscolorationColor, clamp(bakedDiscolorAmt * uDiscolorationIntensity, 0.0, 1.0));
-`;
+export function bakedDiscolorationAmountNode(
+  map: Texture | null,
+  uniforms: BakedDiscolorationUniforms
+) {
+  if (!map) return float(0);
+  return uniforms.hasMap
+    .mul(smoothstep(0.2, 0.75, texture(map, uv()).r))
+    .mul(uniforms.intensity)
+    .clamp(0, 1);
+}
