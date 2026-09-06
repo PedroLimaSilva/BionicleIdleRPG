@@ -161,10 +161,8 @@ export function getUnresolvedMaterialSlotNodes(
 export { KIT_2001_MATERIAL_SLOTS, KIT_2003_MATERIAL_SLOTS, KIT_2004_MATERIAL_SLOTS };
 
 /** Nodes registered without a resolvable GLB mesh (see `resolveKitGlbNodeName`). */
-export const KIT_2001_MATERIAL_SLOT_EXEMPT = [
-  'MataSingleArmPistonLowerR',
-  'MataSingleArmPistonUpperR',
-] as const satisfies readonly (keyof typeof KIT_2001_NODES)[];
+export const KIT_2001_MATERIAL_SLOT_EXEMPT =
+  [] as const satisfies readonly (keyof typeof KIT_2001_NODES)[];
 
 export const KIT_2003_MATERIAL_SLOT_EXEMPT =
   [] as const satisfies readonly (keyof typeof KIT_2003_NODES)[];

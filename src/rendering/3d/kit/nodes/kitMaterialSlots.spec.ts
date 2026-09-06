@@ -72,7 +72,15 @@ describe('kit material slots', () => {
       const registry = parseKitNodeRegistry(readFileSync(join(repoRoot, nodesPath), 'utf8'));
       const expected = buildKitMaterialSlotRegistry(registry, join(repoRoot, glbPath));
       for (const key of Object.keys(registryConst)) {
-        expect(slotsConst[key as keyof typeof slotsConst]).toEqual(expected[key] ?? []);
+        expect({
+          kit: glbPath,
+          part: key,
+          slots: slotsConst[key as keyof typeof slotsConst],
+        }).toEqual({
+          kit: glbPath,
+          part: key,
+          slots: expected[key] ?? [],
+        });
       }
     }
   });

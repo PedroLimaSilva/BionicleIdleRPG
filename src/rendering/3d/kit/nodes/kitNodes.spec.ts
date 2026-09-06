@@ -48,10 +48,12 @@ describe('kit nodes', () => {
     for (const [registry, glbPath, exempt] of kits) {
       const runtimeNames = readGlbRuntimeNodeNames(glbPath);
       const exemptKeys = new Set<string>(exempt);
-      for (const [key, kitNodeName] of Object.entries(registry)) {
-        if (exemptKeys.has(key)) continue;
-        expect(runtimeNames.has(kitNodeName)).toBe(true);
-      }
+      const missing = Object.entries(registry).flatMap(([key, kitNodeName]) => {
+        if (exemptKeys.has(key) || runtimeNames.has(kitNodeName)) return [];
+        return [{ kit: glbPath, part: key, kitNodeName }];
+      });
+
+      expect(missing).toEqual([]);
     }
   });
 
