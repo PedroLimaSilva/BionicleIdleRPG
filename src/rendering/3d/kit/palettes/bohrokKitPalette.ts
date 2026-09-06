@@ -5,6 +5,7 @@ import {
   MATORAN_KIT_PALETTE_BODY,
   MATORAN_KIT_PALETTE_METAL,
 } from './matoranKitPlayerPalette';
+import { CRYSTAL_BRAIN_SLOT } from './brainKitPalette';
 import { mataKitPlayerPaletteGlow } from './mataKitPlayerPalette';
 
 export const BOHROK_KIT_PALETTE_BODY = MATORAN_KIT_PALETTE_BODY;
@@ -45,8 +46,8 @@ export const BOHROK_KIT_PALETTE_SOCKETS: Partial<Record<string, KitMaterialSlotE
 };
 
 export const BOHROK_KIT_PALETTE_EYE: Partial<Record<string, KitMaterialSlotEntry>> = {
-  ...mataKitPlayerPaletteGlow(50),
-  Brain: { color: { key: 'eyes', kind: 'palette' }, weathered: false },
+  ...mataKitPlayerPaletteGlow(5),
+  Brain: CRYSTAL_BRAIN_SLOT,
 };
 
 export const BOHROK_KIT_PALETTE_TEETH: Partial<Record<string, KitMaterialSlotEntry>> = {
@@ -62,10 +63,16 @@ export const BOHROK_KIT_PALETTE_TEETH: Partial<Record<string, KitMaterialSlotEnt
   },
 };
 
-/** Swarm faceplate: colored shell, clear viewport unchanged. */
+/** Swarm faceplate viewport — colorless trans-clear plastic, no bloom. */
+const BOHROK_FACEPLATE_CLEAR_SLOT: KitMaterialSlotEntry = {
+  transmissive: 'clear',
+  weathered: false,
+};
+
+/** Swarm faceplate: colored shell, colorless transmissive viewport. */
 export const BOHROK_SWARM_FACEPLATE_PALETTE: Partial<Record<string, KitMaterialSlotEntry>> = {
-  CLEAR: { weathered: false },
-  Clear: { weathered: false },
+  CLEAR: BOHROK_FACEPLATE_CLEAR_SLOT,
+  Clear: BOHROK_FACEPLATE_CLEAR_SLOT,
   Main: { kind: 'part', part: 'body', slot: 'main' },
 };
 

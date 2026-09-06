@@ -21,6 +21,7 @@ import type { KitMaterialSlotEntry } from '../../../types/KitParts';
 import { normalizeKitMaterialSlotEntry } from '../kit/kitMaterialUtils';
 import { resolveKitColorSource } from '../hooks/kitMaterialApplication';
 import { getWeatheredMetalMaterial, type WeatheredMetalOptions } from './WeatheredMetalMaterial';
+import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 
 const BOHROK_MASTER_GLB = import.meta.env.BASE_URL + 'bohrok_master.glb';
 
@@ -33,7 +34,6 @@ const BOHROK_WEATHERED: WeatheredMetalOptions = {
   grimeDarken: 0.4,
   grimeMetalnessReduce: 0.5,
   grimeRoughness: 0.2,
-  largeScale: 5,
   metalness: 0.05,
   roughness: 0.55,
 };
@@ -68,7 +68,7 @@ function showObjectTree(root: Object3D): void {
 
 /** Parents a GLB template onto a rig socket at the socket origin. */
 function attachTemplateAtSocket(template: Object3D, socket: Object3D): Object3D {
-  const clone = template.clone(true);
+  const clone = cloneGltfInstance(template);
   clone.position.set(0, 0, 0);
   clone.rotation.set(0, 0, 0);
   clone.scale.set(1, 1, 1);
@@ -149,7 +149,7 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
   const isKal = isBohrokKal(id);
   const colorScheme = CHARACTER_DEX[id].colors;
 
-  const bohrokInstance = useMemo(() => nodes.Bohrok.clone(true), [nodes]);
+  const bohrokInstance = useMemo(() => cloneGltfInstance(nodes.Bohrok), [nodes]);
   const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(bohrokInstance), [bohrokInstance]);
 
   const kit2003Attachments = useMemo(() => buildBohrokKit2003Attachments(isKal), [isKal]);

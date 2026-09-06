@@ -24,7 +24,11 @@ import {
   isMaskStandardMat,
   MASK_LENS_GLOW_EMISSIVE_INTENSITY,
 } from './maskMaterial';
-import { applyMaskDiscolorationToObject, setupMaskDiscolorationShader } from './maskDiscoloration';
+import {
+  applyMaskDiscolorationToObject,
+  applyMaskPowerEmissive,
+  setupMaskDiscolorationShader,
+} from './maskDiscoloration';
 import { masksCollected } from '../../../services/matoranUtils';
 
 const NUVA_MASKS_GLB_PATH = import.meta.env.BASE_URL + 'Toa_Nuva/masks.glb';
@@ -68,9 +72,7 @@ function applyNuvaMaskColors(
 
     forEachMaskMaterial(mesh, (mat) => {
       if (isMaskGlowMaterialName(mat.name) || isNuvaLensMesh(mesh)) {
-        if (isMaskGlowMaterialName(mat.name) && mat.emissive) {
-          mat.emissiveIntensity = MASK_LENS_GLOW_EMISSIVE_INTENSITY;
-        }
+        if (mat.emissive) mat.emissiveIntensity = MASK_LENS_GLOW_EMISSIVE_INTENSITY;
         return;
       }
 
@@ -83,15 +85,7 @@ function applyNuvaMaskColors(
 
       mat.color.copy(new Color(tintColor));
       applyMaskMetallicPbr(mat, tintColor);
-      if (mat.emissive) {
-        if (maskPowerActive) {
-          mat.emissive = new Color(tintColor);
-          mat.emissiveIntensity = 2.5;
-        } else {
-          mat.emissive = new Color(0x000000);
-          mat.emissiveIntensity = 0;
-        }
-      }
+      applyMaskPowerEmissive(mat, tintColor, maskPowerActive);
     });
   });
 

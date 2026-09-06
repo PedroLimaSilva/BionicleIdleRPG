@@ -1,9 +1,15 @@
-import { ClampToEdgeWrapping, MeshStandardMaterial, RepeatWrapping, Texture } from 'three';
+import { ClampToEdgeWrapping, Color, MeshStandardMaterial, Texture } from 'three';
+import { LegoColor } from '../../../types/Colors';
+import {
+  DEFAULT_LEGO_DISCOLORATION,
+  discolorationForColor,
+} from '../kit/palettes/legoColorDiscoloration';
 import {
   adoptBakedDiscolorationMap,
-  configureBakedAtlasMap,
+  applyBakedDiscolorationUniforms,
+  bakedDiscolorationAmountNode,
+  createBakedDiscolorationUniforms,
   getBakedDiscolorationMap,
-  glslUvAttributeForTextureChannel,
 } from './bakedDiscoloration';
 
 describe('adoptBakedDiscolorationMap', () => {
@@ -31,7 +37,6 @@ describe('adoptBakedDiscolorationMap', () => {
 
   test('zeros emission and clamps atlas wrapping', () => {
     const map = new Texture();
-    map.channel = 1;
     const mat = new MeshStandardMaterial({
       emissive: 0xffffff,
       emissiveIntensity: 1,
@@ -43,26 +48,39 @@ describe('adoptBakedDiscolorationMap', () => {
     expect(mat.emissiveIntensity).toBe(0);
     expect(map.wrapS).toBe(ClampToEdgeWrapping);
     expect(map.wrapT).toBe(ClampToEdgeWrapping);
-    expect(map.channel).toBe(1);
   });
 });
 
-describe('configureBakedAtlasMap', () => {
-  test('clamps wrap so atlas islands do not repeat', () => {
+describe('baked discoloration uniforms', () => {
+  test('uses the color-specific wear tint and ignores missing maps', () => {
+    const uniforms = createBakedDiscolorationUniforms(null, LegoColor.Red);
+    expect((uniforms.color.value as Color).getHexString()).toBe(
+      new Color(DEFAULT_LEGO_DISCOLORATION.color).getHexString()
+    );
+    expect(uniforms.intensity.value).toBe(0);
+    expect(uniforms.hasMap.value).toBe(0);
+  });
+
+  test('updates mix color when the tinted mask color changes', () => {
     const map = new Texture();
-    map.wrapS = RepeatWrapping;
-    map.wrapT = RepeatWrapping;
-    configureBakedAtlasMap(map);
-    expect(map.wrapS).toBe(ClampToEdgeWrapping);
-    expect(map.wrapT).toBe(ClampToEdgeWrapping);
+    const uniforms = createBakedDiscolorationUniforms(map, LegoColor.Red);
+    expect(uniforms.intensity.value).toBe(DEFAULT_LEGO_DISCOLORATION.intensity);
+    expect(uniforms.hasMap.value).toBe(1);
+
+    applyBakedDiscolorationUniforms(uniforms, LegoColor.White, map);
+    const whiteSpec = discolorationForColor(LegoColor.White);
+    expect((uniforms.color.value as Color).getHexString()).toBe(
+      new Color(whiteSpec.color).getHexString()
+    );
+    expect(uniforms.intensity.value).toBe(whiteSpec.intensity);
   });
 });
 
-describe('glslUvAttributeForTextureChannel', () => {
-  test('maps glTF texCoord / Three channel to the GLSL attribute', () => {
-    expect(glslUvAttributeForTextureChannel(undefined)).toBe('uv');
-    expect(glslUvAttributeForTextureChannel(0)).toBe('uv');
-    expect(glslUvAttributeForTextureChannel(1)).toBe('uv1');
-    expect(glslUvAttributeForTextureChannel(2)).toBe('uv2');
+describe('baked discoloration amount', () => {
+  test('samples the default mesh UV without throwing', () => {
+    const map = new Texture();
+    const uniforms = createBakedDiscolorationUniforms(map, LegoColor.Red);
+    expect(() => bakedDiscolorationAmountNode(map, uniforms)).not.toThrow();
+    expect(bakedDiscolorationAmountNode(null, uniforms)).toBeDefined();
   });
 });

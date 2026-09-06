@@ -7,18 +7,24 @@ import {
   MeshPhysicalMaterial,
   MeshStandardMaterial,
 } from 'three';
-import { buildKitMaterialSlotLookup, buildKitMeshMaterials } from './kitMaterialApplication';
-import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
 import {
-  TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
-  TRANSMISSIVE_KIT_IOR,
-  TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
-  TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
-} from './transmissiveKitMaterial';
+  buildKitMaterialSlotLookup,
+  buildKitMeshMaterials,
+  applyKitMaterialsToObject,
+} from './kitMaterialApplication';
+import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
 import { type WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
-import { getBakedDiscolorationMap } from './bakedDiscoloration';
+import { DISCOLORATION_MAP_USERDATA_KEY } from './bakedDiscoloration';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
+import {
+  TRANSMISSIVE_KIT_BRAIN_TRANSMISSION,
+  TRANSMISSIVE_KIT_CLEAR_TRANSMISSION,
+  TRANSMISSIVE_KIT_CRYSTAL_TRANSMISSION,
+  TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION,
+  TRANSMISSIVE_KIT_RENDER_ORDER,
+  TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION,
+} from './transmissiveKitMaterial';
 
 const PLASTIC_WEATHERED: WeatheredMetalOptions = { metalness: 0.05, roughness: 0.45 };
 
@@ -104,7 +110,7 @@ describe('buildKitMeshMaterials metallic colors', () => {
     expect(mat.roughness).toBe(0.5);
   });
 
-  test('albedo-mapped materials stay untouched even when a slot would match', () => {
+  test('albedo-mapped materials keep the printed map and authored PBR maps', () => {
     const mesh = meshWithMaterialNamed('Main');
     const mapped = mesh.material as MeshStandardMaterial;
     mapped.map = discolorTex();
@@ -118,30 +124,11 @@ describe('buildKitMeshMaterials metallic colors', () => {
     ) as MeshStandardMaterial;
     expect(next.map).toBe(mapped.map);
     expect(next.metalnessMap).toBe(mapped.metalnessMap);
-    expect(next.metalness).toBe(0.5);
+    expect(next.normalMap).toBe(mapped.normalMap);
+    expect(next.emissiveIntensity).toBe(0);
   });
 
-  test('McToran Face Brain slot is clearer than Toa brain', () => {
-    const mesh = meshWithMaterialNamed('Brain');
-    const next = buildKitMeshMaterials(
-      mesh,
-      buildKitMaterialSlotLookup({
-        Brain: {
-          color: { key: 'eyes', kind: 'palette' },
-          emissive: { key: 'eyes', kind: 'palette' },
-          emissiveIntensity: 0.1,
-          transmissive: 'mctoranFace',
-          weathered: false,
-        },
-      }),
-      COLORS,
-      PLASTIC_WEATHERED
-    ) as MeshPhysicalMaterial;
-    expect(next.transmission).toBe(TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION);
-    expect(next.transmission).toBeGreaterThan(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
-  });
-
-  test('Brain slot gets runtime transmission when slot tints emissive', () => {
+  test('Brain slot uses transmissive eye gel', () => {
     const mesh = meshWithMaterialNamed('Brain');
     const next = buildKitMeshMaterials(
       mesh,
@@ -157,13 +144,39 @@ describe('buildKitMeshMaterials metallic colors', () => {
       COLORS,
       PLASTIC_WEATHERED
     ) as MeshPhysicalMaterial;
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
+    expect(next.name).toBe('Brain');
     expect(next.transmission).toBe(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
-    expect(next.ior).toBe(TRANSMISSIVE_KIT_IOR);
-    expect(next.normalMap).toBeNull();
+    expect(next.metalness).toBe(0);
+    expect(next.emissiveIntensity).toBe(0.1);
+    expect(next.transparent).toBe(false);
+    expect((next as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
   });
 
-  test('VahkiHood slot uses the vahkiHood transmissive preset', () => {
+  test('McToran Face Brain slot is clearer transmissive gel', () => {
+    const mesh = meshWithMaterialNamed('Brain');
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Brain: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 0.1,
+          transmissive: 'mctoranFace',
+          weathered: false,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshPhysicalMaterial;
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_MCTORAN_FACE_TRANSMISSION);
+    expect((next as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
+  });
+
+  test('VahkiHood slot uses transmissive visor gel', () => {
     const mesh = meshWithMaterialNamed('VahkiHood');
     const next = buildKitMeshMaterials(
       mesh,
@@ -179,18 +192,78 @@ describe('buildKitMeshMaterials metallic colors', () => {
       COLORS,
       PLASTIC_WEATHERED
     ) as MeshPhysicalMaterial;
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
     expect(next.transmission).toBe(TRANSMISSIVE_KIT_VAHKI_HOOD_TRANSMISSION);
-    expect(next.depthWrite).toBe(true);
-    expect(next.transparent).toBe(false);
-    expect(next.normalMap).toBeNull();
+    expect((next as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
   });
 
-  test('Brain with color-only slot (Bohrok eyes) stays on the plastic path', () => {
+  test('transmissive Brain meshes draw after Kanohi', () => {
+    const mesh = meshWithMaterialNamed('Brain');
+    applyKitMaterialsToObject(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Brain: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 0.1,
+          transmissive: 'brain',
+          weathered: false,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    );
+    expect(mesh.renderOrder).toBe(TRANSMISSIVE_KIT_RENDER_ORDER);
+  });
+
+  test('color-only Brain without a transmissive preset stays on the plastic path', () => {
     const mat = buildSingle('Brain', {
       Brain: { color: { key: 'eyes', kind: 'palette' }, weathered: false },
     });
     expect(mat).not.toBeInstanceOf(MeshPhysicalMaterial);
-    expect(mat.metalness).toBe(0.5);
+    expect(mat.name).toBe('WeatheredMetal');
+    expect(mat.metalness).toBe(PLASTIC_WEATHERED.metalness);
+  });
+
+  test('crystal Brain is transmissive and joins the bloom MRT', () => {
+    const mesh = meshWithMaterialNamed('Brain');
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Brain: {
+          color: { key: 'eyes', kind: 'palette' },
+          emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 0.1,
+          transmissive: 'crystal',
+          weathered: false,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshPhysicalMaterial;
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_CRYSTAL_TRANSMISSION);
+    expect((next as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
+  });
+
+  test('colorless Clear viewport is frosted trans-clear without tint or bloom', () => {
+    const mesh = meshWithMaterialNamed('CLEAR');
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        CLEAR: { transmissive: 'clear', weathered: false },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshPhysicalMaterial;
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(next.color.getHexString().toUpperCase()).toBe('FFFFFF');
+    expect(next.emissive.getHexString().toUpperCase()).toBe('000000');
+    expect(next.emissiveIntensity).toBe(0);
+    expect(next.transmission).toBe(TRANSMISSIVE_KIT_CLEAR_TRANSMISSION);
+    expect((next as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
   });
 
   test('opacity below 1 enables transparent blending on the cloned material', () => {
@@ -239,18 +312,17 @@ describe('buildKitMeshMaterials metallic colors', () => {
   });
 });
 
-describe('buildKitMeshMaterials discoloration map', () => {
-  test('baked kit slots weather with emissive discoloration and keep normals', () => {
+describe('buildKitMeshMaterials untextured slots', () => {
+  test('baked kit slots keep authored PBR maps and steal emissive into discoloration', () => {
     const mesh = meshWithUvAndSlots(['Main_MataChest_baked']);
     const bake = discolorTex();
     const normal = discolorTex();
-    const roughness = discolorTex();
-    const metalness = discolorTex();
+    const mr = discolorTex();
     const source = mesh.material as MeshStandardMaterial;
     source.emissiveMap = bake;
     source.normalMap = normal;
-    source.roughnessMap = roughness;
-    source.metalnessMap = metalness;
+    source.roughnessMap = mr;
+    source.metalnessMap = mr;
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({
@@ -258,15 +330,21 @@ describe('buildKitMeshMaterials discoloration map', () => {
       }),
       COLORS,
       PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
+    ) as MeshStandardMaterial & {
+      metalnessNode?: unknown;
+      normalNode?: unknown;
+      roughnessNode?: unknown;
+    };
     expect(next.name).toBe('WeatheredMetal');
-    expect(getBakedDiscolorationMap(next)).toBe(bake);
     expect(next.emissiveMap).toBeNull();
+    expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+    expect((next as MeshStandardMaterial & { colorNode?: unknown }).colorNode).toBeDefined();
     expect(next.normalMap).toBe(normal);
-    expect(next.roughnessMap).toBeNull();
-    expect(next.metalnessMap).toBeNull();
-    expect(next.metalness).toBe(PLASTIC_WEATHERED.metalness);
-    expect(next.roughness).toBe(PLASTIC_WEATHERED.roughness);
+    expect(next.roughnessMap).toBe(mr);
+    expect(next.metalnessMap).toBe(mr);
+    expect(next.normalNode).toBeUndefined();
+    expect(next.roughnessNode).toBeUndefined();
+    expect(next.metalnessNode).toBeUndefined();
   });
 
   test('Blender duplicate Main.001 still takes the Main slot', () => {
@@ -301,45 +379,12 @@ describe('buildKitMeshMaterials discoloration map', () => {
     expect(mat.name).not.toBe('WeatheredMetal');
   });
 
-  test('kit emissiveMap becomes discoloration on weathered slots and is not emission', () => {
-    const mesh = meshWithUvAndSlots(['Main']);
-    const bake = discolorTex();
-    (mesh.material as MeshStandardMaterial).emissiveMap = bake;
-    const next = buildKitMeshMaterials(
-      mesh,
-      buildKitMaterialSlotLookup({
-        Main: { kind: 'part', part: 'body', slot: 'main' },
-      }),
-      COLORS,
-      PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
-    expect(getBakedDiscolorationMap(next)).toBe(bake);
-    expect(next.emissiveMap).toBeNull();
-  });
-
-  test('meshes without UVs do not attach discoloration', () => {
-    const mesh = meshWithMaterialNamed('Main');
-    const bake = discolorTex();
-    (mesh.material as MeshStandardMaterial).emissiveMap = bake;
-    const next = buildKitMeshMaterials(
-      mesh,
-      buildKitMaterialSlotLookup({
-        Main: { kind: 'part', part: 'body', slot: 'main' },
-      }),
-      COLORS,
-      PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
-    expect(getBakedDiscolorationMap(next)).toBeNull();
-    expect(next.metalness).toBe(PLASTIC_WEATHERED.metalness);
-  });
-
-  test('Face_MataFace_baked keeps discoloration shader and FrontSide without cloning', () => {
+  test('Face_MataFace_baked uses FrontSide without color TSL or GLSL patches', () => {
     const mesh = meshWithUvAndSlots(['Face_MataFace_baked']);
     const bake = discolorTex();
-    const normal = discolorTex();
     const source = mesh.material as MeshStandardMaterial;
     source.emissiveMap = bake;
-    source.normalMap = normal;
+    source.normalMap = discolorTex();
     const next = buildKitMeshMaterials(
       mesh,
       buildKitMaterialSlotLookup({
@@ -347,15 +392,24 @@ describe('buildKitMeshMaterials discoloration map', () => {
       }),
       COLORS,
       PLASTIC_WEATHERED
-    ) as MeshStandardMaterial;
+    ) as MeshStandardMaterial & {
+      colorNode?: unknown;
+      metalnessNode?: unknown;
+      normalNode?: unknown;
+      roughnessNode?: unknown;
+    };
     expect(next.name).toBe('WeatheredMetal');
     expect(next.side).toBe(FrontSide);
-    expect(getBakedDiscolorationMap(next)).toBe(bake);
-    expect(next.normalMap).toBe(normal);
-    expect(next.customProgramCacheKey()).toContain('WeatheredMetal');
+    expect(next.normalMap).toBe(source.normalMap);
+    expect(Object.hasOwn(next, 'onBeforeCompile')).toBe(false);
+    expect(next.colorNode).toBeDefined();
+    expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+    expect(next.metalnessNode).toBeDefined();
+    expect(next.normalNode).toBeUndefined();
+    expect(next.roughnessNode).toBeDefined();
   });
 
-  test('glow slots skip weathering', () => {
+  test('glow slots skip weathering and keep emission', () => {
     const mesh = meshWithUvAndSlots(['Glow']);
     const next = buildKitMeshMaterials(
       mesh,
@@ -369,6 +423,28 @@ describe('buildKitMeshMaterials discoloration map', () => {
       PLASTIC_WEATHERED
     ) as MeshStandardMaterial;
     expect(next.name).not.toBe('WeatheredMetal');
+    expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
     expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
+    expect(next.emissiveIntensity).toBe(1);
+    expect(next.emissiveMap).toBeNull();
+    expect((next as MeshStandardMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
+  });
+
+  test('Glowing Eyes stay emissive without joining the bloom MRT', () => {
+    const mesh = meshWithUvAndSlots(['Glowing Eyes']);
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        'Glowing Eyes': {
+          emissive: { key: 'eyes', kind: 'palette' },
+          emissiveIntensity: 50,
+        },
+      }),
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(next.emissive.getHexString().toUpperCase()).toBe('F8F184');
+    expect(next.emissiveIntensity).toBe(50);
+    expect((next as MeshStandardMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
   });
 });

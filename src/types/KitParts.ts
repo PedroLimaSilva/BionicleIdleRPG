@@ -11,7 +11,7 @@ export type BodyPartSlot = (typeof BODY_PART_SLOTS)[number];
 export type FlatPaletteKey = 'mask' | 'eyes' | 'face';
 
 /** Runtime transmission presets for kit gel / visor slots (`transmissiveKitMaterial`). */
-export type KitTransmissivePreset = 'brain' | 'mctoranFace' | 'vahkiHood';
+export type KitTransmissivePreset = 'brain' | 'clear' | 'crystal' | 'mctoranFace' | 'vahkiHood';
 
 /** How to resolve a hex color for a named material slot on a kit mesh */
 export type KitMaterialColorSource =

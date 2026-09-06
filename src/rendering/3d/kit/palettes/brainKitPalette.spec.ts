@@ -1,5 +1,6 @@
 import {
   BRAIN_EMISSIVE_INTENSITY,
+  CRYSTAL_BRAIN_SLOT,
   KIT_PALETTE_BRAIN,
   MCTORAN_FACE_BRAIN_SLOT,
 } from './brainKitPalette';
@@ -12,6 +13,13 @@ describe('brainKitPalette', () => {
       expect.objectContaining({
         emissiveIntensity: BRAIN_EMISSIVE_INTENSITY,
         transmissive: 'brain',
+        weathered: false,
+      })
+    );
+    expect(CRYSTAL_BRAIN_SLOT).toEqual(
+      expect.objectContaining({
+        emissiveIntensity: BRAIN_EMISSIVE_INTENSITY,
+        transmissive: 'crystal',
         weathered: false,
       })
     );

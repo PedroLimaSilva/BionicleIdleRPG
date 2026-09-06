@@ -1,4 +1,5 @@
 import { Color, FrontSide, Mesh, MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
+import { float } from 'three/tsl';
 import { KANOHI_PAINT_METALNESS, metallicColorPbr } from '../kit/palettes/metalPbr';
 import { adoptBakedDiscolorationMap } from './bakedDiscoloration';
 
@@ -86,6 +87,8 @@ export function ensureAkakuLensMaterialSlot(mesh: Mesh): void {
 }
 
 export function cloneMaskMeshMaterials(mesh: Mesh, maskSculptName: string): void {
+  mesh.geometry = mesh.geometry.clone();
+
   const raw = mesh.material;
   if (Array.isArray(raw)) {
     mesh.material = raw.map((mat) => {
@@ -108,6 +111,8 @@ export function cloneMaskMeshMaterials(mesh: Mesh, maskSculptName: string): void
     const applyTransmission = (mat: MaskStandardMat): MaskStandardMat => {
       if (isMaskGlowMaterialName(mat.name)) return mat;
       const physical = ensurePhysicalMaskMaterial(mat);
+      physical.metalness = 0;
+      physical.metalnessMap = null;
       configureTransmissiveKanohiTransmission(maskSculptName, physical);
       syncMaskTransparencyState(physical);
       return physical;
@@ -163,10 +168,34 @@ export const KAUKAU_TRANSMISSION = 0.75;
 /** Great Rau — more see-through than Kaukau (no transmission map; scalar only). */
 export const RAU_TRANSMISSION = 0.88;
 export const KAUKAU_IOR = 1.45;
+/** Uniform frost so Kaukau / Rau read as cloudy glass, not painted metal. */
+export const FROSTED_KANOHI_ROUGHNESS = 0.35;
+/**
+ * Transmission spends most of the albedo as volume tint. Dark LEGO blues
+ * (`DarkBlue` `#0A3463`) then have almost no leftover diffuse and read as black
+ * glass. Boost darker tints more, from the original hex, so Great Rau stays
+ * navy instead of collapsing, while Gali’s Blue Kaukau only lifts a little.
+ */
+export const FROSTED_KANOHI_LIGHTNESS_BOOST = 0.18;
+export const FROSTED_KANOHI_DARK_LIFT = 0.22;
+export const FROSTED_KANOHI_MAX_LIGHTNESS = 0.48;
+
+const _frostedKanohiHsl = { h: 0, l: 0, s: 0 };
+
+/** Raise HSL lightness from the Kanohi tint so transmissive sculpts stay readable. */
+export function liftFrostedKanohiColor(color: Color): void {
+  color.getHSL(_frostedKanohiHsl);
+  const { h, l, s } = _frostedKanohiHsl;
+  const lifted = Math.min(
+    FROSTED_KANOHI_MAX_LIGHTNESS,
+    l + FROSTED_KANOHI_LIGHTNESS_BOOST + (1 - l) * FROSTED_KANOHI_DARK_LIFT
+  );
+  color.setHSL(h, s, lifted);
+}
 
 const GREAT_MASK_SUFFIX = '_Great';
 
-/** Strip `_Great` so `Rau_Great` and `Rau` share sculpt-specific material rules. */
+/** Strip `_Great` so Mata / Great Kaukau share the same sculpt family name. */
 export function getKanohiSculptBaseName(maskSculptName: string): string {
   return maskSculptName.endsWith(GREAT_MASK_SUFFIX)
     ? maskSculptName.slice(0, -GREAT_MASK_SUFFIX.length)
@@ -179,8 +208,7 @@ export function isMataKaukauSculpt(maskSculptName: string): boolean {
 
 /** Kanohi that use uniform scalar transmission (not a transmission map or alpha blend). */
 export function isTransmissiveKanohiSculpt(maskSculptName: string): boolean {
-  const base = getKanohiSculptBaseName(maskSculptName);
-  return base === 'Kaukau' || base === 'Rau';
+  return isMataKaukauSculpt(maskSculptName) || maskSculptName === 'Rau_Great';
 }
 
 /** Upgrade standard mask materials so transmission / IOR can be configured at runtime. */
@@ -203,18 +231,33 @@ export function ensurePhysicalMaskMaterial(mat: MaskStandardMat): MeshPhysicalMa
     side: mat.side,
     transparent: mat.transparent,
   });
-  if (mat.emissive) {
-    physical.emissive.copy(mat.emissive);
-    physical.emissiveIntensity = mat.emissiveIntensity;
-    physical.emissiveMap = mat.emissiveMap;
-  }
+  physical.emissive.copy(mat.emissive);
+  physical.emissiveIntensity = mat.emissiveIntensity;
+  physical.emissiveMap = mat.emissiveMap;
   physical.userData = { ...mat.userData };
   return physical;
 }
 
 /** Scalar transmission for uniform-transmission Kanohi sculpts. */
 export function transmissionForKanohiSculpt(maskSculptName: string): number {
-  return getKanohiSculptBaseName(maskSculptName) === 'Rau' ? RAU_TRANSMISSION : KAUKAU_TRANSMISSION;
+  return maskSculptName === 'Rau_Great' ? RAU_TRANSMISSION : KAUKAU_TRANSMISSION;
+}
+
+/** Dielectric frost: painted Kanohi metalness would make transmission look opaque. */
+export function applyFrostedKanohiPbr(mat: MaskStandardMat, tintHex?: string): void {
+  if (!(mat instanceof MeshPhysicalMaterial) || (mat.transmission ?? 0) <= 0) return;
+  mat.metalness = 0;
+  mat.metalnessMap = null;
+  mat.roughness = FROSTED_KANOHI_ROUGHNESS;
+  mat.roughnessMap = null;
+  if (tintHex) {
+    mat.color.set(tintHex);
+    liftFrostedKanohiColor(mat.color);
+  }
+  // WebGPU MeshPhysicalNodeMaterial.useTransmission also keys off this node.
+  (mat as MeshPhysicalMaterial & { transmissionNode?: unknown }).transmissionNode = float(
+    mat.transmission
+  );
 }
 
 /** Keep transmissive Kanohi on physical transmission (not opacity blend). */
@@ -231,6 +274,7 @@ export function configureTransmissiveKanohiTransmission(
   if (mat.thickness <= 0) {
     mat.thickness = TRANSMISSIVE_KANOHI_SHELL_THICKNESS;
   }
+  applyFrostedKanohiPbr(mat);
 }
 
 /** Kaukau-only helper; Rau uses {@link configureTransmissiveKanohiTransmission}. */
@@ -262,8 +306,9 @@ export function maskUsesTransmissionRendering(mat: MaskStandardMat): boolean {
 
 export function syncMaskTransparencyState(mat: MaskStandardMat): void {
   if (isMaskGlowMaterialName(mat.name)) {
-    mat.transparent = true;
-    mat.depthWrite = false;
+    mat.transparent = false;
+    mat.depthWrite = true;
+    mat.side = FrontSide;
     return;
   }
 
@@ -284,22 +329,22 @@ export function syncMaskTransparencyState(mat: MaskStandardMat): void {
 }
 
 /**
- * Configure a cloned mask material for runtime tinting and arena lighting.
- * Mata/Nuva mask GLBs ship metallic PBR defaults; without scene IBL (e.g. cavern
- * arenas) those surfaces read nearly black while HDRI-lit deserts look fine.
+ * Configure a cloned mask material for runtime tinting.
+ * Keep baked normal / roughness / metalness / albedo maps (same path as Toa Nuva
+ * `armor.glb`). Steal the emissive bake for discoloration so it cannot glow.
  *
- * Opaque Kanohi stay in the opaque render pass (`transparent: false`) so they
- * depth-occlude head geometry behind the shell. Kaukau and Rau use uniform transmission in
- * the transmissive pass with depthWrite on so the hollow shell self-occludes in profile;
- * brain gel draws after the mask in the same pass and wins depth where it sits in front.
- * Legacy baked-alpha masks and exit fades use the transparent pass. Closed shells use
- * `FrontSide` so interior back-faces do not z-fight with brain gel in the cavity.
+ * Kanohi without PBR maps fall back to dielectric plastic scalars.
  */
 export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
   syncMaskTransparencyState(mat);
   if (isMaskGlowMaterialName(mat.name)) return;
 
   adoptBakedDiscolorationMap(mat);
+
+  if (maskUsesTransmissionRendering(mat)) {
+    applyFrostedKanohiPbr(mat);
+    return;
+  }
 
   if (hasMaskPbrMaps(mat)) return;
 
@@ -317,6 +362,10 @@ export function prepareClonedMaskMaterial(mat: MaskStandardMat): void {
  */
 export function applyMaskMetallicPbr(mat: MaskStandardMat, maskColor: string): void {
   if (isMaskGlowMaterialName(mat.name)) return;
+  if (maskUsesTransmissionRendering(mat)) {
+    applyFrostedKanohiPbr(mat, maskColor);
+    return;
+  }
 
   if (mat.metalnessMap) mat.metalnessMap = null;
 

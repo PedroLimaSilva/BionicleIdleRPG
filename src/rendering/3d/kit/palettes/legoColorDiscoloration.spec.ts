@@ -9,14 +9,32 @@ describe('discolorationForColor', () => {
   test('most colors share protodermis light gray at the same intensity', () => {
     expect(discolorationForColor(LegoColor.Red)).toEqual(DEFAULT_LEGO_DISCOLORATION);
     expect(discolorationForColor(LegoColor.PearlGold)).toEqual(DEFAULT_LEGO_DISCOLORATION);
-    expect(discolorationForColor(LegoColor.Black)).toEqual(DEFAULT_LEGO_DISCOLORATION);
     expect(DEFAULT_LEGO_DISCOLORATION.color).toBe(LegoColor.LightGray);
+  });
+
+  test('dark plastics mix toward light gray instead of the full default wash', () => {
+    expect(discolorationForColor(LegoColor.Black)).toEqual({
+      color: LegoColor.LightGray,
+      intensity: 0.5,
+    });
+    expect(discolorationForColor(LegoColor.DarkGray)).toEqual({
+      color: LegoColor.LightGray,
+      intensity: 1,
+    });
   });
 
   test('light colors use black tint at reduced mix instead of the default', () => {
     const blackTint = { color: LegoColor.Black, intensity: 0.75 };
     expect(Object.keys(LEGO_COLOR_DISCOLORATION).sort()).toEqual(
-      [LegoColor.LightGray, LegoColor.Lime, LegoColor.Orange, LegoColor.Tan, LegoColor.White].sort()
+      [
+        LegoColor.Black,
+        LegoColor.DarkGray,
+        LegoColor.LightGray,
+        LegoColor.Lime,
+        LegoColor.Orange,
+        LegoColor.Tan,
+        LegoColor.White,
+      ].sort()
     );
     expect(discolorationForColor(LegoColor.White)).toEqual(blackTint);
     expect(discolorationForColor(LegoColor.LightGray)).toEqual(blackTint);
