@@ -18,7 +18,7 @@ describe('character dex entries', () => {
         'gahlok',
         'bordakh',
         'nui_rama',
-        KraataPower.Fear,
+        KraataPower.Fragmentation,
       ])
     );
     expect(ids).toHaveLength(Object.keys(CHARACTER_DEX).length);
@@ -34,12 +34,12 @@ describe('character dex entries', () => {
     const takua = CHARACTER_DEX.Takua;
     const tahu = CHARACTER_DEX.Toa_Tahu;
     const gahlok = CHARACTER_DEX.gahlok;
-    const fear = CHARACTER_DEX[KraataPower.Fear];
+    const fragmentation = CHARACTER_DEX[KraataPower.Fragmentation];
     expect(matchesDexTab(takua, 'matoran')).toBe(true);
     expect(matchesDexTab(takua, 'toa')).toBe(false);
     expect(matchesDexTab(tahu, 'toa')).toBe(true);
     expect(matchesDexTab(gahlok, 'other')).toBe(true);
-    expect(matchesDexTab(fear, 'other')).toBe(true);
+    expect(matchesDexTab(fragmentation, 'other')).toBe(true);
     expect(matchesDexTab(gahlok, 'all')).toBe(true);
   });
 

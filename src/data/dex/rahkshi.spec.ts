@@ -4,7 +4,7 @@ import { getRahkshiArmorColors } from '../rahkshiArmorColors';
 import { CHARACTER_DEX } from './index';
 import { RAHKSHI_DEX } from './rahkshi';
 
-const RAHKSHI_SPECIMENS = [KraataPower.Fear, KraataPower.Chameleon] as const;
+const RAHKSHI_SPECIMENS = [KraataPower.Fragmentation, KraataPower.Chameleon] as const;
 
 describe('Rahkshi dex specimens', () => {
   test('each specimen has a Rahkshi-stage dex entry keyed by kraata power', () => {
@@ -16,9 +16,7 @@ describe('Rahkshi dex specimens', () => {
   });
 
   test('armor colors match the Rahkshi appearance table', () => {
-    for (const power of RAHKSHI_SPECIMENS) {
-      const lore = getRahkshiArmorColors(power);
-      expect(lore.staff).toBe('Turahk');
-    }
+    expect(getRahkshiArmorColors(KraataPower.Fragmentation).staff).toBe('Panrahk');
+    expect(getRahkshiArmorColors(KraataPower.Chameleon).staff).toBe('Turahk');
   });
 });

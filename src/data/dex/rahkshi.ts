@@ -5,7 +5,7 @@ import { ElementTribe, Mask, MatoranColors, MatoranStage } from '../../types/Mat
 /** Card chrome colors per power; no 2D Rahkshi avatar yet. */
 const RAHKSHI_CARD_COLORS: Partial<Record<KraataPower, { armor: LegoColor; joint: LegoColor }>> = {
   [KraataPower.Chameleon]: { armor: LegoColor.Red, joint: LegoColor.PearlGold },
-  [KraataPower.Fear]: { armor: LegoColor.Red, joint: LegoColor.Red },
+  [KraataPower.Fragmentation]: { armor: LegoColor.Brown, joint: LegoColor.Brown },
 };
 
 function rahkshiColors(armor: LegoColor, joint: LegoColor): MatoranColors {
@@ -40,5 +40,5 @@ function rahkshiEntry(power: KraataPower) {
 /** Rahkshi specimens in the character dex — one entry per kraata power. */
 export const RAHKSHI_DEX = {
   [KraataPower.Chameleon]: rahkshiEntry(KraataPower.Chameleon),
-  [KraataPower.Fear]: rahkshiEntry(KraataPower.Fear),
+  [KraataPower.Fragmentation]: rahkshiEntry(KraataPower.Fragmentation),
 };
