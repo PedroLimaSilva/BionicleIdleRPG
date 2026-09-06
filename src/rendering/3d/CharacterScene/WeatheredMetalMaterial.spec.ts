@@ -1,6 +1,14 @@
-import { ClampToEdgeWrapping, DataTexture, MeshStandardMaterial, RepeatWrapping } from 'three';
+import {
+  BoxGeometry,
+  ClampToEdgeWrapping,
+  DataTexture,
+  Group,
+  Mesh,
+  MeshStandardMaterial,
+  RepeatWrapping,
+} from 'three';
 import { DISCOLORATION_MAP_USERDATA_KEY } from '../hooks/bakedDiscoloration';
-import { getWeatheredMetalMaterial } from './WeatheredMetalMaterial';
+import { applyWeatheredMetalToObject, getWeatheredMetalMaterial } from './WeatheredMetalMaterial';
 
 function mapTex(): DataTexture {
   return new DataTexture(new Uint8Array([255, 0, 0, 255]), 1, 1);
@@ -145,5 +153,29 @@ describe('getWeatheredMetalMaterial', () => {
       metalness: 0.05,
     });
     expect(a).not.toBe(b);
+  });
+});
+
+describe('applyWeatheredMetalToObject uniqueMaterials', () => {
+  test('same color still gets a private material when uniqueMaterials is set', () => {
+    const shared = new MeshStandardMaterial({ color: '#ffffff', name: 'Primary' });
+    const a = new Group();
+    a.add(new Mesh(new BoxGeometry(), shared));
+    const b = new Group();
+    b.add(new Mesh(new BoxGeometry(), shared));
+
+    applyWeatheredMetalToObject(a, {
+      materialColorMap: { Primary: '#c91a09' },
+      uniqueMaterials: true,
+    });
+    applyWeatheredMetalToObject(b, {
+      materialColorMap: { Primary: '#c91a09' },
+      uniqueMaterials: true,
+    });
+
+    expect((a.children[0] as Mesh).material).not.toBe((b.children[0] as Mesh).material);
+    expect(((a.children[0] as Mesh).material as MeshStandardMaterial).color.getHexString()).toBe(
+      'c91a09'
+    );
   });
 });

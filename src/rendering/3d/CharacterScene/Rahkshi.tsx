@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Color as ThreeColor, Group, MathUtils, Mesh, MeshStandardMaterial, Color } from 'three';
+import { Color as ThreeColor, Group, MathUtils, Mesh, MeshStandardMaterial } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
@@ -7,6 +7,7 @@ import { useCombatAnimations } from '../hooks/useCombatAnimations';
 import { getRahkshiArmorColors } from '../../../data/rahkshiArmorColors';
 import { KraataPower } from '../../../types/Kraata';
 import { applyWeatheredMetalToObject, WeatheredMetalOptions } from './WeatheredMetalMaterial';
+import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 import { disposeObject3DResources } from '../utils/disposeThreeObject';
 import { applySelectiveBloomMrt, isSelectiveBloomRahkshiEyeName } from './selectiveBloom';
 import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
@@ -47,7 +48,7 @@ export const RahkshiModel = forwardRef<
 
   const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + 'rahkshi.glb');
 
-  const bodyInstance = useMemo(() => nodes.Rahkshi.clone(true), [nodes]);
+  const bodyInstance = useMemo(() => cloneGltfInstance(nodes.Rahkshi), [nodes]);
 
   const effectiveIdleAction = hasKraata
     ? glowCompleteForIdle && prevHasKraataRef.current
@@ -135,10 +136,6 @@ export const RahkshiModel = forwardRef<
         }
         return;
       }
-
-      // Non-eye body materials are handled in a two-step pipeline below:
-      // 1) applyWeatheredMetalToObject
-      // 2) color pass by original material name
     });
 
     const materialColorMap: Record<string, string> = {
@@ -148,25 +145,11 @@ export const RahkshiModel = forwardRef<
       Secondary: dex.joint,
     };
 
-    // Always apply weathering first.
     applyWeatheredMetalToObject(bodyInstance, {
       ...WEATHERED_METAL_OPTIONS,
       excludeMaterialNames: ['Eyes', 'Head', 'SOLID-SILVER', 'SOLID-SILVER.001'],
-    });
-
-    // Then apply Rahkshi color scheme while preserving weathered material/shader.
-    bodyInstance.traverse((child) => {
-      if (!(child instanceof Mesh)) return;
-      const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
-      const current = mesh.material;
-      if (!(current instanceof MeshStandardMaterial)) return;
-
-      const sourceMaterialName = mesh.userData?.originalMaterialName;
-      if (!sourceMaterialName) return;
-      const color = materialColorMap[sourceMaterialName];
-      if (!color) return;
-
-      current.color = new Color(color);
+      materialColorMap,
+      uniqueMaterials: true,
     });
 
     glowEntries.current = entries;

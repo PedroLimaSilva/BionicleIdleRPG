@@ -271,6 +271,11 @@ export function applyWeatheredMetalToObject(
     materialColorMap?: Record<string, string>;
     includeNormalMappedMaterials?: boolean;
     preserveExistingMaps?: boolean;
+    /**
+     * Battle enemies that share a GLB (Rahkshi gauntlet) must not reuse the
+     * weathered-material cache. Defeat dispose would otherwise poison later waves.
+     */
+    uniqueMaterials?: boolean;
   } = {}
 ): void {
   if (!object) return;
@@ -330,10 +335,10 @@ export function applyWeatheredMetalToObject(
         meshHasUv(mesh) && raw instanceof MeshStandardMaterial
           ? (raw.emissiveMap ?? undefined)
           : undefined;
-      return getWeatheredMetalMaterial((color ?? '#ffffff') as ColorRepresentation, {
-        ...opts,
-        discolorationMap,
-      });
+      const nextColor = (color ?? '#ffffff') as ColorRepresentation;
+      return opts.uniqueMaterials
+        ? createWeatheredMetalMaterial({ ...opts, color: nextColor, discolorationMap })
+        : getWeatheredMetalMaterial(nextColor, { ...opts, discolorationMap });
     });
 
     if (!changed) return;
