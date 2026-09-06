@@ -370,7 +370,7 @@ describe('buildKitMeshMaterials untextured slots', () => {
     expect(mat.name).not.toBe('WeatheredMetal');
   });
 
-  test('Face_MataFace_baked uses FrontSide without TSL nodes', () => {
+  test('Face_MataFace_baked uses FrontSide without color TSL or GLSL patches', () => {
     const mesh = meshWithUvAndSlots(['Face_MataFace_baked']);
     const bake = discolorTex();
     const source = mesh.material as MeshStandardMaterial;
@@ -383,12 +383,20 @@ describe('buildKitMeshMaterials untextured slots', () => {
       }),
       COLORS,
       PLASTIC_WEATHERED
-    ) as MeshStandardMaterial & { colorNode?: unknown };
+    ) as MeshStandardMaterial & {
+      colorNode?: unknown;
+      metalnessNode?: unknown;
+      normalNode?: unknown;
+      roughnessNode?: unknown;
+    };
     expect(next.name).toBe('WeatheredMetal');
     expect(next.side).toBe(FrontSide);
     expect(next.normalMap).toBeNull();
     expect(Object.hasOwn(next, 'onBeforeCompile')).toBe(false);
-    expect(next.colorNode).toBeUndefined();
+    expect(next.colorNode).toBeDefined();
+    expect(next.metalnessNode).toBeDefined();
+    expect(next.normalNode).toBeDefined();
+    expect(next.roughnessNode).toBeDefined();
   });
 
   test('glow slots skip weathering and keep emission', () => {

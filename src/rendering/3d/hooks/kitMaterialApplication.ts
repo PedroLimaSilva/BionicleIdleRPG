@@ -131,12 +131,29 @@ function resolveSlotAlbedo(
 function mergeSlotPbr(
   spec: KitMaterialSlotOverride | undefined,
   metalPbr: KitMetalPbr | undefined
-): Pick<WeatheredMetalOptions, 'roughness' | 'metalness' | 'envMapIntensity'> {
+): Pick<
+  WeatheredMetalOptions,
+  | 'envMapIntensity'
+  | 'fineScale'
+  | 'grimeDarken'
+  | 'grimeMetalnessReduce'
+  | 'grimeRoughness'
+  | 'largeScale'
+  | 'metalness'
+  | 'roughness'
+> {
   return {
     ...metalPbr,
     ...(spec?.roughness !== undefined ? { roughness: spec.roughness } : {}),
     ...(spec?.metalness !== undefined ? { metalness: spec.metalness } : {}),
     ...(spec?.envMapIntensity !== undefined ? { envMapIntensity: spec.envMapIntensity } : {}),
+    ...(spec?.grimeDarken !== undefined ? { grimeDarken: spec.grimeDarken } : {}),
+    ...(spec?.grimeRoughness !== undefined ? { grimeRoughness: spec.grimeRoughness } : {}),
+    ...(spec?.grimeMetalnessReduce !== undefined
+      ? { grimeMetalnessReduce: spec.grimeMetalnessReduce }
+      : {}),
+    ...(spec?.fineScale !== undefined ? { fineScale: spec.fineScale } : {}),
+    ...(spec?.largeScale !== undefined ? { largeScale: spec.largeScale } : {}),
   };
 }
 

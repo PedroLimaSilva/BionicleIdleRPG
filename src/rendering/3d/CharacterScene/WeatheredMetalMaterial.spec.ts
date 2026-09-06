@@ -1,4 +1,4 @@
-import { DataTexture, RepeatWrapping } from 'three';
+import { DataTexture, MeshStandardMaterial, RepeatWrapping } from 'three';
 import { getWeatheredMetalMaterial } from './WeatheredMetalMaterial';
 
 function mapTex(): DataTexture {
@@ -6,7 +6,7 @@ function mapTex(): DataTexture {
 }
 
 describe('getWeatheredMetalMaterial', () => {
-  test('ignores bake maps and shares materials by color and PBR', () => {
+  test('ignores bake maps and shares materials by color and roughness noise', () => {
     const discolor = mapTex();
     discolor.wrapS = RepeatWrapping;
     discolor.wrapT = RepeatWrapping;
@@ -44,11 +44,80 @@ describe('getWeatheredMetalMaterial', () => {
     expect(red).not.toBe(gold);
   });
 
-  test('does not inject TSL nodes or onBeforeCompile', () => {
-    const mat = getWeatheredMetalMaterial('#c91a09', { metalness: 0.05 });
+  test('object-space FBM darkens albedo, bumps normals, and shifts PBR in the same patches', () => {
+    const mat = getWeatheredMetalMaterial('#c91a09', {
+      fineScale: 18,
+      grimeDarken: 0.9,
+      grimeMetalnessReduce: 0.9,
+      grimeRoughness: 0.2,
+      largeScale: 3.5,
+      metalness: 0.05,
+    }) as MeshStandardMaterial & {
+      colorNode?: unknown;
+      metalnessNode?: unknown;
+      normalNode?: unknown;
+      roughnessNode?: unknown;
+    };
     expect(Object.hasOwn(mat, 'onBeforeCompile')).toBe(false);
+    expect(mat.colorNode).toBeDefined();
+    expect(mat.metalnessNode).toBeDefined();
+    expect(mat.normalNode).toBeDefined();
+    expect(mat.roughnessNode).toBeDefined();
+    expect(mat.metalness).toBe(0.05);
+    expect(mat.color.getHexString()).toBe('c91a09');
+  });
+
+  test('grimeDarken 0 leaves albedo as a scalar color', () => {
+    const mat = getWeatheredMetalMaterial('#c91a09', {
+      grimeDarken: 0,
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
     expect(mat.colorNode).toBeUndefined();
-    expect(mat.roughnessNode).toBeUndefined();
-    expect(mat.metalnessNode).toBeUndefined();
+    expect(mat.color.getHexString()).toBe('c91a09');
+  });
+
+  test('different roughness-noise scales do not share a material', () => {
+    const a = getWeatheredMetalMaterial('#c91a09', { fineScale: 18, metalness: 0.05 });
+    const b = getWeatheredMetalMaterial('#c91a09', { fineScale: 26, metalness: 0.05 });
+    expect(a).not.toBe(b);
+  });
+
+  test('different metalness-reduce amounts do not share a material', () => {
+    const a = getWeatheredMetalMaterial('#c91a09', { grimeMetalnessReduce: 0.25, metalness: 0.05 });
+    const b = getWeatheredMetalMaterial('#c91a09', { grimeMetalnessReduce: 0.7, metalness: 0.05 });
+    expect(a).not.toBe(b);
+  });
+
+  test('different albedo-darken amounts do not share a material', () => {
+    const a = getWeatheredMetalMaterial('#c91a09', { grimeDarken: 0.2, metalness: 0.05 });
+    const b = getWeatheredMetalMaterial('#c91a09', { grimeDarken: 0.6, metalness: 0.05 });
+    expect(a).not.toBe(b);
+  });
+
+  test('different dent strengths do not share a material', () => {
+    const a = getWeatheredMetalMaterial('#c91a09', { dentStrength: 0.8, metalness: 0.05 });
+    const b = getWeatheredMetalMaterial('#c91a09', { dentStrength: 2.4, metalness: 0.05 });
+    expect(a).not.toBe(b);
+  });
+
+  test('dentStrength 0 leaves the geometric normal', () => {
+    const mat = getWeatheredMetalMaterial('#c91a09', {
+      dentStrength: 0,
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { normalNode?: unknown };
+    expect(mat.normalNode).toBeUndefined();
+  });
+
+  test('high metalness still bumps, but with a different program than plastic', () => {
+    const plastic = getWeatheredMetalMaterial('#9ba19d', {
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { normalNode?: unknown };
+    const metal = getWeatheredMetalMaterial('#9ba19d', {
+      metalness: 0.95,
+    }) as MeshStandardMaterial & { normalNode?: unknown };
+    expect(plastic).not.toBe(metal);
+    expect(plastic.normalNode).toBeDefined();
+    expect(metal.normalNode).toBeDefined();
+    expect(plastic.customProgramCacheKey?.()).not.toBe(metal.customProgramCacheKey?.());
   });
 });
