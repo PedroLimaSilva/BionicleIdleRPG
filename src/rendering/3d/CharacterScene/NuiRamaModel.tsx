@@ -24,6 +24,7 @@ import {
   subscribeBattleSpeed,
 } from '../../../utils/battleSpeed';
 import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
+import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 import { LegoColor } from '../../../types/Colors';
 
 const GLB_PATH = import.meta.env.BASE_URL + 'Rahi/NuiRama.glb';
@@ -68,7 +69,7 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
       animations: AnimationClip[];
     };
 
-    const instance = useMemo(() => nodes.Nui_Rama.clone(true), [nodes]);
+    const instance = useMemo(() => cloneGltfInstance(nodes.Nui_Rama), [nodes]);
 
     const { actions, mixer } = useAnimations(animations, root);
     const wingsActionRef = useRef<AnimationAction | null>(null);

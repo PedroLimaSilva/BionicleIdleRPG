@@ -7,6 +7,7 @@ import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMate
 import { normalizeMatoranColors } from '../../../game/characters/matoranColors';
 import { applyKitMaterialsToObject, buildKitMaterialSlotLookup } from './kitMaterialApplication';
 import { notifyModelReadyForTestMode } from '../../../utils/testMode';
+import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 
 function buildKitNodeIndex(scene: Object3D): Record<string, Object3D> {
   const map: Record<string, Object3D> = {};
@@ -85,7 +86,7 @@ export function useKitAttachments({
         continue;
       }
 
-      const clone = template.clone(true);
+      const clone = cloneGltfInstance(template);
       clone.position.set(0, 0, 0);
       clone.rotation.set(0, 0, 0);
       clone.scale.set(1, 1, 1);

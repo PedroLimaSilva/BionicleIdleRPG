@@ -16,6 +16,7 @@ import {
   VAHKI_KIT_2003_ATTACHMENTS,
 } from '../kit/attachments/vahki';
 import { VAHKI_WEATHERED } from '../kit/palettes/vahkiKitPalette';
+import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 
 const VAHKI_GLB = import.meta.env.BASE_URL + 'Vahki.glb';
 
@@ -79,7 +80,7 @@ export const VahkiModel = forwardRef<
       console.warn(`[VahkiModel] Root 'Vahki' not found in ${VAHKI_GLB}`);
       return new Group();
     }
-    return root.clone(true);
+    return cloneGltfInstance(root);
   }, [nodes]);
 
   const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(vahkiInstance), [vahkiInstance]);
