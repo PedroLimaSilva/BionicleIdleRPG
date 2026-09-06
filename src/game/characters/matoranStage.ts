@@ -28,6 +28,10 @@ export function isRahi(matoran: BaseMatoran) {
   return matoran.stage === MatoranStage.Rahi;
 }
 
+export function isRahkshi(matoran: BaseMatoran) {
+  return matoran.stage === MatoranStage.Rahkshi;
+}
+
 /** Stages whose characters may only take jobs explicitly marked for that stage. */
 export function hasStageRestrictedJobs(matoran: BaseMatoran) {
   return isBohrokOrKal(matoran) || isMetru(matoran);

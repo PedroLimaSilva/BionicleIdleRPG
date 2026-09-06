@@ -1,4 +1,5 @@
 import { CHARACTER_DEX } from '../../data/dex';
+import { KraataPower } from '../../types/Kraata';
 import { Mask, MatoranStage } from '../../types/Matoran';
 import {
   getAdjacentDexIds,
@@ -11,7 +12,14 @@ describe('character dex entries', () => {
   test('lists every dex character including un-recruited Toa', () => {
     const ids = getCharacterDexEntries().map((entry) => entry.id);
     expect(ids).toEqual(
-      expect.arrayContaining(['Takua', 'Toa_Tahu', 'gahlok', 'bordakh', 'nui_rama'])
+      expect.arrayContaining([
+        'Takua',
+        'Toa_Tahu',
+        'gahlok',
+        'bordakh',
+        'nui_rama',
+        KraataPower.Fragmentation,
+      ])
     );
     expect(ids).toHaveLength(Object.keys(CHARACTER_DEX).length);
   });
@@ -26,10 +34,12 @@ describe('character dex entries', () => {
     const takua = CHARACTER_DEX.Takua;
     const tahu = CHARACTER_DEX.Toa_Tahu;
     const gahlok = CHARACTER_DEX.gahlok;
+    const fragmentation = CHARACTER_DEX[KraataPower.Fragmentation];
     expect(matchesDexTab(takua, 'matoran')).toBe(true);
     expect(matchesDexTab(takua, 'toa')).toBe(false);
     expect(matchesDexTab(tahu, 'toa')).toBe(true);
     expect(matchesDexTab(gahlok, 'other')).toBe(true);
+    expect(matchesDexTab(fragmentation, 'other')).toBe(true);
     expect(matchesDexTab(gahlok, 'all')).toBe(true);
   });
 

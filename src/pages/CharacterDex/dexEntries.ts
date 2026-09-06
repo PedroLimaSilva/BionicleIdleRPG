@@ -1,5 +1,11 @@
 import { CHARACTER_DEX } from '../../data/dex';
-import { isBohrokOrKal, isMatoran, isToa, isVahki } from '../../game/characters/matoranStage';
+import {
+  isBohrokOrKal,
+  isMatoran,
+  isRahkshi,
+  isToa,
+  isVahki,
+} from '../../game/characters/matoranStage';
 import {
   BaseMatoran,
   isCustomCharacterId,
@@ -29,7 +35,12 @@ export function matchesDexTab(matoran: BaseMatoran, tab: DexTabId): boolean {
   if (tab === 'all') return true;
   if (tab === 'matoran') return isMatoran(matoran);
   if (tab === 'toa') return isToa(matoran);
-  return isBohrokOrKal(matoran) || isVahki(matoran) || (!isMatoran(matoran) && !isToa(matoran));
+  return (
+    isBohrokOrKal(matoran) ||
+    isVahki(matoran) ||
+    isRahkshi(matoran) ||
+    (!isMatoran(matoran) && !isToa(matoran))
+  );
 }
 
 export function getAdjacentDexIds(id: string): { nextId: string; prevId: string } | null {
