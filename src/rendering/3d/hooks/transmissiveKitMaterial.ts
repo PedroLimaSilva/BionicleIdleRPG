@@ -13,12 +13,17 @@ export const TRANSMISSIVE_KIT_IOR = 1.45;
 /** Toa / Metru brain gel (`MataBrain` / `MetruBrain` kit nodes) — kit transmission 0.35. */
 export const TRANSMISSIVE_KIT_BRAIN_TRANSMISSION = 0.5;
 
-/** Bohrok eye shell — optically clear crystal, not murky gel. */
-export const TRANSMISSIVE_KIT_CRYSTAL_TRANSMISSION = 1;
+/**
+ * Bohrok eye shell — optically clear crystal, not murky gel.
+ * Transmission 1 disappears head-on against the dark card (same as the
+ * colorless faceplate viewport), so keep a little albedo. Must stay above
+ * {@link TRANSMISSIVE_KIT_CLEAR_TRANSMISSION}.
+ */
+export const TRANSMISSIVE_KIT_CRYSTAL_TRANSMISSION = 0.82;
 
 /**
  * Swarm faceplate viewport — trans-clear plastic, not optically perfect.
- * Full crystal transmission disappears head-on against the dark card.
+ * Transmission 1 disappears head-on against the dark card.
  */
 export const TRANSMISSIVE_KIT_CLEAR_TRANSMISSION = 0.8;
 

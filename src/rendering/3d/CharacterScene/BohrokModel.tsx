@@ -34,7 +34,6 @@ const BOHROK_WEATHERED: WeatheredMetalOptions = {
   grimeDarken: 0.4,
   grimeMetalnessReduce: 0.5,
   grimeRoughness: 0.2,
-  largeScale: 5,
   metalness: 0.05,
   roughness: 0.55,
 };

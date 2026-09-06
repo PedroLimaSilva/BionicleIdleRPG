@@ -15,7 +15,6 @@ export const METRU_WEATHERED: WeatheredMetalOptions = {
   grimeDarken: 0.15,
   grimeMetalnessReduce: 0.25,
   grimeRoughness: 0.1,
-  largeScale: 3.5,
   metalness: 0.05,
   roughness: 0.45,
 };

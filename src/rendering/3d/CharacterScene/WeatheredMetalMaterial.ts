@@ -66,7 +66,8 @@ const DEFAULT_METALNESS = 0.05;
 const DEFAULT_GRIME_DARKEN = 0.5;
 const DEFAULT_GRIME_ROUGHNESS = 0.35;
 const DEFAULT_GRIME_METALNESS_REDUCE = 0.7;
-const DEFAULT_LARGE_SCALE = 3.5;
+/** Object-space scale for large grime/dent clouds. Lower = bigger patches. 2.6 is slightly broader than master's 3.5 because MaterialX noise is finer than the old hash FBM. */
+const DEFAULT_LARGE_SCALE = 2.6;
 const DEFAULT_FINE_SCALE = 18.0;
 const DEFAULT_ENV_MAP_INTENSITY = 0.4;
 /** Screen-space bump from the master large-cloud FBM (`largeScale`, not fine grain). */
@@ -120,10 +121,24 @@ function objectSpaceFbm(offset: number, scale: number) {
 }
 
 /**
+ * Dent height skips the 4× octave. Screen-space dFdx/dFdy lock onto the finest
+ * term, which turned the large-cloud bump into pockmarks in E2E snapshots.
+ */
+function objectSpaceDentHeight(offset: number, scale: number) {
+  const p = positionLocal.add(offset).mul(scale);
+  const n1 = mx_noise_float(p, 0.5, 0.5);
+  const n2 = mx_noise_float(p.mul(2), 0.5, 0.5);
+  return n1.mul(0.7).add(n2.mul(0.3));
+}
+
+/**
  * Mikkelsen screen-space bump from a scalar height, same as Three's `bumpMap`
  * but for a procedural float instead of a texture.
  */
-function perturbViewNormalFromHeight(height: ReturnType<typeof objectSpaceFbm>, bumpScale: number) {
+function perturbViewNormalFromHeight(
+  height: ReturnType<typeof objectSpaceFbm> | ReturnType<typeof objectSpaceDentHeight>,
+  bumpScale: number
+) {
   const dHdxy = vec2(height.dFdx(), height.dFdy()).mul(bumpScale);
   const vSigmaX = positionView.dFdx().normalize();
   const vSigmaY = positionView.dFdy().normalize();
@@ -177,7 +192,10 @@ function applyObjectSpaceWeathering(mat: WeatheredTslMaterial, opts: WeatheredMe
     .clamp(0.04, 1);
   mat.metalnessNode = materialMetalness.mul(grime.mul(grimeMetalnessReduce).oneMinus()).clamp(0, 1);
   if (dentStrength > 0) {
-    mat.normalNode = perturbViewNormalFromHeight(largeCloud, dentStrength);
+    mat.normalNode = perturbViewNormalFromHeight(
+      objectSpaceDentHeight(50, largeScale),
+      dentStrength
+    );
   }
   mat.customProgramCacheKey = () =>
     `WeatheredMetal|d${grimeDarken}|r${grimeRoughness}|m${grimeMetalnessReduce}|n${dentStrength}|L${largeScale}|F${fineScale}|dc${discolorMap?.uuid ?? 'none'}`;

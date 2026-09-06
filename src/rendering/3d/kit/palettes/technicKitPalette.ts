@@ -20,7 +20,6 @@ const TECHNIC_AXLE_GRAY: KitMaterialSlotEntry = {
   fineScale: 20,
   grimeMetalnessReduce: 0.58,
   grimeRoughness: 0.3,
-  largeScale: 4.2,
   metalness: 0.74,
   roughness: 0.44,
 };

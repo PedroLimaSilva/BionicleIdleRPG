@@ -72,7 +72,6 @@ describe('getWeatheredMetalMaterial', () => {
       grimeDarken: 0.9,
       grimeMetalnessReduce: 0.9,
       grimeRoughness: 0.2,
-      largeScale: 3.5,
       metalness: 0.05,
     }) as MeshStandardMaterial & {
       colorNode?: unknown;
