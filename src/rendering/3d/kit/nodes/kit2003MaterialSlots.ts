@@ -39,6 +39,9 @@ export const KIT_2003_MATERIAL_SLOTS = {
   Propeller: ['Metal'] as const,
   QuakeBreaker: ['Glow', 'Main', 'Metal'] as const,
   RahkshiBody: ['Main'] as const,
+  RahkshiFoot: ['Main', 'Metal', 'Secondary'] as const,
+  RahkshiLeg: ['Main', 'Secondary'] as const,
+  RahkshiLimb: ['Main', 'Metal', 'Secondary'] as const,
   TechnicTorsoPivot: ['Main'] as const,
 } as const satisfies Record<keyof typeof KIT_2003_NODES, readonly string[]>;
 

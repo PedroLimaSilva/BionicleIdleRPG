@@ -155,7 +155,9 @@ const CharacterModel = forwardRef<
       );
     case MatoranStage.Rahkshi:
       if (!isKraataPower(matoran.id)) return null;
-      return <RahkshiModel ref={ref} kraata={matoran.id} hasKraata />;
+      return (
+        <RahkshiModel ref={ref} kraata={matoran.id} hasKraata onKitMeshesAttached={onModelReady} />
+      );
     case MatoranStage.Diminished:
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Rebuilt:
