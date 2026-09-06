@@ -12,6 +12,7 @@ import { CharacterSelectiveBloom } from './CharacterSelectiveBloom';
 import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 
 import { BaseMatoran, MatoranStage, RecruitedCharacterData } from '../../../types/Matoran';
+import { isKraataPower } from '../../../types/Kraata';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { registerCharacterPreviewPlay } from '../utils/characterPreviewControls';
 import { resolveCustomToaBuildId } from '../customToaBuild';
@@ -31,6 +32,7 @@ import { BohrokModel } from './BohrokModel';
 import { VahkiModel } from './VahkiModel';
 import { RahiPlaceholderModel } from './RahiPlaceholderModel';
 import { NuiRamaModel } from './NuiRamaModel';
+import { RahkshiModel } from './Rahkshi';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
 import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
 import { LewaNuvaModel } from './Nuva/LewaNuvaModel';
@@ -151,6 +153,9 @@ const CharacterModel = forwardRef<
           <RahiPlaceholderModel ref={ref} element={matoran.element} />
         </group>
       );
+    case MatoranStage.Rahkshi:
+      if (!isKraataPower(matoran.id)) return null;
+      return <RahkshiModel ref={ref} kraata={matoran.id} hasKraata />;
     case MatoranStage.Diminished:
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;
     case MatoranStage.Rebuilt:

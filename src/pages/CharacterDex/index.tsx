@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Tabs } from '../../components/Tabs';
 import { MatoranAvatar } from '../../rendering/2d/MatoranAvatar';
-import { MatoranStage } from '../../types/Matoran';
+import { isRahi, isRahkshi } from '../../game/characters/matoranStage';
 import { useGame } from '../../context/Game';
 import { DEX_TABS, DexTabId, getCharacterDexEntries, matchesDexTab } from './dexEntries';
 import './index.scss';
@@ -66,7 +66,7 @@ export const CharacterDex: React.FC = () => {
             className={`character-dex-card element-${entry.element}`}
             data-character-id={entry.id}
           >
-            {entry.stage !== MatoranStage.Rahi && (
+            {!(isRahi(entry) || isRahkshi(entry)) && (
               <MatoranAvatar matoran={{ ...entry, exp: 0 }} styles="matoran-avatar model-preview" />
             )}
             <div className="character-dex-card-meta">
