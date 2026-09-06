@@ -14,6 +14,7 @@ import {
 } from './kitMaterialApplication';
 import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
 import { type WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
+import { DISCOLORATION_MAP_USERDATA_KEY } from './bakedDiscoloration';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
 import {
@@ -331,6 +332,8 @@ describe('buildKitMeshMaterials untextured slots', () => {
     ) as MeshStandardMaterial;
     expect(next.name).toBe('WeatheredMetal');
     expect(next.emissiveMap).toBeNull();
+    expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+    expect((next as MeshStandardMaterial & { colorNode?: unknown }).colorNode).toBeDefined();
     expect(next.normalMap).toBeNull();
     expect(next.roughnessMap).toBeNull();
     expect(next.metalnessMap).toBeNull();
@@ -394,6 +397,7 @@ describe('buildKitMeshMaterials untextured slots', () => {
     expect(next.normalMap).toBeNull();
     expect(Object.hasOwn(next, 'onBeforeCompile')).toBe(false);
     expect(next.colorNode).toBeDefined();
+    expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
     expect(next.metalnessNode).toBeDefined();
     expect(next.normalNode).toBeDefined();
     expect(next.roughnessNode).toBeDefined();

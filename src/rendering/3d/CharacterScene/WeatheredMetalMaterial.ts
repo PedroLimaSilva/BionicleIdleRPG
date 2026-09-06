@@ -1,16 +1,18 @@
 /**
  * Weathered kit plastic/metal: object-space FBM that darkens albedo, raises
  * roughness, lowers metalness, and bumps the shading normal in the same
- * local-space patches. Edgewear stays off — baked emissive discoloration
- * maps will own extra color dirt later.
+ * local-space patches. Optional baked emissive discoloration (glTF `emissiveMap`)
+ * mixes on top. Edgewear stays off.
  */
 
 import {
+  ClampToEdgeWrapping,
   Color,
   ColorRepresentation,
   DoubleSide,
   Mesh,
   MeshStandardMaterial,
+  NoColorSpace,
   Object3D,
   Side,
   Texture,
@@ -21,12 +23,18 @@ import {
   materialColor,
   materialMetalness,
   materialRoughness,
+  mix,
   mx_noise_float,
   normalView,
   positionLocal,
   positionView,
   vec2,
 } from 'three/tsl';
+import {
+  bakedDiscolorationAmountNode,
+  createBakedDiscolorationUniforms,
+  DISCOLORATION_MAP_USERDATA_KEY,
+} from '../hooks/bakedDiscoloration';
 
 export type WeatheredMetalOptions = {
   color?: ColorRepresentation;
@@ -93,6 +101,8 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
     opts.largeScale ?? DEFAULT_LARGE_SCALE,
     opts.fineScale ?? DEFAULT_FINE_SCALE,
     opts.dentStrength ?? DEFAULT_DENT_STRENGTH,
+    opts.discolorationMap?.uuid ?? '',
+    opts.discolorationMap?.channel ?? 0,
     opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
     opts.opacity ?? 1,
     opts.transparent ? 't' : '',
@@ -138,8 +148,28 @@ function applyObjectSpaceWeathering(mat: WeatheredTslMaterial, opts: WeatheredMe
   const largeCloud = objectSpaceFbm(50, largeScale);
   const fineGrain = objectSpaceFbm(80, fineScale);
   const grime = largeCloud.sub(0.35).mul(2).clamp(0, 1);
-  if (grimeDarken > 0) {
-    mat.colorNode = materialColor.mul(grime.mul(grimeDarken).oneMinus());
+  const discolorMap = opts.discolorationMap ?? null;
+  if (discolorMap) {
+    discolorMap.colorSpace = NoColorSpace;
+    discolorMap.wrapS = ClampToEdgeWrapping;
+    discolorMap.wrapT = ClampToEdgeWrapping;
+    mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = discolorMap;
+  } else {
+    mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = null;
+  }
+
+  const colorHex = `#${new Color(opts.color ?? mat.color).getHexString()}`;
+  const bakeUniforms = createBakedDiscolorationUniforms(discolorMap, colorHex);
+  const grimyAlbedo =
+    grimeDarken > 0 ? materialColor.mul(grime.mul(grimeDarken).oneMinus()) : materialColor;
+  if (discolorMap) {
+    mat.colorNode = mix(
+      grimyAlbedo,
+      bakeUniforms.color,
+      bakedDiscolorationAmountNode(discolorMap, bakeUniforms)
+    );
+  } else if (grimeDarken > 0) {
+    mat.colorNode = grimyAlbedo;
   }
   mat.roughnessNode = materialRoughness
     .add(grime.mul(grimeRoughness))
@@ -150,7 +180,7 @@ function applyObjectSpaceWeathering(mat: WeatheredTslMaterial, opts: WeatheredMe
     mat.normalNode = perturbViewNormalFromHeight(largeCloud, dentStrength);
   }
   mat.customProgramCacheKey = () =>
-    `WeatheredMetal|d${grimeDarken}|r${grimeRoughness}|m${grimeMetalnessReduce}|n${dentStrength}|L${largeScale}|F${fineScale}`;
+    `WeatheredMetal|d${grimeDarken}|r${grimeRoughness}|m${grimeMetalnessReduce}|n${dentStrength}|L${largeScale}|F${fineScale}|dc${discolorMap?.uuid ?? 'none'}`;
 }
 
 export function stripPbrMapsAndEmission(
@@ -229,8 +259,8 @@ function isExcludedMaterialBySubstring(mat: unknown, substrings: string[]): bool
 
 /**
  * Replaces mesh materials with slot-colored weathered plastic. Skips Masks
- * subtrees and excluded material names (Brain, GlowingEyes, …). Does not
- * sample baked emissive discoloration maps.
+ * subtrees and excluded material names (Brain, GlowingEyes, …). Samples baked
+ * emissive discoloration maps when the mesh has UVs.
  */
 export function applyWeatheredMetalToObject(
   object: Object3D | null | undefined,
@@ -296,7 +326,14 @@ export function applyWeatheredMetalToObject(
       if (hasColorMap && color === undefined) return raw;
 
       changed = true;
-      return getWeatheredMetalMaterial((color ?? '#ffffff') as ColorRepresentation, opts);
+      const discolorationMap =
+        meshHasUv(mesh) && raw instanceof MeshStandardMaterial
+          ? (raw.emissiveMap ?? undefined)
+          : undefined;
+      return getWeatheredMetalMaterial((color ?? '#ffffff') as ColorRepresentation, {
+        ...opts,
+        discolorationMap,
+      });
     });
 
     if (!changed) return;

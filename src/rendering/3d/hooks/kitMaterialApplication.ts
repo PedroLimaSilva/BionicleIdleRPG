@@ -22,6 +22,7 @@ import {
 import { metallicColorPbr, type KitMetalPbr } from '../kit/palettes/metalPbr';
 import {
   getWeatheredMetalMaterial,
+  meshHasUv,
   type WeatheredMetalOptions,
 } from '../CharacterScene/WeatheredMetalMaterial';
 import {
@@ -228,6 +229,9 @@ export function buildKitMeshMaterials(
       ...weatheredBase,
       ...mergeSlotPbr(spec, metalPbr),
     };
+    if (mat.emissiveMap && meshHasUv(mesh)) {
+      opts.discolorationMap = mat.emissiveMap;
+    }
     if (canonicalKitSlotName(mat.name) === 'face') {
       opts.side = FrontSide;
     }

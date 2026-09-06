@@ -40,8 +40,8 @@ export type UseKitAttachmentsParams = {
  * character, and finalizes their materials in a single traversal:
  *   - glow / opt-out slots get cloned `MeshStandardMaterial`s with per-slot overrides;
  *   - everything else (when `weathered` is provided) gets a cached weathered metal
- *     material keyed by color + local-space grime (albedo / roughness / metalness).
- *     Baked emissive dirt maps are not sampled yet.
+ *     material keyed by color + local-space grime. Baked emissive dirt maps
+ *     (when present on the kit clone) mix discoloration on top of that albedo.
  *
  * No post-hoc tree walk is needed — materials are decided once here, and the
  * weathered shared cache is reused across instances with the same spec.

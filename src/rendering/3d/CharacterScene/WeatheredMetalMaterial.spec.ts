@@ -1,4 +1,5 @@
-import { DataTexture, MeshStandardMaterial, RepeatWrapping } from 'three';
+import { ClampToEdgeWrapping, DataTexture, MeshStandardMaterial, RepeatWrapping } from 'three';
+import { DISCOLORATION_MAP_USERDATA_KEY } from '../hooks/bakedDiscoloration';
 import { getWeatheredMetalMaterial } from './WeatheredMetalMaterial';
 
 function mapTex(): DataTexture {
@@ -6,7 +7,7 @@ function mapTex(): DataTexture {
 }
 
 describe('getWeatheredMetalMaterial', () => {
-  test('ignores bake maps and shares materials by color and roughness noise', () => {
+  test('adopts bake maps into userData and shares materials by color and bake uuid', () => {
     const discolor = mapTex();
     discolor.wrapS = RepeatWrapping;
     discolor.wrapT = RepeatWrapping;
@@ -26,7 +27,20 @@ describe('getWeatheredMetalMaterial', () => {
     expect(a.map).toBeNull();
     expect(a.emissiveMap).toBeNull();
     expect(a.emissiveIntensity).toBe(0);
-    expect(discolor.wrapS).toBe(RepeatWrapping);
+    expect(a.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
+    expect(discolor.wrapS).toBe(ClampToEdgeWrapping);
+    expect((a as MeshStandardMaterial & { colorNode?: unknown }).colorNode).toBeDefined();
+  });
+
+  test('baked discoloration still mixes when grimeDarken is 0', () => {
+    const mat = getWeatheredMetalMaterial('#c91a09', {
+      discolorationMap: mapTex(),
+      grimeDarken: 0,
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    expect(mat.colorNode).toBeDefined();
+    expect(mat.emissiveMap).toBeNull();
+    expect(mat.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBeDefined();
   });
 
   test('the same color with unused normal maps still shares a material', () => {
@@ -119,5 +133,17 @@ describe('getWeatheredMetalMaterial', () => {
     expect(plastic.normalNode).toBeDefined();
     expect(metal.normalNode).toBeDefined();
     expect(plastic.customProgramCacheKey?.()).not.toBe(metal.customProgramCacheKey?.());
+  });
+
+  test('different discoloration maps do not share a material', () => {
+    const a = getWeatheredMetalMaterial('#c91a09', {
+      discolorationMap: mapTex(),
+      metalness: 0.05,
+    });
+    const b = getWeatheredMetalMaterial('#c91a09', {
+      discolorationMap: mapTex(),
+      metalness: 0.05,
+    });
+    expect(a).not.toBe(b);
   });
 });
