@@ -36,3 +36,8 @@ export function shouldSelectiveBloomTransmissiveKind(
 export function applySelectiveBloomMrt(mat: SelectiveBloomMrtMaterial): void {
   mat.mrtNode = mrt({ bloomIntensity: BLOOM_INTENSITY_ON });
 }
+
+/** Drops a material from the bloom MRT (mask power off, or a one-off selection). */
+export function clearSelectiveBloomMrt(mat: SelectiveBloomMrtMaterial): void {
+  mat.mrtNode = undefined;
+}

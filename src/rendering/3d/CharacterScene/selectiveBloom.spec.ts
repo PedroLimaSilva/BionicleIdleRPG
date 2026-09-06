@@ -1,5 +1,6 @@
 import {
   applySelectiveBloomMrt,
+  clearSelectiveBloomMrt,
   isSelectiveBloomKitGlowName,
   isSelectiveBloomRahkshiEyeName,
   shouldSelectiveBloomTransmissiveKind,
@@ -34,5 +35,12 @@ describe('selectiveBloom selection', () => {
     const mat: { mrtNode?: unknown; name: string } = { name: 'Glow' };
     applySelectiveBloomMrt(mat);
     expect(mat.mrtNode).toBeDefined();
+  });
+
+  test('clearSelectiveBloomMrt drops the MRT mask', () => {
+    const mat: { mrtNode?: unknown; name: string } = { name: 'Glow' };
+    applySelectiveBloomMrt(mat);
+    clearSelectiveBloomMrt(mat);
+    expect(mat.mrtNode).toBeUndefined();
   });
 });

@@ -47,8 +47,8 @@ type PipelineQuadMaterial = {
 /**
  * WebGPU selective bloom for CharacterScene.
  *
- * Default MRT `bloomIntensity` is 0. Kit brains, kit Glow, and Rahkshi Eyes write 1 via
- * {@link applySelectiveBloomMrt}; Glowing Eyes do not.
+ * Default MRT `bloomIntensity` is 0. Kit brains, kit Glow, Rahkshi Eyes, and
+ * active Kanohi mask-power write 1; Glowing Eyes do not.
  *
  * The HTML compositor ignores RGB at alpha 0, so halo pixels get coverage from
  * the bloom buffer and are composited onto a card-colored stand-in at the same

@@ -4,9 +4,11 @@ import {
   materialMetalness,
   materialRoughness,
   mix,
+  mrt,
   positionLocal,
   uniform,
 } from 'three/tsl';
+import { applySelectiveBloomMrt, clearSelectiveBloomMrt } from '../CharacterScene/selectiveBloom';
 import {
   adoptBakedDiscolorationMap,
   applyBakedDiscolorationUniforms,
@@ -54,12 +56,16 @@ type CrownDiscolorationUniforms = ReturnType<typeof createCrownDiscolorationUnif
 
 type MaskTslMaterial = MaskStandardMat & {
   colorNode?: unknown;
+  emissiveNode?: unknown;
   metalnessNode?: unknown;
+  mrtNode?: unknown;
   roughnessNode?: unknown;
 };
 
-/** Kept for call-site compatibility; mask-power glow stays off on this TSL branch. */
-export const MASK_POWER_EMISSIVE_INTENSITY = 0;
+/** Modest Kanohi body emission while a mask power is active; bloom supplies the halo. */
+export const MASK_POWER_EMISSIVE_INTENSITY = 1;
+
+const MASK_POWER_UNIFORMS_KEY = 'maskPowerUniforms';
 
 function uniformNumber(node: { value: unknown }): { value: number } {
   return node as unknown as { value: number };
@@ -96,6 +102,16 @@ export function setupMaskDiscolorationShader(root: Object3D, baseColor = '#fffff
   });
 }
 
+function createMaskPowerUniforms() {
+  return {
+    bloomIntensity: uniform(0),
+    color: uniform(new Color(0x000000)),
+    intensity: uniform(0),
+  };
+}
+
+type MaskPowerUniforms = ReturnType<typeof createMaskPowerUniforms>;
+
 function attachDiscolorationShader(
   mat: MaskStandardMat,
   minY: number,
@@ -107,9 +123,11 @@ function attachDiscolorationShader(
   mat.emissiveIntensity = 0;
   const baked = createBakedDiscolorationUniforms(map, baseColor);
   const crown = createCrownDiscolorationUniforms(minY, maxY);
+  const power = createMaskPowerUniforms();
 
   mat.userData[DISCOLOR_UNIFORMS_KEY] = crown;
   mat.userData[DISCOLORATION_UNIFORMS_KEY] = baked;
+  mat.userData[MASK_POWER_UNIFORMS_KEY] = power;
 
   const bakedAmt = bakedDiscolorationAmountNode(map, baked);
   const range = crown.maxY.sub(crown.minY).max(1e-5);
@@ -118,6 +136,10 @@ function attachDiscolorationShader(
 
   const tslMat = mat as MaskTslMaterial;
   tslMat.colorNode = mix(afterBake, crown.color, crownAmt);
+  // Keep power and bloom in the graph from the first compile so toggling
+  // later does not require a program rebuild.
+  tslMat.emissiveNode = power.color.mul(power.intensity);
+  tslMat.mrtNode = mrt({ bloomIntensity: power.bloomIntensity });
   if (!maskUsesTransmissionRendering(mat)) {
     // Frosted Kaukau / Rau must keep scalar metalness 0. A metalnessNode graph
     // that doesn't stay at 0 makes WebGPU skip the transmission lobe.
@@ -133,15 +155,39 @@ function attachDiscolorationShader(
   mat.needsUpdate = true;
 }
 
-/** Mask-power glow is disabled; keep emissive black so bake maps cannot light the surface. */
+/** Drive Kanohi body emission from mask color. Bake maps stay on albedo, not light. */
 export function applyMaskPowerEmissive(
   mat: MaskStandardMat,
-  _colorHex: string,
-  _active: boolean | undefined
+  colorHex: string,
+  active: boolean | undefined
 ): void {
   if (!mat.emissive) return;
-  mat.emissive.set(0x000000);
-  mat.emissiveIntensity = 0;
+  const on = Boolean(active);
+  const intensity = on ? MASK_POWER_EMISSIVE_INTENSITY : 0;
+  if (on) {
+    mat.emissive.set(colorHex);
+  } else {
+    mat.emissive.set(0x000000);
+  }
+  mat.emissiveIntensity = intensity;
+
+  const power = mat.userData[MASK_POWER_UNIFORMS_KEY] as MaskPowerUniforms | undefined;
+  if (power) {
+    if (on) {
+      uniformColor(power.color).value.set(colorHex);
+    } else {
+      uniformColor(power.color).value.set(0x000000);
+    }
+    uniformNumber(power.intensity).value = intensity;
+    uniformNumber(power.bloomIntensity).value = on ? 1 : 0;
+    return;
+  }
+
+  if (on) {
+    applySelectiveBloomMrt(mat);
+  } else {
+    clearSelectiveBloomMrt(mat);
+  }
 }
 
 /** Push runtime discoloration settings into patched mask materials. */

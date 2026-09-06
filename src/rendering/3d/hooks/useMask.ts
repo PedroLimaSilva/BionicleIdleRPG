@@ -98,7 +98,8 @@ function applyMaskColors(
  * @param glowColor   - Optional color for emissive "glow" materials (e.g. lens glow matching eye color).
  *                      When provided, materials whose names include "glow" (case-insensitive) will use
  *                      this color for both their base color and emissive color instead of maskColor.
- * @param maskPowerActive - When true, non-glow materials emit the mask color at intensity 5.
+ * @param maskPowerActive - When true, non-glow materials emit the mask color
+ *                          and join selective bloom.
  * @param discoloration - Optional vertical crown tint (Metru double-injected Kanohi).
  *                        Baked emissive discoloration is applied whenever the GLB
  *                        ships an emissiveMap, independent of this prop.
