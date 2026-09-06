@@ -190,6 +190,7 @@ test.describe('Character Model Rendering', () => {
       KraataPower.Disintegration,
       KraataPower.Poison,
       KraataPower.Fragmentation,
+      KraataPower.Chameleon,
       KraataPower.Fear,
       KraataPower.Hunger,
       KraataPower.Anger,

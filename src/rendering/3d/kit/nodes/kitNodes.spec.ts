@@ -50,7 +50,7 @@ describe('kit nodes', () => {
       const exemptKeys = new Set<string>(exempt);
       const missing = Object.entries(registry).flatMap(([key, kitNodeName]) => {
         if (exemptKeys.has(key) || runtimeNames.has(kitNodeName)) return [];
-        return [{ kit: glbPath, part: key, kitNodeName }];
+        return [{ kit: glbPath, kitNodeName, part: key }];
       });
 
       expect(missing).toEqual([]);
