@@ -470,6 +470,9 @@ export function waitForCharacterModelReady(
           .evaluate(() => {
             const invalidate = (window as Window & { __R3F_INVALIDATE__?: () => void })
               .__R3F_INVALIDATE__;
+            // Extra frames so selective bloom's MRT/post pass is painted before capture.
+            invalidate?.();
+            invalidate?.();
             invalidate?.();
             invalidate?.();
             return new Promise<void>((resolve) => {

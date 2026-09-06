@@ -53,7 +53,7 @@ type PipelineQuadMaterial = {
  * The HTML compositor ignores RGB at alpha 0, so halo pixels get coverage from
  * the bloom buffer and are composited onto a card-colored stand-in at the same
  * strength as on-character bloom. Empty pixels stay alpha 0. Color-transform
- * with alpha 1 — RenderOutputNode would kill `a == 0` bloom. Disabled in TEST_MODE.
+ * with alpha 1 — RenderOutputNode would kill `a == 0` bloom. Enabled in TEST_MODE.
  */
 export function CharacterSelectiveBloom() {
   const gl = useThree((s) => s.gl);
