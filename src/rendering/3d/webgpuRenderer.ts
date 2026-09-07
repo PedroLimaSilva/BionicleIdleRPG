@@ -1,5 +1,5 @@
 import { WebGPURenderer } from 'three/webgpu';
-import { isTestMode } from '../../utils/testMode';
+import { shouldForceWebGL } from '../../utils/testMode';
 import { installTintSafeNodeLibrary } from './tsl/tintSafe';
 
 type WebGPURendererOptions = ConstructorParameters<typeof WebGPURenderer>[0];
@@ -31,7 +31,7 @@ function shouldInstallTintSafePatch(forceWebGL: boolean, renderer: WebGPURendere
 export async function createSceneWebGPURenderer(props: {
   canvas: HTMLCanvasElement;
 }): Promise<WebGPURenderer> {
-  const forceWebGL = isTestMode();
+  const forceWebGL = shouldForceWebGL();
   const renderer = createRenderer(props.canvas, forceWebGL);
   try {
     await renderer.init();

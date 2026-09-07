@@ -55,9 +55,20 @@ When a `CharacterScene` mounts and kit attachments finish, the browser console l
 [character:Toa_Tahu] render cost: +142 draws (+38 materials, +49,000 tris) — draws 6 → 148
 ```
 
-**Draws** are estimated from the character subtree (one per mesh material slot) — stable across refresh rates. The **+142** is the character's contribution over the empty rig baseline. Re-logs when switching characters or when kit colors change. Disabled in Playwright test mode.
+**Draws** are estimated from the character subtree (one per mesh material slot) — stable across refresh rates and **both WebGL and WebGPU**. The **+142** is the character's contribution over the empty rig baseline. Re-logs when switching characters or when kit colors change. Disabled in Playwright test mode (`TEST_MODE=true`).
 
 Use this log to compare characters before and after rendering optimizations (e.g. kit geometry merge).
+
+### Forcing WebGL in dev
+
+To compare WebGL vs WebGPU on the same machine without Playwright test mode (which pauses animations and hides the logger):
+
+```js
+localStorage.setItem('FORCE_WEBGL', 'true');
+location.reload();
+```
+
+Clear with `localStorage.removeItem('FORCE_WEBGL')`. WebGL uses `r3f-perf` for the HUD; the console `render cost` log works on both backends.
 
 ## Related code
 

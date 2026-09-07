@@ -15,6 +15,16 @@ export function isTestMode(): boolean {
   return localStorage.getItem('TEST_MODE') === 'true';
 }
 
+/**
+ * Dev-only: force the WebGL 2 backend (same as Playwright) without pausing
+ * animations or disabling the performance monitor / render-cost logger.
+ * Set via localStorage: FORCE_WEBGL=true
+ */
+export function shouldForceWebGL(): boolean {
+  if (typeof window === 'undefined') return false;
+  return isTestMode() || localStorage.getItem('FORCE_WEBGL') === 'true';
+}
+
 export type E2ePwaBannerState = 'needRefresh' | 'offlineReady';
 
 /**
