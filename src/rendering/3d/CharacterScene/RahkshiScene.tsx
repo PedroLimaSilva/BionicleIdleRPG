@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { DirectionalLight, Mesh, Object3D } from 'three';
@@ -40,6 +40,7 @@ function RahkshiFraming() {
 
 export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKraata: boolean }) {
   const sceneRootRef = useRef<Object3D>(null);
+  const [kitRevision, setKitRevision] = useState(0);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
 
@@ -57,7 +58,7 @@ export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKr
     applyShadowProps();
     const t = setTimeout(applyShadowProps, 500);
     return () => clearTimeout(t);
-  }, [effectiveShadows, kraata, hasKraata]);
+  }, [effectiveShadows, kraata, hasKraata, kitRevision]);
 
   const setMainLightRef = (el: DirectionalLight | null) => {
     if (el) {
@@ -99,7 +100,11 @@ export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKr
       <group ref={sceneRootRef}>
         <PresentationControls global snap={false} speed={2} zoom={1} polar={[0, 0]}>
           <Suspense fallback={null}>
-            <RahkshiModel kraata={kraata} hasKraata={hasKraata} />
+            <RahkshiModel
+              kraata={kraata}
+              hasKraata={hasKraata}
+              onKitMeshesAttached={() => setKitRevision((n) => n + 1)}
+            />
           </Suspense>
         </PresentationControls>
       </group>

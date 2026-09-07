@@ -1,21 +1,42 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Color as ThreeColor, Group, MathUtils, Mesh, MeshStandardMaterial } from 'three';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { Color as ThreeColor, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../hooks/useCombatAnimations';
+import { useKitAttachments } from '../hooks/useKitAttachments';
 import { getRahkshiArmorColors } from '../../../data/rahkshiArmorColors';
+import { LegoColor } from '../../../types/Colors';
 import { KraataPower } from '../../../types/Kraata';
-import { applyWeatheredMetalToObject, WeatheredMetalOptions } from './WeatheredMetalMaterial';
+import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
 import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 import { disposeObject3DResources } from '../utils/disposeThreeObject';
 import { applySelectiveBloomMrt, isSelectiveBloomRahkshiEyeName } from './selectiveBloom';
 import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
+import { KIT_2001_GLB_PATH } from '../kit/kit2001';
+import { KIT_2003_GLB_PATH } from '../kit/kit2003';
+import {
+  RAHKSHI_KIT_2001_ATTACHMENTS,
+  RAHKSHI_KIT_2003_ATTACHMENTS,
+} from '../kit/attachments/rahkshi';
+import { RAHKSHI_WEATHERED, rahkshiKitColors } from '../kit/palettes/rahkshiKitPalette';
 
 const BLACK = new ThreeColor('#000000');
 const GLOW_LERP_SPEED = 5;
 /** Threshold for considering glow "complete" (0–1). Eyes light up first, then idle plays. */
 const GLOW_COMPLETE_THRESHOLD = 0.98;
+const RAHKSHI_GLB = import.meta.env.BASE_URL + 'rahkshi.glb';
+
+/** Must match how many `useKitAttachments` calls this component makes. */
+const RAHKSHI_ATTACHMENT_RUNS = 2;
 
 interface GlowEntry {
   material: MeshStandardMaterial;
@@ -24,15 +45,19 @@ interface GlowEntry {
   onEmissiveIntensity: number;
 }
 
-const WEATHERED_METAL_OPTIONS: WeatheredMetalOptions = {
-  metalness: 0.05,
-  roughness: 0.55,
-};
+/** Deepest node wins for duplicate socket names. */
+function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
+  const map: Record<string, Object3D> = {};
+  root.traverse((child) => {
+    if (child.name) map[child.name] = child;
+  });
+  return map;
+}
 
 export const RahkshiModel = forwardRef<
   CombatantModelHandle,
-  { kraata: KraataPower; hasKraata?: boolean }
->(({ hasKraata = true, kraata }, ref) => {
+  { kraata: KraataPower; hasKraata?: boolean; onKitMeshesAttached?: () => void }
+>(({ hasKraata = true, kraata, onKitMeshesAttached }, ref) => {
   const group = useRef<Group>(null);
   const glowEntries = useRef<GlowEntry[]>([]);
   const glowTarget = useRef(hasKraata);
@@ -46,9 +71,63 @@ export const RahkshiModel = forwardRef<
   const [glowCompleteForIdle, setGlowCompleteForIdle] = useState(hasKraata);
   const prevHasKraataRef = useRef(hasKraata);
 
-  const { animations, nodes } = useGLTF(import.meta.env.BASE_URL + 'rahkshi.glb');
+  const { animations, nodes } = useGLTF(RAHKSHI_GLB);
 
-  const bodyInstance = useMemo(() => cloneGltfInstance(nodes.Rahkshi), [nodes]);
+  const { bakedMeshUuids, bodyInstance } = useMemo(() => {
+    const root = nodes.Rahkshi as Object3D | undefined;
+    const instance = root ? cloneGltfInstance(root) : new Group();
+    const uuids = new Set<string>();
+    instance.traverse((child) => {
+      if (child instanceof Mesh) uuids.add(child.uuid);
+    });
+    return { bakedMeshUuids: uuids, bodyInstance: instance };
+  }, [nodes]);
+
+  const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(bodyInstance), [bodyInstance]);
+  const kitColors = useMemo(() => rahkshiKitColors(getRahkshiArmorColors(kraata)), [kraata]);
+
+  const eyeGlowEntriesRef = useRef<GlowEntry[]>([]);
+  const kitLayersDone = useRef(0);
+
+  const collectHeadSocketGlow = useCallback(() => {
+    const stored = originalEyeValuesRef.current;
+    const socket = kitCharacterNodes.Socket_Head;
+    if (!stored || !socket) {
+      glowEntries.current = eyeGlowEntriesRef.current;
+      return;
+    }
+    const headEntries: GlowEntry[] = [];
+    socket.traverse((child) => {
+      // Face and Glow are authored under Socket_Head — only the kit clone should emit.
+      if (!(child instanceof Mesh) || bakedMeshUuids.has(child.uuid)) return;
+      if (child.name === 'Face' || child.name === 'Glow') return;
+      const mat = child.material;
+      if (!(mat instanceof MeshStandardMaterial)) return;
+      if (isSelectiveBloomRahkshiEyeName(mat.name)) return;
+      mat.emissive.copy(stored.onEmissive);
+      mat.emissiveIntensity = glowTarget.current ? stored.onEmissiveIntensity : 0;
+      headEntries.push({
+        material: mat,
+        onColor: mat.color.clone(),
+        onEmissive: stored.onEmissive,
+        onEmissiveIntensity: stored.onEmissiveIntensity,
+      });
+    });
+    glowEntries.current = [...eyeGlowEntriesRef.current, ...headEntries];
+  }, [bakedMeshUuids, kitCharacterNodes]);
+
+  useEffect(() => {
+    kitLayersDone.current = 0;
+  }, [kraata]);
+  const onKitLayerAttached = useMemo(() => {
+    return () => {
+      kitLayersDone.current += 1;
+      if (kitLayersDone.current < RAHKSHI_ATTACHMENT_RUNS) return;
+      kitLayersDone.current = 0;
+      collectHeadSocketGlow();
+      onKitMeshesAttached?.();
+    };
+  }, [collectHeadSocketGlow, onKitMeshesAttached]);
 
   const effectiveIdleAction = hasKraata
     ? glowCompleteForIdle && prevHasKraataRef.current
@@ -78,12 +157,13 @@ export const RahkshiModel = forwardRef<
 
   glowTarget.current = hasKraata;
 
+  // Runs before kit attach (declaration order) so weathering never walks kit clones.
   useEffect(() => {
     const dex = getRahkshiArmorColors(kraata);
     const entries: GlowEntry[] = [];
 
     bodyInstance.traverse((child) => {
-      if (!(child instanceof Mesh)) return;
+      if (!(child instanceof Mesh) || !bakedMeshUuids.has(child.uuid)) return;
       const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
 
       if (isRahkshiVariantMesh(child.name)) {
@@ -138,22 +218,45 @@ export const RahkshiModel = forwardRef<
       }
     });
 
+    glowEntries.current = entries;
+    eyeGlowEntriesRef.current = entries;
+
     const materialColorMap: Record<string, string> = {
       Back_baked: dex.armor,
       Face_baked: dex.armor,
-      Primary: dex.armor,
-      Secondary: dex.joint,
+      KraataCradle_baked: LegoColor.DarkBluishGray,
+      KraataCradleHolder_baked: LegoColor.DarkBluishGray,
+      RahkshiShoulders_baked: LegoColor.DarkBluishGray,
     };
 
-    applyWeatheredMetalToObject(bodyInstance, {
-      ...WEATHERED_METAL_OPTIONS,
-      excludeMaterialNames: ['Eyes', 'Head', 'SOLID-SILVER', 'SOLID-SILVER.001'],
-      materialColorMap,
-      uniqueMaterials: true,
+    bodyInstance.traverse((child) => {
+      if (!(child instanceof Mesh) || !bakedMeshUuids.has(child.uuid)) return;
+      applyWeatheredMetalToObject(child, {
+        ...RAHKSHI_WEATHERED,
+        excludeMaterialNames: ['Eyes', 'SOLID-SILVER', 'SOLID-SILVER.001'],
+        materialColorMap,
+        uniqueMaterials: true,
+      });
     });
+  }, [bakedMeshUuids, bodyInstance, kraata, hasKraata]);
 
-    glowEntries.current = entries;
-  }, [bodyInstance, kraata, hasKraata]);
+  useKitAttachments({
+    attachments: RAHKSHI_KIT_2003_ATTACHMENTS,
+    characterNodes: kitCharacterNodes,
+    colors: kitColors,
+    kitUrl: KIT_2003_GLB_PATH,
+    onAttached: onKitLayerAttached,
+    weathered: RAHKSHI_WEATHERED,
+  });
+
+  useKitAttachments({
+    attachments: RAHKSHI_KIT_2001_ATTACHMENTS,
+    characterNodes: kitCharacterNodes,
+    colors: kitColors,
+    kitUrl: KIT_2001_GLB_PATH,
+    onAttached: onKitLayerAttached,
+    weathered: RAHKSHI_WEATHERED,
+  });
 
   useEffect(() => {
     const instance = bodyInstance;
@@ -194,3 +297,8 @@ export const RahkshiModel = forwardRef<
     </group>
   );
 });
+
+RahkshiModel.displayName = 'RahkshiModel';
+
+useGLTF.preload(RAHKSHI_GLB);
+useKitAttachments.preload(KIT_2001_GLB_PATH, KIT_2003_GLB_PATH);
