@@ -47,6 +47,14 @@ Custom Toa are **not** excluded from battle. They already resolve a rig template
 
 A **battle attachment map** can reference fewer, pre-merged kit nodes on the same rig before full GLB bake — same skeleton, simplified kit wiring in `CombatantModel` only.
 
+### Authoring specs
+
+| Rig                                                           | Doc                                                  |
+| ------------------------------------------------------------- | ---------------------------------------------------- |
+| Toa Tahu (Mata) — material buckets, socket map, Blender steps | [`battle-lod/TAHU_MATA.md`](battle-lod/TAHU_MATA.md) |
+
+Other Mata Toa reuse the same bucket names; only proportions and weapon sockets differ.
+
 ## Phase D — enemy instancing
 
 Good fit when geometry is identical and only **uniform color axes** change:
