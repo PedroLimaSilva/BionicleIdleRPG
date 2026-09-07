@@ -75,3 +75,4 @@ Use this log to compare characters before and after rendering optimizations (e.g
 | `src/rendering/3d/SceneDrawCallLogger.tsx` | One-shot character sheet render-cost log  |
 | `src/rendering/3d/sceneDrawCallStats.ts`   | Scene-graph + frame stat helpers          |
 | `src/persistence/gamePersistence.ts`       | `PERFORMANCE_MONITOR_ENABLED` persistence |
+| `docs/KIT_GEOMETRY_MERGE.md`               | Phase B runtime merge details             |
