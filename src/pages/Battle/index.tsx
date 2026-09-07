@@ -14,7 +14,7 @@ import {
   computeKranaRewardsForBattle,
   computeKraataRewardsForBattle,
 } from '../../game/combat/BattleRewards';
-import { KraataReward } from '../../types/Krana';
+import { KraataReward } from '../../types/Kraata';
 import { BattleSpeedControl } from './BattleSpeedControl';
 import { setBattleSpeedMultiplier } from '../../utils/battleSpeed';
 import { getEncounterArenaId, getEncounterTribe } from '../../game/combat/arena';
