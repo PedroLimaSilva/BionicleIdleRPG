@@ -1,4 +1,4 @@
-import { Suspense, forwardRef, useEffect, useRef } from 'react';
+import { Suspense, forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { PresentationControls } from '@react-three/drei';
 import { ModelInteractionDetector, ModelInteractionProvider } from '../ModelInteractionContext';
 import { useThree } from '@react-three/fiber';
@@ -45,6 +45,7 @@ import { NokamaModel } from './Metru/NokamaModel';
 import { OnewaModel } from './Metru/OnewaModel';
 import { VakamaModel } from './Metru/VakamaModel';
 import { WhenuaModel } from './Metru/WhenuaModel';
+import { SceneDrawCallLogger } from '../SceneDrawCallLogger';
 
 /** Vertical center of the character framing volume. */
 const CHARACTER_CENTER_Y = CYLINDER_CENTER_Y;
@@ -240,6 +241,15 @@ export function CharacterScene({
 }) {
   const characterRootRef = useRef<Object3D>(null);
   const modelRef = useRef<CombatantModelHandle>(null);
+  const characterSessionKey = `${matoran.id}|${matoran.stage}|${matoran.customMataModelId ?? ''}`;
+  const [modelReadyGeneration, setModelReadyGeneration] = useState(0);
+  const onModelReady = useCallback(() => {
+    setModelReadyGeneration((generation) => generation + 1);
+  }, []);
+
+  useEffect(() => {
+    setModelReadyGeneration(0);
+  }, [characterSessionKey]);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
   useEffect(() => {
@@ -278,6 +288,12 @@ export function CharacterScene({
 
   return (
     <>
+      <SceneDrawCallLogger
+        label={matoran.id}
+        measureRootRef={characterRootRef}
+        readyGeneration={modelReadyGeneration}
+        sessionKey={characterSessionKey}
+      />
       <CharacterSelectiveBloom />
       <CharacterFraming />
       <SceneHdriEnvironment {...CITY_ENVIRONMENT_PROPS} intensity={SHEET_ENV_INTENSITY} />
@@ -312,7 +328,7 @@ export function CharacterScene({
           <ModelInteractionDetector />
           <PresentationControls global={true} snap={false} speed={2} zoom={1} polar={[0, 0]}>
             <Suspense fallback={null}>
-              <CharacterModel ref={modelRef} matoran={matoran} />
+              <CharacterModel ref={modelRef} matoran={matoran} onModelReady={onModelReady} />
             </Suspense>
           </PresentationControls>
         </ModelInteractionProvider>
