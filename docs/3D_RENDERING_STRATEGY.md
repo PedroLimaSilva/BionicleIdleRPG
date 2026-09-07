@@ -49,11 +49,12 @@ A **battle attachment map** can reference fewer, pre-merged kit nodes on the sam
 
 ### Authoring specs
 
-| Rig                                                           | Doc                                                  |
-| ------------------------------------------------------------- | ---------------------------------------------------- |
-| Toa Tahu (Mata) — material buckets, socket map, Blender steps | [`battle-lod/TAHU_MATA.md`](battle-lod/TAHU_MATA.md) |
+| Rig                                   | Doc                                                  |
+| ------------------------------------- | ---------------------------------------------------- |
+| **Rahkshi** (recommended first pilot) | [`battle-lod/RAHKSHI.md`](battle-lod/RAHKSHI.md)     |
+| Toa Tahu (Mata)                       | [`battle-lod/TAHU_MATA.md`](battle-lod/TAHU_MATA.md) |
 
-Other Mata Toa reuse the same bucket names; only proportions and weapon sockets differ.
+Other Mata Toa reuse the Tahu bucket names; only proportions and weapon sockets differ.
 
 ## Phase D — enemy instancing
 
