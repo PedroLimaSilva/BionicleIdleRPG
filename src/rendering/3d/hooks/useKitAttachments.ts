@@ -1,11 +1,18 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Object3D } from 'three';
+import { Mesh, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import type { BaseMatoran } from '../../../types/Matoran';
 import type { KitSocketAttachment } from '../../../types/KitParts';
 import type { WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
 import { normalizeMatoranColors } from '../../../game/characters/matoranColors';
 import { applyKitMaterialsToObject, buildKitMaterialSlotLookup } from './kitMaterialApplication';
+import {
+  buildMergedKitMeshes,
+  disposeMergedKitMeshes,
+  extractMergeableMeshesFromClone,
+  isMergeableKitMesh,
+  type KitMeshMergeEntry,
+} from './kitGeometryMerge';
 import { notifyModelReadyForTestMode } from '../../../utils/testMode';
 import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 
@@ -15,6 +22,14 @@ function buildKitNodeIndex(scene: Object3D): Record<string, Object3D> {
     if (child.name) map[child.name] = child;
   });
   return map;
+}
+
+function cloneHasRemainingMeshes(clone: Object3D): boolean {
+  let found = false;
+  clone.traverse((child) => {
+    if ((child as Mesh).isMesh) found = true;
+  });
+  return found;
 }
 
 export type UseKitAttachmentsParams = {
@@ -44,8 +59,8 @@ export type UseKitAttachmentsParams = {
  *     material keyed by color + local-space grime. Baked emissive dirt maps
  *     (when present on the kit clone) mix discoloration on top of that albedo.
  *
- * No post-hoc tree walk is needed — materials are decided once here, and the
- * weathered shared cache is reused across instances with the same spec.
+ * Rigid kit meshes that share a merge anchor bone and the same final material
+ * instance are merged into fewer draw calls (Phase B geometry batching).
  *
  * For multiple kit GLBs on one character, call this hook once per `kitUrl` with
  * disjoint `attachments` keys (each socket should appear in at most one map).
@@ -71,7 +86,8 @@ export function useKitAttachments({
   useEffect(() => {
     if (!characterNodes) return;
 
-    const clones: Object3D[] = [];
+    const socketClones: Object3D[] = [];
+    const mergeEntries: Array<KitMeshMergeEntry & { anchor: Object3D }> = [];
 
     for (const [socketName, row] of Object.entries(attachments)) {
       const socket = characterNodes[socketName];
@@ -95,14 +111,24 @@ export function useKitAttachments({
       applyKitMaterialsToObject(clone, slotLookup, resolvedColors, weathered);
 
       socket.add(clone);
-      clones.push(clone);
+      socket.updateMatrixWorld(true);
+      extractMergeableMeshesFromClone(clone, socket, mergeEntries);
+
+      if (cloneHasRemainingMeshes(clone)) {
+        socketClones.push(clone);
+      } else {
+        socket.remove(clone);
+      }
     }
+
+    const mergedMeshes = buildMergedKitMeshes(mergeEntries);
 
     onAttachedRef.current?.();
     notifyModelReadyForTestMode();
 
     return () => {
-      for (const clone of clones) {
+      disposeMergedKitMeshes(mergedMeshes);
+      for (const clone of socketClones) {
         const p = clone.parent;
         if (p) p.remove(clone);
       }
@@ -115,3 +141,6 @@ useKitAttachments.preload = (...kitUrls: string[]) => {
     useGLTF.preload(url);
   }
 };
+
+// Re-export for tests / diagnostics
+export { isMergeableKitMesh };
