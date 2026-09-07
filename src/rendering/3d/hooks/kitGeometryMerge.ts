@@ -65,7 +65,7 @@ export function kitMergeGroupKey(
  */
 export function extractMergeableKitMesh(
   mesh: Mesh,
-  anchor: Object3D,
+  _anchor: Object3D,
   anchorInverse: Matrix4
 ): KitMeshMergeEntry | null {
   if (!isMergeableKitMesh(mesh)) return null;
