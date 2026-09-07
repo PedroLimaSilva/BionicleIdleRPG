@@ -11,6 +11,7 @@ import { useSettings } from '../../context/useSettings';
 import { isCanvasRoute, shouldFadeCanvasOnExit } from './canvasRoutes';
 import { MOTION_DURATION } from '../../motion/transitions';
 import { createSceneWebGPURenderer, isWebGLBackend } from './webgpuRenderer';
+import { ScenePerfOverlay } from './ScenePerfOverlay';
 
 const CANVAS_EXIT_FADE_MS = MOTION_DURATION.base * 1000;
 
@@ -38,8 +39,10 @@ function SetSRGBColorSpace() {
 
 function PerfOverlay() {
   const gl = useThree((s) => s.gl);
-  if (!isWebGLBackend(gl)) return null;
-  return <Perf position="top-left" />;
+  if (isWebGLBackend(gl)) {
+    return <Perf position="top-left" />;
+  }
+  return <ScenePerfOverlay />;
 }
 
 /** Lets Playwright request a painted frame after a serial model hop. */

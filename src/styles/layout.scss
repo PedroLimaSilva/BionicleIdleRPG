@@ -110,3 +110,23 @@
     word-break: break-word;
   }
 }
+
+.scene-perf-overlay {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 10000;
+  padding: 0.35rem 0.55rem;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #e8f4ff;
+  background: rgba(8, 12, 20, 0.82);
+  border: 1px solid rgba(120, 180, 255, 0.35);
+  border-radius: 4px;
+  pointer-events: none;
+  white-space: pre;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
