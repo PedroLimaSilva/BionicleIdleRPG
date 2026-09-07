@@ -7,6 +7,8 @@ import { isTestMode } from '../../utils/testMode';
 import { AllyCard } from './Cards/Ally';
 import { buildTransition, MOTION_DURATION, MOTION_EASING } from '../../motion/transitions';
 import { scaleBattleDurationMs } from '../../utils/battleSpeed';
+import { useBattleSceneReadiness } from './battleSceneReadiness';
+import { useBattleSceneMask } from './useBattleSceneMask';
 
 /** Total fade in + fade out; keep in sync with `battle-arena-wave-clear` duration in `battle.scss`. */
 const WAVE_CLEAR_TOTAL_MS = 1000;
@@ -34,16 +36,22 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
   const [waveClearPlaying, setWaveClearPlaying] = useState(false);
   const [timerResetToken, setTimerResetToken] = useState(0);
   const waveClearTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const { sceneReady } = useBattleSceneReadiness();
   const shouldReduceMotion = (useReducedMotion() ?? false) || isTestMode();
+  const { sceneMaskRevealing, sceneMaskStyle, sceneMaskVisible } = useBattleSceneMask(
+    sceneReady,
+    shouldReduceMotion
+  );
 
   const bumpTimerReset = () => setTimerResetToken((token) => token + 1);
 
   useEffect(() => {
     if (phase !== BattlePhase.Inprogress) return;
+    if (!sceneReady) return;
     if (actionQueue && actionQueue.length > 0 && isRunningRound === false) {
       playActionQueue();
     }
-  }, [playActionQueue, actionQueue, isRunningRound, phase]);
+  }, [playActionQueue, actionQueue, isRunningRound, phase, sceneReady]);
 
   useEffect(() => {
     return () => {
@@ -72,7 +80,7 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
     );
   };
 
-  const buttonsLocked = isRunningRound || waveClearPlaying || exitPresentation;
+  const buttonsLocked = isRunningRound || waveClearPlaying || exitPresentation || !sceneReady;
   const enemiesAlive = battle.enemies.length > 0 && battle.enemies.some((e) => e.hp > 0);
   const timerResetKey = `${timerResetToken}-${currentWave}-${enemiesAlive ? 'round' : 'wave'}`;
 
@@ -106,6 +114,13 @@ export const BattleInProgress = ({ exitPresentation = false }: BattleInProgressP
               : undefined
           }
         >
+          {sceneMaskVisible && (
+            <div
+              className={`battle-arena-scene-mask${sceneMaskRevealing ? ' battle-arena-scene-mask--reveal' : ''}`}
+              style={sceneMaskStyle}
+              aria-hidden="true"
+            />
+          )}
           <div className="enemy-side"></div>
 
           <div className="ally-side">

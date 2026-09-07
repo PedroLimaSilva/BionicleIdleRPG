@@ -2,10 +2,12 @@ import { PresentationControls, PerspectiveCamera } from '@react-three/drei';
 import { Combatant } from '../../types/Combat';
 import { hasActiveEffectFromSource } from '../../services/combatUtils';
 import { CombatantModel, CombatantModelHandle } from './CombatantModel';
-import { useCallback, useEffect, useRef } from 'react';
+import { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/useSettings';
 import { shouldEnableShadows } from '../../utils/testMode';
+import { CharacterSelectiveBloom } from '../../rendering/3d/CharacterScene/CharacterSelectiveBloom';
+import { battleCombatantReadyKey, markBattleCombatantReady } from './battleSceneReadinessStore';
 import { HitImpactParticles } from './HitImpactParticles';
 import { subscribeBattleCameraEmphasis } from '../../utils/battleCameraEmphasis';
 import {
@@ -28,6 +30,8 @@ interface ArenaProps {
   arenaId?: ArenaId;
   /** Element tribe of the encounter headliner, used to recolor the arena. */
   tribe?: ElementTribe;
+  /** When false, only the arena environment loads (team-prep phase). */
+  showCombatants?: boolean;
 }
 
 const CAMERA_EMPHASIS_IN_MS = 320;
@@ -279,7 +283,14 @@ function ArenaFraming({ layout }: { layout: ArenaLayout }) {
   return null;
 }
 
-export function Arena({ arenaId, currentWave, enemies, team, tribe }: ArenaProps) {
+export function Arena({
+  arenaId,
+  currentWave,
+  enemies,
+  showCombatants = true,
+  team,
+  tribe,
+}: ArenaProps) {
   const combatantRefs = useRef<Record<string, CombatantModelHandle>>({});
   const sceneGroupRef = useRef<THREE.Group>(null);
   const { shadowsEnabled } = useSettings();
@@ -337,54 +348,68 @@ export function Arena({ arenaId, currentWave, enemies, team, tribe }: ArenaProps
     return () => clearTimeout(t);
   }, [effectiveShadows, team, enemies]);
 
+  const markCombatantReady = markBattleCombatantReady;
+
   return (
     <>
+      <CharacterSelectiveBloom variant="scene" />
       <PerspectiveCamera makeDefault />
       <ArenaFraming layout={layout} />
-      <ArenaEnvironment arenaId={arenaId} receiveShadow={effectiveShadows} recolor={recolor} />
-      <PresentationControls
-        enabled={false}
-        global={true}
-        snap={false}
-        speed={2}
-        zoom={1}
-        polar={[-Math.PI / 2, 0]}
-      >
-        <group dispose={null} name="Scene" ref={sceneGroupRef}>
-          <HitImpactParticles />
+      <Suspense fallback={null}>
+        <ArenaEnvironment arenaId={arenaId} receiveShadow={effectiveShadows} recolor={recolor} />
+      </Suspense>
+      {showCombatants && (
+        <PresentationControls
+          enabled={false}
+          global={true}
+          snap={false}
+          speed={2}
+          zoom={1}
+          polar={[-Math.PI / 2, 0]}
+        >
+          <group dispose={null} name="Scene" ref={sceneGroupRef}>
+            <HitImpactParticles />
 
-          {team.map((c, i) => (
-            <CombatantModel
-              key={c.id}
-              combatant={c}
-              side="team"
-              position={teamPositions[i]}
-              maskPowerActive={
-                !!c.maskPower?.active || hasActiveEffectFromSource(team, enemies, c.id)
-              }
-              ref={(ref) => {
-                if (ref) combatantRefs.current[c.id] = ref;
-                else delete combatantRefs.current[c.id];
-              }}
-            />
-          ))}
+            {team.map((c, i) => (
+              <Suspense key={c.id} fallback={null}>
+                <CombatantModel
+                  combatant={c}
+                  side="team"
+                  position={teamPositions[i]}
+                  maskPowerActive={
+                    !!c.maskPower?.active || hasActiveEffectFromSource(team, enemies, c.id)
+                  }
+                  onModelReady={markCombatantReady ? () => markCombatantReady(c.id) : undefined}
+                  ref={(ref) => {
+                    if (ref) combatantRefs.current[c.id] = ref;
+                    else delete combatantRefs.current[c.id];
+                  }}
+                />
+              </Suspense>
+            ))}
 
-          {enemies.map((c, i) => {
-            return (
-              <CombatantModel
-                key={`${c.id}-w${currentWave}`}
-                combatant={c}
-                side="enemy"
-                position={enemyPositions[i]}
-                ref={(ref) => {
-                  if (ref) combatantRefs.current[c.id] = ref;
-                  else delete combatantRefs.current[c.id];
-                }}
-              />
-            );
-          })}
-        </group>
-      </PresentationControls>
+            {enemies.map((c, i) => (
+              <Suspense key={`${c.id}-w${currentWave}`} fallback={null}>
+                <CombatantModel
+                  combatant={c}
+                  side="enemy"
+                  position={enemyPositions[i]}
+                  onModelReady={
+                    markCombatantReady
+                      ? () =>
+                          markCombatantReady(battleCombatantReadyKey(c.id, 'enemy', currentWave))
+                      : undefined
+                  }
+                  ref={(ref) => {
+                    if (ref) combatantRefs.current[c.id] = ref;
+                    else delete combatantRefs.current[c.id];
+                  }}
+                />
+              </Suspense>
+            ))}
+          </group>
+        </PresentationControls>
+      )}
     </>
   );
 }

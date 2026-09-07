@@ -89,6 +89,8 @@ interface CombatantModelProps {
   side: 'enemy' | 'team';
   /** When true, the caster's mask power is active (effect applied to targets) */
   maskPowerActive?: boolean;
+  /** Fires once GLB + kit attachments are ready for this combatant. */
+  onModelReady?: () => void;
 }
 
 export interface PlayAnimationOptions {
@@ -117,8 +119,10 @@ function getFacingRotation(
   return Math.atan2(dx, dz);
 }
 
+const MODELS_WITHOUT_KIT_READY_CALLBACK = new Set(['bohrok', 'nui_rama', 'rahi_placeholder']);
+
 export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelProps>(
-  ({ combatant, maskPowerActive = false, position, side }, ref) => {
+  ({ combatant, maskPowerActive = false, onModelReady, position, side }, ref) => {
     const modelGroup = useRef<Group>(null);
     const childRef = useRef<CombatantModelHandle | null>(null);
 
@@ -298,6 +302,14 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
 
     const rotation: Euler = [0, rotationY, 0];
 
+    const kitReadyProps = onModelReady ? { onKitMeshesAttached: onModelReady } : undefined;
+
+    useEffect(() => {
+      if (!onModelReady) return;
+      if (!MODELS_WITHOUT_KIT_READY_CALLBACK.has(combatant.model)) return;
+      onModelReady();
+    }, [combatant.model, onModelReady]);
+
     const model = (() => {
       const displayModel = combatant.mataRenderModelId ?? combatant.model;
       switch (displayModel) {
@@ -322,13 +334,17 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
         case 'rahkshi':
           return (
             <group scale={0.04} position={[0, 0, 0]}>
-              <RahkshiModel ref={childRef} kraata={combatant.id.split('-')[0] as KraataPower} />
+              <RahkshiModel
+                ref={childRef}
+                kraata={combatant.id.split('-')[0] as KraataPower}
+                {...kitReadyProps}
+              />
             </group>
           );
         case 'vahki':
           return (
             <group scale={0.04}>
-              <VahkiModel ref={childRef} id={combatant.id.split('-')[0]} />
+              <VahkiModel ref={childRef} id={combatant.id.split('-')[0]} {...kitReadyProps} />
             </group>
           );
         case 'Toa_Kopaka':
@@ -343,6 +359,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -358,6 +375,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -373,6 +391,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -388,6 +407,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -403,6 +423,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -418,6 +439,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -433,6 +455,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -448,6 +471,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -463,6 +487,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -478,6 +503,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -493,6 +519,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -508,6 +535,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -523,6 +551,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -538,6 +567,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -553,6 +583,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -568,6 +599,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -583,6 +615,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -598,6 +631,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -613,6 +647,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -628,6 +663,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                {...kitReadyProps}
               />
             </group>
           );
@@ -644,6 +680,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                     exp: 0,
                     maskPowerActive,
                   }}
+                  {...kitReadyProps}
                 />
               </group>
             );

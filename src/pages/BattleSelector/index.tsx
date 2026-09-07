@@ -9,6 +9,8 @@ import { ELEMENT_TO_KRANA_COLOR, isKranaCollected, parseKranaDropId } from '../.
 import type { KranaCollection } from '../../types/Krana';
 import type { EnemyEncounter } from '../../types/Combat';
 import { isKraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
+import { getEncounterArenaId } from '../../game/combat/arena';
+import { preloadArena } from '../../rendering/3d/arenas/preloadArena';
 
 /** Returns loot items to display, excluding already-collected krana. */
 function getDisplayableLoot(
@@ -129,6 +131,7 @@ export const BattleSelector: React.FC = () => {
               <button
                 className="confirm-button"
                 onClick={() => {
+                  preloadArena(getEncounterArenaId(encounter));
                   battle.startBattle(encounter);
                   navigate('/battle');
                 }}
