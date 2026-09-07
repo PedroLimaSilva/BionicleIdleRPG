@@ -170,15 +170,15 @@ Tracked in [#348](https://github.com/PedroLimaSilva/BionicleIdleRPG/issues/348) 
 
 ### Budget per frame (target: 30 fps idle, 60 fps interaction)
 
-| Resource              | Budget               | Notes                                                                                                                                                           |
-| --------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Draw calls**        | ≤ 50                 | Merge static geometry. Use instancing for particles. drei `<Instances>` for repeated props. Phased plan: [`3D_RENDERING_STRATEGY.md`](3D_RENDERING_STRATEGY.md) |
-| **Triangle count**    | ≤ 100k visible       | Current Toa models are ~5–15k each. 6 combatants + arena + backdrop ≈ 80k. Backdrops should be < 5k                                                             |
-| **Textures**          | ≤ 32 MB VRAM         | Shared atlas per character set. Backdrop textures 512x512 max. Use `THREE.CompressedTexture` (KTX2/basis) when possible                                         |
-| **Postprocessing**    | 1 pass max on mobile | SSAO is expensive — gate behind a "quality" setting or disable on mobile. Bloom is cheaper with the `resolutionScale: 0.5` pattern already used                 |
-| **Canvas resolution** | `dpr` capped at 1.5  | drei `<AdaptiveDpr>` or manual `gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))`                                                                       |
-| **JS frame time**     | ≤ 4ms                | Avoid allocations in `useFrame`. No `new Vector3()` per frame — reuse with `.set()`                                                                             |
-| **DOM nodes**         | ≤ 500 visible        | React re-renders during battle should only touch the changed card. Use `React.memo` on combatant cards                                                          |
+| Resource              | Budget               | Notes                                                                                                                                           |
+| --------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Draw calls**        | ≤ 50                 | Merge static geometry. Use instancing for particles. drei `<Instances>` for repeated props                                                      |
+| **Triangle count**    | ≤ 100k visible       | Current Toa models are ~5–15k each. 6 combatants + arena + backdrop ≈ 80k. Backdrops should be < 5k                                             |
+| **Textures**          | ≤ 32 MB VRAM         | Shared atlas per character set. Backdrop textures 512x512 max. Use `THREE.CompressedTexture` (KTX2/basis) when possible                         |
+| **Postprocessing**    | 1 pass max on mobile | SSAO is expensive — gate behind a "quality" setting or disable on mobile. Bloom is cheaper with the `resolutionScale: 0.5` pattern already used |
+| **Canvas resolution** | `dpr` capped at 1.5  | drei `<AdaptiveDpr>` or manual `gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))`                                                       |
+| **JS frame time**     | ≤ 4ms                | Avoid allocations in `useFrame`. No `new Vector3()` per frame — reuse with `.set()`                                                             |
+| **DOM nodes**         | ≤ 500 visible        | React re-renders during battle should only touch the changed card. Use `React.memo` on combatant cards                                          |
 
 ### Patterns to adopt
 

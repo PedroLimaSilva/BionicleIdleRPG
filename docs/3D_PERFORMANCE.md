@@ -2,8 +2,6 @@
 
 **Tracking:** draw-call budget in [`UI_UX_STRATEGY.md`](UI_UX_STRATEGY.md) (≤ 50 draw calls in battle).
 
-**Strategy:** phased draw-call reductions (kit geometry merge, battle LOD, enemy instancing) are documented in [`3D_RENDERING_STRATEGY.md`](3D_RENDERING_STRATEGY.md).
-
 ## In-game overlay
 
 Enable **Settings → 3D Performance Monitor**.
@@ -59,14 +57,7 @@ When a `CharacterScene` mounts and kit attachments finish, the browser console l
 
 **Draws** are estimated from the character subtree (one per mesh material slot) — stable across refresh rates. The **+142** is the character's contribution over the empty rig baseline. Re-logs when switching characters or when kit colors change. Disabled in Playwright test mode.
 
-Use this log to compare characters before and after rendering optimizations (e.g. [`kit geometry merge`](KIT_GEOMETRY_MERGE.md)).
-
-### Example baselines (Tahu Mata, scene-graph)
-
-| Build             | Log fragment                                              |
-| ----------------- | --------------------------------------------------------- |
-| Master            | `+82 draws (+29 materials, +120,343 tris) — draws 0 → 82` |
-| Phase B kit merge | `+74 draws (+29 materials, +120,343 tris) — draws 0 → 74` |
+Use this log to compare characters before and after rendering optimizations (e.g. kit geometry merge).
 
 ## Related code
 
@@ -77,5 +68,3 @@ Use this log to compare characters before and after rendering optimizations (e.g
 | `src/rendering/3d/SceneDrawCallLogger.tsx` | One-shot character sheet render-cost log  |
 | `src/rendering/3d/sceneDrawCallStats.ts`   | Scene-graph + frame stat helpers          |
 | `src/persistence/gamePersistence.ts`       | `PERFORMANCE_MONITOR_ENABLED` persistence |
-| `docs/3D_RENDERING_STRATEGY.md`            | Phased draw-call reduction plan           |
-| `docs/KIT_GEOMETRY_MERGE.md`               | Phase B runtime merge details             |
