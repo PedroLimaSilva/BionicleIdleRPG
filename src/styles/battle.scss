@@ -216,6 +216,15 @@
   }
 }
 
+@keyframes battle-arena-scene-reveal {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 .main-content.landscape {
   .battle {
     padding-right: 2rem;
@@ -332,6 +341,20 @@
       background: #000;
       /* Duration: --battle-wave-clear-ms set in InProgress.tsx (scaled by battle speed) */
       animation: battle-arena-wave-clear var(--battle-wave-clear-ms, 1s) ease-in-out forwards;
+    }
+  }
+
+  &-arena-scene-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    touch-action: none;
+    background: #000;
+    opacity: 1;
+
+    &--reveal {
+      animation: battle-arena-scene-reveal var(--battle-scene-reveal-ms, 400ms) ease-out forwards;
     }
   }
 

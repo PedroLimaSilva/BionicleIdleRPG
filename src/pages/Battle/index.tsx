@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../../context/Game';
 import { BattlePhase } from '../../hooks/useBattleState';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { BattleInProgress } from './InProgress';
 import { BattlePrep } from './Prep';
 import { BattleOutcome } from './BattleOutcome';
@@ -14,10 +14,12 @@ import {
   computeKranaRewardsForBattle,
   computeKraataRewardsForBattle,
 } from '../../game/combat/BattleRewards';
-import { KraataReward } from '../../types/Kraata';
+import { KraataReward } from '../../types/Krana';
 import { BattleSpeedControl } from './BattleSpeedControl';
 import { setBattleSpeedMultiplier } from '../../utils/battleSpeed';
 import { getEncounterArenaId, getEncounterTribe } from '../../game/combat/arena';
+import { BattleSceneReadinessBridge } from './battleSceneReadiness';
+import { battleCombatantReadyKey } from './battleSceneReadinessStore';
 
 export const BattlePage: React.FC = () => {
   const navigate = useNavigate();
@@ -63,6 +65,22 @@ export const BattlePage: React.FC = () => {
   const kranaRewards = kranaRewardsRef.current ?? [];
   const kraataRewards = kraataRewardsRef.current ?? [];
 
+  const teamIdKey = team.map((c) => c.id).join('\0');
+  const enemyIdKey = enemies.map((c) => c.id).join('\0');
+  const expectedCombatantIds = useMemo(() => {
+    if (phase !== BattlePhase.Inprogress) return [];
+    return [
+      ...team.map((c) => battleCombatantReadyKey(c.id, 'team', currentWave)),
+      ...enemies.map((c) => battleCombatantReadyKey(c.id, 'enemy', currentWave)),
+    ];
+  }, [currentWave, enemyIdKey, phase, teamIdKey]);
+
+  const showCombatants =
+    phase === BattlePhase.Inprogress ||
+    phase === BattlePhase.Victory ||
+    phase === BattlePhase.Defeat ||
+    (phase === BattlePhase.Retreated && team.length > 0);
+
   useEffect(() => {
     if (!currentEncounter) {
       navigate('/battle/selector');
@@ -74,96 +92,110 @@ export const BattlePage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Defer heavy arena GLB/atmosphere until combat starts — prep is DOM-only and E2E
-    // must stay responsive while selecting the team.
-    if (currentEncounter && phase !== BattlePhase.Preparing) {
-      setScene(
-        <Arena
-          team={battle.team}
-          enemies={battle.enemies}
-          currentWave={currentWave}
-          arenaId={getEncounterArenaId(currentEncounter)}
-          tribe={getEncounterTribe(currentEncounter)}
-        />
-      );
-    } else {
+    if (!currentEncounter) {
       setScene(null);
+      return;
     }
-  }, [setScene, currentEncounter, battle.team, battle.enemies, currentWave, phase]);
+
+    if (phase === BattlePhase.Idle) {
+      setScene(null);
+      return;
+    }
+
+    setScene(
+      <Arena
+        team={battle.team}
+        enemies={battle.enemies}
+        currentWave={currentWave}
+        arenaId={getEncounterArenaId(currentEncounter)}
+        tribe={getEncounterTribe(currentEncounter)}
+        showCombatants={showCombatants}
+      />
+    );
+  }, [setScene, currentEncounter, battle.team, battle.enemies, currentWave, phase, showCombatants]);
 
   if (!currentEncounter) {
     return null;
   }
 
-  if (phase === BattlePhase.Preparing) {
-    return (
-      <div className={`${battlePageRootClass} battle-page-with-speed`}>
-        <BattleSpeedControl />
-        <BattlePrep />
-      </div>
-    );
-  }
-
-  if (phase === BattlePhase.Inprogress) {
-    return (
-      <div className={`${battlePageRootClass} battle-page-with-speed`}>
-        <BattleSpeedControl />
-        <BattleInProgress />
-      </div>
-    );
-  }
-
-  if (
-    phase === BattlePhase.Retreated ||
-    phase === BattlePhase.Defeat ||
-    phase === BattlePhase.Victory
-  ) {
-    const waitingOnOutcomePresentation =
-      (phase === BattlePhase.Victory || phase === BattlePhase.Defeat) && !outcomePresentationReady;
-
-    if (waitingOnOutcomePresentation) {
+  const page = (() => {
+    if (phase === BattlePhase.Preparing) {
       return (
         <div className={`${battlePageRootClass} battle-page-with-speed`}>
           <BattleSpeedControl />
-          <BattleInProgress exitPresentation />
+          <BattlePrep />
         </div>
       );
     }
 
-    const enemiesDefeated =
-      currentEncounter && getEnemiesDefeatedCount(currentEncounter, phase, currentWave, enemies);
-    const expTotal =
-      currentEncounter && computeBattleExpTotal(currentEncounter, phase, currentWave, enemies);
-    const handleCollectRewards = () => {
-      if (currentEncounter) {
-        applyBattleRewards({
-          currentWave,
-          encounter: currentEncounter,
-          enemies,
-          kraataToCollect: kraataRewards,
-          kranaToApply: kranaRewards,
-          phase,
-          team,
-        });
+    if (phase === BattlePhase.Inprogress) {
+      return (
+        <div className={`${battlePageRootClass} battle-page-with-speed`}>
+          <BattleSpeedControl />
+          <BattleInProgress />
+        </div>
+      );
+    }
+
+    if (
+      phase === BattlePhase.Retreated ||
+      phase === BattlePhase.Defeat ||
+      phase === BattlePhase.Victory
+    ) {
+      const waitingOnOutcomePresentation =
+        (phase === BattlePhase.Victory || phase === BattlePhase.Defeat) &&
+        !outcomePresentationReady;
+
+      if (waitingOnOutcomePresentation) {
+        return (
+          <div className={`${battlePageRootClass} battle-page-with-speed`}>
+            <BattleSpeedControl />
+            <BattleInProgress exitPresentation />
+          </div>
+        );
       }
-      battle.endBattle();
-      navigate('/battle/selector');
-    };
 
-    return (
-      <div className={`${battlePageRootClass} page-container battle battle--outcome`}>
-        <BattleOutcome
-          phase={phase}
-          enemiesDefeated={enemiesDefeated ?? 0}
-          expTotal={expTotal ?? 0}
-          team={team}
-          kranaRewards={kranaRewards}
-          kraataRewards={kraataRewards}
-          onCollect={handleCollectRewards}
-        />
-      </div>
-    );
-  }
+      const enemiesDefeated =
+        currentEncounter && getEnemiesDefeatedCount(currentEncounter, phase, currentWave, enemies);
+      const expTotal =
+        currentEncounter && computeBattleExpTotal(currentEncounter, phase, currentWave, enemies);
+      const handleCollectRewards = () => {
+        if (currentEncounter) {
+          applyBattleRewards({
+            currentWave,
+            encounter: currentEncounter,
+            enemies,
+            kraataToCollect: kraataRewards,
+            kranaToApply: kranaRewards,
+            phase,
+            team,
+          });
+        }
+        battle.endBattle();
+        navigate('/battle/selector');
+      };
 
-  return <div className={`${battlePageRootClass} page-container`}>Battle status: {phase}</div>;
+      return (
+        <div className={`${battlePageRootClass} page-container battle battle--outcome`}>
+          <BattleOutcome
+            phase={phase}
+            enemiesDefeated={enemiesDefeated ?? 0}
+            expTotal={expTotal ?? 0}
+            team={team}
+            kranaRewards={kranaRewards}
+            kraataRewards={kraataRewards}
+            onCollect={handleCollectRewards}
+          />
+        </div>
+      );
+    }
+
+    return <div className={`${battlePageRootClass} page-container`}>Battle status: {phase}</div>;
+  })();
+
+  return (
+    <BattleSceneReadinessBridge expectedCombatantIds={expectedCombatantIds}>
+      {page}
+    </BattleSceneReadinessBridge>
+  );
 };

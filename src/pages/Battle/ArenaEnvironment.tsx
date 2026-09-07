@@ -1,12 +1,22 @@
+import { useEffect } from 'react';
 import { ArenaGlbScene } from '../../rendering/3d/arenas/ArenaGlbScene';
 import { DEFAULT_ARENA_ID, getArenaDefinition } from '../../rendering/3d/arenas/registry';
 import type { ArenaId, ArenaRecolor } from '../../rendering/3d/arenas/types';
+import { markBattleArenaReady } from './battleSceneReadinessStore';
 
 interface ArenaEnvironmentProps {
   arenaId?: ArenaId;
   receiveShadow: boolean;
   /** Optional element-tribe recolor applied to atmosphere, GLB, and props. */
   recolor?: ArenaRecolor;
+}
+
+/** Fires arena-ready once atmosphere + GLB/procedural scene have mounted. */
+function ArenaEnvironmentReady() {
+  useEffect(() => {
+    markBattleArenaReady();
+  }, []);
+  return null;
 }
 
 /**
@@ -30,6 +40,7 @@ export function ArenaEnvironment({
         )}
         {Scene && <Scene receiveShadow={receiveShadow} recolor={recolor} />}
       </group>
+      <ArenaEnvironmentReady />
     </>
   );
 }

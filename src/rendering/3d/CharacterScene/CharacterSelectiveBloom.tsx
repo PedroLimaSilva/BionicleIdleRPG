@@ -44,18 +44,30 @@ type PipelineQuadMaterial = {
   transparent: boolean;
 };
 
+export type SelectiveBloomVariant = 'card' | 'scene';
+
+export type CharacterSelectiveBloomProps = {
+  /**
+   * `card` — character viewer: premultiplied alpha + card backdrop for halos.
+   * `scene` — full-screen battle: opaque output so transmissive kit brains and
+   * glow slots stay visible (card alpha math hides them).
+   */
+  variant?: SelectiveBloomVariant;
+};
+
 /**
- * WebGPU selective bloom for CharacterScene.
+ * WebGPU selective bloom for CharacterScene and battle arenas.
  *
  * Default MRT `bloomIntensity` is 0. Kit brains, kit Glow, Rahkshi Eyes, and
  * active Kanohi mask-power write 1; Glowing Eyes do not.
  *
- * The HTML compositor ignores RGB at alpha 0, so halo pixels get coverage from
- * the bloom buffer and are composited onto a card-colored stand-in at the same
- * strength as on-character bloom. Empty pixels stay alpha 0. Color-transform
- * with alpha 1 — RenderOutputNode would kill `a == 0` bloom. Enabled in TEST_MODE.
+ * Card variant: the HTML compositor ignores RGB at alpha 0, so halo pixels get
+ * coverage from the bloom buffer and are composited onto a card-colored stand-in.
+ *
+ * Scene variant: writes opaque pixels — transmissive MRT materials must not be
+ * multiplied by scene alpha or they vanish against the arena.
  */
-export function CharacterSelectiveBloom() {
+export function CharacterSelectiveBloom({ variant = 'card' }: CharacterSelectiveBloomProps) {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
   const camera = useThree((s) => s.camera);
@@ -75,33 +87,45 @@ export function CharacterSelectiveBloom() {
       BLOOM_RADIUS,
       BLOOM_THRESHOLD
     ) as unknown as TslTextureNode;
-    const haloMix = float(1).sub(outputPass.a as never);
-    const bloomCover = bloomPass.r.max(bloomPass.g).max(bloomPass.b).saturate();
-    const linearRgb = outputPass.rgb
-      .mul(outputPass.a)
-      .add(bloomPass.rgb)
-      .add(CARD_BACKDROP.mul(haloMix).mul(bloomCover as never));
-    const converted = (
-      vec4(linearRgb as never, float(1)) as unknown as TslTextureNode
-    ).renderOutput();
-    const cover = outputPass.a.max(bloomCover);
+
+    let outputNode: TslTextureNode;
+    let quadTransparent: boolean;
+
+    if (variant === 'scene') {
+      const linearRgb = outputPass.rgb.add(bloomPass.rgb);
+      outputNode = (vec4(linearRgb as never, float(1)) as unknown as TslTextureNode).renderOutput();
+      quadTransparent = false;
+    } else {
+      const haloMix = float(1).sub(outputPass.a as never);
+      const bloomCover = bloomPass.r.max(bloomPass.g).max(bloomPass.b).saturate();
+      const linearRgb = outputPass.rgb
+        .mul(outputPass.a)
+        .add(bloomPass.rgb)
+        .add(CARD_BACKDROP.mul(haloMix).mul(bloomCover as never));
+      const converted = (
+        vec4(linearRgb as never, float(1)) as unknown as TslTextureNode
+      ).renderOutput();
+      const cover = outputPass.a.max(bloomCover);
+      outputNode = vec4(converted.rgb as never, cover as never) as unknown as TslTextureNode;
+      quadTransparent = true;
+    }
 
     const rp = new RenderPipeline(gl as never);
     rp.outputColorTransform = false;
-    rp.outputNode = vec4(converted.rgb as never, cover as never);
+    rp.outputNode = outputNode as never;
 
     const renderer = gl as { setClearColor?: (color: number, alpha: number) => void };
-    renderer.setClearColor?.(0x000000, 0);
+    renderer.setClearColor?.(0x000000, variant === 'scene' ? 1 : 0);
 
     const quadMat = (rp as RenderPipeline & { _quadMesh: { material: PipelineQuadMaterial } })
       ._quadMesh.material;
-    quadMat.transparent = true;
+    quadMat.transparent = quadTransparent;
     quadMat.premultipliedAlpha = false;
     quadMat.depthWrite = false;
     quadMat.blending = NoBlending;
     quadMat.needsUpdate = true;
     return rp;
-  }, [camera, enabled, gl, scene]);
+  }, [camera, enabled, gl, scene, variant]);
 
   useEffect(() => {
     return () => pipeline?.dispose();
