@@ -7,6 +7,8 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   moduleNameMapper: {
     '^three/addons/(.*)$': '<rootDir>/src/test/mocks/threeTsl.cjs',
+    '^three/examples/jsm/utils/BufferGeometryUtils.js$':
+      '<rootDir>/src/test/mocks/bufferGeometryUtils.cjs',
     '^three/tsl$': '<rootDir>/src/test/mocks/threeTsl.cjs',
     '^three/webgpu$': '<rootDir>/src/test/mocks/threeWebgpu.cjs',
   },
