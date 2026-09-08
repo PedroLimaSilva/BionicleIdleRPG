@@ -1,6 +1,9 @@
 import { Combatant } from '../../types/Combat';
 import { BohrokModel } from '../../rendering/3d/CharacterScene/BohrokModel';
-import { RahkshiModel } from '../../rendering/3d/CharacterScene/Rahkshi';
+import {
+  RahkshiModel,
+  RAHKSHI_COMBAT_MESH_VARIANT,
+} from '../../rendering/3d/CharacterScene/Rahkshi';
 import { VahkiModel } from '../../rendering/3d/CharacterScene/VahkiModel';
 import { KopakaMataModel } from '../../rendering/3d/CharacterScene/Mata/KopakaMataModel';
 import { CHARACTER_DEX } from '../../data/dex/index';
@@ -337,6 +340,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
               <RahkshiModel
                 ref={childRef}
                 kraata={combatant.id.split('-')[0] as KraataPower}
+                meshVariant={RAHKSHI_COMBAT_MESH_VARIANT}
                 {...kitReadyProps}
               />
             </group>
