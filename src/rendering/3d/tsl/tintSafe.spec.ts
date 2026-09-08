@@ -113,4 +113,31 @@ describe('installTintSafeNodeLibrary', () => {
 
     expect(node.generate(makeBuilder(false))).toBe('nodeVar1');
   });
+
+  it('uses native swizzles for uvec4 skin indices instead of dot()', () => {
+    installTintSafeNodeLibrary();
+    const node = makeSplitNode({
+      components: 'x',
+      snippet: 'skinIndex',
+      sourceType: 'uvec4',
+    });
+
+    const snippet = node.generate(makeBuilder(false));
+    expect(snippet).toBe('skinIndex.x');
+    expect(snippet).not.toContain('dot(');
+  });
+
+  it('rebuilds uvec multi-channel swizzles without dot()', () => {
+    installTintSafeNodeLibrary();
+    const node = makeSplitNode({
+      components: 'xy',
+      outputType: 'uvec2',
+      snippet: 'skinIndex',
+      sourceType: 'uvec4',
+    });
+
+    const snippet = node.generate(makeBuilder(false));
+    expect(snippet).toBe('uvec2( skinIndex.x, skinIndex.y )');
+    expect(snippet).not.toContain('dot(');
+  });
 });
