@@ -6,6 +6,7 @@ import {
   isRahkshiBattleSpeciesMesh,
   shouldShowRahkshiBattleSpeciesMesh,
 } from './rahkshiBattleMeshes';
+import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
 import { logRahkshiLodMeshVisibilityChange } from './rahkshiLodDebug';
 
 function isRenderableMesh(child: Object3D): child is Mesh {
@@ -60,11 +61,27 @@ export function setRahkshiLodVisibility(
 
     const isBattleMesh = isRahkshiBattleRenderableMesh(child);
     if (!isBattle) {
-      const nextVisible = !isBattleMesh;
-      logRahkshiLodMeshVisibilityChange(source, child, nextVisible, {
-        variant,
-        isBattleMesh,
-      });
+      if (isBattleMesh) {
+        logRahkshiLodMeshVisibilityChange(source, child, false, { variant, isBattleMesh });
+        child.visible = false;
+        return;
+      }
+
+      if (isRahkshiVariantMesh(child.name)) {
+        const nextVisible = staffPrefix
+          ? shouldShowRahkshiVariantMesh(child.name, staffPrefix)
+          : false;
+        logRahkshiLodMeshVisibilityChange(source, child, nextVisible, {
+          variant,
+          staffPrefix,
+          isVariantMesh: true,
+        });
+        child.visible = nextVisible;
+        return;
+      }
+
+      const nextVisible = true;
+      logRahkshiLodMeshVisibilityChange(source, child, nextVisible, { variant, isBattleMesh });
       child.visible = nextVisible;
       return;
     }

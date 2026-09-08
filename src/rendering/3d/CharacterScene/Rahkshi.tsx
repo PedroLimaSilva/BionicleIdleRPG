@@ -29,10 +29,8 @@ import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
 import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 import { applySelectiveBloomMrt, isSelectiveBloomRahkshiGlowMaterial } from './selectiveBloom';
 import { isRahkshiGlowMesh, mapRahkshiGlowMaterials } from './rahkshiGlow';
-import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
 import {
   isRahkshiBattleBodyPartMesh,
-  isRahkshiBattleLodMesh,
   isRahkshiBattleRenderableMesh,
   isRahkshiBattleSpeciesMesh,
   RAHKSHI_DETAILED_RIG_NODE,
@@ -42,11 +40,7 @@ import {
   resolveRahkshiBattleAppearanceTarget,
   setRahkshiLodVisibility,
 } from './rahkshiLod';
-import {
-  logRahkshiLodEnableHint,
-  logRahkshiLodMeshVisibilityChange,
-  logRahkshiLodRuntimeNodes,
-} from './rahkshiLodDebug';
+import { logRahkshiLodEnableHint, logRahkshiLodRuntimeNodes } from './rahkshiLodDebug';
 import { KIT_2001_GLB_PATH } from '../kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../kit/kit2003';
 import {
@@ -323,19 +317,11 @@ export const RahkshiModel = forwardRef<
     const dex = getRahkshiArmorColors(kraata);
     const entries: GlowEntry[] = [];
 
-    detailedInstance.traverse((child) => {
-      if (!(child instanceof Mesh) || !detailedMeshUuids.has(child.uuid)) return;
-      const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
+    syncLodState('detailedWeathering');
 
-      if (isRahkshiVariantMesh(child.name)) {
-        const nextVisible = shouldShowRahkshiVariantMesh(child.name, dex.staff);
-        logRahkshiLodMeshVisibilityChange('detailedVariantMesh', child, nextVisible, {
-          variant: 'detailed',
-          staff: dex.staff,
-        });
-        child.visible = nextVisible;
-        if (!child.visible) return;
-      }
+    detailedInstance.traverse((child) => {
+      if (!(child instanceof Mesh) || !detailedMeshUuids.has(child.uuid) || !child.visible) return;
+      const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
 
       const mat = child.material as MeshStandardMaterial;
       if (mat?.name && mat.name !== 'WeatheredMetal') {
@@ -369,8 +355,6 @@ export const RahkshiModel = forwardRef<
         uniqueMaterials: true,
       });
     });
-
-    syncLodState('detailedWeathering');
   }, [detailedInstance, detailedMeshUuids, isBattle, kraata, registerGlowMesh, syncLodState]);
 
   useEffect(() => {

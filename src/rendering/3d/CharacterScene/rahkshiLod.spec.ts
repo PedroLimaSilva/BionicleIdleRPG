@@ -49,6 +49,24 @@ describe('rahkshiLod visibility', () => {
     expect(panrahk.visible).toBe(true);
   });
 
+  test('detailed mode shows only staff variant meshes matching staff prefix', () => {
+    const detailed = new Group();
+    const panrahk = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    panrahk.name = 'PanrahkL';
+    const guurahk = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    guurahk.name = 'GuurahkL';
+    const baked = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    baked.name = 'Face';
+    detailed.add(panrahk);
+    detailed.add(guurahk);
+    detailed.add(baked);
+
+    setRahkshiLodVisibility(detailed, 'detailed', 'Panrahk');
+    expect(panrahk.visible).toBe(true);
+    expect(guurahk.visible).toBe(false);
+    expect(baked.visible).toBe(true);
+  });
+
   test('Battle_Body group children toggle with battle LOD', () => {
     const detailed = new Group();
     const battleBodyGroup = new Group();
