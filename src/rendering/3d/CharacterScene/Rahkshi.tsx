@@ -30,6 +30,7 @@ import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 import { applySelectiveBloomMrt, isSelectiveBloomRahkshiGlowMaterial } from './selectiveBloom';
 import { isRahkshiGlowMesh, mapRahkshiGlowMaterials } from './rahkshiGlow';
 import {
+  isRahkshiBattleBodyMesh,
   isRahkshiBattleBodyPartMesh,
   isRahkshiBattleRenderableMesh,
   isRahkshiBattleSpeciesMesh,
@@ -49,6 +50,7 @@ import {
 import {
   RAHKSHI_WEATHERED,
   applyRahkshiBattleMaterialsToMesh,
+  applyRahkshiBattleSpeciesMetalToMesh,
   rahkshiBattleTintMap,
   rahkshiKitColors,
 } from '../kit/palettes/rahkshiKitPalette';
@@ -97,11 +99,11 @@ function applyBattleMaterials(root: Object3D, meshUuids: Set<string>, kraata: Kr
     if (!isRenderableMesh(child) || !meshUuids.has(child.uuid)) return;
 
     if (isRahkshiBattleSpeciesMesh(child.name)) {
-      applyRahkshiBattleMaterialsToMesh(child, { Battle_Metal: dex.armor });
+      applyRahkshiBattleSpeciesMetalToMesh(child);
       return;
     }
 
-    if (isRahkshiBattleBodyPartMesh(child)) {
+    if (isRahkshiBattleBodyMesh(child.name) || isRahkshiBattleBodyPartMesh(child)) {
       applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleTintMap(dex));
     }
   });

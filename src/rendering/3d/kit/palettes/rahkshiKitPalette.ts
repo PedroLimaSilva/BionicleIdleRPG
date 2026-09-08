@@ -88,13 +88,27 @@ function isTintableBattleMaterial(mat: Material): mat is MeshStandardMaterial {
 
 type SkinnedMaterial = (MeshStandardMaterial | MeshPhysicalMaterial) & { skinning?: boolean };
 
+function applyBattleMetalPbrInPlace(mat: SkinnedMaterial): void {
+  mat.metalness = 0.9;
+  mat.roughness = 0.3;
+  mat.envMapIntensity = 0.52;
+}
+
 function tintBattleMaterialInPlace(mat: SkinnedMaterial, hex: string): void {
   if (mat.name === 'Battle_Metal') {
-    mat.metalness = 0.9;
-    mat.roughness = 0.3;
-    mat.envMapIntensity = 0.52;
+    applyBattleMetalPbrInPlace(mat);
   }
   mat.color.set(hex);
+}
+
+function bindSkinnedBattleMesh(mesh: Mesh): void {
+  const skinned = mesh as SkinnedMesh;
+  if (!skinned.isSkinnedMesh) return;
+
+  mesh.frustumCulled = false;
+  skinned.bind?.(skinned.skeleton, skinned.bindMatrix);
+  skinned.computeBoundingSphere?.();
+  skinned.geometry?.computeBoundingSphere();
 }
 
 /**
@@ -118,12 +132,27 @@ export function applyRahkshiBattleMaterialsToMesh(mesh: Mesh, tints: Record<stri
     tintBattleMaterialInPlace(mat, hex);
   }
 
-  if (!skinned.isSkinnedMesh) return;
+  bindSkinnedBattleMesh(mesh);
+}
 
-  mesh.frustumCulled = false;
-  skinned.bind?.(skinned.skeleton, skinned.bindMatrix);
-  skinned.computeBoundingSphere?.();
-  skinned.geometry?.computeBoundingSphere();
+/**
+ * Species overlays (spine + staff) keep the authored silver `Battle_Metal` color
+ * from the GLB — same intent as detailed-mode `SOLID-SILVER` variant meshes.
+ */
+export function applyRahkshiBattleSpeciesMetalToMesh(mesh: Mesh): void {
+  const raw = mesh.material;
+  const materials = Array.isArray(raw) ? raw : [raw];
+  const skinned = mesh as SkinnedMesh;
+
+  for (const mat of materials) {
+    if (!isTintableBattleMaterial(mat) || mat.name !== 'Battle_Metal') continue;
+    if (skinned.isSkinnedMesh) {
+      (mat as SkinnedMaterial).skinning = true;
+    }
+    applyBattleMetalPbrInPlace(mat);
+  }
+
+  bindSkinnedBattleMesh(mesh);
 }
 
 export function rahkshiKitColors(dex: RahkshiArmorColors): MatoranColors {

@@ -1,5 +1,9 @@
 import { MeshStandardMaterial } from 'three';
-import { applyRahkshiBattleMaterialsToMesh, rahkshiBattleTintMap } from './rahkshiKitPalette';
+import {
+  applyRahkshiBattleMaterialsToMesh,
+  applyRahkshiBattleSpeciesMetalToMesh,
+  rahkshiBattleTintMap,
+} from './rahkshiKitPalette';
 import { KraataPower } from '../../../../types/Kraata';
 import { getRahkshiArmorColors } from '../../../../data/rahkshiArmorColors';
 
@@ -54,5 +58,25 @@ describe('rahkshi battle LOD tints', () => {
     expect(metal.color.getHexString()).toBe('583927');
     expect(metal.metalness).toBe(0.9);
     expect(metal.roughness).toBe(0.3);
+  });
+
+  test('applyRahkshiBattleSpeciesMetalToMesh keeps authored silver and boosts PBR', () => {
+    const metal = new MeshStandardMaterial({
+      color: '#545b56',
+      metalness: 0.1,
+      name: 'Battle_Metal',
+    });
+    const mesh = {
+      frustumCulled: true,
+      isSkinnedMesh: true,
+      material: metal,
+    } as unknown as import('three').SkinnedMesh;
+
+    applyRahkshiBattleSpeciesMetalToMesh(mesh);
+
+    expect(metal.color.getHexString()).toBe('545b56');
+    expect(metal.metalness).toBe(0.9);
+    expect(metal.roughness).toBe(0.3);
+    expect(mesh.frustumCulled).toBe(false);
   });
 });

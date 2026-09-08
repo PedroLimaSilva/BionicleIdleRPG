@@ -8,6 +8,7 @@ import {
   RAHKSHI_BATTLE_BODY_MESH,
   RAHKSHI_BATTLE_GLOW_MATERIAL,
   RAHKSHI_BATTLE_GLOW_MESH,
+  RAHKSHI_BATTLE_SPECIES_MESH_NAMES,
   shouldShowRahkshiBattleSpeciesMesh,
 } from './rahkshiBattleMeshes';
 
@@ -34,6 +35,13 @@ describe('rahkshi.glb battle LOD layout', () => {
       'Battle_Metal',
       'Battle_Tan',
     ]);
+  });
+
+  test('ships all six battle species overlay meshes with Battle_Metal', () => {
+    const slots = extractGlbNodeMaterialSlots(RAHKSHI_GLB);
+    for (const meshName of RAHKSHI_BATTLE_SPECIES_MESH_NAMES) {
+      expect(slots[meshName]).toEqual(['Battle_Metal']);
+    }
   });
 });
 
