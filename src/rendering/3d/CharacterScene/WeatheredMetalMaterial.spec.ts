@@ -218,4 +218,31 @@ describe('applyWeatheredMetalToObject PBR map preservation', () => {
     expect(next.roughnessNode).toBeUndefined();
     expect(next.metalnessNode).toBeUndefined();
   });
+
+  test('resolves meshName_baked when re-weatering an already-renamed WeatheredMetal slot', () => {
+    const discolor = mapTex();
+    const source = new MeshStandardMaterial({
+      color: '#cccccc',
+      emissive: '#ffffff',
+      emissiveIntensity: 1,
+      emissiveMap: discolor,
+      metalnessMap: mapTex(),
+      name: 'WeatheredMetal',
+      roughnessMap: mapTex(),
+    });
+    const mesh = new Mesh(new BoxGeometry(), source);
+    mesh.name = 'RahkshiShoulders';
+
+    applyWeatheredMetalToObject(mesh, {
+      materialColorMap: { RahkshiShoulders_baked: '#6d6e5c' },
+      uniqueMaterials: true,
+    });
+
+    const next = mesh.material as MeshStandardMaterial;
+    expect(next).not.toBe(source);
+    expect(next.color.getHexString()).toBe('6d6e5c');
+    expect(next.emissiveMap).toBeNull();
+    expect(next.emissiveIntensity).toBe(0);
+    expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
+  });
 });

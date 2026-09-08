@@ -322,6 +322,25 @@ function isExcludedMaterialBySubstring(mat: unknown, substrings: string[]): bool
   return substrings.some((s) => name.includes(s.toLowerCase()));
 }
 
+/** Mesh nodes (e.g. `RahkshiShoulders`) often differ from baked slot keys (`RahkshiShoulders_baked`). */
+function resolveMaterialColorFromMap(
+  lookupName: string,
+  meshName: string,
+  materialColorMap: Record<string, string>
+): string | undefined {
+  if (lookupName in materialColorMap) return materialColorMap[lookupName];
+  if (meshName in materialColorMap) return materialColorMap[meshName];
+
+  const bakedCandidates = new Set<string>();
+  if (meshName && !meshName.endsWith('_baked')) bakedCandidates.add(`${meshName}_baked`);
+  if (lookupName && !lookupName.endsWith('_baked')) bakedCandidates.add(`${lookupName}_baked`);
+
+  for (const key of bakedCandidates) {
+    if (key in materialColorMap) return materialColorMap[key];
+  }
+  return undefined;
+}
+
 /**
  * Replaces mesh materials with slot-colored weathered plastic. Skips Masks
  * subtrees and excluded material names (Brain, GlowingEyes, …). Authored
@@ -383,14 +402,11 @@ export function applyWeatheredMetalToObject(
         meshWithUserData.userData.originalMaterialName = matName;
       }
 
-      const color =
-        hasColorMap && lookupName in materialColorMap
-          ? materialColorMap[lookupName]
-          : hasColorMap
-            ? undefined
-            : raw instanceof MeshStandardMaterial && raw.color
-              ? raw.color.getStyle()
-              : '#ffffff';
+      const color = hasColorMap
+        ? resolveMaterialColorFromMap(lookupName, meshName, materialColorMap)
+        : raw instanceof MeshStandardMaterial && raw.color
+          ? raw.color.getStyle()
+          : '#ffffff';
 
       if (!hasColorMap && isWeatheredMetalMaterial(raw)) return raw;
       if (hasColorMap && color === undefined) return raw;
