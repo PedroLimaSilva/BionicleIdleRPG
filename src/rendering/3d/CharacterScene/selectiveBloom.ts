@@ -20,9 +20,17 @@ export function isSelectiveBloomKitGlowName(name: string | undefined): boolean {
   return lower.includes('glow');
 }
 
-/** Rahkshi GLB eye slots (`Eyes`) join the bloom MRT; Kanohi Glowing Eyes do not. */
+/** Rahkshi GLB eye / kraata glow slots join the bloom MRT; Kanohi Glowing Eyes do not. */
 export function isSelectiveBloomRahkshiEyeName(name: string | undefined): boolean {
-  return !!name && name.toLowerCase() === 'eyes';
+  return isSelectiveBloomRahkshiGlowMaterial(name);
+}
+
+/** Rahkshi baked `Glow`, battle `Battle_Bloom`, and legacy `Eyes` materials. */
+export function isSelectiveBloomRahkshiGlowMaterial(name: string | undefined): boolean {
+  if (!name) return false;
+  const lower = name.toLowerCase();
+  if (lower.includes('glowing eyes')) return false;
+  return lower === 'eyes' || lower === 'glow' || lower === 'battle_bloom';
 }
 
 /** Toa / Metru brain gel and Bohrok crystal brains bloom; colorless viewports and visors do not. */

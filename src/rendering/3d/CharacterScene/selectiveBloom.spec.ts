@@ -3,6 +3,7 @@ import {
   clearSelectiveBloomMrt,
   isSelectiveBloomKitGlowName,
   isSelectiveBloomRahkshiEyeName,
+  isSelectiveBloomRahkshiGlowMaterial,
   shouldSelectiveBloomTransmissiveKind,
 } from './selectiveBloom';
 
@@ -14,11 +15,13 @@ describe('selectiveBloom selection', () => {
     expect(isSelectiveBloomKitGlowName('Main')).toBe(false);
   });
 
-  test('Rahkshi Eyes bloom and Kanohi Glowing Eyes do not', () => {
+  test('Rahkshi glow materials bloom and Kanohi Glowing Eyes do not', () => {
     expect(isSelectiveBloomRahkshiEyeName('Eyes')).toBe(true);
     expect(isSelectiveBloomRahkshiEyeName('eyes')).toBe(true);
+    expect(isSelectiveBloomRahkshiGlowMaterial('Glow')).toBe(true);
+    expect(isSelectiveBloomRahkshiGlowMaterial('Battle_Bloom')).toBe(true);
     expect(isSelectiveBloomRahkshiEyeName('Glowing Eyes')).toBe(false);
-    expect(isSelectiveBloomRahkshiEyeName('Glow')).toBe(false);
+    expect(isSelectiveBloomRahkshiGlowMaterial('Glowing Eyes')).toBe(false);
     expect(isSelectiveBloomRahkshiEyeName(undefined)).toBe(false);
   });
 

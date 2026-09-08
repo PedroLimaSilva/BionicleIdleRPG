@@ -12,7 +12,7 @@ describe('rahkshi battle LOD tints', () => {
     });
   });
 
-  test('applyRahkshiBattleMaterialsToMesh replaces matching slots and leaves others', () => {
+  test('applyRahkshiBattleMaterialsToMesh tints skinned slots in place with colorNode', () => {
     const armor = new MeshStandardMaterial({
       color: '#ffffff',
       metalness: 0.1,
@@ -31,11 +31,12 @@ describe('rahkshi battle LOD tints', () => {
 
     applyRahkshiBattleMaterialsToMesh(mesh, { Battle_Armor: '#0055BF' });
 
-    const materials = mesh.material as MeshPhysicalMaterial[];
-    expect(materials[0]).not.toBe(armor);
-    expect(materials[0]).toBeInstanceOf(MeshPhysicalMaterial);
+    const materials = mesh.material as MeshStandardMaterial[];
+    expect(materials[0]).toBe(armor);
     expect(materials[0].color.getHexString()).toBe('0055bf');
-    expect((materials[0] as MeshPhysicalMaterial & { skinning?: boolean }).skinning).toBe(true);
+    expect(
+      (materials[0] as MeshStandardMaterial & { colorNode?: unknown }).colorNode
+    ).toBeDefined();
     expect(materials[1]).toBe(chassis);
     expect(materials[1].metalness).toBe(0.2);
   });
@@ -46,7 +47,10 @@ describe('rahkshi battle LOD tints', () => {
       metalness: 0.1,
       name: 'Battle_Metal',
     });
-    const mesh = { isSkinnedMesh: true, material: metal } as unknown as import('three').SkinnedMesh;
+    const mesh = {
+      isSkinnedMesh: false,
+      material: metal,
+    } as unknown as import('three').SkinnedMesh;
 
     applyRahkshiBattleMaterialsToMesh(mesh, { Battle_Metal: '#583927' });
 
