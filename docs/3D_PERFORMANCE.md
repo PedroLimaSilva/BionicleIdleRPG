@@ -59,7 +59,7 @@ When a `CharacterScene` mounts and kit attachments finish, the browser console l
 
 **Draws** are estimated from the character subtree (one per mesh material slot) — stable across refresh rates. The **+142** is the character's contribution over the empty rig baseline. Re-logs when switching characters or when kit colors change. Disabled in Playwright test mode.
 
-Use this log to compare characters before and after rendering optimizations (see [`3D_RENDERING_STRATEGY.md`](3D_RENDERING_STRATEGY.md)).
+Use this log to compare characters before and after rendering optimizations (see [`3D_RENDERING_STRATEGY.md`](3D_RENDERING_STRATEGY.md); Phase B merge in [`KIT_GEOMETRY_MERGE.md`](KIT_GEOMETRY_MERGE.md)).
 
 ### Example baselines (Tahu Mata, scene-graph)
 
@@ -78,5 +78,6 @@ Use this log to compare characters before and after rendering optimizations (see
 | `src/rendering/3d/sceneDrawCallStats.ts`   | Scene-graph + frame stat helpers          |
 | `src/persistence/gamePersistence.ts`       | `PERFORMANCE_MONITOR_ENABLED` persistence |
 | `docs/3D_RENDERING_STRATEGY.md`            | Phased draw-call reduction plan           |
+| `docs/KIT_GEOMETRY_MERGE.md`               | Phase B runtime merge details             |
 | `docs/battle-lod/RAHKSHI.md`               | Rahkshi battle LOD authoring (pilot)      |
 | `docs/battle-lod/TAHU_MATA.md`             | Toa Tahu battle LOD authoring             |

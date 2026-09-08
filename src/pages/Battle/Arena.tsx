@@ -6,7 +6,6 @@ import { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/useSettings';
 import { shouldEnableShadows } from '../../utils/testMode';
-import { CharacterSelectiveBloom } from '../../rendering/3d/CharacterScene/CharacterSelectiveBloom';
 import { battleCombatantReadyKey, markBattleCombatantReady } from './battleSceneReadinessStore';
 import { HitImpactParticles } from './HitImpactParticles';
 import { subscribeBattleCameraEmphasis } from '../../utils/battleCameraEmphasis';
@@ -352,7 +351,6 @@ export function Arena({
 
   return (
     <>
-      <CharacterSelectiveBloom variant="scene" />
       <PerspectiveCamera makeDefault />
       <ArenaFraming layout={layout} />
       <Suspense fallback={null}>
