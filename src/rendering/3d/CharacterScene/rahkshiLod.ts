@@ -1,6 +1,14 @@
 import { Mesh, Object3D } from 'three';
 import type { RahkshiMeshVariant } from './Rahkshi';
-import { isRahkshiBattleLodMesh } from './rahkshiBattleMeshes';
+import {
+  isRahkshiBattleLodMesh,
+  isRahkshiBattleSpeciesMesh,
+  shouldShowRahkshiBattleSpeciesMesh,
+} from './rahkshiBattleMeshes';
+
+function isRenderableMesh(child: Object3D): child is Mesh {
+  return (child as Mesh).isMesh === true;
+}
 
 export function collectMeshUuids(root: Object3D): Set<string> {
   const uuids = new Set<string>();
@@ -13,7 +21,7 @@ export function collectMeshUuids(root: Object3D): Set<string> {
 export function collectRahkshiBattleMeshUuids(root: Object3D): Set<string> {
   const uuids = new Set<string>();
   root.traverse((child) => {
-    if (child instanceof Mesh && isRahkshiBattleLodMesh(child.name)) {
+    if (isRenderableMesh(child) && isRahkshiBattleLodMesh(child.name)) {
       uuids.add(child.uuid);
     }
   });
@@ -36,12 +44,37 @@ export function resolveRahkshiBattleAppearanceTarget(
   return { meshUuids, root: detailedRoot };
 }
 
-/** Toggle detailed baked/kit meshes vs `Battle_*` meshes on the single armature. */
-export function setRahkshiLodVisibility(detailedRoot: Object3D, variant: RahkshiMeshVariant): void {
+/**
+ * Toggle detailed baked/kit meshes vs `Battle_*` meshes on the single armature.
+ * Species overlays are only eligible in battle mode.
+ */
+export function setRahkshiLodVisibility(
+  detailedRoot: Object3D,
+  variant: RahkshiMeshVariant,
+  staffPrefix?: string
+): void {
   const isBattle = variant === 'battle';
   detailedRoot.traverse((child) => {
-    if (!(child as Mesh).isMesh) return;
+    if (!isRenderableMesh(child)) return;
+
     const isBattleMesh = isRahkshiBattleLodMesh(child.name);
-    child.visible = isBattle ? isBattleMesh : !isBattleMesh;
+    if (!isBattle) {
+      child.visible = !isBattleMesh;
+      return;
+    }
+
+    if (!isBattleMesh) {
+      child.visible = false;
+      return;
+    }
+
+    if (isRahkshiBattleSpeciesMesh(child.name)) {
+      child.visible = staffPrefix
+        ? shouldShowRahkshiBattleSpeciesMesh(child.name, staffPrefix)
+        : false;
+      return;
+    }
+
+    child.visible = true;
   });
 }

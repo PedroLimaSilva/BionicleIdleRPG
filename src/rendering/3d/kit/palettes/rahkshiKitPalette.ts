@@ -95,7 +95,6 @@ function tintBattleMaterialInPlace(mat: SkinnedMaterial, hex: string): void {
     mat.envMapIntensity = 0.52;
   }
   mat.color.set(hex);
-  mat.needsUpdate = true;
 }
 
 /**
@@ -107,24 +106,24 @@ function tintBattleMaterialInPlace(mat: SkinnedMaterial, hex: string): void {
 export function applyRahkshiBattleMaterialsToMesh(mesh: Mesh, tints: Record<string, string>): void {
   const raw = mesh.material;
   const materials = Array.isArray(raw) ? raw : [raw];
-  let changed = false;
+  const skinned = mesh as SkinnedMesh;
 
   for (const mat of materials) {
     if (!isTintableBattleMaterial(mat)) continue;
-    const hex = tints[mat.name];
-    if (!hex) continue;
-    changed = true;
-    tintBattleMaterialInPlace(mat, hex);
-    if ((mesh as SkinnedMesh).isSkinnedMesh) {
+    if (skinned.isSkinnedMesh) {
       (mat as SkinnedMaterial).skinning = true;
     }
+    const hex = tints[mat.name];
+    if (!hex) continue;
+    tintBattleMaterialInPlace(mat, hex);
   }
 
-  if (!changed) return;
+  if (!skinned.isSkinnedMesh) return;
 
-  if ((mesh as SkinnedMesh).isSkinnedMesh) {
-    mesh.frustumCulled = false;
-  }
+  mesh.frustumCulled = false;
+  skinned.bind?.(skinned.skeleton, skinned.bindMatrix);
+  skinned.computeBoundingSphere?.();
+  skinned.geometry?.computeBoundingSphere();
 }
 
 export function rahkshiKitColors(dex: RahkshiArmorColors): MatoranColors {
