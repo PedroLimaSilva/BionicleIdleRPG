@@ -3,11 +3,10 @@ import { mapRahkshiGlowMaterials } from './rahkshiGlow';
 import { applySelectiveBloomMrt } from './selectiveBloom';
 
 describe('rahkshiGlow helpers', () => {
-  test('mapRahkshiGlowMaterials clones every emissive slot on Battle_Glow', () => {
+  test('mapRahkshiGlowMaterials clones the Battle_Bloom slot on Battle_Glow', () => {
     const bloom = new MeshStandardMaterial({ name: 'Battle_Bloom' });
-    const glow = new MeshStandardMaterial({ name: 'Glow' });
     const mesh = {
-      material: [bloom, glow],
+      material: bloom,
       name: 'Battle_Glow',
     } as unknown as import('three').Mesh;
 
@@ -18,10 +17,8 @@ describe('rahkshiGlow helpers', () => {
     });
 
     expect(changed).toBe(true);
-    const materials = mesh.material as MeshStandardMaterial[];
-    expect(materials[0]).not.toBe(bloom);
-    expect(materials[1]).not.toBe(glow);
-    expect((materials[0] as MeshStandardMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
-    expect((materials[1] as MeshStandardMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
+    const material = mesh.material as MeshStandardMaterial;
+    expect(material).not.toBe(bloom);
+    expect((material as MeshStandardMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
   });
 });

@@ -4,8 +4,11 @@ export const RAHKSHI_BATTLE_RIG_NODE = 'Rahkshi_Battle';
 /** Skinned body bucket mesh on `Rahkshi_Battle` (six `Battle_*` material slots). */
 export const RAHKSHI_BATTLE_BODY_MESH = 'SkinnedMesh';
 
-/** Merged head / kraata-disk glow mesh on `Rahkshi_Battle`. Material is `Eyes`. */
+/** Merged head / kraata-disk glow mesh on `Rahkshi_Battle` (one draw, one material). */
 export const RAHKSHI_BATTLE_GLOW_MESH = 'Battle_Glow';
+
+/** Emissive + bloom material on `Battle_Glow`. Merge all glow geometry to this slot before export. */
+export const RAHKSHI_BATTLE_GLOW_MATERIAL = 'Battle_Bloom';
 
 /** One species overlay per staff breed on the battle rig (spine + staff). */
 export const RAHKSHI_BATTLE_SPECIES_MESH_NAMES = [

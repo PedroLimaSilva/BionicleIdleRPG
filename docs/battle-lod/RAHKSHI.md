@@ -25,7 +25,7 @@ Rahkshi_Battle (armature)
 ├── Guurahk       — species overlay (first breed authored; add Panrahk … Turahk)
 ├── Leg.IK.L / Leg.IK.R / Waist …  — same bone names as live rig
 └── Head
-    └── Battle_Glow   — merged eyes + kraata disk; material `Eyes` (selective bloom MRT)
+    └── Battle_Glow   — merged eyes + kraata disk; **one** material `Battle_Bloom` (selective bloom MRT)
 ```
 
 ### Target draw count (battle, when all six species meshes ship)
@@ -58,11 +58,13 @@ Compare to live kit path: **40+** draws per Rahkshi.
 
 ## Head bloom (`Battle_Glow`)
 
-| Item            | Detail                                                                                                                                                                                                     |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Mesh**        | `Battle_Glow` under `Head`                                                                                                                                                                                 |
-| **Material**    | `Eyes` — emissive kraata glow + selective bloom MRT ([`isSelectiveBloomRahkshiEyeName`](../../src/rendering/3d/CharacterScene/selectiveBloom.ts)). Optional rename to `Battle_Bloom` is supported in code. |
-| **Kraata lerp** | Same as live `Eyes` — lerp to black when empty; `Empty` idle until glow completes                                                                                                                          |
+| Item            | Detail                                                                                                                                                                  |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Mesh**        | `Battle_Glow` under `Head` — **one** mesh object, **one** draw call                                                                                                     |
+| **Material**    | **`Battle_Bloom` only** — emissive kraata glow + selective bloom MRT ([`isSelectiveBloomRahkshiGlowMaterial`](../../src/rendering/3d/CharacterScene/selectiveBloom.ts)) |
+| **Kraata lerp** | Same as live `Glow` — lerp to black when empty; `Empty` idle until glow completes                                                                                       |
+
+**Authoring rule:** join every eye / kraata-disk face into a **single** `Battle_Glow` mesh with **one** `Battle_Bloom` material slot. Do **not** leave a second primitive or `Glow` material on this mesh — that was an export mistake in the first battle LOD pass (two primitives: `Battle_Bloom` + `Glow`). Merge in Blender (`Join` / `Merge by Distance`) then assign one material before glTF export.
 
 ---
 
@@ -108,7 +110,7 @@ Character dex defaults to this path; toggle **Battle LOD** on Rahkshi specimens 
 | Kraata inserted | Glow lerp → `Idle`                               | Same                               |
 | Staff breed     | 3 of 18 variant meshes visible                   | 1 species overlay visible          |
 | Kraata tint     | `getRahkshiArmorColors` → weathered              | Tint `SkinnedMesh` slots + species |
-| Bloom           | `Eyes` MRT                                       | `Eyes` on `Battle_Glow`            |
+| Bloom           | `Glow` MRT on baked mesh                         | `Battle_Bloom` on `Battle_Glow`    |
 | Animations      | Shared file clips                                | Same                               |
 
 ---
@@ -130,7 +132,7 @@ Character dex defaults to this path; toggle **Battle LOD** on Rahkshi specimens 
 1. **Live collection** — `Rahkshi` armature + kit instances (unchanged).
 2. **Battle collection** — `Rahkshi_Battle` armature:
    - Join opaque geometry into **`SkinnedMesh`**; assign six `Battle_*` slots; skin to bones.
-   - Join eyes + head disk → **`Battle_Glow`** under `Head`; material **`Eyes`** (or `Battle_Bloom`).
+   - Join eyes + head disk → **`Battle_Glow`** under `Head`; **one** material **`Battle_Bloom`** (merge all faces — no second `Glow` slot on this mesh).
    - Per breed: spine + staff → **`{Breed}`** mesh at armature root (`Guurahk`, `Panrahk`, …).
 3. Export both armatures; verify shared actions on both skins.
 4. Re-export **`Hit`** (and `Defeat` when ready) — required for combat / dex animation buttons.

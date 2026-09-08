@@ -25,7 +25,7 @@ export function isSelectiveBloomRahkshiEyeName(name: string | undefined): boolea
   return isSelectiveBloomRahkshiGlowMaterial(name);
 }
 
-/** Rahkshi baked `Glow`, battle `Battle_Bloom`, and legacy `Eyes` materials. */
+/** Rahkshi baked `Glow` (detailed rig) and battle `Battle_Bloom` on `Battle_Glow`. Legacy `Eyes` still matches. */
 export function isSelectiveBloomRahkshiGlowMaterial(name: string | undefined): boolean {
   if (!name) return false;
   const lower = name.toLowerCase();
