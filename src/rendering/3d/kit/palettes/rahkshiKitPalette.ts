@@ -3,7 +3,7 @@ import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
 import type { MatoranColors } from '../../../../types/Matoran';
 import type { RahkshiArmorColors } from '../../../../data/rahkshiArmorColors';
 import type { WeatheredMetalOptions } from '../../CharacterScene/WeatheredMetalMaterial';
-import { Mesh, MeshStandardMaterial, SkinnedMesh } from 'three';
+import { Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, SkinnedMesh } from 'three';
 import { kitPartSlots } from './partSlots';
 import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from './technicKitPalette';
 
@@ -79,6 +79,29 @@ export function rahkshiBattleTintMap(dex: RahkshiArmorColors): Record<string, st
   };
 }
 
+function isTintableBattleMaterial(mat: Material): mat is MeshStandardMaterial {
+  return (
+    mat instanceof MeshStandardMaterial ||
+    mat instanceof MeshPhysicalMaterial ||
+    (mat as MeshStandardMaterial).isMeshStandardMaterial === true
+  );
+}
+
+function applyBattleMaterialTint(mat: MeshStandardMaterial, hex: string): void {
+  mat.color.set(hex);
+  mat.colorNode = null;
+  if (mat.name === 'Battle_Metal') {
+    mat.metalness = 0.9;
+    mat.roughness = 0.3;
+    mat.envMapIntensity = 0.52;
+  } else {
+    mat.metalness = 0.05;
+    mat.roughness = 0.55;
+    mat.envMapIntensity = 0.4;
+  }
+  mat.needsUpdate = true;
+}
+
 /**
  * Applies battle LOD color tints in place. No weathered TSL — skinned meshes must
  * keep stock materials for WebGPU skinning. Only slots present in `tints` are touched.
@@ -86,10 +109,10 @@ export function rahkshiBattleTintMap(dex: RahkshiArmorColors): Record<string, st
 export function applyRahkshiBattleMaterialsToMesh(mesh: Mesh, tints: Record<string, string>): void {
   const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
   for (const mat of materials) {
-    if (!(mat instanceof MeshStandardMaterial)) continue;
+    if (!isTintableBattleMaterial(mat)) continue;
     const hex = tints[mat.name];
     if (!hex) continue;
-    mat.color.set(hex);
+    applyBattleMaterialTint(mat, hex);
   }
   if ((mesh as SkinnedMesh).isSkinnedMesh) {
     mesh.frustumCulled = false;
