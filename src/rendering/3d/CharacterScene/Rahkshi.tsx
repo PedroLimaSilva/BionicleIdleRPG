@@ -37,6 +37,11 @@ import {
   tagDetailedLayer,
   tagRahkshiLodLayers,
 } from './rahkshiLod';
+import {
+  logRahkshiLodEnableHint,
+  logRahkshiLodMeshVisibilityChange,
+  logRahkshiLodSnapshot,
+} from './rahkshiLodDebug';
 import { KIT_2001_GLB_PATH } from '../kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../kit/kit2003';
 import {
@@ -160,34 +165,42 @@ export const RahkshiModel = forwardRef<
 
   const dex = useMemo(() => getRahkshiArmorColors(kraata), [kraata]);
 
-  const syncLodState = useCallback(() => {
-    tagRahkshiLodLayers(detailedInstance);
-    applyRahkshiLodCameraLayers(camera, meshVariant);
-    setRahkshiBattleSpeciesVisibility(detailedInstance, meshVariant, dex.staff);
-    if (meshVariant === 'battle' && battleAppearanceTarget) {
-      applyBattleMaterials(battleAppearanceTarget.root, battleMeshUuids, kraata);
-    }
-  }, [
-    battleAppearanceTarget,
-    battleMeshUuids,
-    camera,
-    detailedInstance,
-    dex.staff,
-    kraata,
-    meshVariant,
-  ]);
+  const syncLodState = useCallback(
+    (source = 'syncLodState') => {
+      tagRahkshiLodLayers(detailedInstance, source);
+      applyRahkshiLodCameraLayers(camera, meshVariant, source);
+      setRahkshiBattleSpeciesVisibility(detailedInstance, meshVariant, dex.staff, source);
+      if (meshVariant === 'battle' && battleAppearanceTarget) {
+        applyBattleMaterials(battleAppearanceTarget.root, battleMeshUuids, kraata);
+      }
+      logRahkshiLodSnapshot(detailedInstance, meshVariant, source);
+    },
+    [
+      battleAppearanceTarget,
+      battleMeshUuids,
+      camera,
+      detailedInstance,
+      dex.staff,
+      kraata,
+      meshVariant,
+    ]
+  );
+
+  useEffect(() => {
+    logRahkshiLodEnableHint();
+  }, []);
 
   useLayoutEffect(() => {
-    syncLodState();
+    syncLodState('useLayoutEffect');
   }, [syncLodState]);
 
   useEffect(() => {
-    syncLodState();
+    syncLodState('useEffect');
     return () => resetRahkshiLodCameraLayers(camera);
   }, [camera, syncLodState]);
 
   useFrame(() => {
-    applyRahkshiLodCameraLayers(camera, meshVariant);
+    applyRahkshiLodCameraLayers(camera, meshVariant, 'useFrame');
   });
 
   const collectHeadSocketGlow = useCallback(() => {
@@ -277,7 +290,7 @@ export const RahkshiModel = forwardRef<
           tagDetailedLayer(child);
         }
       });
-      syncLodState();
+      syncLodState('onKitLayerAttached');
       collectHeadSocketGlow();
       onKitMeshesAttached?.();
     };
@@ -329,7 +342,12 @@ export const RahkshiModel = forwardRef<
       const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
 
       if (isRahkshiVariantMesh(child.name)) {
-        child.visible = shouldShowRahkshiVariantMesh(child.name, dex.staff);
+        const nextVisible = shouldShowRahkshiVariantMesh(child.name, dex.staff);
+        logRahkshiLodMeshVisibilityChange('detailedVariantMesh', child, nextVisible, {
+          variant: 'detailed',
+          staff: dex.staff,
+        });
+        child.visible = nextVisible;
         if (!child.visible) return;
       }
 
@@ -366,7 +384,7 @@ export const RahkshiModel = forwardRef<
       });
     });
 
-    syncLodState();
+    syncLodState('detailedWeathering');
   }, [detailedInstance, detailedMeshUuids, isBattle, kraata, registerGlowMesh, syncLodState]);
 
   useEffect(() => {
@@ -391,7 +409,7 @@ export const RahkshiModel = forwardRef<
 
     glowEntries.current = entries;
     eyeGlowEntriesRef.current = entries;
-    syncLodState();
+    syncLodState('battleGlowSetup');
     onKitMeshesAttached?.();
   }, [
     battleAppearanceTarget,

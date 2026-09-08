@@ -5,6 +5,11 @@ import {
   isRahkshiBattleSpeciesMesh,
   shouldShowRahkshiBattleSpeciesMesh,
 } from './rahkshiBattleMeshes';
+import {
+  logRahkshiLodCameraLayers,
+  logRahkshiLodMeshState,
+  logRahkshiLodMeshVisibilityChange,
+} from './rahkshiLodDebug';
 
 /** Camera layer for baked meshes, kit attach, and variant overlays. */
 export const RAHKSHI_DETAILED_LAYER = 0;
@@ -52,12 +57,17 @@ export function resolveRahkshiBattleAppearanceTarget(
 }
 
 /** Assign render layers once per mesh — camera mask picks the active LOD. */
-export function tagRahkshiLodLayers(root: Object3D): void {
+export function tagRahkshiLodLayers(root: Object3D, source = 'tagRahkshiLodLayers'): void {
   root.traverse((child) => {
     if (!isRenderableMesh(child)) return;
-    child.layers.set(
-      isRahkshiBattleLodMesh(child.name) ? RAHKSHI_BATTLE_LAYER : RAHKSHI_DETAILED_LAYER
-    );
+    const layer = isRahkshiBattleLodMesh(child.name)
+      ? RAHKSHI_BATTLE_LAYER
+      : RAHKSHI_DETAILED_LAYER;
+    const prevMask = child.layers.mask;
+    child.layers.set(layer);
+    if (isRahkshiBattleLodMesh(child.name) && prevMask !== child.layers.mask) {
+      logRahkshiLodMeshState(`${source}: layer -> ${layer}`, child, { prevLayersMask: prevMask });
+    }
   });
 }
 
@@ -68,9 +78,14 @@ export function tagDetailedLayer(root: Object3D): void {
   });
 }
 
-export function applyRahkshiLodCameraLayers(camera: Camera, variant: RahkshiMeshVariant): void {
+export function applyRahkshiLodCameraLayers(
+  camera: Camera,
+  variant: RahkshiMeshVariant,
+  source = 'applyRahkshiLodCameraLayers'
+): void {
   camera.layers.disableAll();
   camera.layers.enable(variant === 'battle' ? RAHKSHI_BATTLE_LAYER : RAHKSHI_DETAILED_LAYER);
+  logRahkshiLodCameraLayers(camera, variant, source);
 }
 
 export function resetRahkshiLodCameraLayers(camera: Camera): void {
@@ -85,11 +100,13 @@ export function resetRahkshiLodCameraLayers(camera: Camera): void {
 export function setRahkshiBattleSpeciesVisibility(
   detailedRoot: Object3D,
   variant: RahkshiMeshVariant,
-  staffPrefix?: string
+  staffPrefix?: string,
+  source = 'setRahkshiBattleSpeciesVisibility'
 ): void {
   if (variant !== 'battle') {
     detailedRoot.traverse((child) => {
       if (isRenderableMesh(child) && isRahkshiBattleSpeciesMesh(child.name)) {
+        logRahkshiLodMeshVisibilityChange(source, child, false, { variant, staffPrefix });
         child.visible = false;
       }
     });
@@ -98,9 +115,11 @@ export function setRahkshiBattleSpeciesVisibility(
 
   detailedRoot.traverse((child) => {
     if (!isRenderableMesh(child) || !isRahkshiBattleSpeciesMesh(child.name)) return;
-    child.visible = staffPrefix
+    const nextVisible = staffPrefix
       ? shouldShowRahkshiBattleSpeciesMesh(child.name, staffPrefix)
       : false;
+    logRahkshiLodMeshVisibilityChange(source, child, nextVisible, { variant, staffPrefix });
+    child.visible = nextVisible;
   });
 }
 
@@ -116,22 +135,41 @@ export function setRahkshiLodVisibility(
 
     const isBattleMesh = isRahkshiBattleLodMesh(child.name);
     if (!isBattle) {
-      child.visible = !isBattleMesh;
+      const nextVisible = !isBattleMesh;
+      logRahkshiLodMeshVisibilityChange('setRahkshiLodVisibility', child, nextVisible, {
+        variant,
+        isBattleMesh,
+      });
+      child.visible = nextVisible;
       return;
     }
 
     if (!isBattleMesh) {
+      logRahkshiLodMeshVisibilityChange('setRahkshiLodVisibility', child, false, {
+        variant,
+        isBattleMesh,
+      });
       child.visible = false;
       return;
     }
 
     if (isRahkshiBattleSpeciesMesh(child.name)) {
-      child.visible = staffPrefix
+      const nextVisible = staffPrefix
         ? shouldShowRahkshiBattleSpeciesMesh(child.name, staffPrefix)
         : false;
+      logRahkshiLodMeshVisibilityChange('setRahkshiLodVisibility', child, nextVisible, {
+        variant,
+        staffPrefix,
+        isBattleMesh,
+      });
+      child.visible = nextVisible;
       return;
     }
 
+    logRahkshiLodMeshVisibilityChange('setRahkshiLodVisibility', child, true, {
+      variant,
+      isBattleMesh,
+    });
     child.visible = true;
   });
 }
