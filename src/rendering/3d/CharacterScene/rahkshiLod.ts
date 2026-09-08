@@ -2,6 +2,7 @@ import { Mesh, Object3D, SkinnedMesh } from 'three';
 import type { RahkshiMeshVariant } from './Rahkshi';
 import {
   isRahkshiBattleLodMesh,
+  isRahkshiBattleRenderableMesh,
   isRahkshiBattleSpeciesMesh,
   shouldShowRahkshiBattleSpeciesMesh,
 } from './rahkshiBattleMeshes';
@@ -23,7 +24,7 @@ export function collectMeshUuids(root: Object3D): Set<string> {
 export function collectRahkshiBattleMeshUuids(root: Object3D): Set<string> {
   const uuids = new Set<string>();
   root.traverse((child) => {
-    if (isRenderableMesh(child) && isRahkshiBattleLodMesh(child.name)) {
+    if (isRenderableMesh(child) && isRahkshiBattleRenderableMesh(child)) {
       uuids.add(child.uuid);
     }
   });
@@ -57,7 +58,7 @@ export function setRahkshiLodVisibility(
   detailedRoot.traverse((child) => {
     if (!isRenderableMesh(child)) return;
 
-    const isBattleMesh = isRahkshiBattleLodMesh(child.name);
+    const isBattleMesh = isRahkshiBattleRenderableMesh(child);
     if (!isBattle) {
       const nextVisible = !isBattleMesh;
       logRahkshiLodMeshVisibilityChange(source, child, nextVisible, {

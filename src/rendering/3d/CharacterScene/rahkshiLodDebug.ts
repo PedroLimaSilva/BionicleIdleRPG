@@ -1,6 +1,6 @@
 import { Material, Mesh, Object3D, SkinnedMesh } from 'three';
 import type { RahkshiMeshVariant } from './Rahkshi';
-import { isRahkshiBattleLodMesh, RAHKSHI_BATTLE_BODY_MESH } from './rahkshiBattleMeshes';
+import { isRahkshiBattleRenderableMesh, RAHKSHI_BATTLE_BODY_MESH } from './rahkshiBattleMeshes';
 
 const DEBUG_STORAGE_KEY = 'RAHKSHI_LOD_DEBUG';
 
@@ -49,7 +49,7 @@ export function logRahkshiLodMeshState(
     uuid: mesh.uuid.slice(0, 8),
     visible: mesh.visible,
     isSkinnedMesh: skinned.isSkinnedMesh === true,
-    isBattleLod: isRahkshiBattleLodMesh(mesh.name),
+    isBattleLod: isRahkshiBattleRenderableMesh(mesh),
     materials: materialNames(mesh),
     parent: mesh.parent?.name ?? null,
     ...extra,
@@ -98,15 +98,17 @@ export function logRahkshiLodRuntimeNodes(
       type: child.type,
       visible: child.visible,
       isSkinnedMesh: skinned.isSkinnedMesh === true,
-      isBattleLod: isRahkshiBattleLodMesh(child.name),
+      isBattleLod: isRahkshiBattleRenderableMesh(child),
       materials: materialNames(child),
       parent: child.parent?.name ?? null,
       uuid: child.uuid.slice(0, 8),
     });
   });
 
+  const battleBodyParts = meshes.filter(
+    (entry) => entry.isBattleLod && entry.name !== RAHKSHI_BATTLE_BODY_MESH
+  );
   const battleBodyNamed = namedNodes.find((entry) => entry.name === RAHKSHI_BATTLE_BODY_MESH);
-  const battleBodyMesh = meshes.find((entry) => entry.name === RAHKSHI_BATTLE_BODY_MESH);
 
   console.group(`[RahkshiLOD] ${source}: runtime nodes (variant=${variant})`);
   console.log('named node count:', namedNodes.length);
@@ -115,13 +117,15 @@ export function logRahkshiLodRuntimeNodes(
   console.table(meshes);
   if (!battleBodyNamed) {
     console.warn(`[RahkshiLOD] No node named ${RAHKSHI_BATTLE_BODY_MESH} in rig.`);
-  } else if (!battleBodyMesh) {
+  } else if (battleBodyNamed.type === 'Group' && battleBodyParts.length > 0) {
+    console.log(
+      `[RahkshiLOD] ${RAHKSHI_BATTLE_BODY_MESH} is a Group with ${battleBodyParts.length} skinned part(s).`
+    );
+  } else if (battleBodyNamed.type !== 'SkinnedMesh' && battleBodyParts.length === 0) {
     console.warn(
-      `[RahkshiLOD] ${RAHKSHI_BATTLE_BODY_MESH} exists as type="${battleBodyNamed.type}" but is not a Mesh/SkinnedMesh — mesh geometry did not load or export is wrong.`,
+      `[RahkshiLOD] ${RAHKSHI_BATTLE_BODY_MESH} exists as type="${battleBodyNamed.type}" with no renderable children.`,
       battleBodyNamed
     );
-  } else {
-    console.log(`[RahkshiLOD] ${RAHKSHI_BATTLE_BODY_MESH}:`, battleBodyMesh);
   }
   console.groupEnd();
 }

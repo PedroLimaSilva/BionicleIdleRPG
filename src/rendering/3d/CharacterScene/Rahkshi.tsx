@@ -31,8 +31,9 @@ import { applySelectiveBloomMrt, isSelectiveBloomRahkshiGlowMaterial } from './s
 import { isRahkshiGlowMesh, mapRahkshiGlowMaterials } from './rahkshiGlow';
 import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
 import {
-  isRahkshiBattleBodyMesh,
+  isRahkshiBattleBodyPartMesh,
   isRahkshiBattleLodMesh,
+  isRahkshiBattleRenderableMesh,
   isRahkshiBattleSpeciesMesh,
   RAHKSHI_DETAILED_RIG_NODE,
 } from './rahkshiBattleMeshes';
@@ -101,7 +102,7 @@ function applyBattleMaterials(root: Object3D, meshUuids: Set<string>, kraata: Kr
       return;
     }
 
-    if (isRahkshiBattleBodyMesh(child.name)) {
+    if (isRahkshiBattleBodyPartMesh(child)) {
       applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleTintMap(dex));
     }
   });
@@ -148,7 +149,7 @@ export const RahkshiModel = forwardRef<
   const detailedMeshUuids = useMemo(() => {
     const uuids = new Set<string>();
     detailedInstance.traverse((child) => {
-      if (isRenderableMesh(child) && !isRahkshiBattleLodMesh(child.name)) {
+      if (isRenderableMesh(child) && !isRahkshiBattleRenderableMesh(child)) {
         uuids.add(child.uuid);
       }
     });

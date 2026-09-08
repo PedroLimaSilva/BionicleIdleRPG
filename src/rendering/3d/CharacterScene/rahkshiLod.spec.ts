@@ -49,18 +49,43 @@ describe('rahkshiLod visibility', () => {
     expect(panrahk.visible).toBe(true);
   });
 
+  test('Battle_Body group children toggle with battle LOD', () => {
+    const detailed = new Group();
+    const battleBodyGroup = new Group();
+    battleBodyGroup.name = RAHKSHI_BATTLE_BODY_MESH;
+    const part = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    part.name = 'Part-44136_dot_dat003';
+    battleBodyGroup.add(part);
+    detailed.add(battleBodyGroup);
+
+    const baked = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    baked.name = 'Face';
+    detailed.add(baked);
+
+    setRahkshiLodVisibility(detailed, 'detailed');
+    expect(part.visible).toBe(false);
+    expect(baked.visible).toBe(true);
+
+    setRahkshiLodVisibility(detailed, 'battle');
+    expect(part.visible).toBe(true);
+    expect(baked.visible).toBe(false);
+  });
+
   test('resolveRahkshiBattleAppearanceTarget collects Battle_* meshes on Rahkshi', () => {
     const detailed = new Group();
     const baked = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
     baked.name = 'Face';
-    const battleBody = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
-    battleBody.name = RAHKSHI_BATTLE_BODY_MESH;
+    const battleBodyGroup = new Group();
+    battleBodyGroup.name = RAHKSHI_BATTLE_BODY_MESH;
+    const part = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    part.name = 'Part-slot';
+    battleBodyGroup.add(part);
     detailed.add(baked);
-    detailed.add(battleBody);
+    detailed.add(battleBodyGroup);
 
     const target = resolveRahkshiBattleAppearanceTarget(detailed);
     expect(target?.root).toBe(detailed);
-    expect(target?.meshUuids.has(battleBody.uuid)).toBe(true);
+    expect(target?.meshUuids.has(part.uuid)).toBe(true);
     expect(target?.meshUuids.has(baked.uuid)).toBe(false);
     expect(collectRahkshiBattleMeshUuids(detailed)).toEqual(target?.meshUuids);
   });

@@ -1,7 +1,9 @@
 import { join } from 'node:path';
 import { extractGlbNodeMaterialSlots, readGlbJsonFromPath } from '../kit/nodes/readGlbJson';
 import {
+  isRahkshiBattleBodyPartMesh,
   isRahkshiBattleLodMesh,
+  isRahkshiBattleRenderableMesh,
   isRahkshiBattleSpeciesMesh,
   RAHKSHI_BATTLE_BODY_MESH,
   RAHKSHI_BATTLE_GLOW_MATERIAL,
@@ -39,6 +41,18 @@ describe('rahkshi battle mesh naming', () => {
   test('identifies battle LOD meshes by Battle_ prefix', () => {
     expect(isRahkshiBattleLodMesh('Battle_Body')).toBe(true);
     expect(isRahkshiBattleLodMesh('Face')).toBe(false);
+  });
+
+  test('identifies skinned parts parented under the Battle_Body group', () => {
+    const group = { name: RAHKSHI_BATTLE_BODY_MESH, parent: null } as import('three').Object3D;
+    const part = {
+      name: 'Part-44136_dot_dat003',
+      parent: group,
+    } as import('three').Object3D;
+
+    expect(isRahkshiBattleBodyPartMesh(part)).toBe(true);
+    expect(isRahkshiBattleRenderableMesh(part)).toBe(true);
+    expect(isRahkshiBattleRenderableMesh(group)).toBe(true);
   });
 
   test('identifies battle species overlay meshes', () => {

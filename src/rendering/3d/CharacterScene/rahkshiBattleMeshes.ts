@@ -1,10 +1,15 @@
+import type { Object3D } from 'three';
+
 /** Live armature in `rahkshi.glb` — detailed and battle LOD share one skeleton. */
 export const RAHKSHI_DETAILED_RIG_NODE = 'Rahkshi';
 
 /** Prefix for every battle LOD mesh node parented under `Rahkshi`. */
 export const RAHKSHI_BATTLE_MESH_PREFIX = 'Battle_';
 
-/** Skinned body bucket mesh (six `Battle_*` material slots). */
+/**
+ * Body bucket — exported as a `Group` with one skinned child per material slot
+ * (e.g. `Part-44136_dot_dat003` … `_5`), not a single merged `SkinnedMesh`.
+ */
 export const RAHKSHI_BATTLE_BODY_MESH = 'Battle_Body';
 
 /** Merged head / kraata-disk glow mesh (one draw, one material). */
@@ -29,6 +34,22 @@ export function isRahkshiBattleLodMesh(meshName: string): boolean {
 
 export function isRahkshiBattleBodyMesh(meshName: string): boolean {
   return meshName === RAHKSHI_BATTLE_BODY_MESH;
+}
+
+/** Skinned mesh slotted under the `Battle_Body` group (not `Battle_`-prefixed). */
+export function isRahkshiBattleBodyPartMesh(mesh: Object3D): boolean {
+  let parent: Object3D | null = mesh.parent;
+  while (parent) {
+    if (parent.name === RAHKSHI_BATTLE_BODY_MESH) return true;
+    parent = parent.parent;
+  }
+  return false;
+}
+
+/** Any mesh that belongs to battle LOD — `Battle_*` nodes or `Battle_Body` group children. */
+export function isRahkshiBattleRenderableMesh(mesh: Object3D): boolean {
+  if (isRahkshiBattleLodMesh(mesh.name)) return true;
+  return isRahkshiBattleBodyPartMesh(mesh);
 }
 
 export function isRahkshiBattleSpeciesMesh(meshName: string): boolean {
