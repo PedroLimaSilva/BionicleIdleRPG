@@ -56,7 +56,8 @@ export type CharacterSelectiveBloomProps = {
 };
 
 /**
- * WebGPU selective bloom for CharacterScene and battle arenas.
+ * WebGPU selective bloom for CharacterScene (and Rahkshi preview).
+ * Battle arenas skip this pass for performance; combatants still render via the default pipeline.
  *
  * Default MRT `bloomIntensity` is 0. Kit brains, kit Glow, Rahkshi Eyes, and
  * active Kanohi mask-power write 1; Glowing Eyes do not.
