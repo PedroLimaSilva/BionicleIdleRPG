@@ -1,21 +1,11 @@
-import { Camera, Mesh, Object3D, SkinnedMesh } from 'three';
+import { Mesh, Object3D, SkinnedMesh } from 'three';
 import type { RahkshiMeshVariant } from './Rahkshi';
 import {
   isRahkshiBattleLodMesh,
   isRahkshiBattleSpeciesMesh,
   shouldShowRahkshiBattleSpeciesMesh,
 } from './rahkshiBattleMeshes';
-import {
-  logRahkshiLodCameraLayers,
-  logRahkshiLodMeshState,
-  logRahkshiLodMeshVisibilityChange,
-} from './rahkshiLodDebug';
-
-/** Camera layer for baked meshes, kit attach, and variant overlays. */
-export const RAHKSHI_DETAILED_LAYER = 0;
-
-/** Camera layer for `Battle_*` meshes on the single `Rahkshi` armature. */
-export const RAHKSHI_BATTLE_LAYER = 1;
+import { logRahkshiLodMeshVisibilityChange } from './rahkshiLodDebug';
 
 function isRenderableMesh(child: Object3D): child is Mesh {
   const mesh = child as Mesh;
@@ -56,78 +46,12 @@ export function resolveRahkshiBattleAppearanceTarget(
   return { meshUuids, root: detailedRoot };
 }
 
-/** Assign render layers once per mesh — camera mask picks the active LOD. */
-export function tagRahkshiLodLayers(root: Object3D, source = 'tagRahkshiLodLayers'): void {
-  root.traverse((child) => {
-    if (!isRenderableMesh(child)) return;
-    const layer = isRahkshiBattleLodMesh(child.name)
-      ? RAHKSHI_BATTLE_LAYER
-      : RAHKSHI_DETAILED_LAYER;
-    const prevMask = child.layers.mask;
-    child.layers.set(layer);
-    if (isRahkshiBattleLodMesh(child.name) && prevMask !== child.layers.mask) {
-      logRahkshiLodMeshState(`${source}: layer -> ${layer}`, child, { prevLayersMask: prevMask });
-    }
-  });
-}
-
-/** Kit clones attach after the rig is tagged — keep them on the detailed layer. */
-export function tagDetailedLayer(root: Object3D): void {
-  root.traverse((child) => {
-    if (isRenderableMesh(child)) child.layers.set(RAHKSHI_DETAILED_LAYER);
-  });
-}
-
-export function applyRahkshiLodCameraLayers(
-  camera: Camera,
-  variant: RahkshiMeshVariant,
-  source = 'applyRahkshiLodCameraLayers'
-): void {
-  camera.layers.disableAll();
-  camera.layers.enable(variant === 'battle' ? RAHKSHI_BATTLE_LAYER : RAHKSHI_DETAILED_LAYER);
-  logRahkshiLodCameraLayers(camera, variant, source);
-}
-
-export function resetRahkshiLodCameraLayers(camera: Camera): void {
-  camera.layers.disableAll();
-  camera.layers.enable(RAHKSHI_DETAILED_LAYER);
-}
-
-/**
- * Species overlays share the battle camera layer — hide non-active breeds via `visible`.
- * Body/glow visibility stays on; the camera layer gate handles detailed vs battle.
- */
-export function setRahkshiBattleSpeciesVisibility(
-  detailedRoot: Object3D,
-  variant: RahkshiMeshVariant,
-  staffPrefix?: string,
-  source = 'setRahkshiBattleSpeciesVisibility'
-): void {
-  if (variant !== 'battle') {
-    detailedRoot.traverse((child) => {
-      if (isRenderableMesh(child) && isRahkshiBattleSpeciesMesh(child.name)) {
-        logRahkshiLodMeshVisibilityChange(source, child, false, { variant, staffPrefix });
-        child.visible = false;
-      }
-    });
-    return;
-  }
-
-  detailedRoot.traverse((child) => {
-    if (!isRenderableMesh(child) || !isRahkshiBattleSpeciesMesh(child.name)) return;
-    const nextVisible = staffPrefix
-      ? shouldShowRahkshiBattleSpeciesMesh(child.name, staffPrefix)
-      : false;
-    logRahkshiLodMeshVisibilityChange(source, child, nextVisible, { variant, staffPrefix });
-    child.visible = nextVisible;
-  });
-}
-
-/** @deprecated Use tagRahkshiLodLayers + applyRahkshiLodCameraLayers. Kept for unit tests. */
+/** Toggle detailed vs battle meshes via `visible`; species overlays follow staff prefix in battle mode. */
 export function setRahkshiLodVisibility(
   detailedRoot: Object3D,
   variant: RahkshiMeshVariant,
-  staffPrefix?: string
+  staffPrefix?: string,
+  source = 'setRahkshiLodVisibility'
 ): void {
   const isBattle = variant === 'battle';
   detailedRoot.traverse((child) => {
@@ -136,7 +60,7 @@ export function setRahkshiLodVisibility(
     const isBattleMesh = isRahkshiBattleLodMesh(child.name);
     if (!isBattle) {
       const nextVisible = !isBattleMesh;
-      logRahkshiLodMeshVisibilityChange('setRahkshiLodVisibility', child, nextVisible, {
+      logRahkshiLodMeshVisibilityChange(source, child, nextVisible, {
         variant,
         isBattleMesh,
       });
@@ -145,10 +69,7 @@ export function setRahkshiLodVisibility(
     }
 
     if (!isBattleMesh) {
-      logRahkshiLodMeshVisibilityChange('setRahkshiLodVisibility', child, false, {
-        variant,
-        isBattleMesh,
-      });
+      logRahkshiLodMeshVisibilityChange(source, child, false, { variant, isBattleMesh });
       child.visible = false;
       return;
     }
@@ -157,7 +78,7 @@ export function setRahkshiLodVisibility(
       const nextVisible = staffPrefix
         ? shouldShowRahkshiBattleSpeciesMesh(child.name, staffPrefix)
         : false;
-      logRahkshiLodMeshVisibilityChange('setRahkshiLodVisibility', child, nextVisible, {
+      logRahkshiLodMeshVisibilityChange(source, child, nextVisible, {
         variant,
         staffPrefix,
         isBattleMesh,
@@ -166,10 +87,7 @@ export function setRahkshiLodVisibility(
       return;
     }
 
-    logRahkshiLodMeshVisibilityChange('setRahkshiLodVisibility', child, true, {
-      variant,
-      isBattleMesh,
-    });
+    logRahkshiLodMeshVisibilityChange(source, child, true, { variant, isBattleMesh });
     child.visible = true;
   });
 }

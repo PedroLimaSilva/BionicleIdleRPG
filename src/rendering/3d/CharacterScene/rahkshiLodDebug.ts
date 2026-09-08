@@ -1,17 +1,22 @@
-import { Camera, Mesh, Object3D, SkinnedMesh } from 'three';
+import { Material, Mesh, Object3D, SkinnedMesh } from 'three';
 import type { RahkshiMeshVariant } from './Rahkshi';
-import { isRahkshiBattleLodMesh } from './rahkshiBattleMeshes';
+import { isRahkshiBattleLodMesh, RAHKSHI_BATTLE_BODY_MESH } from './rahkshiBattleMeshes';
 
 const DEBUG_STORAGE_KEY = 'RAHKSHI_LOD_DEBUG';
-const RAHKSHI_DETAILED_LAYER = 0;
-const RAHKSHI_BATTLE_LAYER = 1;
 
 let enableHintLogged = false;
-let lastLoggedCameraMask = -1;
 
 function isRenderableMesh(child: Object3D): child is Mesh {
   const mesh = child as Mesh;
   return mesh.isMesh === true || (child as SkinnedMesh).isSkinnedMesh === true;
+}
+
+function materialNames(mesh: Mesh): string {
+  const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+  return materials
+    .filter((mat): mat is Material => mat != null)
+    .map((mat) => mat.name || '(unnamed)')
+    .join(', ');
 }
 
 export function isRahkshiLodDebugEnabled(): boolean {
@@ -32,12 +37,6 @@ export function logRahkshiLodEnableHint(): void {
   );
 }
 
-export function logRahkshiLod(message: string, data?: Record<string, unknown>): void {
-  if (!isRahkshiLodDebugEnabled()) return;
-  if (data) console.log(`[RahkshiLOD] ${message}`, data);
-  else console.log(`[RahkshiLOD] ${message}`);
-}
-
 export function logRahkshiLodMeshState(
   action: string,
   mesh: Mesh,
@@ -49,14 +48,9 @@ export function logRahkshiLodMeshState(
     name: mesh.name,
     uuid: mesh.uuid.slice(0, 8),
     visible: mesh.visible,
-    layersMask: mesh.layers.mask,
-    layerIndex:
-      mesh.layers.mask === 1 << RAHKSHI_BATTLE_LAYER
-        ? RAHKSHI_BATTLE_LAYER
-        : mesh.layers.mask === 1 << RAHKSHI_DETAILED_LAYER
-          ? RAHKSHI_DETAILED_LAYER
-          : 'other',
     isSkinnedMesh: skinned.isSkinnedMesh === true,
+    isBattleLod: isRahkshiBattleLodMesh(mesh.name),
+    materials: materialNames(mesh),
     parent: mesh.parent?.name ?? null,
     ...extra,
   });
@@ -73,42 +67,45 @@ export function logRahkshiLodMeshVisibilityChange(
   logRahkshiLodMeshState(`${source}: visible ${mesh.visible} -> ${nextVisible}`, mesh, extra);
 }
 
-export function logRahkshiLodCameraLayers(
-  camera: Camera,
-  variant: RahkshiMeshVariant,
-  source: string
-): void {
-  if (!isRahkshiLodDebugEnabled()) return;
-  if (camera.layers.mask === lastLoggedCameraMask) return;
-  lastLoggedCameraMask = camera.layers.mask;
-  logRahkshiLod(`${source}: camera layers`, {
-    variant,
-    mask: camera.layers.mask,
-    enabledLayer: variant === 'battle' ? RAHKSHI_BATTLE_LAYER : RAHKSHI_DETAILED_LAYER,
-  });
-}
-
-export function logRahkshiLodSnapshot(
+/** Dump every runtime mesh under the cloned Rahkshi rig when the LOD variant changes. */
+export function logRahkshiLodRuntimeNodes(
   root: Object3D,
   variant: RahkshiMeshVariant,
   source: string
 ): void {
   if (!isRahkshiLodDebugEnabled()) return;
 
-  const battleMeshes: Record<string, unknown>[] = [];
+  const meshes: Record<string, unknown>[] = [];
+  const namedNodes: string[] = [];
+
   root.traverse((child) => {
-    if (!isRenderableMesh(child) || !isRahkshiBattleLodMesh(child.name)) return;
+    if (child.name) namedNodes.push(child.name);
+    if (!isRenderableMesh(child)) return;
+
     const skinned = child as SkinnedMesh;
-    battleMeshes.push({
-      name: child.name,
+    meshes.push({
+      name: child.name || '(unnamed)',
       visible: child.visible,
-      layersMask: child.layers.mask,
       isSkinnedMesh: skinned.isSkinnedMesh === true,
+      isBattleLod: isRahkshiBattleLodMesh(child.name),
+      materials: materialNames(child),
       parent: child.parent?.name ?? null,
+      uuid: child.uuid.slice(0, 8),
     });
   });
 
-  console.groupCollapsed(`[RahkshiLOD] ${source}: snapshot (variant=${variant})`);
-  console.table(battleMeshes);
+  const battleBody = meshes.find((entry) => entry.name === RAHKSHI_BATTLE_BODY_MESH);
+
+  console.group(`[RahkshiLOD] ${source}: runtime nodes (variant=${variant})`);
+  console.log('named node count:', namedNodes.length);
+  console.log('named nodes:', namedNodes.sort().join(', '));
+  console.table(meshes);
+  if (!battleBody) {
+    console.warn(
+      `[RahkshiLOD] ${RAHKSHI_BATTLE_BODY_MESH} not found in runtime rig — check rahkshi.glb export.`
+    );
+  } else {
+    console.log(`[RahkshiLOD] ${RAHKSHI_BATTLE_BODY_MESH}:`, battleBody);
+  }
   console.groupEnd();
 }
