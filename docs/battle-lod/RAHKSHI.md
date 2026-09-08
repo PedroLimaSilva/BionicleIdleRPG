@@ -93,7 +93,7 @@ Rahkshi → clone bodyInstance → weathered baked meshes
        → show 3 of 18 variant meshes per staff prefix
 ```
 
-Character dex defaults to this path; toggle **Battle LOD** on Rahkshi specimens to preview `Battle_*` meshes.
+Character dex defaults to the **detailed** kit path; toggle **Battle LOD** on Rahkshi specimens to preview `Battle_*` meshes. **Combat** uses battle LOD via [`RAHKSHI_COMBAT_MESH_VARIANT`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx) even when species overlays are still being authored.
 
 ---
 
@@ -112,14 +112,14 @@ Character dex defaults to this path; toggle **Battle LOD** on Rahkshi specimens 
 
 ## Code map
 
-| File                                                                                     | Role                                                       |
-| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx)                       | `meshVariant: 'detailed' \| 'battle'`                      |
-| [`rahkshiBattleMeshes.ts`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) | `Battle_*` naming, body group children, species visibility |
-| [`rahkshiLod.ts`](../../src/rendering/3d/CharacterScene/rahkshiLod.ts)                   | Toggle `Battle_*` mesh visibility                          |
-| [`rahkshiKitPalette.ts`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts)       | `rahkshiBattleTintMap` (armor + joint only)                |
-| [`data/dex/rahkshi.ts`](../../src/data/dex/rahkshi.ts)                                   | `RahkshiDexMeshVariant` type for dex preview               |
-| [`CharacterDex/Preview.tsx`](../../src/pages/CharacterDex/Preview.tsx)                   | Battle LOD toggle                                          |
+| File                                                                                     | Role                                                           |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx)                       | `meshVariant: 'detailed' \| 'battle'`; combat default `battle` |
+| [`rahkshiBattleMeshes.ts`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) | `Battle_*` naming, body group children, species visibility     |
+| [`rahkshiLod.ts`](../../src/rendering/3d/CharacterScene/rahkshiLod.ts)                   | Toggle `Battle_*` mesh visibility                              |
+| [`rahkshiKitPalette.ts`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts)       | `rahkshiBattleTintMap` (armor + joint only)                    |
+| [`data/dex/rahkshi.ts`](../../src/data/dex/rahkshi.ts)                                   | `RahkshiDexMeshVariant` type for dex preview                   |
+| [`CharacterDex/Preview.tsx`](../../src/pages/CharacterDex/Preview.tsx)                   | Battle LOD toggle                                              |
 
 ---
 

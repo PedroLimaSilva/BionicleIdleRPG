@@ -61,6 +61,12 @@ const RAHKSHI_GLB = import.meta.env.BASE_URL + 'rahkshi.glb';
 
 export type RahkshiMeshVariant = 'detailed' | 'battle';
 
+/** Character sheet, dex preview, and kraata detail screens. */
+export const RAHKSHI_PREVIEW_MESH_VARIANT: RahkshiMeshVariant = 'detailed';
+
+/** Live combat (`CombatantModel`) — uses merged `Battle_*` meshes even when incomplete. */
+export const RAHKSHI_COMBAT_MESH_VARIANT: RahkshiMeshVariant = 'battle';
+
 /** Must match how many `useKitAttachments` calls this component makes. */
 const RAHKSHI_ATTACHMENT_RUNS = 2;
 

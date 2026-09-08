@@ -32,7 +32,7 @@ import { BohrokModel } from './BohrokModel';
 import { VahkiModel } from './VahkiModel';
 import { RahiPlaceholderModel } from './RahiPlaceholderModel';
 import { NuiRamaModel } from './NuiRamaModel';
-import { RahkshiModel } from './Rahkshi';
+import { RahkshiModel, RAHKSHI_PREVIEW_MESH_VARIANT } from './Rahkshi';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
 import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
 import { LewaNuvaModel } from './Nuva/LewaNuvaModel';
@@ -168,7 +168,7 @@ const CharacterModel = forwardRef<
           ref={ref}
           kraata={matoran.id}
           hasKraata
-          meshVariant={matoran.rahkshiMeshVariant ?? 'detailed'}
+          meshVariant={matoran.rahkshiMeshVariant ?? RAHKSHI_PREVIEW_MESH_VARIANT}
           onKitMeshesAttached={onModelReady}
         />
       );
