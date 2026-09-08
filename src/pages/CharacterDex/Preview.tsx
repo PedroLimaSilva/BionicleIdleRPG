@@ -159,7 +159,7 @@ export const CharacterDexPreview: React.FC = () => {
             </div>
             <p className="character-dex-mask-name">
               {rahkshiMeshVariant === 'battle'
-                ? 'Merged battle rig (`Rahkshi_Battle`)'
+                ? 'Merged battle LOD (`Battle_LOD` on `Rahkshi`, or legacy `Rahkshi_Battle`)'
                 : 'Full kit + baked rig (`Rahkshi`)'}
             </p>
           </section>

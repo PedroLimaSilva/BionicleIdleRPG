@@ -17,6 +17,39 @@ function isDescendantOf(node: Object3D, ancestor: Object3D): boolean {
   return false;
 }
 
+export function getRahkshiBattleLodGroup(detailedRoot: Object3D): Object3D | null {
+  return detailedRoot.getObjectByName(RAHKSHI_BATTLE_LOD_GROUP) ?? null;
+}
+
+export function usesRahkshiBattleLodGroup(detailedRoot: Object3D): boolean {
+  return getRahkshiBattleLodGroup(detailedRoot) !== null;
+}
+
+export type RahkshiBattleAppearanceTarget = {
+  /** Meshes that belong to the active battle LOD (subset of `root`). */
+  meshUuids: Set<string>;
+  /** Object to traverse when applying battle tints and species visibility. */
+  root: Object3D;
+};
+
+/**
+ * Battle meshes live under `Battle_LOD` on the live armature (target export), or on a
+ * legacy `Rahkshi_Battle` root until the GLB is re-exported.
+ */
+export function resolveRahkshiBattleAppearanceTarget(
+  detailedRoot: Object3D,
+  legacyBattleRoot: Object3D | null
+): RahkshiBattleAppearanceTarget | null {
+  const battleLodGroup = getRahkshiBattleLodGroup(detailedRoot);
+  if (battleLodGroup) {
+    return { meshUuids: collectMeshUuids(battleLodGroup), root: detailedRoot };
+  }
+  if (legacyBattleRoot) {
+    return { meshUuids: collectMeshUuids(legacyBattleRoot), root: legacyBattleRoot };
+  }
+  return null;
+}
+
 /**
  * Toggle detailed vs battle meshes.
  *
@@ -25,11 +58,11 @@ function isDescendantOf(node: Object3D, ancestor: Object3D): boolean {
  */
 export function setRahkshiLodVisibility(
   detailedRoot: Object3D,
-  battleRoot: Object3D | null,
+  legacyBattleRoot: Object3D | null,
   variant: RahkshiMeshVariant
 ): void {
   const isBattle = variant === 'battle';
-  const battleLodGroup = detailedRoot.getObjectByName(RAHKSHI_BATTLE_LOD_GROUP);
+  const battleLodGroup = getRahkshiBattleLodGroup(detailedRoot);
 
   if (battleLodGroup) {
     detailedRoot.traverse((child) => {
@@ -41,7 +74,7 @@ export function setRahkshiLodVisibility(
   }
 
   detailedRoot.visible = !isBattle;
-  if (battleRoot) battleRoot.visible = isBattle;
+  if (legacyBattleRoot) legacyBattleRoot.visible = isBattle;
 }
 
 export { RAHKSHI_BATTLE_RIG_NODE };

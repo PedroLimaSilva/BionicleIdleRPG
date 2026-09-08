@@ -1,5 +1,5 @@
 import { BoxGeometry, Group, Mesh, MeshStandardMaterial } from 'three';
-import { setRahkshiLodVisibility } from './rahkshiLod';
+import { resolveRahkshiBattleAppearanceTarget, setRahkshiLodVisibility } from './rahkshiLod';
 import { RAHKSHI_BATTLE_LOD_GROUP } from './rahkshiBattleMeshes';
 
 describe('rahkshiLod visibility', () => {
@@ -37,5 +37,25 @@ describe('rahkshiLod visibility', () => {
     setRahkshiLodVisibility(detailed, null, 'detailed');
     expect(baked.visible).toBe(true);
     expect(battleBody.visible).toBe(false);
+  });
+
+  test('resolveRahkshiBattleAppearanceTarget prefers Battle_LOD on the live armature', () => {
+    const detailed = new Group();
+    const battleLod = new Group();
+    battleLod.name = RAHKSHI_BATTLE_LOD_GROUP;
+    const battleBody = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    battleBody.name = 'SkinnedMesh';
+    battleLod.add(battleBody);
+    detailed.add(battleLod);
+
+    const legacy = new Group();
+    const legacyBody = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    legacyBody.name = 'SkinnedMesh';
+    legacy.add(legacyBody);
+
+    const target = resolveRahkshiBattleAppearanceTarget(detailed, legacy);
+    expect(target?.root).toBe(detailed);
+    expect(target?.meshUuids.has(battleBody.uuid)).toBe(true);
+    expect(target?.meshUuids.has(legacyBody.uuid)).toBe(false);
   });
 });

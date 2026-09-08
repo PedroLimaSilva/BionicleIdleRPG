@@ -29,7 +29,12 @@ import {
   RAHKSHI_DETAILED_RIG_NODE,
   shouldShowRahkshiBattleSpeciesMesh,
 } from './rahkshiBattleMeshes';
-import { collectMeshUuids, setRahkshiLodVisibility } from './rahkshiLod';
+import {
+  collectMeshUuids,
+  resolveRahkshiBattleAppearanceTarget,
+  setRahkshiLodVisibility,
+  usesRahkshiBattleLodGroup,
+} from './rahkshiLod';
 import { KIT_2001_GLB_PATH } from '../kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../kit/kit2003';
 import {
@@ -118,15 +123,26 @@ export const RahkshiModel = forwardRef<
     return root ? cloneGltfInstance(root) : new Group();
   }, [nodes]);
 
-  const battleInstance = useMemo(() => {
+  const usesBattleLodGroup = useMemo(
+    () => usesRahkshiBattleLodGroup(detailedInstance),
+    [detailedInstance]
+  );
+
+  const legacyBattleInstance = useMemo(() => {
+    if (usesBattleLodGroup) return null;
     const root = nodes[RAHKSHI_BATTLE_RIG_NODE] as Object3D | undefined;
     return root ? cloneGltfInstance(root) : null;
-  }, [nodes]);
+  }, [nodes, usesBattleLodGroup]);
+
+  const battleAppearanceTarget = useMemo(
+    () => resolveRahkshiBattleAppearanceTarget(detailedInstance, legacyBattleInstance),
+    [detailedInstance, legacyBattleInstance]
+  );
 
   const detailedMeshUuids = useMemo(() => collectMeshUuids(detailedInstance), [detailedInstance]);
   const battleMeshUuids = useMemo(
-    () => (battleInstance ? collectMeshUuids(battleInstance) : new Set<string>()),
-    [battleInstance]
+    () => battleAppearanceTarget?.meshUuids ?? new Set<string>(),
+    [battleAppearanceTarget]
   );
 
   const kitCharacterNodes = useMemo(
@@ -139,13 +155,13 @@ export const RahkshiModel = forwardRef<
   const kitLayersDone = useRef(0);
 
   useLayoutEffect(() => {
-    setRahkshiLodVisibility(detailedInstance, battleInstance, meshVariant);
-  }, [battleInstance, detailedInstance, meshVariant]);
+    setRahkshiLodVisibility(detailedInstance, legacyBattleInstance, meshVariant);
+  }, [detailedInstance, legacyBattleInstance, meshVariant]);
 
   useLayoutEffect(() => {
-    if (!battleInstance) return;
-    applyBattleAppearance(battleInstance, battleMeshUuids, kraata);
-  }, [battleInstance, battleMeshUuids, kraata]);
+    if (!battleAppearanceTarget) return;
+    applyBattleAppearance(battleAppearanceTarget.root, battleMeshUuids, kraata);
+  }, [battleAppearanceTarget, battleMeshUuids, kraata]);
 
   const collectHeadSocketGlow = useCallback(() => {
     if (isBattle) return;
@@ -313,11 +329,11 @@ export const RahkshiModel = forwardRef<
   }, [detailedInstance, detailedMeshUuids, isBattle, kraata, registerGlowMesh]);
 
   useEffect(() => {
-    if (!isBattle || !battleInstance) return;
+    if (!isBattle || !battleAppearanceTarget) return;
 
     const entries: GlowEntry[] = [];
 
-    battleInstance.traverse((child) => {
+    battleAppearanceTarget.root.traverse((child) => {
       if (!(child instanceof Mesh) || !battleMeshUuids.has(child.uuid)) return;
       const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
 
@@ -335,7 +351,14 @@ export const RahkshiModel = forwardRef<
     glowEntries.current = entries;
     eyeGlowEntriesRef.current = entries;
     onKitMeshesAttached?.();
-  }, [battleInstance, battleMeshUuids, isBattle, kraata, onKitMeshesAttached, registerGlowMesh]);
+  }, [
+    battleAppearanceTarget,
+    battleMeshUuids,
+    isBattle,
+    kraata,
+    onKitMeshesAttached,
+    registerGlowMesh,
+  ]);
 
   const kitAttachments = isBattle ? {} : RAHKSHI_KIT_2003_ATTACHMENTS;
   const kit2001Attachments = isBattle ? {} : RAHKSHI_KIT_2001_ATTACHMENTS;
@@ -359,7 +382,7 @@ export const RahkshiModel = forwardRef<
   });
 
   useEffect(() => {
-    const instances = [detailedInstance, battleInstance].filter(Boolean) as Object3D[];
+    const instances = [detailedInstance, legacyBattleInstance].filter(Boolean) as Object3D[];
     return () => {
       for (const instance of instances) {
         // GLTF geometry is shared with useGLTF cache — never dispose it on clone teardown.
@@ -374,7 +397,7 @@ export const RahkshiModel = forwardRef<
         });
       }
     };
-  }, [battleInstance, detailedInstance]);
+  }, [detailedInstance, legacyBattleInstance]);
 
   useFrame((_, delta) => {
     const entries = glowEntries.current;
@@ -405,7 +428,9 @@ export const RahkshiModel = forwardRef<
   return (
     <group ref={group} dispose={null}>
       <primitive object={detailedInstance} scale={1} position={[0, 0, 0]} />
-      {battleInstance ? <primitive object={battleInstance} scale={1} position={[0, 0, 0]} /> : null}
+      {legacyBattleInstance ? (
+        <primitive object={legacyBattleInstance} scale={1} position={[0, 0, 0]} />
+      ) : null}
     </group>
   );
 });

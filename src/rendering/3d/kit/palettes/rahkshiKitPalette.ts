@@ -3,14 +3,7 @@ import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
 import type { MatoranColors } from '../../../../types/Matoran';
 import type { RahkshiArmorColors } from '../../../../data/rahkshiArmorColors';
 import type { WeatheredMetalOptions } from '../../CharacterScene/WeatheredMetalMaterial';
-import {
-  Color,
-  Material,
-  Mesh,
-  MeshPhysicalMaterial,
-  MeshStandardMaterial,
-  SkinnedMesh,
-} from 'three';
+import { Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, SkinnedMesh } from 'three';
 import { kitPartSlots } from './partSlots';
 import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from './technicKitPalette';
 
@@ -93,50 +86,44 @@ function isTintableBattleMaterial(mat: Material): mat is MeshStandardMaterial {
   );
 }
 
-type SkinnedMaterial = MeshPhysicalMaterial & { skinning?: boolean };
+type SkinnedMaterial = (MeshStandardMaterial | MeshPhysicalMaterial) & { skinning?: boolean };
 
-function createTintedBattleMaterial(
-  source: MeshStandardMaterial,
-  hex: string
-): MeshPhysicalMaterial {
-  const isMetal = source.name === 'Battle_Metal';
-  const tinted = new MeshPhysicalMaterial({
-    color: new Color(hex),
-    envMapIntensity: isMetal ? 0.52 : 0.4,
-    metalness: isMetal ? 0.9 : 0.05,
-    name: source.name,
-    roughness: isMetal ? 0.3 : 0.55,
-  });
-  tinted.userData.originalMaterialName = source.name;
-  (tinted as SkinnedMaterial).skinning = (source as SkinnedMaterial).skinning ?? false;
-  return tinted;
+function tintBattleMaterialInPlace(mat: SkinnedMaterial, hex: string): void {
+  if (mat.name === 'Battle_Metal') {
+    mat.metalness = 0.9;
+    mat.roughness = 0.3;
+    mat.envMapIntensity = 0.52;
+  }
+  mat.color.set(hex);
+  mat.needsUpdate = true;
 }
 
 /**
- * Replaces matching battle material slots with tinted `MeshPhysicalMaterial` instances.
- * Fresh materials avoid WebGPU node-graph issues on skinned meshes.
+ * Applies kraata armor/joint tints on matching `Battle_*` slots.
+ *
+ * Skinned meshes keep their GLTF materials — replacing them breaks WebGPU skinning.
+ * In-place `color` updates preserve the compiled skinning pipeline.
  */
 export function applyRahkshiBattleMaterialsToMesh(mesh: Mesh, tints: Record<string, string>): void {
   const raw = mesh.material;
   const materials = Array.isArray(raw) ? raw : [raw];
   let changed = false;
-  const next = materials.map((mat) => {
-    if (!isTintableBattleMaterial(mat)) return mat;
+
+  for (const mat of materials) {
+    if (!isTintableBattleMaterial(mat)) continue;
     const hex = tints[mat.name];
-    if (!hex) return mat;
+    if (!hex) continue;
     changed = true;
-    const tinted = createTintedBattleMaterial(mat, hex);
+    tintBattleMaterialInPlace(mat, hex);
     if ((mesh as SkinnedMesh).isSkinnedMesh) {
-      (tinted as SkinnedMaterial).skinning = true;
+      (mat as SkinnedMaterial).skinning = true;
     }
-    return tinted;
-  });
+  }
+
   if (!changed) return;
-  mesh.material = Array.isArray(raw) ? next : next[0];
-  const skinned = mesh as SkinnedMesh;
-  if (skinned.isSkinnedMesh) {
+
+  if ((mesh as SkinnedMesh).isSkinnedMesh) {
     mesh.frustumCulled = false;
-    skinned.bind?.(skinned.skeleton, skinned.bindMatrix);
   }
 }
 
