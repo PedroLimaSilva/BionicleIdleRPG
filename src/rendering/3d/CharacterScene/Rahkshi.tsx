@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react';
 import { Color as ThreeColor, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D } from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { CombatantModelHandle } from '../../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../hooks/useCombatAnimations';
@@ -29,9 +29,13 @@ import {
   RAHKSHI_DETAILED_RIG_NODE,
 } from './rahkshiBattleMeshes';
 import {
+  applyRahkshiLodCameraLayers,
   collectRahkshiBattleMeshUuids,
+  resetRahkshiLodCameraLayers,
   resolveRahkshiBattleAppearanceTarget,
-  setRahkshiLodVisibility,
+  setRahkshiBattleSpeciesVisibility,
+  tagDetailedLayer,
+  tagRahkshiLodLayers,
 } from './rahkshiLod';
 import { KIT_2001_GLB_PATH } from '../kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../kit/kit2003';
@@ -76,7 +80,7 @@ function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
 function applyBattleMaterials(root: Object3D, meshUuids: Set<string>, kraata: KraataPower): void {
   const dex = getRahkshiArmorColors(kraata);
   root.traverse((child) => {
-    if (!(child instanceof Mesh) || !meshUuids.has(child.uuid)) return;
+    if (!(child as Mesh).isMesh || !meshUuids.has(child.uuid)) return;
 
     if (isRahkshiBattleSpeciesMesh(child.name)) {
       applyRahkshiBattleMaterialsToMesh(child, { Battle_Metal: dex.armor });
@@ -112,12 +116,18 @@ export const RahkshiModel = forwardRef<
   const [glowCompleteForIdle, setGlowCompleteForIdle] = useState(hasKraata);
   const prevHasKraataRef = useRef(hasKraata);
 
-  const { animations, nodes } = useGLTF(RAHKSHI_GLB);
+  const { animations, nodes, scene } = useGLTF(RAHKSHI_GLB);
+  const camera = useThree((state) => state.camera);
 
   const detailedInstance = useMemo(() => {
-    const root = nodes[RAHKSHI_DETAILED_RIG_NODE] as Object3D | undefined;
-    return root ? cloneGltfInstance(root) : new Group();
-  }, [nodes]);
+    const root =
+      (scene.getObjectByName(RAHKSHI_DETAILED_RIG_NODE) as Object3D | null) ??
+      (nodes[RAHKSHI_DETAILED_RIG_NODE] as Object3D | undefined);
+    if (!root) return new Group();
+    const instance = cloneGltfInstance(root);
+    tagRahkshiLodLayers(instance);
+    return instance;
+  }, [nodes, scene]);
 
   const battleAppearanceTarget = useMemo(
     () => resolveRahkshiBattleAppearanceTarget(detailedInstance),
@@ -127,7 +137,7 @@ export const RahkshiModel = forwardRef<
   const detailedMeshUuids = useMemo(() => {
     const uuids = new Set<string>();
     detailedInstance.traverse((child) => {
-      if (child instanceof Mesh && !isRahkshiBattleLodMesh(child.name)) {
+      if ((child as Mesh).isMesh && !isRahkshiBattleLodMesh(child.name)) {
         uuids.add(child.uuid);
       }
     });
@@ -151,11 +161,21 @@ export const RahkshiModel = forwardRef<
   const dex = useMemo(() => getRahkshiArmorColors(kraata), [kraata]);
 
   const syncLodState = useCallback(() => {
-    setRahkshiLodVisibility(detailedInstance, meshVariant, dex.staff);
-    if (battleAppearanceTarget) {
+    tagRahkshiLodLayers(detailedInstance);
+    applyRahkshiLodCameraLayers(camera, meshVariant);
+    setRahkshiBattleSpeciesVisibility(detailedInstance, meshVariant, dex.staff);
+    if (meshVariant === 'battle' && battleAppearanceTarget) {
       applyBattleMaterials(battleAppearanceTarget.root, battleMeshUuids, kraata);
     }
-  }, [battleAppearanceTarget, battleMeshUuids, detailedInstance, dex.staff, kraata, meshVariant]);
+  }, [
+    battleAppearanceTarget,
+    battleMeshUuids,
+    camera,
+    detailedInstance,
+    dex.staff,
+    kraata,
+    meshVariant,
+  ]);
 
   useLayoutEffect(() => {
     syncLodState();
@@ -163,7 +183,12 @@ export const RahkshiModel = forwardRef<
 
   useEffect(() => {
     syncLodState();
-  }, [syncLodState]);
+    return () => resetRahkshiLodCameraLayers(camera);
+  }, [camera, syncLodState]);
+
+  useFrame(() => {
+    applyRahkshiLodCameraLayers(camera, meshVariant);
+  });
 
   const collectHeadSocketGlow = useCallback(() => {
     if (isBattle) return;
@@ -247,11 +272,22 @@ export const RahkshiModel = forwardRef<
       kitLayersDone.current += 1;
       if (kitLayersDone.current < RAHKSHI_ATTACHMENT_RUNS) return;
       kitLayersDone.current = 0;
+      detailedInstance.traverse((child) => {
+        if ((child as Mesh).isMesh && !detailedMeshUuids.has(child.uuid)) {
+          tagDetailedLayer(child);
+        }
+      });
       syncLodState();
       collectHeadSocketGlow();
       onKitMeshesAttached?.();
     };
-  }, [collectHeadSocketGlow, onKitMeshesAttached, syncLodState]);
+  }, [
+    collectHeadSocketGlow,
+    detailedInstance,
+    detailedMeshUuids,
+    onKitMeshesAttached,
+    syncLodState,
+  ]);
 
   const effectiveIdleAction = hasKraata
     ? glowCompleteForIdle && prevHasKraataRef.current

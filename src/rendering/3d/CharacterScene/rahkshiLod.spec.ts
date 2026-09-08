@@ -1,8 +1,12 @@
-import { BoxGeometry, Group, Mesh, MeshStandardMaterial } from 'three';
+import { BoxGeometry, Group, Mesh, MeshStandardMaterial, PerspectiveCamera } from 'three';
 import {
+  applyRahkshiLodCameraLayers,
   collectRahkshiBattleMeshUuids,
+  RAHKSHI_BATTLE_LAYER,
+  RAHKSHI_DETAILED_LAYER,
   resolveRahkshiBattleAppearanceTarget,
   setRahkshiLodVisibility,
+  tagRahkshiLodLayers,
 } from './rahkshiLod';
 import { RAHKSHI_BATTLE_BODY_MESH } from './rahkshiBattleMeshes';
 
@@ -63,5 +67,26 @@ describe('rahkshiLod visibility', () => {
     expect(target?.meshUuids.has(battleBody.uuid)).toBe(true);
     expect(target?.meshUuids.has(baked.uuid)).toBe(false);
     expect(collectRahkshiBattleMeshUuids(detailed)).toEqual(target?.meshUuids);
+  });
+
+  test('tagRahkshiLodLayers assigns battle and detailed camera layers', () => {
+    const detailed = new Group();
+    const baked = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    baked.name = 'Face';
+    const battleBody = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    battleBody.name = RAHKSHI_BATTLE_BODY_MESH;
+    detailed.add(baked);
+    detailed.add(battleBody);
+
+    tagRahkshiLodLayers(detailed);
+    expect(baked.layers.mask).toBe(1 << RAHKSHI_DETAILED_LAYER);
+    expect(battleBody.layers.mask).toBe(1 << RAHKSHI_BATTLE_LAYER);
+
+    const camera = new PerspectiveCamera();
+    applyRahkshiLodCameraLayers(camera, 'detailed');
+    expect(camera.layers.mask).toBe(1 << RAHKSHI_DETAILED_LAYER);
+
+    applyRahkshiLodCameraLayers(camera, 'battle');
+    expect(camera.layers.mask).toBe(1 << RAHKSHI_BATTLE_LAYER);
   });
 });
