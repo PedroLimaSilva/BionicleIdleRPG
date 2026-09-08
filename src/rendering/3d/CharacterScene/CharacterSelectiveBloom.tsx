@@ -53,11 +53,14 @@ export type CharacterSelectiveBloomProps = {
    * glow slots stay visible (card alpha math hides them).
    */
   variant?: SelectiveBloomVariant;
+  /** When false, keeps the MRT scene pass but skips bloom convolution (battle perf). */
+  bloomEnabled?: boolean;
 };
 
 /**
  * WebGPU selective bloom for CharacterScene (and Rahkshi preview).
- * Battle arenas skip this pass for performance; combatants still render via the default pipeline.
+ * Battle arenas use `variant="scene"` with `bloomEnabled={false}`: the MRT scene
+ * pass keeps transmissive brains and mask-power Kanohi visible, without bloom cost.
  *
  * Default MRT `bloomIntensity` is 0. Kit brains, kit Glow, Rahkshi Eyes, and
  * active Kanohi mask-power write 1; Glowing Eyes do not.
@@ -68,7 +71,10 @@ export type CharacterSelectiveBloomProps = {
  * Scene variant: writes opaque pixels — transmissive MRT materials must not be
  * multiplied by scene alpha or they vanish against the arena.
  */
-export function CharacterSelectiveBloom({ variant = 'card' }: CharacterSelectiveBloomProps) {
+export function CharacterSelectiveBloom({
+  bloomEnabled = true,
+  variant = 'card',
+}: CharacterSelectiveBloomProps) {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
   const camera = useThree((s) => s.camera);
@@ -82,26 +88,30 @@ export function CharacterSelectiveBloom({ variant = 'card' }: CharacterSelective
 
     const outputPass = scenePass.getTextureNode();
     const bloomIntensityPass = scenePass.getTextureNode('bloomIntensity');
-    const bloomPass = bloom(
-      outputPass.mul(bloomIntensityPass) as never,
-      BLOOM_STRENGTH,
-      BLOOM_RADIUS,
-      BLOOM_THRESHOLD
-    ) as unknown as TslTextureNode;
+    const bloomPass = bloomEnabled
+      ? (bloom(
+          outputPass.mul(bloomIntensityPass) as never,
+          BLOOM_STRENGTH,
+          BLOOM_RADIUS,
+          BLOOM_THRESHOLD
+        ) as unknown as TslTextureNode)
+      : null;
 
     let outputNode: TslTextureNode;
     let quadTransparent: boolean;
 
     if (variant === 'scene') {
-      const linearRgb = outputPass.rgb.add(bloomPass.rgb);
+      const linearRgb = bloomPass ? outputPass.rgb.add(bloomPass.rgb) : outputPass.rgb;
       outputNode = (vec4(linearRgb as never, float(1)) as unknown as TslTextureNode).renderOutput();
       quadTransparent = false;
     } else {
       const haloMix = float(1).sub(outputPass.a as never);
-      const bloomCover = bloomPass.r.max(bloomPass.g).max(bloomPass.b).saturate();
+      const bloomCover = bloomPass
+        ? bloomPass.r.max(bloomPass.g).max(bloomPass.b).saturate()
+        : float(0);
       const linearRgb = outputPass.rgb
         .mul(outputPass.a)
-        .add(bloomPass.rgb)
+        .add(bloomPass ? bloomPass.rgb : float(0))
         .add(CARD_BACKDROP.mul(haloMix).mul(bloomCover as never));
       const converted = (
         vec4(linearRgb as never, float(1)) as unknown as TslTextureNode
@@ -126,7 +136,7 @@ export function CharacterSelectiveBloom({ variant = 'card' }: CharacterSelective
     quadMat.blending = NoBlending;
     quadMat.needsUpdate = true;
     return rp;
-  }, [camera, enabled, gl, scene, variant]);
+  }, [bloomEnabled, camera, enabled, gl, scene, variant]);
 
   useEffect(() => {
     return () => pipeline?.dispose();
