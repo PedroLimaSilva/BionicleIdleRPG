@@ -14,9 +14,11 @@ describe('selectiveBloom selection', () => {
     expect(isSelectiveBloomKitGlowName('Main')).toBe(false);
   });
 
-  test('Rahkshi Eyes bloom and Kanohi Glowing Eyes do not', () => {
+  test('Rahkshi Eyes and Battle_Bloom bloom; Kanohi Glowing Eyes do not', () => {
     expect(isSelectiveBloomRahkshiEyeName('Eyes')).toBe(true);
     expect(isSelectiveBloomRahkshiEyeName('eyes')).toBe(true);
+    expect(isSelectiveBloomRahkshiEyeName('Battle_Bloom')).toBe(true);
+    expect(isSelectiveBloomRahkshiEyeName('battle_bloom')).toBe(true);
     expect(isSelectiveBloomRahkshiEyeName('Glowing Eyes')).toBe(false);
     expect(isSelectiveBloomRahkshiEyeName('Glow')).toBe(false);
     expect(isSelectiveBloomRahkshiEyeName(undefined)).toBe(false);
