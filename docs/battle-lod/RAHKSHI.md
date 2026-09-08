@@ -6,105 +6,85 @@ Phase **C** pilot for [`docs/3D_RENDERING_STRATEGY.md`](../3D_RENDERING_STRATEGY
 
 ## GLB layout (`public/rahkshi.glb`)
 
-Two armatures in one file:
+One armature. Battle LOD meshes are siblings on `Rahkshi`. Most battle nodes are named `Battle_*`; the body bucket is a `Battle_Body` **Group** whose skinned children use `Part-*` names (see below). Runtime toggles visibility — no second skeleton.
 
-| Rig        | Node             | Used by                     | Contents                                                                                                 |
-| ---------- | ---------------- | --------------------------- | -------------------------------------------------------------------------------------------------------- |
-| **Live**   | `Rahkshi`        | Inventory preview, fallback | Original kit + baked textures — [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx) today |
-| **Battle** | `rahkshi_battle` | Combat (target)             | Merged battle LOD — no kit attach                                                                        |
+```
+Rahkshi (armature)
+├── … detailed sockets, baked meshes, kit attach points (visible in detailed LOD)
+├── Battle_Body (Group) — six skinned children, one per material slot (see below)
+├── Battle_Glow      — under `Head`; one `Battle_Bloom` material
+└── Battle_Guurahk / Battle_Panrahk / … — species overlays (one visible)
+```
 
-Same animation clips on both armatures (`Empty`, `Idle`, `Attack`, `Hit`, `Defeat`).
+Shared animation clips at file scope (`Attack`, `Empty`, `Idle`). `Hit` is still required for combat — re-export when ready.
 
 ---
 
-## `rahkshi_battle` mesh tree
+## Battle mesh nodes
 
-```
-rahkshi_battle (armature)
-├── Body          — one SkinnedMesh, multiple material slots (opaque buckets below)
-│                   includes shared / common staff geometry
-├── Head          — one mesh, material `Battle_Bloom` (emissive + selective bloom)
-└── Species_*     — six meshes, one material slot each (only one visible at runtime)
-    ├── Species_Guurahk   — spine + staff
-    ├── Species_Turahk
-    ├── Species_Panrahk
-    ├── Species_Lerahk
-    ├── Species_Vorahk
-    └── Species_Kurahk
-```
+| Node             | Draws | Notes                                                                 |
+| ---------------- | ----: | --------------------------------------------------------------------- |
+| `Battle_Body`    |     6 | **Group** of skinned children (one draw per `Battle_*` slot)          |
+| `Battle_Glow`    |     1 | Merged eyes + kraata disk under `Head`                                |
+| `Battle_{Breed}` |     1 | Species overlay (`Battle_Guurahk`, `Battle_Panrahk`, …) — one visible |
 
-### Why this shape
-
-| Piece                          | Rationale                                                                                                                                                                                                                         |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Body** (multi-slot skinned)  | Six opaque tint buckets as **material slots on one mesh** — same draw cost as six separate skinned meshes, simpler export. Shared staff parts that do not vary by breed live here.                                                |
-| **Head** (single bloom mesh)   | Merges baked `Eyes` + kit `Socket_Head` disk into **one emissive mesh with bloom MRT**. Drops a draw vs separate eyes / head-ring passes and matches the visual (glow reads as one unit).                                         |
-| **Species\_\*** (six overlays) | Spine armor + staff shape differ per breed ([`rahkshiVariantMeshes.ts`](../../src/rendering/3d/CharacterScene/rahkshiVariantMeshes.ts)). One material each; runtime shows **one** mesh via `getRahkshiArmorColors(kraata).staff`. |
-
-### Target draw count (battle)
-
-| Mesh                      |  Draws |
-| ------------------------- | -----: |
-| `Body` (6 material slots) |      6 |
-| `Head` (bloom)            |      1 |
-| One visible `Species_*`   |      1 |
-| **Total**                 | **~8** |
+**Shipped today:** `Battle_Guurahk` only. Add `Battle_Panrahk` … `Battle_Turahk` before battle becomes default in combat.
 
 Compare to live kit path: **40+** draws per Rahkshi.
 
 ---
 
-## Body material slots
+## Body material slots (`Battle_Body`)
 
-Name slots on the **`Body`** skinned mesh exactly as below so `applyRahkshiBattlePalette` can map kraata colors.
+Blender exports `Battle_Body` as an **empty Group** parented under `Rahkshi`, not as a single merged `SkinnedMesh`. Each material slot becomes its own skinned child (for example `Part-44136_dot_dat003` … `_5`). Those children are **not** named with the `Battle_` prefix.
 
-| Slot                   | Runtime tint                              | Weathered | Source geometry (live rig)                                                  |
-| ---------------------- | ----------------------------------------- | --------- | --------------------------------------------------------------------------- |
-| `Battle_Armor`         | `body.main` / `face` (= kraata **armor**) | Yes       | Baked `Back`, `Face`; spine sockets; feet secondary; **common staff** parts |
-| `Battle_Joint`         | `feet.main` (= kraata **joint**)          | Yes       | Feet kit; limb sockets; `TechnicArmPistonN`                                 |
-| `Battle_Chassis`       | Fixed `LegoColor.DarkBluishGray`          | Yes       | Body, legs, limbs, technic arms, cradle, shoulders                          |
-| `Battle_Technic_Black` | Fixed black                               | Light     | Black axles, `TechnicArmPistonT`                                            |
-| `Battle_Technic_Metal` | Fixed technic metal                       | Metal PBR | `GearM`, shoulder axle connectors                                           |
-| `Battle_Tan`           | Fixed tan                                 | Light     | `AxlePin_*`                                                                 |
+Runtime code treats any mesh under the `Battle_Body` group as battle LOD via [`isRahkshiBattleBodyPartMesh`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) — do not rely on the group node itself being renderable.
 
-Single-color kraata (armor === joint): slots 1 and 2 may share the same hex at runtime; keep both slots unless you merge them in Blender when armor always equals joint.
+| Slot             | Runtime tint         | Notes                                        |
+| ---------------- | -------------------- | -------------------------------------------- |
+| `Battle_Armor`   | kraata **armor** hex | Tinted at runtime via `rahkshiBattleTintMap` |
+| `Battle_Joint`   | kraata **joint** hex | Tinted at runtime                            |
+| `Battle_Chassis` | Authored in GLB      | Not re-tinted                                |
+| `Battle_Black`   | Authored in GLB      | Not re-tinted                                |
+| `Battle_Metal`   | Authored in GLB      | Not re-tinted (species overlay uses armor)   |
+| `Battle_Tan`     | Authored in GLB      | Not re-tinted                                |
 
-Palette rules: [`rahkshiKitPalette.ts`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts). Socket reference: [`rahkshi.ts`](../../src/rendering/3d/kit/attachments/rahkshi.ts).
-
----
-
-## Head mesh
-
-| Item            | Detail                                                                                                                                                                                                |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Merge**       | Baked eye slits + head socket / kraata disk (`Socket_Head` kit) → **one** mesh                                                                                                                        |
-| **Material**    | `Battle_Bloom` — emissive from `colors.eyes`, **selective bloom MRT** ([`isSelectiveBloomRahkshiEyeName`](../../src/rendering/3d/CharacterScene/selectiveBloom.ts) matches `Eyes` and `Battle_Bloom`) |
-| **Kraata lerp** | No kraata: lerp emissive/color to black; `Empty` idle until glow completes — same as live [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx), but **one** material to animate         |
-
-No separate non-bloom head ring mesh.
+[`rahkshiBattleTintMap`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts) touches **armor + joint only** — no weathered TSL (skinned meshes keep stock materials for WebGPU skinning).
 
 ---
 
-## Species meshes
+## Head bloom (`Battle_Glow`)
 
-One mesh per staff breed; **one material slot** each (tint with `Battle_Armor` / armor hex unless authored otherwise).
+| Item            | Detail                                                                                                                                                                  |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Mesh**        | `Battle_Glow` under `Head` — **one** mesh object, **one** draw call                                                                                                     |
+| **Material**    | **`Battle_Bloom` only** — emissive kraata glow + selective bloom MRT ([`isSelectiveBloomRahkshiGlowMaterial`](../../src/rendering/3d/CharacterScene/selectiveBloom.ts)) |
+| **Kraata lerp** | Same as live `Glow` — lerp to black when empty; `Empty` idle until glow completes                                                                                       |
 
-| Mesh name (suggested) | `staff` prefix | Kraata examples                     |
-| --------------------- | -------------- | ----------------------------------- |
-| `Species_Guurahk`     | `Guurahk`      | Disintegration                      |
-| `Species_Panrahk`     | `Panrahk`      | Fragmentation, Molecular Disruption |
-| `Species_Lerahk`      | `Lerahk`       | Poison                              |
-| `Species_Vorahk`      | `Vorahk`       | Hunger                              |
-| `Species_Kurahk`      | `Kurahk`       | Anger                               |
-| `Species_Turahk`      | `Turahk`       | Fallback — most other powers        |
-
-Each mesh contains that breed’s **spine (S) + staff hands (L/R)** geometry merged for export. Replaces the live rig’s eighteen separate variant meshes (`GuurahkL`, `GuurahkR`, …).
-
-Runtime: `shouldShowRahkshiVariantMesh` logic becomes **show `Species_{staff}`, hide the other five**.
+**Authoring rule:** join every eye / kraata-disk face into a **single** `Battle_Glow` mesh with **one** `Battle_Bloom` material slot.
 
 ---
 
-## Live rig (unchanged) — for comparison
+## Species overlays
+
+One mesh per staff breed, named `Battle_{Breed}` at the armature root (sibling of `Battle_Body`):
+
+| Mesh name        | `staff` prefix | Kraata examples                     |
+| ---------------- | -------------- | ----------------------------------- |
+| `Battle_Guurahk` | `Guurahk`      | Disintegration                      |
+| `Battle_Panrahk` | `Panrahk`      | Fragmentation, Molecular Disruption |
+| `Battle_Lerahk`  | `Lerahk`       | Poison                              |
+| `Battle_Vorahk`  | `Vorahk`       | Hunger                              |
+| `Battle_Kurahk`  | `Kurahk`       | Anger                               |
+| `Battle_Turahk`  | `Turahk`       | Fallback — most other powers        |
+
+Runtime: [`shouldShowRahkshiBattleSpeciesMesh`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) — `meshName === Battle_{staffPrefix}`.
+
+Species overlays tint with the armor hex on their `Battle_Metal` slot.
+
+---
+
+## Live rig (`Rahkshi`) — for comparison
 
 ```
 Rahkshi → clone bodyInstance → weathered baked meshes
@@ -113,55 +93,55 @@ Rahkshi → clone bodyInstance → weathered baked meshes
        → show 3 of 18 variant meshes per staff prefix
 ```
 
-Keep this path for inventory preview until battle visuals are signed off.
+Character dex defaults to the **detailed** kit path; toggle **Battle LOD** on Rahkshi specimens to preview `Battle_*` meshes. **Combat** uses battle LOD via [`RAHKSHI_COMBAT_MESH_VARIANT`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx) even when species overlays are still being authored.
 
 ---
 
 ## Behaviors to preserve (battle code)
 
-| Behavior        | Live                                             | `rahkshi_battle`                        |
-| --------------- | ------------------------------------------------ | --------------------------------------- |
-| No kraata       | Eyes (+ head kit) lerp black; `Empty` until glow | Lerp **`Battle_Bloom`** only            |
-| Kraata inserted | Glow lerp → `Idle`                               | Same, one `Battle_Bloom` material       |
-| Staff breed     | 3 of 18 variant meshes visible                   | 1 of 6 `Species_*` visible              |
-| Kraata tint     | `getRahkshiArmorColors` → weathered              | Tint `Body` slots + visible `Species_*` |
-| Bloom           | `Eyes` MRT                                       | **`Battle_Bloom`** MRT                  |
-| Animations      | Shared clips                                     | Same armature actions                   |
+| Behavior        | Live (`detailed`)                                | Battle (`battle`)                  |
+| --------------- | ------------------------------------------------ | ---------------------------------- |
+| No kraata       | Eyes (+ head kit) lerp black; `Empty` until glow | Lerp `Battle_Glow` only            |
+| Kraata inserted | Glow lerp → `Idle`                               | Same                               |
+| Staff breed     | 3 of 18 variant meshes visible                   | 1 `Battle_{Breed}` overlay visible |
+| Kraata tint     | `getRahkshiArmorColors` → weathered              | Tint `Battle_Body` slots + species |
+| Bloom           | `Glow` MRT on baked mesh                         | `Battle_Bloom` on `Battle_Glow`    |
+| Animations      | Shared file clips                                | Same                               |
+
+---
+
+## Code map
+
+| File                                                                                     | Role                                                           |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx)                       | `meshVariant: 'detailed' \| 'battle'`; combat default `battle` |
+| [`rahkshiBattleMeshes.ts`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) | `Battle_*` naming, body group children, species visibility     |
+| [`rahkshiLod.ts`](../../src/rendering/3d/CharacterScene/rahkshiLod.ts)                   | Toggle `Battle_*` mesh visibility                              |
+| [`rahkshiKitPalette.ts`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts)       | `rahkshiBattleTintMap` (armor + joint only)                    |
+| [`data/dex/rahkshi.ts`](../../src/data/dex/rahkshi.ts)                                   | `RahkshiDexMeshVariant` type for dex preview                   |
+| [`CharacterDex/Preview.tsx`](../../src/pages/CharacterDex/Preview.tsx)                   | Battle LOD toggle                                              |
 
 ---
 
 ## Blender export checklist
 
-1. **Live collection** — `Rahkshi` armature + kit instances (unchanged from current ship).
-2. **Battle collection** — `rahkshi_battle` armature:
-   - Join opaque geometry into **`Body`**; assign six `Battle_*` slots; skin to bones; include common staff pieces.
-   - Join eyes + head disk → **`Head`**; material **`Battle_Bloom`**.
-   - Per breed: join spine + staff L/R → **`Species_{Breed}`**; one material each.
-3. Export both armatures in `rahkshi.glb`; verify actions on both.
-4. Visual QA: Disintegration (Guurahk), Poison (Lerahk), Hunger (Vorahk) vs live kit build.
-
----
-
-## Code follow-up (separate PR from GLB)
-
-| File                      | Change                                                                                             |
-| ------------------------- | -------------------------------------------------------------------------------------------------- |
-| `Rahkshi.tsx`             | Battle: clone `rahkshi_battle`, skip `useKitAttachments`; palette + head lerp + species visibility |
-| `rahkshiVariantMeshes.ts` | Map `staff` → `Species_*` mesh name (or replace with simple visibility helper)                     |
-| `selectiveBloom.ts`       | `isSelectiveBloomRahkshiEyeName` matches `Eyes` and `Battle_Bloom`                                 |
-| `rahkshiKitPalette.ts`    | `applyRahkshiBattlePalette(body, speciesMesh, dex)`                                                |
-
-Preview route can keep live `Rahkshi` until battle path is default everywhere.
+1. **One armature** — `Rahkshi` only (no `Rahkshi_Battle`).
+2. **Battle body** — parent opaque geometry under a **`Battle_Body` Group**; one skinned mesh per `Battle_*` material slot; skin to `Rahkshi` bones with **vertex groups** (Armature modifier → `Rahkshi`, bind to **Vertex Groups**). Merging all slots into one mesh is fine too, but the current export uses a group of six skinned parts.
+3. **Battle glow** — join eyes + head disk → **`Battle_Glow`** under `Head`; **one** material **`Battle_Bloom`**.
+4. **Species** — per breed: spine + staff → **`Battle_{Breed}`** (`Battle_Guurahk`, `Battle_Panrahk`, …).
+5. **Naming** — battle LOD mesh nodes use **`Battle_`** prefix, **except** the skinned children inside `Battle_Body` (runtime matches by parent group).
+6. Export; verify shared actions drive the single `Rahkshi` skeleton.
+7. Re-export **`Hit`** (and `Defeat` when ready) — required for combat / dex animation buttons.
 
 ---
 
 ## Instancing (Phase D)
 
-Same `rahkshi_battle` geometry for all instances; `instanceColor` or uniforms for armor + joint on `Body` slots. Batch by identical kraata power in a wave.
+Same `Battle_*` geometry for all instances; per-instance armor + joint on `Battle_Body` slots. Batch by identical kraata power in a wave.
 
 ---
 
 ## Related docs
 
-- [`battle-lod/TAHU_MATA.md`](TAHU_MATA.md) — Mata Toa (separate dex + battle split)
+- [`battle-lod/TAHU_MATA.md`](TAHU_MATA.md) — Mata Toa bucket spec
 - [`3D_RENDERING_STRATEGY.md`](../3D_RENDERING_STRATEGY.md) — phased plan

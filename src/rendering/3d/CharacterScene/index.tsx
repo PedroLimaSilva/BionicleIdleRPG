@@ -32,7 +32,7 @@ import { BohrokModel } from './BohrokModel';
 import { VahkiModel } from './VahkiModel';
 import { RahiPlaceholderModel } from './RahiPlaceholderModel';
 import { NuiRamaModel } from './NuiRamaModel';
-import { RahkshiModel } from './Rahkshi';
+import { RahkshiModel, RAHKSHI_PREVIEW_MESH_VARIANT } from './Rahkshi';
 import { OnuaNuvaModel } from './Nuva/OnuaNuvaModel';
 import { PohatuNuvaModel } from './Nuva/PohatuNuvaModel';
 import { LewaNuvaModel } from './Nuva/LewaNuvaModel';
@@ -59,6 +59,7 @@ const SHEET_ENV_INTENSITY = 0.4;
 export type CharacterSceneMatoran = BaseMatoran &
   RecruitedCharacterData & {
     maskPowerActive?: boolean;
+    rahkshiMeshVariant?: 'detailed' | 'battle';
     unlockAllMasks?: boolean;
   };
 
@@ -81,7 +82,13 @@ const CharacterModel = forwardRef<
 >(function CharacterModel({ matoran, onModelReady }, ref) {
   useEffect(() => {
     onModelReady?.();
-  }, [matoran.customMataModelId, matoran.id, matoran.stage, onModelReady]);
+  }, [
+    matoran.customMataModelId,
+    matoran.id,
+    matoran.rahkshiMeshVariant,
+    matoran.stage,
+    onModelReady,
+  ]);
 
   switch (matoran.stage) {
     case MatoranStage.ToaMata: {
@@ -157,7 +164,13 @@ const CharacterModel = forwardRef<
     case MatoranStage.Rahkshi:
       if (!isKraataPower(matoran.id)) return null;
       return (
-        <RahkshiModel ref={ref} kraata={matoran.id} hasKraata onKitMeshesAttached={onModelReady} />
+        <RahkshiModel
+          ref={ref}
+          kraata={matoran.id}
+          hasKraata
+          meshVariant={matoran.rahkshiMeshVariant ?? RAHKSHI_PREVIEW_MESH_VARIANT}
+          onKitMeshesAttached={onModelReady}
+        />
       );
     case MatoranStage.Diminished:
       return <DiminishedMatoranModel matoran={matoran} onKitMeshesAttached={onModelReady} />;

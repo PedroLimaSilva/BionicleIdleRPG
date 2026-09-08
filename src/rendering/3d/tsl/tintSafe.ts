@@ -66,6 +66,12 @@ function isIdentitySwizzle(components: string, sourceLength: number): boolean {
   return components === xyzw || components === rgba;
 }
 
+/** WGSL `dot()` only accepts matching float/int vector types — not `uvec4` skin indices. */
+function isIntegerType(type: string | undefined): boolean {
+  if (!type) return false;
+  return type.startsWith('i') || type.startsWith('u');
+}
+
 /** WGSL forbids `vec4(vec3)`. Pad missing components instead of wrapping. */
 function packAsVec4(snippet: string, sourceType: string | undefined): string {
   const length = typeLength(sourceType);
@@ -86,6 +92,9 @@ function extractComponent(
   component: string,
   sourceType: string | undefined
 ): string {
+  if (isIntegerType(sourceType)) {
+    return `${snippet}.${component}`;
+  }
   const mask = CHANNEL_MASKS[component];
   if (!mask) {
     return `${snippet}.${component}`;
@@ -99,6 +108,13 @@ function swizzleAsVector(
   vectorType: string,
   sourceType: string | undefined
 ): string {
+  if (isIntegerType(sourceType)) {
+    const parts = Array.from(components, (component) => `${snippet}.${component}`);
+    while (parts.length < 2) {
+      parts.push('0');
+    }
+    return `${vectorType}( ${parts.join(', ')} )`;
+  }
   const packed = packAsVec4(snippet, sourceType);
   const dots = Array.from(components, (component) => {
     const mask = CHANNEL_MASKS[component];

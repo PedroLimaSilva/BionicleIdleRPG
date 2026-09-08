@@ -3,6 +3,7 @@ import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
 import type { MatoranColors } from '../../../../types/Matoran';
 import type { RahkshiArmorColors } from '../../../../data/rahkshiArmorColors';
 import type { WeatheredMetalOptions } from '../../CharacterScene/WeatheredMetalMaterial';
+import { Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, SkinnedMesh } from 'three';
 import { kitPartSlots } from './partSlots';
 import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from './technicKitPalette';
 
@@ -69,7 +70,62 @@ export const RAHKSHI_KIT_PALETTE_TAN: Partial<Record<string, KitMaterialSlotEntr
 export const RAHKSHI_KIT_PALETTE_BLACK = KIT_TECHNIC_MAIN_BLACK;
 export const RAHKSHI_KIT_PALETTE_METAL = KIT_TECHNIC_MAIN_METAL;
 
-/** Map lore armor/joint hex onto kit part slots (`useKitAttachments` colors). */
+/** Kraata-driven tint slots on battle `Battle_Body` — fixed `Battle_*` slots stay as authored in the GLB. */
+export function rahkshiBattleTintMap(dex: RahkshiArmorColors): Record<string, string> {
+  return {
+    Battle_Armor: dex.armor,
+    Battle_Joint: dex.joint,
+  };
+}
+
+function isTintableBattleMaterial(mat: Material): mat is MeshStandardMaterial {
+  return (
+    mat instanceof MeshStandardMaterial ||
+    mat instanceof MeshPhysicalMaterial ||
+    (mat as MeshStandardMaterial).isMeshStandardMaterial === true
+  );
+}
+
+type SkinnedMaterial = (MeshStandardMaterial | MeshPhysicalMaterial) & { skinning?: boolean };
+
+function tintBattleMaterialInPlace(mat: SkinnedMaterial, hex: string): void {
+  if (mat.name === 'Battle_Metal') {
+    mat.metalness = 0.9;
+    mat.roughness = 0.3;
+    mat.envMapIntensity = 0.52;
+  }
+  mat.color.set(hex);
+}
+
+/**
+ * Applies kraata armor/joint tints on matching `Battle_*` slots.
+ *
+ * Skinned meshes keep their GLTF materials — replacing them breaks WebGPU skinning.
+ * In-place `color` updates preserve the compiled skinning pipeline.
+ */
+export function applyRahkshiBattleMaterialsToMesh(mesh: Mesh, tints: Record<string, string>): void {
+  const raw = mesh.material;
+  const materials = Array.isArray(raw) ? raw : [raw];
+  const skinned = mesh as SkinnedMesh;
+
+  for (const mat of materials) {
+    if (!isTintableBattleMaterial(mat)) continue;
+    if (skinned.isSkinnedMesh) {
+      (mat as SkinnedMaterial).skinning = true;
+    }
+    const hex = tints[mat.name];
+    if (!hex) continue;
+    tintBattleMaterialInPlace(mat, hex);
+  }
+
+  if (!skinned.isSkinnedMesh) return;
+
+  mesh.frustumCulled = false;
+  skinned.bind?.(skinned.skeleton, skinned.bindMatrix);
+  skinned.computeBoundingSphere?.();
+  skinned.geometry?.computeBoundingSphere();
+}
+
 export function rahkshiKitColors(dex: RahkshiArmorColors): MatoranColors {
   const armor = dex.armor as LegoColor;
   const joint = dex.joint as LegoColor;

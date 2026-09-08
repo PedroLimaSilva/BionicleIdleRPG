@@ -20,9 +20,17 @@ export function isSelectiveBloomKitGlowName(name: string | undefined): boolean {
   return lower.includes('glow');
 }
 
-/** Rahkshi GLB eye slots (`Eyes`) join the bloom MRT; Kanohi Glowing Eyes do not. */
+/** Rahkshi GLB eye / kraata glow slots join the bloom MRT; Kanohi Glowing Eyes do not. */
 export function isSelectiveBloomRahkshiEyeName(name: string | undefined): boolean {
-  return !!name && name.toLowerCase() === 'eyes';
+  return isSelectiveBloomRahkshiGlowMaterial(name);
+}
+
+/** Rahkshi baked `Glow` (detailed rig) and battle `Battle_Bloom` on `Battle_Glow`. Legacy `Eyes` still matches. */
+export function isSelectiveBloomRahkshiGlowMaterial(name: string | undefined): boolean {
+  if (!name) return false;
+  const lower = name.toLowerCase();
+  if (lower.includes('glowing eyes')) return false;
+  return lower === 'eyes' || lower === 'glow' || lower === 'battle_bloom';
 }
 
 /** Toa / Metru brain gel and Bohrok crystal brains bloom; colorless viewports and visors do not. */
@@ -33,11 +41,17 @@ export function shouldSelectiveBloomTransmissiveKind(
 }
 
 /** Marks a material so the character bloom MRT picks it up (Three.js selective-bloom pattern). */
-export function applySelectiveBloomMrt(mat: SelectiveBloomMrtMaterial): void {
+export function applySelectiveBloomMrt(
+  mat: SelectiveBloomMrtMaterial & { needsUpdate?: boolean }
+): void {
   mat.mrtNode = mrt({ bloomIntensity: BLOOM_INTENSITY_ON });
+  mat.needsUpdate = true;
 }
 
 /** Drops a material from the bloom MRT (mask power off, or a one-off selection). */
-export function clearSelectiveBloomMrt(mat: SelectiveBloomMrtMaterial): void {
+export function clearSelectiveBloomMrt(
+  mat: SelectiveBloomMrtMaterial & { needsUpdate?: boolean }
+): void {
   mat.mrtNode = undefined;
+  mat.needsUpdate = true;
 }

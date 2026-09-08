@@ -10,6 +10,11 @@ import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { playCharacterPreviewAnimation } from '../../rendering/3d/utils/characterPreviewControls';
 import { ElementTag } from '../../components/ElementTag';
 import { getAdjacentDexIds, PREVIEW_ANIMATIONS, toDexPreviewMatoran } from './dexEntries';
+import { isRahkshi } from '../../game/characters/matoranStage';
+import {
+  RAHKSHI_DEX_DEFAULT_MESH_VARIANT,
+  type RahkshiDexMeshVariant,
+} from '../../data/dex/rahkshi';
 import './index.scss';
 
 export const CharacterDexPreview: React.FC = () => {
@@ -18,11 +23,15 @@ export const CharacterDexPreview: React.FC = () => {
   const base = id ? CHARACTER_DEX[id] : undefined;
   const [selectedMask, setSelectedMask] = useState<Mask | undefined>(base?.mask);
   const [maskPowerActive, setMaskPowerActive] = useState(false);
+  const [rahkshiMeshVariant, setRahkshiMeshVariant] = useState<RahkshiDexMeshVariant>(
+    RAHKSHI_DEX_DEFAULT_MESH_VARIANT
+  );
   const [sceneGeneration, setSceneGeneration] = useState(0);
 
   useEffect(() => {
     setSelectedMask(base?.mask);
     setMaskPowerActive(false);
+    setRahkshiMeshVariant(RAHKSHI_DEX_DEFAULT_MESH_VARIANT);
     setSceneGeneration(0);
   }, [base?.id, base?.mask]);
 
@@ -38,8 +47,9 @@ export const CharacterDexPreview: React.FC = () => {
     return toDexPreviewMatoran(base, {
       maskOverride: selectedMask ?? base.mask,
       maskPowerActive,
+      rahkshiMeshVariant: isRahkshi(base) ? rahkshiMeshVariant : undefined,
     });
-  }, [base, maskPowerActive, selectedMask]);
+  }, [base, maskPowerActive, rahkshiMeshVariant, selectedMask]);
 
   useEffect(() => {
     if (!previewMatoran) {
@@ -48,7 +58,7 @@ export const CharacterDexPreview: React.FC = () => {
     }
     setScene(
       <CharacterScene
-        key={`${previewMatoran.id}-${sceneGeneration}`}
+        key={`${previewMatoran.id}-${sceneGeneration}-${previewMatoran.rahkshiMeshVariant ?? 'detailed'}`}
         enablePreviewControls
         matoran={previewMatoran}
       />
@@ -126,6 +136,34 @@ export const CharacterDexPreview: React.FC = () => {
             </button>
           </div>
         </section>
+
+        {isRahkshi(base) && (
+          <section className="character-dex-control-block">
+            <div className="character-dex-mask-heading">
+              <h2>Mesh</h2>
+              <label className="character-dex-mask-toggle">
+                <span>Battle LOD</span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-label="Battle LOD mesh"
+                  aria-checked={rahkshiMeshVariant === 'battle'}
+                  className={`toggle-placeholder ${rahkshiMeshVariant === 'battle' ? 'on' : ''}`}
+                  onClick={() =>
+                    setRahkshiMeshVariant((variant) =>
+                      variant === 'battle' ? 'detailed' : 'battle'
+                    )
+                  }
+                />
+              </label>
+            </div>
+            <p className="character-dex-mask-name">
+              {rahkshiMeshVariant === 'battle'
+                ? 'Merged battle LOD (`Battle_*` meshes on `Rahkshi`)'
+                : 'Full kit + baked rig (`Rahkshi`)'}
+            </p>
+          </section>
+        )}
 
         {canChangeMask && (
           <section className="character-dex-control-block">

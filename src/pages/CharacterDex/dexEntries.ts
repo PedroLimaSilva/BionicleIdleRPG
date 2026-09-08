@@ -54,13 +54,23 @@ export function getAdjacentDexIds(id: string): { nextId: string; prevId: string 
 
 export function toDexPreviewMatoran(
   base: BaseMatoran,
-  options: { maskOverride?: Mask; maskPowerActive?: boolean }
-): BaseMatoran & RecruitedCharacterData & { maskPowerActive?: boolean; unlockAllMasks: true } {
+  options: {
+    maskOverride?: Mask;
+    maskPowerActive?: boolean;
+    rahkshiMeshVariant?: 'detailed' | 'battle';
+  }
+): BaseMatoran &
+  RecruitedCharacterData & {
+    maskPowerActive?: boolean;
+    rahkshiMeshVariant?: 'detailed' | 'battle';
+    unlockAllMasks: true;
+  } {
   return {
     ...base,
     exp: 0,
     maskOverride: options.maskOverride,
     maskPowerActive: options.maskPowerActive,
+    rahkshiMeshVariant: options.rahkshiMeshVariant,
     unlockAllMasks: true,
   };
 }
