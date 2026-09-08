@@ -37,6 +37,7 @@ import {
   bakedDiscolorationAmountNode,
   createBakedDiscolorationUniforms,
   DISCOLORATION_MAP_USERDATA_KEY,
+  getBakedDiscolorationMap,
 } from '../hooks/bakedDiscoloration';
 
 export type WeatheredMetalOptions = {
@@ -414,7 +415,7 @@ export function applyWeatheredMetalToObject(
       changed = true;
       const discolorationMap =
         meshHasUv(mesh) && raw instanceof MeshStandardMaterial
-          ? (raw.emissiveMap ?? undefined)
+          ? (getBakedDiscolorationMap(raw) ?? undefined)
           : undefined;
       const nextColor = (color ?? '#ffffff') as ColorRepresentation;
       const sourceMaps = raw instanceof MeshStandardMaterial ? mapsFromSource(raw) : {};

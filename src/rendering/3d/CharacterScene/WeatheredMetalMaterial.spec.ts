@@ -221,6 +221,7 @@ describe('applyWeatheredMetalToObject PBR map preservation', () => {
 
   test('resolves meshName_baked when re-weatering an already-renamed WeatheredMetal slot', () => {
     const discolor = mapTex();
+    const roughness = mapTex();
     const source = new MeshStandardMaterial({
       color: '#cccccc',
       emissive: '#ffffff',
@@ -228,7 +229,8 @@ describe('applyWeatheredMetalToObject PBR map preservation', () => {
       emissiveMap: discolor,
       metalnessMap: mapTex(),
       name: 'WeatheredMetal',
-      roughnessMap: mapTex(),
+      normalMap: mapTex(),
+      roughnessMap: roughness,
     });
     const mesh = new Mesh(new BoxGeometry(), source);
     mesh.name = 'RahkshiShoulders';
@@ -241,6 +243,8 @@ describe('applyWeatheredMetalToObject PBR map preservation', () => {
     const next = mesh.material as MeshStandardMaterial;
     expect(next).not.toBe(source);
     expect(next.color.getHexString()).toBe('6d6e5c');
+    expect(next.normalMap).toBeDefined();
+    expect(next.roughnessMap).toBe(roughness);
     expect(next.emissiveMap).toBeNull();
     expect(next.emissiveIntensity).toBe(0);
     expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
