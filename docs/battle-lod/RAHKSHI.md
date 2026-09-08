@@ -23,7 +23,7 @@ Same animation clips on both armatures (`Empty`, `Idle`, `Attack`, `Hit`, `Defea
 rahkshi_battle (armature)
 ├── Body          — one SkinnedMesh, multiple material slots (opaque buckets below)
 │                   includes shared / common staff geometry
-├── Head          — one mesh, emissive + selective bloom (eyes + head socket disk merged)
+├── Head          — one mesh, material `Battle_Bloom` (emissive + selective bloom)
 └── Species_*     — six meshes, one material slot each (only one visible at runtime)
     ├── Species_Guurahk   — spine + staff
     ├── Species_Turahk
@@ -75,11 +75,11 @@ Palette rules: [`rahkshiKitPalette.ts`](../../src/rendering/3d/kit/palettes/rahk
 
 ## Head mesh
 
-| Item            | Detail                                                                                                                                                                                                                                    |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Merge**       | Baked eye slits + head socket / kraata disk (`Socket_Head` kit) → **one** mesh                                                                                                                                                            |
-| **Material**    | `Battle_Head` — emissive from `colors.eyes`, **selective bloom MRT** ([`isSelectiveBloomRahkshiEyeName`](../../src/rendering/3d/CharacterScene/selectiveBloom.ts) today keys off `Eyes`; battle code should treat `Battle_Head` the same) |
-| **Kraata lerp** | No kraata: lerp emissive/color to black; `Empty` idle until glow completes — same as live [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx), but **one** material to animate                                             |
+| Item            | Detail                                                                                                                                                                                                |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Merge**       | Baked eye slits + head socket / kraata disk (`Socket_Head` kit) → **one** mesh                                                                                                                        |
+| **Material**    | `Battle_Bloom` — emissive from `colors.eyes`, **selective bloom MRT** ([`isSelectiveBloomRahkshiEyeName`](../../src/rendering/3d/CharacterScene/selectiveBloom.ts) matches `Eyes` and `Battle_Bloom`) |
+| **Kraata lerp** | No kraata: lerp emissive/color to black; `Empty` idle until glow completes — same as live [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx), but **one** material to animate         |
 
 No separate non-bloom head ring mesh.
 
@@ -121,11 +121,11 @@ Keep this path for inventory preview until battle visuals are signed off.
 
 | Behavior        | Live                                             | `rahkshi_battle`                        |
 | --------------- | ------------------------------------------------ | --------------------------------------- |
-| No kraata       | Eyes (+ head kit) lerp black; `Empty` until glow | Lerp **`Battle_Head`** only             |
-| Kraata inserted | Glow lerp → `Idle`                               | Same, one head material                 |
+| No kraata       | Eyes (+ head kit) lerp black; `Empty` until glow | Lerp **`Battle_Bloom`** only            |
+| Kraata inserted | Glow lerp → `Idle`                               | Same, one `Battle_Bloom` material       |
 | Staff breed     | 3 of 18 variant meshes visible                   | 1 of 6 `Species_*` visible              |
 | Kraata tint     | `getRahkshiArmorColors` → weathered              | Tint `Body` slots + visible `Species_*` |
-| Bloom           | `Eyes` MRT                                       | `Battle_Head` MRT                       |
+| Bloom           | `Eyes` MRT                                       | **`Battle_Bloom`** MRT                  |
 | Animations      | Shared clips                                     | Same armature actions                   |
 
 ---
@@ -135,7 +135,7 @@ Keep this path for inventory preview until battle visuals are signed off.
 1. **Live collection** — `Rahkshi` armature + kit instances (unchanged from current ship).
 2. **Battle collection** — `rahkshi_battle` armature:
    - Join opaque geometry into **`Body`**; assign six `Battle_*` slots; skin to bones; include common staff pieces.
-   - Join eyes + head disk → **`Head`**; single emissive + bloom material.
+   - Join eyes + head disk → **`Head`**; material **`Battle_Bloom`**.
    - Per breed: join spine + staff L/R → **`Species_{Breed}`**; one material each.
 3. Export both armatures in `rahkshi.glb`; verify actions on both.
 4. Visual QA: Disintegration (Guurahk), Poison (Lerahk), Hunger (Vorahk) vs live kit build.
@@ -148,7 +148,7 @@ Keep this path for inventory preview until battle visuals are signed off.
 | ------------------------- | -------------------------------------------------------------------------------------------------- |
 | `Rahkshi.tsx`             | Battle: clone `rahkshi_battle`, skip `useKitAttachments`; palette + head lerp + species visibility |
 | `rahkshiVariantMeshes.ts` | Map `staff` → `Species_*` mesh name (or replace with simple visibility helper)                     |
-| `selectiveBloom.ts`       | Recognize `Battle_Head` for bloom MRT                                                              |
+| `selectiveBloom.ts`       | `isSelectiveBloomRahkshiEyeName` matches `Eyes` and `Battle_Bloom`                                 |
 | `rahkshiKitPalette.ts`    | `applyRahkshiBattlePalette(body, speciesMesh, dex)`                                                |
 
 Preview route can keep live `Rahkshi` until battle path is default everywhere.
