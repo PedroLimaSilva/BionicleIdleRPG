@@ -1,24 +1,38 @@
 import { MeshStandardMaterial } from 'three';
-import { applyRahkshiBattleMaterialsToMesh } from './rahkshiKitPalette';
+import { applyRahkshiBattleMaterialsToMesh, rahkshiBattleTintMap } from './rahkshiKitPalette';
+import { KraataPower } from '../../../../types/Kraata';
+import { getRahkshiArmorColors } from '../../../../data/rahkshiArmorColors';
 
-describe('applyRahkshiBattleMaterialsToMesh', () => {
-  test('tints named slots without replacing materials', () => {
-    const armor = new MeshStandardMaterial({ color: '#ffffff', name: 'Battle_Armor' });
-    const metal = new MeshStandardMaterial({ color: '#ffffff', name: 'Battle_Metal' });
+describe('rahkshi battle LOD tints', () => {
+  test('rahkshiBattleTintMap only includes armor and joint slots', () => {
+    const dex = getRahkshiArmorColors(KraataPower.Fragmentation);
+    expect(rahkshiBattleTintMap(dex)).toEqual({
+      Battle_Armor: dex.armor,
+      Battle_Joint: dex.joint,
+    });
+  });
+
+  test('applyRahkshiBattleMaterialsToMesh tints matching slots and leaves others', () => {
+    const armor = new MeshStandardMaterial({
+      color: '#ffffff',
+      metalness: 0.1,
+      name: 'Battle_Armor',
+    });
+    const chassis = new MeshStandardMaterial({
+      color: '#aaaaaa',
+      metalness: 0.2,
+      name: 'Battle_Chassis',
+    });
     const mesh = {
       frustumCulled: true,
-      material: [armor, metal],
+      material: [armor, chassis],
     } as unknown as import('three').Mesh;
 
-    applyRahkshiBattleMaterialsToMesh(mesh, {
-      Battle_Armor: '#0055BF',
-      Battle_Metal: '#9BA19D',
-    });
+    applyRahkshiBattleMaterialsToMesh(mesh, { Battle_Armor: '#0055BF' });
 
     expect(armor.color.getHexString()).toBe('0055bf');
-    expect(armor.metalness).toBe(0.05);
-    expect(metal.color.getHexString()).toBe('9ba19d');
-    expect(metal.metalness).toBe(0.9);
-    expect(mesh.frustumCulled).toBe(true);
+    expect(armor.metalness).toBe(0.1);
+    expect(chassis.color.getHexString()).toBe('aaaaaa');
+    expect(chassis.metalness).toBe(0.2);
   });
 });

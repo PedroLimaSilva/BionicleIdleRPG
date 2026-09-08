@@ -36,7 +36,7 @@ import {
 import {
   RAHKSHI_WEATHERED,
   applyRahkshiBattleMaterialsToMesh,
-  rahkshiBattleBodyMaterialColorMap,
+  rahkshiBattleTintMap,
   rahkshiKitColors,
 } from '../kit/palettes/rahkshiKitPalette';
 
@@ -300,7 +300,7 @@ export const RahkshiModel = forwardRef<
       }
 
       if (child.name === RAHKSHI_BATTLE_BODY_MESH) {
-        applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleBodyMaterialColorMap(dex));
+        applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleTintMap(dex));
       }
     });
 

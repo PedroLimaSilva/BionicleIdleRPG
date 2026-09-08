@@ -43,16 +43,16 @@ Compare to live kit path: **40+** draws per Rahkshi.
 
 ## Body material slots (`SkinnedMesh`)
 
-| Slot             | Runtime tint                              | Weathered | Notes                                 |
-| ---------------- | ----------------------------------------- | --------- | ------------------------------------- |
-| `Battle_Armor`   | kraata **armor** hex                      | Yes       | Baked armor-colored plastic           |
-| `Battle_Joint`   | kraata **joint** hex                      | Yes       | Feet / limb joint tint                |
-| `Battle_Chassis` | Fixed `LegoColor.DarkBluishGray`          | Yes       | Body shell, limbs, cradle             |
-| `Battle_Black`   | Fixed black                               | Light     | Black axles / technic                 |
-| `Battle_Metal`   | Fixed `LegoColor.LightGray` on body slots | Metal PBR | Gears, metal technic on `SkinnedMesh` |
-| `Battle_Tan`     | Fixed tan                                 | Light     | Tan axle pins                         |
+| Slot             | Runtime tint         | Notes                                        |
+| ---------------- | -------------------- | -------------------------------------------- |
+| `Battle_Armor`   | kraata **armor** hex | Tinted at runtime via `rahkshiBattleTintMap` |
+| `Battle_Joint`   | kraata **joint** hex | Tinted at runtime                            |
+| `Battle_Chassis` | Authored in GLB      | Not re-tinted                                |
+| `Battle_Black`   | Authored in GLB      | Not re-tinted                                |
+| `Battle_Metal`   | Authored in GLB      | Not re-tinted (species overlay uses armor)   |
+| `Battle_Tan`     | Authored in GLB      | Not re-tinted                                |
 
-Palette helper: [`rahkshiBattleBodyMaterialColorMap`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts) applies **in-place** tints (not weathered TSL — skinned meshes must keep stock materials for WebGPU skinning).
+[`rahkshiBattleTintMap`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts) touches **armor + joint only** — no weathered TSL (skinned meshes keep stock materials for WebGPU skinning).
 
 ---
 
@@ -119,7 +119,7 @@ Character dex defaults to this path; toggle **Battle LOD** on Rahkshi specimens 
 | ---------------------------------------------------------------------------------------- | -------------------------------------------- |
 | [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx)                       | `meshVariant: 'detailed' \| 'battle'`        |
 | [`rahkshiBattleMeshes.ts`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) | Rig node + species visibility constants      |
-| [`rahkshiKitPalette.ts`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts)       | `rahkshiBattleBodyMaterialColorMap`          |
+| [`rahkshiKitPalette.ts`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts)       | `rahkshiBattleTintMap` (armor + joint only)  |
 | [`data/dex/rahkshi.ts`](../../src/data/dex/rahkshi.ts)                                   | `RahkshiDexMeshVariant` type for dex preview |
 | [`CharacterDex/Preview.tsx`](../../src/pages/CharacterDex/Preview.tsx)                   | Battle LOD toggle                            |
 

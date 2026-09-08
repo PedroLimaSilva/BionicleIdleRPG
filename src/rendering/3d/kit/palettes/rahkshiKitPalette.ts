@@ -71,42 +71,25 @@ export const RAHKSHI_KIT_PALETTE_BLACK = KIT_TECHNIC_MAIN_BLACK;
 export const RAHKSHI_KIT_PALETTE_METAL = KIT_TECHNIC_MAIN_METAL;
 
 /** Map lore armor/joint hex onto kit part slots (`useKitAttachments` colors). */
-/** Material slot tints on `Rahkshi_Battle` → `SkinnedMesh`. */
-export function rahkshiBattleBodyMaterialColorMap(dex: RahkshiArmorColors): Record<string, string> {
+/** Kraata-driven tint slots on `SkinnedMesh` — fixed `Battle_*` slots stay as authored in the GLB. */
+export function rahkshiBattleTintMap(dex: RahkshiArmorColors): Record<string, string> {
   return {
     Battle_Armor: dex.armor,
-    Battle_Black: LegoColor.Black,
-    Battle_Chassis: LegoColor.DarkBluishGray,
     Battle_Joint: dex.joint,
-    Battle_Metal: LegoColor.LightGray,
-    Battle_Tan: LegoColor.Tan,
   };
 }
 
 /**
- * Tints battle LOD materials in place. SkinnedMesh cannot use weathered TSL
- * replacements — they stop skinning under WebGPU and the body vanishes.
+ * Applies battle LOD color tints in place. No weathered TSL — skinned meshes must
+ * keep stock materials for WebGPU skinning. Only slots present in `tints` are touched.
  */
-export function applyRahkshiBattleMaterialsToMesh(
-  mesh: Mesh,
-  materialColorMap: Record<string, string>
-): void {
+export function applyRahkshiBattleMaterialsToMesh(mesh: Mesh, tints: Record<string, string>): void {
   const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
   for (const mat of materials) {
     if (!(mat instanceof MeshStandardMaterial)) continue;
-    const hex = materialColorMap[mat.name];
+    const hex = tints[mat.name];
     if (!hex) continue;
     mat.color.set(hex);
-    if (mat.name === 'Battle_Metal') {
-      mat.metalness = 0.9;
-      mat.roughness = 0.3;
-      mat.envMapIntensity = 0.52;
-    } else {
-      mat.metalness = 0.05;
-      mat.roughness = 0.55;
-      mat.envMapIntensity = 0.4;
-    }
-    mat.needsUpdate = true;
   }
   if ((mesh as SkinnedMesh).isSkinnedMesh) {
     mesh.frustumCulled = false;
