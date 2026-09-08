@@ -2,6 +2,11 @@ import { LegoColor } from '../../types/Colors';
 import { KraataPower, KRAATA_POWER_NAMES } from '../../types/Kraata';
 import { ElementTribe, Mask, MatoranColors, MatoranStage } from '../../types/Matoran';
 
+/** Character dex preview mesh for Rahkshi specimens. */
+export type RahkshiDexMeshVariant = 'detailed' | 'battle';
+
+export const RAHKSHI_DEX_DEFAULT_MESH_VARIANT: RahkshiDexMeshVariant = 'detailed';
+
 /** Card chrome colors per power; no 2D Rahkshi avatar yet. */
 const RAHKSHI_CARD_COLORS: Partial<Record<KraataPower, { armor: LegoColor; joint: LegoColor }>> = {
   [KraataPower.Chameleon]: { armor: LegoColor.Red, joint: LegoColor.PearlGold },

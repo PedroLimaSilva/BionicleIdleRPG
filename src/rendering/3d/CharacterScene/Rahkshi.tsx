@@ -21,19 +21,32 @@ import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 import { disposeObject3DResources } from '../utils/disposeThreeObject';
 import { applySelectiveBloomMrt, isSelectiveBloomRahkshiEyeName } from './selectiveBloom';
 import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
+import {
+  isRahkshiBattleSpeciesMesh,
+  RAHKSHI_BATTLE_BODY_MESH,
+  RAHKSHI_BATTLE_GLOW_MESH,
+  RAHKSHI_BATTLE_RIG_NODE,
+  shouldShowRahkshiBattleSpeciesMesh,
+} from './rahkshiBattleMeshes';
 import { KIT_2001_GLB_PATH } from '../kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../kit/kit2003';
 import {
   RAHKSHI_KIT_2001_ATTACHMENTS,
   RAHKSHI_KIT_2003_ATTACHMENTS,
 } from '../kit/attachments/rahkshi';
-import { RAHKSHI_WEATHERED, rahkshiKitColors } from '../kit/palettes/rahkshiKitPalette';
+import {
+  RAHKSHI_WEATHERED,
+  rahkshiBattleBodyMaterialColorMap,
+  rahkshiKitColors,
+} from '../kit/palettes/rahkshiKitPalette';
 
 const BLACK = new ThreeColor('#000000');
 const GLOW_LERP_SPEED = 5;
 /** Threshold for considering glow "complete" (0–1). Eyes light up first, then idle plays. */
 const GLOW_COMPLETE_THRESHOLD = 0.98;
 const RAHKSHI_GLB = import.meta.env.BASE_URL + 'rahkshi.glb';
+
+export type RahkshiMeshVariant = 'detailed' | 'battle';
 
 /** Must match how many `useKitAttachments` calls this component makes. */
 const RAHKSHI_ATTACHMENT_RUNS = 2;
@@ -56,8 +69,14 @@ function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
 
 export const RahkshiModel = forwardRef<
   CombatantModelHandle,
-  { kraata: KraataPower; hasKraata?: boolean; onKitMeshesAttached?: () => void }
->(({ hasKraata = true, kraata, onKitMeshesAttached }, ref) => {
+  {
+    kraata: KraataPower;
+    hasKraata?: boolean;
+    meshVariant?: RahkshiMeshVariant;
+    onKitMeshesAttached?: () => void;
+  }
+>(({ hasKraata = true, kraata, meshVariant = 'detailed', onKitMeshesAttached }, ref) => {
+  const isBattle = meshVariant === 'battle';
   const group = useRef<Group>(null);
   const glowEntries = useRef<GlowEntry[]>([]);
   const glowTarget = useRef(hasKraata);
@@ -73,15 +92,17 @@ export const RahkshiModel = forwardRef<
 
   const { animations, nodes } = useGLTF(RAHKSHI_GLB);
 
+  const rigNodeName = isBattle ? RAHKSHI_BATTLE_RIG_NODE : 'Rahkshi';
+
   const { bakedMeshUuids, bodyInstance } = useMemo(() => {
-    const root = nodes.Rahkshi as Object3D | undefined;
+    const root = nodes[rigNodeName] as Object3D | undefined;
     const instance = root ? cloneGltfInstance(root) : new Group();
     const uuids = new Set<string>();
     instance.traverse((child) => {
       if (child instanceof Mesh) uuids.add(child.uuid);
     });
     return { bakedMeshUuids: uuids, bodyInstance: instance };
-  }, [nodes]);
+  }, [nodes, rigNodeName]);
 
   const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(bodyInstance), [bodyInstance]);
   const kitColors = useMemo(() => rahkshiKitColors(getRahkshiArmorColors(kraata)), [kraata]);
@@ -90,6 +111,7 @@ export const RahkshiModel = forwardRef<
   const kitLayersDone = useRef(0);
 
   const collectHeadSocketGlow = useCallback(() => {
+    if (isBattle) return;
     const stored = originalEyeValuesRef.current;
     const socket = kitCharacterNodes.Socket_Head;
     if (!stored || !socket) {
@@ -114,11 +136,54 @@ export const RahkshiModel = forwardRef<
       });
     });
     glowEntries.current = [...eyeGlowEntriesRef.current, ...headEntries];
-  }, [bakedMeshUuids, kitCharacterNodes]);
+  }, [bakedMeshUuids, isBattle, kitCharacterNodes]);
+
+  const registerGlowMaterial = useCallback(
+    (child: Mesh, mat: MeshStandardMaterial, entries: GlowEntry[]): void => {
+      let onColor: ThreeColor;
+      let onEmissive: ThreeColor;
+      let onEmissiveIntensity: number;
+      const stored = originalEyeValuesRef.current;
+      if (stored) {
+        onColor = stored.onColor;
+        onEmissive = stored.onEmissive;
+        onEmissiveIntensity = stored.onEmissiveIntensity;
+        applySelectiveBloomMrt(mat);
+        entries.push({
+          material: mat,
+          onColor,
+          onEmissive,
+          onEmissiveIntensity,
+        });
+        return;
+      }
+      const clone = mat.clone();
+      onColor = mat.color.clone();
+      onEmissive = mat.emissive.clone();
+      onEmissiveIntensity = mat.emissiveIntensity;
+      originalEyeValuesRef.current = { onColor, onEmissive, onEmissiveIntensity };
+      if (!glowTarget.current) {
+        clone.color.set('#000000');
+        clone.emissive.set('#000000');
+        clone.emissiveIntensity = 0;
+      }
+      applySelectiveBloomMrt(clone);
+      child.material = clone;
+      entries.push({
+        material: clone,
+        onColor,
+        onEmissive,
+        onEmissiveIntensity,
+      });
+    },
+    []
+  );
 
   useEffect(() => {
+    originalEyeValuesRef.current = null;
     kitLayersDone.current = 0;
-  }, [kraata]);
+  }, [kraata, meshVariant]);
+
   const onKitLayerAttached = useMemo(() => {
     return () => {
       kitLayersDone.current += 1;
@@ -159,6 +224,8 @@ export const RahkshiModel = forwardRef<
 
   // Runs before kit attach (declaration order) so weathering never walks kit clones.
   useEffect(() => {
+    if (isBattle) return;
+
     const dex = getRahkshiArmorColors(kraata);
     const entries: GlowEntry[] = [];
 
@@ -178,43 +245,7 @@ export const RahkshiModel = forwardRef<
       }
 
       if (isSelectiveBloomRahkshiEyeName(mat.name)) {
-        // Use stored original values if we've already replaced child.material (mat is our previous clone)
-        let onColor: ThreeColor;
-        let onEmissive: ThreeColor;
-        let onEmissiveIntensity: number;
-        const stored = originalEyeValuesRef.current;
-        if (stored) {
-          onColor = stored.onColor;
-          onEmissive = stored.onEmissive;
-          onEmissiveIntensity = stored.onEmissiveIntensity;
-          applySelectiveBloomMrt(mat);
-          entries.push({
-            material: mat,
-            onColor,
-            onEmissive,
-            onEmissiveIntensity,
-          });
-        } else {
-          const clone = mat.clone();
-          onColor = mat.color.clone();
-          onEmissive = mat.emissive.clone();
-          onEmissiveIntensity = mat.emissiveIntensity;
-          originalEyeValuesRef.current = { onColor, onEmissive, onEmissiveIntensity };
-          if (!glowTarget.current) {
-            clone.color.set('#000000');
-            clone.emissive.set('#000000');
-            clone.emissiveIntensity = 0;
-          }
-          applySelectiveBloomMrt(clone);
-          child.material = clone;
-          entries.push({
-            material: clone,
-            onColor,
-            onEmissive,
-            onEmissiveIntensity,
-          });
-        }
-        return;
+        registerGlowMaterial(child, mat, entries);
       }
     });
 
@@ -238,23 +269,73 @@ export const RahkshiModel = forwardRef<
         uniqueMaterials: true,
       });
     });
-  }, [bakedMeshUuids, bodyInstance, kraata, hasKraata]);
+  }, [bakedMeshUuids, bodyInstance, isBattle, kraata, registerGlowMaterial]);
+
+  useEffect(() => {
+    if (!isBattle) return;
+
+    const dex = getRahkshiArmorColors(kraata);
+    const entries: GlowEntry[] = [];
+
+    bodyInstance.traverse((child) => {
+      if (!(child instanceof Mesh) || !bakedMeshUuids.has(child.uuid)) return;
+      const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
+
+      if (isRahkshiBattleSpeciesMesh(child.name)) {
+        child.visible = shouldShowRahkshiBattleSpeciesMesh(child.name, dex.staff);
+        if (!child.visible) return;
+        applyWeatheredMetalToObject(child, {
+          ...RAHKSHI_WEATHERED,
+          materialColorMap: { Battle_Metal: dex.armor },
+          uniqueMaterials: true,
+        });
+        return;
+      }
+
+      const mat = child.material as MeshStandardMaterial;
+      if (mat?.name && mat.name !== 'WeatheredMetal') {
+        mesh.userData ??= {};
+        mesh.userData.originalMaterialName = mat.name;
+      }
+
+      if (child.name === RAHKSHI_BATTLE_GLOW_MESH || isSelectiveBloomRahkshiEyeName(mat.name)) {
+        registerGlowMaterial(child, mat, entries);
+        return;
+      }
+
+      if (child.name === RAHKSHI_BATTLE_BODY_MESH) {
+        applyWeatheredMetalToObject(child, {
+          ...RAHKSHI_WEATHERED,
+          excludeMaterialNames: ['Eyes'],
+          materialColorMap: rahkshiBattleBodyMaterialColorMap(dex),
+          uniqueMaterials: true,
+        });
+      }
+    });
+
+    glowEntries.current = entries;
+    eyeGlowEntriesRef.current = entries;
+    onKitMeshesAttached?.();
+  }, [bakedMeshUuids, bodyInstance, isBattle, kraata, onKitMeshesAttached, registerGlowMaterial]);
+
+  const kitAttachments = isBattle ? {} : RAHKSHI_KIT_2003_ATTACHMENTS;
+  const kit2001Attachments = isBattle ? {} : RAHKSHI_KIT_2001_ATTACHMENTS;
 
   useKitAttachments({
-    attachments: RAHKSHI_KIT_2003_ATTACHMENTS,
+    attachments: kitAttachments,
     characterNodes: kitCharacterNodes,
     colors: kitColors,
     kitUrl: KIT_2003_GLB_PATH,
-    onAttached: onKitLayerAttached,
+    onAttached: isBattle ? undefined : onKitLayerAttached,
     weathered: RAHKSHI_WEATHERED,
   });
 
   useKitAttachments({
-    attachments: RAHKSHI_KIT_2001_ATTACHMENTS,
+    attachments: kit2001Attachments,
     characterNodes: kitCharacterNodes,
     colors: kitColors,
     kitUrl: KIT_2001_GLB_PATH,
-    onAttached: onKitLayerAttached,
+    onAttached: isBattle ? undefined : onKitLayerAttached,
     weathered: RAHKSHI_WEATHERED,
   });
 

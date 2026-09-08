@@ -70,6 +70,18 @@ export const RAHKSHI_KIT_PALETTE_BLACK = KIT_TECHNIC_MAIN_BLACK;
 export const RAHKSHI_KIT_PALETTE_METAL = KIT_TECHNIC_MAIN_METAL;
 
 /** Map lore armor/joint hex onto kit part slots (`useKitAttachments` colors). */
+/** Material slot tints on `Rahkshi_Battle` → `SkinnedMesh`. */
+export function rahkshiBattleBodyMaterialColorMap(dex: RahkshiArmorColors): Record<string, string> {
+  return {
+    Battle_Armor: dex.armor,
+    Battle_Black: LegoColor.Black,
+    Battle_Chassis: LegoColor.DarkBluishGray,
+    Battle_Joint: dex.joint,
+    Battle_Metal: LegoColor.LightGray,
+    Battle_Tan: LegoColor.Tan,
+  };
+}
+
 export function rahkshiKitColors(dex: RahkshiArmorColors): MatoranColors {
   const armor = dex.armor as LegoColor;
   const joint = dex.joint as LegoColor;
