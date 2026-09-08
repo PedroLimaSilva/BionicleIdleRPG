@@ -1,33 +1,35 @@
-/** Live / detailed armature in `rahkshi.glb`. */
+/** Live armature in `rahkshi.glb` — detailed and battle LOD share one skeleton. */
 export const RAHKSHI_DETAILED_RIG_NODE = 'Rahkshi';
 
-/**
- * Parent empty for merged battle meshes on the **single-armature** export path.
- * Battle `SkinnedMesh`, `Battle_Glow`, and species overlays live here, hidden in detailed LOD.
- */
-export const RAHKSHI_BATTLE_LOD_GROUP = 'Battle_LOD';
+/** Prefix for every battle LOD mesh node parented under `Rahkshi`. */
+export const RAHKSHI_BATTLE_MESH_PREFIX = 'Battle_';
 
-/** Legacy second armature root — remove after battle meshes move under `Rahkshi`. */
-export const RAHKSHI_BATTLE_RIG_NODE = 'Rahkshi_Battle';
+/** Skinned body bucket mesh (six `Battle_*` material slots). */
+export const RAHKSHI_BATTLE_BODY_MESH = 'Battle_Body';
 
-/** Skinned body bucket mesh on `Rahkshi_Battle` (six `Battle_*` material slots). */
-export const RAHKSHI_BATTLE_BODY_MESH = 'SkinnedMesh';
-
-/** Merged head / kraata-disk glow mesh on `Rahkshi_Battle` (one draw, one material). */
+/** Merged head / kraata-disk glow mesh (one draw, one material). */
 export const RAHKSHI_BATTLE_GLOW_MESH = 'Battle_Glow';
 
-/** Emissive + bloom material on `Battle_Glow`. Merge all glow geometry to this slot before export. */
+/** Emissive + bloom material on `Battle_Glow`. */
 export const RAHKSHI_BATTLE_GLOW_MATERIAL = 'Battle_Bloom';
 
-/** One species overlay per staff breed on the battle rig (spine + staff). */
+/** One species overlay per staff breed (`Battle_{Breed}`). */
 export const RAHKSHI_BATTLE_SPECIES_MESH_NAMES = [
-  'Guurahk',
-  'Panrahk',
-  'Lerahk',
-  'Vorahk',
-  'Kurahk',
-  'Turahk',
+  'Battle_Guurahk',
+  'Battle_Panrahk',
+  'Battle_Lerahk',
+  'Battle_Vorahk',
+  'Battle_Kurahk',
+  'Battle_Turahk',
 ] as const;
+
+export function isRahkshiBattleLodMesh(meshName: string): boolean {
+  return meshName.startsWith(RAHKSHI_BATTLE_MESH_PREFIX);
+}
+
+export function isRahkshiBattleBodyMesh(meshName: string): boolean {
+  return meshName === RAHKSHI_BATTLE_BODY_MESH;
+}
 
 export function isRahkshiBattleSpeciesMesh(meshName: string): boolean {
   return (RAHKSHI_BATTLE_SPECIES_MESH_NAMES as readonly string[]).includes(meshName);
@@ -35,5 +37,5 @@ export function isRahkshiBattleSpeciesMesh(meshName: string): boolean {
 
 /** Whether a battle species overlay should be visible for the active staff breed. */
 export function shouldShowRahkshiBattleSpeciesMesh(meshName: string, staffPrefix: string): boolean {
-  return meshName === staffPrefix;
+  return meshName === `${RAHKSHI_BATTLE_MESH_PREFIX}${staffPrefix}`;
 }

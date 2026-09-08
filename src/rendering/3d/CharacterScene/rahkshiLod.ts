@@ -1,6 +1,6 @@
 import { Mesh, Object3D } from 'three';
 import type { RahkshiMeshVariant } from './Rahkshi';
-import { RAHKSHI_BATTLE_LOD_GROUP, RAHKSHI_BATTLE_RIG_NODE } from './rahkshiBattleMeshes';
+import { isRahkshiBattleLodMesh } from './rahkshiBattleMeshes';
 
 export function collectMeshUuids(root: Object3D): Set<string> {
   const uuids = new Set<string>();
@@ -10,19 +10,14 @@ export function collectMeshUuids(root: Object3D): Set<string> {
   return uuids;
 }
 
-function isDescendantOf(node: Object3D, ancestor: Object3D): boolean {
-  for (let current: Object3D | null = node; current; current = current.parent) {
-    if (current === ancestor) return true;
-  }
-  return false;
-}
-
-export function getRahkshiBattleLodGroup(detailedRoot: Object3D): Object3D | null {
-  return detailedRoot.getObjectByName(RAHKSHI_BATTLE_LOD_GROUP) ?? null;
-}
-
-export function usesRahkshiBattleLodGroup(detailedRoot: Object3D): boolean {
-  return getRahkshiBattleLodGroup(detailedRoot) !== null;
+export function collectRahkshiBattleMeshUuids(root: Object3D): Set<string> {
+  const uuids = new Set<string>();
+  root.traverse((child) => {
+    if (child instanceof Mesh && isRahkshiBattleLodMesh(child.name)) {
+      uuids.add(child.uuid);
+    }
+  });
+  return uuids;
 }
 
 export type RahkshiBattleAppearanceTarget = {
@@ -32,49 +27,21 @@ export type RahkshiBattleAppearanceTarget = {
   root: Object3D;
 };
 
-/**
- * Battle meshes live under `Battle_LOD` on the live armature (target export), or on a
- * legacy `Rahkshi_Battle` root until the GLB is re-exported.
- */
+/** Battle meshes are `Battle_*` nodes on the live `Rahkshi` armature. */
 export function resolveRahkshiBattleAppearanceTarget(
-  detailedRoot: Object3D,
-  legacyBattleRoot: Object3D | null
+  detailedRoot: Object3D
 ): RahkshiBattleAppearanceTarget | null {
-  const battleLodGroup = getRahkshiBattleLodGroup(detailedRoot);
-  if (battleLodGroup) {
-    return { meshUuids: collectMeshUuids(battleLodGroup), root: detailedRoot };
-  }
-  if (legacyBattleRoot) {
-    return { meshUuids: collectMeshUuids(legacyBattleRoot), root: legacyBattleRoot };
-  }
-  return null;
+  const meshUuids = collectRahkshiBattleMeshUuids(detailedRoot);
+  if (meshUuids.size === 0) return null;
+  return { meshUuids, root: detailedRoot };
 }
 
-/**
- * Toggle detailed vs battle meshes.
- *
- * - **Single armature (target):** battle buckets live under `Battle_LOD` on `Rahkshi`.
- * - **Legacy:** separate `Rahkshi_Battle` root toggled alongside `Rahkshi`.
- */
-export function setRahkshiLodVisibility(
-  detailedRoot: Object3D,
-  legacyBattleRoot: Object3D | null,
-  variant: RahkshiMeshVariant
-): void {
+/** Toggle detailed baked/kit meshes vs `Battle_*` meshes on the single armature. */
+export function setRahkshiLodVisibility(detailedRoot: Object3D, variant: RahkshiMeshVariant): void {
   const isBattle = variant === 'battle';
-  const battleLodGroup = getRahkshiBattleLodGroup(detailedRoot);
-
-  if (battleLodGroup) {
-    detailedRoot.traverse((child) => {
-      if (!(child as Mesh).isMesh) return;
-      const underBattleLod = isDescendantOf(child, battleLodGroup);
-      child.visible = underBattleLod ? isBattle : !isBattle;
-    });
-    return;
-  }
-
-  detailedRoot.visible = !isBattle;
-  if (legacyBattleRoot) legacyBattleRoot.visible = isBattle;
+  detailedRoot.traverse((child) => {
+    if (!(child as Mesh).isMesh) return;
+    const isBattleMesh = isRahkshiBattleLodMesh(child.name);
+    child.visible = isBattle ? isBattleMesh : !isBattleMesh;
+  });
 }
-
-export { RAHKSHI_BATTLE_RIG_NODE };

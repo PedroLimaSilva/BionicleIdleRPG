@@ -70,7 +70,7 @@ export const RAHKSHI_KIT_PALETTE_TAN: Partial<Record<string, KitMaterialSlotEntr
 export const RAHKSHI_KIT_PALETTE_BLACK = KIT_TECHNIC_MAIN_BLACK;
 export const RAHKSHI_KIT_PALETTE_METAL = KIT_TECHNIC_MAIN_METAL;
 
-/** Kraata-driven tint slots on battle `SkinnedMesh` — fixed `Battle_*` slots stay as authored in the GLB. */
+/** Kraata-driven tint slots on battle `Battle_Body` — fixed `Battle_*` slots stay as authored in the GLB. */
 export function rahkshiBattleTintMap(dex: RahkshiArmorColors): Record<string, string> {
   return {
     Battle_Armor: dex.armor,

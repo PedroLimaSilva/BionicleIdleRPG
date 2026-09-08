@@ -23,17 +23,16 @@ import { applySelectiveBloomMrt, isSelectiveBloomRahkshiGlowMaterial } from './s
 import { isRahkshiGlowMesh, mapRahkshiGlowMaterials } from './rahkshiGlow';
 import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
 import {
+  isRahkshiBattleBodyMesh,
+  isRahkshiBattleLodMesh,
   isRahkshiBattleSpeciesMesh,
-  RAHKSHI_BATTLE_BODY_MESH,
-  RAHKSHI_BATTLE_RIG_NODE,
   RAHKSHI_DETAILED_RIG_NODE,
   shouldShowRahkshiBattleSpeciesMesh,
 } from './rahkshiBattleMeshes';
 import {
-  collectMeshUuids,
+  collectRahkshiBattleMeshUuids,
   resolveRahkshiBattleAppearanceTarget,
   setRahkshiLodVisibility,
-  usesRahkshiBattleLodGroup,
 } from './rahkshiLod';
 import { KIT_2001_GLB_PATH } from '../kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../kit/kit2003';
@@ -87,7 +86,7 @@ function applyBattleAppearance(root: Object3D, meshUuids: Set<string>, kraata: K
       return;
     }
 
-    if (child.name === RAHKSHI_BATTLE_BODY_MESH) {
+    if (isRahkshiBattleBodyMesh(child.name)) {
       applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleTintMap(dex));
     }
   });
@@ -123,26 +122,24 @@ export const RahkshiModel = forwardRef<
     return root ? cloneGltfInstance(root) : new Group();
   }, [nodes]);
 
-  const usesBattleLodGroup = useMemo(
-    () => usesRahkshiBattleLodGroup(detailedInstance),
+  const battleAppearanceTarget = useMemo(
+    () => resolveRahkshiBattleAppearanceTarget(detailedInstance),
     [detailedInstance]
   );
 
-  const legacyBattleInstance = useMemo(() => {
-    if (usesBattleLodGroup) return null;
-    const root = nodes[RAHKSHI_BATTLE_RIG_NODE] as Object3D | undefined;
-    return root ? cloneGltfInstance(root) : null;
-  }, [nodes, usesBattleLodGroup]);
+  const detailedMeshUuids = useMemo(() => {
+    const uuids = new Set<string>();
+    detailedInstance.traverse((child) => {
+      if (child instanceof Mesh && !isRahkshiBattleLodMesh(child.name)) {
+        uuids.add(child.uuid);
+      }
+    });
+    return uuids;
+  }, [detailedInstance]);
 
-  const battleAppearanceTarget = useMemo(
-    () => resolveRahkshiBattleAppearanceTarget(detailedInstance, legacyBattleInstance),
-    [detailedInstance, legacyBattleInstance]
-  );
-
-  const detailedMeshUuids = useMemo(() => collectMeshUuids(detailedInstance), [detailedInstance]);
   const battleMeshUuids = useMemo(
-    () => battleAppearanceTarget?.meshUuids ?? new Set<string>(),
-    [battleAppearanceTarget]
+    () => battleAppearanceTarget?.meshUuids ?? collectRahkshiBattleMeshUuids(detailedInstance),
+    [battleAppearanceTarget, detailedInstance]
   );
 
   const kitCharacterNodes = useMemo(
@@ -155,8 +152,8 @@ export const RahkshiModel = forwardRef<
   const kitLayersDone = useRef(0);
 
   useLayoutEffect(() => {
-    setRahkshiLodVisibility(detailedInstance, legacyBattleInstance, meshVariant);
-  }, [detailedInstance, legacyBattleInstance, meshVariant]);
+    setRahkshiLodVisibility(detailedInstance, meshVariant);
+  }, [detailedInstance, meshVariant]);
 
   useLayoutEffect(() => {
     if (!battleAppearanceTarget) return;
@@ -382,22 +379,19 @@ export const RahkshiModel = forwardRef<
   });
 
   useEffect(() => {
-    const instances = [detailedInstance, legacyBattleInstance].filter(Boolean) as Object3D[];
     return () => {
-      for (const instance of instances) {
-        // GLTF geometry is shared with useGLTF cache — never dispose it on clone teardown.
-        instance.traverse((obj) => {
-          if (!(obj instanceof Mesh)) return;
-          const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
-          for (const mat of materials) {
-            if (mat instanceof MeshStandardMaterial && mat.name === 'WeatheredMetal') {
-              mat.dispose();
-            }
+      // GLTF geometry is shared with useGLTF cache — never dispose it on clone teardown.
+      detailedInstance.traverse((obj) => {
+        if (!(obj instanceof Mesh)) return;
+        const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+        for (const mat of materials) {
+          if (mat instanceof MeshStandardMaterial && mat.name === 'WeatheredMetal') {
+            mat.dispose();
           }
-        });
-      }
+        }
+      });
     };
-  }, [detailedInstance, legacyBattleInstance]);
+  }, [detailedInstance]);
 
   useFrame((_, delta) => {
     const entries = glowEntries.current;
@@ -428,9 +422,6 @@ export const RahkshiModel = forwardRef<
   return (
     <group ref={group} dispose={null}>
       <primitive object={detailedInstance} scale={1} position={[0, 0, 0]} />
-      {legacyBattleInstance ? (
-        <primitive object={legacyBattleInstance} scale={1} position={[0, 0, 0]} />
-      ) : null}
     </group>
   );
 });

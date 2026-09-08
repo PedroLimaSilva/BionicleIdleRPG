@@ -1,61 +1,43 @@
 import { BoxGeometry, Group, Mesh, MeshStandardMaterial } from 'three';
-import { resolveRahkshiBattleAppearanceTarget, setRahkshiLodVisibility } from './rahkshiLod';
-import { RAHKSHI_BATTLE_LOD_GROUP } from './rahkshiBattleMeshes';
+import {
+  collectRahkshiBattleMeshUuids,
+  resolveRahkshiBattleAppearanceTarget,
+  setRahkshiLodVisibility,
+} from './rahkshiLod';
+import { RAHKSHI_BATTLE_BODY_MESH } from './rahkshiBattleMeshes';
 
 describe('rahkshiLod visibility', () => {
-  test('legacy dual-armature export toggles whole rig roots', () => {
+  test('single-armature export toggles meshes by Battle_ prefix', () => {
     const detailed = new Group();
-    const battle = new Group();
-    detailed.visible = true;
-    battle.visible = true;
-
-    setRahkshiLodVisibility(detailed, battle, 'battle');
-    expect(detailed.visible).toBe(false);
-    expect(battle.visible).toBe(true);
-
-    setRahkshiLodVisibility(detailed, battle, 'detailed');
-    expect(detailed.visible).toBe(true);
-    expect(battle.visible).toBe(false);
-  });
-
-  test('single-armature export toggles meshes under Battle_LOD', () => {
-    const detailed = new Group();
-    const battleLod = new Group();
-    battleLod.name = RAHKSHI_BATTLE_LOD_GROUP;
     const baked = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
     baked.name = 'Face';
     const battleBody = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
-    battleBody.name = 'SkinnedMesh';
+    battleBody.name = RAHKSHI_BATTLE_BODY_MESH;
     detailed.add(baked);
-    battleLod.add(battleBody);
-    detailed.add(battleLod);
+    detailed.add(battleBody);
 
-    setRahkshiLodVisibility(detailed, null, 'battle');
+    setRahkshiLodVisibility(detailed, 'battle');
     expect(baked.visible).toBe(false);
     expect(battleBody.visible).toBe(true);
 
-    setRahkshiLodVisibility(detailed, null, 'detailed');
+    setRahkshiLodVisibility(detailed, 'detailed');
     expect(baked.visible).toBe(true);
     expect(battleBody.visible).toBe(false);
   });
 
-  test('resolveRahkshiBattleAppearanceTarget prefers Battle_LOD on the live armature', () => {
+  test('resolveRahkshiBattleAppearanceTarget collects Battle_* meshes on Rahkshi', () => {
     const detailed = new Group();
-    const battleLod = new Group();
-    battleLod.name = RAHKSHI_BATTLE_LOD_GROUP;
+    const baked = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    baked.name = 'Face';
     const battleBody = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
-    battleBody.name = 'SkinnedMesh';
-    battleLod.add(battleBody);
-    detailed.add(battleLod);
+    battleBody.name = RAHKSHI_BATTLE_BODY_MESH;
+    detailed.add(baked);
+    detailed.add(battleBody);
 
-    const legacy = new Group();
-    const legacyBody = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
-    legacyBody.name = 'SkinnedMesh';
-    legacy.add(legacyBody);
-
-    const target = resolveRahkshiBattleAppearanceTarget(detailed, legacy);
+    const target = resolveRahkshiBattleAppearanceTarget(detailed);
     expect(target?.root).toBe(detailed);
     expect(target?.meshUuids.has(battleBody.uuid)).toBe(true);
-    expect(target?.meshUuids.has(legacyBody.uuid)).toBe(false);
+    expect(target?.meshUuids.has(baked.uuid)).toBe(false);
+    expect(collectRahkshiBattleMeshUuids(detailed)).toEqual(target?.meshUuids);
   });
 });
