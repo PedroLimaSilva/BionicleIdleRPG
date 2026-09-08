@@ -18,7 +18,6 @@ import { LegoColor } from '../../../types/Colors';
 import { KraataPower } from '../../../types/Kraata';
 import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
 import { cloneGltfInstance } from '../utils/cloneGltfInstance';
-import { disposeObject3DResources } from '../utils/disposeThreeObject';
 import { applySelectiveBloomMrt, isSelectiveBloomRahkshiEyeName } from './selectiveBloom';
 import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
 import {
@@ -36,6 +35,7 @@ import {
 } from '../kit/attachments/rahkshi';
 import {
   RAHKSHI_WEATHERED,
+  applyRahkshiBattleMaterialsToMesh,
   rahkshiBattleBodyMaterialColorMap,
   rahkshiKitColors,
 } from '../kit/palettes/rahkshiKitPalette';
@@ -284,11 +284,7 @@ export const RahkshiModel = forwardRef<
       if (isRahkshiBattleSpeciesMesh(child.name)) {
         child.visible = shouldShowRahkshiBattleSpeciesMesh(child.name, dex.staff);
         if (!child.visible) return;
-        applyWeatheredMetalToObject(child, {
-          ...RAHKSHI_WEATHERED,
-          materialColorMap: { Battle_Metal: dex.armor },
-          uniqueMaterials: true,
-        });
+        applyRahkshiBattleMaterialsToMesh(child, { Battle_Metal: dex.armor });
         return;
       }
 
@@ -304,12 +300,7 @@ export const RahkshiModel = forwardRef<
       }
 
       if (child.name === RAHKSHI_BATTLE_BODY_MESH) {
-        applyWeatheredMetalToObject(child, {
-          ...RAHKSHI_WEATHERED,
-          excludeMaterialNames: ['Eyes'],
-          materialColorMap: rahkshiBattleBodyMaterialColorMap(dex),
-          uniqueMaterials: true,
-        });
+        applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleBodyMaterialColorMap(dex));
       }
     });
 
@@ -342,7 +333,16 @@ export const RahkshiModel = forwardRef<
   useEffect(() => {
     const instance = bodyInstance;
     return () => {
-      disposeObject3DResources(instance, { disposeMaterials: true });
+      // GLTF geometry is shared with useGLTF cache — never dispose it on clone teardown.
+      instance.traverse((obj) => {
+        if (!(obj instanceof Mesh)) return;
+        const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+        for (const mat of materials) {
+          if (mat instanceof MeshStandardMaterial && mat.name === 'WeatheredMetal') {
+            mat.dispose();
+          }
+        }
+      });
     };
   }, [bodyInstance]);
 

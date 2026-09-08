@@ -3,6 +3,7 @@ import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
 import type { MatoranColors } from '../../../../types/Matoran';
 import type { RahkshiArmorColors } from '../../../../data/rahkshiArmorColors';
 import type { WeatheredMetalOptions } from '../../CharacterScene/WeatheredMetalMaterial';
+import { Mesh, MeshStandardMaterial, SkinnedMesh } from 'three';
 import { kitPartSlots } from './partSlots';
 import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from './technicKitPalette';
 
@@ -80,6 +81,36 @@ export function rahkshiBattleBodyMaterialColorMap(dex: RahkshiArmorColors): Reco
     Battle_Metal: LegoColor.LightGray,
     Battle_Tan: LegoColor.Tan,
   };
+}
+
+/**
+ * Tints battle LOD materials in place. SkinnedMesh cannot use weathered TSL
+ * replacements — they stop skinning under WebGPU and the body vanishes.
+ */
+export function applyRahkshiBattleMaterialsToMesh(
+  mesh: Mesh,
+  materialColorMap: Record<string, string>
+): void {
+  const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+  for (const mat of materials) {
+    if (!(mat instanceof MeshStandardMaterial)) continue;
+    const hex = materialColorMap[mat.name];
+    if (!hex) continue;
+    mat.color.set(hex);
+    if (mat.name === 'Battle_Metal') {
+      mat.metalness = 0.9;
+      mat.roughness = 0.3;
+      mat.envMapIntensity = 0.52;
+    } else {
+      mat.metalness = 0.05;
+      mat.roughness = 0.55;
+      mat.envMapIntensity = 0.4;
+    }
+    mat.needsUpdate = true;
+  }
+  if ((mesh as SkinnedMesh).isSkinnedMesh) {
+    mesh.frustumCulled = false;
+  }
 }
 
 export function rahkshiKitColors(dex: RahkshiArmorColors): MatoranColors {

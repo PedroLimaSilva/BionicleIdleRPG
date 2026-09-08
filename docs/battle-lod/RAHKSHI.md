@@ -52,7 +52,7 @@ Compare to live kit path: **40+** draws per Rahkshi.
 | `Battle_Metal`   | Fixed `LegoColor.LightGray` on body slots | Metal PBR | Gears, metal technic on `SkinnedMesh` |
 | `Battle_Tan`     | Fixed tan                                 | Light     | Tan axle pins                         |
 
-Palette helper: [`rahkshiBattleBodyMaterialColorMap`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts). Socket reference (live rig): [`rahkshi.ts`](../../src/rendering/3d/kit/attachments/rahkshi.ts).
+Palette helper: [`rahkshiBattleBodyMaterialColorMap`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts) applies **in-place** tints (not weathered TSL — skinned meshes must keep stock materials for WebGPU skinning).
 
 ---
 
