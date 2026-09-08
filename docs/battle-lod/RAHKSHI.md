@@ -6,12 +6,12 @@ Phase **C** pilot for [`docs/3D_RENDERING_STRATEGY.md`](../3D_RENDERING_STRATEGY
 
 ## GLB layout (`public/rahkshi.glb`)
 
-One armature. Battle LOD meshes are siblings on `Rahkshi` and **every battle mesh node name starts with `Battle_`**. Runtime toggles visibility — no second skeleton.
+One armature. Battle LOD meshes are siblings on `Rahkshi`. Most battle nodes are named `Battle_*`; the body bucket is a `Battle_Body` **Group** whose skinned children use `Part-*` names (see below). Runtime toggles visibility — no second skeleton.
 
 ```
 Rahkshi (armature)
 ├── … detailed sockets, baked meshes, kit attach points (visible in detailed LOD)
-├── Battle_Body      — skinned body, six `Battle_*` material slots
+├── Battle_Body (Group) — six skinned children, one per material slot (see below)
 ├── Battle_Glow      — under `Head`; one `Battle_Bloom` material
 └── Battle_Guurahk / Battle_Panrahk / … — species overlays (one visible)
 ```
@@ -24,7 +24,7 @@ Shared animation clips at file scope (`Attack`, `Empty`, `Idle`). `Hit` is still
 
 | Node             | Draws | Notes                                                                 |
 | ---------------- | ----: | --------------------------------------------------------------------- |
-| `Battle_Body`    |     6 | Skinned opaque body; six material slots (table below)                 |
+| `Battle_Body`    |     6 | **Group** of skinned children (one draw per `Battle_*` slot)          |
 | `Battle_Glow`    |     1 | Merged eyes + kraata disk under `Head`                                |
 | `Battle_{Breed}` |     1 | Species overlay (`Battle_Guurahk`, `Battle_Panrahk`, …) — one visible |
 
@@ -35,6 +35,10 @@ Compare to live kit path: **40+** draws per Rahkshi.
 ---
 
 ## Body material slots (`Battle_Body`)
+
+Blender exports `Battle_Body` as an **empty Group** parented under `Rahkshi`, not as a single merged `SkinnedMesh`. Each material slot becomes its own skinned child (for example `Part-44136_dot_dat003` … `_5`). Those children are **not** named with the `Battle_` prefix.
+
+Runtime code treats any mesh under the `Battle_Body` group as battle LOD via [`isRahkshiBattleBodyPartMesh`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) — do not rely on the group node itself being renderable.
 
 | Slot             | Runtime tint         | Notes                                        |
 | ---------------- | -------------------- | -------------------------------------------- |
@@ -108,24 +112,24 @@ Character dex defaults to this path; toggle **Battle LOD** on Rahkshi specimens 
 
 ## Code map
 
-| File                                                                                     | Role                                         |
-| ---------------------------------------------------------------------------------------- | -------------------------------------------- |
-| [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx)                       | `meshVariant: 'detailed' \| 'battle'`        |
-| [`rahkshiBattleMeshes.ts`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) | `Battle_*` mesh naming + species visibility  |
-| [`rahkshiLod.ts`](../../src/rendering/3d/CharacterScene/rahkshiLod.ts)                   | Toggle `Battle_*` mesh visibility            |
-| [`rahkshiKitPalette.ts`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts)       | `rahkshiBattleTintMap` (armor + joint only)  |
-| [`data/dex/rahkshi.ts`](../../src/data/dex/rahkshi.ts)                                   | `RahkshiDexMeshVariant` type for dex preview |
-| [`CharacterDex/Preview.tsx`](../../src/pages/CharacterDex/Preview.tsx)                   | Battle LOD toggle                            |
+| File                                                                                     | Role                                                       |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx)                       | `meshVariant: 'detailed' \| 'battle'`                      |
+| [`rahkshiBattleMeshes.ts`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) | `Battle_*` naming, body group children, species visibility |
+| [`rahkshiLod.ts`](../../src/rendering/3d/CharacterScene/rahkshiLod.ts)                   | Toggle `Battle_*` mesh visibility                          |
+| [`rahkshiKitPalette.ts`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts)       | `rahkshiBattleTintMap` (armor + joint only)                |
+| [`data/dex/rahkshi.ts`](../../src/data/dex/rahkshi.ts)                                   | `RahkshiDexMeshVariant` type for dex preview               |
+| [`CharacterDex/Preview.tsx`](../../src/pages/CharacterDex/Preview.tsx)                   | Battle LOD toggle                                          |
 
 ---
 
 ## Blender export checklist
 
 1. **One armature** — `Rahkshi` only (no `Rahkshi_Battle`).
-2. **Battle body** — join opaque geometry into **`Battle_Body`**; assign six `Battle_*` material slots; skin to `Rahkshi` bones.
+2. **Battle body** — parent opaque geometry under a **`Battle_Body` Group**; one skinned mesh per `Battle_*` material slot; skin to `Rahkshi` bones with **vertex groups** (Armature modifier → `Rahkshi`, bind to **Vertex Groups**). Merging all slots into one mesh is fine too, but the current export uses a group of six skinned parts.
 3. **Battle glow** — join eyes + head disk → **`Battle_Glow`** under `Head`; **one** material **`Battle_Bloom`**.
 4. **Species** — per breed: spine + staff → **`Battle_{Breed}`** (`Battle_Guurahk`, `Battle_Panrahk`, …).
-5. **Naming** — every battle LOD mesh node must start with **`Battle_`**.
+5. **Naming** — battle LOD mesh nodes use **`Battle_`** prefix, **except** the skinned children inside `Battle_Body` (runtime matches by parent group).
 6. Export; verify shared actions drive the single `Rahkshi` skeleton.
 7. Re-export **`Hit`** (and `Defeat` when ready) — required for combat / dex animation buttons.
 

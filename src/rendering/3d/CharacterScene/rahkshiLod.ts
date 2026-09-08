@@ -1,13 +1,11 @@
 import { Mesh, Object3D, SkinnedMesh } from 'three';
 import type { RahkshiMeshVariant } from './Rahkshi';
 import {
-  isRahkshiBattleLodMesh,
   isRahkshiBattleRenderableMesh,
   isRahkshiBattleSpeciesMesh,
   shouldShowRahkshiBattleSpeciesMesh,
 } from './rahkshiBattleMeshes';
 import { isRahkshiVariantMesh, shouldShowRahkshiVariantMesh } from './rahkshiVariantMeshes';
-import { logRahkshiLodMeshVisibilityChange } from './rahkshiLodDebug';
 
 function isRenderableMesh(child: Object3D): child is Mesh {
   const mesh = child as Mesh;
@@ -52,8 +50,7 @@ export function resolveRahkshiBattleAppearanceTarget(
 export function setRahkshiLodVisibility(
   detailedRoot: Object3D,
   variant: RahkshiMeshVariant,
-  staffPrefix?: string,
-  source = 'setRahkshiLodVisibility'
+  staffPrefix?: string
 ): void {
   const isBattle = variant === 'battle';
   detailedRoot.traverse((child) => {
@@ -62,50 +59,31 @@ export function setRahkshiLodVisibility(
     const isBattleMesh = isRahkshiBattleRenderableMesh(child);
     if (!isBattle) {
       if (isBattleMesh) {
-        logRahkshiLodMeshVisibilityChange(source, child, false, { variant, isBattleMesh });
         child.visible = false;
         return;
       }
 
       if (isRahkshiVariantMesh(child.name)) {
-        const nextVisible = staffPrefix
-          ? shouldShowRahkshiVariantMesh(child.name, staffPrefix)
-          : false;
-        logRahkshiLodMeshVisibilityChange(source, child, nextVisible, {
-          variant,
-          staffPrefix,
-          isVariantMesh: true,
-        });
-        child.visible = nextVisible;
+        child.visible = staffPrefix ? shouldShowRahkshiVariantMesh(child.name, staffPrefix) : false;
         return;
       }
 
-      const nextVisible = true;
-      logRahkshiLodMeshVisibilityChange(source, child, nextVisible, { variant, isBattleMesh });
-      child.visible = nextVisible;
+      child.visible = true;
       return;
     }
 
     if (!isBattleMesh) {
-      logRahkshiLodMeshVisibilityChange(source, child, false, { variant, isBattleMesh });
       child.visible = false;
       return;
     }
 
     if (isRahkshiBattleSpeciesMesh(child.name)) {
-      const nextVisible = staffPrefix
+      child.visible = staffPrefix
         ? shouldShowRahkshiBattleSpeciesMesh(child.name, staffPrefix)
         : false;
-      logRahkshiLodMeshVisibilityChange(source, child, nextVisible, {
-        variant,
-        staffPrefix,
-        isBattleMesh,
-      });
-      child.visible = nextVisible;
       return;
     }
 
-    logRahkshiLodMeshVisibilityChange(source, child, true, { variant, isBattleMesh });
     child.visible = true;
   });
 }

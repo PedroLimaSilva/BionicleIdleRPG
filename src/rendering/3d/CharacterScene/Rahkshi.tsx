@@ -40,7 +40,6 @@ import {
   resolveRahkshiBattleAppearanceTarget,
   setRahkshiLodVisibility,
 } from './rahkshiLod';
-import { logRahkshiLodEnableHint, logRahkshiLodRuntimeNodes } from './rahkshiLodDebug';
 import { KIT_2001_GLB_PATH } from '../kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../kit/kit2003';
 import {
@@ -166,27 +165,16 @@ export const RahkshiModel = forwardRef<
 
   const dex = useMemo(() => getRahkshiArmorColors(kraata), [kraata]);
 
-  const syncLodState = useCallback(
-    (source = 'syncLodState') => {
-      setRahkshiLodVisibility(detailedInstance, meshVariant, dex.staff, source);
-      if (meshVariant === 'battle' && battleAppearanceTarget) {
-        applyBattleMaterials(battleAppearanceTarget.root, battleMeshUuids, kraata);
-      }
-    },
-    [battleAppearanceTarget, battleMeshUuids, detailedInstance, dex.staff, kraata, meshVariant]
-  );
-
-  useEffect(() => {
-    logRahkshiLodEnableHint();
-  }, []);
+  const syncLodState = useCallback(() => {
+    setRahkshiLodVisibility(detailedInstance, meshVariant, dex.staff);
+    if (meshVariant === 'battle' && battleAppearanceTarget) {
+      applyBattleMaterials(battleAppearanceTarget.root, battleMeshUuids, kraata);
+    }
+  }, [battleAppearanceTarget, battleMeshUuids, detailedInstance, dex.staff, kraata, meshVariant]);
 
   useLayoutEffect(() => {
-    syncLodState('syncLodState');
+    syncLodState();
   }, [syncLodState]);
-
-  useEffect(() => {
-    logRahkshiLodRuntimeNodes(detailedInstance, meshVariant, 'meshVariantSwitch');
-  }, [detailedInstance, meshVariant]);
 
   const collectHeadSocketGlow = useCallback(() => {
     if (isBattle) return;
@@ -270,7 +258,7 @@ export const RahkshiModel = forwardRef<
       kitLayersDone.current += 1;
       if (kitLayersDone.current < RAHKSHI_ATTACHMENT_RUNS) return;
       kitLayersDone.current = 0;
-      syncLodState('onKitLayerAttached');
+      syncLodState();
       collectHeadSocketGlow();
       onKitMeshesAttached?.();
     };
@@ -317,7 +305,7 @@ export const RahkshiModel = forwardRef<
     const dex = getRahkshiArmorColors(kraata);
     const entries: GlowEntry[] = [];
 
-    syncLodState('detailedWeathering');
+    syncLodState();
 
     detailedInstance.traverse((child) => {
       if (!(child instanceof Mesh) || !detailedMeshUuids.has(child.uuid) || !child.visible) return;
@@ -379,7 +367,7 @@ export const RahkshiModel = forwardRef<
 
     glowEntries.current = entries;
     eyeGlowEntriesRef.current = entries;
-    syncLodState('battleGlowSetup');
+    syncLodState();
     onKitMeshesAttached?.();
   }, [
     battleAppearanceTarget,
