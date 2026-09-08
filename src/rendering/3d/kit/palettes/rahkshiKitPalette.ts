@@ -87,32 +87,42 @@ function isTintableBattleMaterial(mat: Material): mat is MeshStandardMaterial {
   );
 }
 
-function applyBattleMaterialTint(mat: MeshStandardMaterial, hex: string): void {
-  mat.color.set(hex);
-  mat.colorNode = null;
-  if (mat.name === 'Battle_Metal') {
-    mat.metalness = 0.9;
-    mat.roughness = 0.3;
-    mat.envMapIntensity = 0.52;
-  } else {
-    mat.metalness = 0.05;
-    mat.roughness = 0.55;
-    mat.envMapIntensity = 0.4;
-  }
-  mat.needsUpdate = true;
+type SkinnedMaterial = MeshStandardMaterial & { skinning?: boolean };
+
+function createTintedBattleMaterial(
+  source: MeshStandardMaterial,
+  hex: string
+): MeshPhysicalMaterial {
+  const isMetal = source.name === 'Battle_Metal';
+  const tinted = new MeshPhysicalMaterial({
+    color: hex,
+    envMapIntensity: isMetal ? 0.52 : 0.4,
+    metalness: isMetal ? 0.9 : 0.05,
+    name: source.name,
+    roughness: isMetal ? 0.3 : 0.55,
+  });
+  (tinted as SkinnedMaterial).skinning = (source as SkinnedMaterial).skinning ?? true;
+  return tinted;
 }
 
 /**
- * Applies battle LOD color tints in place. No weathered TSL — skinned meshes must
- * keep stock materials for WebGPU skinning. Only slots present in `tints` are touched.
+ * Applies battle LOD color tints by replacing matching material slots. Skinned meshes
+ * cannot use weathered TSL — fresh MeshPhysicalMaterial instances keep WebGPU skinning
+ * and pick up kraata colors before the first pipeline compile.
  */
 export function applyRahkshiBattleMaterialsToMesh(mesh: Mesh, tints: Record<string, string>): void {
-  const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-  for (const mat of materials) {
-    if (!isTintableBattleMaterial(mat)) continue;
+  const raw = mesh.material;
+  const materials = Array.isArray(raw) ? raw : [raw];
+  let changed = false;
+  const next = materials.map((mat) => {
+    if (!isTintableBattleMaterial(mat)) return mat;
     const hex = tints[mat.name];
-    if (!hex) continue;
-    applyBattleMaterialTint(mat, hex);
+    if (!hex) return mat;
+    changed = true;
+    return createTintedBattleMaterial(mat, hex);
+  });
+  if (changed) {
+    mesh.material = Array.isArray(raw) ? next : next[0];
   }
   if ((mesh as SkinnedMesh).isSkinnedMesh) {
     mesh.frustumCulled = false;

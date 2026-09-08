@@ -33,11 +33,17 @@ export function shouldSelectiveBloomTransmissiveKind(
 }
 
 /** Marks a material so the character bloom MRT picks it up (Three.js selective-bloom pattern). */
-export function applySelectiveBloomMrt(mat: SelectiveBloomMrtMaterial): void {
+export function applySelectiveBloomMrt(
+  mat: SelectiveBloomMrtMaterial & { needsUpdate?: boolean }
+): void {
   mat.mrtNode = mrt({ bloomIntensity: BLOOM_INTENSITY_ON });
+  mat.needsUpdate = true;
 }
 
 /** Drops a material from the bloom MRT (mask power off, or a one-off selection). */
-export function clearSelectiveBloomMrt(mat: SelectiveBloomMrtMaterial): void {
+export function clearSelectiveBloomMrt(
+  mat: SelectiveBloomMrtMaterial & { needsUpdate?: boolean }
+): void {
   mat.mrtNode = undefined;
+  mat.needsUpdate = true;
 }

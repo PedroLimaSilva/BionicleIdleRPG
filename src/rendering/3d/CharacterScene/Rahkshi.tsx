@@ -101,8 +101,21 @@ export const RahkshiModel = forwardRef<
     instance.traverse((child) => {
       if (child instanceof Mesh) uuids.add(child.uuid);
     });
+    if (isBattle) {
+      const dex = getRahkshiArmorColors(kraata);
+      instance.traverse((child) => {
+        if (!(child instanceof Mesh)) return;
+        if (isRahkshiBattleSpeciesMesh(child.name)) {
+          applyRahkshiBattleMaterialsToMesh(child, { Battle_Metal: dex.armor });
+          return;
+        }
+        if (child.name === RAHKSHI_BATTLE_BODY_MESH) {
+          applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleTintMap(dex));
+        }
+      });
+    }
     return { bakedMeshUuids: uuids, bodyInstance: instance };
-  }, [nodes, rigNodeName]);
+  }, [isBattle, kraata, nodes, rigNodeName]);
 
   const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(bodyInstance), [bodyInstance]);
   const kitColors = useMemo(() => rahkshiKitColors(getRahkshiArmorColors(kraata)), [kraata]);

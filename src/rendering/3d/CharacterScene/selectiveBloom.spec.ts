@@ -32,7 +32,7 @@ describe('selectiveBloom selection', () => {
   });
 
   test('applySelectiveBloomMrt writes an MRT mask', () => {
-    const mat: { mrtNode?: unknown; name: string } = { name: 'Glow' };
+    const mat: { mrtNode?: unknown; name: string; needsUpdate?: boolean } = { name: 'Glow' };
     applySelectiveBloomMrt(mat);
     expect(mat.mrtNode).toBeDefined();
   });

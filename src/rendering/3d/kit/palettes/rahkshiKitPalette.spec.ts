@@ -1,4 +1,4 @@
-import { MeshStandardMaterial } from 'three';
+import { MeshPhysicalMaterial, MeshStandardMaterial } from 'three';
 import { applyRahkshiBattleMaterialsToMesh, rahkshiBattleTintMap } from './rahkshiKitPalette';
 import { KraataPower } from '../../../../types/Kraata';
 import { getRahkshiArmorColors } from '../../../../data/rahkshiArmorColors';
@@ -12,7 +12,7 @@ describe('rahkshi battle LOD tints', () => {
     });
   });
 
-  test('applyRahkshiBattleMaterialsToMesh tints matching slots and leaves others', () => {
+  test('applyRahkshiBattleMaterialsToMesh replaces matching slots and leaves others', () => {
     const armor = new MeshStandardMaterial({
       color: '#ffffff',
       metalness: 0.1,
@@ -25,18 +25,19 @@ describe('rahkshi battle LOD tints', () => {
     });
     const mesh = {
       frustumCulled: true,
+      isSkinnedMesh: true,
       material: [armor, chassis],
-    } as unknown as import('three').Mesh;
+    } as unknown as import('three').SkinnedMesh;
 
     applyRahkshiBattleMaterialsToMesh(mesh, { Battle_Armor: '#0055BF' });
 
-    expect(armor.color.getHexString()).toBe('0055bf');
-    expect(armor.metalness).toBe(0.05);
-    expect(armor.roughness).toBe(0.55);
-    expect(armor.version).toBe(1);
-    expect(armor.colorNode).toBeNull();
-    expect(chassis.color.getHexString()).toBe('aaaaaa');
-    expect(chassis.metalness).toBe(0.2);
+    const materials = mesh.material as MeshPhysicalMaterial[];
+    expect(materials[0]).not.toBe(armor);
+    expect(materials[0]).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(materials[0].color.getHexString()).toBe('0055bf');
+    expect((materials[0] as MeshPhysicalMaterial & { skinning?: boolean }).skinning).toBe(true);
+    expect(materials[1]).toBe(chassis);
+    expect(materials[1].metalness).toBe(0.2);
   });
 
   test('applyRahkshiBattleMaterialsToMesh boosts Battle_Metal PBR when tinted', () => {
@@ -45,13 +46,15 @@ describe('rahkshi battle LOD tints', () => {
       metalness: 0.1,
       name: 'Battle_Metal',
     });
-    const mesh = { material: metal } as unknown as import('three').Mesh;
+    const mesh = { isSkinnedMesh: true, material: metal } as unknown as import('three').SkinnedMesh;
 
     applyRahkshiBattleMaterialsToMesh(mesh, { Battle_Metal: '#583927' });
 
-    expect(metal.color.getHexString()).toBe('583927');
-    expect(metal.metalness).toBe(0.9);
-    expect(metal.roughness).toBe(0.3);
-    expect(metal.version).toBe(1);
+    const next = mesh.material as MeshPhysicalMaterial;
+    expect(next).not.toBe(metal);
+    expect(next).toBeInstanceOf(MeshPhysicalMaterial);
+    expect(next.color.getHexString()).toBe('583927');
+    expect(next.metalness).toBe(0.9);
+    expect(next.roughness).toBe(0.3);
   });
 });
