@@ -28,7 +28,7 @@ Shared animation clips at file scope (`Attack`, `Empty`, `Idle`). `Hit` is still
 | `Battle_Glow`    |     1 | Merged eyes + kraata disk under `Head`                                |
 | `Battle_{Breed}` |     1 | Species overlay (`Battle_Guurahk`, `Battle_Panrahk`, …) — one visible |
 
-**Shipped today:** `Battle_Guurahk` only. Add `Battle_Panrahk` … `Battle_Turahk` before battle becomes default in combat.
+**Shipped today:** all six `Battle_{Breed}` species overlays (`Battle_Guurahk` … `Battle_Turahk`).
 
 Compare to live kit path: **40+** draws per Rahkshi.
 
@@ -40,14 +40,14 @@ Blender exports `Battle_Body` as an **empty Group** parented under `Rahkshi`, no
 
 Runtime code treats any mesh under the `Battle_Body` group as battle LOD via [`isRahkshiBattleBodyPartMesh`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) — do not rely on the group node itself being renderable.
 
-| Slot             | Runtime tint         | Notes                                        |
-| ---------------- | -------------------- | -------------------------------------------- |
-| `Battle_Armor`   | kraata **armor** hex | Tinted at runtime via `rahkshiBattleTintMap` |
-| `Battle_Joint`   | kraata **joint** hex | Tinted at runtime                            |
-| `Battle_Chassis` | Authored in GLB      | Not re-tinted                                |
-| `Battle_Black`   | Authored in GLB      | Not re-tinted                                |
-| `Battle_Metal`   | Authored in GLB      | Not re-tinted (species overlay uses armor)   |
-| `Battle_Tan`     | Authored in GLB      | Not re-tinted                                |
+| Slot             | Runtime tint         | Notes                                               |
+| ---------------- | -------------------- | --------------------------------------------------- |
+| `Battle_Armor`   | kraata **armor** hex | Tinted at runtime via `rahkshiBattleTintMap`        |
+| `Battle_Joint`   | kraata **joint** hex | Tinted at runtime                                   |
+| `Battle_Chassis` | Authored in GLB      | Not re-tinted                                       |
+| `Battle_Black`   | Authored in GLB      | Not re-tinted                                       |
+| `Battle_Metal`   | Authored in GLB      | Not re-tinted on body; species overlays keep silver |
+| `Battle_Tan`     | Authored in GLB      | Not re-tinted                                       |
 
 [`rahkshiBattleTintMap`](../../src/rendering/3d/kit/palettes/rahkshiKitPalette.ts) touches **armor + joint only** — no weathered TSL (skinned meshes keep stock materials for WebGPU skinning).
 
@@ -80,7 +80,7 @@ One mesh per staff breed, named `Battle_{Breed}` at the armature root (sibling o
 
 Runtime: [`shouldShowRahkshiBattleSpeciesMesh`](../../src/rendering/3d/CharacterScene/rahkshiBattleMeshes.ts) — `meshName === Battle_{staffPrefix}`.
 
-Species overlays tint with the armor hex on their `Battle_Metal` slot.
+Species overlays keep the authored silver `Battle_Metal` color (same as detailed-mode `SOLID-SILVER` variant meshes) and only receive the metal PBR boost.
 
 ---
 
