@@ -6,14 +6,29 @@ Phase **C** pilot for [`docs/3D_RENDERING_STRATEGY.md`](../3D_RENDERING_STRATEGY
 
 ## GLB layout (`public/rahkshi.glb`)
 
-Two armatures in one file:
+### Target: one armature (recommended)
+
+Parent all battle LOD meshes under the live `Rahkshi` armature. Runtime toggles visibility — no second skeleton.
+
+```
+Rahkshi (armature)
+├── … detailed sockets, baked meshes, kit attach points (visible in detailed LOD)
+└── Battle_LOD (empty — hidden in detailed LOD)
+    ├── SkinnedMesh      — six `Battle_*` slots, skinned to Rahkshi bones
+    ├── Battle_Glow      — one `Battle_Bloom` material
+    └── Guurahk / Panrahk / … — species overlays (one visible)
+```
+
+Shared animation clips at file scope (`Attack`, `Empty`, `Idle`). `Hit` is still required for combat — re-export when ready.
+
+### Legacy: two armatures (shipped today)
 
 | Rig        | Node             | Used by                                | Contents                                                                                                            |
 | ---------- | ---------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | **Live**   | `Rahkshi`        | Inventory, dex default, combat (today) | Kit + baked textures — [`Rahkshi.tsx`](../../src/rendering/3d/CharacterScene/Rahkshi.tsx) `meshVariant: 'detailed'` |
 | **Battle** | `Rahkshi_Battle` | Dex toggle, combat target              | Merged battle LOD — no kit attach (`meshVariant: 'battle'`)                                                         |
 
-Shared animation clips at file scope (`Attack`, `Empty`, `Idle` as of the first battle export). `Hit` is still required for combat — re-export when ready.
+Runtime mounts **both** clones and toggles visibility. Migrate battle meshes under `Rahkshi` / `Battle_LOD` and delete `Rahkshi_Battle` when convenient — one skeleton is easier to animate, tint, and maintain.
 
 ---
 
@@ -130,11 +145,11 @@ Character dex defaults to this path; toggle **Battle LOD** on Rahkshi specimens 
 ## Blender export checklist
 
 1. **Live collection** — `Rahkshi` armature + kit instances (unchanged).
-2. **Battle collection** — `Rahkshi_Battle` armature:
-   - Join opaque geometry into **`SkinnedMesh`**; assign six `Battle_*` slots; skin to bones.
-   - Join eyes + head disk → **`Battle_Glow`** under `Head`; **one** material **`Battle_Bloom`** (merge all faces — no second `Glow` slot on this mesh).
-   - Per breed: spine + staff → **`{Breed}`** mesh at armature root (`Guurahk`, `Panrahk`, …).
-3. Export both armatures; verify shared actions on both skins.
+2. **Battle collection** — parent under `Rahkshi` as **`Battle_LOD`** (preferred) or keep legacy `Rahkshi_Battle` armature until migrated:
+   - Join opaque geometry into **`SkinnedMesh`**; assign six `Battle_*` slots; **skin to `Rahkshi` bones** (not a duplicate armature).
+   - Join eyes + head disk → **`Battle_Glow`** under `Head`; **one** material **`Battle_Bloom`**.
+   - Per breed: spine + staff → **`{Breed}`** mesh (`Guurahk`, `Panrahk`, …).
+3. Export; verify shared actions drive the single `Rahkshi` skeleton.
 4. Re-export **`Hit`** (and `Defeat` when ready) — required for combat / dex animation buttons.
 
 ---

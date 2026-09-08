@@ -1,4 +1,13 @@
-/** Root armature node for the merged battle LOD in `rahkshi.glb`. */
+/** Live / detailed armature in `rahkshi.glb`. */
+export const RAHKSHI_DETAILED_RIG_NODE = 'Rahkshi';
+
+/**
+ * Parent empty for merged battle meshes on the **single-armature** export path.
+ * Battle `SkinnedMesh`, `Battle_Glow`, and species overlays live here, hidden in detailed LOD.
+ */
+export const RAHKSHI_BATTLE_LOD_GROUP = 'Battle_LOD';
+
+/** Legacy second armature root — remove after battle meshes move under `Rahkshi`. */
 export const RAHKSHI_BATTLE_RIG_NODE = 'Rahkshi_Battle';
 
 /** Skinned body bucket mesh on `Rahkshi_Battle` (six `Battle_*` material slots). */

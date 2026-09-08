@@ -11,7 +11,6 @@ import {
   MeshStandardMaterial,
   SkinnedMesh,
 } from 'three';
-import { uniform } from 'three/tsl';
 import { kitPartSlots } from './partSlots';
 import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from './technicKitPalette';
 
@@ -78,8 +77,7 @@ export const RAHKSHI_KIT_PALETTE_TAN: Partial<Record<string, KitMaterialSlotEntr
 export const RAHKSHI_KIT_PALETTE_BLACK = KIT_TECHNIC_MAIN_BLACK;
 export const RAHKSHI_KIT_PALETTE_METAL = KIT_TECHNIC_MAIN_METAL;
 
-/** Map lore armor/joint hex onto kit part slots (`useKitAttachments` colors). */
-/** Kraata-driven tint slots on `SkinnedMesh` — fixed `Battle_*` slots stay as authored in the GLB. */
+/** Kraata-driven tint slots on battle `SkinnedMesh` — fixed `Battle_*` slots stay as authored in the GLB. */
 export function rahkshiBattleTintMap(dex: RahkshiArmorColors): Record<string, string> {
   return {
     Battle_Armor: dex.armor,
@@ -95,28 +93,7 @@ function isTintableBattleMaterial(mat: Material): mat is MeshStandardMaterial {
   );
 }
 
-type SkinnedMaterial = MeshStandardMaterial & { skinning?: boolean };
-
-const BATTLE_TINT_UNIFORM_KEY = 'battleTintUniform';
-
-function tintUniformForMaterial(mat: MeshStandardMaterial, hex: string) {
-  const existing = mat.userData[BATTLE_TINT_UNIFORM_KEY] as { value: Color } | undefined;
-  if (existing) {
-    existing.value.set(hex);
-    return existing;
-  }
-  const tintUniform = uniform(new Color(hex));
-  mat.userData[BATTLE_TINT_UNIFORM_KEY] = tintUniform;
-  return tintUniform;
-}
-
-function applyBattleTintColorNode(mat: MeshStandardMaterial, hex: string): void {
-  const tintUniform = tintUniformForMaterial(mat, hex);
-  (mat as unknown as { colorNode?: unknown }).colorNode = tintUniform;
-  mat.color.set(hex);
-  mat.customProgramCacheKey = () => `battle_tint_${mat.name}_${mat.uuid}`;
-  mat.needsUpdate = true;
-}
+type SkinnedMaterial = MeshPhysicalMaterial & { skinning?: boolean };
 
 function createTintedBattleMaterial(
   source: MeshStandardMaterial,
@@ -124,29 +101,20 @@ function createTintedBattleMaterial(
 ): MeshPhysicalMaterial {
   const isMetal = source.name === 'Battle_Metal';
   const tinted = new MeshPhysicalMaterial({
-    color: hex,
+    color: new Color(hex),
     envMapIntensity: isMetal ? 0.52 : 0.4,
     metalness: isMetal ? 0.9 : 0.05,
     name: source.name,
     roughness: isMetal ? 0.3 : 0.55,
   });
-  (tinted as SkinnedMaterial).skinning = (source as SkinnedMaterial).skinning ?? true;
-  applyBattleTintColorNode(tinted, hex);
+  tinted.userData.originalMaterialName = source.name;
+  (tinted as SkinnedMaterial).skinning = (source as SkinnedMaterial).skinning ?? false;
   return tinted;
 }
 
-function tintBattleMaterialInPlace(mat: MeshStandardMaterial, hex: string): void {
-  if (mat.name === 'Battle_Metal') {
-    mat.metalness = 0.9;
-    mat.roughness = 0.3;
-    mat.envMapIntensity = 0.52;
-  }
-  applyBattleTintColorNode(mat, hex);
-}
-
 /**
- * Applies battle LOD color tints on matching `Battle_*` slots. Skinned meshes cannot use
- * weathered TSL; a `colorNode` uniform keeps WebGPU skinning and kraata colors in sync.
+ * Replaces matching battle material slots with tinted `MeshPhysicalMaterial` instances.
+ * Fresh materials avoid WebGPU node-graph issues on skinned meshes.
  */
 export function applyRahkshiBattleMaterialsToMesh(mesh: Mesh, tints: Record<string, string>): void {
   const raw = mesh.material;
@@ -157,17 +125,18 @@ export function applyRahkshiBattleMaterialsToMesh(mesh: Mesh, tints: Record<stri
     const hex = tints[mat.name];
     if (!hex) return mat;
     changed = true;
+    const tinted = createTintedBattleMaterial(mat, hex);
     if ((mesh as SkinnedMesh).isSkinnedMesh) {
-      tintBattleMaterialInPlace(mat, hex);
-      return mat;
+      (tinted as SkinnedMaterial).skinning = true;
     }
-    return createTintedBattleMaterial(mat, hex);
+    return tinted;
   });
-  if (changed && !(mesh as SkinnedMesh).isSkinnedMesh) {
-    mesh.material = Array.isArray(raw) ? next : next[0];
-  }
-  if ((mesh as SkinnedMesh).isSkinnedMesh) {
+  if (!changed) return;
+  mesh.material = Array.isArray(raw) ? next : next[0];
+  const skinned = mesh as SkinnedMesh;
+  if (skinned.isSkinnedMesh) {
     mesh.frustumCulled = false;
+    skinned.bind?.(skinned.skeleton, skinned.bindMatrix);
   }
 }
 

@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -25,8 +26,10 @@ import {
   isRahkshiBattleSpeciesMesh,
   RAHKSHI_BATTLE_BODY_MESH,
   RAHKSHI_BATTLE_RIG_NODE,
+  RAHKSHI_DETAILED_RIG_NODE,
   shouldShowRahkshiBattleSpeciesMesh,
 } from './rahkshiBattleMeshes';
+import { collectMeshUuids, setRahkshiLodVisibility } from './rahkshiLod';
 import { KIT_2001_GLB_PATH } from '../kit/kit2001';
 import { KIT_2003_GLB_PATH } from '../kit/kit2003';
 import {
@@ -67,6 +70,24 @@ function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
   return map;
 }
 
+function applyBattleAppearance(root: Object3D, meshUuids: Set<string>, kraata: KraataPower): void {
+  const dex = getRahkshiArmorColors(kraata);
+  root.traverse((child) => {
+    if (!(child instanceof Mesh) || !meshUuids.has(child.uuid)) return;
+
+    if (isRahkshiBattleSpeciesMesh(child.name)) {
+      child.visible = shouldShowRahkshiBattleSpeciesMesh(child.name, dex.staff);
+      if (!child.visible) return;
+      applyRahkshiBattleMaterialsToMesh(child, { Battle_Metal: dex.armor });
+      return;
+    }
+
+    if (child.name === RAHKSHI_BATTLE_BODY_MESH) {
+      applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleTintMap(dex));
+    }
+  });
+}
+
 export const RahkshiModel = forwardRef<
   CombatantModelHandle,
   {
@@ -92,36 +113,39 @@ export const RahkshiModel = forwardRef<
 
   const { animations, nodes } = useGLTF(RAHKSHI_GLB);
 
-  const rigNodeName = isBattle ? RAHKSHI_BATTLE_RIG_NODE : 'Rahkshi';
+  const detailedInstance = useMemo(() => {
+    const root = nodes[RAHKSHI_DETAILED_RIG_NODE] as Object3D | undefined;
+    return root ? cloneGltfInstance(root) : new Group();
+  }, [nodes]);
 
-  const { bakedMeshUuids, bodyInstance } = useMemo(() => {
-    const root = nodes[rigNodeName] as Object3D | undefined;
-    const instance = root ? cloneGltfInstance(root) : new Group();
-    const uuids = new Set<string>();
-    instance.traverse((child) => {
-      if (child instanceof Mesh) uuids.add(child.uuid);
-    });
-    if (isBattle) {
-      const dex = getRahkshiArmorColors(kraata);
-      instance.traverse((child) => {
-        if (!(child instanceof Mesh)) return;
-        if (isRahkshiBattleSpeciesMesh(child.name)) {
-          applyRahkshiBattleMaterialsToMesh(child, { Battle_Metal: dex.armor });
-          return;
-        }
-        if (child.name === RAHKSHI_BATTLE_BODY_MESH) {
-          applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleTintMap(dex));
-        }
-      });
-    }
-    return { bakedMeshUuids: uuids, bodyInstance: instance };
-  }, [isBattle, kraata, nodes, rigNodeName]);
+  const battleInstance = useMemo(() => {
+    const root = nodes[RAHKSHI_BATTLE_RIG_NODE] as Object3D | undefined;
+    return root ? cloneGltfInstance(root) : null;
+  }, [nodes]);
 
-  const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(bodyInstance), [bodyInstance]);
+  const detailedMeshUuids = useMemo(() => collectMeshUuids(detailedInstance), [detailedInstance]);
+  const battleMeshUuids = useMemo(
+    () => (battleInstance ? collectMeshUuids(battleInstance) : new Set<string>()),
+    [battleInstance]
+  );
+
+  const kitCharacterNodes = useMemo(
+    () => buildKitCharacterNodes(detailedInstance),
+    [detailedInstance]
+  );
   const kitColors = useMemo(() => rahkshiKitColors(getRahkshiArmorColors(kraata)), [kraata]);
 
   const eyeGlowEntriesRef = useRef<GlowEntry[]>([]);
   const kitLayersDone = useRef(0);
+
+  useLayoutEffect(() => {
+    setRahkshiLodVisibility(detailedInstance, battleInstance, meshVariant);
+  }, [battleInstance, detailedInstance, meshVariant]);
+
+  useLayoutEffect(() => {
+    if (!battleInstance) return;
+    applyBattleAppearance(battleInstance, battleMeshUuids, kraata);
+  }, [battleInstance, battleMeshUuids, kraata]);
 
   const collectHeadSocketGlow = useCallback(() => {
     if (isBattle) return;
@@ -134,7 +158,7 @@ export const RahkshiModel = forwardRef<
     const headEntries: GlowEntry[] = [];
     socket.traverse((child) => {
       // Face and Glow are authored under Socket_Head — only the kit clone should emit.
-      if (!(child instanceof Mesh) || bakedMeshUuids.has(child.uuid)) return;
+      if (!(child instanceof Mesh) || detailedMeshUuids.has(child.uuid)) return;
       if (child.name === 'Face' || child.name === 'Glow') return;
       const mat = child.material;
       if (!(mat instanceof MeshStandardMaterial)) return;
@@ -149,7 +173,7 @@ export const RahkshiModel = forwardRef<
       });
     });
     glowEntries.current = [...eyeGlowEntriesRef.current, ...headEntries];
-  }, [bakedMeshUuids, isBattle, kitCharacterNodes]);
+  }, [detailedMeshUuids, isBattle, kitCharacterNodes]);
 
   const registerGlowMaterial = useCallback(
     (mat: MeshStandardMaterial, entries: GlowEntry[]): MeshStandardMaterial => {
@@ -245,8 +269,8 @@ export const RahkshiModel = forwardRef<
     const dex = getRahkshiArmorColors(kraata);
     const entries: GlowEntry[] = [];
 
-    bodyInstance.traverse((child) => {
-      if (!(child instanceof Mesh) || !bakedMeshUuids.has(child.uuid)) return;
+    detailedInstance.traverse((child) => {
+      if (!(child instanceof Mesh) || !detailedMeshUuids.has(child.uuid)) return;
       const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
 
       if (isRahkshiVariantMesh(child.name)) {
@@ -277,8 +301,8 @@ export const RahkshiModel = forwardRef<
       RahkshiShoulders_baked: LegoColor.DarkBluishGray,
     };
 
-    bodyInstance.traverse((child) => {
-      if (!(child instanceof Mesh) || !bakedMeshUuids.has(child.uuid)) return;
+    detailedInstance.traverse((child) => {
+      if (!(child instanceof Mesh) || !detailedMeshUuids.has(child.uuid)) return;
       applyWeatheredMetalToObject(child, {
         ...RAHKSHI_WEATHERED,
         excludeMaterialNames: ['Eyes', 'SOLID-SILVER', 'SOLID-SILVER.001'],
@@ -286,24 +310,16 @@ export const RahkshiModel = forwardRef<
         uniqueMaterials: true,
       });
     });
-  }, [bakedMeshUuids, bodyInstance, isBattle, kraata, registerGlowMesh]);
+  }, [detailedInstance, detailedMeshUuids, isBattle, kraata, registerGlowMesh]);
 
   useEffect(() => {
-    if (!isBattle) return;
+    if (!isBattle || !battleInstance) return;
 
-    const dex = getRahkshiArmorColors(kraata);
     const entries: GlowEntry[] = [];
 
-    bodyInstance.traverse((child) => {
-      if (!(child instanceof Mesh) || !bakedMeshUuids.has(child.uuid)) return;
+    battleInstance.traverse((child) => {
+      if (!(child instanceof Mesh) || !battleMeshUuids.has(child.uuid)) return;
       const mesh = child as Mesh & { userData?: { originalMaterialName?: string } };
-
-      if (isRahkshiBattleSpeciesMesh(child.name)) {
-        child.visible = shouldShowRahkshiBattleSpeciesMesh(child.name, dex.staff);
-        if (!child.visible) return;
-        applyRahkshiBattleMaterialsToMesh(child, { Battle_Metal: dex.armor });
-        return;
-      }
 
       const mat = child.material as MeshStandardMaterial;
       if (mat?.name && mat.name !== 'WeatheredMetal') {
@@ -313,18 +329,13 @@ export const RahkshiModel = forwardRef<
 
       if (isRahkshiGlowMesh(child.name) || isSelectiveBloomRahkshiGlowMaterial(mat.name)) {
         registerGlowMesh(child, entries);
-        return;
-      }
-
-      if (child.name === RAHKSHI_BATTLE_BODY_MESH) {
-        applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleTintMap(dex));
       }
     });
 
     glowEntries.current = entries;
     eyeGlowEntriesRef.current = entries;
     onKitMeshesAttached?.();
-  }, [bakedMeshUuids, bodyInstance, isBattle, kraata, onKitMeshesAttached, registerGlowMesh]);
+  }, [battleInstance, battleMeshUuids, isBattle, kraata, onKitMeshesAttached, registerGlowMesh]);
 
   const kitAttachments = isBattle ? {} : RAHKSHI_KIT_2003_ATTACHMENTS;
   const kit2001Attachments = isBattle ? {} : RAHKSHI_KIT_2001_ATTACHMENTS;
@@ -348,20 +359,22 @@ export const RahkshiModel = forwardRef<
   });
 
   useEffect(() => {
-    const instance = bodyInstance;
+    const instances = [detailedInstance, battleInstance].filter(Boolean) as Object3D[];
     return () => {
-      // GLTF geometry is shared with useGLTF cache — never dispose it on clone teardown.
-      instance.traverse((obj) => {
-        if (!(obj instanceof Mesh)) return;
-        const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
-        for (const mat of materials) {
-          if (mat instanceof MeshStandardMaterial && mat.name === 'WeatheredMetal') {
-            mat.dispose();
+      for (const instance of instances) {
+        // GLTF geometry is shared with useGLTF cache — never dispose it on clone teardown.
+        instance.traverse((obj) => {
+          if (!(obj instanceof Mesh)) return;
+          const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+          for (const mat of materials) {
+            if (mat instanceof MeshStandardMaterial && mat.name === 'WeatheredMetal') {
+              mat.dispose();
+            }
           }
-        }
-      });
+        });
+      }
     };
-  }, [bodyInstance]);
+  }, [battleInstance, detailedInstance]);
 
   useFrame((_, delta) => {
     const entries = glowEntries.current;
@@ -391,7 +404,8 @@ export const RahkshiModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
-      <primitive object={bodyInstance} scale={1} position={[0, 0, 0]} />
+      <primitive object={detailedInstance} scale={1} position={[0, 0, 0]} />
+      {battleInstance ? <primitive object={battleInstance} scale={1} position={[0, 0, 0]} /> : null}
     </group>
   );
 });
