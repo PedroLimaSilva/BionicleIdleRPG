@@ -67,7 +67,7 @@ export function logRahkshiLodMeshVisibilityChange(
   logRahkshiLodMeshState(`${source}: visible ${mesh.visible} -> ${nextVisible}`, mesh, extra);
 }
 
-/** Dump every runtime mesh under the cloned Rahkshi rig when the LOD variant changes. */
+/** Dump every runtime node under the cloned Rahkshi rig when the LOD variant changes. */
 export function logRahkshiLodRuntimeNodes(
   root: Object3D,
   variant: RahkshiMeshVariant,
@@ -76,15 +76,26 @@ export function logRahkshiLodRuntimeNodes(
   if (!isRahkshiLodDebugEnabled()) return;
 
   const meshes: Record<string, unknown>[] = [];
-  const namedNodes: string[] = [];
+  const namedNodes: Record<string, unknown>[] = [];
 
   root.traverse((child) => {
-    if (child.name) namedNodes.push(child.name);
+    if (child.name) {
+      const skinned = child as SkinnedMesh;
+      namedNodes.push({
+        name: child.name,
+        type: child.type,
+        isMesh: child.type === 'Mesh' || (child as Mesh).isMesh === true,
+        isSkinnedMesh: skinned.isSkinnedMesh === true,
+        hasGeometry: (child as Mesh).geometry != null,
+        parent: child.parent?.name ?? null,
+      });
+    }
     if (!isRenderableMesh(child)) return;
 
     const skinned = child as SkinnedMesh;
     meshes.push({
       name: child.name || '(unnamed)',
+      type: child.type,
       visible: child.visible,
       isSkinnedMesh: skinned.isSkinnedMesh === true,
       isBattleLod: isRahkshiBattleLodMesh(child.name),
@@ -94,18 +105,23 @@ export function logRahkshiLodRuntimeNodes(
     });
   });
 
-  const battleBody = meshes.find((entry) => entry.name === RAHKSHI_BATTLE_BODY_MESH);
+  const battleBodyNamed = namedNodes.find((entry) => entry.name === RAHKSHI_BATTLE_BODY_MESH);
+  const battleBodyMesh = meshes.find((entry) => entry.name === RAHKSHI_BATTLE_BODY_MESH);
 
   console.group(`[RahkshiLOD] ${source}: runtime nodes (variant=${variant})`);
   console.log('named node count:', namedNodes.length);
-  console.log('named nodes:', namedNodes.sort().join(', '));
+  console.table(namedNodes);
+  console.log('renderable meshes:', meshes.length);
   console.table(meshes);
-  if (!battleBody) {
+  if (!battleBodyNamed) {
+    console.warn(`[RahkshiLOD] No node named ${RAHKSHI_BATTLE_BODY_MESH} in rig.`);
+  } else if (!battleBodyMesh) {
     console.warn(
-      `[RahkshiLOD] ${RAHKSHI_BATTLE_BODY_MESH} not found in runtime rig — check rahkshi.glb export.`
+      `[RahkshiLOD] ${RAHKSHI_BATTLE_BODY_MESH} exists as type="${battleBodyNamed.type}" but is not a Mesh/SkinnedMesh — mesh geometry did not load or export is wrong.`,
+      battleBodyNamed
     );
   } else {
-    console.log(`[RahkshiLOD] ${RAHKSHI_BATTLE_BODY_MESH}:`, battleBody);
+    console.log(`[RahkshiLOD] ${RAHKSHI_BATTLE_BODY_MESH}:`, battleBodyMesh);
   }
   console.groupEnd();
 }
