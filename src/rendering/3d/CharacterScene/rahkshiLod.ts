@@ -46,6 +46,23 @@ export function resolveRahkshiBattleAppearanceTarget(
   return { meshUuids, root: detailedRoot };
 }
 
+/**
+ * Drop detailed / kit meshes from a combat clone so the mixer, shadow
+ * traverse, and GPU only see battle LOD. Bones and empty sockets stay.
+ */
+export function pruneRahkshiBattleClone(root: Object3D): void {
+  const toRemove: Object3D[] = [];
+  root.traverse((child) => {
+    if (!isRenderableMesh(child)) return;
+    if (!isRahkshiBattleRenderableMesh(child)) {
+      toRemove.push(child);
+    }
+  });
+  for (const mesh of toRemove) {
+    mesh.parent?.remove(mesh);
+  }
+}
+
 /** Toggle detailed vs battle meshes via `visible`; species overlays follow staff prefix in battle mode. */
 export function setRahkshiLodVisibility(
   detailedRoot: Object3D,

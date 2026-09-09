@@ -25,6 +25,7 @@ import { useKitAttachments } from '../hooks/useKitAttachments';
 import { getRahkshiArmorColors } from '../../../data/rahkshiArmorColors';
 import { LegoColor } from '../../../types/Colors';
 import { KraataPower } from '../../../types/Kraata';
+import type { MatoranColors } from '../../../types/Matoran';
 import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
 import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 import { applySelectiveBloomMrt, isSelectiveBloomRahkshiGlowMaterial } from './selectiveBloom';
@@ -35,9 +36,11 @@ import {
   isRahkshiBattleRenderableMesh,
   isRahkshiBattleSpeciesMesh,
   RAHKSHI_DETAILED_RIG_NODE,
+  shouldShowRahkshiBattleSpeciesMesh,
 } from './rahkshiBattleMeshes';
 import {
   collectRahkshiBattleMeshUuids,
+  pruneRahkshiBattleClone,
   resolveRahkshiBattleAppearanceTarget,
   setRahkshiLodVisibility,
 } from './rahkshiLod';
@@ -99,6 +102,7 @@ function applyBattleMaterials(root: Object3D, meshUuids: Set<string>, kraata: Kr
     if (!isRenderableMesh(child) || !meshUuids.has(child.uuid)) return;
 
     if (isRahkshiBattleSpeciesMesh(child.name)) {
+      if (!shouldShowRahkshiBattleSpeciesMesh(child.name, dex.staff)) return;
       applyRahkshiBattleSpeciesMetalToMesh(child);
       return;
     }
@@ -107,6 +111,35 @@ function applyBattleMaterials(root: Object3D, meshUuids: Set<string>, kraata: Kr
       applyRahkshiBattleMaterialsToMesh(child, rahkshiBattleTintMap(dex));
     }
   });
+}
+
+/** Kit sockets only exist on the detailed LOD — keep these hooks off the battle path. */
+function RahkshiDetailedKitLayers({
+  characterNodes,
+  colors,
+  onAttached,
+}: {
+  characterNodes: Record<string, Object3D>;
+  colors: MatoranColors;
+  onAttached?: () => void;
+}) {
+  useKitAttachments({
+    attachments: RAHKSHI_KIT_2003_ATTACHMENTS,
+    characterNodes,
+    colors,
+    kitUrl: KIT_2003_GLB_PATH,
+    onAttached,
+    weathered: RAHKSHI_WEATHERED,
+  });
+  useKitAttachments({
+    attachments: RAHKSHI_KIT_2001_ATTACHMENTS,
+    characterNodes,
+    colors,
+    kitUrl: KIT_2001_GLB_PATH,
+    onAttached,
+    weathered: RAHKSHI_WEATHERED,
+  });
+  return null;
 }
 
 export const RahkshiModel = forwardRef<
@@ -139,8 +172,10 @@ export const RahkshiModel = forwardRef<
       (scene.getObjectByName(RAHKSHI_DETAILED_RIG_NODE) as Object3D | null) ??
       (nodes[RAHKSHI_DETAILED_RIG_NODE] as Object3D | undefined);
     if (!root) return new Group();
-    return cloneGltfInstance(root);
-  }, [nodes, scene]);
+    const cloned = cloneGltfInstance(root);
+    if (isBattle) pruneRahkshiBattleClone(cloned);
+    return cloned;
+  }, [isBattle, nodes, scene]);
 
   const battleAppearanceTarget = useMemo(
     () => resolveRahkshiBattleAppearanceTarget(detailedInstance),
@@ -375,7 +410,6 @@ export const RahkshiModel = forwardRef<
 
     glowEntries.current = entries;
     eyeGlowEntriesRef.current = entries;
-    syncLodState();
     onKitMeshesAttached?.();
   }, [
     battleAppearanceTarget,
@@ -384,29 +418,7 @@ export const RahkshiModel = forwardRef<
     kraata,
     onKitMeshesAttached,
     registerGlowMesh,
-    syncLodState,
   ]);
-
-  const kitAttachments = isBattle ? {} : RAHKSHI_KIT_2003_ATTACHMENTS;
-  const kit2001Attachments = isBattle ? {} : RAHKSHI_KIT_2001_ATTACHMENTS;
-
-  useKitAttachments({
-    attachments: kitAttachments,
-    characterNodes: kitCharacterNodes,
-    colors: kitColors,
-    kitUrl: KIT_2003_GLB_PATH,
-    onAttached: isBattle ? undefined : onKitLayerAttached,
-    weathered: RAHKSHI_WEATHERED,
-  });
-
-  useKitAttachments({
-    attachments: kit2001Attachments,
-    characterNodes: kitCharacterNodes,
-    colors: kitColors,
-    kitUrl: KIT_2001_GLB_PATH,
-    onAttached: isBattle ? undefined : onKitLayerAttached,
-    weathered: RAHKSHI_WEATHERED,
-  });
 
   useEffect(() => {
     return () => {
@@ -451,6 +463,13 @@ export const RahkshiModel = forwardRef<
 
   return (
     <group ref={group} dispose={null}>
+      {!isBattle && (
+        <RahkshiDetailedKitLayers
+          characterNodes={kitCharacterNodes}
+          colors={kitColors}
+          onAttached={onKitLayerAttached}
+        />
+      )}
       <primitive object={detailedInstance} scale={1} position={[0, 0, 0]} />
     </group>
   );
@@ -459,4 +478,3 @@ export const RahkshiModel = forwardRef<
 RahkshiModel.displayName = 'RahkshiModel';
 
 useGLTF.preload(RAHKSHI_GLB);
-useKitAttachments.preload(KIT_2001_GLB_PATH, KIT_2003_GLB_PATH);
