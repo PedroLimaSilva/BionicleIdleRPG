@@ -37,6 +37,7 @@ import {
   bakedDiscolorationAmountNode,
   createBakedDiscolorationUniforms,
   DISCOLORATION_MAP_USERDATA_KEY,
+  getBakedDiscolorationMap,
 } from '../hooks/bakedDiscoloration';
 
 export type WeatheredMetalOptions = {
@@ -298,16 +299,20 @@ function isUnderMasks(obj: Object3D): boolean {
 }
 
 function mapsFromSource(
-  mat: MeshStandardMaterial
+  mat: MeshStandardMaterial,
+  opts: WeatheredMetalOptions
 ): Pick<
   WeatheredMetalOptions,
   'map' | 'metalness' | 'metalnessMap' | 'normalMap' | 'roughness' | 'roughnessMap'
 > {
+  const keepAuthoredMetalness = opts.metalness === undefined;
   return {
     ...(mat.map ? { map: mat.map } : {}),
     ...(mat.normalMap ? { normalMap: mat.normalMap } : {}),
     ...(mat.roughnessMap ? { roughness: mat.roughness, roughnessMap: mat.roughnessMap } : {}),
-    ...(mat.metalnessMap ? { metalness: mat.metalness, metalnessMap: mat.metalnessMap } : {}),
+    ...(keepAuthoredMetalness && mat.metalnessMap
+      ? { metalness: mat.metalness, metalnessMap: mat.metalnessMap }
+      : {}),
   };
 }
 
@@ -322,12 +327,33 @@ function isExcludedMaterialBySubstring(mat: unknown, substrings: string[]): bool
   return substrings.some((s) => name.includes(s.toLowerCase()));
 }
 
+/** Mesh nodes (e.g. `RahkshiShoulders`) often differ from baked slot keys (`RahkshiShoulders_baked`). */
+function resolveMaterialColorFromMap(
+  lookupName: string,
+  meshName: string,
+  materialColorMap: Record<string, string>
+): string | undefined {
+  if (lookupName in materialColorMap) return materialColorMap[lookupName];
+  if (meshName in materialColorMap) return materialColorMap[meshName];
+
+  const bakedCandidates = new Set<string>();
+  if (meshName && !meshName.endsWith('_baked')) bakedCandidates.add(`${meshName}_baked`);
+  if (lookupName && !lookupName.endsWith('_baked')) bakedCandidates.add(`${lookupName}_baked`);
+
+  for (const key of bakedCandidates) {
+    if (key in materialColorMap) return materialColorMap[key];
+  }
+  return undefined;
+}
+
 /**
  * Replaces mesh materials with slot-colored weathered plastic. Skips Masks
  * subtrees and excluded material names (Brain, GlowingEyes, …). Authored
- * albedo / normal / roughness / metalness maps stay on the material and replace
- * the matching procedural FBM channel. Samples baked emissive discoloration
- * maps when the mesh has UVs.
+ * albedo / normal / roughness maps stay on the material and replace the
+ * matching procedural FBM channel. Caller `metalness` is the weathered
+ * plastic/metal amount and replaces packed metallicRoughness metalness (Rahkshi
+ * roughness bakes ship a full-white B channel). Samples baked emissive
+ * discoloration maps when the mesh has UVs.
  */
 export function applyWeatheredMetalToObject(
   object: Object3D | null | undefined,
@@ -383,14 +409,11 @@ export function applyWeatheredMetalToObject(
         meshWithUserData.userData.originalMaterialName = matName;
       }
 
-      const color =
-        hasColorMap && lookupName in materialColorMap
-          ? materialColorMap[lookupName]
-          : hasColorMap
-            ? undefined
-            : raw instanceof MeshStandardMaterial && raw.color
-              ? raw.color.getStyle()
-              : '#ffffff';
+      const color = hasColorMap
+        ? resolveMaterialColorFromMap(lookupName, meshName, materialColorMap)
+        : raw instanceof MeshStandardMaterial && raw.color
+          ? raw.color.getStyle()
+          : '#ffffff';
 
       if (!hasColorMap && isWeatheredMetalMaterial(raw)) return raw;
       if (hasColorMap && color === undefined) return raw;
@@ -398,10 +421,10 @@ export function applyWeatheredMetalToObject(
       changed = true;
       const discolorationMap =
         meshHasUv(mesh) && raw instanceof MeshStandardMaterial
-          ? (raw.emissiveMap ?? undefined)
+          ? (getBakedDiscolorationMap(raw) ?? undefined)
           : undefined;
       const nextColor = (color ?? '#ffffff') as ColorRepresentation;
-      const sourceMaps = raw instanceof MeshStandardMaterial ? mapsFromSource(raw) : {};
+      const sourceMaps = raw instanceof MeshStandardMaterial ? mapsFromSource(raw, opts) : {};
       const nextOpts = { ...opts, ...sourceMaps, color: nextColor, discolorationMap };
       return opts.uniqueMaterials
         ? createWeatheredMetalMaterial(nextOpts)

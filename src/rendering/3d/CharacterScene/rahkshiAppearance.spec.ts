@@ -1,6 +1,8 @@
 import { BoxGeometry, DataTexture, Group, Mesh, MeshStandardMaterial } from 'three';
 import { getRahkshiArmorColors } from '../../../data/rahkshiArmorColors';
 import { KraataPower } from '../../../types/Kraata';
+import { DISCOLORATION_MAP_USERDATA_KEY } from '../hooks/bakedDiscoloration';
+import { RAHKSHI_WEATHERED } from '../kit/palettes/rahkshiKitPalette';
 import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
 
@@ -26,9 +28,8 @@ function makeSharedRahkshiRig() {
 
 function applyGauntletColors(root: Group, power: KraataPower) {
   applyWeatheredMetalToObject(root, {
+    ...RAHKSHI_WEATHERED,
     materialColorMap: rahkshiColorMap(power),
-    metalness: 0.05,
-    roughness: 0.55,
     uniqueMaterials: true,
   });
 }
@@ -82,36 +83,53 @@ describe('Rahkshi gauntlet instance coloring', () => {
     );
   });
 
-  it('keeps Face_baked and Back_baked PBR maps while tinting armor color', () => {
-    const albedo = new DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1);
+  it('tints Face_baked and Back_baked, keeps normal/roughness, and matches kit metalness', () => {
+    const discolor = new DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1);
     const normal = new DataTexture(new Uint8Array([128, 128, 255, 255]), 1, 1);
+    const roughness = new DataTexture(new Uint8Array([255, 40, 255, 255]), 1, 1);
     const face = new MeshStandardMaterial({
       color: '#ffffff',
-      map: albedo,
+      emissiveMap: discolor,
+      metalness: 0.5,
+      metalnessMap: roughness,
       name: 'Face_baked',
       normalMap: normal,
-      roughnessMap: albedo,
+      roughness: 1,
+      roughnessMap: roughness,
     });
     const back = new MeshStandardMaterial({
       color: '#ffffff',
-      map: albedo,
+      emissiveMap: discolor,
+      metalness: 0.5,
+      metalnessMap: roughness,
       name: 'Back_baked',
       normalMap: normal,
-      roughnessMap: albedo,
+      roughness: 1,
+      roughnessMap: roughness,
     });
     const root = new Group();
     root.add(new Mesh(new BoxGeometry(), face), new Mesh(new BoxGeometry(), back));
     applyGauntletColors(root, KraataPower.Fear);
     const armor = getRahkshiArmorColors(KraataPower.Fear).armor.replace('#', '').toLowerCase();
-    const faceNext = (root.children[0] as Mesh).material as MeshStandardMaterial;
+    const faceNext = (root.children[0] as Mesh).material as MeshStandardMaterial & {
+      metalnessNode?: unknown;
+    };
     const backNext = (root.children[1] as Mesh).material as MeshStandardMaterial;
     expect(faceNext.color.getHexString()).toBe(armor);
     expect(backNext.color.getHexString()).toBe(armor);
-    expect(faceNext.map).toBe(albedo);
-    expect(backNext.map).toBe(albedo);
+    expect(faceNext.map).toBeNull();
+    expect(backNext.map).toBeNull();
     expect(faceNext.normalMap).toBe(normal);
     expect(backNext.normalMap).toBe(normal);
-    expect(faceNext.roughnessMap).toBe(albedo);
-    expect(backNext.roughnessMap).toBe(albedo);
+    expect(faceNext.roughnessMap).toBe(roughness);
+    expect(backNext.roughnessMap).toBe(roughness);
+    expect(faceNext.metalnessMap).toBeNull();
+    expect(backNext.metalnessMap).toBeNull();
+    expect(faceNext.metalness).toBe(RAHKSHI_WEATHERED.metalness);
+    expect(backNext.metalness).toBe(RAHKSHI_WEATHERED.metalness);
+    expect(faceNext.metalnessNode).toBeDefined();
+    expect(faceNext.emissiveMap).toBeNull();
+    expect(faceNext.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
+    expect(backNext.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
   });
 });
