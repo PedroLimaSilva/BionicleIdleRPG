@@ -180,14 +180,14 @@ describe('applyWeatheredMetalToObject uniqueMaterials', () => {
 });
 
 describe('applyWeatheredMetalToObject PBR map preservation', () => {
-  test('weathers mapped materials and keeps albedo, normal, and MR maps', () => {
+  test('weathers mapped materials and keeps albedo, normal, and roughness maps', () => {
     const albedo = mapTex();
     const normal = mapTex();
     const mr = mapTex();
     const source = new MeshStandardMaterial({
       color: '#ffffff',
       map: albedo,
-      metalness: 1,
+      metalness: 0.5,
       metalnessMap: mr,
       name: 'Back_baked',
       normalMap: normal,
@@ -212,11 +212,32 @@ describe('applyWeatheredMetalToObject PBR map preservation', () => {
     expect(next.map).toBe(albedo);
     expect(next.normalMap).toBe(normal);
     expect(next.roughnessMap).toBe(mr);
-    expect(next.metalnessMap).toBe(mr);
+    expect(next.metalnessMap).toBeNull();
+    expect(next.metalness).toBe(0.05);
     expect(next.colorNode).toBeDefined();
     expect(next.normalNode).toBeUndefined();
     expect(next.roughnessNode).toBeUndefined();
-    expect(next.metalnessNode).toBeUndefined();
+    expect(next.metalnessNode).toBeDefined();
+  });
+
+  test('keeps authored metalness maps when weathering does not pass a metalness scalar', () => {
+    const mr = mapTex();
+    const source = new MeshStandardMaterial({
+      color: '#ffffff',
+      metalness: 0.5,
+      metalnessMap: mr,
+      name: 'Back_baked',
+      roughness: 1,
+      roughnessMap: mr,
+    });
+    const mesh = new Mesh(new BoxGeometry(), source);
+    applyWeatheredMetalToObject(new Group().add(mesh), {
+      materialColorMap: { Back_baked: '#c91a09' },
+      uniqueMaterials: true,
+    });
+    const next = mesh.material as MeshStandardMaterial;
+    expect(next.metalnessMap).toBe(mr);
+    expect(next.metalness).toBe(0.5);
   });
 
   test('resolves meshName_baked when re-weatering an already-renamed WeatheredMetal slot', () => {

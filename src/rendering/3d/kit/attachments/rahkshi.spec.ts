@@ -44,6 +44,34 @@ function readGlbNodeNames(relativePath: string): Set<string> {
   return new Set(readGlbNodes(relativePath).map((node) => node.name));
 }
 
+type GlbMaterial = {
+  emissiveTexture?: { index: number };
+  name?: string;
+  normalTexture?: { index: number };
+  pbrMetallicRoughness?: {
+    baseColorTexture?: { index: number };
+    metallicRoughnessTexture?: { index: number };
+  };
+};
+
+function readGlbMaterials(relativePath: string): GlbMaterial[] {
+  const buffer = readFileSync(join(__dirname, '../../../../../public', relativePath));
+  const jsonChunkLength = buffer.readUInt32LE(GLB_HEADER_BYTES);
+  const jsonStart = GLB_HEADER_BYTES + CHUNK_HEADER_BYTES;
+  const gltf = JSON.parse(buffer.subarray(jsonStart, jsonStart + jsonChunkLength).toString()) as {
+    materials?: GlbMaterial[];
+  };
+  return gltf.materials ?? [];
+}
+
+const RAHKSHI_BAKED_SLOTS = [
+  'Back_baked',
+  'Face_baked',
+  'KraataCradle_baked',
+  'KraataCradleHolder_baked',
+  'RahkshiShoulders_baked',
+] as const;
+
 describe('Rahkshi kit attachments', () => {
   test('limb bones and staff variants use Name.Side after Three.js sanitization', () => {
     const sockets = readGlbNodeNames('rahkshi.glb');
@@ -91,6 +119,18 @@ describe('Rahkshi kit attachments', () => {
     for (const name of ['Back', 'Face', 'KraataCradle', 'KraataCradleHolder', 'RahkshiShoulders']) {
       expect(baked.some((node) => node.name === name && node.mesh)).toBe(true);
       expect(kit2003.has(name)).toBe(false);
+    }
+  });
+
+  test('baked unique parts ship emissive discoloration, normal, and roughness — no albedo', () => {
+    const byName = new Map(readGlbMaterials('rahkshi.glb').map((mat) => [mat.name, mat]));
+    for (const name of RAHKSHI_BAKED_SLOTS) {
+      const mat = byName.get(name);
+      expect(mat).toBeDefined();
+      expect(mat?.pbrMetallicRoughness?.baseColorTexture).toBeUndefined();
+      expect(mat?.emissiveTexture).toBeDefined();
+      expect(mat?.normalTexture).toBeDefined();
+      expect(mat?.pbrMetallicRoughness?.metallicRoughnessTexture).toBeDefined();
     }
   });
 
