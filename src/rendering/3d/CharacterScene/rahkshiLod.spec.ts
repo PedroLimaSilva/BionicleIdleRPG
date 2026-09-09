@@ -1,6 +1,7 @@
 import { BoxGeometry, Group, Mesh, MeshStandardMaterial } from 'three';
 import {
   collectRahkshiBattleMeshUuids,
+  pruneRahkshiBattleClone,
   resolveRahkshiBattleAppearanceTarget,
   setRahkshiLodVisibility,
 } from './rahkshiLod';
@@ -106,5 +107,27 @@ describe('rahkshiLod visibility', () => {
     expect(target?.meshUuids.has(part.uuid)).toBe(true);
     expect(target?.meshUuids.has(baked.uuid)).toBe(false);
     expect(collectRahkshiBattleMeshUuids(detailed)).toEqual(target?.meshUuids);
+  });
+
+  test('pruneRahkshiBattleClone removes detailed meshes and keeps battle LOD', () => {
+    const detailed = new Group();
+    const baked = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    baked.name = 'Face';
+    const battleBodyGroup = new Group();
+    battleBodyGroup.name = RAHKSHI_BATTLE_BODY_MESH;
+    const part = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    part.name = 'Part-slot';
+    battleBodyGroup.add(part);
+    const glow = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    glow.name = 'Battle_Glow';
+    detailed.add(baked);
+    detailed.add(battleBodyGroup);
+    detailed.add(glow);
+
+    pruneRahkshiBattleClone(detailed);
+
+    expect(baked.parent).toBeNull();
+    expect(part.parent).toBe(battleBodyGroup);
+    expect(glow.parent).toBe(detailed);
   });
 });

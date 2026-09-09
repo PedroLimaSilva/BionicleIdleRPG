@@ -101,14 +101,16 @@ function tintBattleMaterialInPlace(mat: SkinnedMaterial, hex: string): void {
   mat.color.set(hex);
 }
 
-function bindSkinnedBattleMesh(mesh: Mesh): void {
+/**
+ * Bind-pose bounds are wrong for a posed skinned mesh, so Three.js would
+ * frustum-cull battle LOD off-screen. Disable culling instead of calling
+ * `SkinnedMesh.computeBoundingSphere()` — that CPU-skins every vertex and
+ * hitching the main thread for hundreds of ms per Rahkshi.
+ */
+function disableSkinnedBattleFrustumCulling(mesh: Mesh): void {
   const skinned = mesh as SkinnedMesh;
   if (!skinned.isSkinnedMesh) return;
-
   mesh.frustumCulled = false;
-  skinned.bind?.(skinned.skeleton, skinned.bindMatrix);
-  skinned.computeBoundingSphere?.();
-  skinned.geometry?.computeBoundingSphere();
 }
 
 /**
@@ -132,7 +134,7 @@ export function applyRahkshiBattleMaterialsToMesh(mesh: Mesh, tints: Record<stri
     tintBattleMaterialInPlace(mat, hex);
   }
 
-  bindSkinnedBattleMesh(mesh);
+  disableSkinnedBattleFrustumCulling(mesh);
 }
 
 /**
@@ -152,7 +154,7 @@ export function applyRahkshiBattleSpeciesMetalToMesh(mesh: Mesh): void {
     applyBattleMetalPbrInPlace(mat);
   }
 
-  bindSkinnedBattleMesh(mesh);
+  disableSkinnedBattleFrustumCulling(mesh);
 }
 
 export function rahkshiKitColors(dex: RahkshiArmorColors): MatoranColors {

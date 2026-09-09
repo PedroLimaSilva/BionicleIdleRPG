@@ -79,4 +79,22 @@ describe('rahkshi battle LOD tints', () => {
     expect(metal.roughness).toBe(0.3);
     expect(mesh.frustumCulled).toBe(false);
   });
+
+  test('does not CPU-skin vertices to compute a bounding sphere', () => {
+    const armor = new MeshStandardMaterial({ color: '#ffffff', name: 'Battle_Armor' });
+    const computeBoundingSphere = jest.fn();
+    const mesh = {
+      computeBoundingSphere,
+      frustumCulled: true,
+      geometry: { computeBoundingSphere: jest.fn() },
+      isSkinnedMesh: true,
+      material: armor,
+    } as unknown as import('three').SkinnedMesh;
+
+    applyRahkshiBattleMaterialsToMesh(mesh, { Battle_Armor: '#583927' });
+
+    expect(computeBoundingSphere).not.toHaveBeenCalled();
+    expect(mesh.geometry.computeBoundingSphere).not.toHaveBeenCalled();
+    expect(mesh.frustumCulled).toBe(false);
+  });
 });
