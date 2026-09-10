@@ -29,6 +29,7 @@ import { ModelPreview } from './pages/ModelPreview/index.tsx';
 import { CharacterDex } from './pages/CharacterDex/index.tsx';
 import { CharacterDexPreview } from './pages/CharacterDex/Preview.tsx';
 import { PWABadge } from './components/CacheManagement/PWABadge.tsx';
+import { PwaInstallPrompt } from './components/PwaInstallPrompt/index.tsx';
 
 const NotFound: React.FC = () => (
   <div className="page-container">
@@ -82,6 +83,7 @@ function AppShell() {
           <SaveErrorBanner />
           <TelemetryConsentPrompt />
           <SharedCharacterPrompt />
+          <PwaInstallPrompt />
         </SceneCanvasProvider>
       </SettingsProvider>
     </GameProvider>

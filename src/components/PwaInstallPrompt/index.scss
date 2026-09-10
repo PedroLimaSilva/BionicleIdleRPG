@@ -1,0 +1,152 @@
+.pwa-install-trigger {
+  position: fixed;
+  top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  right: calc(0.75rem + env(safe-area-inset-right, 0px));
+  z-index: 480;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 50%;
+  color: var(--color-text);
+  background: linear-gradient(135deg, rgba(26, 26, 35, 0.96) 0%, rgba(20, 20, 28, 0.94) 100%);
+  backdrop-filter: blur(12px) saturate(160%);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.35),
+    0 0 12px var(--theme-element-glow-transparent);
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    outline: none;
+  }
+}
+
+.pwa-install-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.pwa-install-panel {
+  width: min(100%, 22rem);
+  padding: 1.5rem 1.25rem 1.25rem;
+  border-radius: 20px;
+  border: 1px solid var(--color-border-subtle);
+  background: linear-gradient(160deg, rgba(26, 26, 35, 0.98) 0%, rgba(18, 18, 24, 0.98) 100%);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.45),
+    0 0 1px rgba(255, 255, 255, 0.08) inset;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 0.75rem;
+    border-radius: 50%;
+    color: var(--color-accent);
+    background: radial-gradient(circle, var(--color-accent-hover) 0%, transparent 72%);
+  }
+
+  &__title {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--color-text);
+  }
+
+  &__description {
+    margin: 0 0 1rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+  }
+
+  &__steps {
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+    counter-reset: pwa-install-step;
+
+    li {
+      position: relative;
+      margin: 0 0 0.65rem;
+      padding-left: 2rem;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: var(--color-text);
+
+      &::before {
+        counter-increment: pwa-install-step;
+        content: counter(pwa-install-step);
+        position: absolute;
+        left: 0;
+        top: 0.05rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.35rem;
+        height: 1.35rem;
+        border-radius: 50%;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--color-text);
+        background: var(--color-surface-elevated);
+      }
+    }
+  }
+
+  &__footer {
+    margin: 0 0 1.25rem;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  &__install,
+  &__dismiss {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  &__dismiss {
+    background: #ffffff;
+    color: #111111;
+    border-color: transparent;
+
+    &:hover {
+      background: #f2f2f2;
+      border-color: transparent;
+      color: #111111;
+    }
+  }
+}
