@@ -4,9 +4,11 @@ import posthog from 'posthog-js';
 import { PostHogProvider } from '@posthog/react';
 import { initAnalytics, isAnalyticsConfigured, setupErrorReporting } from './services/telemetry.ts';
 import { setupLocalAssets } from './setupLocalAssets.ts';
+import { preloadAssets } from './preload.ts';
 import { App } from './App.tsx';
 
 setupLocalAssets();
+preloadAssets();
 initAnalytics();
 setupErrorReporting();
 
