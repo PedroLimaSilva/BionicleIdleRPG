@@ -50,18 +50,6 @@
     0 16px 48px rgba(0, 0, 0, 0.45),
     0 0 1px rgba(255, 255, 255, 0.08) inset;
 
-  &__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    margin-bottom: 0.75rem;
-    border-radius: 50%;
-    color: var(--color-accent);
-    background: radial-gradient(circle, var(--color-accent-hover) 0%, transparent 72%);
-  }
-
   &__title {
     margin: 0 0 0.5rem;
     font-family: var(--font-display);

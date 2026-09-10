@@ -175,9 +175,6 @@ export function PwaInstallPrompt() {
               transition={panelTransition}
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="pwa-install-panel__icon" aria-hidden="true">
-                <Expand size={20} />
-              </div>
               <h2 id="pwa-install-title" className="pwa-install-panel__title">
                 {copy.title}
               </h2>
