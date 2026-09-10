@@ -1,9 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import { act, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { isTestMode } from '../../utils/testMode';
-import { SCENE_COMPILE_WATCHDOG_MS, SceneCompileAsync } from './SceneCompileAsync';
+import { SceneCompileAsync } from './SceneCompileAsync';
 
 jest.mock('../../utils/testMode', () => ({
   isTestMode: jest.fn(),
@@ -12,8 +12,6 @@ jest.mock('../../utils/testMode', () => ({
 const isTestModeMock = isTestMode as jest.MockedFunction<typeof isTestMode>;
 
 const compileAsync = jest.fn();
-const invalidate = jest.fn();
-const setFrameloop = jest.fn();
 const scene = { uuid: 'scene' };
 const camera = { uuid: 'camera' };
 const gl: { compileAsync?: typeof compileAsync } = { compileAsync };
@@ -23,50 +21,27 @@ jest.mock('@react-three/fiber', () => ({
     selector({
       camera,
       gl,
-      invalidate,
       scene,
-      setFrameloop,
     }),
 }));
 
 describe('SceneCompileAsync', () => {
   beforeEach(() => {
     compileAsync.mockReset();
-    invalidate.mockReset();
-    setFrameloop.mockReset();
     isTestModeMock.mockReturnValue(false);
     gl.compileAsync = compileAsync;
     compileAsync.mockResolvedValue(undefined);
   });
 
-  test('pauses the frame loop until compileAsync finishes, then resumes', async () => {
-    let resolveCompile: (() => void) | undefined;
-    compileAsync.mockImplementation(
-      () =>
-        new Promise<void>((resolve) => {
-          resolveCompile = resolve;
-        })
-    );
-
+  test('runs compileAsync once kits report ready', async () => {
     render(<SceneCompileAsync compileKey="tahu" ready />);
-
-    expect(setFrameloop).toHaveBeenCalledWith('never');
-    expect(compileAsync).toHaveBeenCalledWith(scene, camera);
-    expect(setFrameloop).not.toHaveBeenCalledWith('always');
-
-    await act(async () => {
-      resolveCompile?.();
-    });
-
     await waitFor(() => {
-      expect(setFrameloop).toHaveBeenCalledWith('always');
+      expect(compileAsync).toHaveBeenCalledWith(scene, camera);
     });
-    expect(invalidate).toHaveBeenCalled();
   });
 
-  test('does not pause before kits report ready', () => {
+  test('does not compile before kits report ready', () => {
     render(<SceneCompileAsync compileKey="tahu" ready={false} />);
-    expect(setFrameloop).not.toHaveBeenCalled();
     expect(compileAsync).not.toHaveBeenCalled();
   });
 
@@ -79,73 +54,29 @@ describe('SceneCompileAsync', () => {
     await waitFor(() => {
       expect(compileAsync).toHaveBeenCalledWith(scene, camera);
     });
-    await waitFor(() => {
-      expect(setFrameloop).toHaveBeenCalledWith('always');
-    });
   });
 
-  test('skips pause and compile in test mode', () => {
+  test('skips compile in test mode', () => {
     isTestModeMock.mockReturnValue(true);
     render(<SceneCompileAsync compileKey="tahu" ready />);
-
-    expect(setFrameloop).not.toHaveBeenCalled();
     expect(compileAsync).not.toHaveBeenCalled();
   });
 
-  test('resumes if compileAsync is missing', () => {
+  test('no-ops if compileAsync is missing', () => {
     delete gl.compileAsync;
     render(<SceneCompileAsync compileKey="gali" ready />);
-    expect(setFrameloop).toHaveBeenCalledWith('always');
+    expect(compileAsync).not.toHaveBeenCalled();
   });
 
-  test('does not resume from compileAsync after unmount', async () => {
-    let resolveCompile: (() => void) | undefined;
-    compileAsync.mockImplementation(
-      () =>
-        new Promise<void>((resolve) => {
-          resolveCompile = resolve;
-        })
-    );
-
-    const { unmount } = render(<SceneCompileAsync compileKey="lewa" ready />);
-    unmount();
-    setFrameloop.mockClear();
-    invalidate.mockClear();
-
-    await act(async () => {
-      resolveCompile?.();
-    });
-
-    expect(setFrameloop).not.toHaveBeenCalled();
-    expect(invalidate).not.toHaveBeenCalled();
-  });
-
-  test('resumes if compileAsync rejects', async () => {
+  test('logs if compileAsync rejects', async () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
     compileAsync.mockRejectedValue(new Error('pipeline failed'));
 
     render(<SceneCompileAsync compileKey="kopaka" ready />);
 
     await waitFor(() => {
-      expect(setFrameloop).toHaveBeenCalledWith('always');
+      expect(warn).toHaveBeenCalled();
     });
-    expect(warn).toHaveBeenCalled();
     warn.mockRestore();
-  });
-
-  test('watchdog resumes if compileAsync never settles', () => {
-    jest.useFakeTimers();
-    try {
-      compileAsync.mockImplementation(() => new Promise(() => undefined));
-      render(<SceneCompileAsync compileKey="whenua" ready />);
-
-      act(() => {
-        jest.advanceTimersByTime(SCENE_COMPILE_WATCHDOG_MS);
-      });
-
-      expect(setFrameloop).toHaveBeenCalledWith('always');
-    } finally {
-      jest.useRealTimers();
-    }
   });
 });
