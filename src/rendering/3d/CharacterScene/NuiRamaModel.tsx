@@ -23,6 +23,7 @@ import {
   scaleBattleDurationMs,
   subscribeBattleSpeed,
 } from '../../../utils/battleSpeed';
+import { getFrameElapsed } from '../utils/getFrameElapsed';
 import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
 import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 import { LegoColor } from '../../../types/Colors';
@@ -100,7 +101,7 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
 
     const [anim, setAnim] = useState<Anim>('idle');
     const animStartRef = useRef(0);
-    /** Desync root bob between multiple Nui-Rama on screen (shared clock → same `t` otherwise). */
+    /** Desync root bob between multiple Nui-Rama on screen (shared timer → same `t` otherwise). */
     const idleBobPhase = useMemo(() => Math.random() * Math.PI * 2, []);
 
     useEffect(() => {
@@ -166,7 +167,7 @@ export const NuiRamaModel = forwardRef<CombatantModelHandle, { variant: NuiRamaV
       const g = root.current;
       if (!g) return;
 
-      const t = state.clock.elapsedTime;
+      const t = getFrameElapsed(state);
 
       if (anim === 'idle') {
         // Hover is subtle so it does not fight the skeletal `Wings` flutter.

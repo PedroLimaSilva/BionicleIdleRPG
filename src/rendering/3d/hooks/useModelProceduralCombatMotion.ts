@@ -4,6 +4,7 @@ import type { RefObject } from 'react';
 import type { Group } from 'three';
 import type { PlayAnimationCallOptions } from './usePlayAnimation';
 import { battleSpeedProgress, scaleBattleDurationMs } from '../../../utils/battleSpeed';
+import { getFrameElapsed } from '../utils/getFrameElapsed';
 
 /** Match RahiPlaceholderModel / NuiRamaModel timing for consistent combat pacing. */
 const ATTACK_CONTACT_MS = 140;
@@ -33,7 +34,7 @@ export function useModelProceduralCombatMotion(rootRef: RefObject<Group | null>)
       return;
     }
 
-    const t = state.clock.elapsedTime;
+    const t = getFrameElapsed(state);
     const elapsed = (performance.now() - animStartRef.current) / 1000;
 
     if (anim === 'attack') {

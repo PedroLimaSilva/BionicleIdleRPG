@@ -1,0 +1,246 @@
+diff --git a/node_modules/@react-three/fiber/dist/declarations/src/core/store.d.ts b/node_modules/@react-three/fiber/dist/declarations/src/core/store.d.ts
+index 0e69589..33aaee6 100644
+--- a/node_modules/@react-three/fiber/dist/declarations/src/core/store.d.ts
++++ b/node_modules/@react-three/fiber/dist/declarations/src/core/store.d.ts
+@@ -80,7 +80,9 @@ export interface RootState {
+     scene: THREE.Scene;
+     /** Default raycaster */
+     raycaster: THREE.Raycaster;
+-    /** Default clock */
++    /** Frame timer (preferred over clock since three r183) */
++    timer: THREE.Timer;
++    /** @deprecated Use `timer.getElapsed()` instead. Kept for backward compatibility. */
+     clock: THREE.Clock;
+     /** Event layer interface, contains the event handler and the node they're connected to */
+     events: EventManager<any>;
+diff --git a/node_modules/@react-three/fiber/dist/events-156d8d12.esm.js b/node_modules/@react-three/fiber/dist/events-156d8d12.esm.js
+index 9681d0c..ef1f87d 100644
+--- a/node_modules/@react-three/fiber/dist/events-156d8d12.esm.js
++++ b/node_modules/@react-three/fiber/dist/events-156d8d12.esm.js
+@@ -985,6 +985,40 @@ const createStore = (invalidate, advance) => {
+         };
+       }
+     }
++    function createFrameTiming() {
++      const timer = new THREE.Timer();
++      if (typeof document !== 'undefined') timer.connect(document);
++      let overrideElapsed = null;
++      const clock = {
++        autoStart: true,
++        startTime: 0,
++        oldTime: 0,
++        running: true,
++        start() {
++          timer.reset();
++          overrideElapsed = null;
++          this.running = true;
++        },
++        stop() {
++          this.running = false;
++          this.autoStart = false;
++        },
++        get elapsedTime() {
++          return overrideElapsed ?? timer.getElapsed();
++        },
++        set elapsedTime(value) {
++          overrideElapsed = value;
++        },
++        getElapsedTime() {
++          return this.elapsedTime;
++        },
++        getDelta() {
++          return timer.getDelta();
++        }
++      };
++      return { timer, clock };
++    }
++    const frameTiming = createFrameTiming();
+     let performanceTimeout = undefined;
+     const setPerformanceCurrent = current => set(state => ({
+       performance: {
+@@ -1013,7 +1047,8 @@ const createStore = (invalidate, advance) => {
+       linear: false,
+       flat: false,
+       controls: null,
+-      clock: new THREE.Clock(),
++      timer: frameTiming.timer,
++      clock: frameTiming.clock,
+       pointer,
+       mouse: pointer,
+       frameloop: 'always',
+@@ -1085,9 +1120,10 @@ const createStore = (invalidate, advance) => {
+         };
+       }),
+       setFrameloop: (frameloop = 'always') => {
+-        const clock = get().clock;
++        const { timer, clock } = get();
+ 
+         // if frameloop === "never" clock.elapsedTime is updated using advance(timestamp)
++        timer.reset();
+         clock.stop();
+         clock.elapsedTime = 0;
+         if (frameloop !== 'never') {
+@@ -16151,7 +16187,8 @@ let subscribers;
+ let subscription;
+ function update(timestamp, state, frame) {
+   // Run local effects
+-  let delta = state.clock.getDelta();
++  state.timer.update(typeof timestamp === 'number' ? timestamp : undefined);
++  let delta = state.timer.getDelta();
+ 
+   // In frameloop='never' mode, clock times are updated using the provided timestamp
+   if (state.frameloop === 'never' && typeof timestamp === 'number') {
+diff --git a/node_modules/@react-three/fiber/dist/events-4c71f21f.cjs.prod.js b/node_modules/@react-three/fiber/dist/events-4c71f21f.cjs.prod.js
+index 65e702e..71c9803 100644
+--- a/node_modules/@react-three/fiber/dist/events-4c71f21f.cjs.prod.js
++++ b/node_modules/@react-three/fiber/dist/events-4c71f21f.cjs.prod.js
+@@ -1010,6 +1010,40 @@ const createStore = (invalidate, advance) => {
+         };
+       }
+     }
++    function createFrameTiming() {
++      const timer = new THREE__namespace.Timer();
++      if (typeof document !== 'undefined') timer.connect(document);
++      let overrideElapsed = null;
++      const clock = {
++        autoStart: true,
++        startTime: 0,
++        oldTime: 0,
++        running: true,
++        start() {
++          timer.reset();
++          overrideElapsed = null;
++          this.running = true;
++        },
++        stop() {
++          this.running = false;
++          this.autoStart = false;
++        },
++        get elapsedTime() {
++          return overrideElapsed ?? timer.getElapsed();
++        },
++        set elapsedTime(value) {
++          overrideElapsed = value;
++        },
++        getElapsedTime() {
++          return this.elapsedTime;
++        },
++        getDelta() {
++          return timer.getDelta();
++        }
++      };
++      return { timer, clock };
++    }
++    const frameTiming = createFrameTiming();
+     let performanceTimeout = undefined;
+     const setPerformanceCurrent = current => set(state => ({
+       performance: {
+@@ -1038,7 +1072,8 @@ const createStore = (invalidate, advance) => {
+       linear: false,
+       flat: false,
+       controls: null,
+-      clock: new THREE__namespace.Clock(),
++      timer: frameTiming.timer,
++      clock: frameTiming.clock,
+       pointer,
+       mouse: pointer,
+       frameloop: 'always',
+@@ -1110,9 +1145,10 @@ const createStore = (invalidate, advance) => {
+         };
+       }),
+       setFrameloop: (frameloop = 'always') => {
+-        const clock = get().clock;
++        const { timer, clock } = get();
+ 
+         // if frameloop === "never" clock.elapsedTime is updated using advance(timestamp)
++        timer.reset();
+         clock.stop();
+         clock.elapsedTime = 0;
+         if (frameloop !== 'never') {
+@@ -7979,7 +8015,8 @@ let subscribers;
+ let subscription;
+ function update(timestamp, state, frame) {
+   // Run local effects
+-  let delta = state.clock.getDelta();
++  state.timer.update(typeof timestamp === 'number' ? timestamp : undefined);
++  let delta = state.timer.getDelta();
+ 
+   // In frameloop='never' mode, clock times are updated using the provided timestamp
+   if (state.frameloop === 'never' && typeof timestamp === 'number') {
+diff --git a/node_modules/@react-three/fiber/dist/events-b1bdeb1a.cjs.dev.js b/node_modules/@react-three/fiber/dist/events-b1bdeb1a.cjs.dev.js
+index 7785529..5718ffc 100644
+--- a/node_modules/@react-three/fiber/dist/events-b1bdeb1a.cjs.dev.js
++++ b/node_modules/@react-three/fiber/dist/events-b1bdeb1a.cjs.dev.js
+@@ -1010,6 +1010,40 @@ const createStore = (invalidate, advance) => {
+         };
+       }
+     }
++    function createFrameTiming() {
++      const timer = new THREE__namespace.Timer();
++      if (typeof document !== 'undefined') timer.connect(document);
++      let overrideElapsed = null;
++      const clock = {
++        autoStart: true,
++        startTime: 0,
++        oldTime: 0,
++        running: true,
++        start() {
++          timer.reset();
++          overrideElapsed = null;
++          this.running = true;
++        },
++        stop() {
++          this.running = false;
++          this.autoStart = false;
++        },
++        get elapsedTime() {
++          return overrideElapsed ?? timer.getElapsed();
++        },
++        set elapsedTime(value) {
++          overrideElapsed = value;
++        },
++        getElapsedTime() {
++          return this.elapsedTime;
++        },
++        getDelta() {
++          return timer.getDelta();
++        }
++      };
++      return { timer, clock };
++    }
++    const frameTiming = createFrameTiming();
+     let performanceTimeout = undefined;
+     const setPerformanceCurrent = current => set(state => ({
+       performance: {
+@@ -1038,7 +1072,8 @@ const createStore = (invalidate, advance) => {
+       linear: false,
+       flat: false,
+       controls: null,
+-      clock: new THREE__namespace.Clock(),
++      timer: frameTiming.timer,
++      clock: frameTiming.clock,
+       pointer,
+       mouse: pointer,
+       frameloop: 'always',
+@@ -1110,9 +1145,10 @@ const createStore = (invalidate, advance) => {
+         };
+       }),
+       setFrameloop: (frameloop = 'always') => {
+-        const clock = get().clock;
++        const { timer, clock } = get();
+ 
+         // if frameloop === "never" clock.elapsedTime is updated using advance(timestamp)
++        timer.reset();
+         clock.stop();
+         clock.elapsedTime = 0;
+         if (frameloop !== 'never') {
+@@ -16176,7 +16212,8 @@ let subscribers;
+ let subscription;
+ function update(timestamp, state, frame) {
+   // Run local effects
+-  let delta = state.clock.getDelta();
++  state.timer.update(typeof timestamp === 'number' ? timestamp : undefined);
++  let delta = state.timer.getDelta();
+ 
+   // In frameloop='never' mode, clock times are updated using the provided timestamp
+   if (state.frameloop === 'never' && typeof timestamp === 'number') {
