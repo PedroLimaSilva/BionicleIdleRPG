@@ -10,6 +10,7 @@ import { shouldEnableShadows } from '../../../utils/testMode';
 import { KraataPower } from '../../../types/Kraata';
 import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 import { CharacterSelectiveBloom } from './CharacterSelectiveBloom';
+import { SceneCompileAsync } from '../SceneCompileAsync';
 import { RahkshiModel } from './Rahkshi';
 
 const CENTER_Y = CYLINDER_CENTER_Y;
@@ -41,6 +42,12 @@ function RahkshiFraming() {
 export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKraata: boolean }) {
   const sceneRootRef = useRef<Object3D>(null);
   const [kitRevision, setKitRevision] = useState(0);
+  const sessionKey = `${kraata}|${hasKraata}`;
+  const [readySessionKey, setReadySessionKey] = useState(sessionKey);
+  if (readySessionKey !== sessionKey) {
+    setReadySessionKey(sessionKey);
+    setKitRevision(0);
+  }
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
 
@@ -71,6 +78,7 @@ export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKr
 
   return (
     <>
+      <SceneCompileAsync compileKey={sessionKey} ready={kitRevision > 0} />
       <CharacterSelectiveBloom />
       <RahkshiFraming />
       <SceneHdriEnvironment {...CITY_ENVIRONMENT_PROPS} intensity={SHEET_ENV_INTENSITY} />
