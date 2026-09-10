@@ -25,13 +25,13 @@ const INSTALL_INSTRUCTIONS: Record<
 > = {
   android: {
     description: 'Add Bionicle to your home screen for a fullscreen app experience.',
-    footer: 'Launch Bionicle from your home screen to play without browser chrome.',
+    footer: 'Launch Bionicle from your home screen to play outside the browser.',
     steps: [
       'Tap the menu (⋮) in Chrome.',
       'Tap Install app or Add to Home screen.',
       'Confirm when prompted.',
     ],
-    title: 'Install for fullscreen play',
+    title: 'Install as App',
   },
   desktop: {
     description: 'Install the game for quick access and a dedicated app window.',
@@ -47,7 +47,7 @@ const INSTALL_INSTRUCTIONS: Record<
       'Choose Add to Home Screen.',
       'Keep Open as Web App on, then tap Add.',
     ],
-    title: 'More room to unfold',
+    title: 'Install as App',
   },
 };
 
