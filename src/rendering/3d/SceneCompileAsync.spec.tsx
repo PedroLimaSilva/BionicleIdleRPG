@@ -64,6 +64,12 @@ describe('SceneCompileAsync', () => {
     expect(invalidate).toHaveBeenCalled();
   });
 
+  test('does not pause before kits report ready', () => {
+    render(<SceneCompileAsync compileKey="tahu" ready={false} />);
+    expect(setFrameloop).not.toHaveBeenCalled();
+    expect(compileAsync).not.toHaveBeenCalled();
+  });
+
   test('compiles when ready flips from false to true', async () => {
     const { rerender } = render(<SceneCompileAsync compileKey="tahu" ready={false} />);
     expect(compileAsync).not.toHaveBeenCalled();
@@ -125,24 +131,6 @@ describe('SceneCompileAsync', () => {
     });
     expect(warn).toHaveBeenCalled();
     warn.mockRestore();
-  });
-
-  test('watchdog resumes when kits never report ready', () => {
-    jest.useFakeTimers();
-    try {
-      render(<SceneCompileAsync compileKey="nuju" ready={false} />);
-      expect(compileAsync).not.toHaveBeenCalled();
-      expect(setFrameloop).not.toHaveBeenCalledWith('always');
-
-      act(() => {
-        jest.advanceTimersByTime(SCENE_COMPILE_WATCHDOG_MS);
-      });
-
-      expect(setFrameloop).toHaveBeenCalledWith('always');
-      expect(invalidate).toHaveBeenCalled();
-    } finally {
-      jest.useRealTimers();
-    }
   });
 
   test('watchdog resumes if compileAsync never settles', () => {

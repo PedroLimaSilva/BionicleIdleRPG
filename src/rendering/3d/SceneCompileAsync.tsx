@@ -17,7 +17,7 @@ export const SCENE_COMPILE_WATCHDOG_MS = 4000;
 export type SceneCompileAsyncProps = {
   /**
    * Identity of the scene contents (character session, battle wave). Changing
-   * this pauses the frame loop until {@link ready} and `compileAsync` finish.
+   * this restarts warmup after kits / combatants report {@link ready}.
    */
   compileKey: string;
   /** False while kit clones / combatants are still attaching. */
@@ -26,8 +26,10 @@ export type SceneCompileAsyncProps = {
 
 /**
  * First draw of a new character (or battle lineup) compiles TSL → WGSL → GPU
- * pipelines on the main thread. Pause rAF until Three's `compileAsync` has
- * yielded through that work so the UI stays responsive.
+ * pipelines on the main thread. After kits attach, pause rAF until Three's
+ * `compileAsync` has yielded through that work so the UI stays responsive.
+ *
+ * Do not pause before the first layout: R3F sizes the canvas on those frames.
  *
  * Compute shaders cannot do this: they do not parse GLBs, clone kit graphs, or
  * compile graphics pipelines. See `docs/3D_PERFORMANCE.md`.
@@ -42,15 +44,15 @@ export function SceneCompileAsync({ compileKey, ready }: SceneCompileAsyncProps)
   const activeLoop = activeCanvasFrameLoop();
 
   useLayoutEffect(() => {
-    if (skip) return undefined;
+    if (skip || !ready) return undefined;
     setFrameloop('never');
     return () => {
       setFrameloop(activeLoop);
     };
-  }, [activeLoop, compileKey, setFrameloop, skip]);
+  }, [activeLoop, compileKey, ready, setFrameloop, skip]);
 
   useEffect(() => {
-    if (skip) return undefined;
+    if (skip || !ready) return undefined;
 
     let cancelled = false;
     let resumed = false;
@@ -61,13 +63,6 @@ export function SceneCompileAsync({ compileKey, ready }: SceneCompileAsyncProps)
       invalidate();
     };
     const watchdog = window.setTimeout(resume, SCENE_COMPILE_WATCHDOG_MS);
-
-    if (!ready) {
-      return () => {
-        cancelled = true;
-        window.clearTimeout(watchdog);
-      };
-    }
 
     const renderer = gl as CompileAsyncRenderer;
     const compile = renderer.compileAsync;
