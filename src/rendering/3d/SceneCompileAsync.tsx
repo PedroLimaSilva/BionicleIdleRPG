@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useThree } from '@react-three/fiber';
 import type { Camera, Scene } from 'three';
 import { isTestMode } from '../../utils/testMode';
+import { isWebGLBackend } from './webgpuRenderer';
 
 type CompileAsyncRenderer = {
   compileAsync?: (scene: Scene, camera: Camera) => Promise<unknown>;
@@ -9,8 +10,8 @@ type CompileAsyncRenderer = {
 
 /**
  * After kit clones land, run Three's yielding `compileAsync` so TSL → WGSL →
- * GPU pipelines are built off the rAF hot path. Do not toggle `frameloop`:
- * pausing before R3F's first layout leaves the canvas at 300×150 / blank.
+ * GPU pipelines are built off the rAF hot path. WebGPU only: the WebGL
+ * fallback's compileAsync can stall the drawing buffer on this path.
  *
  * Compute shaders cannot do this work — see `docs/3D_PERFORMANCE.md`.
  */
@@ -21,6 +22,7 @@ export function SceneCompileAsync({ compileKey, ready }: { compileKey: string; r
 
   useEffect(() => {
     if (isTestMode() || !ready) return undefined;
+    if (isWebGLBackend(gl)) return undefined;
 
     const renderer = gl as CompileAsyncRenderer;
     const compile = renderer.compileAsync;

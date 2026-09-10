@@ -3,13 +3,19 @@
  */
 import { render, waitFor } from '@testing-library/react';
 import { isTestMode } from '../../utils/testMode';
+import { isWebGLBackend } from './webgpuRenderer';
 import { SceneCompileAsync } from './SceneCompileAsync';
 
 jest.mock('../../utils/testMode', () => ({
   isTestMode: jest.fn(),
 }));
 
+jest.mock('./webgpuRenderer', () => ({
+  isWebGLBackend: jest.fn(),
+}));
+
 const isTestModeMock = isTestMode as jest.MockedFunction<typeof isTestMode>;
+const isWebGLBackendMock = isWebGLBackend as jest.MockedFunction<typeof isWebGLBackend>;
 
 const compileAsync = jest.fn();
 const scene = { uuid: 'scene' };
@@ -29,6 +35,7 @@ describe('SceneCompileAsync', () => {
   beforeEach(() => {
     compileAsync.mockReset();
     isTestModeMock.mockReturnValue(false);
+    isWebGLBackendMock.mockReturnValue(false);
     gl.compileAsync = compileAsync;
     compileAsync.mockResolvedValue(undefined);
   });
@@ -58,6 +65,12 @@ describe('SceneCompileAsync', () => {
 
   test('skips compile in test mode', () => {
     isTestModeMock.mockReturnValue(true);
+    render(<SceneCompileAsync compileKey="tahu" ready />);
+    expect(compileAsync).not.toHaveBeenCalled();
+  });
+
+  test('skips compile on the WebGL fallback', () => {
+    isWebGLBackendMock.mockReturnValue(true);
     render(<SceneCompileAsync compileKey="tahu" ready />);
     expect(compileAsync).not.toHaveBeenCalled();
   });
