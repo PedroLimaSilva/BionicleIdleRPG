@@ -11,6 +11,9 @@ function activeCanvasFrameLoop(): 'always' | 'demand' {
   return isTestMode() ? 'demand' : 'always';
 }
 
+/** Resume drawing even if `compileAsync` never settles (WebGL fallback quirks). */
+export const SCENE_COMPILE_WATCHDOG_MS = 4000;
+
 export type SceneCompileAsyncProps = {
   /**
    * Identity of the scene contents (character session, battle wave). Changing
@@ -47,18 +50,29 @@ export function SceneCompileAsync({ compileKey, ready }: SceneCompileAsyncProps)
   }, [activeLoop, compileKey, setFrameloop, skip]);
 
   useEffect(() => {
-    if (skip || !ready) return undefined;
+    if (skip) return undefined;
 
     let cancelled = false;
-    const renderer = gl as CompileAsyncRenderer;
+    let resumed = false;
     const resume = () => {
-      if (cancelled) return;
+      if (cancelled || resumed) return;
+      resumed = true;
       setFrameloop(activeLoop);
       invalidate();
     };
+    const watchdog = window.setTimeout(resume, SCENE_COMPILE_WATCHDOG_MS);
 
+    if (!ready) {
+      return () => {
+        cancelled = true;
+        window.clearTimeout(watchdog);
+      };
+    }
+
+    const renderer = gl as CompileAsyncRenderer;
     const compile = renderer.compileAsync;
     if (typeof compile !== 'function') {
+      window.clearTimeout(watchdog);
       resume();
       return undefined;
     }
@@ -68,10 +82,14 @@ export function SceneCompileAsync({ compileKey, ready }: SceneCompileAsyncProps)
       .catch((error: unknown) => {
         console.warn('[SceneCompileAsync] compileAsync failed', error);
       })
-      .finally(resume);
+      .finally(() => {
+        window.clearTimeout(watchdog);
+        resume();
+      });
 
     return () => {
       cancelled = true;
+      window.clearTimeout(watchdog);
     };
   }, [activeLoop, camera, compileKey, gl, invalidate, ready, scene, setFrameloop, skip]);
 

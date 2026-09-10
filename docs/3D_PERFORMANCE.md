@@ -61,7 +61,7 @@ Opening a character the renderer has not seen yet can stall the tab for seconds.
 
 Baking object-space FBM (`mx_noise_float`) into a 3D texture via a compute pass would only shrink **later** fragment cost. It would tile vs the current unbounded noise, still compile PBR/transmission/bloom, and would not speed kit cloning.
 
-**What we do instead:** `SceneCompileAsync` pauses the R3F frame loop (`frameloop: 'never'`) until kits have attached, then runs Three's `renderer.compileAsync(scene, camera)`. That API yields between materials (`NodeManager.getForRenderAsync` + sequential pipeline creation) so the DOM stays responsive. Playwright test mode skips this and keeps `frameloop: 'demand'`.
+**What we do instead:** `SceneCompileAsync` pauses the R3F frame loop (`frameloop: 'never'`) until kits have attached, then runs Three's `renderer.compileAsync(scene, camera)`. That API yields between materials (`NodeManager.getForRenderAsync` + sequential pipeline creation) so the DOM stays responsive. A 4s watchdog resumes drawing if compile never settles (seen on the WebGL fallback). Playwright test mode skips this and keeps `frameloop: 'demand'`.
 
 ## Character sheet console log
 

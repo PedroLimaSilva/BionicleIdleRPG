@@ -3,7 +3,7 @@
  */
 import { act, render, waitFor } from '@testing-library/react';
 import { isTestMode } from '../../utils/testMode';
-import { SceneCompileAsync } from './SceneCompileAsync';
+import { SCENE_COMPILE_WATCHDOG_MS, SceneCompileAsync } from './SceneCompileAsync';
 
 jest.mock('../../utils/testMode', () => ({
   isTestMode: jest.fn(),
@@ -125,5 +125,39 @@ describe('SceneCompileAsync', () => {
     });
     expect(warn).toHaveBeenCalled();
     warn.mockRestore();
+  });
+
+  test('watchdog resumes when kits never report ready', () => {
+    jest.useFakeTimers();
+    try {
+      render(<SceneCompileAsync compileKey="nuju" ready={false} />);
+      expect(compileAsync).not.toHaveBeenCalled();
+      expect(setFrameloop).not.toHaveBeenCalledWith('always');
+
+      act(() => {
+        jest.advanceTimersByTime(SCENE_COMPILE_WATCHDOG_MS);
+      });
+
+      expect(setFrameloop).toHaveBeenCalledWith('always');
+      expect(invalidate).toHaveBeenCalled();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  test('watchdog resumes if compileAsync never settles', () => {
+    jest.useFakeTimers();
+    try {
+      compileAsync.mockImplementation(() => new Promise(() => undefined));
+      render(<SceneCompileAsync compileKey="whenua" ready />);
+
+      act(() => {
+        jest.advanceTimersByTime(SCENE_COMPILE_WATCHDOG_MS);
+      });
+
+      expect(setFrameloop).toHaveBeenCalledWith('always');
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });
