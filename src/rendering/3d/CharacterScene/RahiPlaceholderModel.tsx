@@ -7,6 +7,7 @@ import type {
 } from '../../../pages/Battle/CombatantModel';
 import { ElementTribe } from '../../../types/Matoran';
 import { battleSpeedProgress, scaleBattleDurationMs } from '../../../utils/battleSpeed';
+import { getFrameElapsed } from '../utils/getFrameElapsed';
 
 const BODY = 0.55;
 const HEAD = 0.28;
@@ -105,7 +106,7 @@ export const RahiPlaceholderModel = forwardRef<CombatantModelHandle, { element: 
 
       const bodyMat = asStdMat(body);
       const headMat = asStdMat(head);
-      const t = state.clock.elapsedTime;
+      const t = getFrameElapsed(state);
 
       if (anim === 'idle') {
         g.position.y = Math.sin(t * 2.2) * 0.04;

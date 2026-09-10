@@ -48,6 +48,7 @@
     "release:notes": "tsx scripts/release.mts notes",
     "release:bump": "tsx scripts/release.mts bump",
     "release:refresh": "tsx scripts/release.mts refresh",
+    "postinstall": "patch-package",
     "prepare": "husky && yarn vendor-draco && yarn vendor-fonts"
   },
   "dependencies": {
@@ -92,6 +93,7 @@
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.2.0",
     "lint-staged": "^15.4.3",
+    "patch-package": "^8.0.1",
     "prettier": "^3.4.2",
     "purgecss": "^8.0.0",
     "sass": "^1.83.4",
