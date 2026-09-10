@@ -14,7 +14,6 @@ import { SettingsProvider } from './context/Settings.tsx';
 
 import './styles/index.scss';
 import { useEffect, useState } from 'react';
-import { preloadAssets } from './preload.ts';
 import SettingsPage from './pages/Settings/index.tsx';
 import GameStateEditorPage from './pages/GameStateEditor/index.tsx';
 import { QuestsPage } from './pages/Quests/index.tsx';
@@ -119,10 +118,6 @@ const router = createBrowserRouter(
 );
 
 export function App() {
-  useEffect(() => {
-    preloadAssets();
-  }, []);
-
   return (
     <>
       <RouterProvider router={router} />
