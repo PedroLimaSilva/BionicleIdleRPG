@@ -1,7 +1,7 @@
 import { Page, TestInfo } from '@playwright/test';
 import { PartialGameState } from '../src/types/GameState';
 import { CURRENT_GAME_STATE_VERSION } from '../src/data/gameState';
-import type { E2ePwaBannerState } from '../src/utils/testMode';
+import type { E2ePwaBannerState, E2ePwaInstallState } from '../src/utils/testMode';
 import { E2E_MODEL_PREVIEW_NAV_KEY } from '../src/rendering/3d/utils/e2eModelPreview';
 
 import { E2E_FORCE_GAME_STATE_IMPORT_KEY, GAME_DB_NAME } from '../src/persistence/gameDatabase';
@@ -12,6 +12,7 @@ import {
 
 type TestModeOptions = {
   pwaBanner?: E2ePwaBannerState;
+  pwaInstall?: E2ePwaInstallState;
 };
 
 export const INITIAL_GAME_STATE: PartialGameState = {
@@ -48,6 +49,12 @@ export async function enableTestMode(page: Page, options?: TestModeOptions) {
     await page.addInitScript((banner: E2ePwaBannerState) => {
       localStorage.setItem('E2E_PWA_BANNER', banner);
     }, options.pwaBanner);
+  }
+
+  if (options?.pwaInstall) {
+    await page.addInitScript((install: E2ePwaInstallState) => {
+      localStorage.setItem('E2E_PWA_INSTALL', install);
+    }, options.pwaInstall);
   }
 }
 
@@ -117,6 +124,12 @@ export async function setupGameState(
     await page.addInitScript((banner: E2ePwaBannerState) => {
       localStorage.setItem('E2E_PWA_BANNER', banner);
     }, options.pwaBanner);
+  }
+
+  if (options?.pwaInstall) {
+    await page.addInitScript((install: E2ePwaInstallState) => {
+      localStorage.setItem('E2E_PWA_INSTALL', install);
+    }, options.pwaInstall);
   }
 }
 

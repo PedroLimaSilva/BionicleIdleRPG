@@ -16,6 +16,7 @@ export function isTestMode(): boolean {
 }
 
 export type E2ePwaBannerState = 'needRefresh' | 'offlineReady';
+export type E2ePwaInstallState = 'visible';
 
 /**
  * Playwright-only override to force the PWA update banner visible for visual regression tests.
@@ -25,6 +26,16 @@ export type E2ePwaBannerState = 'needRefresh' | 'offlineReady';
 export function getE2ePwaBannerState(): E2ePwaBannerState | null {
   const value = localStorage.getItem('E2E_PWA_BANNER');
   if (value === 'needRefresh' || value === 'offlineReady') return value;
+  return null;
+}
+
+/**
+ * Playwright-only override to force the PWA install affordance visible for visual regression tests.
+ * Set via localStorage: E2E_PWA_INSTALL=visible (requires TEST_MODE=true).
+ */
+export function getE2ePwaInstallState(): E2ePwaInstallState | null {
+  const value = localStorage.getItem('E2E_PWA_INSTALL');
+  if (value === 'visible') return value;
   return null;
 }
 
