@@ -1968,6 +1968,11 @@
   resolved "https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.5.5.tgz"
   integrity sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==
 
+"@jridgewell/sourcemap-codec@^1.5.5":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.6.0.tgz#f4c663e862f06dc98ca4d453862c46902789a18d"
+  integrity sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==
+
 "@jridgewell/trace-mapping@0.3.9":
   version "0.3.9"
   resolved "https://registry.npmjs.org/@jridgewell/trace-mapping/-/trace-mapping-0.3.9.tgz"
@@ -2147,6 +2152,13 @@
     "@posthog/core" "^1.49.2"
     "@posthog/types" "^1.407.1"
 
+"@posthog/cli@~0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@posthog/cli/-/cli-0.16.2.tgz#5c078017e400f45ce9c210b379341a84fe7aee77"
+  integrity sha512-h8bpf9ffBUH/Z9IoyGV+wiI+vS8rIPorKT3eKQXuzuwawO0G7Qvy+hDd7HQ9YJjHByYZ77yPPQvrSs4WsqTUCg==
+  dependencies:
+    detect-libc "^2.1.2"
+
 "@posthog/core@^1.49.2":
   version "1.49.2"
   resolved "https://registry.yarnpkg.com/@posthog/core/-/core-1.49.2.tgz#9b2772038c8f390e2fe7e1681539d8f8c5d12401"
@@ -2154,10 +2166,26 @@
   dependencies:
     "@posthog/types" "^1.407.1"
 
+"@posthog/plugin-utils@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@posthog/plugin-utils/-/plugin-utils-2.0.0.tgz#46957e88bfa3f7f324a8f8a8006aca498968a787"
+  integrity sha512-PC94+3zeEQ2IkhiU+pskOIOEkAFKZvwVixvrwpRfy+cl4b6gkTuHN44vp5OeG5ndfQOLJQF5onx8/K7yZC3i1g==
+  dependencies:
+    cross-spawn "^7.0.6"
+
 "@posthog/react@^1.10.5":
   version "1.10.5"
   resolved "https://registry.yarnpkg.com/@posthog/react/-/react-1.10.5.tgz#08729ca42c1c9408503efd1dd4a897c49b14d258"
   integrity sha512-lehh9+mJwb6iEjRBkIvh8olnJ6RV+YgQgdgJ6fdTr+T7EMoml/G1k+q92Oil8vZPcA9Dzg+2n0xaLY5yZrY3YA==
+
+"@posthog/rollup-plugin@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@posthog/rollup-plugin/-/rollup-plugin-1.6.0.tgz#904171bd6e7a9aaa86fe660d7ae99c4065714f05"
+  integrity sha512-QdSjBt+wt+j2VwLADpsr1Ii2j8F5rWe+V/m9O9PuZXWT8nUne8ML5ciMxAmsGTIIfVwmLhdXPtDlJEc2LuJ9rg==
+  dependencies:
+    "@posthog/cli" "~0.16.2"
+    "@posthog/plugin-utils" "^2.0.0"
+    magic-string "^0.30.17"
 
 "@posthog/types@^1.407.1":
   version "1.407.1"
@@ -6695,6 +6723,13 @@ magic-string@^0.25.0, magic-string@^0.25.7:
   integrity sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==
   dependencies:
     sourcemap-codec "^1.4.8"
+
+magic-string@^0.30.17:
+  version "0.30.21"
+  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.30.21.tgz#56763ec09a0fa8091df27879fd94d19078c00d91"
+  integrity sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==
+  dependencies:
+    "@jridgewell/sourcemap-codec" "^1.5.5"
 
 make-dir@^3.0.2:
   version "3.1.0"

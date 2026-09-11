@@ -1,6 +1,7 @@
 import { VitePWA, type IconResource } from 'vite-plugin-pwa';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, type PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
+import posthog from '@posthog/rollup-plugin';
 import { watch } from 'vite-plugin-watch';
 import { readFileSync } from 'fs';
 import { execSync } from 'child_process';
@@ -14,6 +15,27 @@ try {
   console.warn('Failed to get git commit hash, using "unknown"');
 }
 const appVersion = `${pkg.version}+${commitHash}`;
+const RELEASE_NAME = 'bionicle-idle-rpg';
+
+function createPostHogSourcemapPlugin(mode: string): PluginOption | null {
+  const personalApiKey = process.env.POSTHOG_API_KEY;
+  const projectId = process.env.POSTHOG_PROJECT_ID;
+  if (!personalApiKey || !projectId || mode !== 'production') {
+    return null;
+  }
+
+  return posthog({
+    host: process.env.POSTHOG_HOST,
+    personalApiKey,
+    projectId,
+    sourcemaps: {
+      deleteAfterUpload: true,
+      enabled: true,
+      releaseName: RELEASE_NAME,
+      releaseVersion: appVersion,
+    },
+  });
+}
 
 // Extended icon type supporting newer manifest spec fields (color_scheme, design)
 // not yet in vite-plugin-pwa's types
@@ -31,6 +53,7 @@ interface ExtendedIconResource {
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
+  const posthogSourcemapPlugin = createPostHogSourcemapPlugin(mode);
 
   return {
     base: '/BionicleIdleRPG/',
@@ -142,6 +165,7 @@ export default defineConfig(({ mode }) => {
         command: 'tsx tools/generate-quest-graph.ts',
         pattern: 'src/data/quests/**/*',
       }),
+      ...(posthogSourcemapPlugin ? [posthogSourcemapPlugin] : []),
     ],
   };
 });
