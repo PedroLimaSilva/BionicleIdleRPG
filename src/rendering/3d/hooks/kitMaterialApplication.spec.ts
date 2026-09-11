@@ -146,7 +146,6 @@ describe('buildKitMeshMaterials metallic colors', () => {
     ) as MeshPhysicalMaterial;
     expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.name).toBe('Brain');
     expect(next.transmission).toBe(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
     expect(next.metalness).toBe(0);
     expect(next.emissiveIntensity).toBe(0.1);

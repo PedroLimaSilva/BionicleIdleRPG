@@ -11,6 +11,7 @@ import { KraataPower } from '../../../types/Kraata';
 import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 import { CharacterSelectiveBloom } from './CharacterSelectiveBloom';
 import { SceneCompileAsync } from '../SceneCompileAsync';
+import { ShaderVariantBank } from '../ShaderVariantBank';
 import { RahkshiModel } from './Rahkshi';
 
 const CENTER_Y = CYLINDER_CENTER_Y;
@@ -78,6 +79,7 @@ export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKr
 
   return (
     <>
+      <ShaderVariantBank />
       <SceneCompileAsync compileKey={sessionKey} ready={kitRevision > 0} />
       <CharacterSelectiveBloom />
       <RahkshiFraming />

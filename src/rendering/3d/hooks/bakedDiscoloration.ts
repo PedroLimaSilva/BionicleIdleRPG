@@ -8,8 +8,9 @@
  */
 
 import { ClampToEdgeWrapping, Color, MeshStandardMaterial, NoColorSpace, Texture } from 'three';
-import { float, smoothstep, texture, uniform, uv } from 'three/tsl';
+import { float, materialReference, smoothstep, texture, uniform, uv } from 'three/tsl';
 import { discolorationForColor } from '../kit/palettes/legoColorDiscoloration';
+import { DUMMY_DISCOLORATION_MAP, isDummyDiscolorationMap } from './dummyTextures';
 import { setUniformColor, setUniformNumber } from './tslUniforms';
 
 export const DISCOLORATION_MAP_USERDATA_KEY = 'bakedDiscolorationMap';
@@ -30,9 +31,58 @@ export function getBakedDiscolorationMap(mat: unknown): Texture | null {
   const fromUserData = (mat as { userData?: Record<string, unknown> }).userData?.[
     DISCOLORATION_MAP_USERDATA_KEY
   ];
-  if (fromUserData instanceof Texture) return fromUserData;
+  if (fromUserData instanceof Texture && !isDummyDiscolorationMap(fromUserData))
+    return fromUserData;
   const emissiveMap = (mat as MeshStandardMaterial).emissiveMap;
   return emissiveMap ?? null;
+}
+
+const discolorationMapRef = materialReference(
+  `userData.${DISCOLORATION_MAP_USERDATA_KEY}`,
+  'texture'
+);
+type TslFloat = BakedDiscolorationUniforms['hasMap'];
+const discolorationColorRef = materialReference(
+  'userData.discolorationColor',
+  'color'
+) as unknown as BakedDiscolorationUniforms['color'];
+const discolorationHasMapRef = materialReference(
+  'userData.discolorationHasMap',
+  'float'
+) as unknown as TslFloat;
+const discolorationIntensityRef = materialReference(
+  'userData.discolorationIntensity',
+  'float'
+) as unknown as TslFloat;
+
+/**
+ * Bind a bake map (or the shared dummy) so every weathered/mask material can
+ * share one TSL sample graph. GPU programs key off topology, not texture UUID.
+ */
+export function bindDiscolorationMapForSampling(
+  mat: MeshStandardMaterial,
+  map: Texture | null | undefined
+): void {
+  const bake = map ?? DUMMY_DISCOLORATION_MAP;
+  if (bake !== DUMMY_DISCOLORATION_MAP) {
+    bake.colorSpace = NoColorSpace;
+    bake.wrapS = ClampToEdgeWrapping;
+    bake.wrapT = ClampToEdgeWrapping;
+  }
+  mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = bake;
+}
+
+export function bakedDiscolorationColorFromMaterial() {
+  return discolorationColorRef;
+}
+
+/** Shared bake mix amount — samples the current material's userData map. */
+export function bakedDiscolorationAmountFromMaterial() {
+  const sample = texture(discolorationMapRef as never, uv());
+  return smoothstep(0.2, 0.75, sample.r)
+    .mul(discolorationIntensityRef as never)
+    .mul(discolorationHasMapRef as never)
+    .clamp(0, 1);
 }
 
 /**
@@ -46,7 +96,7 @@ export function adoptBakedDiscolorationMap(
 ): Texture | null {
   if (opts.isGlow) return null;
   const existing = mat.userData[DISCOLORATION_MAP_USERDATA_KEY];
-  if (existing instanceof Texture) return existing;
+  if (existing instanceof Texture && !isDummyDiscolorationMap(existing)) return existing;
   const map = mat.emissiveMap;
   if (!map) return null;
   map.colorSpace = NoColorSpace;
@@ -69,6 +119,24 @@ export function applyBakedDiscolorationUniforms(
   setUniformColor(uniforms.color, spec.color);
   setUniformNumber(uniforms.intensity, map ? spec.intensity : 0);
   setUniformNumber(uniforms.hasMap, map ? 1 : 0);
+}
+
+export function writeBakedDiscolorationUserData(
+  mat: MeshStandardMaterial,
+  map: Texture | null,
+  colorHex: string
+): void {
+  const spec = discolorationForColor(colorHex);
+  const bake = map && !isDummyDiscolorationMap(map) ? map : null;
+  bindDiscolorationMapForSampling(mat, bake);
+  const color = mat.userData.discolorationColor;
+  if (color instanceof Color) {
+    color.set(spec.color);
+  } else {
+    mat.userData.discolorationColor = new Color(spec.color);
+  }
+  mat.userData.discolorationIntensity = bake ? spec.intensity : 0;
+  mat.userData.discolorationHasMap = bake ? 1 : 0;
 }
 
 /**

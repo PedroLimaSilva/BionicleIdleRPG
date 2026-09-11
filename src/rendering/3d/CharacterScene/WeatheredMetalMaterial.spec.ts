@@ -101,6 +101,7 @@ describe('getWeatheredMetalMaterial', () => {
     const a = getWeatheredMetalMaterial('#c91a09', { fineScale: 18, metalness: 0.05 });
     const b = getWeatheredMetalMaterial('#c91a09', { fineScale: 26, metalness: 0.05 });
     expect(a).not.toBe(b);
+    expect(a.customProgramCacheKey?.()).toBe(b.customProgramCacheKey?.());
   });
 
   test('different metalness-reduce amounts do not share a material', () => {
@@ -129,7 +130,7 @@ describe('getWeatheredMetalMaterial', () => {
     expect(mat.normalNode).toBeUndefined();
   });
 
-  test('high metalness still bumps, but with a different program than plastic', () => {
+  test('high metalness still bumps, and shares a GPU program with plastic', () => {
     const plastic = getWeatheredMetalMaterial('#9ba19d', {
       metalness: 0.05,
     }) as MeshStandardMaterial & { normalNode?: unknown };
@@ -139,10 +140,17 @@ describe('getWeatheredMetalMaterial', () => {
     expect(plastic).not.toBe(metal);
     expect(plastic.normalNode).toBeDefined();
     expect(metal.normalNode).toBeDefined();
-    expect(plastic.customProgramCacheKey?.()).not.toBe(metal.customProgramCacheKey?.());
+    expect(plastic.customProgramCacheKey?.()).toBe(metal.customProgramCacheKey?.());
   });
 
-  test('different discoloration maps do not share a material', () => {
+  test('red and gold share a GPU program but not a material instance', () => {
+    const red = getWeatheredMetalMaterial('#c91a09', { metalness: 0.05 });
+    const gold = getWeatheredMetalMaterial('#b48455', { metalness: 0.05 });
+    expect(red).not.toBe(gold);
+    expect(red.customProgramCacheKey?.()).toBe(gold.customProgramCacheKey?.());
+  });
+
+  test('different discoloration maps share a GPU program but not a material', () => {
     const a = getWeatheredMetalMaterial('#c91a09', {
       discolorationMap: mapTex(),
       metalness: 0.05,
@@ -152,6 +160,7 @@ describe('getWeatheredMetalMaterial', () => {
       metalness: 0.05,
     });
     expect(a).not.toBe(b);
+    expect(a.customProgramCacheKey?.()).toBe(b.customProgramCacheKey?.());
   });
 });
 

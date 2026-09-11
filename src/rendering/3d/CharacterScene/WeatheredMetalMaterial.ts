@@ -7,38 +7,18 @@
  */
 
 import {
-  ClampToEdgeWrapping,
   Color,
   ColorRepresentation,
   DoubleSide,
   Mesh,
   MeshStandardMaterial,
-  NoColorSpace,
   Object3D,
   Side,
   Texture,
   Vector2,
 } from 'three';
-import {
-  faceDirection,
-  materialColor,
-  materialMetalness,
-  materialRoughness,
-  mix,
-  mx_noise_float,
-  normalView,
-  positionLocal,
-  positionView,
-  texture,
-  uv,
-  vec2,
-} from 'three/tsl';
-import {
-  bakedDiscolorationAmountNode,
-  createBakedDiscolorationUniforms,
-  DISCOLORATION_MAP_USERDATA_KEY,
-  getBakedDiscolorationMap,
-} from '../hooks/bakedDiscoloration';
+import { getBakedDiscolorationMap } from '../hooks/bakedDiscoloration';
+import { applySharedWeatheringGraph, type WeatheredTslMaterial } from './weatheredMetalGraph';
 
 export type WeatheredMetalOptions = {
   color?: ColorRepresentation;
@@ -79,23 +59,19 @@ const DEFAULT_FINE_SCALE = 18.0;
 const DEFAULT_ENV_MAP_INTENSITY = 0.4;
 /** Screen-space bump from the master large-cloud FBM (`largeScale`, not fine grain). */
 const DEFAULT_DENT_STRENGTH = 2;
-/**
- * Metalness kills dent bump. Specular/env highlights turn tiny slopes into
- * crumpled foil, so 0.9 metal keeps ~20% of the plastic gain.
- */
-const METAL_DENT_ATTENUATION = 0.88;
-/** Fine-grain roughness wobble around the base, matching the master FBM path. */
-const FINE_ROUGHNESS_VARIATION = 0.08;
 
 const MATERIAL_NAME = 'WeatheredMetal';
 
 const materialCache = new Map<string, MeshStandardMaterial>();
 
-type WeatheredTslMaterial = MeshStandardMaterial & {
-  colorNode?: unknown;
-  metalnessNode?: unknown;
-  normalNode?: unknown;
-  roughnessNode?: unknown;
+const WEATHERING_DEFAULTS = {
+  dentStrength: DEFAULT_DENT_STRENGTH,
+  fineScale: DEFAULT_FINE_SCALE,
+  grimeDarken: DEFAULT_GRIME_DARKEN,
+  grimeMetalnessReduce: DEFAULT_GRIME_METALNESS_REDUCE,
+  grimeRoughness: DEFAULT_GRIME_ROUGHNESS,
+  largeScale: DEFAULT_LARGE_SCALE,
+  metalness: DEFAULT_METALNESS,
 };
 
 function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): string {
@@ -122,101 +98,9 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
   ].join('|');
 }
 
-/** Three-octave 0–1 FBM in the mesh's local position, same layout as master's GLSL. */
-function objectSpaceFbm(offset: number, scale: number) {
-  const p = positionLocal.add(offset).mul(scale);
-  const n1 = mx_noise_float(p, 0.5, 0.5);
-  const n2 = mx_noise_float(p.mul(2), 0.5, 0.5);
-  const n3 = mx_noise_float(p.mul(4), 0.5, 0.5);
-  return n1.mul(0.5).add(n2.mul(0.25)).add(n3.mul(0.125));
-}
-
-/**
- * Dent height skips the 4× octave. Screen-space dFdx/dFdy lock onto the finest
- * term, which turned the large-cloud bump into pockmarks in E2E snapshots.
- */
-function objectSpaceDentHeight(offset: number, scale: number) {
-  const p = positionLocal.add(offset).mul(scale);
-  const n1 = mx_noise_float(p, 0.5, 0.5);
-  const n2 = mx_noise_float(p.mul(2), 0.5, 0.5);
-  return n1.mul(0.7).add(n2.mul(0.3));
-}
-
-/**
- * Mikkelsen screen-space bump from a scalar height, same as Three's `bumpMap`
- * but for a procedural float instead of a texture.
- */
-function perturbViewNormalFromHeight(
-  height: ReturnType<typeof objectSpaceFbm> | ReturnType<typeof objectSpaceDentHeight>,
-  bumpScale: number
-) {
-  const dHdxy = vec2(height.dFdx(), height.dFdy()).mul(bumpScale);
-  const vSigmaX = positionView.dFdx().normalize();
-  const vSigmaY = positionView.dFdy().normalize();
-  const vN = normalView;
-  const R1 = vSigmaY.cross(vN);
-  const R2 = vN.cross(vSigmaX);
-  const fDet = vSigmaX.dot(R1).mul(faceDirection);
-  const vGrad = fDet.sign().mul(dHdxy.x.mul(R1).add(dHdxy.y.mul(R2)));
-  return fDet.abs().mul(vN).sub(vGrad).normalize();
-}
-
 function applyObjectSpaceWeathering(mat: WeatheredTslMaterial, opts: WeatheredMetalOptions): void {
-  const grimeDarken = opts.grimeDarken ?? DEFAULT_GRIME_DARKEN;
-  const grimeRoughness = opts.grimeRoughness ?? DEFAULT_GRIME_ROUGHNESS;
-  const grimeMetalnessReduce = opts.grimeMetalnessReduce ?? DEFAULT_GRIME_METALNESS_REDUCE;
-  const metalness = opts.metalness ?? DEFAULT_METALNESS;
-  const dentStrength =
-    (opts.dentStrength ?? DEFAULT_DENT_STRENGTH) *
-    (1 - Math.min(1, Math.max(0, metalness)) * METAL_DENT_ATTENUATION);
-  const largeScale = opts.largeScale ?? DEFAULT_LARGE_SCALE;
-  const fineScale = opts.fineScale ?? DEFAULT_FINE_SCALE;
-  const largeCloud = objectSpaceFbm(50, largeScale);
-  const fineGrain = objectSpaceFbm(80, fineScale);
-  const grime = largeCloud.sub(0.35).mul(2).clamp(0, 1);
-  const discolorMap = opts.discolorationMap ?? null;
-  if (discolorMap) {
-    discolorMap.colorSpace = NoColorSpace;
-    discolorMap.wrapS = ClampToEdgeWrapping;
-    discolorMap.wrapT = ClampToEdgeWrapping;
-    mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = discolorMap;
-  } else {
-    mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = null;
-  }
-
   const colorHex = `#${new Color(opts.color ?? mat.color).getHexString()}`;
-  const bakeUniforms = createBakedDiscolorationUniforms(discolorMap, colorHex);
-  const albedo = mat.map ? materialColor.mul(texture(mat.map, uv())) : materialColor;
-  const grimyAlbedo = grimeDarken > 0 ? albedo.mul(grime.mul(grimeDarken).oneMinus()) : albedo;
-  if (discolorMap) {
-    mat.colorNode = mix(
-      grimyAlbedo,
-      bakeUniforms.color,
-      bakedDiscolorationAmountNode(discolorMap, bakeUniforms)
-    );
-  } else if (grimeDarken > 0 || mat.map) {
-    mat.colorNode = grimyAlbedo;
-  }
-  if (!mat.roughnessMap) {
-    mat.roughnessNode = materialRoughness
-      .add(grime.mul(grimeRoughness))
-      .add(fineGrain.sub(0.5).mul(FINE_ROUGHNESS_VARIATION))
-      .clamp(0.04, 1);
-  }
-  if (!mat.metalnessMap) {
-    mat.metalnessNode = materialMetalness
-      .mul(grime.mul(grimeMetalnessReduce).oneMinus())
-      .clamp(0, 1);
-  }
-  // Authored normals stay on the material. Procedural dent would replace them.
-  if (dentStrength > 0 && !mat.normalMap) {
-    mat.normalNode = perturbViewNormalFromHeight(
-      objectSpaceDentHeight(50, largeScale),
-      dentStrength
-    );
-  }
-  mat.customProgramCacheKey = () =>
-    `WeatheredMetal|d${grimeDarken}|r${grimeRoughness}|m${grimeMetalnessReduce}|n${dentStrength}|L${largeScale}|F${fineScale}|dc${discolorMap?.uuid ?? 'none'}|alb${mat.map?.uuid ?? 'none'}|nm${mat.normalMap?.uuid ?? 'none'}|rgh${mat.roughnessMap?.uuid ?? 'none'}|met${mat.metalnessMap?.uuid ?? 'none'}`;
+  applySharedWeatheringGraph(mat, { ...opts, color: colorHex }, WEATHERING_DEFAULTS);
 }
 
 export function stripPbrMapsAndEmission(

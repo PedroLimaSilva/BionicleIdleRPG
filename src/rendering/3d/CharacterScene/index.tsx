@@ -46,6 +46,7 @@ import { OnewaModel } from './Metru/OnewaModel';
 import { VakamaModel } from './Metru/VakamaModel';
 import { WhenuaModel } from './Metru/WhenuaModel';
 import { SceneCompileAsync } from '../SceneCompileAsync';
+import { ShaderVariantBank } from '../ShaderVariantBank';
 import { SceneDrawCallLogger } from '../SceneDrawCallLogger';
 
 /** Vertical center of the character framing volume. */
@@ -303,6 +304,7 @@ export function CharacterScene({
 
   return (
     <>
+      <ShaderVariantBank />
       <SceneCompileAsync compileKey={characterSessionKey} ready={modelReadyGeneration > 0} />
       <SceneDrawCallLogger
         label={matoran.id}

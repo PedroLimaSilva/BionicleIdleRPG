@@ -88,4 +88,11 @@ describe('transmissiveKitMaterial', () => {
     expect((mctoran as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
     expect((hood as MeshPhysicalMaterial & { mrtNode?: unknown }).mrtNode).toBeUndefined();
   });
+
+  test('reuses the same material instance for the same kind and colors', () => {
+    const a = buildTransmissiveKitMaterial('Brain', 'brain', '#F8F184', '#F8F184', 0.1);
+    const b = buildTransmissiveKitMaterial('MataBrain', 'brain', '#F8F184', '#F8F184', 0.1);
+    expect(a).toBe(b);
+    expect(a.customProgramCacheKey?.()).toBe('transmissiveKit|brain|bloom1');
+  });
 });

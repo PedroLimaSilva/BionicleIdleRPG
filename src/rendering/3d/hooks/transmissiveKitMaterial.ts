@@ -102,6 +102,31 @@ function presetForKind(kind: TransmissiveKitKind): {
 }
 
 /** Uniform transmissive plastic — transmissive pass; draws after Kanohi with depthWrite. */
+const transmissiveCache = new Map<string, MeshPhysicalMaterial>();
+const transmissionNodeByKind = new Map<TransmissiveKitKind, unknown>();
+
+function transmissiveCacheKey(
+  kind: TransmissiveKitKind,
+  color: string,
+  emissiveColor: string,
+  emissiveIntensity: number
+): string {
+  return `${kind}|${color}|${emissiveColor}|${emissiveIntensity}`;
+}
+
+function transmissionNodeFor(kind: TransmissiveKitKind): unknown {
+  let node = transmissionNodeByKind.get(kind);
+  if (!node) {
+    node = float(presetForKind(kind).transmission);
+    transmissionNodeByKind.set(kind, node);
+  }
+  return node;
+}
+
+export function transmissiveProgramCacheKey(kind: TransmissiveKitKind): string {
+  return `transmissiveKit|${kind}|bloom${shouldSelectiveBloomTransmissiveKind(kind) ? 1 : 0}`;
+}
+
 export function buildTransmissiveKitMaterial(
   materialName: string,
   kind: TransmissiveKitKind,
@@ -109,6 +134,10 @@ export function buildTransmissiveKitMaterial(
   emissiveColor: string,
   emissiveIntensity: number
 ): MeshPhysicalMaterial {
+  const key = transmissiveCacheKey(kind, color, emissiveColor, emissiveIntensity);
+  const cached = transmissiveCache.get(key);
+  if (cached) return cached;
+
   const preset = presetForKind(kind);
   const mat = new MeshPhysicalMaterial({
     color: new Color(color),
@@ -126,12 +155,12 @@ export function buildTransmissiveKitMaterial(
     transparent: false,
   });
   // WebGPU MeshPhysicalNodeMaterial.useTransmission also keys off this node.
-  (mat as MeshPhysicalMaterial & { transmissionNode?: unknown }).transmissionNode = float(
-    preset.transmission
-  );
+  (mat as { transmissionNode: unknown }).transmissionNode = transmissionNodeFor(kind);
+  mat.customProgramCacheKey = () => transmissiveProgramCacheKey(kind);
   if (shouldSelectiveBloomTransmissiveKind(kind)) {
     applySelectiveBloomMrt(mat);
   }
+  transmissiveCache.set(key, mat);
   return mat;
 }
 
