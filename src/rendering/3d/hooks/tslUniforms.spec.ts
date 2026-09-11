@@ -9,7 +9,7 @@ describe('setUniformColor', () => {
   });
 
   test('updates plain {r,g,b} objects without a .set method', () => {
-    const plain = { r: 1, g: 1, b: 1 };
+    const plain = { b: 1, g: 1, r: 1 };
     const uniformNode = { value: plain };
     setUniformColor(uniformNode, 0x000000);
     expect(plain.r).toBe(0);

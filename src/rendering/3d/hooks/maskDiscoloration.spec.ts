@@ -98,7 +98,7 @@ describe('setupMaskDiscolorationShader', () => {
       color: { value: { b: number; g: number; r: number } };
       intensity: { value: number };
     };
-    power.color.value = { r: 0, g: 0, b: 0 };
+    power.color.value = { b: 0, g: 0, r: 0 };
 
     applyMaskPowerEmissive(mat, LegoColor.Red, true);
     const red = new Color(LegoColor.Red);

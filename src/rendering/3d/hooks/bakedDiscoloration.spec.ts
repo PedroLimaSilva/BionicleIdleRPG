@@ -78,7 +78,7 @@ describe('baked discoloration uniforms', () => {
   test('updates mix color when the uniform value lost Color.prototype', () => {
     const map = new Texture();
     const uniforms = createBakedDiscolorationUniforms(map, LegoColor.Red);
-    uniforms.color.value = { r: 1, g: 1, b: 1 } as unknown as Color;
+    uniforms.color.value = { b: 1, g: 1, r: 1 } as unknown as Color;
 
     applyBakedDiscolorationUniforms(uniforms, LegoColor.White, map);
     const whiteSpec = discolorationForColor(LegoColor.White);
