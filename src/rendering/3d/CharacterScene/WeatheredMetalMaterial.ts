@@ -134,15 +134,15 @@ export function createWeatheredMetalMaterial(
   const mat = new MeshStandardMaterial({
     color: new Color(color),
     envMapIntensity: opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
-    map: opts.map,
     metalness: hasMetalnessMap ? (opts.metalness ?? 1) : (opts.metalness ?? DEFAULT_METALNESS),
-    metalnessMap: opts.metalnessMap,
-    normalMap: opts.normalMap,
     opacity,
     roughness: hasRoughnessMap ? (opts.roughness ?? 1) : (opts.roughness ?? DEFAULT_ROUGHNESS),
-    roughnessMap: opts.roughnessMap,
     side: opts.side ?? DoubleSide,
     transparent: opts.transparent ?? opacity < 1,
+    ...(opts.map ? { map: opts.map } : {}),
+    ...(hasMetalnessMap ? { metalnessMap: opts.metalnessMap } : {}),
+    ...(opts.normalMap ? { normalMap: opts.normalMap } : {}),
+    ...(hasRoughnessMap ? { roughnessMap: opts.roughnessMap } : {}),
   });
   stripPbrMapsAndEmission(mat, {
     keepAlbedo: !!opts.map,
