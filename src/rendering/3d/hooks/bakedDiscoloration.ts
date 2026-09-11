@@ -10,6 +10,7 @@
 import { ClampToEdgeWrapping, Color, MeshStandardMaterial, NoColorSpace, Texture } from 'three';
 import { float, smoothstep, texture, uniform, uv } from 'three/tsl';
 import { discolorationForColor } from '../kit/palettes/legoColorDiscoloration';
+import { setUniformColor, setUniformNumber } from './tslUniforms';
 
 export const DISCOLORATION_MAP_USERDATA_KEY = 'bakedDiscolorationMap';
 export const DISCOLORATION_UNIFORMS_KEY = 'bakedDiscolorationUniforms';
@@ -59,23 +60,15 @@ export function adoptBakedDiscolorationMap(
   return map;
 }
 
-function uniformNumber(node: { value: unknown }): { value: number } {
-  return node as unknown as { value: number };
-}
-
-function uniformColor(node: { value: unknown }): { value: Color } {
-  return node as unknown as { value: Color };
-}
-
 export function applyBakedDiscolorationUniforms(
   uniforms: BakedDiscolorationUniforms,
   colorHex: string,
   map: Texture | null
 ): void {
   const spec = discolorationForColor(colorHex);
-  uniformColor(uniforms.color).value.set(spec.color);
-  uniformNumber(uniforms.intensity).value = map ? spec.intensity : 0;
-  uniformNumber(uniforms.hasMap).value = map ? 1 : 0;
+  setUniformColor(uniforms.color, spec.color);
+  setUniformNumber(uniforms.intensity, map ? spec.intensity : 0);
+  setUniformNumber(uniforms.hasMap, map ? 1 : 0);
 }
 
 /**

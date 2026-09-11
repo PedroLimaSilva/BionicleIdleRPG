@@ -24,6 +24,7 @@ import {
   maskUsesTransmissionRendering,
   type MaskStandardMat,
 } from './maskMaterial';
+import { setUniformColor, setUniformNumber } from './tslUniforms';
 
 /** Vertical crown tint for Metru double-injected Kanohi (silver-gray top → mask color bottom). */
 export type MaskDiscoloration = {
@@ -66,14 +67,6 @@ type MaskTslMaterial = MaskStandardMat & {
 export const MASK_POWER_EMISSIVE_INTENSITY = 1;
 
 const MASK_POWER_UNIFORMS_KEY = 'maskPowerUniforms';
-
-function uniformNumber(node: { value: unknown }): { value: number } {
-  return node as unknown as { value: number };
-}
-
-function uniformColor(node: { value: unknown }): { value: Color } {
-  return node as unknown as { value: Color };
-}
 
 /**
  * Patch non-glow mask materials:
@@ -173,13 +166,9 @@ export function applyMaskPowerEmissive(
 
   const power = mat.userData[MASK_POWER_UNIFORMS_KEY] as MaskPowerUniforms | undefined;
   if (power) {
-    if (on) {
-      uniformColor(power.color).value.set(colorHex);
-    } else {
-      uniformColor(power.color).value.set(0x000000);
-    }
-    uniformNumber(power.intensity).value = intensity;
-    uniformNumber(power.bloomIntensity).value = on ? 1 : 0;
+    setUniformColor(power.color, on ? colorHex : 0x000000);
+    setUniformNumber(power.intensity, intensity);
+    setUniformNumber(power.bloomIntensity, on ? 1 : 0);
     return;
   }
 
@@ -199,12 +188,12 @@ export function applyMaskDiscolorationUniforms(
   const crown = mat.userData[DISCOLOR_UNIFORMS_KEY] as CrownDiscolorationUniforms | undefined;
   if (crown) {
     if (discoloration && discoloration.intensity > 0) {
-      uniformColor(crown.color).value.set(discoloration.color);
-      uniformNumber(crown.intensity).value = discoloration.intensity;
-      uniformNumber(crown.metalness).value = discoloration.metalness ?? DEFAULT_DISCOLOR_METALNESS;
-      uniformNumber(crown.roughness).value = discoloration.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS;
+      setUniformColor(crown.color, discoloration.color);
+      setUniformNumber(crown.intensity, discoloration.intensity);
+      setUniformNumber(crown.metalness, discoloration.metalness ?? DEFAULT_DISCOLOR_METALNESS);
+      setUniformNumber(crown.roughness, discoloration.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS);
     } else {
-      uniformNumber(crown.intensity).value = 0;
+      setUniformNumber(crown.intensity, 0);
     }
   }
 

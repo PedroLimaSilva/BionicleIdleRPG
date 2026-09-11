@@ -74,6 +74,20 @@ describe('baked discoloration uniforms', () => {
     );
     expect(uniforms.intensity.value).toBe(whiteSpec.intensity);
   });
+
+  test('updates mix color when the uniform value lost Color.prototype', () => {
+    const map = new Texture();
+    const uniforms = createBakedDiscolorationUniforms(map, LegoColor.Red);
+    uniforms.color.value = { r: 1, g: 1, b: 1 } as unknown as Color;
+
+    applyBakedDiscolorationUniforms(uniforms, LegoColor.White, map);
+    const whiteSpec = discolorationForColor(LegoColor.White);
+    const white = new Color(whiteSpec.color);
+    const plain = uniforms.color.value as { b: number; g: number; r: number };
+    expect(plain.r).toBeCloseTo(white.r, 5);
+    expect(plain.g).toBeCloseTo(white.g, 5);
+    expect(plain.b).toBeCloseTo(white.b, 5);
+  });
 });
 
 describe('baked discoloration amount', () => {
