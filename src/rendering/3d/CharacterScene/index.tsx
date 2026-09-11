@@ -45,6 +45,7 @@ import { NokamaModel } from './Metru/NokamaModel';
 import { OnewaModel } from './Metru/OnewaModel';
 import { VakamaModel } from './Metru/VakamaModel';
 import { WhenuaModel } from './Metru/WhenuaModel';
+import { SceneCompileAsync } from '../SceneCompileAsync';
 import { SceneDrawCallLogger } from '../SceneDrawCallLogger';
 
 /** Vertical center of the character framing volume. */
@@ -256,13 +257,14 @@ export function CharacterScene({
   const modelRef = useRef<CombatantModelHandle>(null);
   const characterSessionKey = `${matoran.id}|${matoran.stage}|${matoran.customMataModelId ?? ''}`;
   const [modelReadyGeneration, setModelReadyGeneration] = useState(0);
+  const [readySessionKey, setReadySessionKey] = useState(characterSessionKey);
+  if (readySessionKey !== characterSessionKey) {
+    setReadySessionKey(characterSessionKey);
+    setModelReadyGeneration(0);
+  }
   const onModelReady = useCallback(() => {
     setModelReadyGeneration((generation) => generation + 1);
   }, []);
-
-  useEffect(() => {
-    setModelReadyGeneration(0);
-  }, [characterSessionKey]);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
   useEffect(() => {
@@ -301,6 +303,7 @@ export function CharacterScene({
 
   return (
     <>
+      <SceneCompileAsync compileKey={characterSessionKey} ready={modelReadyGeneration > 0} />
       <SceneDrawCallLogger
         label={matoran.id}
         measureRootRef={characterRootRef}

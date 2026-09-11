@@ -49,6 +49,20 @@ For shader/pipeline debugging (not draw-call budgeting):
 - Chrome **WebGPU Developer Features** (chrome://flags) + **Three.js DevTools** when available.
 - Compare against WebGL fallback by forcing test mode or temporarily setting `forceWebGL: true` in `createSceneWebGPURenderer` during local experiments.
 
+## First-open hitch (character sheet)
+
+Opening a character the renderer has not seen yet can stall the tab for seconds. That stall is **not GLB fetch** (kits/masks already `useGLTF.preload` at boot) and **compute shaders will not fix it**.
+
+| Cost on first sheet open                         | What actually runs                                                                                        | Compute shaders?                                               |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Kit clone + Phase B geometry merge               | Main-thread `useKitAttachments` (~50 sockets, `BufferGeometry` bake/merge)                                | No — scene graph / typed arrays live on the CPU                |
+| Weathered-metal / transmission / bloom pipelines | Three.js TSL builds WGSL, then WebGPU `createRenderPipeline` (Tint → Metal/DXIL on first use of each key) | No — that is graphics-pipeline compilation, not a compute pass |
+| Draco decode of the character rig                | WASM decode of `tahu.glb` etc. (not preloaded; kits are)                                                  | No — Three's GLTFLoader has no GPU decode path                 |
+
+Baking object-space FBM (`mx_noise_float`) into a 3D texture via a compute pass would only shrink **later** fragment cost. It would tile vs the current unbounded noise, still compile PBR/transmission/bloom, and would not speed kit cloning.
+
+**What we do instead:** `SceneCompileAsync` runs Three's `renderer.compileAsync(scene, camera)` after kits attach, **on the WebGPU backend only**. That API yields between materials (`NodeManager.getForRenderAsync` + sequential pipeline creation) so TSL/GPU program builds are not one giant first-frame hitch. Playwright and the WebGL fallback skip this (WebGL `compileAsync` can stall the drawing buffer). We do not pause the R3F `frameloop` around compile.
+
 ## Character sheet console log
 
 When a `CharacterScene` mounts and kit attachments finish, the browser console logs once per character load:
@@ -74,6 +88,7 @@ Use this log to compare characters before and after rendering optimizations (see
 | ------------------------------------------ | ----------------------------------------- |
 | `src/rendering/3d/Canvas.tsx`              | Perf overlay routing                      |
 | `src/rendering/3d/ScenePerfOverlay.tsx`    | WebGPU-compatible HUD                     |
+| `src/rendering/3d/SceneCompileAsync.tsx`   | Yielding first-open pipeline compile      |
 | `src/rendering/3d/SceneDrawCallLogger.tsx` | One-shot character sheet render-cost log  |
 | `src/rendering/3d/sceneDrawCallStats.ts`   | Scene-graph + frame stat helpers          |
 | `src/persistence/gamePersistence.ts`       | `PERFORMANCE_MONITOR_ENABLED` persistence |

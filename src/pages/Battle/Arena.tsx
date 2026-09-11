@@ -7,7 +7,9 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useSettings } from '../../context/useSettings';
 import { shouldEnableShadows } from '../../utils/testMode';
 import { CharacterSelectiveBloom } from '../../rendering/3d/CharacterScene/CharacterSelectiveBloom';
+import { SceneCompileAsync } from '../../rendering/3d/SceneCompileAsync';
 import { battleCombatantReadyKey, markBattleCombatantReady } from './battleSceneReadinessStore';
+import { useBattleSceneReadiness } from './battleSceneReadiness';
 import { HitImpactParticles } from './HitImpactParticles';
 import { subscribeBattleCameraEmphasis } from '../../utils/battleCameraEmphasis';
 import {
@@ -295,6 +297,8 @@ export function Arena({
   const sceneGroupRef = useRef<THREE.Group>(null);
   const { shadowsEnabled } = useSettings();
   const effectiveShadows = shadowsEnabled && shouldEnableShadows();
+  const { sceneReady } = useBattleSceneReadiness();
+  const compileKey = `${showCombatants}|${currentWave}|${team.map((c) => c.id).join(',')}|${enemies.map((c) => c.id).join(',')}`;
 
   const arenaDef = getArenaDefinition(arenaId);
   const layout = arenaDef.layout;
@@ -352,6 +356,7 @@ export function Arena({
 
   return (
     <>
+      <SceneCompileAsync compileKey={compileKey} ready={sceneReady} />
       <CharacterSelectiveBloom bloomEnabled={false} variant="scene" />
       <PerspectiveCamera makeDefault />
       <ArenaFraming layout={layout} />
