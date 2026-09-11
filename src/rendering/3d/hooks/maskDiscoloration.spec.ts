@@ -1,4 +1,11 @@
-import { BoxGeometry, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, Texture } from 'three';
+import {
+  BoxGeometry,
+  Color,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Texture,
+} from 'three';
 import { LegoColor } from '../../../types/Colors';
 import { METRU_MASK_DISCOLORATION } from '../kit/palettes/metruKitPlayerPalette';
 import { KAUKAU_TRANSMISSION } from './maskMaterial';
@@ -81,6 +88,32 @@ describe('setupMaskDiscolorationShader', () => {
     expect(mat.emissiveIntensity).toBe(0);
     const crown = mat.userData.discolorationUniforms as { intensity: { value: number } };
     expect(crown.intensity.value).toBe(1);
+  });
+
+  test('toggles mask-power emission when the color uniform lost Color.prototype', () => {
+    const mat = new MeshStandardMaterial({ name: 'Hau' }) as MaskTslMaterial;
+    setupMaskDiscolorationShader(new Mesh(new BoxGeometry(1, 1, 1), mat), LegoColor.Red);
+    const power = mat.userData.maskPowerUniforms as {
+      bloomIntensity: { value: number };
+      color: { value: { b: number; g: number; r: number } };
+      intensity: { value: number };
+    };
+    power.color.value = { b: 0, g: 0, r: 0 };
+
+    applyMaskPowerEmissive(mat, LegoColor.Red, true);
+    const red = new Color(LegoColor.Red);
+    expect(power.intensity.value).toBe(MASK_POWER_EMISSIVE_INTENSITY);
+    expect(power.bloomIntensity.value).toBe(1);
+    expect(power.color.value.r).toBeCloseTo(red.r, 5);
+    expect(power.color.value.g).toBeCloseTo(red.g, 5);
+    expect(power.color.value.b).toBeCloseTo(red.b, 5);
+
+    applyMaskPowerEmissive(mat, LegoColor.Red, false);
+    expect(power.intensity.value).toBe(0);
+    expect(power.bloomIntensity.value).toBe(0);
+    expect(power.color.value.r).toBe(0);
+    expect(power.color.value.g).toBe(0);
+    expect(power.color.value.b).toBe(0);
   });
 
   test('toggles mask-power emission and bloom through TSL uniforms after the first compile', () => {
