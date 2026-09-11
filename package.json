@@ -73,6 +73,7 @@
     "@fontsource/orbitron": "^5.3.0",
     "@gltf-transform/cli": "4.3.0",
     "@playwright/test": "^1.58.0",
+    "@posthog/rollup-plugin": "^1.6.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

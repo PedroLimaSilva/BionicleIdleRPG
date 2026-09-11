@@ -133,7 +133,39 @@ In your PostHog project:
 
 1. Go to **Error Tracking** in the sidebar
 2. Enable exception autocapture if prompted
-3. Upload source maps from production builds for readable stack traces (see [PostHog source maps docs](https://posthog.com/docs/error-tracking/upload-source-maps))
+3. Add GitHub Actions secrets so production builds upload source maps automatically (see below)
+
+### 4. Source maps for readable stack traces
+
+The app already reports uncaught errors via PostHog (`capture_exceptions: true` in `src/services/telemetry.ts`). Without uploaded source maps, stack frames stay minified (`assets/index-abc123.js:1:48291`) and are hard to debug.
+
+This repo uses [`@posthog/rollup-plugin`](https://posthog.com/docs/error-tracking/upload-source-maps/vite) in `vite.config.ts`. When the secrets below are set, each production build:
+
+1. Generates hidden source maps (not shipped to GitHub Pages)
+2. Injects PostHog chunk IDs into JS bundles
+3. Uploads source maps to PostHog, then deletes local `.map` files
+
+**GitHub Actions secrets** (Settings → Secrets and variables → Actions):
+
+| Secret                     | Required | Value                                                                |
+| -------------------------- | -------- | -------------------------------------------------------------------- |
+| `POSTHOG_API_KEY`          | Yes      | Personal API key with **Error tracking → write** access              |
+| `POSTHOG_PROJECT_ID`       | Yes      | Numeric project ID from PostHog → Project settings                   |
+| `VITE_PUBLIC_POSTHOG_HOST` | No       | Same host as telemetry (`https://us.i.posthog.com` or EU equivalent) |
+
+`POSTHOG_HOST` in CI is derived from `VITE_PUBLIC_POSTHOG_HOST` so upload and client telemetry stay on the same PostHog instance.
+
+**Verify uploads:** After a deploy to `master`, open PostHog → **Error Tracking** → **Symbol sets** and confirm new entries appear for release `bionicle-idle-rpg` with version matching `app_version` on events (e.g. `0.8.2+a1b2c3d` from Settings).
+
+**Local one-off upload:**
+
+```bash
+POSTHOG_API_KEY=phx_... POSTHOG_PROJECT_ID=12345 yarn build
+```
+
+**Retroactive symbolication:** Source maps must match the exact JS that was deployed. Crashes from builds uploaded before source maps were enabled cannot be symbolicated retroactively unless you rebuild that commit and upload maps manually.
+
+See also [PostHog source maps docs](https://posthog.com/docs/error-tracking/upload-source-maps).
 
 ## Analyzing the data
 
