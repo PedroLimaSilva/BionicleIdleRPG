@@ -1,4 +1,4 @@
-import { Box3, Color, Mesh, Object3D } from 'three';
+import { Box3, Color, ColorRepresentation, Mesh, Object3D } from 'three';
 import {
   float,
   materialColor,
@@ -30,7 +30,7 @@ import {
   maskUsesTransmissionRendering,
   type MaskStandardMat,
 } from './maskMaterial';
-import { setUniformColor, setUniformNumber } from './tslUniforms';
+import { safeMaterialColorRef, setUniformColor, setUniformNumber } from './tslUniforms';
 
 /** Vertical crown tint for Metru double-injected Kanohi (silver-gray top → mask color bottom). */
 export type MaskDiscoloration = {
@@ -47,6 +47,38 @@ const DISCOLOR_UNIFORMS_KEY = 'discolorationUniforms';
 
 const DEFAULT_DISCOLOR_METALNESS = 0.9;
 const DEFAULT_DISCOLOR_ROUGHNESS = 0.22;
+
+/** JSON-safe Color/number slots. Nested UniformNode `.value` paths throw when missing. */
+const UD = {
+  crownColor: 'maskCrownColor',
+  crownIntensity: 'maskCrownIntensity',
+  crownMaxY: 'maskCrownMaxY',
+  crownMetalness: 'maskCrownMetalness',
+  crownMinY: 'maskCrownMinY',
+  crownRoughness: 'maskCrownRoughness',
+  powerBloom: 'maskPowerBloom',
+  powerColor: 'maskPowerColor',
+  powerIntensity: 'maskPowerIntensity',
+} as const;
+
+function writeUserDataColor(mat: MaskStandardMat, key: string, color: ColorRepresentation): void {
+  const current = mat.userData[key];
+  if (current instanceof Color) {
+    current.set(color);
+    return;
+  }
+  if (current && typeof current === 'object') {
+    const next = new Color(color);
+    const plain = current as { b?: number; g?: number; r?: number };
+    if (typeof plain.r === 'number' && typeof plain.g === 'number' && typeof plain.b === 'number') {
+      plain.r = next.r;
+      plain.g = next.g;
+      plain.b = next.b;
+      return;
+    }
+  }
+  mat.userData[key] = new Color(color);
+}
 
 function createCrownDiscolorationUniforms(minY: number, maxY: number) {
   return {
@@ -79,18 +111,18 @@ function floatRef(path: string): never {
 }
 
 function colorRef(path: string): never {
-  return materialReference(path, 'color') as never;
+  return safeMaterialColorRef(path) as never;
 }
 
-const crownColorRef = colorRef('userData.discolorationUniforms.color.value');
-const crownIntensityRef = floatRef('userData.discolorationUniforms.intensity.value');
-const crownMaxYRef = floatRef('userData.discolorationUniforms.maxY.value');
-const crownMetalnessRef = floatRef('userData.discolorationUniforms.metalness.value');
-const crownMinYRef = floatRef('userData.discolorationUniforms.minY.value');
-const crownRoughnessRef = floatRef('userData.discolorationUniforms.roughness.value');
-const powerBloomRef = floatRef('userData.maskPowerUniforms.bloomIntensity.value');
-const powerColorRef = colorRef('userData.maskPowerUniforms.color.value');
-const powerIntensityRef = floatRef('userData.maskPowerUniforms.intensity.value');
+const crownColorRef = colorRef(`userData.${UD.crownColor}`);
+const crownIntensityRef = floatRef(`userData.${UD.crownIntensity}`);
+const crownMaxYRef = floatRef(`userData.${UD.crownMaxY}`);
+const crownMetalnessRef = floatRef(`userData.${UD.crownMetalness}`);
+const crownMinYRef = floatRef(`userData.${UD.crownMinY}`);
+const crownRoughnessRef = floatRef(`userData.${UD.crownRoughness}`);
+const powerBloomRef = floatRef(`userData.${UD.powerBloom}`);
+const powerColorRef = colorRef(`userData.${UD.powerColor}`);
+const powerIntensityRef = floatRef(`userData.${UD.powerIntensity}`);
 
 const bakedAmt = bakedDiscolorationAmountFromMaterial() as never;
 const crownRange = float(0).add(crownMaxYRef).sub(crownMinYRef).max(1e-5);
@@ -145,6 +177,30 @@ function createMaskPowerUniforms() {
 
 type MaskPowerUniforms = ReturnType<typeof createMaskPowerUniforms>;
 
+function writeMaskCrownUserData(
+  mat: MaskStandardMat,
+  crown: CrownDiscolorationUniforms,
+  opts?: { color?: string; intensity?: number; metalness?: number; roughness?: number }
+): void {
+  writeUserDataColor(mat, UD.crownColor, opts?.color ?? 0xffffff);
+  mat.userData[UD.crownIntensity] = opts?.intensity ?? 0;
+  mat.userData[UD.crownMinY] = crown.minY.value;
+  mat.userData[UD.crownMaxY] = crown.maxY.value;
+  mat.userData[UD.crownMetalness] = opts?.metalness ?? DEFAULT_DISCOLOR_METALNESS;
+  mat.userData[UD.crownRoughness] = opts?.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS;
+}
+
+function writeMaskPowerUserData(
+  mat: MaskStandardMat,
+  color: ColorRepresentation,
+  intensity: number,
+  bloomIntensity: number
+): void {
+  writeUserDataColor(mat, UD.powerColor, color);
+  mat.userData[UD.powerIntensity] = intensity;
+  mat.userData[UD.powerBloom] = bloomIntensity;
+}
+
 function attachDiscolorationShader(
   mat: MaskStandardMat,
   minY: number,
@@ -163,6 +219,8 @@ function attachDiscolorationShader(
   mat.userData[DISCOLOR_UNIFORMS_KEY] = crown;
   mat.userData[DISCOLORATION_UNIFORMS_KEY] = baked;
   mat.userData[MASK_POWER_UNIFORMS_KEY] = power;
+  writeMaskCrownUserData(mat, crown);
+  writeMaskPowerUserData(mat, 0x000000, 0, 0);
 
   const tslMat = mat as MaskTslMaterial;
   if (hasBake) ensureBakeSampleSlot(mat);
@@ -205,6 +263,7 @@ export function applyMaskPowerEmissive(
     setUniformColor(power.color, on ? colorHex : 0x000000);
     setUniformNumber(power.intensity, intensity);
     setUniformNumber(power.bloomIntensity, on ? 1 : 0);
+    writeMaskPowerUserData(mat, on ? colorHex : 0x000000, intensity, on ? 1 : 0);
     return;
   }
 
@@ -228,8 +287,15 @@ export function applyMaskDiscolorationUniforms(
       setUniformNumber(crown.intensity, discoloration.intensity);
       setUniformNumber(crown.metalness, discoloration.metalness ?? DEFAULT_DISCOLOR_METALNESS);
       setUniformNumber(crown.roughness, discoloration.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS);
+      writeMaskCrownUserData(mat, crown, {
+        color: discoloration.color,
+        intensity: discoloration.intensity,
+        metalness: discoloration.metalness ?? DEFAULT_DISCOLOR_METALNESS,
+        roughness: discoloration.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS,
+      });
     } else {
       setUniformNumber(crown.intensity, 0);
+      mat.userData[UD.crownIntensity] = 0;
     }
   }
 

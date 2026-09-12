@@ -1,5 +1,5 @@
 import { Color } from 'three';
-import { setUniformColor, setUniformNumber } from './tslUniforms';
+import { safeMaterialColorRef, setUniformColor, setUniformNumber } from './tslUniforms';
 
 describe('setUniformColor', () => {
   test('updates a Three.js Color uniform in place', () => {
@@ -31,5 +31,11 @@ describe('setUniformNumber', () => {
     const uniformNode = { value: 0 };
     setUniformNumber(uniformNode, 1.25);
     expect(uniformNode.value).toBe(1.25);
+  });
+});
+
+describe('safeMaterialColorRef', () => {
+  test('builds a color material reference without throwing', () => {
+    expect(() => safeMaterialColorRef('userData.discolorationColor')).not.toThrow();
   });
 });

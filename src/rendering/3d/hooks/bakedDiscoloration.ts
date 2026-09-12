@@ -17,7 +17,7 @@ import { ClampToEdgeWrapping, Color, MeshStandardMaterial, NoColorSpace, Texture
 import { float, materialReference, smoothstep, texture, uniform, uv } from 'three/tsl';
 import { discolorationForColor } from '../kit/palettes/legoColorDiscoloration';
 import { DUMMY_DISCOLORATION_MAP, isDummyDiscolorationMap } from './dummyTextures';
-import { setUniformColor, setUniformNumber } from './tslUniforms';
+import { safeMaterialColorRef, setUniformColor, setUniformNumber } from './tslUniforms';
 
 export const DISCOLORATION_MAP_USERDATA_KEY = 'bakedDiscolorationMap';
 export const DISCOLORATION_UNIFORMS_KEY = 'bakedDiscolorationUniforms';
@@ -120,9 +120,8 @@ export function getBakedDiscolorationMap(mat: unknown): Texture | null {
 }
 
 type TslFloat = BakedDiscolorationUniforms['hasMap'];
-const discolorationColorRef = materialReference(
-  'userData.discolorationColor',
-  'color'
+const discolorationColorRef = safeMaterialColorRef(
+  'userData.discolorationColor'
 ) as unknown as BakedDiscolorationUniforms['color'];
 const discolorationHasMapRef = materialReference(
   'userData.discolorationHasMap',

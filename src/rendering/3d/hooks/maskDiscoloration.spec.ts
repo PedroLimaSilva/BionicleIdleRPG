@@ -53,6 +53,10 @@ describe('setupMaskDiscolorationShader', () => {
     expect(mat.userData.bakedDiscolorationMap).toBe(bake);
     expect(mat.aoMap).toBe(bake);
     expect(mat.aoMapIntensity).toBe(0);
+    expect(mat.userData.maskCrownColor).toBeInstanceOf(Color);
+    expect(mat.userData.maskPowerColor).toBeInstanceOf(Color);
+    expect(mat.userData.maskCrownIntensity).toBe(0);
+    expect(mat.userData.maskPowerBloom).toBe(0);
     expect(mat.colorNode).toBeDefined();
     expect(mat.emissiveNode).toBeDefined();
     expect(mat.mrtNode).toBeDefined();
@@ -106,6 +110,7 @@ describe('setupMaskDiscolorationShader', () => {
     expect(mat.emissiveIntensity).toBe(0);
     const crown = mat.userData.discolorationUniforms as { intensity: { value: number } };
     expect(crown.intensity.value).toBe(1);
+    expect(mat.userData.maskCrownIntensity).toBe(1);
   });
 
   test('toggles mask-power emission when the color uniform lost Color.prototype', () => {
