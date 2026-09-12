@@ -7,6 +7,7 @@ import {
 import {
   adoptBakedDiscolorationMap,
   applyBakedDiscolorationUniforms,
+  bakedDiscolorationAmountFromMaterial,
   bakedDiscolorationAmountNode,
   createBakedDiscolorationUniforms,
   getBakedDiscolorationMap,
@@ -96,5 +97,9 @@ describe('baked discoloration amount', () => {
     const uniforms = createBakedDiscolorationUniforms(map, LegoColor.Red);
     expect(() => bakedDiscolorationAmountNode(map, uniforms)).not.toThrow();
     expect(bakedDiscolorationAmountNode(null, uniforms)).toBeDefined();
+  });
+
+  test('shared material bake amount graph builds without throwing', () => {
+    expect(() => bakedDiscolorationAmountFromMaterial()).not.toThrow();
   });
 });

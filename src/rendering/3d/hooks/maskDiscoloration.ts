@@ -99,6 +99,8 @@ const crownAmt = positionLocal.y
   .mul(crownIntensityRef);
 const afterBake = mix(materialColor, bakedDiscolorationColorFromMaterial() as never, bakedAmt);
 const maskColorNode = mix(afterBake, crownColorRef, crownAmt as never);
+/** No bake sample in the graph — matches master `float(0)` mix amount. */
+const maskColorNodeNoBake = mix(materialColor, crownColorRef, crownAmt as never);
 const maskEmissiveNode = float(1).mul(powerColorRef).mul(powerIntensityRef);
 const maskMrtNode = mrt({ bloomIntensity: powerBloomRef });
 const maskMetalnessNode = mix(materialMetalness, crownMetalnessRef, crownAmt as never);
@@ -160,7 +162,7 @@ function attachDiscolorationShader(
   mat.userData[MASK_POWER_UNIFORMS_KEY] = power;
 
   const tslMat = mat as MaskTslMaterial;
-  tslMat.colorNode = maskColorNode;
+  tslMat.colorNode = map ? maskColorNode : maskColorNodeNoBake;
   // Keep power and bloom in the graph from the first compile so toggling
   // later does not require a program rebuild. Bindings come from this
   // material's userData via materialReference — do not close over textures
@@ -173,7 +175,7 @@ function attachDiscolorationShader(
     tslMat.metalnessNode = maskMetalnessNode;
     tslMat.roughnessNode = maskRoughnessNode;
   }
-  const programKey = `mask_discolor|tx${maskUsesTransmissionRendering(mat) ? 1 : 0}`;
+  const programKey = `mask_discolor|tx${maskUsesTransmissionRendering(mat) ? 1 : 0}|dc${map ? 1 : 0}`;
   mat.customProgramCacheKey = () => programKey;
   mat.needsUpdate = true;
 }

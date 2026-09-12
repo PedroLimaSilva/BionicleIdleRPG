@@ -162,6 +162,44 @@ describe('getWeatheredMetalMaterial', () => {
     expect(a).not.toBe(b);
     expect(a.customProgramCacheKey?.()).toBe(b.customProgramCacheKey?.());
   });
+
+  test('no-bake plastics share a color graph that is not the bake-mix graph', () => {
+    const red = getWeatheredMetalMaterial('#c91a09', {
+      metalness: 0.05,
+    }) as MeshStandardMaterial & {
+      colorNode?: unknown;
+    };
+    const gold = getWeatheredMetalMaterial('#b48455', {
+      metalness: 0.05,
+    }) as MeshStandardMaterial & {
+      colorNode?: unknown;
+    };
+    const baked = getWeatheredMetalMaterial('#c91a09', {
+      discolorationMap: mapTex(),
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    expect(red.colorNode).toBe(gold.colorNode);
+    expect(red.colorNode).not.toBe(baked.colorNode);
+    expect(red.customProgramCacheKey?.()).not.toBe(baked.customProgramCacheKey?.());
+  });
+
+  test('mapped albedo uses a distinct shared color graph from unmapped plastic', () => {
+    const unmapped = getWeatheredMetalMaterial('#c91a09', {
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    const mappedA = getWeatheredMetalMaterial('#c91a09', {
+      map: mapTex(),
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    const mappedB = getWeatheredMetalMaterial('#b48455', {
+      map: mapTex(),
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    expect(mappedA.colorNode).toBe(mappedB.colorNode);
+    expect(mappedA.colorNode).not.toBe(unmapped.colorNode);
+    expect(mappedA.customProgramCacheKey?.()).toContain('alb');
+    expect(unmapped.customProgramCacheKey?.()).not.toContain('alb');
+  });
 });
 
 describe('applyWeatheredMetalToObject uniqueMaterials', () => {

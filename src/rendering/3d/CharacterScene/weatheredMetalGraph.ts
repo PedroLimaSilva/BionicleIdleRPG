@@ -87,12 +87,18 @@ const largeCloud = objectSpaceFbm(50, largeScaleRef);
 const fineGrain = objectSpaceFbm(80, fineScaleRef);
 const grime = largeCloud.sub(0.35).mul(2).clamp(0, 1);
 
-const grimyAlbedo = materialColor.mul(grime.mul(grimeDarkenRef).oneMinus());
-const colorWithBake = mix(
-  grimyAlbedo,
-  bakedDiscolorationColorFromMaterial() as never,
-  bakedDiscolorationAmountFromMaterial() as never
-);
+/**
+ * Master multiplied `materialColor` (already map×color) by `texture(map)` again
+ * whenever an albedo map was present. Keep that double-multiply via a map
+ * materialReference so mapped kits match E2E goldens without capturing UUIDs.
+ */
+const albedoMapRef = materialReference('map', 'texture') as never;
+const grimyUnmapped = materialColor.mul(grime.mul(grimeDarkenRef).oneMinus());
+const grimyMapped = materialColor.mul(albedoMapRef).mul(grime.mul(grimeDarkenRef).oneMinus());
+const bakeColor = bakedDiscolorationColorFromMaterial() as never;
+const bakeAmount = bakedDiscolorationAmountFromMaterial() as never;
+const colorUnmappedWithBake = mix(grimyUnmapped, bakeColor, bakeAmount);
+const colorMappedWithBake = mix(grimyMapped, bakeColor, bakeAmount);
 const roughnessNode = materialRoughness
   .add(grime.mul(grimeRoughnessRef))
   .add(fineGrain.sub(0.5).mul(FINE_ROUGHNESS_VARIATION))
@@ -176,10 +182,15 @@ export function applySharedWeatheringGraph(
     (opts.dentStrength ?? defaults.dentStrength) *
     (1 - Math.min(1, Math.max(0, metalness)) * METAL_DENT_ATTENUATION);
   const hasDiscoloration = !!discolorMap && !isDummyDiscolorationMap(discolorMap);
-  const needsColorNode = grimeDarken > 0 || !!mat.map || hasDiscoloration;
+  const hasAlbedoMap = !!mat.map;
+  const needsColorNode = grimeDarken > 0 || hasAlbedoMap || hasDiscoloration;
 
   if (needsColorNode) {
-    mat.colorNode = colorWithBake;
+    if (hasDiscoloration) {
+      mat.colorNode = hasAlbedoMap ? colorMappedWithBake : colorUnmappedWithBake;
+    } else {
+      mat.colorNode = hasAlbedoMap ? grimyMapped : grimyUnmapped;
+    }
   }
   if (!mat.roughnessMap) {
     mat.roughnessNode = roughnessNode;

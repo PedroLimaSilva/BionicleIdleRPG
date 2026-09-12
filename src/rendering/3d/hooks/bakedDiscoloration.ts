@@ -76,10 +76,22 @@ export function bakedDiscolorationColorFromMaterial() {
   return discolorationColorRef;
 }
 
-/** Shared bake mix amount — samples the current material's userData map. */
+type TslTextureRef = {
+  context: (ctx: { getUV: () => unknown }) => { r: unknown };
+};
+
+/**
+ * Shared bake mix amount — samples the current material's userData map.
+ *
+ * `materialReference(..., 'texture')` is already a texture binding (see Three's
+ * displacementMap). Wrapping it in `texture(ref, uv())` builds a TextureNode
+ * whose value is the reference node, not a Texture, so WebGL samples the empty
+ * default and every kit/mask shifts.
+ */
 export function bakedDiscolorationAmountFromMaterial() {
-  const sample = texture(discolorationMapRef as never, uv());
-  return smoothstep(0.2, 0.75, sample.r)
+  const bakeTex = discolorationMapRef as unknown as TslTextureRef;
+  const sample = bakeTex.context({ getUV: () => uv() });
+  return smoothstep(0.2, 0.75, sample.r as never)
     .mul(discolorationIntensityRef as never)
     .mul(discolorationHasMapRef as never)
     .clamp(0, 1);
