@@ -34,6 +34,8 @@ describe('getWeatheredMetalMaterial', () => {
     expect(a.emissiveMap).toBeNull();
     expect(a.emissiveIntensity).toBe(0);
     expect(a.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
+    expect(a.aoMap).toBe(discolor);
+    expect(a.aoMapIntensity).toBe(0);
     expect(discolor.wrapS).toBe(ClampToEdgeWrapping);
     expect((a as MeshStandardMaterial & { colorNode?: unknown }).colorNode).toBeDefined();
   });
@@ -101,6 +103,7 @@ describe('getWeatheredMetalMaterial', () => {
     const a = getWeatheredMetalMaterial('#c91a09', { fineScale: 18, metalness: 0.05 });
     const b = getWeatheredMetalMaterial('#c91a09', { fineScale: 26, metalness: 0.05 });
     expect(a).not.toBe(b);
+    expect(a.customProgramCacheKey?.()).toBe(b.customProgramCacheKey?.());
   });
 
   test('different metalness-reduce amounts do not share a material', () => {
@@ -129,7 +132,7 @@ describe('getWeatheredMetalMaterial', () => {
     expect(mat.normalNode).toBeUndefined();
   });
 
-  test('high metalness still bumps, but with a different program than plastic', () => {
+  test('high metalness still bumps, and shares a GPU program with plastic', () => {
     const plastic = getWeatheredMetalMaterial('#9ba19d', {
       metalness: 0.05,
     }) as MeshStandardMaterial & { normalNode?: unknown };
@@ -139,10 +142,17 @@ describe('getWeatheredMetalMaterial', () => {
     expect(plastic).not.toBe(metal);
     expect(plastic.normalNode).toBeDefined();
     expect(metal.normalNode).toBeDefined();
-    expect(plastic.customProgramCacheKey?.()).not.toBe(metal.customProgramCacheKey?.());
+    expect(plastic.customProgramCacheKey?.()).toBe(metal.customProgramCacheKey?.());
   });
 
-  test('different discoloration maps do not share a material', () => {
+  test('red and gold share a GPU program but not a material instance', () => {
+    const red = getWeatheredMetalMaterial('#c91a09', { metalness: 0.05 });
+    const gold = getWeatheredMetalMaterial('#b48455', { metalness: 0.05 });
+    expect(red).not.toBe(gold);
+    expect(red.customProgramCacheKey?.()).toBe(gold.customProgramCacheKey?.());
+  });
+
+  test('different discoloration maps share a GPU program but not a material', () => {
     const a = getWeatheredMetalMaterial('#c91a09', {
       discolorationMap: mapTex(),
       metalness: 0.05,
@@ -152,6 +162,45 @@ describe('getWeatheredMetalMaterial', () => {
       metalness: 0.05,
     });
     expect(a).not.toBe(b);
+    expect(a.customProgramCacheKey?.()).toBe(b.customProgramCacheKey?.());
+  });
+
+  test('no-bake plastics share a color graph that is not the bake-mix graph', () => {
+    const red = getWeatheredMetalMaterial('#c91a09', {
+      metalness: 0.05,
+    }) as MeshStandardMaterial & {
+      colorNode?: unknown;
+    };
+    const gold = getWeatheredMetalMaterial('#b48455', {
+      metalness: 0.05,
+    }) as MeshStandardMaterial & {
+      colorNode?: unknown;
+    };
+    const baked = getWeatheredMetalMaterial('#c91a09', {
+      discolorationMap: mapTex(),
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    expect(red.colorNode).toBe(gold.colorNode);
+    expect(red.colorNode).not.toBe(baked.colorNode);
+    expect(red.customProgramCacheKey?.()).not.toBe(baked.customProgramCacheKey?.());
+  });
+
+  test('mapped albedo uses a distinct shared color graph from unmapped plastic', () => {
+    const unmapped = getWeatheredMetalMaterial('#c91a09', {
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    const mappedA = getWeatheredMetalMaterial('#c91a09', {
+      map: mapTex(),
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    const mappedB = getWeatheredMetalMaterial('#b48455', {
+      map: mapTex(),
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    expect(mappedA.colorNode).toBe(mappedB.colorNode);
+    expect(mappedA.colorNode).not.toBe(unmapped.colorNode);
+    expect(mappedA.customProgramCacheKey?.()).toContain('alb');
+    expect(unmapped.customProgramCacheKey?.()).not.toContain('alb');
   });
 });
 
@@ -269,5 +318,7 @@ describe('applyWeatheredMetalToObject PBR map preservation', () => {
     expect(next.emissiveMap).toBeNull();
     expect(next.emissiveIntensity).toBe(0);
     expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
+    expect(next.aoMap).toBe(discolor);
+    expect(next.aoMapIntensity).toBe(0);
   });
 });

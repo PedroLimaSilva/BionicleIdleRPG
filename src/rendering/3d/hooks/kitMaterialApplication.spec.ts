@@ -146,7 +146,6 @@ describe('buildKitMeshMaterials metallic colors', () => {
     ) as MeshPhysicalMaterial;
     expect(next).toBeInstanceOf(MeshPhysicalMaterial);
     expect(next.color.getHexString().toUpperCase()).toBe('F8F184');
-    expect(next.name).toBe('Brain');
     expect(next.transmission).toBe(TRANSMISSIVE_KIT_BRAIN_TRANSMISSION);
     expect(next.metalness).toBe(0);
     expect(next.emissiveIntensity).toBe(0.1);
@@ -338,6 +337,8 @@ describe('buildKitMeshMaterials untextured slots', () => {
     expect(next.name).toBe('WeatheredMetal');
     expect(next.emissiveMap).toBeNull();
     expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+    expect(next.aoMap).toBe(bake);
+    expect(next.aoMapIntensity).toBe(0);
     expect((next as MeshStandardMaterial & { colorNode?: unknown }).colorNode).toBeDefined();
     expect(next.normalMap).toBe(normal);
     expect(next.roughnessMap).toBe(mr);
@@ -404,6 +405,7 @@ describe('buildKitMeshMaterials untextured slots', () => {
     expect(Object.hasOwn(next, 'onBeforeCompile')).toBe(false);
     expect(next.colorNode).toBeDefined();
     expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+    expect(next.aoMap).toBe(bake);
     expect(next.metalnessNode).toBeDefined();
     expect(next.normalNode).toBeUndefined();
     expect(next.roughnessNode).toBeDefined();

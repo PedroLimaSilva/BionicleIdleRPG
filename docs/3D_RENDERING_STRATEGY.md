@@ -86,10 +86,12 @@ Follow the **Nui-Rama** pattern: self-contained GLB, merged sub-meshes in Blende
 
 ## Related code
 
-| File                                          | Role                                        |
-| --------------------------------------------- | ------------------------------------------- |
-| `src/rendering/3d/hooks/kitGeometryMerge.ts`  | Phase B merge pipeline                      |
-| `src/rendering/3d/SceneCompileAsync.tsx`      | Yielding first-open TSL / pipeline compile  |
-| `src/rendering/3d/hooks/useKitAttachments.ts` | Kit clone + merge hook                      |
-| `src/pages/Battle/CombatantModel.tsx`         | Battle model routing (Phase C branch point) |
-| `src/rendering/3d/CharacterScene/index.tsx`   | Dex / full-detail path                      |
+| File                                          | Role                                           |
+| --------------------------------------------- | ---------------------------------------------- |
+| `src/rendering/3d/hooks/kitGeometryMerge.ts`  | Phase B merge pipeline                         |
+| `src/rendering/3d/SceneCompileAsync.tsx`      | Yielding first-open TSL / pipeline compile     |
+| `src/rendering/3d/kitMaterialBank.ts`         | CPU material instances for shipped LEGO colors |
+| `src/rendering/3d/ShaderVariantBank.tsx`      | One-shot WebGPU compile of shared variants     |
+| `src/rendering/3d/hooks/useKitAttachments.ts` | Kit clone + merge hook                         |
+| `src/pages/Battle/CombatantModel.tsx`         | Battle model routing (Phase C branch point)    |
+| `src/rendering/3d/CharacterScene/index.tsx`   | Dex / full-detail path                         |

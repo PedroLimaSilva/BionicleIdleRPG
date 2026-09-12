@@ -44,23 +44,29 @@ describe('applyMaskPowerEmissive', () => {
 });
 
 describe('setupMaskDiscolorationShader', () => {
-  test('installs TSL nodes, steals the emissive bake, and keys a unique bake program', () => {
+  test('installs TSL nodes, steals the emissive bake, and keys a shared topology program', () => {
     const bake = new Texture();
     const mat = new MeshStandardMaterial({ emissiveMap: bake, name: 'Hau' }) as MaskTslMaterial;
     const mesh = new Mesh(new BoxGeometry(1, 1, 1), mat);
     setupMaskDiscolorationShader(mesh, LegoColor.Red);
     expect(mat.emissiveMap).toBeNull();
     expect(mat.userData.bakedDiscolorationMap).toBe(bake);
+    expect(mat.aoMap).toBe(bake);
+    expect(mat.aoMapIntensity).toBe(0);
+    expect(mat.userData.maskCrownColor).toBeInstanceOf(Color);
+    expect(mat.userData.maskPowerColor).toBeInstanceOf(Color);
+    expect(mat.userData.maskCrownIntensity).toBe(0);
+    expect(mat.userData.maskPowerBloom).toBe(0);
     expect(mat.colorNode).toBeDefined();
     expect(mat.emissiveNode).toBeDefined();
     expect(mat.mrtNode).toBeDefined();
     expect(mat.metalnessNode).toBeDefined();
     expect(mat.roughnessNode).toBeDefined();
     expect(mat.emissiveIntensity).toBe(0);
-    expect(mat.customProgramCacheKey()).toBe(`mask_bake_${mat.uuid}_${bake.uuid}`);
+    expect(mat.customProgramCacheKey()).toBe('mask_discolor|tx0|dc1');
   });
 
-  test('does not share a bake program across cloned mask materials', () => {
+  test('shares a bake program across cloned mask materials', () => {
     const bakeA = new Texture();
     const bakeB = new Texture();
     const matA = new MeshStandardMaterial({ emissiveMap: bakeA, name: 'Hau' }) as MaskTslMaterial;
@@ -70,7 +76,23 @@ describe('setupMaskDiscolorationShader', () => {
     }) as MaskTslMaterial;
     setupMaskDiscolorationShader(new Mesh(new BoxGeometry(1, 1, 1), matA), LegoColor.Red);
     setupMaskDiscolorationShader(new Mesh(new BoxGeometry(1, 1, 1), matB), LegoColor.Red);
-    expect(matA.customProgramCacheKey()).not.toBe(matB.customProgramCacheKey());
+    expect(matA.customProgramCacheKey()).toBe('mask_discolor|tx0|dc1');
+    expect(matA.customProgramCacheKey()).toBe(matB.customProgramCacheKey());
+    expect(matA.colorNode).toBe(matB.colorNode);
+    expect(matA).not.toBe(matB);
+  });
+
+  test('masks without a bake skip the bake-sample graph', () => {
+    const plain = new MeshStandardMaterial({ name: 'Hau' }) as MaskTslMaterial;
+    const baked = new MeshStandardMaterial({
+      emissiveMap: new Texture(),
+      name: 'Hau',
+    }) as MaskTslMaterial;
+    setupMaskDiscolorationShader(new Mesh(new BoxGeometry(1, 1, 1), plain), LegoColor.Red);
+    setupMaskDiscolorationShader(new Mesh(new BoxGeometry(1, 1, 1), baked), LegoColor.Red);
+    expect(plain.customProgramCacheKey()).toBe('mask_discolor|tx0|dc0');
+    expect(baked.customProgramCacheKey()).toBe('mask_discolor|tx0|dc1');
+    expect(plain.colorNode).not.toBe(baked.colorNode);
   });
 
   test('skips glow materials', () => {
@@ -88,6 +110,7 @@ describe('setupMaskDiscolorationShader', () => {
     expect(mat.emissiveIntensity).toBe(0);
     const crown = mat.userData.discolorationUniforms as { intensity: { value: number } };
     expect(crown.intensity.value).toBe(1);
+    expect(mat.userData.maskCrownIntensity).toBe(1);
   });
 
   test('toggles mask-power emission when the color uniform lost Color.prototype', () => {

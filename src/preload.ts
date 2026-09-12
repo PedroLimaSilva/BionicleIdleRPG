@@ -7,6 +7,8 @@ import { useKitAttachments } from './rendering/3d/hooks/useKitAttachments';
 import { useMask } from './rendering/3d/hooks/useMask';
 import { useNuvaMask } from './rendering/3d/hooks/useNuvaMask';
 
+import { primeKitMaterialBank } from './rendering/3d/kitMaterialBank';
+
 /** Non-blocking GLB warm-up at boot (fetch + Draco decode). Safe to call before React mounts. */
 export function preloadAssets() {
   useMask.preload();
@@ -14,4 +16,5 @@ export function preloadAssets() {
   useNuvaMask.preload();
   useGreatMask.preload();
   useKitAttachments.preload(KIT_2001_GLB_PATH, KIT_2003_GLB_PATH, KIT_2004_GLB_PATH);
+  primeKitMaterialBank();
 }

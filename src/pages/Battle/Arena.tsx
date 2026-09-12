@@ -8,6 +8,7 @@ import { useSettings } from '../../context/useSettings';
 import { shouldEnableShadows } from '../../utils/testMode';
 import { CharacterSelectiveBloom } from '../../rendering/3d/CharacterScene/CharacterSelectiveBloom';
 import { SceneCompileAsync } from '../../rendering/3d/SceneCompileAsync';
+import { ShaderVariantBank } from '../../rendering/3d/ShaderVariantBank';
 import { battleCombatantReadyKey, markBattleCombatantReady } from './battleSceneReadinessStore';
 import { useBattleSceneReadiness } from './battleSceneReadiness';
 import { HitImpactParticles } from './HitImpactParticles';
@@ -356,6 +357,7 @@ export function Arena({
 
   return (
     <>
+      <ShaderVariantBank />
       <SceneCompileAsync compileKey={compileKey} ready={sceneReady} />
       <CharacterSelectiveBloom bloomEnabled={false} variant="scene" />
       <PerspectiveCamera makeDefault />

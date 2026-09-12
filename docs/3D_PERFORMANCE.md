@@ -61,7 +61,12 @@ Opening a character the renderer has not seen yet can stall the tab for seconds.
 
 Baking object-space FBM (`mx_noise_float`) into a 3D texture via a compute pass would only shrink **later** fragment cost. It would tile vs the current unbounded noise, still compile PBR/transmission/bloom, and would not speed kit cloning.
 
-**What we do instead:** `SceneCompileAsync` runs Three's `renderer.compileAsync(scene, camera)` after kits attach, **on the WebGPU backend only**. That API yields between materials (`NodeManager.getForRenderAsync` + sequential pipeline creation) so TSL/GPU program builds are not one giant first-frame hitch. Playwright and the WebGL fallback skip this (WebGL `compileAsync` can stall the drawing buffer). We do not pause the R3F `frameloop` around compile.
+**What we do instead:**
+
+1. **`SceneCompileAsync`** — Three's `renderer.compileAsync(scene, camera)` after kits attach, **on the WebGPU backend only**. Yields between materials so TSL/GPU program builds are not one giant first-frame hitch. Playwright and the WebGL fallback skip this (WebGL `compileAsync` can stall the drawing buffer). We do not pause the R3F `frameloop` around compile.
+2. **Kit material bank** — CPU instances of weathered plastic/metal and transmissive gel are primed at boot for every shipped LEGO color (`primeKitMaterialBank`). GPU programs are keyed by **shader topology** (maps present, dent, transmission kind) rather than texture/material UUIDs, so hopping Tahu → Gali reuses pipelines. `ShaderVariantBank` compiles those variants once against the live lights/env (unskinned kit layout). Skinned body meshes still compile on first open via `SceneCompileAsync`.
+
+A per-character material instance is still required when color or authored maps differ; the bank avoids rebuilding the TSL graph and the GPU pipeline.
 
 ## Character sheet console log
 
@@ -89,6 +94,8 @@ Use this log to compare characters before and after rendering optimizations (see
 | `src/rendering/3d/Canvas.tsx`              | Perf overlay routing                      |
 | `src/rendering/3d/ScenePerfOverlay.tsx`    | WebGPU-compatible HUD                     |
 | `src/rendering/3d/SceneCompileAsync.tsx`   | Yielding first-open pipeline compile      |
+| `src/rendering/3d/kitMaterialBank.ts`      | CPU weathered/transmissive instances      |
+| `src/rendering/3d/ShaderVariantBank.tsx`   | One-shot WebGPU variant compile           |
 | `src/rendering/3d/SceneDrawCallLogger.tsx` | One-shot character sheet render-cost log  |
 | `src/rendering/3d/sceneDrawCallStats.ts`   | Scene-graph + frame stat helpers          |
 | `src/persistence/gamePersistence.ts`       | `PERFORMANCE_MONITOR_ENABLED` persistence |

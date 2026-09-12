@@ -1,7 +1,9 @@
-import { Box3, Color, Mesh, Object3D } from 'three';
+import { Box3, Color, ColorRepresentation, Mesh, Object3D } from 'three';
 import {
+  float,
   materialColor,
   materialMetalness,
+  materialReference,
   materialRoughness,
   mix,
   mrt,
@@ -12,10 +14,14 @@ import { applySelectiveBloomMrt, clearSelectiveBloomMrt } from '../CharacterScen
 import {
   adoptBakedDiscolorationMap,
   applyBakedDiscolorationUniforms,
-  bakedDiscolorationAmountNode,
+  bakedDiscolorationAmountFromMaterial,
+  bakedDiscolorationColorFromMaterial,
   createBakedDiscolorationUniforms,
   DISCOLORATION_UNIFORMS_KEY,
+  ensureBakeSampleSlot,
   getBakedDiscolorationMap,
+  isRenderableBakeMap,
+  writeBakedDiscolorationUserData,
   type BakedDiscolorationUniforms,
 } from './bakedDiscoloration';
 import {
@@ -24,7 +30,7 @@ import {
   maskUsesTransmissionRendering,
   type MaskStandardMat,
 } from './maskMaterial';
-import { setUniformColor, setUniformNumber } from './tslUniforms';
+import { safeMaterialColorRef, setUniformColor, setUniformNumber } from './tslUniforms';
 
 /** Vertical crown tint for Metru double-injected Kanohi (silver-gray top → mask color bottom). */
 export type MaskDiscoloration = {
@@ -41,6 +47,38 @@ const DISCOLOR_UNIFORMS_KEY = 'discolorationUniforms';
 
 const DEFAULT_DISCOLOR_METALNESS = 0.9;
 const DEFAULT_DISCOLOR_ROUGHNESS = 0.22;
+
+/** JSON-safe Color/number slots. Nested UniformNode `.value` paths throw when missing. */
+const UD = {
+  crownColor: 'maskCrownColor',
+  crownIntensity: 'maskCrownIntensity',
+  crownMaxY: 'maskCrownMaxY',
+  crownMetalness: 'maskCrownMetalness',
+  crownMinY: 'maskCrownMinY',
+  crownRoughness: 'maskCrownRoughness',
+  powerBloom: 'maskPowerBloom',
+  powerColor: 'maskPowerColor',
+  powerIntensity: 'maskPowerIntensity',
+} as const;
+
+function writeUserDataColor(mat: MaskStandardMat, key: string, color: ColorRepresentation): void {
+  const current = mat.userData[key];
+  if (current instanceof Color) {
+    current.set(color);
+    return;
+  }
+  if (current && typeof current === 'object') {
+    const next = new Color(color);
+    const plain = current as { b?: number; g?: number; r?: number };
+    if (typeof plain.r === 'number' && typeof plain.g === 'number' && typeof plain.b === 'number') {
+      plain.r = next.r;
+      plain.g = next.g;
+      plain.b = next.b;
+      return;
+    }
+  }
+  mat.userData[key] = new Color(color);
+}
 
 function createCrownDiscolorationUniforms(minY: number, maxY: number) {
   return {
@@ -67,6 +105,40 @@ type MaskTslMaterial = MaskStandardMat & {
 export const MASK_POWER_EMISSIVE_INTENSITY = 1;
 
 const MASK_POWER_UNIFORMS_KEY = 'maskPowerUniforms';
+
+function floatRef(path: string): never {
+  return materialReference(path, 'float') as never;
+}
+
+function colorRef(path: string): never {
+  return safeMaterialColorRef(path) as never;
+}
+
+const crownColorRef = colorRef(`userData.${UD.crownColor}`);
+const crownIntensityRef = floatRef(`userData.${UD.crownIntensity}`);
+const crownMaxYRef = floatRef(`userData.${UD.crownMaxY}`);
+const crownMetalnessRef = floatRef(`userData.${UD.crownMetalness}`);
+const crownMinYRef = floatRef(`userData.${UD.crownMinY}`);
+const crownRoughnessRef = floatRef(`userData.${UD.crownRoughness}`);
+const powerBloomRef = floatRef(`userData.${UD.powerBloom}`);
+const powerColorRef = colorRef(`userData.${UD.powerColor}`);
+const powerIntensityRef = floatRef(`userData.${UD.powerIntensity}`);
+
+const bakedAmt = bakedDiscolorationAmountFromMaterial() as never;
+const crownRange = float(0).add(crownMaxYRef).sub(crownMinYRef).max(1e-5);
+const crownAmt = positionLocal.y
+  .sub(crownMinYRef)
+  .div(crownRange)
+  .clamp(0, 1)
+  .mul(crownIntensityRef);
+const afterBake = mix(materialColor, bakedDiscolorationColorFromMaterial() as never, bakedAmt);
+const maskColorNode = mix(afterBake, crownColorRef, crownAmt as never);
+/** No bake sample in the graph — matches master `float(0)` mix amount. */
+const maskColorNodeNoBake = mix(materialColor, crownColorRef, crownAmt as never);
+const maskEmissiveNode = float(1).mul(powerColorRef).mul(powerIntensityRef);
+const maskMrtNode = mrt({ bloomIntensity: powerBloomRef });
+const maskMetalnessNode = mix(materialMetalness, crownMetalnessRef, crownAmt as never);
+const maskRoughnessNode = mix(materialRoughness, crownRoughnessRef, crownAmt as never);
 
 /**
  * Patch non-glow mask materials:
@@ -105,6 +177,30 @@ function createMaskPowerUniforms() {
 
 type MaskPowerUniforms = ReturnType<typeof createMaskPowerUniforms>;
 
+function writeMaskCrownUserData(
+  mat: MaskStandardMat,
+  crown: CrownDiscolorationUniforms,
+  opts?: { color?: string; intensity?: number; metalness?: number; roughness?: number }
+): void {
+  writeUserDataColor(mat, UD.crownColor, opts?.color ?? 0xffffff);
+  mat.userData[UD.crownIntensity] = opts?.intensity ?? 0;
+  mat.userData[UD.crownMinY] = crown.minY.value;
+  mat.userData[UD.crownMaxY] = crown.maxY.value;
+  mat.userData[UD.crownMetalness] = opts?.metalness ?? DEFAULT_DISCOLOR_METALNESS;
+  mat.userData[UD.crownRoughness] = opts?.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS;
+}
+
+function writeMaskPowerUserData(
+  mat: MaskStandardMat,
+  color: ColorRepresentation,
+  intensity: number,
+  bloomIntensity: number
+): void {
+  writeUserDataColor(mat, UD.powerColor, color);
+  mat.userData[UD.powerIntensity] = intensity;
+  mat.userData[UD.powerBloom] = bloomIntensity;
+}
+
 function attachDiscolorationShader(
   mat: MaskStandardMat,
   minY: number,
@@ -112,38 +208,36 @@ function attachDiscolorationShader(
   baseColor: string
 ): void {
   const map = adoptBakedDiscolorationMap(mat);
+  const hasBake = isRenderableBakeMap(map);
   mat.emissive.set(0, 0, 0);
   mat.emissiveIntensity = 0;
-  const baked = createBakedDiscolorationUniforms(map, baseColor);
+  writeBakedDiscolorationUserData(mat, map, baseColor);
+  const baked = createBakedDiscolorationUniforms(hasBake ? map : null, baseColor);
   const crown = createCrownDiscolorationUniforms(minY, maxY);
   const power = createMaskPowerUniforms();
 
   mat.userData[DISCOLOR_UNIFORMS_KEY] = crown;
   mat.userData[DISCOLORATION_UNIFORMS_KEY] = baked;
   mat.userData[MASK_POWER_UNIFORMS_KEY] = power;
-
-  const bakedAmt = bakedDiscolorationAmountNode(map, baked);
-  const range = crown.maxY.sub(crown.minY).max(1e-5);
-  const crownAmt = positionLocal.y.sub(crown.minY).div(range).clamp(0, 1).mul(crown.intensity);
-  const afterBake = mix(materialColor, baked.color, bakedAmt);
+  writeMaskCrownUserData(mat, crown);
+  writeMaskPowerUserData(mat, 0x000000, 0, 0);
 
   const tslMat = mat as MaskTslMaterial;
-  tslMat.colorNode = mix(afterBake, crown.color, crownAmt);
+  if (hasBake) ensureBakeSampleSlot(mat);
+  tslMat.colorNode = hasBake ? maskColorNode : maskColorNodeNoBake;
   // Keep power and bloom in the graph from the first compile so toggling
-  // later does not require a program rebuild.
-  tslMat.emissiveNode = power.color.mul(power.intensity);
-  tslMat.mrtNode = mrt({ bloomIntensity: power.bloomIntensity });
+  // later does not require a program rebuild. Bindings come from this
+  // material's userData via materialReference — do not close over textures
+  // or UniformNode instances (that made every Kanohi share Tahu's Hau).
+  tslMat.emissiveNode = maskEmissiveNode;
+  tslMat.mrtNode = maskMrtNode;
   if (!maskUsesTransmissionRendering(mat)) {
     // Frosted Kaukau / Rau must keep scalar metalness 0. A metalnessNode graph
     // that doesn't stay at 0 makes WebGPU skip the transmission lobe.
-    tslMat.metalnessNode = mix(materialMetalness, crown.metalness, crownAmt);
-    tslMat.roughnessNode = mix(materialRoughness, crown.roughness, crownAmt);
+    tslMat.metalnessNode = maskMetalnessNode;
+    tslMat.roughnessNode = maskRoughnessNode;
   }
-  // WebGPU copies this onto MeshStandardNodeMaterial and uses it as the
-  // pipeline key. A constant suffix made every Kanohi share the first
-  // compiled program (Tahu Hau, Pohatu Kakama). Close over this clone’s
-  // ids so a later swap cannot reuse that pipeline.
-  const programKey = `mask_bake_${mat.uuid}_${map?.uuid ?? 'none'}`;
+  const programKey = `mask_discolor|tx${maskUsesTransmissionRendering(mat) ? 1 : 0}|dc${hasBake ? 1 : 0}`;
   mat.customProgramCacheKey = () => programKey;
   mat.needsUpdate = true;
 }
@@ -169,6 +263,7 @@ export function applyMaskPowerEmissive(
     setUniformColor(power.color, on ? colorHex : 0x000000);
     setUniformNumber(power.intensity, intensity);
     setUniformNumber(power.bloomIntensity, on ? 1 : 0);
+    writeMaskPowerUserData(mat, on ? colorHex : 0x000000, intensity, on ? 1 : 0);
     return;
   }
 
@@ -192,14 +287,23 @@ export function applyMaskDiscolorationUniforms(
       setUniformNumber(crown.intensity, discoloration.intensity);
       setUniformNumber(crown.metalness, discoloration.metalness ?? DEFAULT_DISCOLOR_METALNESS);
       setUniformNumber(crown.roughness, discoloration.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS);
+      writeMaskCrownUserData(mat, crown, {
+        color: discoloration.color,
+        intensity: discoloration.intensity,
+        metalness: discoloration.metalness ?? DEFAULT_DISCOLOR_METALNESS,
+        roughness: discoloration.roughness ?? DEFAULT_DISCOLOR_ROUGHNESS,
+      });
     } else {
       setUniformNumber(crown.intensity, 0);
+      mat.userData[UD.crownIntensity] = 0;
     }
   }
 
   const baked = mat.userData[DISCOLORATION_UNIFORMS_KEY] as BakedDiscolorationUniforms | undefined;
   if (baked && baseColor) {
-    applyBakedDiscolorationUniforms(baked, baseColor, getBakedDiscolorationMap(mat));
+    const map = getBakedDiscolorationMap(mat);
+    applyBakedDiscolorationUniforms(baked, baseColor, map);
+    writeBakedDiscolorationUserData(mat, map, baseColor);
   }
 }
 
