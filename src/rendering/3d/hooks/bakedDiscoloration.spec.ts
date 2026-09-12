@@ -4,13 +4,18 @@ import {
   DEFAULT_LEGO_DISCOLORATION,
   discolorationForColor,
 } from '../kit/palettes/legoColorDiscoloration';
+import { DUMMY_DISCOLORATION_MAP } from './dummyTextures';
 import {
   adoptBakedDiscolorationMap,
   applyBakedDiscolorationUniforms,
   bakedDiscolorationAmountFromMaterial,
   bakedDiscolorationAmountNode,
+  bakedDiscolorationMapNode,
+  bindBakedDiscolorationMapNode,
+  bindDiscolorationMapForSampling,
   createBakedDiscolorationUniforms,
   DISCOLORATION_MAP_USERDATA_KEY,
+  ensureBakeSampleSlot,
   getBakedDiscolorationMap,
   writeBakedDiscolorationUserData,
 } from './bakedDiscoloration';
@@ -126,5 +131,62 @@ describe('baked discoloration amount', () => {
 
   test('shared material bake amount graph builds without throwing', () => {
     expect(() => bakedDiscolorationAmountFromMaterial()).not.toThrow();
+  });
+});
+
+describe('bakedDiscolorationMapNode', () => {
+  afterEach(() => {
+    bindBakedDiscolorationMapNode(null);
+  });
+
+  test('compile seed is a real Texture, not texture(null)', () => {
+    expect(bakedDiscolorationMapNode.value?.isTexture).toBe(true);
+    expect(bakedDiscolorationMapNode.value).toBe(DUMMY_DISCOLORATION_MAP);
+  });
+
+  test('bindBakedDiscolorationMapNode follows aoMap and falls back to dummy', () => {
+    const real = new Texture();
+    bindBakedDiscolorationMapNode({ aoMap: real });
+    expect(bakedDiscolorationMapNode.value).toBe(real);
+
+    bindBakedDiscolorationMapNode({ aoMap: null });
+    expect(bakedDiscolorationMapNode.value).toBe(DUMMY_DISCOLORATION_MAP);
+
+    bindBakedDiscolorationMapNode({
+      aoMap: { isTexture: false } as unknown as Texture,
+    });
+    expect(bakedDiscolorationMapNode.value).toBe(DUMMY_DISCOLORATION_MAP);
+  });
+});
+
+describe('ensureBakeSampleSlot', () => {
+  test('plants the dummy when aoMap is missing', () => {
+    const mat = new MeshStandardMaterial();
+    ensureBakeSampleSlot(mat);
+    expect(mat.aoMap).toBe(DUMMY_DISCOLORATION_MAP);
+    expect(mat.aoMapIntensity).toBe(0);
+  });
+
+  test('keeps a real bake map', () => {
+    const map = new Texture();
+    const mat = new MeshStandardMaterial({ aoMap: map, aoMapIntensity: 0 });
+    ensureBakeSampleSlot(mat);
+    expect(mat.aoMap).toBe(map);
+  });
+});
+
+describe('bindDiscolorationMapForSampling', () => {
+  test('binds duck-typed isTexture maps that fail instanceof Texture', () => {
+    const duck = {
+      colorSpace: 0,
+      isTexture: true,
+      uuid: 'duck-bake',
+      wrapS: ClampToEdgeWrapping,
+      wrapT: ClampToEdgeWrapping,
+    };
+    const mat = new MeshStandardMaterial();
+    bindDiscolorationMapForSampling(mat, duck as unknown as Texture);
+    expect(mat.aoMap).toBe(duck);
+    expect(mat.aoMapIntensity).toBe(0);
   });
 });

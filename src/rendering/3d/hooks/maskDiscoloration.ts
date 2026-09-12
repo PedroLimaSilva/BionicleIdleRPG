@@ -18,7 +18,9 @@ import {
   bakedDiscolorationColorFromMaterial,
   createBakedDiscolorationUniforms,
   DISCOLORATION_UNIFORMS_KEY,
+  ensureBakeSampleSlot,
   getBakedDiscolorationMap,
+  isRenderableBakeMap,
   writeBakedDiscolorationUserData,
   type BakedDiscolorationUniforms,
 } from './bakedDiscoloration';
@@ -150,10 +152,11 @@ function attachDiscolorationShader(
   baseColor: string
 ): void {
   const map = adoptBakedDiscolorationMap(mat);
+  const hasBake = isRenderableBakeMap(map);
   mat.emissive.set(0, 0, 0);
   mat.emissiveIntensity = 0;
   writeBakedDiscolorationUserData(mat, map, baseColor);
-  const baked = createBakedDiscolorationUniforms(map, baseColor);
+  const baked = createBakedDiscolorationUniforms(hasBake ? map : null, baseColor);
   const crown = createCrownDiscolorationUniforms(minY, maxY);
   const power = createMaskPowerUniforms();
 
@@ -162,7 +165,8 @@ function attachDiscolorationShader(
   mat.userData[MASK_POWER_UNIFORMS_KEY] = power;
 
   const tslMat = mat as MaskTslMaterial;
-  tslMat.colorNode = map ? maskColorNode : maskColorNodeNoBake;
+  if (hasBake) ensureBakeSampleSlot(mat);
+  tslMat.colorNode = hasBake ? maskColorNode : maskColorNodeNoBake;
   // Keep power and bloom in the graph from the first compile so toggling
   // later does not require a program rebuild. Bindings come from this
   // material's userData via materialReference — do not close over textures
@@ -175,7 +179,7 @@ function attachDiscolorationShader(
     tslMat.metalnessNode = maskMetalnessNode;
     tslMat.roughnessNode = maskRoughnessNode;
   }
-  const programKey = `mask_discolor|tx${maskUsesTransmissionRendering(mat) ? 1 : 0}|dc${map ? 1 : 0}`;
+  const programKey = `mask_discolor|tx${maskUsesTransmissionRendering(mat) ? 1 : 0}|dc${hasBake ? 1 : 0}`;
   mat.customProgramCacheKey = () => programKey;
   mat.needsUpdate = true;
 }

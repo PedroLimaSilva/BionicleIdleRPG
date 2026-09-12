@@ -15,9 +15,10 @@ import {
 import {
   bakedDiscolorationAmountFromMaterial,
   bakedDiscolorationColorFromMaterial,
+  ensureBakeSampleSlot,
+  isRenderableBakeMap,
   writeBakedDiscolorationUserData,
 } from '../hooks/bakedDiscoloration';
-import { isDummyDiscolorationMap } from '../hooks/dummyTextures';
 
 type WeatheringGraphOpts = {
   color?: string;
@@ -181,12 +182,13 @@ export function applySharedWeatheringGraph(
   const dentStrength =
     (opts.dentStrength ?? defaults.dentStrength) *
     (1 - Math.min(1, Math.max(0, metalness)) * METAL_DENT_ATTENUATION);
-  const hasDiscoloration = !!discolorMap && !isDummyDiscolorationMap(discolorMap);
+  const hasDiscoloration = isRenderableBakeMap(discolorMap);
   const hasAlbedoMap = !!mat.map;
   const needsColorNode = grimeDarken > 0 || hasAlbedoMap || hasDiscoloration;
 
   if (needsColorNode) {
     if (hasDiscoloration) {
+      ensureBakeSampleSlot(mat);
       mat.colorNode = hasAlbedoMap ? colorMappedWithBake : colorUnmappedWithBake;
     } else {
       mat.colorNode = hasAlbedoMap ? grimyMapped : grimyUnmapped;

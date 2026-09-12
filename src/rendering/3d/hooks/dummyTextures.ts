@@ -18,7 +18,7 @@ function makeSwatch(r: number, g: number, b: number, a = 255): DataTexture {
   return texture;
 }
 
-/** Black 1×1 so bake-absent materials can still share the discoloration sample graph. */
+/** Black 1×1 seed so bake-present TSL compiles without `texture(null)`. */
 export const DUMMY_DISCOLORATION_MAP = makeSwatch(0, 0, 0);
 
 /** Flat normal 1×1 for the authored-normal weathered topology warmup. */

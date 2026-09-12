@@ -35,20 +35,90 @@ export function createBakedDiscolorationUniforms(map: Texture | null, colorHex: 
 
 export type BakedDiscolorationUniforms = ReturnType<typeof createBakedDiscolorationUniforms>;
 
-function isBoundBakeMap(map: unknown): map is Texture {
-  return map instanceof Texture && !isDummyDiscolorationMap(map);
+type TextureNodeLike = {
+  setup: (builder: unknown) => unknown;
+  update: (frame?: unknown) => unknown;
+  updateType: string;
+  value: Texture;
+};
+
+type BakeSampleFrame = {
+  material?: { aoMap?: Texture | null } | Array<{ aoMap?: Texture | null }> | null;
+};
+
+function isTextureValue(map: unknown): map is Texture {
+  return !!map && (map as Texture).isTexture === true;
+}
+
+function bakeMapFromMaterial(material: BakeSampleFrame['material']): Texture {
+  const slot = Array.isArray(material) ? material[0] : material;
+  const map = slot?.aoMap;
+  return isTextureValue(map) ? map : DUMMY_DISCOLORATION_MAP;
+}
+
+function writeTextureValue(node: TextureNodeLike, tex: Texture): void {
+  node.value = tex;
+}
+
+/**
+ * `materialReference(slot, 'texture')` compiles as `texture(null)`. TextureNode.setup
+ * then throws unless the compiling material already has a Texture in that slot
+ * (NodeMaterial copies, empty aoMap, duck-typed GLTF maps). Sample a real dummy
+ * Texture instead and rebind `aoMap` per object so compile never sees null.
+ *
+ * Jest's `three/tsl` mock is a Proxy that only allows writing `.value`; skip
+ * method wrapping there. Production TextureNode accepts the hooks.
+ */
+function createBakeSampleTextureNode(): TextureNodeLike {
+  const sample = texture(DUMMY_DISCOLORATION_MAP, uv()) as unknown as TextureNodeLike;
+  writeTextureValue(sample, DUMMY_DISCOLORATION_MAP);
+  try {
+    const previousUpdate = sample.update.bind(sample);
+    const previousSetup = sample.setup.bind(sample);
+    sample.updateType = 'object';
+    sample.setup = (builder: unknown) => {
+      if (!isTextureValue(sample.value)) {
+        writeTextureValue(sample, DUMMY_DISCOLORATION_MAP);
+      }
+      return previousSetup(builder);
+    };
+    sample.update = (frame?: unknown) => {
+      writeTextureValue(
+        sample,
+        bakeMapFromMaterial((frame as BakeSampleFrame | undefined)?.material)
+      );
+      return previousUpdate(frame);
+    };
+  } catch {
+    // Jest TSL mock: only `.value` is writable.
+  }
+  return sample;
+}
+
+export const bakedDiscolorationMapNode = createBakeSampleTextureNode();
+
+/** Tests / object-update: keep the shared sample on a real Texture. */
+export function bindBakedDiscolorationMapNode(material: BakeSampleFrame['material']): Texture {
+  const tex = bakeMapFromMaterial(material);
+  writeTextureValue(bakedDiscolorationMapNode, tex);
+  return tex;
+}
+
+/** Three's check, not `instanceof` — GLTF maps can fail instanceof across chunks. */
+export function isRenderableBakeMap(map: unknown): map is Texture {
+  return isTextureValue(map) && !isDummyDiscolorationMap(map);
 }
 
 export function getBakedDiscolorationMap(mat: unknown): Texture | null {
   const standard = mat as MeshStandardMaterial;
   const fromUserData = standard.userData?.[DISCOLORATION_MAP_USERDATA_KEY];
-  if (isBoundBakeMap(fromUserData)) return fromUserData;
+  if (isRenderableBakeMap(fromUserData)) return fromUserData;
   // After Material.copy(), userData JSON-clone is not a Texture. aoMap still is.
-  if (isBoundBakeMap(standard.aoMap) && standard.aoMapIntensity === 0) return standard.aoMap;
-  return standard.emissiveMap ?? null;
+  if (isRenderableBakeMap(standard.aoMap) && standard.aoMapIntensity === 0) return standard.aoMap;
+  const emissiveMap = standard.emissiveMap;
+  return isRenderableBakeMap(emissiveMap) ? emissiveMap : null;
 }
 
-const discolorationMapRef = materialReference(DISCOLORATION_MAP_SLOT, 'texture');
 type TslFloat = BakedDiscolorationUniforms['hasMap'];
 const discolorationColorRef = materialReference(
   'userData.discolorationColor',
@@ -64,15 +134,15 @@ const discolorationIntensityRef = materialReference(
 ) as unknown as TslFloat;
 
 /**
- * Bind a bake map so bake-present TSL can `materialReference('aoMap')`.
- * Bake-absent graphs omit the sample; keep `aoMap` null so THREE does not
- * compile an AO path. Dummy stays in userData only (never sampled).
+ * Bind a bake map onto the copy-safe `aoMap` slot. Bake-absent graphs omit the
+ * sample and keep `aoMap` null so THREE does not compile an AO path. Dummy stays
+ * in userData only unless {@link ensureBakeSampleSlot} plants it for compile.
  */
 export function bindDiscolorationMapForSampling(
   mat: MeshStandardMaterial,
   map: Texture | null | undefined
 ): void {
-  const bake = map && isBoundBakeMap(map) ? map : DUMMY_DISCOLORATION_MAP;
+  const bake = isRenderableBakeMap(map) ? map : DUMMY_DISCOLORATION_MAP;
   if (bake !== DUMMY_DISCOLORATION_MAP) {
     bake.colorSpace = NoColorSpace;
     bake.wrapS = ClampToEdgeWrapping;
@@ -86,26 +156,31 @@ export function bindDiscolorationMapForSampling(
   mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = bake;
 }
 
+/** Bake-sample graphs must never compile with a null texture slot. */
+export function ensureBakeSampleSlot(mat: MeshStandardMaterial): void {
+  if (isRenderableBakeMap(mat.aoMap)) {
+    mat.aoMapIntensity = 0;
+    return;
+  }
+  mat.aoMap = DUMMY_DISCOLORATION_MAP;
+  mat.aoMapIntensity = 0;
+}
+
 export function bakedDiscolorationColorFromMaterial() {
   return discolorationColorRef;
 }
 
-type TslTextureRef = {
-  context: (ctx: { getUV: () => unknown }) => { r: unknown };
+type TslTextureSample = {
+  r: unknown;
 };
 
 /**
- * Shared bake mix amount — samples `aoMap` (copy-safe bake slot).
- *
- * `materialReference(..., 'texture')` is already a texture binding (see Three's
- * displacementMap). Wrapping it in `texture(ref, uv())` builds a TextureNode
- * whose value is the reference node, not a Texture, so WebGL samples the empty
- * default and every kit/mask shifts. Force `uv()` so the sample does not follow
- * aoMap's default uv2 channel.
+ * Shared bake mix amount. Samples {@link bakedDiscolorationMapNode} (dummy at
+ * compile, live `aoMap` per object) with explicit `uv()` so the bake stays on
+ * uv0 instead of aoMap's default uv2.
  */
 export function bakedDiscolorationAmountFromMaterial() {
-  const bakeTex = discolorationMapRef as unknown as TslTextureRef;
-  const sample = bakeTex.context({ getUV: () => uv() });
+  const sample = bakedDiscolorationMapNode as unknown as TslTextureSample;
   return smoothstep(0.2, 0.75, sample.r as never)
     .mul(discolorationIntensityRef as never)
     .mul(discolorationHasMapRef as never)
@@ -128,7 +203,7 @@ export function adoptBakedDiscolorationMap(
     return existing;
   }
   const map = mat.emissiveMap;
-  if (!map || isDummyDiscolorationMap(map)) return existing;
+  if (!isRenderableBakeMap(map)) return existing;
   bindDiscolorationMapForSampling(mat, map);
   mat.emissiveMap = null;
   mat.emissive.set(0, 0, 0);
@@ -153,7 +228,7 @@ export function writeBakedDiscolorationUserData(
   colorHex: string
 ): void {
   const spec = discolorationForColor(colorHex);
-  const bake = map && !isDummyDiscolorationMap(map) ? map : null;
+  const bake = isRenderableBakeMap(map) ? map : null;
   bindDiscolorationMapForSampling(mat, bake);
   const color = mat.userData.discolorationColor;
   if (color instanceof Color) {
