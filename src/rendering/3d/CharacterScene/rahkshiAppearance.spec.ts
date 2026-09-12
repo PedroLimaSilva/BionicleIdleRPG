@@ -130,6 +130,9 @@ describe('Rahkshi gauntlet instance coloring', () => {
     expect(faceNext.metalnessNode).toBeDefined();
     expect(faceNext.emissiveMap).toBeNull();
     expect(faceNext.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
+    expect(faceNext.aoMap).toBe(discolor);
+    expect(faceNext.aoMapIntensity).toBe(0);
     expect(backNext.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
+    expect(backNext.aoMap).toBe(discolor);
   });
 });

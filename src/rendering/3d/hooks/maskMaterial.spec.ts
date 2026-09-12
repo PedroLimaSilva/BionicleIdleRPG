@@ -299,6 +299,8 @@ describe('prepareClonedMaskMaterial', () => {
     });
     prepareClonedMaskMaterial(mat);
     expect(mat.emissiveMap).toBeNull();
+    expect(mat.aoMap).toBe(bake);
+    expect(mat.aoMapIntensity).toBe(0);
     expect(getBakedDiscolorationMap(mat)).toBe(bake);
     expect(mat.normalMap).toBeDefined();
     expect(mat.roughnessMap).toBeDefined();
@@ -449,6 +451,7 @@ describe('cloneMaskMeshMaterials for Great Kanohi', () => {
     const mats = mesh.material as MeshStandardMaterial[];
     expect(mats[0].emissiveMap).toBeNull();
     expect(getBakedDiscolorationMap(mats[0])).toBe(bake);
+    expect(mats[0].aoMap).toBe(bake);
     expect(mats[1].emissiveMap).toBe(glowBake);
     expect(mats[1].emissiveIntensity).toBe(1);
   });

@@ -34,6 +34,8 @@ describe('getWeatheredMetalMaterial', () => {
     expect(a.emissiveMap).toBeNull();
     expect(a.emissiveIntensity).toBe(0);
     expect(a.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
+    expect(a.aoMap).toBe(discolor);
+    expect(a.aoMapIntensity).toBe(0);
     expect(discolor.wrapS).toBe(ClampToEdgeWrapping);
     expect((a as MeshStandardMaterial & { colorNode?: unknown }).colorNode).toBeDefined();
   });
@@ -316,5 +318,7 @@ describe('applyWeatheredMetalToObject PBR map preservation', () => {
     expect(next.emissiveMap).toBeNull();
     expect(next.emissiveIntensity).toBe(0);
     expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(discolor);
+    expect(next.aoMap).toBe(discolor);
+    expect(next.aoMapIntensity).toBe(0);
   });
 });

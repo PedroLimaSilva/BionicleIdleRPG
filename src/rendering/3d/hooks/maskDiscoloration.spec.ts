@@ -51,6 +51,8 @@ describe('setupMaskDiscolorationShader', () => {
     setupMaskDiscolorationShader(mesh, LegoColor.Red);
     expect(mat.emissiveMap).toBeNull();
     expect(mat.userData.bakedDiscolorationMap).toBe(bake);
+    expect(mat.aoMap).toBe(bake);
+    expect(mat.aoMapIntensity).toBe(0);
     expect(mat.colorNode).toBeDefined();
     expect(mat.emissiveNode).toBeDefined();
     expect(mat.mrtNode).toBeDefined();

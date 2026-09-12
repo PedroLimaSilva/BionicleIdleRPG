@@ -10,7 +10,9 @@ import {
   bakedDiscolorationAmountFromMaterial,
   bakedDiscolorationAmountNode,
   createBakedDiscolorationUniforms,
+  DISCOLORATION_MAP_USERDATA_KEY,
   getBakedDiscolorationMap,
+  writeBakedDiscolorationUserData,
 } from './bakedDiscoloration';
 
 describe('adoptBakedDiscolorationMap', () => {
@@ -19,6 +21,8 @@ describe('adoptBakedDiscolorationMap', () => {
     const mat = new MeshStandardMaterial({ emissiveMap: map, name: 'Hau_baked' });
     expect(adoptBakedDiscolorationMap(mat)).toBe(map);
     expect(mat.emissiveMap).toBeNull();
+    expect(mat.aoMap).toBe(map);
+    expect(mat.aoMapIntensity).toBe(0);
     expect(getBakedDiscolorationMap(mat)).toBe(map);
     expect(adoptBakedDiscolorationMap(mat)).toBe(map);
   });
@@ -33,6 +37,7 @@ describe('adoptBakedDiscolorationMap', () => {
   test('returns null when there is no bake', () => {
     const mat = new MeshStandardMaterial({ name: 'Hau_baked' });
     expect(adoptBakedDiscolorationMap(mat)).toBeNull();
+    expect(mat.aoMap).toBeNull();
     expect(getBakedDiscolorationMap(mat)).toBeNull();
   });
 
@@ -49,6 +54,26 @@ describe('adoptBakedDiscolorationMap', () => {
     expect(mat.emissiveIntensity).toBe(0);
     expect(map.wrapS).toBe(ClampToEdgeWrapping);
     expect(map.wrapT).toBe(ClampToEdgeWrapping);
+  });
+
+  test('Material.copy keeps the bake on aoMap after userData JSON-clone drops Texture', () => {
+    const map = new Texture();
+    const mat = new MeshStandardMaterial({ emissiveMap: map, name: 'Hau_baked' });
+    adoptBakedDiscolorationMap(mat);
+    const copy = mat.clone();
+    expect(copy.userData[DISCOLORATION_MAP_USERDATA_KEY] instanceof Texture).toBe(false);
+    expect(copy.aoMap).toBe(map);
+    expect(copy.aoMapIntensity).toBe(0);
+    expect(copy.aoMap?.isTexture).toBe(true);
+    expect(getBakedDiscolorationMap(copy)).toBe(map);
+  });
+
+  test('writeBakedDiscolorationUserData does not put a dummy on aoMap', () => {
+    const mat = new MeshStandardMaterial();
+    writeBakedDiscolorationUserData(mat, null, LegoColor.Red);
+    expect(mat.aoMap).toBeNull();
+    expect(mat.aoMapIntensity).toBe(0);
+    expect(getBakedDiscolorationMap(mat)).toBeNull();
   });
 });
 

@@ -113,6 +113,7 @@ export function stripPbrMapsAndEmission(
   } = {}
 ): void {
   if (!opts.keepAlbedo) mat.map = null;
+  // Cleared here; applySharedWeatheringGraph rebinds aoMap as the copy-safe bake slot.
   mat.aoMap = null;
   mat.bumpMap = null;
   mat.emissiveMap = null;

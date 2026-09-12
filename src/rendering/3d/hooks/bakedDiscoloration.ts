@@ -5,6 +5,12 @@
  *
  * WebGPU compiles MeshStandardMaterial through TSL, so the mix is a `colorNode`
  * rather than a GLSL `onBeforeCompile` patch.
+ *
+ * The bake Texture cannot live only in `userData`: `Material.copy()` /
+ * `NodeMaterial.copy()` JSON-clone `userData`, which drops `isTexture` and makes
+ * `TextureNode.setup()` throw (`texture( value )` expects THREE.Texture). Bind
+ * it to {@link MeshStandardMaterial.aoMap} with intensity 0 — a real map slot
+ * that `.copy()` keeps by reference, without contributing AO.
  */
 
 import { ClampToEdgeWrapping, Color, MeshStandardMaterial, NoColorSpace, Texture } from 'three';
@@ -15,6 +21,8 @@ import { setUniformColor, setUniformNumber } from './tslUniforms';
 
 export const DISCOLORATION_MAP_USERDATA_KEY = 'bakedDiscolorationMap';
 export const DISCOLORATION_UNIFORMS_KEY = 'bakedDiscolorationUniforms';
+/** Copy-safe GPU slot. Intensity is always 0 so MeshStandardNodeMaterial AO is identity. */
+export const DISCOLORATION_MAP_SLOT = 'aoMap' as const;
 
 export function createBakedDiscolorationUniforms(map: Texture | null, colorHex: string) {
   const spec = discolorationForColor(colorHex);
@@ -27,20 +35,20 @@ export function createBakedDiscolorationUniforms(map: Texture | null, colorHex: 
 
 export type BakedDiscolorationUniforms = ReturnType<typeof createBakedDiscolorationUniforms>;
 
-export function getBakedDiscolorationMap(mat: unknown): Texture | null {
-  const fromUserData = (mat as { userData?: Record<string, unknown> }).userData?.[
-    DISCOLORATION_MAP_USERDATA_KEY
-  ];
-  if (fromUserData instanceof Texture && !isDummyDiscolorationMap(fromUserData))
-    return fromUserData;
-  const emissiveMap = (mat as MeshStandardMaterial).emissiveMap;
-  return emissiveMap ?? null;
+function isBoundBakeMap(map: unknown): map is Texture {
+  return map instanceof Texture && !isDummyDiscolorationMap(map);
 }
 
-const discolorationMapRef = materialReference(
-  `userData.${DISCOLORATION_MAP_USERDATA_KEY}`,
-  'texture'
-);
+export function getBakedDiscolorationMap(mat: unknown): Texture | null {
+  const standard = mat as MeshStandardMaterial;
+  const fromUserData = standard.userData?.[DISCOLORATION_MAP_USERDATA_KEY];
+  if (isBoundBakeMap(fromUserData)) return fromUserData;
+  // After Material.copy(), userData JSON-clone is not a Texture. aoMap still is.
+  if (isBoundBakeMap(standard.aoMap) && standard.aoMapIntensity === 0) return standard.aoMap;
+  return standard.emissiveMap ?? null;
+}
+
+const discolorationMapRef = materialReference(DISCOLORATION_MAP_SLOT, 'texture');
 type TslFloat = BakedDiscolorationUniforms['hasMap'];
 const discolorationColorRef = materialReference(
   'userData.discolorationColor',
@@ -56,18 +64,24 @@ const discolorationIntensityRef = materialReference(
 ) as unknown as TslFloat;
 
 /**
- * Bind a bake map (or the shared dummy) so every weathered/mask material can
- * share one TSL sample graph. GPU programs key off topology, not texture UUID.
+ * Bind a bake map so bake-present TSL can `materialReference('aoMap')`.
+ * Bake-absent graphs omit the sample; keep `aoMap` null so THREE does not
+ * compile an AO path. Dummy stays in userData only (never sampled).
  */
 export function bindDiscolorationMapForSampling(
   mat: MeshStandardMaterial,
   map: Texture | null | undefined
 ): void {
-  const bake = map ?? DUMMY_DISCOLORATION_MAP;
+  const bake = map && isBoundBakeMap(map) ? map : DUMMY_DISCOLORATION_MAP;
   if (bake !== DUMMY_DISCOLORATION_MAP) {
     bake.colorSpace = NoColorSpace;
     bake.wrapS = ClampToEdgeWrapping;
     bake.wrapT = ClampToEdgeWrapping;
+    mat.aoMap = bake;
+    mat.aoMapIntensity = 0;
+  } else {
+    mat.aoMap = null;
+    mat.aoMapIntensity = 0;
   }
   mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = bake;
 }
@@ -81,12 +95,13 @@ type TslTextureRef = {
 };
 
 /**
- * Shared bake mix amount — samples the current material's userData map.
+ * Shared bake mix amount — samples `aoMap` (copy-safe bake slot).
  *
  * `materialReference(..., 'texture')` is already a texture binding (see Three's
  * displacementMap). Wrapping it in `texture(ref, uv())` builds a TextureNode
  * whose value is the reference node, not a Texture, so WebGL samples the empty
- * default and every kit/mask shifts.
+ * default and every kit/mask shifts. Force `uv()` so the sample does not follow
+ * aoMap's default uv2 channel.
  */
 export function bakedDiscolorationAmountFromMaterial() {
   const bakeTex = discolorationMapRef as unknown as TslTextureRef;
@@ -98,24 +113,23 @@ export function bakedDiscolorationAmountFromMaterial() {
 }
 
 /**
- * Move `emissiveMap` onto userData so MeshStandardMaterial will not multiply it
- * into real emission (mask power / kit glow). Idempotent. Does not mutate maps
- * on glow materials.
+ * Move `emissiveMap` onto the copy-safe bake slot so MeshStandardMaterial will
+ * not multiply it into real emission (mask power / kit glow). Idempotent. Does
+ * not mutate maps on glow materials.
  */
 export function adoptBakedDiscolorationMap(
   mat: MeshStandardMaterial,
   opts: { isGlow?: boolean } = {}
 ): Texture | null {
   if (opts.isGlow) return null;
-  const existing = mat.userData[DISCOLORATION_MAP_USERDATA_KEY];
-  if (existing instanceof Texture && !isDummyDiscolorationMap(existing)) return existing;
+  const existing = getBakedDiscolorationMap(mat);
+  if (existing && existing !== mat.emissiveMap) {
+    bindDiscolorationMapForSampling(mat, existing);
+    return existing;
+  }
   const map = mat.emissiveMap;
-  if (!map) return null;
-  map.colorSpace = NoColorSpace;
-  // Bakes are atlas-packed; REPEAT shows island outlines when UVs skim edges.
-  map.wrapS = ClampToEdgeWrapping;
-  map.wrapT = ClampToEdgeWrapping;
-  mat.userData[DISCOLORATION_MAP_USERDATA_KEY] = map;
+  if (!map || isDummyDiscolorationMap(map)) return existing;
+  bindDiscolorationMapForSampling(mat, map);
   mat.emissiveMap = null;
   mat.emissive.set(0, 0, 0);
   mat.emissiveIntensity = 0;
