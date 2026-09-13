@@ -5,12 +5,10 @@ import { Tabs } from '../../components/Tabs';
 import { MatoranAvatar } from '../../rendering/2d/MatoranAvatar';
 import { isRahi, isRahkshi } from '../../game/characters/matoranStage';
 import { useGame } from '../../context/Game';
-import { usePreloadAllCharacterRigs } from '../../rendering/3d/usePreloadAllCharacterRigs';
 import { DEX_TABS, DexTabId, getCharacterDexEntries, matchesDexTab } from './dexEntries';
 import './index.scss';
 
 export const CharacterDex: React.FC = () => {
-  const rigLoad = usePreloadAllCharacterRigs();
   const { customCharacters } = useGame();
   const [tab, setTab] = useState<DexTabId>('all');
   const [query, setQuery] = useState('');
@@ -31,8 +29,6 @@ export const CharacterDex: React.FC = () => {
       );
     });
   }, [entries, query, tab]);
-
-  if (!rigLoad.ready) return rigLoad.panel;
 
   return (
     <div className="page-container character-dex">

@@ -1,11 +1,7 @@
 import { useGLTF } from '@react-three/drei';
 import { peek } from 'suspend-react';
 import { GLTFLoader } from 'three-stdlib';
-import {
-  allCharacterRigGlbUrls,
-  characterRigGlbUrlsForProgress,
-  type StoryProgressForRigs,
-} from './characterRigGlbs';
+import { characterRigGlbUrlsForProgress, type StoryProgressForRigs } from './characterRigGlbs';
 
 const started = new Set<string>();
 const ready = new Set<string>();
@@ -90,21 +86,6 @@ export async function preloadCharacterRigsForProgress(
     'preloadCharacterRigs',
     'preloadCharacterRigs:start',
     'preloadCharacterRigs:end'
-  );
-  return urls;
-}
-
-export async function preloadAllCharacterRigs(
-  onProgress?: (progress: CharacterRigPreloadProgress) => void
-): Promise<string[]> {
-  performance.mark('preloadAllCharacterRigs:start');
-  const urls = allCharacterRigGlbUrls();
-  await preloadCharacterRigUrls(urls, onProgress);
-  performance.mark('preloadAllCharacterRigs:end');
-  performance.measure(
-    'preloadAllCharacterRigs',
-    'preloadAllCharacterRigs:start',
-    'preloadAllCharacterRigs:end'
   );
   return urls;
 }
