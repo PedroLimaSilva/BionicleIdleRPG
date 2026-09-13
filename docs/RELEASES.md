@@ -46,6 +46,11 @@ After a release PR merges to `master`, the workflow publishes the GitHub Release
 
 For a scheduled release Saturday where the version was already bumped in a merged PR, the workflow skips the bump and only publishes the tag/release.
 
+### Catch up after a failed or missed Saturday run
+
+1. **Actions → Biweekly Release → Run workflow** on `master`.
+2. Leave **date** empty to target the latest scheduled release Saturday on or before today, **or** set **date** explicitly (e.g. `2026-09-12` for the September first release).
+
 ## Changelog format
 
 [`CHANGELOG.md`](../CHANGELOG.md) is the source of truth. Each section lists merged pull requests since the previous release (or since `0.1.0` for the kickoff), grouped into categories such as **Quests & Story**, **Combat & Encounters**, and **Characters & Models**. The GitHub Release body is extracted from the matching section.

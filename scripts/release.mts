@@ -113,6 +113,35 @@ export function planRelease(date: Date, config: ReleaseConfig = readConfig()) {
   };
 }
 
+/** Most recent biweekly release Saturday on or before `date` (UTC). */
+export function latestReleaseSaturdayOnOrBefore(
+  date: Date,
+  config: ReleaseConfig = readConfig()
+): Date {
+  const cursor = new Date(date);
+  const maxLookback = config.intervalDays + 6;
+  for (let day = 0; day <= maxLookback; day += 1) {
+    if (isReleaseSaturday(cursor, config)) {
+      return cursor;
+    }
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
+  }
+  throw new Error(
+    `No release Saturday within ${maxLookback} days on or before ${formatUtcDate(date)}`
+  );
+}
+
+/** Pick the release date for manual workflow runs when no --date was passed. */
+export function resolveManualReleaseDate(
+  asOf: Date,
+  config: ReleaseConfig = readConfig()
+): ReturnType<typeof planRelease> & { resolvedFrom: string } {
+  const resolvedFrom = formatUtcDate(asOf);
+  const target =
+    isReleaseSaturday(asOf, config) ? asOf : latestReleaseSaturdayOnOrBefore(asOf, config);
+  return { ...planRelease(target, config), resolvedFrom };
+}
+
 function runGh(args: string[]): string {
   const result = spawnSync('gh', args, { cwd: ROOT, encoding: 'utf8' });
   if (result.status !== 0) {
@@ -331,6 +360,13 @@ if (command === 'plan') {
   process.exit(0);
 }
 
+if (command === 'resolve-date') {
+  const config = readConfig();
+  const asOf = resolveDateArg();
+  console.log(JSON.stringify(resolveManualReleaseDate(asOf, config), null, 2));
+  process.exit(0);
+}
+
 if (command === 'notes') {
   const config = readConfig();
   const sinceIdx = process.argv.indexOf('--since');
@@ -378,6 +414,6 @@ if (command === 'refresh') {
 }
 
 console.error(
-  'Usage: tsx scripts/release.mts <plan|notes|bump|refresh> [--date YYYY-MM-DD] [--since vX.Y.Z] [--version X.Y.Z]'
+  'Usage: tsx scripts/release.mts <plan|resolve-date|notes|bump|refresh> [--date YYYY-MM-DD] [--since vX.Y.Z] [--version X.Y.Z]'
 );
 process.exit(1);

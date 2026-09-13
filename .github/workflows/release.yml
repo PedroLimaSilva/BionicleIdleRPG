@@ -10,7 +10,9 @@ on:
   workflow_dispatch:
     inputs:
       date:
-        description: 'Release date (YYYY-MM-DD). Defaults to today.'
+        description: >-
+          Release Saturday (YYYY-MM-DD). Leave empty to use the latest scheduled
+          release Saturday on or before today (e.g. catch up after a missed run).
         required: false
         type: string
 
@@ -77,11 +79,17 @@ jobs:
             exit 0
           fi
 
-          DATE="${RELEASE_DATE:-$(date -u +%F)}"
-          PLAN="$(yarn -s tsx scripts/release.mts plan --date "$DATE")"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -z "${RELEASE_DATE:-}" ]; then
+            PLAN="$(yarn -s tsx scripts/release.mts resolve-date --date "$(date -u +%F)")"
+          elif [ -n "${RELEASE_DATE:-}" ]; then
+            PLAN="$(yarn -s tsx scripts/release.mts plan --date "$RELEASE_DATE")"
+          else
+            PLAN="$(yarn -s tsx scripts/release.mts plan --date "$(date -u +%F)")"
+          fi
           echo "$PLAN"
           IS_RELEASE="$(echo "$PLAN" | node -e "const p=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(String(p.isReleaseDay));")"
           VERSION="$(echo "$PLAN" | node -e "const p=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(p.version ?? '');")"
+          DATE="$(echo "$PLAN" | node -e "const p=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(p.date);")"
           echo "should_run=$IS_RELEASE" >> "$GITHUB_OUTPUT"
           echo "mode=bump" >> "$GITHUB_OUTPUT"
           echo "date=$DATE" >> "$GITHUB_OUTPUT"
@@ -89,7 +97,10 @@ jobs:
 
       - name: Skip when nothing to do
         if: steps.context.outputs.should_run != 'true'
-        run: echo "No release work needed for this event."
+        run: |
+          echo "No release work needed for this event."
+          echo "Resolved release date: ${{ steps.context.outputs.date }} (not a release day, or push had nothing to publish)."
+          echo "To catch up: Actions → Biweekly Release → Run workflow (empty date = latest release Saturday, or set date e.g. 2026-09-12)."
 
       - name: Bump version and update changelog
         if: steps.context.outputs.should_run == 'true' && steps.context.outputs.mode == 'bump'
