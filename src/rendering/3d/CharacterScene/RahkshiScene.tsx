@@ -6,7 +6,7 @@ import { DirectionalLight, Mesh, Object3D } from 'three';
 import { useSettings } from '../../../context/useSettings';
 import { SceneHdriEnvironment } from '../SceneHdriEnvironment';
 import { CITY_ENVIRONMENT_PROPS } from '../utils/cityEnvironmentHdri';
-import { shouldEnableShadows } from '../../../utils/testMode';
+import { isTestMode, shouldEnableShadows } from '../../../utils/testMode';
 import { KraataPower } from '../../../types/Kraata';
 import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 import { CharacterSelectiveBloom } from './CharacterSelectiveBloom';
@@ -80,7 +80,12 @@ export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKr
   return (
     <>
       <ShaderVariantBank />
-      <SceneCompileAsync compileKey={sessionKey} ready={kitRevision > 0} />
+      <SceneCompileAsync
+        compileKey={sessionKey}
+        compileRootRef={sceneRootRef}
+        hideUntilCompiled={!isTestMode()}
+        ready={kitRevision > 0}
+      />
       <CharacterSelectiveBloom />
       <RahkshiFraming />
       <SceneHdriEnvironment {...CITY_ENVIRONMENT_PROPS} intensity={SHEET_ENV_INTENSITY} />

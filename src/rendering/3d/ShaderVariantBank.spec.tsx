@@ -1,7 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { Group, Mesh, SkinnedMesh } from 'three';
 import { isTestMode } from '../../utils/testMode';
 import { isWebGLBackend } from './webgpuRenderer';
 import { resetShaderVariantBankForTests, ShaderVariantBank } from './ShaderVariantBank';
@@ -31,6 +32,10 @@ jest.mock('@react-three/fiber', () => ({
     }),
 }));
 
+function previewFromCompile(): Group {
+  return compileAsync.mock.calls[0][0] as Group;
+}
+
 describe('ShaderVariantBank', () => {
   beforeEach(() => {
     compileAsync.mockReset();
@@ -43,11 +48,28 @@ describe('ShaderVariantBank', () => {
     resetShaderVariantBankForTests();
   });
 
-  test('compiles variant meshes once on WebGPU', async () => {
+  test('compiles off-stage Mesh + SkinnedMesh variants once on WebGPU', () => {
     render(<ShaderVariantBank />);
-    expect(scene.add).toHaveBeenCalledTimes(1);
+    expect(scene.add).not.toHaveBeenCalled();
     expect(compileAsync).toHaveBeenCalledTimes(1);
-    await waitFor(() => expect(scene.remove).toHaveBeenCalledTimes(1));
+    expect(compileAsync.mock.calls[0][1]).toBe(camera);
+    expect(compileAsync.mock.calls[0][2]).toBe(scene);
+
+    const preview = previewFromCompile();
+    expect(preview.name).toBe('ShaderVariantBank');
+    expect(preview.visible).toBe(true);
+
+    let meshes = 0;
+    let skinned = 0;
+    preview.traverse((child) => {
+      if ((child as SkinnedMesh).isSkinnedMesh) {
+        skinned += 1;
+        return;
+      }
+      if ((child as Mesh).isMesh) meshes += 1;
+    });
+    expect(skinned).toBeGreaterThan(0);
+    expect(meshes).toBe(skinned);
 
     render(<ShaderVariantBank />);
     expect(compileAsync).toHaveBeenCalledTimes(1);
