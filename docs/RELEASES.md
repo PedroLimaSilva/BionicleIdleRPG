@@ -24,7 +24,9 @@ The schedule anchor is **2026-08-29** (every 14 days after that). The kickoff re
 - **Config:** [`release.config.json`](../release.config.json) — anchor date, interval, kickoff version, baseline for the first changelog.
 - **Categories:** [`release.categories.json`](../release.categories.json) — maps `release/*` PR labels (preferred) and keyword fallbacks to changelog sections. See [PR label guidelines](PR_LABELS.md).
 - **Script:** [`scripts/release.mts`](../scripts/release.mts) — computes the version, lists merged PRs since the last release, groups them by category, and updates `package.json` + `CHANGELOG.md`.
-- **Workflow:** [`.github/workflows/release.yml`](../.github/workflows/release.yml) — on release Saturdays, bumps version and pushes to `master`; every push to `master` publishes a GitHub Release when `CHANGELOG.md` has a section for the current `package.json` version but the `vX.Y.Z` tag is still missing.
+- **Workflow:** [`.github/workflows/release.yml`](../.github/workflows/release.yml) — three triggers, two roles:
+  - **Schedule / manual run:** bumps `package.json` + `CHANGELOG.md` and opens a **`release/vX.Y.Z` pull request** (does not push to `master`; branch protection requires a PR).
+  - **Push to `master`:** **publish-only** — never bumps. Runs on every merge but exits immediately unless `package.json` has a version whose `vX.Y.Z` tag is missing **and** `CHANGELOG.md` has a matching `## [X.Y.Z]` section (typical after merging a release PR).
 
 ### Local commands
 
@@ -50,6 +52,9 @@ For a scheduled release Saturday where the version was already bumped in a merge
 
 1. **Actions → Biweekly Release → Run workflow** on `master`.
 2. Leave **date** empty to target the latest scheduled release Saturday on or before today, **or** set **date** explicitly (e.g. `2026-09-12` for the September first release).
+3. Merge the **`release/vX.Y.Z`** PR the bot opens; the following push to `master` creates the GitHub Release.
+
+If a manual run **failed on `git push` to `master`** with `GH006` / “Changes must be made through a pull request”, the bump succeeded on the runner but never landed — re-run after the PR-based workflow fix, or run `yarn release:bump` locally and open the release PR yourself.
 
 ## Changelog format
 
