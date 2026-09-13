@@ -33,6 +33,21 @@
     font-size: 0.95rem;
     color: var(--color-text-muted);
   }
+
+  &__bar {
+    width: 12rem;
+    height: 0.4rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  &__bar-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-accent);
+    transition: width 0.2s ease-out;
+  }
 }
 
 @keyframes game-load-gate-spin {

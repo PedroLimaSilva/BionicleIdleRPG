@@ -10,7 +10,7 @@ import { DEX_TABS, DexTabId, getCharacterDexEntries, matchesDexTab } from './dex
 import './index.scss';
 
 export const CharacterDex: React.FC = () => {
-  usePreloadAllCharacterRigs();
+  const rigLoad = usePreloadAllCharacterRigs();
   const { customCharacters } = useGame();
   const [tab, setTab] = useState<DexTabId>('all');
   const [query, setQuery] = useState('');
@@ -31,6 +31,8 @@ export const CharacterDex: React.FC = () => {
       );
     });
   }, [entries, query, tab]);
+
+  if (!rigLoad.ready) return rigLoad.panel;
 
   return (
     <div className="page-container character-dex">

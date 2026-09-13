@@ -10,7 +10,7 @@ import { RahkshiDetail } from './pages/RahkshiDetail/index.tsx';
 
 import { GameProvider } from './context/Game.tsx';
 import { SceneCanvasProvider } from './rendering/3d/Canvas.tsx';
-import { StoryCharacterRigPreloader } from './rendering/3d/StoryCharacterRigPreloader';
+import { CharacterRigLoadGate } from './rendering/3d/CharacterRigLoadGate';
 import { SettingsProvider } from './context/Settings.tsx';
 
 import './styles/index.scss';
@@ -70,24 +70,25 @@ function AppShell() {
 
   return (
     <GameProvider>
-      <StoryCharacterRigPreloader />
-      <SettingsProvider>
-        <SceneCanvasProvider>
-          <div className="app-container">
-            <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
-              <div id="canvas-mount"></div>
-              <LayoutGroup>
-                <Outlet />
-              </LayoutGroup>
-            </main>
-            <NavBar isPortrait={isPortrait} />
-          </div>
-          <SaveErrorBanner />
-          <TelemetryConsentPrompt />
-          <SharedCharacterPrompt />
-          <PwaInstallPrompt />
-        </SceneCanvasProvider>
-      </SettingsProvider>
+      <CharacterRigLoadGate>
+        <SettingsProvider>
+          <SceneCanvasProvider>
+            <div className="app-container">
+              <main className={`main-content ${isPortrait ? 'portrait' : 'landscape'}`}>
+                <div id="canvas-mount"></div>
+                <LayoutGroup>
+                  <Outlet />
+                </LayoutGroup>
+              </main>
+              <NavBar isPortrait={isPortrait} />
+            </div>
+            <SaveErrorBanner />
+            <TelemetryConsentPrompt />
+            <SharedCharacterPrompt />
+            <PwaInstallPrompt />
+          </SceneCanvasProvider>
+        </SettingsProvider>
+      </CharacterRigLoadGate>
     </GameProvider>
   );
 }

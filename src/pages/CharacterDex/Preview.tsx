@@ -19,7 +19,7 @@ import {
 import './index.scss';
 
 export const CharacterDexPreview: React.FC = () => {
-  usePreloadAllCharacterRigs();
+  const rigLoad = usePreloadAllCharacterRigs();
   const { id } = useParams();
   const { setScene } = useSceneCanvas();
   const base = id ? CHARACTER_DEX[id] : undefined;
@@ -54,7 +54,7 @@ export const CharacterDexPreview: React.FC = () => {
   }, [base, maskPowerActive, rahkshiMeshVariant, selectedMask]);
 
   useEffect(() => {
-    if (!previewMatoran) {
+    if (!rigLoad.ready || !previewMatoran) {
       setScene(null);
       return;
     }
@@ -65,7 +65,9 @@ export const CharacterDexPreview: React.FC = () => {
         matoran={previewMatoran}
       />
     );
-  }, [previewMatoran, sceneGeneration, setScene]);
+  }, [previewMatoran, rigLoad.ready, sceneGeneration, setScene]);
+
+  if (!rigLoad.ready) return rigLoad.panel;
 
   if (!id || !base || !previewMatoran) {
     return <Navigate to="/test/dex" replace />;
