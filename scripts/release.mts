@@ -137,8 +137,9 @@ export function resolveManualReleaseDate(
   config: ReleaseConfig = readConfig()
 ): ReturnType<typeof planRelease> & { resolvedFrom: string } {
   const resolvedFrom = formatUtcDate(asOf);
-  const target =
-    isReleaseSaturday(asOf, config) ? asOf : latestReleaseSaturdayOnOrBefore(asOf, config);
+  const target = isReleaseSaturday(asOf, config)
+    ? asOf
+    : latestReleaseSaturdayOnOrBefore(asOf, config);
   return { ...planRelease(target, config), resolvedFrom };
 }
 
