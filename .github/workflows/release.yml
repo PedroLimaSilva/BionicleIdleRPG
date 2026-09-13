@@ -10,13 +10,15 @@ on:
   workflow_dispatch:
     inputs:
       date:
-        description: 'Release date (YYYY-MM-DD). Defaults to today.'
+        description: >-
+          Release Saturday (YYYY-MM-DD). Leave empty to use the latest scheduled
+          release Saturday on or before today (e.g. catch up after a missed run).
         required: false
         type: string
 
 permissions:
   contents: write
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   release:
@@ -60,6 +62,7 @@ jobs:
           echo "changelog_has=$CHANGELOG_HAS" >> "$GITHUB_OUTPUT"
 
           if [ "${{ github.event_name }}" = "push" ]; then
+            echo "Push to master: publish-only (never bumps version)."
             if [ "$TAG_EXISTS" = "true" ]; then
               echo "should_run=false" >> "$GITHUB_OUTPUT"
               echo "Publish skipped: ${TAG} already exists."
@@ -77,11 +80,17 @@ jobs:
             exit 0
           fi
 
-          DATE="${RELEASE_DATE:-$(date -u +%F)}"
-          PLAN="$(yarn -s tsx scripts/release.mts plan --date "$DATE")"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -z "${RELEASE_DATE:-}" ]; then
+            PLAN="$(yarn -s tsx scripts/release.mts resolve-date --date "$(date -u +%F)")"
+          elif [ -n "${RELEASE_DATE:-}" ]; then
+            PLAN="$(yarn -s tsx scripts/release.mts plan --date "$RELEASE_DATE")"
+          else
+            PLAN="$(yarn -s tsx scripts/release.mts plan --date "$(date -u +%F)")"
+          fi
           echo "$PLAN"
           IS_RELEASE="$(echo "$PLAN" | node -e "const p=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(String(p.isReleaseDay));")"
           VERSION="$(echo "$PLAN" | node -e "const p=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(p.version ?? '');")"
+          DATE="$(echo "$PLAN" | node -e "const p=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(p.date);")"
           echo "should_run=$IS_RELEASE" >> "$GITHUB_OUTPUT"
           echo "mode=bump" >> "$GITHUB_OUTPUT"
           echo "date=$DATE" >> "$GITHUB_OUTPUT"
@@ -89,7 +98,10 @@ jobs:
 
       - name: Skip when nothing to do
         if: steps.context.outputs.should_run != 'true'
-        run: echo "No release work needed for this event."
+        run: |
+          echo "No release work needed for this event."
+          echo "Resolved release date: ${{ steps.context.outputs.date }} (not a release day, or push had nothing to publish)."
+          echo "To catch up: Actions → Biweekly Release → Run workflow (empty date = latest release Saturday, or set date e.g. 2026-09-12)."
 
       - name: Bump version and update changelog
         if: steps.context.outputs.should_run == 'true' && steps.context.outputs.mode == 'bump'
@@ -105,7 +117,7 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit and push release
+      - name: Open release pull request
         if: >-
           steps.context.outputs.should_run == 'true' &&
           steps.context.outputs.mode == 'bump' &&
@@ -113,20 +125,34 @@ jobs:
         env:
           # Husky pre-commit runs `nvm use`, which is not available on hosted runners.
           HUSKY: '0'
+          GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
+          VERSION="${{ steps.context.outputs.version }}"
+          BRANCH="release/v${VERSION}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           yarn prettier --write package.json CHANGELOG.md
+          git checkout -b "$BRANCH"
           git add package.json CHANGELOG.md
           git diff --staged --quiet && echo "No changes to commit" && exit 0
-          git commit -m "Release v${{ steps.context.outputs.version }}"
-          git push origin HEAD:master
+          git commit -m "Release v${VERSION}"
+          git push -u origin "$BRANCH"
+          if [ "$(gh pr list --head "$BRANCH" --base master --json number --jq 'length')" != "0" ]; then
+            echo "Pull request for ${BRANCH} already exists."
+            exit 0
+          fi
+          gh pr create \
+            --base master \
+            --head "$BRANCH" \
+            --title "Release v${VERSION}" \
+            --body "Automated biweekly release. Merge this PR to update \`master\`; the push-triggered workflow will create the \`v${VERSION}\` tag and GitHub Release."
 
       - name: Publish when tag still missing after scheduled bump
         if: >-
           steps.context.outputs.should_run == 'true' &&
           steps.context.outputs.mode == 'bump' &&
-          (steps.bump.outputs.changed != 'true' || steps.bump.outputs.changed == 'true')
+          steps.bump.outputs.changed != 'true'
         id: publish_scheduled
         env:
           GH_TOKEN: ${{ github.token }}
