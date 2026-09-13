@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { useThree } from '@react-three/fiber';
 import {
+  Bone,
   BoxGeometry,
+  BufferAttribute,
   DataTexture,
   Group,
   Mesh,
@@ -9,9 +11,11 @@ import {
   MeshStandardMaterial,
   RGBAFormat,
   Scene,
+  Skeleton,
+  SkinnedMesh,
   UnsignedByteType,
 } from 'three';
-import type { Camera } from 'three';
+import type { Camera, Object3D } from 'three';
 import { LegoColor } from '../../types/Colors';
 import { isTestMode } from '../../utils/testMode';
 import { getWeatheredMetalMaterial } from './CharacterScene/WeatheredMetalMaterial';
@@ -27,7 +31,7 @@ import { MATA_METAL_PBR } from './kit/palettes/metalPbr';
 import { isWebGLBackend } from './webgpuRenderer';
 
 type CompileAsyncRenderer = {
-  compileAsync?: (scene: Scene, camera: Camera) => Promise<unknown>;
+  compileAsync?: (object: Object3D, camera: Camera, targetScene?: Scene | null) => Promise<unknown>;
 };
 
 const TRANSMISSIVE_KINDS: readonly TransmissiveKitKind[] = [
@@ -52,44 +56,80 @@ function bakeSwatch(): DataTexture {
   return texture;
 }
 
-function addPreviewMesh(group: Group, geo: BoxGeometry, material: Mesh['material']): void {
+/** Tiny box with a 1-bone bind so WebGPU compiles both Mesh and SkinnedMesh pipelines. */
+function createPreviewGeometry(): BoxGeometry {
+  const geo = new BoxGeometry(0.2, 0.2, 0.2);
+  const count = geo.getAttribute('position').count;
+  const skinIndex = new Uint16Array(count * 4);
+  const skinWeight = new Float32Array(count * 4);
+  for (let i = 0; i < count; i += 1) {
+    skinWeight[i * 4] = 1;
+  }
+  geo.setAttribute('skinIndex', new BufferAttribute(skinIndex, 4));
+  geo.setAttribute('skinWeight', new BufferAttribute(skinWeight, 4));
+  return geo;
+}
+
+function addPreviewMeshes(
+  group: Group,
+  geo: BoxGeometry,
+  material: Mesh['material'],
+  skeleton: Skeleton
+): Mesh {
   const mesh = new Mesh(geo, material);
   mesh.frustumCulled = false;
   group.add(mesh);
+
+  const skinned = new SkinnedMesh(geo, material);
+  skinned.frustumCulled = false;
+  skinned.bind(skeleton);
+  group.add(skinned);
+  return mesh;
 }
 
 function buildVariantPreviewGroup(): Group {
   primeKitMaterialBank();
   const group = new Group();
   group.name = 'ShaderVariantBank';
-  group.visible = false;
-  const geo = new BoxGeometry(0.2, 0.2, 0.2);
+  const geo = createPreviewGeometry();
+  const bone = new Bone();
+  bone.name = 'ShaderVariantBankBone';
+  group.add(bone);
+  const skeleton = new Skeleton([bone]);
 
-  addPreviewMesh(group, geo, getWeatheredMetalMaterial(LegoColor.Red, BANK_PLASTIC_WEATHERED));
-  addPreviewMesh(
+  addPreviewMeshes(
     group,
     geo,
-    getWeatheredMetalMaterial(LegoColor.Red, { ...BANK_PLASTIC_WEATHERED, ...MATA_METAL_PBR })
+    getWeatheredMetalMaterial(LegoColor.Red, BANK_PLASTIC_WEATHERED),
+    skeleton
   );
-  addPreviewMesh(
+  addPreviewMeshes(
+    group,
+    geo,
+    getWeatheredMetalMaterial(LegoColor.Red, { ...BANK_PLASTIC_WEATHERED, ...MATA_METAL_PBR }),
+    skeleton
+  );
+  addPreviewMeshes(
     group,
     geo,
     getWeatheredMetalMaterial(LegoColor.Red, {
       ...BANK_PLASTIC_WEATHERED,
       discolorationMap: bakeSwatch(),
-    })
+    }),
+    skeleton
   );
-  addPreviewMesh(
+  addPreviewMeshes(
     group,
     geo,
     getWeatheredMetalMaterial(LegoColor.Red, {
       ...BANK_PLASTIC_WEATHERED,
       normalMap: DUMMY_NORMAL_MAP,
-    })
+    }),
+    skeleton
   );
 
   for (const kind of TRANSMISSIVE_KINDS) {
-    addPreviewMesh(
+    addPreviewMeshes(
       group,
       geo,
       buildTransmissiveKitMaterial(
@@ -98,7 +138,8 @@ function buildVariantPreviewGroup(): Group {
         LegoColor.TransNeonGreen,
         LegoColor.TransNeonGreen,
         0.1
-      )
+      ),
+      skeleton
     );
   }
 
@@ -107,9 +148,7 @@ function buildVariantPreviewGroup(): Group {
     emissiveMap: bakeSwatch(),
     name: 'Hau',
   });
-  const maskMesh = new Mesh(geo, maskMat);
-  maskMesh.frustumCulled = false;
-  group.add(maskMesh);
+  const maskMesh = addPreviewMeshes(group, geo, maskMat, skeleton);
   setupMaskDiscolorationShader(maskMesh, LegoColor.Red);
 
   const kaukau = new MeshPhysicalMaterial({
@@ -117,9 +156,7 @@ function buildVariantPreviewGroup(): Group {
     name: 'Kaukau_baked',
     transmission: KAUKAU_TRANSMISSION,
   });
-  const kaukauMesh = new Mesh(geo, kaukau);
-  kaukauMesh.frustumCulled = false;
-  group.add(kaukauMesh);
+  const kaukauMesh = addPreviewMeshes(group, geo, kaukau, skeleton);
   setupMaskDiscolorationShader(kaukauMesh, LegoColor.Blue);
 
   return group;
@@ -138,6 +175,11 @@ function disposePreviewGroup(group: Group): void {
 /**
  * Once per WebGPU canvas, compile the shared kit shader variants against the
  * live lights/env so the next character hop reuses GPU pipelines.
+ *
+ * Preview meshes stay off the live scene (`compileAsync(group, camera, scene)`).
+ * `visible = false` on a scene child is skipped by Three's projector, so the
+ * old hidden boxes never compiled. Each TSL graph is attached to both a Mesh
+ * and a dummy SkinnedMesh so kit and body pipeline keys are warm.
  */
 export function ShaderVariantBank() {
   const camera = useThree((state) => state.camera);
@@ -154,15 +196,13 @@ export function ShaderVariantBank() {
 
     variantsWarmed = true;
     const group = buildVariantPreviewGroup();
-    scene.add(group);
 
     void compile
-      .call(renderer, scene, camera)
+      .call(renderer, group, camera, scene)
       .catch((error: unknown) => {
         console.warn('[ShaderVariantBank] compileAsync failed', error);
       })
       .finally(() => {
-        scene.remove(group);
         disposePreviewGroup(group);
       });
 
