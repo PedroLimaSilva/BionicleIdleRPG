@@ -93,6 +93,13 @@ function getPmremPromise(renderer: HdriRenderer, url: string): Promise<Texture |
   return pending;
 }
 
+/** Waits for any in-flight HDRI bake on this renderer (no-op if none started). */
+export function whenRendererHdriReady(renderer: object): Promise<void> {
+  const byUrl = pendingPmrem.get(renderer);
+  if (!byUrl || byUrl.size === 0) return Promise.resolve();
+  return Promise.all(byUrl.values()).then(() => undefined);
+}
+
 /** Suspends until the CubeUV PMREM for this renderer+URL is baked (or bake fails). */
 function readPmrem(renderer: HdriRenderer, url: string): Texture | null {
   const cached = getCachedPmrem(renderer, url);
