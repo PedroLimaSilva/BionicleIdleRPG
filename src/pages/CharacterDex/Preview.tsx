@@ -6,6 +6,7 @@ import { getDexPreviewMasks } from '../../data/masks';
 import { MASK_POWERS } from '../../data/combat';
 import { Mask } from '../../types/Matoran';
 import { CharacterScene } from '../../rendering/3d/CharacterScene';
+import { usePreloadAllCharacterRigs } from '../../rendering/3d/usePreloadAllCharacterRigs';
 import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { playCharacterPreviewAnimation } from '../../rendering/3d/utils/characterPreviewControls';
 import { ElementTag } from '../../components/ElementTag';
@@ -18,6 +19,7 @@ import {
 import './index.scss';
 
 export const CharacterDexPreview: React.FC = () => {
+  usePreloadAllCharacterRigs();
   const { id } = useParams();
   const { setScene } = useSceneCanvas();
   const base = id ? CHARACTER_DEX[id] : undefined;
