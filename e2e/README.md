@@ -166,7 +166,7 @@ Different test scenarios have different tolerance levels for pixel differences:
 
 - **Standard UI**: `maxDiffPixels: 100-150` - Allows for minor rendering differences
 - **Avatars/Images**: `maxDiffPixels: 200` - Higher tolerance for image compositing
-- **3D Scenes**: `maxDiffPixels: 100, threshold: 0.1` - Tight enough that kit albedo / bake-map shifts fail; AA noise only. Do not raise `threshold` to 0.2 — that hid discoloration regressions. Bake-absent weathered kits render object-space FBM as grayscale in `TEST_MODE` so that noise is visible in goldens.
+- **3D Scenes**: `maxDiffPixels: 100, threshold: 0.1` - Tight enough that kit albedo / bake-map shifts fail; AA noise only. Do not raise `threshold` to 0.2 — that hid discoloration regressions.
 
 ## Test Structure
 

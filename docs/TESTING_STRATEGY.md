@@ -126,13 +126,12 @@ defineSerialCharacterModelSuite({
 
 Enabled via `localStorage` before navigation (`setupGameState`, `enableTestMode`).
 
-| Behavior                                     | Purpose                                                                                                                                                            |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Animation `timeScale = 0`, paused at frame 0 | Same pose every screenshot                                                                                                                                         |
-| Selective bloom on                           | Goldens include kit Glow / brain / Rahkshi eye bloom                                                                                                               |
-| Real-time shadows off                        | Stable lighting                                                                                                                                                    |
-| `[TEST_MODE] model ready` console log        | Playwright sync point after kit/mask materials apply                                                                                                               |
-| Bake-absent weathered albedo → grayscale FBM | Model goldens show object-space grime so VR catches noise loss (same class of miss as bake wear at `threshold: 0.2`). Baked discoloration stays on the normal mix. |
+| Behavior                                     | Purpose                                              |
+| -------------------------------------------- | ---------------------------------------------------- |
+| Animation `timeScale = 0`, paused at frame 0 | Same pose every screenshot                           |
+| Selective bloom on                           | Goldens include kit Glow / brain / Rahkshi eye bloom |
+| Real-time shadows off                        | Stable lighting                                      |
+| `[TEST_MODE] model ready` console log        | Playwright sync point after kit/mask materials apply |
 
 `maybeBlockSlowExternalFonts` aborts Google Font requests **only in Docker** (`PLAYWRIGHT_DOCKER`) where outbound network is unavailable. GitHub Actions CI keeps real fonts so UI snapshots match committed baselines.
 

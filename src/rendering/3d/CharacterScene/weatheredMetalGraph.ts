@@ -13,7 +13,6 @@ import {
   vec2,
   vec3,
 } from 'three/tsl';
-import { isTestMode } from '../../../utils/testMode';
 import {
   bakedDiscolorationAmountFromMaterial,
   bakedDiscolorationColorFromMaterial,
@@ -57,6 +56,7 @@ const largeScaleRef = materialReference(`userData.${UD.largeScale}`, 'float') as
 const fineScaleRef = materialReference(`userData.${UD.fineScale}`, 'float') as never;
 const dentStrengthRef = materialReference(`userData.${UD.dentStrength}`, 'float') as never;
 
+/** Object-space Perlin — same value every run for a frozen pose, not a random seed. */
 function objectSpaceFbm(offset: number, scale: never) {
   const p = positionLocal.add(offset).mul(scale);
   const n1 = mx_noise_float(p, 0.5, 0.5);
@@ -99,7 +99,7 @@ const grime = largeCloud.sub(0.35).mul(2).clamp(0, 1);
 const albedoMapRef = materialReference('map', 'texture') as never;
 const grimyUnmapped = materialColor.mul(grime.mul(grimeDarkenRef).oneMinus());
 const grimyMapped = materialColor.mul(albedoMapRef).mul(grime.mul(grimeDarkenRef).oneMinus());
-/** GLSL `diffuseColor.rgb = vec3(grime)` — grayscale FBM so VR can see bake-absent noise. */
+/** Opt-in debug: GLSL `diffuseColor.rgb = vec3(grime)`. Not used in TEST_MODE. */
 const debugGrimeColor = vec3(grime);
 const bakeColor = bakedDiscolorationColorFromMaterial() as never;
 const bakeAmount = bakedDiscolorationAmountFromMaterial() as never;
@@ -124,14 +124,9 @@ export type WeatheredTslMaterial = MeshStandardMaterial & {
   roughnessNode?: unknown;
 };
 
-/** True when albedo is replaced with the grayscale FBM so VR can see bake-absent noise. */
-export function shouldVisualizeWeatheringGrime(opts: {
-  debugGrimeAsColor?: boolean;
-  grimeDarken: number;
-  hasDiscoloration: boolean;
-}): boolean {
-  if (opts.debugGrimeAsColor) return true;
-  return isTestMode() && !opts.hasDiscoloration && opts.grimeDarken > 0;
+/** True only for the explicit debug overlay. E2E keeps character albedo. */
+export function shouldVisualizeWeatheringGrime(opts: { debugGrimeAsColor?: boolean }): boolean {
+  return !!opts.debugGrimeAsColor;
 }
 
 /** GPU pipeline identity: topology only. Color, grime, and texture instances are uniforms/bindings. */
@@ -202,8 +197,6 @@ export function applySharedWeatheringGraph(
   const hasAlbedoMap = !!mat.map;
   const visualizeGrime = shouldVisualizeWeatheringGrime({
     debugGrimeAsColor: opts.debugGrimeAsColor,
-    grimeDarken,
-    hasDiscoloration,
   });
   const needsColorNode = grimeDarken > 0 || hasAlbedoMap || hasDiscoloration || visualizeGrime;
 
