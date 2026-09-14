@@ -196,7 +196,7 @@ export const METRU_KIT_2003_FOOT_ATTACHMENTS: Record<string, KitSocketAttachment
 export const METRU_KIT_2003_HOLSTER_ATTACHMENTS: Record<string, KitSocketAttachment> = {
   Pin3LWeapon_Holster: {
     kitNodeName: KIT_2003_NODES.Pin3L,
-    materialColors: { Metal: { color: { kind: 'lego', value: LegoColor.Black } } },
+    materialColors: MATORAN_KIT_PALETTE_BLACK,
   },
 };
 

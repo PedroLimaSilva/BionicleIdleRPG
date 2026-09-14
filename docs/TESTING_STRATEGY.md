@@ -116,9 +116,9 @@ defineSerialCharacterModelSuite({
 | ---------------------------------------- | --------------- | ----------- |
 | Standard UI                              | 100–150         | default     |
 | Images / avatars                         | 200             | default     |
-| 3D canvas (`CHARACTER_MODEL_SCREENSHOT`) | 300             | 0.2         |
+| 3D canvas (`CHARACTER_MODEL_SCREENSHOT`) | 100             | 0.1         |
 
-Tolerances are a safety valve, not a substitute for deterministic setup. Prefer fixing waits and test-mode flags before widening thresholds.
+`threshold` is perceived color distance, not a pixel budget. 0.2 hid kit albedo and baked-discoloration shifts (they never counted as diffs). Keep 0.1 so those regressions fail; do not raise it to paper over WebGL noise — fix waits and test-mode flags first. `maxDiffPixels` is silhouette AA only.
 
 ---
 

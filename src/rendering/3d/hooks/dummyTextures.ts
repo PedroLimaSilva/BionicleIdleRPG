@@ -24,6 +24,9 @@ export const DUMMY_DISCOLORATION_MAP = makeSwatch(0, 0, 0);
 /** Flat normal 1×1 for the authored-normal weathered topology warmup. */
 export const DUMMY_NORMAL_MAP = makeSwatch(128, 128, 255);
 
+/** White 1×1 roughness / packed-MR seed for baked-PBR + bake topology warmup. */
+export const DUMMY_ROUGHNESS_MAP = makeSwatch(255, 255, 255);
+
 export function isDummyDiscolorationMap(texture: unknown): boolean {
   return texture === DUMMY_DISCOLORATION_MAP;
 }
