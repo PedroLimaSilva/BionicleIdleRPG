@@ -36,6 +36,7 @@ export function createBakedDiscolorationUniforms(map: Texture | null, colorHex: 
 export type BakedDiscolorationUniforms = ReturnType<typeof createBakedDiscolorationUniforms>;
 
 export type TextureNodeLike = {
+  getUpdateType?: () => string;
   setup: (builder: unknown) => unknown;
   update: (frame?: unknown) => unknown;
   updateType: string;
@@ -68,10 +69,13 @@ function writeTextureValue(node: TextureNodeLike, tex: Texture): void {
 }
 
 /**
- * Three's TextureNode.setup() overwrites `updateType` to `'none'` unless a UV
- * matrix / flipY uniform exists. The builder snapshots update nodes *after*
- * setup, so a bake sample that does not restore `'object'` stays bound to the
- * black compile dummy and emissive discoloration never appears.
+ * Three's TextureNode.setup() builds UVs inside a lazy `Fn` that later writes
+ * `updateType = 'none'` (no matrix / flipY uniform). The builder collects
+ * update nodes after that Fn runs, so restoring `'object'` only at the end of
+ * setup still leaves the bake sample off the per-object list — bound to the
+ * black compile dummy, so emissive discoloration never appears.
+ *
+ * `getUpdateType()` is what NodeBuilder / NodeFrame actually read.
  *
  * Jest's `three/tsl` mock is a Proxy that only allows writing `.value`; skip
  * method wrapping there. Production TextureNode accepts the hooks.
@@ -80,6 +84,7 @@ export function attachBakeSampleObjectUpdate(sample: TextureNodeLike): TextureNo
   const previousUpdate = sample.update.bind(sample);
   const previousSetup = sample.setup.bind(sample);
   sample.updateType = 'object';
+  sample.getUpdateType = () => 'object';
   sample.setup = (builder: unknown) => {
     writeTextureValue(sample, bakeMapFromMaterial(materialFromState(builder)));
     const result = previousSetup(builder);

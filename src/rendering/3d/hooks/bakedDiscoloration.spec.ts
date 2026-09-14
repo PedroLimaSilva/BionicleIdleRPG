@@ -177,9 +177,14 @@ describe('bakedDiscolorationMapNode', () => {
 
     attachBakeSampleObjectUpdate(sample);
     expect(sample.updateType).toBe('object');
+    expect(sample.getUpdateType?.()).toBe('object');
     expect(sample.setup({ material: { aoMap: real } })).toBe('compiled');
     expect(sample.updateType).toBe('object');
+    expect(sample.getUpdateType?.()).toBe('object');
     expect(sample.value).toBe(real);
+
+    sample.updateType = 'none';
+    expect(sample.getUpdateType?.()).toBe('object');
 
     sample.update({ material: { aoMap: other } });
     expect(sample.value).toBe(other);
