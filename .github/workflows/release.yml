@@ -132,16 +132,17 @@ jobs:
           BRANCH="release/v${VERSION}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          yarn prettier --write package.json CHANGELOG.md
-          git checkout -b "$BRANCH"
-          git add package.json CHANGELOG.md
-          git diff --staged --quiet && echo "No changes to commit" && exit 0
-          git commit -m "Release v${VERSION}"
-          git push -u origin "$BRANCH"
           if [ "$(gh pr list --head "$BRANCH" --base master --json number --jq 'length')" != "0" ]; then
             echo "Pull request for ${BRANCH} already exists."
             exit 0
           fi
+          git fetch origin master "$BRANCH" || true
+          yarn prettier --write package.json CHANGELOG.md
+          git checkout -B "$BRANCH"
+          git add package.json CHANGELOG.md
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          git commit -m "Release v${VERSION}"
+          git push -u origin "$BRANCH" --force-with-lease
           if ! gh pr create \
             --base master \
             --head "$BRANCH" \

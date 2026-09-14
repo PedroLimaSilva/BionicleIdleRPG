@@ -36,6 +36,8 @@ In **Settings → Actions → General → Workflow permissions**, enable:
 
 Without this, the workflow can still push the `release/vX.Y.Z` branch but `gh pr create` fails with `GitHub Actions is not permitted to create or approve pull requests`. Open the PR manually from the compare link in the job log, or enable the setting and re-run.
 
+Re-runs are safe: if the release branch already exists from a partial run, the workflow updates it with `--force-with-lease` and opens the PR if one is still missing. If the PR already exists, the job exits successfully without pushing again.
+
 ### Local commands
 
 ```bash
