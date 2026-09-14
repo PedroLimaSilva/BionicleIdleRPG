@@ -28,6 +28,16 @@ The schedule anchor is **2026-08-29** (every 14 days after that). The kickoff re
   - **Schedule / manual run:** bumps `package.json` + `CHANGELOG.md` and opens a **`release/vX.Y.Z` pull request** (does not push to `master`; branch protection requires a PR).
   - **Push to `master`:** **publish-only** — never bumps. Runs on every merge but exits immediately unless `package.json` has a version whose `vX.Y.Z` tag is missing **and** `CHANGELOG.md` has a matching `## [X.Y.Z]` section (typical after merging a release PR).
 
+#### Repository setting (required for automated release PRs)
+
+In **Settings → Actions → General → Workflow permissions**, enable:
+
+**Allow GitHub Actions to create and approve pull requests**
+
+Without this, the workflow can still push the `release/vX.Y.Z` branch but `gh pr create` fails with `GitHub Actions is not permitted to create or approve pull requests`. Open the PR manually from the compare link in the job log, or enable the setting and re-run.
+
+Re-runs are safe: if the release branch already exists from a partial run, the workflow updates it with `--force-with-lease` and opens the PR if one is still missing. If the PR already exists, the job exits successfully without pushing again.
+
 ### Local commands
 
 ```bash

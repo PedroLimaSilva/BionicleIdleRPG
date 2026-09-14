@@ -132,21 +132,26 @@ jobs:
           BRANCH="release/v${VERSION}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          yarn prettier --write package.json CHANGELOG.md
-          git checkout -b "$BRANCH"
-          git add package.json CHANGELOG.md
-          git diff --staged --quiet && echo "No changes to commit" && exit 0
-          git commit -m "Release v${VERSION}"
-          git push -u origin "$BRANCH"
           if [ "$(gh pr list --head "$BRANCH" --base master --json number --jq 'length')" != "0" ]; then
             echo "Pull request for ${BRANCH} already exists."
             exit 0
           fi
-          gh pr create \
+          git fetch origin master "$BRANCH" || true
+          yarn prettier --write package.json CHANGELOG.md
+          git checkout -B "$BRANCH"
+          git add package.json CHANGELOG.md
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          git commit -m "Release v${VERSION}"
+          git push -u origin "$BRANCH" --force-with-lease
+          if ! gh pr create \
             --base master \
             --head "$BRANCH" \
             --title "Release v${VERSION}" \
-            --body "Automated biweekly release. Merge this PR to update \`master\`; the push-triggered workflow will create the \`v${VERSION}\` tag and GitHub Release."
+            --body "Automated biweekly release. Merge this PR to update \`master\`; the push-triggered workflow will create the \`v${VERSION}\` tag and GitHub Release."; then
+            echo "::error::Could not open PR automatically. Enable 'Allow GitHub Actions to create and approve pull requests' under Settings → Actions → General → Workflow permissions."
+            echo "Open a PR manually: https://github.com/${{ github.repository }}/compare/master...${BRANCH}?expand=1"
+            exit 1
+          fi
 
       - name: Publish when tag still missing after scheduled bump
         if: >-
