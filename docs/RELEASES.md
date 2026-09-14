@@ -24,7 +24,19 @@ The schedule anchor is **2026-08-29** (every 14 days after that). The kickoff re
 - **Config:** [`release.config.json`](../release.config.json) — anchor date, interval, kickoff version, baseline for the first changelog.
 - **Categories:** [`release.categories.json`](../release.categories.json) — maps `release/*` PR labels (preferred) and keyword fallbacks to changelog sections. See [PR label guidelines](PR_LABELS.md).
 - **Script:** [`scripts/release.mts`](../scripts/release.mts) — computes the version, lists merged PRs since the last release, groups them by category, and updates `package.json` + `CHANGELOG.md`.
-- **Workflow:** [`.github/workflows/release.yml`](../.github/workflows/release.yml) — on release Saturdays, bumps version and pushes to `master`; every push to `master` publishes a GitHub Release when `CHANGELOG.md` has a section for the current `package.json` version but the `vX.Y.Z` tag is still missing.
+- **Workflow:** [`.github/workflows/release.yml`](../.github/workflows/release.yml) — three triggers, two roles:
+  - **Schedule / manual run:** bumps `package.json` + `CHANGELOG.md` and opens a **`release/vX.Y.Z` pull request** (does not push to `master`; branch protection requires a PR).
+  - **Push to `master`:** **publish-only** — never bumps. Runs on every merge but exits immediately unless `package.json` has a version whose `vX.Y.Z` tag is missing **and** `CHANGELOG.md` has a matching `## [X.Y.Z]` section (typical after merging a release PR).
+
+#### Repository setting (required for automated release PRs)
+
+In **Settings → Actions → General → Workflow permissions**, enable:
+
+**Allow GitHub Actions to create and approve pull requests**
+
+Without this, the workflow can still push the `release/vX.Y.Z` branch but `gh pr create` fails with `GitHub Actions is not permitted to create or approve pull requests`. Open the PR manually from the compare link in the job log, or enable the setting and re-run.
+
+Re-runs are safe: if the release branch already exists from a partial run, the workflow updates it with `--force-with-lease` and opens the PR if one is still missing. If the PR already exists, the job exits successfully without pushing again.
 
 ### Local commands
 
@@ -45,6 +57,16 @@ yarn release:refresh --version 0.8.2 --date 2026-08-29 --since 0.1.0
 After a release PR merges to `master`, the workflow publishes the GitHub Release automatically when `package.json` and `CHANGELOG.md` are updated but the matching `vX.Y.Z` tag does not exist yet.
 
 For a scheduled release Saturday where the version was already bumped in a merged PR, the workflow skips the bump and only publishes the tag/release.
+
+### Catch up after a failed or missed Saturday run
+
+1. **Actions → Biweekly Release → Run workflow** on `master`.
+2. Leave **date** empty to target the latest scheduled release Saturday on or before today, **or** set **date** explicitly (e.g. `2026-09-12` for the September first release).
+3. Merge the **`release/vX.Y.Z`** PR the bot opens; the following push to `master` creates the GitHub Release.
+
+If the **tag** exists but the **Releases** page has no entry (e.g. publish failed after the tag was pushed), merge the publish fix and run **Biweekly Release** with **publish_pending** checked, or run locally: `gh release create vX.Y.Z --title vX.Y.Z --notes-file …` using the matching `CHANGELOG.md` section.
+
+If a manual run **failed on `git push` to `master`** with `GH006` / “Changes must be made through a pull request”, the bump succeeded on the runner but never landed — re-run after the PR-based workflow fix, or run `yarn release:bump` locally and open the release PR yourself.
 
 ## Changelog format
 

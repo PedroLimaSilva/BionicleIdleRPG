@@ -7,7 +7,7 @@ import { DirectionalLight, Mesh, Object3D } from 'three';
 import { useSettings } from '../../../context/useSettings';
 import { SceneHdriEnvironment } from '../SceneHdriEnvironment';
 import { CITY_ENVIRONMENT_PROPS } from '../utils/cityEnvironmentHdri';
-import { shouldEnableShadows } from '../../../utils/testMode';
+import { isTestMode, shouldEnableShadows } from '../../../utils/testMode';
 import { CharacterSelectiveBloom } from './CharacterSelectiveBloom';
 import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
 
@@ -305,7 +305,12 @@ export function CharacterScene({
   return (
     <>
       <ShaderVariantBank />
-      <SceneCompileAsync compileKey={characterSessionKey} ready={modelReadyGeneration > 0} />
+      <SceneCompileAsync
+        compileKey={characterSessionKey}
+        compileRootRef={characterRootRef}
+        hideUntilCompiled={!isTestMode()}
+        ready={modelReadyGeneration > 0}
+      />
       <SceneDrawCallLogger
         label={matoran.id}
         measureRootRef={characterRootRef}
