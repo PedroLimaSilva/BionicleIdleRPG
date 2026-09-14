@@ -320,6 +320,30 @@ function replaceChangelogSection(version: string, section: string): void {
   writeFileSync(CHANGELOG_PATH, updated.endsWith('\n') ? updated : `${updated}\n`);
 }
 
+/** Lines under `## [version]` until the next `## [` section (for GitHub Release notes). */
+export function extractChangelogSectionBody(version: string): string {
+  const lines = readFileSync(CHANGELOG_PATH, 'utf8').split('\n');
+  const headerPrefix = `## [${version}]`;
+  let start = -1;
+  for (let i = 0; i < lines.length; i += 1) {
+    if (lines[i].startsWith(headerPrefix)) {
+      start = i + 1;
+      break;
+    }
+  }
+  if (start < 0) {
+    throw new Error(`Could not find changelog section for ${version}`);
+  }
+  const body: string[] = [];
+  for (let i = start; i < lines.length; i += 1) {
+    if (lines[i].startsWith('## [')) {
+      break;
+    }
+    body.push(lines[i]);
+  }
+  return body.join('\n').trimEnd();
+}
+
 function prependChangelog(section: string): void {
   const header =
     '# Changelog\n\nBiweekly releases land every other Saturday. See [docs/RELEASES.md](docs/RELEASES.md).\n\n';
@@ -365,6 +389,16 @@ if (command === 'resolve-date') {
   const config = readConfig();
   const asOf = resolveDateArg();
   console.log(JSON.stringify(resolveManualReleaseDate(asOf, config), null, 2));
+  process.exit(0);
+}
+
+if (command === 'changelog-body') {
+  const versionIdx = process.argv.indexOf('--version');
+  const version = versionIdx >= 0 ? process.argv[versionIdx + 1] : readPackageVersion();
+  if (!version) {
+    throw new Error('Expected --version X.Y.Z');
+  }
+  console.log(extractChangelogSectionBody(version));
   process.exit(0);
 }
 
@@ -415,6 +449,6 @@ if (command === 'refresh') {
 }
 
 console.error(
-  'Usage: tsx scripts/release.mts <plan|resolve-date|notes|bump|refresh> [--date YYYY-MM-DD] [--since vX.Y.Z] [--version X.Y.Z]'
+  'Usage: tsx scripts/release.mts <plan|resolve-date|changelog-body|notes|bump|refresh> [--date YYYY-MM-DD] [--since vX.Y.Z] [--version X.Y.Z]'
 );
 process.exit(1);

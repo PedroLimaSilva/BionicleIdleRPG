@@ -15,6 +15,13 @@ on:
           release Saturday on or before today (e.g. catch up after a missed run).
         required: false
         type: string
+      publish_pending:
+        description: >-
+          Create the GitHub Release for the current package.json version (no bump).
+          Use when the tag exists but the Releases page entry is missing.
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -61,16 +68,24 @@ jobs:
           echo "tag_exists=$TAG_EXISTS" >> "$GITHUB_OUTPUT"
           echo "changelog_has=$CHANGELOG_HAS" >> "$GITHUB_OUTPUT"
 
+          PUBLISH_ONLY=false
           if [ "${{ github.event_name }}" = "push" ]; then
+            PUBLISH_ONLY=true
             echo "Push to master: publish-only (never bumps version)."
-            if [ "$TAG_EXISTS" = "true" ]; then
-              echo "should_run=false" >> "$GITHUB_OUTPUT"
-              echo "Publish skipped: ${TAG} already exists."
-              exit 0
-            fi
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.publish_pending }}" = "true" ]; then
+            PUBLISH_ONLY=true
+            echo "Manual publish-only for current package.json."
+          fi
+
+          if [ "$PUBLISH_ONLY" = "true" ]; then
             if [ "$CHANGELOG_HAS" != "true" ]; then
               echo "should_run=false" >> "$GITHUB_OUTPUT"
               echo "Publish skipped: no CHANGELOG section for ${PACKAGE_VERSION}."
+              exit 0
+            fi
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              echo "should_run=false" >> "$GITHUB_OUTPUT"
+              echo "Publish skipped: GitHub Release ${TAG} already exists."
               exit 0
             fi
             echo "should_run=true" >> "$GITHUB_OUTPUT"
@@ -153,12 +168,12 @@ jobs:
             exit 1
           fi
 
-      - name: Publish when tag still missing after scheduled bump
+      - name: Publish GitHub Release
         if: >-
-          steps.context.outputs.should_run == 'true' &&
-          steps.context.outputs.mode == 'bump' &&
-          steps.bump.outputs.changed != 'true'
-        id: publish_scheduled
+          (steps.context.outputs.should_run == 'true' && steps.context.outputs.mode == 'publish') ||
+          (steps.context.outputs.should_run == 'true' &&
+            steps.context.outputs.mode == 'bump' &&
+            steps.bump.outputs.changed != 'true')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -167,51 +182,25 @@ jobs:
           DATE="${{ steps.context.outputs.date }}"
           TAG="v${VERSION}"
 
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Tag ${TAG} already exists; skipping publish."
-            exit 0
-          fi
           if ! grep -q "^## \\[${VERSION}\\]" CHANGELOG.md; then
             echo "No CHANGELOG section for ${VERSION}; skipping publish."
             exit 0
           fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "GitHub Release ${TAG} already exists."
+            exit 0
+          fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "$TAG" -m "Release ${TAG}"
-          git push origin "$TAG"
+          if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+            git tag -a "$TAG" -m "Release ${TAG}"
+            git push origin "$TAG"
+          else
+            echo "Tag ${TAG} already exists; creating GitHub Release only."
+          fi
 
-          NOTES="$(awk -v ver="$VERSION" '
-            $0 ~ "^## \\[" ver "\\]" { found=1; next }
-            found && /^## \\[/ { exit }
-            found { print }
-          ' CHANGELOG.md)"
-          gh release create "$TAG" \
-            --title "$TAG" \
-            --notes "## ${TAG} (${DATE})
-
-          ${NOTES}"
-
-      - name: Publish pending release on push
-        if: steps.context.outputs.should_run == 'true' && steps.context.outputs.mode == 'publish'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          VERSION="${{ steps.context.outputs.version }}"
-          DATE="${{ steps.context.outputs.date }}"
-          TAG="v${VERSION}"
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "$TAG" -m "Release ${TAG}"
-          git push origin "$TAG"
-
-          NOTES="$(awk -v ver="$VERSION" '
-            $0 ~ "^## \\[" ver "\\]" { found=1; next }
-            found && /^## \\[/ { exit }
-            found { print }
-          ' CHANGELOG.md)"
+          NOTES="$(yarn -s tsx scripts/release.mts changelog-body --version "$VERSION")"
           gh release create "$TAG" \
             --title "$TAG" \
             --notes "## ${TAG} (${DATE})

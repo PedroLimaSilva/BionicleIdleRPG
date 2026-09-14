@@ -64,6 +64,8 @@ For a scheduled release Saturday where the version was already bumped in a merge
 2. Leave **date** empty to target the latest scheduled release Saturday on or before today, **or** set **date** explicitly (e.g. `2026-09-12` for the September first release).
 3. Merge the **`release/vX.Y.Z`** PR the bot opens; the following push to `master` creates the GitHub Release.
 
+If the **tag** exists but the **Releases** page has no entry (e.g. publish failed after the tag was pushed), merge the publish fix and run **Biweekly Release** with **publish_pending** checked, or run locally: `gh release create vX.Y.Z --title vX.Y.Z --notes-file …` using the matching `CHANGELOG.md` section.
+
 If a manual run **failed on `git push` to `master`** with `GH006` / “Changes must be made through a pull request”, the bump succeeded on the runner but never landed — re-run after the PR-based workflow fix, or run `yarn release:bump` locally and open the release PR yourself.
 
 ## Changelog format
