@@ -15,7 +15,7 @@ import type { Camera } from 'three';
 import { LegoColor } from '../../types/Colors';
 import { isTestMode } from '../../utils/testMode';
 import { getWeatheredMetalMaterial } from './CharacterScene/WeatheredMetalMaterial';
-import { DUMMY_NORMAL_MAP } from './hooks/dummyTextures';
+import { DUMMY_NORMAL_MAP, DUMMY_ROUGHNESS_MAP } from './hooks/dummyTextures';
 import { setupMaskDiscolorationShader } from './hooks/maskDiscoloration';
 import { KAUKAU_TRANSMISSION } from './hooks/maskMaterial';
 import {
@@ -85,6 +85,17 @@ function buildVariantPreviewGroup(): Group {
     getWeatheredMetalMaterial(LegoColor.Red, {
       ...BANK_PLASTIC_WEATHERED,
       normalMap: DUMMY_NORMAL_MAP,
+    })
+  );
+  addPreviewMesh(
+    group,
+    geo,
+    getWeatheredMetalMaterial(LegoColor.Red, {
+      ...BANK_PLASTIC_WEATHERED,
+      discolorationMap: bakeSwatch(),
+      metalnessMap: DUMMY_ROUGHNESS_MAP,
+      normalMap: DUMMY_NORMAL_MAP,
+      roughnessMap: DUMMY_ROUGHNESS_MAP,
     })
   );
 

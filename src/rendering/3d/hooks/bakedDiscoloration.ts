@@ -35,7 +35,7 @@ export function createBakedDiscolorationUniforms(map: Texture | null, colorHex: 
 
 export type BakedDiscolorationUniforms = ReturnType<typeof createBakedDiscolorationUniforms>;
 
-type TextureNodeLike = {
+export type TextureNodeLike = {
   setup: (builder: unknown) => unknown;
   update: (frame?: unknown) => unknown;
   updateType: string;
@@ -43,6 +43,7 @@ type TextureNodeLike = {
 };
 
 type BakeSampleFrame = {
+  context?: { material?: BakeSampleFrame['material'] };
   material?: { aoMap?: Texture | null } | Array<{ aoMap?: Texture | null }> | null;
 };
 
@@ -56,8 +57,40 @@ function bakeMapFromMaterial(material: BakeSampleFrame['material']): Texture {
   return isTextureValue(map) ? map : DUMMY_DISCOLORATION_MAP;
 }
 
+function materialFromState(state: unknown): BakeSampleFrame['material'] {
+  if (!state || typeof state !== 'object') return undefined;
+  const record = state as BakeSampleFrame;
+  return record.material ?? record.context?.material;
+}
+
 function writeTextureValue(node: TextureNodeLike, tex: Texture): void {
   node.value = tex;
+}
+
+/**
+ * Three's TextureNode.setup() overwrites `updateType` to `'none'` unless a UV
+ * matrix / flipY uniform exists. The builder snapshots update nodes *after*
+ * setup, so a bake sample that does not restore `'object'` stays bound to the
+ * black compile dummy and emissive discoloration never appears.
+ *
+ * Jest's `three/tsl` mock is a Proxy that only allows writing `.value`; skip
+ * method wrapping there. Production TextureNode accepts the hooks.
+ */
+export function attachBakeSampleObjectUpdate(sample: TextureNodeLike): TextureNodeLike {
+  const previousUpdate = sample.update.bind(sample);
+  const previousSetup = sample.setup.bind(sample);
+  sample.updateType = 'object';
+  sample.setup = (builder: unknown) => {
+    writeTextureValue(sample, bakeMapFromMaterial(materialFromState(builder)));
+    const result = previousSetup(builder);
+    sample.updateType = 'object';
+    return result;
+  };
+  sample.update = (frame?: unknown) => {
+    writeTextureValue(sample, bakeMapFromMaterial(materialFromState(frame)));
+    return previousUpdate(frame);
+  };
+  return sample;
 }
 
 /**
@@ -65,30 +98,12 @@ function writeTextureValue(node: TextureNodeLike, tex: Texture): void {
  * then throws unless the compiling material already has a Texture in that slot
  * (NodeMaterial copies, empty aoMap, duck-typed GLTF maps). Sample a real dummy
  * Texture instead and rebind `aoMap` per object so compile never sees null.
- *
- * Jest's `three/tsl` mock is a Proxy that only allows writing `.value`; skip
- * method wrapping there. Production TextureNode accepts the hooks.
  */
 function createBakeSampleTextureNode(): TextureNodeLike {
   const sample = texture(DUMMY_DISCOLORATION_MAP, uv()) as unknown as TextureNodeLike;
   writeTextureValue(sample, DUMMY_DISCOLORATION_MAP);
   try {
-    const previousUpdate = sample.update.bind(sample);
-    const previousSetup = sample.setup.bind(sample);
-    sample.updateType = 'object';
-    sample.setup = (builder: unknown) => {
-      if (!isTextureValue(sample.value)) {
-        writeTextureValue(sample, DUMMY_DISCOLORATION_MAP);
-      }
-      return previousSetup(builder);
-    };
-    sample.update = (frame?: unknown) => {
-      writeTextureValue(
-        sample,
-        bakeMapFromMaterial((frame as BakeSampleFrame | undefined)?.material)
-      );
-      return previousUpdate(frame);
-    };
+    attachBakeSampleObjectUpdate(sample);
   } catch {
     // Jest TSL mock: only `.value` is writable.
   }

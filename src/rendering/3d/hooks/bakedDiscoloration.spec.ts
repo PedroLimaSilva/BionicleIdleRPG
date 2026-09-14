@@ -8,6 +8,7 @@ import { DUMMY_DISCOLORATION_MAP } from './dummyTextures';
 import {
   adoptBakedDiscolorationMap,
   applyBakedDiscolorationUniforms,
+  attachBakeSampleObjectUpdate,
   bakedDiscolorationAmountFromMaterial,
   bakedDiscolorationAmountNode,
   bakedDiscolorationMapNode,
@@ -18,6 +19,7 @@ import {
   ensureBakeSampleSlot,
   getBakedDiscolorationMap,
   writeBakedDiscolorationUserData,
+  type TextureNodeLike,
 } from './bakedDiscoloration';
 
 describe('adoptBakedDiscolorationMap', () => {
@@ -156,6 +158,38 @@ describe('bakedDiscolorationMapNode', () => {
       aoMap: { isTexture: false } as unknown as Texture,
     });
     expect(bakedDiscolorationMapNode.value).toBe(DUMMY_DISCOLORATION_MAP);
+  });
+
+  test('TextureNode.setup cannot drop per-object bake rebinding', () => {
+    const real = new Texture();
+    const other = new Texture();
+    const sample: TextureNodeLike = {
+      setup(this: TextureNodeLike) {
+        this.updateType = 'none';
+        return 'compiled';
+      },
+      update() {
+        return 'updated';
+      },
+      updateType: 'none',
+      value: DUMMY_DISCOLORATION_MAP,
+    };
+
+    attachBakeSampleObjectUpdate(sample);
+    expect(sample.updateType).toBe('object');
+    expect(sample.setup({ material: { aoMap: real } })).toBe('compiled');
+    expect(sample.updateType).toBe('object');
+    expect(sample.value).toBe(real);
+
+    sample.update({ material: { aoMap: other } });
+    expect(sample.value).toBe(other);
+
+    sample.setup({ context: { material: { aoMap: real } } });
+    expect(sample.updateType).toBe('object');
+    expect(sample.value).toBe(real);
+
+    sample.update({ material: { aoMap: null } });
+    expect(sample.value).toBe(DUMMY_DISCOLORATION_MAP);
   });
 });
 

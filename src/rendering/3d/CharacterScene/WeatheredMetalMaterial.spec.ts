@@ -202,6 +202,26 @@ describe('getWeatheredMetalMaterial', () => {
     expect(mappedA.customProgramCacheKey?.()).toContain('alb');
     expect(unmapped.customProgramCacheKey?.()).not.toContain('alb');
   });
+
+  test('baked normal+roughness meshes still mix emissive discoloration', () => {
+    const bake = mapTex();
+    const mat = getWeatheredMetalMaterial('#c91a09', {
+      discolorationMap: bake,
+      metalness: 0.05,
+      metalnessMap: mapTex(),
+      normalMap: mapTex(),
+      roughnessMap: mapTex(),
+    }) as MeshStandardMaterial & { colorNode?: unknown; normalNode?: unknown };
+    expect(mat.aoMap).toBe(bake);
+    expect(mat.aoMapIntensity).toBe(0);
+    expect(mat.emissiveMap).toBeNull();
+    expect(mat.colorNode).toBeDefined();
+    expect(mat.normalNode).toBeUndefined();
+    expect(mat.customProgramCacheKey?.()).toContain('nm');
+    expect(mat.customProgramCacheKey?.()).toContain('rgh');
+    expect(mat.customProgramCacheKey?.()).toContain('dc');
+    expect(mat.customProgramCacheKey?.()).not.toContain('dent');
+  });
 });
 
 describe('applyWeatheredMetalToObject uniqueMaterials', () => {
