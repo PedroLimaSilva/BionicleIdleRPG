@@ -2,6 +2,105 @@
 
 Biweekly releases land every other Saturday. See [docs/RELEASES.md](docs/RELEASES.md).
 
+## [0.9.1] - 2026-09-12
+
+Merged since v0.8.2:
+
+### Telemetry & Analytics
+
+- #483 Enable PostHog source map upload for readable production stack traces
+- #430 Update privacy policy to reflect current data collection
+
+### Infrastructure, CI & Tooling
+
+- #493 Fix release automation for protected master (open release PR)
+- #491 Fix Biweekly Release commit failing on Husky pre-commit in CI
+- #484 Add PostHog MCP config with secret env interpolation
+- #468 feat(3d): WebGPU perf overlay and character render-cost logger
+- #461 Bind kit material slot names to TypeScript types and GLB inventory
+- #448 Fix GLB and kit usage report comment spam on PRs
+- #284 Add Blender kit socket helper for shared-kit GLB authoring
+- #429 Add character animation rig and clip epic tracker
+
+### Testing
+
+- #464 Fix CI lint and Gali Nuva model snapshot after kit GLB re-export
+- #465 Update Rahkshi model rendering tests for kit-assembled chassis
+- #442 Fix flaky tab scroll E2E snapshot after #440 merge
+
+### PWA & Notifications
+
+- #479 Add PWA install prompt with fullscreen trigger button
+
+### Custom Characters & Sharing
+
+- #426 Custom character Metru evolution and Toa armor customization
+
+### Combat & Encounters
+
+- #477 Fix Rahkshi battle load hitches from CPU-skinned bounding spheres
+- #466 Fix battle bloom, progressive loading, and scene-ready blackout
+
+### Jobs, Economy & Progression
+
+- #441 Fix Metru Matoran job eligibility and profession productivity boost
+
+### UI & UX
+
+- #480 Fix installed kraata card layout for long power names
+- #444 Fix Rahkshi detail motion: remove swipe, keep paging transition only
+- #443 Add Rahkshi power coverage counter (X/42) to character inventory
+- #440 Fix tab auto-scroll jumping the page on idle re-renders
+- #439 Remove shared-layout motion transitions from character and Rahkshi inventory
+- #437 Add prev/next navigation to Rahkshi armor detail page
+- #436 Fix character detail tab layout regression from full-bleed tabs
+- #435 Remove shared-layout motion transitions from character inventory and detail
+- #434 Make character tabs span full page width with internal padding
+- #432 Add Rahkshi power coverage counter (X/42) to character inventory
+- #428 Denser character inventory grid with smaller cards and fonts
+
+### Rendering & Materials
+
+- #490 Warm shadow, bloom, and HDRI pipelines in the shader variant bank
+- #489 Warm skinned shader pipelines and hide the rig until compileAsync finishes
+- #488 Preload character-rig GLBs from story progress
+- #486 Share kit shader programs across character hops
+- #485 Fix iOS crash when updating mask TSL color uniforms
+- #482 Yield shader compilation so character sheets do not freeze the tab
+- #481 fix(3d): migrate from deprecated THREE.Clock to THREE.Timer
+- #473 Disable selective bloom in battle arenas (keep MRT scene pass)
+- #471 Disable selective bloom in battle arenas for performance
+- #467 feat(3d): merge kit rigid meshes per bone/material (Phase B)
+- #458 Upgrade Three.js to WebGPURenderer with simple kit materials
+- #457 Support baked emissive discoloration on Great Metru masks
+- #455 Restore full mask discoloration intensity
+- #452 Fix mask swap transition alpha fade for opaque Kanohi
+- #454 Fix Kaukau side-view interior shell bleed-through
+- #451 Fix Mata Kaukau mask z-ordering artifacts
+- #445 Use baked emissive discoloration; drop runtime geometric bevel
+
+### Characters & Models
+
+- #478 Re-enable early kit GLB preloading at app boot
+- #476 Fix Rahkshi detailed-LOD bakes and chassis metalness
+- #474 Fix Rahkshi battle species silver metal and ship all Battle\_{Breed} overlays
+- #472 feat(rahkshi): battle rig GLB, dex LOD toggle, and battle mesh path
+- #469 docs(3d): battle LOD authoring plan (Rahkshi + Tahu Mata)
+- #463 Assemble Rahkshi from kit_2001 and kit_2003 sockets
+- #462 Add Fragmentation and Chameleon Rahkshi to character dex
+- #459 Kit_2001 emissive and normal map bakes
+- #456 Add Vahi and infected Hau Nuva to the Toa Nuva mask kit
+- #449 Rename Akaku scope material to Glow for selective bloom
+- #438 Fix Rahkshi spine/staff meshes not reappearing when paging detail
+- #433 Add Rahi to Character Dex
+- #431 Add missing Vahki hive tools and per-hive kit attachments
+- #410 Add idle switch system for multi-idle character models
+
+### Other
+
+- #494 Document Actions setting for automated release PRs
+- #427 Fix release workflow to publish on push to master
+
 ## [0.8.2] - 2026-08-29
 
 Merged since 0.1.0:
