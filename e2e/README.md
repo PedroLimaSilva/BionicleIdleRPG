@@ -166,7 +166,7 @@ Different test scenarios have different tolerance levels for pixel differences:
 
 - **Standard UI**: `maxDiffPixels: 100-150` - Allows for minor rendering differences
 - **Avatars/Images**: `maxDiffPixels: 200` - Higher tolerance for image compositing
-- **3D Scenes**: `maxDiffPixels: 300, threshold: 0.2` - Moderate tolerance for WebGL rendering (animations are paused in test mode)
+- **3D Scenes**: `maxDiffPixels: 100, threshold: 0.1` - Tight enough that kit albedo / bake-map shifts fail; AA noise only. Do not raise `threshold` to 0.2 — that hid discoloration regressions.
 
 ## Test Structure
 
@@ -204,7 +204,7 @@ If tests fail with small pixel differences that are acceptable:
 
 ### WebGL rendering differences
 
-3D scene tests may have inconsistent results across different machines due to GPU rendering differences. These tests have moderate tolerance thresholds. Mobile tests use Chrome (Chromium) for better WebGL consistency. **Note:** Animations are automatically paused in test mode to prevent flaky screenshots.
+3D scene tests may have inconsistent results across different machines due to GPU rendering differences. Run `yarn test:e2e:docker` (or CI) for Linux/SwiftShader goldens. Do not raise `CHARACTER_MODEL_SCREENSHOT.threshold` to hide that noise — it previously missed bake/albedo regressions. **Note:** Animations are automatically paused in test mode to prevent flaky screenshots.
 
 ### Snapshots missing
 

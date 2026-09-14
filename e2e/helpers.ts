@@ -276,10 +276,18 @@ export async function waitForCanvas(page: Page, timeout = 10000) {
   await page.waitForTimeout(isCI ? 6000 : 3000);
 }
 
-/** Screenshot settings shared by character detail model rendering tests. */
+/**
+ * Canvas-only goldens for `modelRendering.spec.ts`.
+ *
+ * `threshold` is the pixelmatch color-distance cutoff (0–1). At 0.2, kit albedo
+ * and baked discoloration shifts (mask mottling, wear mix) were ignored as
+ * “same color,” so those degradations passed. 0.1 is pixelmatch’s default and
+ * still treats SwiftShader AA as equal. `maxDiffPixels` is silhouette noise
+ * only — a missing bake is thousands of pixels on the 960×540 canvas.
+ */
 export const CHARACTER_MODEL_SCREENSHOT = {
-  maxDiffPixels: 300,
-  threshold: 0.2,
+  maxDiffPixels: 100,
+  threshold: 0.1,
 } as const;
 
 /** 3D preview mount — capture only the WebGL viewport, not the full page chrome. */

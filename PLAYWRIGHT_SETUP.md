@@ -77,7 +77,7 @@ Different components have different tolerance for pixel differences:
 
 - **Standard UI**: 100-150 pixels - For text, buttons, layouts
 - **Images/Avatars**: 200 pixels - For composited images
-- **3D Scenes**: 300 pixels (20% threshold) - For WebGL rendering (animations paused in test mode)
+- **3D Scenes**: 100 pixels (10% color threshold) - Canvas goldens; tight enough to catch albedo / bake-map regressions
 
 ## CI/CD Integration
 
