@@ -1,12 +1,13 @@
 import { MeshStandardMaterial, type Texture } from 'three';
 import {
   faceDirection,
+  float,
+  hash,
   materialColor,
   materialMetalness,
   materialReference,
   materialRoughness,
   mix,
-  mx_noise_float,
   normalView,
   positionLocal,
   positionView,
@@ -36,6 +37,30 @@ type WeatheringGraphOpts = {
 
 const FINE_ROUGHNESS_VARIATION = 0.08;
 const METAL_DENT_ATTENUATION = 0.88;
+/**
+ * PCG increment mixed into object-space lattice hashes via Three's `hash()`.
+ * Same seed every run so bake-absent value-noise FBM is VR-stable (the old GLSL
+ * `sin`/`fract` hash drifted across GPUs; MaterialX Perlin had no caller seed).
+ */
+export const WEATHERING_NOISE_SEED = 2891336453;
+const LATTICE_BASIS = vec3(1, 57, 113);
+
+/** Shader-graph vec3; Three's TSL types do not compose through custom helpers. */
+type NoiseVec = {
+  add: (v: unknown) => NoiseVec;
+  dot: (v: unknown) => { add: (n: number) => never };
+  floor: () => NoiseVec;
+  fract: () => NoiseVec;
+  mul: (v: unknown) => NoiseVec;
+  sub: (v: unknown) => NoiseVec;
+  x: never;
+  y: never;
+  z: never;
+};
+
+function asNoiseVec(value: unknown): NoiseVec {
+  return value as NoiseVec;
+}
 
 const UD = {
   dentStrength: 'weatheringDentStrength',
@@ -56,19 +81,42 @@ const largeScaleRef = materialReference(`userData.${UD.largeScale}`, 'float') as
 const fineScaleRef = materialReference(`userData.${UD.fineScale}`, 'float') as never;
 const dentStrengthRef = materialReference(`userData.${UD.dentStrength}`, 'float') as never;
 
-/** Object-space Perlin — same value every run for a frozen pose, not a random seed. */
+function seededLatticeHash(i: NoiseVec) {
+  return hash(i.dot(LATTICE_BASIS).add(WEATHERING_NOISE_SEED));
+}
+
+/** Trilinear value noise hashed with {@link WEATHERING_NOISE_SEED}. */
+function seededValueNoise(p: NoiseVec) {
+  const i = p.floor();
+  const f = p.fract();
+  const u = asNoiseVec(f.mul(f).mul(asNoiseVec(float(3)).sub(f.mul(2))));
+  const n000 = seededLatticeHash(i);
+  const n100 = seededLatticeHash(i.add(vec3(1, 0, 0)));
+  const n010 = seededLatticeHash(i.add(vec3(0, 1, 0)));
+  const n110 = seededLatticeHash(i.add(vec3(1, 1, 0)));
+  const n001 = seededLatticeHash(i.add(vec3(0, 0, 1)));
+  const n101 = seededLatticeHash(i.add(vec3(1, 0, 1)));
+  const n011 = seededLatticeHash(i.add(vec3(0, 1, 1)));
+  const n111 = seededLatticeHash(i.add(vec3(1, 1, 1)));
+  const nx00 = mix(n000, n100, u.x);
+  const nx10 = mix(n010, n110, u.x);
+  const nx01 = mix(n001, n101, u.x);
+  const nx11 = mix(n011, n111, u.x);
+  return mix(mix(nx00, nx10, u.y), mix(nx01, nx11, u.y), u.z);
+}
+
 function objectSpaceFbm(offset: number, scale: never) {
-  const p = positionLocal.add(offset).mul(scale);
-  const n1 = mx_noise_float(p, 0.5, 0.5);
-  const n2 = mx_noise_float(p.mul(2), 0.5, 0.5);
-  const n3 = mx_noise_float(p.mul(4), 0.5, 0.5);
+  const p = asNoiseVec(positionLocal.add(offset).mul(scale));
+  const n1 = seededValueNoise(p);
+  const n2 = seededValueNoise(p.mul(2));
+  const n3 = seededValueNoise(p.mul(4));
   return n1.mul(0.5).add(n2.mul(0.25)).add(n3.mul(0.125));
 }
 
 function objectSpaceDentHeight(offset: number, scale: never) {
-  const p = positionLocal.add(offset).mul(scale);
-  const n1 = mx_noise_float(p, 0.5, 0.5);
-  const n2 = mx_noise_float(p.mul(2), 0.5, 0.5);
+  const p = asNoiseVec(positionLocal.add(offset).mul(scale));
+  const n1 = seededValueNoise(p);
+  const n2 = seededValueNoise(p.mul(2));
   return n1.mul(0.7).add(n2.mul(0.3));
 }
 

@@ -53,8 +53,8 @@ const DEFAULT_METALNESS = 0.05;
 const DEFAULT_GRIME_DARKEN = 0.5;
 const DEFAULT_GRIME_ROUGHNESS = 0.35;
 const DEFAULT_GRIME_METALNESS_REDUCE = 0.7;
-/** Object-space scale for large grime/dent clouds. Lower = bigger patches. 2.6 is slightly broader than master's 3.5 because MaterialX noise is finer than the old hash FBM. */
-const DEFAULT_LARGE_SCALE = 2.6;
+/** Object-space scale for large grime/dent clouds. Lower = bigger patches. Matches the pre-WebGPU hash FBM (MaterialX Perlin used 2.6 because it was finer). */
+const DEFAULT_LARGE_SCALE = 3.5;
 const DEFAULT_FINE_SCALE = 18.0;
 const DEFAULT_ENV_MAP_INTENSITY = 0.4;
 /** Screen-space bump from the master large-cloud FBM (`largeScale`, not fine grain). */
