@@ -85,6 +85,7 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
     opts.largeScale ?? DEFAULT_LARGE_SCALE,
     opts.fineScale ?? DEFAULT_FINE_SCALE,
     opts.dentStrength ?? DEFAULT_DENT_STRENGTH,
+    opts.debugGrimeAsColor ? 'd' : '',
     opts.discolorationMap?.uuid ?? '',
     opts.discolorationMap?.channel ?? 0,
     opts.map?.uuid ?? '',

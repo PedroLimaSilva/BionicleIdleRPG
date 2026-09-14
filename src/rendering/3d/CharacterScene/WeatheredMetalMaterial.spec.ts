@@ -165,6 +165,25 @@ describe('getWeatheredMetalMaterial', () => {
     expect(a.customProgramCacheKey?.()).toBe(b.customProgramCacheKey?.());
   });
 
+  test('debugGrimeAsColor uses a distinct grayscale FBM color graph', () => {
+    const plastic = getWeatheredMetalMaterial('#c91a09', {
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    const debugA = getWeatheredMetalMaterial('#c91a09', {
+      debugGrimeAsColor: true,
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    const debugB = getWeatheredMetalMaterial('#b48455', {
+      debugGrimeAsColor: true,
+      metalness: 0.05,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    expect(debugA).not.toBe(plastic);
+    expect(debugA.colorNode).toBe(debugB.colorNode);
+    expect(debugA.colorNode).not.toBe(plastic.colorNode);
+    expect(debugA.customProgramCacheKey?.()).toContain('dbg');
+    expect(plastic.customProgramCacheKey?.()).not.toContain('dbg');
+  });
+
   test('no-bake plastics share a color graph that is not the bake-mix graph', () => {
     const red = getWeatheredMetalMaterial('#c91a09', {
       metalness: 0.05,

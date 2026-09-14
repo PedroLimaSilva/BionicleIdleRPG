@@ -11,7 +11,9 @@ import {
   positionLocal,
   positionView,
   vec2,
+  vec3,
 } from 'three/tsl';
+import { isTestMode } from '../../../utils/testMode';
 import {
   bakedDiscolorationAmountFromMaterial,
   bakedDiscolorationColorFromMaterial,
@@ -22,6 +24,7 @@ import {
 
 type WeatheringGraphOpts = {
   color?: string;
+  debugGrimeAsColor?: boolean;
   dentStrength?: number;
   discolorationMap?: Texture;
   fineScale?: number;
@@ -96,6 +99,8 @@ const grime = largeCloud.sub(0.35).mul(2).clamp(0, 1);
 const albedoMapRef = materialReference('map', 'texture') as never;
 const grimyUnmapped = materialColor.mul(grime.mul(grimeDarkenRef).oneMinus());
 const grimyMapped = materialColor.mul(albedoMapRef).mul(grime.mul(grimeDarkenRef).oneMinus());
+/** GLSL `diffuseColor.rgb = vec3(grime)` — grayscale FBM so VR can see bake-absent noise. */
+const debugGrimeColor = vec3(grime);
 const bakeColor = bakedDiscolorationColorFromMaterial() as never;
 const bakeAmount = bakedDiscolorationAmountFromMaterial() as never;
 const colorUnmappedWithBake = mix(grimyUnmapped, bakeColor, bakeAmount);
@@ -119,10 +124,20 @@ export type WeatheredTslMaterial = MeshStandardMaterial & {
   roughnessNode?: unknown;
 };
 
+/** True when albedo is replaced with the grayscale FBM so VR can see bake-absent noise. */
+export function shouldVisualizeWeatheringGrime(opts: {
+  debugGrimeAsColor?: boolean;
+  grimeDarken: number;
+  hasDiscoloration: boolean;
+}): boolean {
+  if (opts.debugGrimeAsColor) return true;
+  return isTestMode() && !opts.hasDiscoloration && opts.grimeDarken > 0;
+}
+
 /** GPU pipeline identity: topology only. Color, grime, and texture instances are uniforms/bindings. */
 export function weatheredProgramCacheKey(
   mat: MeshStandardMaterial,
-  opts: { dentStrength: number; hasDiscoloration: boolean }
+  opts: { debugGrime?: boolean; dentStrength: number; hasDiscoloration: boolean }
 ): string {
   return [
     'WeatheredMetal',
@@ -132,6 +147,7 @@ export function weatheredProgramCacheKey(
     mat.metalnessMap ? 'met' : '',
     opts.hasDiscoloration ? 'dc' : '',
     opts.dentStrength > 0 && !mat.normalMap ? 'dent' : '',
+    opts.debugGrime ? 'dbg' : '',
   ].join('|');
 }
 
@@ -184,10 +200,17 @@ export function applySharedWeatheringGraph(
     (1 - Math.min(1, Math.max(0, metalness)) * METAL_DENT_ATTENUATION);
   const hasDiscoloration = isRenderableBakeMap(discolorMap);
   const hasAlbedoMap = !!mat.map;
-  const needsColorNode = grimeDarken > 0 || hasAlbedoMap || hasDiscoloration;
+  const visualizeGrime = shouldVisualizeWeatheringGrime({
+    debugGrimeAsColor: opts.debugGrimeAsColor,
+    grimeDarken,
+    hasDiscoloration,
+  });
+  const needsColorNode = grimeDarken > 0 || hasAlbedoMap || hasDiscoloration || visualizeGrime;
 
   if (needsColorNode) {
-    if (hasDiscoloration) {
+    if (visualizeGrime) {
+      mat.colorNode = debugGrimeColor;
+    } else if (hasDiscoloration) {
       ensureBakeSampleSlot(mat);
       mat.colorNode = hasAlbedoMap ? colorMappedWithBake : colorUnmappedWithBake;
     } else {
@@ -204,5 +227,9 @@ export function applySharedWeatheringGraph(
     mat.normalNode = dentNormalNode;
   }
   mat.customProgramCacheKey = () =>
-    weatheredProgramCacheKey(mat, { dentStrength, hasDiscoloration });
+    weatheredProgramCacheKey(mat, {
+      debugGrime: visualizeGrime,
+      dentStrength,
+      hasDiscoloration,
+    });
 }
