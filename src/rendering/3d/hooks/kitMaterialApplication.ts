@@ -35,6 +35,8 @@ import {
   applySelectiveBloomMrt,
   isSelectiveBloomKitGlowName,
 } from '../CharacterScene/selectiveBloom';
+import { markSharedGpuResource } from '../utils/disposeThreeObject';
+import { setTopologyProgramCacheKey } from '../tsl/topologyCacheKey';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
 
@@ -57,11 +59,43 @@ function isGlowMaterialName(name: string | undefined): boolean {
   return !!name && name.toLowerCase().includes('glow');
 }
 
+const emissiveKitCache = new Map<string, StandardMat>();
+
+function emissiveKitCacheKey(
+  mat: StandardMat,
+  spec: KitMaterialSlotOverride,
+  palette: BaseMatoran['colors']
+): string {
+  const color = spec.color ? resolveKitColorSource(spec.color, palette) : mat.color.getStyle();
+  const emissive = spec.emissive ? resolveKitColorSource(spec.emissive, palette) : '';
+  const bloom = isSelectiveBloomKitGlowName(mat.name) ? 1 : 0;
+  return [
+    mat.name,
+    color,
+    emissive,
+    spec.emissiveIntensity ?? (mat.emissiveIntensity > 0 ? mat.emissiveIntensity : 1),
+    spec.metalness ?? '',
+    spec.roughness ?? '',
+    spec.envMapIntensity ?? '',
+    spec.opacity ?? '',
+    bloom,
+    mat.map?.uuid ?? '',
+  ].join('|');
+}
+
+function kitGlowProgramCacheKey(name: string | undefined): string {
+  return `kitGlow|bloom${isSelectiveBloomKitGlowName(name) ? 1 : 0}`;
+}
+
 function buildEmissiveKitMaterial(
   mat: StandardMat,
   spec: KitMaterialSlotOverride,
   palette: BaseMatoran['colors']
 ): StandardMat {
+  const key = emissiveKitCacheKey(mat, spec, palette);
+  const cached = emissiveKitCache.get(key);
+  if (cached) return cached;
+
   const cloned = mat.clone();
   cloned.emissiveMap = null;
   if (spec.color) cloned.color = new Color(resolveKitColorSource(spec.color, palette));
@@ -80,6 +114,9 @@ function buildEmissiveKitMaterial(
   if (isSelectiveBloomKitGlowName(cloned.name)) {
     applySelectiveBloomMrt(cloned);
   }
+  setTopologyProgramCacheKey(cloned, kitGlowProgramCacheKey(cloned.name));
+  markSharedGpuResource(cloned);
+  emissiveKitCache.set(key, cloned);
   return cloned;
 }
 

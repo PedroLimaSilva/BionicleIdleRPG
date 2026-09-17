@@ -15,6 +15,7 @@ import {
 import { NUVA_METAL_PBR } from '../kit/palettes/metalPbr';
 import { type WeatheredMetalOptions } from '../CharacterScene/WeatheredMetalMaterial';
 import { DISCOLORATION_MAP_USERDATA_KEY } from './bakedDiscoloration';
+import { isSharedGpuResource } from '../utils/disposeThreeObject';
 import type { MatoranColors } from '../../../types/Matoran';
 import { LegoColor } from '../../../types/Colors';
 import {
@@ -430,6 +431,30 @@ describe('buildKitMeshMaterials untextured slots', () => {
     expect(next.emissiveIntensity).toBe(1);
     expect(next.emissiveMap).toBeNull();
     expect((next as MeshStandardMaterial & { mrtNode?: unknown }).mrtNode).toBeDefined();
+    expect(next.customProgramCacheKey?.()).toBe('kitGlow|bloom1');
+  });
+
+  test('matching glow slots intern to one shared material', () => {
+    const lookup = buildKitMaterialSlotLookup({
+      Glow: {
+        color: { key: 'eyes', kind: 'palette' },
+        emissive: { key: 'eyes', kind: 'palette' },
+      },
+    });
+    const a = buildKitMeshMaterials(
+      meshWithUvAndSlots(['Glow']),
+      lookup,
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    const b = buildKitMeshMaterials(
+      meshWithUvAndSlots(['Glow']),
+      lookup,
+      COLORS,
+      PLASTIC_WEATHERED
+    ) as MeshStandardMaterial;
+    expect(a).toBe(b);
+    expect(isSharedGpuResource(a)).toBe(true);
   });
 
   test('Glowing Eyes stay emissive without joining the bloom MRT', () => {

@@ -1,6 +1,7 @@
 import { WebGPURenderer } from 'three/webgpu';
 import { isTestMode } from '../../utils/testMode';
 import { installTintSafeNodeLibrary } from './tsl/tintSafe';
+import { installTopologyCacheKeyPatch } from './tsl/installTopologyCacheKeyPatch';
 
 type WebGPURendererOptions = ConstructorParameters<typeof WebGPURenderer>[0];
 
@@ -37,6 +38,7 @@ export async function createSceneWebGPURenderer(props: {
     await renderer.init();
     if (shouldInstallTintSafePatch(forceWebGL, renderer)) {
       installTintSafeNodeLibrary();
+      installTopologyCacheKeyPatch();
     }
     return renderer;
   } catch (error: unknown) {

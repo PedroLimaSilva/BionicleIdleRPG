@@ -21,6 +21,7 @@ import {
   isRenderableBakeMap,
   writeBakedDiscolorationUserData,
 } from '../hooks/bakedDiscoloration';
+import { setTopologyProgramCacheKey } from '../tsl/topologyCacheKey';
 
 type WeatheringGraphOpts = {
   color?: string;
@@ -267,10 +268,12 @@ export function applySharedWeatheringGraph(
   if (dentStrength > 0 && !mat.normalMap) {
     mat.normalNode = dentNormalNode;
   }
-  mat.customProgramCacheKey = () =>
+  setTopologyProgramCacheKey(
+    mat,
     weatheredProgramCacheKey(mat, {
       debugGrime: visualizeGrime,
       dentStrength,
       hasDiscoloration,
-    });
+    })
+  );
 }

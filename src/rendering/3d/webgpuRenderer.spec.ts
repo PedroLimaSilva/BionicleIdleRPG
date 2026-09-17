@@ -3,6 +3,10 @@ import {
   isTintSafeNodeLibraryInstalled,
   uninstallTintSafeNodeLibraryForTests,
 } from './tsl/tintSafe';
+import {
+  isTopologyCacheKeyPatchInstalled,
+  uninstallTopologyCacheKeyPatchForTests,
+} from './tsl/installTopologyCacheKeyPatch';
 import { createSceneWebGPURenderer } from './webgpuRenderer';
 
 jest.mock('../../utils/testMode', () => ({
@@ -14,6 +18,7 @@ const isTestModeMock = isTestMode as jest.MockedFunction<typeof isTestMode>;
 describe('createSceneWebGPURenderer', () => {
   afterEach(() => {
     uninstallTintSafeNodeLibraryForTests();
+    uninstallTopologyCacheKeyPatchForTests();
     isTestModeMock.mockReset();
   });
 
@@ -21,11 +26,13 @@ describe('createSceneWebGPURenderer', () => {
     isTestModeMock.mockReturnValue(true);
     await createSceneWebGPURenderer({ canvas: {} as HTMLCanvasElement });
     expect(isTintSafeNodeLibraryInstalled()).toBe(false);
+    expect(isTopologyCacheKeyPatchInstalled()).toBe(false);
   });
 
   it('installs the Tint patch after a successful WebGPU init', async () => {
     isTestModeMock.mockReturnValue(false);
     await createSceneWebGPURenderer({ canvas: {} as HTMLCanvasElement });
     expect(isTintSafeNodeLibraryInstalled()).toBe(true);
+    expect(isTopologyCacheKeyPatchInstalled()).toBe(true);
   });
 });

@@ -35,6 +35,13 @@ SplitNode.prototype.generate = function generate() {
   return 'unpatched';
 };
 
+class NodeMaterial {
+  userData = {};
+  customProgramCacheKey() {
+    return 'node-walk';
+  }
+}
+
 class WebGPURenderer {
   library = {
     fromMaterial(material) {
@@ -56,6 +63,7 @@ class PMREMGenerator {
 module.exports = {
   BlendMode,
   ColorSpaceNode,
+  NodeMaterial,
   PMREMGenerator,
   RenderPipeline,
   SplitNode,

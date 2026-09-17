@@ -6,6 +6,7 @@ import {
   applySelectiveBloomMrt,
   shouldSelectiveBloomTransmissiveKind,
 } from '../CharacterScene/selectiveBloom';
+import { setTopologyProgramCacheKey } from '../tsl/topologyCacheKey';
 
 /** Kit GLB `KHR_materials_ior` export (~1.45 glass / trans-plastic). */
 export const TRANSMISSIVE_KIT_IOR = 1.45;
@@ -156,7 +157,7 @@ export function buildTransmissiveKitMaterial(
   });
   // WebGPU MeshPhysicalNodeMaterial.useTransmission also keys off this node.
   (mat as { transmissionNode: unknown }).transmissionNode = transmissionNodeFor(kind);
-  mat.customProgramCacheKey = () => transmissiveProgramCacheKey(kind);
+  setTopologyProgramCacheKey(mat, transmissiveProgramCacheKey(kind));
   if (shouldSelectiveBloomTransmissiveKind(kind)) {
     applySelectiveBloomMrt(mat);
   }
