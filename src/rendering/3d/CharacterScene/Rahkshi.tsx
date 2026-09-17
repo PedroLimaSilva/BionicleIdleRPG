@@ -28,6 +28,7 @@ import { KraataPower } from '../../../types/Kraata';
 import type { MatoranColors } from '../../../types/Matoran';
 import { applyWeatheredMetalToObject } from './WeatheredMetalMaterial';
 import { cloneGltfInstance } from '../utils/cloneGltfInstance';
+import { isSharedGpuResource } from '../utils/disposeThreeObject';
 import { applySelectiveBloomMrt, isSelectiveBloomRahkshiGlowMaterial } from './selectiveBloom';
 import { isRahkshiGlowMesh, mapRahkshiGlowMaterials } from './rahkshiGlow';
 import {
@@ -54,6 +55,7 @@ import {
   RAHKSHI_WEATHERED,
   applyRahkshiBattleMaterialsToMesh,
   applyRahkshiBattleSpeciesMetalToMesh,
+  internRahkshiSharedBattleMaterials,
   rahkshiBattleTintMap,
   rahkshiKitColors,
 } from '../kit/palettes/rahkshiKitPalette';
@@ -173,7 +175,10 @@ export const RahkshiModel = forwardRef<
       (nodes[RAHKSHI_DETAILED_RIG_NODE] as Object3D | undefined);
     if (!root) return new Group();
     const cloned = cloneGltfInstance(root);
-    if (isBattle) pruneRahkshiBattleClone(cloned);
+    if (isBattle) {
+      pruneRahkshiBattleClone(cloned);
+      internRahkshiSharedBattleMaterials(cloned);
+    }
     return cloned;
   }, [isBattle, nodes, scene]);
 
@@ -383,7 +388,6 @@ export const RahkshiModel = forwardRef<
         ...RAHKSHI_WEATHERED,
         excludeMaterialNames: ['Eyes', 'SOLID-SILVER', 'SOLID-SILVER.001'],
         materialColorMap,
-        uniqueMaterials: true,
       });
     });
   }, [detailedInstance, detailedMeshUuids, isBattle, kraata, registerGlowMesh, syncLodState]);
@@ -427,9 +431,9 @@ export const RahkshiModel = forwardRef<
         if (!(obj instanceof Mesh)) return;
         const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
         for (const mat of materials) {
-          if (mat instanceof MeshStandardMaterial && mat.name === 'WeatheredMetal') {
-            mat.dispose();
-          }
+          if (!(mat instanceof MeshStandardMaterial) || mat.name !== 'WeatheredMetal') continue;
+          if (isSharedGpuResource(mat)) continue;
+          mat.dispose();
         }
       });
     };

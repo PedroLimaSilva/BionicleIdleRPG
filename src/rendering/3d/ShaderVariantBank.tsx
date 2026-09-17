@@ -155,6 +155,16 @@ function buildVariantPreviewGroup(): Group {
     skeleton
   );
 
+  const battleGltfMat = new MeshStandardMaterial({
+    color: '#6d6e5c',
+    metalness: 0.05,
+    name: 'Battle_Chassis',
+    normalMap: DUMMY_NORMAL_MAP,
+    roughness: 0.55,
+    roughnessMap: DUMMY_ROUGHNESS_MAP,
+  });
+  addPreviewMeshes(group, geo, battleGltfMat, skeleton);
+
   for (const kind of TRANSMISSIVE_KINDS) {
     addPreviewMeshes(
       group,

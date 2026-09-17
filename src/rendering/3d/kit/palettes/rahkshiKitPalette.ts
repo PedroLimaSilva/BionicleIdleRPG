@@ -3,7 +3,15 @@ import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
 import type { MatoranColors } from '../../../../types/Matoran';
 import type { RahkshiArmorColors } from '../../../../data/rahkshiArmorColors';
 import type { WeatheredMetalOptions } from '../../CharacterScene/WeatheredMetalMaterial';
-import { Material, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, SkinnedMesh } from 'three';
+import {
+  Material,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Object3D,
+  SkinnedMesh,
+} from 'three';
+import { markSharedGpuResource } from '../../utils/disposeThreeObject';
 import { kitPartSlots } from './partSlots';
 import { KIT_TECHNIC_MAIN_BLACK, KIT_TECHNIC_MAIN_METAL } from './technicKitPalette';
 
@@ -76,6 +84,54 @@ export function rahkshiBattleTintMap(dex: RahkshiArmorColors): Record<string, st
     Battle_Armor: dex.armor,
     Battle_Joint: dex.joint,
   };
+}
+
+/**
+ * Authored battle slots that never get a per-combatant tint. Interning them
+ * lets the gauntlet trio share GPU pipelines; armor/joint/bloom stay private.
+ */
+export const RAHKSHI_SHARED_BATTLE_MATERIAL_NAMES = new Set([
+  'Battle_Black',
+  'Battle_Chassis',
+  'Battle_Metal',
+  'Battle_Tan',
+]);
+
+const internedBattleMaterials = new Map<string, Material>();
+
+/**
+ * Reuses one MeshStandardMaterial per unchanging battle slot across Rahkshi
+ * clones. Private tint/glow clones are left alone so color and kraata lerp
+ * cannot leak. Interned materials are marked shared so defeat dispose is safe.
+ */
+export function internRahkshiSharedBattleMaterials(root: Object3D): void {
+  root.traverse((child) => {
+    if (!(child as Mesh).isMesh) return;
+    const mesh = child as Mesh;
+    const raw = mesh.material;
+    const materials = Array.isArray(raw) ? raw : [raw];
+    let changed = false;
+    const next = materials.map((mat) => {
+      if (!mat || !RAHKSHI_SHARED_BATTLE_MATERIAL_NAMES.has(mat.name)) return mat;
+      const interned = internedBattleMaterials.get(mat.name);
+      if (interned) {
+        if (mat !== interned) {
+          mat.dispose();
+          changed = true;
+        }
+        return interned;
+      }
+      markSharedGpuResource(mat);
+      internedBattleMaterials.set(mat.name, mat);
+      return mat;
+    });
+    if (!changed) return;
+    mesh.material = Array.isArray(raw) ? next : next[0];
+  });
+}
+
+export function resetRahkshiSharedBattleMaterialsForTests(): void {
+  internedBattleMaterials.clear();
 }
 
 function isTintableBattleMaterial(mat: Material): mat is MeshStandardMaterial {
