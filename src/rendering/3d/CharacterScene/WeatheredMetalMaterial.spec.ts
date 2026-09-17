@@ -9,6 +9,7 @@ import {
 } from 'three';
 import { DISCOLORATION_MAP_USERDATA_KEY } from '../hooks/bakedDiscoloration';
 import { applyWeatheredMetalToObject, getWeatheredMetalMaterial } from './WeatheredMetalMaterial';
+import { isSharedGpuResource } from '../utils/disposeThreeObject';
 
 function mapTex(): DataTexture {
   return new DataTexture(new Uint8Array([255, 0, 0, 255]), 1, 1);
@@ -28,6 +29,7 @@ describe('getWeatheredMetalMaterial', () => {
       metalness: 0.05,
     });
     expect(a).toBe(b);
+    expect(isSharedGpuResource(a)).toBe(true);
     expect(a.color.getHexString()).toBe('c91a09');
     expect(a.normalMap).toBeNull();
     expect(a.map).toBeNull();
@@ -261,6 +263,9 @@ describe('applyWeatheredMetalToObject uniqueMaterials', () => {
     });
 
     expect((a.children[0] as Mesh).material).not.toBe((b.children[0] as Mesh).material);
+    expect(isSharedGpuResource((a.children[0] as Mesh).material as MeshStandardMaterial)).toBe(
+      false
+    );
     expect(((a.children[0] as Mesh).material as MeshStandardMaterial).color.getHexString()).toBe(
       'c91a09'
     );

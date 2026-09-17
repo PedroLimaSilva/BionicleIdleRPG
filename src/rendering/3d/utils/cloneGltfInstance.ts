@@ -1,4 +1,5 @@
 import { Bone, Material, Mesh, Object3D, SkinnedMesh } from 'three';
+import { markSharedGpuResource } from './disposeThreeObject';
 
 function parallelTraverse(
   source: Object3D,
@@ -33,6 +34,9 @@ export function cloneGltfInstance(source: Object3D): Object3D {
 
   cloned.traverse((node) => {
     const mesh = node as Mesh;
+    if (mesh.isMesh && mesh.geometry) {
+      markSharedGpuResource(mesh.geometry);
+    }
     if (mesh.isMesh && mesh.material) {
       mesh.material = cloneMaterials(mesh.material);
     }

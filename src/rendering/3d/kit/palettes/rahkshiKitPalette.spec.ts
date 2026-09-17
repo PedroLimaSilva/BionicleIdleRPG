@@ -1,11 +1,14 @@
-import { MeshStandardMaterial } from 'three';
+import { MeshStandardMaterial, Mesh, BoxGeometry, Group } from 'three';
 import {
   applyRahkshiBattleMaterialsToMesh,
   applyRahkshiBattleSpeciesMetalToMesh,
+  internRahkshiSharedBattleMaterials,
   rahkshiBattleTintMap,
+  resetRahkshiSharedBattleMaterialsForTests,
 } from './rahkshiKitPalette';
 import { KraataPower } from '../../../../types/Kraata';
 import { getRahkshiArmorColors } from '../../../../data/rahkshiArmorColors';
+import { isSharedGpuResource } from '../../utils/disposeThreeObject';
 
 describe('rahkshi battle LOD tints', () => {
   test('rahkshiBattleTintMap only includes armor and joint slots', () => {
@@ -96,5 +99,37 @@ describe('rahkshi battle LOD tints', () => {
     expect(computeBoundingSphere).not.toHaveBeenCalled();
     expect(mesh.geometry.computeBoundingSphere).not.toHaveBeenCalled();
     expect(mesh.frustumCulled).toBe(false);
+  });
+});
+
+describe('internRahkshiSharedBattleMaterials', () => {
+  beforeEach(() => {
+    resetRahkshiSharedBattleMaterialsForTests();
+  });
+
+  function meshWith(name: string, color: string): Mesh {
+    return new Mesh(new BoxGeometry(), new MeshStandardMaterial({ color, name }));
+  }
+
+  test('shares unchanging slots across clones and keeps tint slots private', () => {
+    const first = new Group();
+    first.add(meshWith('Battle_Chassis', '#aaaaaa'), meshWith('Battle_Armor', '#ffffff'));
+    const second = new Group();
+    second.add(meshWith('Battle_Chassis', '#bbbbbb'), meshWith('Battle_Armor', '#cccccc'));
+
+    internRahkshiSharedBattleMaterials(first);
+    internRahkshiSharedBattleMaterials(second);
+
+    const firstChassis = (first.children[0] as Mesh).material as MeshStandardMaterial;
+    const secondChassis = (second.children[0] as Mesh).material as MeshStandardMaterial;
+    const firstArmor = (first.children[1] as Mesh).material as MeshStandardMaterial;
+    const secondArmor = (second.children[1] as Mesh).material as MeshStandardMaterial;
+
+    expect(secondChassis).toBe(firstChassis);
+    expect(isSharedGpuResource(firstChassis)).toBe(true);
+    expect(firstArmor).not.toBe(secondArmor);
+    expect(isSharedGpuResource(firstArmor)).toBe(false);
+    expect(firstArmor.color.getHexString()).toBe('ffffff');
+    expect(secondArmor.color.getHexString()).toBe('cccccc');
   });
 });

@@ -30,7 +30,6 @@ function applyGauntletColors(root: Group, power: KraataPower) {
   applyWeatheredMetalToObject(root, {
     ...RAHKSHI_WEATHERED,
     materialColorMap: rahkshiColorMap(power),
-    uniqueMaterials: true,
   });
 }
 
@@ -66,6 +65,16 @@ describe('Rahkshi gauntlet instance coloring', () => {
     expect((fragmentation.children[0] as Mesh).material).not.toBe(
       (disintegration.children[0] as Mesh).material
     );
+  });
+
+  it('same-power clones share cached weathered materials', () => {
+    const template = makeSharedRahkshiRig();
+    const first = cloneGltfInstance(template) as Group;
+    const second = cloneGltfInstance(template) as Group;
+    applyGauntletColors(first, KraataPower.Fear);
+    applyGauntletColors(second, KraataPower.Fear);
+
+    expect((first.children[0] as Mesh).material).toBe((second.children[0] as Mesh).material);
   });
 
   it('mutating one instance color does not retint the others', () => {

@@ -18,6 +18,7 @@ import {
   Vector2,
 } from 'three';
 import { getBakedDiscolorationMap } from '../hooks/bakedDiscoloration';
+import { markSharedGpuResource } from '../utils/disposeThreeObject';
 import { applySharedWeatheringGraph, type WeatheredTslMaterial } from './weatheredMetalGraph';
 
 export type WeatheredMetalOptions = {
@@ -163,7 +164,9 @@ export function getWeatheredMetalMaterial(
 ): MeshStandardMaterial {
   const key = cacheKey(color, opts);
   if (!materialCache.has(key)) {
-    materialCache.set(key, createWeatheredMetalMaterial({ ...opts, color }));
+    const material = createWeatheredMetalMaterial({ ...opts, color });
+    markSharedGpuResource(material);
+    materialCache.set(key, material);
   }
   return materialCache.get(key)!;
 }
@@ -249,8 +252,9 @@ export function applyWeatheredMetalToObject(
     excludeMaterialNamesNormalized?: Set<string>;
     materialColorMap?: Record<string, string>;
     /**
-     * Battle enemies that share a GLB (Rahkshi gauntlet) must not reuse the
-     * weathered-material cache. Defeat dispose would otherwise poison later waves.
+     * Private instances that skip the weathered-material cache. Prefer the cache
+     * in combat — cached materials are marked shared so defeat dispose cannot
+     * poison later waves.
      */
     uniqueMaterials?: boolean;
   } = {}

@@ -9,6 +9,7 @@ import {
   SkinnedMesh,
 } from 'three';
 import { cloneGltfInstance } from './cloneGltfInstance';
+import { isSharedGpuResource } from './disposeThreeObject';
 
 describe('cloneGltfInstance', () => {
   it('gives each instance its own materials so color tints do not leak', () => {
@@ -52,5 +53,18 @@ describe('cloneGltfInstance', () => {
     expect(firstSkinned.skeleton).not.toBe(secondSkinned.skeleton);
     expect(firstSkinned.skeleton.bones[0]).not.toBe(bone);
     expect(firstSkinned.skeleton.bones[0]).toBe(firstSkinned.children[0]);
+  });
+
+  it('marks cloned geometry as shared so defeat dispose cannot poison the GLTF', () => {
+    const geometry = new BoxGeometry();
+    const mesh = new Mesh(geometry, new MeshStandardMaterial());
+    const template = new Group();
+    template.add(mesh);
+
+    const clone = cloneGltfInstance(template);
+    const clonedMesh = clone.children[0] as Mesh;
+
+    expect(clonedMesh.geometry).toBe(geometry);
+    expect(isSharedGpuResource(geometry)).toBe(true);
   });
 });

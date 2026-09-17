@@ -43,8 +43,9 @@ const ROTATION_RESTORE_DURATION = 0.25;
 const DEFEAT_SINK_DEPTH = 0.55;
 
 /**
- * Enemy GLB clones (Rahkshi, Bohrok, …) own their geometry and per-instance materials
- * (weathered-metal shader clones, eye clones). Toa templates share cached GLTF assets.
+ * Enemy GLB clones share template geometry and interned unchanging battle
+ * materials. Defeat dispose skips those shared GPU resources and only frees
+ * per-instance tint/glow/fade clones. Toa templates share cached GLTF assets.
  */
 function shouldDisposeBattleModelResources(model: string): boolean {
   return (
@@ -130,7 +131,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     const childRef = useRef<CombatantModelHandle | null>(null);
 
     const baseRotationY = side === 'team' ? Math.PI : 0;
-    const [overrideRotationY, setOverrideRotationY] = useState<number | null>(null);
+    const facingYRef = useRef<number | null>(null);
     const restoreRef = useRef<{ from: number; startTimeMs: number } | null>(null);
     const [modelDisposed, setModelDisposed] = useState(false);
     const modelResourcesDisposedRef = useRef(false);
@@ -157,20 +158,25 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
     }, [freeModelResources]);
 
     useFrame(() => {
-      const restore = restoreRef.current;
-      if (restore) {
-        const elapsedSec = (performance.now() - restore.startTimeMs) / 1000;
-        const t = battleSpeedProgress(elapsedSec, ROTATION_RESTORE_DURATION);
-        setOverrideRotationY(lerpAngle(restore.from, baseRotationY, t));
-        if (t >= 1) {
-          restoreRef.current = null;
-          setOverrideRotationY(null);
+      const g = modelGroup.current;
+      if (g) {
+        const restore = restoreRef.current;
+        if (restore) {
+          const elapsedSec = (performance.now() - restore.startTimeMs) / 1000;
+          const t = battleSpeedProgress(elapsedSec, ROTATION_RESTORE_DURATION);
+          g.rotation.y = lerpAngle(restore.from, baseRotationY, t);
+          if (t >= 1) {
+            restoreRef.current = null;
+            facingYRef.current = null;
+            g.rotation.y = baseRotationY;
+          }
+        } else {
+          g.rotation.y = facingYRef.current ?? baseRotationY;
         }
       }
 
       const sink = defeatSinkRef.current;
       if (!sink.active) return;
-      const g = modelGroup.current;
       if (!g) {
         sink.active = false;
         sink.onDone?.();
@@ -200,7 +206,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
       done?.();
     });
 
-    const rotationY = overrideRotationY ?? baseRotationY;
+    const rotation: Euler = [0, baseRotationY, 0];
     const attackCompleteRef = useRef<Promise<void>>(Promise.resolve());
 
     useImperativeHandle(ref, () => ({
@@ -219,7 +225,10 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
 
           if (selfPos && targetPos) {
             facingY = getFacingRotation(selfPos, targetPos);
-            setOverrideRotationY(facingY);
+            facingYRef.current = facingY;
+            if (modelGroup.current) {
+              modelGroup.current.rotation.y = facingY;
+            }
           }
         }
 
@@ -302,8 +311,6 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
       },
       waitForAttackComplete: () => attackCompleteRef.current,
     }));
-
-    const rotation: Euler = [0, rotationY, 0];
 
     const kitReadyProps = onModelReady ? { onKitMeshesAttached: onModelReady } : undefined;
 
