@@ -64,6 +64,7 @@ describe('setupMaskDiscolorationShader', () => {
     expect(mat.roughnessNode).toBeDefined();
     expect(mat.emissiveIntensity).toBe(0);
     expect(mat.customProgramCacheKey()).toBe('mask_discolor|tx0|dc1');
+    expect(mat.userData.topologyProgramCacheKey).toBe('mask_discolor|tx0|dc1');
   });
 
   test('shares a bake program across cloned mask materials', () => {

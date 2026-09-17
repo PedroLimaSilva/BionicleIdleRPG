@@ -94,5 +94,6 @@ describe('transmissiveKitMaterial', () => {
     const b = buildTransmissiveKitMaterial('MataBrain', 'brain', '#F8F184', '#F8F184', 0.1);
     expect(a).toBe(b);
     expect(a.customProgramCacheKey?.()).toBe('transmissiveKit|brain|bloom1');
+    expect(a.userData.topologyProgramCacheKey).toBe('transmissiveKit|brain|bloom1');
   });
 });

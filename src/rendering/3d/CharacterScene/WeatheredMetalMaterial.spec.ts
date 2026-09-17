@@ -10,6 +10,7 @@ import {
 import { DISCOLORATION_MAP_USERDATA_KEY } from '../hooks/bakedDiscoloration';
 import { applyWeatheredMetalToObject, getWeatheredMetalMaterial } from './WeatheredMetalMaterial';
 import { isSharedGpuResource } from '../utils/disposeThreeObject';
+import { TOPOLOGY_PROGRAM_CACHE_KEY } from '../tsl/topologyCacheKey';
 
 function mapTex(): DataTexture {
   return new DataTexture(new Uint8Array([255, 0, 0, 255]), 1, 1);
@@ -152,6 +153,10 @@ describe('getWeatheredMetalMaterial', () => {
     const gold = getWeatheredMetalMaterial('#b48455', { metalness: 0.05 });
     expect(red).not.toBe(gold);
     expect(red.customProgramCacheKey?.()).toBe(gold.customProgramCacheKey?.());
+    expect(red.userData[TOPOLOGY_PROGRAM_CACHE_KEY]).toBe(red.customProgramCacheKey?.());
+    expect(gold.userData[TOPOLOGY_PROGRAM_CACHE_KEY]).toBe(
+      red.userData[TOPOLOGY_PROGRAM_CACHE_KEY]
+    );
   });
 
   test('different discoloration maps share a GPU program but not a material', () => {

@@ -11,6 +11,7 @@ import {
   uniform,
 } from 'three/tsl';
 import { applySelectiveBloomMrt, clearSelectiveBloomMrt } from '../CharacterScene/selectiveBloom';
+import { setTopologyProgramCacheKey } from '../tsl/topologyCacheKey';
 import {
   adoptBakedDiscolorationMap,
   applyBakedDiscolorationUniforms,
@@ -238,7 +239,7 @@ function attachDiscolorationShader(
     tslMat.roughnessNode = maskRoughnessNode;
   }
   const programKey = `mask_discolor|tx${maskUsesTransmissionRendering(mat) ? 1 : 0}|dc${hasBake ? 1 : 0}`;
-  mat.customProgramCacheKey = () => programKey;
+  setTopologyProgramCacheKey(mat, programKey);
   mat.needsUpdate = true;
 }
 
