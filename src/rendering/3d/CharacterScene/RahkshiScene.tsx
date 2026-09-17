@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { PresentationControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
-import { DirectionalLight, Mesh, Object3D } from 'three';
+import { DirectionalLight, Object3D } from 'three';
 
 import { useSettings } from '../../../context/useSettings';
 import { SceneHdriEnvironment } from '../SceneHdriEnvironment';
@@ -9,6 +9,15 @@ import { CITY_ENVIRONMENT_PROPS } from '../utils/cityEnvironmentHdri';
 import { isTestMode, shouldEnableShadows } from '../../../utils/testMode';
 import { KraataPower } from '../../../types/Kraata';
 import { CYLINDER_CENTER_Y, CYLINDER_HEIGHT, CYLINDER_RADIUS } from './BoundsCylinder';
+import {
+  applySheetMeshShadows,
+  SHEET_SHADOW_BIAS,
+  SHEET_SHADOW_CAM_EXTENT,
+  SHEET_SHADOW_CAM_FAR,
+  SHEET_SHADOW_CAM_NEAR,
+  SHEET_SHADOW_MAP_SIZE,
+  SHEET_SHADOW_NORMAL_BIAS,
+} from './sheetShadows';
 import { CharacterSelectiveBloom } from './CharacterSelectiveBloom';
 import { SceneCompileAsync } from '../SceneCompileAsync';
 import { ShaderVariantBank } from '../ShaderVariantBank';
@@ -55,13 +64,7 @@ export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKr
   useEffect(() => {
     if (!effectiveShadows || !sceneRootRef.current) return;
     const applyShadowProps = () => {
-      sceneRootRef.current?.traverse((child) => {
-        if ((child as Mesh).isMesh) {
-          const mesh = child as Mesh;
-          mesh.castShadow = true;
-          mesh.receiveShadow = true;
-        }
-      });
+      applySheetMeshShadows(sceneRootRef.current);
     };
     applyShadowProps();
     const t = setTimeout(applyShadowProps, 500);
@@ -95,15 +98,16 @@ export function RahkshiScene({ hasKraata, kraata }: { kraata: KraataPower; hasKr
         position={[3, CENTER_Y + 8, 10]}
         intensity={SHEET_KEY_INTENSITY}
         castShadow={effectiveShadows}
-        shadow-mapSize={[2048, 2048]}
-        shadow-camera-near={0.5}
-        shadow-camera-far={50}
-        shadow-camera-left={-CYLINDER_RADIUS * 2}
-        shadow-camera-right={CYLINDER_RADIUS * 2}
-        shadow-camera-top={CYLINDER_HEIGHT * 0.75}
-        shadow-camera-bottom={-CYLINDER_HEIGHT * 0.75}
-        shadow-bias={-0.0005}
-        shadow-normalBias={0.01}
+        shadow-mapSize={[SHEET_SHADOW_MAP_SIZE, SHEET_SHADOW_MAP_SIZE]}
+        shadow-camera-near={SHEET_SHADOW_CAM_NEAR}
+        shadow-camera-far={SHEET_SHADOW_CAM_FAR}
+        shadow-camera-left={-SHEET_SHADOW_CAM_EXTENT}
+        shadow-camera-right={SHEET_SHADOW_CAM_EXTENT}
+        shadow-camera-top={SHEET_SHADOW_CAM_EXTENT}
+        shadow-camera-bottom={-SHEET_SHADOW_CAM_EXTENT}
+        shadow-bias={SHEET_SHADOW_BIAS}
+        shadow-normalBias={SHEET_SHADOW_NORMAL_BIAS}
+        shadow-radius={2}
       />
       <directionalLight position={[-3, CENTER_Y + 2, -2]} intensity={SHEET_FILL_INTENSITY} />
       {effectiveShadows && (

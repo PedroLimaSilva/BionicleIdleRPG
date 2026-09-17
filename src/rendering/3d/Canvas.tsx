@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Canvas, useThree } from '@react-three/fiber';
 import { useBlocker, useLocation } from 'react-router-dom';
 import { useReducedMotion } from 'motion/react';
-import { PCFShadowMap, SRGBColorSpace } from 'three';
+import { PCFSoftShadowMap, SRGBColorSpace } from 'three';
 import { SceneCanvasContext } from './hooks/useSceneCanvas';
 import { Perf } from 'r3f-perf';
 import { shouldEnableShadows, isTestMode } from '../../utils/testMode';
@@ -66,7 +66,7 @@ function ShadowMapConfig() {
   const shadowMapsOn = shadowsEnabled && shouldEnableShadows();
   useEffect(() => {
     gl.shadowMap.enabled = shadowMapsOn;
-    gl.shadowMap.type = PCFShadowMap;
+    gl.shadowMap.type = PCFSoftShadowMap;
   }, [gl, shadowMapsOn]);
   return null;
 }
