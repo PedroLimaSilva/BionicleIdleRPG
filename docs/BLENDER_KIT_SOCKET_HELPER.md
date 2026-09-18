@@ -28,6 +28,17 @@ empties with zeroed transforms, and skips parts not yet in the library.
 Paste a `*KitAttach.ts` snippet into **JSON** for material preview during sync.
 **Copy Scene** exports a TypeScript attachment map to the clipboard when done.
 
+### 5. Battle LOD bake (optional)
+
+On **battle-only duplicates** in a `Battle` collection ([`MESH_GAME_PASS.md`](MESH_GAME_PASS.md)):
+
+1. Assign bucket materials (`Battle_Main`, `Battle_Armor`, …).
+2. **Rigid Weights (Bone Parent)** — for kit parts still parented to a bone: 100% vertex group, Armature modifier, clear bone parent (keep transform).
+3. **Join Battle Buckets** — joins selected meshes that share the same material; only `Battle_*` opaque slots (skips `Battle_Bloom`, `Battle_Brain`, `Battle_Eyes`, `Battle_Weapon_Glow`).
+4. **Join By Material** — same as (3) but includes any shared material name (useful for one-off joins).
+
+Joined objects are renamed to the material bucket (e.g. `Battle_Main`). Run once per bucket group; select all battle copies that should collapse together.
+
 ## Export
 
 Export the character GLB with socket empties. Exclude `Kit` collection preview
@@ -42,5 +53,7 @@ operators from Cursor against a live Blender session.
 ## Tests
 
 ```bash
-python3 tools/blender/test_kit_socket_infer.py
+cd tools/blender
+python3 test_kit_socket_infer.py
+python3 test_battle_lod_join.py
 ```

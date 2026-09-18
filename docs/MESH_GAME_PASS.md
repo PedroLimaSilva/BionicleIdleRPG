@@ -80,7 +80,7 @@ Never join battle geometry into objects that dex export still needs as separate 
 3. **Duplicate for battle** — duplicate kit instances + embedded body **into `Battle`** (object duplicates). Use **linked mesh data** (`Alt+D`) until you intentionally apply; battle copies can become single-user at bake time without touching dex copies.
 4. **Assign bucket materials** — rename materials to `Battle_Main`, `Battle_Armor`, etc. ([`battle-lod/TAHU_MATA.md`](battle-lod/TAHU_MATA.md), [`battle-lod/RAHKSHI.md`](battle-lod/RAHKSHI.md)).
 5. **Weights** — see next section; rigid kit → 100% vertex group per bone **before** join.
-6. **Join per bucket** — join all `Battle_Main` into one mesh, all `Battle_Secondary` into one, etc. **Do not** join opaque buckets with glow/brain/bloom meshes.
+6. **Join per bucket** — join all `Battle_Main` into one mesh, all `Battle_Secondary` into one, etc. **Do not** join opaque buckets with glow/brain/bloom meshes. The kit addon panel (**Join Battle Buckets**, **Rigid Weights**) automates this — see [`BLENDER_KIT_SOCKET_HELPER.md`](BLENDER_KIT_SOCKET_HELPER.md).
 7. **Parent / armature** — one Armature modifier on each joined object, same `Rahkshi` / `Tahu` armature; bind **Vertex Groups**.
 8. **Export** — same armature, shared actions; battle nodes sibling to dex root per species doc.
 

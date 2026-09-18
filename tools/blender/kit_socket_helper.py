@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Bionicle Kit Socket Helper",
     "author": "Bionicle Idle RPG contributors",
-    "version": (0, 4, 1),
+    "version": (0, 5, 0),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Bionicle Kit",
     "description": "Automate shared-kit socket empties, kit preview attachment, and export prep.",
@@ -48,6 +48,44 @@ def _load_infer_helpers():
 
 
 infer_kit_node_name, strip_numeric_suffix = _load_infer_helpers()
+
+
+def _load_battle_lod_join():
+    join_path = Path(__file__).with_name("battle_lod_join.py")
+    if join_path.exists():
+        spec = importlib.util.spec_from_file_location("battle_lod_join", join_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    class _Fallback:
+        BATTLE_PASS_MATERIALS = frozenset()
+
+        @staticmethod
+        def group_entries_by_material(entries):
+            buckets = {}
+            for object_name, material_name in entries:
+                if not material_name or not str(material_name).strip():
+                    continue
+                key = str(material_name).strip()
+                buckets.setdefault(key, []).append(object_name)
+            return buckets
+
+        @staticmethod
+        def should_batch_join_battle_bucket(material_name, *, prefix="Battle_", exclude=None):
+            if not material_name or not str(material_name).strip():
+                return False
+            key = str(material_name).strip()
+            if not key.startswith(prefix):
+                return False
+            if exclude and key in exclude:
+                return False
+            return True
+
+    return _Fallback()
+
+
+battle_lod_join = _load_battle_lod_join()
 
 SOCKET_PROP = "bionicle_socket"
 KIT_NODE_PROP = "bionicle_kit_node"
@@ -606,6 +644,126 @@ def attach_kit_previews(context, sockets=None, scene=None):
     return attached
 
 
+def _mesh_primary_material_name(obj):
+    if obj.type != "MESH":
+        return None
+    if obj.active_material:
+        return obj.active_material.name
+    mesh = obj.data
+    if mesh and mesh.materials and mesh.materials[0]:
+        return mesh.materials[0].name
+    return None
+
+
+def _selected_mesh_objects(context):
+    return [obj for obj in context.selected_objects if obj.type == "MESH"]
+
+
+def _join_mesh_objects(context, objects):
+    if not objects:
+        return None
+    if len(objects) == 1:
+        return objects[0]
+    view_layer = context.view_layer
+    if context.mode != "OBJECT":
+        bpy.ops.object.mode_set(mode="OBJECT")
+    bpy.ops.object.select_all(action="DESELECT")
+    for obj in objects:
+        obj.select_set(True)
+    view_layer.objects.active = objects[0]
+    bpy.ops.object.join()
+    return view_layer.objects.active
+
+
+def join_meshes_by_material(context, meshes, *, battle_buckets_only=False):
+    prefix = context.scene.bionicle_battle_material_prefix.strip() or "Battle_"
+    entries = []
+    for obj in meshes:
+        material_name = _mesh_primary_material_name(obj)
+        if battle_buckets_only and not battle_lod_join.should_batch_join_battle_bucket(
+            material_name,
+            prefix=prefix,
+            exclude=battle_lod_join.BATTLE_PASS_MATERIALS,
+        ):
+            continue
+        entries.append((obj.name, material_name))
+
+    grouped = battle_lod_join.group_entries_by_material(entries)
+    joined = []
+    singleton_buckets = 0
+    for material_key in sorted(grouped.keys()):
+        names = grouped[material_key]
+        objects = [context.scene.objects[name] for name in names if name in context.scene.objects]
+        if len(objects) < 2:
+            singleton_buckets += 1
+            continue
+        result = _join_mesh_objects(context, objects)
+        if result:
+            result.name = material_key
+            joined.append(result)
+
+    return {
+        "joined": joined,
+        "singleton_buckets": singleton_buckets,
+        "bucket_count": len(grouped),
+    }
+
+
+def _rigid_bone_for_mesh(obj):
+    if obj.parent_type == "BONE" and obj.parent and obj.parent.type == "ARMATURE":
+        if obj.parent_bone:
+            return obj.parent, obj.parent_bone
+    return None, None
+
+
+def assign_rigid_bone_weights_to_mesh(obj, armature, bone_name, *, clear_other_groups=True):
+    mesh = obj.data
+    if mesh is None or not hasattr(mesh, "vertices"):
+        return False
+
+    if clear_other_groups:
+        for vertex_group in list(obj.vertex_groups):
+            if vertex_group.name != bone_name:
+                obj.vertex_groups.remove(vertex_group)
+
+    if bone_name not in obj.vertex_groups:
+        obj.vertex_groups.new(name=bone_name)
+    group = obj.vertex_groups[bone_name]
+    group.add(range(len(mesh.vertices)), 1.0, "REPLACE")
+
+    armature_modifier = None
+    for modifier in obj.modifiers:
+        if modifier.type == "ARMATURE" and modifier.object == armature:
+            armature_modifier = modifier
+            break
+    if armature_modifier is None:
+        armature_modifier = obj.modifiers.new(name="Armature", type="ARMATURE")
+        armature_modifier.object = armature
+    return True
+
+
+def assign_rigid_bone_weights(context, meshes):
+    view_layer = context.view_layer
+    if context.mode != "OBJECT":
+        bpy.ops.object.mode_set(mode="OBJECT")
+
+    updated = []
+    skipped = []
+    for obj in meshes:
+        armature, bone_name = _rigid_bone_for_mesh(obj)
+        if not armature or not bone_name:
+            skipped.append(obj.name)
+            continue
+        assign_rigid_bone_weights_to_mesh(obj, armature, bone_name)
+        if obj.parent_type == "BONE":
+            bpy.ops.object.select_all(action="DESELECT")
+            obj.select_set(True)
+            view_layer.objects.active = obj
+            bpy.ops.object.parent_clear(type="KEEP_TRANSFORM")
+        updated.append(obj.name)
+    return {"updated": updated, "skipped": skipped}
+
+
 def process_selected_kit_sockets(context, scene=None):
     scene = scene or _active_scene(context)
     sources = [obj for obj in context.selected_objects if obj.type != "EMPTY"]
@@ -843,6 +1001,80 @@ class BIONICLE_OT_apply_material_preview(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class BIONICLE_OT_join_selected_by_material(bpy.types.Operator):
+    """Join selected meshes that share the same active material (one object per material)."""
+
+    bl_idname = "bionicle.join_selected_by_material"
+    bl_label = "Join Selected By Material"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        meshes = _selected_mesh_objects(context)
+        if len(meshes) < 2:
+            self.report({"WARNING"}, "Select at least two mesh objects")
+            return {"CANCELLED"}
+        result = join_meshes_by_material(context, meshes, battle_buckets_only=False)
+        message = f"Joined {len(result['joined'])} material bucket(s)"
+        if result["singleton_buckets"]:
+            message += f"; {result['singleton_buckets']} bucket(s) had only one mesh"
+        self.report({"INFO"}, message)
+        return {"FINISHED"}
+
+
+class BIONICLE_OT_join_battle_buckets(bpy.types.Operator):
+    """Join selected Battle_* opaque buckets (skips glow, brain, eyes, weapon glow)."""
+
+    bl_idname = "bionicle.join_battle_buckets"
+    bl_label = "Join Battle Buckets (Selected)"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        meshes = _selected_mesh_objects(context)
+        if len(meshes) < 2:
+            self.report({"WARNING"}, "Select at least two battle mesh objects")
+            return {"CANCELLED"}
+        result = join_meshes_by_material(context, meshes, battle_buckets_only=True)
+        if not result["joined"]:
+            self.report(
+                {"WARNING"},
+                "No buckets joined — assign Battle_* materials (opaque slots) to at least two meshes each",
+            )
+            return {"CANCELLED"}
+        message = f"Joined {len(result['joined'])} battle bucket(s)"
+        if result["singleton_buckets"]:
+            message += f"; {result['singleton_buckets']} bucket(s) had only one mesh"
+        self.report({"INFO"}, message)
+        return {"FINISHED"}
+
+
+class BIONICLE_OT_assign_rigid_bone_weights(bpy.types.Operator):
+    """Rigid kit parts: 100% weight to parent bone, Armature modifier, then clear bone parent."""
+
+    bl_idname = "bionicle.assign_rigid_bone_weights"
+    bl_label = "Assign Rigid Bone Weights"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        meshes = _selected_mesh_objects(context)
+        if not meshes:
+            self.report({"WARNING"}, "Select mesh object(s) bone-parented to the armature")
+            return {"CANCELLED"}
+        result = assign_rigid_bone_weights(context, meshes)
+        if not result["updated"]:
+            self.report(
+                {"WARNING"},
+                "No meshes updated — each object must be parented to a bone (parent type Bone)",
+            )
+            return {"CANCELLED"}
+        message = f"Assigned rigid weights on {len(result['updated'])} mesh(es)"
+        if result["skipped"]:
+            message += f"; skipped {len(result['skipped'])} without bone parent"
+            for name in result["skipped"]:
+                print(f"[Bionicle Kit Sockets] rigid weights skipped: {name}")
+        self.report({"INFO"}, message)
+        return {"FINISHED"}
+
+
 class BIONICLE_OT_copy_attachment_map(bpy.types.Operator):
     """Copy a TypeScript socket attachment map for selected or scene socket empties."""
 
@@ -929,6 +1161,28 @@ class BIONICLE_PT_kit_socket_helper(bpy.types.Panel):
         op.scope = "SELECTED"
         op = row.operator("bionicle.copy_attachment_map", text="Copy Scene")
         op.scope = "SCENE"
+
+        box = layout.box()
+        box.label(text="4. Battle LOD bake")
+        box.label(text="Duplicate battle copies, assign Battle_*")
+        box.label(text="materials, rigid weights, then join per bucket.")
+        box.prop(scene, "bionicle_battle_material_prefix", text="Prefix")
+        box.operator(
+            "bionicle.assign_rigid_bone_weights",
+            icon="MOD_ARMATURE",
+            text="Rigid Weights (Bone Parent)",
+        )
+        row = box.row(align=True)
+        row.operator(
+            "bionicle.join_battle_buckets",
+            icon="AUTOMERGE_ON",
+            text="Join Battle Buckets",
+        )
+        row.operator(
+            "bionicle.join_selected_by_material",
+            icon="OUTLINER_OB_MESH",
+            text="Join By Material",
+        )
 
 
 def _register_scene_props():
@@ -1051,6 +1305,11 @@ def _register_scene_props():
         description='Optional palette for material preview, e.g. {"mask":"#FFFFFF","body":"#C91A09"}',
         default="",
     )
+    bpy.types.Scene.bionicle_battle_material_prefix = bpy.props.StringProperty(
+        name="Battle Material Prefix",
+        description="Material names starting with this prefix are joined by Join Battle Buckets",
+        default="Battle_",
+    )
 
 
 def _unregister_scene_props():
@@ -1075,6 +1334,7 @@ def _unregister_scene_props():
     del bpy.types.Scene.bionicle_kit_library_path
     del bpy.types.Scene.bionicle_attachment_map_json
     del bpy.types.Scene.bionicle_palette_json
+    del bpy.types.Scene.bionicle_battle_material_prefix
 
 
 classes = (
@@ -1085,6 +1345,9 @@ classes = (
     BIONICLE_OT_attach_kit_previews,
     BIONICLE_OT_reset_kit_preview_transforms,
     BIONICLE_OT_apply_material_preview,
+    BIONICLE_OT_join_selected_by_material,
+    BIONICLE_OT_join_battle_buckets,
+    BIONICLE_OT_assign_rigid_bone_weights,
     BIONICLE_OT_copy_attachment_map,
     BIONICLE_PT_kit_socket_helper,
 )
