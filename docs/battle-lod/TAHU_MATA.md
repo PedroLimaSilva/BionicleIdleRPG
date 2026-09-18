@@ -109,6 +109,8 @@ All remaining plastic sockets: ankles, arms (L), chest, waist, legs, feet, hands
 
 ## Blender workflow
 
+Linked kit, vertex weights before join, and rebaking when the library changes: [`MESH_GAME_PASS.md`](../MESH_GAME_PASS.md).
+
 ### 1. Prepare battle collection
 
 1. Duplicate the posed rig + all kit instances (or append from `kit_2001.glb` + `tahu.glb`).

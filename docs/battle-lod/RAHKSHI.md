@@ -125,6 +125,8 @@ Character dex defaults to the **detailed** kit path; toggle **Battle LOD** on Ra
 
 ## Blender export checklist
 
+For linked kit maintenance and a **repeatable** battle bake (instead of one destructive join in the dex file), see [`MESH_GAME_PASS.md`](../MESH_GAME_PASS.md) — _Battle LOD: bake parallel to dex_ and _Skinning: rigid kit parts_.
+
 1. **One armature** — `Rahkshi` only (no `Rahkshi_Battle`).
 2. **Battle body** — parent opaque geometry under a **`Battle_Body` Group**; one skinned mesh per `Battle_*` material slot; skin to `Rahkshi` bones with **vertex groups** (Armature modifier → `Rahkshi`, bind to **Vertex Groups**). Merging all slots into one mesh is fine too, but the current export uses a group of six skinned parts.
 3. **Battle glow** — join eyes + head disk → **`Battle_Glow`** under `Head`; **one** material **`Battle_Bloom`**.
