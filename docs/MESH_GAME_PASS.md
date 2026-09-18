@@ -36,11 +36,94 @@ Use before exporting to `public/**/*.glb`.
 
 1. **Apply transforms** — scale especially; unapplied scale breaks normals, shadows, and glTF skin bind matrices.
 2. **Delete never-seen geometry** — internal shells, duplicate studs, Cycles-only holdout pieces, micro-bevel support loops.
-3. **Manifold sanity** — fix non-manifold edges before subdivision or heavy booleans; 3D Print Toolbox / Mesh → Clean Up.
+3. **Manifold sanity** — 3D Print Toolbox **Check All** / **Make Manifold**, plus manual **Select All by Trait** (see [cleanup section](#cleaning-inherited-render-meshes-manifold-junk-geo-lod)).
 4. **Material slots** — merge zones that share the same runtime tint workflow; keep separate slots only when the engine must (emissive, transmissive brain, selective bloom).
 5. **Triangle budget at game scale** — frame the model at sheet/battle distance; decimate or remove micro-faces before relying on a Decimate modifier on the whole body.
 6. **Normals over micro-geo** — bake bevel/detail to a normal map when the silhouette already reads at target scale.
 7. **Export** — one skinned armature per character file; Draco via `yarn compress` shrinks payload but does not remove useless triangles.
+
+---
+
+## Cleaning inherited render meshes (manifold, junk geo, LOD)
+
+You are not re-authoring from scratch — you are **reducing** meshes built for Cycles close-ups so they behave in a real-time engine. Use **any tool that helps**, in a fixed order, on a **duplicate** (kit library or `Battle` collection copy). Never run destructive cleanup on the only linked dex instance.
+
+### Golden rules
+
+1. **Duplicate first** — `Alt+D` (linked mesh) or full copy into a cleanup collection; keep a pre-cleanup blend if the mesh is precious.
+2. **Apply scale** (`Ctrl+A → Scale`) before merge distance / Make Manifold — thresholds are in meters.
+3. **One object at a time** for diagnosis — joined megameshes hide interior junk until you separate by loose parts.
+4. **Intentional holes stay open** — stud bores, eye sockets, mask interiors: Make Manifold may **cap** openings you need. Undo and fix those regions manually.
+5. **Verify after every automated step** — rotate in solid shading + matcap; re-run checks; compare triangle count in the viewport overlay.
+
+### Recommended order (fast → careful)
+
+| Step | Tool                                         | Purpose                                                                                                                                                                          |
+| ---- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | Viewport **Stats** (overlay)                 | Baseline face/vert count                                                                                                                                                         |
+| 2    | **3D Print Toolbox** → Check All             | Lists non-manifold edges, zero faces, thin/degenerate geometry ([Blender extensions](https://extensions.blender.org/add-ons/print3d-toolbox/))                                   |
+| 3    | Edit Mode → **Select → Select All by Trait** | Target **Non Manifold** (vertex/edge mode), **Interior Faces**, **Loose Geometry**                                                                                               |
+| 4    | **Mesh → Clean Up**                          | Merge by Distance, Delete Loose, Degenerate Dissolve, Dissolve Limited                                                                                                           |
+| 5    | **3D Print Toolbox → Make Manifold**         | Heuristic fix: merge doubles, delete interior/loose, fill small holes, recalc normals — **review before accepting**                                                              |
+| 6    | **Hard Ops → Clean Mesh**                    | Dissolve boolean “spinal” edges, merge doubles on hard-surface — **not** a full manifold repair ([Hard Ops manual](https://hardops-manual.readthedocs.io/en/latest/operations/)) |
+| 7    | **Decimate (Planar)** or manual delete       | Drop micro-faces that do not read at sheet scale                                                                                                                                 |
+| 8    | Normals                                      | **Mesh → Normals → Recalculate Outside**; optional **Weighted Normal** on flat LEGO panels                                                                                       |
+
+Install **3D Print Toolbox** from `Edit → Preferences → Extensions` (not bundled in Blender 4.2+ the way older versions were).
+
+### Make Manifold vs Hard Ops Clean Mesh
+
+They solve **different** problems:
+
+|                   | **Make Manifold** (3D Print Toolbox)                          | **Clean Mesh** (Hard Ops)                                                                                       |
+| ----------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Goal**          | Printable solid: watertight shell, consistent normals         | Tidy hard-surface topology after booleans/bevels                                                                |
+| **Typical fixes** | Holes, internal faces, loose verts, duplicate verts           | Dissolve useless edges/points, boolean spines, doubles                                                          |
+| **Risk**          | Caps intentional openings; deletes interior you meant to keep | Can dissolve more than you want if used globally — prefer **selection-only** / edit-mode options in recent HOps |
+| **When**          | After import, messy booleans, “shading breaks everywhere”     | After BoxCutter/HOps cuts, before next boolean stack                                                            |
+
+**BoxCutter** is primarily a **cutter** — cleanup is still **Clean Mesh**, manual select-by-trait, or Make Manifold on the result. Expect to run cleanup **after each heavy boolean session**, not once at the end of the project.
+
+### Manual fixes (when automation lies)
+
+Use these when Check All still reports issues or Make Manifold damaged the model:
+
+- **Duplicate vertices (T-junctions):** Edit Mode → Select All → **Merge → By Distance** (start ~0.0001 m, increase slightly if needed).
+- **Open boundary loops you want filled:** select boundary edges → **F** (fill) or **Grid Fill** for larger holes.
+- **Internal faces (common after render booleans):** face select → **Select All by Trait → Interior Faces** → delete faces. Alternative: select outer shell (e.g. **Select → Select Similar → Normal** / face orientation), **Invert**, delete inverted selection (works on closed shells only).
+- **Non-manifold edge with two verts co-located:** select one vert → **G** nudge along edge → **Shift-select** partner → **Merge → At Last** (classic “same spot” fix).
+- **Separate accidental join:** Edit Mode → **Mesh → Separate → By Loose Parts**, clean each part, rejoin only what belongs together.
+
+For **impossibly messy** render meshes, **voxel remesh** (modifier on a duplicate, high-ish voxel size) or **retopo one shell** can be faster than hours of Make Manifold — then shrinkwrap to the high-res original if you still need silhouette fidelity.
+
+### Hard-surface addons (Hard Ops, BoxCutter, Machine Tools, etc.)
+
+Treat them as a **cleanup stack**, not competing religion:
+
+1. **BoxCutter / HOps booleans** — blockout and panel cuts on a working copy.
+2. **HOps Clean Mesh** — local cleanup of cut regions (edit-mode / selected geometry when available).
+3. **Machine Tools** (if installed) — quick delete of loose/non-manifold **selection** in vert/edge mode (community “mesh clean” shortcuts; same role as step 4–6 above).
+4. **3D Print Toolbox** — validation + Make Manifold when you need a **closed shell** for export.
+5. **Decimate / remesh** — last, on battle or kit **copies** only.
+
+None of these replace **deleting** geometry you will never see (hidden stud internals, duplicate armor layers). Deletion still wins for triangle count.
+
+### Game-scale simplification (after topology is sane)
+
+1. Frame the camera like the in-game sheet (see character framing in [`3D_RENDERING_STRATEGY.md`](3D_RENDERING_STRATEGY.md)).
+2. Remove **whole interior objects** and **support loops** that do not change silhouette or normals at that distance.
+3. **Decimate Modifier → Planar** (angle limit ~5°–8°) on plastic shells; leave emissive/eyes/brain alone.
+4. Prefer **one normal map** over micro-bevel geometry when the render mesh relied on subdivision.
+
+### Kit library workflow tie-in
+
+| Where you clean                  | What to do                                          |
+| -------------------------------- | --------------------------------------------------- |
+| **`kit_*.blend` canonical part** | Full cleanup once; all rigs benefit                 |
+| **Character embedded body**      | Cleanup on mesh data; re-export character GLB       |
+| **Battle collection duplicate**  | Aggressive decimate + join; dex kit links untouched |
+
+Document what you ran (`Make Manifold yes/no`, decimate ratio) in `battle_bake_notes.txt` so the next kit update is reproducible.
 
 ---
 
@@ -88,14 +171,13 @@ Optional: keep a **`battle_bake_notes.txt`** in the blend (or commit message tem
 
 ### Blender “non-destructive” tools (expectations)
 
-| Tool                             | Useful for                       | Limitation for battle LOD                                                |
-| -------------------------------- | -------------------------------- | ------------------------------------------------------------------------ |
-| **Linked kit + socket helper**   | Dex stays live to library        | Battle still needs its own duplicate bake                                |
-| **Library overrides**            | Per-file mesh/material overrides | Overrides are easy to break across library edits; prefer explicit rebake |
-| **Geometry Nodes**               | Procedural cleanup               | Poor fit for skinned export + bone weights                               |
-| **Modifiers (Mirror, Decimate)** | Battle-only copies               | Apply on battle copies only, then join                                   |
-
-Hard Ops / BoxCutter are best for **new** panels you author; for legacy render meshes, delete hidden geo + per-bucket join usually wins first.
+| Tool                                   | Useful for                       | Limitation for battle LOD                                                                       |
+| -------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Linked kit + socket helper**         | Dex stays live to library        | Battle still needs its own duplicate bake                                                       |
+| **Library overrides**                  | Per-file mesh/material overrides | Overrides are easy to break across library edits; prefer explicit rebake                        |
+| **Geometry Nodes**                     | Procedural cleanup               | Poor fit for skinned export + bone weights                                                      |
+| **Modifiers (Mirror, Decimate)**       | Battle-only copies               | Apply on battle copies only, then join                                                          |
+| **3D Print Toolbox / HOps Clean Mesh** | Inherited render mesh repair     | See [Cleaning inherited render meshes](#cleaning-inherited-render-meshes-manifold-junk-geo-lod) |
 
 ---
 
@@ -186,6 +268,7 @@ Custom Toa on the same rig template reuse the **same bucket names**; only palett
 
 ```text
 Import render mesh
+  → Duplicate → cleanup (Check All, interior/non-manifold, Clean Mesh, Make Manifold if closed shell OK)
   → Game pass (delete hidden, transforms, materials, decimate at sheet scale)
   → Used only as static prop? → Export merged, single material if possible
   → Character with kit?
