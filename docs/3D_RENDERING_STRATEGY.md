@@ -51,6 +51,7 @@ A **battle attachment map** can reference fewer, pre-merged kit nodes on the sam
 
 | Rig                                   | Doc                                                  |
 | ------------------------------------- | ---------------------------------------------------- |
+| **Adapt render meshes + battle bake** | [`MESH_GAME_PASS.md`](MESH_GAME_PASS.md)             |
 | **Rahkshi** (recommended first pilot) | [`battle-lod/RAHKSHI.md`](battle-lod/RAHKSHI.md)     |
 | Toa Tahu (Mata)                       | [`battle-lod/TAHU_MATA.md`](battle-lod/TAHU_MATA.md) |
 
