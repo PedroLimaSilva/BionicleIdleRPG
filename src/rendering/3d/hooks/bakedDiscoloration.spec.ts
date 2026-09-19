@@ -1,4 +1,12 @@
-import { ClampToEdgeWrapping, Color, MeshStandardMaterial, Texture } from 'three';
+import {
+  ClampToEdgeWrapping,
+  Color,
+  LinearFilter,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  Texture,
+} from 'three';
 import { LegoColor } from '../../../types/Colors';
 import {
   DEFAULT_LEGO_DISCOLORATION,
@@ -16,8 +24,11 @@ import {
   bindDiscolorationMapForSampling,
   createBakedDiscolorationUniforms,
   DISCOLORATION_MAP_USERDATA_KEY,
+  DISCOLORATION_SMOOTHSTEP_HI,
+  DISCOLORATION_SMOOTHSTEP_LO,
   ensureBakeSampleSlot,
   getBakedDiscolorationMap,
+  setBakedDiscolorationEnabled,
   writeBakedDiscolorationUserData,
   type TextureNodeLike,
 } from './bakedDiscoloration';
@@ -61,6 +72,10 @@ describe('adoptBakedDiscolorationMap', () => {
     expect(mat.emissiveIntensity).toBe(0);
     expect(map.wrapS).toBe(ClampToEdgeWrapping);
     expect(map.wrapT).toBe(ClampToEdgeWrapping);
+    expect(map.generateMipmaps).toBe(false);
+    expect(map.minFilter).toBe(LinearFilter);
+    expect(map.magFilter).toBe(LinearFilter);
+    expect(map.channel).toBe(0);
   });
 
   test('Material.copy keeps the bake on aoMap after userData JSON-clone drops Texture', () => {
@@ -81,6 +96,28 @@ describe('adoptBakedDiscolorationMap', () => {
     expect(mat.aoMap).toBeNull();
     expect(mat.aoMapIntensity).toBe(0);
     expect(getBakedDiscolorationMap(mat)).toBeNull();
+  });
+});
+
+describe('setBakedDiscolorationEnabled', () => {
+  test('zeros the mix without dropping the bake texture, then restores it', () => {
+    const map = new Texture();
+    const mat = new MeshStandardMaterial({ color: LegoColor.Red, name: 'WeatheredMetal' });
+    writeBakedDiscolorationUserData(mat, map, LegoColor.Red);
+    const mesh = new Mesh();
+    mesh.material = mat;
+    const root = new Object3D();
+    root.add(mesh);
+
+    expect(setBakedDiscolorationEnabled(root, false)).toBe(1);
+    expect(mat.aoMap).toBe(map);
+    expect(mat.userData.discolorationHasMap).toBe(0);
+    expect(mat.userData.discolorationIntensity).toBe(0);
+
+    expect(setBakedDiscolorationEnabled(root, true)).toBe(1);
+    expect(mat.aoMap).toBe(map);
+    expect(mat.userData.discolorationHasMap).toBe(1);
+    expect(mat.userData.discolorationIntensity).toBe(DEFAULT_LEGO_DISCOLORATION.intensity);
   });
 });
 
@@ -133,6 +170,11 @@ describe('baked discoloration amount', () => {
 
   test('shared material bake amount graph builds without throwing', () => {
     expect(() => bakedDiscolorationAmountFromMaterial()).not.toThrow();
+  });
+
+  test('hairline gate reaches full mix below mid-gray', () => {
+    expect(DISCOLORATION_SMOOTHSTEP_LO).toBe(0.04);
+    expect(DISCOLORATION_SMOOTHSTEP_HI).toBe(0.28);
   });
 });
 

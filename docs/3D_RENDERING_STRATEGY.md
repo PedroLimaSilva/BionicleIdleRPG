@@ -12,13 +12,13 @@ Runtime geometry merge (Phase B) only batches meshes that already share a bone a
 
 ## Phased plan
 
-| Phase | What                                                                       | Where it applies                                 | Expected impact                                                                      |
-| ----- | -------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| **A** | Performance monitor + stable render-cost logger                            | Dev / character sheet                            | Baseline measurement ([`3D_PERFORMANCE.md`](3D_PERFORMANCE.md)) — **shipped** (#468) |
-| **B** | Runtime `BufferGeometry` merge in `useKitAttachments`                      | All kit-attached characters (dex + battle today) | Small incremental win (~10% draws); no asset re-export — **this PR**                 |
-| **C** | **Battle LOD** — pre-merged skinned mesh per rig template in character GLB | `CombatantModel` only                            | Large per-character win (target ~1 draw per material bucket, ~15–30 draws vs ~80)    |
-| **D** | **InstancedMesh** for duplicate enemies                                    | Bohrok, Rahkshi, Vahki swarms                    | Compress N identical enemies toward 1 draw per breed × material group                |
-| **E** | **Authoring** — merged Rahi GLBs (no kit sockets)                          | New Rahi creatures                               | Avoid clone overhead; merge small parts in Blender at export                         |
+| Phase | What                                                                       | Where it applies                                 | Expected impact                                                                          |
+| ----- | -------------------------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| **A** | Performance monitor + stable render-cost logger                            | Dev / character sheet                            | Baseline measurement ([`3D_PERFORMANCE.md`](3D_PERFORMANCE.md)) — **shipped** (#468)     |
+| **B** | Runtime `BufferGeometry` merge in `useKitAttachments`                      | All kit-attached characters (dex + battle today) | Small incremental win (~10% draws); no asset re-export — **this PR**                     |
+| **C** | **Battle LOD** — pre-merged skinned mesh per rig template in character GLB | `CombatantModel` only                            | Large per-character win — **Rahkshi + Tahu Mata shipped**; other Mata reuse Tahu buckets |
+| **D** | **InstancedMesh** for duplicate enemies                                    | Bohrok, Rahkshi, Vahki swarms                    | Compress N identical enemies toward 1 draw per breed × material group                    |
+| **E** | **Authoring** — merged Rahi GLBs (no kit sockets)                          | New Rahi creatures                               | Avoid clone overhead; merge small parts in Blender at export                             |
 
 Phases B–E stack. B is necessary but not sufficient for the battle budget.
 
@@ -37,7 +37,7 @@ After materials are applied, rigid kit meshes sharing the same merge anchor bone
 - **Character sheet / dex:** full rig + kit attachment maps (current fidelity).
 - **Battle:** a pre-merged skinned mesh on the **same skeleton** and animation clips, parented under a `*_Battle` node in the character GLB.
 
-`CombatantModel` loads the battle node; `CharacterScene` keeps the full kit path.
+`CombatantModel` loads the battle meshes; `CharacterScene` keeps the full kit path (dex can toggle Tahu / Rahkshi Battle LOD).
 
 ### Custom characters
 

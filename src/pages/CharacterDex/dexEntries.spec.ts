@@ -60,13 +60,17 @@ describe('character dex entries', () => {
 
   test('preview matoran unlocks every mask and does not require recruitment', () => {
     const preview = toDexPreviewMatoran(CHARACTER_DEX.Toa_Tahu, {
+      discolorationBakesActive: true,
       maskOverride: Mask.Kakama,
       maskPowerActive: true,
+      normalMapsActive: false,
     });
     expect(preview.exp).toBe(0);
     expect(preview.stage).toBe(MatoranStage.ToaMata);
     expect(preview.maskOverride).toBe(Mask.Kakama);
     expect(preview.maskPowerActive).toBe(true);
+    expect(preview.discolorationBakesActive).toBe(true);
+    expect(preview.normalMapsActive).toBe(false);
     expect(preview.unlockAllMasks).toBe(true);
   });
 });

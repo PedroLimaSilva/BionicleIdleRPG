@@ -30,3 +30,7 @@ export const DUMMY_ROUGHNESS_MAP = makeSwatch(255, 255, 255);
 export function isDummyDiscolorationMap(texture: unknown): boolean {
   return texture === DUMMY_DISCOLORATION_MAP;
 }
+
+export function isDummyNormalMap(texture: unknown): boolean {
+  return texture === DUMMY_NORMAL_MAP;
+}

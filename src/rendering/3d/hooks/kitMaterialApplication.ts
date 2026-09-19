@@ -22,9 +22,11 @@ import {
 import { metallicColorPbr, type KitMetalPbr } from '../kit/palettes/metalPbr';
 import {
   getWeatheredMetalMaterial,
+  isWeatheredMetalMaterial,
   meshHasUv,
   type WeatheredMetalOptions,
 } from '../CharacterScene/WeatheredMetalMaterial';
+import { bindBakedDiscolorationMapNode, getBakedDiscolorationMap } from './bakedDiscoloration';
 import {
   buildTransmissiveKitMaterial,
   isTransmissiveKitMaterial,
@@ -39,9 +41,43 @@ import { markSharedGpuResource } from '../utils/disposeThreeObject';
 import { setTopologyProgramCacheKey } from '../tsl/topologyCacheKey';
 
 type StandardMat = MeshPhysicalMaterial | MeshStandardMaterial;
+type WeatheredTslMat = StandardMat & {
+  colorNode?: unknown;
+  metalnessNode?: unknown;
+  roughnessNode?: unknown;
+};
+
+/** Stashed GLB slot names so a second apply can still resolve `WeatheredMetal`. */
+const KIT_SLOT_MATERIAL_NAMES_KEY = 'kitSlotMaterialNames';
 
 function isStandardMat(mat: unknown): mat is StandardMat {
-  return mat instanceof MeshPhysicalMaterial || mat instanceof MeshStandardMaterial;
+  const candidate = mat as {
+    isMeshPhysicalMaterial?: boolean;
+    isMeshStandardMaterial?: boolean;
+  };
+  return candidate?.isMeshPhysicalMaterial === true || candidate?.isMeshStandardMaterial === true;
+}
+
+function stashKitSlotMaterialName(mesh: Mesh, index: number, mat: StandardMat): void {
+  if (!mat.name || mat.name === 'WeatheredMetal') return;
+  const names = (mesh.userData[KIT_SLOT_MATERIAL_NAMES_KEY] as string[] | undefined) ?? [];
+  names[index] = mat.name;
+  mesh.userData[KIT_SLOT_MATERIAL_NAMES_KEY] = names;
+}
+
+function readKitSlotMaterialName(mesh: Mesh, index: number, fallback: string): string {
+  const names = mesh.userData[KIT_SLOT_MATERIAL_NAMES_KEY] as string[] | undefined;
+  return names?.[index] || fallback;
+}
+
+function hasWeatheringGraph(mat: StandardMat): boolean {
+  const tsl = mat as WeatheredTslMat;
+  return tsl.colorNode != null || tsl.roughnessNode != null || tsl.metalnessNode != null;
+}
+
+/** Cached weathered TSL — not a `Material.clone()` that dropped `colorNode`. */
+function isLiveWeatheredKitMaterial(mat: StandardMat): boolean {
+  return isWeatheredMetalMaterial(mat) && hasWeatheringGraph(mat);
 }
 
 export function resolveKitColorSource(
@@ -139,9 +175,15 @@ function resolveKitMaterialSlotSpec(
   return undefined;
 }
 
-/** Printed albedo (Kanoka disk, etc.) keeps the GLB look. */
-function isPreservedMappedMaterial(mat: StandardMat): boolean {
-  return !!mat.map;
+/**
+ * Printed albedo (Kanoka disk, etc.) keeps the GLB look — unless this pass
+ * asked for FBM metalness / roughness (`authoredPbrMaps: 'noise'`).
+ */
+function isPreservedMappedMaterial(
+  mat: StandardMat,
+  weatheredBase: WeatheredMetalOptions | undefined
+): boolean {
+  return !!mat.map && weatheredBase?.authoredPbrMaps !== 'noise';
 }
 
 export function buildKitMaterialSlotLookup(
@@ -220,6 +262,23 @@ function stripPreservedMappedMaterial(
   return cloned;
 }
 
+/**
+ * Skinned battle meshes can skip TSL object-update, so the shared bake sample
+ * stays on the black compile dummy. Rebind `aoMap` for the material about to draw.
+ */
+function rebindDiscolorationBakeOnRender(mesh: Mesh): void {
+  const applied = mesh.material;
+  const mats = Array.isArray(applied) ? applied : [applied];
+  if (!mats.some((mat) => mat && getBakedDiscolorationMap(mat as MeshStandardMaterial))) {
+    return;
+  }
+  const previous = mesh.onBeforeRender.bind(mesh);
+  mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
+    previous(renderer, scene, camera, geometry, material, group);
+    bindBakedDiscolorationMapNode(material as MeshStandardMaterial);
+  };
+}
+
 export function buildKitMeshMaterials(
   mesh: Mesh,
   slotLookup: Map<string, KitMaterialSlotOverride>,
@@ -229,16 +288,18 @@ export function buildKitMeshMaterials(
   const raw = mesh.material;
   if (!raw) return raw;
   const mats = Array.isArray(raw) ? raw : [raw];
-  const next = mats.map((mat) => {
+  const next = mats.map((mat, index) => {
     if (!isStandardMat(mat)) return mat;
-    const spec = resolveKitMaterialSlotSpec(mat.name, slotLookup);
-    const transmissiveKind = resolveTransmissiveKitKind(mat.name, spec);
+    stashKitSlotMaterialName(mesh, index, mat);
+    const slotName = readKitSlotMaterialName(mesh, index, mat.name);
+    const spec = resolveKitMaterialSlotSpec(slotName, slotLookup);
+    const transmissiveKind = resolveTransmissiveKitKind(slotName, spec);
     if (transmissiveKind) {
       const color = spec?.color ? resolveKitColorSource(spec.color, palette) : '#ffffff';
       const emissive = spec?.emissive ? resolveKitColorSource(spec.emissive, palette) : '#000000';
       const emissiveIntensity = spec?.emissiveIntensity ?? 0;
       return buildTransmissiveKitMaterial(
-        mat.name,
+        slotName,
         transmissiveKind,
         color,
         emissive,
@@ -250,12 +311,23 @@ export function buildKitMeshMaterials(
       return buildEmissiveKitMaterial(mat, spec, palette);
     }
 
-    if (isPreservedMappedMaterial(mat) || !spec) {
+    if (isLiveWeatheredKitMaterial(mat)) {
+      if (!spec) return mat;
+      const slotColor = resolveSlotAlbedo(spec, palette, mat.color.getStyle());
+      if (new Color(slotColor).equals(mat.color)) return mat;
+    }
+
+    if (
+      (isPreservedMappedMaterial(mat, weatheredBase) || !spec) &&
+      !isLiveWeatheredKitMaterial(mat)
+    ) {
       if (!spec || (!spec.color && !spec.emissive && spec.opacity === undefined)) {
         return stripPreservedMappedMaterial(mat, undefined, palette);
       }
       return stripPreservedMappedMaterial(mat, spec, palette);
     }
+
+    if (!spec) return mat;
 
     const slotColor = resolveSlotAlbedo(spec, palette, mat.color.getStyle());
     const metalPbr = metallicColorPbr(slotColor);
@@ -265,21 +337,23 @@ export function buildKitMeshMaterials(
     };
     if (mat.map) opts.map = mat.map;
     if (mat.normalMap) opts.normalMap = mat.normalMap;
-    if (mat.roughnessMap) {
+    const useNoisePbr = weatheredBase?.authoredPbrMaps === 'noise';
+    if (!useNoisePbr && mat.roughnessMap) {
       opts.roughness = mat.roughness;
       opts.roughnessMap = mat.roughnessMap;
     }
-    if (mat.metalnessMap) {
+    if (!useNoisePbr && mat.metalnessMap) {
       opts.metalness = mat.metalness;
       opts.metalnessMap = mat.metalnessMap;
     }
-    if (mat.emissiveMap && meshHasUv(mesh)) {
-      opts.discolorationMap = mat.emissiveMap;
-    }
-    if (canonicalKitSlotName(mat.name) === 'face') {
+    const bake = meshHasUv(mesh)
+      ? (getBakedDiscolorationMap(mat) ?? mat.emissiveMap ?? undefined)
+      : undefined;
+    if (bake) opts.discolorationMap = bake;
+    if (canonicalKitSlotName(slotName) === 'face') {
       opts.side = FrontSide;
     }
-    if (isGlowMaterialName(mat.name)) {
+    if (isGlowMaterialName(slotName)) {
       opts.metalness = spec?.metalness ?? 0.05;
       opts.roughness = spec?.roughness ?? 0.45;
     }
@@ -309,5 +383,6 @@ export function applyKitMaterialsToObject(
     if (appliedMats.some(isTransmissiveKitMaterial)) {
       mesh.renderOrder = TRANSMISSIVE_KIT_RENDER_ORDER;
     }
+    rebindDiscolorationBakeOnRender(mesh);
   });
 }

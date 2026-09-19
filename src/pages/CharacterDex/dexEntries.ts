@@ -55,22 +55,31 @@ export function getAdjacentDexIds(id: string): { nextId: string; prevId: string 
 export function toDexPreviewMatoran(
   base: BaseMatoran,
   options: {
+    discolorationBakesActive?: boolean;
     maskOverride?: Mask;
     maskPowerActive?: boolean;
+    normalMapsActive?: boolean;
     rahkshiMeshVariant?: 'detailed' | 'battle';
+    tahuMeshVariant?: 'detailed' | 'battle';
   }
 ): BaseMatoran &
   RecruitedCharacterData & {
+    discolorationBakesActive?: boolean;
     maskPowerActive?: boolean;
+    normalMapsActive?: boolean;
     rahkshiMeshVariant?: 'detailed' | 'battle';
+    tahuMeshVariant?: 'detailed' | 'battle';
     unlockAllMasks: true;
   } {
   return {
     ...base,
+    discolorationBakesActive: options.discolorationBakesActive,
     exp: 0,
     maskOverride: options.maskOverride,
     maskPowerActive: options.maskPowerActive,
+    normalMapsActive: options.normalMapsActive,
     rahkshiMeshVariant: options.rahkshiMeshVariant,
+    tahuMeshVariant: options.tahuMeshVariant,
     unlockAllMasks: true,
   };
 }

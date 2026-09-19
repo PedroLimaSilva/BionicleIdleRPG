@@ -58,7 +58,7 @@ Sorted by story progression. Run `yarn animation-clip-report` for the live matri
 
 |   # | Epic                                                         | Story arc        | Rigs | Goal                                                          |
 | --: | ------------------------------------------------------------ | ---------------- | ---: | ------------------------------------------------------------- |
-|   1 | [Toa Mata — Hit clip gaps](#epic-toa-mata-polish)            | Mask Hunt        |    2 | Author Hit for Tahu and Pohatu Mata                           |
+|   1 | [Toa Mata — Hit clip gaps](#epic-toa-mata-polish)            | Mask Hunt        |    1 | Author Hit for Pohatu Mata                                    |
 |   2 | [Nui-Rama — combat clips](#epic-rahi-nui-rama)               | MNOG             |    1 | Skeletal combat beyond Wings ambient loop                     |
 |   3 | [Generic Rahi — GLB-backed rig](#epic-rahi-placeholder)      | Mask Hunt / MNOG |    1 | Replace procedural capsule placeholder                        |
 |   4 | [Toa Nuva — combat clip rollout](#epic-toa-nuva-combat)      | Bohrok Swarm     |    5 | Extend Tahu/Pohatu-quality combat clips to remaining Nuva     |
@@ -124,11 +124,11 @@ Kit libraries (`kit_2001.glb`, `kit_2003.glb`, `kit_2004.glb`) and mask/armor pr
 
 ### Epic: Toa Mata — Hit clip gaps {#epic-toa-mata-polish}
 
-**Story:** Mask Hunt · `story_toa_arrival` · **Rigs:** 2 · **Epic id:** `toa-mata-polish`
+**Story:** Mask Hunt · `story_toa_arrival` · **Rigs:** 1 · **Epic id:** `toa-mata-polish`
 
 | Rig             | GLB                   | Idle | Attack | Hit           | Defeat                |
 | --------------- | --------------------- | ---- | ------ | ------------- | --------------------- |
-| Toa Tahu Mata   | `Toa_Mata/tahu.glb`   | ✅   | ✅     | ❌ procedural | ✅ _(via Attack set)_ |
+| Toa Tahu Mata   | `Toa_Mata/tahu.glb`   | ✅   | ✅     | ✅            | ✅ _(via Attack set)_ |
 | Toa Pohatu Mata | `Toa_Mata/pohatu.glb` | ✅   | ✅     | ❌ procedural | ✅ _(via Attack set)_ |
 
 Other Mata Toa (Gali, Kopaka, Lewa, Onua) ship full Attack + Hit. Extra clips in Mata GLBs (Gear, Hand, Leg, etc.) are 💤 unused export artifacts.

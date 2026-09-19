@@ -42,6 +42,12 @@ export type WeatheredMetalOptions = {
   normalMap?: Texture;
   normalScale?: Vector2;
   roughnessMap?: Texture;
+  /**
+   * `keep` (default): authored roughness / metalness maps replace FBM.
+   * `noise`: drop those maps so weathered FBM drives metalness and roughness
+   * (baked discoloration + normal maps still apply).
+   */
+  authoredPbrMaps?: 'keep' | 'noise';
   envMapIntensity?: number;
   opacity?: number;
   transparent?: boolean;
@@ -90,6 +96,7 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
     opts.discolorationMap?.uuid ?? '',
     opts.discolorationMap?.channel ?? 0,
     opts.map?.uuid ?? '',
+    opts.authoredPbrMaps === 'noise' ? 'pbrNoise' : '',
     opts.metalnessMap?.uuid ?? '',
     opts.normalMap?.uuid ?? '',
     opts.roughnessMap?.uuid ?? '',
@@ -195,11 +202,14 @@ function mapsFromSource(
   'map' | 'metalness' | 'metalnessMap' | 'normalMap' | 'roughness' | 'roughnessMap'
 > {
   const keepAuthoredMetalness = opts.metalness === undefined;
+  const keepAuthoredPbrMaps = opts.authoredPbrMaps !== 'noise';
   return {
     ...(mat.map ? { map: mat.map } : {}),
     ...(mat.normalMap ? { normalMap: mat.normalMap } : {}),
-    ...(mat.roughnessMap ? { roughness: mat.roughness, roughnessMap: mat.roughnessMap } : {}),
-    ...(keepAuthoredMetalness && mat.metalnessMap
+    ...(keepAuthoredPbrMaps && mat.roughnessMap
+      ? { roughness: mat.roughness, roughnessMap: mat.roughnessMap }
+      : {}),
+    ...(keepAuthoredPbrMaps && keepAuthoredMetalness && mat.metalnessMap
       ? { metalness: mat.metalness, metalnessMap: mat.metalnessMap }
       : {}),
   };
@@ -238,11 +248,11 @@ function resolveMaterialColorFromMap(
 /**
  * Replaces mesh materials with slot-colored weathered plastic. Skips Masks
  * subtrees and excluded material names (Brain, GlowingEyes, …). Authored
- * albedo / normal / roughness maps stay on the material and replace the
- * matching procedural FBM channel. Caller `metalness` is the weathered
- * plastic/metal amount and replaces packed metallicRoughness metalness (Rahkshi
- * roughness bakes ship a full-white B channel). Samples baked emissive
- * discoloration maps when the mesh has UVs.
+ * albedo / normal maps stay and replace the matching FBM channel. Roughness /
+ * metalness maps do the same unless `authoredPbrMaps: 'noise'` drops them so
+ * FBM drives those channels (Tahu battle LOD). Caller `metalness` is the
+ * weathered plastic/metal amount. Samples baked emissive discoloration maps
+ * when the mesh has UVs.
  */
 export function applyWeatheredMetalToObject(
   object: Object3D | null | undefined,
