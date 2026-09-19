@@ -10,15 +10,23 @@ describe('WEATHERING_NOISE_SEED', () => {
     expect(WEATHERING_NOISE_SEED).toBe(2891336453);
   });
 
-  test('stays out of the GPU program cache key (shared graph constant)', () => {
+  test('packed PBR is a distinct GPU topology from grayscale discoloration', () => {
     const mat = new MeshStandardMaterial();
     expect(
       weatheredProgramCacheKey(mat, {
         debugGrime: false,
         dentStrength: 0,
-        hasDiscoloration: false,
+        hasDiscoloration: true,
+        packedPbr: true,
       })
-    ).not.toContain(String(WEATHERING_NOISE_SEED));
+    ).toContain('packed');
+    expect(
+      weatheredProgramCacheKey(mat, {
+        debugGrime: false,
+        dentStrength: 0,
+        hasDiscoloration: true,
+      })
+    ).not.toContain('packed');
   });
 });
 

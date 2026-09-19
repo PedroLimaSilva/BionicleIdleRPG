@@ -17,13 +17,18 @@ import {
 import {
   bakedDiscolorationAmountFromMaterial,
   bakedDiscolorationColorFromMaterial,
+  bakedPackedMetalnessFromMaterial,
+  bakedPackedRoughnessFromMaterial,
   ensureBakeSampleSlot,
   isRenderableBakeMap,
   writeBakedDiscolorationUserData,
 } from '../hooks/bakedDiscoloration';
+import { writePackedPbrChannelFlags } from '../hooks/packedPbrMaps';
 import { setTopologyProgramCacheKey } from '../tsl/topologyCacheKey';
 
 type WeatheringGraphOpts = {
+  /** `packed`: emissive RGB is roughness / metalness / wear. */
+  authoredPbrMaps?: 'keep' | 'noise' | 'packed';
   color?: string;
   debugGrimeAsColor?: boolean;
   dentStrength?: number;
@@ -152,8 +157,11 @@ const grimyMapped = materialColor.mul(albedoMapRef).mul(grime.mul(grimeDarkenRef
 const debugGrimeColor = vec3(grime);
 const bakeColor = bakedDiscolorationColorFromMaterial() as never;
 const bakeAmount = bakedDiscolorationAmountFromMaterial() as never;
+const packedBakeAmount = bakedDiscolorationAmountFromMaterial('b') as never;
 const colorUnmappedWithBake = mix(grimyUnmapped, bakeColor, bakeAmount);
 const colorMappedWithBake = mix(grimyMapped, bakeColor, bakeAmount);
+const colorUnmappedWithPackedBake = mix(grimyUnmapped, bakeColor, packedBakeAmount);
+const colorMappedWithPackedBake = mix(grimyMapped, bakeColor, packedBakeAmount);
 const roughnessNode = materialRoughness
   .add(grime.mul(grimeRoughnessRef))
   .add(fineGrain.sub(0.5).mul(FINE_ROUGHNESS_VARIATION))
@@ -161,6 +169,24 @@ const roughnessNode = materialRoughness
 const metalnessNode = materialMetalness
   .mul(grime.mul(grimeMetalnessReduceRef).oneMinus())
   .clamp(0, 1);
+const packedRoughnessHasMapRef = materialReference(
+  'userData.packedRoughnessHasMap',
+  'float'
+) as never;
+const packedMetalnessHasMapRef = materialReference(
+  'userData.packedMetalnessHasMap',
+  'float'
+) as never;
+const packedRoughnessNode = mix(
+  materialRoughness,
+  bakedPackedRoughnessFromMaterial() as never,
+  packedRoughnessHasMapRef
+).clamp(0.04, 1);
+const packedMetalnessNode = mix(
+  materialMetalness,
+  bakedPackedMetalnessFromMaterial() as never,
+  packedMetalnessHasMapRef
+).clamp(0, 1);
 const dentNormalNode = perturbViewNormalFromHeight(
   objectSpaceDentHeight(50, largeScaleRef),
   dentStrengthRef
@@ -181,7 +207,12 @@ export function shouldVisualizeWeatheringGrime(opts: { debugGrimeAsColor?: boole
 /** GPU pipeline identity: topology only. Color, grime, and texture instances are uniforms/bindings. */
 export function weatheredProgramCacheKey(
   mat: MeshStandardMaterial,
-  opts: { debugGrime?: boolean; dentStrength: number; hasDiscoloration: boolean }
+  opts: {
+    debugGrime?: boolean;
+    dentStrength: number;
+    hasDiscoloration: boolean;
+    packedPbr?: boolean;
+  }
 ): string {
   return [
     'WeatheredMetal',
@@ -190,6 +221,7 @@ export function weatheredProgramCacheKey(
     mat.roughnessMap ? 'rgh' : '',
     mat.metalnessMap ? 'met' : '',
     opts.hasDiscoloration ? 'dc' : '',
+    opts.packedPbr ? 'packed' : '',
     opts.dentStrength > 0 && !mat.normalMap ? 'dent' : '',
     opts.debugGrime ? 'dbg' : '',
   ].join('|');
@@ -243,6 +275,8 @@ export function applySharedWeatheringGraph(
     (opts.dentStrength ?? defaults.dentStrength) *
     (1 - Math.min(1, Math.max(0, metalness)) * METAL_DENT_ATTENUATION);
   const hasDiscoloration = isRenderableBakeMap(discolorMap);
+  const packedPbr = opts.authoredPbrMaps === 'packed' && hasDiscoloration;
+  writePackedPbrChannelFlags(mat, packedPbr);
   const hasAlbedoMap = !!mat.map;
   const visualizeGrime = shouldVisualizeWeatheringGrime({
     debugGrimeAsColor: opts.debugGrimeAsColor,
@@ -254,16 +288,25 @@ export function applySharedWeatheringGraph(
       mat.colorNode = debugGrimeColor;
     } else if (hasDiscoloration) {
       ensureBakeSampleSlot(mat);
-      mat.colorNode = hasAlbedoMap ? colorMappedWithBake : colorUnmappedWithBake;
+      if (packedPbr) {
+        mat.colorNode = hasAlbedoMap ? colorMappedWithPackedBake : colorUnmappedWithPackedBake;
+      } else {
+        mat.colorNode = hasAlbedoMap ? colorMappedWithBake : colorUnmappedWithBake;
+      }
     } else {
       mat.colorNode = hasAlbedoMap ? grimyMapped : grimyUnmapped;
     }
   }
-  if (!mat.roughnessMap) {
-    mat.roughnessNode = roughnessNode;
-  }
-  if (!mat.metalnessMap) {
-    mat.metalnessNode = metalnessNode;
+  if (packedPbr) {
+    mat.roughnessNode = packedRoughnessNode;
+    mat.metalnessNode = packedMetalnessNode;
+  } else {
+    if (!mat.roughnessMap) {
+      mat.roughnessNode = roughnessNode;
+    }
+    if (!mat.metalnessMap) {
+      mat.metalnessNode = metalnessNode;
+    }
   }
   if (dentStrength > 0 && !mat.normalMap) {
     mat.normalNode = dentNormalNode;
@@ -274,6 +317,7 @@ export function applySharedWeatheringGraph(
       debugGrime: visualizeGrime,
       dentStrength,
       hasDiscoloration,
+      packedPbr,
     })
   );
 }

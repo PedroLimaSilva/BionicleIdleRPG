@@ -34,7 +34,7 @@ After materials are applied, rigid kit meshes sharing the same merge anchor bone
 
 ### Principle
 
-- **Character sheet / dex:** full rig + kit attachment maps (current fidelity).
+- **Character sheet / dex:** full rig + kit attachment maps (current fidelity). Diminished village Matoran use a single skinned baked mesh on the sheet instead of kit attach.
 - **Battle:** a pre-merged skinned mesh on the **same skeleton** and animation clips, parented under a `*_Battle` node in the character GLB.
 
 `CombatantModel` loads the battle meshes; `CharacterScene` keeps the full kit path (dex can toggle Tahu / Rahkshi Battle LOD).

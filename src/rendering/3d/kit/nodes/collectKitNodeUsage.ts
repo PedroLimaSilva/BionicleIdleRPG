@@ -4,7 +4,6 @@ import {
   BOHROK_FACEPLATE_KIT_2003_ATTACHMENTS,
   BOHROK_KIT_2003_ATTACHMENTS,
 } from '../attachments/bohrok';
-import { DIMINISHED_KIT_2001_ATTACHMENTS } from '../attachments/diminished';
 import { REBUILT_KIT_2001_ATTACHMENTS, REBUILT_KIT_2003_ATTACHMENTS } from '../attachments/rebuilt';
 import { GALI_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/gali';
 import { KOPAKA_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/kopaka';
@@ -86,7 +85,12 @@ import { KIT_2003_NODES, type Kit2003NodeName } from './kit2003Nodes';
 import { KIT_2004_NODES, type Kit2004NodeName } from './kit2004Nodes';
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
-export const KIT_2001_NODE_EXEMPT: readonly Kit2001NodeName[] = [];
+export const KIT_2001_NODE_EXEMPT: readonly Kit2001NodeName[] = [
+  // Diminished village now ships a baked skinned body instead of cloning these.
+  KIT_2001_NODES.McArmL,
+  KIT_2001_NODES.McArmR,
+  KIT_2001_NODES.McTorso,
+];
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
 export const KIT_2003_NODE_EXEMPT: readonly Kit2003NodeName[] = [];
@@ -171,7 +175,6 @@ export function getTotalKit2003SocketReferences(): number {
 
 export const KIT_2001_ATTACHMENT_MAPS = [
   BOHROK_KIT_2001_ATTACHMENTS,
-  DIMINISHED_KIT_2001_ATTACHMENTS,
   REBUILT_KIT_2001_ATTACHMENTS,
   GALI_MATA_KIT_2001_ATTACHMENTS,
   KOPAKA_MATA_KIT_2001_ATTACHMENTS,

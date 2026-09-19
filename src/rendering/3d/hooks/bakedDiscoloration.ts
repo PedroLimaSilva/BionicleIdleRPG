@@ -1,7 +1,10 @@
 /**
- * Baked grayscale discoloration lives in the glTF emissive slot (Blender Simple Bake).
+ * Baked discoloration lives in the glTF emissive slot (Blender Simple Bake).
  * It is *not* light: we steal `emissiveMap`, zero real emission, and mix albedo
  * toward {@link discolorationForColor} where the bake is bright.
+ *
+ * Default bakes are grayscale (Tahu / masks) and sample **R**. Packed diminished
+ * sheets store roughness in R, metalness in G, and wear in B.
  *
  * WebGPU compiles MeshStandardMaterial through TSL, so the mix is a `colorNode`
  * rather than a GLSL `onBeforeCompile` patch.
@@ -155,9 +158,15 @@ export function getBakedDiscolorationMap(mat: unknown): Texture | null {
 }
 
 type TslFloat = BakedDiscolorationUniforms['hasMap'];
-type TslTextureSample = {
-  r: unknown;
+type TslTextureChannel = {
+  clamp: (lo: number, hi: number) => unknown;
 };
+type TslTextureSample = {
+  b: TslTextureChannel;
+  g: TslTextureChannel;
+  r: TslTextureChannel;
+};
+export type DiscolorationBakeChannel = 'r' | 'b';
 const discolorationColorRef = safeMaterialColorRef(
   'userData.discolorationColor'
 ) as unknown as BakedDiscolorationUniforms['color'];
@@ -229,16 +238,24 @@ export function bakedDiscolorationColorFromMaterial() {
  * Mix amount. Samples this material's `aoMap` (the stolen bake) the same way
  * normals sample `normalMap` — a per-draw material binding, not a shared
  * TextureNode. Keep uv0 via {@link bindDiscolorationMapForSampling} `channel`.
+ * Grayscale bakes use **R** (default); packed RGB sheets use **B**.
  */
-export function bakedDiscolorationAmountFromMaterial() {
-  return smoothstep(
-    DISCOLORATION_SMOOTHSTEP_LO,
-    DISCOLORATION_SMOOTHSTEP_HI,
-    discolorationAoMapRef.r as never
-  )
+export function bakedDiscolorationAmountFromMaterial(channel: DiscolorationBakeChannel = 'r') {
+  const sample = channel === 'b' ? discolorationAoMapRef.b : discolorationAoMapRef.r;
+  return smoothstep(DISCOLORATION_SMOOTHSTEP_LO, DISCOLORATION_SMOOTHSTEP_HI, sample as never)
     .mul(discolorationIntensityRef as never)
     .mul(discolorationHasMapRef as never)
     .clamp(0, 1);
+}
+
+/** Packed emissive R — authored roughness in 0–1. */
+export function bakedPackedRoughnessFromMaterial() {
+  return discolorationAoMapRef.r.clamp(0.04, 1);
+}
+
+/** Packed emissive G — authored metalness in 0–1. */
+export function bakedPackedMetalnessFromMaterial() {
+  return discolorationAoMapRef.g.clamp(0, 1);
 }
 
 /**

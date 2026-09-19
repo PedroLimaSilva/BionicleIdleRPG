@@ -59,6 +59,8 @@ export function toDexPreviewMatoran(
     maskOverride?: Mask;
     maskPowerActive?: boolean;
     normalMapsActive?: boolean;
+    packedMetalnessActive?: boolean;
+    packedRoughnessActive?: boolean;
     rahkshiMeshVariant?: 'detailed' | 'battle';
     tahuMeshVariant?: 'detailed' | 'battle';
   }
@@ -67,6 +69,8 @@ export function toDexPreviewMatoran(
     discolorationBakesActive?: boolean;
     maskPowerActive?: boolean;
     normalMapsActive?: boolean;
+    packedMetalnessActive?: boolean;
+    packedRoughnessActive?: boolean;
     rahkshiMeshVariant?: 'detailed' | 'battle';
     tahuMeshVariant?: 'detailed' | 'battle';
     unlockAllMasks: true;
@@ -78,6 +82,8 @@ export function toDexPreviewMatoran(
     maskOverride: options.maskOverride,
     maskPowerActive: options.maskPowerActive,
     normalMapsActive: options.normalMapsActive,
+    packedMetalnessActive: options.packedMetalnessActive,
+    packedRoughnessActive: options.packedRoughnessActive,
     rahkshiMeshVariant: options.rahkshiMeshVariant,
     tahuMeshVariant: options.tahuMeshVariant,
     unlockAllMasks: true,

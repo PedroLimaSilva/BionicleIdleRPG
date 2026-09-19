@@ -20,6 +20,8 @@ import {
   bakedDiscolorationAmountFromMaterial,
   bakedDiscolorationAmountNode,
   bakedDiscolorationMapNode,
+  bakedPackedMetalnessFromMaterial,
+  bakedPackedRoughnessFromMaterial,
   bindBakedDiscolorationMapNode,
   bindDiscolorationMapForSampling,
   createBakedDiscolorationUniforms,
@@ -170,6 +172,9 @@ describe('baked discoloration amount', () => {
 
   test('shared material bake amount graph builds without throwing', () => {
     expect(() => bakedDiscolorationAmountFromMaterial()).not.toThrow();
+    expect(() => bakedDiscolorationAmountFromMaterial('b')).not.toThrow();
+    expect(() => bakedPackedRoughnessFromMaterial()).not.toThrow();
+    expect(() => bakedPackedMetalnessFromMaterial()).not.toThrow();
   });
 
   test('hairline gate reaches full mix below mid-gray', () => {

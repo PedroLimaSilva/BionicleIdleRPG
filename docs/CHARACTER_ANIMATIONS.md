@@ -173,7 +173,7 @@ Other Mata Toa (Gali, Kopaka, Lewa, Onua) ship full Attack + Hit. Extra clips in
 
 **Story:** Bohrok Kal · `bohrok_kal_naming_day` · **Rigs:** 1 · **Epic id:** `rebuilt-idle-switch`
 
-Rebuilt Matoran crossfade between `Idle` and `Idle.001` (`REBUILT_IDLE_SWITCH`). Vahki uses dedicated `Switch_*` transition clips — same pattern recommended here. Also missing `Tilt Head` flavor (Diminished Matoran reference).
+Rebuilt Matoran crossfade between `Idle` and `Idle.001` (`REBUILT_IDLE_SWITCH`). Vahki uses dedicated `Switch_*` transition clips — same pattern recommended here. Also missing `Tilt Head` flavor.
 
 | Rig             | GLB           | Idle switch | Tilt Head |
 | --------------- | ------------- | ----------- | --------- |
@@ -197,7 +197,7 @@ Defeat is intentionally procedural today so knockdown timing stays aligned with 
 
 **Story:** Metru Nui · `story_metru_nui_saga_begin` · **Rigs:** 1 · **Epic id:** `village-flavor`
 
-Metru-stage village Matoran call `useAnimationController` with `Tilt Head`; Diminished Matoran already ship this clip on `matoran_master.glb`.
+Metru-stage village Matoran call `useAnimationController` with `Tilt Head`. Diminished Matoran currently ship `Idle` only on `matoran_master.glb`.
 
 | Rig           | GLB                 | Idle | Tilt Head |
 | ------------- | ------------------- | ---- | --------- |

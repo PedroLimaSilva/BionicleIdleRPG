@@ -3,7 +3,8 @@
  * roughness, lowers metalness, and bumps the shading normal in the same
  * local-space patches. Authored normal / roughness / metalness maps replace the
  * matching FBM channel. Optional baked emissive discoloration (glTF `emissiveMap`)
- * mixes on top. Edgewear stays off.
+ * mixes on top. Packed diminished sheets sample that bake as RGB
+ * (R roughness, G metalness, B wear) instead of FBM PBR. Edgewear stays off.
  */
 
 import {
@@ -46,8 +47,10 @@ export type WeatheredMetalOptions = {
    * `keep` (default): authored roughness / metalness maps replace FBM.
    * `noise`: drop those maps so weathered FBM drives metalness and roughness
    * (baked discoloration + normal maps still apply).
+   * `packed`: emissive RGB is R roughness, G metalness, B wear. Drops glTF
+   * metallicRoughness textures (wrong channel layout).
    */
-  authoredPbrMaps?: 'keep' | 'noise';
+  authoredPbrMaps?: 'keep' | 'noise' | 'packed';
   envMapIntensity?: number;
   opacity?: number;
   transparent?: boolean;
@@ -66,6 +69,13 @@ const DEFAULT_FINE_SCALE = 18.0;
 const DEFAULT_ENV_MAP_INTENSITY = 0.4;
 /** Screen-space bump from the master large-cloud FBM (`largeScale`, not fine grain). */
 const DEFAULT_DENT_STRENGTH = 2;
+
+/** True when glTF metallicRoughness textures must not drive the weathered graph. */
+export function dropsAuthoredMetallicRoughnessMaps(
+  mode: WeatheredMetalOptions['authoredPbrMaps']
+): boolean {
+  return mode === 'noise' || mode === 'packed';
+}
 
 const MATERIAL_NAME = 'WeatheredMetal';
 
@@ -96,7 +106,11 @@ function cacheKey(color: ColorRepresentation, opts: WeatheredMetalOptions): stri
     opts.discolorationMap?.uuid ?? '',
     opts.discolorationMap?.channel ?? 0,
     opts.map?.uuid ?? '',
-    opts.authoredPbrMaps === 'noise' ? 'pbrNoise' : '',
+    opts.authoredPbrMaps === 'noise'
+      ? 'pbrNoise'
+      : opts.authoredPbrMaps === 'packed'
+        ? 'pbrPacked'
+        : '',
     opts.metalnessMap?.uuid ?? '',
     opts.normalMap?.uuid ?? '',
     opts.roughnessMap?.uuid ?? '',
@@ -139,8 +153,9 @@ export function createWeatheredMetalMaterial(
 ): MeshStandardMaterial {
   const color = opts.color ?? '#d4a84b';
   const opacity = opts.opacity ?? 1;
-  const hasMetalnessMap = !!opts.metalnessMap;
-  const hasRoughnessMap = !!opts.roughnessMap;
+  const dropGlbMr = dropsAuthoredMetallicRoughnessMaps(opts.authoredPbrMaps);
+  const hasMetalnessMap = !dropGlbMr && !!opts.metalnessMap;
+  const hasRoughnessMap = !dropGlbMr && !!opts.roughnessMap;
   const mat = new MeshStandardMaterial({
     color: new Color(color),
     envMapIntensity: opts.envMapIntensity ?? DEFAULT_ENV_MAP_INTENSITY,
@@ -202,7 +217,7 @@ function mapsFromSource(
   'map' | 'metalness' | 'metalnessMap' | 'normalMap' | 'roughness' | 'roughnessMap'
 > {
   const keepAuthoredMetalness = opts.metalness === undefined;
-  const keepAuthoredPbrMaps = opts.authoredPbrMaps !== 'noise';
+  const keepAuthoredPbrMaps = !dropsAuthoredMetallicRoughnessMaps(opts.authoredPbrMaps);
   return {
     ...(mat.map ? { map: mat.map } : {}),
     ...(mat.normalMap ? { normalMap: mat.normalMap } : {}),
@@ -250,7 +265,8 @@ function resolveMaterialColorFromMap(
  * subtrees and excluded material names (Brain, GlowingEyes, …). Authored
  * albedo / normal maps stay and replace the matching FBM channel. Roughness /
  * metalness maps do the same unless `authoredPbrMaps: 'noise'` drops them so
- * FBM drives those channels (Tahu battle LOD). Caller `metalness` is the
+ * FBM drives those channels (Tahu battle LOD), or `'packed'` samples the stolen
+ * emissive as R roughness / G metalness / B wear. Caller `metalness` is the
  * weathered plastic/metal amount. Samples baked emissive discoloration maps
  * when the mesh has UVs.
  */

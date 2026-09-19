@@ -353,6 +353,45 @@ describe('applyWeatheredMetalToObject PBR map preservation', () => {
     expect(next.metalnessNode).toBeDefined();
   });
 
+  test('authoredPbrMaps packed drops glTF MR maps and uses a distinct bake topology', () => {
+    const bake = mapTex();
+    const normal = mapTex();
+    const mr = mapTex();
+    const noise = getWeatheredMetalMaterial('#c91a09', {
+      authoredPbrMaps: 'noise',
+      discolorationMap: bake,
+      metalness: 0.05,
+      normalMap: normal,
+      roughnessMap: mr,
+    });
+    const packed = getWeatheredMetalMaterial('#c91a09', {
+      authoredPbrMaps: 'packed',
+      discolorationMap: bake,
+      metalness: 0.05,
+      metalnessMap: mr,
+      normalMap: normal,
+      roughnessMap: mr,
+    });
+    expect(packed).not.toBe(noise);
+    expect(packed.normalMap).toBe(normal);
+    expect(packed.roughnessMap).toBeNull();
+    expect(packed.metalnessMap).toBeNull();
+    expect(packed.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+    expect(
+      (packed as MeshStandardMaterial & { roughnessNode?: unknown; metalnessNode?: unknown })
+        .roughnessNode
+    ).toBeDefined();
+    expect(
+      (packed as MeshStandardMaterial & { roughnessNode?: unknown; metalnessNode?: unknown })
+        .metalnessNode
+    ).toBeDefined();
+    expect(packed.customProgramCacheKey?.()).toContain('packed');
+    expect(noise.customProgramCacheKey?.()).not.toContain('packed');
+    expect(packed.userData.packedRoughnessHasMap).toBe(1);
+    expect(packed.userData.packedMetalnessHasMap).toBe(1);
+    expect(noise.userData.packedRoughnessHasMap).toBeUndefined();
+  });
+
   test('keeps authored metalness maps when weathering does not pass a metalness scalar', () => {
     const mr = mapTex();
     const source = new MeshStandardMaterial({
