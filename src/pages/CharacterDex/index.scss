@@ -294,6 +294,7 @@
 
 .character-dex-mask-heading {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
@@ -302,6 +303,15 @@
   h2 {
     margin: 0;
   }
+}
+
+.character-dex-toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1 1 12rem;
 }
 
 .character-dex-mask-toggle {

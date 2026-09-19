@@ -126,7 +126,7 @@ export const ANIMATION_EPICS: Record<AnimationEpicId, AnimationEpic> = {
     storyBeat: 'story_toa_arrival',
     storyOrder: 10,
     summary:
-      'Tahu and Pohatu Mata lack Hit clips. Attack and Idle are present; Hit currently uses procedural shake.',
+      'Pohatu Mata lacks a Hit clip. Tahu Mata Hit is shipped; Attack and Idle are present on both.',
     title: 'Toa Mata — Hit clip gaps',
   },
   'toa-metru-combat': {
@@ -256,11 +256,11 @@ export const RIG_INVENTORY: RigInventoryEntry[] = [
   },
   {
     displayName: 'Toa Tahu Mata',
-    epicId: 'toa-mata-polish',
+    epicId: 'complete',
     expectedClips: [
       { backlog: 'complete', kind: 'idle', name: 'Idle', required: true },
       { backlog: 'complete', kind: 'combat', name: 'Attack', required: true },
-      { backlog: 'missing', kind: 'combat', name: 'Hit', required: true },
+      { backlog: 'complete', kind: 'combat', name: 'Hit', required: true },
     ],
     glb: 'Toa_Mata/tahu.glb',
     id: 'toa-mata-tahu',

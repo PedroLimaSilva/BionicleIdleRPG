@@ -349,6 +349,73 @@ describe('buildKitMeshMaterials untextured slots', () => {
     expect(next.metalnessNode).toBeUndefined();
   });
 
+  test('authoredPbrMaps noise drops roughness / metalness maps and uses FBM nodes', () => {
+    const mesh = meshWithUvAndSlots(['Main_MataChest_baked']);
+    const bake = discolorTex();
+    const normal = discolorTex();
+    const mr = discolorTex();
+    const source = mesh.material as MeshStandardMaterial;
+    source.emissiveMap = bake;
+    source.normalMap = normal;
+    source.roughnessMap = mr;
+    source.metalnessMap = mr;
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'body', slot: 'main' },
+      }),
+      COLORS,
+      { ...PLASTIC_WEATHERED, authoredPbrMaps: 'noise' }
+    ) as MeshStandardMaterial & {
+      metalnessNode?: unknown;
+      normalNode?: unknown;
+      roughnessNode?: unknown;
+    };
+    expect(next.normalMap).toBe(normal);
+    expect(next.roughnessMap).toBeNull();
+    expect(next.metalnessMap).toBeNull();
+    expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+    expect(next.normalNode).toBeUndefined();
+    expect(next.roughnessNode).toBeDefined();
+    expect(next.metalnessNode).toBeDefined();
+  });
+
+  test('re-applying kit materials does not clone WeatheredMetal and drop TSL nodes', () => {
+    const mesh = meshWithUvAndSlots(['Main']);
+    const lookup = buildKitMaterialSlotLookup({
+      Main: { kind: 'part', part: 'body', slot: 'main' },
+    });
+    applyKitMaterialsToObject(mesh, lookup, COLORS, PLASTIC_WEATHERED);
+    applyKitMaterialsToObject(mesh, lookup, COLORS, PLASTIC_WEATHERED);
+    const next = mesh.material as MeshStandardMaterial & {
+      colorNode?: unknown;
+      roughnessNode?: unknown;
+    };
+    expect(next.name).toBe('WeatheredMetal');
+    expect(next.colorNode).toBeDefined();
+    expect(next.roughnessNode).toBeDefined();
+  });
+
+  test('noise PBR still weathers when a printed albedo map is present', () => {
+    const mesh = meshWithUvAndSlots(['Battle_Body_Main_Baked']);
+    const albedo = discolorTex();
+    const bake = discolorTex();
+    const source = mesh.material as MeshStandardMaterial;
+    source.map = albedo;
+    source.emissiveMap = bake;
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Battle_Body_Main_Baked: { kind: 'part', part: 'body', slot: 'main' },
+      }),
+      COLORS,
+      { ...PLASTIC_WEATHERED, authoredPbrMaps: 'noise' }
+    ) as MeshStandardMaterial & { roughnessNode?: unknown };
+    expect(next.name).toBe('WeatheredMetal');
+    expect(next.roughnessNode).toBeDefined();
+    expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+  });
+
   test('Blender duplicate Main.001 still takes the Main slot', () => {
     const mat = buildSingle('Main.001', { Main: { kind: 'part', part: 'body', slot: 'main' } });
     expect(mat.name).toBe('WeatheredMetal');

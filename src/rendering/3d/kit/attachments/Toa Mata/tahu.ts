@@ -21,194 +21,179 @@ const TAHU_WEAPON_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>> 
   ...mataKitPlayerPaletteWeaponGlow(2.5),
 };
 
+const TAHU_SECONDARY_MAIN: Partial<Record<string, KitMaterialSlotEntry>> = {
+  Main: TAHU_PALETTE_COLORS.Secondary,
+};
+
+const TAHU_BLACK_MAIN: Partial<Record<string, KitMaterialSlotEntry>> = {
+  Main: { kind: 'lego', value: LegoColor.Black },
+};
+
 /**
- * Tahu Mata (2001 kit): same socket / kit node names as Gali; fire palette on plastics.
+ * Tahu Mata (2001 kit): sockets on `Toa_Mata/tahu.glb` are named after the kit
+ * node they receive (same pattern as Gali / Onua). Right-arm single-arm pieces
+ * tint Main as Secondary.
  */
 export const TAHU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
-  Ankle_L: {
-    kitNodeName: KIT_2001_NODES.MataLegModThigh,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Ankle_R: {
-    kitNodeName: KIT_2001_NODES.MataLegModThigh,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Arm_L_Piston_Lower_1: {
-    kitNodeName: KIT_2001_NODES.MataLegModPistonT,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Arm_L_Piston_Upper_1: {
-    kitNodeName: KIT_2001_NODES.MataLegModPistonN,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Arm_Lower_L_1: {
-    kitNodeName: KIT_2001_NODES.MataLegModThigh,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Arm_Lower_R_1: {
-    kitNodeName: KIT_2001_NODES.MataSingleArmLower,
-    materialColors: {
-      Main: TAHU_PALETTE_COLORS.Secondary,
-    },
-  },
-  Arm_R_Piston_Lower_L_1: {
-    kitNodeName: KIT_2001_NODES.MataSingleArmPistonLowerL,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Arm_R_Piston_Lower_R_1: {
-    kitNodeName: KIT_2001_NODES.MataSingleArmPistonLowerL,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Arm_R_Piston_Upper_L_1: {
-    kitNodeName: KIT_2001_NODES.MataSingleArmPistonUpperL,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Arm_R_Piston_Upper_R_1: {
-    kitNodeName: KIT_2001_NODES.MataSingleArmPistonUpperL,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Arm_Upper_L_1: {
-    kitNodeName: KIT_2001_NODES.MataLegModShin,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Arm_Upper_R_1: {
-    kitNodeName: KIT_2001_NODES.MataSingleArmUpper,
-    materialColors: {
-      Main: TAHU_PALETTE_COLORS.Secondary,
-    },
-  },
-  ArmJointStopper: {
-    kitNodeName: KIT_2001_NODES.PerpendicularAxleJoint,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
+  Axle3L_Hand1: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: TAHU_BLACK_MAIN },
+  Axle3L_Hand2: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: TAHU_BLACK_MAIN },
   Axle6L: { kitNodeName: KIT_2001_NODES.Axle6L, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  AxleConPin2: { kitNodeName: KIT_2001_NODES.AxleConPin2, materialColors: TAHU_BLACK_MAIN },
   AxleMod2L: { kitNodeName: KIT_2001_NODES.AxleMod2L, materialColors: KIT_TECHNIC_MAIN_BLACK },
+  AxleMod3L_L: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: TAHU_BLACK_MAIN },
+  AxleMod3L_R: { kitNodeName: KIT_2001_NODES.AxleMod3L, materialColors: TAHU_BLACK_MAIN },
   AxleModHips: { kitNodeName: KIT_2001_NODES.AxleModHips, materialColors: KIT_TECHNIC_MAIN_BLACK },
   AxleSocket1L: {
     kitNodeName: KIT_2001_NODES.AxleSocket1L,
     materialColors: KIT_TECHNIC_MAIN_BLACK,
   },
+  AxleSpacer1L_B: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
+  },
+  AxleSpacer1L_F: {
+    kitNodeName: KIT_2001_NODES.AxleSpacer1L,
+    materialColors: KIT_TECHNIC_MAIN_METAL,
+  },
   BallJoint: { kitNodeName: KIT_2001_NODES.BallJoint, materialColors: KIT_TECHNIC_MAIN_BLACK },
-  Brain: {
-    kitNodeName: KIT_2001_NODES.MataBrain,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Chest: {
-    kitNodeName: KIT_2001_NODES.MataChest,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Face: { kitNodeName: KIT_2001_NODES.MataFace, materialColors: TAHU_PALETTE_COLORS },
-  FingerB: {
-    kitNodeName: KIT_2001_NODES.Axle3L,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  FingerF: {
-    kitNodeName: KIT_2001_NODES.Axle3L,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  Foot_L_1: {
-    kitNodeName: KIT_2001_NODES.MataFoot,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Foot_R_1: {
-    kitNodeName: KIT_2001_NODES.MataFoot,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
   GearB: { kitNodeName: KIT_2001_NODES.GearB, materialColors: KIT_TECHNIC_MAIN_METAL },
-  GearMM: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
-  GearMR: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
-  Glowing_Eyes: {
-    kitNodeName: KIT_2001_NODES.MataGlowingEyes,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  HandL: {
-    kitNodeName: KIT_2001_NODES.MataHand,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  HandR: {
-    kitNodeName: KIT_2001_NODES.MataSingleArmHand,
-    materialColors: { Main: TAHU_PALETTE_COLORS.Secondary },
-  },
-  Hip_Joint_L_1: {
-    kitNodeName: KIT_2001_NODES.SocketModTop,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  Hip_Joint_R_1: {
-    kitNodeName: KIT_2001_NODES.SocketModTop,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  Leg_Lower_Piston_L_1: {
-    kitNodeName: KIT_2001_NODES.MataLegModPistonT,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Leg_Lower_Piston_R_1: {
-    kitNodeName: KIT_2001_NODES.MataLegModPistonT,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Leg_Upper_L_1: {
-    kitNodeName: KIT_2001_NODES.MataLegModShin,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Leg_Upper_Piston_L_1: {
-    kitNodeName: KIT_2001_NODES.MataLegModPistonN,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Leg_Upper_Piston_R_1: {
-    kitNodeName: KIT_2001_NODES.MataLegModPistonN,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Leg_Upper_R_1: {
-    kitNodeName: KIT_2001_NODES.MataLegModShin,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  MataHip: {
-    kitNodeName: KIT_2001_NODES.MataHip,
-    materialColors: TAHU_PALETTE_COLORS,
-  },
-  Neck_1: {
-    kitNodeName: KIT_2001_NODES.AxleConPin2,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  Shoulder_Joint_L_1: {
-    kitNodeName: KIT_2001_NODES.SocketModSide,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  Shoulder_Joint_R_1: {
-    kitNodeName: KIT_2001_NODES.SocketModSide,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  Shoulder_L_1: {
-    kitNodeName: KIT_2001_NODES.AxleMod3L,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  Shoulder_R_1: {
-    kitNodeName: KIT_2001_NODES.AxleMod3L,
-    materialColors: { Main: { kind: 'lego', value: LegoColor.Black } },
-  },
-  Spacer1LB: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: KIT_TECHNIC_MAIN_METAL },
-  Spacer1LF: { kitNodeName: KIT_2001_NODES.AxleSpacer1L, materialColors: KIT_TECHNIC_MAIN_METAL },
-  TahuSword: {
-    kitNodeName: KIT_2001_NODES.TahuSword,
-    materialColors: TAHU_WEAPON_PALETTE_COLORS,
-  },
-  Waist_1_1: {
+  GearM_B: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  GearM_R: { kitNodeName: KIT_2001_NODES.GearM, materialColors: KIT_TECHNIC_MAIN_METAL },
+  MataAbdomen: {
     kitNodeName: KIT_2001_NODES.MataAbdomen,
     materialColors: TAHU_PALETTE_COLORS,
   },
-  Waist_Piston_Lower_L_1: {
-    kitNodeName: KIT_2001_NODES.MataObliqueW,
+  MataBrain: {
+    kitNodeName: KIT_2001_NODES.MataBrain,
     materialColors: TAHU_PALETTE_COLORS,
   },
-  Waist_Piston_Lower_R_1: {
-    kitNodeName: KIT_2001_NODES.MataObliqueW,
+  MataChest: {
+    kitNodeName: KIT_2001_NODES.MataChest,
     materialColors: TAHU_PALETTE_COLORS,
   },
-  Waist_Piston_Upper_L_1: {
+  MataFace: { kitNodeName: KIT_2001_NODES.MataFace, materialColors: TAHU_PALETTE_COLORS },
+  MataFootHeel_L: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: TAHU_PALETTE_COLORS },
+  MataFootHeel_R: { kitNodeName: KIT_2001_NODES.MataFoot, materialColors: TAHU_PALETTE_COLORS },
+  MataGlowingEyes: {
+    kitNodeName: KIT_2001_NODES.MataGlowingEyes,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataHand: { kitNodeName: KIT_2001_NODES.MataHand, materialColors: TAHU_PALETTE_COLORS },
+  MataHip: { kitNodeName: KIT_2001_NODES.MataHip, materialColors: TAHU_PALETTE_COLORS },
+  MataLegModPistonN_Arm: {
+    kitNodeName: KIT_2001_NODES.MataLegModPistonN,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModPistonN_L: {
+    kitNodeName: KIT_2001_NODES.MataLegModPistonN,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModPistonN_R: {
+    kitNodeName: KIT_2001_NODES.MataLegModPistonN,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModPistonT_Arm: {
+    kitNodeName: KIT_2001_NODES.MataLegModPistonT,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModPistonT_L: {
+    kitNodeName: KIT_2001_NODES.MataLegModPistonT,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModPistonT_R: {
+    kitNodeName: KIT_2001_NODES.MataLegModPistonT,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModShin_ArmL: {
+    kitNodeName: KIT_2001_NODES.MataLegModShin,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModShin_L: {
+    kitNodeName: KIT_2001_NODES.MataLegModShin,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModShin_R: {
+    kitNodeName: KIT_2001_NODES.MataLegModShin,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModThigh_ArmL: {
+    kitNodeName: KIT_2001_NODES.MataLegModThigh,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModThigh_L: {
+    kitNodeName: KIT_2001_NODES.MataLegModThigh,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataLegModThigh_R: {
+    kitNodeName: KIT_2001_NODES.MataLegModThigh,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataObliqueN_L: {
     kitNodeName: KIT_2001_NODES.MataObliqueN,
     materialColors: TAHU_PALETTE_COLORS,
   },
-  Waist_Piston_Upper_R_1: {
+  MataObliqueN_R: {
     kitNodeName: KIT_2001_NODES.MataObliqueN,
     materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataObliqueW_L: {
+    kitNodeName: KIT_2001_NODES.MataObliqueW,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataObliqueW_R: {
+    kitNodeName: KIT_2001_NODES.MataObliqueW,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataSingleArmHand: {
+    kitNodeName: KIT_2001_NODES.MataSingleArmHand,
+    materialColors: TAHU_SECONDARY_MAIN,
+  },
+  MataSingleArmLower: {
+    kitNodeName: KIT_2001_NODES.MataSingleArmLower,
+    materialColors: TAHU_SECONDARY_MAIN,
+  },
+  MataSingleArmPistonLowerL_L: {
+    kitNodeName: KIT_2001_NODES.MataSingleArmPistonLowerL,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataSingleArmPistonLowerL_R: {
+    kitNodeName: KIT_2001_NODES.MataSingleArmPistonLowerL,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataSingleArmPistonUpperL_L: {
+    kitNodeName: KIT_2001_NODES.MataSingleArmPistonUpperL,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataSingleArmPistonUpperL_R: {
+    kitNodeName: KIT_2001_NODES.MataSingleArmPistonUpperL,
+    materialColors: TAHU_PALETTE_COLORS,
+  },
+  MataSingleArmUpper: {
+    kitNodeName: KIT_2001_NODES.MataSingleArmUpper,
+    materialColors: TAHU_SECONDARY_MAIN,
+  },
+  PerpendicularAxleJoint: {
+    kitNodeName: KIT_2001_NODES.PerpendicularAxleJoint,
+    materialColors: TAHU_BLACK_MAIN,
+  },
+  SocketModSide_L: {
+    kitNodeName: KIT_2001_NODES.SocketModSide,
+    materialColors: TAHU_BLACK_MAIN,
+  },
+  SocketModSide_R: {
+    kitNodeName: KIT_2001_NODES.SocketModSide,
+    materialColors: TAHU_BLACK_MAIN,
+  },
+  SocketModTop_L: {
+    kitNodeName: KIT_2001_NODES.SocketModTop,
+    materialColors: TAHU_BLACK_MAIN,
+  },
+  SocketModTop_R: {
+    kitNodeName: KIT_2001_NODES.SocketModTop,
+    materialColors: TAHU_BLACK_MAIN,
+  },
+  TahuSword: {
+    kitNodeName: KIT_2001_NODES.TahuSword,
+    materialColors: TAHU_WEAPON_PALETTE_COLORS,
   },
 };

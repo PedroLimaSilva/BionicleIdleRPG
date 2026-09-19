@@ -318,6 +318,41 @@ describe('applyWeatheredMetalToObject PBR map preservation', () => {
     expect(next.metalnessNode).toBeDefined();
   });
 
+  test('authoredPbrMaps noise keeps normals and discoloration, and uses FBM for PBR', () => {
+    const bake = mapTex();
+    const normal = mapTex();
+    const mr = mapTex();
+    const source = new MeshStandardMaterial({
+      color: '#ffffff',
+      emissiveMap: bake,
+      metalnessMap: mr,
+      name: 'Battle_Body_Main_Baked',
+      normalMap: normal,
+      roughnessMap: mr,
+    });
+    const mesh = new Mesh(new BoxGeometry(), source);
+    applyWeatheredMetalToObject(new Group().add(mesh), {
+      authoredPbrMaps: 'noise',
+      discolorationMap: bake,
+      materialColorMap: { Battle_Body_Main_Baked: '#c91a09' },
+      metalness: 0.05,
+      roughness: 0.55,
+      uniqueMaterials: true,
+    });
+    const next = mesh.material as MeshStandardMaterial & {
+      metalnessNode?: unknown;
+      normalNode?: unknown;
+      roughnessNode?: unknown;
+    };
+    expect(next.normalMap).toBe(normal);
+    expect(next.roughnessMap).toBeNull();
+    expect(next.metalnessMap).toBeNull();
+    expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+    expect(next.normalNode).toBeUndefined();
+    expect(next.roughnessNode).toBeDefined();
+    expect(next.metalnessNode).toBeDefined();
+  });
+
   test('keeps authored metalness maps when weathering does not pass a metalness scalar', () => {
     const mr = mapTex();
     const source = new MeshStandardMaterial({

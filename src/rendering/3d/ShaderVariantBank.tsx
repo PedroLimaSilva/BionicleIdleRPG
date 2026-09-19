@@ -148,6 +148,16 @@ function buildVariantPreviewGroup(): Group {
     getWeatheredMetalMaterial(LegoColor.Red, {
       ...BANK_PLASTIC_WEATHERED,
       discolorationMap: bakeSwatch(),
+      normalMap: DUMMY_NORMAL_MAP,
+    }),
+    skeleton
+  );
+  addPreviewMeshes(
+    group,
+    geo,
+    getWeatheredMetalMaterial(LegoColor.Red, {
+      ...BANK_PLASTIC_WEATHERED,
+      discolorationMap: bakeSwatch(),
       metalnessMap: DUMMY_ROUGHNESS_MAP,
       normalMap: DUMMY_NORMAL_MAP,
       roughnessMap: DUMMY_ROUGHNESS_MAP,

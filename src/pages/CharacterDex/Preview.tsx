@@ -10,12 +10,18 @@ import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { playCharacterPreviewAnimation } from '../../rendering/3d/utils/characterPreviewControls';
 import { ElementTag } from '../../components/ElementTag';
 import { getAdjacentDexIds, PREVIEW_ANIMATIONS, toDexPreviewMatoran } from './dexEntries';
-import { isRahkshi } from '../../game/characters/matoranStage';
+import { isRahkshi, isToaMata } from '../../game/characters/matoranStage';
 import {
   RAHKSHI_DEX_DEFAULT_MESH_VARIANT,
   type RahkshiDexMeshVariant,
 } from '../../data/dex/rahkshi';
+import { resolveToaMataBuildId } from '../../rendering/3d/customMataBuild';
+import type { BaseMatoran } from '../../types/Matoran';
 import './index.scss';
+
+function supportsTahuBattleLod(base: BaseMatoran): boolean {
+  return isToaMata(base) && resolveToaMataBuildId(base) === 'Toa_Tahu';
+}
 
 export const CharacterDexPreview: React.FC = () => {
   const { id } = useParams();
@@ -23,15 +29,19 @@ export const CharacterDexPreview: React.FC = () => {
   const base = id ? CHARACTER_DEX[id] : undefined;
   const [selectedMask, setSelectedMask] = useState<Mask | undefined>(base?.mask);
   const [maskPowerActive, setMaskPowerActive] = useState(false);
-  const [rahkshiMeshVariant, setRahkshiMeshVariant] = useState<RahkshiDexMeshVariant>(
+  const [meshVariant, setMeshVariant] = useState<RahkshiDexMeshVariant>(
     RAHKSHI_DEX_DEFAULT_MESH_VARIANT
   );
+  const [discolorationBakesActive, setDiscolorationBakesActive] = useState(true);
+  const [normalMapsActive, setNormalMapsActive] = useState(true);
   const [sceneGeneration, setSceneGeneration] = useState(0);
 
   useEffect(() => {
     setSelectedMask(base?.mask);
     setMaskPowerActive(false);
-    setRahkshiMeshVariant(RAHKSHI_DEX_DEFAULT_MESH_VARIANT);
+    setMeshVariant(RAHKSHI_DEX_DEFAULT_MESH_VARIANT);
+    setDiscolorationBakesActive(true);
+    setNormalMapsActive(true);
     setSceneGeneration(0);
   }, [base?.id, base?.mask]);
 
@@ -45,11 +55,21 @@ export const CharacterDexPreview: React.FC = () => {
   const previewMatoran = useMemo(() => {
     if (!base) return null;
     return toDexPreviewMatoran(base, {
+      discolorationBakesActive: supportsTahuBattleLod(base) ? discolorationBakesActive : undefined,
       maskOverride: selectedMask ?? base.mask,
       maskPowerActive,
-      rahkshiMeshVariant: isRahkshi(base) ? rahkshiMeshVariant : undefined,
+      normalMapsActive: supportsTahuBattleLod(base) ? normalMapsActive : undefined,
+      rahkshiMeshVariant: isRahkshi(base) ? meshVariant : undefined,
+      tahuMeshVariant: supportsTahuBattleLod(base) ? meshVariant : undefined,
     });
-  }, [base, maskPowerActive, rahkshiMeshVariant, selectedMask]);
+  }, [
+    base,
+    discolorationBakesActive,
+    maskPowerActive,
+    meshVariant,
+    normalMapsActive,
+    selectedMask,
+  ]);
 
   useEffect(() => {
     if (!previewMatoran) {
@@ -58,7 +78,7 @@ export const CharacterDexPreview: React.FC = () => {
     }
     setScene(
       <CharacterScene
-        key={`${previewMatoran.id}-${sceneGeneration}-${previewMatoran.rahkshiMeshVariant ?? 'detailed'}`}
+        key={`${previewMatoran.id}-${sceneGeneration}-${previewMatoran.rahkshiMeshVariant ?? previewMatoran.tahuMeshVariant ?? 'detailed'}`}
         enablePreviewControls
         matoran={previewMatoran}
       />
@@ -137,31 +157,75 @@ export const CharacterDexPreview: React.FC = () => {
           </div>
         </section>
 
-        {isRahkshi(base) && (
+        {(isRahkshi(base) || supportsTahuBattleLod(base)) && (
           <section className="character-dex-control-block">
             <div className="character-dex-mask-heading">
               <h2>Mesh</h2>
-              <label className="character-dex-mask-toggle">
-                <span>Battle LOD</span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-label="Battle LOD mesh"
-                  aria-checked={rahkshiMeshVariant === 'battle'}
-                  className={`toggle-placeholder ${rahkshiMeshVariant === 'battle' ? 'on' : ''}`}
-                  onClick={() =>
-                    setRahkshiMeshVariant((variant) =>
-                      variant === 'battle' ? 'detailed' : 'battle'
-                    )
-                  }
-                />
-              </label>
+              <div className="character-dex-toggle-row">
+                <label className="character-dex-mask-toggle">
+                  <span>Battle LOD</span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-label="Battle LOD mesh"
+                    aria-checked={meshVariant === 'battle'}
+                    className={`toggle-placeholder ${meshVariant === 'battle' ? 'on' : ''}`}
+                    onClick={() =>
+                      setMeshVariant((variant) => (variant === 'battle' ? 'detailed' : 'battle'))
+                    }
+                  />
+                </label>
+                {supportsTahuBattleLod(base) && (
+                  <>
+                    <label className="character-dex-mask-toggle">
+                      <span>Emissive bakes</span>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-label="Emissive discoloration bakes"
+                        aria-checked={discolorationBakesActive}
+                        className={`toggle-placeholder ${discolorationBakesActive ? 'on' : ''}`}
+                        onClick={() => setDiscolorationBakesActive((active) => !active)}
+                      />
+                    </label>
+                    <label className="character-dex-mask-toggle">
+                      <span>Normal maps</span>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-label="Authored normal maps"
+                        aria-checked={normalMapsActive}
+                        className={`toggle-placeholder ${normalMapsActive ? 'on' : ''}`}
+                        onClick={() => setNormalMapsActive((active) => !active)}
+                      />
+                    </label>
+                  </>
+                )}
+              </div>
             </div>
             <p className="character-dex-mask-name">
-              {rahkshiMeshVariant === 'battle'
-                ? 'Merged battle LOD (`Battle_*` meshes on `Rahkshi`)'
-                : 'Full kit + baked rig (`Rahkshi`)'}
+              {meshVariant === 'battle'
+                ? isRahkshi(base)
+                  ? 'Merged battle LOD (`Battle_*` meshes on `Rahkshi`)'
+                  : 'Merged battle LOD (`Battle_Body` + `Battle_Brain` on `Tahu`)'
+                : isRahkshi(base)
+                  ? 'Full kit + baked rig (`Rahkshi`)'
+                  : 'Full kit sockets (`Tahu`)'}
             </p>
+            {supportsTahuBattleLod(base) && (
+              <>
+                <p className="character-dex-mask-name">
+                  {discolorationBakesActive
+                    ? 'Emissive wear maps mixed on weathered plastics'
+                    : 'Emissive wear maps off (noise metalness / roughness only)'}
+                </p>
+                <p className="character-dex-mask-name">
+                  {normalMapsActive
+                    ? 'Tangent normal maps applied on weathered plastics'
+                    : 'Tangent normal maps off (smooth geometry)'}
+                </p>
+              </>
+            )}
           </section>
         )}
 

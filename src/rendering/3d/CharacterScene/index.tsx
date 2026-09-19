@@ -34,7 +34,7 @@ import { PohatuMataModel } from './Mata/PohatuMataModel';
 import { KopakaMataModel } from './Mata/KopakaMataModel';
 import { OnuaMataModel } from './Mata/OnuaMataModel';
 import { LewaMataModel } from './Mata/LewaMataModel';
-import { TahuMataModel } from './Mata/TahuMataModel';
+import { TahuMataModel, TAHU_PREVIEW_MESH_VARIANT } from './Mata/TahuMataModel';
 import { TahuNuvaModel } from './Nuva/TahuNuvaModel';
 import { GaliNuvaModel } from './Nuva/GaliNuvaModel';
 import { BohrokModel } from './BohrokModel';
@@ -71,6 +71,9 @@ export type CharacterSceneMatoran = BaseMatoran &
   RecruitedCharacterData & {
     maskPowerActive?: boolean;
     rahkshiMeshVariant?: 'detailed' | 'battle';
+    tahuMeshVariant?: 'detailed' | 'battle';
+    discolorationBakesActive?: boolean;
+    normalMapsActive?: boolean;
     unlockAllMasks?: boolean;
   };
 
@@ -97,6 +100,7 @@ const CharacterModel = forwardRef<
     matoran.customMataModelId,
     matoran.id,
     matoran.rahkshiMeshVariant,
+    matoran.tahuMeshVariant,
     matoran.stage,
     onModelReady,
   ]);
@@ -116,7 +120,14 @@ const CharacterModel = forwardRef<
         case 'Toa_Lewa':
           return <LewaMataModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
         default:
-          return <TahuMataModel ref={ref} matoran={matoran} onKitMeshesAttached={onModelReady} />;
+          return (
+            <TahuMataModel
+              ref={ref}
+              matoran={matoran}
+              meshVariant={matoran.tahuMeshVariant ?? TAHU_PREVIEW_MESH_VARIANT}
+              onKitMeshesAttached={onModelReady}
+            />
+          );
       }
     }
     case MatoranStage.ToaNuva: {

@@ -13,7 +13,16 @@
  * that `.copy()` keeps by reference, without contributing AO.
  */
 
-import { ClampToEdgeWrapping, Color, MeshStandardMaterial, NoColorSpace, Texture } from 'three';
+import {
+  ClampToEdgeWrapping,
+  Color,
+  LinearFilter,
+  Mesh,
+  MeshStandardMaterial,
+  NoColorSpace,
+  Object3D,
+  Texture,
+} from 'three';
 import { float, materialReference, smoothstep, texture, uniform, uv } from 'three/tsl';
 import { discolorationForColor } from '../kit/palettes/legoColorDiscoloration';
 import { DUMMY_DISCOLORATION_MAP, isDummyDiscolorationMap } from './dummyTextures';
@@ -23,6 +32,12 @@ export const DISCOLORATION_MAP_USERDATA_KEY = 'bakedDiscolorationMap';
 export const DISCOLORATION_UNIFORMS_KEY = 'bakedDiscolorationUniforms';
 /** Copy-safe GPU slot. Intensity is always 0 so MeshStandardNodeMaterial AO is identity. */
 export const DISCOLORATION_MAP_SLOT = 'aoMap' as const;
+/**
+ * Hairline edge bakes (Tahu 1024 atlas) filter to ~0.1–0.4. Mix starts near
+ * black and reaches full mix by ~0.28 so 1px wires still discolor.
+ */
+export const DISCOLORATION_SMOOTHSTEP_LO = 0.04;
+export const DISCOLORATION_SMOOTHSTEP_HI = 0.28;
 
 export function createBakedDiscolorationUniforms(map: Texture | null, colorHex: string) {
   const spec = discolorationForColor(colorHex);
@@ -140,6 +155,9 @@ export function getBakedDiscolorationMap(mat: unknown): Texture | null {
 }
 
 type TslFloat = BakedDiscolorationUniforms['hasMap'];
+type TslTextureSample = {
+  r: unknown;
+};
 const discolorationColorRef = safeMaterialColorRef(
   'userData.discolorationColor'
 ) as unknown as BakedDiscolorationUniforms['color'];
@@ -151,11 +169,24 @@ const discolorationIntensityRef = materialReference(
   'userData.discolorationIntensity',
   'float'
 ) as unknown as TslFloat;
+/**
+ * Per-material bake sample — same pattern as `normalMap`. A shared TextureNode
+ * whose `.value` is patched in `onBeforeRender` stays bound to the compile
+ * dummy on WebGPU (`getUniformHash` is the texture UUID).
+ */
+const discolorationAoMapRef = materialReference(
+  DISCOLORATION_MAP_SLOT,
+  'texture'
+) as unknown as TslTextureSample;
 
 /**
  * Bind a bake map onto the copy-safe `aoMap` slot. Bake-absent graphs omit the
  * sample and keep `aoMap` null so THREE does not compile an AO path. Dummy stays
  * in userData only unless {@link ensureBakeSampleSlot} plants it for compile.
+ *
+ * Atlas hairline bakes (Tahu battle LOD) mip-average toward black. Sample
+ * LOD 0 with linear filtering, and keep {@link Texture.channel} on uv0 so
+ * `materialReference('aoMap')` does not pick aoMap's default uv2.
  */
 export function bindDiscolorationMapForSampling(
   mat: MeshStandardMaterial,
@@ -163,9 +194,14 @@ export function bindDiscolorationMapForSampling(
 ): void {
   const bake = isRenderableBakeMap(map) ? map : DUMMY_DISCOLORATION_MAP;
   if (bake !== DUMMY_DISCOLORATION_MAP) {
+    bake.channel = 0;
     bake.colorSpace = NoColorSpace;
+    bake.generateMipmaps = false;
+    bake.magFilter = LinearFilter;
+    bake.minFilter = LinearFilter;
     bake.wrapS = ClampToEdgeWrapping;
     bake.wrapT = ClampToEdgeWrapping;
+    bake.needsUpdate = true;
     mat.aoMap = bake;
     mat.aoMapIntensity = 0;
   } else {
@@ -189,18 +225,17 @@ export function bakedDiscolorationColorFromMaterial() {
   return discolorationColorRef;
 }
 
-type TslTextureSample = {
-  r: unknown;
-};
-
 /**
- * Shared bake mix amount. Samples {@link bakedDiscolorationMapNode} (dummy at
- * compile, live `aoMap` per object) with explicit `uv()` so the bake stays on
- * uv0 instead of aoMap's default uv2.
+ * Mix amount. Samples this material's `aoMap` (the stolen bake) the same way
+ * normals sample `normalMap` — a per-draw material binding, not a shared
+ * TextureNode. Keep uv0 via {@link bindDiscolorationMapForSampling} `channel`.
  */
 export function bakedDiscolorationAmountFromMaterial() {
-  const sample = bakedDiscolorationMapNode as unknown as TslTextureSample;
-  return smoothstep(0.2, 0.75, sample.r as never)
+  return smoothstep(
+    DISCOLORATION_SMOOTHSTEP_LO,
+    DISCOLORATION_SMOOTHSTEP_HI,
+    discolorationAoMapRef.r as never
+  )
     .mul(discolorationIntensityRef as never)
     .mul(discolorationHasMapRef as never)
     .clamp(0, 1);
@@ -260,9 +295,31 @@ export function writeBakedDiscolorationUserData(
 }
 
 /**
- * Mix amount for the baked wear mask. `smoothstep` crushes mid-gray floors so
- * only true edge/highlight texels mix. Pass explicit `uv()` so TSL cannot
- * steal another map’s `getUV` (normal/roughness) when the bake has no uvNode.
+ * Dex preview: keep the bake texture bound and zero / restore the mix uniforms
+ * so toggling does not rebuild weathered materials.
+ */
+export function setBakedDiscolorationEnabled(root: Object3D, enabled: boolean): number {
+  let count = 0;
+  root.traverse((child) => {
+    const mesh = child as Mesh;
+    if (!mesh.isMesh) return;
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    for (const raw of mats) {
+      const mat = raw as MeshStandardMaterial;
+      if (!getBakedDiscolorationMap(mat)) continue;
+      const spec = discolorationForColor(mat.color.getStyle());
+      mat.userData.discolorationHasMap = enabled ? 1 : 0;
+      mat.userData.discolorationIntensity = enabled ? spec.intensity : 0;
+      count += 1;
+    }
+  });
+  return count;
+}
+
+/**
+ * Mix amount for the baked wear mask. Hairline atlases filter below 0.2, so the
+ * gate starts near black and reaches full mix at {@link DISCOLORATION_SMOOTHSTEP_HI}.
+ * Pass explicit `uv()` so TSL cannot steal another map’s `getUV`.
  */
 export function bakedDiscolorationAmountNode(
   map: Texture | null,
@@ -270,7 +327,7 @@ export function bakedDiscolorationAmountNode(
 ) {
   if (!map) return float(0);
   return uniforms.hasMap
-    .mul(smoothstep(0.2, 0.75, texture(map, uv()).r))
+    .mul(smoothstep(DISCOLORATION_SMOOTHSTEP_LO, DISCOLORATION_SMOOTHSTEP_HI, texture(map, uv()).r))
     .mul(uniforms.intensity)
     .clamp(0, 1);
 }

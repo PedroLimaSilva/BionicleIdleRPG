@@ -8,7 +8,10 @@ import { VahkiModel } from '../../rendering/3d/CharacterScene/VahkiModel';
 import { KopakaMataModel } from '../../rendering/3d/CharacterScene/Mata/KopakaMataModel';
 import { CHARACTER_DEX } from '../../data/dex/index';
 import { Euler } from '@react-three/fiber';
-import { TahuMataModel } from '../../rendering/3d/CharacterScene/Mata/TahuMataModel';
+import {
+  TahuMataModel,
+  TAHU_COMBAT_MESH_VARIANT,
+} from '../../rendering/3d/CharacterScene/Mata/TahuMataModel';
 import { PohatuMataModel } from '../../rendering/3d/CharacterScene/Mata/PohatuMataModel';
 import { OnuaMataModel } from '../../rendering/3d/CharacterScene/Mata/OnuaMataModel';
 import { LewaMataModel } from '../../rendering/3d/CharacterScene/Mata/LewaMataModel';
@@ -386,6 +389,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
                   exp: 0,
                   maskPowerActive,
                 }}
+                meshVariant={TAHU_COMBAT_MESH_VARIANT}
                 {...kitReadyProps}
               />
             </group>
