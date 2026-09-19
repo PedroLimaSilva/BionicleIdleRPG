@@ -48,6 +48,25 @@ Use before exporting to `public/**/*.glb`.
 
 You are not re-authoring from scratch — you are **reducing** meshes built for Cycles close-ups so they behave in a real-time engine. Use **any tool that helps**, in a fixed order, on a **duplicate** (kit library or `Battle` collection copy). Never run destructive cleanup on the only linked dex instance.
 
+### Manifold vs visible shells (kit + battle join)
+
+**For this game, prefer visible-shell cleanup over watertight manifold parts.**
+
+| Approach                                                  | When to use                                                                                                                     |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Visible shell only** (delete backs/internals; holes OK) | Default for **kit parts** and **battle bucket joins** — fewer tris, no caps on stud bores or sockets                            |
+| **Manifold per part**                                     | Rare: 3D print, fluid sim, or a tool that requires closed volume — not glTF skinning                                            |
+| **One manifold body after merge**                         | Usually **avoid** — union/remesh/retopo to one solid fights overlapping LEGO parts and breaks a simple weight-per-part workflow |
+
+Real-time rendering does **not** require a watertight character. glTF/Three.js happily draw one skinned mesh with **many separate island shells**. What hurts in-engine:
+
+- **Interior faces** and **duplicate layers** (shadow maps, wasted fill) — delete these regardless of manifold.
+- **Bad normals** (dark patches, faceted shading) — fix with recalculate outside / weighted normals.
+- **Z-fighting** where two visible shells occupy the same surface — merge by distance or delete one layer.
+- **Needless intersections** — only fix where you see artifacts (often you _want_ mask-on-face overlap for sheet self-shadow).
+
+**Make Manifold** is a diagnostic and last-resort fix for broken imports, not a goal for every plastic part. Battle LOD: join buckets → one object per material with **multiple shells inside is fine**; do not boolean-union the whole Toa into one solid unless a specific area fails visually.
+
 ### Golden rules
 
 1. **Duplicate first** — `Alt+D` (linked mesh) or full copy into a cleanup collection; keep a pre-cleanup blend if the mesh is precious.
