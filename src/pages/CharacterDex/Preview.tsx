@@ -203,7 +203,7 @@ export const CharacterDexPreview: React.FC = () => {
                 )}
               </div>
             </div>
-            <p className="character-dex-mask-name">
+            <p className="character-dex-caption">
               {meshVariant === 'battle'
                 ? isRahkshi(base)
                   ? 'Merged battle LOD (`Battle_*` meshes on `Rahkshi`)'
@@ -214,12 +214,12 @@ export const CharacterDexPreview: React.FC = () => {
             </p>
             {supportsTahuBattleLod(base) && (
               <>
-                <p className="character-dex-mask-name">
+                <p className="character-dex-caption">
                   {discolorationBakesActive
                     ? 'Emissive wear maps mixed on weathered plastics'
                     : 'Emissive wear maps off (noise metalness / roughness only)'}
                 </p>
-                <p className="character-dex-mask-name">
+                <p className="character-dex-caption">
                   {normalMapsActive
                     ? 'Tangent normal maps applied on weathered plastics'
                     : 'Tangent normal maps off (smooth geometry)'}

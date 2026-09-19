@@ -48,7 +48,7 @@ test.describe('Character Dex', () => {
       'aria-selected',
       'true'
     );
-    await expect(page.locator('.character-dex-mask-name')).toContainText('Speed');
+    await expect(page.locator('.character-dex-mask-name')).toHaveText(/Mask of Speed/);
 
     await page.getByRole('button', { name: 'Attack' }).click();
     await page.getByRole('link', { name: 'All characters' }).click();
