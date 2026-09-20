@@ -5,6 +5,7 @@ import { useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../hooks/useAnimationController';
 import { useIdleAnimation } from '../hooks/useIdleAnimation';
 import { useMask } from '../hooks/useMask';
+import { setAuthoredNormalMapsEnabled } from '../hooks/authoredNormalMaps';
 import { setBakedDiscolorationEnabled } from '../hooks/bakedDiscoloration';
 import { setPackedMetalnessEnabled, setPackedRoughnessEnabled } from '../hooks/packedPbrMaps';
 import { applyDiminishedSheetMaterials } from '../kit/palettes/diminishedSheetPalette';
@@ -20,6 +21,7 @@ export function DiminishedMatoranModel({
     discolorationBakesActive?: boolean;
     maskOverride?: Mask;
     maskPowerActive?: boolean;
+    normalMapsActive?: boolean;
     packedMetalnessActive?: boolean;
     packedRoughnessActive?: boolean;
   };
@@ -40,17 +42,21 @@ export function DiminishedMatoranModel({
     nodes.Matoran;
 
   const bakesActive = matoran.discolorationBakesActive !== false;
+  const normalMapsActive = matoran.normalMapsActive !== false;
   const roughnessActive = matoran.packedRoughnessActive !== false;
   const metalnessActive = matoran.packedMetalnessActive !== false;
   const bakesActiveRef = useRef(bakesActive);
+  const normalMapsActiveRef = useRef(normalMapsActive);
   const roughnessActiveRef = useRef(roughnessActive);
   const metalnessActiveRef = useRef(metalnessActive);
   bakesActiveRef.current = bakesActive;
+  normalMapsActiveRef.current = normalMapsActive;
   roughnessActiveRef.current = roughnessActive;
   metalnessActiveRef.current = metalnessActive;
 
   const applyPreviewPackedToggles = useCallback((obj: Object3D) => {
     setBakedDiscolorationEnabled(obj, bakesActiveRef.current);
+    setAuthoredNormalMapsEnabled(obj, normalMapsActiveRef.current);
     setPackedRoughnessEnabled(obj, roughnessActiveRef.current);
     setPackedMetalnessEnabled(obj, metalnessActiveRef.current);
   }, []);
@@ -68,10 +74,18 @@ export function DiminishedMatoranModel({
     applyPreviewPackedToggles(root);
     return () => {
       setBakedDiscolorationEnabled(root, true);
+      setAuthoredNormalMapsEnabled(root, true);
       setPackedRoughnessEnabled(root, true);
       setPackedMetalnessEnabled(root, true);
     };
-  }, [applyPreviewPackedToggles, bakesActive, metalnessActive, roughnessActive, root]);
+  }, [
+    applyPreviewPackedToggles,
+    bakesActive,
+    metalnessActive,
+    normalMapsActive,
+    roughnessActive,
+    root,
+  ]);
 
   useMask(nodes.Masks, matoran, matoran.colors.eyes, matoran.maskPowerActive);
 

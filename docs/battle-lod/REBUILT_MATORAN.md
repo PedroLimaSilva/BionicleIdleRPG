@@ -21,7 +21,7 @@ Matoran (armature, origin at feet)
 └── Masks — runtime Kanohi (under `Head`)
 ```
 
-Shipped clips: `Idle`, `Idle.001` (`REBUILT_IDLE_SWITCH`). `Tilt Head` is still missing — do not graduate the rebuilt idle-switch epic until it ships.
+Shipped clips: `Idle`. `Tilt Head` is still missing — do not graduate the rebuilt idle-switch epic until it ships.
 
 `CharacterScene` draws this body. There is no battle path.
 
@@ -76,7 +76,7 @@ Keep **`useMask`** on `Masks` with `masks.glb`. The socket sits under `Head`. Au
 3. **Brain** — skinned `Brain` with `Brain` + `Glowing Eyes`.
 4. Kit sockets can stay as empties; runtime ignores them. Pieces that only rebuilt cloned (`MatoranFoot`, `MatoranBody`, `PerpendicularLiftArm`) can leave `kit_2001` / `kit_2003` — confirm with `yarn kit-node-usage-report`. Keep `McToranFace` (KanohiMonument).
 5. Keep the `Matoran` Y lift so origin stays at the feet.
-6. Export; verify `Idle` / `Idle.001` drive both Body and Brain.
+6. Export; verify `Idle` drives both Body and Brain.
 
 ---
 
@@ -84,7 +84,7 @@ Keep **`useMask`** on `Masks` with `masks.glb`. The socket sits under `Head`. Au
 
 | File                                                                                       | Role                                      |
 | ------------------------------------------------------------------------------------------ | ----------------------------------------- |
-| [`RebuiltMatoranModel.tsx`](../../src/rendering/3d/CharacterScene/RebuiltMatoranModel.tsx) | Packed body; idle switch; no kit attach   |
+| [`RebuiltMatoranModel.tsx`](../../src/rendering/3d/CharacterScene/RebuiltMatoranModel.tsx) | Packed body; single Idle; no kit attach   |
 | [`rebuiltSheetMeshes.ts`](../../src/rendering/3d/CharacterScene/rebuiltSheetMeshes.ts)     | `Body` / `Brain` naming                   |
 | [`rebuiltLod.ts`](../../src/rendering/3d/CharacterScene/rebuiltLod.ts)                     | Show packed meshes; hide leftover kit geo |
 | [`rebuiltSheetPalette.ts`](../../src/rendering/3d/kit/palettes/rebuiltSheetPalette.ts)     | Palette + packed weathered PBR            |

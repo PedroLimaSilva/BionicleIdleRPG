@@ -4,8 +4,8 @@ import { Group, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { useAnimationController } from '../hooks/useAnimationController';
 import { useIdleAnimation } from '../hooks/useIdleAnimation';
-import { REBUILT_IDLE_SWITCH } from './idleSwitchConfigs';
 import { useMask } from '../hooks/useMask';
+import { setAuthoredNormalMapsEnabled } from '../hooks/authoredNormalMaps';
 import { setBakedDiscolorationEnabled } from '../hooks/bakedDiscoloration';
 import { setPackedMetalnessEnabled, setPackedRoughnessEnabled } from '../hooks/packedPbrMaps';
 import { applyRebuiltSheetMaterials } from '../kit/palettes/rebuiltSheetPalette';
@@ -22,6 +22,7 @@ export function RebuiltMatoranModel({
     discolorationBakesActive?: boolean;
     maskOverride?: Mask;
     maskPowerActive?: boolean;
+    normalMapsActive?: boolean;
     packedMetalnessActive?: boolean;
     packedRoughnessActive?: boolean;
   };
@@ -29,13 +30,11 @@ export function RebuiltMatoranModel({
 }) {
   const group = useRef<Group>(null);
   const { animations, nodes, scene } = useGLTF(REBUILT_GLB);
-  const { actions, idleActionName, mixer } = useIdleAnimation(animations, group, {
-    idleSwitch: REBUILT_IDLE_SWITCH,
-  });
+  const { actions, mixer } = useIdleAnimation(animations, group);
 
   useAnimationController({
     flavors: [actions['Tilt Head']].filter(Boolean),
-    idle: actions[idleActionName],
+    idle: actions['Idle'],
     mixer,
   });
 
@@ -43,17 +42,21 @@ export function RebuiltMatoranModel({
     (scene.getObjectByName(REBUILT_SHEET_RIG_NODE) as typeof nodes.Matoran | null) ?? nodes.Matoran;
 
   const bakesActive = matoran.discolorationBakesActive !== false;
+  const normalMapsActive = matoran.normalMapsActive !== false;
   const roughnessActive = matoran.packedRoughnessActive !== false;
   const metalnessActive = matoran.packedMetalnessActive !== false;
   const bakesActiveRef = useRef(bakesActive);
+  const normalMapsActiveRef = useRef(normalMapsActive);
   const roughnessActiveRef = useRef(roughnessActive);
   const metalnessActiveRef = useRef(metalnessActive);
   bakesActiveRef.current = bakesActive;
+  normalMapsActiveRef.current = normalMapsActive;
   roughnessActiveRef.current = roughnessActive;
   metalnessActiveRef.current = metalnessActive;
 
   const applyPreviewPackedToggles = useCallback((obj: Object3D) => {
     setBakedDiscolorationEnabled(obj, bakesActiveRef.current);
+    setAuthoredNormalMapsEnabled(obj, normalMapsActiveRef.current);
     setPackedRoughnessEnabled(obj, roughnessActiveRef.current);
     setPackedMetalnessEnabled(obj, metalnessActiveRef.current);
   }, []);
@@ -71,10 +74,18 @@ export function RebuiltMatoranModel({
     applyPreviewPackedToggles(root);
     return () => {
       setBakedDiscolorationEnabled(root, true);
+      setAuthoredNormalMapsEnabled(root, true);
       setPackedRoughnessEnabled(root, true);
       setPackedMetalnessEnabled(root, true);
     };
-  }, [applyPreviewPackedToggles, bakesActive, metalnessActive, roughnessActive, root]);
+  }, [
+    applyPreviewPackedToggles,
+    bakesActive,
+    metalnessActive,
+    normalMapsActive,
+    roughnessActive,
+    root,
+  ]);
 
   useMask(nodes.Masks, matoran, matoran.colors.eyes, matoran.maskPowerActive);
 

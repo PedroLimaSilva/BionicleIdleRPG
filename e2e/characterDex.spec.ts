@@ -64,12 +64,18 @@ test.describe('Character Dex', () => {
     await hideCanvas(page);
 
     await expect(page.getByRole('heading', { exact: true, name: 'Jala' })).toBeVisible();
+    const normals = page.getByRole('switch', { name: 'Authored normal maps' });
     const discoloration = page.getByRole('switch', { name: 'Packed discoloration' });
     const roughness = page.getByRole('switch', { name: 'Packed roughness' });
     const metalness = page.getByRole('switch', { name: 'Packed metalness' });
+    await expect(normals).toHaveAttribute('aria-checked', 'true');
     await expect(discoloration).toHaveAttribute('aria-checked', 'true');
     await expect(roughness).toHaveAttribute('aria-checked', 'true');
     await expect(metalness).toHaveAttribute('aria-checked', 'true');
+
+    await normals.click();
+    await expect(normals).toHaveAttribute('aria-checked', 'false');
+    await expect(page.getByText('Tangent normal maps off (smooth geometry)')).toBeVisible();
 
     await roughness.click();
     await expect(roughness).toHaveAttribute('aria-checked', 'false');
@@ -91,12 +97,18 @@ test.describe('Character Dex', () => {
     await hideCanvas(page);
 
     await expect(page.getByRole('heading', { exact: true, name: 'Jaller' })).toBeVisible();
+    const normals = page.getByRole('switch', { name: 'Authored normal maps' });
     const discoloration = page.getByRole('switch', { name: 'Packed discoloration' });
     const roughness = page.getByRole('switch', { name: 'Packed roughness' });
     const metalness = page.getByRole('switch', { name: 'Packed metalness' });
+    await expect(normals).toHaveAttribute('aria-checked', 'true');
     await expect(discoloration).toHaveAttribute('aria-checked', 'true');
     await expect(roughness).toHaveAttribute('aria-checked', 'true');
     await expect(metalness).toHaveAttribute('aria-checked', 'true');
+
+    await normals.click();
+    await expect(normals).toHaveAttribute('aria-checked', 'false');
+    await expect(page.getByText('Tangent normal maps off (smooth geometry)')).toBeVisible();
 
     await roughness.click();
     await expect(roughness).toHaveAttribute('aria-checked', 'false');

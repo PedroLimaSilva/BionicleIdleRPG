@@ -62,7 +62,7 @@ Sorted by story progression. Run `yarn animation-clip-report` for the live matri
 |   2 | [Nui-Rama — combat clips](#epic-rahi-nui-rama)               | MNOG             |    1 | Skeletal combat beyond Wings ambient loop                     |
 |   3 | [Generic Rahi — GLB-backed rig](#epic-rahi-placeholder)      | Mask Hunt / MNOG |    1 | Replace procedural capsule placeholder                        |
 |   4 | [Toa Nuva — combat clip rollout](#epic-toa-nuva-combat)      | Bohrok Swarm     |    5 | Extend Tahu/Pohatu-quality combat clips to remaining Nuva     |
-|   5 | [Rebuilt Matoran — idle & flavor](#epic-rebuilt-idle-switch) | Bohrok Kal       |    1 | Idle transition + Tilt Head flavor                            |
+|   5 | [Rebuilt Matoran — idle & flavor](#epic-rebuilt-idle-switch) | Bohrok Kal       |    1 | Add Tilt Head flavor                                          |
 |   6 | [Rahkshi — Defeat clip](#epic-rahkshi-defeat)                | Mask of Light    |    1 | Optional authored knockdown (procedural works today)          |
 |   7 | [Metru Matoran — flavor overlays](#epic-village-flavor)      | Metru Nui        |    1 | Add Tilt Head to `matoran_metru.glb`                          |
 |   8 | [Vahki — combat clips](#epic-vahki-combat)                   | Metru Nui        |    1 | Add combat clips while preserving biped/quadruped idle switch |
@@ -174,11 +174,11 @@ Other Mata Toa (Gali, Lewa, Onua) ship full Attack + Hit. Extra clips in Mata GL
 
 **Story:** Bohrok Kal · `bohrok_kal_naming_day` · **Rigs:** 1 · **Epic id:** `rebuilt-idle-switch`
 
-Rebuilt Matoran crossfade between `Idle` and `Idle.001` (`REBUILT_IDLE_SWITCH`). Vahki uses dedicated `Switch_*` transition clips — same pattern recommended here. Also missing `Tilt Head` flavor.
+Rebuilt Matoran ships a single `Idle`. `Tilt Head` flavor is still missing — do not graduate this epic until it ships.
 
-| Rig             | GLB           | Idle switch | Tilt Head |
-| --------------- | ------------- | ----------- | --------- |
-| Rebuilt Matoran | `rebuilt.glb` | ✅ / ✅     | ❌        |
+| Rig             | GLB           | Idle | Tilt Head |
+| --------------- | ------------- | ---- | --------- |
+| Rebuilt Matoran | `rebuilt.glb` | ✅   | ❌        |
 
 ---
 
