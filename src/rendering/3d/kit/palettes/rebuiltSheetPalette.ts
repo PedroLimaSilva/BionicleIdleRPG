@@ -31,15 +31,16 @@ const REBUILT_SHEET_EYES: KitMaterialSlotEntry = {
 };
 
 /**
- * Material names on `Body_Baked` / `Brain` → player palette.
+ * Material names on `Body` / `Brain` → player palette.
  * Opaque baked slots weather; brain gel and glowing eyes stay unweathered.
  *
- * `Body_Limbs_Baked` is one atlas for arms + legs/feet, so it can only take
- * one tint — `arms.main`. Feet stay independently editable on 2D avatars.
+ * Three body tints: torso (`body.main`), limbs (`feet.main`), metal (`body.metal`).
+ * `Body_Limbs_Baked` is one atlas for arms + legs, so it follows feet — not a
+ * fourth arms color.
  */
 export const REBUILT_SHEET_SLOT_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   Body_Body_Baked: { kind: 'part', part: 'body', slot: 'main' },
-  Body_Limbs_Baked: { kind: 'part', part: 'arms', slot: 'main' },
+  Body_Limbs_Baked: { kind: 'part', part: 'feet', slot: 'main' },
   Body_Metal_Baked: {
     color: { kind: 'part', part: 'body', slot: 'metal' },
     ...MATA_METAL_PBR,

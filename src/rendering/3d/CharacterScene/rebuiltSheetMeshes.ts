@@ -4,7 +4,7 @@ import type { Object3D } from 'three';
 export const REBUILT_SHEET_RIG_NODE = 'Matoran';
 
 /** Merged opaque body — one mesh, one draw per `Body_*_Baked` slot. */
-export const REBUILT_SHEET_BODY_MESH = 'Body_Baked';
+export const REBUILT_SHEET_BODY_MESH = 'Body';
 
 /** Brain gel + glowing eyes. */
 export const REBUILT_SHEET_BRAIN_MESH = 'Brain';
@@ -26,7 +26,7 @@ export function isRebuiltSheetMesh(meshName: string): boolean {
   return REBUILT_SHEET_MESH_NAMES.has(meshName);
 }
 
-/** Primitive under a `Body_Baked` / `Brain` group (Blender mesh names, not the group). */
+/** Primitive under a `Body` / `Brain` group (Blender mesh names, not the group). */
 export function isRebuiltSheetDescendant(mesh: Object3D): boolean {
   let parent: Object3D | null = mesh.parent;
   while (parent) {

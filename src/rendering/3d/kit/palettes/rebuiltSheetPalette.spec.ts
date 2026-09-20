@@ -47,7 +47,7 @@ function uvMesh(materials: MeshStandardMaterial[]): Mesh {
 }
 
 describe('rebuilt sheet materials', () => {
-  test('sheet slot map covers every shipped Body_Baked / Brain name', () => {
+  test('sheet slot map covers every shipped Body / Brain name', () => {
     expect(Object.keys(REBUILT_SHEET_SLOT_COLORS).sort()).toEqual([
       'Body_Body_Baked',
       'Body_Limbs_Baked',
@@ -117,7 +117,7 @@ describe('rebuilt sheet materials', () => {
     expect(applied.userData[PACKED_METALNESS_HAS_MAP_KEY]).toBe(0);
   });
 
-  test('limbs use arms.main; metal uses Mata PBR; brain gel stays transmissive', () => {
+  test('limbs use feet.main; metal uses Mata PBR; brain gel stays transmissive', () => {
     const limbs = new MeshStandardMaterial({ name: 'Body_Limbs_Baked' });
     const metal = new MeshStandardMaterial({ name: 'Body_Metal_Baked' });
     const brain = new MeshStandardMaterial({ name: 'Brain' });
@@ -128,7 +128,7 @@ describe('rebuilt sheet materials', () => {
 
     const [nextLimbs, nextMetal, nextBrain, nextEyes] = mesh.material as MeshStandardMaterial[];
     expect(nextLimbs.color.getHexString().toUpperCase()).toBe(
-      LegoColor.Tan.replace('#', '').toUpperCase()
+      LegoColor.DarkOrange.replace('#', '').toUpperCase()
     );
     expect(nextMetal.color.getHexString().toUpperCase()).toBe(
       LegoColor.LightGray.replace('#', '').toUpperCase()

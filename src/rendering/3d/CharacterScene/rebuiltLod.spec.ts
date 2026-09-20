@@ -3,7 +3,7 @@ import { setRebuiltSheetVisibility } from './rebuiltLod';
 import { REBUILT_SHEET_BODY_MESH, REBUILT_SHEET_BRAIN_MESH } from './rebuiltSheetMeshes';
 
 describe('rebuiltLod visibility', () => {
-  test('shows Body_Baked / Brain and hides leftover kit geo', () => {
+  test('shows Body / Brain and hides leftover kit geo', () => {
     const root = new Group();
     const body = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
     body.name = REBUILT_SHEET_BODY_MESH;
@@ -21,7 +21,7 @@ describe('rebuiltLod visibility', () => {
     expect(kitTorso.visible).toBe(false);
   });
 
-  test('shows primitives parented under the Body_Baked group', () => {
+  test('shows primitives parented under the Body group', () => {
     const root = new Group();
     const body = new Group();
     body.name = REBUILT_SHEET_BODY_MESH;

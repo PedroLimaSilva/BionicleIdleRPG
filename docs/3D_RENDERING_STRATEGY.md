@@ -85,7 +85,7 @@ Follow the **Nui-Rama** pattern: self-contained GLB, merged sub-meshes in Blende
 
 **Kopaka skinned body:** `Body` + transmissive `Brain` / `Sword` + mask; same mesh in sheet and combat.
 
-**Rebuilt packed body:** `Body_Baked` + transmissive `Brain` + mask; character sheet only.
+**Rebuilt packed body:** `Body` + transmissive `Brain` + mask; character sheet only.
 
 ## Related code
 

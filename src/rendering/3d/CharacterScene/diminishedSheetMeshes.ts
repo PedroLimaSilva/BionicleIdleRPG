@@ -18,10 +18,11 @@ export const DIMINISHED_SHEET_BODY_MATERIAL_NAMES = [
 export const DIMINISHED_SHEET_BRAIN_MATERIAL_NAMES = ['Brain', 'Glowing Eyes'] as const;
 
 /**
- * Kanohi sockets on Mata / rebuilt rigs sit under `MataFace` at −90° X, which
- * cancels the Head bone's Blender rest (+90° X) so `masks.glb` stays upright.
+ * Kanohi sockets on Mata rigs sit under `MataFace` at −90° X, which cancels the
+ * Head bone's Blender rest (+90° X) so `masks.glb` stays upright.
  * This export parents `Masks` straight to `Head`, so apply the same cancel here.
- * Idle does not key `Masks`, so this rest pose sticks.
+ * Idle does not key `Masks`, so this rest pose sticks. Rebuilt authors its own
+ * Head cancel in the GLB — do not use this there.
  */
 export const DIMINISHED_MASK_SOCKET_ROTATION = new Euler(-Math.PI / 2, 0, 0);
 
