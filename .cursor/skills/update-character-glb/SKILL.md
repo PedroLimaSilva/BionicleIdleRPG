@@ -140,16 +140,16 @@ Include in **Testing**:
 
 ## Common rig → GLB map
 
-| Family          | GLB pattern                                              | Component dir           |
-| --------------- | -------------------------------------------------------- | ----------------------- |
-| Toa Mata        | `Toa_Mata/<name>.glb`                                    | `CharacterScene/Mata/`  |
-| Toa Nuva        | `Toa_Nuva/<name>.glb`                                    | `CharacterScene/Nuva/`  |
-| Toa Metru       | `Toa_Metru/<Name>.glb`                                   | `CharacterScene/Metru/` |
-| Bohrok          | `bohrok_master.glb`                                      | `BohrokModel.tsx`       |
-| Vahki           | `Vahki.glb`                                              | `VahkiModel.tsx`        |
-| Rahkshi         | `rahkshi.glb`                                            | `Rahkshi.tsx`           |
-| Village Matoran | `matoran_master.glb`, `matoran_metru.glb`, `rebuilt.glb` | `*MatoranModel.tsx`     |
-| Nui-Rama        | `Rahi/NuiRama.glb`                                       | `NuiRamaModel.tsx`      |
+| Family    | GLB pattern                                              | Component dir           |
+| --------- | -------------------------------------------------------- | ----------------------- |
+| Toa Mata  | `Toa_Mata/<name>.glb`                                    | `CharacterScene/Mata/`  |
+| Toa Nuva  | `Toa_Nuva/<name>.glb`                                    | `CharacterScene/Nuva/`  |
+| Toa Metru | `Toa_Metru/<Name>.glb`                                   | `CharacterScene/Metru/` |
+| Bohrok    | `bohrok_master.glb`                                      | `BohrokModel.tsx`       |
+| Vahki     | `Vahki.glb`                                              | `VahkiModel.tsx`        |
+| Rahkshi   | `rahkshi.glb`                                            | `Rahkshi.tsx`           |
+| Matoran   | `matoran_master.glb`, `matoran_metru.glb`, `rebuilt.glb` | `*MatoranModel.tsx`     |
+| Nui-Rama  | `Rahi/NuiRama.glb`                                       | `NuiRamaModel.tsx`      |
 
 ## Checklist before finishing the turn
 

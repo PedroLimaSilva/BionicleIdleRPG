@@ -52,7 +52,7 @@ function disableSkinnedSheetFrustumCulling(mesh: Mesh): void {
   mesh.frustumCulled = false;
 }
 
-/** Tints the baked village body with the player palette; packed emissive drives PBR + wear. */
+/** Tints the baked diminished body with the player palette; packed emissive drives PBR + wear. */
 export function applyDiminishedSheetMaterials(root: Object3D, colors: MatoranColors): void {
   const slotLookup = buildKitMaterialSlotLookup(DIMINISHED_SHEET_SLOT_COLORS);
   applyKitMaterialsToObject(root, slotLookup, colors, DIMINISHED_SHEET_WEATHERED);

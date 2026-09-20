@@ -84,11 +84,11 @@ import { KIT_2004_NODES, type Kit2004NodeName } from './kit2004Nodes';
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
 export const KIT_2001_NODE_EXEMPT: readonly Kit2001NodeName[] = [
-  // Diminished village now ships a baked skinned body instead of cloning these.
+  // Diminished Matoran now ship a baked skinned body instead of cloning these.
   KIT_2001_NODES.McArmL,
   KIT_2001_NODES.McArmR,
   KIT_2001_NODES.McTorso,
-  // Rebuilt village now ships packed `Body_Baked` instead of cloning this foot.
+  // Rebuilt Matoran now ship packed `Body_Baked` instead of cloning this foot.
   KIT_2001_NODES.MatoranFoot,
   // Still drawn by KanohiMonument from kit_2001 — do not drop from the GLB.
   KIT_2001_NODES.McToranFace,
@@ -98,7 +98,7 @@ export const KIT_2001_NODE_EXEMPT: readonly Kit2001NodeName[] = [
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
 export const KIT_2003_NODE_EXEMPT: readonly Kit2003NodeName[] = [
-  // Rebuilt village now ships packed `Body_Baked` instead of cloning these.
+  // Rebuilt Matoran now ship packed `Body_Baked` instead of cloning these.
   KIT_2003_NODES.MatoranBody,
   KIT_2003_NODES.PerpendicularLiftArm,
 ];

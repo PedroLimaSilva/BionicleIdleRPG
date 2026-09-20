@@ -64,7 +64,7 @@ Sorted by story progression. Run `yarn animation-clip-report` for the live matri
 |   4 | [Toa Nuva — combat clip rollout](#epic-toa-nuva-combat)      | Bohrok Swarm     |    5 | Extend Tahu/Pohatu-quality combat clips to remaining Nuva     |
 |   5 | [Rebuilt Matoran — idle & flavor](#epic-rebuilt-idle-switch) | Bohrok Kal       |    1 | Idle transition + Tilt Head flavor                            |
 |   6 | [Rahkshi — Defeat clip](#epic-rahkshi-defeat)                | Mask of Light    |    1 | Optional authored knockdown (procedural works today)          |
-|   7 | [Metru Matoran — flavor overlays](#epic-village-flavor)      | Metru Nui        |    1 | Add Tilt Head to Metru village GLB                            |
+|   7 | [Metru Matoran — flavor overlays](#epic-village-flavor)      | Metru Nui        |    1 | Add Tilt Head to `matoran_metru.glb`                          |
 |   8 | [Vahki — combat clips](#epic-vahki-combat)                   | Metru Nui        |    1 | Add combat clips while preserving biped/quadruped idle switch |
 |   9 | [Toa Metru — skeletal combat clips](#epic-toa-metru-combat)  | Metru Nui        |    7 | Add Attack / Hit / Defeat to all Toa Metru GLBs               |
 |  10 | [Bohrok — unused authored clips](#epic-bohrok-extras)        | Stretch          |    1 | Wire or remove Ball / Flying / Flying Pose                    |
@@ -104,17 +104,17 @@ Character Dex preview buttons use the same combat contract: `Attack`, `Hit`, `De
 
 ### Shipped character GLBs (35 total in `public/`)
 
-| Family          | GLB path pattern                                         | React components       | Combat support                                                       |
-| --------------- | -------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------- |
-| Toa Mata        | `Toa_Mata/<name>.glb`                                    | `Mata/*MataModel`      | Tahu full clips; Kopaka Idle + procedural combat; Pohatu missing Hit |
-| Toa Nuva        | `Toa_Nuva/<name>.glb`                                    | `Nuva/*Model`          | Tahu + Pohatu only; others procedural                                |
-| Toa Metru       | `Toa_Metru/<name>.glb`                                   | `Metru/*Model`         | Idle only — all combat procedural                                    |
-| Bohrok          | `bohrok_master.glb`                                      | `BohrokModel`          | Full combat set (reference rig)                                      |
-| Vahki           | `Vahki.glb` + kit attachments                            | `VahkiModel`           | Idle switch complete; combat procedural                              |
-| Rahkshi         | `rahkshi.glb`                                            | `Rahkshi`              | Attack + Hit; Defeat procedural                                      |
-| Village Matoran | `matoran_master.glb`, `matoran_metru.glb`, `rebuilt.glb` | `*MatoranModel`        | Non-combat; flavor overlays                                          |
-| Rahi            | `Rahi/NuiRama.glb`                                       | `NuiRamaModel`         | Wings ambient; combat procedural                                     |
-| Placeholder     | _(none)_                                                 | `RahiPlaceholderModel` | Fully procedural capsule                                             |
+| Family      | GLB path pattern                                         | React components       | Combat support                                                       |
+| ----------- | -------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------- |
+| Toa Mata    | `Toa_Mata/<name>.glb`                                    | `Mata/*MataModel`      | Tahu full clips; Kopaka Idle + procedural combat; Pohatu missing Hit |
+| Toa Nuva    | `Toa_Nuva/<name>.glb`                                    | `Nuva/*Model`          | Tahu + Pohatu only; others procedural                                |
+| Toa Metru   | `Toa_Metru/<name>.glb`                                   | `Metru/*Model`         | Idle only — all combat procedural                                    |
+| Bohrok      | `bohrok_master.glb`                                      | `BohrokModel`          | Full combat set (reference rig)                                      |
+| Vahki       | `Vahki.glb` + kit attachments                            | `VahkiModel`           | Idle switch complete; combat procedural                              |
+| Rahkshi     | `rahkshi.glb`                                            | `Rahkshi`              | Attack + Hit; Defeat procedural                                      |
+| Matoran     | `matoran_master.glb`, `matoran_metru.glb`, `rebuilt.glb` | `*MatoranModel`        | Non-combat; flavor overlays                                          |
+| Rahi        | `Rahi/NuiRama.glb`                                       | `NuiRamaModel`         | Wings ambient; combat procedural                                     |
+| Placeholder | _(none)_                                                 | `RahiPlaceholderModel` | Fully procedural capsule                                             |
 
 Kit libraries (`kit_2001.glb`, `kit_2003.glb`, `kit_2004.glb`) and mask/armor props are mesh-only — no animation clips.
 
@@ -198,7 +198,7 @@ Defeat is intentionally procedural today so knockdown timing stays aligned with 
 
 **Story:** Metru Nui · `story_metru_nui_saga_begin` · **Rigs:** 1 · **Epic id:** `village-flavor`
 
-Metru-stage village Matoran call `useAnimationController` with `Tilt Head`. Diminished Matoran currently ship `Idle` only on `matoran_master.glb`.
+Metru Matoran call `useAnimationController` with `Tilt Head`. Diminished Matoran currently ship `Idle` only on `matoran_master.glb`.
 
 | Rig           | GLB                 | Idle | Tilt Head |
 | ------------- | ------------------- | ---- | --------- |

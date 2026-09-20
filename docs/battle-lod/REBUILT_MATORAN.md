@@ -1,10 +1,10 @@
 # Packed body — Rebuilt Matoran
 
-Phase **C** for [`docs/3D_RENDERING_STRATEGY.md`](../3D_RENDERING_STRATEGY.md). Rebuilt village Matoran no longer kit-assemble. The character sheet draws one packed body.
+Phase **C** for [`docs/3D_RENDERING_STRATEGY.md`](../3D_RENDERING_STRATEGY.md). Rebuilt Matoran no longer kit-assemble. The character sheet draws one packed body.
 
 **Goal:** packed `Body_Baked` + transmissive brain + mask instead of ~20 kit clones.
 
-Village only — not a combat rig.
+Character sheet only — not a combat rig.
 
 ---
 
