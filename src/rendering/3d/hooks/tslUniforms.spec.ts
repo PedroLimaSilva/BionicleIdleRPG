@@ -1,5 +1,10 @@
-import { Color } from 'three';
-import { safeMaterialColorRef, setUniformColor, setUniformNumber } from './tslUniforms';
+import { Color, Texture } from 'three';
+import {
+  installSafeTextureMaterialRefFallback,
+  safeMaterialColorRef,
+  setUniformColor,
+  setUniformNumber,
+} from './tslUniforms';
 
 describe('setUniformColor', () => {
   test('updates a Three.js Color uniform in place', () => {
@@ -37,5 +42,55 @@ describe('setUniformNumber', () => {
 describe('safeMaterialColorRef', () => {
   test('builds a color material reference without throwing', () => {
     expect(() => safeMaterialColorRef('userData.discolorationColor')).not.toThrow();
+  });
+});
+
+describe('installSafeTextureMaterialRefFallback', () => {
+  test('plants the dummy when the referenced material has no map', () => {
+    const fallback = new Texture();
+    const node = {
+      getValueFromReference: () => undefined,
+      node: { value: null as unknown },
+      updateValue() {
+        this.node.value = this.getValueFromReference();
+      },
+      value: null as unknown,
+    };
+    installSafeTextureMaterialRefFallback(node, fallback);
+    node.updateValue();
+    expect(node.node.value).toBe(fallback);
+  });
+
+  test('keeps a real bake texture', () => {
+    const bake = new Texture();
+    const fallback = new Texture();
+    const node = {
+      getValueFromReference: () => bake,
+      node: { value: null as unknown },
+      updateValue() {
+        this.node.value = this.getValueFromReference();
+      },
+      value: null as unknown,
+    };
+    installSafeTextureMaterialRefFallback(node, fallback);
+    node.updateValue();
+    expect(node.node.value).toBe(bake);
+  });
+
+  test('survives getValueFromReference throwing on a shadow NodeMaterial', () => {
+    const fallback = new Texture();
+    const node = {
+      getValueFromReference: () => {
+        throw new TypeError('Cannot read properties of null');
+      },
+      node: { value: null as unknown },
+      updateValue() {
+        this.node.value = this.getValueFromReference();
+      },
+      value: null as unknown,
+    };
+    installSafeTextureMaterialRefFallback(node, fallback);
+    expect(() => node.updateValue()).not.toThrow();
+    expect(node.node.value).toBe(fallback);
   });
 });
