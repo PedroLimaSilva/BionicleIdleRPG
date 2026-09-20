@@ -49,6 +49,10 @@ export function isDiminished(matoran: BaseMatoran) {
   return matoran.stage === MatoranStage.Diminished;
 }
 
+export function isRebuilt(matoran: BaseMatoran) {
+  return matoran.stage === MatoranStage.Rebuilt;
+}
+
 export function isMatoran(matoran: BaseMatoran) {
   return [MatoranStage.Diminished, MatoranStage.Rebuilt, MatoranStage.Metru].includes(
     matoran.stage
