@@ -1,13 +1,19 @@
-import { Color, ColorRepresentation } from 'three';
+import { Color, ColorRepresentation, Texture } from 'three';
 import { materialReference } from 'three/tsl';
 
 type UniformInputNode = { value: unknown };
 
-type MaterialRefNode = UniformInputNode & {
+export type MaterialRefNode = UniformInputNode & {
   getValueFromReference: (object?: unknown) => unknown;
   node?: UniformInputNode | null;
+  setup?: (builder?: unknown) => unknown;
+  updateReference?: (state?: unknown) => unknown;
   updateValue: () => void;
 };
+
+function isTextureLike(value: unknown): value is Texture {
+  return !!value && (value as Texture).isTexture === true;
+}
 
 function isColorLike(value: unknown): value is { b: number; g: number; r: number } {
   if (!value || typeof value !== 'object') return false;
@@ -49,6 +55,56 @@ export function safeMaterialColorRef(path: string) {
     // Jest TSL mock: only `.value` is writable.
   }
   return node;
+}
+
+/**
+ * Shared `materialReference(..., 'texture')` graphs also update for Three's
+ * shadow NodeMaterial, which has no maps. `texture(null)` then throws in
+ * `TextureNode.setup` during shadow compile / `compileAsync`.
+ */
+export function installSafeTextureMaterialRefFallback(
+  node: MaterialRefNode,
+  fallback: Texture
+): MaterialRefNode {
+  try {
+    const previousGet = node.getValueFromReference.bind(node);
+    node.getValueFromReference = function getValueFromReference(...args: unknown[]) {
+      try {
+        const value = previousGet(...args);
+        return isTextureLike(value) ? value : fallback;
+      } catch {
+        return fallback;
+      }
+    };
+    const previousUpdate = node.updateValue.bind(node);
+    node.updateValue = function updateValue() {
+      try {
+        previousUpdate();
+      } catch {
+        // Nested paths / missing parent throw before the uniform is written.
+      }
+      if (this.node && !isTextureLike(this.node.value)) {
+        this.node.value = fallback;
+      }
+    };
+    const previousSetup = node.setup?.bind(node);
+    if (previousSetup) {
+      node.setup = function setup(builder?: unknown) {
+        this.updateReference?.(builder);
+        this.updateValue();
+        return previousSetup(builder);
+      };
+    }
+  } catch {
+    // Jest TSL mock: only `.value` is writable.
+  }
+  return node;
+}
+
+/** Texture materialReference that never compiles as `texture(null)`. */
+export function safeMaterialTextureRef(property: string, fallback: Texture) {
+  const node = materialReference(property, 'texture') as unknown as MaterialRefNode;
+  return installSafeTextureMaterialRefFallback(node, fallback);
 }
 
 /**
