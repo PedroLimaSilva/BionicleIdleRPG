@@ -25,13 +25,14 @@ describe('rebuilt.glb packed sheet layout', () => {
     expect(matoran?.translation?.[1]).toBeGreaterThan(1);
   });
 
-  test('Body_Baked is the packed opaque body; Brain stays a separate mesh', () => {
+  test('Body is the packed skinned opaque body; Brain stays a separate skinned mesh', () => {
     const gltf = readGlbJsonFromPath(REBUILT_GLB);
     const nodes =
       (gltf.nodes as { mesh?: number; name?: string; skin?: number }[] | undefined) ?? [];
     const body = nodes.find((node) => node.name === REBUILT_SHEET_BODY_MESH);
     const brain = nodes.find((node) => node.name === REBUILT_SHEET_BRAIN_MESH);
     expect(body?.mesh).toBeDefined();
+    expect(body?.skin).toBeDefined();
     expect(brain?.mesh).toBeDefined();
     expect(brain?.skin).toBeDefined();
 
@@ -71,35 +72,40 @@ describe('rebuilt.glb packed sheet layout', () => {
     }
   });
 
-  test('Masks is parented to Head with a +90° X rest', () => {
+  test('Masks is parented to Head; authored rest cancels to world identity', () => {
     const gltf = readGlbJsonFromPath(REBUILT_GLB);
     const nodes =
       (gltf.nodes as {
         children?: number[];
+        mesh?: number;
         name?: string;
         rotation?: number[];
+        scale?: number[];
       }[]) ?? [];
     const masksIndex = nodes.findIndex((node) => node.name === 'Masks');
     const head = nodes.find((node) => node.name === 'Head');
     expect(masksIndex).toBeGreaterThanOrEqual(0);
     expect(head?.children).toContain(masksIndex);
     const masks = nodes[masksIndex];
-    // +90° X ≈ (0.707, 0, 0, 0.707). Runtime does not apply the diminished −90° cancel.
-    expect(masks?.rotation?.[0]).toBeCloseTo(0.707, 2);
-    expect(masks?.rotation?.[3]).toBeCloseTo(0.707, 2);
+    expect(masks?.mesh).toBeUndefined();
+    expect(masks?.scale).toBeUndefined();
+    // Local (90° X, −180° Z) ≈ (0, -0.707, -0.707, 0). World is identity —
+    // do not apply alignDiminishedMaskSocket.
+    expect(masks?.rotation?.[1]).toBeCloseTo(-0.707, 2);
+    expect(masks?.rotation?.[2]).toBeCloseTo(-0.707, 2);
   });
 });
 
 describe('rebuilt sheet mesh naming', () => {
-  test('identifies Body_Baked and Brain', () => {
-    expect(isRebuiltSheetMesh('Body_Baked')).toBe(true);
+  test('identifies Body and Brain', () => {
+    expect(isRebuiltSheetMesh('Body')).toBe(true);
     expect(isRebuiltSheetMesh('Brain')).toBe(true);
     expect(isRebuiltSheetMesh('MatoranBody')).toBe(false);
   });
 
-  test('treats skinned primitives parented under Body_Baked as sheet meshes', () => {
+  test('treats skinned primitives parented under Body as sheet meshes', () => {
     const bodyGroup = {
-      name: 'Body_Baked',
+      name: 'Body',
       parent: null,
     } as unknown as import('three').Object3D;
     const part = {
@@ -110,10 +116,8 @@ describe('rebuilt sheet mesh naming', () => {
     expect(isRebuiltSheetRenderableMesh(part)).toBe(true);
   });
 
-  test('treats Body_Baked / Brain nodes as renderable sheet meshes', () => {
-    expect(isRebuiltSheetRenderableMesh({ name: 'Body_Baked' } as import('three').Object3D)).toBe(
-      true
-    );
+  test('treats Body / Brain nodes as renderable sheet meshes', () => {
+    expect(isRebuiltSheetRenderableMesh({ name: 'Body' } as import('three').Object3D)).toBe(true);
     expect(isRebuiltSheetRenderableMesh({ name: 'MatoranBody' } as import('three').Object3D)).toBe(
       false
     );

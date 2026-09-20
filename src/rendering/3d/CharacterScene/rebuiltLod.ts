@@ -14,7 +14,7 @@ function isUnderMasks(obj: Object3D): boolean {
 }
 
 /**
- * Rebuilt no longer kit-assembles. Show the packed `Body_Baked` / `Brain`
+ * Rebuilt no longer kit-assembles. Show the packed `Body` / `Brain`
  * meshes and keep the Kanohi socket subtree visible for `useMask`.
  */
 export function setRebuiltSheetVisibility(root: Object3D): void {
