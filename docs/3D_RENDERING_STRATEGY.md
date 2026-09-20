@@ -12,13 +12,13 @@ Runtime geometry merge (Phase B) only batches meshes that already share a bone a
 
 ## Phased plan
 
-| Phase | What                                                                       | Where it applies                  | Expected impact                                                                      |
-| ----- | -------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------ |
-| **A** | Performance monitor + stable render-cost logger                            | Dev / character sheet             | Baseline measurement ([`3D_PERFORMANCE.md`](3D_PERFORMANCE.md)) — **shipped** (#468) |
-| **B** | Runtime `BufferGeometry` merge in `useKitAttachments`                      | Remaining kit-attached characters | Small incremental win (~10% draws); no asset re-export — **shipped**                 |
-| **C** | **Skinned packed body** — one mesh set per rig; sheet vs battle is map res | Tahu + Kopaka Mata sheet + combat | Drop kit clones; later lower-res maps then lower-tri battle mesh                     |
-| **D** | **InstancedMesh** for duplicate enemies                                    | Bohrok, Rahkshi, Vahki swarms     | Compress N identical enemies toward 1 draw per breed × material group                |
-| **E** | **Authoring** — merged Rahi GLBs (no kit sockets)                          | New Rahi creatures                | Avoid clone overhead; merge small parts in Blender at export                         |
+| Phase | What                                                                       | Where it applies                    | Expected impact                                                                      |
+| ----- | -------------------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------ |
+| **A** | Performance monitor + stable render-cost logger                            | Dev / character sheet               | Baseline measurement ([`3D_PERFORMANCE.md`](3D_PERFORMANCE.md)) — **shipped** (#468) |
+| **B** | Runtime `BufferGeometry` merge in `useKitAttachments`                      | Remaining kit-attached characters   | Small incremental win (~10% draws); no asset re-export — **shipped**                 |
+| **C** | **Skinned packed body** — one mesh set per rig; sheet vs battle is map res | Tahu + Kopaka Mata; rebuilt village | Drop kit clones; later lower-res maps then lower-tri battle mesh                     |
+| **D** | **InstancedMesh** for duplicate enemies                                    | Bohrok, Rahkshi, Vahki swarms       | Compress N identical enemies toward 1 draw per breed × material group                |
+| **E** | **Authoring** — merged Rahi GLBs (no kit sockets)                          | New Rahi creatures                  | Avoid clone overhead; merge small parts in Blender at export                         |
 
 Phases B–E stack. B is necessary but not sufficient for the battle budget.
 
@@ -32,7 +32,7 @@ After materials are applied, rigid kit meshes sharing the same merge anchor bone
 
 ### Principle
 
-- **Character sheet / dex:** packed/skinned body (same as diminished village Matoran). No kit attach.
+- **Character sheet / dex:** packed/skinned body (diminished and rebuilt village Matoran, Tahu / Kopaka Mata). No kit attach.
 - **Battle:** the **same mesh and skeleton** for now. LOD is **map resolution** (sheet maps; battle will bind lower-res copies when exported). After that, author a lower-tri battle mesh on the same armature.
 - **Kanohi** still attach via `useMask` on `Masks`.
 
@@ -44,11 +44,12 @@ Custom Toa on the Tahu rig share this packed body. Palette tinting uses the same
 
 ### Authoring specs
 
-| Rig                                  | Doc                                                      |
-| ------------------------------------ | -------------------------------------------------------- |
-| **Rahkshi** (kit sheet + battle LOD) | [`battle-lod/RAHKSHI.md`](battle-lod/RAHKSHI.md)         |
-| Toa Tahu (Mata) — packed skinned     | [`battle-lod/TAHU_MATA.md`](battle-lod/TAHU_MATA.md)     |
-| Toa Kopaka (Mata) — skinned          | [`battle-lod/KOPAKA_MATA.md`](battle-lod/KOPAKA_MATA.md) |
+| Rig                                  | Doc                                                              |
+| ------------------------------------ | ---------------------------------------------------------------- |
+| **Rahkshi** (kit sheet + battle LOD) | [`battle-lod/RAHKSHI.md`](battle-lod/RAHKSHI.md)                 |
+| Toa Tahu (Mata) — packed skinned     | [`battle-lod/TAHU_MATA.md`](battle-lod/TAHU_MATA.md)             |
+| Toa Kopaka (Mata) — skinned          | [`battle-lod/KOPAKA_MATA.md`](battle-lod/KOPAKA_MATA.md)         |
+| Rebuilt Matoran — packed body        | [`battle-lod/REBUILT_MATORAN.md`](battle-lod/REBUILT_MATORAN.md) |
 
 Other Mata Toa still kit-assemble until they get a packed body. Reuse Tahu bucket names when they do.
 
@@ -83,6 +84,8 @@ Follow the **Nui-Rama** pattern: self-contained GLB, merged sub-meshes in Blende
 **Tahu packed skinned body:** ~8–9 draws (body + mask); sheet and combat share the mesh.
 
 **Kopaka skinned body:** `Body` + transmissive `Brain` / `Sword` + mask; same mesh in sheet and combat.
+
+**Rebuilt packed body:** `Body_Baked` + transmissive `Brain` + mask; village sheet only.
 
 ## Related code
 

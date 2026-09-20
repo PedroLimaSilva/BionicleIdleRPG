@@ -89,4 +89,16 @@ describe('character dex entries', () => {
     expect(preview.packedRoughnessActive).toBe(true);
     expect(preview.packedMetalnessActive).toBe(false);
   });
+
+  test('preview matoran can carry rebuilt packed-map toggles', () => {
+    const preview = toDexPreviewMatoran(CHARACTER_DEX.Jaller, {
+      discolorationBakesActive: true,
+      packedMetalnessActive: false,
+      packedRoughnessActive: true,
+    });
+    expect(preview.stage).toBe(MatoranStage.Rebuilt);
+    expect(preview.discolorationBakesActive).toBe(true);
+    expect(preview.packedRoughnessActive).toBe(true);
+    expect(preview.packedMetalnessActive).toBe(false);
+  });
 });
