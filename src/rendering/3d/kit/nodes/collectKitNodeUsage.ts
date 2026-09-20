@@ -10,7 +10,6 @@ import { KOPAKA_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/kopaka
 import { LEWA_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/lewa';
 import { ONUA_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/onua';
 import { POHATU_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/pohatu';
-import { TAHU_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/tahu';
 import {
   LHIKAN_KIT_2001_ATTACHMENTS,
   LHIKAN_KIT_2003_ATTACHMENTS,
@@ -90,6 +89,8 @@ export const KIT_2001_NODE_EXEMPT: readonly Kit2001NodeName[] = [
   KIT_2001_NODES.McArmL,
   KIT_2001_NODES.McArmR,
   KIT_2001_NODES.McTorso,
+  // Tahu Mata draws packed `Battle_*` meshes; sword is authored in GLB, not kit-cloned.
+  KIT_2001_NODES.TahuSword,
 ];
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
@@ -181,7 +182,6 @@ export const KIT_2001_ATTACHMENT_MAPS = [
   LEWA_MATA_KIT_2001_ATTACHMENTS,
   ONUA_MATA_KIT_2001_ATTACHMENTS,
   POHATU_MATA_KIT_2001_ATTACHMENTS,
-  TAHU_MATA_KIT_2001_ATTACHMENTS,
   GALI_NUVA_KIT_2001_ATTACHMENTS,
   KOPAKA_NUVA_KIT_2001_ATTACHMENTS,
   LEWA_NUVA_KIT_2001_ATTACHMENTS,

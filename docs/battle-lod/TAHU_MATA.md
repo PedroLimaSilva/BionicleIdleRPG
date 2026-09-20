@@ -151,11 +151,11 @@ From [`src/data/dex/toa.ts`](../../src/data/dex/toa.ts) — custom builds overri
 
 ## Reuse on other Mata Toa
 
-| Rig template | GLB        | Battle node     | Attachment map           |
-| ------------ | ---------- | --------------- | ------------------------ |
-| Tahu         | `tahu.glb` | `Battle_Body`   | `tahu.ts`                |
-| Gali         | `gali.glb` | `Gali_Battle`   | `gali.ts` (same sockets) |
-| …            | …          | `{Name}_Battle` | same bucket rules        |
+| Rig template | GLB        | Battle node     | Attachment map                 |
+| ------------ | ---------- | --------------- | ------------------------------ |
+| Tahu         | `tahu.glb` | `Battle_Body`   | _(none — packed skinned body)_ |
+| Gali         | `gali.glb` | `Gali_Battle`   | `gali.ts` (same sockets)       |
+| …            | …          | `{Name}_Battle` | same bucket rules              |
 
 Weapon sockets differ (hooks, axes, etc.) but bucket rules are identical: plastics → Main/Secondary/Metal, technic → black, glow → `Glow` slot, brain/eyes → separate mesh.
 
