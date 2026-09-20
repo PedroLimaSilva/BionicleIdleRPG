@@ -126,7 +126,7 @@ export const ANIMATION_EPICS: Record<AnimationEpicId, AnimationEpic> = {
     storyBeat: 'story_toa_arrival',
     storyOrder: 10,
     summary:
-      'Pohatu Mata lacks a Hit clip. Tahu Mata Hit is shipped; Attack and Idle are present on both.',
+      'Pohatu Mata lacks a Hit clip. Kopaka Mata skinned-sheet export ships Idle only (Attack / Hit are procedural).',
     title: 'Toa Mata — Hit clip gaps',
   },
   'toa-metru-combat': {
@@ -226,7 +226,7 @@ export const RIG_INVENTORY: RigInventoryEntry[] = [
   },
 
   // --- Toa Mata ---
-  ...(['gali', 'kopaka', 'lewa', 'onua'] as const).map(
+  ...(['gali', 'lewa', 'onua'] as const).map(
     (name): RigInventoryEntry => ({
       displayName: `Toa ${name.charAt(0).toUpperCase()}${name.slice(1)} Mata`,
       epicId: 'complete',
@@ -241,6 +241,21 @@ export const RIG_INVENTORY: RigInventoryEntry[] = [
       role: 'combat',
     })
   ),
+  {
+    displayName: 'Toa Kopaka Mata',
+    epicId: 'toa-mata-polish',
+    expectedClips: [
+      { backlog: 'complete', kind: 'idle', name: 'Idle', required: true },
+      { backlog: 'missing', kind: 'combat', name: 'Attack', required: true },
+      { backlog: 'missing', kind: 'combat', name: 'Hit', required: true },
+    ],
+    glb: 'Toa_Mata/kopaka.glb',
+    id: 'toa-mata-kopaka',
+    notes:
+      'Skinned sheet export ships Idle only; Attack / Hit fall back to procedural combat until re-authored.',
+    reactComponent: 'KopakaMataModel',
+    role: 'combat',
+  },
   {
     displayName: 'Toa Pohatu Mata',
     epicId: 'toa-mata-polish',

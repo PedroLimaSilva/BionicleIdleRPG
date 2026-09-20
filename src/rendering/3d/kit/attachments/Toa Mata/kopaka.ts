@@ -22,7 +22,12 @@ const KOPAKA_SWORD_PALETTE_COLORS: Partial<Record<string, KitMaterialSlotEntry>>
 };
 
 /**
- * Kopaka Mata (2001 kit): same `kitNodeName` / material layout as Tahu; keys match `nodes` on kopaka.glb.
+ * Kopaka Mata kit sockets — **not used at runtime**. The character sheet and
+ * combat both draw the skinned `Body` / `Brain` / `Sword` meshes. This map stays
+ * so `collectKitNodeUsage` still counts the shared 2001 pieces other Mata clone.
+ *
+ * Kopaka Mata (2001 kit): same `kitNodeName` / material layout as the other Mata
+ * Toa; keys match leftover empties on `kopaka.glb`.
  */
 export const KOPAKA_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
   Arm_Piston_Lower_L_1: {

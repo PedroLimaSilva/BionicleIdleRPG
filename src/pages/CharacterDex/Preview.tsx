@@ -20,12 +20,14 @@ import { resolveToaMataBuildId } from '../../rendering/3d/customMataBuild';
 import type { BaseMatoran } from '../../types/Matoran';
 import './index.scss';
 
-function supportsTahuPackedBody(base: BaseMatoran): boolean {
-  return isToaMata(base) && resolveToaMataBuildId(base) === 'Toa_Tahu';
+function supportsMataPackedBody(base: BaseMatoran): boolean {
+  if (!isToaMata(base)) return false;
+  const buildId = resolveToaMataBuildId(base);
+  return buildId === 'Toa_Tahu' || buildId === 'Toa_Kopaka';
 }
 
 function supportsPackedMaps(base: BaseMatoran): boolean {
-  return isDiminished(base) || supportsTahuPackedBody(base);
+  return isDiminished(base) || supportsMataPackedBody(base);
 }
 
 export const CharacterDexPreview: React.FC = () => {
@@ -67,11 +69,14 @@ export const CharacterDexPreview: React.FC = () => {
       discolorationBakesActive: supportsPackedMaps(base) ? discolorationBakesActive : undefined,
       maskOverride: selectedMask ?? base.mask,
       maskPowerActive,
-      normalMapsActive: supportsTahuPackedBody(base) ? normalMapsActive : undefined,
+      normalMapsActive: supportsMataPackedBody(base) ? normalMapsActive : undefined,
       packedMetalnessActive: supportsPackedMaps(base) ? packedMetalnessActive : undefined,
       packedRoughnessActive: supportsPackedMaps(base) ? packedRoughnessActive : undefined,
       rahkshiMeshVariant: isRahkshi(base) ? meshVariant : undefined,
-      tahuMeshVariant: supportsTahuPackedBody(base) ? TAHU_PREVIEW_MESH_VARIANT : undefined,
+      tahuMeshVariant:
+        isToaMata(base) && resolveToaMataBuildId(base) === 'Toa_Tahu'
+          ? TAHU_PREVIEW_MESH_VARIANT
+          : undefined,
     });
   }, [
     base,
@@ -203,7 +208,7 @@ export const CharacterDexPreview: React.FC = () => {
             <div className="character-dex-mask-heading">
               <h2>Packed maps</h2>
               <div className="character-dex-toggle-row">
-                {supportsTahuPackedBody(base) && (
+                {supportsMataPackedBody(base) && (
                   <label className="character-dex-mask-toggle">
                     <span>Normal maps</span>
                     <button
@@ -266,7 +271,7 @@ export const CharacterDexPreview: React.FC = () => {
                 ? 'Emissive G metalness from the packed bake'
                 : 'Metalness off (flat slot metalness)'}
             </p>
-            {supportsTahuPackedBody(base) && (
+            {supportsMataPackedBody(base) && (
               <p className="character-dex-caption">
                 {normalMapsActive
                   ? 'Tangent normal maps applied on weathered plastics'
