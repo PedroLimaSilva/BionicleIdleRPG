@@ -63,7 +63,7 @@ The ice sword is **not** an emissive `Glow` slot. Bind `transmissive: 'brain'` s
 
 ## Mask (runtime attach)
 
-Keep **`useMask`** on `Masks` with `masks.glb`. The socket still sits under `MataFace` (Mata rest pose), unlike diminished village Matoran.
+Keep **`useMask`** on `Masks` with `masks.glb`. The socket still sits under `MataFace` (Mata rest pose), unlike diminished Matoran.
 
 ---
 

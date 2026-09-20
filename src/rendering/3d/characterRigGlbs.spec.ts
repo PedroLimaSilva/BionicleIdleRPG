@@ -20,7 +20,7 @@ describe('characterRigGlbUrl', () => {
     );
   });
 
-  test('shares one diminished rig across village matoran', () => {
+  test('shares one diminished rig across diminished Matoran', () => {
     expect(characterRigGlbUrl({ id: 'Jala', stage: MatoranStage.Diminished })).toBe(
       MATORAN_MASTER_GLB
     );

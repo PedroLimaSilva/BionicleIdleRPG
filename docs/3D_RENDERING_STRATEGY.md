@@ -16,7 +16,7 @@ Runtime geometry merge (Phase B) only batches meshes that already share a bone a
 | ----- | -------------------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------ |
 | **A** | Performance monitor + stable render-cost logger                            | Dev / character sheet               | Baseline measurement ([`3D_PERFORMANCE.md`](3D_PERFORMANCE.md)) — **shipped** (#468) |
 | **B** | Runtime `BufferGeometry` merge in `useKitAttachments`                      | Remaining kit-attached characters   | Small incremental win (~10% draws); no asset re-export — **shipped**                 |
-| **C** | **Skinned packed body** — one mesh set per rig; sheet vs battle is map res | Tahu + Kopaka Mata; rebuilt village | Drop kit clones; later lower-res maps then lower-tri battle mesh                     |
+| **C** | **Skinned packed body** — one mesh set per rig; sheet vs battle is map res | Tahu + Kopaka Mata; rebuilt Matoran | Drop kit clones; later lower-res maps then lower-tri battle mesh                     |
 | **D** | **InstancedMesh** for duplicate enemies                                    | Bohrok, Rahkshi, Vahki swarms       | Compress N identical enemies toward 1 draw per breed × material group                |
 | **E** | **Authoring** — merged Rahi GLBs (no kit sockets)                          | New Rahi creatures                  | Avoid clone overhead; merge small parts in Blender at export                         |
 
@@ -32,7 +32,7 @@ After materials are applied, rigid kit meshes sharing the same merge anchor bone
 
 ### Principle
 
-- **Character sheet / dex:** packed/skinned body (diminished and rebuilt village Matoran, Tahu / Kopaka Mata). No kit attach.
+- **Character sheet / dex:** packed/skinned body (diminished and rebuilt Matoran, Tahu / Kopaka Mata). No kit attach.
 - **Battle:** the **same mesh and skeleton** for now. LOD is **map resolution** (sheet maps; battle will bind lower-res copies when exported). After that, author a lower-tri battle mesh on the same armature.
 - **Kanohi** still attach via `useMask` on `Masks`.
 
@@ -85,7 +85,7 @@ Follow the **Nui-Rama** pattern: self-contained GLB, merged sub-meshes in Blende
 
 **Kopaka skinned body:** `Body` + transmissive `Brain` / `Sword` + mask; same mesh in sheet and combat.
 
-**Rebuilt packed body:** `Body_Baked` + transmissive `Brain` + mask; village sheet only.
+**Rebuilt packed body:** `Body_Baked` + transmissive `Brain` + mask; character sheet only.
 
 ## Related code
 
