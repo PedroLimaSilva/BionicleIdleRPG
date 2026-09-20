@@ -162,7 +162,7 @@ export const ANIMATION_EPICS: Record<AnimationEpicId, AnimationEpic> = {
     storyBeat: 'story_metru_nui_saga_begin',
     storyOrder: 75,
     summary:
-      'Metru-stage village Matoran request Tilt Head flavor overlays; Diminished Matoran already ship this clip.',
+      'Metru-stage village Matoran request Tilt Head flavor overlays; Diminished Matoran currently ship Idle only.',
     title: 'Metru Matoran — flavor overlays',
   },
 };
@@ -432,7 +432,7 @@ export const RIG_INVENTORY: RigInventoryEntry[] = [
     epicId: 'complete',
     expectedClips: [
       { backlog: 'complete', kind: 'idle', name: 'Idle', required: true },
-      { backlog: 'complete', kind: 'flavor', name: 'Tilt Head', required: false },
+      { backlog: 'missing', kind: 'flavor', name: 'Tilt Head', required: false },
     ],
     glb: 'matoran_master.glb',
     id: 'matoran-diminished',

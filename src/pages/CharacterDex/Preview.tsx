@@ -10,7 +10,7 @@ import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { playCharacterPreviewAnimation } from '../../rendering/3d/utils/characterPreviewControls';
 import { ElementTag } from '../../components/ElementTag';
 import { getAdjacentDexIds, PREVIEW_ANIMATIONS, toDexPreviewMatoran } from './dexEntries';
-import { isRahkshi, isToaMata } from '../../game/characters/matoranStage';
+import { isDiminished, isRahkshi, isToaMata } from '../../game/characters/matoranStage';
 import {
   RAHKSHI_DEX_DEFAULT_MESH_VARIANT,
   type RahkshiDexMeshVariant,
@@ -21,6 +21,10 @@ import './index.scss';
 
 function supportsTahuBattleLod(base: BaseMatoran): boolean {
   return isToaMata(base) && resolveToaMataBuildId(base) === 'Toa_Tahu';
+}
+
+function supportsDiminishedPackedMaps(base: BaseMatoran): boolean {
+  return isDiminished(base);
 }
 
 export const CharacterDexPreview: React.FC = () => {
@@ -34,6 +38,8 @@ export const CharacterDexPreview: React.FC = () => {
   );
   const [discolorationBakesActive, setDiscolorationBakesActive] = useState(true);
   const [normalMapsActive, setNormalMapsActive] = useState(true);
+  const [packedRoughnessActive, setPackedRoughnessActive] = useState(true);
+  const [packedMetalnessActive, setPackedMetalnessActive] = useState(true);
   const [sceneGeneration, setSceneGeneration] = useState(0);
 
   useEffect(() => {
@@ -42,6 +48,8 @@ export const CharacterDexPreview: React.FC = () => {
     setMeshVariant(RAHKSHI_DEX_DEFAULT_MESH_VARIANT);
     setDiscolorationBakesActive(true);
     setNormalMapsActive(true);
+    setPackedRoughnessActive(true);
+    setPackedMetalnessActive(true);
     setSceneGeneration(0);
   }, [base?.id, base?.mask]);
 
@@ -55,10 +63,15 @@ export const CharacterDexPreview: React.FC = () => {
   const previewMatoran = useMemo(() => {
     if (!base) return null;
     return toDexPreviewMatoran(base, {
-      discolorationBakesActive: supportsTahuBattleLod(base) ? discolorationBakesActive : undefined,
+      discolorationBakesActive:
+        supportsTahuBattleLod(base) || supportsDiminishedPackedMaps(base)
+          ? discolorationBakesActive
+          : undefined,
       maskOverride: selectedMask ?? base.mask,
       maskPowerActive,
       normalMapsActive: supportsTahuBattleLod(base) ? normalMapsActive : undefined,
+      packedMetalnessActive: supportsDiminishedPackedMaps(base) ? packedMetalnessActive : undefined,
+      packedRoughnessActive: supportsDiminishedPackedMaps(base) ? packedRoughnessActive : undefined,
       rahkshiMeshVariant: isRahkshi(base) ? meshVariant : undefined,
       tahuMeshVariant: supportsTahuBattleLod(base) ? meshVariant : undefined,
     });
@@ -68,6 +81,8 @@ export const CharacterDexPreview: React.FC = () => {
     maskPowerActive,
     meshVariant,
     normalMapsActive,
+    packedMetalnessActive,
+    packedRoughnessActive,
     selectedMask,
   ]);
 
@@ -226,6 +241,64 @@ export const CharacterDexPreview: React.FC = () => {
                 </p>
               </>
             )}
+          </section>
+        )}
+
+        {supportsDiminishedPackedMaps(base) && (
+          <section className="character-dex-control-block">
+            <div className="character-dex-mask-heading">
+              <h2>Packed maps</h2>
+              <div className="character-dex-toggle-row">
+                <label className="character-dex-mask-toggle">
+                  <span>Discoloration</span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-label="Packed discoloration"
+                    aria-checked={discolorationBakesActive}
+                    className={`toggle-placeholder ${discolorationBakesActive ? 'on' : ''}`}
+                    onClick={() => setDiscolorationBakesActive((active) => !active)}
+                  />
+                </label>
+                <label className="character-dex-mask-toggle">
+                  <span>Roughness</span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-label="Packed roughness"
+                    aria-checked={packedRoughnessActive}
+                    className={`toggle-placeholder ${packedRoughnessActive ? 'on' : ''}`}
+                    onClick={() => setPackedRoughnessActive((active) => !active)}
+                  />
+                </label>
+                <label className="character-dex-mask-toggle">
+                  <span>Metalness</span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-label="Packed metalness"
+                    aria-checked={packedMetalnessActive}
+                    className={`toggle-placeholder ${packedMetalnessActive ? 'on' : ''}`}
+                    onClick={() => setPackedMetalnessActive((active) => !active)}
+                  />
+                </label>
+              </div>
+            </div>
+            <p className="character-dex-caption">
+              {discolorationBakesActive
+                ? 'Emissive B wear mixed on weathered plastics'
+                : 'Discoloration off (flat slot color)'}
+            </p>
+            <p className="character-dex-caption">
+              {packedRoughnessActive
+                ? 'Emissive R roughness from the packed bake'
+                : 'Roughness off (flat slot roughness)'}
+            </p>
+            <p className="character-dex-caption">
+              {packedMetalnessActive
+                ? 'Emissive G metalness from the packed bake'
+                : 'Metalness off (flat slot metalness)'}
+            </p>
           </section>
         )}
 

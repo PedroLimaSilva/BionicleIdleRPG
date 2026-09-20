@@ -74,6 +74,8 @@ export type CharacterSceneMatoran = BaseMatoran &
     tahuMeshVariant?: 'detailed' | 'battle';
     discolorationBakesActive?: boolean;
     normalMapsActive?: boolean;
+    packedMetalnessActive?: boolean;
+    packedRoughnessActive?: boolean;
     unlockAllMasks?: boolean;
   };
 

@@ -55,6 +55,33 @@ test.describe('Character Dex', () => {
     await expect(page.getByRole('heading', { name: 'Character Dex' })).toBeVisible();
   });
 
+  test('diminished preview exposes packed map toggles', async ({ page }) => {
+    await setupGameState(page, INITIAL_GAME_STATE);
+    await goto(page, '/test/dex/Jala', {
+      hideCanvasBeforeNav: true,
+      waitUntil: 'domcontentloaded',
+    });
+    await hideCanvas(page);
+
+    await expect(page.getByRole('heading', { exact: true, name: 'Jala' })).toBeVisible();
+    const discoloration = page.getByRole('switch', { name: 'Packed discoloration' });
+    const roughness = page.getByRole('switch', { name: 'Packed roughness' });
+    const metalness = page.getByRole('switch', { name: 'Packed metalness' });
+    await expect(discoloration).toHaveAttribute('aria-checked', 'true');
+    await expect(roughness).toHaveAttribute('aria-checked', 'true');
+    await expect(metalness).toHaveAttribute('aria-checked', 'true');
+
+    await roughness.click();
+    await expect(roughness).toHaveAttribute('aria-checked', 'false');
+    await expect(page.getByText('Roughness off (flat slot roughness)')).toBeVisible();
+
+    await metalness.click();
+    await expect(metalness).toHaveAttribute('aria-checked', 'false');
+    await discoloration.click();
+    await expect(discoloration).toHaveAttribute('aria-checked', 'false');
+    await expect(page.getByText('Discoloration off (flat slot color)')).toBeVisible();
+  });
+
   test('is reachable from Settings', async ({ page }) => {
     await setupGameState(page, INITIAL_GAME_STATE);
     await goto(page, '/settings', {

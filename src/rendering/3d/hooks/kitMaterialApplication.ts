@@ -21,6 +21,7 @@ import {
 } from '../kit/kitMaterialUtils';
 import { metallicColorPbr, type KitMetalPbr } from '../kit/palettes/metalPbr';
 import {
+  dropsAuthoredMetallicRoughnessMaps,
   getWeatheredMetalMaterial,
   isWeatheredMetalMaterial,
   meshHasUv,
@@ -177,13 +178,13 @@ function resolveKitMaterialSlotSpec(
 
 /**
  * Printed albedo (Kanoka disk, etc.) keeps the GLB look — unless this pass
- * asked for FBM metalness / roughness (`authoredPbrMaps: 'noise'`).
+ * asked for FBM or packed metalness / roughness.
  */
 function isPreservedMappedMaterial(
   mat: StandardMat,
   weatheredBase: WeatheredMetalOptions | undefined
 ): boolean {
-  return !!mat.map && weatheredBase?.authoredPbrMaps !== 'noise';
+  return !!mat.map && !dropsAuthoredMetallicRoughnessMaps(weatheredBase?.authoredPbrMaps);
 }
 
 export function buildKitMaterialSlotLookup(
@@ -337,12 +338,12 @@ export function buildKitMeshMaterials(
     };
     if (mat.map) opts.map = mat.map;
     if (mat.normalMap) opts.normalMap = mat.normalMap;
-    const useNoisePbr = weatheredBase?.authoredPbrMaps === 'noise';
-    if (!useNoisePbr && mat.roughnessMap) {
+    const dropGlbMr = dropsAuthoredMetallicRoughnessMaps(weatheredBase?.authoredPbrMaps);
+    if (!dropGlbMr && mat.roughnessMap) {
       opts.roughness = mat.roughness;
       opts.roughnessMap = mat.roughnessMap;
     }
-    if (!useNoisePbr && mat.metalnessMap) {
+    if (!dropGlbMr && mat.metalnessMap) {
       opts.metalness = mat.metalness;
       opts.metalnessMap = mat.metalnessMap;
     }

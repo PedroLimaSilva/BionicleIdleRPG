@@ -73,4 +73,16 @@ describe('character dex entries', () => {
     expect(preview.normalMapsActive).toBe(false);
     expect(preview.unlockAllMasks).toBe(true);
   });
+
+  test('preview matoran can carry diminished packed-map toggles', () => {
+    const preview = toDexPreviewMatoran(CHARACTER_DEX.Jala, {
+      discolorationBakesActive: false,
+      packedMetalnessActive: false,
+      packedRoughnessActive: true,
+    });
+    expect(preview.stage).toBe(MatoranStage.Diminished);
+    expect(preview.discolorationBakesActive).toBe(false);
+    expect(preview.packedRoughnessActive).toBe(true);
+    expect(preview.packedMetalnessActive).toBe(false);
+  });
 });

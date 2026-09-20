@@ -164,6 +164,17 @@ function buildVariantPreviewGroup(): Group {
     }),
     skeleton
   );
+  addPreviewMeshes(
+    group,
+    geo,
+    getWeatheredMetalMaterial(LegoColor.Red, {
+      ...BANK_PLASTIC_WEATHERED,
+      authoredPbrMaps: 'packed',
+      discolorationMap: bakeSwatch(),
+      normalMap: DUMMY_NORMAL_MAP,
+    }),
+    skeleton
+  );
 
   const battleGltfMat = new MeshStandardMaterial({
     color: '#6d6e5c',

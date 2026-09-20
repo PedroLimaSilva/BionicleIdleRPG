@@ -380,6 +380,38 @@ describe('buildKitMeshMaterials untextured slots', () => {
     expect(next.metalnessNode).toBeDefined();
   });
 
+  test('authoredPbrMaps packed drops glTF MR maps and keeps the stolen bake', () => {
+    const mesh = meshWithUvAndSlots(['Main_MataChest_baked']);
+    const bake = discolorTex();
+    const normal = discolorTex();
+    const mr = discolorTex();
+    const source = mesh.material as MeshStandardMaterial;
+    source.emissiveMap = bake;
+    source.normalMap = normal;
+    source.roughnessMap = mr;
+    source.metalnessMap = mr;
+    const next = buildKitMeshMaterials(
+      mesh,
+      buildKitMaterialSlotLookup({
+        Main: { kind: 'part', part: 'body', slot: 'main' },
+      }),
+      COLORS,
+      { ...PLASTIC_WEATHERED, authoredPbrMaps: 'packed' }
+    ) as MeshStandardMaterial & {
+      metalnessNode?: unknown;
+      normalNode?: unknown;
+      roughnessNode?: unknown;
+    };
+    expect(next.normalMap).toBe(normal);
+    expect(next.roughnessMap).toBeNull();
+    expect(next.metalnessMap).toBeNull();
+    expect(next.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+    expect(next.normalNode).toBeUndefined();
+    expect(next.roughnessNode).toBeDefined();
+    expect(next.metalnessNode).toBeDefined();
+    expect(next.customProgramCacheKey?.()).toContain('packed');
+  });
+
   test('re-applying kit materials does not clone WeatheredMetal and drop TSL nodes', () => {
     const mesh = meshWithUvAndSlots(['Main']);
     const lookup = buildKitMaterialSlotLookup({

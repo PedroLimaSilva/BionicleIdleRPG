@@ -45,6 +45,10 @@ export function hasStageRestrictedJobPool(stage: MatoranStage) {
   );
 }
 
+export function isDiminished(matoran: BaseMatoran) {
+  return matoran.stage === MatoranStage.Diminished;
+}
+
 export function isMatoran(matoran: BaseMatoran) {
   return [MatoranStage.Diminished, MatoranStage.Rebuilt, MatoranStage.Metru].includes(
     matoran.stage
