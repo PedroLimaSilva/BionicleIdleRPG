@@ -10,7 +10,7 @@ import {
 import { BRAIN_EMISSIVE_INTENSITY } from './brainKitPalette';
 import { MATA_METAL_PBR } from './metalPbr';
 
-/** Same weathering as Tahu kit plastics; battle LOD uses noise for metalness / roughness. */
+/** Same weathering as Tahu kit plastics; battle LOD uses packed emissive for metalness / roughness. */
 export const TAHU_WEATHERED: WeatheredMetalOptions = {
   cavityStrength: 1,
   edgeColor: '#ffffff',
@@ -24,10 +24,10 @@ export const TAHU_WEATHERED: WeatheredMetalOptions = {
   roughness: 0.55,
 };
 
-/** Battle skinned slots keep baked normals + emissive discoloration; FBM drives PBR. */
+/** Battle skinned slots keep baked normals; packed emissive drives metalness / roughness / wear. */
 export const TAHU_BATTLE_WEATHERED: WeatheredMetalOptions = {
   ...TAHU_WEATHERED,
-  authoredPbrMaps: 'noise',
+  authoredPbrMaps: 'packed',
 };
 
 const TAHU_BATTLE_WEAPON_GLOW: KitMaterialSlotEntry = {
@@ -78,7 +78,7 @@ function disableSkinnedBattleFrustumCulling(mesh: Mesh): void {
   mesh.frustumCulled = false;
 }
 
-/** Tints battle meshes with the player palette; weathered FBM fills metalness / roughness. */
+/** Tints battle meshes with the player palette; packed emissive drives PBR + wear. */
 export function applyTahuBattleMaterials(root: Object3D, colors: MatoranColors): void {
   const slotLookup = buildKitMaterialSlotLookup(TAHU_BATTLE_SLOT_COLORS);
   applyKitMaterialsToObject(root, slotLookup, colors, TAHU_BATTLE_WEATHERED);

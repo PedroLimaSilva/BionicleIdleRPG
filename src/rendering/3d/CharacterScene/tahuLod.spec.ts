@@ -3,22 +3,27 @@ import { reparentTahuBattleBrain, setTahuLodVisibility, TAHU_BATTLE_BRAIN_SOCKET
 import { TAHU_BATTLE_BODY_MESH, TAHU_BATTLE_BRAIN_MESH } from './tahuBattleMeshes';
 
 describe('tahuLod visibility', () => {
-  test('hides Battle_* meshes in detailed mode and shows them in battle', () => {
+  test('shows Battle_* meshes for sheet and battle, and hides leftover kit geo', () => {
     const root = new Group();
     const battleBody = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
     battleBody.name = TAHU_BATTLE_BODY_MESH;
     const battleBrain = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
     battleBrain.name = TAHU_BATTLE_BRAIN_MESH;
+    const kitChest = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    kitChest.name = 'MataChest';
     root.add(battleBody);
     root.add(battleBrain);
+    root.add(kitChest);
 
-    setTahuLodVisibility(root, 'detailed');
-    expect(battleBody.visible).toBe(false);
-    expect(battleBrain.visible).toBe(false);
+    setTahuLodVisibility(root, 'sheet');
+    expect(battleBody.visible).toBe(true);
+    expect(battleBrain.visible).toBe(true);
+    expect(kitChest.visible).toBe(false);
 
     setTahuLodVisibility(root, 'battle');
     expect(battleBody.visible).toBe(true);
     expect(battleBrain.visible).toBe(true);
+    expect(kitChest.visible).toBe(false);
   });
 
   test('shows skinned Brain primitives parented under the Battle_Brain group', () => {
@@ -30,11 +35,21 @@ describe('tahuLod visibility', () => {
     battleBrain.add(gel);
     root.add(battleBrain);
 
-    setTahuLodVisibility(root, 'detailed');
-    expect(gel.visible).toBe(false);
-
-    setTahuLodVisibility(root, 'battle');
+    setTahuLodVisibility(root, 'sheet');
     expect(gel.visible).toBe(true);
+  });
+
+  test('keeps Kanohi meshes under Masks visible', () => {
+    const root = new Group();
+    const masks = new Group();
+    masks.name = 'Masks';
+    const hau = new Mesh(new BoxGeometry(), new MeshStandardMaterial());
+    hau.name = 'Hau';
+    masks.add(hau);
+    root.add(masks);
+
+    setTahuLodVisibility(root, 'sheet');
+    expect(hau.visible).toBe(true);
   });
 
   test('reparents Battle_Brain onto Head without moving bind-pose world position', () => {

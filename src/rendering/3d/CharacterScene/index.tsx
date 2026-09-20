@@ -71,7 +71,7 @@ export type CharacterSceneMatoran = BaseMatoran &
   RecruitedCharacterData & {
     maskPowerActive?: boolean;
     rahkshiMeshVariant?: 'detailed' | 'battle';
-    tahuMeshVariant?: 'detailed' | 'battle';
+    tahuMeshVariant?: 'sheet' | 'battle';
     discolorationBakesActive?: boolean;
     normalMapsActive?: boolean;
     packedMetalnessActive?: boolean;

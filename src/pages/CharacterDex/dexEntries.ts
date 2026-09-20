@@ -62,7 +62,7 @@ export function toDexPreviewMatoran(
     packedMetalnessActive?: boolean;
     packedRoughnessActive?: boolean;
     rahkshiMeshVariant?: 'detailed' | 'battle';
-    tahuMeshVariant?: 'detailed' | 'battle';
+    tahuMeshVariant?: 'sheet' | 'battle';
   }
 ): BaseMatoran &
   RecruitedCharacterData & {
@@ -72,7 +72,7 @@ export function toDexPreviewMatoran(
     packedMetalnessActive?: boolean;
     packedRoughnessActive?: boolean;
     rahkshiMeshVariant?: 'detailed' | 'battle';
-    tahuMeshVariant?: 'detailed' | 'battle';
+    tahuMeshVariant?: 'sheet' | 'battle';
     unlockAllMasks: true;
   } {
   return {

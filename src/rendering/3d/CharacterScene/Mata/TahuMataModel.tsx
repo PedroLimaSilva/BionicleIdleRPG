@@ -13,55 +13,26 @@ import { BaseMatoran, RecruitedCharacterData } from '../../../../types/Matoran';
 import { CombatantModelHandle } from '../../../../pages/Battle/CombatantModel';
 import { useCombatAnimations } from '../../hooks/useCombatAnimations';
 import { useMask } from '../../hooks/useMask';
-import { useKitAttachments } from '../../hooks/useKitAttachments';
-import { KIT_2001_GLB_PATH } from '../../kit/kit2001';
-import { TAHU_MATA_KIT_2001_ATTACHMENTS } from '../../kit/attachments/Toa Mata/tahu';
-import { applyTahuBattleMaterials, TAHU_WEATHERED } from '../../kit/palettes/tahuBattlePalette';
+import { applyTahuBattleMaterials } from '../../kit/palettes/tahuBattlePalette';
 import { cloneGltfInstance } from '../../utils/cloneGltfInstance';
 import { setAuthoredNormalMapsEnabled } from '../../hooks/authoredNormalMaps';
 import { setBakedDiscolorationEnabled } from '../../hooks/bakedDiscoloration';
-import { TAHU_DETAILED_RIG_NODE, type TahuMeshVariant } from '../tahuBattleMeshes';
+import { setPackedMetalnessEnabled, setPackedRoughnessEnabled } from '../../hooks/packedPbrMaps';
+import {
+  TAHU_DETAILED_RIG_NODE,
+  TAHU_PREVIEW_MESH_VARIANT,
+  type TahuMeshVariant,
+} from '../tahuBattleMeshes';
 import { reparentTahuBattleBrain, setTahuLodVisibility } from '../tahuLod';
 
 export type { TahuMeshVariant };
 
-/** Character sheet, dex preview, and inventory screens. */
-export const TAHU_PREVIEW_MESH_VARIANT: TahuMeshVariant = 'detailed';
-
-/** Live combat (`CombatantModel`) — uses merged `Battle_*` meshes. */
-export const TAHU_COMBAT_MESH_VARIANT: TahuMeshVariant = 'battle';
+export { TAHU_COMBAT_MESH_VARIANT, TAHU_PREVIEW_MESH_VARIANT } from '../tahuBattleMeshes';
 
 const TAHU_GLB = import.meta.env.BASE_URL + '/Toa_Mata/tahu.glb';
 
-function buildKitCharacterNodes(root: Object3D): Record<string, Object3D> {
-  const map: Record<string, Object3D> = {};
-  root.traverse((child) => {
-    if (child.name) map[child.name] = child;
-  });
-  return map;
-}
-
-function TahuDetailedKitLayer({
-  characterNodes,
-  colors,
-  onAttached,
-  stage,
-}: {
-  characterNodes: Record<string, Object3D>;
-  colors: BaseMatoran['colors'];
-  onAttached?: () => void;
-  stage: BaseMatoran['stage'];
-}) {
-  useKitAttachments({
-    attachments: TAHU_MATA_KIT_2001_ATTACHMENTS,
-    characterNodes,
-    colors,
-    kitUrl: KIT_2001_GLB_PATH,
-    onAttached,
-    stage,
-    weathered: TAHU_WEATHERED,
-  });
-  return null;
+function maskSocket(root: Object3D): Object3D | undefined {
+  return root.getObjectByName('Masks');
 }
 
 export const TahuMataModel = forwardRef<
@@ -72,13 +43,14 @@ export const TahuMataModel = forwardRef<
         discolorationBakesActive?: boolean;
         maskPowerActive?: boolean;
         normalMapsActive?: boolean;
+        packedMetalnessActive?: boolean;
+        packedRoughnessActive?: boolean;
       };
     meshVariant?: TahuMeshVariant;
-    /** CharacterScene passes this to re-scan selective bloom after kit GLB attaches */
+    /** CharacterScene passes this to re-scan selective bloom after materials bind. */
     onKitMeshesAttached?: () => void;
   }
 >(({ matoran, meshVariant = TAHU_PREVIEW_MESH_VARIANT, onKitMeshesAttached }, ref) => {
-  const isBattle = meshVariant === 'battle';
   const group = useRef<Group>(null);
   const { animations, nodes, scene } = useGLTF(TAHU_GLB);
   const { playAnimation } = useCombatAnimations(animations, group, {
@@ -98,25 +70,29 @@ export const TahuMataModel = forwardRef<
     return cloned;
   }, [nodes, scene]);
 
-  const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(instance), [instance]);
-
   const bakesActive = matoran.discolorationBakesActive !== false;
   const bakesActiveRef = useRef(bakesActive);
   bakesActiveRef.current = bakesActive;
   const normalMapsActive = matoran.normalMapsActive !== false;
   const normalMapsActiveRef = useRef(normalMapsActive);
   normalMapsActiveRef.current = normalMapsActive;
+  const roughnessActive = matoran.packedRoughnessActive !== false;
+  const metalnessActive = matoran.packedMetalnessActive !== false;
+  const roughnessActiveRef = useRef(roughnessActive);
+  const metalnessActiveRef = useRef(metalnessActive);
+  roughnessActiveRef.current = roughnessActive;
+  metalnessActiveRef.current = metalnessActive;
 
   const applyPreviewMapToggles = useCallback((root: Object3D) => {
     setBakedDiscolorationEnabled(root, bakesActiveRef.current);
     setAuthoredNormalMapsEnabled(root, normalMapsActiveRef.current);
+    setPackedRoughnessEnabled(root, roughnessActiveRef.current);
+    setPackedMetalnessEnabled(root, metalnessActiveRef.current);
   }, []);
 
   const applyLodAndMaterials = useCallback(() => {
     setTahuLodVisibility(instance, meshVariant);
-    if (meshVariant === 'battle') {
-      applyTahuBattleMaterials(instance, matoran.colors);
-    }
+    applyTahuBattleMaterials(instance, matoran.colors);
     // Apply after materials so stolen bake / normal maps still exist. Do not
     // put toggle flags in this callback — rebuilding weathered slots drops them.
     applyPreviewMapToggles(instance);
@@ -131,38 +107,27 @@ export const TahuMataModel = forwardRef<
     return () => {
       setBakedDiscolorationEnabled(instance, true);
       setAuthoredNormalMapsEnabled(instance, true);
+      setPackedRoughnessEnabled(instance, true);
+      setPackedMetalnessEnabled(instance, true);
     };
-  }, [applyPreviewMapToggles, bakesActive, instance, normalMapsActive]);
-
-  const onAttached = useMemo(
-    () =>
-      onKitMeshesAttached
-        ? () => {
-            applyLodAndMaterials();
-            onKitMeshesAttached();
-          }
-        : undefined,
-    [applyLodAndMaterials, onKitMeshesAttached]
-  );
+  }, [
+    applyPreviewMapToggles,
+    bakesActive,
+    instance,
+    metalnessActive,
+    normalMapsActive,
+    roughnessActive,
+  ]);
 
   useEffect(() => {
-    if (!isBattle) return;
     onKitMeshesAttached?.();
-  }, [isBattle, onKitMeshesAttached]);
+  }, [onKitMeshesAttached]);
 
   const glowColor = matoran.colors.eyes;
-  useMask(kitCharacterNodes.Masks, matoran, glowColor, matoran.maskPowerActive);
+  useMask(maskSocket(instance), matoran, glowColor, matoran.maskPowerActive);
 
   return (
     <group ref={group} dispose={null}>
-      {!isBattle && (
-        <TahuDetailedKitLayer
-          characterNodes={kitCharacterNodes}
-          colors={matoran.colors}
-          onAttached={onAttached}
-          stage={matoran.stage}
-        />
-      )}
       {/* Z framing only — this export translates `Tahu` so the origin stays at the feet. */}
       <group position={[0, 0, -0.4]}>
         <primitive object={instance} />

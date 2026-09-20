@@ -2,59 +2,54 @@
 
 **Budget:** ≤ 50 draw calls per battle frame ([`UI_UX_STRATEGY.md`](UI_UX_STRATEGY.md)).
 
-Kit-based Toa builds currently land around **~80 draws per character** on the character sheet (e.g. Tahu: 82 draws, 29 materials, ~120k kit tris). Six combatants at that cost cannot fit the battle budget. This document tracks the phased plan to cut draw calls without sacrificing dex fidelity.
+Kit-based Toa builds currently land around **~80 draws per character** on the character sheet (e.g. Gali kit path). Six combatants at that cost cannot fit the battle budget. This document tracks the phased plan to cut draw calls without sacrificing dex fidelity.
 
 ## Problem
 
 `useKitAttachments` clones one kit GLB subtree per socket (~50+ sockets on Mata Toa). Each clone may contain multiple meshes and per-slot materials. The shared `kit_2001.glb` library optimizes **asset reuse and authoring**, not **GPU submission count**.
 
-Runtime geometry merge (Phase B) only batches meshes that already share a bone anchor, material instance, and render order — typically technic axles/pins on the same limb. Measured win on Tahu: **82 → 74 draws (~10%)**. Triangles and material count are unchanged.
+Runtime geometry merge (Phase B) only batches meshes that already share a bone anchor, material instance, and render order — typically technic axles/pins on the same limb. Measured win on Tahu kit: **82 → 74 draws (~10%)**. Triangles and material count are unchanged.
 
 ## Phased plan
 
-| Phase | What                                                                       | Where it applies                                 | Expected impact                                                                          |
-| ----- | -------------------------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| **A** | Performance monitor + stable render-cost logger                            | Dev / character sheet                            | Baseline measurement ([`3D_PERFORMANCE.md`](3D_PERFORMANCE.md)) — **shipped** (#468)     |
-| **B** | Runtime `BufferGeometry` merge in `useKitAttachments`                      | All kit-attached characters (dex + battle today) | Small incremental win (~10% draws); no asset re-export — **this PR**                     |
-| **C** | **Battle LOD** — pre-merged skinned mesh per rig template in character GLB | `CombatantModel` only                            | Large per-character win — **Rahkshi + Tahu Mata shipped**; other Mata reuse Tahu buckets |
-| **D** | **InstancedMesh** for duplicate enemies                                    | Bohrok, Rahkshi, Vahki swarms                    | Compress N identical enemies toward 1 draw per breed × material group                    |
-| **E** | **Authoring** — merged Rahi GLBs (no kit sockets)                          | New Rahi creatures                               | Avoid clone overhead; merge small parts in Blender at export                             |
+| Phase | What                                                                       | Where it applies                           | Expected impact                                                                      |
+| ----- | -------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| **A** | Performance monitor + stable render-cost logger                            | Dev / character sheet                      | Baseline measurement ([`3D_PERFORMANCE.md`](3D_PERFORMANCE.md)) — **shipped** (#468) |
+| **B** | Runtime `BufferGeometry` merge in `useKitAttachments`                      | Remaining kit-attached characters          | Small incremental win (~10% draws); no asset re-export — **shipped**                 |
+| **C** | **Skinned packed body** — one mesh set per rig; sheet vs battle is map res | Tahu Mata sheet + combat — **in progress** | Drop kit clones; later lower-res maps then lower-tri battle mesh                     |
+| **D** | **InstancedMesh** for duplicate enemies                                    | Bohrok, Rahkshi, Vahki swarms              | Compress N identical enemies toward 1 draw per breed × material group                |
+| **E** | **Authoring** — merged Rahi GLBs (no kit sockets)                          | New Rahi creatures                         | Avoid clone overhead; merge small parts in Blender at export                         |
 
 Phases B–E stack. B is necessary but not sufficient for the battle budget.
 
-## Phase B — runtime kit geometry merge (current work)
+## Phase B — runtime kit geometry merge
 
-See [`KIT_GEOMETRY_MERGE.md`](KIT_GEOMETRY_MERGE.md).
+See [`KIT_GEOMETRY_MERGE.md`](KIT_GEOMETRY_MERGE.md). Still applies to Mata Toa that kit-assemble (Gali, Kopaka, …) and Rahkshi detailed LOD.
 
 After materials are applied, rigid kit meshes sharing the same merge anchor bone, material instance, and render order are extracted, baked into anchor-local space, and merged with `BufferGeometryUtils.mergeGeometries`. Excluded: skinned meshes, multi-material meshes, transmissive brain gel, selective-bloom glow (MRT).
 
-**Why ship a small win:** every draw saved helps dex and battle until Phase C lands; the merge pipeline is isolated in `kitGeometryMerge.ts` and covered by unit tests.
-
-## Phase C — battle LOD (next major step)
+## Phase C — skinned packed body (Tahu Mata first)
 
 ### Principle
 
-- **Character sheet / dex:** full rig + kit attachment maps (current fidelity). Diminished village Matoran use a single skinned baked mesh on the sheet instead of kit attach.
-- **Battle:** a pre-merged skinned mesh on the **same skeleton** and animation clips, parented under a `*_Battle` node in the character GLB.
+- **Character sheet / dex:** packed skinned `Battle_*` body (same as diminished village Matoran). No kit attach.
+- **Battle:** the **same mesh and skeleton** for now. LOD is **map resolution** (sheet 1024 packed + normals; battle will bind lower-res copies when exported). After that, author a lower-tri battle mesh on the same armature.
+- **Kanohi** still attach via `useMask` on `Masks`.
 
-`CombatantModel` loads the battle meshes; `CharacterScene` keeps the full kit path (dex can toggle Tahu / Rahkshi Battle LOD).
+`CombatantModel` and `CharacterScene` both draw the skinned body. Rahkshi still kit-assembles on the sheet and toggles a merged battle LOD.
 
 ### Custom characters
 
-Custom Toa are **not** excluded from battle. They already resolve a rig template via `mataRenderModelId` / `resolveCustomToaBuildId`. Battle LOD is authored **per rig template** (e.g. one `Toa_Tahu_Battle` mesh for all Tahu-rig builds). Runtime palette tinting uses the same color system with fewer material slots on the merged mesh.
-
-### Optional intermediate
-
-A **battle attachment map** can reference fewer, pre-merged kit nodes on the same rig before full GLB bake — same skeleton, simplified kit wiring in `CombatantModel` only.
+Custom Toa on the Tahu rig share this packed body. Palette tinting uses the same `Battle_Body_*` slots.
 
 ### Authoring specs
 
-| Rig                                   | Doc                                                  |
-| ------------------------------------- | ---------------------------------------------------- |
-| **Rahkshi** (recommended first pilot) | [`battle-lod/RAHKSHI.md`](battle-lod/RAHKSHI.md)     |
-| Toa Tahu (Mata)                       | [`battle-lod/TAHU_MATA.md`](battle-lod/TAHU_MATA.md) |
+| Rig                                  | Doc                                                  |
+| ------------------------------------ | ---------------------------------------------------- |
+| **Rahkshi** (kit sheet + battle LOD) | [`battle-lod/RAHKSHI.md`](battle-lod/RAHKSHI.md)     |
+| Toa Tahu (Mata) — packed skinned     | [`battle-lod/TAHU_MATA.md`](battle-lod/TAHU_MATA.md) |
 
-Other Mata Toa reuse the Tahu bucket names; only proportions and weapon sockets differ.
+Other Mata Toa still kit-assemble until they get a packed body. Reuse Tahu bucket names when they do.
 
 ## Phase D — enemy instancing
 
@@ -80,9 +75,11 @@ Follow the **Nui-Rama** pattern: self-contained GLB, merged sub-meshes in Blende
 | Settings → 3D Performance Monitor | Live FPS / `renderer.info` while fighting                                                   |
 | `yarn test:ci`                    | `kitGeometryMerge.spec.ts` regression                                                       |
 
-**Tahu baseline (master, no merge):** `+82 draws (+29 materials, +120,343 tris)`.
+**Tahu kit baseline (historical):** `+82 draws (+29 materials, +120,343 tris)`.
 
-**Tahu with Phase B merge:** `+74 draws` (same materials/tris).
+**Tahu kit with Phase B merge (historical):** `+74 draws` (same materials/tris).
+
+**Tahu packed skinned body:** ~8–9 draws (body + mask); sheet and combat share the mesh.
 
 ## Related code
 
@@ -94,4 +91,4 @@ Follow the **Nui-Rama** pattern: self-contained GLB, merged sub-meshes in Blende
 | `src/rendering/3d/ShaderVariantBank.tsx`      | One-shot WebGPU compile of shared variants     |
 | `src/rendering/3d/hooks/useKitAttachments.ts` | Kit clone + merge hook                         |
 | `src/pages/Battle/CombatantModel.tsx`         | Battle model routing (Phase C branch point)    |
-| `src/rendering/3d/CharacterScene/index.tsx`   | Dex / full-detail path                         |
+| `src/rendering/3d/CharacterScene/index.tsx`   | Dex / character sheet path                     |

@@ -25,11 +25,22 @@ export function reparentTahuBattleBrain(root: Object3D): void {
   head.attach(brain);
 }
 
-/** Toggle detailed kit sockets vs `Battle_*` meshes via `visible`. */
-export function setTahuLodVisibility(root: Object3D, variant: TahuMeshVariant): void {
-  const isBattle = variant === 'battle';
+function isUnderMasks(obj: Object3D): boolean {
+  for (let parent: Object3D | null = obj; parent; parent = parent.parent) {
+    if (parent.name === 'Masks') return true;
+  }
+  return false;
+}
+
+/**
+ * Tahu no longer kit-assembles. Sheet and battle both show `Battle_*` meshes;
+ * `variant` is reserved for binding lower-res maps (then a lower-tri mesh).
+ * Keep the Kanohi socket subtree visible for `useMask`.
+ */
+export function setTahuLodVisibility(root: Object3D, _variant: TahuMeshVariant): void {
   root.traverse((child) => {
     if (!isRenderableMesh(child)) return;
-    child.visible = isTahuBattleRenderableMesh(child) === isBattle;
+    if (isUnderMasks(child)) return;
+    child.visible = isTahuBattleRenderableMesh(child);
   });
 }

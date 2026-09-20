@@ -36,11 +36,12 @@ export const DISCOLORATION_UNIFORMS_KEY = 'bakedDiscolorationUniforms';
 /** Copy-safe GPU slot. Intensity is always 0 so MeshStandardNodeMaterial AO is identity. */
 export const DISCOLORATION_MAP_SLOT = 'aoMap' as const;
 /**
- * Hairline edge bakes (Tahu 1024 atlas) filter to ~0.1–0.4. Mix starts near
- * black and reaches full mix by ~0.28 so 1px wires still discolor.
+ * Mix starts at this bake luminance and reaches full mix at
+ * {@link DISCOLORATION_SMOOTHSTEP_HI}. 0.04–0.28 was too permissive on black
+ * (dim atlas noise mixed as wear); 0.2–0.75 crushed packed edge bakes to zero.
  */
-export const DISCOLORATION_SMOOTHSTEP_LO = 0.04;
-export const DISCOLORATION_SMOOTHSTEP_HI = 0.28;
+export const DISCOLORATION_SMOOTHSTEP_LO = 0.12;
+export const DISCOLORATION_SMOOTHSTEP_HI = 0.45;
 
 export function createBakedDiscolorationUniforms(map: Texture | null, colorHex: string) {
   const spec = discolorationForColor(colorHex);
@@ -334,8 +335,8 @@ export function setBakedDiscolorationEnabled(root: Object3D, enabled: boolean): 
 }
 
 /**
- * Mix amount for the baked wear mask. Hairline atlases filter below 0.2, so the
- * gate starts near black and reaches full mix at {@link DISCOLORATION_SMOOTHSTEP_HI}.
+ * Mix amount for the baked wear mask. Dim atlas texels stay on the base color
+ * until {@link DISCOLORATION_SMOOTHSTEP_LO}; full mix at {@link DISCOLORATION_SMOOTHSTEP_HI}.
  * Pass explicit `uv()` so TSL cannot steal another map’s `getUV`.
  */
 export function bakedDiscolorationAmountNode(

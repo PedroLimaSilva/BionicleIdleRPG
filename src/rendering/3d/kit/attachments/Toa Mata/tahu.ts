@@ -30,9 +30,13 @@ const TAHU_BLACK_MAIN: Partial<Record<string, KitMaterialSlotEntry>> = {
 };
 
 /**
- * Tahu Mata (2001 kit): sockets on `Toa_Mata/tahu.glb` are named after the kit
- * node they receive (same pattern as Gali / Onua). Right-arm single-arm pieces
- * tint Main as Secondary.
+ * Tahu Mata kit sockets — **not used at runtime**. The character sheet and
+ * combat both draw the packed skinned `Battle_*` body. This map stays so
+ * `collectKitNodeUsage` still counts the shared 2001 pieces other Mata clone.
+ *
+ * Sockets on `Toa_Mata/tahu.glb` are named after the kit node they would
+ * receive (same pattern as Gali / Onua). Right-arm single-arm pieces tint
+ * Main as Secondary.
  */
 export const TAHU_MATA_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
   Axle3L_Hand1: { kitNodeName: KIT_2001_NODES.Axle3L, materialColors: TAHU_BLACK_MAIN },

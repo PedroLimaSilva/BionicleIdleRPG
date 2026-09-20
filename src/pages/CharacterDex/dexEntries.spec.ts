@@ -64,6 +64,8 @@ describe('character dex entries', () => {
       maskOverride: Mask.Kakama,
       maskPowerActive: true,
       normalMapsActive: false,
+      packedMetalnessActive: true,
+      packedRoughnessActive: false,
     });
     expect(preview.exp).toBe(0);
     expect(preview.stage).toBe(MatoranStage.ToaMata);
@@ -71,6 +73,8 @@ describe('character dex entries', () => {
     expect(preview.maskPowerActive).toBe(true);
     expect(preview.discolorationBakesActive).toBe(true);
     expect(preview.normalMapsActive).toBe(false);
+    expect(preview.packedRoughnessActive).toBe(false);
+    expect(preview.packedMetalnessActive).toBe(true);
     expect(preview.unlockAllMasks).toBe(true);
   });
 

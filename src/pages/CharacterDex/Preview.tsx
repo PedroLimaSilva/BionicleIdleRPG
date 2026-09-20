@@ -15,16 +15,17 @@ import {
   RAHKSHI_DEX_DEFAULT_MESH_VARIANT,
   type RahkshiDexMeshVariant,
 } from '../../data/dex/rahkshi';
+import { TAHU_PREVIEW_MESH_VARIANT } from '../../rendering/3d/CharacterScene/tahuBattleMeshes';
 import { resolveToaMataBuildId } from '../../rendering/3d/customMataBuild';
 import type { BaseMatoran } from '../../types/Matoran';
 import './index.scss';
 
-function supportsTahuBattleLod(base: BaseMatoran): boolean {
+function supportsTahuPackedBody(base: BaseMatoran): boolean {
   return isToaMata(base) && resolveToaMataBuildId(base) === 'Toa_Tahu';
 }
 
-function supportsDiminishedPackedMaps(base: BaseMatoran): boolean {
-  return isDiminished(base);
+function supportsPackedMaps(base: BaseMatoran): boolean {
+  return isDiminished(base) || supportsTahuPackedBody(base);
 }
 
 export const CharacterDexPreview: React.FC = () => {
@@ -63,17 +64,14 @@ export const CharacterDexPreview: React.FC = () => {
   const previewMatoran = useMemo(() => {
     if (!base) return null;
     return toDexPreviewMatoran(base, {
-      discolorationBakesActive:
-        supportsTahuBattleLod(base) || supportsDiminishedPackedMaps(base)
-          ? discolorationBakesActive
-          : undefined,
+      discolorationBakesActive: supportsPackedMaps(base) ? discolorationBakesActive : undefined,
       maskOverride: selectedMask ?? base.mask,
       maskPowerActive,
-      normalMapsActive: supportsTahuBattleLod(base) ? normalMapsActive : undefined,
-      packedMetalnessActive: supportsDiminishedPackedMaps(base) ? packedMetalnessActive : undefined,
-      packedRoughnessActive: supportsDiminishedPackedMaps(base) ? packedRoughnessActive : undefined,
+      normalMapsActive: supportsTahuPackedBody(base) ? normalMapsActive : undefined,
+      packedMetalnessActive: supportsPackedMaps(base) ? packedMetalnessActive : undefined,
+      packedRoughnessActive: supportsPackedMaps(base) ? packedRoughnessActive : undefined,
       rahkshiMeshVariant: isRahkshi(base) ? meshVariant : undefined,
-      tahuMeshVariant: supportsTahuBattleLod(base) ? meshVariant : undefined,
+      tahuMeshVariant: supportsTahuPackedBody(base) ? TAHU_PREVIEW_MESH_VARIANT : undefined,
     });
   }, [
     base,
@@ -172,7 +170,7 @@ export const CharacterDexPreview: React.FC = () => {
           </div>
         </section>
 
-        {(isRahkshi(base) || supportsTahuBattleLod(base)) && (
+        {isRahkshi(base) && (
           <section className="character-dex-control-block">
             <div className="character-dex-mask-heading">
               <h2>Mesh</h2>
@@ -190,65 +188,34 @@ export const CharacterDexPreview: React.FC = () => {
                     }
                   />
                 </label>
-                {supportsTahuBattleLod(base) && (
-                  <>
-                    <label className="character-dex-mask-toggle">
-                      <span>Emissive bakes</span>
-                      <button
-                        type="button"
-                        role="switch"
-                        aria-label="Emissive discoloration bakes"
-                        aria-checked={discolorationBakesActive}
-                        className={`toggle-placeholder ${discolorationBakesActive ? 'on' : ''}`}
-                        onClick={() => setDiscolorationBakesActive((active) => !active)}
-                      />
-                    </label>
-                    <label className="character-dex-mask-toggle">
-                      <span>Normal maps</span>
-                      <button
-                        type="button"
-                        role="switch"
-                        aria-label="Authored normal maps"
-                        aria-checked={normalMapsActive}
-                        className={`toggle-placeholder ${normalMapsActive ? 'on' : ''}`}
-                        onClick={() => setNormalMapsActive((active) => !active)}
-                      />
-                    </label>
-                  </>
-                )}
               </div>
             </div>
             <p className="character-dex-caption">
               {meshVariant === 'battle'
-                ? isRahkshi(base)
-                  ? 'Merged battle LOD (`Battle_*` meshes on `Rahkshi`)'
-                  : 'Merged battle LOD (`Battle_Body` + `Battle_Brain` on `Tahu`)'
-                : isRahkshi(base)
-                  ? 'Full kit + baked rig (`Rahkshi`)'
-                  : 'Full kit sockets (`Tahu`)'}
+                ? 'Merged battle LOD (`Battle_*` meshes on `Rahkshi`)'
+                : 'Full kit + baked rig (`Rahkshi`)'}
             </p>
-            {supportsTahuBattleLod(base) && (
-              <>
-                <p className="character-dex-caption">
-                  {discolorationBakesActive
-                    ? 'Emissive wear maps mixed on weathered plastics'
-                    : 'Emissive wear maps off (noise metalness / roughness only)'}
-                </p>
-                <p className="character-dex-caption">
-                  {normalMapsActive
-                    ? 'Tangent normal maps applied on weathered plastics'
-                    : 'Tangent normal maps off (smooth geometry)'}
-                </p>
-              </>
-            )}
           </section>
         )}
 
-        {supportsDiminishedPackedMaps(base) && (
+        {supportsPackedMaps(base) && (
           <section className="character-dex-control-block">
             <div className="character-dex-mask-heading">
               <h2>Packed maps</h2>
               <div className="character-dex-toggle-row">
+                {supportsTahuPackedBody(base) && (
+                  <label className="character-dex-mask-toggle">
+                    <span>Normal maps</span>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-label="Authored normal maps"
+                      aria-checked={normalMapsActive}
+                      className={`toggle-placeholder ${normalMapsActive ? 'on' : ''}`}
+                      onClick={() => setNormalMapsActive((active) => !active)}
+                    />
+                  </label>
+                )}
                 <label className="character-dex-mask-toggle">
                   <span>Discoloration</span>
                   <button
@@ -299,6 +266,13 @@ export const CharacterDexPreview: React.FC = () => {
                 ? 'Emissive G metalness from the packed bake'
                 : 'Metalness off (flat slot metalness)'}
             </p>
+            {supportsTahuPackedBody(base) && (
+              <p className="character-dex-caption">
+                {normalMapsActive
+                  ? 'Tangent normal maps applied on weathered plastics'
+                  : 'Tangent normal maps off (smooth geometry)'}
+              </p>
+            )}
           </section>
         )}
 
