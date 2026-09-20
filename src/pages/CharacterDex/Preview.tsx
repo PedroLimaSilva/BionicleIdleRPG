@@ -10,7 +10,13 @@ import { useSceneCanvas } from '../../rendering/3d/hooks/useSceneCanvas';
 import { playCharacterPreviewAnimation } from '../../rendering/3d/utils/characterPreviewControls';
 import { ElementTag } from '../../components/ElementTag';
 import { getAdjacentDexIds, PREVIEW_ANIMATIONS, toDexPreviewMatoran } from './dexEntries';
-import { isDiminished, isRahkshi, isRebuilt, isToaMata } from '../../game/characters/matoranStage';
+import {
+  isBohrok,
+  isDiminished,
+  isRahkshi,
+  isRebuilt,
+  isToaMata,
+} from '../../game/characters/matoranStage';
 import {
   RAHKSHI_DEX_DEFAULT_MESH_VARIANT,
   type RahkshiDexMeshVariant,
@@ -27,7 +33,7 @@ function supportsMataPackedBody(base: BaseMatoran): boolean {
 }
 
 function supportsPackedMaps(base: BaseMatoran): boolean {
-  return isDiminished(base) || isRebuilt(base) || supportsMataPackedBody(base);
+  return isDiminished(base) || isRebuilt(base) || supportsMataPackedBody(base) || isBohrok(base);
 }
 
 export const CharacterDexPreview: React.FC = () => {

@@ -126,7 +126,7 @@ function getFacingRotation(
   return Math.atan2(dx, dz);
 }
 
-const MODELS_WITHOUT_KIT_READY_CALLBACK = new Set(['bohrok', 'nui_rama', 'rahi_placeholder']);
+const MODELS_WITHOUT_KIT_READY_CALLBACK = new Set(['nui_rama', 'rahi_placeholder']);
 
 export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelProps>(
   ({ combatant, maskPowerActive = false, onModelReady, position, side }, ref) => {
@@ -329,7 +329,7 @@ export const CombatantModel = forwardRef<CombatantModelHandle, CombatantModelPro
         case 'bohrok':
           return (
             <group scale={0.175}>
-              <BohrokModel ref={childRef} id={combatant.id.split('-')[0]} />
+              <BohrokModel ref={childRef} id={combatant.id.split('-')[0]} {...kitReadyProps} />
             </group>
           );
         case 'nui_rama':

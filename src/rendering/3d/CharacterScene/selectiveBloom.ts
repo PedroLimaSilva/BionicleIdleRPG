@@ -10,13 +10,14 @@ export type SelectiveBloomMrtMaterial = {
 };
 
 /**
- * Kit `Glow` (hooks, weapons, visor lines) blooms. `Glowing Eyes` stay emissive-only
- * so the face doesn't blow out behind the Kanohi. Rahkshi `Eyes` bloom on the sheet.
+ * Kit `Glow` (hooks, weapons, visor lines) blooms. `Glowing Eyes` and the packed
+ * Bohrok iris slot `Glowing` stay emissive-only so the face doesn't blow out.
+ * Rahkshi `Eyes` bloom on the sheet.
  */
 export function isSelectiveBloomKitGlowName(name: string | undefined): boolean {
   if (!name) return false;
   const lower = name.toLowerCase();
-  if (lower.includes('glowing eyes')) return false;
+  if (lower === 'glowing' || lower.includes('glowing eyes')) return false;
   return lower.includes('glow');
 }
 

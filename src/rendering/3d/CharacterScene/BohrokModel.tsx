@@ -1,4 +1,12 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { Group, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import { useGLTF } from '@react-three/drei';
 import { Color as ColorType } from '../../../types/Colors';
@@ -13,38 +21,36 @@ import {
   BOHROK_KIT_2001_ATTACHMENTS,
   buildBohrokKit2003Attachments,
 } from '../kit/attachments/bohrok';
-import {
-  BOHROK_SHIELD_KAL_PALETTE,
-  BOHROK_PRIMARY_PALETTE,
-} from '../kit/palettes/bohrokKitPalette';
+import { BOHROK_SHIELD_KAL_PALETTE, BOHROK_WEATHERED } from '../kit/palettes/bohrokKitPalette';
+import { applyBohrokSheetMaterials } from '../kit/palettes/bohrokSheetPalette';
 import type { KitMaterialSlotEntry } from '../../../types/KitParts';
 import { normalizeKitMaterialSlotEntry } from '../kit/kitMaterialUtils';
 import { resolveKitColorSource } from '../hooks/kitMaterialApplication';
-import { getWeatheredMetalMaterial, type WeatheredMetalOptions } from './WeatheredMetalMaterial';
+import { getWeatheredMetalMaterial } from './WeatheredMetalMaterial';
 import { cloneGltfInstance } from '../utils/cloneGltfInstance';
+import { setAuthoredNormalMapsEnabled } from '../hooks/authoredNormalMaps';
+import { setBakedDiscolorationEnabled } from '../hooks/bakedDiscoloration';
+import { setPackedMetalnessEnabled, setPackedRoughnessEnabled } from '../hooks/packedPbrMaps';
+import {
+  attachBohrokSwarmShields,
+  bohrokSheetBreedName,
+  BOHROK_SHEET_RIG_NODE,
+} from './bohrokSheetMeshes';
 
+const BOHROK_GLB = import.meta.env.BASE_URL + 'Bohrok.glb';
 const BOHROK_MASTER_GLB = import.meta.env.BASE_URL + 'bohrok_master.glb';
 
-const BOHROK_WEATHERED: WeatheredMetalOptions = {
-  cavityStrength: 1,
-  edgeColor: '#ffffff',
-  edgeCurvatureScale: 2,
-  edgeStrength: 0.15,
-  fineScale: 18,
-  grimeDarken: 0.4,
-  grimeMetalnessReduce: 0.5,
-  grimeRoughness: 0.2,
-  metalness: 0.05,
-  roughness: 0.55,
+export type BohrokModelProps = {
+  id: string;
+  discolorationBakesActive?: boolean;
+  normalMapsActive?: boolean;
+  packedMetalnessActive?: boolean;
+  packedRoughnessActive?: boolean;
+  onKitMeshesAttached?: () => void;
 };
 
 /** Cache key: materialName + color. Shared across Bohrok instances with the same Krana tint. */
 const kranaMaterialCache = new Map<string, MeshStandardMaterial>();
-
-function capitalizeBreed(id: string): string {
-  const [breed] = id.split('_');
-  return breed.replace(/^./, (char) => char.toUpperCase());
-}
 
 function isBohrokKal(id: string): boolean {
   return id.split('_').length > 1;
@@ -141,72 +147,180 @@ function getKranaMaterial(
   return mat;
 }
 
-export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ id }, ref) => {
-  const group = useRef<Group>(null);
-  const { animations, nodes } = useGLTF(BOHROK_MASTER_GLB);
+function attachBreedShields(args: {
+  breed: string;
+  colorScheme: BaseMatoran['colors'];
+  isKal: boolean;
+  kitCharacterNodes: Record<string, Object3D>;
+  nodes: Record<string, Object3D>;
+  shieldSlotLookup: Map<string, ReturnType<typeof normalizeKitMaterialSlotEntry>>;
+  sockets: readonly string[];
+}): Object3D[] {
+  const { breed, colorScheme, isKal, kitCharacterNodes, nodes, shieldSlotLookup, sockets } = args;
+  const shieldTemplateName = isKal ? `${breed}Kal` : breed;
+  const shieldTemplate = nodes[shieldTemplateName];
+  if (!shieldTemplate) {
+    console.warn(
+      `[BohrokModel] Shield template '${shieldTemplateName}' not found in ${BOHROK_MASTER_GLB}`
+    );
+  }
 
-  const breed = capitalizeBreed(id);
-  const isKal = isBohrokKal(id);
-  const colorScheme = CHARACTER_DEX[id].colors;
-
-  const bohrokInstance = useMemo(() => cloneGltfInstance(nodes.Bohrok), [nodes]);
-  const kitCharacterNodes = useMemo(() => buildKitCharacterNodes(bohrokInstance), [bohrokInstance]);
-
-  const kit2003Attachments = useMemo(() => buildBohrokKit2003Attachments(isKal), [isKal]);
-
-  const shieldPalette = isKal ? BOHROK_SHIELD_KAL_PALETTE : BOHROK_PRIMARY_PALETTE;
-  const shieldSlotLookup = useMemo(() => buildSlotLookup(shieldPalette), [shieldPalette]);
-
-  const { playAnimation } = useCombatAnimations(animations, group, {
-    actionTimeScale: 2,
-    attackResolveAtFraction: 0.1,
-    modelId: id,
-    transitionMode: 'stopAll',
-  });
-
-  useImperativeHandle(ref, () => ({ playAnimation }));
-
-  useKitAttachments({
-    attachments: BOHROK_KIT_2001_ATTACHMENTS,
-    characterNodes: kitCharacterNodes,
-    colors: colorScheme,
-    kitUrl: KIT_2001_GLB_PATH,
-    weathered: BOHROK_WEATHERED,
-  });
-
-  useKitAttachments({
-    attachments: kit2003Attachments,
-    characterNodes: kitCharacterNodes,
-    colors: colorScheme,
-    kitUrl: KIT_2003_GLB_PATH,
-    weathered: BOHROK_WEATHERED,
-  });
-
-  useEffect(() => {
-    const shieldTemplateName = isKal ? `${breed}Kal` : breed;
-    const shieldTemplate = nodes[shieldTemplateName] as Object3D | undefined;
-    if (!shieldTemplate) {
-      console.warn(
-        `[BohrokModel] Shield template '${shieldTemplateName}' not found in ${BOHROK_MASTER_GLB}`
-      );
+  const shieldClones: Object3D[] = [];
+  for (const socketName of sockets) {
+    const socket = kitCharacterNodes[socketName];
+    if (!socket) {
+      console.warn(`[BohrokModel] Socket '${socketName}' not found on Bohrok rig`);
+      continue;
     }
+    if (!shieldTemplate) continue;
+    const clone = attachTemplateAtSocket(shieldTemplate, socket);
+    applyShieldMaterials(clone, shieldSlotLookup, colorScheme);
+    shieldClones.push(clone);
+  }
+  return shieldClones;
+}
 
-    const shieldClones: Object3D[] = [];
-    (['L', 'R'] as const).forEach((side) => {
-      const socket = kitCharacterNodes[`Shield${side}`];
-      if (!socket) {
-        console.warn(`[BohrokModel] Socket 'Shield${side}' not found on Bohrok rig`);
-        return;
-      }
-      if (!shieldTemplate) return;
+const SwarmPackedBohrokModel = forwardRef<CombatantModelHandle, BohrokModelProps>(
+  (
+    {
+      discolorationBakesActive,
+      id,
+      normalMapsActive,
+      onKitMeshesAttached,
+      packedMetalnessActive,
+      packedRoughnessActive,
+    },
+    ref
+  ) => {
+    const group = useRef<Group>(null);
+    const packedGltf = useGLTF(BOHROK_GLB);
+    const colorScheme = CHARACTER_DEX[id].colors;
 
-      const clone = attachTemplateAtSocket(shieldTemplate, socket);
-      applyShieldMaterials(clone, shieldSlotLookup, colorScheme);
-      shieldClones.push(clone);
+    const instance = useMemo(() => {
+      const root =
+        (packedGltf.scene.getObjectByName(BOHROK_SHEET_RIG_NODE) as Object3D | null) ??
+        (packedGltf.nodes[BOHROK_SHEET_RIG_NODE] as Object3D | undefined);
+      if (!root) return new Group();
+      return cloneGltfInstance(root);
+    }, [packedGltf.nodes, packedGltf.scene]);
+
+    const { playAnimation } = useCombatAnimations(packedGltf.animations, group, {
+      actionTimeScale: 2,
+      attackResolveAtFraction: 0.1,
+      modelId: id,
+      transitionMode: 'stopAll',
     });
 
-    let kalSymbol: Object3D | undefined;
-    if (isKal) {
+    useImperativeHandle(ref, () => ({ playAnimation }));
+
+    const bakesActive = discolorationBakesActive !== false;
+    const normalsActive = normalMapsActive !== false;
+    const roughnessActive = packedRoughnessActive !== false;
+    const metalnessActive = packedMetalnessActive !== false;
+    const bakesActiveRef = useRef(bakesActive);
+    const normalsActiveRef = useRef(normalsActive);
+    const roughnessActiveRef = useRef(roughnessActive);
+    const metalnessActiveRef = useRef(metalnessActive);
+    bakesActiveRef.current = bakesActive;
+    normalsActiveRef.current = normalsActive;
+    roughnessActiveRef.current = roughnessActive;
+    metalnessActiveRef.current = metalnessActive;
+
+    const applyPreviewMapToggles = useCallback((root: Object3D) => {
+      setBakedDiscolorationEnabled(root, bakesActiveRef.current);
+      setAuthoredNormalMapsEnabled(root, normalsActiveRef.current);
+      setPackedRoughnessEnabled(root, roughnessActiveRef.current);
+      setPackedMetalnessEnabled(root, metalnessActiveRef.current);
+    }, []);
+
+    useLayoutEffect(() => {
+      const shieldClones = attachBohrokSwarmShields(instance, bohrokSheetBreedName(id));
+      applyBohrokSheetMaterials(instance, colorScheme);
+      applyPreviewMapToggles(instance);
+      onKitMeshesAttached?.();
+      return () => {
+        for (const clone of shieldClones) {
+          clone.parent?.remove(clone);
+        }
+        setBakedDiscolorationEnabled(instance, true);
+        setAuthoredNormalMapsEnabled(instance, true);
+        setPackedRoughnessEnabled(instance, true);
+        setPackedMetalnessEnabled(instance, true);
+      };
+    }, [applyPreviewMapToggles, colorScheme, id, instance, onKitMeshesAttached]);
+
+    useLayoutEffect(() => {
+      applyPreviewMapToggles(instance);
+    }, [
+      applyPreviewMapToggles,
+      bakesActive,
+      instance,
+      metalnessActive,
+      normalsActive,
+      roughnessActive,
+    ]);
+
+    return (
+      <group ref={group} dispose={null}>
+        <primitive object={instance} />
+      </group>
+    );
+  }
+);
+
+const KalKitBohrokModel = forwardRef<CombatantModelHandle, BohrokModelProps>(
+  ({ id, onKitMeshesAttached }, ref) => {
+    const group = useRef<Group>(null);
+    const { animations, nodes } = useGLTF(BOHROK_MASTER_GLB);
+
+    const breed = bohrokSheetBreedName(id);
+    const colorScheme = CHARACTER_DEX[id].colors;
+
+    const bohrokInstance = useMemo(() => cloneGltfInstance(nodes.Bohrok), [nodes]);
+    const kitCharacterNodes = useMemo(
+      () => buildKitCharacterNodes(bohrokInstance),
+      [bohrokInstance]
+    );
+    const kit2003Attachments = useMemo(() => buildBohrokKit2003Attachments(true), []);
+    const shieldSlotLookup = useMemo(() => buildSlotLookup(BOHROK_SHIELD_KAL_PALETTE), []);
+
+    const { playAnimation } = useCombatAnimations(animations, group, {
+      actionTimeScale: 2,
+      attackResolveAtFraction: 0.1,
+      modelId: id,
+      transitionMode: 'stopAll',
+    });
+
+    useImperativeHandle(ref, () => ({ playAnimation }));
+
+    useKitAttachments({
+      attachments: BOHROK_KIT_2001_ATTACHMENTS,
+      characterNodes: kitCharacterNodes,
+      colors: colorScheme,
+      kitUrl: KIT_2001_GLB_PATH,
+      weathered: BOHROK_WEATHERED,
+    });
+
+    useKitAttachments({
+      attachments: kit2003Attachments,
+      characterNodes: kitCharacterNodes,
+      colors: colorScheme,
+      kitUrl: KIT_2003_GLB_PATH,
+      weathered: BOHROK_WEATHERED,
+    });
+
+    useEffect(() => {
+      const shieldClones = attachBreedShields({
+        breed,
+        colorScheme,
+        isKal: true,
+        kitCharacterNodes,
+        nodes: nodes as Record<string, Object3D>,
+        shieldSlotLookup,
+        sockets: ['ShieldL', 'ShieldR'],
+      });
+
+      let kalSymbol: Object3D | undefined;
       const symbolTemplate = nodes[`${breed}Symbol`] as Object3D | undefined;
       const symbolSocket = kitCharacterNodes.Symbol;
       if (!symbolTemplate) {
@@ -218,31 +332,48 @@ export const BohrokModel = forwardRef<CombatantModelHandle, { id: string }>(({ i
       } else {
         kalSymbol = attachTemplateAtSocket(symbolTemplate, symbolSocket);
       }
-    }
 
-    bohrokInstance.traverse((child) => {
-      if (!(child instanceof Mesh)) return;
-      const mat = child.material as MeshStandardMaterial;
-      if (mat?.name === 'Krana') {
-        child.material = getKranaMaterial(mat, colorScheme);
-      }
-    });
+      bohrokInstance.traverse((child) => {
+        if (!(child instanceof Mesh)) return;
+        const mat = child.material as MeshStandardMaterial;
+        if (mat?.name === 'Krana') {
+          child.material = getKranaMaterial(mat, colorScheme);
+        }
+      });
 
-    return () => {
-      for (const clone of shieldClones) {
-        const parent = clone.parent;
-        if (parent) parent.remove(clone);
-      }
-      if (kalSymbol?.parent) kalSymbol.parent.remove(kalSymbol);
-    };
-  }, [bohrokInstance, breed, colorScheme, isKal, kitCharacterNodes, nodes, shieldSlotLookup]);
+      onKitMeshesAttached?.();
 
-  return (
-    <group ref={group} dispose={null}>
-      <primitive object={bohrokInstance} scale={1} position={[0, 0, 0]} />
-    </group>
-  );
+      return () => {
+        for (const clone of shieldClones) {
+          clone.parent?.remove(clone);
+        }
+        if (kalSymbol?.parent) kalSymbol.parent.remove(kalSymbol);
+      };
+    }, [
+      bohrokInstance,
+      breed,
+      colorScheme,
+      kitCharacterNodes,
+      nodes,
+      onKitMeshesAttached,
+      shieldSlotLookup,
+    ]);
+
+    return (
+      <group ref={group} dispose={null}>
+        <primitive object={bohrokInstance} scale={1} position={[0, 0, 0]} />
+      </group>
+    );
+  }
+);
+
+export const BohrokModel = forwardRef<CombatantModelHandle, BohrokModelProps>((props, ref) => {
+  if (isBohrokKal(props.id)) {
+    return <KalKitBohrokModel ref={ref} {...props} />;
+  }
+  return <SwarmPackedBohrokModel ref={ref} {...props} />;
 });
 
+useGLTF.preload(BOHROK_GLB);
 useGLTF.preload(BOHROK_MASTER_GLB);
 useKitAttachments.preload(KIT_2001_GLB_PATH, KIT_2003_GLB_PATH);

@@ -12,6 +12,7 @@ describe('selectiveBloom selection', () => {
     expect(isSelectiveBloomKitGlowName('Glow')).toBe(true);
     expect(isSelectiveBloomKitGlowName('Matatu Glow')).toBe(true);
     expect(isSelectiveBloomKitGlowName('Glowing Eyes')).toBe(false);
+    expect(isSelectiveBloomKitGlowName('Glowing')).toBe(false);
     expect(isSelectiveBloomKitGlowName('Main')).toBe(false);
   });
 

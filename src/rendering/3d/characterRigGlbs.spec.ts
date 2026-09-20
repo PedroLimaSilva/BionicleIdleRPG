@@ -3,6 +3,8 @@ import {
   allCharacterRigGlbUrls,
   characterRigGlbUrl,
   characterRigGlbUrlsForProgress,
+  BOHROK_GLB,
+  BOHROK_MASTER_GLB,
   MATORAN_MASTER_GLB,
   REBUILT_GLB,
 } from './characterRigGlbs';
@@ -31,6 +33,14 @@ describe('characterRigGlbUrl', () => {
 
   test('returns null for Rahi without a GLB', () => {
     expect(characterRigGlbUrl({ id: 'muaka', stage: MatoranStage.Rahi })).toBeNull();
+  });
+
+  test('swarm Bohrok use the packed chassis; Kal stays on master', () => {
+    expect(characterRigGlbUrl({ id: 'tahnok', stage: MatoranStage.Bohrok })).toBe(BOHROK_GLB);
+    expect(characterRigGlbUrl({ id: 'gahlok', stage: MatoranStage.Bohrok })).toBe(BOHROK_GLB);
+    expect(characterRigGlbUrl({ id: 'tahnok_kal', stage: MatoranStage.BohrokKal })).toBe(
+      BOHROK_MASTER_GLB
+    );
   });
 
   test('uses the custom Toa rig selected on the recruited character', () => {
@@ -90,9 +100,11 @@ describe('allCharacterRigGlbUrls', () => {
     const urls = allCharacterRigGlbUrls();
     const tahuMata = urls.filter((url) => url.endsWith('/Toa_Mata/tahu.glb'));
     const tahuNuva = urls.filter((url) => url.endsWith('Toa_Nuva/tahu.glb'));
-    const bohrok = urls.filter((url) => url.endsWith('bohrok_master.glb'));
+    const packedBohrok = urls.filter((url) => url.endsWith('Bohrok.glb'));
+    const bohrokMaster = urls.filter((url) => url.endsWith('bohrok_master.glb'));
     expect(tahuMata).toHaveLength(1);
     expect(tahuNuva).toHaveLength(1);
-    expect(bohrok).toHaveLength(1);
+    expect(packedBohrok).toHaveLength(1);
+    expect(bohrokMaster).toHaveLength(1);
   });
 });

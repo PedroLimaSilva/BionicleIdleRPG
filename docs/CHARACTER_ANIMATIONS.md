@@ -43,10 +43,11 @@ Macro arc order (see `src/data/quests/index.ts`): **Mask Hunt → MNOG → Bohro
 |     1 | Diminished Matoran              | Game start                                       |
 |     2 | Toa Mata                        | Mask Hunt — `story_toa_arrival`                  |
 |     3 | Nui-Rama, generic Rahi          | MNOG / early combat                              |
-|     4 | Toa Nuva                        | Bohrok Swarm — `bohrok_evolve_toa_nuva`          |
-|     5 | Rebuilt Matoran                 | Bohrok Kal — `bohrok_kal_naming_day`             |
-|     6 | Rahkshi                         | Mask of Light                                    |
-|     7 | Metru Matoran, Vahki, Toa Metru | Metru Nui flashback (latest implemented content) |
+|     4 | Bohrok Swarm                    | Bohrok Swarm — `bohrok_swarm_intro`              |
+|     5 | Toa Nuva                        | Bohrok Swarm — `bohrok_evolve_toa_nuva`          |
+|     6 | Rebuilt Matoran                 | Bohrok Kal — `bohrok_kal_naming_day`             |
+|     7 | Rahkshi                         | Mask of Light                                    |
+|     8 | Metru Matoran, Vahki, Toa Metru | Metru Nui flashback (latest implemented content) |
 
 Set `storyOrder` and `storyArc` on new epics in `characterAnimationInventory.ts` to match quest unlock order. Lower `storyOrder` = animate sooner.
 
@@ -56,18 +57,19 @@ Set `storyOrder` and `storyArc` on new epics in `characterAnimationInventory.ts`
 
 Sorted by story progression. Run `yarn animation-clip-report` for the live matrix parsed from shipped GLBs.
 
-|   # | Epic                                                         | Story arc        | Rigs | Goal                                                          |
-| --: | ------------------------------------------------------------ | ---------------- | ---: | ------------------------------------------------------------- |
-|   1 | [Toa Mata — Hit clip gaps](#epic-toa-mata-polish)            | Mask Hunt        |    2 | Author Hit for Pohatu Mata; Attack/Hit for Kopaka Mata        |
-|   2 | [Nui-Rama — combat clips](#epic-rahi-nui-rama)               | MNOG             |    1 | Skeletal combat beyond Wings ambient loop                     |
-|   3 | [Generic Rahi — GLB-backed rig](#epic-rahi-placeholder)      | Mask Hunt / MNOG |    1 | Replace procedural capsule placeholder                        |
-|   4 | [Toa Nuva — combat clip rollout](#epic-toa-nuva-combat)      | Bohrok Swarm     |    5 | Extend Tahu/Pohatu-quality combat clips to remaining Nuva     |
-|   5 | [Rebuilt Matoran — idle & flavor](#epic-rebuilt-idle-switch) | Bohrok Kal       |    1 | Add Tilt Head flavor                                          |
-|   6 | [Rahkshi — Defeat clip](#epic-rahkshi-defeat)                | Mask of Light    |    1 | Optional authored knockdown (procedural works today)          |
-|   7 | [Metru Matoran — flavor overlays](#epic-village-flavor)      | Metru Nui        |    1 | Add Tilt Head to `matoran_metru.glb`                          |
-|   8 | [Vahki — combat clips](#epic-vahki-combat)                   | Metru Nui        |    1 | Add combat clips while preserving biped/quadruped idle switch |
-|   9 | [Toa Metru — skeletal combat clips](#epic-toa-metru-combat)  | Metru Nui        |    7 | Add Attack / Hit / Defeat to all Toa Metru GLBs               |
-|  10 | [Bohrok — unused authored clips](#epic-bohrok-extras)        | Stretch          |    1 | Wire or remove Ball / Flying / Flying Pose                    |
+|   # | Epic                                                             | Story arc        | Rigs | Goal                                                          |
+| --: | ---------------------------------------------------------------- | ---------------- | ---: | ------------------------------------------------------------- |
+|   1 | [Toa Mata — Hit clip gaps](#epic-toa-mata-polish)                | Mask Hunt        |    2 | Author Hit for Pohatu Mata; Attack/Hit for Kopaka Mata        |
+|   2 | [Nui-Rama — combat clips](#epic-rahi-nui-rama)                   | MNOG             |    1 | Skeletal combat beyond Wings ambient loop                     |
+|   3 | [Generic Rahi — GLB-backed rig](#epic-rahi-placeholder)          | Mask Hunt / MNOG |    1 | Replace procedural capsule placeholder                        |
+|   4 | [Bohrok Swarm — packed combat clips](#epic-bohrok-packed-combat) | Bohrok Swarm     |    1 | Transfer Attack / Hit / Defeat from `bohrok_master.glb`       |
+|   5 | [Toa Nuva — combat clip rollout](#epic-toa-nuva-combat)          | Bohrok Swarm     |    5 | Extend Tahu/Pohatu-quality combat clips to remaining Nuva     |
+|   6 | [Rebuilt Matoran — idle & flavor](#epic-rebuilt-idle-switch)     | Bohrok Kal       |    1 | Add Tilt Head flavor                                          |
+|   7 | [Rahkshi — Defeat clip](#epic-rahkshi-defeat)                    | Mask of Light    |    1 | Optional authored knockdown (procedural works today)          |
+|   8 | [Metru Matoran — flavor overlays](#epic-village-flavor)          | Metru Nui        |    1 | Add Tilt Head to `matoran_metru.glb`                          |
+|   9 | [Vahki — combat clips](#epic-vahki-combat)                       | Metru Nui        |    1 | Add combat clips while preserving biped/quadruped idle switch |
+|  10 | [Toa Metru — skeletal combat clips](#epic-toa-metru-combat)      | Metru Nui        |    7 | Add Attack / Hit / Defeat to all Toa Metru GLBs               |
+|  11 | [Bohrok — unused authored clips](#epic-bohrok-extras)            | Stretch          |    1 | Wire or remove Ball / Flying / Flying Pose                    |
 
 ---
 
@@ -102,14 +104,14 @@ Character Dex preview buttons use the same combat contract: `Attack`, `Hit`, `De
 
 ## Rig families
 
-### Shipped character GLBs (35 total in `public/`)
+### Shipped character GLBs (36 total in `public/`)
 
 | Family      | GLB path pattern                                         | React components       | Combat support                                                       |
 | ----------- | -------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------- |
 | Toa Mata    | `Toa_Mata/<name>.glb`                                    | `Mata/*MataModel`      | Tahu full clips; Kopaka Idle + procedural combat; Pohatu missing Hit |
 | Toa Nuva    | `Toa_Nuva/<name>.glb`                                    | `Nuva/*Model`          | Tahu + Pohatu only; others procedural                                |
 | Toa Metru   | `Toa_Metru/<name>.glb`                                   | `Metru/*Model`         | Idle only — all combat procedural                                    |
-| Bohrok      | `bohrok_master.glb`                                      | `BohrokModel`          | Full combat set (reference rig)                                      |
+| Bohrok      | `Bohrok.glb`, `bohrok_master.glb`                        | `BohrokModel`          | Packed swarm: Idle + procedural combat; Kal: full master clips       |
 | Vahki       | `Vahki.glb` + kit attachments                            | `VahkiModel`           | Idle switch complete; combat procedural                              |
 | Rahkshi     | `rahkshi.glb`                                            | `Rahkshi`              | Attack + Hit; Defeat procedural                                      |
 | Matoran     | `matoran_master.glb`, `matoran_metru.glb`, `rebuilt.glb` | `*MatoranModel`        | Non-combat; flavor overlays                                          |
@@ -151,6 +153,18 @@ Other Mata Toa (Gali, Lewa, Onua) ship full Attack + Hit. Extra clips in Mata GL
 **Story:** Mask Hunt / MNOG · `early_rahi_muaka` · **Rigs:** 1 · **Epic id:** `rahi-placeholder`
 
 `RahiPlaceholderModel` is a procedural capsule for generic Rahi encounters (Muaka, Nui-Jaga). Replace with a shared low-poly GLB when art bandwidth allows.
+
+---
+
+### Epic: Bohrok Swarm — packed combat clips {#epic-bohrok-packed-combat}
+
+**Story:** Bohrok Swarm · `bohrok_swarm_intro` · **Rigs:** 1 · **Epic id:** `bohrok-packed-combat`
+
+Packed `Bohrok.glb` ships `Idle` only. Combat uses procedural root motion until Attack / Hit / Defeat transfer from `bohrok_master.glb`. Do not graduate this epic until those clips ship. Faceplate and all six breed shields are packed.
+
+| Rig                 | GLB          | Idle | Attack        | Hit           | Defeat        |
+| ------------------- | ------------ | ---- | ------------- | ------------- | ------------- |
+| Bohrok Swarm packed | `Bohrok.glb` | ✅   | ❌ procedural | ❌ procedural | ❌ procedural |
 
 ---
 
@@ -242,7 +256,7 @@ All Toa Metru share the same gap: `Idle` is authored; `Attack`, `Hit`, and `Defe
 
 **Story:** Stretch / polish · **Rigs:** 1 · **Epic id:** `bohrok-extras`
 
-`bohrok_master.glb` is the **reference-complete** combat rig (Bohrok Swarm arc). It also ships `Ball`, `Flying`, and `Flying Pose` — 💤 unused. Either wire these for flying enemies / ball mode or strip on next export pass.
+`bohrok_master.glb` is the **reference-complete** combat rig for Bohrok-Kal, and still holds swarm shield templates. It also ships `Ball`, `Flying`, and `Flying Pose` — 💤 unused. Either wire these for flying enemies / ball mode or strip on next export pass.
 
 ---
 

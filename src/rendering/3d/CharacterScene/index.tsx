@@ -154,10 +154,27 @@ const CharacterModel = forwardRef<
       }
     }
     case MatoranStage.Bohrok:
+      return (
+        <BohrokModel
+          ref={ref}
+          key={matoran.id}
+          discolorationBakesActive={matoran.discolorationBakesActive}
+          id={matoran.id}
+          normalMapsActive={matoran.normalMapsActive}
+          onKitMeshesAttached={onModelReady}
+          packedMetalnessActive={matoran.packedMetalnessActive}
+          packedRoughnessActive={matoran.packedRoughnessActive}
+        />
+      );
     case MatoranStage.BohrokKal:
       return (
         <group scale={4.5}>
-          <BohrokModel ref={ref} key={matoran.id} id={matoran.id} />
+          <BohrokModel
+            ref={ref}
+            key={matoran.id}
+            id={matoran.id}
+            onKitMeshesAttached={onModelReady}
+          />
         </group>
       );
     case MatoranStage.Vahki:

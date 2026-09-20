@@ -11,6 +11,7 @@ export type AnimationEpicId =
   | 'rebuilt-idle-switch'
   | 'rahi-nui-rama'
   | 'rahi-placeholder'
+  | 'bohrok-packed-combat'
   | 'bohrok-extras';
 
 export type StoryArcId =
@@ -83,6 +84,15 @@ export const ANIMATION_EPICS: Record<AnimationEpicId, AnimationEpic> = {
     summary:
       'bohrok_master.glb includes Ball, Flying, and Flying Pose clips that no code path plays yet. Wire or trim on next Bohrok polish pass.',
     title: 'Bohrok — unused authored clips',
+  },
+  'bohrok-packed-combat': {
+    id: 'bohrok-packed-combat',
+    storyArc: 'bohrok-swarm',
+    storyBeat: 'bohrok_swarm_intro',
+    storyOrder: 35,
+    summary:
+      'Packed swarm chassis ships Idle only. Attack / Hit / Defeat are procedural until those clips transfer from bohrok_master.glb. Faceplate and all six breed shields are packed in this GLB.',
+    title: 'Bohrok Swarm — packed combat clips',
   },
   'rahi-nui-rama': {
     id: 'rahi-nui-rama',
@@ -188,7 +198,7 @@ const VILLAGE_FLAVOR: ExpectedClip[] = [
 export const RIG_INVENTORY: RigInventoryEntry[] = [
   // --- Complete reference rigs ---
   {
-    displayName: 'Bohrok / Bohrok-Kal (shared chassis)',
+    displayName: 'Bohrok-Kal (shared chassis)',
     epicId: 'complete',
     expectedClips: [
       { backlog: 'complete', kind: 'idle', name: 'Idle', required: true },
@@ -219,7 +229,41 @@ export const RIG_INVENTORY: RigInventoryEntry[] = [
     ],
     glb: 'bohrok_master.glb',
     id: 'bohrok',
-    notes: 'Shared rig for all twelve Bohrok and Bohrok-Kal variants.',
+    notes: 'Kal kit path plus unused swarm shield templates. Swarm chassis lives in Bohrok.glb.',
+    reactComponent: 'BohrokModel',
+    role: 'combat',
+  },
+  {
+    displayName: 'Bohrok Swarm (packed chassis)',
+    epicId: 'bohrok-packed-combat',
+    expectedClips: [
+      { backlog: 'complete', kind: 'idle', name: 'Idle', required: true },
+      {
+        backlog: 'missing',
+        kind: 'combat',
+        name: 'Attack',
+        notes: 'Procedural until clips transfer from bohrok_master.glb.',
+        required: true,
+      },
+      {
+        backlog: 'missing',
+        kind: 'combat',
+        name: 'Hit',
+        notes: 'Procedural until clips transfer from bohrok_master.glb.',
+        required: true,
+      },
+      {
+        backlog: 'missing',
+        kind: 'combat',
+        name: 'Defeat',
+        notes: 'Procedural until clips transfer from bohrok_master.glb.',
+        required: true,
+      },
+    ],
+    glb: 'Bohrok.glb',
+    id: 'bohrok-packed',
+    notes:
+      'Shared packed body for all six swarm breeds, plus packed faceplate and per-breed shields.',
     reactComponent: 'BohrokModel',
     role: 'combat',
   },
