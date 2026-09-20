@@ -29,7 +29,12 @@ import {
 import { float, materialReference, smoothstep, texture, uniform, uv } from 'three/tsl';
 import { discolorationForColor } from '../kit/palettes/legoColorDiscoloration';
 import { DUMMY_DISCOLORATION_MAP, isDummyDiscolorationMap } from './dummyTextures';
-import { safeMaterialColorRef, setUniformColor, setUniformNumber } from './tslUniforms';
+import {
+  safeMaterialColorRef,
+  safeMaterialTextureRef,
+  setUniformColor,
+  setUniformNumber,
+} from './tslUniforms';
 
 export const DISCOLORATION_MAP_USERDATA_KEY = 'bakedDiscolorationMap';
 export const DISCOLORATION_UNIFORMS_KEY = 'bakedDiscolorationUniforms';
@@ -182,11 +187,13 @@ const discolorationIntensityRef = materialReference(
 /**
  * Per-material bake sample — same pattern as `normalMap`. A shared TextureNode
  * whose `.value` is patched in `onBeforeRender` stays bound to the compile
- * dummy on WebGPU (`getUniformHash` is the texture UUID).
+ * dummy on WebGPU (`getUniformHash` is the texture UUID). Shadow override
+ * materials have no `aoMap`; {@link safeMaterialTextureRef} plants the dummy
+ * so `TextureNode.setup` never sees `texture(null)`.
  */
-const discolorationAoMapRef = materialReference(
+const discolorationAoMapRef = safeMaterialTextureRef(
   DISCOLORATION_MAP_SLOT,
-  'texture'
+  DUMMY_DISCOLORATION_MAP
 ) as unknown as TslTextureSample;
 
 /**
