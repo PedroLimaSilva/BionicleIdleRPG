@@ -7,6 +7,8 @@ import {
   TAHU_BATTLE_BODY_MESH,
   TAHU_BATTLE_BRAIN_MATERIAL_NAMES,
   TAHU_BATTLE_BRAIN_MESH,
+  TAHU_BATTLE_WEAPON_MATERIAL_NAMES,
+  TAHU_BATTLE_WEAPON_MESH,
   TAHU_DETAILED_RIG_NODE,
 } from './tahuBattleMeshes';
 
@@ -25,20 +27,25 @@ describe('Toa_Mata/tahu.glb battle LOD layout', () => {
     expect(tahu?.translation?.[1]).toBeGreaterThan(1);
   });
 
-  test('Battle_Body is one skinned mesh with baked slots plus Glow', () => {
+  test('Battle_Body is one skinned mesh with baked slots; Glow lives on Battle_Weapon', () => {
     const slots = extractGlbNodeMaterialSlots(TAHU_GLB);
     expect(slots[TAHU_BATTLE_BODY_MESH]).toEqual([...TAHU_BATTLE_BODY_MATERIAL_NAMES].sort());
     expect(slots[TAHU_BATTLE_BRAIN_MESH]).toEqual([...TAHU_BATTLE_BRAIN_MATERIAL_NAMES].sort());
+    expect(slots[TAHU_BATTLE_WEAPON_MESH]).toEqual([...TAHU_BATTLE_WEAPON_MATERIAL_NAMES].sort());
   });
 
-  test('opaque battle slots ship emissive discoloration and normals, not metallicRoughness maps', () => {
+  test('opaque battle slots ship packed emissive and normals', () => {
     const gltf = readGlbJsonFromPath(TAHU_GLB);
+    const images = (gltf.images as { name?: string }[] | undefined) ?? [];
+    const textures =
+      (gltf.textures as
+        | { extensions?: { EXT_texture_webp?: { source?: number } } }[]
+        | undefined) ?? [];
     const materials =
       (gltf.materials as {
         emissiveTexture?: { index: number };
         name?: string;
         normalTexture?: { index: number };
-        pbrMetallicRoughness?: { metallicRoughnessTexture?: { index: number } };
       }[]) ?? [];
     const byName = new Map(materials.map((mat) => [mat.name, mat]));
     for (const name of [
@@ -51,7 +58,9 @@ describe('Toa_Mata/tahu.glb battle LOD layout', () => {
       expect(mat).toBeDefined();
       expect(mat?.emissiveTexture).toBeDefined();
       expect(mat?.normalTexture).toBeDefined();
-      expect(mat?.pbrMetallicRoughness?.metallicRoughnessTexture).toBeUndefined();
+      const source =
+        textures[mat?.emissiveTexture?.index ?? -1]?.extensions?.EXT_texture_webp?.source;
+      expect(images[source ?? -1]?.name).toMatch(/Packed$/);
     }
   });
 });

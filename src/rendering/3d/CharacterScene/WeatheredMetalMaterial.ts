@@ -265,8 +265,8 @@ function resolveMaterialColorFromMap(
  * subtrees and excluded material names (Brain, GlowingEyes, …). Authored
  * albedo / normal maps stay and replace the matching FBM channel. Roughness /
  * metalness maps do the same unless `authoredPbrMaps: 'noise'` drops them so
- * FBM drives those channels (Tahu battle LOD), or `'packed'` samples the stolen
- * emissive as R roughness / G metalness / B wear. Caller `metalness` is the
+ * FBM drives those channels, or `'packed'` samples the stolen emissive as
+ * R roughness / G metalness / B wear (Tahu packed body, diminished sheets). Caller `metalness` is the
  * weathered plastic/metal amount. Samples baked emissive discoloration maps
  * when the mesh has UVs.
  */

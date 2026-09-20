@@ -177,14 +177,9 @@ describe('baked discoloration amount', () => {
     expect(() => bakedPackedMetalnessFromMaterial()).not.toThrow();
   });
 
-  test('hairline gate reaches full mix below mid-gray', () => {
-    expect(DISCOLORATION_SMOOTHSTEP_LO).toBe(0.04);
-    expect(DISCOLORATION_SMOOTHSTEP_HI).toBe(0.28);
-  });
-
-  test('hairline gate reaches full mix below mid-gray', () => {
-    expect(DISCOLORATION_SMOOTHSTEP_LO).toBe(0.04);
-    expect(DISCOLORATION_SMOOTHSTEP_HI).toBe(0.28);
+  test('wear gate sits between the hairline clip and the original luminance clip', () => {
+    expect(DISCOLORATION_SMOOTHSTEP_LO).toBe(0.12);
+    expect(DISCOLORATION_SMOOTHSTEP_HI).toBe(0.45);
   });
 });
 

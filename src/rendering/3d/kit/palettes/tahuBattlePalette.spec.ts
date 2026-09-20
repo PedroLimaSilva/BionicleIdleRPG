@@ -13,6 +13,12 @@ import {
   DISCOLORATION_MAP_USERDATA_KEY,
 } from '../../hooks/bakedDiscoloration';
 import {
+  PACKED_METALNESS_HAS_MAP_KEY,
+  PACKED_ROUGHNESS_HAS_MAP_KEY,
+  setPackedMetalnessEnabled,
+  setPackedRoughnessEnabled,
+} from '../../hooks/packedPbrMaps';
+import {
   applyTahuBattleMaterials,
   TAHU_BATTLE_SLOT_COLORS,
   TAHU_BATTLE_WEATHERED,
@@ -53,10 +59,10 @@ describe('tahu battle materials', () => {
       'TRANS-DARK_PINK',
       'Tahu Eyes',
     ]);
-    expect(TAHU_BATTLE_WEATHERED.authoredPbrMaps).toBe('noise');
+    expect(TAHU_BATTLE_WEATHERED.authoredPbrMaps).toBe('packed');
   });
 
-  test('keeps baked normals and discoloration, and uses noise for metalness / roughness', () => {
+  test('keeps baked normals and discoloration, and uses packed emissive for metalness / roughness', () => {
     const bake = mapTex();
     const normal = mapTex();
     const mr = mapTex();
@@ -88,12 +94,40 @@ describe('tahu battle materials', () => {
     expect(applied.metalnessMap).toBeNull();
     expect(applied.emissiveMap).toBeNull();
     expect(applied.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+    expect(applied.userData[PACKED_ROUGHNESS_HAS_MAP_KEY]).toBe(1);
+    expect(applied.userData[PACKED_METALNESS_HAS_MAP_KEY]).toBe(1);
     expect(applied.normalNode).toBeUndefined();
     expect(applied.roughnessNode).toBeDefined();
     expect(applied.metalnessNode).toBeDefined();
     expect(mesh.frustumCulled).toBe(false);
     mesh.onBeforeRender({} as never, {} as never, {} as never, mesh.geometry, applied, {} as never);
     expect(bakedDiscolorationMapNode.value).toBe(bake);
+  });
+
+  test('dex packed-map toggles flatten roughness and metalness without dropping the bake', () => {
+    const bake = mapTex();
+    const main = new MeshStandardMaterial({
+      emissiveMap: bake,
+      name: 'Battle_Body_Main_Baked',
+    });
+    const mesh = uvMesh([main]);
+    applyTahuBattleMaterials(mesh, COLORS);
+    const applied = (
+      Array.isArray(mesh.material) ? mesh.material[0] : mesh.material
+    ) as MeshStandardMaterial;
+
+    expect(setPackedRoughnessEnabled(mesh, false)).toBe(1);
+    expect(applied.userData[PACKED_ROUGHNESS_HAS_MAP_KEY]).toBe(0);
+    expect(applied.userData[PACKED_METALNESS_HAS_MAP_KEY]).toBe(1);
+    expect(applied.userData[DISCOLORATION_MAP_USERDATA_KEY]).toBe(bake);
+
+    expect(setPackedMetalnessEnabled(mesh, false)).toBe(1);
+    expect(applied.userData[PACKED_METALNESS_HAS_MAP_KEY]).toBe(0);
+
+    expect(setPackedRoughnessEnabled(mesh, true)).toBe(1);
+    expect(setPackedMetalnessEnabled(mesh, true)).toBe(1);
+    expect(applied.userData[PACKED_ROUGHNESS_HAS_MAP_KEY]).toBe(1);
+    expect(applied.userData[PACKED_METALNESS_HAS_MAP_KEY]).toBe(1);
   });
 
   test('a second apply keeps the weathered TSL graph (React Strict Mode remount)', () => {

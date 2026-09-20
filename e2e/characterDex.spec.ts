@@ -82,6 +82,28 @@ test.describe('Character Dex', () => {
     await expect(page.getByText('Discoloration off (flat slot color)')).toBeVisible();
   });
 
+  test('Tahu preview exposes packed map toggles on the skinned sheet', async ({ page }) => {
+    await setupGameState(page, INITIAL_GAME_STATE);
+    await goto(page, '/test/dex/Toa_Tahu', {
+      hideCanvasBeforeNav: true,
+      waitUntil: 'domcontentloaded',
+    });
+    await hideCanvas(page);
+
+    await expect(page.getByRole('heading', { exact: true, name: 'Toa Tahu' })).toBeVisible();
+    await expect(page.getByRole('switch', { name: 'Battle LOD mesh' })).toHaveCount(0);
+    const discoloration = page.getByRole('switch', { name: 'Packed discoloration' });
+    const roughness = page.getByRole('switch', { name: 'Packed roughness' });
+    const metalness = page.getByRole('switch', { name: 'Packed metalness' });
+    await expect(discoloration).toHaveAttribute('aria-checked', 'true');
+    await expect(roughness).toHaveAttribute('aria-checked', 'true');
+    await expect(metalness).toHaveAttribute('aria-checked', 'true');
+
+    await roughness.click();
+    await expect(roughness).toHaveAttribute('aria-checked', 'false');
+    await expect(page.getByText('Roughness off (flat slot roughness)')).toBeVisible();
+  });
+
   test('is reachable from Settings', async ({ page }) => {
     await setupGameState(page, INITIAL_GAME_STATE);
     await goto(page, '/settings', {
