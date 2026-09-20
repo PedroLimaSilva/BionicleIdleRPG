@@ -9,6 +9,7 @@ import {
 import { LegoColor } from '../../../../types/Colors';
 import type { MatoranColors } from '../../../../types/Matoran';
 import { DISCOLORATION_MAP_USERDATA_KEY } from '../../hooks/bakedDiscoloration';
+import { setAuthoredNormalMapsEnabled } from '../../hooks/authoredNormalMaps';
 import {
   PACKED_METALNESS_HAS_MAP_KEY,
   PACKED_ROUGHNESS_HAS_MAP_KEY,
@@ -94,6 +95,12 @@ describe('rebuilt sheet materials', () => {
     expect(applied.roughnessNode).toBeDefined();
     expect(applied.metalnessNode).toBeDefined();
     expect(mesh.frustumCulled).toBe(false);
+    expect(setAuthoredNormalMapsEnabled(mesh, false)).toBe(1);
+    expect(applied.normalScale.x).toBe(0);
+    expect(applied.normalScale.y).toBe(0);
+    expect(applied.normalMap).toBe(normal);
+    expect(setAuthoredNormalMapsEnabled(mesh, true)).toBe(1);
+    expect(applied.normalScale.x).toBe(1);
   });
 
   test('dex packed-map toggles flatten roughness and metalness without dropping the bake', () => {

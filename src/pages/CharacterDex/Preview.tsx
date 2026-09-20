@@ -69,7 +69,7 @@ export const CharacterDexPreview: React.FC = () => {
       discolorationBakesActive: supportsPackedMaps(base) ? discolorationBakesActive : undefined,
       maskOverride: selectedMask ?? base.mask,
       maskPowerActive,
-      normalMapsActive: supportsMataPackedBody(base) ? normalMapsActive : undefined,
+      normalMapsActive: supportsPackedMaps(base) ? normalMapsActive : undefined,
       packedMetalnessActive: supportsPackedMaps(base) ? packedMetalnessActive : undefined,
       packedRoughnessActive: supportsPackedMaps(base) ? packedRoughnessActive : undefined,
       rahkshiMeshVariant: isRahkshi(base) ? meshVariant : undefined,
@@ -208,19 +208,17 @@ export const CharacterDexPreview: React.FC = () => {
             <div className="character-dex-mask-heading">
               <h2>Packed maps</h2>
               <div className="character-dex-toggle-row">
-                {supportsMataPackedBody(base) && (
-                  <label className="character-dex-mask-toggle">
-                    <span>Normal maps</span>
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-label="Authored normal maps"
-                      aria-checked={normalMapsActive}
-                      className={`toggle-placeholder ${normalMapsActive ? 'on' : ''}`}
-                      onClick={() => setNormalMapsActive((active) => !active)}
-                    />
-                  </label>
-                )}
+                <label className="character-dex-mask-toggle">
+                  <span>Normal maps</span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-label="Authored normal maps"
+                    aria-checked={normalMapsActive}
+                    className={`toggle-placeholder ${normalMapsActive ? 'on' : ''}`}
+                    onClick={() => setNormalMapsActive((active) => !active)}
+                  />
+                </label>
                 <label className="character-dex-mask-toggle">
                   <span>Discoloration</span>
                   <button
@@ -271,13 +269,11 @@ export const CharacterDexPreview: React.FC = () => {
                 ? 'Emissive G metalness from the packed bake'
                 : 'Metalness off (flat slot metalness)'}
             </p>
-            {supportsMataPackedBody(base) && (
-              <p className="character-dex-caption">
-                {normalMapsActive
-                  ? 'Tangent normal maps applied on weathered plastics'
-                  : 'Tangent normal maps off (smooth geometry)'}
-              </p>
-            )}
+            <p className="character-dex-caption">
+              {normalMapsActive
+                ? 'Tangent normal maps applied on weathered plastics'
+                : 'Tangent normal maps off (smooth geometry)'}
+            </p>
           </section>
         )}
 

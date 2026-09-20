@@ -116,8 +116,7 @@ export const ANIMATION_EPICS: Record<AnimationEpicId, AnimationEpic> = {
     storyArc: 'bohrok-kal',
     storyBeat: 'bohrok_kal_naming_day',
     storyOrder: 50,
-    summary:
-      'Rebuilt Matoran crossfade between Idle and Idle.001 (plus missing Tilt Head flavor). A dedicated transition clip (like Vahki Switch_BQ) would polish the swap.',
+    summary: 'Rebuilt Matoran ships a single Idle. Tilt Head flavor is still missing.',
     title: 'Rebuilt Matoran — idle & flavor',
   },
   'toa-mata-polish': {
@@ -467,15 +466,7 @@ export const RIG_INVENTORY: RigInventoryEntry[] = [
     displayName: 'Rebuilt Matoran',
     epicId: 'rebuilt-idle-switch',
     expectedClips: [
-      { backlog: 'complete', kind: 'idle-switch', name: 'Idle', required: true },
-      { backlog: 'complete', kind: 'idle-switch', name: 'Idle.001', required: true },
-      {
-        backlog: 'missing',
-        kind: 'transition',
-        name: 'Switch_Idle',
-        notes: 'Suggested name for a future one-shot transition clip (Vahki Switch_* pattern).',
-        required: false,
-      },
+      { backlog: 'complete', kind: 'idle', name: 'Idle', required: true },
       ...VILLAGE_FLAVOR.filter((clip) => clip.name !== 'Idle'),
     ],
     glb: 'rebuilt.glb',
