@@ -58,7 +58,7 @@ Sorted by story progression. Run `yarn animation-clip-report` for the live matri
 
 |   # | Epic                                                         | Story arc        | Rigs | Goal                                                          |
 | --: | ------------------------------------------------------------ | ---------------- | ---: | ------------------------------------------------------------- |
-|   1 | [Toa Mata — Hit clip gaps](#epic-toa-mata-polish)            | Mask Hunt        |    1 | Author Hit for Pohatu Mata                                    |
+|   1 | [Toa Mata — Hit clip gaps](#epic-toa-mata-polish)            | Mask Hunt        |    2 | Author Hit for Pohatu Mata; Attack/Hit for Kopaka Mata        |
 |   2 | [Nui-Rama — combat clips](#epic-rahi-nui-rama)               | MNOG             |    1 | Skeletal combat beyond Wings ambient loop                     |
 |   3 | [Generic Rahi — GLB-backed rig](#epic-rahi-placeholder)      | Mask Hunt / MNOG |    1 | Replace procedural capsule placeholder                        |
 |   4 | [Toa Nuva — combat clip rollout](#epic-toa-nuva-combat)      | Bohrok Swarm     |    5 | Extend Tahu/Pohatu-quality combat clips to remaining Nuva     |
@@ -104,17 +104,17 @@ Character Dex preview buttons use the same combat contract: `Attack`, `Hit`, `De
 
 ### Shipped character GLBs (35 total in `public/`)
 
-| Family          | GLB path pattern                                         | React components       | Combat support                          |
-| --------------- | -------------------------------------------------------- | ---------------------- | --------------------------------------- |
-| Toa Mata        | `Toa_Mata/<name>.glb`                                    | `Mata/*MataModel`      | Full clips (except Tahu/Pohatu Hit)     |
-| Toa Nuva        | `Toa_Nuva/<name>.glb`                                    | `Nuva/*Model`          | Tahu + Pohatu only; others procedural   |
-| Toa Metru       | `Toa_Metru/<name>.glb`                                   | `Metru/*Model`         | Idle only — all combat procedural       |
-| Bohrok          | `bohrok_master.glb`                                      | `BohrokModel`          | Full combat set (reference rig)         |
-| Vahki           | `Vahki.glb` + kit attachments                            | `VahkiModel`           | Idle switch complete; combat procedural |
-| Rahkshi         | `rahkshi.glb`                                            | `Rahkshi`              | Attack + Hit; Defeat procedural         |
-| Village Matoran | `matoran_master.glb`, `matoran_metru.glb`, `rebuilt.glb` | `*MatoranModel`        | Non-combat; flavor overlays             |
-| Rahi            | `Rahi/NuiRama.glb`                                       | `NuiRamaModel`         | Wings ambient; combat procedural        |
-| Placeholder     | _(none)_                                                 | `RahiPlaceholderModel` | Fully procedural capsule                |
+| Family          | GLB path pattern                                         | React components       | Combat support                                                       |
+| --------------- | -------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------- |
+| Toa Mata        | `Toa_Mata/<name>.glb`                                    | `Mata/*MataModel`      | Tahu full clips; Kopaka Idle + procedural combat; Pohatu missing Hit |
+| Toa Nuva        | `Toa_Nuva/<name>.glb`                                    | `Nuva/*Model`          | Tahu + Pohatu only; others procedural                                |
+| Toa Metru       | `Toa_Metru/<name>.glb`                                   | `Metru/*Model`         | Idle only — all combat procedural                                    |
+| Bohrok          | `bohrok_master.glb`                                      | `BohrokModel`          | Full combat set (reference rig)                                      |
+| Vahki           | `Vahki.glb` + kit attachments                            | `VahkiModel`           | Idle switch complete; combat procedural                              |
+| Rahkshi         | `rahkshi.glb`                                            | `Rahkshi`              | Attack + Hit; Defeat procedural                                      |
+| Village Matoran | `matoran_master.glb`, `matoran_metru.glb`, `rebuilt.glb` | `*MatoranModel`        | Non-combat; flavor overlays                                          |
+| Rahi            | `Rahi/NuiRama.glb`                                       | `NuiRamaModel`         | Wings ambient; combat procedural                                     |
+| Placeholder     | _(none)_                                                 | `RahiPlaceholderModel` | Fully procedural capsule                                             |
 
 Kit libraries (`kit_2001.glb`, `kit_2003.glb`, `kit_2004.glb`) and mask/armor props are mesh-only — no animation clips.
 
@@ -124,14 +124,15 @@ Kit libraries (`kit_2001.glb`, `kit_2003.glb`, `kit_2004.glb`) and mask/armor pr
 
 ### Epic: Toa Mata — Hit clip gaps {#epic-toa-mata-polish}
 
-**Story:** Mask Hunt · `story_toa_arrival` · **Rigs:** 1 · **Epic id:** `toa-mata-polish`
+**Story:** Mask Hunt · `story_toa_arrival` · **Rigs:** 2 · **Epic id:** `toa-mata-polish`
 
-| Rig             | GLB                   | Idle | Attack | Hit           | Defeat                |
-| --------------- | --------------------- | ---- | ------ | ------------- | --------------------- |
-| Toa Tahu Mata   | `Toa_Mata/tahu.glb`   | ✅   | ✅     | ✅            | ✅ _(via Attack set)_ |
-| Toa Pohatu Mata | `Toa_Mata/pohatu.glb` | ✅   | ✅     | ❌ procedural | ✅ _(via Attack set)_ |
+| Rig             | GLB                   | Idle | Attack        | Hit           | Defeat                |
+| --------------- | --------------------- | ---- | ------------- | ------------- | --------------------- |
+| Toa Tahu Mata   | `Toa_Mata/tahu.glb`   | ✅   | ✅            | ✅            | ✅ _(via Attack set)_ |
+| Toa Pohatu Mata | `Toa_Mata/pohatu.glb` | ✅   | ✅            | ❌ procedural | ✅ _(via Attack set)_ |
+| Toa Kopaka Mata | `Toa_Mata/kopaka.glb` | ✅   | ❌ procedural | ❌ procedural | ❌ procedural         |
 
-Other Mata Toa (Gali, Kopaka, Lewa, Onua) ship full Attack + Hit. Extra clips in Mata GLBs (Gear, Hand, Leg, etc.) are 💤 unused export artifacts.
+Other Mata Toa (Gali, Lewa, Onua) ship full Attack + Hit. Extra clips in Mata GLBs (Gear, Hand, Leg, etc.) are 💤 unused export artifacts.
 
 ---
 
