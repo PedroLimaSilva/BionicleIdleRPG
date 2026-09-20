@@ -30,6 +30,7 @@
     "deploy": "yarn build && gh-pages -d dist",
     "preview": "vite preview",
     "compress": "bash scripts/compress-glb.sh",
+    "diagnose-glb-draco": "tsx scripts/diagnose-glb-draco.mts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:unused-css": "tsx tools/check-unused-css.ts",

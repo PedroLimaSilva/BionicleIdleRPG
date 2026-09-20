@@ -1,5 +1,6 @@
 import type { KitMaterialSlotEntry } from '../../../../types/KitParts';
 import { LegoColor } from '../../../../types/Colors';
+import type { WeatheredMetalOptions } from '../../CharacterScene/WeatheredMetalMaterial';
 import {
   MATORAN_KIT_PALETTE_ARMS,
   MATORAN_KIT_PALETTE_BODY,
@@ -7,6 +8,20 @@ import {
 } from './matoranKitPlayerPalette';
 import { CRYSTAL_BRAIN_SLOT } from './brainKitPalette';
 import { mataKitPlayerPaletteGlow } from './mataKitPlayerPalette';
+
+/** Kit + unpacked shield weathering (FBM, not packed emissive). */
+export const BOHROK_WEATHERED: WeatheredMetalOptions = {
+  cavityStrength: 1,
+  edgeColor: '#ffffff',
+  edgeCurvatureScale: 2,
+  edgeStrength: 0.15,
+  fineScale: 18,
+  grimeDarken: 0.4,
+  grimeMetalnessReduce: 0.5,
+  grimeRoughness: 0.2,
+  metalness: 0.05,
+  roughness: 0.55,
+};
 
 export const BOHROK_KIT_PALETTE_BODY = MATORAN_KIT_PALETTE_BODY;
 export const BOHROK_KIT_PALETTE_ARMS = MATORAN_KIT_PALETTE_ARMS;

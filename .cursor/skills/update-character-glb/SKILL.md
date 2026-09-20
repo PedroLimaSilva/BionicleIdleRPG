@@ -161,9 +161,10 @@ Include in **Testing**:
 
 ## Related commands
 
-| Command                             | Purpose                     |
-| ----------------------------------- | --------------------------- |
-| `yarn animation-clip-inspect <glb>` | Diff one GLB vs inventory   |
-| `yarn animation-clip-report`        | Full epic + rig matrix      |
-| `yarn glb-size-report`              | GLB size diff vs merge-base |
-| `yarn compress`                     | Draco-compress large GLBs   |
+| Command                             | Purpose                                                 |
+| ----------------------------------- | ------------------------------------------------------- |
+| `yarn animation-clip-inspect <glb>` | Diff one GLB vs inventory                               |
+| `yarn animation-clip-report`        | Full epic + rig matrix                                  |
+| `yarn glb-size-report`              | GLB size diff vs merge-base                             |
+| `yarn compress`                     | Draco-compress large GLBs (preflights UV/texture slots) |
+| `yarn diagnose-glb-draco <glb>`     | Explain Draco `setTexCoord` export failures             |
