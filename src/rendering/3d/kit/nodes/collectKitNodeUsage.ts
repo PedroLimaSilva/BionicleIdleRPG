@@ -4,7 +4,6 @@ import {
   BOHROK_FACEPLATE_KIT_2003_ATTACHMENTS,
   BOHROK_KIT_2003_ATTACHMENTS,
 } from '../attachments/bohrok';
-import { REBUILT_KIT_2001_ATTACHMENTS, REBUILT_KIT_2003_ATTACHMENTS } from '../attachments/rebuilt';
 import { GALI_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/gali';
 import { KOPAKA_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/kopaka';
 import { LEWA_MATA_KIT_2001_ATTACHMENTS } from '../attachments/Toa Mata/lewa';
@@ -89,12 +88,20 @@ export const KIT_2001_NODE_EXEMPT: readonly Kit2001NodeName[] = [
   KIT_2001_NODES.McArmL,
   KIT_2001_NODES.McArmR,
   KIT_2001_NODES.McTorso,
+  // Rebuilt village now ships packed `Body_Baked` instead of cloning this foot.
+  KIT_2001_NODES.MatoranFoot,
+  // Still drawn by KanohiMonument from kit_2001 — do not drop from the GLB.
+  KIT_2001_NODES.McToranFace,
   // Tahu Mata draws packed `Battle_*` meshes; sword is authored in GLB, not kit-cloned.
   KIT_2001_NODES.TahuSword,
 ];
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
-export const KIT_2003_NODE_EXEMPT: readonly Kit2003NodeName[] = [];
+export const KIT_2003_NODE_EXEMPT: readonly Kit2003NodeName[] = [
+  // Rebuilt village now ships packed `Body_Baked` instead of cloning these.
+  KIT_2003_NODES.MatoranBody,
+  KIT_2003_NODES.PerpendicularLiftArm,
+];
 
 /** Kit nodes registered but intentionally not referenced by any attachment map yet. */
 export const KIT_2004_NODE_EXEMPT: readonly Kit2004NodeName[] = [];
@@ -176,7 +183,6 @@ export function getTotalKit2003SocketReferences(): number {
 
 export const KIT_2001_ATTACHMENT_MAPS = [
   BOHROK_KIT_2001_ATTACHMENTS,
-  REBUILT_KIT_2001_ATTACHMENTS,
   GALI_MATA_KIT_2001_ATTACHMENTS,
   KOPAKA_MATA_KIT_2001_ATTACHMENTS,
   LEWA_MATA_KIT_2001_ATTACHMENTS,
@@ -203,7 +209,6 @@ export const KIT_2001_ATTACHMENT_MAPS = [
 export const KIT_2003_ATTACHMENT_MAPS = [
   BOHROK_KIT_2003_ATTACHMENTS,
   BOHROK_FACEPLATE_KIT_2003_ATTACHMENTS,
-  REBUILT_KIT_2003_ATTACHMENTS,
   GALI_NUVA_KIT_2003_ATTACHMENTS,
   KOPAKA_NUVA_KIT_2003_ATTACHMENTS,
   LEWA_NUVA_KIT_2003_ATTACHMENTS,
