@@ -33,21 +33,34 @@ const BOHROK_SHEET_IRIS: KitMaterialSlotEntry = {
   weathered: false,
 };
 
+const BOHROK_SHEET_SILVER: KitMaterialSlotEntry = {
+  color: { kind: 'lego', value: LegoColor.LightGray },
+  ...MATA_METAL_PBR,
+};
+
 /**
- * Packed `Body_Baked` slots. Secondary is the limb/accent atlas (`arms.main`);
+ * Packed `Body` slots. Secondary is the limb/accent atlas (`arms.main`);
  * feet stay independently editable on 2D avatars.
  */
 export const BOHROK_SHEET_BODY_SLOT_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Body_Original_Black_Baked: { kind: 'lego', value: LegoColor.Black },
-  Body_Original_Main_Baked: { kind: 'part', part: 'body', slot: 'main' },
-  Body_Original_Metal_Baked: {
+  Swarm_Body_Black_Baked: { kind: 'lego', value: LegoColor.Black },
+  Swarm_Body_Main_Baked: { kind: 'part', part: 'body', slot: 'main' },
+  Swarm_Body_Metal_Baked: {
     color: { kind: 'part', part: 'body', slot: 'metal' },
     ...MATA_METAL_PBR,
   },
-  Body_Original_Secondary_Baked: { kind: 'part', part: 'arms', slot: 'main' },
+  Swarm_Body_Secondary_Baked: { kind: 'part', part: 'arms', slot: 'main' },
 };
 
-/** Packed atlas on the faceplate shell and every breed shield. */
+/** Packed Kal chassis. Main stays the breed color; Metal / shields are silver. */
+export const BOHROK_SHEET_KAL_SLOT_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
+  Kal_Black_Baked: { kind: 'lego', value: LegoColor.Black },
+  Kal_Main_Baked: { kind: 'part', part: 'body', slot: 'main' },
+  Kal_Metal_Baked: BOHROK_SHEET_SILVER,
+  KalShields_Baked: BOHROK_SHEET_SILVER,
+};
+
+/** Packed atlas on the swarm faceplate shell and every swarm shield. */
 const BOHROK_SHEET_SWARMS_SLOT: KitMaterialSlotEntry = {
   kind: 'part',
   part: 'body',
@@ -56,6 +69,7 @@ const BOHROK_SHEET_SWARMS_SLOT: KitMaterialSlotEntry = {
 
 export const BOHROK_SHEET_PACKED_SLOT_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
   ...BOHROK_SHEET_BODY_SLOT_COLORS,
+  ...BOHROK_SHEET_KAL_SLOT_COLORS,
   Swarms_Baked: BOHROK_SHEET_SWARMS_SLOT,
 };
 
@@ -84,7 +98,7 @@ function disableSkinnedSheetFrustumCulling(mesh: Mesh): void {
   mesh.frustumCulled = false;
 }
 
-/** Tints packed `Body_Baked` / `Swarms_Baked` plus unpacked eyes, Krana, and the faceplate viewport. */
+/** Tints packed swarm / Kal chassis plus unpacked eyes, Krana, and the swarm viewport. */
 export function applyBohrokSheetMaterials(root: Object3D, colors: MatoranColors): void {
   applyKitMaterialsToObject(
     root,

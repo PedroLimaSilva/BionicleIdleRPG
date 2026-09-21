@@ -52,19 +52,23 @@ function uvMesh(materials: MeshStandardMaterial[]): Mesh {
 }
 
 describe('bohrok sheet materials', () => {
-  test('packed body map covers every shipped Body_Baked name', () => {
+  test('packed body map covers every shipped swarm and Kal slot', () => {
     expect(Object.keys(BOHROK_SHEET_BODY_SLOT_COLORS).sort()).toEqual([
-      'Body_Original_Black_Baked',
-      'Body_Original_Main_Baked',
-      'Body_Original_Metal_Baked',
-      'Body_Original_Secondary_Baked',
+      'Swarm_Body_Black_Baked',
+      'Swarm_Body_Main_Baked',
+      'Swarm_Body_Metal_Baked',
+      'Swarm_Body_Secondary_Baked',
     ]);
     expect(BOHROK_SHEET_WEATHERED.authoredPbrMaps).toBe('packed');
     expect(Object.keys(BOHROK_SHEET_PACKED_SLOT_COLORS).sort()).toEqual([
-      'Body_Original_Black_Baked',
-      'Body_Original_Main_Baked',
-      'Body_Original_Metal_Baked',
-      'Body_Original_Secondary_Baked',
+      'KalShields_Baked',
+      'Kal_Black_Baked',
+      'Kal_Main_Baked',
+      'Kal_Metal_Baked',
+      'Swarm_Body_Black_Baked',
+      'Swarm_Body_Main_Baked',
+      'Swarm_Body_Metal_Baked',
+      'Swarm_Body_Secondary_Baked',
       'Swarms_Baked',
     ]);
     expect(Object.keys(BOHROK_SHEET_ACCESSORY_SLOT_COLORS).sort()).toEqual([
@@ -81,7 +85,7 @@ describe('bohrok sheet materials', () => {
     const main = new MeshStandardMaterial({
       emissiveMap: bake,
       metalnessMap: mr,
-      name: 'Body_Original_Main_Baked',
+      name: 'Swarm_Body_Main_Baked',
       normalMap: normal,
       roughnessMap: mr,
     });
@@ -116,7 +120,7 @@ describe('bohrok sheet materials', () => {
     const bake = mapTex();
     const main = new MeshStandardMaterial({
       emissiveMap: bake,
-      name: 'Body_Original_Main_Baked',
+      name: 'Swarm_Body_Main_Baked',
     });
     const mesh = uvMesh([main]);
     applyBohrokSheetMaterials(mesh, COLORS);
@@ -134,8 +138,8 @@ describe('bohrok sheet materials', () => {
   });
 
   test('secondary uses arms.main; metal uses Mata PBR; eyes stay transmissive', () => {
-    const secondary = new MeshStandardMaterial({ name: 'Body_Original_Secondary_Baked' });
-    const metal = new MeshStandardMaterial({ name: 'Body_Original_Metal_Baked' });
+    const secondary = new MeshStandardMaterial({ name: 'Swarm_Body_Secondary_Baked' });
+    const metal = new MeshStandardMaterial({ name: 'Swarm_Body_Metal_Baked' });
     const crystal = new MeshStandardMaterial({ name: 'Trans_Color' });
     const iris = new MeshStandardMaterial({ name: 'Glowing' });
     const mesh = uvMesh([secondary, metal, crystal, iris]);
@@ -202,5 +206,35 @@ describe('bohrok sheet materials', () => {
     expect((viewportMat as MeshPhysicalMaterial).transmission).toBe(
       TRANSMISSIVE_KIT_CLEAR_TRANSMISSION
     );
+  });
+
+  test('Kal chassis and shields tint silver metal; main stays breed color', () => {
+    const bake = mapTex();
+    const main = new MeshStandardMaterial({
+      emissiveMap: bake,
+      name: 'Kal_Main_Baked',
+    });
+    const metal = new MeshStandardMaterial({
+      emissiveMap: bake,
+      name: 'Kal_Metal_Baked',
+    });
+    const shield = new MeshStandardMaterial({
+      emissiveMap: bake,
+      name: 'KalShields_Baked',
+    });
+    const mesh = uvMesh([main, metal, shield]);
+    applyBohrokSheetMaterials(mesh, COLORS);
+    const [nextMain, nextMetal, nextShield] = mesh.material as MeshStandardMaterial[];
+    expect(nextMain.color.getHexString().toUpperCase()).toBe(
+      LegoColor.Red.replace('#', '').toUpperCase()
+    );
+    expect(nextMetal.color.getHexString().toUpperCase()).toBe(
+      LegoColor.LightGray.replace('#', '').toUpperCase()
+    );
+    expect(nextShield.color.getHexString().toUpperCase()).toBe(
+      LegoColor.LightGray.replace('#', '').toUpperCase()
+    );
+    expect(nextMetal.metalness).toBeGreaterThan(0.5);
+    expect(nextShield.metalness).toBeGreaterThan(0.5);
   });
 });

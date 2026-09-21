@@ -145,7 +145,7 @@ Include in **Testing**:
 | Toa Mata  | `Toa_Mata/<name>.glb`                                    | `CharacterScene/Mata/`  |
 | Toa Nuva  | `Toa_Nuva/<name>.glb`                                    | `CharacterScene/Nuva/`  |
 | Toa Metru | `Toa_Metru/<Name>.glb`                                   | `CharacterScene/Metru/` |
-| Bohrok    | `bohrok_master.glb`                                      | `BohrokModel.tsx`       |
+| Bohrok    | `Bohrok.glb`                                             | `BohrokModel.tsx`       |
 | Vahki     | `Vahki.glb`                                              | `VahkiModel.tsx`        |
 | Rahkshi   | `rahkshi.glb`                                            | `Rahkshi.tsx`           |
 | Matoran   | `matoran_master.glb`, `matoran_metru.glb`, `rebuilt.glb` | `*MatoranModel.tsx`     |

@@ -91,7 +91,7 @@ export const ANIMATION_EPICS: Record<AnimationEpicId, AnimationEpic> = {
     storyBeat: 'bohrok_swarm_intro',
     storyOrder: 35,
     summary:
-      'Packed swarm chassis ships Idle only. Attack / Hit / Defeat are procedural until those clips transfer from bohrok_master.glb. Faceplate and all six breed shields are packed in this GLB.',
+      'Packed Bohrok.glb ships Idle plus unused Ball / Flying. Attack / Hit / Defeat are procedural until those clips transfer from bohrok_master.glb. Swarm and Kal chassis, faceplates, and shields live in this GLB.',
     title: 'Bohrok Swarm — packed combat clips',
   },
   'rahi-nui-rama': {
@@ -229,12 +229,13 @@ export const RIG_INVENTORY: RigInventoryEntry[] = [
     ],
     glb: 'bohrok_master.glb',
     id: 'bohrok',
-    notes: 'Kal kit path plus unused swarm shield templates. Swarm chassis lives in Bohrok.glb.',
+    notes:
+      'Clip-transfer source and unused Ball / Flying / Flying Pose. Live swarm and Kal chassis is Bohrok.glb.',
     reactComponent: 'BohrokModel',
     role: 'combat',
   },
   {
-    displayName: 'Bohrok Swarm (packed chassis)',
+    displayName: 'Bohrok (packed chassis)',
     epicId: 'bohrok-packed-combat',
     expectedClips: [
       { backlog: 'complete', kind: 'idle', name: 'Idle', required: true },
@@ -259,11 +260,25 @@ export const RIG_INVENTORY: RigInventoryEntry[] = [
         notes: 'Procedural until clips transfer from bohrok_master.glb.',
         required: true,
       },
+      {
+        backlog: 'unused',
+        kind: 'ambient',
+        name: 'Ball',
+        notes: 'Authored but not referenced in code.',
+        required: false,
+      },
+      {
+        backlog: 'unused',
+        kind: 'ambient',
+        name: 'Flying',
+        notes: 'Authored but not referenced in code.',
+        required: false,
+      },
     ],
     glb: 'Bohrok.glb',
     id: 'bohrok-packed',
     notes:
-      'Shared packed body for all six swarm breeds, plus packed faceplate and per-breed shields.',
+      'Packed swarm + Kal chassis, faceplates, per-breed shields, and Kal symbols. Combat clips still transfer from master.',
     reactComponent: 'BohrokModel',
     role: 'combat',
   },

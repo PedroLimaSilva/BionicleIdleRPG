@@ -106,17 +106,17 @@ Character Dex preview buttons use the same combat contract: `Attack`, `Hit`, `De
 
 ### Shipped character GLBs (36 total in `public/`)
 
-| Family      | GLB path pattern                                         | React components       | Combat support                                                       |
-| ----------- | -------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------- |
-| Toa Mata    | `Toa_Mata/<name>.glb`                                    | `Mata/*MataModel`      | Tahu full clips; Kopaka Idle + procedural combat; Pohatu missing Hit |
-| Toa Nuva    | `Toa_Nuva/<name>.glb`                                    | `Nuva/*Model`          | Tahu + Pohatu only; others procedural                                |
-| Toa Metru   | `Toa_Metru/<name>.glb`                                   | `Metru/*Model`         | Idle only — all combat procedural                                    |
-| Bohrok      | `Bohrok.glb`, `bohrok_master.glb`                        | `BohrokModel`          | Packed swarm: Idle + procedural combat; Kal: full master clips       |
-| Vahki       | `Vahki.glb` + kit attachments                            | `VahkiModel`           | Idle switch complete; combat procedural                              |
-| Rahkshi     | `rahkshi.glb`                                            | `Rahkshi`              | Attack + Hit; Defeat procedural                                      |
-| Matoran     | `matoran_master.glb`, `matoran_metru.glb`, `rebuilt.glb` | `*MatoranModel`        | Non-combat; flavor overlays                                          |
-| Rahi        | `Rahi/NuiRama.glb`                                       | `NuiRamaModel`         | Wings ambient; combat procedural                                     |
-| Placeholder | _(none)_                                                 | `RahiPlaceholderModel` | Fully procedural capsule                                             |
+| Family      | GLB path pattern                                         | React components       | Combat support                                                            |
+| ----------- | -------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------- |
+| Toa Mata    | `Toa_Mata/<name>.glb`                                    | `Mata/*MataModel`      | Tahu full clips; Kopaka Idle + procedural combat; Pohatu missing Hit      |
+| Toa Nuva    | `Toa_Nuva/<name>.glb`                                    | `Nuva/*Model`          | Tahu + Pohatu only; others procedural                                     |
+| Toa Metru   | `Toa_Metru/<name>.glb`                                   | `Metru/*Model`         | Idle only — all combat procedural                                         |
+| Bohrok      | `Bohrok.glb`, `bohrok_master.glb`                        | `BohrokModel`          | Packed swarm + Kal: Idle + procedural combat; master holds transfer clips |
+| Vahki       | `Vahki.glb` + kit attachments                            | `VahkiModel`           | Idle switch complete; combat procedural                                   |
+| Rahkshi     | `rahkshi.glb`                                            | `Rahkshi`              | Attack + Hit; Defeat procedural                                           |
+| Matoran     | `matoran_master.glb`, `matoran_metru.glb`, `rebuilt.glb` | `*MatoranModel`        | Non-combat; flavor overlays                                               |
+| Rahi        | `Rahi/NuiRama.glb`                                       | `NuiRamaModel`         | Wings ambient; combat procedural                                          |
+| Placeholder | _(none)_                                                 | `RahiPlaceholderModel` | Fully procedural capsule                                                  |
 
 Kit libraries (`kit_2001.glb`, `kit_2003.glb`, `kit_2004.glb`) and mask/armor props are mesh-only — no animation clips.
 
@@ -160,7 +160,7 @@ Other Mata Toa (Gali, Lewa, Onua) ship full Attack + Hit. Extra clips in Mata GL
 
 **Story:** Bohrok Swarm · `bohrok_swarm_intro` · **Rigs:** 1 · **Epic id:** `bohrok-packed-combat`
 
-Packed `Bohrok.glb` ships `Idle` only. Combat uses procedural root motion until Attack / Hit / Defeat transfer from `bohrok_master.glb`. Do not graduate this epic until those clips ship. Faceplate and all six breed shields are packed.
+Packed `Bohrok.glb` ships `Idle` plus unused `Ball` / `Flying`. Combat uses procedural root motion until Attack / Hit / Defeat transfer from `bohrok_master.glb`. Do not graduate this epic until those clips ship. Swarm and Kal chassis, faceplates, shields, and Kal symbols are packed.
 
 | Rig                 | GLB          | Idle | Attack        | Hit           | Defeat        |
 | ------------------- | ------------ | ---- | ------------- | ------------- | ------------- |
@@ -256,7 +256,7 @@ All Toa Metru share the same gap: `Idle` is authored; `Attack`, `Hit`, and `Defe
 
 **Story:** Stretch / polish · **Rigs:** 1 · **Epic id:** `bohrok-extras`
 
-`bohrok_master.glb` is the **reference-complete** combat rig for Bohrok-Kal, and still holds swarm shield templates. It also ships `Ball`, `Flying`, and `Flying Pose` — 💤 unused. Either wire these for flying enemies / ball mode or strip on next export pass.
+`bohrok_master.glb` still holds the reference Attack / Hit / Defeat clips for transfer, plus `Ball`, `Flying`, and `Flying Pose` — 💤 unused. Packed `Bohrok.glb` also ships unused `Ball` / `Flying`. Either wire these for flying enemies / ball mode or strip on next export pass.
 
 ---
 
