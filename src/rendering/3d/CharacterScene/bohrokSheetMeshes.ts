@@ -102,7 +102,7 @@ const KAL_SHIELD_SET = new Set<string>(BOHROK_SHEET_KAL_SHIELD_MESHES);
  * reserved `[].:/` stripped). `Tahnok.Kal` becomes `TahnokKal` on the live graph.
  */
 export function bohrokSheetRuntimeName(name: string): string {
-  return name.replace(/\s/g, '_').replace(/[\[\].:/]/g, '');
+  return name.replace(/\s/g, '_').replace(/[[\].:/]/g, '');
 }
 
 export function isBohrokSheetShieldMesh(meshName: string): boolean {
