@@ -54,21 +54,21 @@ function uvMesh(materials: MeshStandardMaterial[]): Mesh {
 describe('bohrok sheet materials', () => {
   test('packed body map covers every shipped swarm and Kal slot', () => {
     expect(Object.keys(BOHROK_SHEET_BODY_SLOT_COLORS).sort()).toEqual([
-      'Swarm_Body_Black_Baked',
-      'Swarm_Body_Main_Baked',
-      'Swarm_Body_Metal_Baked',
-      'Swarm_Body_Secondary_Baked',
+      'Body_Black_Baked',
+      'Body_Main_Baked',
+      'Body_Metal_Baked',
+      'Body_Secondary_Baked',
     ]);
     expect(BOHROK_SHEET_WEATHERED.authoredPbrMaps).toBe('packed');
     expect(Object.keys(BOHROK_SHEET_PACKED_SLOT_COLORS).sort()).toEqual([
+      'Body_Black_Baked',
+      'Body_Main_Baked',
+      'Body_Metal_Baked',
+      'Body_Secondary_Baked',
       'KalShields_Baked',
       'Kal_Black_Baked',
       'Kal_Main_Baked',
       'Kal_Metal_Baked',
-      'Swarm_Body_Black_Baked',
-      'Swarm_Body_Main_Baked',
-      'Swarm_Body_Metal_Baked',
-      'Swarm_Body_Secondary_Baked',
       'Swarms_Baked',
     ]);
     expect(Object.keys(BOHROK_SHEET_ACCESSORY_SLOT_COLORS).sort()).toEqual([
@@ -85,7 +85,7 @@ describe('bohrok sheet materials', () => {
     const main = new MeshStandardMaterial({
       emissiveMap: bake,
       metalnessMap: mr,
-      name: 'Swarm_Body_Main_Baked',
+      name: 'Body_Main_Baked',
       normalMap: normal,
       roughnessMap: mr,
     });
@@ -120,7 +120,7 @@ describe('bohrok sheet materials', () => {
     const bake = mapTex();
     const main = new MeshStandardMaterial({
       emissiveMap: bake,
-      name: 'Swarm_Body_Main_Baked',
+      name: 'Body_Main_Baked',
     });
     const mesh = uvMesh([main]);
     applyBohrokSheetMaterials(mesh, COLORS);
@@ -138,8 +138,8 @@ describe('bohrok sheet materials', () => {
   });
 
   test('secondary uses arms.main; metal uses Mata PBR; eyes stay transmissive', () => {
-    const secondary = new MeshStandardMaterial({ name: 'Swarm_Body_Secondary_Baked' });
-    const metal = new MeshStandardMaterial({ name: 'Swarm_Body_Metal_Baked' });
+    const secondary = new MeshStandardMaterial({ name: 'Body_Secondary_Baked' });
+    const metal = new MeshStandardMaterial({ name: 'Body_Metal_Baked' });
     const crystal = new MeshStandardMaterial({ name: 'Trans_Color' });
     const iris = new MeshStandardMaterial({ name: 'Glowing' });
     const mesh = uvMesh([secondary, metal, crystal, iris]);

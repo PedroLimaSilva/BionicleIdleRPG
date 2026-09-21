@@ -43,13 +43,13 @@ const BOHROK_SHEET_SILVER: KitMaterialSlotEntry = {
  * feet stay independently editable on 2D avatars.
  */
 export const BOHROK_SHEET_BODY_SLOT_COLORS: Partial<Record<string, KitMaterialSlotEntry>> = {
-  Swarm_Body_Black_Baked: { kind: 'lego', value: LegoColor.Black },
-  Swarm_Body_Main_Baked: { kind: 'part', part: 'body', slot: 'main' },
-  Swarm_Body_Metal_Baked: {
+  Body_Black_Baked: { kind: 'lego', value: LegoColor.Black },
+  Body_Main_Baked: { kind: 'part', part: 'body', slot: 'main' },
+  Body_Metal_Baked: {
     color: { kind: 'part', part: 'body', slot: 'metal' },
     ...MATA_METAL_PBR,
   },
-  Swarm_Body_Secondary_Baked: { kind: 'part', part: 'arms', slot: 'main' },
+  Body_Secondary_Baked: { kind: 'part', part: 'arms', slot: 'main' },
 };
 
 /** Packed Kal chassis. Main stays the breed color; Metal / shields are silver. */

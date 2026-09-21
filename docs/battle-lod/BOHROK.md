@@ -10,7 +10,7 @@ Phase **C** for [`docs/3D_RENDERING_STRATEGY.md`](../3D_RENDERING_STRATEGY.md). 
 
 | Piece                | Shared across breeds? | Shipped in `Bohrok.glb` today             | Runtime                                                                              |
 | -------------------- | --------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------ |
-| Packed swarm chassis | Yes                   | `Body` (`Swarm_Body_*_Baked`)             | Tint Main / Secondary / Black / Metal from dex                                       |
+| Packed swarm chassis | Yes                   | `Body` (`Body_*_Baked`)                   | Tint Main / Secondary / Black / Metal from dex                                       |
 | Packed Kal chassis   | Yes                   | `Kal` (`Kal_*_Baked`)                     | Hide `Body`; tint Main / Black; Metal is silver                                      |
 | Eyes + Krana         | Yes (palette)         | Yes                                       | `Trans_Color` crystal + `Glowing` iris + `Krana` from `colors.eyes`                  |
 | Swarm faceplate      | Yes                   | `FacePlate_Transparent`                   | `Swarms_Baked` ← `body.main`; `Clear` viewport                                       |
@@ -57,7 +57,7 @@ Draco: `yarn compress` now preflights UV/texture slots (`yarn diagnose-glb-draco
 
 | Node                    | Draws | Notes                                                                             |
 | ----------------------- | ----: | --------------------------------------------------------------------------------- |
-| `Body`                  |     4 | One skinned mesh, one draw per `Swarm_Body_*_Baked` slot                          |
+| `Body`                  |     4 | One skinned mesh, one draw per `Body_*_Baked` slot                                |
 | `Kal`                   |     3 | One skinned mesh, one draw per `Kal_*_Baked` slot                                 |
 | `Eyes`                  |     2 | `Trans_Color` (crystal, blooms) + `Glowing` (emissive iris, no bloom)             |
 | `FacePlate_Transparent` |     2 | Packed `Swarms_Baked` shell + `Clear` (colorless viewport)                        |
@@ -73,12 +73,12 @@ Opaque chassis slots, `Swarms_Baked`, and `KalShields_Baked` use packed `emissiv
 
 ## Swarm body material slots (`Body`)
 
-| Slot                         | Runtime tint            | Weathered                        | Notes                                       |
-| ---------------------------- | ----------------------- | -------------------------------- | ------------------------------------------- |
-| `Swarm_Body_Main_Baked`      | `body.main`             | Yes — packed PBR + bake + normal | Shell / feet plastics                       |
-| `Swarm_Body_Secondary_Baked` | `arms.main`             | Yes                              | Limb / accent atlas                         |
-| `Swarm_Body_Metal_Baked`     | `body.metal`            | Yes (Mata metal PBR + packed)    | Defaults to LightGray when palette omits it |
-| `Swarm_Body_Black_Baked`     | Fixed `LegoColor.Black` | Yes (packed plastic)             | Axles, pins                                 |
+| Slot                   | Runtime tint            | Weathered                        | Notes                                       |
+| ---------------------- | ----------------------- | -------------------------------- | ------------------------------------------- |
+| `Body_Main_Baked`      | `body.main`             | Yes — packed PBR + bake + normal | Shell / feet plastics                       |
+| `Body_Secondary_Baked` | `arms.main`             | Yes                              | Limb / accent atlas                         |
+| `Body_Metal_Baked`     | `body.metal`            | Yes (Mata metal PBR + packed)    | Defaults to LightGray when palette omits it |
+| `Body_Black_Baked`     | Fixed `LegoColor.Black` | Yes (packed plastic)             | Axles, pins                                 |
 
 ## Kal body material slots (`Kal`)
 
@@ -108,7 +108,7 @@ Kal `{Breed}.Symbol` meshes keep their authored materials (including leftover Bl
 ## Blender export checklist
 
 1. **One armature** — `Bohrok` only. Accessory shields stay scene roots; symbols stay under `Face Plate`.
-2. **Body** — skinned swarm chassis; `Swarm_Body_*_Baked`; **packed emissive** + **normal** bakes. Packed **B** is edge wear. Do not export metallicRoughness.
+2. **Body** — skinned swarm chassis; `Body_*_Baked`; **packed emissive** + **normal** bakes. Packed **B** is edge wear. Do not export metallicRoughness.
 3. **Kal** — skinned replacement chassis (not an overlay); `Kal_*_Baked`. Hide `Body` at runtime for Kal.
 4. **Swarm faceplate** — skinned; packed `Swarms_Baked` shell + `Clear` viewport.
 5. **Kal faceplate** — skinned; solid `KalShields_Baked` metal, no viewport.
