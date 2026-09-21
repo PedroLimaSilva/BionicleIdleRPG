@@ -154,6 +154,7 @@ const CharacterModel = forwardRef<
       }
     }
     case MatoranStage.Bohrok:
+    case MatoranStage.BohrokKal:
       return (
         <BohrokModel
           ref={ref}
@@ -165,17 +166,6 @@ const CharacterModel = forwardRef<
           packedMetalnessActive={matoran.packedMetalnessActive}
           packedRoughnessActive={matoran.packedRoughnessActive}
         />
-      );
-    case MatoranStage.BohrokKal:
-      return (
-        <group scale={4.5}>
-          <BohrokModel
-            ref={ref}
-            key={matoran.id}
-            id={matoran.id}
-            onKitMeshesAttached={onModelReady}
-          />
-        </group>
       );
     case MatoranStage.Vahki:
       // Bind pose faces +Z (battle forward). Character-sheet camera looks from +Z, so yaw 180°.

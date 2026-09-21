@@ -4,7 +4,6 @@ import {
   characterRigGlbUrl,
   characterRigGlbUrlsForProgress,
   BOHROK_GLB,
-  BOHROK_MASTER_GLB,
   MATORAN_MASTER_GLB,
   REBUILT_GLB,
 } from './characterRigGlbs';
@@ -35,11 +34,11 @@ describe('characterRigGlbUrl', () => {
     expect(characterRigGlbUrl({ id: 'muaka', stage: MatoranStage.Rahi })).toBeNull();
   });
 
-  test('swarm Bohrok use the packed chassis; Kal stays on master', () => {
+  test('swarm and Kal Bohrok share the packed chassis', () => {
     expect(characterRigGlbUrl({ id: 'tahnok', stage: MatoranStage.Bohrok })).toBe(BOHROK_GLB);
     expect(characterRigGlbUrl({ id: 'gahlok', stage: MatoranStage.Bohrok })).toBe(BOHROK_GLB);
     expect(characterRigGlbUrl({ id: 'tahnok_kal', stage: MatoranStage.BohrokKal })).toBe(
-      BOHROK_MASTER_GLB
+      BOHROK_GLB
     );
   });
 
@@ -101,10 +100,9 @@ describe('allCharacterRigGlbUrls', () => {
     const tahuMata = urls.filter((url) => url.endsWith('/Toa_Mata/tahu.glb'));
     const tahuNuva = urls.filter((url) => url.endsWith('Toa_Nuva/tahu.glb'));
     const packedBohrok = urls.filter((url) => url.endsWith('Bohrok.glb'));
-    const bohrokMaster = urls.filter((url) => url.endsWith('bohrok_master.glb'));
     expect(tahuMata).toHaveLength(1);
     expect(tahuNuva).toHaveLength(1);
     expect(packedBohrok).toHaveLength(1);
-    expect(bohrokMaster).toHaveLength(1);
+    expect(urls.some((url) => url.endsWith('bohrok_master.glb'))).toBe(false);
   });
 });

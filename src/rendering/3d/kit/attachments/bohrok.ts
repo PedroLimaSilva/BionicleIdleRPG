@@ -82,7 +82,7 @@ export const BOHROK_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment
   Pin3L: { kitNodeName: KIT_2003_NODES.Pin3L, materialColors: BOHROK_KIT_PALETTE_METAL },
 };
 
-/** Faceplate palette depends on Kal vs swarm; merged in `BohrokModel` via `buildBohrokKit2003Attachments`. */
+/** Faceplate palette depends on Kal vs swarm. Packed `Bohrok.glb` no longer kit-assembles. */
 export const BOHROK_FACEPLATE_KIT_2003_ATTACHMENTS: Record<string, Kit2003SocketAttachment> = {
   Face_Plate_1: {
     kitNodeName: KIT_2003_NODES.FacePlate,

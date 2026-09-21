@@ -11,7 +11,7 @@ import { playCharacterPreviewAnimation } from '../../rendering/3d/utils/characte
 import { ElementTag } from '../../components/ElementTag';
 import { getAdjacentDexIds, PREVIEW_ANIMATIONS, toDexPreviewMatoran } from './dexEntries';
 import {
-  isBohrok,
+  isBohrokOrKal,
   isDiminished,
   isRahkshi,
   isRebuilt,
@@ -33,7 +33,9 @@ function supportsMataPackedBody(base: BaseMatoran): boolean {
 }
 
 function supportsPackedMaps(base: BaseMatoran): boolean {
-  return isDiminished(base) || isRebuilt(base) || supportsMataPackedBody(base) || isBohrok(base);
+  return (
+    isDiminished(base) || isRebuilt(base) || supportsMataPackedBody(base) || isBohrokOrKal(base)
+  );
 }
 
 export const CharacterDexPreview: React.FC = () => {
