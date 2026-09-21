@@ -117,7 +117,7 @@ Kal `{Breed}.Symbol` meshes keep their authored materials (including leftover Bl
 8. **Kal symbols** — `{Breed}.Symbol` parented under `Face Plate`. Runtime toggles the active print.
 9. **Eyes / Krana** may stay unpacked.
 10. Export; verify `Idle` drives the `Bohrok` skeleton.
-11. Re-introduce Attack / Hit / Defeat from `bohrok_master.glb` before graduating the packed-combat epic.
+11. Author Attack / Hit / Defeat on the packed armature before graduating the packed-combat epic.
 
 ---
 

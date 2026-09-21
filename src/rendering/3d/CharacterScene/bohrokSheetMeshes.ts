@@ -88,8 +88,8 @@ export const BOHROK_SHEET_SHIELD_MATERIAL_NAMES = [BOHROK_SHEET_SWARMS_MATERIAL]
 export const BOHROK_SHEET_KAL_SHIELD_MATERIAL_NAMES = [BOHROK_SHEET_KAL_SHIELDS_MATERIAL] as const;
 
 /**
- * `bohrok_master.glb` authors this scale on the `Bohrok` node. Packed
- * `Bohrok.glb` already matches that visual size in mesh space, so do **not**
+ * Legacy kit `Bohrok` root scale was ~4.73×. Packed `Bohrok.glb` already matches
+ * that visual size in mesh space, so do **not**
  * apply this on the packed clone — battle `0.175` is shared for swarm and Kal.
  */
 export const BOHROK_PACKED_MATCH_MASTER_SCALE = 4.732668399810791;

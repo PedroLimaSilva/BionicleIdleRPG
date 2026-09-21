@@ -16,8 +16,6 @@ export const MATORAN_MASTER_GLB = BASE + 'matoran_master.glb';
 export const REBUILT_GLB = BASE + 'rebuilt.glb';
 export const METRU_MATORAN_GLB = BASE + 'matoran_metru.glb';
 export const BOHROK_GLB = BASE + 'Bohrok.glb';
-/** Clip-transfer source. Packed `Bohrok.glb` is the live swarm and Kal chassis. */
-export const BOHROK_MASTER_GLB = BASE + 'bohrok_master.glb';
 export const VAHKI_GLB = BASE + 'Vahki.glb';
 export const RAHKSHI_GLB = BASE + 'rahkshi.glb';
 export const NUI_RAMA_GLB = BASE + 'Rahi/NuiRama.glb';
