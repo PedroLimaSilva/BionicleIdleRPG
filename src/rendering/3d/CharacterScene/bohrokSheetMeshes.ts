@@ -4,7 +4,7 @@ import { cloneGltfInstance } from '../utils/cloneGltfInstance';
 /** Live armature in `Bohrok.glb` — packed swarm + Kal chassis, faceplates, and shields. */
 export const BOHROK_SHEET_RIG_NODE = 'Bohrok';
 
-/** Packed swarm chassis — one mesh, one draw per `Swarm_Body_*_Baked` slot. */
+/** Packed swarm chassis — one mesh, one draw per `Body_*_Baked` slot. */
 export const BOHROK_SHEET_BODY_MESH = 'Body';
 
 /** Packed Kal chassis — Main / Black / Metal (no secondary). */
@@ -52,10 +52,10 @@ export const BOHROK_SHEET_SYMBOL_MESHES = BOHROK_SHEET_BREEDS.map(
 export const BOHROK_SHEET_SHIELD_SOCKETS = ['Shield_L', 'Shield_R'] as const;
 
 export const BOHROK_SHEET_BODY_MATERIAL_NAMES = [
-  'Swarm_Body_Black_Baked',
-  'Swarm_Body_Main_Baked',
-  'Swarm_Body_Metal_Baked',
-  'Swarm_Body_Secondary_Baked',
+  'Body_Black_Baked',
+  'Body_Main_Baked',
+  'Body_Metal_Baked',
+  'Body_Secondary_Baked',
 ] as const;
 
 export const BOHROK_SHEET_KAL_BODY_MATERIAL_NAMES = [

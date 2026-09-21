@@ -160,10 +160,7 @@ describe('packed shield attach', () => {
     left.name = 'Shield_L';
     const right = new Group();
     right.name = 'Shield_R';
-    const body = new Mesh(
-      new BoxGeometry(),
-      new MeshStandardMaterial({ name: 'Swarm_Body_Main_Baked' })
-    );
+    const body = new Mesh(new BoxGeometry(), new MeshStandardMaterial({ name: 'Body_Main_Baked' }));
     body.name = 'Body';
     const kal = new Mesh(new BoxGeometry(), new MeshStandardMaterial({ name: 'Kal_Main_Baked' }));
     kal.name = 'Kal';
@@ -206,10 +203,7 @@ describe('packed shield attach', () => {
     right.name = 'Shield_R';
     const facePlate = new Group();
     facePlate.name = 'Face Plate';
-    const body = new Mesh(
-      new BoxGeometry(),
-      new MeshStandardMaterial({ name: 'Swarm_Body_Main_Baked' })
-    );
+    const body = new Mesh(new BoxGeometry(), new MeshStandardMaterial({ name: 'Body_Main_Baked' }));
     body.name = 'Body';
     const kal = new Mesh(new BoxGeometry(), new MeshStandardMaterial({ name: 'Kal_Main_Baked' }));
     kal.name = 'Kal';
@@ -278,7 +272,7 @@ describe('packed shield attach', () => {
     body.name = 'Body';
     const swarmSlot = new Mesh(
       new BoxGeometry(),
-      new MeshStandardMaterial({ name: 'Swarm_Body_Main_Baked' })
+      new MeshStandardMaterial({ name: 'Body_Main_Baked' })
     );
     swarmSlot.name = 'Swarm';
     body.add(swarmSlot);
