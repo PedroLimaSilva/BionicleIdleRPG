@@ -82,7 +82,7 @@ export const ANIMATION_EPICS: Record<AnimationEpicId, AnimationEpic> = {
     storyBeat: 'bohrok_swarm_intro',
     storyOrder: 100,
     summary:
-      'bohrok_master.glb includes Ball, Flying, and Flying Pose clips that no code path plays yet. Wire or trim on next Bohrok polish pass.',
+      'Bohrok.glb includes Ball and Flying clips that no code path plays yet. Wire or trim on next Bohrok polish pass.',
     title: 'Bohrok — unused authored clips',
   },
   'bohrok-packed-combat': {
@@ -91,7 +91,7 @@ export const ANIMATION_EPICS: Record<AnimationEpicId, AnimationEpic> = {
     storyBeat: 'bohrok_swarm_intro',
     storyOrder: 35,
     summary:
-      'Packed Bohrok.glb ships Idle plus unused Ball / Flying. Attack / Hit / Defeat are procedural until those clips transfer from bohrok_master.glb. Swarm and Kal chassis, faceplates, and shields live in this GLB.',
+      'Packed Bohrok.glb ships Idle plus unused Ball / Flying. Attack / Hit / Defeat are procedural until authored into this GLB. Swarm and Kal chassis, faceplates, and shields are packed.',
     title: 'Bohrok Swarm — packed combat clips',
   },
   'rahi-nui-rama': {
@@ -196,44 +196,7 @@ const VILLAGE_FLAVOR: ExpectedClip[] = [
 
 /** Canonical rig list — update when adding GLBs or changing clip contracts in code. */
 export const RIG_INVENTORY: RigInventoryEntry[] = [
-  // --- Complete reference rigs ---
-  {
-    displayName: 'Bohrok-Kal (shared chassis)',
-    epicId: 'complete',
-    expectedClips: [
-      { backlog: 'complete', kind: 'idle', name: 'Idle', required: true },
-      { backlog: 'complete', kind: 'combat', name: 'Attack', required: true },
-      { backlog: 'complete', kind: 'combat', name: 'Hit', required: true },
-      { backlog: 'complete', kind: 'combat', name: 'Defeat', required: true },
-      {
-        backlog: 'unused',
-        kind: 'ambient',
-        name: 'Ball',
-        notes: 'Authored but not referenced in code.',
-        required: false,
-      },
-      {
-        backlog: 'unused',
-        kind: 'ambient',
-        name: 'Flying',
-        notes: 'Authored but not referenced in code.',
-        required: false,
-      },
-      {
-        backlog: 'unused',
-        kind: 'ambient',
-        name: 'Flying Pose',
-        notes: 'Authored but not referenced in code.',
-        required: false,
-      },
-    ],
-    glb: 'bohrok_master.glb',
-    id: 'bohrok',
-    notes:
-      'Clip-transfer source and unused Ball / Flying / Flying Pose. Live swarm and Kal chassis is Bohrok.glb.',
-    reactComponent: 'BohrokModel',
-    role: 'combat',
-  },
+  // --- Bohrok (packed swarm + Kal) ---
   {
     displayName: 'Bohrok (packed chassis)',
     epicId: 'bohrok-packed-combat',
@@ -243,21 +206,21 @@ export const RIG_INVENTORY: RigInventoryEntry[] = [
         backlog: 'missing',
         kind: 'combat',
         name: 'Attack',
-        notes: 'Procedural until clips transfer from bohrok_master.glb.',
+        notes: 'Procedural until Attack is authored into Bohrok.glb.',
         required: true,
       },
       {
         backlog: 'missing',
         kind: 'combat',
         name: 'Hit',
-        notes: 'Procedural until clips transfer from bohrok_master.glb.',
+        notes: 'Procedural until Hit is authored into Bohrok.glb.',
         required: true,
       },
       {
         backlog: 'missing',
         kind: 'combat',
         name: 'Defeat',
-        notes: 'Procedural until clips transfer from bohrok_master.glb.',
+        notes: 'Procedural until Defeat is authored into Bohrok.glb.',
         required: true,
       },
       {
@@ -277,8 +240,7 @@ export const RIG_INVENTORY: RigInventoryEntry[] = [
     ],
     glb: 'Bohrok.glb',
     id: 'bohrok-packed',
-    notes:
-      'Packed swarm + Kal chassis, faceplates, per-breed shields, and Kal symbols. Combat clips still transfer from master.',
+    notes: 'Packed swarm + Kal chassis, faceplates, per-breed shields, and Kal symbols.',
     reactComponent: 'BohrokModel',
     role: 'combat',
   },

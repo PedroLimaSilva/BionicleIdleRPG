@@ -16,7 +16,7 @@ import {
 } from '../palettes/bohrokKitPalette';
 
 /**
- * Bohrok rig sockets on `bohrok_master.glb` filled from `kit_2001.glb` (pins / axles).
+ * Legacy kit-assembled Bohrok rig sockets filled from `kit_2001.glb` (pins / axles).
  * Duplicate socket names resolve to the deepest node when building the kit node map.
  */
 export const BOHROK_KIT_2001_ATTACHMENTS: Record<string, Kit2001SocketAttachment> = {
