@@ -28,6 +28,18 @@ empties with zeroed transforms, and skips parts not yet in the library.
 Paste a `*KitAttach.ts` snippet into **JSON** for material preview during sync.
 **Copy Scene** exports a TypeScript attachment map to the clipboard when done.
 
+## Bone parent merge
+
+Select the armature, or any mesh parented under it. In the same sidebar, **Bone Parent Merge → Join Bone-Parented Meshes**.
+
+1. Meshes with a Curve modifier, and anything parented under them, stay as they are. A tread that follows a path keeps that animation instead of being baked into the merged mesh.
+2. Other shape modifiers are applied. Smooth by Angle stays as shading on the merged mesh. Existing Armature vertex groups are kept.
+3. Each remaining mesh is joined into its parent mesh, deepest first, so inner bricks land in the bone-parented part.
+4. Every vertex of that part is weighted `1` to the parent bone.
+5. Those parts, plus meshes already parented to the armature object, are joined into `{Armature}_Mesh` with one Armature modifier.
+
+The operator switches the armature to Rest Position while it bakes transforms, then restores the pose. Run it once per armature when both creatures are in the file.
+
 ## Export
 
 Export the character GLB with socket empties. Exclude `Kit` collection preview
@@ -43,4 +55,5 @@ operators from Cursor against a live Blender session.
 
 ```bash
 python3 tools/blender/test_kit_socket_infer.py
+python3 tools/blender/test_bone_parent_merge.py
 ```
