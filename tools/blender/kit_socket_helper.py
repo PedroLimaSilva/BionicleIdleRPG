@@ -1,10 +1,10 @@
 bl_info = {
     "name": "Bionicle Kit Socket Helper",
     "author": "Bionicle Idle RPG contributors",
-    "version": (0, 4, 1),
+    "version": (0, 5, 0),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Bionicle Kit",
-    "description": "Automate shared-kit socket empties, kit preview attachment, and export prep.",
+    "description": "Kit socket empties, kit preview attachment, and bone-parent mesh merging.",
     "category": "Object",
 }
 
@@ -892,6 +892,499 @@ class BIONICLE_OT_copy_attachment_map(bpy.types.Operator):
         return {"FINISHED"}
 
 
+def controlling_bone(name, nodes):
+    """Return (armature name, bone name) for a bone-parented object or one of its descendants."""
+    seen = set()
+    current = name
+    while current and current not in seen:
+        seen.add(current)
+        node = nodes.get(current)
+        if node is None:
+            return None, None
+        if (
+            node.get("parent_type") == "BONE"
+            and node.get("parent_object_type") == "ARMATURE"
+            and node.get("parent_bone")
+            and node.get("parent")
+        ):
+            return node["parent"], node["parent_bone"]
+        current = node.get("parent")
+    return None, None
+
+
+def expand_with_descendants(nodes, names):
+    """Include each named object and every object parented under it."""
+    children_by_parent = {}
+    for name, node in nodes.items():
+        parent_name = node.get("parent")
+        if parent_name:
+            children_by_parent.setdefault(parent_name, []).append(name)
+    skipped = set(names)
+    pending = list(names)
+    while pending:
+        current = pending.pop()
+        for child_name in children_by_parent.get(current, []):
+            if child_name in skipped:
+                continue
+            skipped.add(child_name)
+            pending.append(child_name)
+    return skipped
+
+
+def plan_parent_mesh_joins(nodes, armature_name, skip_names=()):
+    """Bottom-up (parent mesh, [child meshes]) joins for pieces controlled by this armature.
+
+    Deepest parents come first, so a grandchild is absorbed before that child joins its parent.
+    skip_names stay untouched, including meshes that keep a live Curve modifier.
+    """
+
+    def depth(mesh_name):
+        depth_count = 0
+        seen = set()
+        current = mesh_name
+        while current and current not in seen:
+            seen.add(current)
+            node = nodes.get(current)
+            if node is None:
+                break
+            parent_name = node.get("parent")
+            parent = nodes.get(parent_name) if parent_name else None
+            if parent is None or parent.get("type") != "MESH":
+                break
+            current = parent_name
+            depth_count += 1
+        return depth_count
+
+    grouped = {}
+    for name, node in nodes.items():
+        if node.get("type") != "MESH":
+            continue
+        parent_name = node.get("parent")
+        parent = nodes.get(parent_name) if parent_name else None
+        if parent is None or parent.get("type") != "MESH":
+            continue
+        if name in skip_names or parent_name in skip_names:
+            continue
+        armature, _bone = controlling_bone(name, nodes)
+        if armature != armature_name:
+            continue
+        grouped.setdefault(parent_name, []).append(name)
+
+    parents = sorted(grouped, key=lambda parent_name: (-depth(parent_name), parent_name))
+    return [(parent_name, sorted(grouped[parent_name])) for parent_name in parents]
+
+
+def plan_bone_weight_roots(nodes, armature_name, skip_names=()):
+    """Meshes that remain after parent joins, each paired with its parent bone."""
+    roots = []
+    for name, node in nodes.items():
+        if node.get("type") != "MESH":
+            continue
+        parent_name = node.get("parent")
+        parent = nodes.get(parent_name) if parent_name else None
+        if parent is not None and parent.get("type") == "MESH":
+            continue
+        if name in skip_names:
+            continue
+        armature, bone = controlling_bone(name, nodes)
+        if armature == armature_name and bone:
+            roots.append((name, bone))
+    return sorted(roots)
+
+
+def plan_existing_armature_meshes(nodes, armature_name, skip_names=()):
+    """Meshes parented to the armature object, already skinned with vertex groups."""
+    names = []
+    for name, node in nodes.items():
+        if node.get("type") != "MESH":
+            continue
+        if node.get("parent") != armature_name or node.get("parent_type") == "BONE":
+            continue
+        if node.get("parent_object_type") != "ARMATURE":
+            continue
+        if name in skip_names:
+            continue
+        names.append(name)
+    return sorted(names)
+
+
+def _mesh_belongs_to_armature(nodes, name, armature_name):
+    node = nodes.get(name)
+    if node is None or node.get("type") != "MESH":
+        return False
+    armature, _bone = controlling_bone(name, nodes)
+    if armature == armature_name:
+        return True
+    return node.get("parent") == armature_name and node.get("parent_object_type") == "ARMATURE"
+
+
+def _curve_deformed_mesh_names(objects):
+    return [
+        obj.name
+        for obj in objects
+        if obj.type == "MESH" and any(modifier.type == "CURVE" for modifier in obj.modifiers)
+    ]
+
+
+def _snapshot_parent_nodes(objects):
+    nodes = {}
+    for obj in objects:
+        parent = obj.parent
+        nodes[obj.name] = {
+            "type": obj.type,
+            "parent": parent.name if parent else None,
+            "parent_type": obj.parent_type,
+            "parent_object_type": parent.type if parent else None,
+            "parent_bone": obj.parent_bone or "",
+        }
+    return nodes
+
+
+def _controlling_armature_object(obj):
+    seen = set()
+    current = obj
+    while current is not None and current.as_pointer() not in seen:
+        seen.add(current.as_pointer())
+        if (
+            current.parent_type == "BONE"
+            and current.parent is not None
+            and current.parent.type == "ARMATURE"
+            and current.parent_bone
+        ):
+            return current.parent
+        current = current.parent
+    return None
+
+
+def _armature_from_context(context):
+    active = context.view_layer.objects.active
+    if active is None:
+        return None
+    if active.type == "ARMATURE":
+        return active
+    return _controlling_armature_object(active)
+
+
+def _parent_keep_world(obj, parent, parent_type, parent_bone):
+    world = obj.matrix_world.copy()
+    obj.parent = parent
+    obj.parent_type = parent_type
+    obj.parent_bone = parent_bone
+    obj.matrix_parent_inverse = Matrix.Identity(4)
+    obj.matrix_world = world
+
+
+def _clear_parent_keep_world(obj):
+    _parent_keep_world(obj, None, "OBJECT", "")
+
+
+def _rehome_non_mesh_children(source, parent, parent_type, parent_bone):
+    for child in list(source.children):
+        if child.type == "MESH":
+            continue
+        _parent_keep_world(child, parent, parent_type, parent_bone)
+
+
+def _smooth_by_angle_modifier(obj):
+    for modifier in obj.modifiers:
+        node_group = getattr(modifier, "node_group", None)
+        if modifier.type == "NODES" and node_group and node_group.name == "Smooth by Angle":
+            return modifier
+    return None
+
+
+def _find_smooth_by_angle_group(context, joins, roots, weighted_names=()):
+    names = []
+    for parent_name, child_names in joins:
+        names.append(parent_name)
+        names.extend(child_names)
+    for name, _bone_name in roots:
+        names.append(name)
+    names.extend(weighted_names)
+    seen = set()
+    for name in names:
+        if name in seen:
+            continue
+        seen.add(name)
+        obj = context.view_layer.objects.get(name)
+        if obj is None:
+            continue
+        modifier = _smooth_by_angle_modifier(obj)
+        if modifier is not None:
+            return modifier.node_group
+    return None
+
+
+def _ensure_smooth_by_angle(obj, node_group):
+    if node_group is None or _smooth_by_angle_modifier(obj) is not None:
+        return
+    modifier = obj.modifiers.new("Smooth by Angle", "NODES")
+    modifier.node_group = node_group
+
+
+def _copy_nodes_modifier_inputs(source_modifier, created):
+    """Copy Geometry Nodes inputs. Blender 5 stores these on properties.inputs, not ID properties."""
+    source_inputs = getattr(getattr(source_modifier, "properties", None), "inputs", None)
+    created_inputs = getattr(getattr(created, "properties", None), "inputs", None)
+    if source_inputs is None or created_inputs is None:
+        return
+    for prop in source_inputs.bl_rna.properties:
+        identifier = prop.identifier
+        if identifier in {"rna_type", "name"}:
+            continue
+        source_socket = getattr(source_inputs, identifier, None)
+        created_socket = getattr(created_inputs, identifier, None)
+        if source_socket is None or created_socket is None:
+            continue
+        for field in ("value", "attribute_name", "layer_name"):
+            if not hasattr(source_socket, field) or not hasattr(created_socket, field):
+                continue
+            try:
+                setattr(created_socket, field, getattr(source_socket, field))
+            except (TypeError, AttributeError, ValueError):
+                continue
+
+
+def _copy_smooth_by_angle(source_modifier, target):
+    if source_modifier is None or _smooth_by_angle_modifier(target) is not None:
+        return
+    created = target.modifiers.new(source_modifier.name, "NODES")
+    created.node_group = source_modifier.node_group
+    _copy_nodes_modifier_inputs(source_modifier, created)
+
+
+def _stamp_rigid_vertex_group(obj, bone_name):
+    if obj.data.users > 1:
+        obj.data = obj.data.copy()
+    for group in list(obj.vertex_groups):
+        obj.vertex_groups.remove(group)
+    vertex_group = obj.vertex_groups.new(name=bone_name)
+    indexes = [vertex.index for vertex in obj.data.vertices]
+    if indexes:
+        vertex_group.add(indexes, 1.0, "REPLACE")
+
+
+def _is_shape_modifier(modifier):
+    """Modifiers that must be baked into vertex positions before a join.
+
+    Armature modifiers stay as vertex weights. Smooth by Angle is shading and is
+    put back on the merged mesh.
+    """
+    if modifier.type == "ARMATURE":
+        return False
+    if modifier.type == "NODES":
+        node_group = getattr(modifier, "node_group", None)
+        if node_group is not None and node_group.name == "Smooth by Angle":
+            return False
+    return True
+
+
+def _apply_shape_modifiers(context, obj):
+    warnings = []
+    pending = [modifier.name for modifier in obj.modifiers if _is_shape_modifier(modifier)]
+    if not pending:
+        return warnings
+    if obj.data.users > 1:
+        obj.data = obj.data.copy()
+    for modifier_name in pending:
+        if obj.modifiers.get(modifier_name) is None:
+            continue
+        bpy.ops.object.select_all(action="DESELECT")
+        obj.hide_set(False)
+        obj.select_set(True)
+        context.view_layer.objects.active = obj
+        try:
+            bpy.ops.object.modifier_apply(modifier=modifier_name)
+        except RuntimeError as exc:
+            warnings.append(f"Could not apply {modifier_name} on {obj.name}: {exc}")
+    return warnings
+
+
+def _ensure_armature_modifier(obj, armature):
+    modifier = next((item for item in obj.modifiers if item.type == "ARMATURE"), None)
+    if modifier is None:
+        modifier = obj.modifiers.new("Armature", "ARMATURE")
+    modifier.object = armature
+    modifier.use_vertex_groups = True
+    return modifier
+
+
+def _join_objects(context, target, extras):
+    view_layer = context.view_layer
+    for obj in (target, *extras):
+        obj.hide_set(False)
+    bpy.ops.object.select_all(action="DESELECT")
+    for obj in extras:
+        obj.select_set(True)
+    target.select_set(True)
+    view_layer.objects.active = target
+    bpy.ops.object.join()
+    return view_layer.objects.active
+
+
+class BIONICLE_OT_join_bone_parented_meshes(bpy.types.Operator):
+    """Join meshes into their parent mesh, weight each part to its parent bone, then join those parts."""
+
+    bl_idname = "bionicle.join_bone_parented_meshes"
+    bl_label = "Join Bone-Parented Meshes"
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return _armature_from_context(context) is not None
+
+    def execute(self, context):
+        armature = _armature_from_context(context)
+        if armature is None:
+            self.report({"WARNING"}, "Select an armature, or a mesh parented under one")
+            return {"CANCELLED"}
+
+        if context.mode != "OBJECT":
+            bpy.ops.object.mode_set(mode="OBJECT")
+
+        nodes = _snapshot_parent_nodes(context.scene.objects)
+        skipped = expand_with_descendants(nodes, _curve_deformed_mesh_names(context.scene.objects))
+        joins = plan_parent_mesh_joins(nodes, armature.name, skipped)
+        roots = plan_bone_weight_roots(nodes, armature.name, skipped)
+        weighted_names = plan_existing_armature_meshes(nodes, armature.name, skipped)
+        left_on_curve = sorted(
+            name
+            for name in skipped
+            if _mesh_belongs_to_armature(nodes, name, armature.name)
+        )
+        if not roots and not weighted_names:
+            self.report({"WARNING"}, f"{armature.name} has no bone-parented meshes")
+            return {"CANCELLED"}
+
+        smooth_group = _find_smooth_by_angle_group(context, joins, roots, weighted_names)
+        previous_pose = armature.data.pose_position
+        armature.data.pose_position = "REST"
+        context.view_layer.update()
+        try:
+            apply_warnings = self._apply_participating_shape_modifiers(
+                context, joins, roots, weighted_names
+            )
+            child_count = self._join_children_into_parents(context, joins)
+            root_objects, warnings = self._weight_roots(context, armature, roots)
+            weighted_objects = self._take_existing_weighted_meshes(context, weighted_names)
+            warnings.extend(apply_warnings)
+            merge_objects = root_objects + weighted_objects
+            if not merge_objects:
+                self.report({"WARNING"}, "Bone-parented meshes are no longer in the view layer")
+                return {"CANCELLED"}
+            joined = self._join_weighted_roots(context, armature, merge_objects, smooth_group)
+        finally:
+            armature.data.pose_position = previous_pose
+            context.view_layer.update()
+
+        bpy.ops.object.select_all(action="DESELECT")
+        joined.select_set(True)
+        context.view_layer.objects.active = joined
+        message = (
+            f"Joined {child_count} child mesh(es) into parent meshes; "
+            f"merged {len(root_objects)} bone part(s) and {len(weighted_objects)} "
+            f"already-weighted mesh(es) into {joined.name} "
+            f"({len(joined.data.vertices)} verts, {len(joined.vertex_groups)} groups)"
+        )
+        if left_on_curve:
+            message += f"; left {', '.join(left_on_curve)} on its curve"
+        if warnings:
+            self.report({"WARNING"}, message + ". " + "; ".join(warnings))
+        else:
+            self.report({"INFO"}, message)
+        return {"FINISHED"}
+
+    def _apply_participating_shape_modifiers(self, context, joins, roots, weighted_names):
+        warnings = []
+        seen = set()
+        names = []
+        for parent_name, child_names in joins:
+            names.append(parent_name)
+            names.extend(child_names)
+        names.extend(name for name, _bone_name in roots)
+        names.extend(weighted_names)
+        for name in names:
+            if name in seen:
+                continue
+            seen.add(name)
+            obj = context.view_layer.objects.get(name)
+            if obj is None or obj.type != "MESH":
+                continue
+            warnings.extend(_apply_shape_modifiers(context, obj))
+        return warnings
+
+    def _take_existing_weighted_meshes(self, context, names):
+        objects = []
+        for name in names:
+            obj = context.view_layer.objects.get(name)
+            if obj is None or obj.type != "MESH":
+                continue
+            for modifier in list(obj.modifiers):
+                if modifier.type == "ARMATURE":
+                    obj.modifiers.remove(modifier)
+            _clear_parent_keep_world(obj)
+            objects.append(obj)
+        context.view_layer.update()
+        return objects
+
+    def _join_children_into_parents(self, context, joins):
+        child_count = 0
+        for parent_name, child_names in joins:
+            parent = context.view_layer.objects.get(parent_name)
+            children = []
+            for name in child_names:
+                obj = context.view_layer.objects.get(name)
+                if obj is not None and obj.type == "MESH":
+                    children.append(obj)
+            if parent is None or parent.type != "MESH" or not children:
+                continue
+            for child in children:
+                smooth = _smooth_by_angle_modifier(child)
+                if smooth is not None:
+                    _copy_smooth_by_angle(smooth, parent)
+                _rehome_non_mesh_children(child, parent, "OBJECT", "")
+            _join_objects(context, parent, children)
+            child_count += len(children)
+        return child_count
+
+    def _weight_roots(self, context, armature, roots):
+        root_objects = []
+        warnings = []
+        context.view_layer.update()
+        for name, bone_name in roots:
+            obj = context.view_layer.objects.get(name)
+            if obj is None or obj.type != "MESH":
+                continue
+            bone = armature.data.bones.get(bone_name)
+            if bone is None:
+                warnings.append(f"{name} is parented to missing bone {bone_name}")
+                continue
+            if not bone.use_deform:
+                warnings.append(f"{bone_name} does not deform")
+            for child in list(obj.children):
+                if child.type == "MESH":
+                    continue
+                _parent_keep_world(child, armature, "BONE", bone_name)
+            _stamp_rigid_vertex_group(obj, bone_name)
+            _clear_parent_keep_world(obj)
+            root_objects.append(obj)
+        context.view_layer.update()
+        return root_objects, warnings
+
+    def _join_weighted_roots(self, context, armature, root_objects, smooth_group):
+        target = next(
+            (obj for obj in root_objects if _smooth_by_angle_modifier(obj) is not None),
+            root_objects[0],
+        )
+        extras = [obj for obj in root_objects if obj != target]
+        joined = target if not extras else _join_objects(context, target, extras)
+        joined.name = f"{armature.name}_Mesh"
+        _parent_keep_world(joined, armature, "OBJECT", "")
+        _ensure_armature_modifier(joined, armature)
+        _ensure_smooth_by_angle(joined, smooth_group)
+        return joined
+
+
 class BIONICLE_PT_kit_socket_helper(bpy.types.Panel):
     bl_idname = "BIONICLE_PT_kit_socket_helper"
     bl_label = "Bionicle Kit Sockets"
@@ -929,6 +1422,28 @@ class BIONICLE_PT_kit_socket_helper(bpy.types.Panel):
         op.scope = "SELECTED"
         op = row.operator("bionicle.copy_attachment_map", text="Copy Scene")
         op.scope = "SCENE"
+
+
+class BIONICLE_PT_bone_parent_merge(bpy.types.Panel):
+    bl_idname = "BIONICLE_PT_bone_parent_merge"
+    bl_label = "Bone Parent Merge"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Bionicle Kit"
+
+    def draw(self, context):
+        layout = self.layout
+        box = layout.box()
+        box.label(text="Rigid parts to one mesh")
+        column = box.column(align=True)
+        column.label(text="Uses the active object's armature.")
+        column.label(text="Curve-deformed meshes stay separate.")
+        column.label(text="Other shape modifiers are applied.")
+        column.label(text="Keeps existing Armature weights.")
+        column.label(text="1. Join each mesh into its parent mesh")
+        column.label(text="2. Weight bone-parented parts to that bone")
+        column.label(text="3. Join those into one armature mesh")
+        box.operator("bionicle.join_bone_parented_meshes", icon="GROUP_VERTEX")
 
 
 def _register_scene_props():
@@ -1086,7 +1601,9 @@ classes = (
     BIONICLE_OT_reset_kit_preview_transforms,
     BIONICLE_OT_apply_material_preview,
     BIONICLE_OT_copy_attachment_map,
+    BIONICLE_OT_join_bone_parented_meshes,
     BIONICLE_PT_kit_socket_helper,
+    BIONICLE_PT_bone_parent_merge,
 )
 
 
