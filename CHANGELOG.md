@@ -2,6 +2,32 @@
 
 Biweekly releases land every other Saturday. See [docs/RELEASES.md](docs/RELEASES.md).
 
+## [0.9.2] - 2026-09-26
+
+Merged since v0.9.1:
+
+### Infrastructure, CI & Tooling
+
+- #508 feat(blender): merge bone-parented meshes into one weighted mesh
+
+### Combat & Encounters
+
+- #498 Share gauntlet Rahkshi GPU resources to cut combat frame hangs
+
+### Rendering & Materials
+
+- #499 Fit cheaper PCFSoft shadows on character sheets and skip per-draw TSL hashing
+- #497 Share kit shader programs across character hops
+
+### Characters & Models
+
+- #507 Render packed Bohrok swarm and Kal from Bohrok.glb
+- #506 Drop rebuilt kit assembly so Rebuilt Matoran draw a packed Body_Baked sheet
+- #505 Drop Kopaka kit assembly so the sheet and combat share a packed skinned body
+- #503 Drop Tahu kit assembly so the sheet and combat share the packed skinned body
+- #502 Render diminished village Matoran from a packed skinned sheet
+- #501 Wire Tahu Mata skinned battle LOD with weathered noise PBR
+
 ## [0.9.1] - 2026-09-12
 
 Merged since v0.8.2:
