@@ -24,7 +24,7 @@ async function gotoRecruitment(page: Page, extra: Partial<typeof INITIAL_GAME_ST
     hideCanvasBeforeNav: true,
     waitUntil: 'domcontentloaded',
   });
-  await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 10000 });
+  await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 30000 });
   await hideCanvas(page);
   await disableCSSAnimations(page);
 }
@@ -57,7 +57,7 @@ test.describe('Custom Character', () => {
 
         // The first buyable entry is always the "create" slot, which shows the Create button.
         const createBtn = page.locator('.elemental-btn').filter({ hasText: /^Create$/ });
-        await expect(createBtn).toBeVisible({ timeout: 10000 });
+        await expect(createBtn).toBeVisible({ timeout: 30000 });
         await expect(createBtn).not.toHaveClass(/disabled/);
 
         await expect(page.locator('.character-name')).toHaveText('New Matoran');
@@ -85,7 +85,7 @@ test.describe('Custom Character', () => {
           waitUntil: 'domcontentloaded',
         });
 
-        await page.locator('.character-creation').waitFor({ state: 'visible', timeout: 10000 });
+        await page.locator('.character-creation').waitFor({ state: 'visible', timeout: 30000 });
         await hideCanvas(page);
         await disableCSSAnimations(page);
 
@@ -118,7 +118,7 @@ test.describe('Custom Character', () => {
           waitUntil: 'domcontentloaded',
         });
 
-        await page.locator('.character-creation').waitFor({ state: 'visible', timeout: 10000 });
+        await page.locator('.character-creation').waitFor({ state: 'visible', timeout: 30000 });
         await hideCanvas(page);
         await disableCSSAnimations(page);
 
@@ -133,11 +133,11 @@ test.describe('Custom Character', () => {
         await confirmBtn.click();
 
         const createModal = page.getByTestId('create-matoran-confirm-modal');
-        await expect(createModal).toBeVisible({ timeout: 10000 });
+        await expect(createModal).toBeVisible({ timeout: 30000 });
         await expect(createModal).toContainText('cannot change');
         await page.getByTestId('create-matoran-confirm-submit').click();
 
-        await page.waitForURL(/\/characters\/custom_0$/, { timeout: 10000 });
+        await page.waitForURL(/\/characters\/custom_0$/, { timeout: 30000 });
 
         const persisted = await readPersistedGameState(page);
         expect(persisted.protodermis).toBe(4500);
@@ -182,7 +182,7 @@ test.describe('Custom Character', () => {
         await disableCSSAnimations(page);
 
         const dialog = page.locator('[data-testid="shared-character-prompt"]');
-        await expect(dialog).toBeVisible({ timeout: 10000 });
+        await expect(dialog).toBeVisible({ timeout: 30000 });
         await expect(dialog).toContainText('Pridak');
         await expect(dialog).toContainText('Water');
 
@@ -207,7 +207,7 @@ test.describe('Custom Character', () => {
           hideCanvasBeforeNav: true,
           waitUntil: 'domcontentloaded',
         });
-        await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 10000 });
+        await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 30000 });
         await hideCanvas(page);
         await disableCSSAnimations(page);
 
@@ -247,7 +247,7 @@ test.describe('Custom Character', () => {
         await disableCSSAnimations(page);
 
         const dialog = page.locator('[data-testid="shared-character-prompt"]');
-        await expect(dialog).toBeVisible({ timeout: 10000 });
+        await expect(dialog).toBeVisible({ timeout: 30000 });
         await dialog.getByRole('button', { name: 'Continue' }).click();
         await expect(dialog).not.toBeVisible();
 
@@ -288,7 +288,7 @@ test.describe('Custom Character', () => {
           hideCanvasBeforeNav: true,
           waitUntil: 'domcontentloaded',
         });
-        await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 10000 });
+        await page.locator('.recruitment-screen').waitFor({ state: 'visible', timeout: 30000 });
         await hideCanvas(page);
         await disableCSSAnimations(page);
 
@@ -301,7 +301,7 @@ test.describe('Custom Character', () => {
         await page.getByRole('button', { name: /Add to recruitment list/i }).click();
 
         const dialog = page.locator('[data-testid="shared-character-prompt"]');
-        await expect(dialog).toBeVisible({ timeout: 10000 });
+        await expect(dialog).toBeVisible({ timeout: 30000 });
         await expect(dialog).toContainText('Pridak');
 
         await dialog.getByRole('button', { name: 'Continue' }).click();

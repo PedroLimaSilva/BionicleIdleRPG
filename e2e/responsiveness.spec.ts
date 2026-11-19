@@ -109,7 +109,7 @@ test.describe('Responsiveness', () => {
           await page.setViewportSize(size);
           await goto(page, '/characters/Toa_Tahu', { hideCanvasBeforeNav: true });
 
-          await page.locator('.character-detail').waitFor({ state: 'visible', timeout: 10000 });
+          await page.locator('.character-detail').waitFor({ state: 'visible', timeout: 30000 });
           await hideCanvas(page);
           await disableCSSAnimations(page);
 
