@@ -107,88 +107,93 @@ export const CharacterDetail: React.FC = () => {
 
   return (
     <div className={`page-container character-detail element-${matoran.element}`}>
-      <div className="character-detail-visualization">
-        <div className="character-header">
-          <h1 className="character-name">{matoran.name}</h1>
-          {isCustom && <CustomCharacterShareButton matoran={matoran} />}
-        </div>
-
+      <div className="character-stage character-detail-visualization">
         <div id="model-frame">
           <div className="divider"></div>
         </div>
       </div>
-      <div className="character-detail-tabs">
-        <Tabs tabs={tabs} activeTab={activeTab} onTabChange={(tab: string) => setActiveTab(tab)} />
-      </div>
-      <div className="character-detail-content">
-        <div className="character-detail-section" id={activeTab}>
-          {activeTab === 'stats' && (
-            <StatsTab
-              matoran={matoran}
-              completedQuests={completedQuests}
-              protodermis={protodermis}
-              convertProtodermisToExp={convertProtodermisToExp}
-              activeMask={activeMask}
-              maskDescription={maskDescription}
-              onEvolveCharacter={(charId) => {
-                const evolutionFromStage = matoran.stage;
-                evolveCharacter(charId, (evolvedId) => {
-                  if (isCustomCharacterId(evolvedId)) {
-                    navigate('/character-create', {
-                      state: {
-                        customizeCharacterId: evolvedId,
-                        evolutionFromStage,
-                        freeCustomize: true,
-                      },
-                    });
-                    return;
-                  }
-                  navigate(`/characters/${evolvedId}`, { replace: true });
-                });
-              }}
-              onCustomizeAppearance={
-                isCustom && isToa(matoran)
-                  ? () =>
+      <div className="character-dossier">
+        <div className="character-header">
+          <h1 className="character-name">{matoran.name}</h1>
+          {isCustom && <CustomCharacterShareButton matoran={matoran} />}
+        </div>
+        <div className="character-detail-tabs">
+          <Tabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={(tab: string) => setActiveTab(tab)}
+          />
+        </div>
+        <div className="character-detail-content">
+          <div className="character-detail-section" id={activeTab}>
+            {activeTab === 'stats' && (
+              <StatsTab
+                matoran={matoran}
+                completedQuests={completedQuests}
+                protodermis={protodermis}
+                convertProtodermisToExp={convertProtodermisToExp}
+                activeMask={activeMask}
+                maskDescription={maskDescription}
+                onEvolveCharacter={(charId) => {
+                  const evolutionFromStage = matoran.stage;
+                  evolveCharacter(charId, (evolvedId) => {
+                    if (isCustomCharacterId(evolvedId)) {
                       navigate('/character-create', {
                         state: {
-                          customizeCharacterId: matoran.id,
-                          freeCustomize: false,
+                          customizeCharacterId: evolvedId,
+                          evolutionFromStage,
+                          freeCustomize: true,
                         },
-                      })
-                  : undefined
-              }
-            />
-          )}
-          {activeTab === 'inventory' && (
-            <>
-              <MaskCollection matoran={matoran} />
-              {isToaMata(matoran) && isKranaCollectionActive(completedQuests) && (
-                <KranaCollection matoran={matoran} />
-              )}
-            </>
-          )}
+                      });
+                      return;
+                    }
+                    navigate(`/characters/${evolvedId}`, { replace: true });
+                  });
+                }}
+                onCustomizeAppearance={
+                  isCustom && isToa(matoran)
+                    ? () =>
+                        navigate('/character-create', {
+                          state: {
+                            customizeCharacterId: matoran.id,
+                            freeCustomize: false,
+                          },
+                        })
+                    : undefined
+                }
+              />
+            )}
+            {activeTab === 'inventory' && (
+              <>
+                <MaskCollection matoran={matoran} />
+                {isToaMata(matoran) && isKranaCollectionActive(completedQuests) && (
+                  <KranaCollection matoran={matoran} />
+                )}
+              </>
+            )}
 
-          {activeTab === 'tasks' && (
-            <div>
-              {/* Job Assignement  */}
-              {(isMatoran(matoran) || isBohrokOrKal(matoran)) && (
-                <JobAssignment matoran={matoran} />
-              )}
+            {activeTab === 'tasks' && (
+              <div>
+                {/* Job Assignement  */}
+                {(isMatoran(matoran) || isBohrokOrKal(matoran)) && (
+                  <JobAssignment matoran={matoran} />
+                )}
 
-              {/* Assigned Quest  */}
-              {matoran.quest && (
-                <div>
-                  <p>Assigned Quest:</p>
-                  <Link to="/quests">
-                    <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
-                  </Link>
-                </div>
-              )}
-            </div>
-          )}
-          {activeTab === 'chronicle' && matoran.chronicleId && (
-            <CharacterChronicle matoran={matoran} />
-          )}
+                {/* Assigned Quest  */}
+                {matoran.quest && (
+                  <div>
+                    <p>Assigned Quest:</p>
+                    <Link to="/quests">
+                      <p>{QUESTS.find((q) => q.id === matoran.quest)!.name}</p>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+            {activeTab === 'chronicle' && matoran.chronicleId && (
+              <CharacterChronicle matoran={matoran} />
+            )}
+          </div>
         </div>
       </div>
     </div>
