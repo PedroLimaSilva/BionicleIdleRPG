@@ -9,7 +9,7 @@
   .currency-progress {
     min-width: unset;
     width: 25px;
-    min-height: min(200px, calc(100dvh - 8rem));
+    min-height: 200px;
   }
   .currency-fill {
     height: unset;
@@ -78,16 +78,5 @@
 @media (orientation: landscape) {
   .currency-bar {
     @include currency-bar-landscape;
-  }
-}
-
-@media (orientation: landscape) and (max-height: 500px) {
-  .currency-bar {
-    padding: 1rem 2rem 1rem 0.75rem;
-
-    .currency-progress {
-      min-height: min(140px, calc(100dvh - 6rem));
-      width: 22px;
-    }
   }
 }
