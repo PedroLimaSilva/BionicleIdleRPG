@@ -63,8 +63,23 @@
   &.landscape {
     .page-container {
       padding-bottom: 2rem;
-      padding-right: 180px; //space for .nav-bar
+      /* Nav + vertical currency bar sit on the trailing edge. */
+      padding-right: var(--landscape-trailing-chrome, 13.5rem);
     }
+  }
+}
+
+@media (orientation: landscape) {
+  .main-content .page-container {
+    padding-bottom: 2rem;
+    padding-right: var(--landscape-trailing-chrome, 13.5rem);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .main-content .page-container {
+    padding: 0.75rem;
+    padding-right: var(--landscape-trailing-chrome, 12rem);
   }
 }
 

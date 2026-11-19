@@ -243,7 +243,7 @@
 .character-dex-preview #model-frame {
   anchor-name: --canvas-anchor;
   position: relative;
-  height: calc(100vh - 7rem - 220px);
+  height: clamp(12.5rem, calc(100dvh - 22rem), 52dvh);
 
   .divider {
     position: absolute;
@@ -255,7 +255,13 @@
 }
 
 .landscape .character-dex-preview #model-frame {
-  height: calc(100vh - 7rem);
+  height: calc(100dvh - 7rem);
+}
+
+@media (orientation: landscape) {
+  .character-dex-preview #model-frame {
+    height: calc(100dvh - 7rem);
+  }
 }
 
 .character-dex-controls {

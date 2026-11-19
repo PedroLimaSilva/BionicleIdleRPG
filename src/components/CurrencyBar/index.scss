@@ -1,3 +1,26 @@
+@mixin currency-bar-landscape {
+  bottom: 50%;
+  left: unset;
+  right: 50%;
+  padding: 2rem 3rem 2rem 1rem;
+  border-radius: 50px 0 0 50px;
+  transform: translateY(50%);
+
+  .currency-progress {
+    min-width: unset;
+    width: 25px;
+    min-height: min(200px, calc(100dvh - 8rem));
+  }
+  .currency-fill {
+    height: unset;
+    width: 100%;
+    transition: height var(--transition-slow);
+  }
+  .currency-label {
+    transform: translate(50%, -50%) rotate(-90deg);
+  }
+}
+
 .currency {
   &-bar {
     padding: 1rem 2rem;
@@ -16,26 +39,7 @@
     transform: translateX(-50%);
 
     &.landscape {
-      bottom: 50%;
-      left: unset;
-      right: 50%;
-      padding: 2rem 3rem 2rem 1rem;
-      border-radius: 50px 0 0 50px;
-      transform: translateY(50%);
-
-      .currency-progress {
-        min-width: unset;
-        width: 25px;
-        min-height: 200px;
-      }
-      .currency-fill {
-        height: unset;
-        width: 100%;
-        transition: height var(--transition-slow);
-      }
-      .currency-label {
-        transform: translate(50%, -50%) rotate(-90deg);
-      }
+      @include currency-bar-landscape;
     }
   }
   &-progress {
@@ -68,5 +72,22 @@
     color: var(--color-text-muted);
     font-size: 0.8rem;
     font-weight: 600;
+  }
+}
+
+@media (orientation: landscape) {
+  .currency-bar {
+    @include currency-bar-landscape;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .currency-bar {
+    padding: 1rem 2rem 1rem 0.75rem;
+
+    .currency-progress {
+      min-height: min(140px, calc(100dvh - 6rem));
+      width: 22px;
+    }
   }
 }

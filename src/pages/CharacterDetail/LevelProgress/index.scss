@@ -1,6 +1,7 @@
 .character-progress {
   text-align: center;
   width: 100%;
+  scroll-margin-top: 4.5rem;
 
   .level-display {
     font-size: 1rem;
@@ -14,6 +15,23 @@
     .value {
       font-size: 1.8em;
       font-weight: bold;
+    }
+  }
+
+  @media (orientation: landscape) and (max-height: 500px) {
+    .level-display {
+      .value {
+        font-size: 1.35em;
+      }
+    }
+
+    .xp-label {
+      font-size: 0.8rem;
+      margin-top: 0.4rem;
+    }
+
+    .xp-bar {
+      height: 14px;
     }
   }
 
