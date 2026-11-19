@@ -20,6 +20,12 @@
     transition: opacity var(--transition-base);
     pointer-events: none;
 
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
     &.canvas-mount--exiting {
       opacity: 0;
     }
@@ -30,7 +36,15 @@
     /* Align the 3D canvas to the model panel. A viewport-relative `top`
        made the canvas taller than the panel, so the camera framed extra
        space above the card and the panel cropped the top of every model. */
-    &[class*='route--characters-'],
+    /* Match the stage exactly. A wider canvas zoomed the figure down and
+       painted the spare width over the stats sheet. */
+    &[class*='route--characters-'] {
+      display: block;
+      z-index: 1;
+      top: anchor(top);
+      left: anchor(left);
+      right: anchor(right);
+    }
     &[class*='route--rahkshi'],
     &[class*='route--test-dex-'] {
       display: block;
@@ -63,8 +77,16 @@
   &.landscape {
     .page-container {
       padding-bottom: 2rem;
-      padding-right: 180px; //space for .nav-bar
+      /* Nav + vertical currency bar sit on the trailing edge. */
+      padding-right: var(--landscape-trailing-chrome, 13.5rem);
     }
+  }
+}
+
+@media (orientation: landscape) {
+  .main-content .page-container {
+    padding-bottom: 2rem;
+    padding-right: var(--landscape-trailing-chrome, 13.5rem);
   }
 }
 

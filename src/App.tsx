@@ -14,7 +14,6 @@ import { CharacterRigLoadGate } from './rendering/3d/CharacterRigLoadGate';
 import { SettingsProvider } from './context/Settings.tsx';
 
 import './styles/index.scss';
-import { useEffect, useState } from 'react';
 import SettingsPage from './pages/Settings/index.tsx';
 import GameStateEditorPage from './pages/GameStateEditor/index.tsx';
 import { QuestsPage } from './pages/Quests/index.tsx';
@@ -31,6 +30,7 @@ import { CharacterDex } from './pages/CharacterDex/index.tsx';
 import { CharacterDexPreview } from './pages/CharacterDex/Preview.tsx';
 import { PWABadge } from './components/CacheManagement/PWABadge.tsx';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt/index.tsx';
+import { useViewportOrientation } from './utils/useViewportOrientation';
 
 const NotFound: React.FC = () => (
   <div className="page-container">
@@ -40,33 +40,7 @@ const NotFound: React.FC = () => (
 );
 
 function AppShell() {
-  const [isPortrait, setIsPortrait] = useState(window.innerHeight > window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsPortrait(window.innerHeight > window.innerWidth);
-    };
-
-    window.addEventListener(
-      'resize',
-      handleResize as unknown as (this: Window, ev: UIEvent) => void
-    );
-    window.addEventListener(
-      'orientationchange',
-      handleResize as unknown as (this: Window, ev: Event) => void
-    );
-
-    return () => {
-      window.removeEventListener(
-        'resize',
-        handleResize as unknown as (this: Window, ev: UIEvent) => void
-      );
-      window.removeEventListener(
-        'orientationchange',
-        handleResize as unknown as (this: Window, ev: Event) => void
-      );
-    };
-  }, []);
+  const isPortrait = useViewportOrientation();
 
   return (
     <GameProvider>

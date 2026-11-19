@@ -1,3 +1,40 @@
+@mixin nav-container-landscape {
+  bottom: 50%;
+  left: unset;
+  right: 1.5rem;
+  transform: translateY(50%);
+
+  .nav-bar {
+    width: fit-content;
+    flex-direction: column;
+    padding: 0.5rem 0.5rem;
+    height: fit-content;
+    min-height: min(320px, calc(100dvh - 4rem));
+  }
+
+  .nav-item {
+    &:hover,
+    &:focus {
+      transform: translateY(0);
+      svg {
+        transform: scale(1.1);
+      }
+    }
+    &.active {
+      svg {
+        transform: scale(1.05);
+      }
+    }
+    label {
+      display: none;
+    }
+  }
+
+  &.hidden {
+    transform: translateY(50%) translateX(calc(64px + 24px));
+  }
+}
+
 .nav-container {
   position: fixed;
   bottom: 24px;
@@ -14,32 +51,32 @@
   }
 
   &.landscape {
-    bottom: 50%;
-    left: unset;
-    right: 1.5rem;
-    transform: translateY(50%);
+    @include nav-container-landscape;
+  }
+}
+
+@media (orientation: landscape) {
+  .nav-container {
+    @include nav-container-landscape;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .nav-container {
+    right: 0.75rem;
+
     .nav-bar {
-      width: fit-content;
-      flex-direction: column;
-      padding: 0.5rem 0.5rem;
-      height: fit-content;
-      min-height: 320px;
+      min-height: unset;
+      padding: 0.35rem;
     }
+
     .nav-item {
-      &:hover,
-      &:focus {
-        transform: translateY(0);
-        svg {
-          transform: scale(1.1);
-        }
-      }
-      &.active {
-        svg {
-          transform: scale(1.05);
-        }
-      }
-      label {
-        display: none;
+      height: 48px;
+      padding: 0.35rem;
+
+      svg {
+        height: 24px;
+        width: 24px;
       }
     }
   }

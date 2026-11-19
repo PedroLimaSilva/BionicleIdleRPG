@@ -94,11 +94,12 @@ jobs:
         run: yarn test:ci
 
   # Job 2a: E2E app/UI tests (fast — no 3D model golden masters)
+  # Pin Ubuntu 24.04: Playwright 1.58.x cannot install Chromium on ubuntu-latest (26.04).
   e2e-app:
     name: E2E App Tests
     needs: changes
     if: needs.changes.outputs.docs_only != 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -136,11 +137,12 @@ jobs:
           retention-days: 30
 
   # Job 2b: E2E 3D model rendering (slow — canvas snapshots for every character)
+  # Pin Ubuntu 24.04: Playwright 1.58.x cannot install Chromium on ubuntu-latest (26.04).
   e2e-models:
     name: E2E Model Rendering
     needs: changes
     if: needs.changes.outputs.docs_only != 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
