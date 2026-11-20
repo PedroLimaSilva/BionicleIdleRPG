@@ -1,3 +1,0 @@
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{};e._posthogReleaseId=e._posthogReleaseId||"01a1f6b0-42d0-0000-d4a6-07f5920808f9";var n=(new e.Error).stack;n&&(e._posthogChunkIds=e._posthogChunkIds||{},e._posthogChunkIds[n]="eab1e45b-4432-52b4-a281-3b0f1579b770")}catch(e){}}();import{_ as l}from"./index-CEoM5-Q6.js";function m(e,c){var i,t,o;e.accDescr&&((i=c.setAccDescription)==null||i.call(c,e.accDescr)),e.accTitle&&((t=c.setAccTitle)==null||t.call(c,e.accTitle)),e.title&&((o=c.setDiagramTitle)==null||o.call(c,e.title))}l(m,"populateCommonDb");export{m as p};
-
-//# chunkId=eab1e45b-4432-52b4-a281-3b0f1579b770
