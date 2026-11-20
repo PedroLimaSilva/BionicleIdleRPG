@@ -77,8 +77,7 @@
   &.landscape {
     .page-container {
       padding-bottom: 2rem;
-      /* Nav + vertical currency bar sit on the trailing edge. */
-      padding-right: var(--landscape-trailing-chrome, 13.5rem);
+      padding-right: 180px; //space for .nav-bar
     }
   }
 }
@@ -86,7 +85,7 @@
 @media (orientation: landscape) {
   .main-content .page-container {
     padding-bottom: 2rem;
-    padding-right: var(--landscape-trailing-chrome, 13.5rem);
+    padding-right: 180px; //space for .nav-bar
   }
 }
 

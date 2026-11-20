@@ -9,7 +9,7 @@
     flex-direction: column;
     padding: 0.5rem 0.5rem;
     height: fit-content;
-    min-height: min(320px, calc(100dvh - 4rem));
+    min-height: 320px;
   }
 
   .nav-item {
@@ -58,27 +58,6 @@
 @media (orientation: landscape) {
   .nav-container {
     @include nav-container-landscape;
-  }
-}
-
-@media (orientation: landscape) and (max-height: 500px) {
-  .nav-container {
-    right: 0.75rem;
-
-    .nav-bar {
-      min-height: unset;
-      padding: 0.35rem;
-    }
-
-    .nav-item {
-      height: 48px;
-      padding: 0.35rem;
-
-      svg {
-        height: 24px;
-        width: 24px;
-      }
-    }
   }
 }
 
