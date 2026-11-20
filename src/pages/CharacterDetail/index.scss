@@ -12,12 +12,15 @@
    */
   --character-stage-ratio: 14 / 22;
   /*
-   * Portrait stage is as large as the screen allows. Height stops above the
-   * floating nav so the figure stays on screen; width follows 14×22 and
-   * fills the column when the phone is narrow (iPhone Duo outer display).
+   * Portrait stage fills the column until it would run under the bottom
+   * chrome: nav offset (24px), nav (64px), and the currency bar on top of
+   * the nav (11rem, including the name, the tab row, and a small gap).
+   * Width follows 14×22.
    */
-  --character-stage-max-h: calc(100dvh - 7rem);
+  --character-stage-max-h: calc(100dvh - 24px - 64px - 11rem - env(safe-area-inset-bottom, 0px));
   --character-sheet-pad: 0.75rem;
+  /* Match the centered nav pill. 0.75rem is tighter than that inset on a phone. */
+  --character-sheet-pad-inline: max(var(--character-sheet-pad), var(--nav-inline-inset, 0px));
   --landscape-trailing-chrome: 13.5rem;
 }
 
@@ -31,6 +34,7 @@
   justify-items: center;
   row-gap: 0.75rem;
   padding: var(--character-sheet-pad);
+  padding-inline: var(--character-sheet-pad-inline);
   padding-bottom: calc(10.5rem + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
@@ -38,6 +42,7 @@
 .character-stage {
   grid-area: stage;
   width: min(100%, calc(var(--character-stage-max-h) * 14 / 22));
+  max-height: var(--character-stage-max-h);
   aspect-ratio: var(--character-stage-ratio);
   margin-inline: auto;
   border: 2px solid var(--theme-element-primary);
@@ -101,6 +106,7 @@
 @mixin character-stage-landscape {
   width: min(46vw, calc((100dvh - 1.5rem) * 14 / 22));
   height: calc(100dvh - 1.5rem);
+  max-height: none;
   aspect-ratio: auto;
   margin: 0;
   position: sticky;
@@ -195,6 +201,16 @@
   .tabs-inner {
     margin: 0;
     justify-content: flex-start;
+  }
+
+  /* The row lines up with the nav, which is narrower than the old 0.75rem
+     sheet. Keep the labels on one line inside that width. */
+  .tabs-container .tabs-inner {
+    gap: 0.35rem;
+  }
+
+  .tabs-container .tab-btn {
+    padding-inline: 0.25rem;
   }
 }
 
