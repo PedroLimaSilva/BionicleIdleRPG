@@ -38,7 +38,9 @@
 .nav-container {
   position: fixed;
   bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-  left: calc(50% + (env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2);
+  /* Center on the layout viewport. Shifting by the Duo's right inset
+     parks the bar left of the character on the outer portrait screen. */
+  left: 50%;
   transform: translateX(-50%);
   z-index: 500;
   transition: transform var(--transition-slow);
@@ -74,7 +76,7 @@
   padding: 0 24px;
   display: flex;
   justify-content: space-between;
-  width: min(600px, calc(90vw - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+  width: min(600px, 90vw);
   max-width: 600px;
 
   .nav-item {
