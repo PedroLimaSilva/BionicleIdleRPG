@@ -202,15 +202,29 @@
     margin: 0;
     justify-content: flex-start;
   }
+}
 
-  /* The row lines up with the nav, which is narrower than the old 0.75rem
-     sheet. Keep the labels on one line inside that width. */
+/* Portrait sheet matches the nav pill, so the row is narrower than the
+   landscape sheet. Keep the three labels on one line there only. */
+.main-content.portrait .character-detail-tabs {
   .tabs-container .tabs-inner {
     gap: 0.35rem;
   }
 
   .tabs-container .tab-btn {
     padding-inline: 0.25rem;
+  }
+}
+
+@media (orientation: portrait) {
+  .character-detail-tabs {
+    .tabs-container .tabs-inner {
+      gap: 0.35rem;
+    }
+
+    .tabs-container .tab-btn {
+      padding-inline: 0.25rem;
+    }
   }
 }
 
