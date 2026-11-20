@@ -13,11 +13,11 @@
   --character-stage-ratio: 14 / 22;
   /*
    * Portrait stage fills the column until it would run under the bottom
-   * chrome: nav offset (24px), nav (64px), and the currency bar on top of
-   * the nav (11rem, including the name, the tab row, and a small gap).
-   * Width follows 14×22.
+   * chrome: the nav's side inset under the pill, the nav (64px), and the
+   * currency bar on top of the nav (11rem, including the name, the tab
+   * row, and a small gap). Width follows 14×22.
    */
-  --character-stage-max-h: calc(100dvh - 24px - 64px - 11rem - env(safe-area-inset-bottom, 0px));
+  --character-stage-max-h: calc(100dvh - var(--nav-inline-inset, 0px) - 64px - 11rem);
   --character-sheet-pad: 0.75rem;
   /* Match the centered nav pill. 0.75rem is tighter than that inset on a phone. */
   --character-sheet-pad-inline: max(var(--character-sheet-pad), var(--nav-inline-inset, 0px));
