@@ -44,7 +44,8 @@
 
 .nav-container {
   position: fixed;
-  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  /* Same gap under the pill as on each side. */
+  bottom: var(--nav-inline-inset);
   /* Center on the layout viewport. Shifting by the Duo's right inset
      parks the bar left of the character on the outer portrait screen. */
   left: 50%;
@@ -53,7 +54,7 @@
   transition: transform var(--transition-slow);
 
   &.hidden {
-    transform: translateX(-50%) translateY(calc(64px + 24px));
+    transform: translateX(-50%) translateY(calc(64px + var(--nav-inline-inset)));
     opacity: 0;
     pointer-events: none;
     touch-action: none;
