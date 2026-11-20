@@ -11,8 +11,12 @@
    * same ratio so the figure fills the frame instead of sitting in a wide card.
    */
   --character-stage-ratio: 14 / 22;
-  /* Portrait: nav + name, tabs, level, XP, element, and the training title. */
-  --character-sheet-reserve: 29rem;
+  /*
+   * Portrait stage is as large as the screen allows. Height stops above the
+   * floating nav so the figure stays on screen; width follows 14×22 and
+   * fills the column when the phone is narrow (iPhone Duo outer display).
+   */
+  --character-stage-max-h: calc(100dvh - 7rem);
   --character-sheet-pad: 0.75rem;
   --landscape-trailing-chrome: 13.5rem;
 }
@@ -33,7 +37,7 @@
 
 .character-stage {
   grid-area: stage;
-  width: min(100%, calc((100dvh - var(--character-sheet-reserve)) * 14 / 22));
+  width: min(100%, calc(var(--character-stage-max-h) * 14 / 22));
   aspect-ratio: var(--character-stage-ratio);
   margin-inline: auto;
   border: 2px solid var(--theme-element-primary);
