@@ -76,23 +76,23 @@
 
   &.landscape {
     .page-container {
-      padding-bottom: 2rem;
-      padding-right: 180px; //space for .nav-bar
+      padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+      padding-right: calc(180px + env(safe-area-inset-right, 0px)); //space for .nav-bar
     }
   }
 }
 
 @media (orientation: landscape) {
   .main-content .page-container {
-    padding-bottom: 2rem;
-    padding-right: 180px; //space for .nav-bar
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+    padding-right: calc(180px + env(safe-area-inset-right, 0px)); //space for .nav-bar
   }
 }
 
 .page-container {
   width: 100%;
   padding: 2rem;
-  padding-bottom: 170px; //space for .nav-bar
+  padding-bottom: calc(170px + env(safe-area-inset-bottom, 0px)); //space for .nav-bar
   max-width: 1400px;
   margin: 0 auto;
 

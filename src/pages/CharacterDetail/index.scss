@@ -27,7 +27,7 @@
   justify-items: center;
   row-gap: 0.75rem;
   padding: var(--character-sheet-pad);
-  padding-bottom: 10.5rem;
+  padding-bottom: calc(10.5rem + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
@@ -80,7 +80,7 @@
   row-gap: 0;
   /* Side nav only — no extra band under the sheet. */
   padding: var(--character-sheet-pad);
-  padding-right: var(--landscape-trailing-chrome);
+  padding-right: calc(var(--landscape-trailing-chrome) + env(safe-area-inset-right, 0px));
 }
 
 .landscape .page-container.character-detail,

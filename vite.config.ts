@@ -148,7 +148,7 @@ export default defineConfig(({ mode }) => {
           short_name: 'Bionicle',
           theme_color: '#ffffff',
           // Extended manifest fields for dark mode theming
-          ...({ dark_background_color: '#2d2d2d', dark_theme_color: '#2d2d2d' } as Record<
+          ...({ dark_background_color: '#151518', dark_theme_color: '#151518' } as Record<
             string,
             string
           >),

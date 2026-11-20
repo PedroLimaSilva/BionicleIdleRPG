@@ -1,7 +1,7 @@
 @mixin nav-container-landscape {
   bottom: 50%;
   left: unset;
-  right: 1.5rem;
+  right: calc(1.5rem + env(safe-area-inset-right, 0px));
   transform: translateY(50%);
 
   .nav-bar {
@@ -37,8 +37,8 @@
 
 .nav-container {
   position: fixed;
-  bottom: 24px;
-  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  left: calc(50% + (env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2);
   transform: translateX(-50%);
   z-index: 500;
   transition: transform var(--transition-slow);
@@ -74,7 +74,7 @@
   padding: 0 24px;
   display: flex;
   justify-content: space-between;
-  width: 90vw;
+  width: min(600px, calc(90vw - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
   max-width: 600px;
 
   .nav-item {
