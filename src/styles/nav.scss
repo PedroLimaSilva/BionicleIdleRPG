@@ -1,3 +1,10 @@
+:root {
+  /* Centered portrait pill. Character sheets use the same side inset so
+     their edges line up with the bar instead of running past it. */
+  --nav-bar-width: min(600px, 90vw);
+  --nav-inline-inset: max(0px, calc((100vw - var(--nav-bar-width)) / 2));
+}
+
 @mixin nav-container-landscape {
   bottom: 50%;
   left: unset;
@@ -76,7 +83,7 @@
   padding: 0 24px;
   display: flex;
   justify-content: space-between;
-  width: min(600px, 90vw);
+  width: var(--nav-bar-width);
   max-width: 600px;
 
   .nav-item {
