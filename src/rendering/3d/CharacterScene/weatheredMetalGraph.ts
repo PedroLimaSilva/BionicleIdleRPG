@@ -153,6 +153,13 @@ const grime = largeCloud.sub(0.35).mul(2).clamp(0, 1);
 const albedoMapRef = materialReference('map', 'texture') as never;
 const grimyUnmapped = materialColor.mul(grime.mul(grimeDarkenRef).oneMinus());
 const grimyMapped = materialColor.mul(albedoMapRef).mul(grime.mul(grimeDarkenRef).oneMinus());
+/**
+ * Packed sheets already store edge wear in the bake's B channel. The flats
+ * stay the plain albedo — sampling `grime` here would run object-space FBM
+ * on every armor fragment even where the mix weight is 0.
+ */
+const packedAlbedoUnmapped = materialColor;
+const packedAlbedoMapped = materialColor.mul(albedoMapRef);
 /** Opt-in debug: GLSL `diffuseColor.rgb = vec3(grime)`. Not used in TEST_MODE. */
 const debugGrimeColor = vec3(grime);
 const bakeColor = bakedDiscolorationColorFromMaterial() as never;
@@ -160,8 +167,16 @@ const bakeAmount = bakedDiscolorationAmountFromMaterial() as never;
 const packedBakeAmount = bakedDiscolorationAmountFromMaterial('b') as never;
 const colorUnmappedWithBake = mix(grimyUnmapped, bakeColor, bakeAmount);
 const colorMappedWithBake = mix(grimyMapped, bakeColor, bakeAmount);
-const colorUnmappedWithPackedBake = mix(grimyUnmapped, bakeColor, packedBakeAmount);
-const colorMappedWithPackedBake = mix(grimyMapped, bakeColor, packedBakeAmount);
+const colorUnmappedWithPackedBake = mix(packedAlbedoUnmapped, bakeColor, packedBakeAmount);
+const colorMappedWithPackedBake = mix(packedAlbedoMapped, bakeColor, packedBakeAmount);
+
+/** Grayscale bake color still darkens with live grime. Packed color does not. */
+export const weatheredColorNodes = {
+  grayscaleBakeMapped: colorMappedWithBake,
+  grayscaleBakeUnmapped: colorUnmappedWithBake,
+  packedBakeMapped: colorMappedWithPackedBake,
+  packedBakeUnmapped: colorUnmappedWithPackedBake,
+} as const;
 const roughnessNode = materialRoughness
   .add(grime.mul(grimeRoughnessRef))
   .add(fineGrain.sub(0.5).mul(FINE_ROUGHNESS_VARIATION))
@@ -222,7 +237,7 @@ export function weatheredProgramCacheKey(
     mat.metalnessMap ? 'met' : '',
     opts.hasDiscoloration ? 'dc' : '',
     opts.packedPbr ? 'packed' : '',
-    opts.dentStrength > 0 && !mat.normalMap ? 'dent' : '',
+    !opts.packedPbr && opts.dentStrength > 0 && !mat.normalMap ? 'dent' : '',
     opts.debugGrime ? 'dbg' : '',
   ].join('|');
 }
@@ -308,7 +323,9 @@ export function applySharedWeatheringGraph(
       mat.metalnessNode = metalnessNode;
     }
   }
-  if (dentStrength > 0 && !mat.normalMap) {
+  // Packed bodies ship normal bakes. Procedural dents are another live noise
+  // and stay off this topology even if a slot is missing its normal map.
+  if (!packedPbr && dentStrength > 0 && !mat.normalMap) {
     mat.normalNode = dentNormalNode;
   }
   setTopologyProgramCacheKey(

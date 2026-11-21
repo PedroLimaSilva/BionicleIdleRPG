@@ -3,8 +3,9 @@
  * roughness, lowers metalness, and bumps the shading normal in the same
  * local-space patches. Authored normal / roughness / metalness maps replace the
  * matching FBM channel. Optional baked emissive discoloration (glTF `emissiveMap`)
- * mixes on top. Packed diminished sheets sample that bake as RGB
- * (R roughness, G metalness, B wear) instead of FBM PBR. Edgewear stays off.
+ * mixes on top of that live grime. Packed sheets sample the bake as RGB
+ * (R roughness, G metalness, B edge wear) and do not evaluate the grime FBM:
+ * B mixes a flat albedo toward the wear tint. Edgewear stays off.
  */
 
 import {
@@ -48,7 +49,7 @@ export type WeatheredMetalOptions = {
    * `noise`: drop those maps so weathered FBM drives metalness and roughness
    * (baked discoloration + normal maps still apply).
    * `packed`: emissive RGB is R roughness, G metalness, B wear. Drops glTF
-   * metallicRoughness textures (wrong channel layout).
+   * metallicRoughness textures (wrong channel layout) and the live grime FBM.
    */
   authoredPbrMaps?: 'keep' | 'noise' | 'packed';
   envMapIntensity?: number;
