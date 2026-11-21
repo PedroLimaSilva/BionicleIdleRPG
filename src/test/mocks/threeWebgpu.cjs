@@ -43,6 +43,9 @@ class NodeMaterial {
 }
 
 class WebGPURenderer {
+  constructor(options = {}) {
+    this.options = options;
+  }
   library = {
     fromMaterial(material) {
       return material;
