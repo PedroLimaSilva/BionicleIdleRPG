@@ -9,6 +9,7 @@ import {
 } from 'three';
 import { DISCOLORATION_MAP_USERDATA_KEY } from '../hooks/bakedDiscoloration';
 import { applyWeatheredMetalToObject, getWeatheredMetalMaterial } from './WeatheredMetalMaterial';
+import { weatheredColorNodes } from './weatheredMetalGraph';
 import { isSharedGpuResource } from '../utils/disposeThreeObject';
 import { TOPOLOGY_PROGRAM_CACHE_KEY } from '../tsl/topologyCacheKey';
 
@@ -390,6 +391,30 @@ describe('applyWeatheredMetalToObject PBR map preservation', () => {
     expect(packed.userData.packedRoughnessHasMap).toBe(1);
     expect(packed.userData.packedMetalnessHasMap).toBe(1);
     expect(noise.userData.packedRoughnessHasMap).toBeUndefined();
+  });
+
+  test('packed color uses the flat albedo mix and skips live grime and dents', () => {
+    const bake = mapTex();
+    const albedo = mapTex();
+    const packed = getWeatheredMetalMaterial('#c91a09', {
+      authoredPbrMaps: 'packed',
+      discolorationMap: bake,
+    }) as MeshStandardMaterial & { colorNode?: unknown; normalNode?: unknown };
+    const packedMapped = getWeatheredMetalMaterial('#c91a09', {
+      authoredPbrMaps: 'packed',
+      discolorationMap: bake,
+      map: albedo,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+    const grayscale = getWeatheredMetalMaterial('#ff0000', {
+      discolorationMap: bake,
+    }) as MeshStandardMaterial & { colorNode?: unknown };
+
+    expect(packed.colorNode).toBe(weatheredColorNodes.packedBakeUnmapped);
+    expect(packedMapped.colorNode).toBe(weatheredColorNodes.packedBakeMapped);
+    expect(grayscale.colorNode).toBe(weatheredColorNodes.grayscaleBakeUnmapped);
+    expect(packed.colorNode).not.toBe(grayscale.colorNode);
+    expect(packed.normalNode).toBeUndefined();
+    expect(packed.customProgramCacheKey?.()).not.toContain('dent');
   });
 
   test('keeps authored metalness maps when weathering does not pass a metalness scalar', () => {

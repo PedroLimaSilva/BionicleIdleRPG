@@ -28,6 +28,25 @@ describe('WEATHERING_NOISE_SEED', () => {
       })
     ).not.toContain('packed');
   });
+
+  test('packed topology omits the procedural dent variant', () => {
+    const mat = new MeshStandardMaterial();
+    expect(
+      weatheredProgramCacheKey(mat, {
+        debugGrime: false,
+        dentStrength: 2,
+        hasDiscoloration: true,
+        packedPbr: true,
+      })
+    ).not.toContain('dent');
+    expect(
+      weatheredProgramCacheKey(mat, {
+        debugGrime: false,
+        dentStrength: 2,
+        hasDiscoloration: true,
+      })
+    ).toContain('dent');
+  });
 });
 
 describe('shouldVisualizeWeatheringGrime', () => {
