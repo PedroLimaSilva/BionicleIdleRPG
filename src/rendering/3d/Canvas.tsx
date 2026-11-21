@@ -10,6 +10,7 @@ import { shouldEnableShadows, isTestMode } from '../../utils/testMode';
 import { useSettings } from '../../context/useSettings';
 import { isCanvasRoute, shouldFadeCanvasOnExit } from './canvasRoutes';
 import { MOTION_DURATION } from '../../motion/transitions';
+import { CANVAS_DPR } from './canvasPixelRatio';
 import { createSceneWebGPURenderer, isWebGLBackend } from './webgpuRenderer';
 import { ScenePerfOverlay } from './ScenePerfOverlay';
 
@@ -159,6 +160,7 @@ export const SceneCanvasProvider: React.FC<{ children: React.ReactNode }> = ({ c
         createPortal(
           <Canvas
             className="shared-canvas"
+            dpr={CANVAS_DPR}
             frameloop={isTestMode() ? 'demand' : 'always'}
             gl={createSceneWebGPURenderer as never}
             orthographic
