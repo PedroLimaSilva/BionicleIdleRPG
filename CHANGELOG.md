@@ -2,6 +2,43 @@
 
 Biweekly releases land every other Saturday. See [docs/RELEASES.md](docs/RELEASES.md).
 
+## [0.11.2] - 2026-11-21
+
+Merged since v0.9.1:
+
+### Infrastructure, CI & Tooling
+
+- #508 feat(blender): merge bone-parented meshes into one weighted mesh
+
+### Combat & Encounters
+
+- #498 Share gauntlet Rahkshi GPU resources to cut combat frame hangs
+
+### UI & UX
+
+- #521 Match the portrait nav’s bottom gap to its side gaps
+- #520 Limit the tighter character tabs to portrait
+- #519 Keep the portrait character stage above the nav
+- #518 Center the portrait nav on the Duo outer screen
+- #517 Enlarge the portrait character stage to the screen
+- #515 Paint the page under the iPhone Duo side controls
+- #514 Restore shared landscape chrome and refresh character snapshots
+- #513 Improve character detail layouts for iPhone Duo viewports
+
+### Rendering & Materials
+
+- #499 Fit cheaper PCFSoft shadows on character sheets and skip per-draw TSL hashing
+- #497 Share kit shader programs across character hops
+
+### Characters & Models
+
+- #507 Render packed Bohrok swarm and Kal from Bohrok.glb
+- #506 Drop rebuilt kit assembly so Rebuilt Matoran draw a packed Body_Baked sheet
+- #505 Drop Kopaka kit assembly so the sheet and combat share a packed skinned body
+- #503 Drop Tahu kit assembly so the sheet and combat share the packed skinned body
+- #502 Render diminished village Matoran from a packed skinned sheet
+- #501 Wire Tahu Mata skinned battle LOD with weathered noise PBR
+
 ## [0.9.1] - 2026-09-12
 
 Merged since v0.8.2:
